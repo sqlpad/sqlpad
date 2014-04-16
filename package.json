@@ -1,0 +1,16 @@
+{
+  "name": "query-server",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node query-server.js"
+  },
+  "dependencies": {
+    "express": "3.4.x",
+    "ejs": "*",
+    "pg.js": "3.0.x",
+    "moment": "*",
+    "bcrypt-nodejs": "0.0.x",
+    "nedb": "0.10.x"
+  }
+}

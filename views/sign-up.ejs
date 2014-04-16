@@ -1,0 +1,18 @@
+<% include header %>
+  	
+	<form class="form-signin" role="form" action="/sign-up" method="post">
+		<h2 class="form-signin-heading">Please sign up</h2>
+		<% if (message) { %>
+			<h3><%= message %></h3>
+		<% } %>
+		<input name="organizationName"     value="<%= organizationName %>" type="text" class="form-control" placeholder="Organization Name" required autofocus>
+		<input name="email"                value="<%= email %>" type="email" class="form-control" placeholder="Email address" required autofocus>
+		<input name="password"             value="<%= password %>" type="password" class="form-control" placeholder="Password" required>
+		<input name="passwordConfirmation" value="<%= passwordConfirmation %>" type="password" class="form-control" placeholder="Confirm Password" required>
+		<label class="checkbox">
+			<input name="remember" type="checkbox" value="remember" <%= (remember ? "checked" : "") %>> Remember me
+		</label>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+	</form>
+
+<% include footer %>
