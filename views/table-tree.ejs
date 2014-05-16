@@ -1,0 +1,43 @@
+<!--
+<ul>
+    <li>tableType
+        <ul>
+            <li>schema
+                <ul>
+                    <li>tablename
+                        <ul>
+                            <li>columnName</li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+-->
+
+<ul class="schema-info">
+    <% for (var tableType in tree) { %> 
+        <li><%= tableType %>
+            <ul>
+                <% for (var schema in tree[tableType]) { %>
+                    <li><%= schema %>
+                        <ul>
+                            <% for (var tableName in tree[tableType][schema]) { %>
+                                <li><%= tableName %>
+                                    <ul>
+                                        <% var columns = tree[tableType][schema][tableName]; %>
+                                        <% for (var i=0; i < columns.length; i++) { %>
+                                            <li><%= columns[i].column_name %> (<%= columns[i].data_type %>)</li>
+                                        <% } %>
+                                    </ul>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </li>
+                <% } %>
+            </ul>
+        </li>
+    <% } %>
+</ul>
+

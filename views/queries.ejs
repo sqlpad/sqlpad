@@ -1,0 +1,84 @@
+<% include header %>
+
+        <div class="col-sm-12  col-md-12 main">
+            <h1 class="page-header">
+                My Queries 
+                <% if (filter.tags) { %>
+                    : tagged "<%= filter.tags %>"
+                <% } %>
+            </h1>
+            
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Tags</th>
+                            <th>connection</th>
+                            <th>Accessed</th>
+                            <th>Modified</th>
+                            <th><a href="/queries/new" class="btn btn-primary">Add New</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% queries.forEach(function(query) { %>
+                            <tr>
+                                <td><a href="/queries/<%= query._id %>"><%= query.name %></a></td>
+                                <td>
+                                    <% for (var t = 0; t < query.tags.length; t++) { %>
+                                        <a href="/queries?tag=<%= query.tags[t] %>"><%= query.tags[t] %></a><%= (t < (query.tags.length - 1) ? "," : "") %>
+                                    <% } %>    
+                                </td>
+                                <td>
+                                    <% if (connectionsById[query.connectionId]) { %> 
+                                        <%= connectionsById[query.connectionId].name %> 
+                                    <% } %>
+                                </td>
+                                <td><%= query.lastAccessedDate || "" %></td>
+                                <td><%= query.modifiedDate %></td>
+                                <td>
+                                    <form role="form" action="/queries/<%= query._id %>" method="post">
+                                        <input type="hidden" name="_method" value="delete" />
+                                        <button class="btn" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>    
+                            
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Don't get ahead of yourself!
+            
+            <br><br><br><br>
+            
+            <h2 class="page-header">Other Peoples Queries</h2>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>name</th>
+                            <th>modified</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% queries.forEach(function(query) { %>
+                            <tr>
+                                <td><a href="/queries/<%= query._id %>"><%= query.name %></a></td>
+                                <td><%= query.modifiedDate %></td>
+                                <td>
+                                    
+                                </td>
+                            </tr>    
+                            
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            -->
+            
+        </div>
+    
+<% include footer %>

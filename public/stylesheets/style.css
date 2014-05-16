@@ -1,16 +1,11 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
 body {
-  padding: 50px;
+  /* padding: 50px; */
+  padding-top: 70px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-body {
-	padding-top: 20px;
-	padding-bottom: 20px;
-}
 
-.navbar {
-	margin-bottom: 20px;
-}
 
 a {
   color: #00B7FF;
@@ -40,13 +35,153 @@ a {
 .form-signin .form-control:focus {
   z-index: 2;
 }
-.form-signin input[type="email"] {
+.top-field {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
 }
-.form-signin input[type="password"] {
+.middle-field {
+  margin-bottom: -1px;
+  border-radius: 0;
+}
+.bottom-field {
   margin-bottom: 10px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+#panel-main {
+    position:absolute;
+    top: 50px;
+    left: 0;
+    right:0;
+    bottom:0;
+}
+
+#panel-db-info {
+    padding: 10px;
+}
+
+.panel-editor {
+    background-color: #2F3129; /* ace gutter color */
+    background-color: #DDD;
+}
+
+.panel-viz {
+    background-color: #f6f6f6;
+    background-color: #FFF;
+}
+
+.panel-results {
+    padding: 20px;
+}
+
+
+#ace-editor {
+    position: absolute;
+    top: 1px; 
+    bottom: 1px;
+    left: 1px;
+    right: 1px;
+}
+
+
+.connection-dropdown {
+    max-width: 300px;
+    background-color: #555;
+    color: #DADADA;
+    border-color: #888;
+}
+
+
+/*  DB Info sidebar 
+======================================================== */
+
+.schema-info {
+    padding-left: 0;
+}
+.schema-info ul {
+    padding-left: 10px;
+    padding-right: 6px;
+}
+
+.schema-info li {
+    list-style-type: none;
+}
+
+.navbar-inverse-NOT {
+    border-bottom: 1px solid #BBB;
+    background-color: #f3f3f3;
+}
+
+.sidebar-header {
+    display: block;
+    padding-top: 10px;
+    font-size: 12px;
+    line-height: 1.42857143;
+    color: #999;
+}
+
+.sidebar-divider {
+    display: block;
+}
+
+/*  Panel Results / Slick grids
+======================================================== */
+
+#panel-result-header {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 30px;
+    
+    background-color: #5bc0de;
+    background-color: #DDD;
+    padding: .6em;
+    
+    font-weight: 700;
+    line-height: 1;
+    color: #333;
+    white-space: nowrap;
+    vertical-align: baseline;
+    font-size: 90%;
+    /*
+    
+    text-align: center;
+    
+    border-radius: .25em;
+    */
+}
+
+.panel-result-header-label {
+    padding-left: 30px;
+    color: #777;
+}
+.panel-result-header-label:nth-of-type(1) {
+    padding-left: 5px;
+}
+
+#result-slick-grid, #result-slick-grid div {
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+}
+
+#result-slick-grid {
+    position: absolute;
+    top: 30px;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+}
+
+#btn-run-result {
+    position: absolute;
+    top: 30px;
+    bottom: 2px;
+    left: 2px;
+    right: 2px;
+    font-size: 30px;
+    text-align: center;
 }

@@ -1,0 +1,27 @@
+<% include header %>
+  
+	<form class="form-signin" role="form" action="/signin" method="post">
+		<h1>Query Server</h1>
+		<% if (message) { %>
+			<h3><%= message %></h3>
+		<% } %>
+		<input
+		    name="email"
+		    value="<%= email %>"
+		    type="email"
+		    class="form-control top-field"
+		    placeholder="Email address"
+		    required
+		    autofocus>
+		<input
+		    name="password"
+		    value="<%= password %>"
+		    type="password"
+		    class="form-control middle-field"
+		    placeholder="Password"
+		    required>
+		<br>
+		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+	</form>
+
+<% include footer %>

@@ -1,0 +1,87 @@
+<% include header %>
+  
+    <div class="col-sm-12  col-md-12 main">
+        <h1 class="page-header">Users</h1>
+        <div class="col-md-8">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Admin</th>
+                            <th>Signup Date</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(function(user) { %>
+                            <tr>
+                                <td><%= user.email %></td>
+                                <td><%= (user.admin ? "yes" : "" ) %></td>
+                                <td><%- (user.createdDate ? user.createdDate : "<em>not yet signed up</em>") %></td>
+                                <td>
+                                    <% if (user.admin) { %>
+                                        <form role="form" action="/users/remove-admin/<%= user._id %>" method="post">
+                                            <button class="btn btn-default" type="submit">Remove Admin</button>
+                                        </form>
+                                    <% } else { %>
+                                        <form role="form" action="/users/make-admin/<%= user._id %>" method="post">
+                                            <button class="btn btn-default" type="submit">Make Admin</button>
+                                        </form>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <form role="form" action="/users/<%= user._id %>" method="post">
+                                        <input type="hidden" name="_method" value="delete" />
+                                        <button class="btn btn-default" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>    
+                            
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>    
+        </div>
+        <div class="col-md-4 ">
+            <div class="well">
+                <form role="form" action="/users/whitelist" method="post">
+                    <fieldset>
+                        <!-- Form Name -->
+                        <legend>Add a User! (sorta)</legend>
+                        <p>
+                            No one can sign up for a user account without first being whitelisted. 
+                            To allow someone to join this application, you must first whitelist their email address.
+                            This will create an initial user record for them.
+                        </p>
+                        <div class="form-group">
+                            <label class="control-label sr-only" for="email">Email Address</label>
+                            <input id="email" name="email" value="" type="text" placeholder="Email Address" class="form-control input-md">
+                        </div>
+                        <label class="checkbox">
+                          <input type="checkbox" name="admin" value="admin"> Is Admin
+                        </label>
+                        <p class="help-block">
+                            <strong>Admins</strong> are special accounts that 
+                            can add and edit database connections,
+                            as well as whitelist (invite) users to join.
+                        </p>
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">Add Email</button>
+                        </div>
+                        <p>
+                            Once someone has been added to the whitelist, invite them to 
+                            continue the sign-up process at <a href="/signup">the hidden signup page</a>.
+                        </p><p>    
+                            You'll have to write and send the email yourself though - 
+                            we aren't fancy enough for that kind of stuff.
+                        </p>
+                    </fieldset>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+
+<% include footer %>

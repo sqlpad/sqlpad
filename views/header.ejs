@@ -12,68 +12,118 @@
 	
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-
+	
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+
+	<!-- Custom styles for this template -->
+    <link href="/stylesheets/dashboard.css" rel="stylesheet">
 	
+	<!-- slick grid stuff -->
+    <link rel="stylesheet" href="/javascripts/vendor/slickgrid/slick.grid.css" type="text/css"/>
+    <link rel="stylesheet" href="/javascripts/vendor/slickgrid/slick-default-theme.css" type="text/css"/>
+	
+	<!-- nvd3 stuff -->
+    <link rel="stylesheet" href="/javascripts/vendor/nv.d3.min.css" type="text/css"/>
+    
+    <!-- jQuery Splitter -->
+    <link rel="stylesheet" href="/javascripts/vendor/jquery.splitter/jquery.splitter.css" type="text/css"/>
+    
+	
+	<!-- my css -->
     <link rel="stylesheet" href="/stylesheets/style.css">
 	
-	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-	  
-   
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
   </head>
 
   <body>
-
-    <div class="container">
-
+    
+    <% if (session && session.userId) { %>
       <!-- Static navbar -->
-      <div class="navbar navbar-default" role="navigation">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Query Server</a>
-          </div>
-          <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="/">Home</a></li>
-              <li><a href="/">Blog</a></li>
-              <li><a href="/">About Us</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="/setcookie">setcookie</a></li>
-                  <li><a href="/viewcookie">viewcookie</a></li>
-				  <li><a href="/clearcookie">clearcookie</a></li>
-                  <li class="divider"></li>
-                  <li class="dropdown-header">Nav header</li>
-                  <li><a href="/">Separated link</a></li>
-                  <li><a href="/">One more separated link</a></li>
-                </ul>
-              </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <% if (session && session.userId) { %>
-				<li><a href="/log-out">Log Out</a></li>
-			  <% } else { %>
-				<li><a href="/log-in">Log In</a></li>
-                <li><a href="/sign-up">Sign Up</a></li>	
-			  <% } %>
-			  
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div><!--/.container-fluid -->
-      </div>
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+          <div class="container-fluid">
+            
+            
+            
+            
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <!--
+              <a class="navbar-brand" href="/queries">QS</a>
+              -->
+            </div>
+            
+            <div class="navbar-collapse collapse">
+              <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
+                     <ul class="dropdown-menu">
+                       <li><a href="/queries">Query List</a></li>
+                       <li class="divider"></li>
+                       <li><a href="#" data-toggle="modal" data-target="#query-details-modal">Edit Query Details</a></li>
+                       <li><a href="#">Save</a></li>
+                       <li><a href="#">Clone</a></li>
+                       <li class="divider"></li>
+                       <li><a href="/queries/new">New Query</a></li>
+                       <% if (session && session.admin) { %>
+                       <li class="divider"></li>
+                       <li class="dropdown-header">Admin Stuff</li>
+                       <li><a href="/connections">Connections</a></li>
+                       <li><a href="/users">Users</a></li>
+                       <% } %>
+                     </ul>                       
+                </li>
+              </ul>
+              <% if (navbarConnections && navbarConnections.length) { %>
+                  <form class="navbar-form navbar-left" role="form">
+                    <div class="form-group">
+                        <select id="connection" name="connection" class="form-control">
+                            <option value="">Choose a Connection...</option>
+                            <% navbarConnections.forEach(function(connection) { %>
+                                <option value="<%= connection._id %>" <%=( connection._id===query.connectionId ? 'selected' : '') %>>
+                                    <%= connection.name %>
+                                </option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button id="btn-run-query" class="btn btn-default">Run Query</button>
+                    </div>
+                  </form>
+                  <a class="navbar-brand active" href="#" data-toggle="modal" data-target="#query-details-modal">
+                    <% if (query && query.name) { %> <%= query.name %> <% } %>
+                  </a>
+                  <div class="navbar-form navbar-left">
+                      <span id="btn-save-result" class="label label-info"></span>
+                  </div>
+              
+              <% } %>
+              <ul class="nav navbar-nav navbar-right">
+                <% if (session && session.userId && session.email) { %>
+                  <li><a href="/signout"><%= session.email.split('@')[0] %> (signout)</a></li>
+                <% } else { %>
+                  <li><a href="/signin">Sign In</a></li>
+                  <li><a href="/signup">Sign Up</a></li>
+                <% } %>
+              </ul>
+            </div><!--/.nav-collapse -->
+            
+          </div><!--/.container-fluid -->
+        </div>
+    <% } %>
+    
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <% if (debug) { %>
+                <pre><%= JSON.stringify(debug, null, 2) %></pre>
+            <% } %>
+        </div>
+    </div>
+    <div class="row">
+            
+      

@@ -11,6 +11,10 @@
     "pg.js": "3.0.x",
     "moment": "*",
     "bcrypt-nodejs": "0.0.x",
-    "nedb": "0.10.x"
+    "nedb": "0.10.x",
+    "lodash": "2.4.x",
+    "mssql": "^0.5.3",
+    "mysql": "^2.1.1",
+    "ua-parser": "^0.3.3"
   }
 }

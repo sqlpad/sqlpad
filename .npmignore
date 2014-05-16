@@ -1,5 +1,6 @@
 node_modules/
-.git*
+db/
 .DS_Store
 .env
 .zedstate
+tags
