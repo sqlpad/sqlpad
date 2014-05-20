@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var express = require('express');
 var http = require('http');
 var path = require('path');
@@ -6,34 +8,134 @@ var Datastore = require('nedb');
 var crypto = require('crypto');
 var uaParser = require('ua-parser');
 var _ = require('lodash');
+var argv = require('yargs').argv;
 var runQuery = require('./lib/run-query.js');
 var noop = function () {};
 
 
+var config = {
+    passphrase: "At least the sensitive bits won't be plain text?",
+    dbPath: path.join(__dirname, "/db"), // db folder within global install directory
+    port: 80
+};
+
+/*  CLI Stuff
+============================================================================= */
+if (argv.h || argv.help) {
+    var helpText = "\n\n" 
+                 + "SQUEEGEE HELP: \n"
+                 + " \n"
+                 + "USAGE: squeegee [options]\n"
+                 + " \n"
+                 + "OPTIONS: \n"
+                 + " \n"
+                 + "  --passphrase [phrase]  Set passphrase for modest encryption  (recommended)\n"
+                 + "  --db [path]            Set database directory                (optional)\n"
+                 + "  --admin [email]        Whitelist an administrator email      (req. 1st run)\n"
+                 + "  --port [port]          Set port to run on. Default is 80     (optional)\n"
+                 + "  \n"
+                 + "EXAMPLES:  \n"
+                 + "  \n"
+                 + "  First Run: whitelist email address. Set encryption passphrase. \n"
+                 + "  Leave port and db path at default. \n"
+                 + "  \n"
+                 + "      squeegee --admin me@mycompany.com --passphrase s3cr3t-phr@se \n"
+                 + "  \n"
+                 + "  Future runs: just set encryption passphrase\n"
+                 + "  \n"
+                 + "      squeegee --passphrase s3cr3t-phr@se \n"
+                 + "  \n"
+                 + "  To set db folder, either use a relative path to current location...\n"
+                 + "  \n"
+                 + "      squeegee --db ./db/folder/ \n"
+                 + "  \n"
+                 + "  ... or use an exact path\n"
+                 + "  \n"
+                 + "      squeegee --db c:\\squeegeedb \n"
+                 + "  \n";
+                 
+    console.log(helpText);
+    process.exit();
+}
+
+if (argv.passphrase) {
+    config.passphrase = argv.passphrase;
+}
+
+if (argv.db) {
+    config.dbPath = path.resolve(argv.db);
+}
+
+if (argv.port) {
+    config.port = argv.port;
+}
+
+
+
 /*  Configuration, Settings, and Misc Variables
 ============================================================================= */
-var secretKey = "Super secret key that's used for encrypting/decrypting stuff "
-              + "like cookies, passwords. Is this secure? I'm not sure.";
 var algorithm = 'aes256';
 function cipher (text) {
-    var myCipher = crypto.createCipher(algorithm, secretKey);
+    var myCipher = crypto.createCipher(algorithm, config.passphrase);
     return myCipher.update(text, 'utf8', 'hex') + myCipher.final('hex');
 }
 function decipher (gibberish) {
-    var myDecipher = crypto.createDecipher(algorithm, secretKey);
-    return myDecipher.update(gibberish, 'hex', 'utf8') + myDecipher.final('utf8');
+    var returnValue = "";
+    try {
+        var myDecipher = crypto.createDecipher(algorithm, config.passphrase);
+        returnValue = myDecipher.update(gibberish, 'hex', 'utf8') + myDecipher.final('utf8');    
+    }
+    finally {
+        return returnValue;    
+    }
 }
 
 /*  NeDB (Node Embedded Database!)
+    Database path:
+    - If not specified, it'll be under __dirname + "/db"; (which is under global install path)
+    - If specified, its a resolved path to a specified folder
 ============================================================================= */
-var db = {};
-db.users = new Datastore({filename: __dirname + "/db/users.db", autoload: true});
-db.connections = new Datastore({filename: __dirname + "/db/connections.db", autoload: true});
-db.queries = new Datastore({filename: __dirname + "/db/queries.db", autoload: true});
 
-db.users.ensureIndex({fieldName: 'email', unique: true}, function (err) {
-   if (err) console.log(err);
-});
+var db = {};
+db.users = new Datastore({filename: path.join(config.dbPath, "/users.db"), autoload: true, onload: onUsersDbLoad});
+db.connections = new Datastore({filename: path.join(config.dbPath, "/connections.db"), autoload: true});
+db.queries = new Datastore({filename: path.join(config.dbPath, "/queries.db"), autoload: true});
+
+function onUsersDbLoad (err) {
+    db.users.ensureIndex({fieldName: 'email', unique: true}, function (err) {
+       if (err) console.log(err);
+    });
+    // if an admin was passed in the command line, check to see if a user exists with that email
+    // if so, set the admin to true
+    // if not, whitelist the email address.
+    // Then write to console that the person should visit the signup url to finish registration.
+    if (argv.admin) {
+        db.users.findOne({email: argv.admin}, function (err, user) {
+            if (user) {
+                db.users.update({_id: user._id}, {$set: {admin: true}}, {}, function (err) {
+                    if (err) {
+                        console.log("ERROR: could not make " + argv.admin + " an admin.");
+                    } else {
+                        console.log(argv.admin + " should now have admin access.");
+                    }
+                });
+            } else {
+                var newAdmin = {
+                    email: argv.admin,
+                    admin: true
+                }
+                db.users.insert(newAdmin, function (err, newUser) {
+                    if (err) {
+                        console.log("\nERROR: could not make " + argv.admin + " an admin.");
+                    } else {
+                        console.log("\n" + argv.admin + " has been whitelisted with admin access.");
+                        console.log("\nPlease visit http://localhost:" + config.port + "/signup/ to complete registration.");
+                    }
+                });
+            }
+        });
+    }
+}
 
 var oneDay = 24 * 60 * 60 * 1000;
 for (var collection in db) {
@@ -44,19 +146,20 @@ for (var collection in db) {
 ============================================================================= */
 var app = express();
 
+
 // all environments
-app.set('port', process.env.PORT || 3000);
+app.set('port', config.port);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.favicon());
 app.use(express.bodyParser());
 app.use(express.methodOverride()); // simulate PUT/DELETE via POST in client by <input type="hidden" name="_method" value="put" />
-app.use(express.cookieParser(secretKey)); // populates req.cookies with an object
+app.use(express.cookieParser(config.passphrase)); // populates req.cookies with an object
 app.use(express.cookieSession());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.logger('dev'));
 app.use(function(req, res, next){
-	//	Logging for test purposes
+	// Logging for test purposes
 	//console.log('req.session');
 	//console.log(req.session);
 	next();

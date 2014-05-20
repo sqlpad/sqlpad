@@ -15,6 +15,11 @@
     "lodash": "2.4.x",
     "mssql": "^0.5.3",
     "mysql": "^2.1.1",
-    "ua-parser": "^0.3.3"
+    "ua-parser": "^0.3.3",
+    "yargs": "^1.2.2"
+  },
+  "main": "query-server.js",
+  "bin": {
+    "squeegee": "./query-server.js"
   }
 }
