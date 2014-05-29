@@ -62,11 +62,14 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
                      <ul class="dropdown-menu">
-                       <li><a href="/queries">Query List</a></li>
-                       <li class="divider"></li>
+                       <% if (queryMenu) { %>
                        <li><a href="#" data-toggle="modal" data-target="#query-details-modal">Edit Query Details</a></li>
-                       <li><a href="#">Save</a></li>
-                       <li><a href="#">Clone</a></li>
+                       <li><a id="menu-save" href="#">Save</a></li>
+                       <li><a href="/queries/clone/<%= query._id %>">Clone</a></li>
+                       <li class="divider"></li>
+                       <% } %>
+                       <li><a href="/queries?createdBy=<%= encodeURIComponent(session.email) %>">My Queries</a></li>
+                       <li><a href="/queries">All Queries</a></li>
                        <li class="divider"></li>
                        <li><a href="/queries/new">New Query</a></li>
                        <% if (session && session.admin) { %>
@@ -94,13 +97,18 @@
                         <button id="btn-run-query" class="btn btn-default">Run Query</button>
                     </div>
                   </form>
-                  <a class="navbar-brand active" href="#" data-toggle="modal" data-target="#query-details-modal">
+                  <a class="navbar-brand active" id="header-query-name" href="#" data-toggle="modal" data-target="#query-details-modal">
                     <% if (query && query.name) { %> <%= query.name %> <% } %>
                   </a>
                   <div class="navbar-form navbar-left">
                       <span id="btn-save-result" class="label label-info"></span>
                   </div>
               
+              <% } %>
+              <% if (pageTitle) { %>
+                <a class="navbar-brand page-title" href="#" >
+                  // <%= pageTitle %>
+                </a>
               <% } %>
               <ul class="nav navbar-nav navbar-right">
                 <% if (session && session.userId && session.email) { %>

@@ -1,7 +1,6 @@
 <% include header %>
   
     <div class="col-sm-12  col-md-12 main">
-        <h1 class="page-header">Users</h1>
         <div class="col-md-8">
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -49,11 +48,15 @@
                 <form role="form" action="/users/whitelist" method="post">
                     <fieldset>
                         <!-- Form Name -->
-                        <legend>Add a User! (sorta)</legend>
+                        <legend>Add a User (sorta)</legend>
                         <p>
                             No one can sign up for a user account without first being whitelisted. 
-                            To allow someone to join this application, you must first whitelist their email address.
-                            This will create an initial user record for them.
+                            Once someone has been added to the whitelist, invite them to 
+                            continue the sign-up process at <a href="/signup">the hidden signup page</a>.
+                        </p>
+                        <p>
+                            You'll have to write and send the email yourself though - 
+                            we aren't fancy enough for that kind of stuff.
                         </p>
                         <div class="form-group">
                             <label class="control-label sr-only" for="email">Email Address</label>
@@ -70,13 +73,7 @@
                         <div class="form-group">
                             <button class="btn btn-primary" type="submit">Add Email</button>
                         </div>
-                        <p>
-                            Once someone has been added to the whitelist, invite them to 
-                            continue the sign-up process at <a href="/signup">the hidden signup page</a>.
-                        </p><p>    
-                            You'll have to write and send the email yourself though - 
-                            we aren't fancy enough for that kind of stuff.
-                        </p>
+                        
                     </fieldset>
                 </form>
             </div>

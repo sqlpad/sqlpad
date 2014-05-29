@@ -176,7 +176,7 @@ a {
     right: 2px;
 }
 
-#btn-run-result {
+#run-result-notification {
     position: absolute;
     top: 30px;
     bottom: 2px;
@@ -184,4 +184,13 @@ a {
     right: 2px;
     font-size: 30px;
     text-align: center;
+    padding-top: 20px;
+}
+
+
+/*  Nav Bar
+======================================================== */
+.page-title {
+    padding-left: 30px;
+    color: #FFF !important; /* should always be white. something is overriding this to grey */
 }

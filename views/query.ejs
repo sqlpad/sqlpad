@@ -30,10 +30,11 @@
                     <span class="panel-result-header-label">Rows: </span>
                     <span class="panel-result-header-value" id="rowcount"></span>
                     <span class="panel-result-header-label">Download: </span>
-                    <a href="#">.xlsx</a> <a href="#">.csv</a>
+                    <!--<a href="#">.xlsx</a> -->
+                    <a id="csv-download-link" href="/download-results/<%= cacheKey %>.csv">.csv</a>
                 </div>
                 <div id="result-slick-grid"></div>
-                <div id="btn-run-result"></div>
+                <div id="run-result-notification"></div>
             </div>
             
         </div>
@@ -63,6 +64,8 @@
                         <label class="control-label" for="tags">Tags</label>
                         <input id="tags" name="tags" value="<%= query.tags || '' %>" type="text" placeholder="Tags" class="form-control input-md">
                     </div>
+                    
+                    <input type="hidden" id="cache-key" value="<%= cacheKey %>" />
                     
                     <% if (query._id) { %>
                         <input type="hidden" name="_method" value="put" />

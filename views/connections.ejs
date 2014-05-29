@@ -1,7 +1,6 @@
 <% include header %>
   
     <div class="col-sm-12  col-md-12 main">
-        <h1 class="page-header">Connections</h1>
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
@@ -25,7 +24,7 @@
                             <td>
                                 <form role="form" action="/connections/<%= connection._id %>" method="post">
                                     <input type="hidden" name="_method" value="delete" />
-                                    <button class="btn" type="submit">Delete</button>
+                                    <button class="btn btn-default" type="submit">Delete</button>
                                 </form>
                             </td>
                         </tr>    

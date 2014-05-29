@@ -1,12 +1,67 @@
 <% include header %>
 
         <div class="col-sm-12  col-md-12 main">
-            <h1 class="page-header">
-                My Queries 
-                <% if (filter.tags) { %>
-                    : tagged "<%= filter.tags %>"
-                <% } %>
-            </h1>
+
+            <form id="query-filter-form">
+                <fieldset>
+                    <div class="row">
+                        <!--
+                        <div class="col-sm-2 col-md-2">
+                            <h1 class="page-header">
+                                Queries 
+                            </h1>
+                        </div>
+                        -->
+                        <div class="col-sm-2 col-md-2">
+                            <div class="form-group">
+                                <label class="control-label" for="tag">Tag</label>
+                                <select id="query-filter-tag" name="tag" class="form-control">
+                                    <option value="">all</option>
+                                    <% tags.forEach(function(tag) { %>
+                                        <option value="<%= tag %>" <%=( filter && filter.tags && filter.tags===tag ? 'selected' : '') %>>
+                                            <%= tag %>
+                                        </option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <div class="form-group">
+                                <label class="control-label" for="createdBy">Created By</label>
+                                <select id="query-filter-created-by" name="createdBy" class="form-control">
+                                    <option value="">Everyone</option>
+                                    <% createdBys.forEach(function(createdBy) { %>
+                                        <option value="<%= createdBy %>" <%=( filter && filter.createdBy && filter.createdBy===createdBy ? 'selected' : '') %>>
+                                            <%= (createdBy && createdBy == session.email ? "Me" : (createdBy || "")) %>
+                                        </option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <div class="form-group">
+                                <label class="control-label" for="connection">Connection</label>
+                                <select id="query-filter-connection" name="connection" class="form-control">
+                                    <option value="">all</option>
+                                    <% connections.forEach(function(connection) { %>
+                                        <option value="<%= connection._id %>" <%=( filter && filter.connectionId && filter.connectionId===connection._id ? 'selected' : '') %>>
+                                            <%= connection.name || "" %>
+                                        </option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <div class="form-group">
+                                <label class="control-label" for="name">Sort By</label>
+                                <input id="name" name="name" value="" type="text" placeholder="Name" class="form-control input-md">
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+            
+            
             
             <div class="table-responsive">
                 <table class="table table-striped">
@@ -15,13 +70,16 @@
                             <th>Name</th>
                             <th>Tags</th>
                             <th>connection</th>
+                            <th>Created By</th>
                             <th>Accessed</th>
                             <th>Modified</th>
-                            <th><a href="/queries/new" class="btn btn-primary">Add New</a></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% queries.forEach(function(query) { %>
+                        <% for (var i=0; i<queries.length; i++) {
+                            var query = queries[i];
+                        %>
                             <tr>
                                 <td><a href="/queries/<%= query._id %>"><%= query.name %></a></td>
                                 <td>
@@ -34,50 +92,21 @@
                                         <%= connectionsById[query.connectionId].name %> 
                                     <% } %>
                                 </td>
-                                <td><%= query.lastAccessedDate || "" %></td>
-                                <td><%= query.modifiedDate %></td>
+                                <td><%= (query.createdBy && query.createdBy == session.email ? "Me" : (query.createdBy || "")) %></td>
+                                <td><%= query.lastAccessedFromNow || "" %></td>
+                                <td><%= query.modifiedCalendar %></td>
                                 <td>
                                     <form role="form" action="/queries/<%= query._id %>" method="post">
                                         <input type="hidden" name="_method" value="delete" />
-                                        <button class="btn" type="submit">Delete</button>
+                                        <button class="btn btn-default" type="submit">Delete</button>
                                     </form>
                                 </td>
                             </tr>    
                             
-                        <% }) %>
+                        <% } %>
                     </tbody>
                 </table>
             </div>
-            
-            <!-- Don't get ahead of yourself!
-            
-            <br><br><br><br>
-            
-            <h2 class="page-header">Other Peoples Queries</h2>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>name</th>
-                            <th>modified</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% queries.forEach(function(query) { %>
-                            <tr>
-                                <td><a href="/queries/<%= query._id %>"><%= query.name %></a></td>
-                                <td><%= query.modifiedDate %></td>
-                                <td>
-                                    
-                                </td>
-                            </tr>    
-                            
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-            -->
             
         </div>
     

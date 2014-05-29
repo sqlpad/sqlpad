@@ -42,33 +42,38 @@ $('#btn-test-connection').click(function (e) {
 /* 
     From query.ejs, its the ace editor!
 ============================================================================= */
-var editor = ace.edit("ace-editor");
-if (editor) { 
-    //editor.setTheme("ace/theme/monokai");
-    editor.getSession().setMode("ace/mode/sql");    
-    editor.focus();
-    editor.commands.addCommand({
-        name: 'saveQuery',
-        bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-        exec: function (editor) {
-            saveQuery(null, editor);
-        }
-    });
-    editor.commands.addCommand({
-        name: 'executeQuery',
-        bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
-        exec: function (editor) {
-            runQuery(null, editor);
-        }
-    });
-    editor.commands.addCommand({
-        name: 'runQuery',
-        bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
-        exec: function (editor) {
-            runQuery(null, editor);
-        }
-    });
+var $editor = $('#ace-editor');
+var editor;
+if ($editor.length) {
+    editor = ace.edit("ace-editor");
+    if (editor) { 
+        //editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/sql");    
+        editor.focus();
+        editor.commands.addCommand({
+            name: 'saveQuery',
+            bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+            exec: function (editor) {
+                saveQuery(null, editor);
+            }
+        });
+        editor.commands.addCommand({
+            name: 'executeQuery',
+            bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
+            exec: function (editor) {
+                runQuery(null, editor);
+            }
+        });
+        editor.commands.addCommand({
+            name: 'runQuery',
+            bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
+            exec: function (editor) {
+                runQuery(null, editor);
+            }
+        });
+    }
 }
+
 
 function getEditorText (editor) {
     var relevantText;
@@ -83,6 +88,10 @@ function getEditorText (editor) {
     return relevantText;
 };
 
+$('#menu-save').click(function (event) {
+    saveQuery(event, editor);
+})
+
 $('#btn-save').click(function (event) {
     saveQuery(event, editor);
 });
@@ -91,7 +100,9 @@ $('#btn-run-query').click(function (event) {
     runQuery(event, editor);
 })
 
-
+$('#name').change(function () {
+    $('#header-query-name').text($('#name').val());
+});
 
 
 /*
@@ -115,8 +126,8 @@ function saveQuery (event, editor) {
         event.stopPropagation();
     }
     $('#query-details-modal').modal('hide')
-    
-    var queryId = $('#query-id').val();
+    $queryId = $('#query-id');
+    var queryId = $queryId.val();
     var query = {
         name: $('#name').val(),
         queryText: getEditorText(editor),
@@ -127,12 +138,13 @@ function saveQuery (event, editor) {
     $('#btn-save-result').text('saving...').show();
     $.ajax({
         type: "POST",
-        url: "/queries/" + queryId,
+        url: "/queries/" + $queryId.val(),
         data: query
     }).done(function (data) {
         if (data.success) {
             //alert('success');
             window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id)
+            $queryId.val(data.query._id);
             $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
             setTimeout(function () {
                 $('#btn-save-result').fadeOut(400, function () {
@@ -148,10 +160,11 @@ function saveQuery (event, editor) {
     });
 };
 
-
 var grid;
 var clientStart;
 var clientEnd;
+
+var $csvLink = $('#csv-download-link').hide();
 
 function runQuery (event, editor) {
     if (event) {
@@ -160,10 +173,11 @@ function runQuery (event, editor) {
     }
     // TODO: destroy/empty a slickgrid. for now we'll just empty
     $('#result-slick-grid').empty();
-    
+    $csvLink.hide();
     var data = {
         queryText: getEditorText(editor),
-        connectionId: $('#connection').val()
+        connectionId: $('#connection').val(),
+        cacheKey: $('#cache-key').val()
     };
     notifyRunning();
     clientStart = new Date();
@@ -175,19 +189,27 @@ function runQuery (event, editor) {
 }
 
 function notifyRunning () {
-    $('#btn-run-result').text('running...').show();
+    $('#run-result-notification')
+        .removeClass('label-success')
+        .removeClass('label-danger')
+        .text('running...')
+        .show();
 }
 
 function notifyFailure () {
-    alert('ajax fail');
+    $('#run-result-notification')
+        .removeClass('label-info')
+        .addClass('label-danger')
+        .text("Something is broken :(");
 }
 
 function renderQueryResult (data) {
     clientEnd = new Date();
+    
     $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
-    $('#server-run-time').html(data.serverMs/1000 + " sec.")
+    $('#server-run-time').html(data.serverMs/1000 + " sec.");
     if (data.success) {
-        
+        $csvLink.show();
         var columns = [];
         if (data.results && data.results[0]) {
             $('#rowcount').html(data.results.length);
@@ -202,13 +224,13 @@ function renderQueryResult (data) {
         };
         grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
         
-        $('#btn-run-result')
+        $('#run-result-notification')
             .removeClass('label-info')
             .addClass('label-success')
             .text('Success');
         setTimeout(function () {
-            $('#btn-run-result').fadeOut(400, function () {
-                $('#btn-run-result')
+            $('#run-result-notification').fadeOut(400, function () {
+                $('#run-result-notification')
                     .removeClass('label-success')
                     .removeClass('label-danger')
                     .addClass('label-info')
@@ -216,41 +238,51 @@ function renderQueryResult (data) {
             })
         }, 1000);
     } else {
-        $('#btn-run-result')
+        $('#run-result-notification')
             .removeClass('label-info')
             .addClass('label-danger')
-            .text('Failed');
+            .text(data.error);
     }
 }
+
+$('#connection').change(getDbInfo);
 
 function getDbInfo () {
     $('#panel-db-info').empty();
     var connectionId = $('#connection').val();
-    $.getJSON("/schema-info/" + connectionId, function (tree) {
-        var $root = $('<ul class="schema-info">').appendTo('#panel-db-info');
-        for (var tableType in tree) {
-            var $tableType = $('<li><a href="#">' + tableType + '</a></li>').appendTo($root);
-            var $tableTypeUl = $('<ul>').appendTo($tableType);
-            for (var schema in tree[tableType]) {
-                var $schema = $('<li><a href="#">' + schema + '</a></li>').appendTo($tableTypeUl);
-                var $schemaUl = $('<ul>').appendTo($schema);
-                for (var tableName in tree[tableType][schema]) {
-                    var $tableName = $('<li><a href="#">' + tableName + '</a></li>').appendTo($schemaUl);
-                    var $tableNameUl = $('<ul>').appendTo($tableName);
-                    var columns = tree[tableType][schema][tableName];
-                    for (var i=0; i < columns.length; i++) {
-                        $column = $('<li>' + columns[i].column_name + '</li>').appendTo($tableNameUl);
+    if (connectionId) {
+        $.getJSON("/schema-info/" + connectionId, function (data) {
+            if (data.success) {
+                var tree = data.tree;
+                var $root = $('<ul class="schema-info">').appendTo('#panel-db-info');
+                for (var tableType in tree) {
+                    var $tableType = $('<li><a href="#">' + tableType + '</a></li>').appendTo($root);
+                    var $tableTypeUl = $('<ul>').appendTo($tableType);
+                    for (var schema in tree[tableType]) {
+                        var $schema = $('<li><a href="#">' + schema + '</a></li>').appendTo($tableTypeUl);
+                        var $schemaUl = $('<ul>').appendTo($schema);
+                        for (var tableName in tree[tableType][schema]) {
+                            var $tableName = $('<li><a href="#">' + tableName + '</a></li>').appendTo($schemaUl);
+                            var $tableNameUl = $('<ul>').appendTo($tableName);
+                            var columns = tree[tableType][schema][tableName];
+                            for (var i=0; i < columns.length; i++) {
+                                $column = $('<li>' + columns[i].column_name + '</li>').appendTo($tableNameUl);
+                            }
+                        }
                     }
                 }
+                $('.schema-info').find('ul').find('ul').hide();
+                $('.schema-info').find('li').click(function (e) {
+                    $(this).children('ul').toggle();
+                    e.stopPropagation();
+                });
+            } else {
+                $('<ul class="schema-info"><li>Problem getting Schema Info</li></ul>').appendTo('#panel-db-info');
             }
-        }
-        $('.schema-info').find('ul').find('ul').hide();
-        $('.schema-info').find('li').click(function (e) {
-            $(this).children('ul').toggle();
-            e.stopPropagation();
         });
-    });
-};
+    }
+    
+}
 
 getDbInfo();
 
@@ -264,3 +296,12 @@ function resizeStuff () {
     if (grid) grid.resizeCanvas();
 }
 
+/*  Query Filter 
+==============================================================================*/
+var $queryFilterForm = $('#query-filter-form');
+if ($queryFilterForm.length) {
+    $('select').change(function () {
+        console.log($queryFilterForm.serialize())
+        window.location.href = '/queries?' + $queryFilterForm.serialize();
+    })
+}
