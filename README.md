@@ -1,4 +1,4 @@
-# Squeegee
+# SqlPad
 
 A Node.js web app that allows you to write SQL and get the result against a database. Postgres, MySQL, and SQL Server supported.
 

@@ -1,5 +1,5 @@
 {
-  "name": "query-server",
+  "name": "sqlpad",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -28,6 +28,6 @@
   },
   "main": "query-server.js",
   "bin": {
-    "squeegee": "./query-server.js"
+    "sqlpad": "./query-server.js"
   }
 }
