@@ -16,6 +16,11 @@ a {
   padding: 15px;
   margin: 0 auto;
 }
+
+.form-signin h2 {
+    text-align: center; padding-bottom:20px
+}
+
 .form-signin .form-signin-heading,
 .form-signin .checkbox {
   margin-bottom: 10px;
