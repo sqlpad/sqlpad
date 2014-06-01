@@ -1,9 +1,8 @@
 {
   "name": "sqlpad",
   "version": "0.0.1",
-  "private": true,
   "scripts": {
-    "start": "nodemon query-server --db ./db --port 3000"
+    "start": "nodemon server --db ./db --port 3000"
   },
   "dependencies": {
     "express": "4.2.x",
@@ -26,8 +25,8 @@
     "uuid": "^1.4.1",
     "json2csv": "^2.2.1"
   },
-  "main": "query-server.js",
+  "main": "server.js",
   "bin": {
-    "sqlpad": "./query-server.js"
+    "sqlpad": "./server.js"
   }
 }
