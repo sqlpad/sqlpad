@@ -5,13 +5,12 @@
             <form id="query-filter-form">
                 <fieldset>
                     <div class="row">
-                        <!--
-                        <div class="col-sm-2 col-md-2">
-                            <h1 class="page-header">
-                                Queries 
-                            </h1>
+                        <div class="col-sm-4 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label" for="search">Search (Name, Query)</label>
+                                <input id="query-filter-search" name="search" class="form-control" type="text" />
+                            </div>
                         </div>
-                        -->
                         <div class="col-sm-2 col-md-2">
                             <div class="form-group">
                                 <label class="control-label" for="tag">Tag</label>
@@ -20,19 +19,6 @@
                                     <% tags.forEach(function(tag) { %>
                                         <option value="<%= tag %>" <%=( filter && filter.tags && filter.tags===tag ? 'selected' : '') %>>
                                             <%= tag %>
-                                        </option>
-                                    <% }) %>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-2 col-md-2">
-                            <div class="form-group">
-                                <label class="control-label" for="createdBy">Created By</label>
-                                <select id="query-filter-created-by" name="createdBy" class="form-control">
-                                    <option value="">Everyone</option>
-                                    <% createdBys.forEach(function(createdBy) { %>
-                                        <option value="<%= createdBy %>" <%=( filter && filter.createdBy && filter.createdBy===createdBy ? 'selected' : '') %>>
-                                            <%= (createdBy && createdBy == session.email ? "Me" : (createdBy || "")) %>
                                         </option>
                                     <% }) %>
                                 </select>
@@ -53,6 +39,19 @@
                         </div>
                         <div class="col-sm-2 col-md-2">
                             <div class="form-group">
+                                <label class="control-label" for="createdBy">Created By</label>
+                                <select id="query-filter-created-by" name="createdBy" class="form-control">
+                                    <option value="">Everyone</option>
+                                    <% createdBys.forEach(function(createdBy) { %>
+                                        <option value="<%= createdBy %>" <%=( filter && filter.createdBy && filter.createdBy===createdBy ? 'selected' : '') %>>
+                                            <%= (createdBy && createdBy == session.email ? "Me" : (createdBy || "")) %>
+                                        </option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-2 col-md-2">
+                            <div class="form-group">
                                 <label class="control-label" for="sortBy">Sort By</label>
                                 <select id="query-filter-sort-by" name="sortBy" class="form-control">
                                     <option value="accessed" selected>Accessed</option>
@@ -61,12 +60,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-2 col-md-2">
-                            <div class="form-group">
-                                <label class="control-label" for="search">Search (Name, Query)</label>
-                                <input id="query-filter-search" name="search" class="form-control" type="text" />
-                            </div>
-                        </div>
+                        
                         <input type="hidden" name="format" value="table-only"/>
                     </div>
                 </fieldset>
