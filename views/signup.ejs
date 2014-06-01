@@ -1,10 +1,10 @@
 <% include header %>
   	
 	<form class="form-signin" role="form" action="/signup" method="post">
-		<h2 class="form-signin-heading">Please sign up</h2>
-		<% if (message) { %>
-			<h3><%= message %></h3>
-		<% } %>
+		<h2>SqlPad</h2>
+        <% if (message) { %>
+            <h3><%= message %></h3>
+        <% } %>
 		<input
 		    name="email"
 		    value="<%= email %>"

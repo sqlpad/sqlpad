@@ -1,7 +1,7 @@
 <% include header %>
   
 	<form class="form-signin" role="form" action="/signin" method="post">
-		<h1>Query Server</h1>
+		<h2>SqlPad</h2>
 		<% if (message) { %>
 			<h3><%= message %></h3>
 		<% } %>
@@ -17,7 +17,7 @@
 		    name="password"
 		    value="<%= password %>"
 		    type="password"
-		    class="form-control middle-field"
+		    class="form-control bottom-field"
 		    placeholder="Password"
 		    required>
 		<br>
