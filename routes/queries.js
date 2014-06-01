@@ -26,6 +26,7 @@ module.exports = function (app) {
     
     
     app.get('/queries', getQueryFilterData, function (req, res) {
+        console.log("req.query:");
         console.log(req.query);
         var filter = {};
         if (req.query && req.query.tag) {
@@ -37,20 +38,48 @@ module.exports = function (app) {
         if (req.query && req.query.createdBy) { 
             filter.createdBy = req.query.createdBy;
         }
+        if (req.query && req.query.search) {
+            var nameRegExp = new RegExp(req.query.search, "i");
+            var queryTextRegExp = new RegExp(req.query.search, "i");
+            filter.$or = [{queryText: {$regex: queryTextRegExp}}, {name: {$regex: nameRegExp}}]
+            //filter.queryText = {$regex: queryTextRegExp};
+        }
+        console.log("resulting NeDB filter:");
         console.log(filter);
-        db.queries.find(filter, function (err, queries) {
+        var cursor = db.queries.find(filter);
+        if (req.query && req.query.sortBy) {
+            if (req.query.sortBy === "accessed") {
+                cursor.sort({lastAccessedDate: -1});
+            } else if (req.query.sortBy === "modified") {
+                cursor.sort({modifiedDate: -1});
+            } else if (req.query.sortBy === "name") {
+                cursor.sort({name: 1});
+            }
+        } else {
+            cursor.sort({lastAccessedDate: -1});
+        }
+        cursor.exec(function (err, queries) {
             queries.forEach(function(query) {
                 query.lastAccessedFromNow = moment(query.lastAccessedDate).fromNow();
                 query.modifiedCalendar = moment(query.modifiedDate).calendar();
                 var timeForDiff = query.lastAccessedDate || query.modifiedDate;
                 query.timeDiff = new Date() - timeForDiff;
             });
-            queries = _.sortBy(queries, 'timeDiff');
-            res.render('queries', {
-                pageTitle: "Queries",
-                queries: queries,
-                filter: filter
-            });
+            //queries = _.sortBy(queries, 'timeDiff');
+            if (req.query && req.query.format && req.query.format === "table-only") {
+                res.render('queries-table', {
+                    pageTitle: "Queries",
+                    queries: queries,
+                    filter: filter
+                });
+            } else {
+                res.render('queries', {
+                    pageTitle: "Queries",
+                    queries: queries,
+                    filter: filter
+                });
+            }
+            
         });
     });
     

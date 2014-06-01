@@ -16,7 +16,7 @@
                             <div class="form-group">
                                 <label class="control-label" for="tag">Tag</label>
                                 <select id="query-filter-tag" name="tag" class="form-control">
-                                    <option value="">all</option>
+                                    <option value="">All</option>
                                     <% tags.forEach(function(tag) { %>
                                         <option value="<%= tag %>" <%=( filter && filter.tags && filter.tags===tag ? 'selected' : '') %>>
                                             <%= tag %>
@@ -42,7 +42,7 @@
                             <div class="form-group">
                                 <label class="control-label" for="connection">Connection</label>
                                 <select id="query-filter-connection" name="connection" class="form-control">
-                                    <option value="">all</option>
+                                    <option value="">All</option>
                                     <% connections.forEach(function(connection) { %>
                                         <option value="<%= connection._id %>" <%=( filter && filter.connectionId && filter.connectionId===connection._id ? 'selected' : '') %>>
                                             <%= connection.name || "" %>
@@ -53,59 +53,27 @@
                         </div>
                         <div class="col-sm-2 col-md-2">
                             <div class="form-group">
-                                <label class="control-label" for="name">Sort By</label>
-                                <input id="name" name="name" value="" type="text" placeholder="Name" class="form-control input-md">
+                                <label class="control-label" for="sortBy">Sort By</label>
+                                <select id="query-filter-sort-by" name="sortBy" class="form-control">
+                                    <option value="accessed" selected>Accessed</option>
+                                    <option value="modified">Modified</option>
+                                    <option value="name">Name</option>
+                                </select>
                             </div>
                         </div>
+                        <div class="col-sm-2 col-md-2">
+                            <div class="form-group">
+                                <label class="control-label" for="search">Search (Name, Query)</label>
+                                <input id="query-filter-search" name="search" class="form-control" type="text" />
+                            </div>
+                        </div>
+                        <input type="hidden" name="format" value="table-only"/>
                     </div>
                 </fieldset>
             </form>
             
-            
-            
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Tags</th>
-                            <th>connection</th>
-                            <th>Created By</th>
-                            <th>Accessed</th>
-                            <th>Modified</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% for (var i=0; i<queries.length; i++) {
-                            var query = queries[i];
-                        %>
-                            <tr>
-                                <td><a href="/queries/<%= query._id %>"><%= query.name %></a></td>
-                                <td>
-                                    <% for (var t = 0; t < query.tags.length; t++) { %>
-                                        <a href="/queries?tag=<%= query.tags[t] %>"><%= query.tags[t] %></a><%= (t < (query.tags.length - 1) ? "," : "") %>
-                                    <% } %>    
-                                </td>
-                                <td>
-                                    <% if (connectionsById[query.connectionId]) { %> 
-                                        <%= connectionsById[query.connectionId].name %> 
-                                    <% } %>
-                                </td>
-                                <td><%= (query.createdBy && query.createdBy == session.email ? "Me" : (query.createdBy || "")) %></td>
-                                <td><%= query.lastAccessedFromNow || "" %></td>
-                                <td><%= query.modifiedCalendar %></td>
-                                <td>
-                                    <form role="form" action="/queries/<%= query._id %>" method="post">
-                                        <input type="hidden" name="_method" value="delete" />
-                                        <button class="btn btn-default" type="submit">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>    
-                            
-                        <% } %>
-                    </tbody>
-                </table>
+            <div id="queries-table">
+                <% include queries-table %>
             </div>
             
         </div>

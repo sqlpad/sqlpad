@@ -163,10 +163,24 @@ function saveQuery (event, editor) {
 var grid;
 var clientStart;
 var clientEnd;
+var running = false;
+
+function renderRunningTime () {
+    if (running) {
+        var now = new Date();
+        $('#client-run-time').html((now - clientStart)/1000 + " sec.");
+        setTimeout(renderRunningTime, 50);
+    }
+}
 
 var $csvLink = $('#csv-download-link').hide();
 
 function runQuery (event, editor) {
+    $('#client-run-time').html('');
+    $('#server-run-time').html('');
+    $('#rowcount').html('');
+    running = true;
+    renderRunningTime();
     if (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -190,7 +204,6 @@ function runQuery (event, editor) {
 
 function notifyRunning () {
     $('#run-result-notification')
-        .removeClass('label-success')
         .removeClass('label-danger')
         .text('running...')
         .show();
@@ -198,14 +211,14 @@ function notifyRunning () {
 
 function notifyFailure () {
     $('#run-result-notification')
-        .removeClass('label-info')
         .addClass('label-danger')
         .text("Something is broken :(");
 }
 
 function renderQueryResult (data) {
-    clientEnd = new Date();
     
+    clientEnd = new Date();
+    running = false;
     $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
     $('#server-run-time').html(data.serverMs/1000 + " sec.");
     if (data.success) {
@@ -225,21 +238,10 @@ function renderQueryResult (data) {
         grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
         
         $('#run-result-notification')
-            .removeClass('label-info')
-            .addClass('label-success')
-            .text('Success');
-        setTimeout(function () {
-            $('#run-result-notification').fadeOut(400, function () {
-                $('#run-result-notification')
-                    .removeClass('label-success')
-                    .removeClass('label-danger')
-                    .addClass('label-info')
-                    .text('');
-            })
-        }, 1000);
+            .text('')
+            .hide();
     } else {
         $('#run-result-notification')
-            .removeClass('label-info')
             .addClass('label-danger')
             .text(data.error);
     }
@@ -302,6 +304,14 @@ var $queryFilterForm = $('#query-filter-form');
 if ($queryFilterForm.length) {
     $('select').change(function () {
         console.log($queryFilterForm.serialize())
-        window.location.href = '/queries?' + $queryFilterForm.serialize();
-    })
+        $.get('/queries?' + $queryFilterForm.serialize(), function (data) {
+            $('#queries-table').empty().html(data);
+        })
+        //window.location.href = '/queries?' + $queryFilterForm.serialize();
+    });
+    $('#query-filter-search').keyup(function() {
+        $.get('/queries?' + $queryFilterForm.serialize(), function (data) {
+            $('#queries-table').empty().html(data);
+        })
+    });
 }

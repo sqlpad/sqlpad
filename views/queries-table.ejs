@@ -1,0 +1,45 @@
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Tags</th>
+                            <th>connection</th>
+                            <th>Created By</th>
+                            <th>Accessed</th>
+                            <th>Modified</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (var i=0; i<queries.length; i++) {
+                            var query = queries[i];
+                        %>
+                            <tr>
+                                <td><a href="/queries/<%= query._id %>"><%= query.name %></a></td>
+                                <td>
+                                    <% for (var t = 0; t < query.tags.length; t++) { %>
+                                        <a href="/queries?tag=<%= query.tags[t] %>"><%= query.tags[t] %></a><%= (t < (query.tags.length - 1) ? "," : "") %>
+                                    <% } %>    
+                                </td>
+                                <td>
+                                    <% if (connectionsById[query.connectionId]) { %> 
+                                        <%= connectionsById[query.connectionId].name %> 
+                                    <% } %>
+                                </td>
+                                <td><%= (query.createdBy && query.createdBy == session.email ? "Me" : (query.createdBy || "")) %></td>
+                                <td><%= query.lastAccessedFromNow || "" %></td>
+                                <td><%= query.modifiedCalendar %></td>
+                                <td>
+                                    <form role="form" action="/queries/<%= query._id %>" method="post">
+                                        <input type="hidden" name="_method" value="delete" />
+                                        <button class="btn btn-default" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>    
+                            
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
