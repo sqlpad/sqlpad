@@ -63,6 +63,7 @@ Once you have a SqlPad running, you can sign up (assuming you've whitelisted you
 
 ### Before considered "done"
 [x] query clone link to work  
+[ ] query clone link to only be available if query has been saved
 [ ] add visualizations  
 [ ] about/thank-you page  
 [ ] github pages on what/how/why  
