@@ -42,9 +42,6 @@
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
           <div class="container-fluid">
             
-            
-            
-            
             <div class="navbar-header">
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -52,9 +49,6 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <!--
-              <a class="navbar-brand" href="/queries">QS</a>
-              -->
             </div>
             
             <div class="navbar-collapse collapse">
@@ -62,12 +56,6 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
                      <ul class="dropdown-menu">
-                       <% if (queryMenu) { %>
-                       <li><a href="#" data-toggle="modal" data-target="#query-details-modal">Edit Query Details</a></li>
-                       <li><a id="menu-save" href="#">Save</a></li>
-                       <li><a href="/queries/clone/<%= query._id %>">Clone</a></li>
-                       <li class="divider"></li>
-                       <% } %>
                        <li><a href="/queries?createdBy=<%= encodeURIComponent(session.email) %>">My Queries</a></li>
                        <li><a href="/queries">All Queries</a></li>
                        <li class="divider"></li>
@@ -81,35 +69,19 @@
                      </ul>                       
                 </li>
               </ul>
-              <% if (navbarConnections && navbarConnections.length) { %>
-                  <form class="navbar-form navbar-left" role="form">
-                    <div class="form-group">
-                        <select id="connection" name="connection" class="form-control">
-                            <option value="">Choose a Connection...</option>
-                            <% navbarConnections.forEach(function(connection) { %>
-                                <option value="<%= connection._id %>" <%=( connection._id===query.connectionId ? 'selected' : '') %>>
-                                    <%= connection.name %>
-                                </option>
-                            <% }) %>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <button id="btn-run-query" class="btn btn-default">Run Query</button>
-                    </div>
-                  </form>
-                  <a class="navbar-brand active" id="header-query-name" href="#" data-toggle="modal" data-target="#query-details-modal">
-                    <% if (query && query.name) { %> <%= query.name %> <% } %>
-                  </a>
-                  <div class="navbar-form navbar-left">
-                      <span id="btn-save-result" class="label label-info"></span>
-                  </div>
               
-              <% } %>
-              <% if (pageTitle) { %>
-                <a class="navbar-brand page-title" href="#" >
-                  // <%= pageTitle %>
-                </a>
-              <% } %>
+              <span class="navbar-brand page-title" id="header-query-name">
+                <% if (query && query.name) { %> 
+                    <%= query.name %>
+                <% } else if (pageTitle) { %> 
+                    <%= pageTitle %> 
+                <% } %>
+              </span>
+              
+              <div class="navbar-form navbar-left">
+                  <span id="btn-save-result" class="label label-info"></span>
+              </div>
+              
               <ul class="nav navbar-nav navbar-right">
                 <% if (session && session.userId && session.email) { %>
                   <li><a href="/signout"><%= session.email.split('@')[0] %> (signout)</a></li>

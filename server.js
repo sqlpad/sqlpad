@@ -45,6 +45,7 @@ app.use(function (req, res, next) {
     res.locals.message = null;
     res.locals.navbarConnections = [];
     res.locals.debug = null;
+    res.locals.query = null;
     res.locals.queryMenu = false;
     res.locals.session = req.session || null;
     res.locals.pageTitle = "";
@@ -77,6 +78,7 @@ function mustBeAdmin (req, res, next) {
 }
 app.use('/connections', mustBeAdmin);
 app.use('/users', mustBeAdmin);
+
 
 
 /*  Routes begins here

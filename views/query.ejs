@@ -1,12 +1,60 @@
 <% include header %>
     
-   
-    
     <div id="panel-main">
         
-        <div id="panel-db-info">
-            
+        <div class="sidebar">
+            <div class="query-form">
+                <form id="query-form">
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="control-label" for="name">Query Name</label>
+                            <br>
+                            <input id="name" name="name" class="input-small" value="<%= query.name || '' %>" type="text" placeholder="Name" class="form-control input-md">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="control-label" for="tags">Tags</label>
+                            <br>
+                            <input id="tags" name="tags" class="input-small" value="<%= query.tags || '' %>" type="text" placeholder="Tags" class="form-control input-md">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="control-label" for="connection">Connection</label>
+                            <br>
+                            <select id="connection" name="connection" class="input-small">
+                                <option value="">Choose a Connection...</option>
+                                <% navbarConnections.forEach(function(connection) { %>
+                                    <option value="<%= connection._id %>" <%=( connection._id===query.connectionId ? 'selected' : '') %>>
+                                        <%= connection.name %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+                        
+                        <input type="hidden" id="cache-key" value="<%= cacheKey %>" />
+                        
+                        <% if (query._id) { %>
+                            <input type="hidden" name="_method" value="put" />
+                        <% } %>
+                        <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>" />
+                        
+                        <!-- Button (Double) -->
+                        <div class="form-group">
+                            <button type="button" id="btn-save" class="btn btn-default">Save</button>
+                            <button id="btn-run-query" class="btn btn-default btn-small">Run Query</button>
+                        </div>
+                        
+                        <a href="/queries/clone/<%= query._id %>">Clone</a>
+                        
+                    </fieldset>
+                </form>
+                <hr>
+            </div>
+            <div id="panel-db-info">
+                
+            </div>
         </div>
+        
         
         <div id="panel-editor-viz-results">
             <div id="editor-viz-panels">
@@ -25,13 +73,16 @@
                 <div id="panel-result-header">
                     <span class="panel-result-header-label">Client Run Time: </span>
                     <span class="panel-result-header-value" id="client-run-time"></span>
-                    <span class="panel-result-header-label">Server Run Time: </span>
-                    <span class="panel-result-header-value" id="server-run-time"></span>
-                    <span class="panel-result-header-label">Rows: </span>
-                    <span class="panel-result-header-value" id="rowcount"></span>
-                    <span class="panel-result-header-label">Download: </span>
-                    <!--<a href="#">.xlsx</a> -->
-                    <a id="csv-download-link" href="/download-results/<%= cacheKey %>.csv">.csv</a>
+                    <span class="hide-while-running" style="display: none">
+                        <span class="panel-result-header-label">Server Run Time: </span>
+                        <span class="panel-result-header-value" id="server-run-time"></span>
+                        <span class="panel-result-header-label">Rows: </span>
+                        <span class="panel-result-header-value" id="rowcount"></span>
+                        <span class="panel-result-header-label">Download: </span>
+                        <!--<a href="#">.xlsx</a> -->
+                        <a id="csv-download-link" href="/download-results/<%= cacheKey %>.csv">.csv</a>
+                    </span>
+                    
                 </div>
                 <div id="result-slick-grid"></div>
                 <div id="run-result-notification"></div>
@@ -41,53 +92,6 @@
         
     </div>
     
-    
-    
-    
-    <!-- Modal -->
-    <div class="modal fade" id="query-details-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title" id="myModalLabel">Query Details</h4>
-          </div>
-          <div class="modal-body">
-            <form id="query-form">
-                <fieldset>
-                    <div class="form-group">
-                        <label class="control-label" for="name">Query Name</label>
-                        <input id="name" name="name" value="<%= query.name || '' %>" type="text" placeholder="Name" class="form-control input-md">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="control-label" for="tags">Tags</label>
-                        <input id="tags" name="tags" value="<%= query.tags || '' %>" type="text" placeholder="Tags" class="form-control input-md">
-                    </div>
-                    
-                    <input type="hidden" id="cache-key" value="<%= cacheKey %>" />
-                    
-                    <% if (query._id) { %>
-                        <input type="hidden" name="_method" value="put" />
-                    <% } %>
-                    <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>" />
-                    
-                    <!-- Button (Double) -->
-                    <div class="form-group">
-                        
-                        
-                    </div>
-                    
-                </fieldset>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" id="btn-save" class="btn btn-default">Save</button>
-          </div>
-        </div>
-      </div>
-    </div>
     
     <!-- /.panel-tabs -->
     <% include footer %>

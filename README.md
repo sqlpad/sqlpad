@@ -89,7 +89,7 @@ Pull requests welcome! However, contributor beware:
 
 I wrote this without much planning, so some parts of this application feel like a big ball of mud. 
 
-Indentation is with tabs/4 spaces. And I use windows. And the Zed editor. And semicolons. 
+Indentation is with tabs/4 spaces. And I use semicolons. 
 
 This said, feel free to contribute as you want
 

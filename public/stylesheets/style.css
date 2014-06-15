@@ -119,6 +119,10 @@ a {
     background-color: #f3f3f3;
 }
 
+.sidebar {
+    padding: 12px;
+}
+
 .sidebar-header {
     display: block;
     padding-top: 10px;
@@ -129,6 +133,17 @@ a {
 
 .sidebar-divider {
     display: block;
+}
+
+.sidebar input {
+    width: 100%;
+}
+.sidebar select {
+    width: 100%;
+}
+.sidebar .control-label {
+    font-weight: 400;
+    color: #777;
 }
 
 /*  Panel Results / Slick grids

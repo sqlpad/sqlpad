@@ -168,12 +168,24 @@ var running = false;
 function renderRunningTime () {
     if (running) {
         var now = new Date();
-        $('#client-run-time').html((now - clientStart)/1000 + " sec.");
-        setTimeout(renderRunningTime, 50);
+        var ms = now - clientStart;
+        
+        $('#client-run-time').html(ms/1000 + " sec.");
+        
+        var leftovers = ms % 4000;
+        if (leftovers < 1000) {
+            $('#run-result-notification').text('running');
+        } else if (leftovers >= 1000 && leftovers < 2000) {
+            $('#run-result-notification').text('your');
+        } else if (leftovers >= 2000) {
+            $('#run-result-notification').text('query');
+        }
+        
+        setTimeout(renderRunningTime, 53);
     }
 }
 
-var $csvLink = $('#csv-download-link').hide();
+var $csvLink = $('#csv-download-link');
 
 function runQuery (event, editor) {
     $('#client-run-time').html('');
@@ -187,14 +199,15 @@ function runQuery (event, editor) {
     }
     // TODO: destroy/empty a slickgrid. for now we'll just empty
     $('#result-slick-grid').empty();
-    $csvLink.hide();
     var data = {
         queryText: getEditorText(editor),
         connectionId: $('#connection').val(),
         cacheKey: $('#cache-key').val()
     };
-    notifyRunning();
+    
     clientStart = new Date();
+    clientEnd = null;
+    notifyRunning();
     $.ajax({
         type: "POST",
         url: "/run-query",
@@ -207,9 +220,11 @@ function notifyRunning () {
         .removeClass('label-danger')
         .text('running...')
         .show();
+    $('.hide-while-running').hide();
 }
 
 function notifyFailure () {
+    running = false;
     $('#run-result-notification')
         .addClass('label-danger')
         .text("Something is broken :(");
@@ -222,7 +237,7 @@ function renderQueryResult (data) {
     $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
     $('#server-run-time').html(data.serverMs/1000 + " sec.");
     if (data.success) {
-        $csvLink.show();
+        $('.hide-while-running').show();
         var columns = [];
         if (data.results && data.results[0]) {
             $('#rowcount').html(data.results.length);
