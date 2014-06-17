@@ -83,16 +83,6 @@ module.exports = function (app) {
         });
     });
     
-    app.get('/queries/clone/:_id', function (req, res) {
-       db.queries.findOne({_id: req.params._id}, function (err, query) {
-           delete query._id;
-           query.name = "CLONE OF " + query.name;
-           db.queries.insert(query, function (err, query) {
-               res.redirect('/queries/' +  query._id);
-           });
-       });
-    });
-    
     app.get('/queries/:_id', function (req, res) {
         var ua = req.headers['user-agent'];
         var os = uaParser.parseOS(ua).toString();
