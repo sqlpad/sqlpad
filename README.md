@@ -4,7 +4,8 @@ A Node.js web app that allows you to write SQL and get the result against a data
 
 SqlPad is meant to be run on an internal network, for a single team. All connections added to the app can be used by all individuals with access to the SqlPad server. All queries written can be run and edited by everyone on the server. 
 
-If you want to be bold and daring, you can expose your SqlPad instance to the outside world. Please make sure you fully understand the risks associated with doing this. 
+If you want to be bold and daring, you can expose your SqlPad instance to the outside world. Please make sure you fully understand the risks associated with doing this and use SSL.
+
 
 
 ## Installation & Usage
@@ -50,6 +51,7 @@ sqlpad --port 3000 --db c:/sqlpad/ --passphrase secret-encryption-phrase
 Once you have a SqlPad running, you can sign up (assuming you've whitelisted your email address with the --admin flag) at http://localhost/signup.
 
 
+
 ## TODO
 
 ### Done
@@ -60,18 +62,18 @@ Once you have a SqlPad running, you can sign up (assuming you've whitelisted you
 [x] temp csv cache file for downloads  
 [x] upgrade to express 4.0 to get rid of annoying messages  
 [x] save menu button works  
+[x] SQL Editor: refresh schema on connection change  
+[x] SQL Editor: prompt to choose a connection if one hasn't been chosen  
+[x] default db location should be user's HOME directory/sqlpad.  
+[x] --dev flag for console.logging
 
 ### Before considered "done"
-[x] query clone link to work  
-[ ] query clone link to only be available if query has been saved
 [ ] add visualizations  
 [ ] about/thank-you page  
 [ ] github pages on what/how/why  
-[x] SQL Editor: refresh schema on connection change  
-[x] SQL Editor: prompt to choose a connection if one hasn't been chosen  
 [ ] clean up various dates being displayed to appropriate values  
-[ ] default db location should be user's HOME directory/sqlpad.  
-[ ] --dev flag for console.logging
+[ ] update notifications like nodemon
+[ ] add datatypes to schema info
 
 ### Optional
 [x] make routes separate js files (broken up by related chunks)  
@@ -81,6 +83,8 @@ Once you have a SqlPad running, you can sign up (assuming you've whitelisted you
 [ ] connection: prefer SSL (for postgres --> heroku)  
 [ ] SQL Editor: Excel file download  
 [ ] SQL Editor: download filename uses query name  
+[ ] Application Profiles? https://github.com/dominictarr/rc for configs?
+
 
 
 ## Contributing
@@ -93,24 +97,8 @@ Indentation is with tabs/4 spaces. And I use semicolons.
 
 This said, feel free to contribute as you want
 
-## TODO
-
-store a config file in filesystem. it has multiple profiles.
-
-'sqlpad'
-- if no profile is found, start setup wizard.
-- if 1 profile is found, run that one
-- if >1 profile is found, prompt for which one to start
-
-'sqlpad --setup'
-list profiles. options are (edit profile, create new)
-
-'sqlpad --profile accounting'
-runs sqlpad using the accounting profile/instance
 
 
-function getUserHome() {
-  return process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-}
+## License 
 
-https://github.com/dominictarr/rc
+MIT
