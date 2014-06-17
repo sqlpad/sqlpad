@@ -5,10 +5,12 @@ var http = require('http');
 var path = require('path');
 
 var app = express();
+var userHome = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 
 app.set('passphrase', "At least the sensitive bits won't be plain text?");
-app.set('dbPath', path.join(process.cwd(), "/db"));
+app.set('dbPath', path.join(userHome, "sqlpad/db"));
 app.set('port', 80);
+app.set('dev', false);
 
 app.locals.title = 'SqlPad';
 
@@ -39,7 +41,7 @@ app.use(methodOverride()); // simulate PUT/DELETE via POST in client by <input t
 app.use(cookieParser(app.get('passphrase'))); // populates req.cookies with an object
 app.use(cookieSession({secret: app.get('passphrase')}));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(morgan('dev'));
+if (app.get('dev')) app.use(morgan('dev'));
 app.use(function (req, res, next) {
     // Boostrap res.locals with any common variables
     res.locals.message = null;
