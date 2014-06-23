@@ -66,6 +66,7 @@ Once you have a SqlPad running, you can sign up (assuming you've whitelisted you
 [x] SQL Editor: prompt to choose a connection if one hasn't been chosen  
 [x] default db location should be user's HOME directory/sqlpad.  
 [x] --dev flag for console.logging
+[x] add datatypes to schema info
 
 ### Before considered "done"
 [ ] add visualizations  
@@ -73,7 +74,6 @@ Once you have a SqlPad running, you can sign up (assuming you've whitelisted you
 [ ] github pages on what/how/why  
 [ ] clean up various dates being displayed to appropriate values  
 [ ] update notifications like nodemon
-[ ] add datatypes to schema info
 
 ### Optional
 [x] make routes separate js files (broken up by related chunks)  
@@ -102,3 +102,9 @@ This said, feel free to contribute as you want
 ## License 
 
 MIT
+
+
+
+## Reminders
+
+moment(gdata[1].time_created).isValid()
