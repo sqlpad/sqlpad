@@ -1,6 +1,14 @@
 // The last javascript file. 
 // It'll contain all the old-school jQuery stuff.
 
+var $ = require('jquery');
+var ace = require('ace');
+var Slick = require('Slick');
+var nv = require('nv');
+var moment = require('moment');
+
+window.moment = moment;
+
 /* 
     From connection.ejs, its the button to test the database connection!
     with the power of AJAX, we can find out that a connection doesn't work 
@@ -37,6 +45,26 @@ $('#btn-test-connection').click(function (e) {
     });
 });
 
+
+/*  Query Filter 
+    used on queries.ejs for reading the query filter form and doing the ajax
+    to get the stuff. ajax.
+==============================================================================*/
+var $queryFilterForm = $('#query-filter-form');
+if ($queryFilterForm.length) {
+    $('select').change(function () {
+        console.log($queryFilterForm.serialize());
+        $.get('/queries?' + $queryFilterForm.serialize(), function (data) {
+            $('#queries-table').empty().html(data);
+        });
+        //window.location.href = '/queries?' + $queryFilterForm.serialize();
+    });
+    $('#query-filter-search').keyup(function() {
+        $.get('/queries?' + $queryFilterForm.serialize(), function (data) {
+            $('#queries-table').empty().html(data);
+        });
+    });
+}
 
 
 /* 
@@ -86,11 +114,8 @@ function getEditorText (editor) {
         relevantText = editor.getValue();
     }
     return relevantText;
-};
+}
 
-$('#menu-save').click(function (event) {
-    saveQuery(event, editor);
-})
 
 $('#btn-save').click(function (event) {
     saveQuery(event, editor);
@@ -98,7 +123,7 @@ $('#btn-save').click(function (event) {
 
 $('#btn-run-query').click(function (event) {
     runQuery(event, editor);
-})
+});
 
 $('#name').change(function () {
     $('#header-query-name').text($('#name').val());
@@ -125,7 +150,7 @@ function saveQuery (event, editor) {
         event.preventDefault();
         event.stopPropagation();
     }
-    $('#query-details-modal').modal('hide')
+    $('#query-details-modal').modal('hide');
     $queryId = $('#query-id');
     var queryId = $queryId.val();
     var query = {
@@ -143,22 +168,22 @@ function saveQuery (event, editor) {
     }).done(function (data) {
         if (data.success) {
             //alert('success');
-            window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id)
+            window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
             $queryId.val(data.query._id);
             $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
             setTimeout(function () {
                 $('#btn-save-result').fadeOut(400, function () {
                     $('#btn-save-result').removeClass('label-success').addClass('label-info').text('');
-                })
+                });
             }, 1000);
         } else {
             //alert('fail on the server side idk');
             $('#btn-save-result').removeClass('label-info').addClass('label-danger').text('Failed');
         }
     }).fail(function () {
-        alert('ajax fail')
+        alert('ajax fail');
     });
-};
+}
 
 var grid;
 var clientStart;
@@ -230,6 +255,10 @@ function notifyFailure () {
         .text("Something is broken :(");
 }
 
+var gdata;   // NOTE: exposed data for console debugging
+var gmeta;   // and actually, I'm kind of abusing these elsewhere.
+var gchart;  // so these aren't just for debugging anymore
+
 function renderQueryResult (data) {
     
     clientEnd = new Date();
@@ -240,10 +269,40 @@ function renderQueryResult (data) {
         $('.hide-while-running').show();
         var columns = [];
         if (data.results && data.results[0]) {
+            gdata = data.results; // NOTE: exposed data for console debugging
+            gmeta = data.meta;
             $('#rowcount').html(data.results.length);
             var firstRow = data.results[0];
             for (var col in firstRow) {
-                columns.push({id: col, name: col, field: col, width: col.length * 15});
+                var columnSpec = {id: col, name: col, field: col, width: col.length * 15};
+                if (data.meta[col].datatype === 'date') {
+                    columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
+                        // https://github.com/mleibman/SlickGrid/wiki/Column-Options
+                        if (value === null) {
+                          return "";
+                        } else {
+                            var d = moment.utc(value);
+                            return d.format('MM/DD/YYYY HH:mm:ss');
+                            // default formatter:
+                            // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+                        }
+                    };
+                }
+                columns.push(columnSpec);
+            }
+            
+            // loop through and clean up dates!
+            // TODO: this is lazy and could use optimization
+            for (var r = 0; r < data.results.length; r++) {
+                var row = data.results[r];
+                for (var key in data.meta) {
+                    if (data.meta[key].datatype === 'date' && row[key]) {
+                        var d = moment.utc(row[key]);
+                        row[key] = new Date(row[key]);
+                        //row[key] = d.format('MM/DD/YYYY HH:mm:SS');
+                        //console.log(d.format('MM/DD/YYYY HH:mm:SS'));
+                    }
+                }
             }
         }
         var options = {
@@ -283,7 +342,7 @@ function getDbInfo () {
                             var $tableNameUl = $('<ul>').appendTo($tableName);
                             var columns = tree[tableType][schema][tableName];
                             for (var i=0; i < columns.length; i++) {
-                                $column = $('<li>' + columns[i].column_name + '</li>').appendTo($tableNameUl);
+                                $column = $('<li>' + columns[i].column_name + " <span class='data-type'>(" + columns[i].data_type + ')</span></li>').appendTo($tableNameUl);
                             }
                         }
                     }
@@ -311,22 +370,141 @@ function resizeStuff () {
     editor.resize();
     //https://github.com/mleibman/SlickGrid/wiki/Slick.Grid#resizeCanvas
     if (grid) grid.resizeCanvas();
+    if (gchart) gchart.update();
 }
+$(window).resize(resizeStuff);
 
-/*  Query Filter 
+
+
+
+
+
+
+
+
+/*  Chart Setup
 ==============================================================================*/
-var $queryFilterForm = $('#query-filter-form');
-if ($queryFilterForm.length) {
-    $('select').change(function () {
-        console.log($queryFilterForm.serialize())
-        $.get('/queries?' + $queryFilterForm.serialize(), function (data) {
-            $('#queries-table').empty().html(data);
-        })
-        //window.location.href = '/queries?' + $queryFilterForm.serialize();
+var $chartSetup = $('#chart-setup');
+var $chartTypeDropDown = $('<select>').appendTo($chartSetup);
+$chartTypeDropDown
+    .append('<option value=""></option>')
+    .append('<option value="line">line</option>')
+    .append('<option value="bar">bar</option>')
+    .append('<option value="bubble">bubble</option>')
+    .change(function () {
+        var selectedChartType = $chartTypeDropDown.val();
+        // loop through and create dropdowns
+        if (chartTypes[selectedChartType]) {
+            var ct = chartTypes[selectedChartType];
+            
+            // render chart ui;
+            var $ui = $('#chart-setup-ui').empty();
+            for (var f in ct.fields) {
+                var field = ct.fields[f];
+                var $label = $('<label>' + field.label + '</label>');
+                var $input;
+                if (field.inputType === "field-dropdown") {
+                    $input = $('<select>');
+                    $input.append('<option value=""></option>');
+                    for (var m in gmeta) {
+                        $input.append('<option value="' + m + '">' + m + '</option>');
+                    }
+                }
+                $ui.append('<br>')
+                    .append($label)
+                    .append('<br>')
+                    .append($input)
+                
+                // so it'll be available?    
+                field.$input = $input;
+            }
+            
+            // render button too, then assign button click
+            var $btn = $('<button>go</button>').appendTo($ui);
+            $btn.click(function () {
+                var cData = ct.massageData(gmeta, gdata, ct.fields);
+                var chart = ct.renderChart(gmeta, gdata, ct.fields);
+                gchart = chart;
+                d3.select('#chart svg')
+                    .datum(cData)
+                    .call(chart);
+                nv.utils.windowResize(chart.update);
+                nv.addGraph(function () {
+                    return chart;
+                });
+            });
+        }
     });
-    $('#query-filter-search').keyup(function() {
-        $.get('/queries?' + $queryFilterForm.serialize(), function (data) {
-            $('#queries-table').empty().html(data);
-        })
-    });
-}
+
+var chartTypes = {
+    line: {
+        fields: {
+            x: {
+                optional: false,
+                label: "x",
+                inputType: "field-dropdown"
+            },
+            y: { 
+                optional: false,
+                label: "y",
+                inputType: "field-dropdown"
+            },
+            split: {
+                optional: true,
+                label: "line for each:",
+                inputType: "field-dropdown"
+            }
+        },
+        massageData: function (meta, data, fields) {
+            var chartData;
+            if (fields.split.$input.val()) {
+                
+            } else {
+                chartData = [{
+                    key: fields.y.$input.val(),
+                    values: data
+                }];
+            }
+            
+            return chartData;
+        },
+        renderChart: function (meta, data, fields) {
+            var $x = fields.x.$input;
+            var $y = fields.y.$input;
+            var chart = nv.models.lineChart()
+                            .margin({left: 50, top: 50, right: 50})
+                            .x(function(d,i) { 
+                                var selectedDataType = meta[$x.val()].datatype;
+                                if (selectedDataType == "date" || selectedDataType == "number") {
+                                    return d[$x.val()];
+                                } else {
+                                    return i;
+                                }
+                            })
+                            .y(function(d,i) {
+                                var selectedDataType = meta[$y.val()].datatype;
+                                if (selectedDataType == "date") {
+                                    return d[$y.val()];
+                                } else if (selectedDataType == "number") {
+                                    return parseInt(d[$y.val()]);
+                                } else {
+                                    return null;
+                                }
+                            })
+                            //.y(function(d,i) {return parseFloat(d.y) })
+                            .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                            .transitionDuration(350)  //how fast do you want the lines to transition?
+                            .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                            .showYAxis(true)        //Show the y-axis
+                            .showXAxis(true)        //Show the x-axis
+                            .clipEdge(false)
+            
+            chart.xAxis.axisLabel($x.val())
+                //.tickFormat(d3.format(',r'));
+            chart.yAxis.axisLabel($y.val())
+                //.tickFormat(d3.format('.02f'));
+            
+            return chart;
+        }
+    }
+};

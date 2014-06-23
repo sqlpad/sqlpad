@@ -112,6 +112,7 @@ a {
 
 .schema-info li {
     list-style-type: none;
+    white-space: nowrap;
 }
 
 .navbar-inverse-NOT {
@@ -128,7 +129,7 @@ a {
     padding-top: 10px;
     font-size: 12px;
     line-height: 1.42857143;
-    color: #999;
+    color: #AAA;
 }
 
 .sidebar-divider {
@@ -144,6 +145,10 @@ a {
 .sidebar .control-label {
     font-weight: 400;
     color: #777;
+}
+
+.data-type {
+    color: #999;
 }
 
 /*  Panel Results / Slick grids

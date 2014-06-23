@@ -2,6 +2,11 @@ var runQuery = require('../lib/run-query.js');
 var json2csv = require('json2csv');
 var fs = require('fs');
 var path = require('path');
+var _ = require('lodash');
+
+function isNumberLike (n) {
+    return (!isNaN(parseFloat(n)) && isFinite(n));
+}
 
 module.exports = function (app) {
     
@@ -43,10 +48,74 @@ module.exports = function (app) {
                                 error: err.toString()
                             });
                         } else {
-                            var fields = [];
-                            for (var key in results.rows[0]) {
-                                fields.push(key);
+                            
+                            // get meta data
+                            // this meta data will be used by the UI to format data appropriately
+                            // it will also be used to determine columns for basic data visuals
+                            /*
+                            {
+                                fieldname: {
+                                    datatype: 'date',        // or 'number' or 'string'
+                                    max: 42 ,                // if a number, max is present
+                                    min: 1                   // available if number
+                                }
                             }
+                            
+                            */
+                            var fields = [];
+                            var meta = {};
+                            for (var r = 0; r < results.rows.length; r++) {
+                                var row = results.rows[r];
+                                _.forOwn(row, function (value, key) {
+                                    // if this is first row, record fields in fields array
+                                    if (r === 0) fields.push(key);
+                                    if (!meta[key]) meta[key] = {
+                                        datatype: null,
+                                        max: null,
+                                        min: null
+                                    };
+                                    
+                                    // if we don't have a data type and we have a value yet lets try and figure it out
+                                    if (!meta[key].datatype && value) {
+                                        console.log("Row:    ");
+                                        console.log(row);
+                                        console.log("Value:  " + value);
+                                        console.log("String? " + _.isString(value));
+                                        console.log("Number? " + _.isNumber(value));
+                                        if (_.isDate(value)) meta[key].datatype = 'date';
+                                        else if (isNumberLike(value)) meta[key].datatype = 'number';
+                                        else if (_.isString(value)) meta[key].datatype = 'string';
+                                    }
+                                    // if we have a value and are dealing with a number or date, we should get min and max
+                                    if (
+                                            value 
+                                            && (meta[key].datatype === 'number' || meta[key].datatype === 'date')
+                                            && (isNumberLike(value) || _.isDate(value))
+                                        ) {
+                                        // if we haven't yet defined a max and this row contains a number
+                                        if (!meta[key].max) meta[key].max = value;
+                                        // otherwise this field in this row contains a number, and we should see if its bigger
+                                        else if (value > meta[key].max) meta[key].max = value;
+                                        // then do the same thing for min
+                                        if (!meta[key].min) meta[key].min = value;
+                                        else if (value < meta[key].min) meta[key].min = value;
+                                    }
+                                    // if the datatype is number-like, 
+                                    // we should check to see if it ever changes to a string
+                                    // this is hacky, but sometimes data will be 
+                                    // a mix of number-like and strings that aren't number like
+                                    // in the event that we get some data that's NOT NUMBER LIKE, 
+                                    // then we should *really* be recording this as string
+                                    if (meta[key].datatype === 'number' && value) {
+                                        if (!isNumberLike(value)) {
+                                            meta[key].datatype = 'string';
+                                            meta[key].max = null;
+                                            meta[key].min = null;
+                                        }
+                                    }
+                                });
+                            }
+                            
                             json2csv({data: results.rows, fields: fields}, function (err, csv) {
                                 if (err) {
                                     console.log(err);
@@ -62,6 +131,7 @@ module.exports = function (app) {
                                         res.send({
                                             success: true,
                                             serverMs: end - start,
+                                            meta: meta,
                                             results: results.rows,
                                             csvUrl: '/query-results/' + cache.cacheKey + '.csv'
                                         });

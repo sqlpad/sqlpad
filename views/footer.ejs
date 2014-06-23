@@ -2,17 +2,20 @@
         </div> <!-- /row -->
     </div> <!-- /container -->
     
+    <!-- 
+        This stuff has been made available as globals via browserify shim 
+        Ideally this would be managed via npm/browserify completely, but it seems really confusing.
+        I'll revisit once I'm a bit more familiar with how browserify performs its magic
+    -->
+    
+    <!-- jquery -->
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-   
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
     
+    <!-- bootstrap -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    
+    <!-- ace editor -->
     <script src="/javascripts/vendor/ace-src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
     
     <!-- slick grid stuff -->
@@ -23,14 +26,13 @@
     <!-- nvd3 -->
     <script src="/javascripts/vendor/d3.v3.js"></script>
     <script src="/javascripts/vendor/nv.d3.min.js"></script>
-    
             
     <!-- jquery splitter -->
     <script src="/javascripts/vendor/jquery.splitter/jquery.splitter-0.14.0.js"></script>
     
             
-    <!-- my.js -->
-    <script src="/javascripts/main.js"></script>
+    <!-- browserified js -->
+    <script src="/javascripts/browserified.js"></script>
     
   </body>
 </html>
