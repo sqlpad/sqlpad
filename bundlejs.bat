@@ -1,1 +1,1 @@
-browserify -t browserify-shim ./public/javascripts/main.js > ./public/javascripts/browserified.js
+watchify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim

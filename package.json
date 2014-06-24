@@ -23,10 +23,7 @@
     "cookie-session": "^1.0.2",
     "morgan": "^1.1.0",
     "uuid": "^1.4.1",
-    "json2csv": "^2.2.1",
-    "jquery": "^2.1.1",
-    "brace": "^0.2.1",
-    "bootstrap": "^3.1.1"
+    "json2csv": "^2.2.1"
   },
   "main": "server.js",
   "bin": {
@@ -45,6 +42,7 @@
     "jquery": "global:$",
     "ace": "global:ace",
     "Slick": "global:Slick",
-    "nv": "global:nv"
+    "nv": "global:nv",
+    "d3": "global:d3"
   }
 }
