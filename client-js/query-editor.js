@@ -227,7 +227,8 @@ module.exports = function () {
                             if (value === null) {
                               return "";
                             } else {
-                                var d = moment.utc(value);
+                                //var d = moment.utc(value);
+                                var d = moment(value);
                                 return d.format('MM/DD/YYYY HH:mm:ss');
                                 // default formatter:
                                 // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -242,7 +243,6 @@ module.exports = function () {
                     var row = data.results[r];
                     for (var key in data.meta) {
                         if (data.meta[key].datatype === 'date' && row[key]) {
-                            var d = moment.utc(row[key]);
                             row[key] = new Date(row[key]);
                             //row[key] = d.format('MM/DD/YYYY HH:mm:SS');
                             //console.log(d.format('MM/DD/YYYY HH:mm:SS'));
@@ -322,60 +322,76 @@ module.exports = function () {
     
     /*  Chart Setup
     ==============================================================================*/
-    var $chartSetup = $('#chart-setup');
-    var $chartTypeDropDown = $('<select>').appendTo($chartSetup);
-    $chartTypeDropDown
-        .append('<option value=""></option>')
-        .append('<option value="line">line</option>')
-        .append('<option value="bar">bar</option>')
-        .append('<option value="bubble">bubble</option>')
-        .change(function () {
-            var selectedChartType = $chartTypeDropDown.val();
-            // loop through and create dropdowns
-            if (chartTypes[selectedChartType]) {
-                var ct = chartTypes[selectedChartType];
-                
-                // render chart ui;
-                var $ui = $('#chart-setup-ui').empty();
-                for (var f in ct.fields) {
-                    var field = ct.fields[f];
-                    var $label = $('<label>' + field.label + '</label>');
-                    var $input;
-                    if (field.inputType === "field-dropdown") {
-                        $input = $('<select>');
-                        $input.append('<option value=""></option>');
-                        for (var m in gmeta) {
-                            $input.append('<option value="' + m + '">' + m + '</option>');
-                        }
-                    }
-                    $ui.append('<br>')
-                        .append($label)
-                        .append('<br>')
-                        .append($input);
-                    
-                    // so it'll be available?    
-                    field.$input = $input;
-                }
-                
-                // render button too, then assign button click
-                var $btn = $('<button>go</button>').appendTo($ui);
-                $btn.click(function () {
-                    var cData = ct.transformData(gmeta, gdata, ct.fields);
-                    var chart = ct.renderChart(gmeta, gdata, ct.fields);
-                    gchart = chart;
-                    d3.select('#chart svg')
-                        .datum(cData)
-                        .call(chart);
-                    nv.utils.windowResize(chart.update);
-                    nv.addGraph(function () {
-                        return chart;
-                    });
-                });
-            }
-        });
-    
     var chartTypes = {
-        line: require('./chart-type-line.js')
+        line: require('./chart-type-line.js'),
+        bar: require('./chart-type-bar.js'),
+        bubble: require('./chart-type-bubble.js')
     };
     
+    var $chartSetup = $('#chart-setup');
+    var $chartTypeFormGroup = $('<div class="form-group">').appendTo($chartSetup);
+    var $chartTypeLabel = $('<label class="control-label">Chart Type</label>').appendTo($chartTypeFormGroup);
+    var $chartTypeDropDown = $('<select>').appendTo($chartTypeFormGroup);
+    $chartTypeDropDown.append('<option value=""></option>');
+    for (var key in chartTypes) {
+        $chartTypeDropDown.append('<option value="' + key + '">' + key + '</option>');
+    }
+    $chartTypeDropDown.change(function () {
+        var selectedChartType = $chartTypeDropDown.val();
+        // loop through and create dropdowns
+        if (chartTypes[selectedChartType]) {
+            var ct = chartTypes[selectedChartType];
+            
+            // render chart ui;
+            var $ui = $('#chart-setup-ui').empty();
+            for (var f in ct.fields) {
+                var field = ct.fields[f];
+                var $formGroup = $('<div class="form-group">');
+                var $label = $('<label class="control-label">' + field.label + '</label>');
+                var $input;
+                if (field.inputType === "field-dropdown") {
+                    $input = $('<select>');
+                    $input.append('<option value=""></option>');
+                    for (var m in gmeta) {
+                        $input.append('<option value="' + m + '">' + m + '</option>');
+                    }
+                }
+                $formGroup
+                    .append($label)
+                    .append($input)
+                    .appendTo($ui);
+                
+                // so it'll be available?    
+                field.$input = $input;
+            }
+            
+            // render button too, then assign button click
+            var $btn = $('<button>Visualize</button>').appendTo($ui);
+            $btn.click(function () {
+                
+                // loop through chart type fields and do things like
+                // add the value, datatype
+                for (var f in ct.fields) {
+                    var field = ct.fields[f];
+                    field.val = field.$input.val();
+                    if (field.val && gmeta[field.val]) {
+                        field.datatype = gmeta[field.val].datatype;
+                        field.min = gmeta[field.val].min;
+                        field.max = gmeta[field.val].max;
+                    }
+                }
+                
+                var cData = ct.transformData(gmeta, gdata, ct.fields);
+                var chart = ct.renderChart(gmeta, gdata, ct.fields);
+                gchart = chart;
+                d3.select('#chart svg')
+                    .datum(cData)
+                    .call(chart);
+                nv.utils.windowResize(chart.update);
+                nv.addGraph(function () {
+                    return chart;
+                });
+            });
+        }
+    });
 };

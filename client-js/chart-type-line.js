@@ -1,11 +1,18 @@
 var nv = require('nv');
+var _  = require('lodash');
+var d3 = require('d3');
 
 module.exports =  {
     fields: {
         x: {
             optional: false,
             label: "x",
-            inputType: "field-dropdown"
+            inputType: "field-dropdown",
+            $input: null,
+            val: null,
+            datatype: null,
+            min: null,
+            max: null
         },
         y: { 
             optional: false,
@@ -19,54 +26,66 @@ module.exports =  {
         }
     },
     transformData: function (meta, data, fields) {
-        var chartData;
-        if (fields.split.$input.val()) {
-            
-        } else {
+        var chartData = [];
+        var splitField = fields.split.val;
+        if (splitField) {
+            var indexed = _.groupBy(data, splitField);
+            console.log(indexed);
+            _.forOwn(indexed, function (data, key) {
+                chartData.push({
+                    key: key,
+                    values: data
+                });
+            });
+        } else { 
             chartData = [{
-                key: fields.y.$input.val(),
+                key: fields.y.val,
                 values: data
             }];
         }
-        
         return chartData;
     },
     renderChart: function (meta, data, fields) {
-        var $x = fields.x.$input;
-        var $y = fields.y.$input;
+        
+        var ymin = 0;
+        if (fields.y.min < 0) ymin = fields.y.min;
+        
         var chart = nv.models.lineChart()
                         .margin({left: 50, top: 50, right: 50})
-                        .x(function(d,i) { 
-                            var selectedDataType = meta[$x.val()].datatype;
-                            if (selectedDataType == "date" || selectedDataType == "number") {
-                                return d[$x.val()];
+                        .x(function(d, i) { 
+                            if (fields.x.datatype == "date" || fields.x.datatype == "number") {
+                                return d[fields.x.val];
                             } else {
                                 return i;
                             }
                         })
-                        .y(function(d,i) { 
-                            var selectedDataType = meta[$y.val()].datatype;
-                            if (selectedDataType == "date") {
-                                return d[$y.val()];
-                            } else if (selectedDataType == "number") {
-                                return parseInt(d[$y.val()]);
+                        .y(function(d, i) { 
+                            if (fields.y.datatype == "date") {
+                                return d[fields.y.val];
+                            } else if (fields.y.datatype == "number") {
+                                return parseInt(d[fields.y.val]);
                             } else {
                                 return null;
                             }
                         })
-                        //.y(function(d,i) {return parseFloat(d.y) })
                         .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
                         .transitionDuration(350)        //how fast do you want the lines to transition?
                         .showLegend(true)               //Show the legend, allowing users to turn on/off line series.
                         .showYAxis(true)                //Show the y-axis
                         .showXAxis(true)                //Show the x-axis
+                        .forceY([0, ymin]) 
                         .clipEdge(false);                // I don't know what this does
         
-        chart.xAxis.axisLabel($x.val());
-            //.tickFormat(d3.format(',r'));
-        chart.yAxis.axisLabel($y.val());
-            //.tickFormat(d3.format('.02f'));
+        if (fields.x.datatype == 'date') { 
+            chart.xAxis.tickFormat(function(d) { 
+                return d3.time.format('%x')(new Date(d)); 
+            });
+        } else {
+            chart.xAxis.axisLabel(fields.x.val);
+        }
+        
+        chart.yAxis.axisLabel(fields.y.val);
         
         return chart;
     }
-}
+};
