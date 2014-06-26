@@ -4,7 +4,8 @@
 // Run button configuration
   "commands": {
         "Node version": "node --version",
-      "run": "npm start"
+		"run": "npm start",
+		"browserify": "browserify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim"
   },
 
 // Preview button configuration
