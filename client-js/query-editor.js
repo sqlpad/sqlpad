@@ -2,6 +2,32 @@
 // This could use some refactoring, 
 // as there is a lot going on and not a lot of it is very structured
 
+/*	
+	simplify the way this page works by following a client-side rendering flow:
+    Initial page request, we have the query Id available. 
+    
+    var queryId = $('#query-id').val();
+    var viewModel = {}; // a place to put all the data/state for the page
+    
+    $.get(/query/id, renderQueryData);
+ 	
+    render() 
+    	- query name
+        - query tags
+        - query connection
+        - query text
+        - visualization selection
+        - vis options:
+        	- option: value
+            - option: value
+            
+    methods to render visualization stuff should optionally take current values. 
+ 
+*/
+
+
+
+
 var $ = require('jquery');
 var ace = require('ace');
 var Slick = require('Slick');
