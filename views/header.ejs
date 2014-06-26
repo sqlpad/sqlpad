@@ -53,21 +53,17 @@
             
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu <b class="caret"></b></a>
-                     <ul class="dropdown-menu">
-                       <li><a href="/queries?createdBy=<%= encodeURIComponent(session.email) %>">My Queries</a></li>
-                       <li><a href="/queries">All Queries</a></li>
-                       <li class="divider"></li>
-                       <li><a href="/queries/new">New Query</a></li>
-                       <% if (session && session.admin) { %>
-                       <li class="divider"></li>
-                       <li class="dropdown-header">Admin Stuff</li>
-                       <li><a href="/connections">Connections</a></li>
-                       <li><a href="/users">Users</a></li>
-                       <% } %>
-                     </ul>                       
-                </li>
+                <li><a href="/queries?createdBy=<%= encodeURIComponent(session.email) %>">My Queries</a></li>
+                <li><a href="/queries/new">New</a></li>
+                <% if (session && session.admin) { %>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
+                         <ul class="dropdown-menu">
+                           <li><a href="/connections">Connections</a></li>
+                           <li><a href="/users">Users</a></li>
+                         </ul>                       
+                    </li>
+                <% } %>
               </ul>
               
               <span class="navbar-brand page-title" id="header-query-name">
