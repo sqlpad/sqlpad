@@ -384,6 +384,7 @@ module.exports = function () {
                 var cData = ct.transformData(gmeta, gdata, ct.fields);
                 var chart = ct.renderChart(gmeta, gdata, ct.fields);
                 gchart = chart;
+                $('#chart svg').empty();
                 d3.select('#chart svg')
                     .datum(cData)
                     .call(chart);
