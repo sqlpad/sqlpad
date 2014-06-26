@@ -67,16 +67,20 @@ Once you have a SqlPad running, you can sign up (assuming you've whitelisted you
 [x] default db location should be user's HOME directory/sqlpad.  
 [x] --dev flag for console.logging
 [x] add datatypes to schema info
+[x] add initial visualizations  
+[x] make routes separate js files (broken up by related chunks)  
 
 ### Before considered "done"
-[ ] add visualizations  
 [ ] about/thank-you page  
 [ ] github pages on what/how/why  
 [ ] clean up various dates being displayed to appropriate values  
 [ ] update notifications like nodemon
+[ ] viz pane/ui hidden away until needed
+[ ] viz selections saved with query
+[ ] visualize button runs query if it needs to be run
+[ ] viz ui updates with new query results (available fields may have changed)
 
 ### Optional
-[x] make routes separate js files (broken up by related chunks)  
 [ ] clean up and organize front end js. (split into separate js files?)  
 [ ] connection: window colors  
 [ ] connection: application-enforced read only option  
@@ -84,7 +88,6 @@ Once you have a SqlPad running, you can sign up (assuming you've whitelisted you
 [ ] SQL Editor: Excel file download  
 [ ] SQL Editor: download filename uses query name  
 [ ] Application Profiles? https://github.com/dominictarr/rc for configs?
-
 
 
 ## Contributing
