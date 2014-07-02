@@ -6,10 +6,24 @@
 	simplify the way this page works by following a client-side rendering flow:
     Initial page request, we have the query Id available. 
     
-    var queryId = $('#query-id').val();
-    var viewModel = {}; // a place to put all the data/state for the page
     
-    $.get(/query/id, renderQueryData);
+    var queryEditor = require('query-editor.js');
+    var schemaTree = require('schema-tree.js');
+    var metaEditor = require('meta-editor.js');
+    
+    var id = $('#query-id').val();
+    var viewModel; // a place to put all the data/state for the page
+    
+    $.get(/query/:id, function(data) {
+    	viewModel = data;
+        metaEditor.render(viewModel);
+        schemaTree.render(viewModel.connectionId);
+        metaEditor.$connection.change(function() {
+        	schemaTree.render($(this).val());
+        });
+        queryEditor.render(viewModel);
+        
+    });
  	
     render() 
     	- query name

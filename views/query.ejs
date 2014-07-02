@@ -24,7 +24,7 @@
                             <select id="connection" name="connection" class="input-small">
                                 <option value="">Choose a Connection...</option>
                                 <% navbarConnections.forEach(function(connection) { %>
-                                    <option value="<%= connection._id %>" <%=( connection._id===query.connectionId ? 'selected' : '') %>>
+                                    <option value="<%= connection._id %>" <%= ( connection._id === query.connectionId ? 'selected' : '') %>
                                         <%= connection.name %>
                                     </option>
                                 <% }) %>
@@ -59,6 +59,7 @@
                 
             </div>
         </div>
+        
         
         
         <div id="panel-editor-viz-results">

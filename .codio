@@ -5,7 +5,9 @@
   "commands": {
         "Node version": "node --version",
 		"run": "npm start",
-		"browserify": "browserify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim"
+		"browserify": "browserify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim",
+      "install-zed-remote": "curl http://get.zedapp.org | bash",
+      "zed-remote": "./zedrem"
   },
 
 // Preview button configuration
