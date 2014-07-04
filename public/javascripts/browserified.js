@@ -282,6 +282,46 @@ queryEditor.render();
 // This could use some refactoring, 
 // as there is a lot going on and not a lot of it is very structured
 
+/*	
+	simplify the way this page works by following a client-side rendering flow:
+    Initial page request, we have the query Id available. 
+    
+    
+    var queryEditor = require('query-editor.js');
+    var schemaTree = require('schema-tree.js');
+    var metaEditor = require('meta-editor.js');
+    
+    var id = $('#query-id').val();
+    var viewModel; // a place to put all the data/state for the page
+    
+    $.get(/query/:id, function(data) {
+    	viewModel = data;
+        metaEditor.render(viewModel);
+        schemaTree.render(viewModel.connectionId);
+        metaEditor.$connection.change(function() {
+        	schemaTree.render($(this).val());
+        });
+        queryEditor.render(viewModel);
+        
+    });
+ 	
+    render() 
+    	- query name
+        - query tags
+        - query connection
+        - query text
+        - visualization selection
+        - vis options:
+        	- option: value
+            - option: value
+            
+    methods to render visualization stuff should optionally take current values. 
+ 
+*/
+
+
+
+
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 var ace = (typeof window !== "undefined" ? window.ace : typeof global !== "undefined" ? global.ace : null);
 var Slick = (typeof window !== "undefined" ? window.Slick : typeof global !== "undefined" ? global.Slick : null);
@@ -392,7 +432,7 @@ module.exports = function () {
         }
         var $queryId = $('#query-id');
         var query = {
-            name: $('#name').val(),
+            name: $('#header-query-name').html(),
             queryText: getEditorText(editor),
             tags: $.map($('#tags').val().split(','), $.trim),
             connectionId: $('#connection').val()
@@ -585,11 +625,13 @@ module.exports = function () {
     getDbInfo();
     $('#connection').change(getDbInfo);
     
-    
+    //$('#tab-content-sql').split({orientation: 'vertical', limit: 50, position: '200px', onDragEnd: resizeStuff});
+    //$('.ace-and-results').split({orientation: 'horizontal', limit: 50, onDragEnd: resizeStuff});
+    /*
     $('#panel-main').split({orientation: 'vertical', limit: 50, position: '200px', onDragEnd: resizeStuff});
     $('#panel-editor-viz-results').split({orientation: 'horizontal', limit: 50, onDragEnd: resizeStuff});
     $('#editor-viz-panels').split({orientation: 'vertical', limit: 50, onDragEnd: resizeStuff});
-    
+    */
     
     function resizeStuff () {
         editor.resize();

@@ -15,9 +15,6 @@
 	
 	<!-- Optional theme -->
 	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-
-	<!-- Custom styles for this template -->
-    <link href="/stylesheets/dashboard.css" rel="stylesheet">
 	
 	<!-- slick grid stuff -->
     <link rel="stylesheet" href="/javascripts/vendor/slickgrid/slick.grid.css" type="text/css"/>
@@ -66,7 +63,7 @@
                 <% } %>
               </ul>
               
-              <span class="navbar-brand page-title" id="header-query-name">
+              <span class="navbar-brand page-title" id="header-query-name" contenteditable="true">
                 <% if (query && query.name) { %> 
                     <%= query.name %>
                 <% } else if (pageTitle) { %> 
@@ -93,13 +90,6 @@
     <% } %>
     
     <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <% if (debug) { %>
-                <pre><%= JSON.stringify(debug, null, 2) %></pre>
-            <% } %>
-        </div>
-    </div>
     <div class="row">
             
       

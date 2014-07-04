@@ -152,7 +152,7 @@ module.exports = function () {
         }
         var $queryId = $('#query-id');
         var query = {
-            name: $('#name').val(),
+            name: $('#header-query-name').html(),
             queryText: getEditorText(editor),
             tags: $.map($('#tags').val().split(','), $.trim),
             connectionId: $('#connection').val()
@@ -345,11 +345,13 @@ module.exports = function () {
     getDbInfo();
     $('#connection').change(getDbInfo);
     
-    
+    //$('#tab-content-sql').split({orientation: 'vertical', limit: 50, position: '200px', onDragEnd: resizeStuff});
+    //$('.ace-and-results').split({orientation: 'horizontal', limit: 50, onDragEnd: resizeStuff});
+    /*
     $('#panel-main').split({orientation: 'vertical', limit: 50, position: '200px', onDragEnd: resizeStuff});
     $('#panel-editor-viz-results').split({orientation: 'horizontal', limit: 50, onDragEnd: resizeStuff});
     $('#editor-viz-panels').split({orientation: 'vertical', limit: 50, onDragEnd: resizeStuff});
-    
+    */
     
     function resizeStuff () {
         editor.resize();

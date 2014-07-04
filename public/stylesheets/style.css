@@ -1,7 +1,7 @@
 /* Move down content because we have a fixed navbar that is 50px tall */
 body {
   /* padding: 50px; */
-  padding-top: 70px;
+  padding-top: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
@@ -57,7 +57,7 @@ a {
 
 #panel-main {
     position:absolute;
-    top: 50px;
+    top: 101px;
     left: 0;
     right:0;
     bottom:0;
@@ -98,7 +98,9 @@ a {
     border-color: #888;
 }
 
-
+.navbar {
+    margin-bottom: 0;
+}
 /*  DB Info sidebar 
 ======================================================== */
 
@@ -122,6 +124,18 @@ a {
 
 .sidebar {
     padding: 12px;
+    width: 200px;
+    position: fixed;
+    top: 103px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
 }
 
 .sidebar-header {
@@ -150,6 +164,8 @@ a {
 .data-type {
     color: #999;
 }
+
+
 
 /*  Panel Results / Slick grids
 ======================================================== */
@@ -196,9 +212,10 @@ a {
 #result-slick-grid {
     position: absolute;
     top: 30px;
-    bottom: 2px;
-    left: 2px;
-    right: 2px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border: 1px solid #dcdcdc;
 }
 
 #run-result-notification {
