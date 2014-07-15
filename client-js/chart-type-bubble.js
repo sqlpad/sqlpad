@@ -50,8 +50,10 @@ module.exports =  {
                     .color(d3.scale.category10().range());
         
         //Configure how the tooltip looks.
-        chart.tooltipContent(function(key) {
-            return '<h3>' + key + '</h3>';
+        chart.tooltipContent(function(key, x, y, e, graph) {
+            // TODO: add a field for bubble-label. Can get at stuff like:
+            // e.point.author_name
+            return '<h3>' + JSON.stringify(e, null, 2) + '</h3>';
         });
         
         //We want to show shapes other than circles.
