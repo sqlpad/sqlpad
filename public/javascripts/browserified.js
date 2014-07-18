@@ -92,7 +92,11 @@ module.exports =  {
             inputType: "field-dropdown"
         },
         size: {
-            label: "size",
+            label: "Size",
+            inputType: "field-dropdown"
+        },
+        label: {
+            label: "Bubble Label",
             inputType: "field-dropdown"
         }
     },
@@ -125,10 +129,15 @@ module.exports =  {
         
         //Configure how the tooltip looks.
         chart.tooltipContent(function(key, x, y, e, graph) {
-            console.log(key);
-            console.log(e);
-            console.log(graph);
-            return '<h3>' + JSON.stringify(e, null, 2) + '</h3>';
+            // TODO: add a field for bubble-label. Can get at stuff like:
+            // e.point.author_name
+            // e.point[fields.label.val]
+            if (fields.label.val) {
+				return '<h4> ' + e.point[fields.label.val] + ' </h4>'; 
+            } else {
+                return '<pre>' + JSON.stringify(e.point, null, 2) + '</pre>';
+            }
+            
         });
         
         //We want to show shapes other than circles.
