@@ -26,8 +26,6 @@ module.exports = function (app) {
     
     
     app.get('/queries', getQueryFilterData, function (req, res) {
-        console.log("req.query:");
-        console.log(req.query);
         var filter = {};
         if (req.query && req.query.tag) {
             filter.tags = req.query.tag;
@@ -41,11 +39,10 @@ module.exports = function (app) {
         if (req.query && req.query.search) {
             var nameRegExp = new RegExp(req.query.search, "i");
             var queryTextRegExp = new RegExp(req.query.search, "i");
-            filter.$or = [{queryText: {$regex: queryTextRegExp}}, {name: {$regex: nameRegExp}}]
-            //filter.queryText = {$regex: queryTextRegExp};
+            filter.$or = [{queryText: {$regex: queryTextRegExp}}, {name: {$regex: nameRegExp}}];
         }
-        console.log("resulting NeDB filter:");
-        console.log(filter);
+        //console.log("resulting NeDB filter:");
+        //console.log(filter);
         var cursor = db.queries.find(filter);
         if (req.query && req.query.sortBy) {
             if (req.query.sortBy === "accessed") {
@@ -60,7 +57,7 @@ module.exports = function (app) {
         }
         cursor.exec(function (err, queries) {
             queries.forEach(function(query) {
-                query.lastAccessedFromNow = moment(query.lastAccessedDate).fromNow();
+                query.lastAccessedFromNow = moment(query.lastAccessedDate).calendar();
                 query.modifiedCalendar = moment(query.modifiedDate).calendar();
                 var timeForDiff = query.lastAccessedDate || query.modifiedDate;
                 query.timeDiff = new Date() - timeForDiff;

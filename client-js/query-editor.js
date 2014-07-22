@@ -3,39 +3,19 @@
 // as there is a lot going on and not a lot of it is very structured
 
 /*	
-	simplify the way this page works by following a client-side rendering flow:
-    Initial page request, we have the query Id available. 
+	Simplify this page. Break it down into "components"
+	Later, these can be made into React components, or something similar
+	
+	
+    // Editor consists of Ace editor, status bar, slickgrid
+    // it is the holder of the data
+    
+    var editor = new editor()
+    editor.getEditorText(); 
+    editor.getData();
+    editor.runQuery();
     
     
-    var queryEditor = require('query-editor.js');
-    var schemaTree = require('schema-tree.js');
-    var metaEditor = require('meta-editor.js');
-    
-    var id = $('#query-id').val();
-    var viewModel; // a place to put all the data/state for the page
-    
-    $.get(/query/:id, function(data) {
-    	viewModel = data;
-        metaEditor.render(viewModel);
-        schemaTree.render(viewModel.connectionId);
-        metaEditor.$connection.change(function() {
-        	schemaTree.render($(this).val());
-        });
-        queryEditor.render(viewModel);
-        
-    });
- 	
-    render() 
-    	- query name
-        - query tags
-        - query connection
-        - query text
-        - visualization selection
-        - vis options:
-        	- option: value
-            - option: value
-            
-    methods to render visualization stuff should optionally take current values. 
  
 */
 
@@ -123,10 +103,6 @@ module.exports = function () {
     
     $('#btn-run-query').click(function (event) {
         runQuery(event, editor);
-    });
-    
-    $('#name').change(function () {
-        $('#header-query-name').text($('#name').val());
     });
     
     

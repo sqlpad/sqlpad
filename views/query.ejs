@@ -1,13 +1,21 @@
 <% include header %>
     <nav class="navbar navbar-default" role="navigation">
       <div class="container-fluid">
-        <form class="navbar-form navbar-left">
+        
+        <ul class="nav navbar-nav navbar-left" role="tablist">
+            <li class="active">
+                <a role="tab" data-toggle="tab" href="#tab-content-sql"><span class="glyphicon glyphicon-align-left"></span> SQL</a>
+            </li>
+            <li>
+                <a role="tab" data-toggle="tab" href="#tab-content-visualize"><span class="glyphicon glyphicon-stats"></span> Vis</a>
+            </li>
+        </ul>
+        
+        <form class="navbar-form navbar-left navbar-left-border">
           <button type="button" id="btn-save" class="btn btn-default">Save</button>
           <button id="btn-run-query" class="btn btn-default btn-small">Run Query</button>
         </form>
-
         
-
         <form class="navbar-form navbar-left">
           <div class="form-group">
               <label class="control-label" for="tags">Tags</label>
@@ -19,15 +27,6 @@
           <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>" />
         </form>
         
-        <ul class="nav navbar-nav navbar-right" role="tablist">
-            <li class="active">
-                <a role="tab" data-toggle="tab" href="#tab-content-sql"><span class="glyphicon glyphicon-align-left"></span> SQL</a>
-            </li>
-            <li>
-                <a role="tab" data-toggle="tab" href="#tab-content-visualize"><span class="glyphicon glyphicon-stats"></span> Vis</a>
-            </li>
-        </ul>
-
       </div><!-- /.container-fluid -->
     </nav>
     <div id="panel-main">
@@ -35,7 +34,7 @@
             <!-- BEGIN QUERY DETAILS PANE -->
             <style>
                 .tab-content {
-                    left: 200px;
+                    left: 250px;
                     position: absolute;
                     right:0;
                     bottom:0;

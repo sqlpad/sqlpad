@@ -55,6 +55,10 @@ a {
   border-top-right-radius: 0;
 }
 
+.main {
+    margin-top: 20px;
+}
+
 #panel-main {
     position:absolute;
     top: 101px;
@@ -101,11 +105,18 @@ a {
 .navbar {
     margin-bottom: 0;
 }
+
+.navbar-left-border {
+    border-left: 1px solid #fafafa;
+    margin-left: 16px;
+}
+
 /*  DB Info sidebar 
 ======================================================== */
 
 .schema-info {
     padding-left: 0;
+    font-size: 12px;
 }
 .schema-info ul {
     padding-left: 10px;
@@ -124,7 +135,7 @@ a {
 
 .sidebar {
     padding: 12px;
-    width: 200px;
+    width: 250px;
     position: fixed;
     top: 103px;
     bottom: 0;
