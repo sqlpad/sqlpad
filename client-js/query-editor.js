@@ -1,44 +1,51 @@
-// contains all the view/model logic for the query.ejs page
-// This could use some refactoring, 
-// as there is a lot going on and not a lot of it is very structured
-
 /*	
-	Simplify this page. Break it down into "components"
+	Contains all the view/model logic for the query.ejs page
+	
+	I'm trying to simplify this page. Break it down into "components"
 	Later, these can be made into React components, or something similar
 	
+	This is the sequence objects need to be instantiated.
+	If anyone out there is reading this, and knows a better way to 
+	do all this, please let me know :)
 	
-    // Editor consists of Ace editor, status bar, slickgrid
-    // it is the holder of the data
-    
-    var editor = new editor()
-    editor.getEditorText(); 
-    editor.getData();
-    editor.runQuery();
-    
-    
+	first DbInfo
+	    - it is standalone, does not depend on any other UI elements
+	    
+	then SqlEditor 
+	    - depends on DbInfo for ConnectionId
+	    - potential issue (ctrl-s needs to reference save function on navbar)
+	
+	then ChartBuilder
+	    - requires data from SqlEditor result
+	
+	then navbar
+	    - this "component" will contain the save/run query buttons
+	      as well as the query name/tags inputs
+	    - the save button will require data from 
+	        - DbInfo (connection Id)
+	        - SqlEditor (query text)
+	        - ChartBuilder (chart type, inputs)
+	        - itself (query name, tags)
+        - the run button will hook into SqlEditor
  
 */
 
 var $ = require('jquery');
-var moment = require('moment');
-
 var d3 = require('d3');
 var nv = require('nv');
 
 
-// expose moment for some debugging purposes
-window.moment = moment;
-
-// declare variables and cache jQuery objects
-
-
-
-
 module.exports = function () {
+    
+    
+    /*  DB / Schema Info
+    ==============================================================================*/
+    var DbInfo = require('./component-db-info.js');
+    var dbInfo = new DbInfo();
+    
     
     /*  Set up the Ace Editor
     ========================================================================= */
-    // TODO:
     var SqlEditor = require('./component-sql-editor.js');
     var sqlEditor;
     
@@ -47,8 +54,8 @@ module.exports = function () {
         sqlEditor.aceEditor.commands.addCommand({
             name: 'saveQuery',
             bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-            exec: function (editor) {
-                saveQuery(null, editor);
+            exec: function () {
+                saveQuery();
             }
         });
     }
@@ -87,7 +94,7 @@ module.exports = function () {
             name: $('#header-query-name').html(),
             queryText: sqlEditor.getEditorText(),
             tags: $.map($('#tags').val().split(','), $.trim),
-            connectionId: $('#connection').val()
+            connectionId: dbInfo.getConnectionId()
         };
         console.log(query);
         $('#btn-save-result').text('saving...').show();
@@ -97,7 +104,6 @@ module.exports = function () {
             data: query
         }).done(function (data) {
             if (data.success) {
-                //alert('success');
                 window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
                 $queryId.val(data.query._id);
                 $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
@@ -107,57 +113,12 @@ module.exports = function () {
                     });
                 }, 1000);
             } else {
-                //alert('fail on the server side idk');
                 $('#btn-save-result').removeClass('label-info').addClass('label-danger').text('Failed');
             }
         }).fail(function () {
             alert('ajax fail');
         });
     }
-    
-    
-    /*  DB / Schema Info
-    ==============================================================================*/
-    function getDbInfo () {
-        $('#panel-db-info').empty();
-        var connectionId = $('#connection').val();
-        if (connectionId) {
-            $.getJSON("/schema-info/" + connectionId, function (data) {
-                if (data.success) {
-                    var tree = data.tree;
-                    var $root = $('<ul class="schema-info">').appendTo('#panel-db-info');
-                    for (var tableType in tree) {
-                        var $tableType = $('<li><a href="#">' + tableType + '</a></li>').appendTo($root);
-                        var $tableTypeUl = $('<ul>').appendTo($tableType);
-                        for (var schema in tree[tableType]) {
-                            var $schema = $('<li><a href="#">' + schema + '</a></li>').appendTo($tableTypeUl);
-                            var $schemaUl = $('<ul>').appendTo($schema);
-                            for (var tableName in tree[tableType][schema]) {
-                                var $tableName = $('<li><a href="#">' + tableName + '</a></li>').appendTo($schemaUl);
-                                var $tableNameUl = $('<ul>').appendTo($tableName);
-                                var columns = tree[tableType][schema][tableName];
-                                for (var i=0; i < columns.length; i++) {
-                                    var $column = $('<li>' + columns[i].column_name + " <span class='data-type'>(" + columns[i].data_type + ')</span></li>').appendTo($tableNameUl);
-                                }
-                            }
-                        }
-                    }
-                    $('.schema-info').find('ul').find('ul').find('ul').hide();
-                    $('.schema-info').find('li').click(function (e) {
-                        $(this).children('ul').toggle();
-                        e.stopPropagation();
-                    });
-                } else {
-                    $('<ul class="schema-info"><li>Problem getting Schema Info</li></ul>').appendTo('#panel-db-info');
-                }
-            });
-        }
-        
-    }
-    getDbInfo();
-    $('#connection').change(getDbInfo);
-    
-    
     
     
     /*  Chart Setup
@@ -245,4 +206,3 @@ module.exports = function () {
         }
     });
 };
-
