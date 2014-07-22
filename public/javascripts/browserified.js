@@ -70,7 +70,7 @@ module.exports =  {
     }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash":8}],2:[function(require,module,exports){
+},{"lodash":9}],2:[function(require,module,exports){
 (function (global){
 var nv = (typeof window !== "undefined" ? window.nv : typeof global !== "undefined" ? global.nv : null);
 var _  = require('lodash');
@@ -151,7 +151,7 @@ module.exports =  {
     }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash":8}],3:[function(require,module,exports){
+},{"lodash":9}],3:[function(require,module,exports){
 (function (global){
 var nv = (typeof window !== "undefined" ? window.nv : typeof global !== "undefined" ? global.nv : null);
 var _  = require('lodash');
@@ -245,7 +245,233 @@ module.exports =  {
     }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash":8}],4:[function(require,module,exports){
+},{"lodash":9}],4:[function(require,module,exports){
+(function (global){
+/*
+
+"component" for ace editor, status bar, and slickgrid
+
+
+EXAMPLE: 
+
+var SqlEditor = require('whatever-this-module-is');
+var editor = new SqlEditor()
+editor.getEditorText(); 
+editor.getData();
+editor.runQuery();
+
+
+*/
+
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var ace = (typeof window !== "undefined" ? window.ace : typeof global !== "undefined" ? global.ace : null);
+var Slick = (typeof window !== "undefined" ? window.Slick : typeof global !== "undefined" ? global.Slick : null);
+var moment = require('moment');
+
+// expose moment for some debugging purposes
+window.moment = moment;
+
+// declare variables and cache jQuery objects
+var $editor;
+var editor;
+
+var grid;
+var clientStart;
+var clientEnd;
+var running = false; 
+
+var gdata;   // NOTE: these were initially exposed for console debugging
+var gmeta;   // but now I'm kind of abusing these elsewhere.
+
+
+
+var SqlEditor = function () {
+    var me = this;
+    
+    // init stuff.
+    $editor = $('#ace-editor');
+    
+    
+    editor = ace.edit("ace-editor");
+    this.aceEditor = editor;
+    
+    if (editor) { 
+        //editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/sql");    
+        editor.focus();
+        editor.commands.addCommand({
+            name: 'executeQuery',
+            bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
+            exec: function (editor) {
+                me.runQuery(null, editor);
+            }
+        });
+        editor.commands.addCommand({
+            name: 'runQuery',
+            bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
+            exec: function (editor) {
+                me.runQuery(null, editor);
+            }
+        });
+    }
+    
+};
+
+module.exports = SqlEditor;
+
+SqlEditor.prototype.resize = function () {
+    editor.resize();
+    //https://github.com/mleibman/SlickGrid/wiki/Slick.Grid#resizeCanvas
+    if (grid) grid.resizeCanvas();
+};
+
+$(window).resize(SqlEditor.resize);
+
+
+
+SqlEditor.prototype.getEditorText = function () {
+    var relevantText;
+    var selectedText = editor.session.getTextRange(editor.getSelectionRange());
+    if (selectedText.length) {
+        // get only selected content
+        relevantText = selectedText;
+    } else {
+        // get whole editor content
+        relevantText = editor.getValue();
+    }
+    return relevantText;
+};
+
+
+function renderRunningTime () {
+    if (running) {
+        var now = new Date();
+        var ms = now - clientStart;
+        
+        $('#client-run-time').html(ms/1000 + " sec.");
+        
+        var leftovers = ms % 4000;
+        if (leftovers < 1000) {
+            $('#run-result-notification').text('running');
+        } else if (leftovers >= 1000 && leftovers < 2000) {
+            $('#run-result-notification').text('your');
+        } else if (leftovers >= 2000) {
+            $('#run-result-notification').text('query');
+        }
+        
+        setTimeout(renderRunningTime, 53);
+    }
+}
+
+SqlEditor.prototype.getGdata = function () {
+    return gdata;
+};
+SqlEditor.prototype.getGmeta = function () {
+    return gmeta;
+};
+
+SqlEditor.prototype.runQuery = function () {
+    var me = this;
+    $('#client-run-time').html('');
+    $('#server-run-time').html('');
+    $('#rowcount').html('');
+    running = true;
+    renderRunningTime();
+    
+    // TODO: destroy/empty a slickgrid. for now we'll just empty
+    $('#result-slick-grid').empty();
+    var data = {
+        queryText: me.getEditorText(),
+        connectionId: $('#connection').val(),
+        cacheKey: $('#cache-key').val()
+    };
+    
+    clientStart = new Date();
+    clientEnd = null;
+    notifyRunning();
+    $.ajax({
+        type: "POST",
+        url: "/run-query",
+        data: data
+    }).done(renderQueryResult).fail(notifyFailure);
+};
+
+function notifyRunning () {
+    $('#run-result-notification')
+        .removeClass('label-danger')
+        .text('running...')
+        .show();
+    $('.hide-while-running').hide();
+}
+
+function notifyFailure () {
+    running = false;
+    $('#run-result-notification')
+        .addClass('label-danger')
+        .text("Something is broken :(");
+}
+
+function renderQueryResult (data) {
+    clientEnd = new Date();
+    running = false;
+    $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
+    $('#server-run-time').html(data.serverMs/1000 + " sec.");
+    if (data.success) {
+        $('.hide-while-running').show();
+        var columns = [];
+        if (data.results && data.results[0]) {
+            gdata = data.results; // NOTE: exposed data for console debugging
+            gmeta = data.meta;
+            $('#rowcount').html(data.results.length);
+            var firstRow = data.results[0];
+            for (var col in firstRow) {
+                var columnSpec = {id: col, name: col, field: col, width: col.length * 15};
+                if (data.meta[col].datatype === 'date') {
+                    columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
+                        // https://github.com/mleibman/SlickGrid/wiki/Column-Options
+                        if (value === null) {
+                          return "";
+                        } else {
+                            //var d = moment.utc(value);
+                            var d = moment(value);
+                            return d.format('MM/DD/YYYY HH:mm:ss');
+                            // default formatter:
+                            // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+                        }
+                    };
+                }
+                columns.push(columnSpec);
+            }
+            // loop through and clean up dates!
+            // TODO: this is lazy and could use optimization
+            for (var r = 0; r < data.results.length; r++) {
+                var row = data.results[r];
+                for (var key in data.meta) {
+                    if (data.meta[key].datatype === 'date' && row[key]) {
+                        row[key] = new Date(row[key]);
+                        //row[key] = d.format('MM/DD/YYYY HH:mm:SS');
+                        //console.log(d.format('MM/DD/YYYY HH:mm:SS'));
+                    }
+                }
+            }
+        }
+        var options = {
+          enableCellNavigation: true,
+          enableColumnReorder: false
+        };
+        grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
+        
+        $('#run-result-notification')
+            .text('')
+            .hide();
+    } else {
+        $('#run-result-notification')
+            .addClass('label-danger')
+            .text(data.error);
+    }
+}
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"moment":10}],5:[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
 //  via Browserify. 
 //  All the heavy old-school javascript libraries are exposed as browserify globals
@@ -288,74 +514,41 @@ queryEditor.addChartTypeConfig("histogram", require('./chart-type-histogram.js')
 
 queryEditor.render();
 */
-},{"./query-editor.js":5,"./query-filter-form.js":6,"./test-connection.js":7}],5:[function(require,module,exports){
+},{"./query-editor.js":6,"./query-filter-form.js":7,"./test-connection.js":8}],6:[function(require,module,exports){
 (function (global){
 // contains all the view/model logic for the query.ejs page
 // This could use some refactoring, 
 // as there is a lot going on and not a lot of it is very structured
 
 /*	
-	simplify the way this page works by following a client-side rendering flow:
-    Initial page request, we have the query Id available. 
+	Simplify this page. Break it down into "components"
+	Later, these can be made into React components, or something similar
+	
+	
+    // Editor consists of Ace editor, status bar, slickgrid
+    // it is the holder of the data
+    
+    var editor = new editor()
+    editor.getEditorText(); 
+    editor.getData();
+    editor.runQuery();
     
     
-    var queryEditor = require('query-editor.js');
-    var schemaTree = require('schema-tree.js');
-    var metaEditor = require('meta-editor.js');
-    
-    var id = $('#query-id').val();
-    var viewModel; // a place to put all the data/state for the page
-    
-    $.get(/query/:id, function(data) {
-    	viewModel = data;
-        metaEditor.render(viewModel);
-        schemaTree.render(viewModel.connectionId);
-        metaEditor.$connection.change(function() {
-        	schemaTree.render($(this).val());
-        });
-        queryEditor.render(viewModel);
-        
-    });
- 	
-    render() 
-    	- query name
-        - query tags
-        - query connection
-        - query text
-        - visualization selection
-        - vis options:
-        	- option: value
-            - option: value
-            
-    methods to render visualization stuff should optionally take current values. 
  
 */
 
-
-
-
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-var ace = (typeof window !== "undefined" ? window.ace : typeof global !== "undefined" ? global.ace : null);
-var Slick = (typeof window !== "undefined" ? window.Slick : typeof global !== "undefined" ? global.Slick : null);
-var nv = (typeof window !== "undefined" ? window.nv : typeof global !== "undefined" ? global.nv : null);
 var moment = require('moment');
+
 var d3 = (typeof window !== "undefined" ? window.d3 : typeof global !== "undefined" ? global.d3 : null);
+var nv = (typeof window !== "undefined" ? window.nv : typeof global !== "undefined" ? global.nv : null);
+
 
 // expose moment for some debugging purposes
 window.moment = moment;
 
 // declare variables and cache jQuery objects
-var $editor = $('#ace-editor');
-var editor;
 
-var grid;
-var clientStart;
-var clientEnd;
-var running = false; 
-
-var gdata;   // NOTE: these were initially exposed for console debugging
-var gmeta;   // but now I'm kind of abusing these elsewhere.
-var gchart;  // so these aren't just for debugging anymore
 
 
 
@@ -363,62 +556,31 @@ module.exports = function () {
     
     /*  Set up the Ace Editor
     ========================================================================= */
+    // TODO:
+    var SqlEditor = require('./component-sql-editor.js');
+    var sqlEditor;
     
-    if ($editor.length) {
-        editor = ace.edit("ace-editor");
-        if (editor) { 
-            //editor.setTheme("ace/theme/monokai");
-            editor.getSession().setMode("ace/mode/sql");    
-            editor.focus();
-            editor.commands.addCommand({
-                name: 'saveQuery',
-                bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-                exec: function (editor) {
-                    saveQuery(null, editor);
-                }
-            });
-            editor.commands.addCommand({
-                name: 'executeQuery',
-                bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
-                exec: function (editor) {
-                    runQuery(null, editor);
-                }
-            });
-            editor.commands.addCommand({
-                name: 'runQuery',
-                bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
-                exec: function (editor) {
-                    runQuery(null, editor);
-                }
-            });
-        }
+    if ($('#ace-editor').length) {
+        sqlEditor = new SqlEditor();
+        sqlEditor.aceEditor.commands.addCommand({
+            name: 'saveQuery',
+            bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+            exec: function (editor) {
+                saveQuery(null, editor);
+            }
+        });
     }
-    
-    
-    function getEditorText (editor) {
-        var relevantText;
-        var selectedText = editor.session.getTextRange(editor.getSelectionRange());
-        if (selectedText.length) {
-            // get only selected content
-            relevantText = selectedText;
-        } else {
-            // get whole editor content
-            relevantText = editor.getValue();
-        }
-        return relevantText;
-    }
-    
     
     $('#btn-save').click(function (event) {
-        saveQuery(event, editor);
+        event.preventDefault();
+        event.stopPropagation();
+        saveQuery();
     });
     
     $('#btn-run-query').click(function (event) {
-        runQuery(event, editor);
-    });
-    
-    $('#name').change(function () {
-        $('#header-query-name').text($('#name').val());
+        event.preventDefault();
+        event.stopPropagation();
+        sqlEditor.runQuery();
     });
     
     
@@ -437,15 +599,11 @@ module.exports = function () {
             query: queryobject
         }
     */
-    function saveQuery (event, editor) {
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
+    function saveQuery () {
         var $queryId = $('#query-id');
         var query = {
             name: $('#header-query-name').html(),
-            queryText: getEditorText(editor),
+            queryText: sqlEditor.getEditorText(),
             tags: $.map($('#tags').val().split(','), $.trim),
             connectionId: $('#connection').val()
         };
@@ -475,129 +633,9 @@ module.exports = function () {
         });
     }
     
-    function renderRunningTime () {
-        if (running) {
-            var now = new Date();
-            var ms = now - clientStart;
-            
-            $('#client-run-time').html(ms/1000 + " sec.");
-            
-            var leftovers = ms % 4000;
-            if (leftovers < 1000) {
-                $('#run-result-notification').text('running');
-            } else if (leftovers >= 1000 && leftovers < 2000) {
-                $('#run-result-notification').text('your');
-            } else if (leftovers >= 2000) {
-                $('#run-result-notification').text('query');
-            }
-            
-            setTimeout(renderRunningTime, 53);
-        }
-    }
     
-    function runQuery (event, editor) {
-        $('#client-run-time').html('');
-        $('#server-run-time').html('');
-        $('#rowcount').html('');
-        running = true;
-        renderRunningTime();
-        if (event) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        // TODO: destroy/empty a slickgrid. for now we'll just empty
-        $('#result-slick-grid').empty();
-        var data = {
-            queryText: getEditorText(editor),
-            connectionId: $('#connection').val(),
-            cacheKey: $('#cache-key').val()
-        };
-        
-        clientStart = new Date();
-        clientEnd = null;
-        notifyRunning();
-        $.ajax({
-            type: "POST",
-            url: "/run-query",
-            data: data
-        }).done(renderQueryResult).fail(notifyFailure);
-    }
-    
-    function notifyRunning () {
-        $('#run-result-notification')
-            .removeClass('label-danger')
-            .text('running...')
-            .show();
-        $('.hide-while-running').hide();
-    }
-    
-    function notifyFailure () {
-        running = false;
-        $('#run-result-notification')
-            .addClass('label-danger')
-            .text("Something is broken :(");
-    }
-    
-    function renderQueryResult (data) {
-        clientEnd = new Date();
-        running = false;
-        $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
-        $('#server-run-time').html(data.serverMs/1000 + " sec.");
-        if (data.success) {
-            $('.hide-while-running').show();
-            var columns = [];
-            if (data.results && data.results[0]) {
-                gdata = data.results; // NOTE: exposed data for console debugging
-                gmeta = data.meta;
-                $('#rowcount').html(data.results.length);
-                var firstRow = data.results[0];
-                for (var col in firstRow) {
-                    var columnSpec = {id: col, name: col, field: col, width: col.length * 15};
-                    if (data.meta[col].datatype === 'date') {
-                        columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
-                            // https://github.com/mleibman/SlickGrid/wiki/Column-Options
-                            if (value === null) {
-                              return "";
-                            } else {
-                                //var d = moment.utc(value);
-                                var d = moment(value);
-                                return d.format('MM/DD/YYYY HH:mm:ss');
-                                // default formatter:
-                                // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-                            }
-                        };
-                    }
-                    columns.push(columnSpec);
-                }
-                // loop through and clean up dates!
-                // TODO: this is lazy and could use optimization
-                for (var r = 0; r < data.results.length; r++) {
-                    var row = data.results[r];
-                    for (var key in data.meta) {
-                        if (data.meta[key].datatype === 'date' && row[key]) {
-                            row[key] = new Date(row[key]);
-                            //row[key] = d.format('MM/DD/YYYY HH:mm:SS');
-                            //console.log(d.format('MM/DD/YYYY HH:mm:SS'));
-                        }
-                    }
-                }
-            }
-            var options = {
-              enableCellNavigation: true,
-              enableColumnReorder: false
-            };
-            grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
-            
-            $('#run-result-notification')
-                .text('')
-                .hide();
-        } else {
-            $('#run-result-notification')
-                .addClass('label-danger')
-                .text(data.error);
-        }
-    }
-    
+    /*  DB / Schema Info
+    ==============================================================================*/
     function getDbInfo () {
         $('#panel-db-info').empty();
         var connectionId = $('#connection').val();
@@ -637,25 +675,17 @@ module.exports = function () {
     getDbInfo();
     $('#connection').change(getDbInfo);
     
-    //$('#tab-content-sql').split({orientation: 'vertical', limit: 50, position: '200px', onDragEnd: resizeStuff});
-    //$('.ace-and-results').split({orientation: 'horizontal', limit: 50, onDragEnd: resizeStuff});
-    /*
-    $('#panel-main').split({orientation: 'vertical', limit: 50, position: '200px', onDragEnd: resizeStuff});
-    $('#panel-editor-viz-results').split({orientation: 'horizontal', limit: 50, onDragEnd: resizeStuff});
-    $('#editor-viz-panels').split({orientation: 'vertical', limit: 50, onDragEnd: resizeStuff});
-    */
     
-    function resizeStuff () {
-        editor.resize();
-        //https://github.com/mleibman/SlickGrid/wiki/Slick.Grid#resizeCanvas
-        if (grid) grid.resizeCanvas();
-        if (gchart) gchart.update();
-    }
-    $(window).resize(resizeStuff);
     
     
     /*  Chart Setup
     ==============================================================================*/
+    var gchart;
+    
+    $(window).resize(function () {
+        if (gchart) gchart.update();
+    });
+    
     var chartTypes = {
         line: require('./chart-type-line.js'),
         bar: require('./chart-type-bar.js'),
@@ -671,6 +701,9 @@ module.exports = function () {
         $chartTypeDropDown.append('<option value="' + key + '">' + key + '</option>');
     }
     $chartTypeDropDown.change(function () {
+        var gdata = sqlEditor.getGdata();
+        var gmeta = sqlEditor.getGmeta();
+        
         var selectedChartType = $chartTypeDropDown.val();
         // loop through and create dropdowns
         if (chartTypes[selectedChartType]) {
@@ -730,8 +763,10 @@ module.exports = function () {
         }
     });
 };
+
+
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./chart-type-bar.js":1,"./chart-type-bubble.js":2,"./chart-type-line.js":3,"moment":9}],6:[function(require,module,exports){
+},{"./chart-type-bar.js":1,"./chart-type-bubble.js":2,"./chart-type-line.js":3,"./component-sql-editor.js":4,"moment":10}],7:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
@@ -753,7 +788,7 @@ module.exports = function () {
     }
 }
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
@@ -804,7 +839,7 @@ module.exports = function () {
     });
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -7593,7 +7628,7 @@ module.exports = function () {
 }.call(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.7.0
@@ -10207,4 +10242,4 @@ module.exports = function () {
 }).call(this);
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[4])
+},{}]},{},[5])
