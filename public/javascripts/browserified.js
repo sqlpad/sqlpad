@@ -660,7 +660,7 @@ module.exports = function () {
                             }
                         }
                     }
-                    $('.schema-info').find('ul').find('ul').hide();
+                    $('.schema-info').find('ul').find('ul').find('ul').hide();
                     $('.schema-info').find('li').click(function (e) {
                         $(this).children('ul').toggle();
                         e.stopPropagation();
