@@ -70,7 +70,7 @@ module.exports =  {
     }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash":10}],2:[function(require,module,exports){
+},{"lodash":12}],2:[function(require,module,exports){
 (function (global){
 var nv = (typeof window !== "undefined" ? window.nv : typeof global !== "undefined" ? global.nv : null);
 var _  = require('lodash');
@@ -151,7 +151,7 @@ module.exports =  {
     }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash":10}],3:[function(require,module,exports){
+},{"lodash":12}],3:[function(require,module,exports){
 (function (global){
 var nv = (typeof window !== "undefined" ? window.nv : typeof global !== "undefined" ? global.nv : null);
 var _  = require('lodash');
@@ -245,7 +245,120 @@ module.exports =  {
     }
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"lodash":10}],4:[function(require,module,exports){
+},{"lodash":12}],4:[function(require,module,exports){
+(function (global){
+/*
+
+"component" for chart editor
+
+EXAMPLE: 
+
+var ChartEditor = require('this-file.js');
+var chartEditor = new ChartEditor();
+
+
+
+
+
+*/
+
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var d3 = (typeof window !== "undefined" ? window.d3 : typeof global !== "undefined" ? global.d3 : null);
+var nv = (typeof window !== "undefined" ? window.nv : typeof global !== "undefined" ? global.nv : null);
+
+var ChartEditor = function (opts) {
+    var me = this;
+    var sqlEditor = opts.sqlEditor;
+    var gchart;
+    var gdata;
+    var gmeta;
+    var chartTypes = {}; // holds chart types once registered
+    var $chartTypeDropDown = $('#chart-type-dropdown');
+    var $btnVisualize = $('#btn-visualize');
+    var $chartSetupUI = $("#chart-setup-ui");
+    
+    this.registerChartType = function (type, chartType) {
+        chartTypes[type] = chartType;
+        $chartTypeDropDown.append('<option value="' + type + '">' + type + '</option>');
+    };
+    
+    this.buildChartUI = function () {
+        gmeta = sqlEditor.getGmeta();
+        var selectedChartType = $chartTypeDropDown.val();
+        // loop through and create dropdowns
+        if (chartTypes[selectedChartType]) {
+            $chartSetupUI.empty();
+            var ct = chartTypes[selectedChartType];
+            for (var f in ct.fields) {
+                var field = ct.fields[f];
+                var $formGroup = $('<div class="form-group">');
+                var $label = $('<label class="control-label">' + field.label + '</label>');
+                var $input;
+                if (field.inputType === "field-dropdown") {
+                    $input = $('<select>');
+                    $input.append('<option value=""></option>');
+                    for (var m in gmeta) {
+                        $input.append('<option value="' + m + '">' + m + '</option>');
+                    }
+                }
+                $formGroup
+                    .append($label)
+                    .append($input)
+                    .appendTo($chartSetupUI);
+                // add a reference to input for later  
+                field.$input = $input;
+            }
+        }
+    };
+    
+    this.getChartConfiguration = function () {
+        
+    }
+    
+    // TODO: factor out the chart piece from the chart editor
+    this.renderChart = function () {
+        gdata = sqlEditor.getGdata();
+        gmeta = sqlEditor.getGmeta();
+        
+        var selectedChartType = $chartTypeDropDown.val();
+        if (chartTypes[selectedChartType]) {
+            var ct = chartTypes[selectedChartType];
+            // loop through chart type fields and do things like
+            // add the value, datatype
+            for (var f in ct.fields) {
+                var field = ct.fields[f];
+                field.val = field.$input.val();
+                if (field.val && gmeta[field.val]) {
+                    field.datatype = gmeta[field.val].datatype;
+                    field.min = gmeta[field.val].min;
+                    field.max = gmeta[field.val].max;
+                }
+            }
+            var cData = ct.transformData(gmeta, gdata, ct.fields);
+            var chart = ct.renderChart(gmeta, gdata, ct.fields);
+            gchart = chart;
+            $('#chart svg').empty();
+            d3.select('#chart svg')
+                .datum(cData)
+                .call(chart);
+            nv.utils.windowResize(chart.update);
+            nv.addGraph(function () {
+                return chart;
+            });
+        }
+    };
+    
+    // Bind Events
+    $btnVisualize.click(me.renderChart);
+    $chartTypeDropDown.change(me.buildChartUI);
+    $(window).resize(function () {
+        if (gchart) gchart.update();
+    });
+};
+module.exports = ChartEditor;
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],5:[function(require,module,exports){
 (function (global){
 /*
 
@@ -313,7 +426,98 @@ DbInfo.prototype.render = function () {
 
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
+(function (global){
+/*
+
+"component" for menubar
+
+EXAMPLE: 
+
+var Menubar = require('this-file.js');
+var menubar = new Menubar();
+
+
+
+
+
+*/
+
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var dbInfo;
+var sqlEditor;
+var chartEditor;
+
+var Menubar = function (opts) {
+    var me = this;
+    dbInfo = opts.dbInfo;
+    sqlEditor = opts.sqlEditor;
+    chartEditor = opts.chartEditor;
+    
+    $('#btn-save').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        me.saveQuery();
+    });
+    
+    $('#btn-run-query').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        sqlEditor.runQuery();
+    });
+    
+};
+
+module.exports = Menubar;
+
+Menubar.prototype.saveQuery = function () {
+    /*
+        should POST to /queries/:id or /queries/new
+        {
+            name: 'a fun query',
+            tags: [],
+            connectionId: connectionId
+        }
+        
+        it returns
+        {
+            success: true,
+            query: queryobject
+        }
+    */
+    var $queryId = $('#query-id');
+    var query = {
+        name: $('#header-query-name').html(),
+        queryText: sqlEditor.getEditorText(),
+        tags: $.map($('#tags').val().split(','), $.trim),
+        connectionId: dbInfo.getConnectionId()
+    };
+    console.log(query);
+    $('#btn-save-result').text('saving...').show();
+    $.ajax({
+        type: "POST",
+        url: "/queries/" + $queryId.val(),
+        data: query
+    }).done(function (data) {
+        if (data.success) {
+            window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
+            $queryId.val(data.query._id);
+            $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
+            setTimeout(function () {
+                $('#btn-save-result').fadeOut(400, function () {
+                    $('#btn-save-result').removeClass('label-success').addClass('label-info').text('');
+                });
+            }, 1000);
+        } else {
+            $('#btn-save-result').removeClass('label-info').addClass('label-danger').text('Failed');
+        }
+    }).fail(function () {
+        alert('ajax fail');
+    });
+};
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],7:[function(require,module,exports){
 (function (global){
 /*
 
@@ -539,7 +743,7 @@ function renderQueryResult (data) {
     }
 }
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"moment":11}],6:[function(require,module,exports){
+},{"moment":13}],8:[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
 //  via Browserify. 
 //  All the heavy old-school javascript libraries are exposed as browserify globals
@@ -582,7 +786,7 @@ queryEditor.addChartTypeConfig("histogram", require('./chart-type-histogram.js')
 
 queryEditor.render();
 */
-},{"./query-editor.js":7,"./query-filter-form.js":8,"./test-connection.js":9}],7:[function(require,module,exports){
+},{"./query-editor.js":9,"./query-filter-form.js":10,"./test-connection.js":11}],9:[function(require,module,exports){
 (function (global){
 /*	
 	Contains all the view/model logic for the query.ejs page
@@ -604,7 +808,7 @@ queryEditor.render();
 	then ChartBuilder
 	    - requires data from SqlEditor result
 	
-	then navbar
+	then menubar
 	    - this "component" will contain the save/run query buttons
 	      as well as the query name/tags inputs
 	    - the save button will require data from 
@@ -617,184 +821,48 @@ queryEditor.render();
 */
 
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-var d3 = (typeof window !== "undefined" ? window.d3 : typeof global !== "undefined" ? global.d3 : null);
-var nv = (typeof window !== "undefined" ? window.nv : typeof global !== "undefined" ? global.nv : null);
-
 
 module.exports = function () {
     
-    
-    /*  DB / Schema Info
-    ==============================================================================*/
-    var DbInfo = require('./component-db-info.js');
-    var dbInfo = new DbInfo();
-    
-    
-    /*  Set up the Ace Editor
-    ========================================================================= */
-    var SqlEditor = require('./component-sql-editor.js');
-    var sqlEditor;
-    
     if ($('#ace-editor').length) {
-        sqlEditor = new SqlEditor();
+        
+        /*  DB / Schema Info
+        ==============================================================================*/
+        var DbInfo = require('./component-db-info.js');
+        var dbInfo = new DbInfo();
+        
+        
+        /*  Set up the Ace Editor
+        ========================================================================= */
+        var SqlEditor = require('./component-sql-editor.js');
+        var sqlEditor = new SqlEditor();
+        
+        
+        /*  Chart Editor Setup
+        ==============================================================================*/
+        var ChartEditor = require('./component-chart-editor.js');
+        var chartEditor = new ChartEditor({sqlEditor: sqlEditor});
+        chartEditor.registerChartType("line", require('./chart-type-line.js'));
+        chartEditor.registerChartType("bar", require('./chart-type-bar.js'));
+        chartEditor.registerChartType("bubble", require('./chart-type-bubble'));
+        
+        /*  Menubar Setup
+        ==============================================================================*/
+        var Menubar = require('./component-menubar.js');
+        var menubar = new Menubar({sqlEditor: sqlEditor, dbInfo: dbInfo, chartEditor: chartEditor});
+        
         sqlEditor.aceEditor.commands.addCommand({
             name: 'saveQuery',
             bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
             exec: function () {
-                saveQuery();
+                menubar.saveQuery();
             }
         });
-    }
-    
-    $('#btn-save').click(function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        saveQuery();
-    });
-    
-    $('#btn-run-query').click(function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        sqlEditor.runQuery();
-    });
-    
-    
-    /*
-        should POST to /queries/:id or /queries/new
-        {
-            name: 'a fun query',
-            tags: [],
-            connectionId: connectionId
-        }
         
-        it returns
-        
-        {
-            success: true,
-            query: queryobject
-        }
-    */
-    function saveQuery () {
-        var $queryId = $('#query-id');
-        var query = {
-            name: $('#header-query-name').html(),
-            queryText: sqlEditor.getEditorText(),
-            tags: $.map($('#tags').val().split(','), $.trim),
-            connectionId: dbInfo.getConnectionId()
-        };
-        console.log(query);
-        $('#btn-save-result').text('saving...').show();
-        $.ajax({
-            type: "POST",
-            url: "/queries/" + $queryId.val(),
-            data: query
-        }).done(function (data) {
-            if (data.success) {
-                window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
-                $queryId.val(data.query._id);
-                $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
-                setTimeout(function () {
-                    $('#btn-save-result').fadeOut(400, function () {
-                        $('#btn-save-result').removeClass('label-success').addClass('label-info').text('');
-                    });
-                }, 1000);
-            } else {
-                $('#btn-save-result').removeClass('label-info').addClass('label-danger').text('Failed');
-            }
-        }).fail(function () {
-            alert('ajax fail');
-        });
     }
-    
-    
-    /*  Chart Setup
-    ==============================================================================*/
-    var gchart;
-    
-    $(window).resize(function () {
-        if (gchart) gchart.update();
-    });
-    
-    var chartTypes = {
-        line: require('./chart-type-line.js'),
-        bar: require('./chart-type-bar.js'),
-        bubble: require('./chart-type-bubble.js')
-    };
-    
-    var $chartSetup = $('#chart-setup');
-    var $chartTypeFormGroup = $('<div class="form-group">').appendTo($chartSetup);
-    var $chartTypeLabel = $('<label class="control-label">Chart Type</label>').appendTo($chartTypeFormGroup);
-    var $chartTypeDropDown = $('<select>').appendTo($chartTypeFormGroup);
-    $chartTypeDropDown.append('<option value=""></option>');
-    for (var key in chartTypes) {
-        $chartTypeDropDown.append('<option value="' + key + '">' + key + '</option>');
-    }
-    $chartTypeDropDown.change(function () {
-        var gdata = sqlEditor.getGdata();
-        var gmeta = sqlEditor.getGmeta();
-        
-        var selectedChartType = $chartTypeDropDown.val();
-        // loop through and create dropdowns
-        if (chartTypes[selectedChartType]) {
-            var ct = chartTypes[selectedChartType];
-            
-            // render chart ui;
-            var $ui = $('#chart-setup-ui').empty();
-            for (var f in ct.fields) {
-                var field = ct.fields[f];
-                var $formGroup = $('<div class="form-group">');
-                var $label = $('<label class="control-label">' + field.label + '</label>');
-                var $input;
-                if (field.inputType === "field-dropdown") {
-                    $input = $('<select>');
-                    $input.append('<option value=""></option>');
-                    for (var m in gmeta) {
-                        $input.append('<option value="' + m + '">' + m + '</option>');
-                    }
-                }
-                $formGroup
-                    .append($label)
-                    .append($input)
-                    .appendTo($ui);
-                
-                // so it'll be available?    
-                field.$input = $input;
-            }
-            
-            // render button too, then assign button click
-            var $btn = $('<button>Visualize</button>').appendTo($ui);
-            $btn.click(function () {
-                
-                // loop through chart type fields and do things like
-                // add the value, datatype
-                for (var f in ct.fields) {
-                    var field = ct.fields[f];
-                    field.val = field.$input.val();
-                    if (field.val && gmeta[field.val]) {
-                        field.datatype = gmeta[field.val].datatype;
-                        field.min = gmeta[field.val].min;
-                        field.max = gmeta[field.val].max;
-                    }
-                }
-                
-                var cData = ct.transformData(gmeta, gdata, ct.fields);
-                var chart = ct.renderChart(gmeta, gdata, ct.fields);
-                gchart = chart;
-                $('#chart svg').empty();
-                d3.select('#chart svg')
-                    .datum(cData)
-                    .call(chart);
-                nv.utils.windowResize(chart.update);
-                nv.addGraph(function () {
-                    return chart;
-                });
-            });
-        }
-    });
 };
-
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./chart-type-bar.js":1,"./chart-type-bubble.js":2,"./chart-type-line.js":3,"./component-db-info.js":4,"./component-sql-editor.js":5}],8:[function(require,module,exports){
+},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./component-chart-editor.js":4,"./component-db-info.js":5,"./component-menubar.js":6,"./component-sql-editor.js":7}],10:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
@@ -816,7 +884,7 @@ module.exports = function () {
     }
 }
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
 
@@ -867,7 +935,7 @@ module.exports = function () {
     });
 };
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -7656,7 +7724,7 @@ module.exports = function () {
 }.call(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.7.0
@@ -10270,4 +10338,4 @@ module.exports = function () {
 }).call(this);
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[6])
+},{}]},{},[8])

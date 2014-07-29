@@ -115,8 +115,18 @@
             <!-- BEGIN Visualize PANE -->
             <div class="tab-pane" id="tab-content-visualize">
                 <div class="sidebar">
-                    <div id="chart-setup"></div>
+                    <div id="chart-setup">
+                        <div class="form-group">
+                            <label class="control-label">Chart Type</label>
+                            <select id="chart-type-dropdown">
+                                <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
                     <div id="chart-setup-ui"></div>
+                    <div>
+                        <button id="btn-visualize">Visualize</button>
+                    </div>
                 </div>
                 
                 <div id="chart" style="height: 100%">
