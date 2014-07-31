@@ -36,7 +36,10 @@ var morgan = require('morgan');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 //app.use(favicon());
-app.use(bodyParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 app.use(methodOverride()); // simulate PUT/DELETE via POST in client by <input type="hidden" name="_method" value="put" />
 app.use(cookieParser(app.get('passphrase'))); // populates req.cookies with an object
 app.use(cookieSession({secret: app.get('passphrase')}));
