@@ -8,6 +8,14 @@ If you want to be bold and daring, you can expose your SqlPad instance to the ou
 
 
 
+## HEY IS SOMEONE OUT THERE USING THIS?!  
+
+If so, please let me know what you think! (either via github issue or email)
+
+npm says people are downloading this. Maybe the downloads are just robots, but it'd be really cool and exciting if real humans are using this already :)
+
+
+
 ## Installation & Usage
 
 First, install Node.js if you haven't already.
@@ -52,62 +60,16 @@ Once you have a SqlPad running, you can sign up (assuming you've whitelisted you
 
 
 
-## TODO
+## Contributing & Future of this Project
 
-### Done
-[x] add toggle for admins in /users  
-[x] can't unadmin one's self (prevents last-admin-standing scenario)  
-[x] only show/permit admin links for admins  
-[x] CLI tooling (db folder, admin, encryption phrase, port)  
-[x] temp csv cache file for downloads  
-[x] upgrade to express 4.0 to get rid of annoying messages  
-[x] save menu button works  
-[x] SQL Editor: refresh schema on connection change  
-[x] SQL Editor: prompt to choose a connection if one hasn't been chosen  
-[x] default db location should be user's HOME directory/sqlpad.  
-[x] --dev flag for console.logging
-[x] add datatypes to schema info
-[x] add initial visualizations  
-[x] make routes separate js files (broken up by related chunks)  
+I started this project as a personal-side project. I don't know how far I'll take it, how much I'll support it, if it's useful to anyone, or what features I'll eventually add to it.
 
-### Before considered "done"
-[ ] about/thank-you page  
-[ ] github pages on what/how/why  
-[ ] clean up various dates being displayed to appropriate values  
-[ ] update notifications like nodemon
-[ ] viz pane/ui hidden away until needed
-[ ] viz selections saved with query
-[ ] visualize button runs query if it needs to be run
-[ ] viz ui updates with new query results (available fields may have changed)
+Right now I feel like this needs a lot of refactoring and cleaning up before anyone dives into the code. 
 
-### Optional
-[ ] clean up and organize front end js. (split into separate js files?)  
-[ ] connection: window colors  
-[ ] connection: application-enforced read only option  
-[ ] connection: prefer SSL (for postgres --> heroku)  
-[ ] SQL Editor: Excel file download  
-[ ] SQL Editor: download filename uses query name  
-[ ] Application Profiles? https://github.com/dominictarr/rc for configs?
-
-
-## Contributing
-
-Pull requests welcome! However, contributor beware: 
-
-I wrote this without much planning, so some parts of this application feel like a big ball of mud. 
-
-Indentation is with tabs/4 spaces. And I use semicolons. 
-
-This said, feel free to contribute as you want
+But if you really want to dig in... 
 
 
 
 ## License 
 
 MIT
-
-
-
-## Reminders
-
-moment(gdata[1].time_created).isValid()
