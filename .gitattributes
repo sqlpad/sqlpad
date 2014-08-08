@@ -2,7 +2,7 @@
 * text=auto
 
 # hopefully this fixes the hashbang \r thing
-server.js text eol=lf
+*.js text eol=lf
 
 # Custom for Visual Studio
 *.cs     diff=csharp
