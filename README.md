@@ -8,7 +8,7 @@ If you want to be bold and daring, you can expose your SqlPad instance to the ou
 
 
 
-## HEY IS SOMEONE OUT THERE USING THIS?!  
+## Is someone out there using this?!  
 
 If so, please let me know what you think! (either via github issue or email)
 
