@@ -36,6 +36,9 @@ module.exports = function () {
     
     if ($('#ace-editor').length) {
         
+        var $queryId = $('#query-id');
+        
+        
         /*  DB / Schema Info
         ==============================================================================*/
         var DbInfo = require('./component-db-info.js');
@@ -69,5 +72,28 @@ module.exports = function () {
             }
         });
         
+        /*  (re-)render the chart when the viz tab is pressed, 
+            TODO: only do this if necessary
+        ==============================================================================*/
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            // if shown tab was the chart tab, rerender the chart
+            // e.target is the activated tab
+            if (e.target.getAttribute("href") == "#tab-content-visualize") {
+                chartEditor.rerenderChart();
+            }
+        });
+        
+        /*  get query again, because not all the data is in the HTML
+            TODO: do most the workflow this way? That or boostrap the page with the query object
+        ==============================================================================*/
+        $.ajax({
+            type: "GET",
+            url: "/queries/" + $queryId.val() + "?format=json"
+        }).done(function (data) {
+            console.log(data);
+            chartEditor.loadChartConfiguration(data.chartConfiguration);
+        }).fail(function () {
+            alert('Failed to get additional Query info');
+        });
     }
 };

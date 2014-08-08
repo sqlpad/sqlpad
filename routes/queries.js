@@ -101,7 +101,15 @@ module.exports = function (app) {
                     // TODO: render error if this fails?
                     db.queries.update({_id: req.params._id}, {$set: {lastAccessedDate: new Date()}}, {}, noop);
                     if (query && query.tags) query.tags = query.tags.join(', ');
-                    res.render('query', {query: query});
+                    console.log('\ngot query:');
+                    console.log(query);
+                    if (req.query && req.query.format && req.query.format === 'json') {
+                        // send JSON of query object
+                        res.json(query);
+                    } else {
+                        // render page
+                        res.render('query', {query: query});
+                    }
                 });
             }
         });
@@ -114,6 +122,7 @@ module.exports = function (app) {
             tags: req.body.tags,
             connectionId: req.body.connectionId,
             queryText: req.body.queryText,
+            chartConfiguration: req.body.chartConfiguration,
             modifiedDate: new Date(),
             modifiedBy: req.session.email,
             lastAccessedDate: new Date()

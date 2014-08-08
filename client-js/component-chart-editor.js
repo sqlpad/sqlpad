@@ -63,8 +63,62 @@ var ChartEditor = function (opts) {
     };
     
     this.getChartConfiguration = function () {
-        
-    }
+        /*
+            {
+                chartType: "line",
+                fields: {
+                    "x": "column-name",
+                    "y": "column-name"
+                }
+            }
+        */
+        var chartConfig = {
+            chartType: null,
+            fields: {}
+        };
+        chartConfig.chartType = $chartTypeDropDown.val();
+        if (chartTypes[chartConfig.chartType]) {
+            var ct = chartTypes[chartConfig.chartType];
+            for (var f in ct.fields) {
+                chartConfig.fields[f] = ct.fields[f].$input.val();
+            }
+        }
+        return chartConfig;
+    };
+    
+    this.loadChartConfiguration = function (config) {
+        // set chart type dropdown
+        // fire .buildChartUI
+        // loop through chart types and set their values
+        $chartTypeDropDown.val(config.chartType);
+        $chartTypeDropDown.trigger("change");
+        if (chartTypes[config.chartType]) {
+            var ct = chartTypes[config.chartType];
+            for (var f in ct.fields) {
+                if (config.fields[f]) {
+                    // attempt to set the value of what is in the config
+                    ct.fields[f].$input.val(config.fields[f]);
+                    // check the value
+                    var inputVal = ct.fields[f].$input.val();
+                    // if the value is nothing, then we will force it
+                    if (!inputVal) {
+                        console.log('in the thing');
+                        console.log(ct.fields[f]);
+                        console.log(config.fields[f]);
+                        ct.fields[f].$input.append('<option value="' + config.fields[f] + '">' + config.fields[f] + '</option>');
+                        ct.fields[f].$input.val(config.fields[f]);
+                    }
+                }
+            }
+        }
+    };
+    
+    this.rerenderChart = function () {
+        var chartConfig = me.getChartConfiguration();
+        me.buildChartUI();
+        me.loadChartConfiguration(chartConfig);
+        me.renderChart();
+    };
     
     // TODO: factor out the chart piece from the chart editor
     this.renderChart = function () {
@@ -92,7 +146,6 @@ var ChartEditor = function (opts) {
             d3.select('#chart svg')
                 .datum(cData)
                 .call(chart);
-            nv.utils.windowResize(chart.update);
             nv.addGraph(function () {
                 return chart;
             });

@@ -35,13 +35,13 @@ var gdata;   // NOTE: these were initially exposed for console debugging
 var gmeta;   // but now I'm kind of abusing these elsewhere.
 
 
+// TODO: Clean up SqlEditor. seriously.
 
 var SqlEditor = function () {
     var me = this;
     
     // init stuff.
     $editor = $('#ace-editor');
-    
     
     editor = ace.edit("ace-editor");
     this.aceEditor = editor;
@@ -66,6 +66,65 @@ var SqlEditor = function () {
         });
     }
     
+    this.renderQueryResult = function (data) {
+        clientEnd = new Date();
+        running = false;
+        $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
+        $('#server-run-time').html(data.serverMs/1000 + " sec.");
+        if (data.success) {
+            $('.hide-while-running').show();
+            var columns = [];
+            if (data.results && data.results[0]) {
+                gdata = data.results; // NOTE: exposed data for console debugging
+                gmeta = data.meta;
+                $('#rowcount').html(data.results.length);
+                var firstRow = data.results[0];
+                for (var col in firstRow) {
+                    var columnSpec = {id: col, name: col, field: col, width: col.length * 15};
+                    if (data.meta[col].datatype === 'date') {
+                        columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
+                            // https://github.com/mleibman/SlickGrid/wiki/Column-Options
+                            if (value === null) {
+                              return "";
+                            } else {
+                                //var d = moment.utc(value);
+                                var d = moment(value);
+                                return d.format('MM/DD/YYYY HH:mm:ss');
+                                // default formatter:
+                                // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+                            }
+                        };
+                    }
+                    columns.push(columnSpec);
+                }
+                // loop through and clean up dates!
+                // TODO: this is lazy and could use optimization
+                for (var r = 0; r < data.results.length; r++) {
+                    var row = data.results[r];
+                    for (var key in data.meta) {
+                        if (data.meta[key].datatype === 'date' && row[key]) {
+                            row[key] = new Date(row[key]);
+                            //row[key] = d.format('MM/DD/YYYY HH:mm:SS');
+                            //console.log(d.format('MM/DD/YYYY HH:mm:SS'));
+                        }
+                    }
+                }
+            }
+            var options = {
+              enableCellNavigation: true,
+              enableColumnReorder: false
+            };
+            grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
+            
+            $('#run-result-notification')
+                .text('')
+                .hide();
+        } else {
+            $('#run-result-notification')
+                .addClass('label-danger')
+                .text(data.error);
+        }
+    };
 };
 
 module.exports = SqlEditor;
@@ -144,7 +203,7 @@ SqlEditor.prototype.runQuery = function () {
         type: "POST",
         url: "/run-query",
         data: data
-    }).done(renderQueryResult).fail(notifyFailure);
+    }).done(me.renderQueryResult).fail(notifyFailure);
 };
 
 function notifyRunning () {
@@ -162,62 +221,3 @@ function notifyFailure () {
         .text("Something is broken :(");
 }
 
-function renderQueryResult (data) {
-    clientEnd = new Date();
-    running = false;
-    $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
-    $('#server-run-time').html(data.serverMs/1000 + " sec.");
-    if (data.success) {
-        $('.hide-while-running').show();
-        var columns = [];
-        if (data.results && data.results[0]) {
-            gdata = data.results; // NOTE: exposed data for console debugging
-            gmeta = data.meta;
-            $('#rowcount').html(data.results.length);
-            var firstRow = data.results[0];
-            for (var col in firstRow) {
-                var columnSpec = {id: col, name: col, field: col, width: col.length * 15};
-                if (data.meta[col].datatype === 'date') {
-                    columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
-                        // https://github.com/mleibman/SlickGrid/wiki/Column-Options
-                        if (value === null) {
-                          return "";
-                        } else {
-                            //var d = moment.utc(value);
-                            var d = moment(value);
-                            return d.format('MM/DD/YYYY HH:mm:ss');
-                            // default formatter:
-                            // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-                        }
-                    };
-                }
-                columns.push(columnSpec);
-            }
-            // loop through and clean up dates!
-            // TODO: this is lazy and could use optimization
-            for (var r = 0; r < data.results.length; r++) {
-                var row = data.results[r];
-                for (var key in data.meta) {
-                    if (data.meta[key].datatype === 'date' && row[key]) {
-                        row[key] = new Date(row[key]);
-                        //row[key] = d.format('MM/DD/YYYY HH:mm:SS');
-                        //console.log(d.format('MM/DD/YYYY HH:mm:SS'));
-                    }
-                }
-            }
-        }
-        var options = {
-          enableCellNavigation: true,
-          enableColumnReorder: false
-        };
-        grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
-        
-        $('#run-result-notification')
-            .text('')
-            .hide();
-    } else {
-        $('#run-result-notification')
-            .addClass('label-danger')
-            .text(data.error);
-    }
-}

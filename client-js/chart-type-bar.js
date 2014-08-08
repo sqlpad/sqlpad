@@ -35,7 +35,8 @@ module.exports =  {
                             if (fields.barlabel.datatype == "date" || fields.barlabel.datatype == "number") {
                                 return d[fields.barlabel.val];
                             } else {
-                                return i;
+                                //return i;
+                                return d[fields.barlabel.val];
                             }
                         })
                         // y should be bar value
@@ -49,18 +50,10 @@ module.exports =  {
                             }
                         })
                         .transitionDuration(350)
-                        .margin({left: 50, top: 50, right: 50})
+                        .margin({left: 150, top: 50, right: 50})
                         .tooltips(true)
                         // since this is for 1 bar series, we don't want to show option to stack
-                        .showControls(false) 
-        
-        if (fields.barlabel.datatype == 'date') { 
-            chart.xAxis.tickFormat(function(d) { 
-                return d3.time.format('%x')(new Date(d)); 
-            });
-        } else {
-            chart.xAxis.axisLabel(fields.barlabel.val);
-        }
+                        .showControls(false);
         
         chart.yAxis.axisLabel(fields.barvalue.val);
         
