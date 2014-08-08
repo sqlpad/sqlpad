@@ -8,6 +8,8 @@ var packageJson = require('./package.json');
 var app = express();
 var userHome = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 
+console.log(userHome);
+
 updateNotifier({packageName: packageJson.name, packageVersion: packageJson.version}).notify();
 
 app.set('passphrase', "At least the sensitive bits won't be plain text?");
