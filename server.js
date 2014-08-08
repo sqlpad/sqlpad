@@ -3,9 +3,12 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
+var updateNotifier = require('update-notifier');
 var packageJson = require('./package.json');
 var app = express();
 var userHome = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
+
+updateNotifier({packageName: packageJson.name, packageVersion: packageJson.version}).notify();
 
 app.set('passphrase', "At least the sensitive bits won't be plain text?");
 app.set('dbPath', path.join(userHome, "sqlpad/db"));

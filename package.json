@@ -4,48 +4,49 @@
   "description": "A sql editor/runner to be run in your own private cloud. Supports MySQL, Postgres, and SQL Server.",
   "license": "MIT",
   "author": {
-      "name": "Rick Bergfalk",
-      "email": "rick.bergfalk@gmail.com"
+    "name": "Rick Bergfalk",
+    "email": "rick.bergfalk@gmail.com"
   },
   "keywords": [
-      "sql",
-      "mssql",
-      "postgres",
-      "postgresql",
-      "mysql"
+    "sql",
+    "mssql",
+    "postgres",
+    "postgresql",
+    "mysql"
   ],
-  "repository" : {
-    "type": "git", 
+  "repository": {
+    "type": "git",
     "url": "git://github.com/rickbergfalk/sqlpad"
   },
-  "bugs" : {
+  "bugs": {
     "url": "https://github.com/rickbergfalk/sqlpad/issues",
-    "email": "rick.bergfalk@gmail.com" 
+    "email": "rick.bergfalk@gmail.com"
   },
   "scripts": {
     "start": "nodemon server.js --db ./db --port 3000",
     "watchify": "watchify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim"
   },
   "dependencies": {
-    "express": "4.2.x",
-    "ejs": "*",
-    "pg.js": "3.0.x",
-    "moment": "*",
     "bcrypt-nodejs": "0.0.x",
-    "nedb": "0.10.x",
-    "lodash": "2.4.x",
-    "mssql": "^0.5.3",
-    "mysql": "^2.1.1",
-    "ua-parser": "^0.3.3",
-    "yargs": "^1.2.2",
     "body-parser": "^1.2.0",
-    "serve-favicon": "^2.0.0",
-    "method-override": "^1.0.1",
     "cookie-parser": "^1.1.0",
     "cookie-session": "^1.0.2",
+    "ejs": "*",
+    "express": "4.2.x",
+    "json2csv": "^2.2.1",
+    "lodash": "2.4.x",
+    "method-override": "^1.0.1",
+    "moment": "*",
     "morgan": "^1.1.0",
+    "mssql": "^0.5.3",
+    "mysql": "^2.1.1",
+    "nedb": "0.10.x",
+    "pg.js": "3.0.x",
+    "serve-favicon": "^2.0.0",
+    "ua-parser": "^0.3.3",
+    "update-notifier": "^0.2.0",
     "uuid": "^1.4.1",
-    "json2csv": "^2.2.1"
+    "yargs": "^1.2.2"
   },
   "main": "server.js",
   "bin": {
