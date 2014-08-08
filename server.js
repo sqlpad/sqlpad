@@ -3,7 +3,7 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
-
+var packageJson = require('./package.json');
 var app = express();
 var userHome = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 
@@ -11,8 +11,11 @@ app.set('passphrase', "At least the sensitive bits won't be plain text?");
 app.set('dbPath', path.join(userHome, "sqlpad/db"));
 app.set('port', 80);
 app.set('dev', false);
+app.set('packageJson', packageJson);
 
 app.locals.title = 'SqlPad';
+app.locals.version = packageJson.version;
+
 
 /*  Boostrap app object with stuff
     This allows us to pass app around and all the related utility/helper/db 
@@ -35,7 +38,7 @@ var morgan = require('morgan');
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-//app.use(favicon());
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -54,6 +57,7 @@ app.use(function (req, res, next) {
     res.locals.queryMenu = false;
     res.locals.session = req.session || null;
     res.locals.pageTitle = "";
+    
 	next();
 });
 app.use(function (req, res, next) {

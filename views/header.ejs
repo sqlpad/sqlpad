@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+    <link rel="shortcut icon" href="/images/favicon.ico">
 
     <title><%= title %></title>
 	
@@ -50,22 +50,30 @@
             
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">SqlPad <b class="caret"></b></a>
+                     <ul class="dropdown-menu">
+                       <li><a href="/queries?createdBy=<%= encodeURIComponent(session.email) %>">My Queries</a></li>
+                       <li><a href="/queries/new">New</a></li>
+                       <% if (session && session.admin) { %>
+                       <li role="presentation" class="divider"></li>
+                       <li role="presentation" class="dropdown-header">Admin</li>
+                       <li><a href="/connections">Connections</a></li>
+                       <li><a href="/users">Users</a></li>
+                       <% } %>
+                       <li role="presentation" class="divider"></li>
+                       <li><a href="#" data-toggle="modal" data-target="#aboutModal">About SqlPad</a></li>
+                     </ul>                       
+                </li>
+                <!--
                 <li><a href="/queries?createdBy=<%= encodeURIComponent(session.email) %>">My Queries</a></li>
                 <li><a href="/queries/new">New</a></li>
-                <% if (session && session.admin) { %>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <b class="caret"></b></a>
-                         <ul class="dropdown-menu">
-                           <li><a href="/connections">Connections</a></li>
-                           <li><a href="/users">Users</a></li>
-                         </ul>                       
-                    </li>
-                <% } %>
+                -->
               </ul>
               
-              <span class="navbar-brand page-title" id="header-query-name" contenteditable="true">
+              <span class="navbar-brand page-title">
                 <% if (query && query.name) { %> 
-                    <%= query.name %>
+                    <span id="header-query-name" contenteditable="true"><%= query.name %></span>
                 <% } else if (pageTitle) { %> 
                     <%= pageTitle %> 
                 <% } %>
@@ -77,7 +85,12 @@
               
               <ul class="nav navbar-nav navbar-right">
                 <% if (session && session.userId && session.email) { %>
-                  <li><a href="/signout"><%= session.email.split('@')[0] %> (signout)</a></li>
+                  <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= session.email.split('@')[0] %> <b class="caret"></b></a>
+                       <ul class="dropdown-menu">
+                         <li><a href="/signout">Sign Out</a></li>
+                       </ul>                       
+                  </li>
                 <% } else { %>
                   <li><a href="/signin">Sign In</a></li>
                   <li><a href="/signup">Sign Up</a></li>
