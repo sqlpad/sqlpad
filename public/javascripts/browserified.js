@@ -515,7 +515,7 @@ var Menubar = function (opts) {
          */
          var $queryId = $('#query-id');
          var query = {
-             name: $('#header-query-name').html(),
+             name: $('#header-query-name').val(),
              queryText: sqlEditor.getEditorText(),
              tags: $.map($('#tags').val().split(','), $.trim),
              connectionId: dbInfo.getConnectionId(),

@@ -65,19 +65,35 @@
                        <li><a href="#" data-toggle="modal" data-target="#aboutModal">About SqlPad</a></li>
                      </ul>                       
                 </li>
-                <!--
-                <li><a href="/queries?createdBy=<%= encodeURIComponent(session.email) %>">My Queries</a></li>
-                <li><a href="/queries/new">New</a></li>
-                -->
               </ul>
+              <style>
+                  .navbar-form .form-control.input-query-name {
+                    font-size: 18px;
+                    line-height: 20px;
+                    width: 500px;
+                    background-color: rgba(0, 0, 0, 0);
+                    color: #FFF;
+                    border-top: 0px;
+                    border-left: 0px;
+                    border-right: 0px;
+                    border-bottom: 1px dotted #A5A5A5;
+                    box-shadow: none;
+                    border-radius: 0;
+                  }
+              </style>
+              <% if (query && query.name) { %>
+                  <form class="navbar-form navbar-left">
+                      <div class="form-group">
+                        <input id="header-query-name" name="header-query-name" class="input-query-name form-control" value="<%= query.name %>" type="text" placeholder="Query Name" >
+                      </div>
+                  </form>
+              <% } else if (pageTitle) { %> 
+                  <span class="navbar-brand page-title">
+                    <%= pageTitle %>
+                  </span>
+                   
+              <% } %>
               
-              <span class="navbar-brand page-title">
-                <% if (query && query.name) { %> 
-                    <span id="header-query-name" contenteditable="true"><%= query.name %></span>
-                <% } else if (pageTitle) { %> 
-                    <%= pageTitle %> 
-                <% } %>
-              </span>
               
               <div class="navbar-form navbar-left">
                   <span id="btn-save-result" class="label label-info"></span>
