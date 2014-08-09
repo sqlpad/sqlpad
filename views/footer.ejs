@@ -11,7 +11,10 @@
             <h4 class="modal-title" id="myModalLabel">About SqlPad</h4>
           </div>
           <div class="modal-body">
-            Version: <%= version %>
+            <p>
+                <strong>Version</strong>: <%= version %>
+            </p>
+            <% include thank-yous %>
           </div>
           <!--
           <div class="modal-footer">
