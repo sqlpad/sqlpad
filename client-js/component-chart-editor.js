@@ -100,7 +100,7 @@ var ChartEditor = function (opts) {
                     ct.fields[f].$input.val(config.fields[f]);
                     // check the value
                     var inputVal = ct.fields[f].$input.val();
-                t    // if the value is nothing, then we will force it
+                    // if the value is nothing, then we will force it
                     if (!inputVal) {
                         console.log('in the thing');
                         console.log(ct.fields[f]);
