@@ -1,6 +1,6 @@
 {
   "name": "sqlpad",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A sql editor/runner to be run in your own private cloud. Supports MySQL, Postgres, and SQL Server.",
   "license": "MIT",
   "author": {
