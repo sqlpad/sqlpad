@@ -44,7 +44,7 @@
     "pg.js": "3.0.x",
     "serve-favicon": "^2.0.0",
     "ua-parser": "^0.3.3",
-    "update-notifier": "^0.2.0",
+    "update-notifier": "^0.1.8",
     "uuid": "^1.4.1",
     "yargs": "^1.2.2"
   },

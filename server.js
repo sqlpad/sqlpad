@@ -8,12 +8,14 @@ var packageJson = require('./package.json');
 var app = express();
 var userHome = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 
+var notifier = updateNotifier({
+    packageName: packageJson.name, 
+    packageVersion: packageJson.version
+});
 
-var notifier = updateNotifier({packageName: packageJson.name, packageVersion: packageJson.version});
 if (notifier.update) {
-    notifier.notify();
+  notifier.notify();
 }
-
 
 app.set('passphrase', "At least the sensitive bits won't be plain text?");
 app.set('dbPath', path.join(userHome, "sqlpad/db"));
