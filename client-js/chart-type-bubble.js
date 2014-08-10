@@ -7,6 +7,7 @@ module.exports =  {
         x: {
             label: "x Axis",
             inputType: "field-dropdown",
+            required: true,
             $input: null,
             val: null,
             datatype: null,
@@ -15,15 +16,18 @@ module.exports =  {
         },
         y: { 
             label: "y Axis",
-            inputType: "field-dropdown"
+            inputType: "field-dropdown",
+            required: true
         },
         size: {
             label: "Size",
-            inputType: "field-dropdown"
+            inputType: "field-dropdown",
+            required: false
         },
         label: {
             label: "Bubble Label",
-            inputType: "field-dropdown"
+            inputType: "field-dropdown",
+            required: false
         }
     },
     transformData: function (meta, data, fields) {

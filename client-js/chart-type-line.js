@@ -5,7 +5,7 @@ var d3 = require('d3');
 module.exports =  {
     fields: {
         x: {
-            optional: false,
+            required: true,
             label: "x",
             inputType: "field-dropdown",
             $input: null,
@@ -15,12 +15,12 @@ module.exports =  {
             max: null
         },
         y: { 
-            optional: false,
+            required: true,
             label: "y",
             inputType: "field-dropdown"
         },
         split: {
-            optional: true,
+            required: false,
             label: "line for each:",
             inputType: "field-dropdown"
         }

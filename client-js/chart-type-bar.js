@@ -5,7 +5,7 @@ var d3 = require('d3');
 module.exports =  {
     fields: {
         barlabel: {
-            optional: false,
+            required: true,
             label: "Bar Label",
             inputType: "field-dropdown",
             $input: null,
@@ -15,7 +15,7 @@ module.exports =  {
             max: null
         },
         barvalue: { 
-            optional: false,
+            required: true,
             label: "Bar Value",
             inputType: "field-dropdown"
         }
