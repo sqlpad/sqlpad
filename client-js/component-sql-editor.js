@@ -104,8 +104,6 @@ var SqlEditor = function () {
                     for (var key in data.meta) {
                         if (data.meta[key].datatype === 'date' && row[key]) {
                             row[key] = new Date(row[key]);
-                            //row[key] = d.format('MM/DD/YYYY HH:mm:SS');
-                            //console.log(d.format('MM/DD/YYYY HH:mm:SS'));
                         }
                     }
                 }

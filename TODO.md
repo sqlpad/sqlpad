@@ -23,10 +23,10 @@
 - [x] viz selections saved with query
 - [x] viz ui updates with new query results (fields may have changed)  
 - [x] only render viz if all req fields are provided
+- [x] clean up console.loggings
 
 ## Before considered 1.x.x  
 - [ ] github pages on what/how/why  
-- [ ] clean up console.loggings
 
 ## Undecided on
 - [ ] public mode: anyone can view/run existing queries

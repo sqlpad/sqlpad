@@ -41,8 +41,6 @@ module.exports = function (app) {
             var queryTextRegExp = new RegExp(req.query.search, "i");
             filter.$or = [{queryText: {$regex: queryTextRegExp}}, {name: {$regex: nameRegExp}}];
         }
-        //console.log("resulting NeDB filter:");
-        //console.log(filter);
         var cursor = db.queries.find(filter);
         if (req.query && req.query.sortBy) {
             if (req.query.sortBy === "accessed") {
@@ -101,8 +99,6 @@ module.exports = function (app) {
                     // TODO: render error if this fails?
                     db.queries.update({_id: req.params._id}, {$set: {lastAccessedDate: new Date()}}, {}, noop);
                     if (query && query.tags) query.tags = query.tags.join(', ');
-                    console.log('\ngot query:');
-                    console.log(query);
                     if (req.query && req.query.format && req.query.format === 'json') {
                         // send JSON of query object
                         res.json(query);
