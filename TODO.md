@@ -18,14 +18,15 @@
 - [x] clean up various dates being displayed to appropriate values  
 - [x] viz pane/ui hidden away until needed  
 - [x] clean up and organize front end js (started browserifying things)  
+- [x] update notifications like nodemon  
+- [x] about/thank-you page  
+- [x] viz selections saved with query
+- [x] viz ui updates with new query results (fields may have changed)  
+- [x] only render viz if all req fields are provided
 
-## Before considered "done"  
-- [ ] about/thank-you page  
+## Before considered 1.x.x  
 - [ ] github pages on what/how/why  
-- [ ] update notifications like nodemon  
-- [ ] viz selections saved with query  
-- [ ] visualize button runs query if it needs to be run  
-- [ ] viz ui updates with new query results (fields may have changed)  
+- [ ] clean up console.loggings
 
 ## Undecided on
 - [ ] public mode: anyone can view/run existing queries
