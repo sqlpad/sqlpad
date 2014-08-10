@@ -124,6 +124,8 @@ var ChartEditor = function (opts) {
     this.renderChart = function () {
         gdata = sqlEditor.getGdata();
         gmeta = sqlEditor.getGmeta();
+        var requirementsMet = true;
+        var fieldsNeeded = [];
         
         var selectedChartType = $chartTypeDropDown.val();
         if (chartTypes[selectedChartType]) {
@@ -138,17 +140,25 @@ var ChartEditor = function (opts) {
                     field.min = gmeta[field.val].min;
                     field.max = gmeta[field.val].max;
                 }
+                if (field.val === "" && field.required) {
+                    requirementsMet = false;
+                    fieldsNeeded.push(field.label);
+                }
             }
             var cData = ct.transformData(gmeta, gdata, ct.fields);
             var chart = ct.renderChart(gmeta, gdata, ct.fields);
             gchart = chart;
             $('#chart svg').empty();
-            d3.select('#chart svg')
-                .datum(cData)
-                .call(chart);
-            nv.addGraph(function () {
-                return chart;
-            });
+            if (requirementsMet) {
+                d3.select('#chart svg')
+                    .datum(cData)
+                    .call(chart);
+                nv.addGraph(function () {
+                    return chart;
+                });    
+            } else {
+                alert("Chart requires additional information: " + fieldsNeeded.join(', '));
+            }
         }
     };
     
