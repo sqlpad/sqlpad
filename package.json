@@ -24,7 +24,8 @@
   },
   "scripts": {
     "start": "nodemon server.js --db ./db --port 3000",
-    "watchify": "watchify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim"
+    "watchify": "watchify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim",
+    "bundle": "browserify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.x",
