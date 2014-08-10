@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var nv = (window.nv);
 var _  = require('lodash');
 var d3 = (window.d3);
@@ -6,7 +6,7 @@ var d3 = (window.d3);
 module.exports =  {
     fields: {
         barlabel: {
-            optional: false,
+            required: true,
             label: "Bar Label",
             inputType: "field-dropdown",
             $input: null,
@@ -16,7 +16,7 @@ module.exports =  {
             max: null
         },
         barvalue: { 
-            optional: false,
+            required: true,
             label: "Bar Value",
             inputType: "field-dropdown"
         }
@@ -71,6 +71,7 @@ module.exports =  {
         x: {
             label: "x Axis",
             inputType: "field-dropdown",
+            required: true,
             $input: null,
             val: null,
             datatype: null,
@@ -79,15 +80,18 @@ module.exports =  {
         },
         y: { 
             label: "y Axis",
-            inputType: "field-dropdown"
+            inputType: "field-dropdown",
+            required: true
         },
         size: {
             label: "Size",
-            inputType: "field-dropdown"
+            inputType: "field-dropdown",
+            required: false
         },
         label: {
             label: "Bubble Label",
-            inputType: "field-dropdown"
+            inputType: "field-dropdown",
+            required: false
         }
     },
     transformData: function (meta, data, fields) {
@@ -148,7 +152,7 @@ var d3 = (window.d3);
 module.exports =  {
     fields: {
         x: {
-            optional: false,
+            required: true,
             label: "x",
             inputType: "field-dropdown",
             $input: null,
@@ -158,12 +162,12 @@ module.exports =  {
             max: null
         },
         y: { 
-            optional: false,
+            required: true,
             label: "y",
             inputType: "field-dropdown"
         },
         split: {
-            optional: true,
+            required: false,
             label: "line for each:",
             inputType: "field-dropdown"
         }
@@ -359,6 +363,8 @@ var ChartEditor = function (opts) {
     this.renderChart = function () {
         gdata = sqlEditor.getGdata();
         gmeta = sqlEditor.getGmeta();
+        var requirementsMet = true;
+        var fieldsNeeded = [];
         
         var selectedChartType = $chartTypeDropDown.val();
         if (chartTypes[selectedChartType]) {
@@ -373,17 +379,25 @@ var ChartEditor = function (opts) {
                     field.min = gmeta[field.val].min;
                     field.max = gmeta[field.val].max;
                 }
+                if (field.val === "" && field.required) {
+                    requirementsMet = false;
+                    fieldsNeeded.push(field.label);
+                }
             }
             var cData = ct.transformData(gmeta, gdata, ct.fields);
             var chart = ct.renderChart(gmeta, gdata, ct.fields);
             gchart = chart;
             $('#chart svg').empty();
-            d3.select('#chart svg')
-                .datum(cData)
-                .call(chart);
-            nv.addGraph(function () {
-                return chart;
-            });
+            if (requirementsMet) {
+                d3.select('#chart svg')
+                    .datum(cData)
+                    .call(chart);
+                nv.addGraph(function () {
+                    return chart;
+                });    
+            } else {
+                alert("Chart requires additional information: " + fieldsNeeded.join(', '));
+            }
         }
     };
     
@@ -7774,7 +7788,7 @@ module.exports = function () {
   }
 }.call(this));
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],13:[function(require,module,exports){
 (function (global){
 //! moment.js
@@ -10267,5 +10281,5 @@ module.exports = function () {
     }
 }).call(this);
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[8])
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[8]);
