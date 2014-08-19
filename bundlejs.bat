@@ -1,1 +1,0 @@
-browserify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim
