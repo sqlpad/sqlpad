@@ -29,33 +29,34 @@
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.x",
-    "body-parser": "^1.2.0",
-    "cookie-parser": "^1.1.0",
-    "cookie-session": "^1.0.2",
-    "ejs": "*",
+    "body-parser": "1.2.x",
+    "cookie-parser": "1.1.x",
+    "cookie-session": "1.0.x",
+    "ejs": "1.0.x",
     "express": "4.2.x",
-    "json2csv": "^2.2.1",
+    "json2csv": "2.2.x",
     "lodash": "2.4.x",
-    "method-override": "^1.0.1",
-    "moment": "*",
-    "morgan": "^1.1.0",
-    "mssql": "^0.5.3",
-    "mysql": "^2.1.1",
+    "method-override": "1.0.x",
+    "moment": "2.8.x",
+    "morgan": "1.1.x",
+    "mssql": "0.5.x",
+    "mysql": "2.1.x",
     "nedb": "0.10.x",
     "pg.js": "3.0.x",
-    "serve-favicon": "^2.0.0",
-    "ua-parser": "^0.3.3",
-    "update-notifier": "^0.1.8",
-    "uuid": "^1.4.1",
-    "yargs": "^1.2.2"
+    "sanitize-filename": "1.1.x",
+    "serve-favicon": "2.0.x",
+    "ua-parser": "0.3.x",
+    "update-notifier": "0.1.x",
+    "uuid": "1.4.x",
+    "yargs": "1.2.x"
   },
   "main": "server.js",
   "bin": {
     "sqlpad": "./server.js"
   },
   "devDependencies": {
-    "browserify": "^4.1.11",
-    "browserify-shim": "^3.5.0"
+    "browserify": "4.1.x",
+    "browserify-shim": "3.5.x"
   },
   "browserify": {
     "transform": [
