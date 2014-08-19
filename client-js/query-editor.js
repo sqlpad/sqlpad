@@ -64,6 +64,8 @@ module.exports = function () {
         var Menubar = require('./component-menubar.js');
         var menubar = new Menubar({sqlEditor: sqlEditor, dbInfo: dbInfo, chartEditor: chartEditor});
         
+        sqlEditor.setMenubar(menubar);
+        
         sqlEditor.aceEditor.commands.addCommand({
             name: 'saveQuery',
             bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},

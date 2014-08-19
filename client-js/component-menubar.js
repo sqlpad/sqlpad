@@ -21,6 +21,8 @@ var Menubar = function (opts) {
     var sqlEditor = opts.sqlEditor;
     var chartEditor = opts.chartEditor;
     
+    var $queryName = $('#header-query-name');
+    
     $('#btn-save').click(function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -32,6 +34,14 @@ var Menubar = function (opts) {
         event.stopPropagation();
         sqlEditor.runQuery();
     });
+    
+    this.getQueryName = function () {
+        return $queryName.val();
+    };
+    
+    this.getQueryTags = function () {
+        return $.map($('#tags').val().split(','), $.trim)
+    };
     
     this.saveQuery = function () {
          /*
@@ -50,9 +60,9 @@ var Menubar = function (opts) {
          */
          var $queryId = $('#query-id');
          var query = {
-             name: $('#header-query-name').val(),
+             name: me.getQueryName(),
              queryText: sqlEditor.getEditorText(),
-             tags: $.map($('#tags').val().split(','), $.trim),
+             tags: me.getQueryTags(),
              connectionId: dbInfo.getConnectionId(),
              chartConfiguration: chartEditor.getChartConfiguration()
          };
