@@ -8,14 +8,6 @@ If you want to be bold and daring, you can expose your SqlPad instance to the ou
 
 
 
-## Is someone out there using this?!  
-
-If so, please let me know what you think! (either via github issue or email)
-
-npm says people are downloading this. Maybe the downloads are just robots, but it'd be really cool and exciting if real humans are using this already :)
-
-
-
 ## Installation & Usage
 
 First, install Node.js if you haven't already.
