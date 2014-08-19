@@ -3,6 +3,8 @@ var json2csv = require('json2csv');
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
+var sanitize = require("sanitize-filename");
+var moment = require('moment');
 
 function isNumberLike (n) {
     return (!isNaN(parseFloat(n)) && isFinite(n));
@@ -33,8 +35,10 @@ module.exports = function (app) {
                 var expirationDate = new Date(now.getTime() + (1000 * 60 * 60 * 8)); // 8 hours in the future.
                 var cache = {
                     cacheKey: req.body.cacheKey,
-                    expiration: expirationDate
+                    expiration: expirationDate,
+                    queryName: sanitize(req.body.queryName + " " + moment().format("YYYY-MM-DD"))
                 };
+                
                 // upsert cacheKey if it doesn't exist, setting new expiration time
                 db.cache.update({cacheKey: cache.cacheKey}, cache, {upsert: true}, function (err) {
                     if (err) console.log(err);
