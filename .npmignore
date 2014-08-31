@@ -4,3 +4,4 @@ db/
 .env
 .zedstate
 tags
+.zedstate
