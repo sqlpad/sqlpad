@@ -14,6 +14,10 @@ var menubar = new Menubar();
 */
 
 var $ = require('jquery');
+var toastr = require('toastr');
+toastr.options = {
+    positionClass: "toast-bottom-right"
+};
 
 var Menubar = function (opts) {
     var me = this;
@@ -77,12 +81,14 @@ var Menubar = function (opts) {
              if (data.success) {
                  window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
                  $queryId.val(data.query._id);
+                 
                  $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
                  setTimeout(function () {
                      $('#btn-save-result').fadeOut(400, function () {
                          $('#btn-save-result').removeClass('label-success').addClass('label-info').text('');
                      });
                  }, 1000);
+                 
              } else {
                  $('#btn-save-result').removeClass('label-info').addClass('label-danger').text('Failed');
              }

@@ -25,7 +25,6 @@
     
     <!-- jQuery Splitter -->
     <link rel="stylesheet" href="/javascripts/vendor/jquery.splitter/jquery.splitter.css" type="text/css"/>
-    
 	
 	<!-- my css -->
     <link rel="stylesheet" href="/stylesheets/style.css">
@@ -66,21 +65,7 @@
                      </ul>                       
                 </li>
               </ul>
-              <style>
-                  .navbar-form .form-control.input-query-name {
-                    font-size: 18px;
-                    line-height: 20px;
-                    width: 500px;
-                    background-color: rgba(0, 0, 0, 0);
-                    color: #FFF;
-                    border-top: 0px;
-                    border-left: 0px;
-                    border-right: 0px;
-                    border-bottom: 1px dotted #A5A5A5;
-                    box-shadow: none;
-                    border-radius: 0;
-                  }
-              </style>
+                
               <% if (query && query.name) { %>
                   <form class="navbar-form navbar-left">
                       <div class="form-group">
@@ -91,13 +76,8 @@
                   <span class="navbar-brand page-title">
                     <%= pageTitle %>
                   </span>
-                   
               <% } %>
               
-              
-              <div class="navbar-form navbar-left">
-                  <span id="btn-save-result" class="label label-info"></span>
-              </div>
               
               <ul class="nav navbar-nav navbar-right">
                 <% if (session && session.userId && session.email) { %>

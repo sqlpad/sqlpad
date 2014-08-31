@@ -25,9 +25,11 @@
 - [x] only render viz if all req fields are provided
 - [x] clean up console.loggings
 - [x] SQL Editor: download filename uses query name  
+- [x] cleanup css for query page
 
 ## Before considered 1.x.x  
 - [ ] github pages on what/how/why  
+- [ ] decide on tags/last accessed date stuff (is it necessary?)
 
 ## Undecided on
 - [ ] public mode: anyone can view/run existing queries

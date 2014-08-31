@@ -14,10 +14,8 @@
         <form class="navbar-form navbar-left navbar-left-border">
           <button type="button" id="btn-save" class="btn btn-default">Save</button>
           <button id="btn-run-query" class="btn btn-default btn-small">Run Query</button>
-        </form>
-        
-        <form class="navbar-form navbar-left">
-          <div class="form-group">
+          
+          <div class="form-group" style="margin-left: 20px;">
               <label class="control-label" for="tags">Tags</label>
           </div>
           <div class="form-group">
@@ -25,50 +23,16 @@
           </div>
           <input type="hidden" id="cache-key" value="<%= cacheKey %>" />
           <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>" />
+          
+          <span id="btn-save-result" class="label label-info"></span>
+            
         </form>
         
       </div><!-- /.container-fluid -->
     </nav>
     <div id="panel-main">
         <div class="tab-content">
-            <!-- BEGIN QUERY DETAILS PANE -->
-            <style>
-                .tab-content {
-                    left: 250px;
-                    position: absolute;
-                    right:0;
-                    bottom:0;
-                    top:0;
-                }
-                .tab-pane {
-                    position:absolute;
-                    left:0;
-                    right:0;
-                    bottom:0;
-                    top:0;
-                }
-                .ace-and-results {
-                    left: 0;
-                    bottom: 0;
-                    top: 0;
-                    right: 0;
-                    position: absolute;
-                }
-                .panel-editor {
-                    position: absolute;
-                    left:0;
-                    top:0; 
-                    right:0;
-                    height: 50%;
-                }
-                #panel-result {
-                    position: absolute;
-                    left:0;
-                    right:0;
-                    height: 50%;
-                    bottom: 0;
-                }
-            </style>
+
             <!-- BEGIN QUERY SQL PANE -->
             <div class="tab-pane active" id="tab-content-sql">
                 <div class="sidebar">
@@ -112,6 +76,7 @@
                     </div>
                 </div>
             </div>
+            
             <!-- BEGIN Visualize PANE -->
             <div class="tab-pane" id="tab-content-visualize">
                 <div class="sidebar">

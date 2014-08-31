@@ -1,73 +1,77 @@
 <% include header %>
     
-    <form id="connection-form" role="form" class="col-md-6 col-md-offset-3" action="/connections/<%= connection._id || "new" %>" method="post">
-    <fieldset>
-    
-    <!-- Form Name -->
-    <legend>Connection</legend>
-    
-    <!-- Text input-->
-    <div class="form-group">
-      <label class=" control-label" for="name">Friendly Connection Name</label>  
-      
-      <input id="name" name="name" value="<%= connection.name %>" type="text" placeholder="" class="form-control input-md">
+    <div class="col-sm-12  col-md-12 main">
+        <form id="connection-form" role="form" class="col-md-6 col-md-offset-3" action="/connections/<%= connection._id || "new" %>" method="post">
+        <fieldset>
+        
+        <!-- Form Name -->
+        <legend>Connection</legend>
+        
+        <!-- Text input-->
+        <div class="form-group">
+          <label class=" control-label" for="name">Friendly Connection Name</label>  
+          
+          <input id="name" name="name" value="<%= connection.name %>" type="text" placeholder="" class="form-control input-md">
+        </div>
+        
+        <!-- Select Basic -->
+        <div class="form-group">
+          <label class=" control-label" for="driver">Database Driver</label>
+          <div class="">
+            <select id="driver" name="driver" class="form-control">
+              <option value="mysql"     <%= (connection.driver === 'mysql' ? 'selected' : '') %> >MySQL</option>
+              <option value="postgres"  <%= (connection.driver === 'postgres' ? 'selected' : '') %>>Postgres</option>
+              <option value="sqlserver" <%= (connection.driver === 'sqlserver' ? 'selected' : '') %>>SQL Server</option>
+            </select>
+          </div>
+        </div>
+        
+        <!-- Text input-->
+        <div class="form-group">
+          <label class=" control-label" for="host">Host/Server/IP Address</label>  
+          <div class="">
+          <input id="host" name="host" value="<%= connection.host %>" type="text" class="form-control input-md" required="">
+          </div>
+        </div>
+        
+        <!-- Text input-->
+        <div class="form-group">
+          <label class=" control-label" for="database">Database Name</label>  
+          <div class="">
+          <input id="database" name="database" value="<%= connection.database %>" type="text" class="form-control input-md" required="">
+          </div>
+        </div>
+        
+        <!-- Text input-->
+        <div class="form-group">
+          <label class=" control-label" for="username">Database Username</label>  
+          <input id="username" name="username" value="<%= connection.username %>" type="text" class="form-control input-md" required="">
+        </div>
+        
+        <!-- Password input-->
+        <div class="form-group">
+          <label class=" control-label" for="password">Password</label>
+          <input id="password" name="password" value="<%= connection.password %>" type="password" class="form-control input-md" required="">
+        </div>
+        
+        <% if (connection._id) { %>
+            <input type="hidden" name="_method" value="put" />
+        <% } %>
+        
+        <!-- Button (Double) -->
+        <div class="form-group">
+          <label class=" control-label" for="btnTest"></label>
+          <div class="">
+            <button id="btn-Save-connection" name="btnSave" class="btn btn-primary" type="submit">Save</button>
+            <button id="btn-test-connection" name="btnTest" class="btn btn-inverse" type="submit">Test Connection</button>
+            <span id="test-connection-result" class="label label-default"></span>
+          </div>
+        </div>
+        
+        </fieldset>
+        </form>
     </div>
     
-    <!-- Select Basic -->
-    <div class="form-group">
-      <label class=" control-label" for="driver">Database Driver</label>
-      <div class="">
-        <select id="driver" name="driver" class="form-control">
-          <option value="mysql"     <%= (connection.driver === 'mysql' ? 'selected' : '') %> >MySQL</option>
-          <option value="postgres"  <%= (connection.driver === 'postgres' ? 'selected' : '') %>>Postgres</option>
-          <option value="sqlserver" <%= (connection.driver === 'sqlserver' ? 'selected' : '') %>>SQL Server</option>
-        </select>
-      </div>
-    </div>
     
-    <!-- Text input-->
-    <div class="form-group">
-      <label class=" control-label" for="host">Host/Server/IP Address</label>  
-      <div class="">
-      <input id="host" name="host" value="<%= connection.host %>" type="text" class="form-control input-md" required="">
-      </div>
-    </div>
-    
-    <!-- Text input-->
-    <div class="form-group">
-      <label class=" control-label" for="database">Database Name</label>  
-      <div class="">
-      <input id="database" name="database" value="<%= connection.database %>" type="text" class="form-control input-md" required="">
-      </div>
-    </div>
-    
-    <!-- Text input-->
-    <div class="form-group">
-      <label class=" control-label" for="username">Database Username</label>  
-      <input id="username" name="username" value="<%= connection.username %>" type="text" class="form-control input-md" required="">
-    </div>
-    
-    <!-- Password input-->
-    <div class="form-group">
-      <label class=" control-label" for="password">Password</label>
-      <input id="password" name="password" value="<%= connection.password %>" type="password" class="form-control input-md" required="">
-    </div>
-    
-    <% if (connection._id) { %>
-        <input type="hidden" name="_method" value="put" />
-    <% } %>
-    
-    <!-- Button (Double) -->
-    <div class="form-group">
-      <label class=" control-label" for="btnTest"></label>
-      <div class="">
-        <button id="btn-Save-connection" name="btnSave" class="btn btn-primary" type="submit">Save</button>
-        <button id="btn-test-connection" name="btnTest" class="btn btn-inverse" type="submit">Test Connection</button>
-        <span id="test-connection-result" class="label label-default"></span>
-      </div>
-    </div>
-    
-    </fieldset>
-    </form>
     
 <% include footer %>

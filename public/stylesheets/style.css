@@ -59,6 +59,38 @@ a {
     margin-top: 20px;
 }
 
+
+
+/*  Navbar stuff?
+======================================================== */
+.navbar {
+    margin-bottom: 0;
+}
+
+.navbar-left-border {
+    border-left: 1px solid #fafafa;
+    margin-left: 16px;
+}
+
+.navbar-form .form-control.input-query-name {
+  font-size: 18px;
+  line-height: 20px;
+  width: 500px;
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0);
+  color: #FFF;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 1px dotted #A5A5A5;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+
+/*  Query Page
+======================================================== */
+
 #panel-main {
     position:absolute;
     top: 101px;
@@ -102,14 +134,43 @@ a {
     border-color: #888;
 }
 
-.navbar {
-    margin-bottom: 0;
+
+.tab-content {
+    left: 0;
+    position: absolute;
+    right:0;
+    bottom:0;
+    top:0;
+}
+.tab-pane {
+    position:absolute;
+    left:250px;
+    right:0;
+    bottom:0;
+    top:0;
+}
+.ace-and-results {
+    left: 0;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    position: absolute;
+}
+.panel-editor {
+    position: absolute;
+    left:0;
+    top:0; 
+    right:0;
+    height: 50%;
+}
+#panel-result {
+    position: absolute;
+    left:0;
+    right:0;
+    height: 50%;
+    bottom: 0;
 }
 
-.navbar-left-border {
-    border-left: 1px solid #fafafa;
-    margin-left: 16px;
-}
 
 /*  DB Info sidebar 
 ======================================================== */
@@ -128,10 +189,7 @@ a {
     white-space: nowrap;
 }
 
-.navbar-inverse-NOT {
-    border-bottom: 1px solid #BBB;
-    background-color: #f3f3f3;
-}
+
 
 .sidebar {
     padding: 12px;
