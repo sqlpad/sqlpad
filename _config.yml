@@ -1,0 +1,49 @@
+---
+
+port: 4000
+host: 0.0.0.0
+safe: false
+
+
+### site serving configuration ###
+exclude: [CNAME, README.md, .gitignore]
+permalink: / ## disables post output
+timezone: null
+lsi: false
+markdown: kramdown
+highlighter: pygments
+
+
+### content configuration ###
+title:
+keywords:
+description:
+source_link:
+favicon:
+touch_icon:
+google_analytics_key:
+
+
+### template colors, used site-wide via css ###
+colors:
+  black:
+    light: '#303030'
+    dark: '#111111'
+  white:
+    light: '#f5f5f5'
+    dark: '#f8f8f8'
+  blue:
+    light: '#3c9eec'
+    dark: '#49a7e9'
+  green:
+    light: '#a3d832'
+    dark: '#9bcf2f'
+  purple:
+    light: '#c869bf'
+    dark: '#c869bf'
+  orange:
+    light: '#faaf22'
+    dark: '#fab125'
+  turquoise:
+    light: '#0fbfcf'
+    dark: '#0fbfcf'
