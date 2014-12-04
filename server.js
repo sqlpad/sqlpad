@@ -6,25 +6,18 @@ var path = require('path');
 var updateNotifier = require('update-notifier');
 var packageJson = require('./package.json');
 var app = express();
-var userHome = process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
 
+
+/*  Automatic notifier thing that an update is available
+============================================================================= */
 var notifier = updateNotifier({
     packageName: packageJson.name, 
     packageVersion: packageJson.version
 });
 
 if (notifier.update) {
-  notifier.notify();
+    notifier.notify();
 }
-
-app.set('passphrase', "At least the sensitive bits won't be plain text?");
-app.set('dbPath', path.join(userHome, "sqlpad/db"));
-app.set('port', 80);
-app.set('dev', false);
-app.set('packageJson', packageJson);
-
-app.locals.title = 'SqlPad';
-app.locals.version = packageJson.version;
 
 
 /*  Boostrap app object with stuff
@@ -34,11 +27,11 @@ app.locals.version = packageJson.version;
 require('./lib/add-cli-config-to-app.js')(app);
 require('./lib/add-db-to-app.js')(app);
 require('./lib/add-cipher-decipher-to-app.js')(app);
+require('./lib/add-open-admin-registration-to-app.js')(app);
 
 
 /*  Express setup
 ============================================================================= */
-// all the express middleware no longer included
 var bodyParser = require('body-parser');
 var favicon = require('serve-favicon');
 var methodOverride = require('method-override');
@@ -46,6 +39,9 @@ var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var morgan = require('morgan');
 
+app.locals.title = 'SqlPad';
+app.locals.version = packageJson.version;
+app.set('packageJson', packageJson);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
@@ -67,7 +63,7 @@ app.use(function (req, res, next) {
     res.locals.queryMenu = false;
     res.locals.session = req.session || null;
     res.locals.pageTitle = "";
-    
+    res.locals.openAdminRegistration = app.get('openAdminRegistration');
 	next();
 });
 app.use(function (req, res, next) {
@@ -76,6 +72,9 @@ app.use(function (req, res, next) {
         next();
     } else if (req._parsedUrl.pathname === '/signin' || req._parsedUrl.pathname === '/signup') {
         next();
+    } else if (app.get('openRegistration')) {
+        // if there are no users whitelisted, direct to signup
+        res.redirect('/signup');
     } else {
         res.redirect('/signin');
     }

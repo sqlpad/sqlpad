@@ -5,6 +5,17 @@
         <% if (message) { %>
             <h3><%= message %></h3>
         <% } %>
+        <% if (openAdminRegistration) { %>
+            <h4>Admin Registration is Open</h4>
+            <p>
+                Welcome to SqlPad! 
+                Since there are no admins currently in the system, 
+                registration is open to anyone. By signing up, you will 
+                be granted admin rights, and the system will be locked down.
+                Only people explicitly invited & whitelisted will be able to join.
+            </p>
+            <br>
+        <% } %>
 		<input
 		    name="email"
 		    value="<%= email %>"

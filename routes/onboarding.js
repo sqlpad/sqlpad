@@ -50,6 +50,29 @@ module.exports = function (app) {
                     } else if (err) {
                         console.log(err);
                         res.render('signup', {message: 'An error happened.'});
+                    } else if (app.get('openAdminRegistration')) {
+                        // first admin in the system, so allow it to go through
+                        // then once its in, turn openAdminRegistration off
+                        user = {
+                            email: bodyUser.email,
+                            admin: true,
+                            passhash: hash,
+                            createdDate: new Date(),
+                            modifiedDate: new Date()
+                        };
+                        db.users.insert(user, function (err, newUser) {
+                            // set session, turn open registration off
+                            if (err) {
+                                console.log(err);
+                                res.render('signup', {message: 'An error happened saving the new user to DB.'});
+                            } else {
+                                app.set('openAdminRegistration', false);
+                                req.session.userId = newUser._id;
+                                req.session.admin = newUser.admin;
+                                req.session.email = newUser.email;
+                                res.redirect('/');
+                            }
+                        });
                     } else {
                         // not whitelisted?
                         console.log(user);

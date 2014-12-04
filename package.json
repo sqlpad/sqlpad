@@ -43,12 +43,12 @@
     "mysql": "2.1.x",
     "nedb": "0.10.x",
     "pg.js": "3.0.x",
+    "rc": "^0.5.4",
     "sanitize-filename": "1.1.x",
     "serve-favicon": "2.0.x",
     "ua-parser": "0.3.x",
     "update-notifier": "0.1.x",
-    "uuid": "1.4.x",
-    "yargs": "1.2.x"
+    "uuid": "1.4.x"
   },
   "main": "server.js",
   "bin": {

@@ -20,7 +20,10 @@ a {
 .form-signin h2 {
     text-align: center; padding-bottom:20px
 }
-
+.form-signin-footer {
+    text-align: center;
+    margin-top: 30px;
+}
 .form-signin .form-signin-heading,
 .form-signin .checkbox {
   margin-bottom: 10px;
