@@ -49,35 +49,13 @@
             
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">SqlPad <b class="caret"></b></a>
-                     <ul class="dropdown-menu">
-                       <li><a href="/queries?createdBy=<%= encodeURIComponent(session.email) %>">My Queries</a></li>
-                       <li><a href="/queries/new">New</a></li>
-                       <% if (session && session.admin) { %>
-                       <li role="presentation" class="divider"></li>
-                       <li role="presentation" class="dropdown-header">Admin</li>
-                       <li><a href="/connections">Connections</a></li>
-                       <li><a href="/users">Users</a></li>
-                       <% } %>
-                       <li role="presentation" class="divider"></li>
-                       <li><a href="#" data-toggle="modal" data-target="#aboutModal">About SqlPad</a></li>
-                     </ul>                       
-                </li>
+                <li class="<%= (pageTitle && pageTitle == "Queries" ? "active" : "") %>"><a href="/queries?createdBy=<%= encodeURIComponent(session.email) %>">Queries</a></li>
+                <li><a href="/queries/new">New Query</a></li>
+                <% if (session && session.admin) { %>
+                <li class="<%= (pageTitle && pageTitle == "Connections" ? "active" : "") %>"><a href="/connections">Connections</a></li>
+                <li class="<%= (pageTitle && pageTitle == "Users" ? "active" : "") %>"><a href="/users">Users</a></li>
+                <% } %>
               </ul>
-                
-              <% if (query && query.name) { %>
-                  <form class="navbar-form navbar-left">
-                      <div class="form-group">
-                        <input id="header-query-name" name="header-query-name" class="input-query-name form-control" value="<%= query.name %>" type="text" placeholder="Query Name" >
-                      </div>
-                  </form>
-              <% } else if (pageTitle) { %> 
-                  <span class="navbar-brand page-title">
-                    <%= pageTitle %>
-                  </span>
-              <% } %>
-              
               
               <ul class="nav navbar-nav navbar-right">
                 <% if (session && session.userId && session.email) { %>
@@ -85,6 +63,8 @@
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= session.email.split('@')[0] %> <b class="caret"></b></a>
                        <ul class="dropdown-menu">
                          <li><a href="/signout">Sign Out</a></li>
+                         <li role="presentation" class="divider"></li>
+                         <li><a href="#" data-toggle="modal" data-target="#aboutModal">About SqlPad</a></li>
                        </ul>                       
                   </li>
                 <% } else { %>

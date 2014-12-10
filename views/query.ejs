@@ -16,11 +16,19 @@
           <button id="btn-run-query" class="btn btn-default btn-small">Run Query</button>
           
           <div class="form-group" style="margin-left: 20px;">
+              <label class="control-label" for="header-query-name">Name</label>
+          </div>
+          <div class="form-group">
+            <input id="header-query-name" name="header-query-name" class="input-query-name form-control" value="<%= query.name %>" type="text" placeholder="Query Name" >
+          </div>
+          
+          <div class="form-group" style="margin-left: 20px;">
               <label class="control-label" for="tags">Tags</label>
           </div>
           <div class="form-group">
             <input id="tags" name="tags" class="input-smallz input-mdz form-control" value="<%= query.tags || '' %>" type="text" placeholder="Tags" >
           </div>
+          
           <input type="hidden" id="cache-key" value="<%= cacheKey %>" />
           <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>" />
           

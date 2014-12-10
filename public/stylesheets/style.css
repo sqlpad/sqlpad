@@ -78,16 +78,23 @@ a {
 .navbar-form .form-control.input-query-name {
   font-size: 18px;
   line-height: 20px;
-  width: 500px;
+  width: 450px;
+  /*
   background-color: #000;
-  background-color: rgba(0, 0, 0, 0);
+  
   color: #FFF;
+ 
+ 
+  
+  
+  background-color: rgba(0, 0, 0, 0);
   border-top: 0;
   border-left: 0;
   border-right: 0;
   border-bottom: 1px dotted #A5A5A5;
   box-shadow: none;
   border-radius: 0;
+  */
 }
 
 
@@ -303,8 +310,10 @@ a {
 
 
 /*  Nav Bar
-======================================================== */
+======================================================== 
 .page-title {
     padding-left: 30px;
-    color: #FFF !important; /* should always be white. something is overriding this to grey */
+    color: #FFF !important; 
 }
+
+*/
