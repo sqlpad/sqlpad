@@ -31,7 +31,7 @@
 - [ ] github pages on what/how/why  
 - [ ] decide on tags/last accessed date stuff (is it necessary?)
 
-## Undecided on
+## Later or never
 - [ ] public mode: anyone can view/run existing queries
 - [ ] public mode: anyone can view/edit/run queries (but not save)
 - [ ] public mode: anyone can view/edit/run/save queries
@@ -41,20 +41,3 @@
 - [ ] connection: prepend arbitrary SQL (TRANS ISOLATION LEVEL, etc)  
 - [ ] connection: prefer SSL (for postgres --> heroku)  
 - [ ] SQL Editor: Excel file download  
-
-
-## rework configuration
-
-common options at runtime 
-
-    --port 
-    --db or --dir for path to SqlPad data files
-
-less common options
-
-    --dev to get logging
-
-options still supported, but no longer necessary/deprecated
-
-    --admin (first admin can sign up freely. can be used as override.)
-    --passphrase (ideally, this is randomly generated and then stored)
