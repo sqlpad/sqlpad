@@ -1,7 +1,7 @@
 {
   "name": "sqlpad",
   "version": "0.5.0",
-  "description": "A sql editor/runner to be run in your own private cloud. Supports MySQL, Postgres, and SQL Server.",
+  "description": "Web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, and SQL Server.",
   "license": "MIT",
   "author": {
     "name": "Rick Bergfalk",
