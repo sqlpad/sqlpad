@@ -41,11 +41,11 @@ Once SqlPad is running, you create an initial admin account by navigationg to ht
 If for whatever reason you lose admin rights, and the last-admin-standing won't give you admin rights back, you can reinstate them to yourself by running
 
 ```sh
-sqlpad --admin youraddress@email.com
+sqlpad --admin yourEmailAddress@domain.com
 ```
 
 
-## A real-world example:  
+## A Realistic Example:  
 
 ```sh
 sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase
@@ -82,7 +82,7 @@ sqlpad --forget
 
 ## Contributing & Future of this Project
 
-I started this project as a personal-side project so I could run queries from a chromebook and visualize the results with some simple visualizations. I have no intention on taking this application further than that, although I wouldn't be surprised if I change my mind about that.
+I started this project as a personal side-project so I could run queries from a chromebook and visualize the results with some simple visualizations. I have no intention on taking this application further than that, although I wouldn't be surprised if I change my mind about that.
 
 I will merge any pull requests for feature additions so long as  
 
