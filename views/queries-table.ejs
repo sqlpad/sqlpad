@@ -32,7 +32,7 @@
                                 <!--<td><%= query.lastAccessedFromNow || "" %></td>-->
                                 <td><%= query.modifiedCalendar %></td>
                                 <td>
-                                    <form role="form" action="/queries/<%= query._id %>" method="post">
+                                    <form role="form" class="form-delete-query" action="/queries/<%= query._id %>" method="post">
                                         <input type="hidden" name="_method" value="delete" />
                                         <button class="btn btn-default" type="submit">Delete</button>
                                     </form>

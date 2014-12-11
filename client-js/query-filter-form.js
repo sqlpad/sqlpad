@@ -16,4 +16,14 @@ module.exports = function () {
             });
         });
     }
+    
+    $('.form-delete-query').submit(function(event) {
+        var confirmation = confirm("Delete the query? This can't be undone.");
+        if (confirmation) {
+            return true;
+        } else {
+            event.preventDefault();
+            return false;
+        }
+    });
 }

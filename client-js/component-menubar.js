@@ -14,10 +14,12 @@ var menubar = new Menubar();
 */
 
 var $ = require('jquery');
+/*
 var toastr = require('toastr');
 toastr.options = {
     positionClass: "toast-bottom-right"
 };
+*/
 
 var Menubar = function (opts) {
     var me = this;
