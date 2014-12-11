@@ -51,7 +51,7 @@ module.exports = function (app) {
                 cursor.sort({name: 1});
             }
         } else {
-            cursor.sort({lastAccessedDate: -1});
+            cursor.sort({modifiedDate: -1});
         }
         cursor.exec(function (err, queries) {
             queries.forEach(function(query) {
