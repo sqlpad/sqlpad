@@ -7,7 +7,7 @@
                             <th>Tags</th>
                             <th>connection</th>
                             <th>Created By</th>
-                            <th>Accessed</th>
+                            <!--<th>Accessed</th>-->
                             <th>Modified</th>
                             <th></th>
                         </tr>
@@ -29,7 +29,7 @@
                                     <% } %>
                                 </td>
                                 <td><%= (query.createdBy && query.createdBy == session.email ? "Me" : (query.createdBy || "")) %></td>
-                                <td><%= query.lastAccessedFromNow || "" %></td>
+                                <!--<td><%= query.lastAccessedFromNow || "" %></td>-->
                                 <td><%= query.modifiedCalendar %></td>
                                 <td>
                                     <form role="form" action="/queries/<%= query._id %>" method="post">
