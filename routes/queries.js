@@ -93,7 +93,7 @@ module.exports = function (app) {
             res.locals.navbarConnections = connections;
             
             if (req.params._id === 'new') {
-                res.render('query', {query: {name: "A new Query"}});
+                res.render('query', {query: {name: ""}});
             } else {
                 db.queries.findOne({_id: req.params._id}, function (err, query) {
                     // TODO: render error if this fails?
@@ -114,7 +114,7 @@ module.exports = function (app) {
     app.post('/queries/:_id', function (req, res) {
         // save the query, to the query db
         var bodyQuery = {
-            name: req.body.name,
+            name: req.body.name || "No Name Query",
             tags: req.body.tags,
             connectionId: req.body.connectionId,
             queryText: req.body.queryText,
