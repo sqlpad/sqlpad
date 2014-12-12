@@ -88,10 +88,10 @@ I started this project as a personal side-project so I could run queries from a 
 
 I will merge any pull requests for feature additions so long as  
 
-- an issue is opened in advance to get permission
 - the pull request is backwards compatible with the current version of SqlPad
+- an issue is opened in advance to give a heads up  
 
-If the pull request if for a bug fix no advance permission is necessary.
+If the pull request is for a bug fix no advance permission is necessary.
 
 
 ## More Screenshots
