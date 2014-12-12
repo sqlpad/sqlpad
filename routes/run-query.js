@@ -36,7 +36,7 @@ module.exports = function (app) {
                 var cache = {
                     cacheKey: req.body.cacheKey,
                     expiration: expirationDate,
-                    queryName: sanitize(req.body.queryName + " " + moment().format("YYYY-MM-DD"))
+                    queryName: sanitize((req.body.queryName || "SqlPad Query Results") + " " + moment().format("YYYY-MM-DD"))
                 };
                 
                 // upsert cacheKey if it doesn't exist, setting new expiration time
