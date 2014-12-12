@@ -94,6 +94,18 @@ I will merge any pull requests for feature additions so long as
 If the pull request if for a bug fix no advance permission is necessary.
 
 
+## More Screenshots
+
+### Vis Editor
+![SqlPad Query Listing](screenshots/vis-editor.png)
+
+### Query Listing
+![SqlPad Query Listing](screenshots/query-list.png)
+
+### User Administration
+![SqlPad Query Listing](screenshots/user-admin.png)
+
+
 
 ## License 
 
