@@ -85,7 +85,6 @@ module.exports = function (app) {
                     err: err
                 });
             } else {
-                console.log(results.rows);
                 res.send({
                     success: true,
                     results: results.rows
