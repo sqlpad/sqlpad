@@ -35,7 +35,15 @@ DbInfo.prototype.render = function () {
                 var tree = data.tree;
                 var $root = $('<ul class="schema-info">').appendTo('#panel-db-info');
                 for (var tableType in tree) {
-                    var $tableType = $('<li><a href="#">' + tableType + '</a></li>').appendTo($root);
+                    var tableTypeName;
+                    if (tableType == "BASE TABLE") {
+                        tableTypeName = "Tables";
+                    } else if (tableType == "VIEW") {
+                        tableTypeName = "Views";
+                    } else {
+                        tableTypeName = tableType;
+                    }
+                    var $tableType = $('<li><a href="#">' + tableTypeName + '</a></li>').appendTo($root);
                     var $tableTypeUl = $('<ul>').appendTo($tableType);
                     for (var schema in tree[tableType]) {
                         var $schema = $('<li><a href="#">' + schema + '</a></li>').appendTo($tableTypeUl);
@@ -50,7 +58,7 @@ DbInfo.prototype.render = function () {
                         }
                     }
                 }
-                $('.schema-info').find('ul').find('ul').find('ul').hide();
+                $('.schema-info').find('ul').find('ul').hide(); //find('ul').hide();
                 $('.schema-info').find('li').click(function (e) {
                     $(this).children('ul').toggle();
                     e.stopPropagation();
