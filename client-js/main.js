@@ -29,6 +29,17 @@ require('./query-filter-form.js')();
 require('./query-editor.js')();
 
 
+/*  User Admin
+==============================================================================*/
+require('./user-admin.js')();
+
+
+/*  Connection Admin
+==============================================================================*/
+require('./connection-admin.js')();
+
+
+
 /*
 // eventually have this api:
 

@@ -61,7 +61,7 @@ module.exports =  {
         return chart;
     }
 };
-},{"lodash":12}],2:[function(require,module,exports){
+},{"lodash":14}],2:[function(require,module,exports){
 var nv = (window.nv);
 var _  = require('lodash');
 var d3 = (window.d3);
@@ -144,7 +144,7 @@ module.exports =  {
         return chart;
     }
 };
-},{"lodash":12}],3:[function(require,module,exports){
+},{"lodash":14}],3:[function(require,module,exports){
 var nv = (window.nv);
 var _  = require('lodash');
 var d3 = (window.d3);
@@ -236,7 +236,7 @@ module.exports =  {
         return chart;
     }
 };
-},{"lodash":12}],4:[function(require,module,exports){
+},{"lodash":14}],4:[function(require,module,exports){
 /*
 
 "component" for chart editor
@@ -813,7 +813,21 @@ var SqlEditor = function () {
 };
 
 module.exports = SqlEditor;
-},{"moment":13}],8:[function(require,module,exports){
+},{"moment":15}],8:[function(require,module,exports){
+var $ = (window.$);
+
+module.exports = function () {
+    $('.form-delete-connection').submit(function(event) {
+        var confirmation = confirm("Delete this Connection? This can't be undone.");
+        if (confirmation) {
+            return true;
+        } else {
+            event.preventDefault();
+            return false;
+        }
+    });
+}
+},{}],9:[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
 //  via Browserify. 
 //  All the heavy old-school javascript libraries are exposed as browserify globals
@@ -845,6 +859,17 @@ require('./query-filter-form.js')();
 require('./query-editor.js')();
 
 
+/*  User Admin
+==============================================================================*/
+require('./user-admin.js')();
+
+
+/*  Connection Admin
+==============================================================================*/
+require('./connection-admin.js')();
+
+
+
 /*
 // eventually have this api:
 
@@ -857,7 +882,7 @@ queryEditor.addChartTypeConfig("histogram", require('./chart-type-histogram.js')
 
 queryEditor.render();
 */
-},{"./query-editor.js":9,"./query-filter-form.js":10,"./test-connection.js":11}],9:[function(require,module,exports){
+},{"./connection-admin.js":8,"./query-editor.js":10,"./query-filter-form.js":11,"./test-connection.js":12,"./user-admin.js":13}],10:[function(require,module,exports){
 /*	
 	Contains all the view/model logic for the query.ejs page
 	
@@ -959,7 +984,7 @@ module.exports = function () {
         });
     }
 };
-},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./component-chart-editor.js":4,"./component-db-info.js":5,"./component-menubar.js":6,"./component-sql-editor.js":7}],10:[function(require,module,exports){
+},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./component-chart-editor.js":4,"./component-db-info.js":5,"./component-menubar.js":6,"./component-sql-editor.js":7}],11:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -989,7 +1014,7 @@ module.exports = function () {
         }
     });
 }
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var $ = (window.$);
 
 function renderFailure (text) {
@@ -1038,7 +1063,21 @@ module.exports = function () {
         });
     });
 };
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
+var $ = (window.$);
+
+module.exports = function () {
+    $('.form-delete-user').submit(function(event) {
+        var confirmation = confirm("Delete this User? This can't be undone.");
+        if (confirmation) {
+            return true;
+        } else {
+            event.preventDefault();
+            return false;
+        }
+    });
+}
+},{}],14:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -7827,7 +7866,7 @@ module.exports = function () {
 }.call(this));
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.4
@@ -10767,4 +10806,4 @@ module.exports = function () {
 }).call(this);
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[8])
+},{}]},{},[9])

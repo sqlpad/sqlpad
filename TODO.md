@@ -30,13 +30,16 @@
 - [x] Change BASE TABLES to just TABLES
 - [x] Remove test connection logging
 - [x] Only schema in db info
+- [x] all delete buttons should have confirmations
+- [x] user/connection sorting (sane default only)
+
 
 ## Before considered 1.x.x  
 - [ ] github pages on what/how/why  
-- [ ] all delete buttons should have confirmations
-- [ ] user/connection sorting (sane default only)
+
 - [ ] multiple bar charts
 - [ ] smart column width in query results (max(value length) or max(column name length)) but no more than some amount (300px?)
+
 
 ## Later or never
 - [ ] public mode: anyone can view/run existing queries

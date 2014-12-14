@@ -8,7 +8,7 @@ module.exports = function (app) {
     var cipher = app.get('cipher');
     
     app.get('/connections', function (req, res) {
-        db.connections.find({}, function (err, connections) {
+        db.connections.find({}).sort({name: 1}).exec(function (err, connections) {
             connections = _.sortBy(connections, function(c) {
                 return c.name.toLowerCase();
             });

@@ -4,7 +4,7 @@ module.exports = function (app) {
     var db = app.get('db');
         
     function renderUsers (req, res) {
-        db.users.find({}, function (err, users) {
+        db.users.find({}).sort({email: 1}).exec(function (err, users) {
             res.render('users', {users: users, pageTitle: "Users"});
         });   
     }
