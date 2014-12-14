@@ -76,14 +76,18 @@ module.exports = function (app) {
                                     if (!meta[key]) meta[key] = {
                                         datatype: null,
                                         max: null,
-                                        min: null
+                                        min: null,
+                                        maxValueLength: 0
                                     };
                                     
                                     // if we don't have a data type and we have a value yet lets try and figure it out
                                     if (!meta[key].datatype && value) {
                                         if (_.isDate(value)) meta[key].datatype = 'date';
                                         else if (isNumberLike(value)) meta[key].datatype = 'number';
-                                        else if (_.isString(value)) meta[key].datatype = 'string';
+                                        else if (_.isString(value)) {
+                                            meta[key].datatype = 'string';
+                                            if (meta[key].maxValueLength < value.length) meta[key].maxValueLength = value.length;
+                                        }
                                     }
                                     // if we have a value and are dealing with a number or date, we should get min and max
                                     if (

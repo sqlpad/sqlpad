@@ -32,13 +32,12 @@
 - [x] Only schema in db info
 - [x] all delete buttons should have confirmations
 - [x] user/connection sorting (sane default only)
+- [x] smart column width in query results (max(value length) or max(column name length)) but no more than some amount (400px)
 
 
 ## Before considered 1.x.x  
 - [ ] github pages on what/how/why  
-
 - [ ] multiple bar charts
-- [ ] smart column width in query results (max(value length) or max(column name length)) but no more than some amount (300px?)
 
 
 ## Later or never

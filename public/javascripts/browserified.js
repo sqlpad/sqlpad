@@ -670,7 +670,10 @@ var SqlEditor = function () {
                 $('#rowcount').html(data.results.length);
                 var firstRow = data.results[0];
                 for (var col in firstRow) {
-                    var columnSpec = {id: col, name: col, field: col, width: col.length * 15};
+                    var maxValueLength = data.meta[col].maxValueLength;
+                    var columnWidth = (maxValueLength > col.length ? maxValueLength * 15 : col.length * 15);
+                    if (columnWidth > 300) columnWidth = 300;
+                    var columnSpec = {id: col, name: col, field: col, width: columnWidth};
                     if (data.meta[col].datatype === 'date') {
                         columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
                             // https://github.com/mleibman/SlickGrid/wiki/Column-Options
