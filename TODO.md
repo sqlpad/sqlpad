@@ -30,6 +30,13 @@
 ## Before considered 1.x.x  
 - [ ] github pages on what/how/why  
 - [ ] decide on tags/last accessed date stuff (is it necessary?)
+- [ ] all delete buttons should have confirmations
+- [ ] user/connection sorting (sane default only)
+- [ ] multiple bar charts
+- [ ] Only schema in db info
+- [x] Change BASE TABLES to just TABLES
+- [x] Remove test connection logging
+- [ ] smart column width in query results (max(value length) or max(column name length)) but no more than some amount (300px?)
 
 ## Later or never
 - [ ] public mode: anyone can view/run existing queries
@@ -41,3 +48,7 @@
 - [ ] connection: prepend arbitrary SQL (TRANS ISOLATION LEVEL, etc)  
 - [ ] connection: prefer SSL (for postgres --> heroku)  
 - [ ] SQL Editor: Excel file download  
+- [ ] vis types - they should probably have an ID and a label, for when things get complicated (multiple bar charts?)
+- [ ] Get rid of tags?
+- [ ] inputs to sidebar?
+- [ ] Loading animation?
