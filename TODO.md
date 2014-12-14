@@ -26,16 +26,16 @@
 - [x] clean up console.loggings
 - [x] SQL Editor: download filename uses query name  
 - [x] cleanup css for query page
+- [x] decide last accessed date stuff (hidden for now)
+- [x] Change BASE TABLES to just TABLES
+- [x] Remove test connection logging
+- [x] Only schema in db info
 
 ## Before considered 1.x.x  
 - [ ] github pages on what/how/why  
-- [ ] decide on tags/last accessed date stuff (is it necessary?)
 - [ ] all delete buttons should have confirmations
 - [ ] user/connection sorting (sane default only)
 - [ ] multiple bar charts
-- [ ] Only schema in db info
-- [x] Change BASE TABLES to just TABLES
-- [x] Remove test connection logging
 - [ ] smart column width in query results (max(value length) or max(column name length)) but no more than some amount (300px?)
 
 ## Later or never
