@@ -1,6 +1,8 @@
 var nv = require('nv');
 var _  = require('lodash');
 var d3 = require('d3');
+var dimple = require('dimple');
+var $ = require('jquery');
 
 module.exports =  {
     fields: {
@@ -47,6 +49,33 @@ module.exports =  {
     },
     renderChart: function (meta, data, fields) {
         
+        
+        var $chart = $('#chart');
+        var width = $chart.width();
+        var height = $chart.height();
+        var svg = dimple.newSvg("#chart", width, height);
+        var myChart = new dimple.chart(svg, data);
+        myChart.setBounds(60, 30, width - 100, height - 90);
+        
+        if (fields.x.datatype == "date" || fields.x.datatype == "number") {
+            
+        } else {
+            alert("x should be date or number")
+        }
+        var x = myChart.addCategoryAxis("x", fields.x.val);
+        if (fields.x.datatype == "date") x.addOrderRule("Date");
+        myChart.addMeasureAxis("y", fields.y.val);
+        
+        var lineForEach = fields.split.val || null;
+        var s = myChart.addSeries(lineForEach, dimple.plot.line);
+        s.interpolation = "cardinal";                   // add line smoothing
+        //myChart.addLegend(60, 10, width, 20, "right"); 
+        myChart.draw();
+        return myChart;
+    
+        
+        /////////////////////////
+        /*
         var ymin = 0;
         if (fields.y.min < 0) ymin = fields.y.min;
         
@@ -87,5 +116,6 @@ module.exports =  {
         chart.yAxis.axisLabel(fields.y.val);
         
         return chart;
+        */
     }
 };

@@ -1,6 +1,8 @@
 var nv = require('nv');
 var _  = require('lodash');
 var d3 = require('d3');
+var dimple = require('dimple');
+var $ = require('jquery');
 
 module.exports =  {
     fields: {
@@ -27,7 +29,25 @@ module.exports =  {
         }];
     },
     renderChart: function (meta, data, fields) {
+        var $chart = $('#chart');
+        var width = $chart.width();
+        var height = $chart.height();
+        var svg = dimple.newSvg("#chart", width, height);
+        var myChart = new dimple.chart(svg, data);
+        myChart.setBounds(60, 30, width - 100, height - 90);
         
+        //var x = myChart.addCategoryAxis("x", "Month");
+        var x = myChart.addCategoryAxis("x", fields.barlabel.val);
+        //x.addOrderRule("Month");
+        
+        //myChart.addMeasureAxis("y", "Unit Sales");
+        myChart.addMeasureAxis("y", fields.barvalue.val);
+        
+        myChart.addSeries(null, dimple.plot.bar);
+        myChart.draw();
+        return myChart;
+        
+        /*
         var chart = nv.models.multiBarHorizontalChart()
                         
                         // x should be bar label
@@ -56,7 +76,7 @@ module.exports =  {
                         .showControls(false);
         
         chart.yAxis.axisLabel(fields.barvalue.val);
+        */
         
-        return chart;
     }
 };

@@ -2,6 +2,8 @@
 var nv = (window.nv);
 var _  = require('lodash');
 var d3 = (window.d3);
+var dimple = (window.dimple);
+var $ = (window.$);
 
 module.exports =  {
     fields: {
@@ -28,7 +30,25 @@ module.exports =  {
         }];
     },
     renderChart: function (meta, data, fields) {
+        var $chart = $('#chart');
+        var width = $chart.width();
+        var height = $chart.height();
+        var svg = dimple.newSvg("#chart", width, height);
+        var myChart = new dimple.chart(svg, data);
+        myChart.setBounds(60, 30, width - 100, height - 90);
         
+        //var x = myChart.addCategoryAxis("x", "Month");
+        var x = myChart.addCategoryAxis("x", fields.barlabel.val);
+        //x.addOrderRule("Month");
+        
+        //myChart.addMeasureAxis("y", "Unit Sales");
+        myChart.addMeasureAxis("y", fields.barvalue.val);
+        
+        myChart.addSeries(null, dimple.plot.bar);
+        myChart.draw();
+        return myChart;
+        
+        /*
         var chart = nv.models.multiBarHorizontalChart()
                         
                         // x should be bar label
@@ -57,14 +77,16 @@ module.exports =  {
                         .showControls(false);
         
         chart.yAxis.axisLabel(fields.barvalue.val);
+        */
         
-        return chart;
     }
 };
 },{"lodash":14}],2:[function(require,module,exports){
 var nv = (window.nv);
 var _  = require('lodash');
 var d3 = (window.d3);
+var dimple = (window.dimple);
+var $ = (window.$);
 
 module.exports =  {
     fields: {
@@ -115,6 +137,26 @@ module.exports =  {
     },
     renderChart: function (meta, data, fields) {
         
+        var $chart = $('#chart');
+        var width = $chart.width();
+        var height = $chart.height();
+        var svg = dimple.newSvg("#chart", width, height);
+        var myChart = new dimple.chart(svg, data);
+        myChart.setBounds(60, 30, width - 100, height - 90);
+        
+        
+        myChart.addMeasureAxis("x", fields.x.val);
+        myChart.addMeasureAxis("y", fields.y.val);
+        if (fields.size.val) myChart.addMeasureAxis("z", fields.size.val); // bubble size
+        // to get label we could do fields.label.val
+        myChart.addSeries([fields.label.val, "bubble color"], dimple.plot.bubble); // TODO: null defines color groupings
+        
+        myChart.draw();
+        return myChart;
+        
+        
+        ///////////////////
+        /*
         var chart = nv.models.scatterChart()
                     .showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
                     .showDistY(true)
@@ -142,12 +184,15 @@ module.exports =  {
         chart.yAxis.tickFormat(d3.format('.02f'));
         
         return chart;
+        */
     }
 };
 },{"lodash":14}],3:[function(require,module,exports){
 var nv = (window.nv);
 var _  = require('lodash');
 var d3 = (window.d3);
+var dimple = (window.dimple);
+var $ = (window.$);
 
 module.exports =  {
     fields: {
@@ -194,6 +239,33 @@ module.exports =  {
     },
     renderChart: function (meta, data, fields) {
         
+        
+        var $chart = $('#chart');
+        var width = $chart.width();
+        var height = $chart.height();
+        var svg = dimple.newSvg("#chart", width, height);
+        var myChart = new dimple.chart(svg, data);
+        myChart.setBounds(60, 30, width - 100, height - 90);
+        
+        if (fields.x.datatype == "date" || fields.x.datatype == "number") {
+            
+        } else {
+            alert("x should be date or number")
+        }
+        var x = myChart.addCategoryAxis("x", fields.x.val);
+        if (fields.x.datatype == "date") x.addOrderRule("Date");
+        myChart.addMeasureAxis("y", fields.y.val);
+        
+        var lineForEach = fields.split.val || null;
+        var s = myChart.addSeries(lineForEach, dimple.plot.line);
+        s.interpolation = "cardinal";                   // add line smoothing
+        //myChart.addLegend(60, 10, width, 20, "right"); 
+        myChart.draw();
+        return myChart;
+    
+        
+        /////////////////////////
+        /*
         var ymin = 0;
         if (fields.y.min < 0) ymin = fields.y.min;
         
@@ -234,6 +306,7 @@ module.exports =  {
         chart.yAxis.axisLabel(fields.y.val);
         
         return chart;
+        */
     }
 };
 },{"lodash":14}],4:[function(require,module,exports){
@@ -384,17 +457,13 @@ var ChartEditor = function (opts) {
                     fieldsNeeded.push(field.label);
                 }
             }
-            var cData = ct.transformData(gmeta, gdata, ct.fields);
-            var chart = ct.renderChart(gmeta, gdata, ct.fields);
-            gchart = chart;
-            $('#chart svg').empty();
+            var cData;
+            var chart;
+            
             if (requirementsMet) {
-                d3.select('#chart svg')
-                    .datum(cData)
-                    .call(chart);
-                nv.addGraph(function () {
-                    return chart;
-                });    
+                $('#chart').empty();
+                chart = ct.renderChart(gmeta, gdata, ct.fields);
+                gchart = chart;
             } else {
                 alert("Chart requires additional information: " + fieldsNeeded.join(', '));
             }
@@ -672,7 +741,7 @@ var SqlEditor = function () {
                 for (var col in firstRow) {
                     var maxValueLength = data.meta[col].maxValueLength;
                     var columnWidth = (maxValueLength > col.length ? maxValueLength * 15 : col.length * 15);
-                    if (columnWidth > 300) columnWidth = 300;
+                    if (columnWidth > 400) columnWidth = 400;
                     var columnSpec = {id: col, name: col, field: col, width: columnWidth};
                     if (data.meta[col].datatype === 'date') {
                         columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
@@ -972,6 +1041,31 @@ module.exports = function () {
                 chartEditor.rerenderChart();
             }
         });
+        
+        /*  if in the alt-view
+            do additional stuff when tabs are toggled
+        ==============================================================================*/
+        if ($('.query-editor-altview').length) {
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                // if shown tab was the chart tab, rerender the chart
+                // e.target is the activated tab
+                if (e.target.getAttribute("href") == "#tab-content-visualize") {
+                    // hide sql ui
+                    // show vis ui
+                    $('.side-sql-ui').hide();
+                    $('.side-vis-ui').show();
+                } else {
+                    // hide vis ui
+                    // show sql ui
+                    $('.side-vis-ui').hide();
+                    $('.side-sql-ui').show();
+                }
+            });
+            $('.side-vis-ui').hide();
+        }
+        
+        
+        
         
         /*  get query again, because not all the data is in the HTML
             TODO: do most the workflow this way? That or boostrap the page with the query object

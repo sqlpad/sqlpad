@@ -145,17 +145,13 @@ var ChartEditor = function (opts) {
                     fieldsNeeded.push(field.label);
                 }
             }
-            var cData = ct.transformData(gmeta, gdata, ct.fields);
-            var chart = ct.renderChart(gmeta, gdata, ct.fields);
-            gchart = chart;
-            $('#chart svg').empty();
+            var cData;
+            var chart;
+            
             if (requirementsMet) {
-                d3.select('#chart svg')
-                    .datum(cData)
-                    .call(chart);
-                nv.addGraph(function () {
-                    return chart;
-                });    
+                $('#chart').empty();
+                chart = ct.renderChart(gmeta, gdata, ct.fields);
+                gchart = chart;
             } else {
                 alert("Chart requires additional information: " + fieldsNeeded.join(', '));
             }

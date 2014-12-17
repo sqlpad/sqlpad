@@ -1,6 +1,8 @@
 var nv = require('nv');
 var _  = require('lodash');
 var d3 = require('d3');
+var dimple = require('dimple');
+var $ = require('jquery');
 
 module.exports =  {
     fields: {
@@ -51,6 +53,26 @@ module.exports =  {
     },
     renderChart: function (meta, data, fields) {
         
+        var $chart = $('#chart');
+        var width = $chart.width();
+        var height = $chart.height();
+        var svg = dimple.newSvg("#chart", width, height);
+        var myChart = new dimple.chart(svg, data);
+        myChart.setBounds(60, 30, width - 100, height - 90);
+        
+        
+        myChart.addMeasureAxis("x", fields.x.val);
+        myChart.addMeasureAxis("y", fields.y.val);
+        if (fields.size.val) myChart.addMeasureAxis("z", fields.size.val); // bubble size
+        // to get label we could do fields.label.val
+        myChart.addSeries([fields.label.val, "bubble color"], dimple.plot.bubble); // TODO: null defines color groupings
+        
+        myChart.draw();
+        return myChart;
+        
+        
+        ///////////////////
+        /*
         var chart = nv.models.scatterChart()
                     .showDistX(true)    //showDist, when true, will display those little distribution lines on the axis.
                     .showDistY(true)
@@ -78,5 +100,6 @@ module.exports =  {
         chart.yAxis.tickFormat(d3.format('.02f'));
         
         return chart;
+        */
     }
 };
