@@ -85,6 +85,31 @@ module.exports = function () {
             }
         });
         
+        /*  if in the alt-view
+            do additional stuff when tabs are toggled
+        ==============================================================================*/
+        if ($('.query-editor-altview').length) {
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                // if shown tab was the chart tab, rerender the chart
+                // e.target is the activated tab
+                if (e.target.getAttribute("href") == "#tab-content-visualize") {
+                    // hide sql ui
+                    // show vis ui
+                    $('.side-sql-ui').hide();
+                    $('.side-vis-ui').show();
+                } else {
+                    // hide vis ui
+                    // show sql ui
+                    $('.side-vis-ui').hide();
+                    $('.side-sql-ui').show();
+                }
+            });
+            $('.side-vis-ui').hide();
+        }
+        
+        
+        
+        
         /*  get query again, because not all the data is in the HTML
             TODO: do most the workflow this way? That or boostrap the page with the query object
         ==============================================================================*/

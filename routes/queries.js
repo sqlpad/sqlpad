@@ -79,6 +79,7 @@ module.exports = function (app) {
     });
     
     app.get('/queries/:_id', function (req, res) {
+        
         var ua = req.headers['user-agent'];
         var os = uaParser.parseOS(ua).toString();
         res.locals.isMac = (os.search(/mac/i) >= 0);
@@ -92,8 +93,11 @@ module.exports = function (app) {
             res.locals.cacheKey = uuid.v1();
             res.locals.navbarConnections = connections;
             
+            var view = 'query';
+            if (req.query && req.query.view) view = req.query.view;
+            
             if (req.params._id === 'new') {
-                res.render('query', {query: {name: ""}});
+                res.render(view, {query: {name: ""}});
             } else {
                 db.queries.findOne({_id: req.params._id}, function (err, query) {
                     // TODO: render error if this fails?
@@ -104,7 +108,7 @@ module.exports = function (app) {
                         res.json(query);
                     } else {
                         // render page
-                        res.render('query', {query: query});
+                        res.render(view, {query: query});
                     }
                 });
             }
