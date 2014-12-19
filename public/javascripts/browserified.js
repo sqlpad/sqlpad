@@ -1,5 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var $ = (window.$);
 var dimple = (window.dimple);
 
 module.exports =  {
@@ -21,12 +20,9 @@ module.exports =  {
         }
     },
     renderChart: function (meta, data, fields) {
-        var $chart = $('#chart');
-        var width = $chart.width();
-        var height = $chart.height();
-        var svg = dimple.newSvg("#chart", width, height);
+        var svg = dimple.newSvg("#chart", "100%", "100%");
         var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(60, 30, width - 100, height - 90);
+        myChart.setMargins(80, 30, 30, 80); // left top right bottom
         
         //var x = myChart.addCategoryAxis("x", "Month");
         var x = myChart.addCategoryAxis("x", fields.barlabel.val);
@@ -41,7 +37,6 @@ module.exports =  {
     }
 };
 },{}],2:[function(require,module,exports){
-var $ = (window.$);
 var dimple = (window.dimple);
 
 module.exports =  {
@@ -73,28 +68,19 @@ module.exports =  {
         }
     },
     renderChart: function (meta, data, fields) {
-        
-        var $chart = $('#chart');
-        var width = $chart.width();
-        var height = $chart.height();
-        var svg = dimple.newSvg("#chart", width, height);
+        var svg = dimple.newSvg("#chart", "100%", "100%");
         var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(60, 30, width - 100, height - 90);
-        
-        
+        myChart.setMargins(80, 30, 30, 80); // left top right bottom
         myChart.addMeasureAxis("x", fields.x.val);
         myChart.addMeasureAxis("y", fields.y.val);
         if (fields.size.val) myChart.addMeasureAxis("z", fields.size.val); // bubble size
         // to get label we could do fields.label.val
         myChart.addSeries([fields.label.val, "bubble color"], dimple.plot.bubble); // TODO: null defines color groupings
-        
         myChart.draw();
         return myChart;
-        
     }
 };
 },{}],3:[function(require,module,exports){
-var $ = (window.$);
 var dimple = (window.dimple);
 
 module.exports =  {
@@ -121,12 +107,9 @@ module.exports =  {
         }
     },
     renderChart: function (meta, data, fields) {
-        var $chart = $('#chart');
-        var width = $chart.width();
-        var height = $chart.height();
-        var svg = dimple.newSvg("#chart", width, height);
+        var svg = dimple.newSvg("#chart", "100%", "100%");
         var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(60, 30, width - 100, height - 90);
+        myChart.setMargins(80, 30, 30, 80); // left top right bottom
         
         if (fields.x.datatype == "date" || fields.x.datatype == "number") {
             
@@ -301,7 +284,7 @@ var ChartEditor = function (opts) {
     $btnVisualize.click(me.renderChart);
     $chartTypeDropDown.change(me.buildChartUI);
     $(window).resize(function () {
-        if (gchart) gchart.update();
+        if (gchart) gchart.draw(0, true);
     });
 };
 module.exports = ChartEditor;

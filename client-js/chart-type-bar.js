@@ -1,4 +1,3 @@
-var $ = require('jquery');
 var dimple = require('dimple');
 
 module.exports =  {
@@ -20,12 +19,9 @@ module.exports =  {
         }
     },
     renderChart: function (meta, data, fields) {
-        var $chart = $('#chart');
-        var width = $chart.width();
-        var height = $chart.height();
-        var svg = dimple.newSvg("#chart", width, height);
+        var svg = dimple.newSvg("#chart", "100%", "100%");
         var myChart = new dimple.chart(svg, data);
-        myChart.setBounds(60, 30, width - 100, height - 90);
+        myChart.setMargins(80, 30, 30, 80); // left top right bottom
         
         //var x = myChart.addCategoryAxis("x", "Month");
         var x = myChart.addCategoryAxis("x", fields.barlabel.val);

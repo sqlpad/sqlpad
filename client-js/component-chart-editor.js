@@ -154,7 +154,7 @@ var ChartEditor = function (opts) {
     $btnVisualize.click(me.renderChart);
     $chartTypeDropDown.change(me.buildChartUI);
     $(window).resize(function () {
-        if (gchart) gchart.update();
+        if (gchart) gchart.draw(0, true);
     });
 };
 module.exports = ChartEditor;
