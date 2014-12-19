@@ -67,7 +67,6 @@
     "jquery": "global:$",
     "ace": "global:ace",
     "Slick": "global:Slick",
-    "nv": "global:nv",
     "d3": "global:d3",
     "dimple": "global:dimple"
   }

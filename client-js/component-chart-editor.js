@@ -7,15 +7,9 @@ EXAMPLE:
 var ChartEditor = require('this-file.js');
 var chartEditor = new ChartEditor();
 
-
-
-
-
 */
 
 var $ = require('jquery');
-var d3 = require('d3');
-var nv = require('nv');
 
 var ChartEditor = function (opts) {
     var me = this;
@@ -145,9 +139,7 @@ var ChartEditor = function (opts) {
                     fieldsNeeded.push(field.label);
                 }
             }
-            var cData;
             var chart;
-            
             if (requirementsMet) {
                 $('#chart').empty();
                 chart = ct.renderChart(gmeta, gdata, ct.fields);
