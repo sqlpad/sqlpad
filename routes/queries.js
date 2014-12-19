@@ -93,11 +93,8 @@ module.exports = function (app) {
             res.locals.cacheKey = uuid.v1();
             res.locals.navbarConnections = connections;
             
-            var view = 'query';
-            if (req.query && req.query.view) view = req.query.view;
-            
             if (req.params._id === 'new') {
-                res.render(view, {query: {name: ""}});
+                res.render('query', {query: {name: ""}});
             } else {
                 db.queries.findOne({_id: req.params._id}, function (err, query) {
                     // TODO: render error if this fails?
@@ -108,7 +105,7 @@ module.exports = function (app) {
                         res.json(query);
                     } else {
                         // render page
-                        res.render(view, {query: query});
+                        res.render('query', {query: query});
                     }
                 });
             }
