@@ -1,7 +1,8 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-bar.js":[function(require,module,exports){
 var dimple = (window.dimple);
 
 module.exports =  {
+    chartLabel: "Horizontal Bar",
     fields: {
         barlabel: {
             required: true,
@@ -17,29 +18,73 @@ module.exports =  {
             required: true,
             label: "Bar Value",
             inputType: "field-dropdown"
+        },
+        sortField: {
+            required: false,
+            label: "Sort Field",
+            inputType: "field-dropdown"
+        },
+        sortOrder: {
+            required: false,
+            label: "Sort Order",
+            inputType: "custom-dropdown",
+            options: [{value: "asc", label: "ascending"},{value: "desc", label: "descending"}]
         }
     },
     renderChart: function (meta, data, fields) {
+        // preserve order in array
+        // TODO: we may not need this
+        var order = [];
+        for (var i = 0; i < data.length; i += 1) {
+            if (order.indexOf(data[i][fields.barlabel.val]) === -1) {
+                order.push(data[i][fields.barlabel.val]);
+            }
+        }
+        
         var svg = dimple.newSvg("#chart", "100%", "100%");
         var myChart = new dimple.chart(svg, data);
         myChart.setMargins(80, 30, 30, 80); // left top right bottom
         
-        //var x = myChart.addCategoryAxis("x", "Month");
-        var x = myChart.addCategoryAxis("x", fields.barlabel.val);
-        //x.addOrderRule("Month");
+        var y = myChart.addCategoryAxis("y", fields.barlabel.val);
         
-        //myChart.addMeasureAxis("y", "Unit Sales");
-        myChart.addMeasureAxis("y", fields.barvalue.val);
+        var x = myChart.addMeasureAxis("x", fields.barvalue.val);
         
-        myChart.addSeries(null, dimple.plot.bar);
+        var s = myChart.addSeries(null, dimple.plot.bar);
+        
+        /*
+        y.addOrderRule(function (r1, r2) {
+            console.log("---");
+            console.log(r1);
+            console.log(r2);
+            if (r1[fields.barvalue.val][0] < r2[fields.barvalue.val][0]) {
+                return 1;
+            } else if (r1[fields.barvalue.val][0] > r2[fields.barvalue.val][0]) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }, true);
+        */
+        //y.addOrderRule(order, true);
+        
+        // IMPORTANT: This seems backwards. Dimple might have it backwards. 
+        // Or do I have it backwards? 
+        // Doesn't matter - this gives me the results I'm expecting
+        
+        if (fields.sortOrder.val) {
+            var sortDesc = (fields.sortOrder.val == "asc" ? true : false);
+            y.addOrderRule(fields.sortField.val || fields.barvalue.val, sortDesc);
+        }
+        
         myChart.draw();
         return myChart;
     }
 };
-},{}],2:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-bubble.js":[function(require,module,exports){
 var dimple = (window.dimple);
 
 module.exports =  {
+    chartLabel: "Bubble",
     fields: {
         x: {
             label: "x Axis",
@@ -80,10 +125,11 @@ module.exports =  {
         return myChart;
     }
 };
-},{}],3:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-line.js":[function(require,module,exports){
 var dimple = (window.dimple);
 
 module.exports =  {
+    chartLabel: "Line",
     fields: {
         x: {
             required: true,
@@ -127,7 +173,7 @@ module.exports =  {
         return myChart;
     }
 };
-},{}],4:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/component-chart-editor.js":[function(require,module,exports){
 /*
 
 "component" for chart editor
@@ -154,7 +200,8 @@ var ChartEditor = function (opts) {
     
     this.registerChartType = function (type, chartType) {
         chartTypes[type] = chartType;
-        $chartTypeDropDown.append('<option value="' + type + '">' + type + '</option>');
+        var chartLabel = chartType.chartLabel || type;
+        $chartTypeDropDown.append('<option value="' + type + '">' + chartLabel + '</option>');
     };
     
     this.buildChartUI = function () {
@@ -174,6 +221,12 @@ var ChartEditor = function (opts) {
                     $input.append('<option value=""></option>');
                     for (var m in gmeta) {
                         $input.append('<option value="' + m + '">' + m + '</option>');
+                    }
+                } else if (field.inputType === "custom-dropdown") {
+                    $input = $('<select>');
+                    $input.append('<option value=""></option>');
+                    for (var i in field.options) {
+                        $input.append('<option value="' + field.options[i].value + '">' + field.options[i].label + '</option>');
                     }
                 }
                 $formGroup
@@ -289,7 +342,7 @@ var ChartEditor = function (opts) {
 };
 module.exports = ChartEditor;
 
-},{}],5:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/component-db-info.js":[function(require,module,exports){
 /*
 
 "component" for db schema info
@@ -363,7 +416,7 @@ DbInfo.prototype.render = function () {
 };
 
 
-},{}],6:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/component-menubar.js":[function(require,module,exports){
 /*
 
 "component" for menubar
@@ -468,7 +521,7 @@ var Menubar = function (opts) {
 };
 
 module.exports = Menubar;
-},{}],7:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/component-sql-editor.js":[function(require,module,exports){
 /*
 
 "component" for ace editor, status bar, and slickgrid
@@ -695,7 +748,7 @@ var SqlEditor = function () {
 };
 
 module.exports = SqlEditor;
-},{"moment":14}],8:[function(require,module,exports){
+},{"moment":"/Users/rickbergfalk/Code/sqlpad/node_modules/moment/moment.js"}],"/Users/rickbergfalk/Code/sqlpad/client-js/connection-admin.js":[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -709,7 +762,7 @@ module.exports = function () {
         }
     });
 }
-},{}],9:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/main.js":[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
 //  via Browserify. 
 //  All the heavy old-school javascript libraries are exposed as browserify globals
@@ -764,7 +817,7 @@ queryEditor.addChartTypeConfig("histogram", require('./chart-type-histogram.js')
 
 queryEditor.render();
 */
-},{"./connection-admin.js":8,"./query-editor.js":10,"./query-filter-form.js":11,"./test-connection.js":12,"./user-admin.js":13}],10:[function(require,module,exports){
+},{"./connection-admin.js":"/Users/rickbergfalk/Code/sqlpad/client-js/connection-admin.js","./query-editor.js":"/Users/rickbergfalk/Code/sqlpad/client-js/query-editor.js","./query-filter-form.js":"/Users/rickbergfalk/Code/sqlpad/client-js/query-filter-form.js","./test-connection.js":"/Users/rickbergfalk/Code/sqlpad/client-js/test-connection.js","./user-admin.js":"/Users/rickbergfalk/Code/sqlpad/client-js/user-admin.js"}],"/Users/rickbergfalk/Code/sqlpad/client-js/query-editor.js":[function(require,module,exports){
 /*	
 	Contains all the view/model logic for the query.ejs page
 	
@@ -891,7 +944,7 @@ module.exports = function () {
         });
     }
 };
-},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./component-chart-editor.js":4,"./component-db-info.js":5,"./component-menubar.js":6,"./component-sql-editor.js":7}],11:[function(require,module,exports){
+},{"./chart-type-bar.js":"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-bar.js","./chart-type-bubble":"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-bubble.js","./chart-type-line.js":"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-line.js","./component-chart-editor.js":"/Users/rickbergfalk/Code/sqlpad/client-js/component-chart-editor.js","./component-db-info.js":"/Users/rickbergfalk/Code/sqlpad/client-js/component-db-info.js","./component-menubar.js":"/Users/rickbergfalk/Code/sqlpad/client-js/component-menubar.js","./component-sql-editor.js":"/Users/rickbergfalk/Code/sqlpad/client-js/component-sql-editor.js"}],"/Users/rickbergfalk/Code/sqlpad/client-js/query-filter-form.js":[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -921,7 +974,7 @@ module.exports = function () {
         }
     });
 }
-},{}],12:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/test-connection.js":[function(require,module,exports){
 var $ = (window.$);
 
 function renderFailure (text) {
@@ -970,7 +1023,7 @@ module.exports = function () {
         });
     });
 };
-},{}],13:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/user-admin.js":[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -984,7 +1037,7 @@ module.exports = function () {
         }
     });
 }
-},{}],14:[function(require,module,exports){
+},{}],"/Users/rickbergfalk/Code/sqlpad/node_modules/moment/moment.js":[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.4
@@ -3923,5 +3976,5 @@ module.exports = function () {
     }
 }).call(this);
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[9])
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},["/Users/rickbergfalk/Code/sqlpad/client-js/main.js"]);

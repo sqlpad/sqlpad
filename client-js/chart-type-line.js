@@ -1,6 +1,7 @@
 var dimple = require('dimple');
 
 module.exports =  {
+    chartLabel: "Line",
     fields: {
         x: {
             required: true,

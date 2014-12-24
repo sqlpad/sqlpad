@@ -1,6 +1,7 @@
 var dimple = require('dimple');
 
 module.exports =  {
+    chartLabel: "Bubble",
     fields: {
         x: {
             label: "x Axis",

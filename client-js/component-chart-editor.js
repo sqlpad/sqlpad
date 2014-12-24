@@ -24,7 +24,8 @@ var ChartEditor = function (opts) {
     
     this.registerChartType = function (type, chartType) {
         chartTypes[type] = chartType;
-        $chartTypeDropDown.append('<option value="' + type + '">' + type + '</option>');
+        var chartLabel = chartType.chartLabel || type;
+        $chartTypeDropDown.append('<option value="' + type + '">' + chartLabel + '</option>');
     };
     
     this.buildChartUI = function () {
@@ -44,6 +45,12 @@ var ChartEditor = function (opts) {
                     $input.append('<option value=""></option>');
                     for (var m in gmeta) {
                         $input.append('<option value="' + m + '">' + m + '</option>');
+                    }
+                } else if (field.inputType === "custom-dropdown") {
+                    $input = $('<select>');
+                    $input.append('<option value=""></option>');
+                    for (var i in field.options) {
+                        $input.append('<option value="' + field.options[i].value + '">' + field.options[i].label + '</option>');
                     }
                 }
                 $formGroup
