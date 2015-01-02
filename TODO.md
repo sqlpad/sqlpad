@@ -33,6 +33,7 @@
 - [x] all delete buttons should have confirmations
 - [x] user/connection sorting (sane default only)
 - [x] smart column width in query results (max(value length) or max(column name length)) but no more than some amount (400px)
+- [x] vis types - they should probably have an ID and a label, for when things get complicated (multiple bar charts?)
 
 
 ## Before considered 1.x.x  
@@ -50,7 +51,5 @@
 - [ ] connection: prepend arbitrary SQL (TRANS ISOLATION LEVEL, etc)  
 - [ ] connection: prefer SSL (for postgres --> heroku)  
 - [ ] SQL Editor: Excel file download  
-- [ ] vis types - they should probably have an ID and a label, for when things get complicated (multiple bar charts?)
 - [ ] Get rid of tags?
-- [ ] inputs to sidebar?
 - [ ] Loading animation?
