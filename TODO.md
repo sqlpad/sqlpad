@@ -38,7 +38,6 @@
 
 ## Before considered 1.x.x  
 - [ ] github pages on what/how/why  
-- [ ] multiple bar charts
 
 
 ## Later or never
@@ -51,5 +50,6 @@
 - [ ] connection: prepend arbitrary SQL (TRANS ISOLATION LEVEL, etc)  
 - [ ] connection: prefer SSL (for postgres --> heroku)  
 - [ ] SQL Editor: Excel file download  
+- [ ] multiple bar charts
 - [ ] Get rid of tags?
 - [ ] Loading animation?
