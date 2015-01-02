@@ -12,8 +12,8 @@ module.exports = function (app) {
         db.connections.find({}, function (err, connections) {
             var connectionsById = _.indexBy(connections, '_id');
             db.queries.find({}, function (err, queries) {
-                var tags = _.uniq(_.flatten(queries, 'tags'));
-                var createdBys = _.uniq(_.pluck(queries, 'createdBy'));
+                var tags = _.uniq(_.flatten(queries, 'tags')).sort();
+                var createdBys = _.uniq(_.pluck(queries, 'createdBy')).sort();
                 connections = _.sortBy(connections, 'name');
                 res.locals.connectionsById = connectionsById;
                 res.locals.connections = connections;
@@ -91,7 +91,7 @@ module.exports = function (app) {
         db.connections.find({}, function (err, connections) {
             res.locals.queryMenu = true;
             res.locals.cacheKey = uuid.v1();
-            res.locals.navbarConnections = connections;
+            res.locals.navbarConnections = _.sortBy(connections, 'name');
             
             if (req.params._id === 'new') {
                 res.render('query', {query: {name: ""}});
