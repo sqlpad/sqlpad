@@ -18,14 +18,24 @@ var ChartEditor = function (opts) {
     var gdata;
     var gmeta;
     var chartTypes = {}; // holds chart types once registered
+    var chartLabels = []; // array of chart labels for sorting/serving as a record of labels
+    var chartTypeKeyByChartLabel = {}; // index of chart types by chartlabel
     var $chartTypeDropDown = $('#chart-type-dropdown');
     var $btnVisualize = $('#btn-visualize');
     var $chartSetupUI = $("#chart-setup-ui");
     
     this.registerChartType = function (type, chartType) {
         chartTypes[type] = chartType;
-        var chartLabel = chartType.chartLabel || type;
-        $chartTypeDropDown.append('<option value="' + type + '">' + chartLabel + '</option>');
+        chartLabels.push(chartType.chartLabel);
+        chartLabels.sort();
+        chartTypeKeyByChartLabel[chartType.chartLabel] = type;
+        // rerender chart type dropdown
+        $chartTypeDropDown.empty();
+        $chartTypeDropDown.append('<option value=""></option>');
+        for (var i = 0; i < chartLabels.length; i++) {
+            var chartLabel = chartLabels[i];
+            $chartTypeDropDown.append('<option value="' + chartTypeKeyByChartLabel[chartLabel] + '">' + chartLabel + '</option>');
+        }
     };
     
     this.buildChartUI = function () {

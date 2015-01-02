@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-bar.js":[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var dimple = (window.dimple);
 
 module.exports =  {
@@ -80,7 +80,7 @@ module.exports =  {
         return myChart;
     }
 };
-},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-bubble.js":[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 var dimple = (window.dimple);
 
 module.exports =  {
@@ -125,7 +125,7 @@ module.exports =  {
         return myChart;
     }
 };
-},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-line.js":[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var dimple = (window.dimple);
 
 module.exports =  {
@@ -173,7 +173,7 @@ module.exports =  {
         return myChart;
     }
 };
-},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/component-chart-editor.js":[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 /*
 
 "component" for chart editor
@@ -194,14 +194,24 @@ var ChartEditor = function (opts) {
     var gdata;
     var gmeta;
     var chartTypes = {}; // holds chart types once registered
+    var chartLabels = []; // array of chart labels for sorting/serving as a record of labels
+    var chartTypeKeyByChartLabel = {}; // index of chart types by chartlabel
     var $chartTypeDropDown = $('#chart-type-dropdown');
     var $btnVisualize = $('#btn-visualize');
     var $chartSetupUI = $("#chart-setup-ui");
     
     this.registerChartType = function (type, chartType) {
         chartTypes[type] = chartType;
-        var chartLabel = chartType.chartLabel || type;
-        $chartTypeDropDown.append('<option value="' + type + '">' + chartLabel + '</option>');
+        chartLabels.push(chartType.chartLabel);
+        chartLabels.sort();
+        chartTypeKeyByChartLabel[chartType.chartLabel] = type;
+        // rerender chart type dropdown
+        $chartTypeDropDown.empty();
+        $chartTypeDropDown.append('<option value=""></option>');
+        for (var i = 0; i < chartLabels.length; i++) {
+            var chartLabel = chartLabels[i];
+            $chartTypeDropDown.append('<option value="' + chartTypeKeyByChartLabel[chartLabel] + '">' + chartLabel + '</option>');
+        }
     };
     
     this.buildChartUI = function () {
@@ -342,7 +352,7 @@ var ChartEditor = function (opts) {
 };
 module.exports = ChartEditor;
 
-},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/component-db-info.js":[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 /*
 
 "component" for db schema info
@@ -416,7 +426,7 @@ DbInfo.prototype.render = function () {
 };
 
 
-},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/component-menubar.js":[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /*
 
 "component" for menubar
@@ -521,7 +531,7 @@ var Menubar = function (opts) {
 };
 
 module.exports = Menubar;
-},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/component-sql-editor.js":[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*
 
 "component" for ace editor, status bar, and slickgrid
@@ -748,7 +758,7 @@ var SqlEditor = function () {
 };
 
 module.exports = SqlEditor;
-},{"moment":"/Users/rickbergfalk/Code/sqlpad/node_modules/moment/moment.js"}],"/Users/rickbergfalk/Code/sqlpad/client-js/connection-admin.js":[function(require,module,exports){
+},{"moment":14}],8:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -762,7 +772,7 @@ module.exports = function () {
         }
     });
 }
-},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/main.js":[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
 //  via Browserify. 
 //  All the heavy old-school javascript libraries are exposed as browserify globals
@@ -817,7 +827,7 @@ queryEditor.addChartTypeConfig("histogram", require('./chart-type-histogram.js')
 
 queryEditor.render();
 */
-},{"./connection-admin.js":"/Users/rickbergfalk/Code/sqlpad/client-js/connection-admin.js","./query-editor.js":"/Users/rickbergfalk/Code/sqlpad/client-js/query-editor.js","./query-filter-form.js":"/Users/rickbergfalk/Code/sqlpad/client-js/query-filter-form.js","./test-connection.js":"/Users/rickbergfalk/Code/sqlpad/client-js/test-connection.js","./user-admin.js":"/Users/rickbergfalk/Code/sqlpad/client-js/user-admin.js"}],"/Users/rickbergfalk/Code/sqlpad/client-js/query-editor.js":[function(require,module,exports){
+},{"./connection-admin.js":8,"./query-editor.js":10,"./query-filter-form.js":11,"./test-connection.js":12,"./user-admin.js":13}],10:[function(require,module,exports){
 /*	
 	Contains all the view/model logic for the query.ejs page
 	
@@ -944,7 +954,7 @@ module.exports = function () {
         });
     }
 };
-},{"./chart-type-bar.js":"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-bar.js","./chart-type-bubble":"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-bubble.js","./chart-type-line.js":"/Users/rickbergfalk/Code/sqlpad/client-js/chart-type-line.js","./component-chart-editor.js":"/Users/rickbergfalk/Code/sqlpad/client-js/component-chart-editor.js","./component-db-info.js":"/Users/rickbergfalk/Code/sqlpad/client-js/component-db-info.js","./component-menubar.js":"/Users/rickbergfalk/Code/sqlpad/client-js/component-menubar.js","./component-sql-editor.js":"/Users/rickbergfalk/Code/sqlpad/client-js/component-sql-editor.js"}],"/Users/rickbergfalk/Code/sqlpad/client-js/query-filter-form.js":[function(require,module,exports){
+},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./component-chart-editor.js":4,"./component-db-info.js":5,"./component-menubar.js":6,"./component-sql-editor.js":7}],11:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -974,7 +984,7 @@ module.exports = function () {
         }
     });
 }
-},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/test-connection.js":[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 var $ = (window.$);
 
 function renderFailure (text) {
@@ -1023,7 +1033,7 @@ module.exports = function () {
         });
     });
 };
-},{}],"/Users/rickbergfalk/Code/sqlpad/client-js/user-admin.js":[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -1037,7 +1047,7 @@ module.exports = function () {
         }
     });
 }
-},{}],"/Users/rickbergfalk/Code/sqlpad/node_modules/moment/moment.js":[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.4
@@ -3976,5 +3986,5 @@ module.exports = function () {
     }
 }).call(this);
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},["/Users/rickbergfalk/Code/sqlpad/client-js/main.js"]);
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[9])
