@@ -1,8 +1,8 @@
 ---
 title: "Usage"
-bg: turquoise  #defined in _config.yml, can use html color like '#0fbfcf'
+bg: orange  #defined in _config.yml, can use html color like '#0fbfcf'
 color: white   #text color
-fa-icon: paint-brush
+fa-icon: rocket
 ---
 
 ## Installation & Usage
