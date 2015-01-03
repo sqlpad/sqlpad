@@ -1,5 +1,5 @@
 ---
-title: "Contributing & Future of this Project"
+title: "Contributing"
 bg: turquoise  #defined in _config.yml, can use html color like '#0fbfcf'
 color: white   #text color
 fa-icon: paint-brush
