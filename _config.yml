@@ -21,7 +21,7 @@ description: "A single-page template for Jekyll based blogs (like what you'd use
 source_link: "https://github.com/t413/SinglePaged"
 favicon:     #put a path like: "img/favicon.ico"
 touch_icon:  #put a path like: "img/apple-touch-icon.png"
-google_analytics_key: ## put YOUR key here to enable tracking! (blank to disable)
+google_analytics_key: "UA-54318769-1"
 
 
 ### template colors, used site-wide via css ###
