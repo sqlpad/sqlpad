@@ -1,5 +1,5 @@
 ---
-title: "Usage"
+title: "Installation"
 bg: orange  #defined in _config.yml, can use html color like '#0fbfcf'
 color: black   #text color
 fa-icon: rocket  #cog, cube, cubes, cloud-download, database, edit, plug, power-off, wrench, toggle-down, arrow-cirlce-down
