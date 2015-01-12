@@ -135,7 +135,7 @@ nav ul {
 nav ul li {
   display:inline-block;
   border-top:{{navborder}}px solid;
-  padding: {{navborder}}px 0;
+  padding: {{navborder}}px 14px;
   *display:inline;
   zoom:1;
   line-height:normal;

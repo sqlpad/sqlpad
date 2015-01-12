@@ -1,11 +1,11 @@
 ---
-title: "Installation"
+title: "Setup"
 bg: orange  #defined in _config.yml, can use html color like '#0fbfcf'
 color: black   #text color
 fa-icon: rocket  #cog, cube, cubes, cloud-download, database, edit, plug, power-off, wrench, toggle-down, arrow-cirlce-down
 ---
 
-## Installation & Usage
+## Setup
 
 First, install Node.js if you haven't already.
 
@@ -51,7 +51,7 @@ These settings can be forgotten by running
 `sqlpad --forget`
 
 
-## Once SqlPad is Running
+### Once SqlPad is Running
 
 Once SqlPad is running, you create an initial admin account by navigationg to http://localhost/signup. Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page.
 
