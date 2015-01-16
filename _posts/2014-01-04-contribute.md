@@ -1,18 +1,24 @@
 ---
-title: "Contributing"
+title: "Contribute"
 bg: turquoise  #defined in _config.yml, can use html color like '#0fbfcf'
-color: white   #text color
+color: black   #text color
 fa-icon: pencil
 ---
 
 ## Contributing & Future of this Project
 
-I started this project as a personal side-project so I could run queries from a chromebook and visualize the results with some simple visualizations. I have no intention on taking this application further than it currently is.
+Do you know Node.js? Are you willing to explore someone else's code? Do you use SqlPad and wish it was different or better in some way?
 
-Would you like to contribute to SqlPad? Open a GitHub issue to discuss the addition or change. 
-I will merge any pull requests for feature additions so long as  
+Well you're in luck! 
 
-- an issue is opened in advance to give a heads up
-- the pull request is backwards compatible with the current version of SqlPad
+SqlPad is open open source, and I'm willing to merge in pretty much any pull request out there. 
 
-If the pull request is for a bug fix no advance permission is necessary.
+I only ask 2 things: 
+
+1. Please open a GitHub issue discussing the addition prior to starting on the work. This gives me and anyone else a heads up of the effort being done. 
+
+2. Keep any current features/functionality of SqlPad intact. According to npm, there are people out there somewhere using this. I'd hate for them to be depending on it for anything too serious and something suddenly break for them :S
+
+If you have any questions about any of it, feel free to open a GitHub issue to discuss. More often than not I'm thrilled to find out someone has bothered to read through and contribute to my code :)
+
+And of course, if the pull request is for a bug fix no advance permission is necessary.
