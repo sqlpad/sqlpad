@@ -2,12 +2,12 @@
 title: "Setup"
 bg: orange  #defined in _config.yml, can use html color like '#0fbfcf'
 color: black   #text color
-fa-icon: rocket  #cog, cube, cubes, cloud-download, database, edit, plug, power-off, wrench, toggle-down, arrow-cirlce-down
+fa-icon: cog #rocket  cog, cube, cubes, cloud-download, database, edit, plug, power-off, wrench, toggle-down, arrow-cirlce-down
 ---
 
 ## Setup
 
-First, install Node.js if you haven't already.
+First, install Node.js.
 
 Once node is installed, open up a command line and run
 
@@ -36,7 +36,7 @@ The **passphrase** argument is used to encrypt database connection usernames and
 
 If a passphrase is ever changed or forgotten, you'll need to re-add the connection usernames and passwords to each database connection. 
 
-If you ever want to save the arguments you are passing in so you don't have to keep typing them over and over, you can save them by passing in the ```--save``` argument.
+If you ever want to save the arguments you are passing in so you don't have to remember them, you can save them by passing in the ```--save``` argument.
 
 `sqlpad --dir ./sqlpad/ --port 3000 --passphrase secret-encryption-phrase --save`
 
