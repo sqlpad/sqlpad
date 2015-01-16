@@ -5,7 +5,7 @@ color: black   #text color
 fa-icon: pencil
 ---
 
-## Contributing & Future of this Project
+## Contribute
 
 Do you know Node.js? Are you willing to explore someone else's code? Do you use SqlPad and wish it was different or better in some way?
 
