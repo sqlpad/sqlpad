@@ -7,7 +7,7 @@ fa-icon: ban
 
 ## Limitations
 
-SqlPad is not technically as finished as you think.
+### SqlPad is not as finished as you think.
 
 Be sure to not forget your password to your user account. As of now there's no way to reset it.
 
