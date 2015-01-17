@@ -10,100 +10,64 @@ If you want to be bold and daring, you can expose your SqlPad instance to the ou
 
 
 
+
 ## Installation & Usage
 
-First, install Node.js if you haven't already.
-
-Once node is installed, open up a command line and run
+First, install Node.js and then
 
 ```sh
 npm install sqlpad -g
 ```
+s
+For more info visit the project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
 
-This will install the SqlPad command line utility to run a SqlPad server. 
 
-To run a SqlPad Server, type the following from the command line:
+
+## Development Setup
+
+If you want to hack on SqlPad, here's a guide as to what my workflow has been like:
+
+First clone or download this repo. Then install dependencies.
 
 ```sh
-sqlpad
+npm install
 ```
 
-To get help:
+Install nodemon for automatic server restarts when developing
 
-```sh
-sqlpad --help
+```sh  
+npm install nodemon -g
 ```
 
-
-
-## Once SqlPad is Running
-
-Once SqlPad is running, you create an initial admin account by navigationg to http://localhost/signup. Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page.
-
-If for whatever reason you lose admin rights, and the last-admin-standing won't give you admin rights back, you can reinstate them to yourself by running
+Install browserify to compile client-side scripts
 
 ```sh
-sqlpad --admin yourEmailAddress@domain.com
-```
-
-
-## A Realistic Example:  
-
-```sh
-sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase
-```
-
-The **dir** argument specifies where to keep the sqlpad query/user/connection files. If not provided, SqlPad will put its files in the user's home directory under /sqlpad/db.
-
-The **port** argument specifies the port on which SqlPad should run. The default is port 80, but that may not be available.
-
-The **passphrase** argument is used to encrypt database connection usernames and passwords, and cookie encryption. If not provided, SqlPad will use the default to at least prevent usernames and passwords from being stored in plaintext. 
-
-If a passphrase is ever changed or forgotten, you'll need to re-add the connection usernames and passwords to each database connection. 
-
-If you ever want to save the arguments you are passing in so you don't have to keep typing them over and over, you can save them by passing in the ```--save``` argument.
-
-```sh
-sqlpad --dir ./sqlpad/ --port 3000 --passphrase secret-encryption-phrase --save
-```
-
-Then the next time you can simply run...
-
-```sh
-sqlpad
+npm install browserify -g
 ``` 
 
-...and Sqlpad will use directory ./sqlpad, on port 3000, with the proper encryption passphrase.
-
-These settings can be forgotten by running 
+Optionally install watchify to automatically browserify your client-side scripts
 
 ```sh
-sqlpad --forget
+npm install watchify -g
 ```
 
+To start SqlPad on port 3000  with datafiles in ./db run 
 
-## Contributing & Future of this Project
+```sh
+npm start
+```
 
-I started this project as a personal side-project so I could run queries from a chromebook and visualize the results with some simple visualizations. I have no intention on taking this application further than that, although I wouldn't be surprised if I change my mind about that.
+To bundle client-side scripts run 
 
-I will merge any pull requests for feature additions so long as  
+```sh 
+npm run bundle
+```
 
-- the pull request is backwards compatible with the current version of SqlPad
-- an issue is opened in advance to give a heads up  
+or to auto-browserify as changes happen
 
-If the pull request is for a bug fix no advance permission is necessary.
-
-
-## More Screenshots
-
-### Vis Editor
-![SqlPad Query Listing](screenshots/vis-editor.png)
-
-### Query Listing
-![SqlPad Query Listing](screenshots/query-list.png)
-
-### User Administration
-![SqlPad Query Listing](screenshots/user-admin.png)
+```sh
+npm run watchify
+```
 
 
 
