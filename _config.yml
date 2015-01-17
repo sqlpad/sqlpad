@@ -18,7 +18,7 @@ highlighter: pygments
 title:       "SqlPad - A web app for running SQL queries and visualizing the results"
 keywords:    "SqlPad, node.js, Postgres, postgresql, mysql, microsoft sql server, online sql editor"
 description: "SqlPad is a web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, and SQL Server. Built with Node.js"
-source_link: "https://github.com/t413/SinglePaged"
+source_link: "https://github.com/rickbergfalk/sqlpad"
 favicon:     #put a path like: "img/favicon.ico"
 touch_icon:  #put a path like: "img/apple-touch-icon.png"
 google_analytics_key: "UA-54318769-1"
