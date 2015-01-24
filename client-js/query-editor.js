@@ -57,7 +57,10 @@ module.exports = function () {
         var chartEditor = new ChartEditor({sqlEditor: sqlEditor});
         chartEditor.registerChartType("line", require('./chart-type-line.js'));
         chartEditor.registerChartType("bar", require('./chart-type-bar.js'));
+        chartEditor.registerChartType("verticalbar", require('./chart-type-vertical-bar'));
         chartEditor.registerChartType("bubble", require('./chart-type-bubble'));
+        
+        
         
         /*  Menubar Setup
         ==============================================================================*/

@@ -1,7 +1,7 @@
 var dimple = require('dimple');
 
 module.exports =  {
-    chartLabel: "Bar - Horizontal",
+    chartLabel: "Bar - Vertical",
     fields: {
         barlabel: {
             required: true,
@@ -44,9 +44,9 @@ module.exports =  {
         var myChart = new dimple.chart(svg, data);
         myChart.setMargins(80, 30, 30, 80); // left top right bottom
         
-        var y = myChart.addCategoryAxis("y", fields.barlabel.val);
+        var x = myChart.addCategoryAxis("x", fields.barlabel.val);
         
-        var x = myChart.addMeasureAxis("x", fields.barvalue.val);
+        var y = myChart.addMeasureAxis("y", fields.barvalue.val);
         
         var s = myChart.addSeries(null, dimple.plot.bar);
         
@@ -66,13 +66,12 @@ module.exports =  {
         */
         //y.addOrderRule(order, true);
         
-        // IMPORTANT: This seems backwards. Dimple might have it backwards. 
-        // Or do I have it backwards? 
-        // Doesn't matter - this gives me the results I'm expecting
+        // IMPORTANT: Unlike the horizontal bar, this sorting section
+        // seems to make sense.
         
         if (fields.sortOrder.val) {
-            var sortDesc = (fields.sortOrder.val == "asc" ? true : false);
-            y.addOrderRule(fields.sortField.val || fields.barvalue.val, sortDesc);
+            var sortDesc = (fields.sortOrder.val == "asc" ? false : true);
+            x.addOrderRule(fields.sortField.val || fields.barvalue.val, sortDesc);
         }
         
         myChart.draw();
