@@ -18,7 +18,7 @@ First, install Node.js and then
 ```sh
 npm install sqlpad -g
 ```
-s
+
 For more info visit the project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
 
 
