@@ -96,6 +96,7 @@ function mustBeAdmin (req, res, next) {
 }
 app.use('/connections', mustBeAdmin);
 app.use('/users', mustBeAdmin);
+app.use('/config', mustBeAdmin);
 
 
 
@@ -126,6 +127,7 @@ require('./routes/queries.js')(app);
 require('./routes/run-query.js')(app); // ajaxy route used for executing query and getting results
 require('./routes/download-results.js')(app); // streams cached query results to browser
 require('./routes/schema-info.js')(app);
+require('./routes/configs.js')(app);
 
 app.get('/error', function (req, res) {
     res.render('error', {errorMessage: "this is a message"});

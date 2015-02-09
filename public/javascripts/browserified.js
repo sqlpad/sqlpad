@@ -839,7 +839,21 @@ var SqlEditor = function () {
 };
 
 module.exports = SqlEditor;
-},{"moment":15}],9:[function(require,module,exports){
+},{"moment":16}],9:[function(require,module,exports){
+var $ = (window.$);
+
+module.exports = function () {
+    $('.form-delete-config').submit(function(event) {
+        var confirmation = confirm("Delete this config item? This can't be undone.");
+        if (confirmation) {
+            return true;
+        } else {
+            event.preventDefault();
+            return false;
+        }
+    });
+};
+},{}],10:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -853,7 +867,7 @@ module.exports = function () {
         }
     });
 }
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
 //  via Browserify. 
 //  All the heavy old-school javascript libraries are exposed as browserify globals
@@ -894,6 +908,10 @@ require('./user-admin.js')();
 ==============================================================================*/
 require('./connection-admin.js')();
 
+/*  Config
+==============================================================================*/
+require('./configs.js')();
+
 
 
 /*
@@ -908,7 +926,7 @@ queryEditor.addChartTypeConfig("histogram", require('./chart-type-histogram.js')
 
 queryEditor.render();
 */
-},{"./connection-admin.js":9,"./query-editor.js":11,"./query-filter-form.js":12,"./test-connection.js":13,"./user-admin.js":14}],11:[function(require,module,exports){
+},{"./configs.js":9,"./connection-admin.js":10,"./query-editor.js":12,"./query-filter-form.js":13,"./test-connection.js":14,"./user-admin.js":15}],12:[function(require,module,exports){
 /*	
 	Contains all the view/model logic for the query.ejs page
 	
@@ -1038,7 +1056,7 @@ module.exports = function () {
         });
     }
 };
-},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./chart-type-vertical-bar":4,"./component-chart-editor.js":5,"./component-db-info.js":6,"./component-menubar.js":7,"./component-sql-editor.js":8}],12:[function(require,module,exports){
+},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./chart-type-vertical-bar":4,"./component-chart-editor.js":5,"./component-db-info.js":6,"./component-menubar.js":7,"./component-sql-editor.js":8}],13:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -1068,7 +1086,7 @@ module.exports = function () {
         }
     });
 }
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var $ = (window.$);
 
 function renderFailure (text) {
@@ -1117,7 +1135,7 @@ module.exports = function () {
         });
     });
 };
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -1131,7 +1149,7 @@ module.exports = function () {
         }
     });
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.4
@@ -4071,4 +4089,4 @@ module.exports = function () {
 }).call(this);
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[10])
+},{}]},{},[11])
