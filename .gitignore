@@ -6,3 +6,4 @@ db/
 tags
 zedrem.exe
 .zedstate
+.idea/*
