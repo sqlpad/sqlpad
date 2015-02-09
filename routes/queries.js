@@ -1,14 +1,15 @@
 var _ = require('lodash');
 var uaParser = require('ua-parser');
 var uuid = require('uuid');
-var noop = function () {};
+var noop = function () {
+};
 var moment = require('moment');
 
 module.exports = function (app) {
-    
+
     var db = app.get('db');
-    
-    function getQueryFilterData (req, res, next) {
+
+    function getQueryFilterData(req, res, next) {
         db.connections.find({}, function (err, connections) {
             var connectionsById = _.indexBy(connections, '_id');
             db.queries.find({}, function (err, queries) {
@@ -23,8 +24,8 @@ module.exports = function (app) {
             });
         });
     }
-    
-    
+
+
     app.get('/queries', getQueryFilterData, function (req, res) {
         var filter = {};
         if (req.query && req.query.tag) {
@@ -33,7 +34,7 @@ module.exports = function (app) {
         if (req.query && req.query.connection) {
             filter.connectionId = req.query.connection;
         }
-        if (req.query && req.query.createdBy) { 
+        if (req.query && req.query.createdBy) {
             filter.createdBy = req.query.createdBy;
         }
         if (req.query && req.query.search) {
@@ -54,7 +55,7 @@ module.exports = function (app) {
             cursor.sort({modifiedDate: -1});
         }
         cursor.exec(function (err, queries) {
-            queries.forEach(function(query) {
+            queries.forEach(function (query) {
                 query.lastAccessedFromNow = moment(query.lastAccessedDate).calendar();
                 query.modifiedCalendar = moment(query.modifiedDate).calendar();
                 var timeForDiff = query.lastAccessedDate || query.modifiedDate;
@@ -74,12 +75,12 @@ module.exports = function (app) {
                     filter: filter
                 });
             }
-            
+
         });
     });
-    
+
     app.get('/queries/:_id', function (req, res) {
-        
+
         var ua = req.headers['user-agent'];
         var os = uaParser.parseOS(ua).toString();
         res.locals.isMac = (os.search(/mac/i) >= 0);
@@ -88,30 +89,41 @@ module.exports = function (app) {
         } else {
             res.locals.controlKeyText = 'Ctrl';
         }
-        db.connections.find({}, function (err, connections) {
-            res.locals.queryMenu = true;
-            res.locals.cacheKey = uuid.v1();
-            res.locals.navbarConnections = _.sortBy(connections, 'name');
-            
-            if (req.params._id === 'new') {
-                res.render('query', {query: {name: ""}});
-            } else {
-                db.queries.findOne({_id: req.params._id}, function (err, query) {
-                    // TODO: render error if this fails?
-                    db.queries.update({_id: req.params._id}, {$set: {lastAccessedDate: new Date()}}, {}, noop);
-                    if (query && query.tags) query.tags = query.tags.join(', ');
-                    if (req.query && req.query.format && req.query.format === 'json') {
-                        // send JSON of query object
-                        res.json(query);
-                    } else {
-                        // render page
-                        res.render('query', {query: query});
-                    }
-                });
+
+        db.config.findOne({key: "allowCsvDownload"}, function (err, config) {
+
+            if (err) {
+                console.log(err);
             }
+
+            var preventDownload = config && config.value === "false";
+
+            db.connections.find({}, function (err, connections) {
+                res.locals.queryMenu = true;
+                res.locals.cacheKey = uuid.v1();
+                res.locals.navbarConnections = _.sortBy(connections, 'name');
+                res.locals.allowDownload = !preventDownload;
+
+                if (req.params._id === 'new') {
+                    res.render('query', {query: {name: ""}});
+                } else {
+                    db.queries.findOne({_id: req.params._id}, function (err, query) {
+                        // TODO: render error if this fails?
+                        db.queries.update({_id: req.params._id}, {$set: {lastAccessedDate: new Date()}}, {}, noop);
+                        if (query && query.tags) query.tags = query.tags.join(', ');
+                        if (req.query && req.query.format && req.query.format === 'json') {
+                            // send JSON of query object
+                            res.json(query);
+                        } else {
+                            // render page
+                            res.render('query', {query: query});
+                        }
+                    });
+                }
+            });
         });
     });
-    
+
     app.post('/queries/:_id', function (req, res) {
         // save the query, to the query db
         var bodyQuery = {
@@ -127,7 +139,7 @@ module.exports = function (app) {
         if (req.params._id == "new") {
             bodyQuery.createdDate = new Date();
             bodyQuery.createdBy = req.session.email;
-            
+
             db.queries.insert(bodyQuery, function (err, query) {
                 if (err) {
                     console.log(err);
@@ -150,12 +162,12 @@ module.exports = function (app) {
             });
         }
     });
-    
+
     app.delete('/queries/:_id', function (req, res) {
         db.queries.remove({_id: req.params._id}, function (err) {
             console.log(err);
             res.redirect('/queries');
         });
     });
-    
+
 };

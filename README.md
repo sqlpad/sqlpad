@@ -21,7 +21,10 @@ npm install sqlpad -g
 
 For more info visit the project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
 
+## Configuration
 
+### Disable CSV download
+To disable CSV downloads, visit the "Configuration" page and add a new item with key `allowCsvDownload` and value `false`. If the key is missing or set to any other value, CSV downloads will be enabled.
 
 ## Development Setup
 

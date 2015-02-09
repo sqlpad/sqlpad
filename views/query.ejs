@@ -1,6 +1,6 @@
 <% include header %>
-    <nav class="navbar navbar-default" role="navigation">
-      <div class="container-fluid">
+<nav class="navbar navbar-default" role="navigation">
+    <div class="container-fluid">
         <style>
             .query-editor-nav-pills {
                 margin-top: 6px;
@@ -8,109 +8,116 @@
         </style>
         <ul class="nav nav-pills navbar-left query-editor-nav-pills" role="tablist">
             <li class="active">
-                <a role="tab" data-toggle="tab" href="#tab-content-sql"><span class="glyphicon glyphicon-align-left"></span> SQL</a>
+                <a role="tab" data-toggle="tab" href="#tab-content-sql"><span
+                            class="glyphicon glyphicon-align-left"></span> SQL</a>
             </li>
             <li>
-                <a role="tab" data-toggle="tab" href="#tab-content-visualize"><span class="glyphicon glyphicon-stats"></span> Vis</a>
+                <a role="tab" data-toggle="tab" href="#tab-content-visualize"><span
+                            class="glyphicon glyphicon-stats"></span> Vis</a>
             </li>
         </ul>
-        
-        <form class="navbar-form navbar-left navbar-left-border">
-          <button type="button" id="btn-save" class="btn btn-default">Save</button>
-          
-          <div class="form-group" style="margin-left: 20px;">
-              <label class="control-label" for="header-query-name">Name</label>
-          </div>
-          <div class="form-group">
-            <input id="header-query-name" name="header-query-name" class="input-query-name form-control" value="<%= query.name %>" type="text" placeholder="Query Name" >
-          </div>
-          
-          <div class="form-group" style="margin-left: 20px;">
-              <label class="control-label" for="tags">Tags</label>
-          </div>
-          <div class="form-group">
-            <input id="tags" name="tags" class="input-smallz input-mdz form-control" value="<%= query.tags || '' %>" type="text" placeholder="Tags" >
-          </div>
-          
-          <input type="hidden" id="cache-key" value="<%= cacheKey %>" />
-          <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>" />
-          
-          <span id="btn-save-result" class="label label-info"></span>
-            
-        </form>
-        
-      </div><!-- /.container-fluid -->
-    </nav>
-    <div id="panel-main">
-        <div class="tab-content">
 
-            <!-- BEGIN QUERY SQL PANE -->
-            <div class="tab-pane active" id="tab-content-sql">
-                <div class="sidebar">
-                    <form>
-                        <div class="form-group">
-                            <label class="control-label" for="connection">Connection</label>
-                            <br>
-                            <select id="connection" name="connection" class="input-small">
-                                <option value="">Choose a Connection...</option>
-                                <% navbarConnections.forEach(function(connection) { %>
-                                    <option value="<%= connection._id %>" <%=( connection._id === query.connectionId ? 'selected' : '') %> >
-                                        <%= connection.name %>
-                                    </option>
-                                    <% }) %>
-                            </select>
-                        </div>
-                    </form>
-                    <button id="btn-run-query" class="btn btn-primary btn-sm btn-block">Run Query</button>
-                    <hr>
-                    <div id="panel-db-info"></div>
-                </div>
-                <div class="ace-and-results">
-                    <div class="panel-editor">
-                        <div id="ace-editor"><%- query.queryText || "" %></div>
+        <form class="navbar-form navbar-left navbar-left-border">
+            <button type="button" id="btn-save" class="btn btn-default">Save</button>
+
+            <div class="form-group" style="margin-left: 20px;">
+                <label class="control-label" for="header-query-name">Name</label>
+            </div>
+            <div class="form-group">
+                <input id="header-query-name" name="header-query-name" class="input-query-name form-control"
+                       value="<%= query.name %>" type="text" placeholder="Query Name">
+            </div>
+
+            <div class="form-group" style="margin-left: 20px;">
+                <label class="control-label" for="tags">Tags</label>
+            </div>
+            <div class="form-group">
+                <input id="tags" name="tags" class="input-smallz input-mdz form-control" value="<%= query.tags || '' %>"
+                       type="text" placeholder="Tags">
+            </div>
+
+            <input type="hidden" id="cache-key" value="<%= cacheKey %>"/>
+            <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>"/>
+
+            <span id="btn-save-result" class="label label-info"></span>
+
+        </form>
+
+    </div>
+    <!-- /.container-fluid -->
+</nav>
+<div id="panel-main">
+    <div class="tab-content">
+
+        <!-- BEGIN QUERY SQL PANE -->
+        <div class="tab-pane active" id="tab-content-sql">
+            <div class="sidebar">
+                <form>
+                    <div class="form-group">
+                        <label class="control-label" for="connection">Connection</label>
+                        <br>
+                        <select id="connection" name="connection" class="input-small">
+                            <option value="">Choose a Connection...</option>
+                            <% navbarConnections.forEach(function(connection) { %>
+                            <option value="<%= connection._id %>" <%= ( connection._id === query.connectionId ? 'selected' : '') %> >
+                                <%= connection.name %>
+                            </option>
+                            <% }) %>
+                        </select>
                     </div>
-                    <div id="panel-result">
-                        <div id="panel-result-header"> 
-                            <span class="panel-result-header-label">Client Run Time: </span>
-                            <span class="panel-result-header-value" id="client-run-time"></span>
+                </form>
+                <button id="btn-run-query" class="btn btn-primary btn-sm btn-block">Run Query</button>
+                <hr>
+                <div id="panel-db-info"></div>
+            </div>
+            <div class="ace-and-results">
+                <div class="panel-editor">
+                    <div id="ace-editor"><%- query.queryText || "" %></div>
+                </div>
+                <div id="panel-result">
+                    <div id="panel-result-header">
+                        <span class="panel-result-header-label">Client Run Time: </span>
+                        <span class="panel-result-header-value" id="client-run-time"></span>
                             <span class="hide-while-running" style="display: none">
                                 <span class="panel-result-header-label">Server Run Time: </span>
                                 <span class="panel-result-header-value" id="server-run-time"></span>
                                 <span class="panel-result-header-label">Rows: </span>
                                 <span class="panel-result-header-value" id="rowcount"></span>
+                                <% if (allowDownload === true) { %>
                                 <span class="panel-result-header-label">Download: </span>
                                 <!--<a href="#">.xlsx</a> -->
                                 <a id="csv-download-link" href="/download-results/<%= cacheKey %>.csv">.csv</a>
+                                <% } %>
                             </span>
-                        </div>
-                        <div id="result-slick-grid"></div>
-                        <div id="run-result-notification"></div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- BEGIN Visualize PANE -->
-            <div class="tab-pane" id="tab-content-visualize">
-                <div class="sidebar">
-                    <div id="chart-setup">
-                        <div class="form-group">
-                            <label class="control-label">Chart Type</label>
-                            <select id="chart-type-dropdown">
-                                <option value=""></option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="chart-setup-ui"></div>
-                    <div>
-                        <button id="btn-visualize" class="btn btn-primary btn-sm btn-block">Visualize</button>
-                    </div>
-                </div>
-                
-                <div id="chart" style="height: 100%">
-                    <svg style="height: 100%"></svg>
+                    <div id="result-slick-grid"></div>
+                    <div id="run-result-notification"></div>
                 </div>
             </div>
         </div>
+
+        <!-- BEGIN Visualize PANE -->
+        <div class="tab-pane" id="tab-content-visualize">
+            <div class="sidebar">
+                <div id="chart-setup">
+                    <div class="form-group">
+                        <label class="control-label">Chart Type</label>
+                        <select id="chart-type-dropdown">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+                <div id="chart-setup-ui"></div>
+                <div>
+                    <button id="btn-visualize" class="btn btn-primary btn-sm btn-block">Visualize</button>
+                </div>
+            </div>
+
+            <div id="chart" style="height: 100%">
+                <svg style="height: 100%"></svg>
+            </div>
+        </div>
     </div>
-    <!-- /.panel-tabs -->
-    <% include footer %>
+</div>
+<!-- /.panel-tabs -->
+<% include footer %>
