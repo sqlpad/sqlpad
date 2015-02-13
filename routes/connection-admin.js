@@ -2,28 +2,28 @@ var _ = require('lodash');
 var runQuery = require('../lib/run-query.js');
 
 module.exports = function (app) {
-    
+
     var db = app.get('db');
     var decipher = app.get('decipher');
     var cipher = app.get('cipher');
-    
+
     app.get('/connections', function (req, res) {
         db.connections.find({}).sort({name: 1}).exec(function (err, connections) {
-            connections = _.sortBy(connections, function(c) {
+            connections = _.sortBy(connections, function (c) {
                 return c.name.toLowerCase();
             });
             res.render('connections', {pageTitle: "Connections", connections: connections});
         });
     });
-    
+
     app.get('/connections/:_id', function (req, res) {
         db.connections.findOne({_id: req.params._id}, function (err, connection) {
-            var encryptedUsername, encryptedPassword;
             if (!connection) {
                 connection = {
                     name: '',
                     driver: '',
                     host: '',
+                    port: '',
                     database: '',
                     username: '',
                     password: '',
@@ -32,8 +32,6 @@ module.exports = function (app) {
                 };
             } else {
                 // decrypt connection username and password
-                encryptedUsername = connection.username;
-                encryptedPassword = connection.password;
                 connection.username = decipher(connection.username);
                 connection.password = decipher(connection.password);
             }
@@ -42,12 +40,13 @@ module.exports = function (app) {
             });
         });
     });
-    
+
     app.post('/connections/new', function (req, res) {
         var connection = {
             name: req.body.name,
             driver: req.body.driver,
             host: req.body.host,
+            port: req.body.port,
             database: req.body.database,
             username: req.body.username,
             password: req.body.password,
@@ -57,7 +56,7 @@ module.exports = function (app) {
         // encrypt connection username and password
         connection.username = cipher(connection.username);
         connection.password = cipher(connection.password);
-        
+
         db.connections.insert(connection, function (err) {
             if (err) {
                 console.log(err);
@@ -67,16 +66,17 @@ module.exports = function (app) {
             }
         });
     });
-    
-    function testConnection (req, res) {
+
+    function testConnection(req, res) {
         var bodyConnection = {
             name: req.body.name,
             driver: req.body.driver,
             host: req.body.host,
+            port: req.body.port,
             database: req.body.database,
             username: req.body.username,
             password: req.body.password
-        }; 
+        };
         runQuery("SELECT 'success' AS TestQuery;", bodyConnection, function (err, results) {
             if (err) {
                 console.log(err);
@@ -92,16 +92,17 @@ module.exports = function (app) {
             }
         });
     }
-    
+
     app.post('/connections/test', testConnection);
     app.put('/connections/test', testConnection);
-    
+
     app.put('/connections/:_id', function (req, res) {
         // TODO - make more dynamic based on database driver (SSL?)
         var bodyConnection = {
             name: req.body.name,
             driver: req.body.driver,
             host: req.body.host,
+            port: req.body.port,
             database: req.body.database,
             username: req.body.username,
             password: req.body.password
@@ -109,7 +110,7 @@ module.exports = function (app) {
         // encrypt connection username and password
         bodyConnection.username = cipher(bodyConnection.username);
         bodyConnection.password = cipher(bodyConnection.password);
-        
+
         db.connections.findOne({_id: req.params._id}, function (err, connection) {
             _.merge(connection, bodyConnection);
             connection.modifiedDate = new Date();
@@ -119,7 +120,7 @@ module.exports = function (app) {
             });
         });
     });
-    
+
     app.delete('/connections/:_id', function (req, res) {
         db.connections.remove({_id: req.params._id}, function (err) {
             if (err) console.log(err);

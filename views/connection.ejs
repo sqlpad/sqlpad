@@ -34,6 +34,14 @@
           <input id="host" name="host" value="<%= connection.host %>" type="text" class="form-control input-md" required="">
           </div>
         </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class=" control-label" for="port">Port (optional)</label>
+          <div class="">
+          <input id="port" name="port" value="<%= connection.port ? connection.port : '' %>" type="text" class="form-control input-md" required="">
+          </div>
+        </div>
         
         <!-- Text input-->
         <div class="form-group">

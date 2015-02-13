@@ -7,6 +7,7 @@
                     <tr>
                         <th>Name</th>
                         <th>Host/Server</th>
+                        <th>Port</th>
                         <th>Database</th>
                         <th>DB Driver</th>
                         <th>Created Date</th>
@@ -18,6 +19,7 @@
                         <tr>
                             <td><a href="/connections/<%= connection._id %>"><%= connection.name %></a></td>
                             <td><%= connection.host %></td>
+                            <td><%= connection.port ? connection.port : '' %></td>
                             <td><%= connection.database %></td>
                             <td><%= connection.driver %></td>
                             <td><%= connection.createdDate %></td>
