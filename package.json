@@ -43,6 +43,7 @@
     "mysql": "2.x.x",
     "nedb": "1.x.x",
     "pg": "^4.1.0",
+    "pg-cursor": "^1.0.0",
     "rc": "^0.5.4",
     "sanitize-filename": "1.1.x",
     "serve-favicon": "2.0.x",
