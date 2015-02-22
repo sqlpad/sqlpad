@@ -136,6 +136,7 @@ module.exports = function (app) {
                                             serverMs: end - start,
                                             meta: meta,
                                             results: results.rows,
+                                            incomplete: results.incomplete,
                                             csvUrl: '/query-results/' + cache.cacheKey + '.csv'
                                         });
                                     });
