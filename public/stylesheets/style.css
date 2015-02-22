@@ -309,11 +309,8 @@ a {
 }
 
 
-/*  Nav Bar
-======================================================== 
-.page-title {
-    padding-left: 30px;
-    color: #FFF !important; 
+/*  Utility stuff 
+======================================================== */
+.hidden {
+    display: none;
 }
-
-*/
