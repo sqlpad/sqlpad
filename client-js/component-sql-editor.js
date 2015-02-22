@@ -72,6 +72,11 @@ var SqlEditor = function () {
         if (data.success) {
             $('.hide-while-running').show();
             var columns = [];
+            if (data.incomplete) {
+                $('.incomplete-notification').removeClass("hidden");
+            } else {
+                $('.incomplete-notification').addClass("hidden");
+            }
             if (data.results && data.results[0]) {
                 gdata = data.results; // NOTE: exposed data for console debugging
                 gmeta = data.meta;

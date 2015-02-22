@@ -687,6 +687,11 @@ var SqlEditor = function () {
         if (data.success) {
             $('.hide-while-running').show();
             var columns = [];
+            if (data.incomplete) {
+                $('.incomplete-notification').removeClass("hidden");
+            } else {
+                $('.incomplete-notification').addClass("hidden");
+            }
             if (data.results && data.results[0]) {
                 gdata = data.results; // NOTE: exposed data for console debugging
                 gmeta = data.meta;
@@ -843,7 +848,7 @@ module.exports = SqlEditor;
 var $ = (window.$);
 
 module.exports = function () {
-    $('.form-delete-config').submit(function(event) {
+    $('.form-delete-config').submit(function (event) {
         var confirmation = confirm("Delete this config item? This can't be undone.");
         if (confirmation) {
             return true;
@@ -909,7 +914,7 @@ require('./user-admin.js')();
 require('./connection-admin.js')();
 
 /*  Config
-==============================================================================*/
+ ==============================================================================*/
 require('./configs.js')();
 
 
