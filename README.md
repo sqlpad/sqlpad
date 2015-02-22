@@ -23,6 +23,9 @@ For more info visit the project page at [http://rickbergfalk.github.io/sqlpad/](
 
 ## Configuration
 
+### Change query result record limit
+To change the maximum records returned by a SQL query, add a new item with key "queryResultMaxRows" and set the value to the max number of rows you would like returned. If the key is missing or set to a non-number, SqlPad will return a maximum of 50,000 rows.
+
 ### Disable CSV download
 To disable CSV downloads, visit the "Configuration" page and add a new item with key `allowCsvDownload` and value `false`. If the key is missing or set to any other value, CSV downloads will be enabled.
 
