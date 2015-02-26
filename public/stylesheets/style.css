@@ -308,6 +308,11 @@ a {
     padding-top: 20px;
 }
 
+#btn-reload-schema span {
+    display: inline-block;
+    margin-right: 5px;
+}
+
 
 /*  Utility stuff 
 ======================================================== */

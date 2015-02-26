@@ -436,24 +436,23 @@ module.exports = ChartEditor;
 },{}],6:[function(require,module,exports){
 /*
 
-"component" for db schema info
+ "component" for db schema info
 
-EXAMPLE: 
+ EXAMPLE:
 
-var DbInfo = require('this-file.js');
-var dbInfo = new DbInfo();
-dbInfo.getConnectionId();
+ var DbInfo = require('this-file.js');
+ var dbInfo = new DbInfo();
+ dbInfo.getConnectionId();
 
 
 
-*/
+ */
 
 var $ = (window.$);
 
 var DbInfo = function () {
-    var me = this;
-    this.render();
-    $('#connection').change(me.render);
+    this.bindRender();
+    this.bindReloadButton();
 };
 
 module.exports = DbInfo;
@@ -462,12 +461,33 @@ DbInfo.prototype.getConnectionId = function () {
     return $('#connection').val();
 };
 
-DbInfo.prototype.render = function () {
+DbInfo.prototype.bindRender = function () {
+    var that = this;
+    $('#connection').change(function () {
+        that.getSchema();
+    });
+};
+
+DbInfo.prototype.bindReloadButton = function () {
+    var that = this;
+    $('#btn-reload-schema').click(function () {
+        that.getSchema(true);
+    });
+};
+
+DbInfo.prototype.getSchema = function (reload) {
     $('#panel-db-info').empty();
+    $('#btn-reload-schema').hide();
     var connectionId = $('#connection').val();
     if (connectionId) {
-        $.getJSON("/schema-info/" + connectionId, function (data) {
+        var params = {
+            reload: typeof reload != 'undefined'
+        };
+
+        $.getJSON("/schema-info/" + connectionId, params, function (data) {
             if (data.success) {
+                $('#btn-reload-schema').show();
+
                 var tree = data.tree;
                 var $root = $('<ul class="schema-info">').appendTo('#panel-db-info');
                 for (var tableType in tree) {
@@ -488,14 +508,15 @@ DbInfo.prototype.render = function () {
                             var $tableName = $('<li><a href="#">' + tableName + '</a></li>').appendTo($schemaUl);
                             var $tableNameUl = $('<ul>').appendTo($tableName);
                             var columns = tree[tableType][schema][tableName];
-                            for (var i=0; i < columns.length; i++) {
-                                var $column = $('<li>' + columns[i].column_name + " <span class='data-type'>(" + columns[i].data_type + ')</span></li>').appendTo($tableNameUl);
+                            for (var i = 0; i < columns.length; i++) {
+                                $('<li>' + columns[i].column_name + " <span class='data-type'>(" + columns[i].data_type + ')</span></li>').appendTo($tableNameUl);
                             }
                         }
                     }
                 }
-                $('.schema-info').find('ul').find('ul').hide(); //find('ul').hide();
-                $('.schema-info').find('li').click(function (e) {
+                var schemaInfo = $('.schema-info');
+                schemaInfo.find('ul').find('ul').hide(); //find('ul').hide();
+                schemaInfo.find('li').click(function (e) {
                     $(this).children('ul').toggle();
                     e.stopPropagation();
                 });
@@ -505,8 +526,6 @@ DbInfo.prototype.render = function () {
         });
     }
 };
-
-
 },{}],7:[function(require,module,exports){
 /*
 

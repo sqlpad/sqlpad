@@ -68,7 +68,12 @@
                 </form>
                 <button id="btn-run-query" class="btn btn-primary btn-sm btn-block">Run Query</button>
                 <hr>
-                <div id="panel-db-info"></div>
+                <div id="panel-db-info-container">
+                    <button id="btn-reload-schema" class="btn btn-primary btn-sm" style="display: none;">
+                        <span class="glyphicon glyphicon-refresh"></span>Reload Schema
+                    </button>
+                    <div id="panel-db-info"></div>
+                </div>
             </div>
             <div class="ace-and-results">
                 <div class="panel-editor">
