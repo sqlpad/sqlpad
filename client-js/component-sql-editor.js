@@ -116,7 +116,8 @@ var SqlEditor = function () {
             }
             var options = {
               enableCellNavigation: true,
-              enableColumnReorder: false
+              enableColumnReorder: false,
+              enableTextSelectionOnCells: true
             };
             grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
             
