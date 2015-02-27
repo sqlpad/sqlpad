@@ -17,6 +17,7 @@ var $ = require('jquery');
 var DbInfo = function () {
     this.bindRender();
     this.bindReloadButton();
+    this.getSchema(false);
 };
 
 module.exports = DbInfo;
@@ -45,7 +46,7 @@ DbInfo.prototype.getSchema = function (reload) {
     var connectionId = $('#connection').val();
     if (connectionId) {
         var params = {
-            reload: typeof reload != 'undefined'
+            reload: typeof reload != 'undefined' ? reload : false
         };
 
         $.getJSON("/schema-info/" + connectionId, params, function (data) {
