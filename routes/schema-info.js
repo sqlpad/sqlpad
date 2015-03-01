@@ -13,7 +13,7 @@ module.exports = function (app) {
             if (!err && connection) {
                 connection.username = decipher(connection.username);
                 connection.password = decipher(connection.password);
-                connection.maxRows = Number.MAX_SAFE_INTEGER;
+                connection.maxRows = typeof Number.MAX_SAFE_INTEGER == 'undefined' ? 9007199254740991 : Number.MAX_SAFE_INTEGER;
 
                 var tableAndColumnSql;
 
