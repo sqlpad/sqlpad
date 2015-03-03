@@ -1,33 +1,17 @@
 /*	
-	Contains all the view/model logic for the query.ejs page
+	TODO: refactor this stuff in a way that makes sense.
 	
-	I'm trying to simplify this page. Break it down into "components"
-	Later, these can be made into React components, or something similar
+	Originally these components were going to be stand-alone, but really they 
+	need to keep referencing each other.attribute
 	
-	This is the sequence objects need to be instantiated.
-	If anyone out there is reading this, and knows a better way to 
-	do all this, please let me know :)
+	Maybe keep the individual components, but make them all part of the 
+	larger "component" that is the page?
 	
-	first DbInfo
-	    - it is standalone, does not depend on any other UI elements
-	    
-	then SqlEditor 
-	    - depends on DbInfo for ConnectionId
-	    - potential issue (ctrl-s needs to reference save function on navbar)
+	For example: the save vis to image button needs to reference the query name
+	which is stored on the menu bar. 
 	
-	then ChartBuilder
-	    - requires data from SqlEditor result
-	
-	then menubar
-	    - this "component" will contain the save/run query buttons
-	      as well as the query name/tags inputs
-	    - the save button will require data from 
-	        - DbInfo (connection Id)
-	        - SqlEditor (query text)
-	        - ChartBuilder (chart type, inputs)
-	        - itself (query name, tags)
-        - the run button will hook into SqlEditor
- 
+	Also worth considering: The chart/table should be easily rendered without all the 
+	surrounding UI.
 */
 
 var $ = require('jquery');
@@ -87,29 +71,6 @@ module.exports = function () {
                 chartEditor.rerenderChart();
             }
         });
-        
-        /*  if in the alt-view
-            do additional stuff when tabs are toggled
-        ==============================================================================*/
-        if ($('.query-editor-altview').length) {
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                // if shown tab was the chart tab, rerender the chart
-                // e.target is the activated tab
-                if (e.target.getAttribute("href") == "#tab-content-visualize") {
-                    // hide sql ui
-                    // show vis ui
-                    $('.side-sql-ui').hide();
-                    $('.side-vis-ui').show();
-                } else {
-                    // hide vis ui
-                    // show sql ui
-                    $('.side-vis-ui').hide();
-                    $('.side-sql-ui').show();
-                }
-            });
-            $('.side-vis-ui').hide();
-        }
-        
         
         
         
