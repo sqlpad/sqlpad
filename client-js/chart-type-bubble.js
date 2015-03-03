@@ -1,4 +1,5 @@
 var dimple = require('dimple');
+var $ = require('jquery');
 
 module.exports =  {
     chartLabel: "Bubble",
@@ -31,6 +32,9 @@ module.exports =  {
     },
     renderChart: function (meta, data, fields) {
         var svg = dimple.newSvg("#chart", "100%", "100%");
+        // svg is a d3 selection
+        svg.attr("id", "svgchart");
+       
         var myChart = new dimple.chart(svg, data);
         myChart.setMargins(80, 30, 30, 80); // left top right bottom
         myChart.addMeasureAxis("x", fields.x.val);
@@ -39,6 +43,7 @@ module.exports =  {
         // to get label we could do fields.label.val
         myChart.addSeries([fields.label.val, "bubble color"], dimple.plot.bubble); // TODO: null defines color groupings
         myChart.draw();
+        
         return myChart;
     }
 };

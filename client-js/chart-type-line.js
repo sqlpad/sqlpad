@@ -26,6 +26,9 @@ module.exports =  {
     },
     renderChart: function (meta, data, fields) {
         var svg = dimple.newSvg("#chart", "100%", "100%");
+        // svg is a d3 selection
+        svg.attr("id", "svgchart");
+        
         var myChart = new dimple.chart(svg, data);
         myChart.setMargins(80, 30, 30, 80); // left top right bottom
         
