@@ -70,6 +70,6 @@
     "Slick": "global:Slick",
     "d3": "global:d3",
     "dimple": "global:dimple",
-    "saveSvgAsPng": "global:saveSvgAsPnG"
+    "saveSvgAsPng": "global:saveSvgAsPng"
   }
 }

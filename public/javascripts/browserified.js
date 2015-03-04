@@ -279,7 +279,7 @@ var ChartEditor = require('this-file.js');
 var chartEditor = new ChartEditor();
 
 */
-
+var saveSvgAsPng = (window.saveSvgAsPng);
 var $ = (window.$);
 
 var ChartEditor = function (opts) {
