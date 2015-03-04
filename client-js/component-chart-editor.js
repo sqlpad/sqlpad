@@ -8,7 +8,7 @@ var ChartEditor = require('this-file.js');
 var chartEditor = new ChartEditor();
 
 */
-
+var saveSvgAsPng = require('saveSvgAsPng');
 var $ = require('jquery');
 
 var ChartEditor = function (opts) {

@@ -69,6 +69,7 @@
     "ace": "global:ace",
     "Slick": "global:Slick",
     "d3": "global:d3",
-    "dimple": "global:dimple"
+    "dimple": "global:dimple",
+    "saveSvgAsPng": "global:saveSvgAsPnG"
   }
 }
