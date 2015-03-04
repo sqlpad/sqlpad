@@ -8,7 +8,7 @@ var ChartEditor = require('this-file.js');
 var chartEditor = new ChartEditor();
 
 */
-
+var saveSvgAsPng = require('saveSvgAsPng');
 var $ = require('jquery');
 
 var ChartEditor = function (opts) {
@@ -22,6 +22,7 @@ var ChartEditor = function (opts) {
     var chartTypeKeyByChartLabel = {}; // index of chart types by chartlabel
     var $chartTypeDropDown = $('#chart-type-dropdown');
     var $btnVisualize = $('#btn-visualize');
+    var $btnSaveImage = $('#btn-save-image');
     var $chartSetupUI = $("#chart-setup-ui");
     
     this.registerChartType = function (type, chartType) {
@@ -167,8 +168,24 @@ var ChartEditor = function (opts) {
         }
     };
     
+    this.saveImage = function () {
+        // for the saveSvgAsPng to work,
+        // height and width must be pixels in the style attribute
+        // height and width attributes must be removed
+        var $svg = $('#svgchart');
+        var width = $svg.width();
+        var height = $svg.height();
+        $svg.attr("style", "width: " + width + "; height:" + height + ";");
+        $svg.attr("width", null);
+        $svg.attr("height", null);
+        // Cheating for now and just referencing element directly
+        var imageName = $('#header-query-name').val();
+        saveSvgAsPng(document.getElementById("svgchart"), imageName + ".png");
+    };
+    
     // Bind Events
     $btnVisualize.click(me.renderChart);
+    $btnSaveImage.click(me.saveImage);
     $chartTypeDropDown.change(me.buildChartUI);
     $(window).resize(function () {
         if (gchart) gchart.draw(0, true);

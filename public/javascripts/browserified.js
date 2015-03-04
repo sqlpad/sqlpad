@@ -42,6 +42,9 @@ module.exports =  {
         }
         
         var svg = dimple.newSvg("#chart", "100%", "100%");
+        // svg is a d3 selection
+        svg.attr("id", "svgchart");
+        
         var myChart = new dimple.chart(svg, data);
         myChart.setMargins(80, 30, 30, 80); // left top right bottom
         
@@ -82,6 +85,7 @@ module.exports =  {
 };
 },{}],2:[function(require,module,exports){
 var dimple = (window.dimple);
+var $ = (window.$);
 
 module.exports =  {
     chartLabel: "Bubble",
@@ -114,6 +118,9 @@ module.exports =  {
     },
     renderChart: function (meta, data, fields) {
         var svg = dimple.newSvg("#chart", "100%", "100%");
+        // svg is a d3 selection
+        svg.attr("id", "svgchart");
+       
         var myChart = new dimple.chart(svg, data);
         myChart.setMargins(80, 30, 30, 80); // left top right bottom
         myChart.addMeasureAxis("x", fields.x.val);
@@ -122,6 +129,7 @@ module.exports =  {
         // to get label we could do fields.label.val
         myChart.addSeries([fields.label.val, "bubble color"], dimple.plot.bubble); // TODO: null defines color groupings
         myChart.draw();
+        
         return myChart;
     }
 };
@@ -154,6 +162,9 @@ module.exports =  {
     },
     renderChart: function (meta, data, fields) {
         var svg = dimple.newSvg("#chart", "100%", "100%");
+        // svg is a d3 selection
+        svg.attr("id", "svgchart");
+        
         var myChart = new dimple.chart(svg, data);
         myChart.setMargins(80, 30, 30, 80); // left top right bottom
         
@@ -217,6 +228,9 @@ module.exports =  {
         }
         
         var svg = dimple.newSvg("#chart", "100%", "100%");
+        // svg is a d3 selection
+        svg.attr("id", "svgchart");
+        
         var myChart = new dimple.chart(svg, data);
         myChart.setMargins(80, 30, 30, 80); // left top right bottom
         
@@ -265,7 +279,7 @@ var ChartEditor = require('this-file.js');
 var chartEditor = new ChartEditor();
 
 */
-
+var saveSvgAsPng = (window.saveSvgAsPng);
 var $ = (window.$);
 
 var ChartEditor = function (opts) {
@@ -279,6 +293,7 @@ var ChartEditor = function (opts) {
     var chartTypeKeyByChartLabel = {}; // index of chart types by chartlabel
     var $chartTypeDropDown = $('#chart-type-dropdown');
     var $btnVisualize = $('#btn-visualize');
+    var $btnSaveImage = $('#btn-save-image');
     var $chartSetupUI = $("#chart-setup-ui");
     
     this.registerChartType = function (type, chartType) {
@@ -424,8 +439,24 @@ var ChartEditor = function (opts) {
         }
     };
     
+    this.saveImage = function () {
+        // for the saveSvgAsPng to work,
+        // height and width must be pixels in the style attribute
+        // height and width attributes must be removed
+        var $svg = $('#svgchart');
+        var width = $svg.width();
+        var height = $svg.height();
+        $svg.attr("style", "width: " + width + "; height:" + height + ";");
+        $svg.attr("width", null);
+        $svg.attr("height", null);
+        // Cheating for now and just referencing element directly
+        var imageName = $('#header-query-name').val();
+        saveSvgAsPng(document.getElementById("svgchart"), imageName + ".png");
+    };
+    
     // Bind Events
     $btnVisualize.click(me.renderChart);
+    $btnSaveImage.click(me.saveImage);
     $chartTypeDropDown.change(me.buildChartUI);
     $(window).resize(function () {
         if (gchart) gchart.draw(0, true);
@@ -954,35 +985,19 @@ queryEditor.render();
 */
 },{"./configs.js":9,"./connection-admin.js":10,"./query-editor.js":12,"./query-filter-form.js":13,"./test-connection.js":14,"./user-admin.js":15}],12:[function(require,module,exports){
 /*	
-	Contains all the view/model logic for the query.ejs page
+	TODO: refactor this stuff in a way that makes sense.
 	
-	I'm trying to simplify this page. Break it down into "components"
-	Later, these can be made into React components, or something similar
+	Originally these components were going to be stand-alone, but really they 
+	need to keep referencing each other.attribute
 	
-	This is the sequence objects need to be instantiated.
-	If anyone out there is reading this, and knows a better way to 
-	do all this, please let me know :)
+	Maybe keep the individual components, but make them all part of the 
+	larger "component" that is the page?
 	
-	first DbInfo
-	    - it is standalone, does not depend on any other UI elements
-	    
-	then SqlEditor 
-	    - depends on DbInfo for ConnectionId
-	    - potential issue (ctrl-s needs to reference save function on navbar)
+	For example: the save vis to image button needs to reference the query name
+	which is stored on the menu bar. 
 	
-	then ChartBuilder
-	    - requires data from SqlEditor result
-	
-	then menubar
-	    - this "component" will contain the save/run query buttons
-	      as well as the query name/tags inputs
-	    - the save button will require data from 
-	        - DbInfo (connection Id)
-	        - SqlEditor (query text)
-	        - ChartBuilder (chart type, inputs)
-	        - itself (query name, tags)
-        - the run button will hook into SqlEditor
- 
+	Also worth considering: The chart/table should be easily rendered without all the 
+	surrounding UI.
 */
 
 var $ = (window.$);
@@ -1042,29 +1057,6 @@ module.exports = function () {
                 chartEditor.rerenderChart();
             }
         });
-        
-        /*  if in the alt-view
-            do additional stuff when tabs are toggled
-        ==============================================================================*/
-        if ($('.query-editor-altview').length) {
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                // if shown tab was the chart tab, rerender the chart
-                // e.target is the activated tab
-                if (e.target.getAttribute("href") == "#tab-content-visualize") {
-                    // hide sql ui
-                    // show vis ui
-                    $('.side-sql-ui').hide();
-                    $('.side-vis-ui').show();
-                } else {
-                    // hide vis ui
-                    // show sql ui
-                    $('.side-vis-ui').hide();
-                    $('.side-sql-ui').show();
-                }
-            });
-            $('.side-vis-ui').hide();
-        }
-        
         
         
         
