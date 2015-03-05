@@ -84,19 +84,23 @@ module.exports = function (app) {
                                         schema: JSON.stringify(tree)
                                     };
                                     db.cache.update({cacheKey: cacheKey}, params, {upsert: true}, function () {
-                                        res.send({tree: tree, success: true});
+                                        res.render('schema-info', {tree: tree});
+                                        //res.send({tree: tree, success: true});
                                     });
                                 } else {
-                                    res.send({tree: tree, success: true});
+                                    res.render('schema-info', {tree: tree});
+                                    //res.send({tree: tree, success: true});
                                 }
                             }
                         });
                     } else {
-                        res.send({tree: JSON.parse(cache.schema), success: true});
+                        res.render('schema-info', {tree: JSON.parse(cache.schema)});
+                        //res.send({tree: JSON.parse(cache.schema), success: true});
                     }
                 });
             } else {
-                res.send({tree: tree, success: false});
+                res.render('schema-info', {tree: tree});
+                //res.send({tree: tree, success: false});
             }
 
         });
