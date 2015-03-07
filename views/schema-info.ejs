@@ -6,11 +6,11 @@
                 <% for (var schema in tree[tableType]) { %>
                     <li>
                         <a href="#"><%= schema %></a>
-                        <ul>
+                        <ul class="hidden">
                             <% for (var tableName in tree[tableType][schema]) { %>
                                 <li>
                                     <a href="#"><%= tableName %></a>
-                                    <ul>
+                                    <ul class="hidden">
                                         <% 
                                             var columns = tree[tableType][schema][tableName]; 
                                             for (var i = 0; i < columns.length; i++) {
