@@ -48,46 +48,18 @@ DbInfo.prototype.getSchema = function (reload) {
         var params = {
             reload: typeof reload != 'undefined' ? reload : false
         };
-
-        $.getJSON("/schema-info/" + connectionId, params, function (data) {
-            if (data.success) {
-                $('#btn-reload-schema').show();
-
-                var tree = data.tree;
-                var $root = $('<ul class="schema-info">').appendTo('#panel-db-info');
-                for (var tableType in tree) {
-                    var tableTypeName;
-                    if (tableType == "BASE TABLE") {
-                        tableTypeName = "Tables";
-                    } else if (tableType == "VIEW") {
-                        tableTypeName = "Views";
-                    } else {
-                        tableTypeName = tableType;
-                    }
-                    var $tableType = $('<li><a href="#">' + tableTypeName + '</a></li>').appendTo($root);
-                    var $tableTypeUl = $('<ul>').appendTo($tableType);
-                    for (var schema in tree[tableType]) {
-                        var $schema = $('<li><a href="#">' + schema + '</a></li>').appendTo($tableTypeUl);
-                        var $schemaUl = $('<ul>').appendTo($schema);
-                        for (var tableName in tree[tableType][schema]) {
-                            var $tableName = $('<li><a href="#">' + tableName + '</a></li>').appendTo($schemaUl);
-                            var $tableNameUl = $('<ul>').appendTo($tableName);
-                            var columns = tree[tableType][schema][tableName];
-                            for (var i = 0; i < columns.length; i++) {
-                                $('<li>' + columns[i].column_name + " <span class='data-type'>(" + columns[i].data_type + ')</span></li>').appendTo($tableNameUl);
-                            }
-                        }
-                    }
-                }
-                var schemaInfo = $('.schema-info');
-                schemaInfo.find('ul').find('ul').hide(); //find('ul').hide();
-                schemaInfo.find('li').click(function (e) {
-                    $(this).children('ul').toggle();
-                    e.stopPropagation();
-                });
-            } else {
-                $('<ul class="schema-info"><li>Problem getting Schema Info</li></ul>').appendTo('#panel-db-info');
-            }
+        var jqxhr = $.get("/schema-info/" + connectionId, params);
+        jqxhr.done(function (data) {
+            $('#btn-reload-schema').show();
+            $('#panel-db-info').html(data);
+            var schemaInfo = $('.schema-info');
+            schemaInfo.find('li').click(function (e) {
+                $(this).children('ul').toggleClass('hidden');
+                e.stopPropagation();
+            });
+        });
+        jqxhr.fail(function () {
+            $('<ul class="schema-info"><li>Problem getting Schema Info</li></ul>').appendTo('#panel-db-info');
         });
     }
 };

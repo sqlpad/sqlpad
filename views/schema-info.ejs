@@ -1,0 +1,32 @@
+<ul class="schema-info">
+    <% for (var tableType in tree) { %>
+        <li>
+            <a href="#"><%= tableType %></a>
+            <ul>
+                <% for (var schema in tree[tableType]) { %>
+                    <li>
+                        <a href="#"><%= schema %></a>
+                        <ul class="hidden">
+                            <% for (var tableName in tree[tableType][schema]) { %>
+                                <li>
+                                    <a href="#"><%= tableName %></a>
+                                    <ul class="hidden">
+                                        <% 
+                                            var columns = tree[tableType][schema][tableName]; 
+                                            for (var i = 0; i < columns.length; i++) {
+                                        %>
+                                            <li>
+                                                <%= columns[i].column_name %> <span class="data-type">(<%= columns[i].data_type %>)</span>
+                                            </li>
+                                        <% } %>
+                                    </ul>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </li>
+                <% } %>
+            </ul>
+        </li>
+    <% } %>
+</ul>
+
