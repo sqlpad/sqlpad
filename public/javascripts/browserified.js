@@ -520,7 +520,6 @@ DbInfo.prototype.getSchema = function (reload) {
             $('#btn-reload-schema').show();
             $('#panel-db-info').html(data);
             var schemaInfo = $('.schema-info');
-            //schemaInfo.find('ul').find('ul').hide();
             schemaInfo.find('li').click(function (e) {
                 $(this).children('ul').toggleClass('hidden');
                 e.stopPropagation();
