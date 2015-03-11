@@ -39,6 +39,7 @@
     "method-override": "1.0.x",
     "moment": "2.8.x",
     "morgan": "1.1.x",
+    "vertica": "0.5.x",
     "mssql": "1.x.x",
     "mysql": "2.x.x",
     "nedb": "1.x.x",
