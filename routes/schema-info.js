@@ -4,21 +4,22 @@ var _ = require('lodash');
 module.exports = function (app) {
 
     var db = app.get('db');
-    var decipher = app.get('decipher');
 
     app.get('/schema-info/:connectionId', function (req, res) {
         var reload = req.query.reload === "true";
         db.connections.findOne({_id: req.params.connectionId}, function (err, connection) {
             var tree = {};
             if (!err && connection) {
-                connection.username = decipher(connection.username);
-                connection.password = decipher(connection.password);
-                connection.maxRows = typeof Number.MAX_SAFE_INTEGER == 'undefined' ? 9007199254740991 : Number.MAX_SAFE_INTEGER;
-
                 var cacheKey = "schemaCache:" + req.params.connectionId;
 
                 db.cache.findOne({cacheKey: cacheKey}, function (err, cache) {
                     if (!cache || reload) {
+
+                        var decipher = app.get('decipher');
+
+                        connection.username = decipher(connection.username);
+                        connection.password = decipher(connection.password);
+                        connection.maxRows = typeof Number.MAX_SAFE_INTEGER == 'undefined' ? 9007199254740991 : Number.MAX_SAFE_INTEGER;
 
                         var tableAndColumnSql;
 
