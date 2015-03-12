@@ -6,15 +6,15 @@ var _ = require('lodash');
 var sanitize = require("sanitize-filename");
 var moment = require('moment');
 
-function isNumberLike (n) {
+function isNumberLike(n) {
     return (!isNaN(parseFloat(n)) && isFinite(n));
 }
 
 module.exports = function (app) {
-    
+
     var db = app.get('db');
     var decipher = app.get('decipher');
-    
+
     app.post('/run-query', function (req, res) {
         db.connections.findOne({_id: req.body.connectionId}, function (err, connection) {
             if (err) {
@@ -38,7 +38,7 @@ module.exports = function (app) {
                     } else {
                         connection.maxRows = 50000;
                     }
-                    
+
                     connection.username = decipher(connection.username);
                     connection.password = decipher(connection.password);
                     var now = new Date();
@@ -48,7 +48,7 @@ module.exports = function (app) {
                         expiration: expirationDate,
                         queryName: sanitize((req.body.queryName || "SqlPad Query Results") + " " + moment().format("YYYY-MM-DD"))
                     };
-                    
+
                     // upsert cacheKey if it doesn't exist, setting new expiration time
                     db.cache.update({cacheKey: cache.cacheKey}, cache, {upsert: true}, function (err) {
                         if (err) console.log(err);
@@ -62,20 +62,19 @@ module.exports = function (app) {
                                     error: err.toString()
                                 });
                             } else {
-                                
+
                                 // get meta data
                                 // this meta data will be used by the UI to format data appropriately
                                 // it will also be used to determine columns for basic data visuals
-                                /*
-                                {
-                                    fieldname: {
-                                        datatype: 'date',        // or 'number' or 'string'
-                                        max: 42 ,                // if a number, max is present
-                                        min: 1                   // available if number
-                                    }
-                                }
-                                
-                                */
+                                /**
+                                 {
+                                     fieldname: {
+                                         datatype: 'date',        // or 'number' or 'string'
+                                         max: 42 ,                // if a number, max is present
+                                         min: 1                   // available if number
+                                     }
+                                 }
+                                 */
                                 var fields = [];
                                 var meta = {};
                                 for (var r = 0; r < results.rows.length; r++) {
@@ -89,7 +88,7 @@ module.exports = function (app) {
                                             min: null,
                                             maxValueLength: 0
                                         };
-                                        
+
                                         // if we don't have a data type and we have a value yet lets try and figure it out
                                         if (!meta[key].datatype && value) {
                                             if (_.isDate(value)) meta[key].datatype = 'date';
@@ -101,10 +100,10 @@ module.exports = function (app) {
                                         }
                                         // if we have a value and are dealing with a number or date, we should get min and max
                                         if (
-                                                value 
-                                                && (meta[key].datatype === 'number' || meta[key].datatype === 'date')
-                                                && (isNumberLike(value) || _.isDate(value))
-                                            ) {
+                                            value
+                                            && (meta[key].datatype === 'number' || meta[key].datatype === 'date')
+                                            && (isNumberLike(value) || _.isDate(value))
+                                        ) {
                                             // if we haven't yet defined a max and this row contains a number
                                             if (!meta[key].max) meta[key].max = value;
                                             // otherwise this field in this row contains a number, and we should see if its bigger
@@ -128,27 +127,40 @@ module.exports = function (app) {
                                         }
                                     });
                                 }
-                                
-                                json2csv({data: results.rows, fields: fields}, function (err, csv) {
-                                    if (err) {
-                                        console.log(err);
+
+                                db.config.findOne({key: "allowCsvDownload"}, function (err, config) {
+                                    var preventDownload = config && config.value === "false";
+                                    if (!preventDownload) {
+                                        json2csv({data: results.rows, fields: fields}, function (err, csv) {
+                                            if (err) {
+                                                console.log(err);
+                                                res.send({
+                                                    success: true,
+                                                    serverMs: end - start,
+                                                    results: results.rows
+                                                });
+                                            } else {
+                                                var csvPath = path.join(app.get('dbPath'), "/cache/", cache.cacheKey + ".csv");
+                                                fs.writeFile(csvPath, csv, function (err) {
+                                                    if (err) console.log(err);
+                                                    res.send({
+                                                        success: true,
+                                                        serverMs: end - start,
+                                                        meta: meta,
+                                                        results: results.rows,
+                                                        incomplete: results.incomplete,
+                                                        csvUrl: '/query-results/' + cache.cacheKey + '.csv'
+                                                    });
+                                                });
+                                            }
+                                        });
+                                    } else {
                                         res.send({
                                             success: true,
                                             serverMs: end - start,
-                                            results: results.rows
-                                        });
-                                    } else {
-                                        var csvPath = path.join(app.get('dbPath'), "/cache/", cache.cacheKey + ".csv");
-                                        fs.writeFile(csvPath, csv, function (err) {
-                                            if (err) console.log(err);
-                                            res.send({
-                                                success: true,
-                                                serverMs: end - start,
-                                                meta: meta,
-                                                results: results.rows,
-                                                incomplete: results.incomplete,
-                                                csvUrl: '/query-results/' + cache.cacheKey + '.csv'
-                                            });
+                                            meta: meta,
+                                            results: results.rows,
+                                            incomplete: results.incomplete
                                         });
                                     }
                                 });
