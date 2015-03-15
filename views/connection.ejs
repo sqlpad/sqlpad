@@ -11,7 +11,7 @@
         <div class="form-group">
           <label class=" control-label" for="name">Friendly Connection Name</label>  
           
-          <input id="name" name="name" value="<%= connection.name %>" type="text" placeholder="" class="form-control input-md">
+          <input id="name" name="name" value="<%= connection.name || '' %>" type="text" placeholder="" class="form-control input-md">
         </div>
         
         <!-- Select Basic -->
@@ -31,7 +31,7 @@
         <div class="form-group">
           <label class=" control-label" for="host">Host/Server/IP Address</label>  
           <div class="">
-          <input id="host" name="host" value="<%= connection.host %>" type="text" class="form-control input-md" required="">
+          <input id="host" name="host" value="<%= connection.host || '' %>" type="text" class="form-control input-md" required="">
           </div>
         </div>
 
@@ -39,7 +39,7 @@
         <div class="form-group">
           <label class=" control-label" for="port">Port (optional)</label>
           <div class="">
-          <input id="port" name="port" value="<%= connection.port ? connection.port : '' %>" type="text" class="form-control input-md">
+          <input id="port" name="port" value="<%= connection.port || '' %>" type="text" class="form-control input-md">
           </div>
         </div>
         
@@ -47,20 +47,33 @@
         <div class="form-group">
           <label class=" control-label" for="database">Database Name</label>  
           <div class="">
-          <input id="database" name="database" value="<%= connection.database %>" type="text" class="form-control input-md" required="">
+          <input id="database" name="database" value="<%= connection.database || '' %>" type="text" class="form-control input-md" required="">
           </div>
         </div>
         
         <!-- Text input-->
         <div class="form-group">
           <label class=" control-label" for="username">Database Username</label>  
-          <input id="username" name="username" value="<%= connection.username %>" type="text" class="form-control input-md" required="">
+          <input id="username" name="username" value="<%= connection.username || '' %>" type="text" class="form-control input-md" required="">
         </div>
         
         <!-- Password input-->
         <div class="form-group">
           <label class=" control-label" for="password">Password</label>
-          <input id="password" name="password" value="<%= connection.password %>" type="password" class="form-control input-md" required="">
+          <input id="password" name="password" value="<%= connection.password || '' %>" type="password" class="form-control input-md" required="">
+        </div>
+        
+        <!-- database specific fields -->
+        <div class="checkbox driver-specific sqlserver">
+          <label>
+            <input name="sqlserverEncrypt" <%= (connection.sqlserverEncrypt ? "checked" : "") %> type="checkbox"> Encrypt (necessary for Azure)
+          </label>
+        </div>
+        
+        <div class="checkbox driver-specific postgres">
+          <label>
+            <input name="postgresSsl" <%= (connection.postgresSsl ? "checked" : "") %> type="checkbox"> Use SSL
+          </label>
         </div>
         
         <% if (connection._id) { %>

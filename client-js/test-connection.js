@@ -24,7 +24,16 @@ function renderTesting () {
         .text('Testing...');
 }
 
+function handleDatabaseSpecificFields () {
+    var driver = $('#driver').val();
+    $('.driver-specific').hide();
+    $('.driver-specific.' + driver).show();
+}
+
 module.exports = function () {
+    $('#driver').change(handleDatabaseSpecificFields);
+    handleDatabaseSpecificFields();
+    
     $('#btn-test-connection').click(function (e) {
         e.preventDefault();
         e.stopPropagation();
