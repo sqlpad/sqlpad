@@ -313,6 +313,9 @@ a {
     margin-right: 5px;
 }
 
+.driver-specific {
+    display: none;
+}
 
 /*  Utility stuff 
 ======================================================== */
