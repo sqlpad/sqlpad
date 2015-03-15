@@ -45,7 +45,6 @@ module.exports = function (app) {
     });
 
     app.post('/connections/new', function (req, res) {
-        console.log(req.body);
         var connection = connectionFromBody(req.body);
         connection.createdDate = new Date();
         connection.modifiedDate = new Date();
@@ -83,7 +82,6 @@ module.exports = function (app) {
     app.put('/connections/test', testConnection);
 
     app.put('/connections/:_id', function (req, res) {
-        console.log(req.body);
         var bodyConnection = connectionFromBody(req.body);
         bodyConnection.username = cipher(bodyConnection.username);
         bodyConnection.password = cipher(bodyConnection.password);
