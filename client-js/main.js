@@ -7,52 +7,13 @@
 //  in smaller files. Then I just require them  here and execute the function to 
 //  bind any events and whatever else to the page. 
 
-
-/*  From connection.ejs, its the button to test the database connection!
-    with the power of AJAX, we can find out that a connection doesn't work 
-    BEFORE trying to use it. REVOLUTIONARY.
-============================================================================= */
-require('./test-connection.js')();
- 
- 
-/*  Query Filter 
-    used on queries.ejs for reading the query filter form and doing the ajax
-    to get the stuff. ajax.
-==============================================================================*/
-require('./query-filter-form.js')();
-
- 
-/*  Query Editor
-    All the stuff that happens when viewing/working with a single query
-    happens in this code here
-==============================================================================*/
-require('./query-editor.js')();
-
-
-/*  User Admin
-==============================================================================*/
-require('./user-admin.js')();
-
-
-/*  Connection Admin
-==============================================================================*/
+require('./connection.js')();
 require('./connection-admin.js')();
-
-/*  Config
- ==============================================================================*/
+require('./user-admin.js')();
 require('./configs.js')();
 
+// used on queries.ejs for reading the query filter form and doing the ajax
+require('./query-filter-form.js')();
 
-
-/*
-// eventually have this api:
-
-var queryEditor = require('query-editor')
-
-queryEditor.addChartTypeConfig("line",      require('./chart-type-line.js'));
-queryEditor.addChartTypeConfig("bar",       require('./chart-type-bar.js'));
-queryEditor.addChartTypeConfig("bubble",    require('./chart-type-bubble.js'));
-queryEditor.addChartTypeConfig("histogram", require('./chart-type-histogram.js'));
-
-queryEditor.render();
-*/
+// All the stuff that happens when viewing/working with a single query happens here
+require('./query-editor.js')();

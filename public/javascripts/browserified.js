@@ -897,6 +897,64 @@ module.exports = function () {
     });
 }
 },{}],11:[function(require,module,exports){
+var $ = (window.$);
+
+function renderFailure (text) {
+    text = text || "Failed";
+    $('#test-connection-result')
+        .removeClass('label-info')
+        .addClass('label-danger')
+        .text(text);
+}
+
+function renderSuccess (text) {
+    text = text || "Success";
+    $('#test-connection-result')
+        .removeClass('label-info')
+        .addClass('label-success')
+        .text(text);
+}
+
+function renderTesting () {
+    $('#test-connection-result')
+        .removeClass('label-danger')
+        .removeClass('label-success')
+        .addClass('label-info')
+        .text('Testing...');
+}
+
+function handleDatabaseSpecificFields () {
+    var driver = $('#driver').val();
+    $('.driver-specific').hide();
+    $('.driver-specific.' + driver).show();
+}
+
+module.exports = function () {
+    $('#driver').change(handleDatabaseSpecificFields);
+    handleDatabaseSpecificFields();
+    
+    $('#btn-test-connection').click(function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var data = $('#connection-form').serialize();
+        //console.log(data);
+        renderTesting();
+        $.ajax({
+            type: "POST",
+            url: "/connections/test",
+            data: data
+        }).done(function (data) {
+            if (data.success) {
+                renderSuccess();
+            } else {
+                renderFailure();
+            }
+        }).fail(function () {
+            renderFailure("Something is broken.");
+        });
+    });
+};
+},{}],12:[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
 //  via Browserify. 
 //  All the heavy old-school javascript libraries are exposed as browserify globals
@@ -906,56 +964,17 @@ module.exports = function () {
 //  in smaller files. Then I just require them  here and execute the function to 
 //  bind any events and whatever else to the page. 
 
-
-/*  From connection.ejs, its the button to test the database connection!
-    with the power of AJAX, we can find out that a connection doesn't work 
-    BEFORE trying to use it. REVOLUTIONARY.
-============================================================================= */
-require('./test-connection.js')();
- 
- 
-/*  Query Filter 
-    used on queries.ejs for reading the query filter form and doing the ajax
-    to get the stuff. ajax.
-==============================================================================*/
-require('./query-filter-form.js')();
-
- 
-/*  Query Editor
-    All the stuff that happens when viewing/working with a single query
-    happens in this code here
-==============================================================================*/
-require('./query-editor.js')();
-
-
-/*  User Admin
-==============================================================================*/
-require('./user-admin.js')();
-
-
-/*  Connection Admin
-==============================================================================*/
+require('./connection.js')();
 require('./connection-admin.js')();
-
-/*  Config
- ==============================================================================*/
+require('./user-admin.js')();
 require('./configs.js')();
 
+// used on queries.ejs for reading the query filter form and doing the ajax
+require('./query-filter-form.js')();
 
-
-/*
-// eventually have this api:
-
-var queryEditor = require('query-editor')
-
-queryEditor.addChartTypeConfig("line",      require('./chart-type-line.js'));
-queryEditor.addChartTypeConfig("bar",       require('./chart-type-bar.js'));
-queryEditor.addChartTypeConfig("bubble",    require('./chart-type-bubble.js'));
-queryEditor.addChartTypeConfig("histogram", require('./chart-type-histogram.js'));
-
-queryEditor.render();
-*/
-},{"./configs.js":9,"./connection-admin.js":10,"./query-editor.js":12,"./query-filter-form.js":13,"./test-connection.js":14,"./user-admin.js":15}],12:[function(require,module,exports){
+// All the stuff that happens when viewing/working with a single query happens here
+require('./query-editor.js')();
+},{"./configs.js":9,"./connection-admin.js":10,"./connection.js":11,"./query-editor.js":13,"./query-filter-form.js":14,"./user-admin.js":15}],13:[function(require,module,exports){
 /*	
 	TODO: refactor this stuff in a way that makes sense.
 	
@@ -1046,7 +1065,7 @@ module.exports = function () {
         });
     }
 };
-},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./chart-type-vertical-bar":4,"./component-chart-editor.js":5,"./component-db-info.js":6,"./component-menubar.js":7,"./component-sql-editor.js":8}],13:[function(require,module,exports){
+},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./chart-type-vertical-bar":4,"./component-chart-editor.js":5,"./component-db-info.js":6,"./component-menubar.js":7,"./component-sql-editor.js":8}],14:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -1076,64 +1095,6 @@ module.exports = function () {
         }
     });
 }
-},{}],14:[function(require,module,exports){
-var $ = (window.$);
-
-function renderFailure (text) {
-    text = text || "Failed";
-    $('#test-connection-result')
-        .removeClass('label-info')
-        .addClass('label-danger')
-        .text(text);
-}
-
-function renderSuccess (text) {
-    text = text || "Success";
-    $('#test-connection-result')
-        .removeClass('label-info')
-        .addClass('label-success')
-        .text(text);
-}
-
-function renderTesting () {
-    $('#test-connection-result')
-        .removeClass('label-danger')
-        .removeClass('label-success')
-        .addClass('label-info')
-        .text('Testing...');
-}
-
-function handleDatabaseSpecificFields () {
-    var driver = $('#driver').val();
-    $('.driver-specific').hide();
-    $('.driver-specific.' + driver).show();
-}
-
-module.exports = function () {
-    $('#driver').change(handleDatabaseSpecificFields);
-    handleDatabaseSpecificFields();
-    
-    $('#btn-test-connection').click(function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        var data = $('#connection-form').serialize();
-        //console.log(data);
-        renderTesting();
-        $.ajax({
-            type: "POST",
-            url: "/connections/test",
-            data: data
-        }).done(function (data) {
-            if (data.success) {
-                renderSuccess();
-            } else {
-                renderFailure();
-            }
-        }).fail(function () {
-            renderFailure("Something is broken.");
-        });
-    });
-};
 },{}],15:[function(require,module,exports){
 var $ = (window.$);
 
@@ -4088,4 +4049,4 @@ module.exports = function () {
 }).call(this);
 
 }).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[11])
+},{}]},{},[12])
