@@ -12,9 +12,10 @@ module.exports = function () {
         if (doTimer) {
             var now = new Date();
             var ms = now - clientStart;
-            var timeText = "running query<br>" + (ms/1000) + " sec.";
+            var seconds = ms/1000;
+            var timeText = "running query<br>" + seconds.toFixed(3) + " sec.";
             $('#run-result-notification').html(timeText);
-            setTimeout(_renderTime, 26);
+            setTimeout(_renderTime, 27);
         }
     }
     

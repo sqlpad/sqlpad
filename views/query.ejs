@@ -81,20 +81,19 @@
                 </div>
                 <div id="panel-result">
                     <div id="panel-result-header">
-                        <span class="panel-result-header-label">Client Run Time: </span>
-                        <span class="panel-result-header-value" id="client-run-time"></span>
-                            <span class="hide-while-running" style="display: none">
-                                <span class="panel-result-header-label">Server Run Time: </span>
-                                <span class="panel-result-header-value" id="server-run-time"></span>
-                                <span class="panel-result-header-label">Rows: </span>
-                                <span class="panel-result-header-value" id="rowcount"></span>
-                                <% if (allowDownload === true) { %>
+                        <span class="hide-while-running" style="display: none">
+                            <span class="panel-result-header-label">Client Run Time: </span>
+                            <span class="panel-result-header-value" id="client-run-time"></span>
+                            <span class="panel-result-header-label">Server Run Time: </span>
+                            <span class="panel-result-header-value" id="server-run-time"></span>
+                            <span class="panel-result-header-label">Rows: </span>
+                            <span class="panel-result-header-value" id="rowcount"></span>
+                            <% if (allowDownload === true) { %>
                                 <span class="panel-result-header-label">Download: </span>
-                                <!--<a href="#">.xlsx</a> -->
                                 <a id="csv-download-link" href="/download-results/<%= cacheKey %>.csv">.csv</a>
-                                <% } %>
-                                <span class="panel-result-header-label incomplete-notification hidden">Incomplete Data (hit record limit)</span>
-                            </span>
+                            <% } %>
+                            <span class="panel-result-header-label incomplete-notification hidden">Incomplete Data (hit record limit)</span>
+                        </span>
                     </div>
                     <div id="result-slick-grid"></div>
                     <div id="run-result-notification"></div>

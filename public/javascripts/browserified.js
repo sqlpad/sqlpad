@@ -528,9 +528,10 @@ module.exports = function () {
         if (doTimer) {
             var now = new Date();
             var ms = now - clientStart;
-            var timeText = "running query<br>" + (ms/1000) + " sec.";
+            var seconds = ms/1000;
+            var timeText = "running query<br>" + seconds.toFixed(3) + " sec.";
             $('#run-result-notification').html(timeText);
-            setTimeout(_renderTime, 26);
+            setTimeout(_renderTime, 27);
         }
     }
     
@@ -791,10 +792,8 @@ require('./query-filter-form.js')();
 require('./query-editor.js')();
 },{"./configs.js":9,"./connection-admin.js":10,"./connection.js":11,"./query-editor.js":13,"./query-filter-form.js":14,"./user-admin.js":15}],13:[function(require,module,exports){
 var $ = (window.$);
-var AceSqlEditor = require('./component-ace-sql-editor.js');
 
 var QueryEditor = function () {
-    var me = this;
     
     var ChartEditor = require('./component-chart-editor.js');
     var chartEditor = new ChartEditor();
@@ -802,43 +801,43 @@ var QueryEditor = function () {
     var DbInfo = require('./component-db-info.js');
     var dbInfo = new DbInfo();
     
+    var AceSqlEditor = require('./component-ace-sql-editor.js');
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     aceSqlEditor.addCommand({
         name: 'executeQuery',
         bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
         exec: function (editor) {
-            me.runQuery(null, editor);
+            runQuery(null, editor);
         }
     });
     aceSqlEditor.addCommand({
         name: 'runQuery',
         bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
         exec: function (editor) {
-            me.runQuery(null, editor);
+            runQuery(null, editor);
         }
     });                  
     aceSqlEditor.addCommand({
         name: 'saveQuery',
         bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
         exec: function () {
-            me.saveQuery();
+            saveQuery();
         }
     });
     
     var DataGrid = require('./component-data-grid.js');
     var dataGrid = new DataGrid();
     
-    this.runQuery = function () {
+    function runQuery () {
         $('#client-run-time').html('');
         $('#server-run-time').html('');
         $('#rowcount').html('');
         dataGrid.emptyDataGrid();
-        var queryName = me.getQueryName();
         var data = {
             queryText: aceSqlEditor.getSelectedOrAllText(),
             connectionId: $('#connection').val(),
             cacheKey: $('#cache-key').val(),
-            queryName: queryName
+            queryName: getQueryName()
         };
         var clientStart = new Date();
         var clientEnd = null;
@@ -868,26 +867,22 @@ var QueryEditor = function () {
             dataGrid.stopRunningTimer();
             dataGrid.renderError("Something is broken :(");
         });
-    };
+    }
     
+    function getQueryName () {
+        return $('#header-query-name').val();
+    }
     
-    // From MenuBar
-    var $queryName = $('#header-query-name');
-    
-    this.getQueryName = function () {
-        return $queryName.val();
-    };
-    
-    this.getQueryTags = function () {
+    function getQueryTags () {
         return $.map($('#tags').val().split(','), $.trim);
-    };
+    }
     
-    this.saveQuery = function () {
+    function saveQuery () {
         var $queryId = $('#query-id');
         var query = {
-            name: me.getQueryName(),
+            name: getQueryName(),
             queryText: aceSqlEditor.getEditorText(),
-            tags: me.getQueryTags(),
+            tags: getQueryTags(),
             connectionId: dbInfo.getConnectionId(),
             chartConfiguration: chartEditor.getChartConfiguration()
         };
@@ -912,18 +907,18 @@ var QueryEditor = function () {
         }).fail(function () {
             alert('ajax fail');
         });
-    };
+    }
     
     $('#btn-save').click(function (event) {
         event.preventDefault();
         event.stopPropagation();
-        me.saveQuery();
+        saveQuery();
     });
     
     $('#btn-run-query').click(function (event) {
         event.preventDefault();
         event.stopPropagation();
-        me.runQuery();
+        runQuery();
     });
     
     /*  (re-)render the chart when the viz tab is pressed, 
@@ -957,12 +952,9 @@ var QueryEditor = function () {
 
 module.exports = function () {
     if ($('#ace-editor').length) {
-        var queryEditor = new QueryEditor();
+        new QueryEditor();
     }
 };
-
-
-
 },{"./component-ace-sql-editor.js":5,"./component-chart-editor.js":6,"./component-data-grid.js":7,"./component-db-info.js":8}],14:[function(require,module,exports){
 var $ = (window.$);
 
