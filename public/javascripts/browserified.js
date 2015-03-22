@@ -269,6 +269,49 @@ module.exports =  {
     }
 };
 },{}],5:[function(require,module,exports){
+var $ = (window.$);
+var ace = (window.ace);
+
+module.exports = function (id) {
+    var me = this;
+    
+    id = id || "ace-editor";
+    var editor = ace.edit(id);
+    
+    if (editor) { 
+        //editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/sql");    
+        editor.focus();
+    }
+    
+    this.addCommand = function (aceCommand) {
+        editor.commands.addCommand(aceCommand);
+    };
+    
+    this.getEditorText = function () {
+        return editor.getValue();
+    };
+    
+    this.getSelectedOrAllText = function () {
+        var relevantText;
+        var selectedText = editor.session.getTextRange(editor.getSelectionRange());
+        if (selectedText.length) {
+            // get only selected content
+            relevantText = selectedText;
+        } else {
+            // get whole editor content
+            relevantText = editor.getValue();
+        }
+        return relevantText;
+    };
+    
+    this.resize = function () {
+        editor.resize();
+    };
+    
+    $(window).resize(me.resize);
+};
+},{}],6:[function(require,module,exports){
 /*
 
 "component" for chart editor
@@ -282,9 +325,8 @@ var chartEditor = new ChartEditor();
 var saveSvgAsPng = (window.saveSvgAsPng);
 var $ = (window.$);
 
-var ChartEditor = function (opts) {
+var ChartEditor = function () {
     var me = this;
-    var sqlEditor = opts.sqlEditor;
     var gchart;
     var gdata;
     var gmeta;
@@ -296,7 +338,12 @@ var ChartEditor = function (opts) {
     var $btnSaveImage = $('#btn-save-image');
     var $chartSetupUI = $("#chart-setup-ui");
     
-    this.registerChartType = function (type, chartType) {
+    this.setData = function(data) {
+        gdata = data.results;
+        gmeta = data.meta;
+    };
+    
+    function registerChartType (type, chartType) {
         chartTypes[type] = chartType;
         chartLabels.push(chartType.chartLabel);
         chartLabels.sort();
@@ -308,10 +355,14 @@ var ChartEditor = function (opts) {
             var chartLabel = chartLabels[i];
             $chartTypeDropDown.append('<option value="' + chartTypeKeyByChartLabel[chartLabel] + '">' + chartLabel + '</option>');
         }
-    };
+    }
+    registerChartType("line", require('./chart-type-line.js'));
+    registerChartType("bar", require('./chart-type-bar.js'));
+    registerChartType("verticalbar", require('./chart-type-vertical-bar'));
+    registerChartType("bubble", require('./chart-type-bubble'));
+    
     
     this.buildChartUI = function () {
-        gmeta = sqlEditor.getGmeta();
         var selectedChartType = $chartTypeDropDown.val();
         // loop through and create dropdowns
         if (chartTypes[selectedChartType]) {
@@ -405,8 +456,6 @@ var ChartEditor = function (opts) {
     
     // TODO: factor out the chart piece from the chart editor
     this.renderChart = function () {
-        gdata = sqlEditor.getGdata();
-        gmeta = sqlEditor.getGmeta();
         var requirementsMet = true;
         var fieldsNeeded = [];
         
@@ -464,7 +513,111 @@ var ChartEditor = function (opts) {
 };
 module.exports = ChartEditor;
 
-},{}],6:[function(require,module,exports){
+},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./chart-type-vertical-bar":4}],7:[function(require,module,exports){
+var $ = (window.$);
+var Slick = (window.Slick);
+var moment = require('moment');
+
+module.exports = function () {
+    var me = this;
+    var grid;
+    var clientStart;
+    var doTimer = false;
+    
+    function _renderTime () {
+        if (doTimer) {
+            var now = new Date();
+            var ms = now - clientStart;
+            var timeText = "running query<br>" + (ms/1000) + " sec.";
+            $('#run-result-notification').html(timeText);
+            setTimeout(_renderTime, 26);
+        }
+    }
+    
+    this.startRunningTimer = function () {
+        clientStart = new Date();
+        doTimer = true;
+        $('#run-result-notification')
+            .removeClass('label-danger')
+            .text('running...')
+            .show();
+        $('.hide-while-running').hide();
+        _renderTime();
+    };
+    
+    this.stopRunningTimer = function () {
+        doTimer = false;
+    };
+    
+    this.renderError = function (errorMsg) {
+        // error message was data.error
+        $('#run-result-notification')
+            .addClass('label-danger')
+            .text(errorMsg);
+    };
+    
+    this.emptyDataGrid = function () {
+        // TODO: destroy/empty a slickgrid. for now we'll just empty
+        $('#result-slick-grid').empty();
+    };
+    
+    this.renderGridData = function (data) {
+        var columns = [];
+        if (data.results && data.results[0]) {
+            $('#rowcount').html(data.results.length);
+            var firstRow = data.results[0];
+            for (var col in firstRow) {
+                var maxValueLength = data.meta[col].maxValueLength;
+                var columnWidth = (maxValueLength > col.length ? maxValueLength * 15 : col.length * 15);
+                if (columnWidth > 400) columnWidth = 400;
+                var columnSpec = {id: col, name: col, field: col, width: columnWidth};
+                if (data.meta[col].datatype === 'date') {
+                    columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
+                        // https://github.com/mleibman/SlickGrid/wiki/Column-Options
+                        if (value === null) {
+                          return "";
+                        } else {
+                            //var d = moment.utc(value);
+                            var d = moment(value);
+                            return d.format('MM/DD/YYYY HH:mm:ss');
+                            // default formatter:
+                            // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+                        }
+                    };
+                }
+                columns.push(columnSpec);
+            }
+            // loop through and clean up dates!
+            // TODO: this is lazy and could use optimization
+            for (var r = 0; r < data.results.length; r++) {
+                var row = data.results[r];
+                for (var key in data.meta) {
+                    if (data.meta[key].datatype === 'date' && row[key]) {
+                        row[key] = new Date(row[key]);
+                    }
+                }
+            }
+        }
+        var options = {
+          enableCellNavigation: true,
+          enableColumnReorder: false,
+          enableTextSelectionOnCells: true
+        };
+        grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
+        
+        $('#run-result-notification')
+            .text('')
+            .hide();
+    };
+    
+    this.resize = function () {
+        //https://github.com/mleibman/SlickGrid/wiki/Slick.Grid#resizeCanvas
+        if (grid) grid.resizeCanvas();
+    };
+    
+    $(window).resize(me.resize);
+};
+},{"moment":16}],8:[function(require,module,exports){
 /*
 
  "component" for db schema info
@@ -530,345 +683,7 @@ DbInfo.prototype.getSchema = function (reload) {
         });
     }
 };
-},{}],7:[function(require,module,exports){
-/*
-
-"component" for menubar
-
-EXAMPLE: 
-
-var Menubar = require('this-file.js');
-var menubar = new Menubar();
-
-
-
-
-
-*/
-
-var $ = (window.$);
-/*
-var toastr = require('toastr');
-toastr.options = {
-    positionClass: "toast-bottom-right"
-};
-*/
-
-var Menubar = function (opts) {
-    var me = this;
-    var dbInfo = opts.dbInfo;
-    var sqlEditor = opts.sqlEditor;
-    var chartEditor = opts.chartEditor;
-    
-    var $queryName = $('#header-query-name');
-    
-    $('#btn-save').click(function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        me.saveQuery();
-    });
-    
-    $('#btn-run-query').click(function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        sqlEditor.runQuery();
-    });
-    
-    this.getQueryName = function () {
-        return $queryName.val();
-    };
-    
-    this.getQueryTags = function () {
-        return $.map($('#tags').val().split(','), $.trim)
-    };
-    
-    this.saveQuery = function () {
-         /*
-             should POST to /queries/:id or /queries/new
-             {
-                 name: 'a fun query',
-                 tags: [],
-                 connectionId: connectionId
-             }
-             
-             it returns
-             {
-                 success: true,
-                 query: queryobject
-             }
-         */
-         var $queryId = $('#query-id');
-         var query = {
-             name: me.getQueryName(),
-             queryText: sqlEditor.getEditorText(),
-             tags: me.getQueryTags(),
-             connectionId: dbInfo.getConnectionId(),
-             chartConfiguration: chartEditor.getChartConfiguration()
-         };
-         console.log("saving query:");
-         console.log(query);
-         $('#btn-save-result').text('saving...').show();
-         $.ajax({
-             type: "POST",
-             url: "/queries/" + $queryId.val(),
-             data: query
-         }).done(function (data) {
-             if (data.success) {
-                 window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
-                 $queryId.val(data.query._id);
-                 
-                 $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
-                 setTimeout(function () {
-                     $('#btn-save-result').fadeOut(400, function () {
-                         $('#btn-save-result').removeClass('label-success').addClass('label-info').text('');
-                     });
-                 }, 1000);
-                 
-             } else {
-                 $('#btn-save-result').removeClass('label-info').addClass('label-danger').text('Failed');
-             }
-         }).fail(function () {
-             alert('ajax fail');
-         });
-     };
-    
-};
-
-module.exports = Menubar;
-},{}],8:[function(require,module,exports){
-/*
-
-"component" for ace editor, status bar, and slickgrid
-
-
-EXAMPLE: 
-
-var SqlEditor = require('whatever-this-module-is');
-var editor = new SqlEditor()
-editor.getEditorText(); 
-editor.getData();
-editor.runQuery();
-
-
-*/
-
-var $ = (window.$);
-var ace = (window.ace);
-var Slick = (window.Slick);
-var moment = require('moment');
-
-// expose moment for some debugging purposes
-window.moment = moment;
-
-
-// TODO: Clean up SqlEditor. seriously.
-
-var SqlEditor = function () {
-    var me = this;
-    
-    var grid;
-    var clientStart;
-    var clientEnd;
-    var running = false; 
-    
-    var gdata;   // NOTE: these were initially exposed for console debugging
-    var gmeta;   // but now I'm kind of abusing these elsewhere.
-    
-    var menubar;
-    this.setMenubar = function (m) {
-        menubar = m;
-    };
-    
-    var editor = ace.edit("ace-editor");
-    this.aceEditor = editor;
-    
-    if (editor) { 
-        //editor.setTheme("ace/theme/monokai");
-        editor.getSession().setMode("ace/mode/sql");    
-        editor.focus();
-        editor.commands.addCommand({
-            name: 'executeQuery',
-            bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
-            exec: function (editor) {
-                me.runQuery(null, editor);
-            }
-        });
-        editor.commands.addCommand({
-            name: 'runQuery',
-            bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
-            exec: function (editor) {
-                me.runQuery(null, editor);
-            }
-        });
-    }
-    
-    this.renderQueryResult = function (data) {
-        clientEnd = new Date();
-        running = false;
-        $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
-        $('#server-run-time').html(data.serverMs/1000 + " sec.");
-        if (data.success) {
-            $('.hide-while-running').show();
-            var columns = [];
-            if (data.incomplete) {
-                $('.incomplete-notification').removeClass("hidden");
-            } else {
-                $('.incomplete-notification').addClass("hidden");
-            }
-            if (data.results && data.results[0]) {
-                gdata = data.results; // NOTE: exposed data for console debugging
-                gmeta = data.meta;
-                $('#rowcount').html(data.results.length);
-                var firstRow = data.results[0];
-                for (var col in firstRow) {
-                    var maxValueLength = data.meta[col].maxValueLength;
-                    var columnWidth = (maxValueLength > col.length ? maxValueLength * 15 : col.length * 15);
-                    if (columnWidth > 400) columnWidth = 400;
-                    var columnSpec = {id: col, name: col, field: col, width: columnWidth};
-                    if (data.meta[col].datatype === 'date') {
-                        columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
-                            // https://github.com/mleibman/SlickGrid/wiki/Column-Options
-                            if (value === null) {
-                              return "";
-                            } else {
-                                //var d = moment.utc(value);
-                                var d = moment(value);
-                                return d.format('MM/DD/YYYY HH:mm:ss');
-                                // default formatter:
-                                // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-                            }
-                        };
-                    }
-                    columns.push(columnSpec);
-                }
-                // loop through and clean up dates!
-                // TODO: this is lazy and could use optimization
-                for (var r = 0; r < data.results.length; r++) {
-                    var row = data.results[r];
-                    for (var key in data.meta) {
-                        if (data.meta[key].datatype === 'date' && row[key]) {
-                            row[key] = new Date(row[key]);
-                        }
-                    }
-                }
-            }
-            var options = {
-              enableCellNavigation: true,
-              enableColumnReorder: false,
-              enableTextSelectionOnCells: true
-            };
-            grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
-            
-            $('#run-result-notification')
-                .text('')
-                .hide();
-        } else {
-            $('#run-result-notification')
-                .addClass('label-danger')
-                .text(data.error);
-        }
-    };
-    
-    
-    this.getEditorText = function () {
-        var relevantText;
-        var selectedText = editor.session.getTextRange(editor.getSelectionRange());
-        if (selectedText.length) {
-            // get only selected content
-            relevantText = selectedText;
-        } else {
-            // get whole editor content
-            relevantText = editor.getValue();
-        }
-        return relevantText;
-    };
-    
-    
-    this.resize = function () {
-        editor.resize();
-        //https://github.com/mleibman/SlickGrid/wiki/Slick.Grid#resizeCanvas
-        if (grid) grid.resizeCanvas();
-    };
-    
-    $(window).resize(me.resize);    
-    
-    
-    this.getGdata = function () {
-        return gdata;
-    };
-    
-    this.getGmeta = function () {
-        return gmeta;
-    };
-    
-    
-    function renderRunningTime () {
-        if (running) {
-            var now = new Date();
-            var ms = now - clientStart;
-            
-            $('#client-run-time').html(ms/1000 + " sec.");
-            
-            var leftovers = ms % 4000;
-            if (leftovers < 1000) {
-                $('#run-result-notification').text('running');
-            } else if (leftovers >= 1000 && leftovers < 2000) {
-                $('#run-result-notification').text('your');
-            } else if (leftovers >= 2000) {
-                $('#run-result-notification').text('query');
-            }
-            
-            setTimeout(renderRunningTime, 53);
-        }
-    }
-    
-    this.runQuery = function () {
-        var me = this;
-        $('#client-run-time').html('');
-        $('#server-run-time').html('');
-        $('#rowcount').html('');
-        running = true;
-        renderRunningTime();
-        
-        // TODO: destroy/empty a slickgrid. for now we'll just empty
-        $('#result-slick-grid').empty();
-        var queryName = (menubar ? menubar.getQueryName() : '');
-        var data = {
-            queryText: me.getEditorText(),
-            connectionId: $('#connection').val(),
-            cacheKey: $('#cache-key').val(),
-            queryName: queryName
-        };
-        
-        clientStart = new Date();
-        clientEnd = null;
-        notifyRunning();
-        $.ajax({
-            type: "POST",
-            url: "/run-query",
-            data: data
-        }).done(me.renderQueryResult).fail(notifyFailure);
-    };
-    
-    function notifyRunning () {
-        $('#run-result-notification')
-            .removeClass('label-danger')
-            .text('running...')
-            .show();
-        $('.hide-while-running').hide();
-    }
-    
-    function notifyFailure () {
-        running = false;
-        $('#run-result-notification')
-            .addClass('label-danger')
-            .text("Something is broken :(");
-    }
-    
-};
-
-module.exports = SqlEditor;
-},{"moment":16}],9:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -975,97 +790,180 @@ require('./query-filter-form.js')();
 // All the stuff that happens when viewing/working with a single query happens here
 require('./query-editor.js')();
 },{"./configs.js":9,"./connection-admin.js":10,"./connection.js":11,"./query-editor.js":13,"./query-filter-form.js":14,"./user-admin.js":15}],13:[function(require,module,exports){
-/*	
-	TODO: refactor this stuff in a way that makes sense.
-	
-	Originally these components were going to be stand-alone, but really they 
-	need to keep referencing each other.attribute
-	
-	Maybe keep the individual components, but make them all part of the 
-	larger "component" that is the page?
-	
-	For example: the save vis to image button needs to reference the query name
-	which is stored on the menu bar. 
-	
-	Also worth considering: The chart/table should be easily rendered without all the 
-	surrounding UI.
-*/
-
 var $ = (window.$);
+var AceSqlEditor = require('./component-ace-sql-editor.js');
+
+var QueryEditor = function () {
+    var me = this;
+    
+    var ChartEditor = require('./component-chart-editor.js');
+    var chartEditor = new ChartEditor();
+    
+    var DbInfo = require('./component-db-info.js');
+    var dbInfo = new DbInfo();
+    
+    var aceSqlEditor = new AceSqlEditor("ace-editor");
+    aceSqlEditor.addCommand({
+        name: 'executeQuery',
+        bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
+        exec: function (editor) {
+            me.runQuery(null, editor);
+        }
+    });
+    aceSqlEditor.addCommand({
+        name: 'runQuery',
+        bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
+        exec: function (editor) {
+            me.runQuery(null, editor);
+        }
+    });                  
+    aceSqlEditor.addCommand({
+        name: 'saveQuery',
+        bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
+        exec: function () {
+            me.saveQuery();
+        }
+    });
+    
+    var DataGrid = require('./component-data-grid.js');
+    var dataGrid = new DataGrid();
+    
+    this.runQuery = function () {
+        $('#client-run-time').html('');
+        $('#server-run-time').html('');
+        $('#rowcount').html('');
+        dataGrid.emptyDataGrid();
+        var queryName = me.getQueryName();
+        var data = {
+            queryText: aceSqlEditor.getSelectedOrAllText(),
+            connectionId: $('#connection').val(),
+            cacheKey: $('#cache-key').val(),
+            queryName: queryName
+        };
+        var clientStart = new Date();
+        var clientEnd = null;
+        dataGrid.startRunningTimer();
+        $.ajax({
+            type: "POST",
+            url: "/run-query",
+            data: data
+        }).done(function (data) {
+            chartEditor.setData(data);
+            clientEnd = new Date();
+            dataGrid.stopRunningTimer();
+            $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
+            $('#server-run-time').html(data.serverMs/1000 + " sec.");
+            if (data.success) {
+                $('.hide-while-running').show();
+                if (data.incomplete) {
+                    $('.incomplete-notification').removeClass("hidden");
+                } else {
+                    $('.incomplete-notification').addClass("hidden");
+                }
+                dataGrid.renderGridData(data);
+            } else {
+                dataGrid.renderError(data.error);
+            }
+        }).fail(function () {
+            dataGrid.stopRunningTimer();
+            dataGrid.renderError("Something is broken :(");
+        });
+    };
+    
+    
+    // From MenuBar
+    var $queryName = $('#header-query-name');
+    
+    this.getQueryName = function () {
+        return $queryName.val();
+    };
+    
+    this.getQueryTags = function () {
+        return $.map($('#tags').val().split(','), $.trim);
+    };
+    
+    this.saveQuery = function () {
+        var $queryId = $('#query-id');
+        var query = {
+            name: me.getQueryName(),
+            queryText: aceSqlEditor.getEditorText(),
+            tags: me.getQueryTags(),
+            connectionId: dbInfo.getConnectionId(),
+            chartConfiguration: chartEditor.getChartConfiguration()
+        };
+        $('#btn-save-result').text('saving...').show();
+        $.ajax({
+            type: "POST",
+            url: "/queries/" + $queryId.val(),
+            data: query
+        }).done(function (data) {
+            if (data.success) {
+                window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
+                $queryId.val(data.query._id);
+                $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
+                setTimeout(function () {
+                    $('#btn-save-result').fadeOut(400, function () {
+                        $('#btn-save-result').removeClass('label-success').addClass('label-info').text('');
+                    });
+                }, 1000);
+            } else {
+                $('#btn-save-result').removeClass('label-info').addClass('label-danger').text('Failed');
+            }
+        }).fail(function () {
+            alert('ajax fail');
+        });
+    };
+    
+    $('#btn-save').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        me.saveQuery();
+    });
+    
+    $('#btn-run-query').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        me.runQuery();
+    });
+    
+    /*  (re-)render the chart when the viz tab is pressed, 
+        TODO: only do this if necessary
+    ==============================================================================*/
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        // if shown tab was the chart tab, rerender the chart
+        // e.target is the activated tab
+        if (e.target.getAttribute("href") == "#tab-content-visualize") {
+            chartEditor.rerenderChart();
+        } else if (e.target.getAttribute("href") == "#tab-content-sql") {
+            dataGrid.resize();
+        }
+    });
+    
+    /*  get query again, because not all the data is in the HTML
+        TODO: do most the workflow this way? That or boostrap the page with the query object
+    ==============================================================================*/
+    var $queryId = $('#query-id');
+    $.ajax({
+        type: "GET",
+        url: "/queries/" + $queryId.val() + "?format=json"
+    }).done(function (data) {
+        console.log(data);
+        chartEditor.loadChartConfiguration(data.chartConfiguration);
+    }).fail(function () {
+        alert('Failed to get additional Query info');
+    });
+};
+
 
 module.exports = function () {
-    
     if ($('#ace-editor').length) {
-        
-        var $queryId = $('#query-id');
-        
-        
-        /*  DB / Schema Info
-        ==============================================================================*/
-        var DbInfo = require('./component-db-info.js');
-        var dbInfo = new DbInfo();
-        
-        
-        /*  Set up the Ace Editor
-        ========================================================================= */
-        var SqlEditor = require('./component-sql-editor.js');
-        var sqlEditor = new SqlEditor();
-        
-        
-        /*  Chart Editor Setup
-        ==============================================================================*/
-        var ChartEditor = require('./component-chart-editor.js');
-        var chartEditor = new ChartEditor({sqlEditor: sqlEditor});
-        chartEditor.registerChartType("line", require('./chart-type-line.js'));
-        chartEditor.registerChartType("bar", require('./chart-type-bar.js'));
-        chartEditor.registerChartType("verticalbar", require('./chart-type-vertical-bar'));
-        chartEditor.registerChartType("bubble", require('./chart-type-bubble'));
-        
-        
-        
-        /*  Menubar Setup
-        ==============================================================================*/
-        var Menubar = require('./component-menubar.js');
-        var menubar = new Menubar({sqlEditor: sqlEditor, dbInfo: dbInfo, chartEditor: chartEditor});
-        
-        sqlEditor.setMenubar(menubar);
-        
-        sqlEditor.aceEditor.commands.addCommand({
-            name: 'saveQuery',
-            bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-            exec: function () {
-                menubar.saveQuery();
-            }
-        });
-        
-        /*  (re-)render the chart when the viz tab is pressed, 
-            TODO: only do this if necessary
-        ==============================================================================*/
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            // if shown tab was the chart tab, rerender the chart
-            // e.target is the activated tab
-            if (e.target.getAttribute("href") == "#tab-content-visualize") {
-                chartEditor.rerenderChart();
-            }
-        });
-        
-        
-        
-        /*  get query again, because not all the data is in the HTML
-            TODO: do most the workflow this way? That or boostrap the page with the query object
-        ==============================================================================*/
-        $.ajax({
-            type: "GET",
-            url: "/queries/" + $queryId.val() + "?format=json"
-        }).done(function (data) {
-            console.log(data);
-            chartEditor.loadChartConfiguration(data.chartConfiguration);
-        }).fail(function () {
-            alert('Failed to get additional Query info');
-        });
+        var queryEditor = new QueryEditor();
     }
 };
-},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./chart-type-vertical-bar":4,"./component-chart-editor.js":5,"./component-db-info.js":6,"./component-menubar.js":7,"./component-sql-editor.js":8}],14:[function(require,module,exports){
+
+
+
+},{"./component-ace-sql-editor.js":5,"./component-chart-editor.js":6,"./component-data-grid.js":7,"./component-db-info.js":8}],14:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {

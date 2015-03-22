@@ -11,9 +11,8 @@ var chartEditor = new ChartEditor();
 var saveSvgAsPng = require('saveSvgAsPng');
 var $ = require('jquery');
 
-var ChartEditor = function (opts) {
+var ChartEditor = function () {
     var me = this;
-    var sqlEditor = opts.sqlEditor;
     var gchart;
     var gdata;
     var gmeta;
@@ -25,7 +24,12 @@ var ChartEditor = function (opts) {
     var $btnSaveImage = $('#btn-save-image');
     var $chartSetupUI = $("#chart-setup-ui");
     
-    this.registerChartType = function (type, chartType) {
+    this.setData = function(data) {
+        gdata = data.results;
+        gmeta = data.meta;
+    };
+    
+    function registerChartType (type, chartType) {
         chartTypes[type] = chartType;
         chartLabels.push(chartType.chartLabel);
         chartLabels.sort();
@@ -37,10 +41,14 @@ var ChartEditor = function (opts) {
             var chartLabel = chartLabels[i];
             $chartTypeDropDown.append('<option value="' + chartTypeKeyByChartLabel[chartLabel] + '">' + chartLabel + '</option>');
         }
-    };
+    }
+    registerChartType("line", require('./chart-type-line.js'));
+    registerChartType("bar", require('./chart-type-bar.js'));
+    registerChartType("verticalbar", require('./chart-type-vertical-bar'));
+    registerChartType("bubble", require('./chart-type-bubble'));
+    
     
     this.buildChartUI = function () {
-        gmeta = sqlEditor.getGmeta();
         var selectedChartType = $chartTypeDropDown.val();
         // loop through and create dropdowns
         if (chartTypes[selectedChartType]) {
@@ -134,8 +142,6 @@ var ChartEditor = function (opts) {
     
     // TODO: factor out the chart piece from the chart editor
     this.renderChart = function () {
-        gdata = sqlEditor.getGdata();
-        gmeta = sqlEditor.getGmeta();
         var requirementsMet = true;
         var fieldsNeeded = [];
         
