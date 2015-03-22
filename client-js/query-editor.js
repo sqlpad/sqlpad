@@ -1,38 +1,15 @@
 var $ = require('jquery');
+var keymaster = require('keymaster');
+var ChartEditor = require('./component-chart-editor.js');
+var DbInfo = require('./component-db-info.js');
+var AceSqlEditor = require('./component-ace-sql-editor.js');
+var DataGrid = require('./component-data-grid.js');
 
 var QueryEditor = function () {
     
-    var ChartEditor = require('./component-chart-editor.js');
     var chartEditor = new ChartEditor();
-    
-    var DbInfo = require('./component-db-info.js');
     var dbInfo = new DbInfo();
-    
-    var AceSqlEditor = require('./component-ace-sql-editor.js');
     var aceSqlEditor = new AceSqlEditor("ace-editor");
-    aceSqlEditor.addCommand({
-        name: 'executeQuery',
-        bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
-        exec: function (editor) {
-            runQuery(null, editor);
-        }
-    });
-    aceSqlEditor.addCommand({
-        name: 'runQuery',
-        bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
-        exec: function (editor) {
-            runQuery(null, editor);
-        }
-    });                  
-    aceSqlEditor.addCommand({
-        name: 'saveQuery',
-        bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-        exec: function () {
-            saveQuery();
-        }
-    });
-    
-    var DataGrid = require('./component-data-grid.js');
     var dataGrid = new DataGrid();
     
     function runQuery () {
@@ -55,6 +32,7 @@ var QueryEditor = function () {
             data: data
         }).done(function (data) {
             chartEditor.setData(data);
+            // TODO - if vis tab is active, render chart
             clientEnd = new Date();
             dataGrid.stopRunningTimer();
             $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
@@ -142,7 +120,7 @@ var QueryEditor = function () {
     });
     
     /*  get query again, because not all the data is in the HTML
-        TODO: do most the workflow this way? That or boostrap the page with the query object
+        TODO: do most the workflow this way? 
     ==============================================================================*/
     var $queryId = $('#query-id');
     $.ajax({
@@ -153,6 +131,22 @@ var QueryEditor = function () {
         chartEditor.loadChartConfiguration(data.chartConfiguration);
     }).fail(function () {
         alert('Failed to get additional Query info');
+    });
+    
+    
+    /*  Shortcuts
+    ==============================================================================*/
+    keymaster.filter = function (event) {
+        var tagName = (event.target || event.srcElement).tagName;
+        return true; //!(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
+    };
+    keymaster('ctrl+s, command+s', function() { 
+        saveQuery();
+        return false; //stops the event and prevents default browser events
+    });
+    keymaster('ctrl+r, command+r, ctrl+e, command+e', function() { 
+        runQuery();
+        return false; //stops the event and prevents default browser events
     });
 };
 

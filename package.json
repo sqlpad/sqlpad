@@ -35,11 +35,11 @@
     "ejs": "1.0.x",
     "express": "4.x.x",
     "json2csv": "2.2.x",
+    "keymaster": "^1.6.2",
     "lodash": "2.4.x",
     "method-override": "1.0.x",
     "moment": "2.8.x",
     "morgan": "1.1.x",
-    "vertica": "0.5.x",
     "mssql": "1.x.x",
     "mysql": "2.x.x",
     "nedb": "1.x.x",
@@ -50,7 +50,8 @@
     "serve-favicon": "2.0.x",
     "ua-parser": "0.3.x",
     "update-notifier": "0.1.x",
-    "uuid": "1.4.x"
+    "uuid": "1.4.x",
+    "vertica": "0.5.x"
   },
   "main": "server.js",
   "bin": {
