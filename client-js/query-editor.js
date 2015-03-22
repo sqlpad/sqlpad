@@ -1,8 +1,6 @@
 var $ = require('jquery');
-var AceSqlEditor = require('./component-ace-sql-editor.js');
 
 var QueryEditor = function () {
-    var me = this;
     
     var ChartEditor = require('./component-chart-editor.js');
     var chartEditor = new ChartEditor();
@@ -10,43 +8,43 @@ var QueryEditor = function () {
     var DbInfo = require('./component-db-info.js');
     var dbInfo = new DbInfo();
     
+    var AceSqlEditor = require('./component-ace-sql-editor.js');
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     aceSqlEditor.addCommand({
         name: 'executeQuery',
         bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
         exec: function (editor) {
-            me.runQuery(null, editor);
+            runQuery(null, editor);
         }
     });
     aceSqlEditor.addCommand({
         name: 'runQuery',
         bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
         exec: function (editor) {
-            me.runQuery(null, editor);
+            runQuery(null, editor);
         }
     });                  
     aceSqlEditor.addCommand({
         name: 'saveQuery',
         bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
         exec: function () {
-            me.saveQuery();
+            saveQuery();
         }
     });
     
     var DataGrid = require('./component-data-grid.js');
     var dataGrid = new DataGrid();
     
-    this.runQuery = function () {
+    function runQuery () {
         $('#client-run-time').html('');
         $('#server-run-time').html('');
         $('#rowcount').html('');
         dataGrid.emptyDataGrid();
-        var queryName = me.getQueryName();
         var data = {
             queryText: aceSqlEditor.getSelectedOrAllText(),
             connectionId: $('#connection').val(),
             cacheKey: $('#cache-key').val(),
-            queryName: queryName
+            queryName: getQueryName()
         };
         var clientStart = new Date();
         var clientEnd = null;
@@ -76,26 +74,22 @@ var QueryEditor = function () {
             dataGrid.stopRunningTimer();
             dataGrid.renderError("Something is broken :(");
         });
-    };
+    }
     
+    function getQueryName () {
+        return $('#header-query-name').val();
+    }
     
-    // From MenuBar
-    var $queryName = $('#header-query-name');
-    
-    this.getQueryName = function () {
-        return $queryName.val();
-    };
-    
-    this.getQueryTags = function () {
+    function getQueryTags () {
         return $.map($('#tags').val().split(','), $.trim);
-    };
+    }
     
-    this.saveQuery = function () {
+    function saveQuery () {
         var $queryId = $('#query-id');
         var query = {
-            name: me.getQueryName(),
+            name: getQueryName(),
             queryText: aceSqlEditor.getEditorText(),
-            tags: me.getQueryTags(),
+            tags: getQueryTags(),
             connectionId: dbInfo.getConnectionId(),
             chartConfiguration: chartEditor.getChartConfiguration()
         };
@@ -120,18 +114,18 @@ var QueryEditor = function () {
         }).fail(function () {
             alert('ajax fail');
         });
-    };
+    }
     
     $('#btn-save').click(function (event) {
         event.preventDefault();
         event.stopPropagation();
-        me.saveQuery();
+        saveQuery();
     });
     
     $('#btn-run-query').click(function (event) {
         event.preventDefault();
         event.stopPropagation();
-        me.runQuery();
+        runQuery();
     });
     
     /*  (re-)render the chart when the viz tab is pressed, 
@@ -165,8 +159,6 @@ var QueryEditor = function () {
 
 module.exports = function () {
     if ($('#ace-editor').length) {
-        var queryEditor = new QueryEditor();
+        new QueryEditor();
     }
 };
-
-
