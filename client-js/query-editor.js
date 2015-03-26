@@ -136,17 +136,19 @@ var QueryEditor = function () {
     
     /*  Shortcuts
     ==============================================================================*/
+    // keymaster doesn't fire on input/textarea events by default
+    // since we are only using command/ctrl shortcuts, 
+    // we want the event to fire all the time for any element
     keymaster.filter = function (event) {
-        var tagName = (event.target || event.srcElement).tagName;
-        return true; //!(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
+        return true; 
     };
     keymaster('ctrl+s, command+s', function() { 
         saveQuery();
-        return false; //stops the event and prevents default browser events
+        return false;
     });
     keymaster('ctrl+r, command+r, ctrl+e, command+e', function() { 
         runQuery();
-        return false; //stops the event and prevents default browser events
+        return false;
     });
 };
 
