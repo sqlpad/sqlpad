@@ -310,7 +310,9 @@ a {
 
 #btn-reload-schema span {
     display: inline-block;
-    margin-right: 5px;
+}
+#btn-reload-schema {
+    float: right;
 }
 
 .driver-specific {
