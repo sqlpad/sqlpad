@@ -13,7 +13,6 @@ var QueryEditor = function () {
     var dataGrid = new DataGrid();
     
     function runQuery () {
-        $('#client-run-time').html('');
         $('#server-run-time').html('');
         $('#rowcount').html('');
         dataGrid.emptyDataGrid();
@@ -23,8 +22,6 @@ var QueryEditor = function () {
             cacheKey: $('#cache-key').val(),
             queryName: getQueryName()
         };
-        var clientStart = new Date();
-        var clientEnd = null;
         dataGrid.startRunningTimer();
         $.ajax({
             type: "POST",
@@ -33,9 +30,7 @@ var QueryEditor = function () {
         }).done(function (data) {
             chartEditor.setData(data);
             // TODO - if vis tab is active, render chart
-            clientEnd = new Date();
             dataGrid.stopRunningTimer();
-            $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
             $('#server-run-time').html(data.serverMs/1000 + " sec.");
             if (data.success) {
                 $('.hide-while-running').show();

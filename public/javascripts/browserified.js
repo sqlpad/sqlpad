@@ -792,32 +792,20 @@ require('./query-filter-form.js')();
 require('./query-editor.js')();
 },{"./configs.js":9,"./connection-admin.js":10,"./connection.js":11,"./query-editor.js":13,"./query-filter-form.js":14,"./user-admin.js":15}],13:[function(require,module,exports){
 var $ = (window.$);
-var key = require('keymaster');
-
-key.filter = function (event) {
-    var tagName = (event.target || event.srcElement).tagName;
-    return true; //!(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
-};
+var keymaster = require('keymaster');
+var ChartEditor = require('./component-chart-editor.js');
+var DbInfo = require('./component-db-info.js');
+var AceSqlEditor = require('./component-ace-sql-editor.js');
+var DataGrid = require('./component-data-grid.js');
 
 var QueryEditor = function () {
     
-    
-    
-    var ChartEditor = require('./component-chart-editor.js');
     var chartEditor = new ChartEditor();
-    
-    var DbInfo = require('./component-db-info.js');
     var dbInfo = new DbInfo();
-    
-    var AceSqlEditor = require('./component-ace-sql-editor.js');
     var aceSqlEditor = new AceSqlEditor("ace-editor");
-    
-    
-    var DataGrid = require('./component-data-grid.js');
     var dataGrid = new DataGrid();
     
     function runQuery () {
-        $('#client-run-time').html('');
         $('#server-run-time').html('');
         $('#rowcount').html('');
         dataGrid.emptyDataGrid();
@@ -827,8 +815,6 @@ var QueryEditor = function () {
             cacheKey: $('#cache-key').val(),
             queryName: getQueryName()
         };
-        var clientStart = new Date();
-        var clientEnd = null;
         dataGrid.startRunningTimer();
         $.ajax({
             type: "POST",
@@ -837,9 +823,7 @@ var QueryEditor = function () {
         }).done(function (data) {
             chartEditor.setData(data);
             // TODO - if vis tab is active, render chart
-            clientEnd = new Date();
             dataGrid.stopRunningTimer();
-            $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
             $('#server-run-time').html(data.serverMs/1000 + " sec.");
             if (data.success) {
                 $('.hide-while-running').show();
@@ -924,7 +908,7 @@ var QueryEditor = function () {
     });
     
     /*  get query again, because not all the data is in the HTML
-        TODO: do most the workflow this way? That or boostrap the page with the query object
+        TODO: do most the workflow this way? 
     ==============================================================================*/
     var $queryId = $('#query-id');
     $.ajax({
@@ -938,40 +922,22 @@ var QueryEditor = function () {
     });
     
     
-    /*  shortcuts
+    /*  Shortcuts
     ==============================================================================*/
-    key('ctrl+s, command+s', function() { 
+    // keymaster doesn't fire on input/textarea events by default
+    // since we are only using command/ctrl shortcuts, 
+    // we want the event to fire all the time for any element
+    keymaster.filter = function (event) {
+        return true; 
+    };
+    keymaster('ctrl+s, command+s', function() { 
         saveQuery();
-        return false; //stops the event and prevents default browser events
+        return false;
     });
-    key('ctrl+r, command+r, ctrl+e, command+e', function() { 
+    keymaster('ctrl+r, command+r, ctrl+e, command+e', function() { 
         runQuery();
-        return false; //stops the event and prevents default browser events
+        return false;
     });
-    /*
-    aceSqlEditor.addCommand({
-        name: 'executeQuery',
-        bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
-        exec: function (editor) {
-            runQuery(null, editor);
-        }
-    });
-    aceSqlEditor.addCommand({
-        name: 'runQuery',
-        bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
-        exec: function (editor) {
-            runQuery(null, editor);
-        }
-    });                  
-    aceSqlEditor.addCommand({
-        name: 'saveQuery',
-        bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-        exec: function () {
-            saveQuery();
-        }
-    });
-    */
-    
 };
 
 
