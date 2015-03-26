@@ -154,15 +154,15 @@ a {
 }
 .tab-pane {
     position:absolute;
-    left:250px;
+    left:0;
     right:0;
-    bottom:0;
+    bottom:30px;
     top:0;
 }
-.ace-and-results {
-    left: 0;
+.tab-pane-main {
+    left: 251px;
     bottom: 0;
-    top: 0;
+    top: 2px;
     right: 0;
     position: absolute;
 }
@@ -206,14 +206,14 @@ a {
     width: 250px;
     position: fixed;
     top: 103px;
-    bottom: 0;
+    bottom: 30px;
     left: 0;
     z-index: 1000;
     display: block;
     padding: 20px;
     overflow-x: hidden;
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #f5f5f5;
+    background-color: #f8f8f8;
     border-right: 1px solid #eee;
 }
 
@@ -245,19 +245,34 @@ a {
 }
 
 
+.navbar-default {
+  /* background-image: -webkit-linear-gradient(top,#fff 0,#f8f8f8 100%); */
+  background-image: none;
+  /* background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#f8f8f8)); */
+  /* background-image: linear-gradient(to bottom,#fff 0,#f8f8f8 100%); */
+  boarder-radius: 0;
+  box-shadow: none;
+  /* background-repeat: repeat-x; */
+  /* border-radius: 4px; */
+  /* -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.15),0 1px 5px rgba(0,0,0,.075); */
+  /* box-shadow: inset 0 1px 0 rgba(255,255,255,.15),0 1px 5px rgba(0,0,0,.075); */
+}
 
 /*  Panel Results / Slick grids
 ======================================================== */
 
 #panel-result-header {
     position: absolute;
+    /*
     top: 0px;
+    */
+    bottom: 0;
     left: 0px;
     right: 0px;
     height: 30px;
-    
+    border-top: 1px solid #dcdcdc;
     background-color: #5bc0de;
-    background-color: #DDD;
+    background-color: #f0f0f0;
     padding: .6em;
     
     font-weight: 700;
@@ -290,16 +305,21 @@ a {
 
 #result-slick-grid {
     position: absolute;
+    /*
     top: 30px;
+    bottom: 0;
+    border: 1px solid #dcdcdc;
+    */
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    border: 1px solid #dcdcdc;
+    border-left: 1px solid #dcdcdc;
 }
 
 #run-result-notification {
     position: absolute;
-    top: 30px;
+    top: 0;
     bottom: 2px;
     left: 2px;
     right: 2px;
