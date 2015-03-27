@@ -97,6 +97,13 @@ a {
   */
 }
 
+.navbar label.control-label {
+    font-weight: normal;
+}
+
+.form-control {
+    color: #333;
+}
 
 /*  Query Page
 ======================================================== */
@@ -156,7 +163,7 @@ a {
     position:absolute;
     left:0;
     right:0;
-    bottom:30px;
+    bottom:0;
     top:0;
 }
 .tab-pane-main {
@@ -206,7 +213,7 @@ a {
     width: 250px;
     position: fixed;
     top: 103px;
-    bottom: 30px;
+    bottom: 0;
     left: 0;
     z-index: 1000;
     display: block;
@@ -263,14 +270,12 @@ a {
 
 #panel-result-header {
     position: absolute;
-    /*
-    top: 0px;
-    */
-    bottom: 0;
+    top: 0;
     left: 0px;
     right: 0px;
     height: 30px;
-    border-top: 1px solid #dcdcdc;
+    border-left: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
     background-color: #5bc0de;
     background-color: #f0f0f0;
     padding: .6em;
@@ -305,13 +310,12 @@ a {
 
 #result-slick-grid {
     position: absolute;
-    /*
     top: 30px;
     bottom: 0;
+    /*
+    
     border: 1px solid #dcdcdc;
     */
-    top: 0;
-    bottom: 0;
     left: 0;
     right: 0;
     border-left: 1px solid #dcdcdc;
@@ -319,13 +323,13 @@ a {
 
 #run-result-notification {
     position: absolute;
-    top: 0;
+    top: 30px;
     bottom: 2px;
     left: 2px;
     right: 2px;
     font-size: 30px;
     text-align: center;
-    padding-top: 20px;
+    padding-top: 40px;
 }
 
 #btn-reload-schema span {
@@ -343,4 +347,8 @@ a {
 ======================================================== */
 .hidden {
     display: none;
+}
+
+.shortcut-letter {
+    text-decoration: underline;
 }
