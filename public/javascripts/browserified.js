@@ -269,6 +269,49 @@ module.exports =  {
     }
 };
 },{}],5:[function(require,module,exports){
+var $ = (window.$);
+var ace = (window.ace);
+
+module.exports = function (id) {
+    var me = this;
+    
+    id = id || "ace-editor";
+    var editor = ace.edit(id);
+    
+    if (editor) { 
+        //editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/sql");    
+        editor.focus();
+    }
+    
+    this.addCommand = function (aceCommand) {
+        editor.commands.addCommand(aceCommand);
+    };
+    
+    this.getEditorText = function () {
+        return editor.getValue();
+    };
+    
+    this.getSelectedOrAllText = function () {
+        var relevantText;
+        var selectedText = editor.session.getTextRange(editor.getSelectionRange());
+        if (selectedText.length) {
+            // get only selected content
+            relevantText = selectedText;
+        } else {
+            // get whole editor content
+            relevantText = editor.getValue();
+        }
+        return relevantText;
+    };
+    
+    this.resize = function () {
+        editor.resize();
+    };
+    
+    $(window).resize(me.resize);
+};
+},{}],6:[function(require,module,exports){
 /*
 
 "component" for chart editor
@@ -282,9 +325,8 @@ var chartEditor = new ChartEditor();
 var saveSvgAsPng = (window.saveSvgAsPng);
 var $ = (window.$);
 
-var ChartEditor = function (opts) {
+var ChartEditor = function () {
     var me = this;
-    var sqlEditor = opts.sqlEditor;
     var gchart;
     var gdata;
     var gmeta;
@@ -296,7 +338,12 @@ var ChartEditor = function (opts) {
     var $btnSaveImage = $('#btn-save-image');
     var $chartSetupUI = $("#chart-setup-ui");
     
-    this.registerChartType = function (type, chartType) {
+    this.setData = function(data) {
+        gdata = data.results;
+        gmeta = data.meta;
+    };
+    
+    function registerChartType (type, chartType) {
         chartTypes[type] = chartType;
         chartLabels.push(chartType.chartLabel);
         chartLabels.sort();
@@ -308,10 +355,14 @@ var ChartEditor = function (opts) {
             var chartLabel = chartLabels[i];
             $chartTypeDropDown.append('<option value="' + chartTypeKeyByChartLabel[chartLabel] + '">' + chartLabel + '</option>');
         }
-    };
+    }
+    registerChartType("line", require('./chart-type-line.js'));
+    registerChartType("bar", require('./chart-type-bar.js'));
+    registerChartType("verticalbar", require('./chart-type-vertical-bar'));
+    registerChartType("bubble", require('./chart-type-bubble'));
+    
     
     this.buildChartUI = function () {
-        gmeta = sqlEditor.getGmeta();
         var selectedChartType = $chartTypeDropDown.val();
         // loop through and create dropdowns
         if (chartTypes[selectedChartType]) {
@@ -405,8 +456,6 @@ var ChartEditor = function (opts) {
     
     // TODO: factor out the chart piece from the chart editor
     this.renderChart = function () {
-        gdata = sqlEditor.getGdata();
-        gmeta = sqlEditor.getGmeta();
         var requirementsMet = true;
         var fieldsNeeded = [];
         
@@ -464,7 +513,112 @@ var ChartEditor = function (opts) {
 };
 module.exports = ChartEditor;
 
-},{}],6:[function(require,module,exports){
+},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./chart-type-vertical-bar":4}],7:[function(require,module,exports){
+var $ = (window.$);
+var Slick = (window.Slick);
+var moment = require('moment');
+
+module.exports = function () {
+    var me = this;
+    var grid;
+    var clientStart;
+    var doTimer = false;
+    
+    function _renderTime () {
+        if (doTimer) {
+            var now = new Date();
+            var ms = now - clientStart;
+            var seconds = ms/1000;
+            var timeText = "running query<br>" + seconds.toFixed(3) + " sec.";
+            $('#run-result-notification').html(timeText);
+            setTimeout(_renderTime, 27);
+        }
+    }
+    
+    this.startRunningTimer = function () {
+        clientStart = new Date();
+        doTimer = true;
+        $('#run-result-notification')
+            .removeClass('label-danger')
+            .text('running...')
+            .show();
+        $('.hide-while-running').hide();
+        _renderTime();
+    };
+    
+    this.stopRunningTimer = function () {
+        doTimer = false;
+    };
+    
+    this.renderError = function (errorMsg) {
+        // error message was data.error
+        $('#run-result-notification')
+            .addClass('label-danger')
+            .text(errorMsg);
+    };
+    
+    this.emptyDataGrid = function () {
+        // TODO: destroy/empty a slickgrid. for now we'll just empty
+        $('#result-slick-grid').empty();
+    };
+    
+    this.renderGridData = function (data) {
+        var columns = [];
+        if (data.results && data.results[0]) {
+            $('#rowcount').html(data.results.length);
+            var firstRow = data.results[0];
+            for (var col in firstRow) {
+                var maxValueLength = data.meta[col].maxValueLength;
+                var columnWidth = (maxValueLength > col.length ? maxValueLength * 15 : col.length * 15);
+                if (columnWidth > 400) columnWidth = 400;
+                var columnSpec = {id: col, name: col, field: col, width: columnWidth};
+                if (data.meta[col].datatype === 'date') {
+                    columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
+                        // https://github.com/mleibman/SlickGrid/wiki/Column-Options
+                        if (value === null) {
+                          return "";
+                        } else {
+                            //var d = moment.utc(value);
+                            var d = moment(value);
+                            return d.format('MM/DD/YYYY HH:mm:ss');
+                            // default formatter:
+                            // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+                        }
+                    };
+                }
+                columns.push(columnSpec);
+            }
+            // loop through and clean up dates!
+            // TODO: this is lazy and could use optimization
+            for (var r = 0; r < data.results.length; r++) {
+                var row = data.results[r];
+                for (var key in data.meta) {
+                    if (data.meta[key].datatype === 'date' && row[key]) {
+                        row[key] = new Date(row[key]);
+                    }
+                }
+            }
+        }
+        var options = {
+          enableCellNavigation: true,
+          enableColumnReorder: false,
+          enableTextSelectionOnCells: true
+        };
+        grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
+        
+        $('#run-result-notification')
+            .text('')
+            .hide();
+    };
+    
+    this.resize = function () {
+        //https://github.com/mleibman/SlickGrid/wiki/Slick.Grid#resizeCanvas
+        if (grid) grid.resizeCanvas();
+    };
+    
+    $(window).resize(me.resize);
+};
+},{"moment":17}],8:[function(require,module,exports){
 /*
 
  "component" for db schema info
@@ -530,345 +684,7 @@ DbInfo.prototype.getSchema = function (reload) {
         });
     }
 };
-},{}],7:[function(require,module,exports){
-/*
-
-"component" for menubar
-
-EXAMPLE: 
-
-var Menubar = require('this-file.js');
-var menubar = new Menubar();
-
-
-
-
-
-*/
-
-var $ = (window.$);
-/*
-var toastr = require('toastr');
-toastr.options = {
-    positionClass: "toast-bottom-right"
-};
-*/
-
-var Menubar = function (opts) {
-    var me = this;
-    var dbInfo = opts.dbInfo;
-    var sqlEditor = opts.sqlEditor;
-    var chartEditor = opts.chartEditor;
-    
-    var $queryName = $('#header-query-name');
-    
-    $('#btn-save').click(function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        me.saveQuery();
-    });
-    
-    $('#btn-run-query').click(function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-        sqlEditor.runQuery();
-    });
-    
-    this.getQueryName = function () {
-        return $queryName.val();
-    };
-    
-    this.getQueryTags = function () {
-        return $.map($('#tags').val().split(','), $.trim)
-    };
-    
-    this.saveQuery = function () {
-         /*
-             should POST to /queries/:id or /queries/new
-             {
-                 name: 'a fun query',
-                 tags: [],
-                 connectionId: connectionId
-             }
-             
-             it returns
-             {
-                 success: true,
-                 query: queryobject
-             }
-         */
-         var $queryId = $('#query-id');
-         var query = {
-             name: me.getQueryName(),
-             queryText: sqlEditor.getEditorText(),
-             tags: me.getQueryTags(),
-             connectionId: dbInfo.getConnectionId(),
-             chartConfiguration: chartEditor.getChartConfiguration()
-         };
-         console.log("saving query:");
-         console.log(query);
-         $('#btn-save-result').text('saving...').show();
-         $.ajax({
-             type: "POST",
-             url: "/queries/" + $queryId.val(),
-             data: query
-         }).done(function (data) {
-             if (data.success) {
-                 window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
-                 $queryId.val(data.query._id);
-                 
-                 $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
-                 setTimeout(function () {
-                     $('#btn-save-result').fadeOut(400, function () {
-                         $('#btn-save-result').removeClass('label-success').addClass('label-info').text('');
-                     });
-                 }, 1000);
-                 
-             } else {
-                 $('#btn-save-result').removeClass('label-info').addClass('label-danger').text('Failed');
-             }
-         }).fail(function () {
-             alert('ajax fail');
-         });
-     };
-    
-};
-
-module.exports = Menubar;
-},{}],8:[function(require,module,exports){
-/*
-
-"component" for ace editor, status bar, and slickgrid
-
-
-EXAMPLE: 
-
-var SqlEditor = require('whatever-this-module-is');
-var editor = new SqlEditor()
-editor.getEditorText(); 
-editor.getData();
-editor.runQuery();
-
-
-*/
-
-var $ = (window.$);
-var ace = (window.ace);
-var Slick = (window.Slick);
-var moment = require('moment');
-
-// expose moment for some debugging purposes
-window.moment = moment;
-
-
-// TODO: Clean up SqlEditor. seriously.
-
-var SqlEditor = function () {
-    var me = this;
-    
-    var grid;
-    var clientStart;
-    var clientEnd;
-    var running = false; 
-    
-    var gdata;   // NOTE: these were initially exposed for console debugging
-    var gmeta;   // but now I'm kind of abusing these elsewhere.
-    
-    var menubar;
-    this.setMenubar = function (m) {
-        menubar = m;
-    };
-    
-    var editor = ace.edit("ace-editor");
-    this.aceEditor = editor;
-    
-    if (editor) { 
-        //editor.setTheme("ace/theme/monokai");
-        editor.getSession().setMode("ace/mode/sql");    
-        editor.focus();
-        editor.commands.addCommand({
-            name: 'executeQuery',
-            bindKey: {win: 'Ctrl-E',  mac: 'Command-E'},
-            exec: function (editor) {
-                me.runQuery(null, editor);
-            }
-        });
-        editor.commands.addCommand({
-            name: 'runQuery',
-            bindKey: {win: 'Ctrl-R',  mac: 'Command-R'},
-            exec: function (editor) {
-                me.runQuery(null, editor);
-            }
-        });
-    }
-    
-    this.renderQueryResult = function (data) {
-        clientEnd = new Date();
-        running = false;
-        $('#client-run-time').html((clientEnd - clientStart)/1000 + " sec.");
-        $('#server-run-time').html(data.serverMs/1000 + " sec.");
-        if (data.success) {
-            $('.hide-while-running').show();
-            var columns = [];
-            if (data.incomplete) {
-                $('.incomplete-notification').removeClass("hidden");
-            } else {
-                $('.incomplete-notification').addClass("hidden");
-            }
-            if (data.results && data.results[0]) {
-                gdata = data.results; // NOTE: exposed data for console debugging
-                gmeta = data.meta;
-                $('#rowcount').html(data.results.length);
-                var firstRow = data.results[0];
-                for (var col in firstRow) {
-                    var maxValueLength = data.meta[col].maxValueLength;
-                    var columnWidth = (maxValueLength > col.length ? maxValueLength * 15 : col.length * 15);
-                    if (columnWidth > 400) columnWidth = 400;
-                    var columnSpec = {id: col, name: col, field: col, width: columnWidth};
-                    if (data.meta[col].datatype === 'date') {
-                        columnSpec.formatter = function (row, cell, value, columnDef, dataContext) {
-                            // https://github.com/mleibman/SlickGrid/wiki/Column-Options
-                            if (value === null) {
-                              return "";
-                            } else {
-                                //var d = moment.utc(value);
-                                var d = moment(value);
-                                return d.format('MM/DD/YYYY HH:mm:ss');
-                                // default formatter:
-                                // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-                            }
-                        };
-                    }
-                    columns.push(columnSpec);
-                }
-                // loop through and clean up dates!
-                // TODO: this is lazy and could use optimization
-                for (var r = 0; r < data.results.length; r++) {
-                    var row = data.results[r];
-                    for (var key in data.meta) {
-                        if (data.meta[key].datatype === 'date' && row[key]) {
-                            row[key] = new Date(row[key]);
-                        }
-                    }
-                }
-            }
-            var options = {
-              enableCellNavigation: true,
-              enableColumnReorder: false,
-              enableTextSelectionOnCells: true
-            };
-            grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
-            
-            $('#run-result-notification')
-                .text('')
-                .hide();
-        } else {
-            $('#run-result-notification')
-                .addClass('label-danger')
-                .text(data.error);
-        }
-    };
-    
-    
-    this.getEditorText = function () {
-        var relevantText;
-        var selectedText = editor.session.getTextRange(editor.getSelectionRange());
-        if (selectedText.length) {
-            // get only selected content
-            relevantText = selectedText;
-        } else {
-            // get whole editor content
-            relevantText = editor.getValue();
-        }
-        return relevantText;
-    };
-    
-    
-    this.resize = function () {
-        editor.resize();
-        //https://github.com/mleibman/SlickGrid/wiki/Slick.Grid#resizeCanvas
-        if (grid) grid.resizeCanvas();
-    };
-    
-    $(window).resize(me.resize);    
-    
-    
-    this.getGdata = function () {
-        return gdata;
-    };
-    
-    this.getGmeta = function () {
-        return gmeta;
-    };
-    
-    
-    function renderRunningTime () {
-        if (running) {
-            var now = new Date();
-            var ms = now - clientStart;
-            
-            $('#client-run-time').html(ms/1000 + " sec.");
-            
-            var leftovers = ms % 4000;
-            if (leftovers < 1000) {
-                $('#run-result-notification').text('running');
-            } else if (leftovers >= 1000 && leftovers < 2000) {
-                $('#run-result-notification').text('your');
-            } else if (leftovers >= 2000) {
-                $('#run-result-notification').text('query');
-            }
-            
-            setTimeout(renderRunningTime, 53);
-        }
-    }
-    
-    this.runQuery = function () {
-        var me = this;
-        $('#client-run-time').html('');
-        $('#server-run-time').html('');
-        $('#rowcount').html('');
-        running = true;
-        renderRunningTime();
-        
-        // TODO: destroy/empty a slickgrid. for now we'll just empty
-        $('#result-slick-grid').empty();
-        var queryName = (menubar ? menubar.getQueryName() : '');
-        var data = {
-            queryText: me.getEditorText(),
-            connectionId: $('#connection').val(),
-            cacheKey: $('#cache-key').val(),
-            queryName: queryName
-        };
-        
-        clientStart = new Date();
-        clientEnd = null;
-        notifyRunning();
-        $.ajax({
-            type: "POST",
-            url: "/run-query",
-            data: data
-        }).done(me.renderQueryResult).fail(notifyFailure);
-    };
-    
-    function notifyRunning () {
-        $('#run-result-notification')
-            .removeClass('label-danger')
-            .text('running...')
-            .show();
-        $('.hide-while-running').hide();
-    }
-    
-    function notifyFailure () {
-        running = false;
-        $('#run-result-notification')
-            .addClass('label-danger')
-            .text("Something is broken :(");
-    }
-    
-};
-
-module.exports = SqlEditor;
-},{"moment":16}],9:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -975,97 +791,162 @@ require('./query-filter-form.js')();
 // All the stuff that happens when viewing/working with a single query happens here
 require('./query-editor.js')();
 },{"./configs.js":9,"./connection-admin.js":10,"./connection.js":11,"./query-editor.js":13,"./query-filter-form.js":14,"./user-admin.js":15}],13:[function(require,module,exports){
-/*	
-	TODO: refactor this stuff in a way that makes sense.
-	
-	Originally these components were going to be stand-alone, but really they 
-	need to keep referencing each other.attribute
-	
-	Maybe keep the individual components, but make them all part of the 
-	larger "component" that is the page?
-	
-	For example: the save vis to image button needs to reference the query name
-	which is stored on the menu bar. 
-	
-	Also worth considering: The chart/table should be easily rendered without all the 
-	surrounding UI.
-*/
-
 var $ = (window.$);
+var keymaster = require('keymaster');
+var ChartEditor = require('./component-chart-editor.js');
+var DbInfo = require('./component-db-info.js');
+var AceSqlEditor = require('./component-ace-sql-editor.js');
+var DataGrid = require('./component-data-grid.js');
 
-module.exports = function () {
+var QueryEditor = function () {
     
-    if ($('#ace-editor').length) {
-        
-        var $queryId = $('#query-id');
-        
-        
-        /*  DB / Schema Info
-        ==============================================================================*/
-        var DbInfo = require('./component-db-info.js');
-        var dbInfo = new DbInfo();
-        
-        
-        /*  Set up the Ace Editor
-        ========================================================================= */
-        var SqlEditor = require('./component-sql-editor.js');
-        var sqlEditor = new SqlEditor();
-        
-        
-        /*  Chart Editor Setup
-        ==============================================================================*/
-        var ChartEditor = require('./component-chart-editor.js');
-        var chartEditor = new ChartEditor({sqlEditor: sqlEditor});
-        chartEditor.registerChartType("line", require('./chart-type-line.js'));
-        chartEditor.registerChartType("bar", require('./chart-type-bar.js'));
-        chartEditor.registerChartType("verticalbar", require('./chart-type-vertical-bar'));
-        chartEditor.registerChartType("bubble", require('./chart-type-bubble'));
-        
-        
-        
-        /*  Menubar Setup
-        ==============================================================================*/
-        var Menubar = require('./component-menubar.js');
-        var menubar = new Menubar({sqlEditor: sqlEditor, dbInfo: dbInfo, chartEditor: chartEditor});
-        
-        sqlEditor.setMenubar(menubar);
-        
-        sqlEditor.aceEditor.commands.addCommand({
-            name: 'saveQuery',
-            bindKey: {win: 'Ctrl-S',  mac: 'Command-S'},
-            exec: function () {
-                menubar.saveQuery();
-            }
-        });
-        
-        /*  (re-)render the chart when the viz tab is pressed, 
-            TODO: only do this if necessary
-        ==============================================================================*/
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            // if shown tab was the chart tab, rerender the chart
-            // e.target is the activated tab
-            if (e.target.getAttribute("href") == "#tab-content-visualize") {
-                chartEditor.rerenderChart();
-            }
-        });
-        
-        
-        
-        /*  get query again, because not all the data is in the HTML
-            TODO: do most the workflow this way? That or boostrap the page with the query object
-        ==============================================================================*/
+    var chartEditor = new ChartEditor();
+    var dbInfo = new DbInfo();
+    var aceSqlEditor = new AceSqlEditor("ace-editor");
+    var dataGrid = new DataGrid();
+    
+    function runQuery () {
+        $('#server-run-time').html('');
+        $('#rowcount').html('');
+        dataGrid.emptyDataGrid();
+        var data = {
+            queryText: aceSqlEditor.getSelectedOrAllText(),
+            connectionId: $('#connection').val(),
+            cacheKey: $('#cache-key').val(),
+            queryName: getQueryName()
+        };
+        dataGrid.startRunningTimer();
         $.ajax({
-            type: "GET",
-            url: "/queries/" + $queryId.val() + "?format=json"
+            type: "POST",
+            url: "/run-query",
+            data: data
         }).done(function (data) {
-            console.log(data);
-            chartEditor.loadChartConfiguration(data.chartConfiguration);
+            chartEditor.setData(data);
+            // TODO - if vis tab is active, render chart
+            dataGrid.stopRunningTimer();
+            $('#server-run-time').html(data.serverMs/1000 + " sec.");
+            if (data.success) {
+                $('.hide-while-running').show();
+                if (data.incomplete) {
+                    $('.incomplete-notification').removeClass("hidden");
+                } else {
+                    $('.incomplete-notification').addClass("hidden");
+                }
+                dataGrid.renderGridData(data);
+            } else {
+                dataGrid.renderError(data.error);
+            }
         }).fail(function () {
-            alert('Failed to get additional Query info');
+            dataGrid.stopRunningTimer();
+            dataGrid.renderError("Something is broken :(");
         });
     }
+    
+    function getQueryName () {
+        return $('#header-query-name').val();
+    }
+    
+    function getQueryTags () {
+        return $.map($('#tags').val().split(','), $.trim);
+    }
+    
+    function saveQuery () {
+        var $queryId = $('#query-id');
+        var query = {
+            name: getQueryName(),
+            queryText: aceSqlEditor.getEditorText(),
+            tags: getQueryTags(),
+            connectionId: dbInfo.getConnectionId(),
+            chartConfiguration: chartEditor.getChartConfiguration()
+        };
+        $('#btn-save-result').text('saving...').show();
+        $.ajax({
+            type: "POST",
+            url: "/queries/" + $queryId.val(),
+            data: query
+        }).done(function (data) {
+            if (data.success) {
+                window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
+                $queryId.val(data.query._id);
+                $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
+                setTimeout(function () {
+                    $('#btn-save-result').fadeOut(400, function () {
+                        $('#btn-save-result').removeClass('label-success').addClass('label-info').text('');
+                    });
+                }, 1000);
+            } else {
+                $('#btn-save-result').removeClass('label-info').addClass('label-danger').text('Failed');
+            }
+        }).fail(function () {
+            alert('ajax fail');
+        });
+    }
+    
+    $('#btn-save').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        saveQuery();
+    });
+    
+    $('#btn-run-query').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        runQuery();
+    });
+    
+    /*  (re-)render the chart when the viz tab is pressed, 
+        TODO: only do this if necessary
+    ==============================================================================*/
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        // if shown tab was the chart tab, rerender the chart
+        // e.target is the activated tab
+        if (e.target.getAttribute("href") == "#tab-content-visualize") {
+            chartEditor.rerenderChart();
+        } else if (e.target.getAttribute("href") == "#tab-content-sql") {
+            dataGrid.resize();
+        }
+    });
+    
+    /*  get query again, because not all the data is in the HTML
+        TODO: do most the workflow this way? 
+    ==============================================================================*/
+    var $queryId = $('#query-id');
+    $.ajax({
+        type: "GET",
+        url: "/queries/" + $queryId.val() + "?format=json"
+    }).done(function (data) {
+        console.log(data);
+        chartEditor.loadChartConfiguration(data.chartConfiguration);
+    }).fail(function () {
+        alert('Failed to get additional Query info');
+    });
+    
+    
+    /*  Shortcuts
+    ==============================================================================*/
+    // keymaster doesn't fire on input/textarea events by default
+    // since we are only using command/ctrl shortcuts, 
+    // we want the event to fire all the time for any element
+    keymaster.filter = function (event) {
+        return true; 
+    };
+    keymaster('ctrl+s, command+s', function() { 
+        saveQuery();
+        return false;
+    });
+    keymaster('ctrl+r, command+r, ctrl+e, command+e', function() { 
+        runQuery();
+        return false;
+    });
 };
-},{"./chart-type-bar.js":1,"./chart-type-bubble":2,"./chart-type-line.js":3,"./chart-type-vertical-bar":4,"./component-chart-editor.js":5,"./component-db-info.js":6,"./component-menubar.js":7,"./component-sql-editor.js":8}],14:[function(require,module,exports){
+
+
+module.exports = function () {
+    if ($('#ace-editor').length) {
+        new QueryEditor();
+    }
+};
+},{"./component-ace-sql-editor.js":5,"./component-chart-editor.js":6,"./component-data-grid.js":7,"./component-db-info.js":8,"keymaster":16}],14:[function(require,module,exports){
 var $ = (window.$);
 
 module.exports = function () {
@@ -1110,6 +991,304 @@ module.exports = function () {
     });
 }
 },{}],16:[function(require,module,exports){
+//     keymaster.js
+//     (c) 2011-2013 Thomas Fuchs
+//     keymaster.js may be freely distributed under the MIT license.
+
+;(function(global){
+  var k,
+    _handlers = {},
+    _mods = { 16: false, 18: false, 17: false, 91: false },
+    _scope = 'all',
+    // modifier keys
+    _MODIFIERS = {
+      '⇧': 16, shift: 16,
+      '⌥': 18, alt: 18, option: 18,
+      '⌃': 17, ctrl: 17, control: 17,
+      '⌘': 91, command: 91
+    },
+    // special keys
+    _MAP = {
+      backspace: 8, tab: 9, clear: 12,
+      enter: 13, 'return': 13,
+      esc: 27, escape: 27, space: 32,
+      left: 37, up: 38,
+      right: 39, down: 40,
+      del: 46, 'delete': 46,
+      home: 36, end: 35,
+      pageup: 33, pagedown: 34,
+      ',': 188, '.': 190, '/': 191,
+      '`': 192, '-': 189, '=': 187,
+      ';': 186, '\'': 222,
+      '[': 219, ']': 221, '\\': 220
+    },
+    code = function(x){
+      return _MAP[x] || x.toUpperCase().charCodeAt(0);
+    },
+    _downKeys = [];
+
+  for(k=1;k<20;k++) _MAP['f'+k] = 111+k;
+
+  // IE doesn't support Array#indexOf, so have a simple replacement
+  function index(array, item){
+    var i = array.length;
+    while(i--) if(array[i]===item) return i;
+    return -1;
+  }
+
+  // for comparing mods before unassignment
+  function compareArray(a1, a2) {
+    if (a1.length != a2.length) return false;
+    for (var i = 0; i < a1.length; i++) {
+        if (a1[i] !== a2[i]) return false;
+    }
+    return true;
+  }
+
+  var modifierMap = {
+      16:'shiftKey',
+      18:'altKey',
+      17:'ctrlKey',
+      91:'metaKey'
+  };
+  function updateModifierKey(event) {
+      for(k in _mods) _mods[k] = event[modifierMap[k]];
+  };
+
+  // handle keydown event
+  function dispatch(event) {
+    var key, handler, k, i, modifiersMatch, scope;
+    key = event.keyCode;
+
+    if (index(_downKeys, key) == -1) {
+        _downKeys.push(key);
+    }
+
+    // if a modifier key, set the key.<modifierkeyname> property to true and return
+    if(key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
+    if(key in _mods) {
+      _mods[key] = true;
+      // 'assignKey' from inside this closure is exported to window.key
+      for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = true;
+      return;
+    }
+    updateModifierKey(event);
+
+    // see if we need to ignore the keypress (filter() can can be overridden)
+    // by default ignore key presses if a select, textarea, or input is focused
+    if(!assignKey.filter.call(this, event)) return;
+
+    // abort if no potentially matching shortcuts found
+    if (!(key in _handlers)) return;
+
+    scope = getScope();
+
+    // for each potential shortcut
+    for (i = 0; i < _handlers[key].length; i++) {
+      handler = _handlers[key][i];
+
+      // see if it's in the current scope
+      if(handler.scope == scope || handler.scope == 'all'){
+        // check if modifiers match if any
+        modifiersMatch = handler.mods.length > 0;
+        for(k in _mods)
+          if((!_mods[k] && index(handler.mods, +k) > -1) ||
+            (_mods[k] && index(handler.mods, +k) == -1)) modifiersMatch = false;
+        // call the handler and stop the event if neccessary
+        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
+          if(handler.method(event, handler)===false){
+            if(event.preventDefault) event.preventDefault();
+              else event.returnValue = false;
+            if(event.stopPropagation) event.stopPropagation();
+            if(event.cancelBubble) event.cancelBubble = true;
+          }
+        }
+      }
+    }
+  };
+
+  // unset modifier keys on keyup
+  function clearModifier(event){
+    var key = event.keyCode, k,
+        i = index(_downKeys, key);
+
+    // remove key from _downKeys
+    if (i >= 0) {
+        _downKeys.splice(i, 1);
+    }
+
+    if(key == 93 || key == 224) key = 91;
+    if(key in _mods) {
+      _mods[key] = false;
+      for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = false;
+    }
+  };
+
+  function resetModifiers() {
+    for(k in _mods) _mods[k] = false;
+    for(k in _MODIFIERS) assignKey[k] = false;
+  };
+
+  // parse and assign shortcut
+  function assignKey(key, scope, method){
+    var keys, mods;
+    keys = getKeys(key);
+    if (method === undefined) {
+      method = scope;
+      scope = 'all';
+    }
+
+    // for each shortcut
+    for (var i = 0; i < keys.length; i++) {
+      // set modifier keys if any
+      mods = [];
+      key = keys[i].split('+');
+      if (key.length > 1){
+        mods = getMods(key);
+        key = [key[key.length-1]];
+      }
+      // convert to keycode and...
+      key = key[0]
+      key = code(key);
+      // ...store handler
+      if (!(key in _handlers)) _handlers[key] = [];
+      _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
+    }
+  };
+
+  // unbind all handlers for given key in current scope
+  function unbindKey(key, scope) {
+    var multipleKeys, keys,
+      mods = [],
+      i, j, obj;
+
+    multipleKeys = getKeys(key);
+
+    for (j = 0; j < multipleKeys.length; j++) {
+      keys = multipleKeys[j].split('+');
+
+      if (keys.length > 1) {
+        mods = getMods(keys);
+        key = keys[keys.length - 1];
+      }
+
+      key = code(key);
+
+      if (scope === undefined) {
+        scope = getScope();
+      }
+      if (!_handlers[key]) {
+        return;
+      }
+      for (i = 0; i < _handlers[key].length; i++) {
+        obj = _handlers[key][i];
+        // only clear handlers if correct scope and mods match
+        if (obj.scope === scope && compareArray(obj.mods, mods)) {
+          _handlers[key][i] = {};
+        }
+      }
+    }
+  };
+
+  // Returns true if the key with code 'keyCode' is currently down
+  // Converts strings into key codes.
+  function isPressed(keyCode) {
+      if (typeof(keyCode)=='string') {
+        keyCode = code(keyCode);
+      }
+      return index(_downKeys, keyCode) != -1;
+  }
+
+  function getPressedKeyCodes() {
+      return _downKeys.slice(0);
+  }
+
+  function filter(event){
+    var tagName = (event.target || event.srcElement).tagName;
+    // ignore keypressed in any elements that support keyboard data input
+    return !(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
+  }
+
+  // initialize key.<modifier> to false
+  for(k in _MODIFIERS) assignKey[k] = false;
+
+  // set current scope (default 'all')
+  function setScope(scope){ _scope = scope || 'all' };
+  function getScope(){ return _scope || 'all' };
+
+  // delete all handlers for a given scope
+  function deleteScope(scope){
+    var key, handlers, i;
+
+    for (key in _handlers) {
+      handlers = _handlers[key];
+      for (i = 0; i < handlers.length; ) {
+        if (handlers[i].scope === scope) handlers.splice(i, 1);
+        else i++;
+      }
+    }
+  };
+
+  // abstract key logic for assign and unassign
+  function getKeys(key) {
+    var keys;
+    key = key.replace(/\s/g, '');
+    keys = key.split(',');
+    if ((keys[keys.length - 1]) == '') {
+      keys[keys.length - 2] += ',';
+    }
+    return keys;
+  }
+
+  // abstract mods logic for assign and unassign
+  function getMods(key) {
+    var mods = key.slice(0, key.length - 1);
+    for (var mi = 0; mi < mods.length; mi++)
+    mods[mi] = _MODIFIERS[mods[mi]];
+    return mods;
+  }
+
+  // cross-browser events
+  function addEvent(object, event, method) {
+    if (object.addEventListener)
+      object.addEventListener(event, method, false);
+    else if(object.attachEvent)
+      object.attachEvent('on'+event, function(){ method(window.event) });
+  };
+
+  // set the handlers globally on document
+  addEvent(document, 'keydown', function(event) { dispatch(event) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
+  addEvent(document, 'keyup', clearModifier);
+
+  // reset modifiers to false whenever the window is (re)focused.
+  addEvent(window, 'focus', resetModifiers);
+
+  // store previously defined key
+  var previousKey = global.key;
+
+  // restore previously defined key and return reference to our key object
+  function noConflict() {
+    var k = global.key;
+    global.key = previousKey;
+    return k;
+  }
+
+  // set window.key and window.key.set/get/deleteScope, and the default filter
+  global.key = assignKey;
+  global.key.setScope = setScope;
+  global.key.getScope = getScope;
+  global.key.deleteScope = deleteScope;
+  global.key.filter = filter;
+  global.key.isPressed = isPressed;
+  global.key.getPressedKeyCodes = getPressedKeyCodes;
+  global.key.noConflict = noConflict;
+  global.key.unbind = unbindKey;
+
+  if(typeof module !== 'undefined') module.exports = assignKey;
+
+})(this);
+
+},{}],17:[function(require,module,exports){
 (function (global){
 //! moment.js
 //! version : 2.8.4
