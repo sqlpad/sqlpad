@@ -79,22 +79,6 @@ a {
   font-size: 18px;
   line-height: 20px;
   width: 450px;
-  /*
-  background-color: #000;
-  
-  color: #FFF;
- 
- 
-  
-  
-  background-color: rgba(0, 0, 0, 0);
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
-  border-bottom: 1px dotted #A5A5A5;
-  box-shadow: none;
-  border-radius: 0;
-  */
 }
 
 .navbar label.control-label {
@@ -103,6 +87,10 @@ a {
 
 .form-control {
     color: #333;
+}
+
+.query-editor-nav-pills {
+    margin-top: 6px;
 }
 
 /*  Query Page

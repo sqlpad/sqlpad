@@ -1,51 +1,40 @@
 <% include header %>
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
-        <style>
-            .query-editor-nav-pills {
-                margin-top: 6px;
-            }
-        </style>
         <ul class="nav nav-pills navbar-left query-editor-nav-pills" role="tablist">
             <li class="active">
-                <a role="tab" data-toggle="tab" href="#tab-content-sql"><span
-                            class="glyphicon glyphicon-align-left"></span> SQL</a>
+                <a role="tab" data-toggle="tab" href="#tab-content-sql">
+                    <span class="glyphicon glyphicon-align-left"></span> SQL
+                </a>
             </li>
             <li>
-                <a role="tab" data-toggle="tab" href="#tab-content-visualize"><span
-                            class="glyphicon glyphicon-stats"></span> Vis</a>
+                <a role="tab" data-toggle="tab" href="#tab-content-visualize">
+                    <span class="glyphicon glyphicon-stats"></span> Vis
+                </a>
             </li>
         </ul>
 
         <form class="navbar-form navbar-left navbar-left-border">
-            <button type="button" id="btn-save" class="btn btn-default"><span class="shortcut-letter">S</span>ave</button>
+            <button type="button" id="btn-save" class="btn btn-default">
+                <span class="shortcut-letter">S</span>ave
+            </button>
             <div class="form-group" style="margin-left: 20px;">
-                <!--
-                <label class="control-label" for="header-query-name">Name</label>
-                -->
-            </div>
-            <div class="form-group">
                 <input id="header-query-name" name="header-query-name" class="input-query-name form-control"
                        value="<%= query.name %>" type="text" placeholder="Query Name">
             </div>
-
             <div class="form-group" style="margin-left: 20px;">
                 <label class="control-label" for="tags">Tags</label>
             </div>
             <div class="form-group">
-                <input id="tags" name="tags" class="input-smallz input-mdz form-control" value="<%= query.tags || '' %>"
-                       type="text" placeholder="Tags">
+                <input id="tags" name="tags" class="input-smallz input-mdz form-control" 
+                    value="<%= query.tags || '' %>" type="text" placeholder="Tags">
             </div>
-
             <input type="hidden" id="cache-key" value="<%= cacheKey %>"/>
             <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>"/>
-
             <span id="btn-save-result" class="label label-info"></span>
-
         </form>
 
     </div>
-    <!-- /.container-fluid -->
 </nav>
 <div id="panel-main">
     <div class="tab-content">
@@ -67,7 +56,9 @@
                         </select>
                     </div>
                 </form>
-                <button id="btn-run-query" class="btn btn-primary btn-sm btn-block"><span class="shortcut-letter">R</span>un Query</button>
+                <button id="btn-run-query" class="btn btn-primary btn-sm btn-block">
+                    <span class="shortcut-letter">R</span>un Query
+                </button>
                 <hr>
                 <div id="panel-db-info-container">
                     <button id="btn-reload-schema" class="btn btn-default btn-sm" style="display: none;">
@@ -83,10 +74,6 @@
                 <div id="panel-result">
                     <div id="panel-result-header">
                         <span class="hide-while-running" style="display: none">
-                            <!--
-                            <span class="panel-result-header-label">Client Run Time: </span>
-                            <span class="panel-result-header-value" id="client-run-time"></span>
-                            -->
                             <span class="panel-result-header-label">Query Run Time: </span>
                             <span class="panel-result-header-value" id="server-run-time"></span>
                             <span class="panel-result-header-label">Rows: </span>
@@ -130,7 +117,6 @@
                 </div>
             </div>
         </div>
-        
         
     </div>
 </div>
