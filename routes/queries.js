@@ -24,8 +24,14 @@ module.exports = function (app) {
             });
         });
     }
-
-
+    
+    app.get('/tags', function (req, res) {
+        db.queries.find({}, function (err, queries) {
+            var tags = _.uniq(_.flatten(queries, 'tags')).sort();
+            res.json(tags);
+        });
+    });
+    
     app.get('/queries', getQueryFilterData, function (req, res) {
         var filter = {};
         if (req.query && req.query.tag) {

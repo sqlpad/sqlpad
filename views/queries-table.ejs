@@ -20,7 +20,7 @@
                                 <td><a href="/queries/<%= query._id %>"><%= query.name %></a></td>
                                 <td>
                                     <% for (var t = 0; t < query.tags.length; t++) { %>
-                                        <a href="/queries?tag=<%= query.tags[t] %>"><%= query.tags[t] %></a><%= (t < (query.tags.length - 1) ? "," : "") %>
+                                        <a class="tag label label-info" href="/queries?tag=<%= query.tags[t] %>"><%= query.tags[t] %></a>
                                     <% } %>    
                                 </td>
                                 <td>
@@ -34,7 +34,7 @@
                                 <td>
                                     <form role="form" class="form-delete-query" action="/queries/<%= query._id %>" method="post">
                                         <input type="hidden" name="_method" value="delete" />
-                                        <button class="btn btn-default" type="submit">Delete</button>
+                                        <button class="btn btn-default btn-sm" type="submit">Delete</button>
                                     </form>
                                 </td>
                             </tr>    
