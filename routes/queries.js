@@ -24,8 +24,7 @@ module.exports = function (app) {
             });
         });
     }
-
-
+    
     app.get('/queries', getQueryFilterData, function (req, res) {
         var filter = {};
         if (req.query && req.query.tag) {

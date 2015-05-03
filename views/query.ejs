@@ -13,7 +13,6 @@
                 </a>
             </li>
         </ul>
-
         <form class="navbar-form navbar-left navbar-left-border">
             <button type="button" id="btn-save" class="btn btn-default">
                 <span class="shortcut-letter">S</span>ave
@@ -26,14 +25,13 @@
                 <label class="control-label" for="tags">Tags</label>
             </div>
             <div class="form-group">
-                <input id="tags" name="tags" class="input-smallz input-mdz form-control" 
-                    value="<%= query.tags || '' %>" type="text" placeholder="Tags">
+                <input id="tags" name="tags" class="form-control" data-role="tagsinput"
+                    value="<%= query.tags || '' %>" type="text" placeholder="">
             </div>
             <input type="hidden" id="cache-key" value="<%= cacheKey %>"/>
             <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>"/>
             <span id="btn-save-result" class="label label-info"></span>
         </form>
-
     </div>
 </nav>
 <div id="panel-main">

@@ -72,6 +72,7 @@
     "Slick": "global:Slick",
     "d3": "global:d3",
     "dimple": "global:dimple",
-    "saveSvgAsPng": "global:saveSvgAsPng"
+    "saveSvgAsPng": "global:saveSvgAsPng",
+    "Bloodhound": "global:Bloodhound"
   }
 }

@@ -245,7 +245,7 @@ a {
   background-image: none;
   /* background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#f8f8f8)); */
   /* background-image: linear-gradient(to bottom,#fff 0,#f8f8f8 100%); */
-  boarder-radius: 0;
+  border-radius: 0;
   box-shadow: none;
   /* background-repeat: repeat-x; */
   /* border-radius: 4px; */
@@ -330,6 +330,65 @@ a {
 .driver-specific {
     display: none;
 }
+
+/*  Bootstrap tagsinput
+======================================================== */
+.bootstrap-tagsinput {
+    margin-bottom: 0;
+    min-width: 200px;
+}
+
+/*  Twitter Typeahead
+======================================================== */
+
+.twitter-typeahead .tt-query,
+.twitter-typeahead .tt-hint {
+  margin-bottom: 0;
+}
+
+.twitter-typeahead .tt-hint
+{
+    display: none;
+}
+
+.tt-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  font-size: 14px;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  background-clip: padding-box;
+}
+.tt-suggestion > p {
+  display: block;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.428571429;
+  color: #333333;
+  white-space: nowrap;
+}
+.tt-suggestion > p:hover,
+.tt-suggestion > p:focus,
+.tt-suggestion.tt-cursor p {
+  color: #ffffff;
+  text-decoration: none;
+  outline: 0;
+  background-color: #428bca;
+}
+
 
 /*  Utility stuff 
 ======================================================== */
