@@ -331,7 +331,12 @@ a {
     display: none;
 }
 
-
+/*  Bootstrap tagsinput
+======================================================== */
+.bootstrap-tagsinput {
+    margin-bottom: 0;
+    min-width: 200px;
+}
 
 /*  Twitter Typeahead
 ======================================================== */
