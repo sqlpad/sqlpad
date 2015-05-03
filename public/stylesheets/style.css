@@ -245,7 +245,7 @@ a {
   background-image: none;
   /* background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#f8f8f8)); */
   /* background-image: linear-gradient(to bottom,#fff 0,#f8f8f8 100%); */
-  boarder-radius: 0;
+  border-radius: 0;
   box-shadow: none;
   /* background-repeat: repeat-x; */
   /* border-radius: 4px; */
