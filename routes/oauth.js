@@ -13,7 +13,7 @@ module.exports = function (app, passport) {
     passport.use(new passportGoogleStrategy({
         clientID          : process.env.GOOGLE_CLIENT_ID,
         clientSecret      : process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL       : "http://localhost:3000/auth/google/callback",
+        callbackURL       : process.env.PUBLIC_URL + "/auth/google/callback",
         passReqToCallback : true
     },
         function(request, accessToken, refreshToken, profile, done) {
