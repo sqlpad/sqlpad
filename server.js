@@ -40,12 +40,18 @@ var cookieSession = require('cookie-session');
 var morgan = require('morgan');
 var passport = require('passport');
 var connectFlash = require('connect-flash');
+var errorhandler = require('errorhandler');
 
 app.locals.title = 'SqlPad';
 app.locals.version = packageJson.version;
 app.set('packageJson', packageJson);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+if (process.env.NODE_ENV === 'development') {
+  // only use in development
+  app.use(errorhandler());
+}
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -97,9 +103,7 @@ function mustBeAdmin (req, res, next) {
     if (req.user.admin) {
         next();
     } else {
-        res.location('/error');
-        res.locals.errorMessage = "You must be an admin to do that";
-        res.render('error');
+        throw "You must be an admin to do that";
     }
 }
 app.use('/connections', mustBeAdmin);
@@ -138,16 +142,6 @@ require('./routes/download-results.js')(app); // streams cached query results to
 require('./routes/schema-info.js')(app);
 require('./routes/configs.js')(app);
 require('./routes/tags.js')(app);
-
-app.get('/error', function (req, res) {
-    res.render('error', {errorMessage: "this is a message"});
-});
-
-function errorHandler(err, req, res, next) {
-    res.status(500);
-    res.render('error', { error: err });
-}
-app.use(errorHandler);
 
 /*	Start the Server
 ============================================================================= */

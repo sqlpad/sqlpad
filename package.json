@@ -34,6 +34,7 @@
     "connect-flash": "^0.1.1",
     "cookie-session": "1.0.x",
     "ejs": "1.0.x",
+    "errorhandler": "^1.4.0",
     "express": "4.x.x",
     "json2csv": "2.2.x",
     "keymaster": "^1.6.2",
