@@ -31,6 +31,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.2.x",
     "cookie-parser": "1.1.x",
+    "connect-flash": "^0.1.1",
     "cookie-session": "1.0.x",
     "ejs": "1.0.x",
     "express": "4.x.x",

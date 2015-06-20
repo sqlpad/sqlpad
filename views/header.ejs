@@ -80,6 +80,11 @@
     <% } %>
     
     <div class="container-fluid">
+    <% if (errors.length > 0) { %>
+    <div class="row error">
+      <h3><%= errors %></h3>
+    </div>
+    <% } %>
     <div class="row">
             
       

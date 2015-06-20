@@ -136,7 +136,7 @@ module.exports = function (app) {
     app.post('/signin',
         passport.authenticate('local', {
             successRedirect: '/',
-            failureRedirect: '/error',
+            failureRedirect: '/signin',
             failureFlash: true
         })
     );

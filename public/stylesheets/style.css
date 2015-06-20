@@ -11,6 +11,10 @@ a {
   color: #00B7FF;
 }
 
+.error {
+  text-align: center;
+}
+
 .form-signin {
   max-width: 330px;
   padding: 15px;

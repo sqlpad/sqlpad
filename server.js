@@ -54,12 +54,14 @@ app.use(bodyParser.urlencoded({
 app.use(methodOverride()); // simulate PUT/DELETE via POST in client by <input type="hidden" name="_method" value="put" />
 app.use(cookieParser(app.get('passphrase'))); // populates req.cookies with an object
 app.use(cookieSession({secret: app.get('passphrase')}));
+app.use(connectFlash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 if (app.get('dev')) app.use(morgan('dev'));
 app.use(function (req, res, next) {
     // Boostrap res.locals with any common variables
+    res.locals.errors = req.flash('error');
     res.locals.message = null;
     res.locals.navbarConnections = [];
     res.locals.debug = null;
