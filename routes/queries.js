@@ -132,12 +132,12 @@ module.exports = function (app) {
             queryText: req.body.queryText,
             chartConfiguration: req.body.chartConfiguration,
             modifiedDate: new Date(),
-            modifiedBy: req.session.email,
+            modifiedBy: req.user.email,
             lastAccessedDate: new Date()
         };
         if (req.params._id == "new") {
             bodyQuery.createdDate = new Date();
-            bodyQuery.createdBy = req.session.email;
+            bodyQuery.createdBy = req.user.email;
 
             db.queries.insert(bodyQuery, function (err, query) {
                 if (err) {

@@ -38,6 +38,8 @@ var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var morgan = require('morgan');
+var passport = require('passport');
+var connectFlash = require('connect-flash');
 
 app.locals.title = 'SqlPad';
 app.locals.version = packageJson.version;
@@ -52,6 +54,8 @@ app.use(bodyParser.urlencoded({
 app.use(methodOverride()); // simulate PUT/DELETE via POST in client by <input type="hidden" name="_method" value="put" />
 app.use(cookieParser(app.get('passphrase'))); // populates req.cookies with an object
 app.use(cookieSession({secret: app.get('passphrase')}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 if (app.get('dev')) app.use(morgan('dev'));
 app.use(function (req, res, next) {
@@ -64,11 +68,13 @@ app.use(function (req, res, next) {
     res.locals.session = req.session || null;
     res.locals.pageTitle = "";
     res.locals.openAdminRegistration = app.get('openAdminRegistration');
+    res.locals.user = req.user;
+    res.locals.isAuthenticated = req.isAuthenticated();
 	next();
 });
 app.use(function (req, res, next) {
     // if not signed in redirect to sign in page
-    if (req.session && req.session.userId) {
+    if (req.isAuthenticated()) {
         next();
     } else if (req._parsedUrl.pathname === '/signin' || req._parsedUrl.pathname === '/signup') {
         next();
@@ -86,7 +92,7 @@ app.use(function (req, res, next) {
     This middleware and middleware assignment handles that.
 ============================================================================= */
 function mustBeAdmin (req, res, next) {
-    if (req.session.admin) {
+    if (req.user.admin) {
         next();
     } else {
         res.location('/error');

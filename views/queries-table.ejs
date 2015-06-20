@@ -28,7 +28,7 @@
                                         <%= connectionsById[query.connectionId].name %> 
                                     <% } %>
                                 </td>
-                                <td><%= (query.createdBy && query.createdBy == session.email ? "Me" : (query.createdBy || "")) %></td>
+                                <td><%= (query.createdBy && query.createdBy == user.email ? "Me" : (query.createdBy || "")) %></td>
                                 <!--<td><%= query.lastAccessedFromNow || "" %></td>-->
                                 <td><%= query.modifiedCalendar %></td>
                                 <td>

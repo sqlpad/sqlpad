@@ -1,4 +1,6 @@
 var bcrypt = require('bcrypt-nodejs'); //https://www.npmjs.org/package/bcrypt-nodejs (the native one is icky for windows)
+var passport = require('passport');
+var passportLocalStrategy = require('passport-local').Strategy;
 
 module.exports = function (app) {
     
@@ -14,7 +16,7 @@ module.exports = function (app) {
     }
     
     function notIfSignedIn (req, res, next) {
-        if (req.session && req.session.userId) {
+        if (isAuthenticated()) {
             res.locals.debug = {message: "Already signed in - why do you need to sign up?"};
             res.location('/');
             res.render('index');
@@ -91,36 +93,57 @@ module.exports = function (app) {
         res.locals.password = req.body.password || '';
         next();
     }
-    
+
     app.get('/signin', signinBodyToLocals, function (req, res) {
         res.render('signin');
     });
-    
-    app.post('/signin', signinBodyToLocals, function (req, res) {
-        db.users.findOne({email: req.body.email}, function (err, doc) {
+
+    passport.use(new passportLocalStrategy({
+        usernameField: 'email',
+      },
+      function(email, password, done) {
+        db.users.findOne({email: email}, function (err, doc) {
+            if (err) { return done(err); }
             if (doc) {
-                bcrypt.compare(req.body.password, doc.passhash, function (err, isMatch) {
+                bcrypt.compare(password, doc.passhash, function (err, isMatch) {
+                    if (err) { done(err); }
                     if (isMatch) {
                         // match! redirect home
-                        req.session.userId = doc._id;
-                        req.session.admin = doc.admin;
-                        req.session.email = doc.email;
-                        res.redirect('/');
+                        return done(null, {
+                            id: doc._id,
+                            admin: doc.admin,
+                            email: doc.email
+                        });
                     } else {
-                        // render signin page again
-                        res.render('signin', {message: "wrong email or password"});
+                        return done(null, false, { message: "wrong email or password" });
                     }
                 });
             } else {
-                res.render('signin', {message: "wrong email or password"});
+                return done(null, false, { message: "wrong email or password" });
             }
         });
+      }
+    ));
+
+    passport.serializeUser(function(user, done) {
+        done(null, user);
+    });
+
+    passport.deserializeUser(function(user, done) {
+        done(null, user);
     });
     
+    app.post('/signin',
+        passport.authenticate('local', {
+            successRedirect: '/',
+            failureRedirect: '/error',
+            failureFlash: true
+        })
+    );
+
     app.get('/signout', function (req, res) {
-        req.session = null;
-        res.locals.session = req.session; // gotta clear this here too for UI reasons
-        res.redirect('/signin');
+        req.logout();
+        res.redirect('/');
     });
     
 };

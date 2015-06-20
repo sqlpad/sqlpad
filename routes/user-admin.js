@@ -37,7 +37,7 @@ module.exports = function (app) {
     
     app.post('/users/remove-admin/:_id', function (req, res) {
         // can't unadmin one's self
-        if (req.session.userId === req.params._id) {
+        if (req.user._id === req.params._id) {
             res.location('/users');
             res.locals.debug = "You can't unadmin yourself!";
             renderUsers(req, res);
