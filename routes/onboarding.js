@@ -95,7 +95,7 @@ module.exports = function (app) {
     }
 
     app.get('/signin', signinBodyToLocals, function (req, res) {
-        res.render('signin');
+        res.render('signin', { strategies: passport._strategies });
     });
 
     passport.use(new passportLocalStrategy({

@@ -78,7 +78,7 @@ app.use(function (req, res, next) {
     // if not signed in redirect to sign in page
     if (req.isAuthenticated()) {
         next();
-    } else if (req._parsedUrl.pathname === '/signin' || req._parsedUrl.pathname === '/signup') {
+    } else if (req._parsedUrl.pathname === '/signin' || req._parsedUrl.pathname === '/signup' || req._parsedUrl.pathname.indexOf('/auth/') == 0) {
         next();
     } else if (app.get('openRegistration')) {
         // if there are no users whitelisted, direct to signup
@@ -127,6 +127,7 @@ app.use('/config', mustBeAdmin);
     update → PUT     /collection/id
     delete → DELETE  /collection/id
 ============================================================================= */
+require('./routes/oauth.js')(app, passport);
 require('./routes/homepage.js')(app);
 require('./routes/onboarding.js')(app);
 require('./routes/user-admin.js')(app);

@@ -45,6 +45,7 @@
     "mysql": "2.x.x",
     "nedb": "1.x.x",
     "passport": "^0.2.2",
+    "passport-google-oauth2": "^0.1.6",
     "passport-local": "^1.0.0",
     "pg": "^4.1.0",
     "pg-cursor": "^1.0.0",
