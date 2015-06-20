@@ -126,11 +126,21 @@ module.exports = function (app) {
     ));
 
     passport.serializeUser(function(user, done) {
-        done(null, user);
+        done(null, user.id);
     });
 
-    passport.deserializeUser(function(user, done) {
-        done(null, user);
+    passport.deserializeUser(function(id, done) {
+        db.users.findOne({_id: id}, function (err, doc) {
+            if (doc) {
+                done(null, {
+                    id: doc._id,
+                    admin: doc.admin,
+                    email: doc.email
+                });
+            } else {
+                done(null, false);
+            }
+        });
     });
     
     app.post('/signin',
