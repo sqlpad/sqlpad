@@ -44,7 +44,7 @@
                                     <option value="">Everyone</option>
                                     <% createdBys.forEach(function(createdBy) { %>
                                         <option value="<%= createdBy %>" <%=( filter && filter.createdBy && filter.createdBy===createdBy ? 'selected' : '') %>>
-                                            <%= (createdBy && createdBy == session.email ? "Me" : (createdBy || "")) %>
+                                            <%= (createdBy && createdBy == user.email ? "Me" : (createdBy || "")) %>
                                         </option>
                                     <% }) %>
                                 </select>

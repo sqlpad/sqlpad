@@ -1,34 +1,44 @@
 <% include header %>
-  
-	<form class="form-signin" role="form" action="/signin" method="post">
-		<h2>SqlPad</h2>
-		<% if (message) { %>
-			<h3><%= message %></h3>
-		<% } %>
-		<input
-		    name="email"
-		    value="<%= email %>"
-		    type="email"
-		    class="form-control top-field"
-		    placeholder="Email address"
-		    required
-		    autofocus>
-		<input
-		    name="password"
-		    value="<%= password %>"
-		    type="password"
-		    class="form-control bottom-field"
-		    placeholder="Password"
-		    required>
-		<br>
-		<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        <div class="form-signin-footer">
-            <p>
-                <a href="/signup">Need to Sign Up?</a>
-            </p>
-        </div>
-        
-	</form>
-	
+
+  <div class="signin">
+	<h2>SqlPad</h2>
+  	<% if ("local" in strategies) { %>
+  	<div>
+		<form class="form-signin" role="form" action="/signin" method="post">
+			<input
+			    name="email"
+			    value="<%= email %>"
+			    type="email"
+			    class="form-control top-field"
+			    placeholder="Email address"
+			    required
+			    autofocus>
+			<input
+			    name="password"
+			    value="<%= password %>"
+			    type="password"
+			    class="form-control bottom-field"
+			    placeholder="Password"
+			    required>
+			<br>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+		</form>
+		<div class="form-signin-footer">
+			<p>
+				<a href="/signup">Need to Sign Up?</a>
+			</p>
+		</div>
+	</div>
+	<% } %>
+	<% if ("google" in strategies) { %>
+	<div>
+		<a href="/auth/google">
+			<button class="btn btn-lg btn-danger btn-block">
+				<i class="fa fa-google-plus"></i> Log in with Google
+			</button>
+		</a>
+	</div>
+	<% } %>
+  </div>
 
 <% include footer %>

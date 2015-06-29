@@ -11,18 +11,28 @@ a {
   color: #00B7FF;
 }
 
-.form-signin {
-  max-width: 330px;
-  padding: 15px;
-  margin: 0 auto;
+.error {
+  text-align: center;
 }
 
-.form-signin h2 {
-    text-align: center; padding-bottom:20px
+.signin {
+  max-width: 330px;
+  margin: 0 auto;
+  padding: 15px;
 }
+
+.signin h2 {
+    text-align: center;
+    padding-bottom:20px
+}
+
+.signin a:hover, .signin a:focus, .signin a:active {
+  text-decoration: none;
+}
+
 .form-signin-footer {
     text-align: center;
-    margin-top: 30px;
+    margin-top: 15px;
 }
 .form-signin .form-signin-heading,
 .form-signin .checkbox {

@@ -38,12 +38,20 @@ var methodOverride = require('method-override');
 var cookieParser = require('cookie-parser');
 var cookieSession = require('cookie-session');
 var morgan = require('morgan');
+var passport = require('passport');
+var connectFlash = require('connect-flash');
+var errorhandler = require('errorhandler');
 
 app.locals.title = 'SqlPad';
 app.locals.version = packageJson.version;
 app.set('packageJson', packageJson);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+if (process.env.NODE_ENV === 'development') {
+  // only use in development
+  app.use(errorhandler());
+}
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -52,10 +60,14 @@ app.use(bodyParser.urlencoded({
 app.use(methodOverride()); // simulate PUT/DELETE via POST in client by <input type="hidden" name="_method" value="put" />
 app.use(cookieParser(app.get('passphrase'))); // populates req.cookies with an object
 app.use(cookieSession({secret: app.get('passphrase')}));
+app.use(connectFlash());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 if (app.get('dev')) app.use(morgan('dev'));
 app.use(function (req, res, next) {
     // Boostrap res.locals with any common variables
+    res.locals.errors = req.flash('error');
     res.locals.message = null;
     res.locals.navbarConnections = [];
     res.locals.debug = null;
@@ -64,13 +76,15 @@ app.use(function (req, res, next) {
     res.locals.session = req.session || null;
     res.locals.pageTitle = "";
     res.locals.openAdminRegistration = app.get('openAdminRegistration');
+    res.locals.user = req.user;
+    res.locals.isAuthenticated = req.isAuthenticated();
 	next();
 });
 app.use(function (req, res, next) {
     // if not signed in redirect to sign in page
-    if (req.session && req.session.userId) {
+    if (req.isAuthenticated()) {
         next();
-    } else if (req._parsedUrl.pathname === '/signin' || req._parsedUrl.pathname === '/signup') {
+    } else if (req._parsedUrl.pathname === '/signin' || req._parsedUrl.pathname === '/signup' || req._parsedUrl.pathname.indexOf('/auth/') == 0) {
         next();
     } else if (app.get('openRegistration')) {
         // if there are no users whitelisted, direct to signup
@@ -86,12 +100,10 @@ app.use(function (req, res, next) {
     This middleware and middleware assignment handles that.
 ============================================================================= */
 function mustBeAdmin (req, res, next) {
-    if (req.session.admin) {
+    if (req.user.admin) {
         next();
     } else {
-        res.location('/error');
-        res.locals.errorMessage = "You must be an admin to do that";
-        res.render('error');
+        throw "You must be an admin to do that";
     }
 }
 app.use('/connections', mustBeAdmin);
@@ -119,6 +131,7 @@ app.use('/config', mustBeAdmin);
     update → PUT     /collection/id
     delete → DELETE  /collection/id
 ============================================================================= */
+require('./routes/oauth.js')(app, passport);
 require('./routes/homepage.js')(app);
 require('./routes/onboarding.js')(app);
 require('./routes/user-admin.js')(app);
@@ -129,16 +142,6 @@ require('./routes/download-results.js')(app); // streams cached query results to
 require('./routes/schema-info.js')(app);
 require('./routes/configs.js')(app);
 require('./routes/tags.js')(app);
-
-app.get('/error', function (req, res) {
-    res.render('error', {errorMessage: "this is a message"});
-});
-
-function errorHandler(err, req, res, next) {
-    res.status(500);
-    res.render('error', { error: err });
-}
-app.use(errorHandler);
 
 /*	Start the Server
 ============================================================================= */
