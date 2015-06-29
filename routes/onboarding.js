@@ -53,12 +53,13 @@ module.exports = function (app) {
                         } else if (err) {
                             console.log(err);
                             res.render('signup', {message: 'An error happened.'});
-                        } else if (app.get('openAdminRegistration')) {
+                        } else if (app.get('openAdminRegistration') || app.get('checkWhitelist')(req.body.email)) {
                             // first admin in the system, so allow it to go through
+                            // also allow whitelisted emails
                             // then once its in, turn openAdminRegistration off
                             user = {
                                 email: bodyUser.email,
-                                admin: true,
+                                admin: app.get('openAdminRegistration'),
                                 passhash: hash,
                                 createdDate: new Date(),
                                 modifiedDate: new Date()

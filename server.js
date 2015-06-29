@@ -28,6 +28,7 @@ require('./lib/add-cli-config-to-app.js')(app);
 require('./lib/add-db-to-app.js')(app);
 require('./lib/add-cipher-decipher-to-app.js')(app);
 require('./lib/add-open-admin-registration-to-app.js')(app);
+require('./lib/add-email-domain-whitelist-to-app.js')(app);
 
 
 /*  Express setup

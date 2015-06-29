@@ -37,10 +37,10 @@ module.exports = function (app, passport) {
                         });
                     }
                 } else {
-                    if (app.get('openAdminRegistration')){
+                    if (app.get('openAdminRegistration') || app.get('checkWhitelist')(profile.email)){
                         var user = {
                             email: profile.email,
-                            admin: true, 
+                            admin: app.get('openAdminRegistration'), 
                             createdDate: new Date()
                         }
                         db.users.insert(user, function (err, newUser) {
