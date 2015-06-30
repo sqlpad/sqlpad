@@ -13,12 +13,11 @@ module.exports = function (app) {
             if (doc) {
                 connectionExists = true;
             }
+            if (!connectionExists && res.locals.user.admin) {
+                res.redirect('/connections');
+            } else {
+                res.redirect('/queries');
+            }
         });
-
-        if (!connectionExists && res.locals.user.admin) {
-            res.redirect('/connections');
-        } else {
-            res.redirect('/queries');
-        }
     });  
 };
