@@ -153,7 +153,7 @@ module.exports = function (app) {
     });    
     
     app.get('/signout', function (req, res) {
-        req.logout();
+        req.session = null;
         res.redirect('/');
     });
     
