@@ -1,5 +1,3 @@
-_site/
 .DS_Store
-node_modules/
 .zedstate
-db/
+node_modules/
