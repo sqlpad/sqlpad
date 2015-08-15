@@ -7,12 +7,9 @@ fa-icon: database #rocket  cog, cube, cubes, cloud-download, database, edit, plu
 
 ## Similar Projects
 
-While working on SqlPad I ran across a few web-based projects that sort of overlap with what I was building. Some have a focus on visualization, some just writing SQL and other adminstrative tasks.
-
-I haven't tried most of these out personally, but the look like they are worth checking out if you are looking for a web-app to execute SQL in. 
+While working on SqlPad I ran across a few web-based projects that sort of overlap with what I was building. I haven't tried most of these out personally, but they look like they are worth checking out if you are looking for a web-app to execute SQL and visualize/organize the results. 
 
 Have a project or product I can add to this list? Let me know via pull request, GitHub issue, or email to rick.bergfalk@gmail.com.
-
 
 
 **[pgcharts](https://github.com/dimitri/pgcharts)**
@@ -28,8 +25,3 @@ Create charts using SQL with this web-based tool. Unsure of the databases suppor
 **[re:dash](https://github.com/EverythingMe/redash)**
 
 Web application that allows you to query a variety of databases and share the dataset and visualize it in different ways, including dashboards.
-
-
-**[pgweb](https://github.com/sosedoff/pgweb)**
-
-A Postgres only web app with a focus on writing SQL and exploring the structure of a database. Query results can be exported to CSV. Nice clean design. Likely target is database administration.
