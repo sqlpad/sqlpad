@@ -19,7 +19,7 @@ module.exports = function (app) {
                 db.cache.findOne({cacheKey: req.params.cacheKey}, function (err, cache) {
                     if (err) console.log(err);
                     var filename = cache.queryName + ".csv";
-                    res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+                    res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
                     res.setHeader('Content-Type', 'text/csv');
                     var csvPath = path.join(app.get('dbPath'), "/cache/", req.params.cacheKey + ".csv");
                     fs.createReadStream(csvPath).pipe(res);
