@@ -36,7 +36,7 @@ module.exports = function (app) {
                 connection = {};
             } else {
                 connection.username = decipher(connection.username);
-                connection.password = decipher(connection.password);
+                connection.password = "";
             }
             res.render('connection', {
                 connection: connection
