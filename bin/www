@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+var sys = require("sys")
+var exec = require("child-proc").exec;
+
+var command    = (typeof process.env.npm_config_command  == "undefined") ? "start" : typeof process.env.npm_config_command;
+var enviroment = (typeof process.env.npm_config_env  == "undefined")     ? "dev"   : process.env.npm_config_env;
+var db         = (typeof process.env.npm_config_db   == "undefined")     ? "./db"  : process.env.npm_config_db;
+var port       = (typeof process.env.npm_config_port == "undefined")     ? "3000"  : process.env.npm_config_port;
+var unix       = "";
+
+if(enviroment == "dev"){
+    console.log('Starting development server');
+    unix = "nodemon server.js --dir "  + db + " --port "  + port;
+    console.log(unix);
+}
+
+if(enviroment == "prod"){
+    console.log('Starting production server');
+    unix = "forever start ./server.js --dir "  + db + " --port "  + port;
+    console.log(unix);
+}
+
+exec(unix, function(error, stdout, stderr){
+    sys.puts(error);
+    sys.puts(stderr);
+    sys.puts(stdout);
+});
+
+return;
+
+
+
+
+
+
+
+
