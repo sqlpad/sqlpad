@@ -57,18 +57,11 @@ Optionally install watchify to automatically browserify your client-side scripts
 npm install watchify -g
 ```
 
-To start the development environment SqlPad on port 3000  with datafiles in ./db run 
+To start SqlPad on port 3000  with datafiles in ./db run 
 
 ```sh
 npm start
 ```
-
-To start SqlPad in a production environment using forever
-```sh
-npm start --env=prod --db=./db --port=8080
-```
-Instructions on how to use the forever are in https://github.com/foreverjs/forever
-
 
 To bundle client-side scripts run 
 
