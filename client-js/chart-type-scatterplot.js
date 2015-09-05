@@ -1,14 +1,13 @@
 var tauCharts = require('tauCharts');
 var _ = require('lodash');
-var $ = require('jquery');
 
 module.exports =  {
-    chartLabel: "Line",
+    chartLabel: "Scatterplot",
     fields: {
         x: {
-            required: true,
-            label: "x",
+            label: "x Axis",
             inputType: "field-dropdown",
+            required: true,
             $input: null,
             val: null,
             datatype: null,
@@ -16,14 +15,19 @@ module.exports =  {
             max: null
         },
         y: { 
-            required: true,
-            label: "y",
-            inputType: "field-dropdown"
+            label: "y Axis",
+            inputType: "field-dropdown",
+            required: true
         },
-        split: {
-            required: false,
-            label: "color / line for each",
-            inputType: "field-dropdown"
+        size: {
+            label: "Size",
+            inputType: "field-dropdown",
+            required: false
+        },
+        color: {
+            label: "Color",
+            inputType: "field-dropdown",
+            required: false
         },
         xFacet: {
             requied: false,
@@ -44,7 +48,16 @@ module.exports =  {
     renderChart: function (meta, data, fields) {
         // fields.x.datatype will be "date", "number", or "text"
         for (var row in data) {
-            data[row][fields.y.val] = Number(data[row][fields.y.val]);
+            // make barvalue field a Number
+            if (fields.x.datatype == "text" || fields.x.datatype == "number") {
+                data[row][fields.x.val] = Number(data[row][fields.x.val]);
+            }
+            if (fields.y.datatype == "text" || fields.y.datatype == "number") {
+                data[row][fields.y.val] = Number(data[row][fields.y.val]);
+            }
+            if (fields.size.val) {
+                data[row][fields.size.val] = Number(data[row][fields.size.val]);    
+            }
             // Facets need to be a dimension, not a measure. 
             // tauCharts auto detects numbers to be measures
             // Here we'll convert a number to a string, 
@@ -56,42 +69,33 @@ module.exports =  {
                 data[row][fields.yFacet.val] = data[row][fields.yFacet.val].toString();
             }
         }
+        
         var x = fields.x.val;
         if (fields.xFacet.val) {
             x = [fields.xFacet.val, fields.x.val];
         }
+        
         var y = fields.y.val;
         if (fields.yFacet.val) {
             y = [fields.yFacet.val, fields.y.val];
         }
-        var chart;
-        var lineForEach = fields.split.val;
         
         var plugins = [];
         if (fields.trendline.val) {
             plugins.push(tauCharts.api.plugins.get('trendline')());
         }
-        plugins.push(tauCharts.api.plugins.get('tooltip')({fields: [fields.x.val, fields.y.val, lineForEach]}));
+        plugins.push(tauCharts.api.plugins.get('tooltip')({fields: [fields.x.val, fields.y.val, fields.size.val, fields.color.val]}));
         plugins.push(tauCharts.api.plugins.get('legend')());
         
-        if (lineForEach) {
-            chart = new tauCharts.Chart({
-                data: data,
-                type: 'line',
-                x: x,
-                y: y,
-                color: lineForEach, // there will be two lines with different colors on the chart
-                plugins: plugins
-            });
-        } else {
-            chart = new tauCharts.Chart({
-                data: data,
-                type: 'line',
-                x: x,
-                y: y,
-                plugins: plugins
-            });
-        }
+        var chart = new tauCharts.Chart({
+            data: data,
+            type: "scatterplot",
+            y: y,
+            x: x,
+            color: fields.color.val,
+            size: fields.size.val,
+            plugins: plugins
+        });
         chart.renderTo('#chart');
         return chart;
     }
