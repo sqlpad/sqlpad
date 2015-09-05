@@ -122,7 +122,6 @@ var QueryEditor = function () {
         type: "GET",
         url: "/queries/" + $queryId.val() + "?format=json"
     }).done(function (data) {
-        console.log(data);
         chartEditor.loadChartConfiguration(data.chartConfiguration);
     }).fail(function () {
         alert('Failed to get additional Query info');

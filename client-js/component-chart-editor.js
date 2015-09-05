@@ -10,12 +10,14 @@ var chartEditor = new ChartEditor();
 */
 var saveSvgAsPng = require('saveSvgAsPng');
 var $ = require('jquery');
+var _ = require('lodash');
 
 var ChartEditor = function () {
     var me = this;
-    var gchart;
+    var chart; // the rendered tauchart
     var gdata;
     var gmeta;
+    var fieldValueCache = {};
     var chartTypes = {}; // holds chart types once registered
     var chartLabels = []; // array of chart labels for sorting/serving as a record of labels
     var chartTypeKeyByChartLabel = {}; // index of chart types by chartlabel
@@ -43,10 +45,10 @@ var ChartEditor = function () {
         }
     }
     registerChartType("line", require('./chart-type-line.js'));
-    registerChartType("bar", require('./chart-type-bar.js'));
-    registerChartType("verticalbar", require('./chart-type-vertical-bar'));
-    registerChartType("bubble", require('./chart-type-bubble'));
-    
+    registerChartType("bar", require('./chart-type-bar-horizontal.js'));
+    registerChartType("verticalbar", require('./chart-type-bar-vertical'));
+    // this needs to stay registered under bubble... for now
+    registerChartType("bubble", require('./chart-type-scatterplot')); 
     
     this.buildChartUI = function () {
         var selectedChartType = $chartTypeDropDown.val();
@@ -65,17 +67,27 @@ var ChartEditor = function () {
                     for (var m in gmeta) {
                         $input.append('<option value="' + m + '">' + m + '</option>');
                     }
+                    $formGroup
+                        .append($label)
+                        .append($input)
+                        .appendTo($chartSetupUI);
                 } else if (field.inputType === "custom-dropdown") {
                     $input = $('<select>');
                     $input.append('<option value=""></option>');
                     for (var i in field.options) {
                         $input.append('<option value="' + field.options[i].value + '">' + field.options[i].label + '</option>');
                     }
+                    $formGroup
+                        .append($label)
+                        .append($input)
+                        .appendTo($chartSetupUI);
+                } else if (field.inputType === "checkbox") {
+                    $input = $('<input type="checkbox">');
+                    $formGroup
+                        .append($label)
+                        .appendTo($chartSetupUI);
+                    $label.prepend($input);
                 }
-                $formGroup
-                    .append($label)
-                    .append($input)
-                    .appendTo($chartSetupUI);
                 // add a reference to input for later  
                 field.$input = $input;
             }
@@ -84,6 +96,7 @@ var ChartEditor = function () {
     
     this.getChartConfiguration = function () {
         /*
+            // Expected output:
             {
                 chartType: "line",
                 fields: {
@@ -100,38 +113,65 @@ var ChartEditor = function () {
         if (chartTypes[chartConfig.chartType]) {
             var ct = chartTypes[chartConfig.chartType];
             for (var f in ct.fields) {
-                chartConfig.fields[f] = ct.fields[f].$input.val();
+                if (ct.fields[f].inputType === "checkbox") {
+                    chartConfig.fields[f] = ct.fields[f].$input.prop("checked");
+                } else {
+                    // else its a dropdown of some kind
+                    chartConfig.fields[f] = ct.fields[f].$input.val();
+                }
+                
             }
         }
         return chartConfig;
     };
     
+    // Whenever the chart type dropdown is focused on
+    // we should cache the chart config field values
+    // we'll re-apply any values that make sense if the chart type changes
+    this.cacheChartConfigFieldValues = function () {
+        var chartConfig = me.getChartConfiguration();
+        _.merge(fieldValueCache, chartConfig.fields);
+    };
+    
     this.loadChartConfiguration = function (config) {
         // set chart type dropdown
-        // fire .buildChartUI
-        // loop through chart types and set their values
+        // build the UI
+        // set chart type field values
+        var chartType = config.chartType;
+        var fieldValues = config.fields;
         $chartTypeDropDown.val(config.chartType);
-        $chartTypeDropDown.trigger("change");
-        if (chartTypes[config.chartType]) {
-            var ct = chartTypes[config.chartType];
+        me.buildChartUI();
+        setChartTypeFieldValues(chartType, fieldValues);
+    };
+    
+    function setChartTypeFieldValues (chartType, fieldValues) {
+        if (chartTypes[chartType]) {
+            var ct = chartTypes[chartType];
             for (var f in ct.fields) {
-                if (config.fields[f]) {
-                    // attempt to set the value of what is in the config
-                    ct.fields[f].$input.val(config.fields[f]);
-                    // check the value
-                    var inputVal = ct.fields[f].$input.val();
-                    // if the value is nothing, then we will force it
-                    if (!inputVal) {
-                        console.log('in the thing');
-                        console.log(ct.fields[f]);
-                        console.log(config.fields[f]);
-                        ct.fields[f].$input.append('<option value="' + config.fields[f] + '">' + config.fields[f] + '</option>');
-                        ct.fields[f].$input.val(config.fields[f]);
+                if (fieldValues[f]) {
+                    if (ct.fields[f].inputType === "checkbox") {
+                        // unfortunately fieldValues[f] is going to be a boolean in string form
+                        // so we'll make it a boolean here
+                        // It might also be a boolean here too if already converted. so ick.
+                        fieldValues[f] = (fieldValues[f] === "true" || fieldValues[f] === true);
+                        ct.fields[f].$input.prop("checked", fieldValues[f]);
+                    } else {
+                        // is a dropdown of some kind
+                        // attempt to set the value of what is in the config
+                        ct.fields[f].$input.val(fieldValues[f]);
+                        // check the value
+                        var inputVal = ct.fields[f].$input.val();
+                        // if the value is nothing, then we will force it
+                        if (!inputVal) {
+                            ct.fields[f].$input.append('<option value="' + fieldValues[f] + '">' + fieldValues[f] + '</option>');
+                            ct.fields[f].$input.val(fieldValues[f]);
+                        }
                     }
+                    
                 }
             }
         }
-    };
+    }
     
     this.rerenderChart = function () {
         var chartConfig = me.getChartConfiguration();
@@ -152,7 +192,12 @@ var ChartEditor = function () {
             // add the value, datatype
             for (var f in ct.fields) {
                 var field = ct.fields[f];
-                field.val = field.$input.val();
+                if (field.inputType === "checkbox") {
+                    field.val = field.$input.prop("checked");
+                } else {
+                    // its a dropdown of some kind
+                    field.val = field.$input.val();
+                }
                 if (field.val && gmeta[field.val]) {
                     field.datatype = gmeta[field.val].datatype;
                     field.min = gmeta[field.val].min;
@@ -163,11 +208,10 @@ var ChartEditor = function () {
                     fieldsNeeded.push(field.label);
                 }
             }
-            var chart;
             if (requirementsMet) {
                 $('#chart').empty();
+                if (chart && chart.destroy) chart.destroy(); // needed for tauChart
                 chart = ct.renderChart(gmeta, gdata, ct.fields);
-                gchart = chart;
             } else {
                 alert("Chart requires additional information: " + fieldsNeeded.join(', '));
             }
@@ -178,7 +222,7 @@ var ChartEditor = function () {
         // for the saveSvgAsPng to work,
         // height and width must be pixels in the style attribute
         // height and width attributes must be removed
-        var $svg = $('#svgchart');
+        var $svg = $('#chart').find('svg').first();
         var width = $svg.width();
         var height = $svg.height();
         $svg.attr("style", "width: " + width + "; height:" + height + ";");
@@ -186,15 +230,21 @@ var ChartEditor = function () {
         $svg.attr("height", null);
         // Cheating for now and just referencing element directly
         var imageName = $('#header-query-name').val();
-        saveSvgAsPng(document.getElementById("svgchart"), imageName + ".png");
+        saveSvgAsPng($svg.get(0), imageName + ".png");
     };
     
     // Bind Events
     $btnVisualize.click(me.renderChart);
     $btnSaveImage.click(me.saveImage);
-    $chartTypeDropDown.change(me.buildChartUI);
+    $chartTypeDropDown.change(function () {
+        me.buildChartUI();
+        var selectedChartType = $chartTypeDropDown.val();
+        setChartTypeFieldValues(selectedChartType, fieldValueCache);
+    });
+    $chartTypeDropDown.focus(me.cacheChartConfigFieldValues);
     $(window).resize(function () {
-        if (gchart) gchart.draw(0, true);
+        // call resize if appropriate
+        // tauCharts may handle this for us...
     });
 };
 module.exports = ChartEditor;
