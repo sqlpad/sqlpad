@@ -23,21 +23,19 @@
     "email": "rick.bergfalk@gmail.com"
   },
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "nodemon server.js --dir ./db --port 3000",
     "watchify": "watchify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim",
     "bundle": "browserify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.2.x",
-    "child-proc": "0.0.1",
     "connect-flash": "^0.1.1",
     "cookie-parser": "1.1.x",
     "cookie-session": "1.0.x",
     "ejs": "1.0.x",
     "errorhandler": "^1.4.0",
     "express": "4.x.x",
-    "forever": "^0.15.1",
     "json2csv": "2.2.x",
     "keymaster": "^1.6.2",
     "lodash": "2.4.x",
@@ -56,7 +54,6 @@
     "request": "^2.58.0",
     "sanitize-filename": "1.1.x",
     "serve-favicon": "2.0.x",
-    "sys": "0.0.1",
     "ua-parser": "0.3.x",
     "update-notifier": "0.1.x",
     "uuid": "1.4.x",
