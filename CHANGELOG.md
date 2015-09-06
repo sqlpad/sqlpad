@@ -6,6 +6,12 @@
 - SqlPad database files compacted every 10 minutes, instead of once a day
 - Signup page styling is fixed.
 
+## 1.8.2
+- Connection password no longer visible on connection screen.
+
+## 1.8.1
+- Duplicate content headers prevented when csv filename contains comma.
+
 ## 1.8.0
 - Authentication now managed by Passport.js
 - Username/Password authenication strategy can be disabled by setting environment variable DISABLE_USERPASS_AUTH
