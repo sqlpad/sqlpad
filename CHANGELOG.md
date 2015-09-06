@@ -1,5 +1,11 @@
 # Changelog
 
+## In Progress (1.9.0)
+- Charting now handled by the very cool tauCharts library. It's a bit faster, has facets, grammar of graphics concepts, handles time series data better, trendlines.
+- When changing chart types, SqlPad will remember and reapply the field selections where applicable. 
+- SqlPad database files compacted every 10 minutes, instead of once a day
+- Signup page styling is fixed.
+
 ## 1.8.0
 - Authentication now managed by Passport.js
 - Username/Password authenication strategy can be disabled by setting environment variable DISABLE_USERPASS_AUTH
