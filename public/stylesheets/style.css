@@ -237,6 +237,11 @@ a {
 .sidebar input {
     width: 100%;
 }
+
+.sidebar input[type=checkbox] {
+    width: 24px;
+}
+
 .sidebar select {
     width: 100%;
 }
