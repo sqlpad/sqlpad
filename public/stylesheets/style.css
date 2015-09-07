@@ -254,6 +254,17 @@ a {
     color: #999;
 }
 
+/* schema-info copy button */
+.schema-info-schema, .schema-info-table, .schema-info-column {
+    min-width: 210px;
+    display: inline-block;
+}
+.copy-button {
+    position: absolute;
+    left: 190px;
+    width: 40px;
+}
+
 
 .navbar-default {
   /* background-image: -webkit-linear-gradient(top,#fff 0,#f8f8f8 100%); */

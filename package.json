@@ -80,6 +80,7 @@
     "saveSvgAsPng": "global:saveSvgAsPng",
     "Bloodhound": "global:Bloodhound",
     "tauCharts": "global:tauCharts",
-    "_": "global:_"
+    "_": "global:_",
+    "ZeroClipboard": "global:ZeroClipboard"
   }
 }
