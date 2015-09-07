@@ -794,6 +794,8 @@ module.exports = function () {
  */
 
 var $ = (window.$);
+var ZeroClipboard = (window.ZeroClipboard);
+ZeroClipboard.config({ bubbleEvents: false });
 
 var DbInfo = function () {
     this.bindRender();
@@ -835,15 +837,55 @@ DbInfo.prototype.getSchema = function (reload) {
             $('#panel-db-info').html(data);
             var schemaInfo = $('.schema-info');
             schemaInfo.find('li').click(function (e) {
-                $(this).children('ul').toggleClass('hidden');
                 e.stopPropagation();
+                $(this).children('ul').toggleClass('hidden');
             });
+            
+            // table/column copy button
+            // Vertica needs fully qualified names, and sometimes these are quite long
+            // This adds a copy button on hover. Someday maybe we can have autocomplete
+            var $copyBtn = $('<a id="path-tooltip" href="#" class="copy-button tag label label-info">copy</a>');
+            if (schemaInfo.hasClass("show-schema-copy-button")) {
+                schemaInfo.find('.schema-info-table, .schema-info-column').each(function () {
+                    var zeroClient;
+                    var $schemaItem = $(this);
+                    var created = false;
+                    
+                    function hoverOn (e) {
+                        e.stopPropagation();
+                        if (created && ( $(e.target).hasClass('schema-info-table') || $(e.target).hasClass('schema-info-column') ) ) {
+                            zeroClient.destroy();
+                            $copyBtn.detach();
+                            created = false;
+                        }
+                        if ($(e.target).hasClass('schema-info-table') || $(e.target).hasClass('schema-info-column') ) {
+                            $schemaItem.append($copyBtn);
+                            var fullName = $schemaItem.attr('data-full-name');
+                            $copyBtn.attr("data-clipboard-text", fullName);
+                            zeroClient = new ZeroClipboard( $copyBtn.get(0) );
+                            created = true;
+                        }
+                    }
+                    
+                    function hoverOff (e) {
+                        if (created && ( $(e.target).hasClass('schema-info-table') || $(e.target).hasClass('schema-info-column') ) ) {
+                            zeroClient.destroy();
+                            $copyBtn.detach();
+                            created = false;
+                        }
+                    }
+                    
+                    $(this).hover(hoverOn, hoverOff);
+                });
+            }
+            
         });
         jqxhr.fail(function () {
             $('<ul class="schema-info"><li>Problem getting Schema Info</li></ul>').appendTo('#panel-db-info');
         });
     }
 };
+
 },{}],9:[function(require,module,exports){
 var $ = (window.$);
 
@@ -1121,6 +1163,7 @@ var QueryEditor = function () {
         runQuery();
         return false;
     });
+    
 };
 
 
