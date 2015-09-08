@@ -1,22 +1,25 @@
-<ul class="schema-info">
+<ul class="schema-info <%= (showSchemaCopyButton ? "show-schema-copy-button" : "") %>">
     <% for (var tableType in tree) { %>
         <li>
             <a href="#"><%= tableType %></a>
             <ul>
                 <% for (var schema in tree[tableType]) { %>
                     <li>
-                        <a href="#"><%= schema %></a>
+                        <a href="#" class="schema-info-schema"><%= schema %></a>
                         <ul class="hidden">
                             <% for (var tableName in tree[tableType][schema]) { %>
                                 <li>
-                                    <a href="#"><%= tableName %></a>
+                                    <a href="#" class="schema-info-table" data-full-name="<%= schema + "." + tableName %>"><%= tableName %></a>
                                     <ul class="hidden">
                                         <% 
                                             var columns = tree[tableType][schema][tableName]; 
                                             for (var i = 0; i < columns.length; i++) {
                                         %>
                                             <li>
-                                                <%= columns[i].column_name %> <span class="data-type">(<%= columns[i].data_type %>)</span>
+                                                <span class="schema-info-column" data-full-name="<%= schema + "." + tableName + "." + columns[i].column_name %>">
+                                                    <%= columns[i].column_name %> 
+                                                    <span class="data-type">(<%= columns[i].data_type %>)</span>
+                                                </span>
                                             </li>
                                         <% } %>
                                     </ul>

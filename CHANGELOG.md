@@ -5,6 +5,7 @@
 - When changing chart types, SqlPad will remember and reapply the field selections where applicable. 
 - SqlPad database files compacted every 10 minutes, instead of once a day
 - Signup page styling is fixed.
+- Schema-item-name copy-to-clipboard buttons now available. Opt in by creating configuration item `showSchemaCopyButton` to `true`.
 
 ## 1.8.2
 - Connection password no longer visible on connection screen.
