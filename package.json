@@ -45,6 +45,7 @@
     "mssql": "1.x.x",
     "mysql": "2.x.x",
     "nedb": "1.x.x",
+    "node-xlsx": "^0.6.0",
     "passport": "^0.2.2",
     "passport-google-oauth2": "^0.1.6",
     "passport-local": "^1.0.0",
