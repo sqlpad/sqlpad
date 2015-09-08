@@ -6,6 +6,7 @@
 - SqlPad database files compacted every 10 minutes, instead of once a day
 - Signup page styling is fixed.
 - Schema-item-name copy-to-clipboard buttons now available. Opt in by creating configuration item `showSchemaCopyButton` to `true`.
+- Query results can now be downloaded as xlsx file. (link will be hidden if csv downloads are disabled)
 
 ## 1.8.2
 - Connection password no longer visible on connection screen.
