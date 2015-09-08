@@ -316,6 +316,10 @@ a {
     padding-left: 5px;
 }
 
+.result-download-link {
+    margin-left: 10px;
+}
+
 #result-slick-grid, #result-slick-grid div {
   -webkit-box-sizing: content-box;
      -moz-box-sizing: content-box;

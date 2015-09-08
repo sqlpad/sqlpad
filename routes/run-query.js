@@ -5,6 +5,7 @@ var path = require('path');
 var _ = require('lodash');
 var sanitize = require("sanitize-filename");
 var moment = require('moment');
+var xlsx = require('node-xlsx');
 
 function isNumberLike(n) {
     return (!isNaN(parseFloat(n)) && isFinite(n));
@@ -131,29 +132,51 @@ module.exports = function (app) {
                                 db.config.findOne({key: "allowCsvDownload"}, function (err, config) {
                                     var preventDownload = config && config.value === "false";
                                     if (!preventDownload) {
-                                        json2csv({data: results.rows, fields: fields}, function (err, csv) {
+                                        
+                                        // loop through rows and build out an array of arrays
+                                        var resultArray = [];
+                                        resultArray.push(fields);
+                                        for (var i = 0; i < results.rows.length; i++) {
+                                            var row = [];
+                                            for (var c = 0; c < fields.length; c++) {
+                                                var fieldName = fields[c];
+                                                row.push(results.rows[i][fieldName]);
+                                            }
+                                            resultArray.push(row);
+                                        }
+                                        
+                                        // build out and write xlsx file
+                                        var xlsxBuffer = xlsx.build([{name: "query-results", data: resultArray}]); // returns a buffer 
+                                        var xlsxPath = path.join(app.get('dbPath'), "/cache/", cache.cacheKey + ".xlsx");
+                                        fs.writeFile(xlsxPath, xlsxBuffer, function (err) {
                                             if (err) {
                                                 console.log(err);
-                                                res.send({
-                                                    success: true,
-                                                    serverMs: end - start,
-                                                    results: results.rows
-                                                });
-                                            } else {
-                                                var csvPath = path.join(app.get('dbPath'), "/cache/", cache.cacheKey + ".csv");
-                                                fs.writeFile(csvPath, csv, function (err) {
-                                                    if (err) console.log(err);
+                                            }
+                                            json2csv({data: results.rows, fields: fields}, function (err, csv) {
+                                                if (err) {
+                                                    console.log(err);
                                                     res.send({
                                                         success: true,
                                                         serverMs: end - start,
-                                                        meta: meta,
-                                                        results: results.rows,
-                                                        incomplete: results.incomplete,
-                                                        csvUrl: '/query-results/' + cache.cacheKey + '.csv'
+                                                        results: results.rows
                                                     });
-                                                });
-                                            }
+                                                } else {
+                                                    var csvPath = path.join(app.get('dbPath'), "/cache/", cache.cacheKey + ".csv");
+                                                    fs.writeFile(csvPath, csv, function (err) {
+                                                        if (err) console.log(err);
+                                                        res.send({
+                                                            success: true,
+                                                            serverMs: end - start,
+                                                            meta: meta,
+                                                            results: results.rows,
+                                                            incomplete: results.incomplete,
+                                                            csvUrl: '/query-results/' + cache.cacheKey + '.csv'
+                                                        });
+                                                    });
+                                                }
+                                            });
                                         });
+                                        
                                     } else {
                                         res.send({
                                             success: true,
