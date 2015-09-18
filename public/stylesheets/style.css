@@ -114,6 +114,15 @@ a {
     bottom:0;
 }
 
+#panel-main.fullscreen {
+    top: 0px;
+}
+
+#panel-main.fullscreen .tab-pane-main {
+    left: 0px;
+    top: 0px;
+}
+
 #panel-db-info {
     padding: 10px;
 }

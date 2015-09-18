@@ -1006,7 +1006,7 @@ var QueryEditor = function () {
     var dbInfo = new DbInfo();
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     var dataGrid = new DataGrid();
-    var chartFormat = $('#panel-main[format="chart"]').length > 0;
+    var chartFormat = $('[format="chart"]').length > 0;
     
     function runQuery () {
         $('#server-run-time').html('');
@@ -1175,7 +1175,10 @@ var QueryEditor = function () {
     });
 
     if (chartFormat) {
-        $('.navbar').hide();
+        //$('.navbar').hide();
+        $('[href="#tab-content-visualize"]').tab('show');
+        // $('.sidebar').hide();
+        // $('#panel-main').addClass('fullscreen');
     }
 
 };

@@ -119,6 +119,7 @@ module.exports = function (app) {
                 res.locals.cacheKey = uuid.v1();
                 res.locals.navbarConnections = _.sortBy(connections, 'name');
                 res.locals.allowDownload = !preventDownload;
+                var format = req.query && req.query.format;
 
                 if (req.params._id === 'new') {
                     res.render('query', {query: {name: ""}});
@@ -127,15 +128,18 @@ module.exports = function (app) {
                         // TODO: render error if this fails?
                         db.queries.update({_id: req.params._id}, {$set: {lastAccessedDate: new Date()}}, {}, noop);
                         if (query && query.tags) query.tags = query.tags.join(', ');
-                        if (req.query && req.query.format && req.query.format === 'json') {
+                        if (format === 'json') {
                             // send JSON of query object
                             res.json(query);
-                        } else if (req.query && req.query.format && req.query.format === 'chart') {
-                            // render page
-                            res.render('query-chart', {query: query});
                         } else {
                             // render page
-                            res.render('query', {query: query});
+                            res.render('query', {
+                                query: query, 
+                                
+                                // format may be set to 'chart'
+                                format: format,
+                                fullscreenContent: format === 'chart' ? true: false
+                            });
                         }
                     });
                 }
