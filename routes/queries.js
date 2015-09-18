@@ -130,6 +130,9 @@ module.exports = function (app) {
                         if (req.query && req.query.format && req.query.format === 'json') {
                             // send JSON of query object
                             res.json(query);
+                        } else if (req.query && req.query.format && req.query.format === 'chart') {
+                            // render page
+                            res.render('query-chart', {query: query});
                         } else {
                             // render page
                             res.render('query', {query: query});
