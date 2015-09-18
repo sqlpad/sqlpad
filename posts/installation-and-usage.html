@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="/stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Rick Bergfalk's Directory of Things</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <a href="/"><h1>Rick Bergfalk</h1></a>
+        </header>
+
+        <hr>
+	<section id="main_content">
+		<h1>
+			Setup
+		</h1>
+		<small>
+			September 2015
+		</small>
+		<hr>
+		<div>
+			<h4 id="installation">Installation</h4>
+<p>SqlPad can be installed on Mac, Linux, and Windows.</p>
+<p>In order to install SqlPad, you&#39;ll first need to install <a href="https://nodejs.org/">Node.js</a>. </p>
+<p>Once node is installed, open up a command line and run</p>
+<p><code>npm install sqlpad -g</code></p>
+<p>This will install the SqlPad command line utility used to run a SqlPad server. </p>
+<p>To spin up a SqlPad Server, type the following from the command line:</p>
+<p><code>sqlpad</code></p>
+<p>To get help and see parameters:</p>
+<p><code>sqlpad --help</code></p>
+<h4 id="a-realistic-example-">A Realistic Example:</h4>
+<p><code>sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase</code></p>
+<p>The <strong>dir</strong> argument specifies where to keep the sqlpad query/user/connection files. If not provided, SqlPad will put its files in the user&#39;s home directory under /sqlpad/db.</p>
+<p>The <strong>port</strong> argument specifies the port on which SqlPad should run. The default is port 80, but that may not be available.</p>
+<p>The <strong>passphrase</strong> argument is used to encrypt database connection usernames and passwords, and cookie encryption. If not provided, SqlPad will use the default to at least prevent usernames and passwords from being stored in plaintext. </p>
+<p>If a passphrase is ever changed or forgotten, you&#39;ll need to re-add the connection usernames and passwords to each database connection. </p>
+<p>If you ever want to save the arguments you are passing in so you don&#39;t have to remember them, you can save them by passing in the <code>--save</code> argument.</p>
+<p><code>sqlpad --dir ./sqlpad/ --port 3000 --passphrase secret-encryption-phrase --save</code></p>
+<p>Then the next time you can simply run...</p>
+<p><code>sqlpad</code> </p>
+<p>...and Sqlpad will use directory ./sqlpad, on port 3000, with the proper encryption passphrase.</p>
+<p>These settings can be forgotten by running </p>
+<p><code>sqlpad --forget</code></p>
+<h4 id="once-sqlpad-is-running">Once SqlPad is Running</h4>
+<p>Once SqlPad is running, create an initial admin account by navigating to <a href="http://localhost/signup">http://localhost/signup</a>. Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page.</p>
+<p>If for whatever reason you lose admin rights, and the last-admin-standing won&#39;t give you admin rights back, you can reinstate them to yourself by running</p>
+<p><code>sqlpad --admin yourEmailAddress@domain.com</code></p>
+		</div>
+	</section>
+
+		<footer>
+			
+			<p>
+				Hello! I'm a Business Intelligence developer/SQL Server DBA that dabbles with web development on the side via Node.js.
+				Yes, it's an odd combination. You can find most of my web-related code on <a href="http://github.com/rickbergfalk">GitHub</a>. 
+				I'm also on <a href="http://twitter.com/rickbergfalk">Twitter</a>, although I don't tweet much.
+			</p>
+			<p class="footer-links">
+				© Rick Bergfalk 2014
+			</p>
+		</footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>

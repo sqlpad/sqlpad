@@ -1,21 +1,20 @@
 ---
 title: "Setup"
-bg: orange  #defined in _config.yml, can use html color like '#0fbfcf'
-color: black   #text color
-fa-icon: cog #rocket  cog, cube, cubes, cloud-download, database, edit, plug, power-off, wrench, toggle-down, arrow-cirlce-down
 ---
 
-## Setup
+#### Installation
 
-First, install Node.js.
+SqlPad can be installed on Mac, Linux, and Windows.
+
+In order to install SqlPad, you'll first need to install [Node.js](https://nodejs.org/). 
 
 Once node is installed, open up a command line and run
 
 `npm install sqlpad -g`
 
-This will install the SqlPad command line utility to run a SqlPad server. 
+This will install the SqlPad command line utility used to run a SqlPad server. 
 
-To run a SqlPad Server, type the following from the command line:
+To spin up a SqlPad Server, type the following from the command line:
 
 `sqlpad`
 
@@ -24,7 +23,7 @@ To get help and see parameters:
 `sqlpad --help`
 
 
-### A Realistic Example:  
+#### A Realistic Example:  
 
 `sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase`
 
@@ -51,9 +50,9 @@ These settings can be forgotten by running
 `sqlpad --forget`
 
 
-### Once SqlPad is Running
+#### Once SqlPad is Running
 
-Once SqlPad is running, you create an initial admin account by navigationg to http://localhost/signup. Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page.
+Once SqlPad is running, create an initial admin account by navigating to http://localhost/signup. Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page.
 
 If for whatever reason you lose admin rights, and the last-admin-standing won't give you admin rights back, you can reinstate them to yourself by running
 

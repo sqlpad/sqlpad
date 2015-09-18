@@ -1,0 +1,17 @@
+{
+  "name": "my-website",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "nodemon generate.js"
+  },
+  "dependencies": {
+    "express": "3.x.x",
+    "ejs": "2.x.x",
+    "fs-extra": "0.24.x",
+    "moment": "2.x.x",
+    "watch": "0.16.x",
+	"lodash": "3.x.x",
+	"marky-mark": "1.x.x"
+  }
+}
