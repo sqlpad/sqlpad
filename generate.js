@@ -9,6 +9,7 @@ var mm 			= require('marky-mark'); 		// easy handling of all those markdown file
 
 
 var USER_POSTS_DIRECTORY 	= __dirname + '/_posts';
+var PAGES_DIRECTORY = __dirname + '/_pages';
 var USER_LAYOUTS_DIRECTORY 	= __dirname + '/layouts';
 templates.directory = USER_LAYOUTS_DIRECTORY;
 
@@ -33,11 +34,10 @@ function generate() {
 }
 
 function render () {
-    var posts = [];
-    var postsByFilename = {};
     
-    posts = mm.parseDirectorySync(USER_POSTS_DIRECTORY);
-    postsByFilename = _.indexBy(posts, "filename");
+    // Posts
+    var posts = mm.parseDirectorySync(USER_POSTS_DIRECTORY);
+    var postsByFilename = _.indexBy(posts, "filename");
     // flatten posts
     for (var i= 0; i < posts.length; i++) {
         var post = posts[i];
@@ -51,6 +51,16 @@ function render () {
     // post.meta.key: yaml content of that key
     // post.meta_key: yaml content of that key
     
+    // Pages
+    var pages = mm.parseDirectorySync(PAGES_DIRECTORY);
+    pages.forEach(function(page) {
+        page.moment = moment;
+        var rendered = ejs.render(templates.templateContent('page'), {
+            page: page,
+            filename: USER_LAYOUTS_DIRECTORY + '/page.ejs'
+        });
+        fs.outputFileSync(__dirname + '/' + page.filename + '/index.html', rendered);
+    });
     
     var renderedHome = ejs.render(templates.templateContent('home'), {
         posts: posts,

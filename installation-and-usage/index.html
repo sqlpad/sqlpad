@@ -51,114 +51,40 @@
               </li>
             </ul>
         </nav>
-        <div class="u-cf"></div>        
-        
-        <section class="header">
-            <div class="row">
-                <h1>SqlPad</h1>
-            </div>
-            <div class="row">
-                <h3>Run SQL in your browser...</h3>
-                <p><img class="u-max-full-width" src="images/screenshots/query-editor.png" alt="SqlPad Query Editor" /></p>
-            </div>
-            <div class="row">
-                <h3>... and chart the results.</h3>
-                <p><img class="u-max-full-width" src="images/screenshots/chart-line.png" alt="SqlPad Line Chart" /></p>
-            </div>
-            <h3>
-                Supports Postgres, MySQL, SQL Server and Vertica.
-            </h3>
-            <div class="value-props row">
-                <div class="three columns value-prop">
-                    <img style="width: 70%;" src="images/logo-postgresql.png" />
-                </div>
-                <div class="three columns value-prop">
-                    <img class="u-max-full-width" src="images/logo-mysql.png" />
-                </div>
-                <div class="three columns value-prop">
-                    <img class="u-max-full-width" src="images/logo-sql-server.png" />
-                </div>
-                <div class="three columns value-prop">
-                    <img class="u-max-full-width" src="images/logo-vertica.jpg" />
-                </div>
-            </div>
-        </section>
-        
-        
-        <!--
-        <section>
-            <div class="row">
-                <div class="three columns" style="margin-top: 35%">
-                    <h1>SqlPad</h1>
-                    <p>Run SQL in your browser and chart the results. Supports Postgres, MySQL, SQL Server and Vertica.</p>
-                </div>
-                <div class="nine columns" style="margin-top: 25%">
-                    <p><img class="u-max-full-width" src="images/screenshots/query-editor.png" alt="SqlPad Query Editor" /></p>
-                </div>
-            </div>
-        </section>
-        -->
-  
-      
-  
-      <!-- Why use Skeleton -->
-      <div class="docs-section" id="intro">
-        <h6 class="docs-header">Is SqlPad for you?</h6>
-        <p>
-            SqlPad is meant to be run on an internal network for a single team. 
-            All connections added to the app can be used by all individuals with access 
-            to the SqlPad server. All queries written can be run and edited by everyone on 
-            the server.
-        </p>
-        <p>
-            If you want to be bold and daring, you can expose your SqlPad instance 
-            to the outside world. Please make sure you fully understand the risks 
-            associated with doing this and use HTTPS.
-        </p>
-      </div>
-      
-        <div class="docs-section">
-            <h6 class="docs-header">Screenshots</h6>
-            <div class="row">
-                
-                <div class="four columns">
-                    <img class="u-max-full-width" src="images/screenshots/chart-horizontal-bar.png" alt="SqlPad Bar Chart" />
-                </div>
-                <div class="eight columns">
-                    <img class="u-max-full-width" src="images/screenshots/chart-bubble-1.png" alt="SqlPad Bubble Chart 1" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="seven columns">
-                    <img class="u-max-full-width" src="images/screenshots/query-list.png" alt="SqlPad Query List" />
-                </div>
-                <div class="five columns">
-                    <img class="u-max-full-width" src="images/screenshots/user-admin.png" alt="SqlPad User Admin" />
-                </div>
-            </div>
-        </div>
-        
-        <div class="docs-section" id="limitations">
-            <h6 class="docs-header">Limitations</h6>
-            <div class="row">
-                <div class="eight columns">
-                    <h4 id="sqlpad-is-not-as-finished-as-you-might-think-">SqlPad is not as finished as you might think.</h4>
-<p>Be sure to not forget your password to your user account. As of now there&#39;s no way to reset it.</p>
-<p>Even though username is based on an email address, in no way does SqlPad have the capability to email that address.</p>
-<p>Be sure not to query with 2 columns returned of the same name. Some SQL reporting systems can handle this. SqlPad can&#39;t.</p>
-<p>Every query run is done with a new session/connection, so keep that in mind if you use variables and temp tables and split up your SQL executions. If this doesn&#39;t make any sense to you just forget you read this you probably won&#39;t be impacted by it.</p>
-<p>Have you hit a weird limitation you&#39;d like us to know about? Feel free to <a href="https://github.com/rickbergfalk/sqlpad/issues">add a GitHub issue about it</a>. </p>
-                </div>
-                <div class="four columns"></div>
-            </div>
-        </div>
-        
-        <style>
-            .docs-section {
-                padding-top: 100px;
-            }
-        </style>
-        
+        <div class="u-cf"></div>	<section id="main_content" style="margin-top: 100px;">
+		<h1>
+			Setup
+		</h1>
+		<div>
+			<h4 id="installation">Installation</h4>
+<p>SqlPad can be installed on Mac, Linux, and Windows.</p>
+<p>In order to install SqlPad, you&#39;ll first need to install <a href="https://nodejs.org/">Node.js</a>. </p>
+<p>Once node is installed, open up a command line and run</p>
+<p><code>npm install sqlpad -g</code></p>
+<p>This will install the SqlPad command line utility used to run a SqlPad server. </p>
+<p>To spin up a SqlPad Server, type the following from the command line:</p>
+<p><code>sqlpad</code></p>
+<p>To get help and see parameters:</p>
+<p><code>sqlpad --help</code></p>
+<h4 id="a-realistic-example-">A Realistic Example:</h4>
+<p><code>sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase</code></p>
+<p>The <strong>dir</strong> argument specifies where to keep the sqlpad query/user/connection files. If not provided, SqlPad will put its files in the user&#39;s home directory under /sqlpad/db.</p>
+<p>The <strong>port</strong> argument specifies the port on which SqlPad should run. The default is port 80, but that may not be available.</p>
+<p>The <strong>passphrase</strong> argument is used to encrypt database connection usernames and passwords, and cookie encryption. If not provided, SqlPad will use the default to at least prevent usernames and passwords from being stored in plaintext. </p>
+<p>If a passphrase is ever changed or forgotten, you&#39;ll need to re-add the connection usernames and passwords to each database connection. </p>
+<p>If you ever want to save the arguments you are passing in so you don&#39;t have to remember them, you can save them by passing in the <code>--save</code> argument.</p>
+<p><code>sqlpad --dir ./sqlpad/ --port 3000 --passphrase secret-encryption-phrase --save</code></p>
+<p>Then the next time you can simply run...</p>
+<p><code>sqlpad</code> </p>
+<p>...and Sqlpad will use directory ./sqlpad, on port 3000, with the proper encryption passphrase.</p>
+<p>These settings can be forgotten by running </p>
+<p><code>sqlpad --forget</code></p>
+<h4 id="once-sqlpad-is-running">Once SqlPad is Running</h4>
+<p>Once SqlPad is running, create an initial admin account by navigating to <a href="http://localhost/signup">http://localhost/signup</a>. Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page.</p>
+<p>If for whatever reason you lose admin rights, and the last-admin-standing won&#39;t give you admin rights back, you can reinstate them to yourself by running</p>
+<p><code>sqlpad --admin yourEmailAddress@domain.com</code></p>
+		</div>
+	</section>
 
     </div> <!-- container -->
     
@@ -241,4 +167,4 @@
         })();
     </script>
 </body>
-</html>        
+</html>
