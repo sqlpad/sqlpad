@@ -44,18 +44,21 @@
                   <a class="navbar-link" href="/">Home</a>
               </li>
               <li class="navbar-item">
-                  <a class="navbar-link" href="/installation-and-usage">Installation & Usage</a>
+                  <a class="navbar-link" href="/installation-and-administration">Installation & Administration</a>
+              </li>
+              <li class="navbar-item">
+                  <a class="navbar-link" href="/chart-tutorials">Chart Tutorials</a>
               </li>
             </ul>
         </nav>
-        <div class="u-cf"></div>	<section id="main_content" style="margin-top: 50px;">
+        <div class="u-cf"></div>	<section class="page-content">
 		<div class="row">
-		    <div class="columns eight">
+		    <div class="columns nine">
 		        <h1>
-                    Setup
+                    Installation &amp; Administration
                 </h1>
                 <div>
-                    <h4 id="installation">Installation</h4>
+                    <h2 id="installation">Installation</h2>
 <p>SqlPad can be installed on Mac, Linux, and Windows.</p>
 <p>In order to install SqlPad, you&#39;ll first need to install <a href="https://nodejs.org/">Node.js</a>. </p>
 <p>Once node is installed, open up a command line and run</p>
@@ -65,7 +68,7 @@
 <p><code>sqlpad</code></p>
 <p>To get help and see parameters:</p>
 <p><code>sqlpad --help</code></p>
-<h4 id="a-realistic-example-">A Realistic Example:</h4>
+<h2 id="a-realistic-example-">A Realistic Example:</h2>
 <p><code>sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase</code></p>
 <p>The <strong>dir</strong> argument specifies where to keep the sqlpad query/user/connection files. If not provided, SqlPad will put its files in the user&#39;s home directory under /sqlpad/db.</p>
 <p>The <strong>port</strong> argument specifies the port on which SqlPad should run. The default is port 80, but that may not be available.</p>
@@ -78,10 +81,47 @@
 <p>...and Sqlpad will use directory ./sqlpad, on port 3000, with the proper encryption passphrase.</p>
 <p>These settings can be forgotten by running </p>
 <p><code>sqlpad --forget</code></p>
-<h4 id="once-sqlpad-is-running">Once SqlPad is Running</h4>
-<p>Once SqlPad is running, create an initial admin account by navigating to <a href="http://localhost/signup">http://localhost/signup</a>. Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page.</p>
+<h2 id="administration">Administration</h2>
+<p>Once SqlPad is running, create an initial admin account by navigating to <a href="http://localhost/signup"><a href="http://localhost/signup">http://localhost/signup</a></a>. </p>
+<p>Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page. Other users may also be given admin rights, allowing them to add/edit database connections and whitelist/modify/remove SqlPad users.</p>
 <p>If for whatever reason you lose admin rights, and the last-admin-standing won&#39;t give you admin rights back, you can reinstate them to yourself by running</p>
 <p><code>sqlpad --admin yourEmailAddress@domain.com</code></p>
+<h2 id="running-as-a-service">Running as a Service</h2>
+<p>If you are running SqlPad for your team, chances are you&#39;d like SqlPad to start up when your server boots up, and stay running if an unhandled exception occurs. How this is accomplished largely depends on the operating system you are running. </p>
+<p>Full disclosure - this isn&#39;t my area of expertise so if anyone knows of any better options or better practices, please let me know at rick.bergfalk@gmail.com.</p>
+<p><strong>Windows</strong>: Use <a href="http://nssm.cc/">nssm</a> to create a windows service</p>
+<p><strong>Ubuntu</strong>: Create a job conf file for use with <a href="http://upstart.ubuntu.com/getting-started.html">upstart</a>. </p>
+<p>Here&#39;s a script I&#39;ve gotten to work - but again not sure if this is good practice or if there&#39;s a better way to go about it:</p>
+<pre><code>description &quot;sqlpad&quot;
+author &quot;yourname &lt;your@email.com&gt;&quot;
+
+start on runlevel [2345]
+stop on shutdown
+
+# I used -u to change the user it executes with, 
+# which means by default SqlPad uses that user&#39;s home directory 
+# for its database files
+exec sudo -u UserAccountToUse /usr/bin/sqlpad --port 3000
+
+respawn</code></pre>
+<p><strong>Mac</strong>: ??? </p>
+<p><strong>Platform agnostic</strong>: Clone or download the GitHub repository and use <a href="https://github.com/foreverjs/forever">forever</a> to run server.js directly. (The downside to this though is that you miss out on updating SqlPad with the easy npm install command, and you still have to run the forever command on startup)</p>
+<h2 id="configuration">Configuration</h2>
+<p>Beyond SqlPad&#39;s initial setup options (port, file location, passphrase), there are a few areas where you can opt-in, opt-out, or change the default limits.</p>
+<p>These settings are configured by either adding a configuration key in the configuration page, or by setting an environment variable (depending on the behavior or feature being modified).</p>
+<h3 id="change-query-result-record-limit">Change query result record limit</h3>
+<p>To change the maximum records returned by a SQL query, add a new item with key <code>queryResultMaxRows</code> and set the value to the max number of rows you would like returned. If the key is missing or set to a non-number, SqlPad will return a maximum of 50,000 rows.</p>
+<h3 id="disable-csv-and-now-xlsx-downloads">Disable CSV (and now XLSX) downloads</h3>
+<p>To disable CSV downloads, visit the &quot;Configuration&quot; page and add a new item with key <code>allowCsvDownload</code> and value <code>false</code>. If the key is missing or set to any other value, CSV downloads will be enabled.</p>
+<h3 id="show-schema-copy-buttons">Show Schema Copy Buttons</h3>
+<p>Some databases (like Vertica) require the fully qualified table and column names within a SQL statement. This can be a hassle to remember or type when you have long and complicated names. For convenience, you can enable fully-qualified-name copy buttons that appear in the schema sidebar. When hovering over an item in the schema tree, a copy button will appear. Click it and the schema name, table name, and column name will be copied to your clipboard.</p>
+<p>To enable the schema copy buttons, add a new configuration item with key <code>showSchemaCopyButton</code> with value true.</p>
+<h3 id="google-oauth-authentication">Google OAuth Authentication</h3>
+<p>Google OAuth authentication can be enabled by setting environment variables <code>GOOGLE_CLIENT_ID</code>, <code>GOOGLE_CLIENT_SECRET</code>, AND <code>PUBLIC_URL</code>. The plain old regular authentication can be disabled by setting environment variable <code>DISABLE_USERPASS_AUTH</code>. </p>
+<h3 id="post-query-to-slack-when-saved">Post Query to Slack When Saved</h3>
+<p>A SqlPad query can be posted to a Slack webhook when saved. To enable, create a configuration item with key <code>slackWebhook</code> and set the value to a Slack incoming webhook URL.</p>
+<h3 id="whitelist-domains-for-user-administration">Whitelist Domains for User Administration</h3>
+<p>An entire domain can be whitelisted for username administration by setting enviornment variable <code>WHITELISTED_DOMAINS</code></p>
                 </div>
 		    </div>
 		</div>

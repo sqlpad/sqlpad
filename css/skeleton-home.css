@@ -15,7 +15,7 @@
   font-weight: 600; }
 .docs-section {
   border-top: 1px solid #eee;
-  padding: 4rem 0;
+  padding: 9rem 0 7rem;
   margin-bottom: 0;}
 .value-img {
   display: block;
@@ -100,6 +100,30 @@
   color: #222; }
 .navbar-link.active {
   color: #33C3F0; }  
+
+/* page content styles */
+.page-content {
+    margin-top: 4rem;
+    margin-bottom: 12rem;
+}
+.page-content h2:first-child {
+    border-top: none;
+    margin-top: 3rem;
+}
+.page-content h2 {
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    letter-spacing: .2rem;
+    font-weight: 600;
+    border-top: 1px solid #eee;
+    padding-top: 6.5rem;
+    margin-top: 6.5rem;
+}
+.page-content h3 {
+    font-size: 1.5rem;
+    letter-spacing: .1rem;
+    font-weight: 600;
+}
   
 /* Larger than phone */
 @media (min-width: 550px) {
@@ -113,8 +137,10 @@
   .example-grid .column,
   .example-grid .columns {
     margin-bottom: 1.5rem; }
+  /*
   .docs-section {
     padding: 6rem 0; }
+  */
   .example-send-yourself-copy {
     float: right;
     margin-top: 12px; }
