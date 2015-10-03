@@ -448,6 +448,7 @@ var ChartEditor = function () {
     var $chartTypeDropDown = $('#chart-type-dropdown');
     var $btnVisualize = $('#btn-visualize');
     var $btnSaveImage = $('#btn-save-image');
+    var $btnLinkToChart = $('#btn-link-to-chart');
     var $chartSetupUI = $("#chart-setup-ui");
     
     this.setData = function(data) {
@@ -656,10 +657,15 @@ var ChartEditor = function () {
         var imageName = $('#header-query-name').val();
         saveSvgAsPng($svg.get(0), imageName + ".png");
     };
+
+    this.linkToChart = function () {
+        window.open('?format=chart', '_chart');
+    };
     
     // Bind Events
     $btnVisualize.click(me.renderChart);
     $btnSaveImage.click(me.saveImage);
+    $btnLinkToChart.click(me.linkToChart);
     $chartTypeDropDown.change(function () {
         me.buildChartUI();
         var selectedChartType = $chartTypeDropDown.val();
