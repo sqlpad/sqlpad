@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "nodemon server.js --dir ./db --port 3000",
-    "watchify": "watchify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim",
+    "watchify": "watchify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim -v",
     "bundle": "browserify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim"
   },
   "dependencies": {
