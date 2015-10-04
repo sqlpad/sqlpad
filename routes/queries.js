@@ -122,7 +122,12 @@ module.exports = function (app) {
                 var format = req.query && req.query.format;
 
                 if (req.params._id === 'new') {
-                    res.render('query', {query: {name: ""}});
+                    res.render('query', {
+                        query: {
+                            name: ""
+                        },
+                        format: format
+                    });
                 } else {
                     db.queries.findOne({_id: req.params._id}, function (err, query) {
                         // TODO: render error if this fails?
