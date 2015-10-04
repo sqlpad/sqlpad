@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.10.0 (in development)
+- MySQL connections can now old/insecure pre 4.1 auth system
+
 ## 1.9.0
 - Charting now handled by the very cool tauCharts library. It's a bit faster, has facets, grammar of graphics concepts, handles time series data better, trendlines.
 - When changing chart types, SqlPad will remember and reapply the field selections where applicable. 

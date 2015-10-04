@@ -11,7 +11,8 @@ function connectionFromBody (body) {
         username: body.username,
         password: body.password,
         sqlserverEncrypt: (body.sqlserverEncrypt ? true : false),
-        postgresSsl: (body.postgresSsl ? true : false)
+        postgresSsl: (body.postgresSsl ? true : false),
+        mysqlInsecureAuth: (body.mysqlInsecureAuth ? true : false)
     };
 }
 

@@ -65,8 +65,8 @@
     "sqlpad": "./server.js"
   },
   "devDependencies": {
-    "browserify": "4.1.x",
-    "browserify-shim": "3.5.x"
+    "browserify": "11.x.x",
+    "browserify-shim": "3.x.x"
   },
   "browserify": {
     "transform": [

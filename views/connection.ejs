@@ -76,6 +76,12 @@
           </label>
         </div>
         
+        <div class="checkbox driver-specific mysql">
+          <label>
+            <input name="mysqlInsecureAuth" <%= (connection.mysqlInsecureAuth ? "checked" : "") %> type="checkbox"> Use old/insecure pre 4.1 Auth System
+          </label>
+        </div>
+        
         <% if (connection._id) { %>
             <input type="hidden" name="_method" value="put" />
         <% } %>
