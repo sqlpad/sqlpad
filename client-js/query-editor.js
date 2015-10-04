@@ -12,6 +12,14 @@ var QueryEditor = function () {
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     var dataGrid = new DataGrid();
     
+    function autoRefreshSeconds () {
+        return $('#auto-refresh-seconds').val();
+    }
+    
+    function autoRefreshEnabled () {
+        return $('#enable-auto-refresh').prop("checked");
+    }
+    
     function runQuery () {
         $('#server-run-time').html('');
         $('#rowcount').html('');
@@ -28,7 +36,19 @@ var QueryEditor = function () {
             url: "/run-query",
             data: data
         }).done(function (data) {
-            chartEditor.setData(data);
+            // if refresh is turned on run the query again!
+            if (!autoRefreshSeconds()) {
+                console.log("no seconds specified. turning autofresh off");
+                $('#enable-auto-refresh').prop("checked", false);
+            }
+            if (autoRefreshEnabled() && autoRefreshSeconds()) {
+                setTimeout(function () {
+                    if (autoRefreshEnabled()) {
+                        runQuery();
+                    }
+                }, autoRefreshSeconds() * 1000);
+            }
+            
             // TODO - if vis tab is active, render chart
             dataGrid.stopRunningTimer();
             $('#server-run-time').html(data.serverMs/1000 + " sec.");
@@ -40,6 +60,10 @@ var QueryEditor = function () {
                     $('.incomplete-notification').addClass("hidden");
                 }
                 dataGrid.renderGridData(data);
+                
+                // render chart? we might be on the chart tab
+                chartEditor.setData(data);
+                chartEditor.rerenderChart();
             } else {
                 dataGrid.renderError(data.error);
             }
