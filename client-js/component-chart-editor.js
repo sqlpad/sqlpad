@@ -235,7 +235,7 @@ var ChartEditor = function () {
     };
 
     this.linkToChart = function () {
-        window.open('?format=chart', '_chart');
+        window.open('?format=chart', '_queryPreview');
     };
     
     // Bind Events

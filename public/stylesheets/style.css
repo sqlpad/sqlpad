@@ -209,6 +209,24 @@ a {
     bottom: 0;
 }
 
+.fullscreen-content #panel-result-header, .fullscreen-content .panel-editor {
+    display: none; 
+}
+
+.fullscreen-content #panel-result {
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+}
+
+.fullscreen-content #result-slick-grid {
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+}
+
 
 /*  DB Info sidebar 
 ======================================================== */
