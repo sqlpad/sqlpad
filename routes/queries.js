@@ -141,9 +141,9 @@ module.exports = function (app) {
                             res.render('query', {
                                 query: query, 
                                 
-                                // format may be set to 'chart'
+                                // format may be set to 'chart' or 'table'
                                 format: format,
-                                fullscreenContent: format === 'chart' ? true: false
+                                fullscreenContent: ['chart', 'table'].indexOf(format) > -1 ? true: false
                             });
                         }
                     });

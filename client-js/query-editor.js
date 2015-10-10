@@ -12,6 +12,7 @@ var QueryEditor = function () {
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     var dataGrid = new DataGrid();
     var chartFormat = $('[format="chart"]').length > 0;
+    var tableFormat = $('[format="table"]').length > 0;
     
     function runQuery () {
         $('#server-run-time').html('');
@@ -105,6 +106,12 @@ var QueryEditor = function () {
         event.stopPropagation();
         runQuery();
     });
+
+    $('#btn-link-to-table').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        window.open('?format=table', '_queryPreview');
+    });
     
     /*  (re-)render the chart when the viz tab is pressed, 
         TODO: only do this if necessary
@@ -130,7 +137,7 @@ var QueryEditor = function () {
         chartEditor.loadChartConfiguration(data.chartConfiguration);
 
         // if showing an embeddable chart, run the query immediately
-        if (chartFormat) {
+        if (chartFormat || tableFormat) {
             runQuery();
         }
     }).fail(function () {
