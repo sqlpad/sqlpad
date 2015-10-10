@@ -72,6 +72,29 @@ a {
     margin-top: 20px;
 }
 
+/*  fullscreen mode
+======================================================== */
+
+.fullscreen-content .navbar {
+  display: none;
+}
+
+.fullscreen-content .sidebar {
+  display: none;
+}
+
+.fullscreen-content .sidebar {
+  display: none;
+}
+
+.fullscreen-content #panel-main {
+    top: 0px;
+}
+
+.fullscreen-content  .tab-pane-main {
+    left: 0px;
+    top: 0px;
+}
 
 
 /*  Navbar stuff?

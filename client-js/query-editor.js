@@ -11,6 +11,7 @@ var QueryEditor = function () {
     var dbInfo = new DbInfo();
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     var dataGrid = new DataGrid();
+    var chartFormat = $('[format="chart"]').length > 0;
     
     function runQuery () {
         $('#server-run-time').html('');
@@ -29,7 +30,6 @@ var QueryEditor = function () {
             data: data
         }).done(function (data) {
             chartEditor.setData(data);
-            // TODO - if vis tab is active, render chart
             dataGrid.stopRunningTimer();
             $('#server-run-time').html(data.serverMs/1000 + " sec.");
             if (data.success) {
@@ -40,6 +40,11 @@ var QueryEditor = function () {
                     $('.incomplete-notification').addClass("hidden");
                 }
                 dataGrid.renderGridData(data);
+
+                if ($('#tab-content-visualize.active').length) {
+                    chartEditor.rerenderChart();
+                }
+
             } else {
                 dataGrid.renderError(data.error);
             }
@@ -123,6 +128,11 @@ var QueryEditor = function () {
         url: "/queries/" + $queryId.val() + "?format=json"
     }).done(function (data) {
         chartEditor.loadChartConfiguration(data.chartConfiguration);
+
+        // if showing an embeddable chart, run the query immediately
+        if (chartFormat) {
+            runQuery();
+        }
     }).fail(function () {
         alert('Failed to get additional Query info');
     });
@@ -168,11 +178,19 @@ var QueryEditor = function () {
         runQuery();
         return false;
     });
+
+    if (chartFormat) {
+        //$('.navbar').hide();
+        $('[href="#tab-content-visualize"]').tab('show');
+        // $('.sidebar').hide();
+        // $('#panel-main').addClass('fullscreen');
+    }
+
 };
 
 
 module.exports = function () {
-    if ($('#ace-editor').length) {
+    if ($('#ace-editor').length || $('#panel-main[format="chart"]').length) {
         new QueryEditor();
     }
 };
