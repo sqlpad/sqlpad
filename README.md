@@ -45,12 +45,6 @@ First clone or download this repo. Then install dependencies.
 npm install
 ```
 
-Install nodemon for automatic server restarts when developing
-
-```sh  
-npm install nodemon -g
-```
-
 Install browserify to compile client-side scripts
 
 ```sh
