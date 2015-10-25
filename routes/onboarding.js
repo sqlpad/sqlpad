@@ -88,10 +88,10 @@ module.exports = function (app) {
         });
 
         passport.use(new passportLocalStrategy({
-            usernameField: 'email',
+            usernameField: 'email'
           },
           function(email, password, done) {
-            db.users.findOne({email: email}, function (err, doc) {
+            db.users.findOne({email: email, createdDate: {$exists: true}}, function (err, doc) {
                 if (err) { return done(err); }
                 if (doc) {
                     bcrypt.compare(password, doc.passhash, function (err, isMatch) {
