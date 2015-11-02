@@ -1,7 +1,8 @@
 # Changelog
 
-## 1.10.0 (in development)
+## 1.10.0
 - MySQL connections can now old/insecure pre 4.1 auth system
+- links now available to display just the chart or data grid
 
 ## 1.9.0
 - Charting now handled by the very cool tauCharts library. It's a bit faster, has facets, grammar of graphics concepts, handles time series data better, trendlines.

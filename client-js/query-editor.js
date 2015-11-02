@@ -11,6 +11,8 @@ var QueryEditor = function () {
     var dbInfo = new DbInfo();
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     var dataGrid = new DataGrid();
+    var chartFormat = $('[format="chart"]').length > 0;
+    var tableFormat = $('[format="table"]').length > 0;
     
     function autoRefreshSeconds () {
         return $('#auto-refresh-seconds').val();
@@ -48,8 +50,9 @@ var QueryEditor = function () {
                     }
                 }, autoRefreshSeconds() * 1000);
             }
-            
-            // TODO - if vis tab is active, render chart
+
+            chartEditor.setData(data);
+
             dataGrid.stopRunningTimer();
             $('#server-run-time').html(data.serverMs/1000 + " sec.");
             if (data.success) {
@@ -60,10 +63,11 @@ var QueryEditor = function () {
                     $('.incomplete-notification').addClass("hidden");
                 }
                 dataGrid.renderGridData(data);
-                
-                // render chart? we might be on the chart tab
-                chartEditor.setData(data);
-                chartEditor.rerenderChart();
+
+                if ($('#tab-content-visualize.active').length) {
+                    chartEditor.rerenderChart();
+                }
+
             } else {
                 dataGrid.renderError(data.error);
             }
@@ -124,6 +128,12 @@ var QueryEditor = function () {
         event.stopPropagation();
         runQuery();
     });
+
+    $('#btn-link-to-table').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        window.open('?format=table', '_queryPreview');
+    });
     
     /*  (re-)render the chart when the viz tab is pressed, 
         TODO: only do this if necessary
@@ -147,6 +157,11 @@ var QueryEditor = function () {
         url: "/queries/" + $queryId.val() + "?format=json"
     }).done(function (data) {
         chartEditor.loadChartConfiguration(data.chartConfiguration);
+
+        // if showing an embeddable chart, run the query immediately
+        if (chartFormat || tableFormat) {
+            runQuery();
+        }
     }).fail(function () {
         alert('Failed to get additional Query info');
     });
@@ -192,11 +207,19 @@ var QueryEditor = function () {
         runQuery();
         return false;
     });
+
+    if (chartFormat) {
+        //$('.navbar').hide();
+        $('[href="#tab-content-visualize"]').tab('show');
+        // $('.sidebar').hide();
+        // $('#panel-main').addClass('fullscreen');
+    }
+
 };
 
 
 module.exports = function () {
-    if ($('#ace-editor').length) {
+    if ($('#ace-editor').length || $('#panel-main[format="chart"]').length) {
         new QueryEditor();
     }
 };

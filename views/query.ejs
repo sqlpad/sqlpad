@@ -1,4 +1,5 @@
 <% include header %>
+<span class="hide" format="<%= format %>"></span>
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
         <ul class="nav nav-pills navbar-left query-editor-nav-pills" role="tablist">
@@ -71,6 +72,13 @@
                       <input id="auto-refresh-seconds" type="text" class="form-control input-small" placeholder="number of seconds" style="height: 24px; font-size: 11px;">
                     </div><!-- /input-group -->
                 </form>
+                <button id="btn-run-query" class="btn btn-primary btn-sm btn-block">
+                    <span class="shortcut-letter">R</span>un Query
+                </button>
+                <button id="btn-link-to-table" class="btn btn-default btn-sm btn-block" >
+                    <span class="glyphicon glyphicon-link"></span>
+                    Link To Table
+                </button>
                 <hr>
                 <div id="panel-db-info-container">
                     <button id="btn-reload-schema" class="btn btn-default btn-sm" style="display: none;">
@@ -121,6 +129,10 @@
                     <button id="btn-save-image" class="btn btn-default btn-sm btn-block">
                         <span class="glyphicon glyphicon-save"></span>
                         Save Chart Image
+                    </button>
+                    <button id="btn-link-to-chart" class="btn btn-default btn-sm btn-block" >
+                        <span class="glyphicon glyphicon-link"></span>
+                        Link To Chart
                     </button>
                 </div>
             </div>

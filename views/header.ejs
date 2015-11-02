@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="/stylesheets/style.css"> <!-- sqlpad's styles -->
   </head>
 
-  <body>
+  <body class="<%= (typeof fullscreenContent !== 'undefined' && fullscreenContent) ? 'fullscreen-content' : '' %>">
     
     <% if (isAuthenticated) { %>
       <!-- Static navbar -->

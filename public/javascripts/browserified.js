@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var tauCharts = (window.tauCharts);
 var _ = require('lodash');
 var $ = (window.$);
@@ -448,6 +448,7 @@ var ChartEditor = function () {
     var $chartTypeDropDown = $('#chart-type-dropdown');
     var $btnVisualize = $('#btn-visualize');
     var $btnSaveImage = $('#btn-save-image');
+    var $btnLinkToChart = $('#btn-link-to-chart');
     var $chartSetupUI = $("#chart-setup-ui");
     
     this.setData = function(data) {
@@ -657,10 +658,15 @@ var ChartEditor = function () {
         var imageName = $('#header-query-name').val();
         saveSvgAsPng($svg.get(0), imageName + ".png");
     };
+
+    this.linkToChart = function () {
+        window.open('?format=chart', '_queryPreview');
+    };
     
     // Bind Events
     $btnVisualize.click(me.renderChart);
     $btnSaveImage.click(me.saveImage);
+    $btnLinkToChart.click(me.linkToChart);
     $chartTypeDropDown.change(function () {
         me.buildChartUI();
         var selectedChartType = $chartTypeDropDown.val();
@@ -1007,6 +1013,8 @@ var QueryEditor = function () {
     var dbInfo = new DbInfo();
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     var dataGrid = new DataGrid();
+    var chartFormat = $('[format="chart"]').length > 0;
+    var tableFormat = $('[format="table"]').length > 0;
     
     function autoRefreshSeconds () {
         return $('#auto-refresh-seconds').val();
@@ -1032,6 +1040,7 @@ var QueryEditor = function () {
             url: "/run-query",
             data: data
         }).done(function (data) {
+<<<<<<< HEAD
             // if refresh is turned on run the query again!
             if (!autoRefreshSeconds()) {
                 console.log("no seconds specified. turning autofresh off");
@@ -1046,6 +1055,9 @@ var QueryEditor = function () {
             }
             
             // TODO - if vis tab is active, render chart
+=======
+            chartEditor.setData(data);
+>>>>>>> master
             dataGrid.stopRunningTimer();
             $('#server-run-time').html(data.serverMs/1000 + " sec.");
             if (data.success) {
@@ -1056,10 +1068,18 @@ var QueryEditor = function () {
                     $('.incomplete-notification').addClass("hidden");
                 }
                 dataGrid.renderGridData(data);
+<<<<<<< HEAD
                 
                 // render chart? we might be on the chart tab
                 chartEditor.setData(data);
                 chartEditor.rerenderChart();
+=======
+
+                if ($('#tab-content-visualize.active').length) {
+                    chartEditor.rerenderChart();
+                }
+
+>>>>>>> master
             } else {
                 dataGrid.renderError(data.error);
             }
@@ -1120,6 +1140,12 @@ var QueryEditor = function () {
         event.stopPropagation();
         runQuery();
     });
+
+    $('#btn-link-to-table').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        window.open('?format=table', '_queryPreview');
+    });
     
     /*  (re-)render the chart when the viz tab is pressed, 
         TODO: only do this if necessary
@@ -1143,6 +1169,11 @@ var QueryEditor = function () {
         url: "/queries/" + $queryId.val() + "?format=json"
     }).done(function (data) {
         chartEditor.loadChartConfiguration(data.chartConfiguration);
+
+        // if showing an embeddable chart, run the query immediately
+        if (chartFormat || tableFormat) {
+            runQuery();
+        }
     }).fail(function () {
         alert('Failed to get additional Query info');
     });
@@ -1188,11 +1219,22 @@ var QueryEditor = function () {
         runQuery();
         return false;
     });
+<<<<<<< HEAD
+=======
+
+    if (chartFormat) {
+        //$('.navbar').hide();
+        $('[href="#tab-content-visualize"]').tab('show');
+        // $('.sidebar').hide();
+        // $('#panel-main').addClass('fullscreen');
+    }
+
+>>>>>>> master
 };
 
 
 module.exports = function () {
-    if ($('#ace-editor').length) {
+    if ($('#ace-editor').length || $('#panel-main[format="chart"]').length) {
         new QueryEditor();
     }
 };
@@ -1577,6 +1619,7 @@ module.exports = function () {
 
     // line terminators
     '\n\r\u2028\u2029' +
+<<<<<<< HEAD
 
     // unicode category "Zs" space separators
     '\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000'
@@ -1587,6 +1630,18 @@ module.exports = function () {
       reEmptyStringMiddle = /\b(__p \+=) '' \+/g,
       reEmptyStringTrailing = /(__e\(.*?\)|\b__t\)) \+\n'';/g;
 
+=======
+
+    // unicode category "Zs" space separators
+    '\u1680\u180e\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u202f\u205f\u3000'
+  );
+
+  /** Used to match empty string literals in compiled template source */
+  var reEmptyStringLeading = /\b__p \+= '';/g,
+      reEmptyStringMiddle = /\b(__p \+=) '' \+/g,
+      reEmptyStringTrailing = /(__e\(.*?\)|\b__t\)) \+\n'';/g;
+
+>>>>>>> master
   /**
    * Used to match ES6 template delimiters
    * http://people.mozilla.org/~jorendorff/es6-draft.html#sec-literals-string-literals
@@ -2771,6 +2826,7 @@ module.exports = function () {
             isArr,
             result = source,
             value = object[key];
+<<<<<<< HEAD
 
         if (source && ((isArr = isArray(source)) || isPlainObject(source))) {
           // avoid merging previously merged cyclic sources
@@ -2798,6 +2854,35 @@ module.exports = function () {
             stackA.push(source);
             stackB.push(value);
 
+=======
+
+        if (source && ((isArr = isArray(source)) || isPlainObject(source))) {
+          // avoid merging previously merged cyclic sources
+          var stackLength = stackA.length;
+          while (stackLength--) {
+            if ((found = stackA[stackLength] == source)) {
+              value = stackB[stackLength];
+              break;
+            }
+          }
+          if (!found) {
+            var isShallow;
+            if (callback) {
+              result = callback(value, source);
+              if ((isShallow = typeof result != 'undefined')) {
+                value = result;
+              }
+            }
+            if (!isShallow) {
+              value = isArr
+                ? (isArray(value) ? value : [])
+                : (isPlainObject(value) ? value : {});
+            }
+            // add `source` and associated `value` to the stack of traversed objects
+            stackA.push(source);
+            stackB.push(value);
+
+>>>>>>> master
             // recursively merge objects and arrays (susceptible to call stack limits)
             if (!isShallow) {
               baseMerge(value, source, callback, stackA, stackB);
@@ -2893,6 +2978,180 @@ module.exports = function () {
       return function(collection, callback, thisArg) {
         var result = {};
         callback = lodash.createCallback(callback, thisArg, 3);
+<<<<<<< HEAD
+
+        var index = -1,
+            length = collection ? collection.length : 0;
+
+        if (typeof length == 'number') {
+          while (++index < length) {
+            var value = collection[index];
+            setter(result, value, callback(value, index, collection), collection);
+          }
+        } else {
+          forOwn(collection, function(value, key, collection) {
+            setter(result, value, callback(value, key, collection), collection);
+          });
+        }
+        return result;
+      };
+    }
+
+    /**
+     * Creates a function that, when called, either curries or invokes `func`
+     * with an optional `this` binding and partially applied arguments.
+     *
+     * @private
+     * @param {Function|string} func The function or method name to reference.
+     * @param {number} bitmask The bitmask of method flags to compose.
+     *  The bitmask may be composed of the following flags:
+     *  1 - `_.bind`
+     *  2 - `_.bindKey`
+     *  4 - `_.curry`
+     *  8 - `_.curry` (bound)
+     *  16 - `_.partial`
+     *  32 - `_.partialRight`
+     * @param {Array} [partialArgs] An array of arguments to prepend to those
+     *  provided to the new function.
+     * @param {Array} [partialRightArgs] An array of arguments to append to those
+     *  provided to the new function.
+     * @param {*} [thisArg] The `this` binding of `func`.
+     * @param {number} [arity] The arity of `func`.
+     * @returns {Function} Returns the new function.
+     */
+    function createWrapper(func, bitmask, partialArgs, partialRightArgs, thisArg, arity) {
+      var isBind = bitmask & 1,
+          isBindKey = bitmask & 2,
+          isCurry = bitmask & 4,
+          isCurryBound = bitmask & 8,
+          isPartial = bitmask & 16,
+          isPartialRight = bitmask & 32;
+
+      if (!isBindKey && !isFunction(func)) {
+        throw new TypeError;
+      }
+      if (isPartial && !partialArgs.length) {
+        bitmask &= ~16;
+        isPartial = partialArgs = false;
+      }
+      if (isPartialRight && !partialRightArgs.length) {
+        bitmask &= ~32;
+        isPartialRight = partialRightArgs = false;
+      }
+      var bindData = func && func.__bindData__;
+      if (bindData && bindData !== true) {
+        // clone `bindData`
+        bindData = slice(bindData);
+        if (bindData[2]) {
+          bindData[2] = slice(bindData[2]);
+        }
+        if (bindData[3]) {
+          bindData[3] = slice(bindData[3]);
+        }
+        // set `thisBinding` is not previously bound
+        if (isBind && !(bindData[1] & 1)) {
+          bindData[4] = thisArg;
+        }
+        // set if previously bound but not currently (subsequent curried functions)
+        if (!isBind && bindData[1] & 1) {
+          bitmask |= 8;
+        }
+        // set curried arity if not yet set
+        if (isCurry && !(bindData[1] & 4)) {
+          bindData[5] = arity;
+        }
+        // append partial left arguments
+        if (isPartial) {
+          push.apply(bindData[2] || (bindData[2] = []), partialArgs);
+        }
+        // append partial right arguments
+        if (isPartialRight) {
+          unshift.apply(bindData[3] || (bindData[3] = []), partialRightArgs);
+        }
+        // merge flags
+        bindData[1] |= bitmask;
+        return createWrapper.apply(null, bindData);
+      }
+      // fast path for `_.bind`
+      var creater = (bitmask == 1 || bitmask === 17) ? baseBind : baseCreateWrapper;
+      return creater([func, bitmask, partialArgs, partialRightArgs, thisArg, arity]);
+    }
+
+    /**
+     * Used by `escape` to convert characters to HTML entities.
+     *
+     * @private
+     * @param {string} match The matched character to escape.
+     * @returns {string} Returns the escaped character.
+     */
+    function escapeHtmlChar(match) {
+      return htmlEscapes[match];
+    }
+
+    /**
+     * Gets the appropriate "indexOf" function. If the `_.indexOf` method is
+     * customized, this method returns the custom method, otherwise it returns
+     * the `baseIndexOf` function.
+     *
+     * @private
+     * @returns {Function} Returns the "indexOf" function.
+     */
+    function getIndexOf() {
+      var result = (result = lodash.indexOf) === indexOf ? baseIndexOf : result;
+      return result;
+    }
+
+    /**
+     * Checks if `value` is a native function.
+     *
+     * @private
+     * @param {*} value The value to check.
+     * @returns {boolean} Returns `true` if the `value` is a native function, else `false`.
+     */
+    function isNative(value) {
+      return typeof value == 'function' && reNative.test(value);
+    }
+
+    /**
+     * Sets `this` binding data on a given function.
+     *
+     * @private
+     * @param {Function} func The function to set data on.
+     * @param {Array} value The data array to set.
+     */
+    var setBindData = !defineProperty ? noop : function(func, value) {
+      descriptor.value = value;
+      defineProperty(func, '__bindData__', descriptor);
+      descriptor.value = null;
+    };
+
+    /**
+     * A fallback implementation of `isPlainObject` which checks if a given value
+     * is an object created by the `Object` constructor, assuming objects created
+     * by the `Object` constructor have no inherited enumerable properties and that
+     * there are no `Object.prototype` extensions.
+     *
+     * @private
+     * @param {*} value The value to check.
+     * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+     */
+    function shimIsPlainObject(value) {
+      var ctor,
+          result;
+
+      // avoid non Object objects, `arguments` objects, and DOM elements
+      if (!(value && toString.call(value) == objectClass) ||
+          (ctor = value.constructor, isFunction(ctor) && !(ctor instanceof ctor))) {
+        return false;
+      }
+      // In most environments an object's own properties are iterated before
+      // its inherited properties. If the last iterated property is an object's
+      // own property then there are no inherited enumerable properties.
+      forIn(value, function(value, key) {
+        result = key;
+      });
+      return typeof result == 'undefined' || hasOwnProperty.call(value, result);
+=======
 
         var index = -1,
             length = collection ? collection.length : 0;
@@ -3076,11 +3335,28 @@ module.exports = function () {
      */
     function unescapeHtmlChar(match) {
       return htmlUnescapes[match];
+>>>>>>> master
     }
 
     /*--------------------------------------------------------------------------*/
 
     /**
+<<<<<<< HEAD
+     * Used by `unescape` to convert HTML entities to characters.
+     *
+     * @private
+     * @param {string} match The matched character to unescape.
+     * @returns {string} Returns the unescaped character.
+     */
+    function unescapeHtmlChar(match) {
+      return htmlUnescapes[match];
+    }
+
+    /*--------------------------------------------------------------------------*/
+
+    /**
+=======
+>>>>>>> master
      * Checks if `value` is an `arguments` object.
      *
      * @static
@@ -8327,7 +8603,7 @@ module.exports = function () {
   }
 }.call(this));
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],18:[function(require,module,exports){
 (function (global){
 //! moment.js
@@ -11267,5 +11543,5 @@ module.exports = function () {
     }
 }).call(this);
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[12])
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[12]);
