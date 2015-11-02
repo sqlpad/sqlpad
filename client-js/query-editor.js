@@ -14,6 +14,14 @@ var QueryEditor = function () {
     var chartFormat = $('[format="chart"]').length > 0;
     var tableFormat = $('[format="table"]').length > 0;
     
+    function autoRefreshSeconds () {
+        return $('#auto-refresh-seconds').val();
+    }
+    
+    function autoRefreshEnabled () {
+        return $('#enable-auto-refresh').prop("checked");
+    }
+    
     function runQuery () {
         $('#server-run-time').html('');
         $('#rowcount').html('');
@@ -30,7 +38,21 @@ var QueryEditor = function () {
             url: "/run-query",
             data: data
         }).done(function (data) {
+            // if refresh is turned on run the query again!
+            if (!autoRefreshSeconds()) {
+                console.log("no seconds specified. turning autofresh off");
+                $('#enable-auto-refresh').prop("checked", false);
+            }
+            if (autoRefreshEnabled() && autoRefreshSeconds()) {
+                setTimeout(function () {
+                    if (autoRefreshEnabled()) {
+                        runQuery();
+                    }
+                }, autoRefreshSeconds() * 1000);
+            }
+
             chartEditor.setData(data);
+
             dataGrid.stopRunningTimer();
             $('#server-run-time').html(data.serverMs/1000 + " sec.");
             if (data.success) {

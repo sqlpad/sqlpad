@@ -60,14 +60,26 @@
                             <% }) %>
                         </select>
                     </div>
+                    <button id="btn-run-query" class="btn btn-primary btn-sm btn-block">
+                        <span class="shortcut-letter">R</span>un Query
+                    </button>
+                    <button id="btn-link-to-table" class="btn btn-default btn-sm btn-block" >
+                        <span class="glyphicon glyphicon-link"></span>
+                        Link To Table
+                    </button>
+                    <br>
+                    <label class="control-label">Auto-Refresh</label>
+                    <div class="input-group">
+                      <span class="input-group-addon" style="padding:2px 10px;">
+                        <input id="enable-auto-refresh" type="checkbox">
+                      </span>
+                      <input id="auto-refresh-seconds" type="text" class="form-control input-small" placeholder="number of seconds" style="height: 24px; font-size: 11px;">
+                    </div><!-- /input-group -->
                 </form>
-                <button id="btn-run-query" class="btn btn-primary btn-sm btn-block">
-                    <span class="shortcut-letter">R</span>un Query
-                </button>
-                <button id="btn-link-to-table" class="btn btn-default btn-sm btn-block" >
-                    <span class="glyphicon glyphicon-link"></span>
-                    Link To Table
-                </button>
+                
+                
+                
+                
                 <hr>
                 <div id="panel-db-info-container">
                     <button id="btn-reload-schema" class="btn btn-default btn-sm" style="display: none;">

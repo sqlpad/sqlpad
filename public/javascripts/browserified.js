@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var tauCharts = (window.tauCharts);
 var _ = require('lodash');
 var $ = (window.$);
@@ -1015,6 +1015,14 @@ var QueryEditor = function () {
     var chartFormat = $('[format="chart"]').length > 0;
     var tableFormat = $('[format="table"]').length > 0;
     
+    function autoRefreshSeconds () {
+        return $('#auto-refresh-seconds').val();
+    }
+    
+    function autoRefreshEnabled () {
+        return $('#enable-auto-refresh').prop("checked");
+    }
+    
     function runQuery () {
         $('#server-run-time').html('');
         $('#rowcount').html('');
@@ -1031,7 +1039,21 @@ var QueryEditor = function () {
             url: "/run-query",
             data: data
         }).done(function (data) {
+            // if refresh is turned on run the query again!
+            if (!autoRefreshSeconds()) {
+                console.log("no seconds specified. turning autofresh off");
+                $('#enable-auto-refresh').prop("checked", false);
+            }
+            if (autoRefreshEnabled() && autoRefreshSeconds()) {
+                setTimeout(function () {
+                    if (autoRefreshEnabled()) {
+                        runQuery();
+                    }
+                }, autoRefreshSeconds() * 1000);
+            }
+
             chartEditor.setData(data);
+
             dataGrid.stopRunningTimer();
             $('#server-run-time').html(data.serverMs/1000 + " sec.");
             if (data.success) {
@@ -8333,7 +8355,7 @@ module.exports = function () {
   }
 }.call(this));
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],18:[function(require,module,exports){
 (function (global){
 //! moment.js
@@ -11273,5 +11295,5 @@ module.exports = function () {
     }
 }).call(this);
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[12]);
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[12])
