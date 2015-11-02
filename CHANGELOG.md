@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.11.0
+- Auto-refresh query every x seconds
+- Fix crash when unregistered user tries to log in
+
 ## 1.10.0
 - MySQL connections can now old/insecure pre 4.1 auth system
 - links now available to display just the chart or data grid
