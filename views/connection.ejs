@@ -23,6 +23,7 @@
               <option value="postgres"  <%= (connection.driver === 'postgres' ? 'selected' : '') %>>Postgres</option>
               <option value="sqlserver" <%= (connection.driver === 'sqlserver' ? 'selected' : '') %>>SQL Server</option>
               <option value="vertica"   <%= (connection.driver === 'vertica' ? 'selected' : '') %>>Vertica</option>
+              <option value="crate"   <%= (connection.driver === 'crate' ? 'selected' : '') %>>Crate</option>
             </select>
           </div>
         </div>
@@ -44,7 +45,7 @@
         </div>
         
         <!-- Text input-->
-        <div class="form-group">
+        <div class="form-group driver-specific mysql postgres sqlserver vertica">
           <label class=" control-label" for="database">Database Name</label>  
           <div class="">
           <input id="database" name="database" value="<%= connection.database || '' %>" type="text" class="form-control input-md" required="">
@@ -52,13 +53,13 @@
         </div>
         
         <!-- Text input-->
-        <div class="form-group">
+        <div class="form-group driver-specific mysql postgres sqlserver vertica">
           <label class=" control-label" for="username">Database Username</label>  
           <input id="username" name="username" value="<%= connection.username || '' %>" type="text" class="form-control input-md" >
         </div>
         
         <!-- Password input-->
-        <div class="form-group">
+        <div class="form-group driver-specific mysql postgres sqlserver vertica">
           <label class=" control-label" for="password">Password</label>
           <input id="password" name="password" value="<%= connection.password || '' %>" type="password" class="form-control input-md">
         </div>

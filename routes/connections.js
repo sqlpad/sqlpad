@@ -63,7 +63,11 @@ module.exports = function (app) {
 
     function testConnection(req, res) {
         var bodyConnection = connectionFromBody(req.body);
-        runQuery("SELECT 'success' AS TestQuery;", bodyConnection, function (err, results) {
+        testQuery = "SELECT 'success' AS TestQuery;"
+        if (bodyConnection.driver == "crate") {
+            testQuery = "SELECT name from sys.cluster";
+        }
+        runQuery(testQuery, bodyConnection, function (err, results) {
             if (err) {
                 console.log(err);
                 res.send({
