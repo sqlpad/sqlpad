@@ -21,6 +21,10 @@ npm install sqlpad -g
 
 For more info visit the project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
 
+## Tips
+
+If you have highlighted just part of your query, only that part will be executed when you click Run Query.
+
 ## Configuration
 
 ### Change query result record limit
