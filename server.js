@@ -19,12 +19,30 @@ if (notifier.update) {
     notifier.notify();
 }
 
+/*  add config to app object
+    TODO: remove dependency on attaching config values to app object 
+    Turns out node.js cache's the require() of a module
+    Instead of attaching config to the app object, 
+    just require('./lib/config.js') around the app. 
+    (Sometimes we need config when we don't need the app object)
+============================================================================= */
+var config = require('./lib/config.js');
+if (config.debug) {
+    console.log("CONFIG:");
+    console.log(config);
+}
+app.set('debug', config.debug);
+app.set('passphrase', config.passphrase);
+app.set('dbPath', config.dbPath);
+app.set('port', config.port);
+if (config.hasOwnProperty('dev')) app.set('dev', true);
+if (config.admin) app.set('admin', config.admin);
 
 /*  Boostrap app object with stuff
     This allows us to pass app around and all the related utility/helper/db 
     functions and variables go with it.
+    TODO: move to just requiring needed files directly
 ============================================================================= */
-require('./lib/add-cli-config-to-app.js')(app);
 require('./lib/add-db-to-app.js')(app);
 require('./lib/add-cipher-decipher-to-app.js')(app);
 require('./lib/add-open-admin-registration-to-app.js')(app);

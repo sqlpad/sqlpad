@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.0
+- Add --debug flag to SqlPad cli to enable extra logging
+- Port and passphrase may be set via environment variables SQLPAD_PORT and SQLPAD_PASSPHRASE
+
 ## 1.11.0
 - Auto-refresh query every x seconds
 - Fix crash when unregistered user tries to log in
