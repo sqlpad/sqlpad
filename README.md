@@ -27,7 +27,15 @@ If you have highlighted just part of your query, only that part will be executed
 
 ## Configuration
 
-### Change query result record limit
+### Port
+
+By default SqlPad will use port 80. This my be overridden via cli parameter --port or environment variable SQLPAD_PORT.
+
+### Encryption Passphrase 
+
+SqlPad uses very simple encryption when storing database connection passwords. A custom encryption passphrase may be set via cli parameter --passphrase or environment variable SQLPAD_PASSPHRASE.
+
+### Query result record limit
 To change the maximum records returned by a SQL query, add a new item with key `queryResultMaxRows` and set the value to the max number of rows you would like returned. If the key is missing or set to a non-number, SqlPad will return a maximum of 50,000 rows.
 
 ### Disable CSV download
