@@ -1,8 +1,7 @@
-    
-        </div> <!-- /row -->
+     </div> <!-- /row -->
     </div> <!-- /container -->
-    
-    <!-- Modal -->
+
+   - Modal -->
     <div class="modal" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -19,9 +18,9 @@
             </p>
             <hr>
             <p>
-                SqlPad is open source! Feel free to browse the code, 
-                discuss a potential new feature, 
-                report a bug, etc.<br>
+                SqlPad is open source! Feel free to browse the code,
+               discuss a potential new feature,
+               report a bug, etc.<br>
             </p>
             <p>
                 <ul class="nav nav-pills nav-justified">
@@ -30,18 +29,17 @@
                   <li role="presentation"><a href="https://github.com/rickbergfalk/sqlpad/issues" target="_blank">Issues <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></li>
                 </ul>
             </p>
-            
-          </div>
-        </div>
+
+             </div>
       </div>
     </div>
-    
-    <!-- 
-        This stuff has been made available as globals via browserify shim 
-        Ideally this would be managed via npm/browserify completely, but it seems really confusing.
+
+    <!--
+        This stuff has ben made available as globals via browserify shim
+        Ideally this wouldbe managed via npm/browserify completely, but it seems really confusing.
         I'll revisit once I'm a bit more familiar with how browserify performs its magic
     -->
-    <script src="/javascripts/vendor/underscore-min.js"></script>
+    <script src="/javascripts/vendor/lodash.min.js"></script>
     <script src="/javascripts/vendor/jquery-2.1.1.min.js"></script>
     <script src="/javascripts/vendor/bootstrap.min.js"></script>
     <script src="/javascripts/vendor/ace-src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
@@ -56,6 +54,6 @@
     <script src="/javascripts/vendor/ZeroClipboard/ZeroClipboard.min.js"></script>
     <!-- then finally the browserified/bundled js -->
     <script src="/javascripts/browserified.js"></script>
-    
+
   </body>
 </html>

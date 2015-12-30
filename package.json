@@ -38,7 +38,7 @@
     "express": "4.x.x",
     "json2csv": "2.2.x",
     "keymaster": "^1.6.2",
-    "lodash": "2.4.x",
+    "lodash": "3.10.x",
     "method-override": "1.0.x",
     "moment": "2.8.x",
     "morgan": "1.1.x",
@@ -83,7 +83,7 @@
     "saveSvgAsPng": "global:saveSvgAsPng",
     "Bloodhound": "global:Bloodhound",
     "tauCharts": "global:tauCharts",
-    "_": "global:_",
+    "lodash": "global:_",
     "ZeroClipboard": "global:ZeroClipboard"
   }
 }
