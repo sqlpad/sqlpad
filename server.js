@@ -156,6 +156,7 @@ require('./routes/onboarding.js')(app);
 require('./routes/user-admin.js')(app);
 require('./routes/connections.js')(app);
 require('./routes/queries.js')(app);
+require('./routes/beautiSql.js')(app);
 require('./routes/run-query.js')(app); // ajaxy route used for executing query and getting results
 require('./routes/download-results.js')(app); // streams cached query results to browser
 require('./routes/schema-info.js')(app);

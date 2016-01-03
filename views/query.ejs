@@ -18,6 +18,9 @@
             <button type="button" id="btn-save" class="btn btn-default">
                 <span class="shortcut-letter">S</span>ave
             </button>
+            <button type="button" id="btn-beautiSql" class="btn btn-default">
+                <span class="shortcut-letter">B</span>eautiSql
+            </button>
             <div class="form-group" style="margin-left: 20px;">
                 <input id="header-query-name" name="header-query-name" class="input-query-name form-control"
                        value="<%= query.name %>" type="text" placeholder="Query Name">
@@ -29,6 +32,7 @@
                 <input id="tags" name="tags" class="form-control" data-role="tagsinput"
                     value="<%= query.tags || '' %>" type="text" placeholder="">
             </div>
+
             <input type="hidden" id="cache-key" value="<%= cacheKey %>"/>
             <input type="hidden" id="query-id" name="query-id" value="<%= query._id || 'new' %>"/>
             <span id="btn-save-result" class="label label-info"></span>

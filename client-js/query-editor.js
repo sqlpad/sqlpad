@@ -6,23 +6,23 @@ var AceSqlEditor = require('./component-ace-sql-editor.js');
 var DataGrid = require('./component-data-grid.js');
 
 var QueryEditor = function () {
-    
+
     var chartEditor = new ChartEditor();
     var dbInfo = new DbInfo();
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     var dataGrid = new DataGrid();
     var chartFormat = $('[format="chart"]').length > 0;
     var tableFormat = $('[format="table"]').length > 0;
-    
-    function autoRefreshSeconds () {
+
+    function autoRefreshSeconds() {
         return $('#auto-refresh-seconds').val();
     }
-    
-    function autoRefreshEnabled () {
+
+    function autoRefreshEnabled() {
         return $('#enable-auto-refresh').prop("checked");
     }
-    
-    function runQuery () {
+
+    function runQuery() {
         $('#server-run-time').html('');
         $('#rowcount').html('');
         dataGrid.emptyDataGrid();
@@ -54,7 +54,7 @@ var QueryEditor = function () {
             chartEditor.setData(data);
 
             dataGrid.stopRunningTimer();
-            $('#server-run-time').html(data.serverMs/1000 + " sec.");
+            $('#server-run-time').html(data.serverMs / 1000 + " sec.");
             if (data.success) {
                 $('.hide-while-running').show();
                 if (data.incomplete) {
@@ -76,16 +76,33 @@ var QueryEditor = function () {
             dataGrid.renderError("Something is broken :(");
         });
     }
-    
-    function getQueryName () {
+
+    function getQueryName() {
         return $('#header-query-name').val();
     }
-    
-    function getQueryTags () {
+
+    function getQueryTags() {
         return $.map($('#tags').val().split(','), $.trim);
     }
-    
-    function saveQuery () {
+
+
+    function beautiSql() {
+        var query = {
+            queryText: aceSqlEditor.getEditorText(),
+        };
+        $.ajax({
+            type: "POST",
+            url: "/beautiSql/",
+            data: query
+        }).done(function (data) {
+            debugger;
+            aceSqlEditor.setEditorText(data);
+        }).fail(function () {
+            alert('ajax fail');
+        });
+    }
+
+    function saveQuery() {
         var $queryId = $('#query-id');
         var query = {
             name: getQueryName(),
@@ -116,13 +133,19 @@ var QueryEditor = function () {
             alert('ajax fail');
         });
     }
-    
+
     $('#btn-save').click(function (event) {
         event.preventDefault();
         event.stopPropagation();
         saveQuery();
     });
-    
+
+    $('#btn-beautiSql').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        beautiSql();
+    });
+
     $('#btn-run-query').click(function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -134,10 +157,10 @@ var QueryEditor = function () {
         event.stopPropagation();
         window.open('?format=table', '_queryPreview');
     });
-    
+
     /*  (re-)render the chart when the viz tab is pressed, 
-        TODO: only do this if necessary
-    ==============================================================================*/
+     TODO: only do this if necessary
+     ==============================================================================*/
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         // if shown tab was the chart tab, rerender the chart
         // e.target is the activated tab
@@ -147,10 +170,10 @@ var QueryEditor = function () {
             dataGrid.resize();
         }
     });
-    
+
     /*  get query again, because not all the data is in the HTML
-        TODO: do most the workflow this way? 
-    ==============================================================================*/
+     TODO: do most the workflow this way?
+     ==============================================================================*/
     var $queryId = $('#query-id');
     $.ajax({
         type: "GET",
@@ -165,46 +188,51 @@ var QueryEditor = function () {
     }).fail(function () {
         alert('Failed to get additional Query info');
     });
-    
+
     /*  Tags Typeahead
-    ==============================================================================*/
+     ==============================================================================*/
     var Bloodhound = require('Bloodhound');
     var bloodhoundTags = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      prefetch: {
-        url: '/tags', // array of tagnames
-        ttl: 0,
-        filter: function(list) {
-          return $.map(list, function(tag) {
-            return { name: tag }; });
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: {
+            url: '/tags', // array of tagnames
+            ttl: 0,
+            filter: function (list) {
+                return $.map(list, function (tag) {
+                    return {name: tag};
+                });
+            }
         }
-      }
     });
     bloodhoundTags.initialize();
     $('#tags').tagsinput({
-      typeaheadjs: {
-        //name: 'tags',
-        displayKey: 'name',
-        valueKey: 'name',
-        source: bloodhoundTags.ttAdapter()
-      }
+        typeaheadjs: {
+            //name: 'tags',
+            displayKey: 'name',
+            valueKey: 'name',
+            source: bloodhoundTags.ttAdapter()
+        }
     });
-    
+
     /*  Shortcuts
-    ==============================================================================*/
+     ==============================================================================*/
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts, 
     // we want the event to fire all the time for any element
     keymaster.filter = function (event) {
-        return true; 
+        return true;
     };
-    keymaster('ctrl+s, command+s', function() { 
+    keymaster('ctrl+s, command+s', function () {
         saveQuery();
         return false;
     });
-    keymaster('ctrl+r, command+r, ctrl+e, command+e', function() { 
+    keymaster('ctrl+r, command+r, ctrl+e, command+e', function () {
         runQuery();
+        return false;
+    });
+    keymaster('ctrl+b, command+b', function () {
+        beautiSql();
         return false;
     });
 
