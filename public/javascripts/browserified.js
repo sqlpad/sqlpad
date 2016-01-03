@@ -1,7 +1,8 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var tauCharts = (window.tauCharts);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
+var tauCharts = (typeof window !== "undefined" ? window['tauCharts'] : typeof global !== "undefined" ? global['tauCharts'] : null);
 var _ = require('lodash');
-var $ = (window.$);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports =  {
     chartLabel: "Bar - Horizontal",
@@ -89,10 +90,12 @@ module.exports =  {
         return chart;
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"lodash":17}],2:[function(require,module,exports){
-var tauCharts = (window.tauCharts);
+(function (global){
+var tauCharts = (typeof window !== "undefined" ? window['tauCharts'] : typeof global !== "undefined" ? global['tauCharts'] : null);
 var _ = require('lodash');
-var $ = (window.$);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports =  {
     chartLabel: "Bar - Vertical",
@@ -176,10 +179,12 @@ module.exports =  {
         return chart;
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"lodash":17}],3:[function(require,module,exports){
-var tauCharts = (window.tauCharts);
+(function (global){
+var tauCharts = (typeof window !== "undefined" ? window['tauCharts'] : typeof global !== "undefined" ? global['tauCharts'] : null);
 var _ = require('lodash');
-var $ = (window.$);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports =  {
     chartLabel: "Line",
@@ -275,8 +280,10 @@ module.exports =  {
         return chart;
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"lodash":17}],4:[function(require,module,exports){
-var tauCharts = (window.tauCharts);
+(function (global){
+var tauCharts = (typeof window !== "undefined" ? window['tauCharts'] : typeof global !== "undefined" ? global['tauCharts'] : null);
 var _ = require('lodash');
 
 module.exports =  {
@@ -378,30 +385,36 @@ module.exports =  {
         return chart;
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"lodash":17}],5:[function(require,module,exports){
-var $ = (window.$);
-var ace = (window.ace);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var ace = (typeof window !== "undefined" ? window['ace'] : typeof global !== "undefined" ? global['ace'] : null);
 
 module.exports = function (id) {
     var me = this;
-    
+
     id = id || "ace-editor";
     var editor = ace.edit(id);
-    
-    if (editor) { 
+
+    if (editor) {
         //editor.setTheme("ace/theme/monokai");
-        editor.getSession().setMode("ace/mode/sql");    
+        editor.getSession().setMode("ace/mode/sql");
         editor.focus();
     }
-    
+
     this.addCommand = function (aceCommand) {
         editor.commands.addCommand(aceCommand);
     };
-    
+
+    this.setEditorText = function (value) {
+        return editor.setValue(value);
+    };
+
     this.getEditorText = function () {
         return editor.getValue();
     };
-    
+
     this.getSelectedOrAllText = function () {
         var relevantText;
         var selectedText = editor.session.getTextRange(editor.getSelectionRange());
@@ -414,14 +427,16 @@ module.exports = function (id) {
         }
         return relevantText;
     };
-    
+
     this.resize = function () {
         editor.resize();
     };
-    
+
     $(window).resize(me.resize);
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],6:[function(require,module,exports){
+(function (global){
 /*
 
 "component" for chart editor
@@ -432,8 +447,8 @@ var ChartEditor = require('this-file.js');
 var chartEditor = new ChartEditor();
 
 */
-var saveSvgAsPng = (window.saveSvgAsPng);
-var $ = (window.$);
+var saveSvgAsPng = (typeof window !== "undefined" ? window['saveSvgAsPng'] : typeof global !== "undefined" ? global['saveSvgAsPng'] : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var _ = require('lodash');
 
 var ChartEditor = function () {
@@ -679,9 +694,11 @@ var ChartEditor = function () {
 };
 module.exports = ChartEditor;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./chart-type-bar-horizontal.js":1,"./chart-type-bar-vertical":2,"./chart-type-line.js":3,"./chart-type-scatterplot":4,"lodash":17}],7:[function(require,module,exports){
-var $ = (window.$);
-var Slick = (window.Slick);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var Slick = (typeof window !== "undefined" ? window['Slick'] : typeof global !== "undefined" ? global['Slick'] : null);
 var moment = require('moment');
 
 module.exports = function () {
@@ -784,7 +801,9 @@ module.exports = function () {
     
     $(window).resize(me.resize);
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"moment":18}],8:[function(require,module,exports){
+(function (global){
 /*
 
  "component" for db schema info
@@ -799,8 +818,8 @@ module.exports = function () {
 
  */
 
-var $ = (window.$);
-var ZeroClipboard = (window.ZeroClipboard);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var ZeroClipboard = (typeof window !== "undefined" ? window['ZeroClipboard'] : typeof global !== "undefined" ? global['ZeroClipboard'] : null);
 ZeroClipboard.config({ bubbleEvents: false });
 
 var DbInfo = function () {
@@ -892,8 +911,10 @@ DbInfo.prototype.getSchema = function (reload) {
     }
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],9:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports = function () {
     $('.form-delete-config').submit(function (event) {
@@ -906,8 +927,10 @@ module.exports = function () {
         }
     });
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],10:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports = function () {
     $('.form-delete-connection').submit(function(event) {
@@ -920,8 +943,10 @@ module.exports = function () {
         }
     });
 }
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],11:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 function renderFailure (text) {
     text = text || "Failed";
@@ -978,6 +1003,7 @@ module.exports = function () {
         });
     });
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],12:[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
 //  via Browserify. 
@@ -999,7 +1025,8 @@ require('./query-filter-form.js')();
 // All the stuff that happens when viewing/working with a single query happens here
 require('./query-editor.js')();
 },{"./configs.js":9,"./connection-admin.js":10,"./connection.js":11,"./query-editor.js":13,"./query-filter-form.js":14,"./user-admin.js":15}],13:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var keymaster = require('keymaster');
 var ChartEditor = require('./component-chart-editor.js');
 var DbInfo = require('./component-db-info.js');
@@ -1007,23 +1034,23 @@ var AceSqlEditor = require('./component-ace-sql-editor.js');
 var DataGrid = require('./component-data-grid.js');
 
 var QueryEditor = function () {
-    
+
     var chartEditor = new ChartEditor();
     var dbInfo = new DbInfo();
     var aceSqlEditor = new AceSqlEditor("ace-editor");
     var dataGrid = new DataGrid();
     var chartFormat = $('[format="chart"]').length > 0;
     var tableFormat = $('[format="table"]').length > 0;
-    
-    function autoRefreshSeconds () {
+
+    function autoRefreshSeconds() {
         return $('#auto-refresh-seconds').val();
     }
-    
-    function autoRefreshEnabled () {
+
+    function autoRefreshEnabled() {
         return $('#enable-auto-refresh').prop("checked");
     }
-    
-    function runQuery () {
+
+    function runQuery() {
         $('#server-run-time').html('');
         $('#rowcount').html('');
         dataGrid.emptyDataGrid();
@@ -1055,7 +1082,7 @@ var QueryEditor = function () {
             chartEditor.setData(data);
 
             dataGrid.stopRunningTimer();
-            $('#server-run-time').html(data.serverMs/1000 + " sec.");
+            $('#server-run-time').html(data.serverMs / 1000 + " sec.");
             if (data.success) {
                 $('.hide-while-running').show();
                 if (data.incomplete) {
@@ -1077,16 +1104,33 @@ var QueryEditor = function () {
             dataGrid.renderError("Something is broken :(");
         });
     }
-    
-    function getQueryName () {
+
+    function getQueryName() {
         return $('#header-query-name').val();
     }
-    
-    function getQueryTags () {
+
+    function getQueryTags() {
         return $.map($('#tags').val().split(','), $.trim);
     }
-    
-    function saveQuery () {
+
+
+    function beautiSql() {
+        var query = {
+            queryText: aceSqlEditor.getEditorText(),
+        };
+        $.ajax({
+            type: "POST",
+            url: "/beautiSql/",
+            data: query
+        }).done(function (data) {
+            debugger;
+            aceSqlEditor.setEditorText(data);
+        }).fail(function () {
+            alert('ajax fail');
+        });
+    }
+
+    function saveQuery() {
         var $queryId = $('#query-id');
         var query = {
             name: getQueryName(),
@@ -1117,13 +1161,19 @@ var QueryEditor = function () {
             alert('ajax fail');
         });
     }
-    
+
     $('#btn-save').click(function (event) {
         event.preventDefault();
         event.stopPropagation();
         saveQuery();
     });
-    
+
+    $('#btn-beautiSql').click(function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        beautiSql();
+    });
+
     $('#btn-run-query').click(function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -1135,10 +1185,10 @@ var QueryEditor = function () {
         event.stopPropagation();
         window.open('?format=table', '_queryPreview');
     });
-    
+
     /*  (re-)render the chart when the viz tab is pressed, 
-        TODO: only do this if necessary
-    ==============================================================================*/
+     TODO: only do this if necessary
+     ==============================================================================*/
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         // if shown tab was the chart tab, rerender the chart
         // e.target is the activated tab
@@ -1148,10 +1198,10 @@ var QueryEditor = function () {
             dataGrid.resize();
         }
     });
-    
+
     /*  get query again, because not all the data is in the HTML
-        TODO: do most the workflow this way? 
-    ==============================================================================*/
+     TODO: do most the workflow this way?
+     ==============================================================================*/
     var $queryId = $('#query-id');
     $.ajax({
         type: "GET",
@@ -1166,46 +1216,51 @@ var QueryEditor = function () {
     }).fail(function () {
         alert('Failed to get additional Query info');
     });
-    
+
     /*  Tags Typeahead
-    ==============================================================================*/
-    var Bloodhound = (window.Bloodhound);
+     ==============================================================================*/
+    var Bloodhound = (typeof window !== "undefined" ? window['Bloodhound'] : typeof global !== "undefined" ? global['Bloodhound'] : null);
     var bloodhoundTags = new Bloodhound({
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      prefetch: {
-        url: '/tags', // array of tagnames
-        ttl: 0,
-        filter: function(list) {
-          return $.map(list, function(tag) {
-            return { name: tag }; });
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: {
+            url: '/tags', // array of tagnames
+            ttl: 0,
+            filter: function (list) {
+                return $.map(list, function (tag) {
+                    return {name: tag};
+                });
+            }
         }
-      }
     });
     bloodhoundTags.initialize();
     $('#tags').tagsinput({
-      typeaheadjs: {
-        //name: 'tags',
-        displayKey: 'name',
-        valueKey: 'name',
-        source: bloodhoundTags.ttAdapter()
-      }
+        typeaheadjs: {
+            //name: 'tags',
+            displayKey: 'name',
+            valueKey: 'name',
+            source: bloodhoundTags.ttAdapter()
+        }
     });
-    
+
     /*  Shortcuts
-    ==============================================================================*/
+     ==============================================================================*/
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts, 
     // we want the event to fire all the time for any element
     keymaster.filter = function (event) {
-        return true; 
+        return true;
     };
-    keymaster('ctrl+s, command+s', function() { 
+    keymaster('ctrl+s, command+s', function () {
         saveQuery();
         return false;
     });
-    keymaster('ctrl+r, command+r, ctrl+e, command+e', function() { 
+    keymaster('ctrl+r, command+r, ctrl+e, command+e', function () {
         runQuery();
+        return false;
+    });
+    keymaster('ctrl+b, command+b', function () {
+        beautiSql();
         return false;
     });
 
@@ -1224,8 +1279,10 @@ module.exports = function () {
         new QueryEditor();
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./component-ace-sql-editor.js":5,"./component-chart-editor.js":6,"./component-data-grid.js":7,"./component-db-info.js":8,"keymaster":16}],14:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports = function () {
     var $queryFilterForm = $('#query-filter-form');
@@ -1254,8 +1311,10 @@ module.exports = function () {
         }
     });
 }
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],15:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports = function () {
     $('.form-delete-user').submit(function(event) {
@@ -1268,6 +1327,7 @@ module.exports = function () {
         }
     });
 }
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],16:[function(require,module,exports){
 //     keymaster.js
 //     (c) 2011-2013 Thomas Fuchs
@@ -8355,7 +8415,7 @@ module.exports = function () {
   }
 }.call(this));
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],18:[function(require,module,exports){
 (function (global){
 //! moment.js
@@ -11295,5 +11355,5 @@ module.exports = function () {
     }
 }).call(this);
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[12])
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[12]);

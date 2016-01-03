@@ -36,6 +36,7 @@
     "ejs": "1.0.x",
     "errorhandler": "^1.4.0",
     "express": "4.x.x",
+    "formattor": "0.0.2",
     "json2csv": "2.2.x",
     "keymaster": "^1.6.2",
     "lodash": "2.4.x",
@@ -45,6 +46,7 @@
     "mssql": "1.x.x",
     "mysql": "2.x.x",
     "nedb": "1.x.x",
+    "node-crate": "1.0.x",
     "node-xlsx": "^0.6.0",
     "passport": "^0.2.2",
     "passport-google-oauth2": "^0.1.6",
@@ -58,8 +60,7 @@
     "ua-parser": "0.3.x",
     "update-notifier": "0.1.x",
     "uuid": "1.4.x",
-    "vertica": "0.5.x",
-    "node-crate": "1.0.x"
+    "vertica": "0.5.x"
   },
   "main": "server.js",
   "bin": {
