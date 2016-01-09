@@ -7,7 +7,7 @@ module.exports = function () {
     var grid;
     var clientStart;
     var doTimer = false;
-    
+
     function _renderTime () {
         if (doTimer) {
             var now = new Date();
@@ -18,7 +18,7 @@ module.exports = function () {
             setTimeout(_renderTime, 27);
         }
     }
-    
+
     this.startRunningTimer = function () {
         clientStart = new Date();
         doTimer = true;
@@ -29,23 +29,23 @@ module.exports = function () {
         $('.hide-while-running').hide();
         _renderTime();
     };
-    
+
     this.stopRunningTimer = function () {
         doTimer = false;
     };
-    
+
     this.renderError = function (errorMsg) {
         // error message was data.error
         $('#run-result-notification')
             .addClass('label-danger')
             .text(errorMsg);
     };
-    
+
     this.emptyDataGrid = function () {
         // TODO: destroy/empty a slickgrid. for now we'll just empty
         $('#result-slick-grid').empty();
     };
-    
+
     this.renderGridData = function (data) {
         var columns = [];
         if (data.results && data.results[0]) {
@@ -62,8 +62,11 @@ module.exports = function () {
                         if (value === null) {
                           return "";
                         } else {
-                            //var d = moment.utc(value);
-                            var d = moment(value);
+                            if (window.configItems.localize === 'false') {
+                              var d = moment.utc(value);
+                            } else {
+                              var d = moment(value);
+                            }
                             return d.format('MM/DD/YYYY HH:mm:ss');
                             // default formatter:
                             // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -89,16 +92,16 @@ module.exports = function () {
           enableTextSelectionOnCells: true
         };
         grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
-        
+
         $('#run-result-notification')
             .text('')
             .hide();
     };
-    
+
     this.resize = function () {
         //https://github.com/mleibman/SlickGrid/wiki/Slick.Grid#resizeCanvas
         if (grid) grid.resizeCanvas();
     };
-    
+
     $(window).resize(me.resize);
 };

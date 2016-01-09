@@ -1,7 +1,8 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var tauCharts = (window.tauCharts);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function (global){
+var tauCharts = (typeof window !== "undefined" ? window['tauCharts'] : typeof global !== "undefined" ? global['tauCharts'] : null);
 var _ = require('lodash');
-var $ = (window.$);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports =  {
     chartLabel: "Bar - Horizontal",
@@ -89,10 +90,12 @@ module.exports =  {
         return chart;
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"lodash":17}],2:[function(require,module,exports){
-var tauCharts = (window.tauCharts);
+(function (global){
+var tauCharts = (typeof window !== "undefined" ? window['tauCharts'] : typeof global !== "undefined" ? global['tauCharts'] : null);
 var _ = require('lodash');
-var $ = (window.$);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports =  {
     chartLabel: "Bar - Vertical",
@@ -176,10 +179,12 @@ module.exports =  {
         return chart;
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"lodash":17}],3:[function(require,module,exports){
-var tauCharts = (window.tauCharts);
+(function (global){
+var tauCharts = (typeof window !== "undefined" ? window['tauCharts'] : typeof global !== "undefined" ? global['tauCharts'] : null);
 var _ = require('lodash');
-var $ = (window.$);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports =  {
     chartLabel: "Line",
@@ -275,8 +280,10 @@ module.exports =  {
         return chart;
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"lodash":17}],4:[function(require,module,exports){
-var tauCharts = (window.tauCharts);
+(function (global){
+var tauCharts = (typeof window !== "undefined" ? window['tauCharts'] : typeof global !== "undefined" ? global['tauCharts'] : null);
 var _ = require('lodash');
 
 module.exports =  {
@@ -378,9 +385,11 @@ module.exports =  {
         return chart;
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"lodash":17}],5:[function(require,module,exports){
-var $ = (window.$);
-var ace = (window.ace);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var ace = (typeof window !== "undefined" ? window['ace'] : typeof global !== "undefined" ? global['ace'] : null);
 
 module.exports = function (id) {
     var me = this;
@@ -421,7 +430,9 @@ module.exports = function (id) {
     
     $(window).resize(me.resize);
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],6:[function(require,module,exports){
+(function (global){
 /*
 
 "component" for chart editor
@@ -432,8 +443,8 @@ var ChartEditor = require('this-file.js');
 var chartEditor = new ChartEditor();
 
 */
-var saveSvgAsPng = (window.saveSvgAsPng);
-var $ = (window.$);
+var saveSvgAsPng = (typeof window !== "undefined" ? window['saveSvgAsPng'] : typeof global !== "undefined" ? global['saveSvgAsPng'] : null);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var _ = require('lodash');
 
 var ChartEditor = function () {
@@ -679,9 +690,11 @@ var ChartEditor = function () {
 };
 module.exports = ChartEditor;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./chart-type-bar-horizontal.js":1,"./chart-type-bar-vertical":2,"./chart-type-line.js":3,"./chart-type-scatterplot":4,"lodash":17}],7:[function(require,module,exports){
-var $ = (window.$);
-var Slick = (window.Slick);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var Slick = (typeof window !== "undefined" ? window['Slick'] : typeof global !== "undefined" ? global['Slick'] : null);
 var moment = require('moment');
 
 module.exports = function () {
@@ -689,7 +702,7 @@ module.exports = function () {
     var grid;
     var clientStart;
     var doTimer = false;
-    
+
     function _renderTime () {
         if (doTimer) {
             var now = new Date();
@@ -700,7 +713,7 @@ module.exports = function () {
             setTimeout(_renderTime, 27);
         }
     }
-    
+
     this.startRunningTimer = function () {
         clientStart = new Date();
         doTimer = true;
@@ -711,23 +724,23 @@ module.exports = function () {
         $('.hide-while-running').hide();
         _renderTime();
     };
-    
+
     this.stopRunningTimer = function () {
         doTimer = false;
     };
-    
+
     this.renderError = function (errorMsg) {
         // error message was data.error
         $('#run-result-notification')
             .addClass('label-danger')
             .text(errorMsg);
     };
-    
+
     this.emptyDataGrid = function () {
         // TODO: destroy/empty a slickgrid. for now we'll just empty
         $('#result-slick-grid').empty();
     };
-    
+
     this.renderGridData = function (data) {
         var columns = [];
         if (data.results && data.results[0]) {
@@ -744,8 +757,11 @@ module.exports = function () {
                         if (value === null) {
                           return "";
                         } else {
-                            //var d = moment.utc(value);
-                            var d = moment(value);
+                            if (window.configItems.localize === 'false') {
+                              var d = moment.utc(value);
+                            } else {
+                              var d = moment(value);
+                            }
                             return d.format('MM/DD/YYYY HH:mm:ss');
                             // default formatter:
                             // return (value + "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
@@ -771,20 +787,23 @@ module.exports = function () {
           enableTextSelectionOnCells: true
         };
         grid = new Slick.Grid("#result-slick-grid", data.results, columns, options);
-        
+
         $('#run-result-notification')
             .text('')
             .hide();
     };
-    
+
     this.resize = function () {
         //https://github.com/mleibman/SlickGrid/wiki/Slick.Grid#resizeCanvas
         if (grid) grid.resizeCanvas();
     };
-    
+
     $(window).resize(me.resize);
 };
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"moment":18}],8:[function(require,module,exports){
+(function (global){
 /*
 
  "component" for db schema info
@@ -799,8 +818,8 @@ module.exports = function () {
 
  */
 
-var $ = (window.$);
-var ZeroClipboard = (window.ZeroClipboard);
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
+var ZeroClipboard = (typeof window !== "undefined" ? window['ZeroClipboard'] : typeof global !== "undefined" ? global['ZeroClipboard'] : null);
 ZeroClipboard.config({ bubbleEvents: false });
 
 var DbInfo = function () {
@@ -892,8 +911,10 @@ DbInfo.prototype.getSchema = function (reload) {
     }
 };
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],9:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports = function () {
     $('.form-delete-config').submit(function (event) {
@@ -906,8 +927,10 @@ module.exports = function () {
         }
     });
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],10:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports = function () {
     $('.form-delete-connection').submit(function(event) {
@@ -920,8 +943,10 @@ module.exports = function () {
         }
     });
 }
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],11:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 function renderFailure (text) {
     text = text || "Failed";
@@ -978,6 +1003,7 @@ module.exports = function () {
         });
     });
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],12:[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
 //  via Browserify. 
@@ -999,7 +1025,8 @@ require('./query-filter-form.js')();
 // All the stuff that happens when viewing/working with a single query happens here
 require('./query-editor.js')();
 },{"./configs.js":9,"./connection-admin.js":10,"./connection.js":11,"./query-editor.js":13,"./query-filter-form.js":14,"./user-admin.js":15}],13:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var keymaster = require('keymaster');
 var ChartEditor = require('./component-chart-editor.js');
 var DbInfo = require('./component-db-info.js');
@@ -1169,7 +1196,7 @@ var QueryEditor = function () {
     
     /*  Tags Typeahead
     ==============================================================================*/
-    var Bloodhound = (window.Bloodhound);
+    var Bloodhound = (typeof window !== "undefined" ? window['Bloodhound'] : typeof global !== "undefined" ? global['Bloodhound'] : null);
     var bloodhoundTags = new Bloodhound({
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
@@ -1224,8 +1251,10 @@ module.exports = function () {
         new QueryEditor();
     }
 };
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./component-ace-sql-editor.js":5,"./component-chart-editor.js":6,"./component-data-grid.js":7,"./component-db-info.js":8,"keymaster":16}],14:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports = function () {
     var $queryFilterForm = $('#query-filter-form');
@@ -1254,8 +1283,10 @@ module.exports = function () {
         }
     });
 }
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],15:[function(require,module,exports){
-var $ = (window.$);
+(function (global){
+var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 
 module.exports = function () {
     $('.form-delete-user').submit(function(event) {
@@ -1268,6 +1299,7 @@ module.exports = function () {
         }
     });
 }
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],16:[function(require,module,exports){
 //     keymaster.js
 //     (c) 2011-2013 Thomas Fuchs
@@ -8355,7 +8387,7 @@ module.exports = function () {
   }
 }.call(this));
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],18:[function(require,module,exports){
 (function (global){
 //! moment.js
@@ -11295,5 +11327,5 @@ module.exports = function () {
     }
 }).call(this);
 
-}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}]},{},[12])
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[12]);
