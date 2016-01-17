@@ -14,8 +14,8 @@ module.exports = function (app) {
         db.connections.find({}, function (err, connections) {
             var connectionsById = _.indexBy(connections, '_id');
             db.queries.find({}, function (err, queries) {
-                var tags = _.uniq(_.flatten(queries, 'tags')).sort();
-                var createdBys = _.uniq(_.pluck(queries, 'createdBy')).sort();
+                var tags = _.uniq(_.flatten(_.map(queries, 'tags'))).sort();
+                var createdBys = _.uniq(_.map(queries, 'createdBy')).sort();
                 connections = _.sortBy(connections, 'name');
                 res.locals.connectionsById = connectionsById;
                 res.locals.connections = connections;
