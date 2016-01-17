@@ -10,14 +10,8 @@ var app = express();
 
 /*  Automatic notifier thing that an update is available
 ============================================================================= */
-var notifier = updateNotifier({
-    packageName: packageJson.name,
-    packageVersion: packageJson.version
-});
+updateNotifier({pkg: packageJson}).notify();
 
-if (notifier.update) {
-    notifier.notify();
-}
 
 /*  add config to app object
     TODO: remove dependency on attaching config values to app object
