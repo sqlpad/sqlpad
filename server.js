@@ -29,6 +29,7 @@ app.set('debug', config.debug);
 app.set('passphrase', config.passphrase);
 app.set('dbPath', config.dbPath);
 app.set('port', config.port);
+app.set('ip', config.ip);
 if (config.hasOwnProperty('dev')) app.set('dev', true);
 if (config.admin) app.set('admin', config.admin);
 
@@ -179,6 +180,6 @@ require('./routes/tags.js')(app);
 
 /*	Start the Server
 ============================================================================= */
-http.createServer(app).listen(app.get('port'), function(){
-	console.log('\nWelcome to ' + app.locals.title + '!. Visit http://localhost:' + app.get('port') + ' to get started');
+http.createServer(app).listen(app.get('port'), app.get('ip'), function(){
+	console.log('\nWelcome to ' + app.locals.title + '!. Visit http://'+(app.get('ip') == '0.0.0.0' ? 'localhost' : app.get('ip'))+':' + app.get('port') + ' to get started');
 });

@@ -2,6 +2,7 @@
 
 ## Next Release
 - Many client-side and server-side dependencies updated
+- Add ability to bind to a specific IP address via the --ip flag or the SQLPAD_IP environment variable
 
 ## 1.14.0
 - Add ability to turn off date localization (add config item "localize" set to "false")
