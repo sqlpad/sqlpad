@@ -27,9 +27,13 @@ If you have highlighted just part of your query, only that part will be executed
 
 ## Configuration
 
+### IP Address
+
+By default SqlPad will listen from all available addresses (0.0.0.0). This may be overridden via the `--ip` flag or the `SQLPAD_IP` environment variable.
+
 ### Port
 
-By default SqlPad will use port 80. This my be overridden via cli parameter --port or environment variable SQLPAD_PORT.
+By default SqlPad will use port 80. This may be overridden via cli parameter `--port` or environment variable `SQLPAD_PORT`.
 
 ### Encryption Passphrase 
 
