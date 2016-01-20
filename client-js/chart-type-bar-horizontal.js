@@ -1,6 +1,4 @@
 var tauCharts = require('tauCharts');
-var _ = require('lodash');
-var $ = require('jquery');
 
 module.exports =  {
     chartLabel: "Bar - Horizontal",
@@ -29,17 +27,6 @@ module.exports =  {
             required: false,
             label: "Bar Value Facet",
             inputType: "field-dropdown"
-        },
-        sortField: {
-            required: false,
-            label: "Sort Field",
-            inputType: "field-dropdown"
-        },
-        sortOrder: {
-            required: false,
-            label: "Sort Order",
-            inputType: "custom-dropdown",
-            options: [{value: "asc", label: "ascending"},{value: "desc", label: "descending"}]
         }
     },
     renderChart: function (meta, data, fields) {
@@ -56,15 +43,6 @@ module.exports =  {
             if (fields.valueFacet.val && fields.valueFacet.datatype == "number" && data[row][fields.valueFacet.val]) {
                 data[row][fields.valueFacet.val] = data[row][fields.valueFacet.val].toString();
             }
-        }
-        if (fields.sortField.val) {
-            var sortOrder = "asc";
-            if (fields.sortOrder.val) sortOrder = fields.sortOrder.val;
-            // this sounds odd, but for the HORIZONTAL bar chart, we want the inverse of the sort selected
-            // to make the chart render as we'd expect
-            if (sortOrder == "asc") sortOrder = "desc";
-            else sortOrder = "asc";
-            data = _.sortByOrder(data, [fields.sortField.val], [sortOrder]);
         }
         var x = fields.barvalue.val;
         if (fields.valueFacet.val) {

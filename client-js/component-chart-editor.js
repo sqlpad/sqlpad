@@ -10,7 +10,7 @@ var chartEditor = new ChartEditor();
 */
 var saveSvgAsPng = require('saveSvgAsPng');
 var $ = require('jquery');
-var _ = require('lodash');
+var _ = require('_');
 
 var ChartEditor = function () {
     var me = this;
@@ -131,7 +131,7 @@ var ChartEditor = function () {
     // we'll re-apply any values that make sense if the chart type changes
     this.cacheChartConfigFieldValues = function () {
         var chartConfig = me.getChartConfiguration();
-        _.merge(fieldValueCache, chartConfig.fields);
+        _.extend(fieldValueCache, chartConfig.fields);
     };
     
     this.loadChartConfiguration = function (config) {

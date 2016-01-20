@@ -1,5 +1,4 @@
 var tauCharts = require('tauCharts');
-var _ = require('lodash');
 
 module.exports =  {
     chartLabel: "Scatterplot",
