@@ -1,6 +1,4 @@
 var tauCharts = require('tauCharts');
-var _ = require('lodash');
-var $ = require('jquery');
 
 module.exports =  {
     chartLabel: "Line",
