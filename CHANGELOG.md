@@ -1,6 +1,6 @@
 # Changelog
 
-## Next Release
+## 1.15.0
 - Many client-side and server-side dependencies updated
 - Add ability to bind to a specific IP address via the --ip flag or the SQLPAD_IP environment variable
 - Removed sort inputs for bar charts. (Chart sort may instead be influenced using  ORDER BY in SQL query.)
