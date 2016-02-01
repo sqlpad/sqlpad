@@ -50,7 +50,7 @@ module.exports = function (app, passport) {
                                 console.log("Error: ", err);
                             }
                             return done(null, {
-                                id: user._id,
+                                id: newUser._id,
                                 email: user.email,
                                 admin: user.admin                                
                             });
