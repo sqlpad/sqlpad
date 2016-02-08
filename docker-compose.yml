@@ -1,0 +1,6 @@
+web:
+  build: docker
+  environment:
+    SQL_PAD_PASSWORD: somepassword
+  ports:
+    - "3000:3000"

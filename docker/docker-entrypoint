@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sqlpad --dir /var/lib/sqlpad --port 3000 --passphrase $SQL_PAD_PASSWORD
