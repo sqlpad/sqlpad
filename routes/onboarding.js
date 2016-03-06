@@ -2,7 +2,7 @@ var bcrypt = require('bcrypt-nodejs'); //https://www.npmjs.org/package/bcrypt-no
 var passport = require('passport');
 var passportLocalStrategy = require('passport-local').Strategy;
 
-module.exports = function (app) {
+module.exports = function (app, router) {
     
     var db = app.get('db');
     
@@ -26,11 +26,11 @@ module.exports = function (app) {
             }
         }
         
-        app.get('/signup', notIfSignedIn, signupBodyToLocals, function (req, res) {
+        router.get('/signup', notIfSignedIn, signupBodyToLocals, function (req, res) {
             res.render('signup');
         });
         
-        app.post('/signup', signupBodyToLocals, function (req, res) {
+        router.post('/signup', signupBodyToLocals, function (req, res) {
             if (req.body.password !== req.body.passwordConfirmation) {
                 res.render('signup', {message: 'passwords are not match'});
             } else {
@@ -149,11 +149,11 @@ module.exports = function (app) {
         next();
     }
 
-    app.get('/signin', signinBodyToLocals, function (req, res) {
+    router.get('/signin', signinBodyToLocals, function (req, res) {
         res.render('signin', { strategies: passport._strategies });
     });    
     
-    app.get('/signout', function (req, res) {
+    router.get('/signout', function (req, res) {
         req.session = null;
         res.redirect('/');
     });

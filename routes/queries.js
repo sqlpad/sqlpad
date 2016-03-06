@@ -6,9 +6,10 @@ var noop = function () {
 var moment = require('moment');
 var request = require('request');
 
-module.exports = function (app) {
+module.exports = function (app, router) {
 
     var db = app.get('db');
+    var baseUrl = app.get('baseUrl');
 
     function getQueryFilterData(req, res, next) {
         db.connections.find({}, function (err, connections) {
@@ -42,7 +43,7 @@ module.exports = function (app) {
         });
     }
     
-    app.get('/queries', getQueryFilterData, function (req, res) {
+    router.get('/queries', getQueryFilterData, function (req, res) {
         var filter = {};
         if (req.query && req.query.tag) {
             filter.tags = req.query.tag;
@@ -95,7 +96,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/queries/:_id', function (req, res) {
+    router.get('/queries/:_id', function (req, res) {
 
         var ua = req.headers['user-agent'];
         var os = uaParser.parseOS(ua).toString();
@@ -152,7 +153,7 @@ module.exports = function (app) {
         });
     });
 
-    app.post('/queries/:_id', function (req, res) {
+    router.post('/queries/:_id', function (req, res) {
         // save the query, to the query db
         var bodyQuery = {
             name: req.body.name || "No Name Query",
@@ -204,10 +205,10 @@ module.exports = function (app) {
         }
     });
 
-    app.delete('/queries/:_id', function (req, res) {
+    router.delete('/queries/:_id', function (req, res) {
         db.queries.remove({_id: req.params._id}, function (err) {
             console.log(err);
-            res.redirect('/queries');
+            res.redirect(baseUrl + '/queries');
         });
     });
 

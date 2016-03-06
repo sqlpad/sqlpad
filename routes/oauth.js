@@ -1,6 +1,6 @@
 var passportGoogleStrategy = require('passport-google-oauth2').Strategy;
 
-module.exports = function (app, passport) {  
+module.exports = function (app, passport, router) {
     var db = app.get('db');
 
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
@@ -63,9 +63,9 @@ module.exports = function (app, passport) {
         }
     ));
     
-    app.get("/auth/google", passport.authenticate('google', { scope: ['email'] }));
+    router.get("/auth/google", passport.authenticate('google', { scope: ['email'] }));
 
-    app.get('/auth/google/callback', 
+    router.get('/auth/google/callback', 
         passport.authenticate('google', { 
             successRedirect: '/',
             failureRedirect: '/signin'
