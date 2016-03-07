@@ -170,7 +170,7 @@ app.use('/config', mustBeAdmin);
     update → PUT     /collection/id
     delete → DELETE  /collection/id
 ============================================================================= */
-require('./routes/oauth.js')(router, passport, router);
+require('./routes/oauth.js')(app, passport, router);
 require('./routes/homepage.js')(app, router);
 require('./routes/onboarding.js')(app, router);
 require('./routes/user-admin.js')(app, router);
