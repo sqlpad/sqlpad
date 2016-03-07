@@ -39,21 +39,21 @@
         Ideally this would be managed via npm/browserify completely, but it seems really confusing.
         I'll revisit once I'm a bit more familiar with how browserify performs its magic
     -->
-    <script src="/javascripts/vendor/underscore-min.js"></script>
-    <script src="/javascripts/vendor/jquery-2.2.0.min.js"></script>
-    <script src="/javascripts/vendor/bootstrap.min.js"></script>
-    <script src="/javascripts/vendor/ace-src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="/javascripts/vendor/jquery.event.drag-2.2.js"></script> <!-- needed for slickgrid -->
-    <script src="/javascripts/vendor/slickgrid/slick.core.js"></script>
-    <script src="/javascripts/vendor/slickgrid/slick.grid.js"></script>
-    <script src="/javascripts/vendor/d3.min.js"></script>
-    <script src="/javascripts/vendor/saveSvgAsPng.js"></script>
-    <script src="/javascripts/vendor/typeahead.bundle.js"></script>
-    <script src="/javascripts/vendor/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
-    <script src="/javascripts/vendor/tauCharts/tauCharts.min.js"></script>
-    <script src="/javascripts/vendor/ZeroClipboard/ZeroClipboard.min.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/underscore-min.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/jquery-2.2.0.min.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/bootstrap.min.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/ace-src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/jquery.event.drag-2.2.js"></script> <!-- needed for slickgrid -->
+    <script src="<%= baseUrl %>/javascripts/vendor/slickgrid/slick.core.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/slickgrid/slick.grid.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/d3.min.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/saveSvgAsPng.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/typeahead.bundle.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/tauCharts/tauCharts.min.js"></script>
+    <script src="<%= baseUrl %>/javascripts/vendor/ZeroClipboard/ZeroClipboard.min.js"></script>
     <!-- then finally the browserified/bundled js -->
-    <script src="/javascripts/browserified.js"></script>
+    <script src="<%= baseUrl %>/javascripts/browserified.js"></script>
 
     <!-- key-value configs -->
     <script>

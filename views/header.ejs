@@ -6,16 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="/images/favicon.ico">
+    <link rel="shortcut icon" href="<%= baseUrl %>/images/favicon.ico">
     <title><%= title %></title>
-	<link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
-	<link rel="stylesheet" href="/stylesheets/bootstrap-theme.min.css"> <!-- optional bootstrap theme -->
-    <link rel="stylesheet" href="/javascripts/vendor/slickgrid/slick.grid.css" type="text/css"/>
-    <link rel="stylesheet" href="/javascripts/vendor/slickgrid/slick-default-theme.css" type="text/css"/>
-    <link rel="stylesheet" href="/javascripts/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css" type="text/css"/>
-    <link rel="stylesheet" href="/javascripts/vendor/tauCharts/tauCharts.min.css" type="text/css"/>
+	<link rel="stylesheet" href="<%= baseUrl %>/stylesheets/bootstrap.min.css">
+	<link rel="stylesheet" href="<%= baseUrl %>/stylesheets/bootstrap-theme.min.css"> <!-- optional bootstrap theme -->
+    <link rel="stylesheet" href="<%= baseUrl %>/javascripts/vendor/slickgrid/slick.grid.css" type="text/css"/>
+    <link rel="stylesheet" href="<%= baseUrl %>/javascripts/vendor/slickgrid/slick-default-theme.css" type="text/css"/>
+    <link rel="stylesheet" href="<%= baseUrl %>/javascripts/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css" type="text/css"/>
+    <link rel="stylesheet" href="<%= baseUrl %>/javascripts/vendor/tauCharts/tauCharts.min.css" type="text/css"/>
     <link rel='stylesheet', href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" type="text/css"/>
-    <link rel="stylesheet" href="/stylesheets/style.css"> <!-- sqlpad's styles -->
+    <link rel="stylesheet" href="<%= baseUrl %>/stylesheets/style.css"> <!-- sqlpad's styles -->
+
+    <script>
+      var baseUrl = <%- JSON.stringify(baseUrl) %>;
+    </script>
   </head>
 
   <body class="<%= (typeof fullscreenContent !== 'undefined' && fullscreenContent) ? 'fullscreen-content' : '' %>">
@@ -36,12 +40,12 @@
             
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="<%= (pageTitle && pageTitle == "Queries" ? "active" : "") %>"><a href="/queries?createdBy=<%= encodeURIComponent(user.email) %>">Queries</a></li>
-                <li><a href="/queries/new">New Query</a></li>
+                <li class="<%= (pageTitle && pageTitle == "Queries" ? "active" : "") %>"><a href="<%= baseUrl %>/queries?createdBy=<%= encodeURIComponent(user.email) %>">Queries</a></li>
+                <li><a href="<%= baseUrl %>/queries/new">New Query</a></li>
                 <% if (isAuthenticated && user.admin) { %>
-                <li class="<%= (pageTitle && pageTitle == "Connections" ? "active" : "") %>"><a href="/connections">Connections</a></li>
-                <li class="<%= (pageTitle && pageTitle == "Users" ? "active" : "") %>"><a href="/users">Users</a></li>
-                <li class="<%= (pageTitle && pageTitle == "Configuration" ? "active" : "") %>"><a href="/configs">Configuration</a></li>
+                <li class="<%= (pageTitle && pageTitle == "Connections" ? "active" : "") %>"><a href="<%= baseUrl %>/connections">Connections</a></li>
+                <li class="<%= (pageTitle && pageTitle == "Users" ? "active" : "") %>"><a href="<%= baseUrl %>/users">Users</a></li>
+                <li class="<%= (pageTitle && pageTitle == "Configuration" ? "active" : "") %>"><a href="<%= baseUrl %>/configs">Configuration</a></li>
                 <% } %>
               </ul>
               
@@ -50,14 +54,14 @@
                   <li class="dropdown">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= user.email.split('@')[0] %> <b class="caret"></b></a>
                        <ul class="dropdown-menu">
-                         <li><a href="/signout">Sign Out</a></li>
+                         <li><a href="<%= baseUrl %>/signout">Sign Out</a></li>
                          <li role="presentation" class="divider"></li>
                          <li><a href="#" data-toggle="modal" data-target="#aboutModal">About SqlPad</a></li>
                        </ul>                       
                   </li>
                 <% } else { %>
-                  <li><a href="/signin">Sign In</a></li>
-                  <li><a href="/signup">Sign Up</a></li>
+                  <li><a href="<%= baseUrl %>/signin">Sign In</a></li>
+                  <li><a href="<%= baseUrl %>/signup">Sign Up</a></li>
                 <% } %>
               </ul>
             </div><!--/.nav-collapse -->
@@ -73,5 +77,3 @@
     </div>
     <% } %>
     <div class="row">
-            
-      

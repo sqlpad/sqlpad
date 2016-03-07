@@ -79,7 +79,7 @@ app.use(cookieSession({secret: app.get('passphrase')}));
 app.use(connectFlash());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(config.baseUrl, express.static(path.join(__dirname, 'public')));
 if (app.get('dev')) app.use(morgan('dev'));
 app.use(function (req, res, next) {
     // Boostrap res.locals with any common variables
