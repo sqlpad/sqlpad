@@ -101,8 +101,8 @@
                             <span class="panel-result-header-value" id="rowcount"></span>
                             <% if (allowDownload === true) { %>
                                 <span class="panel-result-header-label">Download: </span>
-                                <a id="csv-download-link" class="result-download-link" href="/download-results/<%= cacheKey %>.csv">.csv</a>
-                                <a id="xlsx-download-link" class="result-download-link" href="/download-results/<%= cacheKey %>.xlsx">.xlsx</a>
+                                <a id="csv-download-link" class="result-download-link" href="<%= baseUrl %>/download-results/<%= cacheKey %>.csv">.csv</a>
+                                <a id="xlsx-download-link" class="result-download-link" href="<%= baseUrl %>/download-results/<%= cacheKey %>.xlsx">.xlsx</a>
                             <% } %>
                             <span class="panel-result-header-label incomplete-notification hidden">Incomplete Data (hit record limit)</span>
                         </span>

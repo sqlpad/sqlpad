@@ -11,20 +11,20 @@
                         <th>Database</th>
                         <th>DB Driver</th>
                         <th>Created Date</th>
-                        <th><a href="/connections/new" class="btn btn-primary">Add New</a></th>
+                        <th><a href="<%= baseUrl %>/connections/new" class="btn btn-primary">Add New</a></th>
                     </tr>
                 </thead>
                 <tbody>
                     <% connections.forEach(function(connection) { %>
                         <tr>
-                            <td><a href="/connections/<%= connection._id %>"><%= connection.name %></a></td>
+                            <td><a href="<%= baseUrl %>/connections/<%= connection._id %>"><%= connection.name %></a></td>
                             <td><%= connection.host %></td>
                             <td><%= connection.port ? connection.port : '' %></td>
                             <td><%= connection.database %></td>
                             <td><%= connection.driver %></td>
                             <td><%= connection.createdDate %></td>
                             <td>
-                                <form role="form" class="form-delete-connection" action="/connections/<%= connection._id %>" method="post">
+                                <form role="form" class="form-delete-connection" action="<%= baseUrl %>/connections/<%= connection._id %>" method="post">
                                     <input type="hidden" name="_method" value="delete" />
                                     <button class="btn btn-default" type="submit">Delete</button>
                                 </form>

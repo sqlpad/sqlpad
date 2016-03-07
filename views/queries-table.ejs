@@ -17,10 +17,10 @@
                             var query = queries[i];
                         %>
                             <tr>
-                                <td><a href="/queries/<%= query._id %>"><%= query.name %></a></td>
+                                <td><a href="<%= baseUrl %>/queries/<%= query._id %>"><%= query.name %></a></td>
                                 <td>
                                     <% for (var t = 0; t < query.tags.length; t++) { %>
-                                        <a class="tag label label-info" href="/queries?tag=<%= query.tags[t] %>"><%= query.tags[t] %></a>
+                                        <a class="tag label label-info" href="<%= baseUrl %>/queries?tag=<%= query.tags[t] %>"><%= query.tags[t] %></a>
                                     <% } %>    
                                 </td>
                                 <td>
@@ -32,7 +32,7 @@
                                 <!--<td><%= query.lastAccessedFromNow || "" %></td>-->
                                 <td><%= query.modifiedCalendar %></td>
                                 <td>
-                                    <form role="form" class="form-delete-query" action="/queries/<%= query._id %>" method="post">
+                                    <form role="form" class="form-delete-query" action="<%= baseUrl %>/queries/<%= query._id %>" method="post">
                                         <input type="hidden" name="_method" value="delete" />
                                         <button class="btn btn-default btn-sm" type="submit">Delete</button>
                                     </form>

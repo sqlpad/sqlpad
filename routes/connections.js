@@ -21,6 +21,7 @@ module.exports = function (app, router) {
     var db = app.get('db');
     var decipher = app.get('decipher');
     var cipher = app.get('cipher');
+    var baseUrl = app.get('baseUrl');
 
     router.get('/connections', function (req, res) {
         db.connections.find({}).sort({name: 1}).exec(function (err, connections) {
@@ -56,7 +57,7 @@ module.exports = function (app, router) {
                 console.log(err);
                 res.render('connection', {debug: err});
             } else {
-                res.redirect('/connections');
+                res.redirect(baseUrl + '/connections');
             }
         });
     });
@@ -95,7 +96,7 @@ module.exports = function (app, router) {
             connection.modifiedDate = new Date();
             db.connections.update({_id: req.params._id}, connection, {}, function (err) {
                 if (err) console.log(err);
-                res.redirect('/connections');
+                res.redirect(baseUrl + '/connections');
             });
         });
     });
@@ -103,7 +104,7 @@ module.exports = function (app, router) {
     router.delete('/connections/:_id', function (req, res) {
         db.connections.remove({_id: req.params._id}, function (err) {
             if (err) console.log(err);
-            res.redirect('/connections');
+            res.redirect(baseUrl + '/connections');
         });
     });
 };

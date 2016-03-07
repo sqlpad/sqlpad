@@ -1,7 +1,7 @@
 <% include header %>
     
     <div class="col-sm-12  col-md-12 main">
-        <form id="connection-form" role="form" class="col-md-6 col-md-offset-3" action="/connections/<%= connection._id || "new" %>" method="post">
+        <form id="connection-form" role="form" class="col-md-6 col-md-offset-3" action="<%= baseUrl %>/connections/<%= connection._id || "new" %>" method="post">
         <fieldset>
         
         <!-- Form Name -->

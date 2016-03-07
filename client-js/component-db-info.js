@@ -50,7 +50,7 @@ DbInfo.prototype.getSchema = function (reload) {
         var params = {
             reload: typeof reload != 'undefined' ? reload : false
         };
-        var jqxhr = $.get("/schema-info/" + connectionId, params);
+        var jqxhr = $.get(baseUrl + "/schema-info/" + connectionId, params);
         jqxhr.done(function (data) {
             $('#btn-reload-schema').show();
             $('#panel-db-info').html(data);

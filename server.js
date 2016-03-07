@@ -182,10 +182,10 @@ require('./routes/schema-info.js')(app, router);
 require('./routes/configs.js')(app, router);
 require('./routes/tags.js')(app, router);
 
-app.use('/sqlpad', router);
+app.use(config.baseUrl, router);
 
 /*	Start the Server
 ============================================================================= */
 http.createServer(app).listen(app.get('port'), app.get('ip'), function(){
-	console.log('\nWelcome to ' + app.locals.title + '!. Visit http://'+(app.get('ip') == '0.0.0.0' ? 'localhost' : app.get('ip'))+':' + app.get('port') + ' to get started');
+	console.log('\nWelcome to ' + app.locals.title + '!. Visit http://'+(app.get('ip') == '0.0.0.0' ? 'localhost' : app.get('ip')) + ':' + app.get('port') + app.get('baseUrl') + ' to get started');
 });

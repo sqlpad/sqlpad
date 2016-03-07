@@ -11,12 +11,12 @@ function isNumberLike(n) {
     return (!isNaN(parseFloat(n)) && isFinite(n));
 }
 
-module.exports = function (app) {
+module.exports = function (app, router) {
 
     var db = app.get('db');
     var decipher = app.get('decipher');
 
-    app.post('/run-query', function (req, res) {
+    router.post('/run-query', function (req, res) {
         db.connections.findOne({_id: req.body.connectionId}, function (err, connection) {
             if (err) {
                 res.send({
