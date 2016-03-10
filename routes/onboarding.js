@@ -5,6 +5,7 @@ var passportLocalStrategy = require('passport-local').Strategy;
 module.exports = function (app, router) {
     
     var db = app.get('db');
+    var baseUrl = app.get('baseUrl');
     
     if (!("DISABLE_USERPASS_AUTH" in process.env)) {
         /*    Sign Up
@@ -19,7 +20,7 @@ module.exports = function (app, router) {
         function notIfSignedIn (req, res, next) {
             if (req.session && req.session.userId) {
                 res.locals.debug = {message: "Already signed in - why do you need to sign up?"};
-                res.location('/');
+                res.location(baseUrl + '/');
                 res.render('index');
             } else {
                 next();
@@ -48,7 +49,7 @@ module.exports = function (app, router) {
                                 req.session.userId = user._id;
                                 req.session.admin = user.admin;
                                 req.session.email = user.email;
-                                res.redirect('/');
+                                res.redirect(baseUrl + '/'); // TODO: user still gets prompted to log in. Why?
                             });
                         } else if (err) {
                             console.log(err);
@@ -74,7 +75,7 @@ module.exports = function (app, router) {
                                     req.session.userId = newUser._id;
                                     req.session.admin = newUser.admin;
                                     req.session.email = newUser.email;
-                                    res.redirect('/');
+                                    res.redirect(baseUrl + '/');
                                 }
                             });
                         } else {
@@ -114,10 +115,10 @@ module.exports = function (app, router) {
           }
         ));
 
-        app.post('/signin',
+        router.post('/signin',
             passport.authenticate('local', {
-                successRedirect: '/',
-                failureRedirect: '/signin',
+                successRedirect: baseUrl + '/',
+                failureRedirect: baseUrl + '/signin',
                 failureFlash: true
             })
         );
@@ -155,7 +156,7 @@ module.exports = function (app, router) {
     
     router.get('/signout', function (req, res) {
         req.session = null;
-        res.redirect('/');
+        res.redirect(baseUrl + '/');
     });
     
 };

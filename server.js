@@ -107,12 +107,10 @@ app.use(function (req, res, next) {
           });
       } else {
         var keyValueConfig = {};
-
         for (var i = 0; i < configItems.length; i++) {
-	  console.log(configItems);
           keyValueConfig[configItems[i]['key']] = configItems[i]['value'];
         }
-
+        
         res.locals.configItems = JSON.stringify(keyValueConfig);
       }
 
@@ -123,13 +121,13 @@ app.use(function (req, res, next) {
     // if not signed in redirect to sign in page
     if (req.isAuthenticated()) {
         next();
-    } else if (req._parsedUrl.pathname === '/signin' || req._parsedUrl.pathname === '/signup' || req._parsedUrl.pathname.indexOf('/auth/') == 0) {
+    } else if (req._parsedUrl.pathname === config.baseUrl + '/signin' || req._parsedUrl.pathname === config.baseUrl + '/signup' || req._parsedUrl.pathname.indexOf('/auth/') == 0) {
         next();
     } else if (app.get('openRegistration')) {
         // if there are no users whitelisted, direct to signup
-        res.redirect('/signup');
+        res.redirect(config.baseUrl + '/signup');
     } else {
-        res.redirect('/signin');
+        res.redirect(config.baseUrl + '/signin');
     }
 });
 
