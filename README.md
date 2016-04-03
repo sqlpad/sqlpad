@@ -37,7 +37,7 @@ By default SqlPad will use port 80. This may be overridden via cli parameter `--
 
 ### Base URL Path
 
-By default SqlPad will be accessible from the absolute base path of the available IP address(es). This may be overridden via cli parameter `--base` or environment variable `SQLPAD_BASE_URL`.
+By default SqlPad will be accessible from the absolute base path of the available IP address(es). This may be overridden via cli parameter `--base-url` or environment variable `SQLPAD_BASE_URL`.
 
 ### Encryption Passphrase 
 
