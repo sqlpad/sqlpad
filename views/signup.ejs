@@ -1,7 +1,7 @@
 <% include header %>
   	
   	<div class="signin">
-  	    <form class="form-signin" role="form" action="/signup" method="post">
+  	    <form class="form-signin" role="form" action="<%= baseUrl %>/signup" method="post">
               <h2>SqlPad</h2>
               <% if (message) { %>
                   <h3><%= message %></h3>

@@ -1,11 +1,11 @@
 var runQuery = require('../lib/run-query.js');
 var _ = require('lodash');
 
-module.exports = function (app) {
+module.exports = function (app, router) {
 
     var db = app.get('db');
 
-    app.get('/schema-info/:connectionId', function (req, res) {
+    router.get('/schema-info/:connectionId', function (req, res) {
         var reload = req.query.reload === "true";
         var showSchemaCopyButton = false;
         var tree = {};

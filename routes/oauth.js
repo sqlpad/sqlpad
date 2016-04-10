@@ -1,8 +1,9 @@
 var passportGoogleStrategy = require('passport-google-oauth2').Strategy;
 
-module.exports = function (app, passport) {  
+module.exports = function (app, passport, router) {
     var db = app.get('db');
-
+    var baseUrl = app.get('baseUrl');
+    
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
         console.log("Disabling Google authentication streategy, since there's no GOOGLE_CLIENT_ID or no GOOGLE_CLIENT_SECRET in ENV.");
         return;
@@ -13,7 +14,7 @@ module.exports = function (app, passport) {
     passport.use(new passportGoogleStrategy({
         clientID          : process.env.GOOGLE_CLIENT_ID,
         clientSecret      : process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL       : process.env.PUBLIC_URL + "/auth/google/callback",
+        callbackURL       : process.env.PUBLIC_URL + baseUrl + "/auth/google/callback",
         passReqToCallback : true
     },
         function(request, accessToken, refreshToken, profile, done) {
@@ -63,11 +64,11 @@ module.exports = function (app, passport) {
         }
     ));
     
-    app.get("/auth/google", passport.authenticate('google', { scope: ['email'] }));
+    router.get("/auth/google", passport.authenticate('google', { scope: ['email'] }));
 
-    app.get('/auth/google/callback', 
+    router.get('/auth/google/callback', 
         passport.authenticate('google', { 
-            successRedirect: '/',
-            failureRedirect: '/signin'
+            successRedirect: baseUrl + '/',
+            failureRedirect: baseUrl + '/signin'
     }));
 };

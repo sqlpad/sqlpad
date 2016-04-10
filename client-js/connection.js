@@ -42,7 +42,7 @@ module.exports = function () {
         renderTesting();
         $.ajax({
             type: "POST",
-            url: "/connections/test",
+            url: baseUrl + "/connections/test",
             data: data
         }).done(function (data) {
             if (data.success) {

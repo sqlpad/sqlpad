@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var express = require('express');
+var router = express.Router();
 var http = require('http');
 var path = require('path');
 var updateNotifier = require('update-notifier');
@@ -30,6 +31,7 @@ app.set('passphrase', config.passphrase);
 app.set('dbPath', config.dbPath);
 app.set('port', config.port);
 app.set('ip', config.ip);
+app.set('baseUrl', config.baseUrl);
 if (config.hasOwnProperty('dev')) app.set('dev', true);
 if (config.admin) app.set('admin', config.admin);
 
@@ -77,7 +79,7 @@ app.use(cookieSession({secret: app.get('passphrase')}));
 app.use(connectFlash());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(config.baseUrl, express.static(path.join(__dirname, 'public')));
 if (app.get('dev')) app.use(morgan('dev'));
 app.use(function (req, res, next) {
     // Boostrap res.locals with any common variables
@@ -92,6 +94,7 @@ app.use(function (req, res, next) {
     res.locals.openAdminRegistration = app.get('openAdminRegistration');
     res.locals.user = req.user;
     res.locals.isAuthenticated = req.isAuthenticated();
+    res.locals.baseUrl = config.baseUrl
 
     // Expose key-value configs as a common variable
     var db = app.get('db');
@@ -104,11 +107,10 @@ app.use(function (req, res, next) {
           });
       } else {
         var keyValueConfig = {};
-
         for (var i = 0; i < configItems.length; i++) {
           keyValueConfig[configItems[i]['key']] = configItems[i]['value'];
         }
-
+        
         res.locals.configItems = JSON.stringify(keyValueConfig);
       }
 
@@ -119,13 +121,13 @@ app.use(function (req, res, next) {
     // if not signed in redirect to sign in page
     if (req.isAuthenticated()) {
         next();
-    } else if (req._parsedUrl.pathname === '/signin' || req._parsedUrl.pathname === '/signup' || req._parsedUrl.pathname.indexOf('/auth/') == 0) {
+    } else if (req._parsedUrl.pathname === config.baseUrl + '/signin' || req._parsedUrl.pathname === config.baseUrl + '/signup' || req._parsedUrl.pathname.indexOf(config.baseUrl + '/auth/') == 0) {
         next();
     } else if (app.get('openRegistration')) {
         // if there are no users whitelisted, direct to signup
-        res.redirect('/signup');
+        res.redirect(config.baseUrl + '/signup');
     } else {
-        res.redirect('/signin');
+        res.redirect(config.baseUrl + '/signin');
     }
 });
 
@@ -166,20 +168,22 @@ app.use('/config', mustBeAdmin);
     update → PUT     /collection/id
     delete → DELETE  /collection/id
 ============================================================================= */
-require('./routes/oauth.js')(app, passport);
-require('./routes/homepage.js')(app);
-require('./routes/onboarding.js')(app);
-require('./routes/user-admin.js')(app);
-require('./routes/connections.js')(app);
-require('./routes/queries.js')(app);
-require('./routes/run-query.js')(app); // ajaxy route used for executing query and getting results
-require('./routes/download-results.js')(app); // streams cached query results to browser
-require('./routes/schema-info.js')(app);
-require('./routes/configs.js')(app);
-require('./routes/tags.js')(app);
+require('./routes/oauth.js')(app, passport, router);
+require('./routes/homepage.js')(app, router);
+require('./routes/onboarding.js')(app, router);
+require('./routes/user-admin.js')(app, router);
+require('./routes/connections.js')(app, router);
+require('./routes/queries.js')(app, router);
+require('./routes/run-query.js')(app, router); // ajaxy route used for executing query and getting results
+require('./routes/download-results.js')(app, router); // streams cached query results to browser
+require('./routes/schema-info.js')(app, router);
+require('./routes/configs.js')(app, router);
+require('./routes/tags.js')(app, router);
+
+app.use(config.baseUrl, router);
 
 /*	Start the Server
 ============================================================================= */
 http.createServer(app).listen(app.get('port'), app.get('ip'), function(){
-	console.log('\nWelcome to ' + app.locals.title + '!. Visit http://'+(app.get('ip') == '0.0.0.0' ? 'localhost' : app.get('ip'))+':' + app.get('port') + ' to get started');
+	console.log('\nWelcome to ' + app.locals.title + '!. Visit http://'+(app.get('ip') == '0.0.0.0' ? 'localhost' : app.get('ip')) + ':' + app.get('port') + app.get('baseUrl') + ' to get started');
 });

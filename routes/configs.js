@@ -1,10 +1,11 @@
 var _ = require('lodash');
 
-module.exports = function (app) {
+module.exports = function (app, router) {
 
     var db = app.get('db');
+    var baseUrl = app.get('baseUrl')
 
-    app.get('/configs', function (req, res) {
+    router.get('/configs', function (req, res) {
         db.config.find({}).exec(function (err, configItems) {
 
             if (err) {
@@ -19,7 +20,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/configs/:_id', function (req, res) {
+    router.get('/configs/:_id', function (req, res) {
         db.config.findOne({_id: req.params._id}, function (err, config) {
             if (!config) {
                 config = {
@@ -35,7 +36,7 @@ module.exports = function (app) {
         });
     });
 
-    app.post('/configs/new', function (req, res) {
+    router.post('/configs/new', function (req, res) {
         var config = {
             key: req.body.key,
             value: req.body.value,
@@ -48,12 +49,12 @@ module.exports = function (app) {
                 console.log(err);
                 res.render('config', {config: config, debug: err});
             } else {
-                res.redirect('/configs');
+                res.redirect(baseUrl + '/configs');
             }
         });
     });
 
-    app.put('/configs/:_id', function (req, res) {
+    router.put('/configs/:_id', function (req, res) {
         var bodyConfig = {
             value: req.body.value,
             modifiedDate: new Date()
@@ -64,15 +65,15 @@ module.exports = function (app) {
             dbconfig.modifiedDate = new Date();
             db.config.update({_id: req.params._id}, dbconfig, {}, function (err) {
                 if (err) console.log(err);
-                res.redirect('/configs');
+                res.redirect(baseUrl + '/configs');
             });
         });
     });
 
-    app.delete('/configs/:_id', function (req, res) {
+    router.delete('/configs/:_id', function (req, res) {
         db.config.remove({_id: req.params._id}, function (err) {
             if (err) console.log(err);
-            res.redirect('/configs');
+            res.redirect(baseUrl + '/configs');
         });
     });
 };

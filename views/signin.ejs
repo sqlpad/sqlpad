@@ -4,7 +4,7 @@
 	<h2>SqlPad</h2>
   	<% if ("local" in strategies) { %>
   	<div>
-		<form class="form-signin" role="form" action="/signin" method="post">
+		<form class="form-signin" role="form" action="<%= baseUrl %>/signin" method="post">
 			<input
 			    name="email"
 			    value="<%= email %>"
@@ -25,14 +25,14 @@
 		</form>
 		<div class="form-signin-footer">
 			<p>
-				<a href="/signup">Need to Sign Up?</a>
+				<a href="<%= baseUrl %>/signup">Need to Sign Up?</a>
 			</p>
 		</div>
 	</div>
 	<% } %>
 	<% if ("google" in strategies) { %>
 	<div>
-		<a href="/auth/google">
+		<a href="<%= baseUrl %>/auth/google">
 			<button class="btn btn-lg btn-danger btn-block">
 				<i class="fa fa-google-plus"></i> Log in with Google
 			</button>

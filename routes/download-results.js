@@ -1,9 +1,9 @@
 var path = require('path');
 var fs = require('fs');
 
-module.exports = function (app) {
+module.exports = function (app, router) {
     var db = app.get('db');
-    app.get('/download-results/:cacheKey.csv', function (req, res) {
+    router.get('/download-results/:cacheKey.csv', function (req, res) {
 
         db.config.findOne({key: "allowCsvDownload"}, function (err, config) {
             if (err) {
@@ -28,7 +28,7 @@ module.exports = function (app) {
         });
     });
     
-    app.get('/download-results/:cacheKey.xlsx', function (req, res) {
+    router.get('/download-results/:cacheKey.xlsx', function (req, res) {
 
         db.config.findOne({key: "allowCsvDownload"}, function (err, config) {
             if (err) {

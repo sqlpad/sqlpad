@@ -9,19 +9,19 @@
                 <th>Value</th>
                 <th>Created Date</th>
                 <th>Modified Date</th>
-                <th><a href="/configs/new" class="btn btn-primary">Add New</a></th>
+                <th><a href="<%= baseUrl %>/configs/new" class="btn btn-primary">Add New</a></th>
             </tr>
             </thead>
             <tbody>
             <% if (configItems.length > 0) { %>
             <% configItems.forEach(function(config) { %>
             <tr>
-                <td><a href="/configs/<%= config._id %>"><%= config.key %></a></td>
+                <td><a href="<%= baseUrl %>/configs/<%= config._id %>"><%= config.key %></a></td>
                 <td><%= config.value %></td>
                 <td><%= config.createdDate %></td>
                 <td><%= config.modifiedDate %></td>
                 <td>
-                    <form role="form" class="form-delete-config" action="/configs/<%= config._id %>" method="post">
+                    <form role="form" class="form-delete-config" action="<%= baseUrl %>/configs/<%= config._id %>" method="post">
                         <input type="hidden" name="_method" value="delete"/>
                         <button class="btn btn-default" type="submit">Delete</button>
                     </form>

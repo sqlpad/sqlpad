@@ -35,7 +35,7 @@ var QueryEditor = function () {
         dataGrid.startRunningTimer();
         $.ajax({
             type: "POST",
-            url: "/run-query",
+            url: baseUrl + "/run-query",
             data: data
         }).done(function (data) {
             // if refresh is turned on run the query again!
@@ -97,11 +97,11 @@ var QueryEditor = function () {
         $('#btn-save-result').text('saving...').show();
         $.ajax({
             type: "POST",
-            url: "/queries/" + $queryId.val(),
+            url: baseUrl + "/queries/" + $queryId.val(),
             data: query
         }).done(function (data) {
             if (data.success) {
-                window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
+                window.history.replaceState({}, "query " + data.query._id, baseUrl + "/queries/" + data.query._id);
                 $queryId.val(data.query._id);
                 $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
                 setTimeout(function () {
@@ -154,7 +154,7 @@ var QueryEditor = function () {
     var $queryId = $('#query-id');
     $.ajax({
         type: "GET",
-        url: "/queries/" + $queryId.val() + "?format=json"
+        url: baseUrl + "/queries/" + $queryId.val() + "?format=json"
     }).done(function (data) {
         chartEditor.loadChartConfiguration(data.chartConfiguration);
 
@@ -173,7 +173,7 @@ var QueryEditor = function () {
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       prefetch: {
-        url: '/tags', // array of tagnames
+        url: baseUrl + '/tags', // array of tagnames
         ttl: 0,
         filter: function(list) {
           return $.map(list, function(tag) {

@@ -813,7 +813,7 @@ DbInfo.prototype.getSchema = function (reload) {
         var params = {
             reload: typeof reload != 'undefined' ? reload : false
         };
-        var jqxhr = $.get("/schema-info/" + connectionId, params);
+        var jqxhr = $.get(baseUrl + "/schema-info/" + connectionId, params);
         jqxhr.done(function (data) {
             $('#btn-reload-schema').show();
             $('#panel-db-info').html(data);
@@ -947,7 +947,7 @@ module.exports = function () {
         renderTesting();
         $.ajax({
             type: "POST",
-            url: "/connections/test",
+            url: baseUrl + "/sqlpad/connections/test",
             data: data
         }).done(function (data) {
             if (data.success) {
@@ -960,6 +960,7 @@ module.exports = function () {
         });
     });
 };
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],12:[function(require,module,exports){
 //  This is where all the client side js stuff is required so it can be bundled 
@@ -1020,7 +1021,7 @@ var QueryEditor = function () {
         dataGrid.startRunningTimer();
         $.ajax({
             type: "POST",
-            url: "/run-query",
+            url: baseUrl + "/run-query",
             data: data
         }).done(function (data) {
             // if refresh is turned on run the query again!
@@ -1082,11 +1083,11 @@ var QueryEditor = function () {
         $('#btn-save-result').text('saving...').show();
         $.ajax({
             type: "POST",
-            url: "/queries/" + $queryId.val(),
+            url: baseUrl + "/queries/" + $queryId.val(),
             data: query
         }).done(function (data) {
             if (data.success) {
-                window.history.replaceState({}, "query " + data.query._id, "/queries/" + data.query._id);
+                window.history.replaceState({}, "query " + data.query._id, baseUrl + "/queries/" + data.query._id);
                 $queryId.val(data.query._id);
                 $('#btn-save-result').removeClass('label-info').addClass('label-success').text('Success');
                 setTimeout(function () {
@@ -1139,7 +1140,7 @@ var QueryEditor = function () {
     var $queryId = $('#query-id');
     $.ajax({
         type: "GET",
-        url: "/queries/" + $queryId.val() + "?format=json"
+        url: baseUrl + "/queries/" + $queryId.val() + "?format=json"
     }).done(function (data) {
         chartEditor.loadChartConfiguration(data.chartConfiguration);
 
@@ -1158,7 +1159,7 @@ var QueryEditor = function () {
       datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
       queryTokenizer: Bloodhound.tokenizers.whitespace,
       prefetch: {
-        url: '/tags', // array of tagnames
+        url: baseUrl + '/tags', // array of tagnames
         ttl: 0,
         filter: function(list) {
           return $.map(list, function(tag) {
@@ -1208,6 +1209,7 @@ module.exports = function () {
         new QueryEditor();
     }
 };
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./component-ace-sql-editor.js":5,"./component-chart-editor.js":6,"./component-data-grid.js":7,"./component-db-info.js":8,"keymaster":16}],14:[function(require,module,exports){
 (function (global){
@@ -1218,13 +1220,13 @@ module.exports = function () {
     if ($queryFilterForm.length) {
         $('select').change(function () {
             //console.log($queryFilterForm.serialize());
-            $.get('/queries?' + $queryFilterForm.serialize(), function (data) {
+            $.get(baseUrl + '/queries?' + $queryFilterForm.serialize(), function (data) {
                 $('#queries-table').empty().html(data);
             });
             //window.location.href = '/queries?' + $queryFilterForm.serialize();
         });
         $('#query-filter-search').keyup(function() {
-            $.get('/queries?' + $queryFilterForm.serialize(), function (data) {
+            $.get(baseUrl + '/queries?' + $queryFilterForm.serialize(), function (data) {
                 $('#queries-table').empty().html(data);
             });
         });
@@ -1240,6 +1242,7 @@ module.exports = function () {
         }
     });
 }
+
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],15:[function(require,module,exports){
 (function (global){
@@ -1557,7 +1560,7 @@ module.exports = function () {
 
 },{}],17:[function(require,module,exports){
 //! moment.js
-//! version : 2.11.1
+//! version : 2.11.2
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -3374,7 +3377,7 @@ module.exports = function () {
     }
 
     // ASP.NET json date format regex
-    var aspNetRegex = /(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/;
+    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?\d*)?$/;
 
     // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
     // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
@@ -5129,7 +5132,7 @@ module.exports = function () {
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.11.1';
+    utils_hooks__hooks.version = '2.11.2';
 
     setHookCallback(local__createLocal);
 

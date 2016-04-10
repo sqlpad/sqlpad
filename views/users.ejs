@@ -21,17 +21,17 @@
                                 <td><%- (user.createdDate ? user.createdDate : "<em>not yet signed up</em>") %></td>
                                 <td>
                                     <% if (user.admin) { %>
-                                        <form role="form" action="/users/remove-admin/<%= user._id %>" method="post">
+                                        <form role="form" action="<%= baseUrl %>/users/remove-admin/<%= user._id %>" method="post">
                                             <button class="btn btn-default" type="submit">Remove Admin</button>
                                         </form>
                                     <% } else { %>
-                                        <form role="form" action="/users/make-admin/<%= user._id %>" method="post">
+                                        <form role="form" action="<%= baseUrl %>/users/make-admin/<%= user._id %>" method="post">
                                             <button class="btn btn-default" type="submit">Make Admin</button>
                                         </form>
                                     <% } %>
                                 </td>
                                 <td>
-                                    <form role="form" class="form-delete-user" action="/users/<%= user._id %>" method="post">
+                                    <form role="form" class="form-delete-user" action="<%= baseUrl %>/users/<%= user._id %>" method="post">
                                         <input type="hidden" name="_method" value="delete" />
                                         <button class="btn btn-default" type="submit">Delete</button>
                                     </form>
@@ -45,13 +45,13 @@
         </div>
         <div class="col-md-4 ">
             <div class="well">
-                <form role="form" action="/users/whitelist" method="post">
+                <form role="form" action="<%= baseUrl %>/users/whitelist" method="post">
                     <fieldset>
                         <legend>Whitelist a User</legend>
                         <p>
                             No one can sign up for a user account without first being whitelisted. 
                             Once someone has been added to the list, invite them to 
-                            continue the sign-up process on the <a href="/signup">signup page</a>.
+                            continue the sign-up process on the <a href="<%= baseUrl %>/signup">signup page</a>.
                         </p>
                         <p>
                             You'll have to write and send the email yourself though.

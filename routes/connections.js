@@ -16,13 +16,14 @@ function connectionFromBody (body) {
     };
 }
 
-module.exports = function (app) {
+module.exports = function (app, router) {
 
     var db = app.get('db');
     var decipher = app.get('decipher');
     var cipher = app.get('cipher');
+    var baseUrl = app.get('baseUrl');
 
-    app.get('/connections', function (req, res) {
+    router.get('/connections', function (req, res) {
         db.connections.find({}).sort({name: 1}).exec(function (err, connections) {
             connections = _.sortBy(connections, function (c) {
                 return c.name.toLowerCase();
@@ -31,7 +32,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/connections/:_id', function (req, res) {
+    router.get('/connections/:_id', function (req, res) {
         db.connections.findOne({_id: req.params._id}, function (err, connection) {
             if (!connection) {
                 connection = {};
@@ -45,7 +46,7 @@ module.exports = function (app) {
         });
     });
 
-    app.post('/connections/new', function (req, res) {
+    router.post('/connections/new', function (req, res) {
         var connection = connectionFromBody(req.body);
         connection.createdDate = new Date();
         connection.modifiedDate = new Date();
@@ -56,7 +57,7 @@ module.exports = function (app) {
                 console.log(err);
                 res.render('connection', {debug: err});
             } else {
-                res.redirect('/connections');
+                res.redirect(baseUrl + '/connections');
             }
         });
     });
@@ -83,10 +84,10 @@ module.exports = function (app) {
         });
     }
 
-    app.post('/connections/test', testConnection);
-    app.put('/connections/test', testConnection);
+    router.post('/connections/test', testConnection);
+    router.put('/connections/test', testConnection);
 
-    app.put('/connections/:_id', function (req, res) {
+    router.put('/connections/:_id', function (req, res) {
         var bodyConnection = connectionFromBody(req.body);
         bodyConnection.username = cipher(bodyConnection.username);
         bodyConnection.password = cipher(bodyConnection.password);
@@ -95,15 +96,15 @@ module.exports = function (app) {
             connection.modifiedDate = new Date();
             db.connections.update({_id: req.params._id}, connection, {}, function (err) {
                 if (err) console.log(err);
-                res.redirect('/connections');
+                res.redirect(baseUrl + '/connections');
             });
         });
     });
 
-    app.delete('/connections/:_id', function (req, res) {
+    router.delete('/connections/:_id', function (req, res) {
         db.connections.remove({_id: req.params._id}, function (err) {
             if (err) console.log(err);
-            res.redirect('/connections');
+            res.redirect(baseUrl + '/connections');
         });
     });
 };
