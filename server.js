@@ -121,7 +121,7 @@ app.use(function (req, res, next) {
     // if not signed in redirect to sign in page
     if (req.isAuthenticated()) {
         next();
-    } else if (req._parsedUrl.pathname === config.baseUrl + '/signin' || req._parsedUrl.pathname === config.baseUrl + '/signup' || req._parsedUrl.pathname.indexOf('/auth/') == 0) {
+    } else if (req._parsedUrl.pathname === config.baseUrl + '/signin' || req._parsedUrl.pathname === config.baseUrl + '/signup' || req._parsedUrl.pathname.indexOf(config.baseUrl + '/auth/') == 0) {
         next();
     } else if (app.get('openRegistration')) {
         // if there are no users whitelisted, direct to signup
