@@ -29,7 +29,7 @@ module.exports =  {
             inputType: "field-dropdown"
         }
     },
-    renderChart: function (meta, data, fields) {
+    renderChart: function (meta, data, fields, fileName) {
         for (var row in data) {
             // make barvalue field a Number
             data[row][fields.barvalue.val] = Number(data[row][fields.barvalue.val]);
@@ -59,7 +59,11 @@ module.exports =  {
             x: x,
             plugins: [
                 tauCharts.api.plugins.get('tooltip')({fields: [fields.barlabel.val, fields.barvalue.val, fields.labelFacet.val, fields.valueFacet.val]}),
-                tauCharts.api.plugins.get('legend')()
+                tauCharts.api.plugins.get('legend')(),
+                tauCharts.api.plugins.get('exportTo')({
+                    cssPaths:[baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'],
+                    fileName: fileName
+                })
             ]
         });
         chart.renderTo('#chart');

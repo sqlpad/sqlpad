@@ -227,6 +227,10 @@ a {
     width: 100%;
 }
 
+/* hide tauchart's ui for export options */
+.graphical-report__layout__header {
+    display: none;
+}
 
 /*  DB Info sidebar 
 ======================================================== */

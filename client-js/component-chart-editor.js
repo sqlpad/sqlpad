@@ -8,7 +8,6 @@ var ChartEditor = require('this-file.js');
 var chartEditor = new ChartEditor();
 
 */
-var saveSvgAsPng = require('saveSvgAsPng');
 var $ = require('jquery');
 var _ = require('_');
 
@@ -212,26 +211,17 @@ var ChartEditor = function () {
             if (requirementsMet) {
                 $('#chart').empty();
                 if (chart && chart.destroy) chart.destroy(); // needed for tauChart
-                chart = ct.renderChart(gmeta, gdata, ct.fields);
+                var fileName = $('#header-query-name').val();
+                chart = ct.renderChart(gmeta, gdata, ct.fields, fileName);
             } else {
                 alert("Chart requires additional information: " + fieldsNeeded.join(', '));
             }
         }
     };
     
-    this.saveImage = function () {
-        // for the saveSvgAsPng to work,
-        // height and width must be pixels in the style attribute
-        // height and width attributes must be removed
-        var $svg = $('#chart').find('svg').first();
-        var width = $svg.width();
-        var height = $svg.height();
-        $svg.attr("style", "width: " + width + "; height:" + height + ";");
-        $svg.attr("width", null);
-        $svg.attr("height", null);
-        // Cheating for now and just referencing element directly
-        var imageName = $('#header-query-name').val();
-        saveSvgAsPng($svg.get(0), imageName + ".png");
+    this.saveImage = function (e) {
+        chart.fire('exportTo','png');
+        e.preventDefault();
     };
 
     this.linkToChart = function () {

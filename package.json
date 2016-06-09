@@ -87,7 +87,6 @@
     "ace": "global:ace",
     "Slick": "global:Slick",
     "d3": "global:d3",
-    "saveSvgAsPng": "global:saveSvgAsPng",
     "Bloodhound": "global:Bloodhound",
     "tauCharts": "global:tauCharts",
     "_": "global:_",

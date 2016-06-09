@@ -31,7 +31,7 @@ module.exports =  {
             inputType: "field-dropdown"
         }
     },
-    renderChart: function (meta, data, fields) {
+    renderChart: function (meta, data, fields, fileName) {
         for (var row in data) {
             // make barvalue field a Number
             data[row][fields.barvalue.val] = Number(data[row][fields.barvalue.val]);
@@ -61,7 +61,11 @@ module.exports =  {
             x: x,
             plugins: [
                 tauCharts.api.plugins.get('tooltip')({fields: [fields.barlabel.val, fields.barvalue.val, fields.labelFacet.val, fields.valueFacet.val]}),
-                tauCharts.api.plugins.get('legend')()
+                tauCharts.api.plugins.get('legend')(),
+                tauCharts.api.plugins.get('exportTo')({
+                    cssPaths:[baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'],
+                    fileName: fileName
+                })
             ]
         });
         chart.renderTo('#chart');
@@ -102,7 +106,7 @@ module.exports =  {
             inputType: "field-dropdown"
         }
     },
-    renderChart: function (meta, data, fields) {
+    renderChart: function (meta, data, fields, fileName) {
         for (var row in data) {
             // make barvalue field a Number
             data[row][fields.barvalue.val] = Number(data[row][fields.barvalue.val]);
@@ -132,7 +136,11 @@ module.exports =  {
             x: x,
             plugins: [
                 tauCharts.api.plugins.get('tooltip')({fields: [fields.barlabel.val, fields.barvalue.val, fields.labelFacet.val, fields.valueFacet.val]}),
-                tauCharts.api.plugins.get('legend')()
+                tauCharts.api.plugins.get('legend')(),
+                tauCharts.api.plugins.get('exportTo')({
+                    cssPaths:[baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'],
+                    fileName: fileName
+                })
             ]
         });
         chart.renderTo('#chart');
@@ -183,7 +191,7 @@ module.exports =  {
             inputType: "checkbox"
         }
     },
-    renderChart: function (meta, data, fields) {
+    renderChart: function (meta, data, fields, fileName) {
         // fields.x.datatype will be "date", "number", or "text"
         for (var row in data) {
             data[row][fields.y.val] = Number(data[row][fields.y.val]);
@@ -215,6 +223,12 @@ module.exports =  {
         }
         plugins.push(tauCharts.api.plugins.get('tooltip')({fields: [fields.x.val, fields.y.val, lineForEach]}));
         plugins.push(tauCharts.api.plugins.get('legend')());
+        plugins.push(
+            tauCharts.api.plugins.get('exportTo')({
+                cssPaths:[baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'],
+                fileName: fileName
+            })
+        );
         
         if (lineForEach) {
             chart = new tauCharts.Chart({
@@ -287,7 +301,7 @@ module.exports =  {
             inputType: "checkbox"
         }
     },
-    renderChart: function (meta, data, fields) {
+    renderChart: function (meta, data, fields, fileName) {
         // fields.x.datatype will be "date", "number", or "text"
         for (var row in data) {
             // make barvalue field a Number
@@ -328,6 +342,12 @@ module.exports =  {
         }
         plugins.push(tauCharts.api.plugins.get('tooltip')({fields: [fields.x.val, fields.y.val, fields.size.val, fields.color.val]}));
         plugins.push(tauCharts.api.plugins.get('legend')());
+        plugins.push(
+            tauCharts.api.plugins.get('exportTo')({
+                cssPaths:[baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'],
+                fileName: fileName
+            })
+        );
         
         var chart = new tauCharts.Chart({
             data: data,
@@ -400,7 +420,6 @@ var ChartEditor = require('this-file.js');
 var chartEditor = new ChartEditor();
 
 */
-var saveSvgAsPng = (typeof window !== "undefined" ? window['saveSvgAsPng'] : typeof global !== "undefined" ? global['saveSvgAsPng'] : null);
 var $ = (typeof window !== "undefined" ? window['$'] : typeof global !== "undefined" ? global['$'] : null);
 var _ = (typeof window !== "undefined" ? window['_'] : typeof global !== "undefined" ? global['_'] : null);
 
@@ -604,26 +623,19 @@ var ChartEditor = function () {
             if (requirementsMet) {
                 $('#chart').empty();
                 if (chart && chart.destroy) chart.destroy(); // needed for tauChart
-                chart = ct.renderChart(gmeta, gdata, ct.fields);
+                var fileName = $('#header-query-name').val();
+                chart = ct.renderChart(gmeta, gdata, ct.fields, fileName);
             } else {
                 alert("Chart requires additional information: " + fieldsNeeded.join(', '));
             }
         }
     };
     
-    this.saveImage = function () {
-        // for the saveSvgAsPng to work,
-        // height and width must be pixels in the style attribute
-        // height and width attributes must be removed
-        var $svg = $('#chart').find('svg').first();
-        var width = $svg.width();
-        var height = $svg.height();
-        $svg.attr("style", "width: " + width + "; height:" + height + ";");
-        $svg.attr("width", null);
-        $svg.attr("height", null);
-        // Cheating for now and just referencing element directly
-        var imageName = $('#header-query-name').val();
-        saveSvgAsPng($svg.get(0), imageName + ".png");
+    this.saveImage = function (e) {
+        console.log(new Date());
+        chart.fire('exportTo','png');
+        console.log(new Date());
+        e.preventDefault();
     };
 
     this.linkToChart = function () {
