@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.16.0 (in dev)
+- SqlPad may now be mounted under a base url path by providing --base-url cli flag or SQLPAD_BASE_URL env variable
+- updated taucharts to 0.9.1
+
 ## 1.15.0
 - Many client-side and server-side dependencies updated
 - Add ability to bind to a specific IP address via the --ip flag or the SQLPAD_IP environment variable

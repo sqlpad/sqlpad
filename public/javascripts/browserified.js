@@ -947,7 +947,7 @@ module.exports = function () {
         renderTesting();
         $.ajax({
             type: "POST",
-            url: baseUrl + "/sqlpad/connections/test",
+            url: baseUrl + "/connections/test",
             data: data
         }).done(function (data) {
             if (data.success) {
@@ -1560,7 +1560,7 @@ module.exports = function () {
 
 },{}],17:[function(require,module,exports){
 //! moment.js
-//! version : 2.11.2
+//! version : 2.11.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -3377,7 +3377,7 @@ module.exports = function () {
     }
 
     // ASP.NET json date format regex
-    var aspNetRegex = /^(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?\d*)?$/;
+    var aspNetRegex = /(\-)?(?:(\d*)[. ])?(\d+)\:(\d+)(?:\:(\d+)\.?(\d{3})?)?/;
 
     // from http://docs.closure-library.googlecode.com/git/closure_goog_date_date.js.source.html
     // somewhat more in line with 4.4.3.2 2004 spec, but allows decimal anywhere
@@ -5132,7 +5132,7 @@ module.exports = function () {
     // Side effect imports
 
 
-    utils_hooks__hooks.version = '2.11.2';
+    utils_hooks__hooks.version = '2.11.1';
 
     setHookCallback(local__createLocal);
 

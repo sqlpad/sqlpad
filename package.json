@@ -7,10 +7,12 @@
     "name": "Rick Bergfalk",
     "email": "rick.bergfalk@gmail.com"
   },
-  "contributors": [{
-    "name": "D. Can Celasun",
-    "email": "dcelasun@gmail.com"
-  }],
+  "contributors": [
+    {
+      "name": "D. Can Celasun",
+      "email": "dcelasun@gmail.com"
+    }
+  ],
   "keywords": [
     "sql",
     "mssql",
@@ -72,7 +74,8 @@
   "devDependencies": {
     "browserify": "^13.0.0",
     "browserify-shim": "3.x.x",
-    "nodemon": "^1.8.1"
+    "nodemon": "^1.8.1",
+    "taucharts": "^0.9.1"
   },
   "browserify": {
     "transform": [
