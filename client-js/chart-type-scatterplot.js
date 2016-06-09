@@ -44,7 +44,7 @@ module.exports =  {
             inputType: "checkbox"
         }
     },
-    renderChart: function (meta, data, fields) {
+    renderChart: function (meta, data, fields, fileName) {
         // fields.x.datatype will be "date", "number", or "text"
         for (var row in data) {
             // make barvalue field a Number
@@ -85,6 +85,12 @@ module.exports =  {
         }
         plugins.push(tauCharts.api.plugins.get('tooltip')({fields: [fields.x.val, fields.y.val, fields.size.val, fields.color.val]}));
         plugins.push(tauCharts.api.plugins.get('legend')());
+        plugins.push(
+            tauCharts.api.plugins.get('exportTo')({
+                cssPaths:[baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'],
+                fileName: fileName
+            })
+        );
         
         var chart = new tauCharts.Chart({
             data: data,
