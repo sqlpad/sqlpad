@@ -1,8 +1,9 @@
 # Changelog
 
-## 1.16.0 (in dev)
+## 1.16.0
 - SqlPad may now be mounted under a base url path by providing --base-url cli flag or SQLPAD_BASE_URL env variable
-- updated taucharts to 0.9.1
+- Updated taucharts to 0.9.1
+- Legends are now included when saving png chart images
 
 ## 1.15.0
 - Many client-side and server-side dependencies updated

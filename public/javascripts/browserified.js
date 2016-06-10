@@ -632,9 +632,7 @@ var ChartEditor = function () {
     };
     
     this.saveImage = function (e) {
-        console.log(new Date());
         chart.fire('exportTo','png');
-        console.log(new Date());
         e.preventDefault();
     };
 
