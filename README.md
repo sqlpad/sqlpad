@@ -65,36 +65,20 @@ First clone or download this repo. Then install dependencies.
 npm install
 ```
 
-Install browserify to compile client-side scripts
+Some scripts are already provided in the package.json file to get started quickly. 
 
-```sh
-npm install browserify -g
-``` 
+```npm start``` will run a sqlpad instance with some basic parameters for development.
 
-Optionally install watchify to automatically browserify your client-side scripts
+```npm run bundle``` will run browserify and bundle the client-side javascript files.
 
-```sh
-npm install watchify -g
-```
-
-To start SqlPad on port 3000  with datafiles in ./db run 
-
-```sh
-npm start
-```
-
-To bundle client-side scripts run 
+If you'd like to provide different command line parameters to sqlpad while developing 
+you can do so by passing them to server.js directly. For example: 
 
 ```sh 
-npm run bundle
+node server.js --dir ./db --port 3000 --debug
 ```
 
-or to auto-browserify as changes happen
-
-```sh
-npm run watchify
-```
-
+While developing, it might be useful to use ```nodemon``` or ```watchify``` to monitor directories and restart/rebundle on file changes.
 
 
 ## License 
