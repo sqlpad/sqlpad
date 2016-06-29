@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.17.0
+- empty postgres queries (like executing a comment only) no longer crash sqlpad
+- materialized views are included in schema sidebar for postgres
+
 ## 1.16.0
 - SqlPad may now be mounted under a base url path by providing --base-url cli flag or SQLPAD_BASE_URL env variable
 - Updated taucharts to 0.9.1
