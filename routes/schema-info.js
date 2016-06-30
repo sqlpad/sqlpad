@@ -1,11 +1,14 @@
 var runQuery = require('../lib/run-query.js');
 var _ = require('lodash');
 var fs = require('fs');
+var path = require('path');
 
-var sqlSchemaPostgres = fs.readFileSync('./sql/schema-postgres.sql', {encoding: 'utf8'});
-var sqlSchemaVertica = fs.readFileSync('./sql/schema-vertica.sql', {encoding: 'utf8'});
-var sqlSchemaCrate = fs.readFileSync('./sql/schema-crate.sql', {encoding: 'utf8'});
-var sqlSchemaStandard = fs.readFileSync('./sql/schema-standard.sql', {encoding: 'utf8'});
+var sqldir = path.resolve(__dirname + '/../sql/');
+
+var sqlSchemaPostgres = fs.readFileSync(sqldir + '/schema-postgres.sql', {encoding: 'utf8'});
+var sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {encoding: 'utf8'});
+var sqlSchemaCrate = fs.readFileSync(sqldir + '/schema-crate.sql', {encoding: 'utf8'});
+var sqlSchemaStandard = fs.readFileSync(sqldir + '/schema-standard.sql', {encoding: 'utf8'});
 
 module.exports = function (app, router) {
 
