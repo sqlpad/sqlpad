@@ -4,22 +4,13 @@ A Node.js web app for writing and running SQL queries and visualizing the result
 
 ![SqlPad Query Editor](screenshots/query-editor.png)
 
-SqlPad is meant to be run on an internal network for a single team. All connections added to the app can be used by all individuals with access to the SqlPad server. All queries written can be run and edited by everyone on the server. 
-
-If you want to be bold and daring, you can expose your SqlPad instance to the outside world. Please make sure you fully understand the risks associated with doing this and use SSL.
+For installation and usage, visit project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
 
 
+## Development
 
+Please use branch [v2-development](https://github.com/rickbergfalk/sqlpad/tree/v2-devlopment) for any new SqlPad features and code cleanup. See wiki for v2 roadmap.
 
-## Installation & Usage
-
-First, install Node.js and then
-
-```sh
-npm install sqlpad -g
-```
-
-For more info visit the project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
 
 ## Tips
 
@@ -54,31 +45,6 @@ Some databases (like Vertica) require the fully qualified table and column names
 within a SQL statement. This can be a hassle to remember or type when you have long and complicated names. For convenience, you can enable fully-qualified-name copy buttons that appear in the schema sidebar. When hovering over an item in the schema tree, a copy button will appear. Click it and the schema name, table name, and column name will be copied to your clipboard.
 
 To enable the schema copy buttons, add a new configuration item with key `showSchemaCopyButton` with value `true`.
-
-## Development Setup
-
-If you want to hack on SqlPad, here's a guide as to what my workflow has been like:
-
-First clone or download this repo. Then install dependencies.
-
-```sh
-npm install
-```
-
-Some scripts are already provided in the package.json file to get started quickly. 
-
-```npm start``` will run a sqlpad instance with some basic parameters for development.
-
-```npm run bundle``` will run browserify and bundle the client-side javascript files.
-
-If you'd like to provide different command line parameters to sqlpad while developing 
-you can do so by passing them to server.js directly. For example: 
-
-```sh 
-node server.js --dir ./db --port 3000 --debug
-```
-
-While developing, it might be useful to use ```nodemon``` or ```watchify``` to monitor directories and restart/rebundle on file changes.
 
 
 ## License 
