@@ -111,7 +111,7 @@ app.use(function (req, res, next) {
           keyValueConfig[configItems[i]['key']] = configItems[i]['value'];
         }
         
-        res.locals.configItems = JSON.stringify(keyValueConfig);
+        res.locals.configItemsJSONString = JSON.stringify(keyValueConfig);
       }
 
       next();
@@ -179,6 +179,7 @@ require('./routes/download-results.js')(app, router); // streams cached query re
 require('./routes/schema-info.js')(app, router);
 require('./routes/configs.js')(app, router);
 require('./routes/tags.js')(app, router);
+require('./routes/react-hello-world.js')(app, router);
 
 app.use(config.baseUrl, router);
 
