@@ -1,0 +1,22 @@
+
+SqlPad Help:
+
+Usage: sqlpad [options]
+
+Options: 
+
+  --passphrase [phrase]   Passphrase for modest encryption  (recommended)
+                          environment variable: SQLPAD_PASSPHRASE
+  --dir [path]            Data directory (optional. Default is $HOME/sqlpad/db)
+  --ip [ip]               IP address to bind to (optional. Default is all IPs, i.e 0.0.0.0)
+  --port [port]           Port to run on (optional. Default is 80)
+                          environment variable: SQLPAD_PORT
+  --base-url [path]       Base url to run on (optional. Default is empty string)
+  --debug                 Enable extra console logging. Sets env to development.
+  --save                  Saves above parameters to a file so you don't
+                          need to keep typing them in. No need to remember!
+  --forget                Forget the parameters you previously saved.
+
+Example: 
+
+  sqlpad --dir ./SqlpadData --ip 127.0.0.1 --port 3000 --passphrase secr3t

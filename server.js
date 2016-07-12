@@ -5,6 +5,7 @@ var router = express.Router();
 var http = require('http');
 var path = require('path');
 var updateNotifier = require('update-notifier');
+var db = require('./lib/db.js');
 var packageJson = require('./package.json');
 var app = express();
 
@@ -14,33 +15,23 @@ var app = express();
 updateNotifier({pkg: packageJson}).notify();
 
 
-/*  add config to app object
-    TODO: remove dependency on attaching config values to app object
-    Turns out node.js cache's the require() of a module
-    Instead of attaching config to the app object,
-    just require('./lib/config.js') around the app.
-    (Sometimes we need config when we don't need the app object)
+/*  Env/Cli Config stuff
 ============================================================================= */
 var config = require('./lib/config.js');
-if (config.debug) {
-    console.log("CONFIG:");
-    console.log(config);
+if (config.get("debug")) {
+    console.log("CONFIG VALUES:");
+    console.log(config.getAllValues());
 }
-app.set('debug', config.debug);
-app.set('passphrase', config.passphrase);
-app.set('dbPath', config.dbPath);
-app.set('port', config.port);
-app.set('ip', config.ip);
-app.set('baseUrl', config.baseUrl);
-if (config.hasOwnProperty('dev')) app.set('dev', true);
-if (config.admin) app.set('admin', config.admin);
+
 
 /*  Boostrap app object with stuff
     This allows us to pass app around and all the related utility/helper/db
     functions and variables go with it.
     TODO: move to just requiring needed files directly
 ============================================================================= */
-require('./lib/add-db-to-app.js')(app);
+config.syncConfigToApp(app);
+db.init(config.get("dbPath"));
+db.addDbToApp(app);
 require('./lib/add-cipher-decipher-to-app.js')(app);
 require('./lib/add-open-admin-registration-to-app.js')(app);
 require('./lib/add-email-domain-whitelist-to-app.js')(app);
@@ -79,7 +70,7 @@ app.use(cookieSession({secret: app.get('passphrase')}));
 app.use(connectFlash());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(config.baseUrl, express.static(path.join(__dirname, 'public')));
+app.use(app.get('baseUrl'), express.static(path.join(__dirname, 'public')));
 if (app.get('dev')) app.use(morgan('dev'));
 app.use(function (req, res, next) {
     // Boostrap res.locals with any common variables
@@ -94,7 +85,7 @@ app.use(function (req, res, next) {
     res.locals.openAdminRegistration = app.get('openAdminRegistration');
     res.locals.user = req.user;
     res.locals.isAuthenticated = req.isAuthenticated();
-    res.locals.baseUrl = config.baseUrl
+    res.locals.baseUrl = app.get('baseUrl');
 
     // Expose key-value configs as a common variable
     var db = app.get('db');
@@ -121,13 +112,13 @@ app.use(function (req, res, next) {
     // if not signed in redirect to sign in page
     if (req.isAuthenticated()) {
         next();
-    } else if (req._parsedUrl.pathname === config.baseUrl + '/signin' || req._parsedUrl.pathname === config.baseUrl + '/signup' || req._parsedUrl.pathname.indexOf(config.baseUrl + '/auth/') == 0) {
+    } else if (req._parsedUrl.pathname === (app.get('baseUrl') + '/signin') || req._parsedUrl.pathname === (app.get('baseUrl') + '/signup') || req._parsedUrl.pathname.indexOf(app.get('baseUrl') + '/auth/') == 0) {
         next();
     } else if (app.get('openRegistration')) {
         // if there are no users whitelisted, direct to signup
-        res.redirect(config.baseUrl + '/signup');
+        res.redirect(app.get('baseUrl') + '/signup');
     } else {
-        res.redirect(config.baseUrl + '/signin');
+        res.redirect(app.get('baseUrl') + '/signin');
     }
 });
 
@@ -181,7 +172,7 @@ require('./routes/configs.js')(app, router);
 require('./routes/tags.js')(app, router);
 require('./routes/react-hello-world.js')(app, router);
 
-app.use(config.baseUrl, router);
+app.use(app.get('baseUrl'), router);
 
 /*	Start the Server
 ============================================================================= */
