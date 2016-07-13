@@ -49,6 +49,7 @@ example = "any string even gibberish longer the better ad98ckd.l0"
 [[configItems]]
 key = "admin"
 cliFlag = "admin"
+envVar = "SQLPAD_ADMIN"
 default = ""
 example = "AdminEmail@domain.com"
 

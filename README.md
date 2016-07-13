@@ -4,12 +4,16 @@ A Node.js web app for writing and running SQL queries and visualizing the result
 
 ![SqlPad Query Editor](screenshots/query-editor.png)
 
-For installation and usage, visit project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
+## Installation and Usage
+
+Visit project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
 
 
 ## Development
 
-Please use branch [v2-development](https://github.com/rickbergfalk/sqlpad/tree/v2-devlopment) for any new SqlPad features and code cleanup. See wiki for v2 roadmap.
+Please use branch [v2-development](https://github.com/rickbergfalk/sqlpad/tree/v2-devlopment) for any new SqlPad features and code cleanup. 
+
+See wiki for v2 roadmap, along with other helpful dev documentation.
 
 
 ## Tips
