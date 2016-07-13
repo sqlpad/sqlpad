@@ -1,6 +1,7 @@
 node_modules/
 db/
 screenshots/
+test/
 .DS_Store
 .env
 .zedstate

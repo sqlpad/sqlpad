@@ -29,6 +29,8 @@
     "email": "rick.bergfalk@gmail.com"
   },
   "scripts": {
+    "test": "mocha --recursive",
+    "coverage": "istanbul cover _mocha -- --recursive",
     "start": "nodemon server.js --dir ./db --port 3000 --debug",
     "bundle": "node bundle.js",
     "bundle-dev": "node bundle.js --dev"
@@ -78,7 +80,10 @@
     "babel-preset-react": "^6.11.1",
     "babelify": "^7.3.0",
     "browserify": "^13.0.1",
+    "chai": "^3.5.0",
     "exposify": "^0.5.0",
+    "istanbul": "^0.4.4",
+    "mocha": "^2.5.3",
     "nodemon": "^1.8.1",
     "react": "^15.1.0",
     "react-bootstrap": "^0.29.5",
