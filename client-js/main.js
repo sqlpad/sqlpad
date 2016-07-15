@@ -10,7 +10,6 @@
 require('./connection.js')();
 require('./connection-admin.js')();
 require('./user-admin.js')();
-require('./configs.js')();
 
 // used on queries.ejs for reading the query filter form and doing the ajax
 require('./query-filter-form.js')();
@@ -18,5 +17,18 @@ require('./query-filter-form.js')();
 // All the stuff that happens when viewing/working with a single query happens here
 require('./query-editor.js')();
 
-// a test to make sure react is working
-require('./react-hello-world.js')();
+
+// stuff below is gradually being converted into react
+// as more react components are available these can be 
+// managed in a more elegant way (client-side router or... ?)
+var React = require('react');
+var ReactDOM = require('react-dom');
+
+var ConfigValues = require('./ConfigValues.js');
+
+if (document.getElementById('config-values')) {
+    ReactDOM.render(
+        <ConfigValues/>,
+        document.getElementById('config-values')
+    );
+}

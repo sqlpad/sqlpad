@@ -10,3 +10,5 @@ tags
 zedrem.exe
 .zedstate
 .idea/*
+
+jsconfig.json

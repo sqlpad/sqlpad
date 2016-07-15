@@ -31,7 +31,7 @@
   "scripts": {
     "test": "mocha --recursive",
     "coverage": "istanbul cover _mocha -- --recursive",
-    "start": "nodemon server.js --dir ./db --port 3000 --debug",
+    "start": "nodemon --ignore 'public/*' --ignore 'client-js/*' server.js --dir ./db --port 3000 --debug",
     "bundle": "node bundle.js",
     "bundle-dev": "node bundle.js --dev"
   },
@@ -44,6 +44,7 @@
     "ejs": "^2.3.4",
     "errorhandler": "^1.4.0",
     "express": "4.x.x",
+    "joi": "^9.0.0",
     "json2csv": "^3.0.2",
     "keymaster": "^1.6.2",
     "lodash": "^3.10.1",
@@ -64,10 +65,10 @@
     "request": "^2.58.0",
     "sanitize-filename": "1.x.x",
     "serve-favicon": "2.x.x",
+    "toml": "^2.3.0",
     "ua-parser": "0.3.x",
     "update-notifier": "^0.6.0",
     "uuid": "^2.0.1",
-    "toml": "^2.3.0",
     "vertica": "0.5.x"
   },
   "main": "server.js",
@@ -89,7 +90,8 @@
     "react-bootstrap": "^0.29.5",
     "react-dom": "^15.1.0",
     "taucharts": "^0.9.1",
-    "watchify": "^3.7.0"
+    "watchify": "^3.7.0",
+    "whatwg-fetch": "^1.0.0"
   },
   "babel": {
     "presets": [
