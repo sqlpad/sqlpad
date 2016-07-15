@@ -24,7 +24,8 @@ if (config.dev) {
         entries: ['./client-js/main.js'],
         cache: {}, 
         packageCache: {}, 
-        debug: true 
+        debug: true, 
+        fullPaths: true
     });
     b.plugin(watchify);
     b.transform("babelify", {presets: ["es2015", "react"]});
@@ -39,7 +40,8 @@ if (config.dev) {
 } else {
     process.env.NODE_ENV = "production";
     b = browserify({
-        entries: ['./client-js/main.js']
+        entries: ['./client-js/main.js'],
+        fullPaths: true
     });
     b.transform("babelify", {presets: ["es2015", "react"]});
     b.transform("exposify", exposeConfig);
