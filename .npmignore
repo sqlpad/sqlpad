@@ -2,6 +2,7 @@ node_modules/
 db/
 screenshots/
 test/
+coverage/
 .DS_Store
 .env
 .zedstate
