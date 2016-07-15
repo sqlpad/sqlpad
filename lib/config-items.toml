@@ -6,6 +6,7 @@
 # if "label" is provided, setting is exposed via ui
 
 [[configItems]]
+interface = "env"
 key = "ip"
 cliFlag = "ip"
 envVar = "SQLPAD_IP"
@@ -13,6 +14,7 @@ default = "0.0.0.0"
 example = ""
 
 [[configItems]]
+interface = "env"
 key = "port"
 cliFlag = "port"
 envVar = "SQLPAD_PORT"
@@ -20,6 +22,7 @@ default = 80
 example = ""
 
 [[configItems]]
+interface = "env"
 key = "dbPath"
 cliFlag = ["db", "dbPath", "dir"]
 envVar = "SQLPAD_DB_PATH"
@@ -27,6 +30,7 @@ default = "$HOME/sqlpad/db"
 example = ""
 
 [[configItems]]
+interface = "env"
 key = "baseUrl"
 cliFlag = "base-url"
 envVar = "SQLPAD_BASE_URL"
@@ -40,6 +44,7 @@ description = """\
 """
 
 [[configItems]]
+interface = "env"
 key = "passphrase"
 cliFlag = "passphrase"
 envVar = "SQLPAD_PASSPHRASE"
@@ -47,6 +52,7 @@ default = "At least the sensitive bits won't be plain text?"
 example = "any string even gibberish longer the better ad98ckd.l0"
 
 [[configItems]]
+interface = "env"
 key = "admin"
 cliFlag = "admin"
 envVar = "SQLPAD_ADMIN"
@@ -54,6 +60,7 @@ default = ""
 example = "AdminEmail@domain.com"
 
 [[configItems]]
+interface = "env"
 key = "debug"
 cliFlag = "debug"
 envVar = "SQLPAD_DEBUG"
@@ -61,24 +68,28 @@ default = false
 
 [[configItems]]
 # a default sqlpad instance should be production unless
+interface = "env"
 key = "env"
 cliFlag = "env"
 envVar = "NODE_ENV"
 default = "production" 
 
 [[configItems]]
+interface = "env"
 key = "googleClientId"
 envVar = "GOOGLE_CLIENT_ID"
 description = "Google Client ID used for OAuth setup"
 default = ""
 
 [[configItems]]
+interface = "env"
 key = "googleClientSecret"
 envVar = "GOOGLE_CLIENT_SECRET"
 description = "Google Client Secret used for OAuth setup"
 default = ""
 
 [[configItems]]
+interface = "env"
 key = "publicUrl"
 envVar = "PUBLIC_URL"
 description = "Public URL used for OAuth setup"
@@ -86,6 +97,7 @@ default = ""
 example = "myinstancesqlpad.com"
 
 [[configItems]]
+interface = "env"
 key = "disableUserpassAuth"
 envVar = "DISABLE_USERPASS_AUTH"
 description = "Set to TRUE to disable built-in user authentication. Useful to restrict authentication to OAuth only."
@@ -94,6 +106,7 @@ default = false
 # these are UI only variables. 
 
 [[configItems]]
+interface = "ui"
 key = "allowCsvDownload"
 label = "Allow CSV/XLSX Download"
 description = "Set to false to disable csv or xlsx downloads."
@@ -101,18 +114,21 @@ options = [true, false]
 default = true
 
 [[configItems]]
+interface = "ui"
 key = "queryResultMaxRows"
 label = "Query Result Max Rows"
 description = "By default query results are limited to 50,000 records"
 default = 50000
 
 [[configItems]]
+interface = "ui"
 key = "slackWebhook"
 label = "Slack Webhook URL"
 description = "Supply incoming Slack webhook URL to post query when saved."
 default = ""
 
 [[configItems]]
+interface = "ui"
 key = "showSchemaCopyButton"
 label = "Show Schema Copy Button"
 description = "Enable a button to copy an object's full schema path in schema explorer. Useful for databases that require fully qualified names."

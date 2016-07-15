@@ -8,6 +8,7 @@ describe('lib/config.js', function() {
     // set any process.env variables here
     // or any process.env.args
     process.argv.push('--debug');
+    process.argv.push('--save');
     process.env.SQLPAD_DEBUG = "FALSE";
     process.env.GOOGLE_CLIENT_ID = "google-client-id";
     var config = require('../../lib/config.js');
@@ -62,6 +63,30 @@ describe('lib/config.js', function() {
         it('cli param should override default and env', function () {
             var debug = config.get('debug');
             debug.should.equal(true);
+        })
+    })
+
+    describe('#getAllValues', function () {
+        it('should return an object', function () {
+            config.getAllValues().should.exist;
+        })
+    })
+
+    describe('#getAllSetBy', function () {
+        it('should return an object', function () {
+            config.getAllSetBy().should.exist;
+        })
+    })
+
+    describe('#syncConfigToApp', function () {
+        var mockApp = {
+            set: function (key, value) {}
+        }
+        it('should not error', function () {
+            var fn = function () {
+                config.syncConfigToApp(mockApp);
+            }
+            fn.should.not.throw(Error);
         })
     })
 })

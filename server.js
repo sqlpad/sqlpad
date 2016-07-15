@@ -30,7 +30,6 @@ if (config.get("debug")) {
     TODO: move to just requiring needed files directly
 ============================================================================= */
 config.syncConfigToApp(app);
-db.init(config.get("dbPath"));
 db.addDbToApp(app);
 require('./lib/add-cipher-decipher-to-app.js')(app);
 require('./lib/add-open-admin-registration-to-app.js')(app);
@@ -136,7 +135,7 @@ function mustBeAdmin (req, res, next) {
 }
 app.use('/connections', mustBeAdmin);
 app.use('/users', mustBeAdmin);
-app.use('/config', mustBeAdmin);
+app.use('/config-values', mustBeAdmin);
 
 
 
@@ -168,9 +167,8 @@ require('./routes/queries.js')(app, router);
 require('./routes/run-query.js')(app, router); // ajaxy route used for executing query and getting results
 require('./routes/download-results.js')(app, router); // streams cached query results to browser
 require('./routes/schema-info.js')(app, router);
-require('./routes/configs.js')(app, router);
+require('./routes/config-values.js')(app, router);
 require('./routes/tags.js')(app, router);
-require('./routes/react-hello-world.js')(app, router);
 
 app.use(app.get('baseUrl'), router);
 
