@@ -24,16 +24,30 @@ if (config.get("debug")) {
 }
 
 
-/*  Boostrap app object with stuff
-    This allows us to pass app around and all the related utility/helper/db
-    functions and variables go with it.
-    TODO: move to just requiring needed files directly
+/*  Determine if app should have open registration or not
+    
+    If there are no admin accounts with created dates, 
+    registration will be open.
+    
+    The first account created will be an admin account. 
 ============================================================================= */
-config.syncConfigToApp(app);
-db.addDbToApp(app);
-require('./lib/add-cipher-decipher-to-app.js')(app);
-require('./lib/add-open-admin-registration-to-app.js')(app);
-require('./lib/add-email-domain-whitelist-to-app.js')(app);
+// TODO - move this into middleware
+var openAdminFilter = {
+    admin: true, 
+    createdDate: {
+        $lte: new Date()
+    }
+};
+db.users.findOne(openAdminFilter, function (err, doc) {
+    if (doc) {
+        app.set('openAdminRegistration', false);
+    } else {
+        console.log('\nNo admins found - open admin registration enabled.');
+        console.log('Visit /signup to register an admin and close open admin registration.')
+        app.set('openAdminRegistration', true);
+    }
+});
+
 
 
 /*  Express setup
@@ -54,23 +68,20 @@ app.set('packageJson', packageJson);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-if (process.env.NODE_ENV === 'development') {
-  // only use in development
-  app.use(errorhandler());
-}
+if (config.get('debug')) app.use(errorhandler());
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(methodOverride()); // simulate PUT/DELETE via POST in client by <input type="hidden" name="_method" value="put" />
-app.use(cookieParser(app.get('passphrase'))); // populates req.cookies with an object
-app.use(cookieSession({secret: app.get('passphrase')}));
+app.use(cookieParser(config.get('passphrase'))); // populates req.cookies with an object
+app.use(cookieSession({secret: config.get('passphrase')}));
 app.use(connectFlash());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(app.get('baseUrl'), express.static(path.join(__dirname, 'public')));
-if (app.get('dev')) app.use(morgan('dev'));
+app.use(config.get('baseUrl'), express.static(path.join(__dirname, 'public')));
+if (config.get('debug')) app.use(morgan('dev'));
 app.use(function (req, res, next) {
     // Boostrap res.locals with any common variables
     res.locals.errors = req.flash('error');
@@ -84,11 +95,10 @@ app.use(function (req, res, next) {
     res.locals.openAdminRegistration = app.get('openAdminRegistration');
     res.locals.user = req.user;
     res.locals.isAuthenticated = req.isAuthenticated();
-    res.locals.baseUrl = app.get('baseUrl');
+    res.locals.baseUrl = config.get('baseUrl');
 
-    // Expose key-value configs as a common variable
-    var db = app.get('db');
-
+    // Expose key-value configs as a common variable passed on to browser
+    // TODO: sensitive configs should not go to browser
     db.config.find({}, function (err, configItems) {
       if (err) {
           res.send({
@@ -111,13 +121,15 @@ app.use(function (req, res, next) {
     // if not signed in redirect to sign in page
     if (req.isAuthenticated()) {
         next();
-    } else if (req._parsedUrl.pathname === (app.get('baseUrl') + '/signin') || req._parsedUrl.pathname === (app.get('baseUrl') + '/signup') || req._parsedUrl.pathname.indexOf(app.get('baseUrl') + '/auth/') == 0) {
+    } else if (req._parsedUrl.pathname === (config.get('baseUrl') + '/signin') 
+            || req._parsedUrl.pathname === (config.get('baseUrl') + '/signup') 
+            || req._parsedUrl.pathname.indexOf(config.get('baseUrl') + '/auth/') == 0) {
         next();
     } else if (app.get('openRegistration')) {
         // if there are no users whitelisted, direct to signup
-        res.redirect(app.get('baseUrl') + '/signup');
+        res.redirect(config.get('baseUrl') + '/signup');
     } else {
-        res.redirect(app.get('baseUrl') + '/signin');
+        res.redirect(config.get('baseUrl') + '/signin');
     }
 });
 
@@ -170,10 +182,10 @@ require('./routes/schema-info.js')(app, router);
 require('./routes/config-values.js')(app, router);
 require('./routes/tags.js')(app, router);
 
-app.use(app.get('baseUrl'), router);
+app.use(config.get('baseUrl'), router);
 
 /*	Start the Server
 ============================================================================= */
-http.createServer(app).listen(app.get('port'), app.get('ip'), function(){
-	console.log('\nWelcome to ' + app.locals.title + '!. Visit http://'+(app.get('ip') == '0.0.0.0' ? 'localhost' : app.get('ip')) + ':' + app.get('port') + app.get('baseUrl') + ' to get started');
+http.createServer(app).listen(config.get('port'), config.get('ip'), function(){
+	console.log('\nWelcome to ' + app.locals.title + '!. Visit http://'+(config.get('ip') == '0.0.0.0' ? 'localhost' : config.get('ip')) + ':' + config.get('port') + config.get('baseUrl') + ' to get started');
 });

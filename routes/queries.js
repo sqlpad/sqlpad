@@ -5,11 +5,12 @@ var noop = function () {
 };
 var moment = require('moment');
 var request = require('request');
+var config = require('../lib/config.js');
+var db = require('../lib/db.js');
+
+const BASE_URL = config.get('baseUrl');
 
 module.exports = function (app, router) {
-
-    var db = app.get('db');
-    var baseUrl = app.get('baseUrl');
 
     function getQueryFilterData(req, res, next) {
         db.connections.find({}, function (err, connections) {
@@ -75,10 +76,7 @@ module.exports = function (app, router) {
             queries.forEach(function (query) {
                 query.lastAccessedFromNow = moment(query.lastAccessedDate).calendar();
                 query.modifiedCalendar = moment(query.modifiedDate).calendar();
-                var timeForDiff = query.lastAccessedDate || query.modifiedDate;
-                query.timeDiff = new Date() - timeForDiff;
             });
-            //queries = _.sortBy(queries, 'timeDiff');
             if (req.query && req.query.format && req.query.format === "table-only") {
                 res.render('queries-table', {
                     pageTitle: "Queries",
@@ -107,49 +105,39 @@ module.exports = function (app, router) {
             res.locals.controlKeyText = 'Ctrl';
         }
 
-        db.config.findOne({key: "allowCsvDownload"}, function (err, config) {
+        db.connections.find({}, function (err, connections) {
+            res.locals.queryMenu = true;
+            res.locals.cacheKey = uuid.v1();
+            res.locals.navbarConnections = _.sortBy(connections, 'name');
+            res.locals.allowDownload = config.get('allowCsvDownload');
+            var format = req.query && req.query.format;
 
-            if (err) {
-                console.log(err);
+            if (req.params._id === 'new') {
+                res.render('query', {
+                    query: {
+                        name: ""
+                    },
+                    format: format
+                });
+            } else {
+                db.queries.findOne({_id: req.params._id}, function (err, query) {
+                    // TODO: render error if this fails?
+                    db.queries.update({_id: req.params._id}, {$set: {lastAccessedDate: new Date()}}, {}, noop);
+                    if (query && query.tags) query.tags = query.tags.join(', ');
+                    if (format === 'json') {
+                        // send JSON of query object
+                        res.json(query);
+                    } else {
+                        // render page
+                        res.render('query', {
+                            query: query, 
+                            // format may be set to 'chart' or 'table'
+                            format: format,
+                            fullscreenContent: ['chart', 'table'].indexOf(format) > -1 ? true: false
+                        });
+                    }
+                });
             }
-
-            var preventDownload = config && config.value === "false";
-
-            db.connections.find({}, function (err, connections) {
-                res.locals.queryMenu = true;
-                res.locals.cacheKey = uuid.v1();
-                res.locals.navbarConnections = _.sortBy(connections, 'name');
-                res.locals.allowDownload = !preventDownload;
-                var format = req.query && req.query.format;
-
-                if (req.params._id === 'new') {
-                    res.render('query', {
-                        query: {
-                            name: ""
-                        },
-                        format: format
-                    });
-                } else {
-                    db.queries.findOne({_id: req.params._id}, function (err, query) {
-                        // TODO: render error if this fails?
-                        db.queries.update({_id: req.params._id}, {$set: {lastAccessedDate: new Date()}}, {}, noop);
-                        if (query && query.tags) query.tags = query.tags.join(', ');
-                        if (format === 'json') {
-                            // send JSON of query object
-                            res.json(query);
-                        } else {
-                            // render page
-                            res.render('query', {
-                                query: query, 
-                                
-                                // format may be set to 'chart' or 'table'
-                                format: format,
-                                fullscreenContent: ['chart', 'table'].indexOf(format) > -1 ? true: false
-                            });
-                        }
-                    });
-                }
-            });
         });
     });
 
@@ -174,20 +162,18 @@ module.exports = function (app, router) {
                     console.log(err);
                     res.send({err: err, success: false});
                 } else {
-                    db.config.findOne({ key: "slackWebhook"}, function(err, webhook){
-                        if (err) console.log(err);
-                        if (!webhook) {
-                            // if not configured, just return success response
-                            res.send({success:true, query: query});
-                        } else {
-                            pushQueryToSlack(query, req.user.email, webhook.value, function(err){
-                                if (err) console.log("Something went wrong while sending to Slack.")
-                                else {
-                                    res.send({success: true, query: query});
-                                }
-                             });
-                        }
-                    });
+                    const SLACK_WEBHOOK = config.get('slackWebhook');
+                    if (!SLACK_WEBHOOK) {
+                        // if not configured, just return success response
+                        res.send({success:true, query: query});
+                    } else {
+                        pushQueryToSlack(query, req.user.email, webhook.value, function(err){
+                            if (err) console.log("Something went wrong while sending to Slack.")
+                            else {
+                                res.send({success: true, query: query});
+                            }
+                        });
+                    }
                 }
             });
         } else {
@@ -207,8 +193,8 @@ module.exports = function (app, router) {
 
     router.delete('/queries/:_id', function (req, res) {
         db.queries.remove({_id: req.params._id}, function (err) {
-            console.log(err);
-            res.redirect(baseUrl + '/queries');
+            if (err) console.log(err);
+            res.redirect(BASE_URL + '/queries');
         });
     });
 
