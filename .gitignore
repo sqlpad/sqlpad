@@ -2,7 +2,7 @@ node_modules/
 db/
 coverage/
 public/javascripts/browserified.js
-public/javascripts/disc.html
+disc.html
 .DS_Store
 .env
 .zedstate
