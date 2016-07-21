@@ -33,7 +33,8 @@
     "coverage": "istanbul cover _mocha -- --recursive",
     "start": "nodemon --ignore 'public/*' --ignore 'client-js/*' server.js --dir ./db --port 3000 --debug",
     "bundle": "node bundle.js",
-    "bundle-dev": "node bundle.js --dev"
+    "bundle-dev": "node bundle.js --dev",
+    "disc": "discify ./public/javascripts/browserified.js > disc.html"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -82,6 +83,7 @@
     "babelify": "^7.3.0",
     "browserify": "^13.0.1",
     "chai": "^3.5.0",
+    "disc": "^1.3.2",
     "exposify": "^0.5.0",
     "istanbul": "^0.4.4",
     "mocha": "^2.5.3",
