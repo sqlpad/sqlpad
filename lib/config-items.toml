@@ -103,6 +103,16 @@ envVar = "DISABLE_USERPASS_AUTH"
 description = "Set to TRUE to disable built-in user authentication. Useful to restrict authentication to OAuth only."
 default = false
 
+[[configItems]]
+interface = "env"
+key = "whitelistedDomains"
+envVar = "WHITELISTED_DOMAINS"
+cliFlag = "whitelisted-domains"
+description = "Allows whitelisting of email domains so individual email addresses do not need to be whitelisted. Domains must be delimited by whitespace."
+example = "'baz.com foo.bar.com' will whitelist sara@baz.com and john@foo.bar.com"
+default = ""
+
+
 # these are UI only variables. 
 
 [[configItems]]

@@ -1,13 +1,16 @@
 var bcrypt = require('bcrypt-nodejs'); //https://www.npmjs.org/package/bcrypt-nodejs (the native one is icky for windows)
 var passport = require('passport');
 var passportLocalStrategy = require('passport-local').Strategy;
+var config = require('../lib/config.js');
+var db = require('../lib/db.js');
+var checkWhitelist = require('../lib/check-whitelist');
+
+const BASE_URL = config.get('baseUrl');
+const DISABLE_USERPASS_AUTH = config.get('disableUserpassAuth');
 
 module.exports = function (app, router) {
     
-    var db = app.get('db');
-    var baseUrl = app.get('baseUrl');
-    
-    if (!("DISABLE_USERPASS_AUTH" in process.env)) {
+    if (!DISABLE_USERPASS_AUTH) {
         /*    Sign Up
         ============================================================================= */
         function signupBodyToLocals (req, res, next) {
@@ -20,7 +23,7 @@ module.exports = function (app, router) {
         function notIfSignedIn (req, res, next) {
             if (req.session && req.session.userId) {
                 res.locals.debug = {message: "Already signed in - why do you need to sign up?"};
-                res.location(baseUrl + '/');
+                res.location(BASE_URL + '/');
                 res.render('index');
             } else {
                 next();
@@ -49,12 +52,12 @@ module.exports = function (app, router) {
                                 req.session.userId = user._id;
                                 req.session.admin = user.admin;
                                 req.session.email = user.email;
-                                res.redirect(baseUrl + '/'); // TODO: user still gets prompted to log in. Why?
+                                res.redirect(BASE_URL + '/'); // TODO: user still gets prompted to log in. Why?
                             });
                         } else if (err) {
                             console.log(err);
                             res.render('signup', {message: 'An error happened.'});
-                        } else if (app.get('openAdminRegistration') || app.get('checkWhitelist')(req.body.email)) {
+                        } else if (app.get('openAdminRegistration') || checkWhitelist(req.body.email)) {
                             // first admin in the system, so allow it to go through
                             // also allow whitelisted emails
                             // then once its in, turn openAdminRegistration off
@@ -75,7 +78,7 @@ module.exports = function (app, router) {
                                     req.session.userId = newUser._id;
                                     req.session.admin = newUser.admin;
                                     req.session.email = newUser.email;
-                                    res.redirect(baseUrl + '/');
+                                    res.redirect(BASE_URL + '/');
                                 }
                             });
                         } else {
@@ -117,8 +120,8 @@ module.exports = function (app, router) {
 
         router.post('/signin',
             passport.authenticate('local', {
-                successRedirect: baseUrl + '/',
-                failureRedirect: baseUrl + '/signin',
+                successRedirect: BASE_URL + '/',
+                failureRedirect: BASE_URL + '/signin',
                 failureFlash: true
             })
         );
@@ -156,7 +159,7 @@ module.exports = function (app, router) {
     
     router.get('/signout', function (req, res) {
         req.session = null;
-        res.redirect(baseUrl + '/');
+        res.redirect(BASE_URL + '/');
     });
     
 };

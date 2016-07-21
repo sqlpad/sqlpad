@@ -5,10 +5,12 @@
     If there are connections in the system, it redirects to the queries listing.
     If there are no connections, the user goes to the connections page
 ============================================================================= */
-module.exports = function (app, router) {
-    var db = app.get('db');
-    var baseUrl = app.get('baseUrl')
 
+var db = require('../lib/db.js');
+var config = require('../lib/config.js');
+var baseUrl = config.get('baseUrl')
+
+module.exports = function (app, router) {
     router.get('/', function(req, res) {
         var connectionExists = false;
         db.connections.findOne({}, function (err, doc) {

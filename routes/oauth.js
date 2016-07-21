@@ -1,25 +1,32 @@
 var passportGoogleStrategy = require('passport-google-oauth2').Strategy;
+var db = require('../lib/db.js');
+var config = require('../lib/config.js');
+var checkWhitelist = require('../lib/check-whitelist.js');
+
+const BASE_URL = config.get('baseUrl');
+const GOOGLE_CLIENT_ID = config.get('googleClientId');
+const GOOGLE_CLIENT_SECRET = config.get('googleClientSecret');
+const PUBLIC_URL = config.get('publicUrl');
 
 module.exports = function (app, passport, router) {
-    var db = app.get('db');
-    var baseUrl = app.get('baseUrl');
     
-    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-        console.log("Disabling Google authentication streategy, since there's no GOOGLE_CLIENT_ID or no GOOGLE_CLIENT_SECRET in ENV.");
+    if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
         return;
     } else {
         console.log("Enabling Google authentication Strategy.")
     }
 
     passport.use(new passportGoogleStrategy({
-        clientID          : process.env.GOOGLE_CLIENT_ID,
-        clientSecret      : process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL       : process.env.PUBLIC_URL + baseUrl + "/auth/google/callback",
-        passReqToCallback : true
-    },
+            clientID          : GOOGLE_CLIENT_ID,
+            clientSecret      : GOOGLE_CLIENT_SECRET,
+            callbackURL       : PUBLIC_URL + BASE_URL + "/auth/google/callback",
+            passReqToCallback : true
+        },
         function(request, accessToken, refreshToken, profile, done) {
             db.users.findOne({ email: profile.email }, function(err, user){
-                if (err) { return done(err, null); }
+                if (err) { 
+                    return done(err, null); 
+                }
                 if (user) {
                     if (!user.createdDate) {
                         db.users.update({_id: user._id}, {$set: {createdDate: new Date()}}, function (err) {
@@ -38,7 +45,7 @@ module.exports = function (app, passport, router) {
                         });
                     }
                 } else {
-                    if (app.get('openAdminRegistration') || app.get('checkWhitelist')(profile.email)){
+                    if (app.get('openAdminRegistration') || checkWhitelist(profile.email)){
                         var user = {
                             email: profile.email,
                             admin: app.get('openAdminRegistration'), 
@@ -68,7 +75,7 @@ module.exports = function (app, passport, router) {
 
     router.get('/auth/google/callback', 
         passport.authenticate('google', { 
-            successRedirect: baseUrl + '/',
-            failureRedirect: baseUrl + '/signin'
+            successRedirect: BASE_URL + '/',
+            failureRedirect: BASE_URL + '/signin'
     }));
 };

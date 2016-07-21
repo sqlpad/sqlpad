@@ -1,5 +1,10 @@
 var _ = require('lodash');
 var runQuery = require('../lib/run-query.js');
+var cipher = require('../lib/cipher.js');
+var decipher = require('../lib/decipher.js');
+var config = require('../lib/config.js');
+var db = require('../lib/db.js');
+var baseUrl = config.get('baseUrl');
 
 function connectionFromBody (body) {
     return {
@@ -17,11 +22,6 @@ function connectionFromBody (body) {
 }
 
 module.exports = function (app, router) {
-
-    var db = app.get('db');
-    var decipher = app.get('decipher');
-    var cipher = app.get('cipher');
-    var baseUrl = app.get('baseUrl');
 
     router.get('/connections', function (req, res) {
         db.connections.find({}).sort({name: 1}).exec(function (err, connections) {

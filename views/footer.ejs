@@ -39,6 +39,11 @@
         Ideally this would be managed via npm/browserify completely, but it seems really confusing.
         I'll revisit once I'm a bit more familiar with how browserify performs its magic
     -->
+    <!-- key-value configs -->
+    <script>
+      window.configItems = <%- configItemsJSONString %>;
+      var baseUrl = <%- JSON.stringify(baseUrl) %>;
+    </script>
     <script src="<%= baseUrl %>/javascripts/vendor/underscore-min.js"></script>
     <script src="<%= baseUrl %>/javascripts/vendor/jquery-2.2.0.min.js"></script>
     <script src="<%= baseUrl %>/javascripts/vendor/bootstrap.min.js"></script>
@@ -54,10 +59,7 @@
     <!-- then finally the browserified/bundled js -->
     <script src="<%= baseUrl %>/javascripts/browserified.js"></script>
 
-    <!-- key-value configs -->
-    <script>
-      window.configItems = <%- configItemsJSONString %>;
-    </script>
+    
 
   </body>
 </html>

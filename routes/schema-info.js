@@ -2,6 +2,9 @@ var runQuery = require('../lib/run-query.js');
 var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
+var config = require('../lib/config.js');
+var db = require('../lib/db.js');
+var decipher = require('../lib/decipher.js');
 
 var sqldir = path.resolve(__dirname + '/../sql/');
 
@@ -12,41 +15,33 @@ var sqlSchemaStandard = fs.readFileSync(sqldir + '/schema-standard.sql', {encodi
 
 module.exports = function (app, router) {
 
-    var db = app.get('db');
-
-    router.get('/schema-info/:connectionId', function (req, res) {
-        var reload = req.query.reload === "true";
-        var showSchemaCopyButton = false;
-        var tree = {};
-        var cacheKey;
-        var connection;
+    router.get('/schema-info/:connectionId', 
+        function initLocals (req, res, next) {
+            res.locals.reload = req.query.reload === "true";
+            res.locals.tree = {};
+            res.locals.cacheKey;
+            res.locals.connection;
+            res.locals.SHOW_SCHEMA_COPY_BUTTON = config.get('showSchemaCopyButton');
+            res.locals.connectionId = req.params.connectionId;
+            next()
+        },
         
-        getSchemaCopyButtonConfig();
-        
-        function getSchemaCopyButtonConfig () {
-            db.config.findOne({key: "showSchemaCopyButton"}, function (err, config) {
-                showSchemaCopyButton = (config && config.value.toLowerCase() === "true");
-                getConnection();
-            });
-        }
-        
-        function getConnection () {
-            db.connections.findOne({_id: req.params.connectionId}, function (err, conn) {
+        function getConnection (req, res, next) {
+            db.connections.findOne({_id: res.locals.connectionId}, function (err, conn) {
                 if (!err && conn) {
-                    connection = conn;
-                    cacheKey = "schemaCache:" + req.params.connectionId;
-                    getCache();
+                    res.locals.connection = conn;
+                    res.locals.cacheKey = "schemaCache:" + res.locals.connectionId;
+                    next();
                 } else {
-                    res.render('schema-info', {tree: tree, showSchemaCopyButton: showSchemaCopyButton});
+                    res.render('schema-info', {tree: tree, showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON});
                 }
             });
-        }
-        
-        function getCache() {
-            db.cache.findOne({cacheKey: cacheKey}, function (err, cache) {
-                if (!cache || reload) {
+        },
 
-                    var decipher = app.get('decipher');
+        function getCache (req, res, next) {
+            db.cache.findOne({cacheKey: res.locals.cacheKey}, function (err, cache) {
+                if (!cache || res.locals.reload) {
+                    var connection = res.locals.connection;
 
                     connection.username = decipher(connection.username);
                     connection.password = decipher(connection.password);
@@ -66,65 +61,62 @@ module.exports = function (app, router) {
                     runQuery(tableAndColumnSql, connection, function (err, results) {
                         if (err) {
                             console.log(err);
-                            res.send({success: false});
-                        } else {
-                            var byTableType = _.groupBy(results.rows, "table_type");
-                            for (var tableType in byTableType) {
-                                if (byTableType.hasOwnProperty(tableType)) {
-                                    tree[tableType] = {};
-                                    var bySchema = _.groupBy(byTableType[tableType], "table_schema");
-                                    for (var schema in bySchema) {
-                                        if (bySchema.hasOwnProperty(schema)) {
-                                            tree[tableType][schema] = {};
-                                            var byTableName = _.groupBy(bySchema[schema], "table_name");
-                                            for (var tableName in byTableName) {
-                                                if (byTableName.hasOwnProperty(tableName)) {
-                                                    tree[tableType][schema][tableName] = byTableName[tableName];
-                                                }
+                            return res.send({success: false});
+                        } 
+                        var byTableType = _.groupBy(results.rows, "table_type");
+                        for (var tableType in byTableType) {
+                            if (byTableType.hasOwnProperty(tableType)) {
+                                res.locals.tree[tableType] = {};
+                                var bySchema = _.groupBy(byTableType[tableType], "table_schema");
+                                for (var schema in bySchema) {
+                                    if (bySchema.hasOwnProperty(schema)) {
+                                        res.locals.tree[tableType][schema] = {};
+                                        var byTableName = _.groupBy(bySchema[schema], "table_name");
+                                        for (var tableName in byTableName) {
+                                            if (byTableName.hasOwnProperty(tableName)) {
+                                                res.locals.tree[tableType][schema][tableName] = byTableName[tableName];
                                             }
                                         }
                                     }
                                 }
                             }
-                            /*
-                            So at this point, tree should look like this:
-                            tree: {
-                                "table": {
-                                    "dbo": {
-                                        "tablename": [
-                                            {
-                                                column_name: "the column name",
-                                                data_type: "string",
-                                                is_nullable: "no"
-                                            }
-                                        ]
-                                    }
+                        }
+                        /*
+                        So at this point, tree should look like this:
+                        tree: {
+                            "table": {
+                                "dbo": {
+                                    "tablename": [
+                                        {
+                                            column_name: "the column name",
+                                            data_type: "string",
+                                            is_nullable: "no"
+                                        }
+                                    ]
                                 }
                             }
-                            */
-                            updateCacheAndRender();
                         }
+                        */
+                        next();
                     });
                 } else {
-                    res.render('schema-info', {tree: JSON.parse(cache.schema), showSchemaCopyButton: showSchemaCopyButton});
+                    return res.render('schema-info', {tree: JSON.parse(cache.schema), showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON});
                 }
-            });
-        }
+            })
+        },
         
-        
-        function updateCacheAndRender () {
-            if (!_.isEmpty(tree)) {
+        function updateCacheAndRender (req, res, next) {
+            if (!_.isEmpty(res.locals.tree)) {
                 var params = {
-                    cacheKey: cacheKey,
-                    schema: JSON.stringify(tree)
+                    cacheKey: res.locals.cacheKey,
+                    schema: JSON.stringify(res.locals.tree)
                 };
-                db.cache.update({cacheKey: cacheKey}, params, {upsert: true}, function () {
-                    res.render('schema-info', {tree: tree, showSchemaCopyButton: showSchemaCopyButton});
+                db.cache.update({cacheKey: res.locals.cacheKey}, params, {upsert: true}, function () {
+                    res.render('schema-info', {tree: res.locals.tree, showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON});
                 });
             } else {
-                res.render('schema-info', {tree: tree, showSchemaCopyButton: showSchemaCopyButton});
+                res.render('schema-info', {tree: tree, showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON});
             }
-        }
-        
-    });
+        }      
+    );
 };
