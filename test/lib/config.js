@@ -13,7 +13,7 @@ describe('lib/config.js', function() {
     process.env.GOOGLE_CLIENT_ID = "google-client-id";
     var config = require('../../lib/config.js');
     var configItems = require('../../lib/config-items.js');
-    var configItemsByKey = _.indexBy(configItems, 'key');
+    var configItemsByKey = _.keyBy(configItems, 'key');
 
     describe('#set()', function() {
         it('should accept key, value, setBy', function() {

@@ -6,7 +6,7 @@ describe('models/ConfigValue.js', function() {
     
     //var config = require('../../lib/config.js');
     //var configItems = require('../../lib/config-items.js');
-    //var configItemsByKey = _.indexBy(configItems, 'key');
+    //var configItemsByKey = _.keyBy(configItems, 'key');
 
     var ConfigValue = require('../../models/ConfigValue.js');
 
