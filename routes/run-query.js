@@ -6,6 +6,7 @@ var _ = require('lodash');
 var sanitize = require("sanitize-filename");
 var moment = require('moment');
 var xlsx = require('node-xlsx');
+var router = require('express').Router();
 var config = require('../lib/config.js');
 var db = require('../lib/db.js');
 var decipher = require('../lib/decipher.js');
@@ -14,9 +15,7 @@ function isNumberLike(n) {
     return (!isNaN(parseFloat(n)) && isFinite(n));
 }
 
-module.exports = function (app, router) {
-    router.post('/run-query', postRunQuery);
-};
+router.post('/run-query', postRunQuery);
 
 function postRunQuery (req, res) {
     db.connections.findOne({_id: req.body.connectionId}, function (err, connection) {
@@ -185,3 +184,5 @@ function postRunQuery (req, res) {
         }); // end db cache update
     });
 }
+
+module.exports = router;
