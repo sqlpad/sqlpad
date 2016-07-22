@@ -7,12 +7,9 @@ router.get("/auth/google", passport.authenticate('google', { scope: ['email'] })
 
 router.get('/auth/google/callback', 
     passport.authenticate('google', { 
-        //successRedirect: BASE_URL + '/',
+        successRedirect: BASE_URL + '/',
         failureRedirect: BASE_URL + '/signin'
-    }),
-    function createUserThenRedirect (req, res) {
-        res.redirect(BASE_URL + '/');
-    }
+    })
 );
 
 module.exports = router;

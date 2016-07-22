@@ -92,7 +92,8 @@ app.use(function (req, res, next) {
     res.locals.baseUrl = BASE_URL;
     // Expose key-value configs as a common variable passed on to browser
     // TODO: sensitive configs should not go to browser
-    res.locals.configItemsJsonString = JSON.stringify(config.getAllValues());
+    res.locals.configItemsJSONString = JSON.stringify(config.getAllValues());
+    next();
 });
 app.use(require('./middleware/open-admin-registration.js'));
 app.use(require('./middleware/auth-redirects.js'));
@@ -141,7 +142,7 @@ if (!DISABLE_USERPASS_AUTH) {
     routers.push(require('./routes/onboarding.js'));
 }
 
-if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET & PUBLIC_URL) {
+if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && PUBLIC_URL) {
     console.log("Enabling Google authentication Strategy.")
     routers.push(require('./routes/oauth.js'));
 }
