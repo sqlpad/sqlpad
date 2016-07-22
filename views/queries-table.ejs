@@ -19,9 +19,9 @@
                             <tr>
                                 <td><a href="<%= baseUrl %>/queries/<%= query._id %>"><%= query.name %></a></td>
                                 <td>
-                                    <% for (var t = 0; t < query.tags.length; t++) { %>
-                                        <a class="tag label label-info" href="<%= baseUrl %>/queries?tag=<%= query.tags[t] %>"><%= query.tags[t] %></a>
-                                    <% } %>    
+                                    <% if (query.tags) query.tags.forEach(function (tag) { %>
+                                        <a class="tag label label-info" href="<%= baseUrl %>/queries?tag=<%= tag %>"><%= tag %></a>
+                                    <% }) %>    
                                 </td>
                                 <td>
                                     <% if (connectionsById[query.connectionId]) { %> 
