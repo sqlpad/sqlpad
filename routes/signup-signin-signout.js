@@ -25,7 +25,7 @@ function adminRegistrationOpen (req, res, next) {
     });
 }
 
-router.get('/signup', signupBodyToLocals, function (req, res) {
+router.get('/signup', signupBodyToLocals, adminRegistrationOpen, function (req, res) {
     res.render('signup');
 });
 
@@ -36,6 +36,9 @@ router.post('/signup', signupBodyToLocals, adminRegistrationOpen, function (req,
         User.findOneByEmail(req.body.email, function (err, user) {
             if (err) {
                 return res.render('signup', {message: 'Error looking up user by email'});
+            }
+            if (user && user.passhash) {
+                return res.render('signup', {message: 'Already signed up'});
             }
             if (user) {
                 user.password = req.body.password;

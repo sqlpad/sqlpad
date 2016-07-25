@@ -33,6 +33,11 @@ if (DEBUG) {
 }
 
 
+/*  Run migrations on data if necessary
+============================================================================= */
+require('./lib/migrate-schema.js');
+
+
 /*  Express setup
 ============================================================================= */
 var bodyParser = require('body-parser');

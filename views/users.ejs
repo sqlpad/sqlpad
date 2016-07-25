@@ -18,7 +18,7 @@
                             <tr>
                                 <td><%= user.email %></td>
                                 <td><%= (user.admin ? "yes" : "" ) %></td>
-                                <td><%- (user.createdDate ? user.createdDate : "<em>not yet signed up</em>") %></td>
+                                <td><%- (user.signupDate ? user.signupDate : "<em>not yet signed up</em>") %></td>
                                 <td>
                                     <% if (user.admin) { %>
                                         <form role="form" action="<%= baseUrl %>/users/remove-admin/<%= user._id %>" method="post">
