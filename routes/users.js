@@ -1,10 +1,11 @@
 var router = require('express').Router();
-var db = require('../lib/db.js');
 var config = require('../lib/config.js');
 const BASE_URL = config.get('baseUrl');
+var User = require('../models/User.js');
 
 function renderUsers (req, res) {
-    db.users.find({}).sort({email: 1}).exec(function (err, users) {
+    User.findAll(function (err, users) {
+        if (err) console.log(err);
         res.render('users', {users: users, pageTitle: "Users"});
     });   
 }
@@ -12,11 +13,11 @@ function renderUsers (req, res) {
 router.get('/users', renderUsers);
 
 router.post('/users/whitelist', function (req, res) {
-    var user = {
+    var user = new User({
         email: req.body.email,
         admin: (req.body.admin ? true : false)
-    };
-    db.users.insert(user, function (err) {
+    });
+    user.save(function (err, newUser) {
         if (err) {
             console.log(err);
             res.location(BASE_URL + '/users');
@@ -29,9 +30,13 @@ router.post('/users/whitelist', function (req, res) {
 });
 
 router.post('/users/make-admin/:_id', function (req, res) {
-    db.users.update({_id: req.params._id}, {$set: {admin: true}}, {}, function (err) {
-        if (err) console.log(err);
-        res.redirect(BASE_URL + '/users');
+    User.findOneById(req.params._id, function (err, user) {
+        if (err) console.error(err);
+        user.admin = true;
+        user.save(function (err) {
+            if (err) console.error(err);
+            res.redirect(BASE_URL + '/users');
+        });
     });
 });
 
@@ -42,16 +47,19 @@ router.post('/users/remove-admin/:_id', function (req, res) {
         res.locals.debug = "You can't unadmin yourself!";
         renderUsers(req, res);
     } else {
-        db.users.update({_id: req.params._id}, {$set: {admin: false}}, {}, function (err) {
-            if (err) console.log(err);
-            res.redirect(BASE_URL + '/users');
+        User.findOneById(req.params._id, function (err, user) {
+            if (err) console.error(err);
+            user.admin = false;
+            user.save(function (err) {
+                if (err) console.error(err);
+                res.redirect(BASE_URL + '/users');
+            });
         });
     }
-        
 });
 
 router.delete('/users/:_id', function (req, res) {
-    db.users.remove({_id: req.params._id}, function (err) {
+    User.removeOneById(req.params._id, function (err) {
         if (err) console.log(err);
         res.redirect(BASE_URL + '/users');
     });

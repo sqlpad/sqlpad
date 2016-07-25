@@ -37,6 +37,7 @@
     "disc": "discify ./public/javascripts/browserified.js > disc.html"
   },
   "dependencies": {
+    "async": "^2.0.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.x.x",
     "connect-flash": "^0.1.1",

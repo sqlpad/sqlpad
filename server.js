@@ -95,7 +95,6 @@ app.use(function (req, res, next) {
     res.locals.configItemsJSONString = JSON.stringify(config.getAllValues());
     next();
 });
-app.use(require('./middleware/open-admin-registration.js'));
 app.use(require('./middleware/auth-redirects.js'));
 
 
@@ -126,7 +125,7 @@ require('./middleware/passport.js');
 ============================================================================= */
 var routers = [
     require('./routes/homepage.js'),
-    require('./routes/user-admin.js'),
+    require('./routes/users.js'),
     require('./routes/connections.js'),
     require('./routes/queries.js'),
     require('./routes/run-query.js'), // ajaxy route used for executing query and getting results
@@ -139,7 +138,7 @@ var routers = [
 // if a route should only conditionally exist load it here
 // routers.push(require('./routes/another-router.js'));
 if (!DISABLE_USERPASS_AUTH) {
-    routers.push(require('./routes/onboarding.js'));
+    routers.push(require('./routes/signup-signin-signout.js'));
 }
 
 if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && PUBLIC_URL) {

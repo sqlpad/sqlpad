@@ -9,7 +9,8 @@ var schema = {
     passhash: Joi.string().optional(), // may not exist if user hasn't signed up yet
     password: Joi.string().optional().strip(),
     createdDate: Joi.date().default(new Date(), 'time of creation'),
-    modifiedDate: Joi.date().default(new Date(), 'time of modification') 
+    modifiedDate: Joi.date().default(new Date(), 'time of modification'),
+    signupDate: Joi.date().optional() 
 }
 
 var User = function User (data) {
@@ -20,6 +21,7 @@ var User = function User (data) {
     this.password = data.password;
     this.createdDate = data.createdDate;
     this.modifiedDate = data.modifiedDate;
+    this.signupDate = data.signupDate;
 }
 
 User.prototype.save = function UserSave (callback) {
@@ -40,7 +42,10 @@ User.prototype.save = function UserSave (callback) {
     function validateAndSave () {
         var joiResult = Joi.validate(self, schema);
         if (joiResult.error) return callback(joiResult.error);
-        db.users.update({email: self.email}, joiResult.value, {upsert: true}, callback);
+        db.users.update({email: self.email}, joiResult.value, {upsert: true}, function (err) {
+            if (err) return callback(err);
+            return User.findOneByEmail(self.email, callback);
+        });
     }
         
 }
@@ -55,6 +60,14 @@ User.prototype.comparePasswordToHash = function comparePasswordToHash (password,
 
 User.findOneByEmail = function UserFindByEmail (email, callback) {
     db.users.findOne({email: email}).exec(function (err, doc) {
+        if (err) return callback(err);
+        if (!doc) return callback();
+        return callback(err, new User(doc));
+    });
+}
+
+User.findOneById = function UserFindOneById (id, callback) {
+    db.users.findOne({_id: id}).exec(function (err, doc) {
         if (err) return callback(err);
         if (!doc) return callback();
         return callback(err, new User(doc));
@@ -82,6 +95,9 @@ User.adminRegistrationOpen = function (callback) {
     });
 } 
 
+User.removeOneById = function UserRemoveOneById (id, callback) {
+    db.users.remove({_id: id}, callback);
+} 
 
 User._removeAll = function _removeAllUsers (callback) {
     db.users.remove({}, {multi: true}, callback);
