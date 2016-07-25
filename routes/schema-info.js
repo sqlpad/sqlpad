@@ -5,6 +5,7 @@ var path = require('path');
 var router = require('express').Router();
 var config = require('../lib/config.js');
 var db = require('../lib/db.js');
+var Connection = require('../models/Connection.js');
 var decipher = require('../lib/decipher.js');
 
 var sqldir = path.resolve(__dirname + '/../sql/');
@@ -26,7 +27,7 @@ router.get('/schema-info/:connectionId',
     },
     
     function getConnection (req, res, next) {
-        db.connections.findOne({_id: res.locals.connectionId}, function (err, conn) {
+        Connection.findOneById(res.locals.connectionId, function (err, conn) {
             if (!err && conn) {
                 res.locals.connection = conn;
                 res.locals.cacheKey = "schemaCache:" + res.locals.connectionId;

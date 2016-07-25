@@ -6,13 +6,13 @@
     If there are no connections, the user goes to the connections page
 ============================================================================= */
 var router = require('express').Router();
-var db = require('../lib/db.js');
+var Connection = require('../models/Connection.js');
 var config = require('../lib/config.js');
 const BASE_URL = config.get('baseUrl')
 
 router.get('/', function(req, res) {
-    db.connections.findOne({}, function (err, doc) {
-        if (!doc && res.locals.user.admin) {
+    Connection.findAll(function (err, connections) {
+        if (connections.length === 0 && res.locals.user.admin) {
             res.redirect(BASE_URL + '/connections');
         } else {
             res.redirect(BASE_URL + '/queries');

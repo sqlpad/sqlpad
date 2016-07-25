@@ -10,6 +10,7 @@ var router = require('express').Router();
 var config = require('../lib/config.js');
 var db = require('../lib/db.js');
 var decipher = require('../lib/decipher.js');
+var Connection = require('../models/Connection.js');
 
 function isNumberLike(n) {
     return (!isNaN(parseFloat(n)) && isFinite(n));
@@ -18,7 +19,7 @@ function isNumberLike(n) {
 router.post('/run-query', postRunQuery);
 
 function postRunQuery (req, res) {
-    db.connections.findOne({_id: req.body.connectionId}, function (err, connection) {
+    Connection.findOneById(req.body.connectionId, function (err, connection) {
         if (err) {
             return res.send({
                 success: false,

@@ -4,8 +4,8 @@ var runQuery = require('../lib/run-query.js');
 var cipher = require('../lib/cipher.js');
 var decipher = require('../lib/decipher.js');
 var config = require('../lib/config.js');
-var db = require('../lib/db.js');
-var baseUrl = config.get('baseUrl');
+var Connection = require('../models/Connection.js');
+var BASE_URL = config.get('baseUrl');
 
 function connectionFromBody (body) {
     return {
@@ -23,16 +23,13 @@ function connectionFromBody (body) {
 }
 
 router.get('/connections', function (req, res) {
-    db.connections.find({}).sort({name: 1}).exec(function (err, connections) {
-        connections = _.sortBy(connections, function (c) {
-            return c.name.toLowerCase();
-        });
+    Connection.findAll(function (err, connections) {
         res.render('connections', {pageTitle: "Connections", connections: connections});
     });
 });
 
 router.get('/connections/:_id', function (req, res) {
-    db.connections.findOne({_id: req.params._id}, function (err, connection) {
+    Connection.findOneById(req.params._id, function (err, connection) {
         if (!connection) {
             connection = {};
         } else {
@@ -46,17 +43,15 @@ router.get('/connections/:_id', function (req, res) {
 });
 
 router.post('/connections/new', function (req, res) {
-    var connection = connectionFromBody(req.body);
-    connection.createdDate = new Date();
-    connection.modifiedDate = new Date();
+    var connection = new Connection(connectionFromBody(req.body));
     connection.username = cipher(connection.username);
     connection.password = cipher(connection.password);
-    db.connections.insert(connection, function (err) {
+    connection.save(function (err, newConnection) {
         if (err) {
             console.log(err);
             res.render('connection', {debug: err});
         } else {
-            res.redirect(baseUrl + '/connections');
+            res.redirect(BASE_URL + '/connections');
         }
     });
 });
@@ -87,23 +82,20 @@ router.post('/connections/test', testConnection);
 router.put('/connections/test', testConnection);
 
 router.put('/connections/:_id', function (req, res) {
-    var bodyConnection = connectionFromBody(req.body);
-    bodyConnection.username = cipher(bodyConnection.username);
-    bodyConnection.password = cipher(bodyConnection.password);
-    db.connections.findOne({_id: req.params._id}, function (err, connection) {
-        _.merge(connection, bodyConnection);
-        connection.modifiedDate = new Date();
-        db.connections.update({_id: req.params._id}, connection, {}, function (err) {
-            if (err) console.log(err);
-            res.redirect(baseUrl + '/connections');
-        });
+    var connection = new Connection(connectionFromBody(req.body));
+    connection.username = cipher(bodyConnection.username);
+    connection.password = cipher(bodyConnection.password);
+    connection._id = req.params._id;
+    connection.save(function (err, newConnection) {
+        if (err) console.error(err);
+        res.redirect(BASE_URL + '/connections');
     });
 });
 
 router.delete('/connections/:_id', function (req, res) {
-    db.connections.remove({_id: req.params._id}, function (err) {
-        if (err) console.log(err);
-        res.redirect(baseUrl + '/connections');
+    Connection.removeOneById(req.params._id, function (err) {
+        if (err) console.error(err);
+        res.redirect(BASE_URL + '/connections');
     });
 });
 

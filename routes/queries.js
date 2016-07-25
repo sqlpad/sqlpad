@@ -7,10 +7,11 @@ var moment = require('moment');
 var request = require('request');
 var config = require('../lib/config.js');
 var db = require('../lib/db.js');
+var Connection = require('../models/Connection.js');
 const BASE_URL = config.get('baseUrl');
 
 function getQueryFilterData(req, res, next) {
-    db.connections.find({}, function (err, connections) {
+    Connection.findAll(function (err, connections) {
         var connectionsById = _.keyBy(connections, '_id');
         db.queries.find({}, function (err, queries) {
             var tags = _.uniq(_.flatten(_.map(queries, 'tags'))).sort();
@@ -102,7 +103,7 @@ router.get('/queries/:_id', function (req, res) {
         res.locals.controlKeyText = 'Ctrl';
     }
 
-    db.connections.find({}, function (err, connections) {
+    Connection.findAll(function (err, connections) {
         res.locals.queryMenu = true;
         res.locals.cacheKey = uuid.v1();
         res.locals.navbarConnections = _.sortBy(connections, 'name');
