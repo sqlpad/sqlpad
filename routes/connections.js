@@ -83,8 +83,8 @@ router.put('/connections/test', testConnection);
 
 router.put('/connections/:_id', function (req, res) {
     var connection = new Connection(connectionFromBody(req.body));
-    connection.username = cipher(bodyConnection.username);
-    connection.password = cipher(bodyConnection.password);
+    connection.username = cipher(connection.username);
+    connection.password = cipher(connection.password);
     connection._id = req.params._id;
     connection.save(function (err, newConnection) {
         if (err) console.error(err);
