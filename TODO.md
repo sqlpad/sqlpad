@@ -2,6 +2,9 @@
 
 This is a place to document and delay decisions for the 2.0.0 release. 
 
+- .xlsx cache not getting deleted
+    It should be deleted on sqlpad startup (migration or every time?)
+
 - data schema migration
     User model has a distinction between createdDate and signupDate.
     On first startup of sqlpad 2.0, data should be migrated to handle this

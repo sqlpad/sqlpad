@@ -1,0 +1,126 @@
+var fs = require('fs');
+var path = require('path');
+var Joi = require('joi');
+var db = require('../lib/db.js');
+var config = require('../lib/config.js');
+const DB_PATH = config.get('dbPath');
+var rimraf = require('rimraf');
+
+
+var schema = {
+    _id: Joi.string().optional(), // will be auto-gen by nedb
+    cacheKey: Joi.string().required(), // unique, manually provided
+    expiration: Joi.date().optional(), // item and associated cache files are removed on expiration
+    queryName: Joi.string().optional(), // used for file names if a file is downloaded
+    createdDate: Joi.date().default(new Date(), 'time of creation'),
+    modifiedDate: Joi.date().default(new Date(), 'time of modification')
+}
+
+var Cache = function Cache (data) {
+    this._id = data._id;
+    this.cacheKey = data.cacheKey;
+    this.expiration = data.expiration;
+    this.queryName = data.queryName;
+    this.createdDate = data.createdDate;
+    this.modifiedDate = data.modifiedDate;
+}
+
+Cache.prototype.xlsxFilePath = function CacheXlsxFilePath () {
+    return path.join(DB_PATH, "/cache/", this.cacheKey + ".xlsx");
+}
+
+Cache.prototype.csvFilePath = function CacheCsvFilePath () {
+    return path.join(DB_PATH, "/cache/", this.cacheKey + ".csv")
+}
+
+Cache.prototype.filePaths = function CacheFilePaths () {
+    // these may not exist. 
+    // eventually actual files should be stored on the cache item
+    return [   
+        this.xlsxFilePath(),
+        this.csvFilePath()
+    ];
+}
+
+Cache.prototype.removeFiles = function CacheRemoveFiles () {
+    var filepaths = this.filePaths();
+    filepaths.forEach(function (fp) {
+        if (fs.existsSync(fp)) {
+            fs.unlinkSync(fp);
+        }
+    });
+}
+
+Cache.prototype.expire = function CacheExpire () {
+    this.removeFiles();
+    db.cache.remove({_id: this._id}, {});
+}
+
+Cache.prototype.writeXlsx = function CacheWriteXlsx (queryResult, callback) {
+    // TODO once QueryResult model is formalized
+}
+
+Cache.prototype.writeCsv = function CacheWriteCsv (queryResult, callback) {
+    // TODO once QueryResult model is formalized
+}
+
+Cache.prototype.save = function CacheSave (callback) {
+    var self = this;
+    this.modifiedDate = new Date();
+    var joiResult = Joi.validate(self, schema);
+    if (joiResult.error) return callback(joiResult.error);
+    if (self._id) {
+        db.cache.update({_id: self._id}, joiResult.value, {}, function (err) {
+            if (err) return callback(err);
+            return Cache.findOneById(self._id, callback);
+        });
+    } else {
+        db.cache.insert(joiResult.value, function (err, newDoc) {
+            if (err) return callback(err);
+            return callback(null, new Cache(newDoc));
+        });
+    }
+}
+
+/*  Query methods
+============================================================================== */
+
+Cache.findOneByCacheKey = function CacheFindOneByCacheKey (cacheKey, callback) {
+    db.cache.findOne({cacheKey: cacheKey}, function (err, doc) {
+        if (err) return callback(err);
+        if (!doc) return callback();
+        return callback(err, new Cache(doc));
+    });
+}
+
+Cache.findExpired = function CacheFindExpired (callback) {
+    var now = new Date();
+    db.cache.find({expiration: {$lt: now}}, function (err, docs) {
+        if (err) return callback(err);
+        var caches = docs.map(function (doc) {
+            return new Cache(doc);
+        });
+        return callback(null, caches);
+    });
+}
+
+Cache.removeExpired = function CacheRemoveExpired (callback) {
+    Cache.findExpired(function (err, caches) {
+        caches.forEach(function (cache) {
+            cache.expire();
+        });
+    });
+}
+
+// Every five minutes check and expire cache
+// TODO: Move this out to somewhere else
+//const FIVE_MINUTES = 1000 * 60 * 5;
+//setInterval(Cache.removeExpired, FIVE_MINUTES);
+
+Cache.removeAll = function CacheRemoveAll (callback) {
+    // first remove all the cache files
+    // then remove the cache db records
+    rimraf(path.join(DB_PATH, "/cache/*"), function (err) {
+        db.cache.remove({}, {multi: true}, callback);
+    });
+}
