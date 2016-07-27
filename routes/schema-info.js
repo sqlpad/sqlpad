@@ -4,8 +4,8 @@ var fs = require('fs');
 var path = require('path');
 var router = require('express').Router();
 var config = require('../lib/config.js');
-var db = require('../lib/db.js');
 var Connection = require('../models/Connection.js');
+var Cache = require('../models/Cache.js');
 var decipher = require('../lib/decipher.js');
 
 var sqldir = path.resolve(__dirname + '/../sql/');
@@ -33,14 +33,20 @@ router.get('/schema-info/:connectionId',
                 res.locals.cacheKey = "schemaCache:" + res.locals.connectionId;
                 next();
             } else {
-                res.render('schema-info', {tree: tree, showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON});
+                res.render('schema-info', {
+                    tree: res.locals.tree, 
+                    showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON
+                });
             }
         });
     },
 
     function getCache (req, res, next) {
-        db.cache.findOne({cacheKey: res.locals.cacheKey}, function (err, cache) {
+        Cache.findOneByCacheKey(res.locals.cacheKey, function (err, cache) {
             if (!cache || res.locals.reload) {
+                if (!cache) cache = new Cache({cacheKey: res.locals.cacheKey});
+                res.locals.cache = cache;
+
                 var connection = res.locals.connection;
 
                 connection.username = decipher(connection.username);
@@ -100,24 +106,31 @@ router.get('/schema-info/:connectionId',
                     next();
                 });
             } else {
-                return res.render('schema-info', {tree: JSON.parse(cache.schema), showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON});
+                return res.render('schema-info', {
+                    tree: JSON.parse(cache.schema), 
+                    showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON
+                });
             }
         })
     },
     
     function updateCacheAndRender (req, res, next) {
         if (!_.isEmpty(res.locals.tree)) {
-            var params = {
-                cacheKey: res.locals.cacheKey,
-                schema: JSON.stringify(res.locals.tree)
-            };
-            db.cache.update({cacheKey: res.locals.cacheKey}, params, {upsert: true}, function () {
-                res.render('schema-info', {tree: res.locals.tree, showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON});
+            var cache = res.locals.cache;
+            cache.schema = JSON.stringify(res.locals.tree);
+            cache.save(function (err, newCache) {
+                res.render('schema-info', {
+                    tree: res.locals.tree, 
+                    showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON
+                });
             });
         } else {
-            res.render('schema-info', {tree: tree, showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON});
+            res.render('schema-info', {
+                tree: res.locals.tree, 
+                showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON
+            });
         }
-    }      
+    }
 );
 
 module.exports = router;

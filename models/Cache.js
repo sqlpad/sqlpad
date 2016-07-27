@@ -5,13 +5,15 @@ var db = require('../lib/db.js');
 var config = require('../lib/config.js');
 const DB_PATH = config.get('dbPath');
 var rimraf = require('rimraf');
-
+var xlsx = require('node-xlsx');
+var json2csv = require('json2csv');
 
 var schema = {
     _id: Joi.string().optional(), // will be auto-gen by nedb
     cacheKey: Joi.string().required(), // unique, manually provided
     expiration: Joi.date().optional(), // item and associated cache files are removed on expiration
     queryName: Joi.string().optional(), // used for file names if a file is downloaded
+    schema: Joi.string().optional(), // schema tree in JSON if that's what we're caching
     createdDate: Joi.date().default(new Date(), 'time of creation'),
     modifiedDate: Joi.date().default(new Date(), 'time of modification')
 }
@@ -21,6 +23,7 @@ var Cache = function Cache (data) {
     this.cacheKey = data.cacheKey;
     this.expiration = data.expiration;
     this.queryName = data.queryName;
+    this.schema = data.schema; // schema tree in JSON if that's what we're caching
     this.createdDate = data.createdDate;
     this.modifiedDate = data.modifiedDate;
 }
@@ -56,12 +59,46 @@ Cache.prototype.expire = function CacheExpire () {
     db.cache.remove({_id: this._id}, {});
 }
 
+
+
 Cache.prototype.writeXlsx = function CacheWriteXlsx (queryResult, callback) {
-    // TODO once QueryResult model is formalized
+    // TODO - record that xlsx was written for this cache item?
+    var self = this;
+    // loop through rows and build out an array of arrays
+    var resultArray = [];
+    resultArray.push(queryResult.fields);
+    for (var i = 0; i < queryResult.rows.length; i++) {
+        var row = [];
+        for (var c = 0; c < queryResult.fields.length; c++) {
+            var fieldName = queryResult.fields[c];
+            row.push(queryResult.rows[i][fieldName]);
+        }
+        resultArray.push(row);
+    }
+    var xlsxBuffer = xlsx.build([{name: "query-results", data: resultArray}]); // returns a buffer 
+    fs.writeFile(self.xlsxFilePath(), xlsxBuffer, function (err) {
+        // if there's an error log it but otherwise continue on 
+        // we can still send results even if download file failed to create 
+        if (err) {
+            console.log(err);
+        }
+        return callback();
+    });
 }
 
 Cache.prototype.writeCsv = function CacheWriteCsv (queryResult, callback) {
-    // TODO once QueryResult model is formalized
+    // TODO - record csv was written for this cache item?
+    var self = this;
+    json2csv({data: queryResult.rows, fields: queryResult.fields}, function (err, csv) {
+        if (err) {
+            console.log(err);
+            return callback();
+        }
+        fs.writeFile(self.csvFilePath(), csv, function (err) {
+            if (err) console.log(err);
+            return callback();
+        });
+    });
 }
 
 Cache.prototype.save = function CacheSave (callback) {
@@ -69,17 +106,10 @@ Cache.prototype.save = function CacheSave (callback) {
     this.modifiedDate = new Date();
     var joiResult = Joi.validate(self, schema);
     if (joiResult.error) return callback(joiResult.error);
-    if (self._id) {
-        db.cache.update({_id: self._id}, joiResult.value, {}, function (err) {
-            if (err) return callback(err);
-            return Cache.findOneById(self._id, callback);
-        });
-    } else {
-        db.cache.insert(joiResult.value, function (err, newDoc) {
-            if (err) return callback(err);
-            return callback(null, new Cache(newDoc));
-        });
-    }
+    db.cache.update({cacheKey: self.cacheKey}, joiResult.value, {upsert: true}, function (err) {
+        if (err) return callback(err);
+        return Cache.findOneByCacheKey(self.cacheKey, callback);
+    });
 }
 
 /*  Query methods
@@ -124,3 +154,6 @@ Cache.removeAll = function CacheRemoveAll (callback) {
         db.cache.remove({}, {multi: true}, callback);
     });
 }
+
+
+module.exports = Cache;
