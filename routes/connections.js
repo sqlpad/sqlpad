@@ -62,7 +62,7 @@ function testConnection(req, res) {
     if (bodyConnection.driver == "crate") {
         testQuery = "SELECT name from sys.cluster";
     }
-    runQuery(testQuery, bodyConnection, function (err, results) {
+    runQuery(testQuery, bodyConnection, function (err, queryResult) {
         if (err) {
             console.log(err);
             res.send({
@@ -72,7 +72,7 @@ function testConnection(req, res) {
         } else {
             res.send({
                 success: true,
-                results: results.rows
+                results: queryResult.rows
             });
         }
     });

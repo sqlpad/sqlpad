@@ -11,18 +11,12 @@ var config = require('../lib/config.js');
 var db = require('../lib/db.js');
 var decipher = require('../lib/decipher.js');
 var Connection = require('../models/Connection.js');
-
 const DB_PATH = config.get('dbPath');
-
-function isNumberLike(n) {
-    return (!isNaN(parseFloat(n)) && isFinite(n));
-}
 
 router.post('/run-query', 
     getConnection, 
     updateCache,
     execRunQuery,
-    getMetaData,
     downloadCheck,
     createXlsxDownload,
     createCsvDownload,
@@ -71,8 +65,7 @@ function updateCache (req, res, next) {
 function execRunQuery (req, res, next) {
     var connection = res.locals.connection;
     res.locals.start = new Date();
-    runQuery(req.body.queryText, connection, function (err, results) {
-        res.locals.end = new Date();
+    runQuery(req.body.queryText, connection, function (err, queryResult) {
         if (err) {
             console.log(err.toString());
             return res.send({
@@ -80,79 +73,10 @@ function execRunQuery (req, res, next) {
                 error: err.toString()
             });
         }
-        res.locals.results = results; 
+        res.locals.queryResult = queryResult;
+        res.locals.end = new Date();
         next();
     });
-}
-
-function getMetaData (req, res, next) {
-    // this meta data will be used by the UI to format data appropriately
-    // it will also be used to determine columns for basic data visuals
-    /*
-    {
-        fieldname: {
-            datatype: 'date',        // or 'number' or 'string'
-            max: 42 ,                // if a number, max is present
-            min: 1                   // available if number
-        }
-    }
-    */
-    var results = res.locals.results;
-    var fields = [];
-    var meta = {};
-    for (var r = 0; r < results.rows.length; r++) {
-        var row = results.rows[r];
-        _.forOwn(row, function (value, key) {
-            // if this is first row, record fields in fields array
-            if (r === 0) fields.push(key);
-            if (!meta[key]) meta[key] = {
-                datatype: null,
-                max: null,
-                min: null,
-                maxValueLength: 0
-            };
-
-            // if we don't have a data type and we have a value yet lets try and figure it out
-            if (!meta[key].datatype && value) {
-                if (_.isDate(value)) meta[key].datatype = 'date';
-                else if (isNumberLike(value)) meta[key].datatype = 'number';
-                else if (_.isString(value)) {
-                    meta[key].datatype = 'string';
-                    if (meta[key].maxValueLength < value.length) meta[key].maxValueLength = value.length;
-                }
-            }
-            // if we have a value and are dealing with a number or date, we should get min and max
-            if (
-                value
-                && (meta[key].datatype === 'number' || meta[key].datatype === 'date')
-                && (isNumberLike(value) || _.isDate(value))
-            ) {
-                // if we haven't yet defined a max and this row contains a number
-                if (!meta[key].max) meta[key].max = value;
-                // otherwise this field in this row contains a number, and we should see if its bigger
-                else if (value > meta[key].max) meta[key].max = value;
-                // then do the same thing for min
-                if (!meta[key].min) meta[key].min = value;
-                else if (value < meta[key].min) meta[key].min = value;
-            }
-            // if the datatype is number-like, 
-            // we should check to see if it ever changes to a string
-            // this is hacky, but sometimes data will be 
-            // a mix of number-like and strings that aren't number like
-            // in the event that we get some data that's NOT NUMBER LIKE, 
-            // then we should *really* be recording this as string
-            if (meta[key].datatype === 'number' && value) {
-                if (!isNumberLike(value)) {
-                    meta[key].datatype = 'string';
-                    meta[key].max = null;
-                    meta[key].min = null;
-                }
-            }
-        });
-    }
-    res.locals.fields = fields;
-    res.locals.meta = meta;
-    next();
 }
 
 function downloadCheck (req, res, next) {
@@ -160,32 +84,28 @@ function downloadCheck (req, res, next) {
     if (ALLOW_CSV_DOWNLOAD) {
         next();
     } else {
-        var results = res.locals.results;
-        var fields = res.locals.fields;
-        var meta = res.locals.meta;
+        var queryResult = res.locals.queryResult;
         return res.send({
             success: true,
             serverMs: res.locals.end - res.locals.start,
-            meta: meta,
-            results: results.rows,
-            incomplete: results.incomplete
+            meta: queryResult.meta,
+            results: queryResult.rows,
+            incomplete: queryResult.incomplete
         });
     }
 }
 
 function createXlsxDownload (req, res, next) {
-    var results = res.locals.results;
-    var fields = res.locals.fields;
-    var meta = res.locals.meta;
+    var queryResult = res.locals.queryResult;
     var cache = res.locals.cache;
     // loop through rows and build out an array of arrays
     var resultArray = [];
-    resultArray.push(fields);
-    for (var i = 0; i < results.rows.length; i++) {
+    resultArray.push(queryResult.fields);
+    for (var i = 0; i < queryResult.rows.length; i++) {
         var row = [];
-        for (var c = 0; c < fields.length; c++) {
-            var fieldName = fields[c];
-            row.push(results.rows[i][fieldName]);
+        for (var c = 0; c < queryResult.fields.length; c++) {
+            var fieldName = queryResult.fields[c];
+            row.push(queryResult.rows[i][fieldName]);
         }
         resultArray.push(row);
     }
@@ -202,10 +122,9 @@ function createXlsxDownload (req, res, next) {
 }
 
 function createCsvDownload (req, res, next) {
-    var results = res.locals.results;
-    var fields = res.locals.fields;
+    var queryResult = res.locals.queryResult;
     var cache = res.locals.cache;
-    json2csv({data: results.rows, fields: fields}, function (err, csv) {
+    json2csv({data: queryResult.rows, fields: queryResult.fields}, function (err, csv) {
         if (err) {
             console.log(err);
             return next();
@@ -219,15 +138,14 @@ function createCsvDownload (req, res, next) {
 }
 
 function sendResults (req, res) {
-    var results = res.locals.results;
-    var meta = res.locals.meta;
+    var queryResult = res.locals.queryResult;
     var cache = res.locals.cache;
     res.send({
         success: true,
         serverMs: res.locals.end - res.locals.start,
-        meta: meta,
-        results: results.rows,
-        incomplete: results.incomplete,
+        meta: queryResult.meta,
+        results: queryResult.rows,
+        incomplete: queryResult.incomplete,
         csvUrl: '/query-results/' + cache.cacheKey + '.csv'
     });     
 }

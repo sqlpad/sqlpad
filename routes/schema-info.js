@@ -58,12 +58,12 @@ router.get('/schema-info/:connectionId',
                     tableAndColumnSql = sqlSchemaStandard
                 }
 
-                runQuery(tableAndColumnSql, connection, function (err, results) {
+                runQuery(tableAndColumnSql, connection, function (err, queryResult) {
                     if (err) {
                         console.log(err);
                         return res.send({success: false});
                     } 
-                    var byTableType = _.groupBy(results.rows, "table_type");
+                    var byTableType = _.groupBy(queryResult.rows, "table_type");
                     for (var tableType in byTableType) {
                         if (byTableType.hasOwnProperty(tableType)) {
                             res.locals.tree[tableType] = {};
