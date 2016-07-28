@@ -4,7 +4,6 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 var updateNotifier = require('update-notifier');
-var db = require('./lib/db.js');
 var packageJson = require('./package.json');
 var app = express();
 
