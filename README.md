@@ -2,7 +2,8 @@
 
 A Node.js web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate and Vertica.
 
-![SqlPad Query Editor](screenshots/query-editor.png)
+![SqlPad Query Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/query-editor.png)
+![SqlPad Chart Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/chart-line.png)
 
 ## Installation and Usage
 
