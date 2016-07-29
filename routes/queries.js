@@ -2,18 +2,18 @@ var _ = require('lodash');
 var uaParser = require('ua-parser');
 var uuid = require('uuid');
 var router = require('express').Router();
-var noop = function () {};
 var moment = require('moment');
 var request = require('request');
 var config = require('../lib/config.js');
-var db = require('../lib/db.js');
 var Connection = require('../models/Connection.js');
+var Query = require('../models/Query.js');
+var noop = function () {};
 const BASE_URL = config.get('baseUrl');
 
 function getQueryFilterData(req, res, next) {
     Connection.findAll(function (err, connections) {
         var connectionsById = _.keyBy(connections, '_id');
-        db.queries.find({}, function (err, queries) {
+        Query.findAll(function (err, queries) {
             var tags = _.uniq(_.flatten(_.map(queries, 'tags'))).sort();
             var createdBys = _.uniq(_.map(queries, 'createdBy')).sort();
             connections = _.sortBy(connections, 'name');
@@ -23,22 +23,6 @@ function getQueryFilterData(req, res, next) {
             res.locals.tags = tags;
             next();
         });
-    });
-}
-
-// Post to a slack webhook
-function pushQueryToSlack(query, userEmail, webhookUrl, cb){
-    var options = {
-        method: 'post',
-        body: {"text": "New Query <" + process.env.PUBLIC_URL +
-                        "/queries/" + query._id + "|"+ query.name +
-                        "> saved by " + userEmail + " on SqlPad ```" +
-                        query.queryText + "```"},
-        json: true,
-        url: webhookUrl
-    }
-    request(options, function(err, httpResponse, body){
-        cb(err);
     });
 }
 
@@ -58,19 +42,14 @@ router.get('/queries', getQueryFilterData, function (req, res) {
         var queryTextRegExp = new RegExp(req.query.search, "i");
         filter.$or = [{queryText: {$regex: queryTextRegExp}}, {name: {$regex: nameRegExp}}];
     }
-    var cursor = db.queries.find(filter);
-    if (req.query && req.query.sortBy) {
-        if (req.query.sortBy === "accessed") {
-            cursor.sort({lastAccessedDate: -1});
-        } else if (req.query.sortBy === "modified") {
-            cursor.sort({modifiedDate: -1});
-        } else if (req.query.sortBy === "name") {
-            cursor.sort({name: 1});
+    Query.findByFilter(filter, function (err, queries) {
+        if (req.query && req.query.sortBy && req.query.sortBy === "name") {
+            queries = _.orderBy(queries, function (q){
+                return q.name.toLowerCase();
+            }, ['asc']);
+        } else {
+            queries = _.orderBy(queries, ['modifiedDate'], ['desc']);
         }
-    } else {
-        cursor.sort({modifiedDate: -1});
-    }
-    cursor.exec(function (err, queries) {
         queries.forEach(function (query) {
             query.lastAccessedFromNow = moment(query.lastAccessedDate).calendar();
             query.modifiedCalendar = moment(query.modifiedDate).calendar();
@@ -88,12 +67,10 @@ router.get('/queries', getQueryFilterData, function (req, res) {
                 filter: filter
             });
         }
-
     });
 });
 
-router.get('/queries/:_id', function (req, res) {
-
+function getControlKeyText (req, res, next) {
     var ua = req.headers['user-agent'];
     var os = uaParser.parseOS(ua).toString();
     res.locals.isMac = (os.search(/mac/i) >= 0);
@@ -102,14 +79,16 @@ router.get('/queries/:_id', function (req, res) {
     } else {
         res.locals.controlKeyText = 'Ctrl';
     }
+    next();
+}
 
+router.get('/queries/:_id', getControlKeyText, function (req, res) {
     Connection.findAll(function (err, connections) {
         res.locals.queryMenu = true;
         res.locals.cacheKey = uuid.v1();
         res.locals.navbarConnections = _.sortBy(connections, 'name');
         res.locals.allowDownload = config.get('allowCsvDownload');
         var format = req.query && req.query.format;
-
         if (req.params._id === 'new') {
             res.render('query', {
                 query: {
@@ -118,9 +97,9 @@ router.get('/queries/:_id', function (req, res) {
                 format: format
             });
         } else {
-            db.queries.findOne({_id: req.params._id}, function (err, query) {
+            Query.findOneById(req.params._id, function (err, query) {
                 // TODO: render error if this fails?
-                db.queries.update({_id: req.params._id}, {$set: {lastAccessedDate: new Date()}}, {}, noop);
+                query.logAccess(noop);
                 if (query && query.tags) query.tags = query.tags.join(', ');
                 if (format === 'json') {
                     // send JSON of query object
@@ -134,65 +113,69 @@ router.get('/queries/:_id', function (req, res) {
                         fullscreenContent: ['chart', 'table'].indexOf(format) > -1 ? true: false
                     });
                 }
-            });
+            })
         }
     });
 });
 
 router.post('/queries/:_id', function (req, res) {
     // save the query, to the query db
-    var bodyQuery = {
-        name: req.body.name || "No Name Query",
-        tags: req.body.tags,
-        connectionId: req.body.connectionId,
-        queryText: req.body.queryText,
-        chartConfiguration: req.body.chartConfiguration,
-        modifiedDate: new Date(),
-        modifiedBy: req.user.email,
-        lastAccessedDate: new Date()
-    };
     if (req.params._id == "new") {
-        bodyQuery.createdDate = new Date();
-        bodyQuery.createdBy = req.user.email;
-
-        db.queries.insert(bodyQuery, function (err, query) {
+        var query = new Query({
+            name: req.body.name || "No Name Query",
+            tags: req.body.tags,
+            connectionId: req.body.connectionId,
+            queryText: req.body.queryText,
+            chartConfiguration: req.body.chartConfiguration,
+            createdBy: req.user.email,
+            modifiedBy: req.user.email
+        });
+        query.save(function (err, newQuery) {
             if (err) {
                 console.log(err);
                 res.send({err: err, success: false});
             } else {
-                const SLACK_WEBHOOK = config.get('slackWebhook');
-                if (!SLACK_WEBHOOK) {
-                    // if not configured, just return success response
-                    res.send({success:true, query: query});
-                } else {
-                    pushQueryToSlack(query, req.user.email, webhook.value, function(err){
-                        if (err) console.log("Something went wrong while sending to Slack.")
-                        else {
-                            res.send({success: true, query: query});
-                        }
-                    });
-                }
+                // push query to slack if set up. 
+                // this is async, but save operation doesn't care about when/if finished
+                newQuery.pushQueryToSlackIfSetup(); 
+                res.send({success:true, query: newQuery});
             }
         });
     } else {
-        // This style update merges the bodyQuery values to whatever objects 
-        // are matched by the initial filter (in this case, _id, which will only match 1 query)
-        db.queries.update({_id: req.params._id}, {$set: bodyQuery}, {}, function (err) {
+        Query.findOneById(req.params._id, function (err, query) {
             if (err) {
-                console.log(err);
-                res.send({err: err, success: false});
-            } else {
-                bodyQuery._id = req.params._id;
-                res.send({success: true, query: bodyQuery});
+                return res.send({
+                    err: err,
+                    success: false
+                });
             }
+            if (!query) {
+                return res.send({
+                    err: "No query found for that Id",
+                    success: false
+                });
+            }
+            query.name = req.body.name || "";
+            query.tags = req.body.tags;
+            query.connectionId = req.body.connectionId;
+            query.queryText = req.body.queryText;
+            query.chartConfiguration = req.body.chartConfiguration;
+            query.modifiedBy = req.user.email;
+            query.save(function (err, newQuery) {
+                if (err) {
+                    console.log(err);
+                    return res.send({success: false, err: err});
+                }
+                return res.send({success: true, query: newQuery});
+            });
         });
     }
 });
 
 router.delete('/queries/:_id', function (req, res) {
-    db.queries.remove({_id: req.params._id}, function (err) {
+    Query.removeOneById(req.params._id, function (err) {
         if (err) console.log(err);
-        res.redirect(BASE_URL + '/queries');
+        return res.redirect(BASE_URL + '/queries');
     });
 });
 

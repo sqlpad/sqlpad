@@ -1,9 +1,9 @@
 var _ = require('lodash');
-var db = require('../lib/db.js');
 var router = require('express').Router();
+var Query = require('../models/Query.js');
 
 router.get('/tags', function (req, res) {
-    db.queries.find({}, function (err, queries) {
+    Query.findAll(function (err, queries) {
         var tags = _.uniq(_.flatten(_.map(queries, 'tags'))).sort();
         res.json(tags);
     });

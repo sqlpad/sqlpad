@@ -8,7 +8,6 @@ describe('lib/config.js', function() {
     // set any process.env variables here
     // or any process.env.args
     process.argv.push('--debug');
-    process.argv.push('--save');
     process.env.SQLPAD_DEBUG = "FALSE";
     process.env.GOOGLE_CLIENT_ID = "google-client-id";
     var config = require('../../lib/config.js');

@@ -2,6 +2,8 @@
 
 This is a place to document and delay decisions for the 2.0.0 release. 
 
+- query sorting should happen client side
+
 - .xlsx cache not getting deleted
     It should be deleted on sqlpad startup (migration or every time?)
 
