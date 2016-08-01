@@ -22,6 +22,15 @@ function connectionFromBody (body) {
     };
 }
 
+router.get('/api/connections', function (req, res) {
+    Connection.findAll(function (err, connections) {
+        res.json({
+            err: err,
+            connections: connections
+        });
+    });
+});
+
 router.get('/connections', function (req, res) {
     Connection.findAll(function (err, connections) {
         res.render('connections', {pageTitle: "Connections", connections: connections});

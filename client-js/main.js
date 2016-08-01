@@ -15,7 +15,7 @@ require('./user-admin.js')();
 require('./query-filter-form.js')();
 
 // All the stuff that happens when viewing/working with a single query happens here
-require('./query-editor.js')();
+//require('./query-editor.js')();
 
 
 // stuff below is gradually being converted into react
@@ -31,4 +31,12 @@ if (document.getElementById('config-values')) {
         <ConfigValues/>,
         document.getElementById('config-values')
     );
+}
+
+var FilterableQueryList = require('./FilterableQueryList.js');
+if (document.getElementById('filterable-query-list')) {
+    ReactDOM.render(
+        <FilterableQueryList/>,
+        document.getElementById('filterable-query-list')
+    )
 }

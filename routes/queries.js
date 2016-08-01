@@ -26,7 +26,26 @@ function getQueryFilterData(req, res, next) {
     });
 }
 
+router.get('/react/queries', function (req, res) {
+    res.render('react-queries', {
+        pageTitle: "Queries"
+    });
+})
+
+router.get('/api/queries', function (req, res) {
+    Query.findAll(function (err, queries) {
+        res.json({
+            err: err,
+            queries: queries
+        });
+    })
+})
+
 router.get('/queries', getQueryFilterData, function (req, res) {
+    return res.render('queries', {
+        pageTitle: "Queries"
+    });
+    /*
     var filter = {};
     if (req.query && req.query.tag) {
         filter.tags = req.query.tag;
@@ -35,7 +54,7 @@ router.get('/queries', getQueryFilterData, function (req, res) {
         filter.connectionId = req.query.connection;
     }
     if (req.query && req.query.createdBy) {
-        filter.createdBy = req.query.createdBy;
+        filter.createdBy = 
     }
     if (req.query && req.query.search) {
         var nameRegExp = new RegExp(req.query.search, "i");
@@ -43,31 +62,9 @@ router.get('/queries', getQueryFilterData, function (req, res) {
         filter.$or = [{queryText: {$regex: queryTextRegExp}}, {name: {$regex: nameRegExp}}];
     }
     Query.findByFilter(filter, function (err, queries) {
-        if (req.query && req.query.sortBy && req.query.sortBy === "name") {
-            queries = _.orderBy(queries, function (q){
-                return q.name.toLowerCase();
-            }, ['asc']);
-        } else {
-            queries = _.orderBy(queries, ['modifiedDate'], ['desc']);
-        }
-        queries.forEach(function (query) {
-            query.lastAccessedFromNow = moment(query.lastAccessedDate).calendar();
-            query.modifiedCalendar = moment(query.modifiedDate).calendar();
-        });
-        if (req.query && req.query.format && req.query.format === "table-only") {
-            res.render('queries-table', {
-                pageTitle: "Queries",
-                queries: queries,
-                filter: filter
-            });
-        } else {
-            res.render('queries', {
-                pageTitle: "Queries",
-                queries: queries,
-                filter: filter
-            });
-        }
+
     });
+    */
 });
 
 function getControlKeyText (req, res, next) {
