@@ -7,7 +7,7 @@ var config = rc('sqlpad-dev');
 var exposeConfig = { 
     expose: { 
         jquery: '$', 
-        ace: 'ace',
+        //ace: 'ace',
         Slick: 'Slick',
         d3: 'd3',
         Bloodhound: 'Bloodhound',

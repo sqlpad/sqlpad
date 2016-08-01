@@ -52,7 +52,6 @@ var Query = function (data) {
 }
 
 Query.prototype.save = function QuerySave (callback) {
-    const SLACK_WEBHOOK = config.get('slackWebhook');
     var self = this;
     this.modifiedDate = new Date();
     this.lastAccessDate = new Date();
