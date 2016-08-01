@@ -91,6 +91,7 @@
     "istanbul": "^0.4.4",
     "mocha": "^2.5.3",
     "nodemon": "^1.8.1",
+    "page": "^1.7.1",
     "react": "^15.1.0",
     "react-ace": "^3.5.0",
     "react-bootstrap": "^0.30.0",

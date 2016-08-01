@@ -20,9 +20,12 @@ require('./query-filter-form.js')();
 
 // stuff below is gradually being converted into react
 // as more react components are available these can be 
-// managed in a more elegant way (client-side router or... ?)
+// managed in a more elegant way 
+// for now page.js is gradually being worked in. 
+var page = require('page');
 var React = require('react');
 var ReactDOM = require('react-dom');
+
 
 var ConfigValues = require('./ConfigValues.js');
 
@@ -33,10 +36,21 @@ if (document.getElementById('config-values')) {
     );
 }
 
+
 var FilterableQueryList = require('./FilterableQueryList.js');
+page.base(baseUrl);
+page('/queries', function (ctx) {
+    ReactDOM.render(
+        <FilterableQueryList/>,
+        document.getElementById('react-applet')
+    )
+})
+page({click: false});
+/*
 if (document.getElementById('filterable-query-list')) {
     ReactDOM.render(
         <FilterableQueryList/>,
         document.getElementById('filterable-query-list')
     )
 }
+*/

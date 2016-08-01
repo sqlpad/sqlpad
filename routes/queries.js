@@ -33,19 +33,8 @@ router.get('/react/queries', function (req, res) {
 })
 
 router.get('/api/queries', function (req, res) {
-    Query.findAll(function (err, queries) {
-        res.json({
-            err: err,
-            queries: queries
-        });
-    })
-})
-
-router.get('/queries', getQueryFilterData, function (req, res) {
-    return res.render('queries', {
-        pageTitle: "Queries"
-    });
     /*
+    NOTE: db side filter. implement or? 
     var filter = {};
     if (req.query && req.query.tag) {
         filter.tags = req.query.tag;
@@ -65,6 +54,18 @@ router.get('/queries', getQueryFilterData, function (req, res) {
 
     });
     */
+    Query.findAll(function (err, queries) {
+        res.json({
+            err: err,
+            queries: queries
+        });
+    })
+})
+
+router.get('/queries', getQueryFilterData, function (req, res) {
+    return res.render('react-applet', {
+        pageTitle: "Queries"
+    });
 });
 
 function getControlKeyText (req, res, next) {
