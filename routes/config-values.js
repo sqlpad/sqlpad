@@ -3,6 +3,13 @@ var configItems = require('../lib/config-items.js');
 var config = require('../lib/config.js');
 var router = require('express').Router();
 
+router.get('/api/config', function (req, res) {
+    res.json({
+        err: null,
+        config: config.getAllValues()
+    });
+})
+
 router.get('/api/config-items', function (req, res) {
     var setBys = config.getAllSetBy();
     var withValues = configItems.map(function (item) {
