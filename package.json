@@ -97,6 +97,7 @@
     "react-bootstrap": "^0.30.0",
     "react-copy-to-clipboard": "^4.2.2",
     "react-dom": "^15.1.0",
+    "react-select": "^1.0.0-beta14",
     "taucharts": "^0.9.1",
     "watchify": "^3.7.0",
     "whatwg-fetch": "^1.0.0"
