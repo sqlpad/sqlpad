@@ -137,10 +137,6 @@ a {
     bottom:0;
 }
 
-#panel-db-info {
-    padding: 10px;
-}
-
 .panel-editor {
     background-color: #2F3129; /* ace gutter color */
     background-color: #DDD;
@@ -220,7 +216,7 @@ a {
     width: 100%;
 }
 
-.fullscreen-content #result-slick-grid {
+.fullscreen-content #result-grid {
     top: 0px;
     left: 0px;
     height: 100%;
@@ -249,13 +245,13 @@ a {
     white-space: nowrap;
 }
 
-
+/* nav above sidebar is f8f8f8 */
 
 .sidebar {
     padding: 12px;
-    width: 250px;
+    width: 280px;
     position: fixed;
-    top: 103px;
+    top: 98px;
     bottom: 0;
     left: 0;
     z-index: 1000;
@@ -263,8 +259,20 @@ a {
     padding: 20px;
     overflow-x: hidden;
     overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #f8f8f8;
+    background-color: #fdfdfd;
     border-right: 1px solid #eee;
+    /*
+    background-color: #fcfcfc;
+    border-right: 1px solid #eee;
+    */
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    color: #555;
+    cursor: default;
+    background-color: #fdfdfd;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
 }
 
 .sidebar-header {
@@ -301,13 +309,18 @@ a {
 
 /* schema-info copy button */
 .schema-info-schema, .schema-info-table, .schema-info-column {
-    min-width: 210px;
+    min-width: 230px;
     display: inline-block;
 }
 .copy-button {
+    background-color: #5bc0de; /* label-info color */
     position: absolute;
-    left: 190px;
+    cursor: pointer;
+    right: 20px;
     width: 40px;
+}
+.copy-button:hover {
+    background-color: orange;
 }
 
 
@@ -327,61 +340,49 @@ a {
 /*  Panel Results / Slick grids
 ======================================================== */
 
-#panel-result-header {
+.panel-result-header {
     position: absolute;
     top: 0;
     left: 0px;
     right: 0px;
     height: 30px;
-    border-left: 1px solid #dcdcdc;
+    border-top: 1px solid #dcdcdc;
     border-bottom: 1px solid #dcdcdc;
-    background-color: #5bc0de;
-    background-color: #f0f0f0;
+    background-color: #fdfdfd;
     padding: .6em;
-    
     font-weight: 700;
     line-height: 1;
     color: #333;
     white-space: nowrap;
     vertical-align: baseline;
     font-size: 90%;
-    /*
-    
-    text-align: center;
-    
-    border-radius: .25em;
-    */
 }
 
-.panel-result-header-label {
+.panel-result-header-item {
     padding-left: 30px;
-    color: #777;
 }
-.panel-result-header-label:nth-of-type(1) {
+.panel-result-header-item:nth-of-type(1) {
     padding-left: 5px;
 }
-
+.panel-result-header-label {
+    color: #777;
+}
 .result-download-link {
     margin-left: 10px;
 }
 
-#result-slick-grid, #result-slick-grid div {
+#result-grid, #result-grid div {
   -webkit-box-sizing: content-box;
      -moz-box-sizing: content-box;
           box-sizing: content-box;
 }
 
-#result-slick-grid {
+#result-grid {
     position: absolute;
     top: 30px;
     bottom: 0;
-    /*
-    
-    border: 1px solid #dcdcdc;
-    */
     left: 0;
     right: 0;
-    border-left: 1px solid #dcdcdc;
 }
 
 #run-result-notification {
@@ -398,9 +399,12 @@ a {
 #btn-reload-schema span {
     display: inline-block;
 }
+
 #btn-reload-schema {
-    float: right;
+    position: absolute;
+    right: 20px;
 }
+
 
 .driver-specific {
     display: none;
@@ -467,13 +471,21 @@ a {
 
 /*  Utility stuff 
 ======================================================== */
+.shortcut-letter {
+    text-decoration: underline;
+}
 .hidden {
     display: none;
 }
 
-.shortcut-letter {
-    text-decoration: underline;
+.spinning {
+    -webkit-animation:spin 2s linear infinite;
+    -moz-animation:spin 2s linear infinite;
+    animation:spin 2s linear infinite;
 }
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
 
 
@@ -538,3 +550,63 @@ a {
     border-radius: 4px;
     border: 1px solid #DDD;
 }
+
+
+/*  React Schema Info
+======================================================== */
+.SchemaInfoViewType {
+    color: #8a8a8a;
+    background-color: #e7e7e7;
+    border: 1px solid #d8d8d8;
+    height: 14px;
+    width: 14px;
+    font-size: 10px;
+    display: inline-block;
+    padding-left: 3px;
+}
+
+
+/*  Query Editor
+======================================================== */
+
+.QueryEditorSubheaderItem {
+    margin-left: 10px;
+    min-width: 80px;
+}
+
+.QueryEditorQueryName {
+    margin-left: 40px;
+    font-size: 18px;
+    line-height: 20px;
+    width: 450px;
+    color: #00B7FF;
+}
+.QueryEditorQueryName:hover {
+    color: #23527c;
+    cursor: pointer;
+}
+
+
+.NonSidebar {
+    position: fixed;
+    top: 98px;
+    right: 0;
+    bottom: 0;
+    left: 280px;
+}
+
+.QueryEditorAceEditorWrapper {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 50%;
+    left: 0;
+}
+
+.incomplete-notification {
+    color: #e31a1c;
+}
+
+
+
+
