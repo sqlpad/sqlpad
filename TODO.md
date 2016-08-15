@@ -2,6 +2,13 @@
 
 This is a place to document and delay decisions for the 2.0.0 release. 
 
+- react-select
+    allowCreate isn't implemented in react-select v1 beta, and v0.9 doesn't play well with react 15.
+
+- QueryResultDataTable
+    Old version used to convert date values as well as format for text.
+    Hold off converting to dates unless needed for chart? 
+
 - query sorting should happen client side
 
 - .xlsx cache not getting deleted
