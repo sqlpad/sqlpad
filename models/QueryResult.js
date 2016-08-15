@@ -12,6 +12,9 @@ function isNumberLike(n) {
 }
 
 function QueryResult () {
+    this.startTime;
+    this.stopTime;
+    this.queryRunTime;
     this.processedInitialHeader = false;
     this.fields = [];           // array of field names
     this.incomplete = false;    // signals whether results were truncated due to MAX_ROWS
@@ -28,6 +31,16 @@ function QueryResult () {
     this.rows = [];             // array of row objects [{col1: value, col2: value}]
 }
 
+QueryResult.prototype.timerStart = function () {
+    this.startTime = new Date();
+    this.stopTime = undefined;
+}
+
+QueryResult.prototype.timerStop = function () {
+    this.stopTime = new Date();
+    this.queryRunTime = this.stopTime - this.startTime;
+}
+
 QueryResult.prototype.addRows = function QueryResultAddRows (rows) {
     rows.forEach(function(row) {
         this.addRow(row);
@@ -35,12 +48,12 @@ QueryResult.prototype.addRows = function QueryResultAddRows (rows) {
 }
 
 QueryResult.prototype.addRow = function QueryResultAddRow (row) {
+    var self = this;
     this.rows.push(row);
     _.forOwn(row, function (value, key) {
         // if this is first row added, record fields in fields array
         if (!this.processedInitialHeader) {
             this.fields.push(key);
-            this.processedInitialHeader = true;
         } 
 
         if (!this.meta[key]) this.meta[key] = {
@@ -91,6 +104,11 @@ QueryResult.prototype.addRow = function QueryResultAddRow (row) {
             }
         }
     }.bind(this));
+
+    // if we haven't processed the header yet we have now
+    if (!this.processedInitialHeader) {
+        this.processedInitialHeader = true;
+    } 
 }
 
 module.exports = QueryResult;
