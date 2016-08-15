@@ -7,7 +7,7 @@ var decipher = require('../lib/decipher.js');
 var Connection = require('../models/Connection.js');
 var Cache = require('../models/Cache.js');
 
-router.post('/run-query', 
+router.post('/api/run-query', 
     getConnection, 
     updateCache,
     execRunQuery,
@@ -83,9 +83,7 @@ function downloadCheck (req, res, next) {
         return res.send({
             success: true,
             serverMs: res.locals.end - res.locals.start,
-            meta: queryResult.meta,
-            results: queryResult.rows,
-            incomplete: queryResult.incomplete
+            queryResult: queryResult
         });
     }
 }
@@ -108,10 +106,7 @@ function sendResults (req, res) {
     res.send({
         success: true,
         serverMs: res.locals.end - res.locals.start,
-        meta: queryResult.meta,
-        results: queryResult.rows,
-        incomplete: queryResult.incomplete,
-        csvUrl: '/query-results/' + cache.cacheKey + '.csv'
+        queryResult: res.locals.queryResult
     });     
 }
 
