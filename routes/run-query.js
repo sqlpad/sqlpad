@@ -59,7 +59,6 @@ function updateCache (req, res, next) {
 
 function execRunQuery (req, res, next) {
     var connection = res.locals.connection;
-    res.locals.start = new Date();
     runQuery(req.body.queryText, connection, function (err, queryResult) {
         if (err) {
             console.log(err.toString());
@@ -69,7 +68,6 @@ function execRunQuery (req, res, next) {
             });
         }
         res.locals.queryResult = queryResult;
-        res.locals.end = new Date();
         next();
     });
 }
@@ -82,7 +80,6 @@ function downloadCheck (req, res, next) {
         var queryResult = res.locals.queryResult;
         return res.send({
             success: true,
-            serverMs: res.locals.end - res.locals.start,
             queryResult: queryResult
         });
     }
@@ -101,11 +98,8 @@ function createCsvDownload (req, res, next) {
 }
 
 function sendResults (req, res) {
-    var queryResult = res.locals.queryResult;
-    var cache = res.locals.cache;
     res.send({
         success: true,
-        serverMs: res.locals.end - res.locals.start,
         queryResult: res.locals.queryResult
     });     
 }
