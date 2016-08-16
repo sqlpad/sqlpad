@@ -5,25 +5,23 @@ require('./connection.js')();
 require('./connection-admin.js')();
 require('./user-admin.js')();
 
-
 // stuff below is gradually being converted into react applets
 // for now page.js is being used to provide a bit of a router 
 var page = require('page');
 var React = require('react');
 var ReactDOM = require('react-dom');
 
-
+page.base(baseUrl);
 
 var ConfigValues = require('./ConfigValues.js');
-if (document.getElementById('config-values')) {
+page('/config-values', function (ctx) {
     ReactDOM.render(
         <ConfigValues/>,
-        document.getElementById('config-values')
+        document.getElementById('react-applet')
     );
-}
+});
 
 var FilterableQueryList = require('./FilterableQueryList.js');
-page.base(baseUrl);
 page('/queries', function (ctx) {
     ReactDOM.render(
         <FilterableQueryList/>,

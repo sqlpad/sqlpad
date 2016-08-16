@@ -47,7 +47,7 @@ router.post('/api/config-values/:key', function (req, res) {
 })
 
 router.get('/config-values', function (req, res) {
-    res.render('config-values', {
+    return res.render('react-applet', {
         pageTitle: "Configuration"
     });
 });
