@@ -299,8 +299,17 @@ a {
     width: 100%;
 }
 .sidebar .control-label {
-    font-weight: 400;
-    color: #777;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* also in sidebar */
+.checkbox label, .radio label {
+    font-weight: 600;
+    font-size: 13px;
+}
+input[type=checkbox], input[type=radio] {
+    margin: 2px 0 0;
 }
 
 .data-type {
@@ -610,3 +619,7 @@ a {
 
 
 
+#chart {
+    padding: 10px;
+    height: 100%;
+}

@@ -3,17 +3,19 @@ var moment = require('moment');
 var _ = require('_');
 var uuid = require('uuid');
 var keymaster = require('keymaster');
+var Select = require('react-select');
 var SchemaInfo = require('./SchemaInfo.js');
 var QueryResultDataTable = require('./QueryResultDataTable.js');
 var QueryResultHeader = require('./QueryResultHeader.js');
-var Select = require('react-select');
+var ChartInputs = require('./ChartInputs.js');
+var SqlpadTauChart = require('./SqlpadTauChart.js');
+
 
 import 'whatwg-fetch';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/sql';
 import 'brace/theme/github';
-import {Table, Column, Cell} from 'fixed-data-table'; // react's fixed data table
 
 
 var Row = require('react-bootstrap/lib/Row');
@@ -27,8 +29,6 @@ var Form = require('react-bootstrap/lib/Form');
 var FormGroup = require('react-bootstrap/lib/FormGroup');
 var FormControl = require('react-bootstrap/lib/FormControl');
 var ControlLabel = require('react-bootstrap/lib/ControlLabel');
-var ListGroup = require('react-bootstrap/lib/ListGroup');
-var ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
 var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Modal = require('react-bootstrap/lib/Modal');
@@ -126,9 +126,11 @@ var QueryEditor = React.createClass({
                 this.setState({
                     query: json.query
                 });
-            }.bind(this)).catch(function(ex) {
+            }.bind(this))
+            /*.catch(function(ex) {
                 console.error(ex.toString());
             });
+            */
     },
     autoPickConnection: function () {
         if (this.state.connections.length == 1 && this.state.query) {
@@ -256,6 +258,12 @@ var QueryEditor = React.createClass({
             query: query
         });
     },
+    onChartTypeChange: function (e) {
+        var chartType = e.target.value;
+        var query = this.state.query;
+        query.chartConfiguration.chartType = chartType;
+        this.setState({query: query});
+    },
     runQuery: function () {
         var editor = this.editor;
         var selectedText = editor.session.getTextRange(editor.getSelectionRange());
@@ -331,6 +339,34 @@ var QueryEditor = React.createClass({
             return false;
         });
     },
+    onChartConfigurationFieldsChange: function (chartFieldId, queryResultField) {
+        var query = this.state.query;
+        query.chartConfiguration.fields[chartFieldId] = queryResultField;
+        this.setState({
+            query: query
+        });
+    },
+    sqlpadTauChart: undefined,
+    onVisualizeClick: function (e) {
+        this.sqlpadTauChart.renderChart(true);
+    },
+    onTabSelect: function (tabkey) {
+        var renderChartIfVisible = () => {
+            var chartEl = document.getElementById('chart');
+            if (chartEl.clientHeight > 0) {
+                try {
+                    this.sqlpadTauChart.renderChart();
+                } 
+                catch (e) {
+                    console.log("tauchart rendering failed")
+                    console.log(e);
+                }
+            } else {
+                setTimeout(renderChartIfVisible, 20);
+            }
+        }
+        renderChartIfVisible();
+    },
     render: function () {
         var tabsFormStyle = {
             position: 'absolute',
@@ -341,7 +377,10 @@ var QueryEditor = React.createClass({
             return {value: t, label: t}
         });
         return (
-            <Tab.Container id="left-tabs-example" defaultActiveKey="sql">
+            <Tab.Container 
+                id="left-tabs-example" 
+                defaultActiveKey="sql"
+                onSelect={this.onTabSelect}>
                 <Col sm={12}>
                     <Row className="clearfix navbar-default">
                         <Nav bsStyle="tabs" className="navbar-left query-editor-nav-pills" style={{width: '100%', paddingLeft: 6}}>
@@ -421,7 +460,36 @@ var QueryEditor = React.createClass({
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="vis">
-                                    <h1>Vis</h1>
+                                    <div className="sidebar">
+                                        <FormGroup controlId="formControlsSelect" bsSize="small">
+                                            <FormControl 
+                                                value={this.state.query.chartConfiguration.chartType} 
+                                                onChange={this.onChartTypeChange}
+                                                componentClass="select" 
+                                                className="input-small">
+                                                <option value="">Choose a chart type...</option>
+                                                <option value="line">Line</option>
+                                                <option value="bar">Bar - Horizontal</option>
+                                                <option value="verticalbar">Bar - Vertical</option>
+                                                <option value="bubble">Scatterplot</option>
+                                            </FormControl>
+                                        </FormGroup>
+                                        <hr/>
+                                        <ChartInputs 
+                                            chartType={this.state.query.chartConfiguration.chartType} 
+                                            queryChartConfigurationFields={this.state.query.chartConfiguration.fields}
+                                            onChartConfigurationFieldsChange={this.onChartConfigurationFieldsChange}
+                                            queryResult={this.state.queryResult}
+                                            />
+                                        <hr/>
+                                        <Button onClick={this.onVisualizeClick} className={'btn-block'} bsSize={'sm'}>Visualize</Button>
+                                    </div>
+                                    <div className="NonSidebar">
+                                        <SqlpadTauChart 
+                                            query={this.state.query}
+                                            queryResult={this.state.queryResult}
+                                            ref={(ref) => this.sqlpadTauChart = ref} />
+                                    </div>
                                 </Tab.Pane>
                             </Tab.Content>
                         </Col>
