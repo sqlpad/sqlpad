@@ -23,9 +23,8 @@ var SqlpadTauChart = React.createClass({
         var selectedFields = this.props.query.chartConfiguration.fields;
         var chartDefinition = _.findWhere(chartDefinitions, {chartType: chartType})
         
+        // If there's no data just exit the chart render
         if (!dataRows.length) return;
-
-        var fileName = 'TODO-CHANGE-ME'
 
         var chartConfig = {
             type: chartDefinition.tauChartsType,
@@ -35,7 +34,7 @@ var SqlpadTauChart = React.createClass({
                 tauCharts.api.plugins.get('quick-filter')(),
                 tauCharts.api.plugins.get('exportTo')({
                     cssPaths:[baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'],
-                    fileName: fileName
+                    fileName: this.props.query.name || 'unnamed query'
                 })
             ]
         };

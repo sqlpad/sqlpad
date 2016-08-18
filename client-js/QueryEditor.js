@@ -367,6 +367,11 @@ var QueryEditor = React.createClass({
         }
         renderChartIfVisible();
     },
+    onSaveImageClick: function (e) {
+        if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
+            this.sqlpadTauChart.chart.fire('exportTo','png');    
+        }
+    },
     render: function () {
         var tabsFormStyle = {
             position: 'absolute',
@@ -483,6 +488,10 @@ var QueryEditor = React.createClass({
                                             />
                                         <hr/>
                                         <Button onClick={this.onVisualizeClick} className={'btn-block'} bsSize={'sm'}>Visualize</Button>
+                                        <Button onClick={this.onSaveImageClick} className={'btn-block'} bsSize={'sm'}>
+                                            <Glyphicon glyph="save" />{" "}
+                                            Save Chart Image
+                                        </Button>
                                     </div>
                                     <div className="NonSidebar">
                                         <SqlpadTauChart 
