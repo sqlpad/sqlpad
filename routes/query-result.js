@@ -7,10 +7,42 @@ var config = require('../lib/config.js');
 var decipher = require('../lib/decipher.js');
 var Connection = require('../models/Connection.js');
 var Cache = require('../models/Cache.js');
+var Query = require('../models/Query.js');
 
 
 router.get('/api/query-result/:_queryId', function (req, res) {
-
+    Query.findOneById(req.params._queryId, function (err, query) {
+        if (err) {
+            return res.send({
+                success: false,
+                error: err.toString()
+            });
+        }
+        if (!query) {
+            return res.send({
+                success: false,
+                error: "Query not found for that Id (please save query first)"
+            });
+        }
+        var data = {
+            connectionId: query.connectionId,
+            cacheKey: query._id,
+            queryName: query.name,
+            queryText: query.queryText
+        };
+        getQueryResult(data, function (err, queryResult) {
+            if (err) {
+                return res.send({
+                    success: false,
+                    error: err.toString()
+                });
+            }
+            return res.send({
+                success: true,
+                queryResult: queryResult
+            });  
+        });
+    })
 });
 
 router.post('/api/query-result', function (req, res) {

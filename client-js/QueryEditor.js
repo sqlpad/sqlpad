@@ -90,6 +90,19 @@ var QueryDetailsModal = React.createClass({
                                     onChange={this.props.onQueryTagsChange}
                                 />
                             </FormGroup>
+                            <br/>
+                            <ul className="nav nav-pills nav-justified">
+                                <li role="presentation">
+                                    <a href="?format=table" target="_queryPreview">
+                                        Link to Table {' '} <Glyphicon glyph="new-window"></Glyphicon> 
+                                    </a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="?format=chart" target="_queryPreview">
+                                        Link to Chart {' '} <Glyphicon glyph="new-window"></Glyphicon>
+                                    </a>
+                                </li>
+                            </ul>
                         </form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -449,14 +462,16 @@ var QueryEditor = React.createClass({
                                                 runSeconds={this.state.runSeconds}
                                                 queryResult={this.state.queryResult}
                                                 />
-                                            <QueryResultDataTable 
-                                                {...this.props}
-                                                isRunning={this.state.isRunning}
-                                                runQueryStartTime={this.state.runQueryStartTime}
-                                                queryResult={this.state.queryResult}
-                                                queryError={this.state.queryError}
-                                                querySuccess={this.state.querySuccess}
-                                                />
+                                            <div style={{position: 'absolute', top: 29, bottom: 3, left: 0, right: 2}}>
+                                                <QueryResultDataTable 
+                                                    {...this.props}
+                                                    isRunning={this.state.isRunning}
+                                                    runQueryStartTime={this.state.runQueryStartTime}
+                                                    queryResult={this.state.queryResult}
+                                                    queryError={this.state.queryError}
+                                                    querySuccess={this.state.querySuccess}
+                                                    />
+                                            </div>
                                         </div>
                                     </div>
                                 </Tab.Pane>
@@ -488,6 +503,7 @@ var QueryEditor = React.createClass({
                                             <Glyphicon glyph="save" />{" "}
                                             Save Chart Image
                                         </Button>
+                                        
                                     </div>
                                     <div className="NonSidebar">
                                         <SqlpadTauChart 

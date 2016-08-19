@@ -11,7 +11,7 @@ var QueryResultDataTable = React.createClass({
         }
     },
     handleResize: function(e) {
-        var resultGrid = document.getElementById('panel-result');
+        var resultGrid = document.getElementById('result-grid');
         if (resultGrid) {
             this.setState({
                 gridHeight: resultGrid.clientHeight,
@@ -29,14 +29,14 @@ var QueryResultDataTable = React.createClass({
     render: function () {
         if (this.props.isRunning) {
             return  (
-                <div id="run-result-notification">
+                <div id="result-grid" className="run-result-notification">
                     running...<br/>
                     <SecondsTimer startTime={this.props.runQueryStartTime} />
                 </div>
             );
         } else if (!this.props.querySuccess && this.props.queryError) {
             return (
-                <div id="run-result-notification" className="label-danger">
+                <div id="result-grid" className="run-result-notification label-danger">
                     {this.props.queryError}
                 </div>
             );
@@ -80,14 +80,14 @@ var QueryResultDataTable = React.createClass({
                         rowHeight={30}
                         rowsCount={queryResult.rows.length}
                         width={this.state.gridWidth}
-                        height={this.state.gridHeight - 32}
+                        height={this.state.gridHeight}
                         headerHeight={30}>
                         {columnNodes}
                     </Table>
                 </div>
             );
         } else {
-            return null;
+            return <div id="result-grid"></div>;
         }
     }
 });
