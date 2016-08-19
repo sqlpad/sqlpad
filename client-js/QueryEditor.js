@@ -32,6 +32,8 @@ var ControlLabel = require('react-bootstrap/lib/ControlLabel');
 var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Modal = require('react-bootstrap/lib/Modal');
+var Tooltip = require('react-bootstrap/lib/Tooltip');
+var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 
 var QueryDetailsModal = React.createClass({
@@ -59,14 +61,30 @@ var QueryDetailsModal = React.createClass({
         if (this.input) this.input.focus();
     },
     render: function () {
-        var myCategories = [
-            {
-                id: 'catid',
-                type: 'tag',
-                title: 'tags title',
-                items: ['Array', 'With', 'Tags']
+        var modalNavLink = (href, text) => {
+            var saved = this.props.query._id ? true : false;
+            if (saved) {
+                return (
+                    <li role="presentation">
+                        <a href={href} target="_blank" >
+                            {text} {' '} <Glyphicon glyph="new-window"></Glyphicon> 
+                        </a>
+                    </li>
+                )
+            } else {
+                var tooltip = <Tooltip id="tooltip">Save query to enable table/chart view links</Tooltip>;
+                return (
+                    <OverlayTrigger placement="top" overlay={tooltip}>
+                        <li role="presentation" className="disabled">
+                            <a href={href} target="_blank" onClick={(e) => e.preventDefault()} >
+                                {text} {' '} <Glyphicon glyph="new-window"></Glyphicon> 
+                            </a>
+                        </li>
+                    </OverlayTrigger>
+                )
             }
-        ]
+        }
+
         return (
                 <Modal onEntered={this.onEntered} animation={true} show={this.state.showModal} onHide={this.close} >
                     <Modal.Header closeButton>
@@ -75,14 +93,14 @@ var QueryDetailsModal = React.createClass({
                         <form onSubmit={this.onSubmit}>
                             <FormGroup>
                                 <ControlLabel>Query Name</ControlLabel>
-                                <input className="form-control" ref={(ref) => this.input = ref} type="text" value={this.props.queryName} onChange={this.onQueryNameChange} />
+                                <input className="form-control" ref={(ref) => this.input = ref} type="text" value={this.props.query.name} onChange={this.onQueryNameChange} />
                             </FormGroup>
                             <br/>
                             <FormGroup>
                                 <ControlLabel>Query Tags</ControlLabel>
                                 <Select
                                     name="query-tags-field"
-                                    value={this.props.tags}
+                                    value={this.props.query.tags}
                                     multi={true}
                                     allowCreate={true}
                                     placeholder=""
@@ -92,16 +110,8 @@ var QueryDetailsModal = React.createClass({
                             </FormGroup>
                             <br/>
                             <ul className="nav nav-pills nav-justified">
-                                <li role="presentation">
-                                    <a href="?format=table" target="_blank">
-                                        Link to Table {' '} <Glyphicon glyph="new-window"></Glyphicon> 
-                                    </a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="?format=chart" target="_blank">
-                                        Link to Chart {' '} <Glyphicon glyph="new-window"></Glyphicon>
-                                    </a>
-                                </li>
+                                {modalNavLink('?format=table', 'Link to Table')}
+                                {modalNavLink('?format=chart', 'Link to Chart')}
                             </ul>
                         </form>
                     </Modal.Body>
@@ -419,8 +429,7 @@ var QueryEditor = React.createClass({
                             <QueryDetailsModal 
                                 onQueryNameChange={this.onQueryNameChange} 
                                 onQueryTagsChange={this.onQueryTagsChange}
-                                queryName={this.state.query.name}
-                                tags={this.state.query.tags}
+                                query={this.state.query}
                                 tagOptions={tagOptions}
                                 ref={(ref) => this.queryDetailsModal = ref }/>
                         </Form>
