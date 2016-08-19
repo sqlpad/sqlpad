@@ -409,7 +409,12 @@ input[type=checkbox], input[type=radio] {
 .run-result-notification {
     font-size: 30px;
     text-align: center;
-    padding-top: 50px;
+    padding: 50px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 #btn-reload-schema span {

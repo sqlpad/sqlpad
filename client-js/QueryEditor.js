@@ -518,6 +518,7 @@ var QueryEditor = React.createClass({
                                         <SqlpadTauChart 
                                             query={this.state.query}
                                             queryResult={this.state.queryResult}
+                                            queryError={this.state.queryError}
                                             isRunning={this.state.isRunning}
                                             ref={(ref) => this.sqlpadTauChart = ref} />
                                     </div>
