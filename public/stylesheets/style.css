@@ -583,7 +583,7 @@ input[type=checkbox], input[type=radio] {
 
 .QueryEditorSubheaderItem {
     margin-left: 10px;
-    min-width: 80px;
+    min-width: 90px;
 }
 
 .QueryEditorQueryName {

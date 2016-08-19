@@ -422,8 +422,8 @@ var QueryEditor = React.createClass({
                                 disabled={this.state.isSaving}>
                                 <span className="shortcut-letter">S</span>{this.state.isSaving ? 'aving' : 'ave'}
                             </Button>
-                            <Button className="QueryEditorSubheaderItem" onClick={this.runQuery}>
-                                <span className="shortcut-letter">R</span>un
+                            <Button className="QueryEditorSubheaderItem" onClick={this.runQuery} disabled={this.state.isRunning}>
+                                <span className="shortcut-letter">R</span>{this.state.isRunning ? 'unning' : 'un'}
                             </Button>
                             <ControlLabel onClick={this.openQueryDetailsModal} className="QueryEditorSubheaderItem QueryEditorQueryName">{(this.state.query.name ? this.state.query.name : "(click to name query)")}</ControlLabel>
                             <QueryDetailsModal 
