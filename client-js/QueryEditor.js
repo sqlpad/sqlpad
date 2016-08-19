@@ -287,7 +287,7 @@ var QueryEditor = React.createClass({
                 queryText: queryToRun
             })
         }
-        fetch(baseUrl + '/api/run-query', postData)
+        fetch(baseUrl + '/api/query-result', postData)
             .then(function(response) {
                 return response.json();
             }).then(function(json) {
