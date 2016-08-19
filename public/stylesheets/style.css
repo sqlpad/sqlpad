@@ -394,6 +394,14 @@ input[type=checkbox], input[type=radio] {
     right: 0;
 }
 
+#chart {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
 .run-result-notification {
     font-size: 30px;
     text-align: center;

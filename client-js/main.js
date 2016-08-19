@@ -48,9 +48,10 @@ page('/query-table/:queryId', getConfig, function (ctx) {
     )
 });
 
+var QueryChartOnly = require('./QueryChartOnly.js');
 page('/query-chart/:queryId', getConfig, function (ctx) {
     ReactDOM.render(
-        <h1>chart only</h1>,
+        <QueryChartOnly queryId={ctx.params.queryId} />,
         document.getElementById('react-applet')
     )
 });

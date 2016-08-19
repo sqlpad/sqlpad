@@ -1,6 +1,7 @@
 var React = require('react');
 var _ = require('_');
 var chartDefinitions = require('./ChartDefinitions.js');
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var tauCharts = require('tauCharts');
 var deepEqual = require('deep-equal');
 
@@ -164,8 +165,21 @@ var SqlpadTauChart = React.createClass({
 		this.chart.destroy();
 	},
     render: function () {
+        var runResultNotification = () => {
+            if (!this.chart && this.props.isRunning) {
+                return (
+                    <div className="run-result-notification">
+                        <Glyphicon glyph="refresh" className="spinning" /> Loading
+                    </div>
+                )
+            }
+            return null;
+        }
         return (
-            <div id="chart"></div>
+            <div id="chart">
+                {runResultNotification()}
+            </div>
+            
         )
     }
 });

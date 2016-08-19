@@ -93,12 +93,12 @@ var QueryDetailsModal = React.createClass({
                             <br/>
                             <ul className="nav nav-pills nav-justified">
                                 <li role="presentation">
-                                    <a href="?format=table" target="_queryPreview">
+                                    <a href="?format=table" target="_blank">
                                         Link to Table {' '} <Glyphicon glyph="new-window"></Glyphicon> 
                                     </a>
                                 </li>
                                 <li role="presentation">
-                                    <a href="?format=chart" target="_queryPreview">
+                                    <a href="?format=chart" target="_blank">
                                         Link to Chart {' '} <Glyphicon glyph="new-window"></Glyphicon>
                                     </a>
                                 </li>
@@ -509,6 +509,7 @@ var QueryEditor = React.createClass({
                                         <SqlpadTauChart 
                                             query={this.state.query}
                                             queryResult={this.state.queryResult}
+                                            isRunning={this.state.isRunning}
                                             ref={(ref) => this.sqlpadTauChart = ref} />
                                     </div>
                                 </Tab.Pane>
