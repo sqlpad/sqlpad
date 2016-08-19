@@ -10,6 +10,8 @@ var Cache = require('../models/Cache.js');
 var Query = require('../models/Query.js');
 
 
+// this allows executing a query relying on the saved query text
+// instead of relying on an open endpoint that executes arbitrary sql 
 router.get('/api/query-result/:_queryId', function (req, res) {
     Query.findOneById(req.params._queryId, function (err, query) {
         if (err) {
@@ -45,9 +47,10 @@ router.get('/api/query-result/:_queryId', function (req, res) {
     })
 });
 
+
+// accepts raw inputs from client
+// used during query editing
 router.post('/api/query-result', function (req, res) {
-    // accepts raw inputs from client
-    // used during query editing
     var data = {
         connectionId: req.body.connectionId,
         cacheKey: req.body.cacheKey,
@@ -80,17 +83,13 @@ function getQueryResult (data, getQueryResultCallback) {
         execRunQuery,
         createDownloads
     ], function (err, data) {
-        return getQueryResultCallback(err, data.queryResult);
+        var queryResult = (data && data.queryResult ? data.queryResult : null);
+        return getQueryResultCallback(err, queryResult);
     });
 }
 
 
-// get the query from the provided queryId in body
-// this allows executing a query relying on the saved query text
-// instead of relying on an open endpoint that executes arbitrary sql 
-function getQuery (req, res, next) {
-    console.log("TODO");
-}
+
 
 
 function getConnection (data, next) {
