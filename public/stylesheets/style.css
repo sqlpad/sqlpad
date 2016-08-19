@@ -76,29 +76,6 @@ a:hover {
     margin-top: 20px;
 }
 
-/*  fullscreen mode
-======================================================== */
-
-.fullscreen-content .navbar {
-  display: none;
-}
-
-.fullscreen-content .sidebar {
-  display: none;
-}
-
-.fullscreen-content .sidebar {
-  display: none;
-}
-
-.fullscreen-content #panel-main {
-    top: 0px;
-}
-
-.fullscreen-content  .tab-pane-main {
-    left: 0px;
-    top: 0px;
-}
 
 
 /*  Navbar stuff?
@@ -209,23 +186,6 @@ a:hover {
     bottom: 0;
 }
 
-.fullscreen-content #panel-result-header, .fullscreen-content .panel-editor {
-    display: none; 
-}
-
-.fullscreen-content #panel-result {
-    top: 0px;
-    left: 0px;
-    height: 100%;
-    width: 100%;
-}
-
-.fullscreen-content #result-grid {
-    top: 0px;
-    left: 0px;
-    height: 100%;
-    width: 100%;
-}
 
 /* hide tauchart's ui for export options */
 .graphical-report__layout__header {
