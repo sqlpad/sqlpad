@@ -44,6 +44,15 @@ router.get('/query-chart/:_id', function (req, res) {
 /*  API routes
 ============================================================================= */
 
+router.delete('/api/queries/:_id', function (req, res) {
+    Query.removeOneById(req.params._id, function (err) {
+        res.json({
+            err: err,
+            success: !err
+        });
+    });
+});
+
 router.get('/api/queries', function (req, res) {
     /*
     NOTE: db side filter. implement or? 
@@ -162,11 +171,6 @@ router.put('/api/queries/:_id', function (req, res) {
     });
 });
 
-router.delete('/queries/:_id', function (req, res) {
-    Query.removeOneById(req.params._id, function (err) {
-        if (err) console.log(err);
-        return res.redirect(BASE_URL + '/queries');
-    });
-});
+
 
 module.exports = router;

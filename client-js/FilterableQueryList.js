@@ -29,6 +29,9 @@ var HelpBlock = require('react-bootstrap/lib/HelpBlock');
 var InputGroup = require('react-bootstrap/lib/InputGroup');
 var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
+var Popover = require('react-bootstrap/lib/Popover');
+var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+
 
 var _ = require('_');
 
@@ -49,6 +52,37 @@ var FilterableQueryList = React.createClass({
     },
     handleQueryListRowMouseOver: function (query) {
         this.setState({selectedQuery: query});
+    },
+    handleQueryDelete: function (queryId) {
+        var queries = this.state.queries;
+        var selectedQuery = this.state.selectedQuery;
+        if (selectedQuery._id == queryId) selectedQuery = null;
+        queries = queries.filter((q) => {
+            return q._id !== queryId
+        });
+        this.setState({
+            queries: queries,
+            selectedQuery: selectedQuery
+        });
+        var opts = {
+            method: 'DELETE',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        };
+        fetch(baseUrl + '/api/queries/' + queryId, opts)
+            .then(function(response) {
+                return response.json();
+            }).then(function(json) {
+                if (!json.success) {
+                    console.log("problem deleting query");
+                    console.log(json.err);
+                }
+            }).catch(function(ex) {
+                console.log('parsing failed', ex);
+            });
     },
     loadConfigValuesFromServer: function () {
         fetch(baseUrl + "/api/queries", {credentials: 'same-origin'})
@@ -156,6 +190,7 @@ var FilterableQueryList = React.createClass({
                 <QueryList 
                     queries={filteredQueries} 
                     selectedQuery={this.state.selectedQuery}
+                    handleQueryDelete={this.handleQueryDelete}
                     handleQueryListRowMouseOver={this.handleQueryListRowMouseOver}/>
                 <QueryPreview 
                     selectedQuery={this.state.selectedQuery} />
@@ -252,6 +287,7 @@ var QueryList = React.createClass({
                     key={query._id} 
                     query={query} 
                     selectedQuery={this.props.selectedQuery}
+                    handleQueryDelete={this.props.handleQueryDelete}
                     handleQueryListRowMouseOver={self.props.handleQueryListRowMouseOver}/>
             )
         })
@@ -278,6 +314,9 @@ var QueryListRow = React.createClass({
     onClick: function (e) {
         //location.href=baseUrl + "/queries/" + this.props.query._id;
     },
+    onDelete: function (e) {
+        this.props.handleQueryDelete(this.props.query._id);
+    },
     render: function () {
         var tagLabels = this.props.query.tags.map((tag) => {
             return (
@@ -294,6 +333,11 @@ var QueryListRow = React.createClass({
                 return "list-group-item QueryListRow"
             }
         }
+        const popoverClick = (
+            <Popover id="popover-trigger-click"  title="Are you sure?">
+                <Button bsStyle="danger" onClick={this.onDelete} style={{width: '100%'}}>delete</Button>
+            </Popover>
+        );
         return (
             <li
                 onClick={this.onClick}
@@ -303,7 +347,9 @@ var QueryListRow = React.createClass({
                 <h4><a href={editUrl}>{this.props.query.name}</a></h4>
                 <p>{this.props.query.createdBy} {tagLabels}</p>
                 <p><a href={tableUrl} target="_blank">table</a> <a href={chartUrl} target="_blank">chart</a> </p>
-                <a className="QueryListRowDeleteButton" href="#"><Glyphicon glyph="trash" /></a>
+                <OverlayTrigger trigger="click" placement="left" container={this} rootClose overlay={popoverClick}>
+                    <a className="QueryListRowDeleteButton" href="#"><Glyphicon glyph="trash" /></a>
+                </OverlayTrigger>
             </li>
         );
     }
