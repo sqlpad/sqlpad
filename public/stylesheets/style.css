@@ -11,6 +11,10 @@ a {
   color: #00B7FF;
 }
 
+a:hover {
+    text-decoration: none;
+}
+
 .error {
   text-align: center;
 }
@@ -299,8 +303,17 @@ a {
     width: 100%;
 }
 .sidebar .control-label {
-    font-weight: 400;
-    color: #777;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* also in sidebar */
+.checkbox label, .radio label {
+    font-weight: 600;
+    font-size: 13px;
+}
+input[type=checkbox], input[type=radio] {
+    margin: 2px 0 0;
 }
 
 .data-type {
@@ -379,21 +392,29 @@ a {
 
 #result-grid {
     position: absolute;
-    top: 30px;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
 }
 
-#run-result-notification {
+#chart {
     position: absolute;
-    top: 30px;
-    bottom: 2px;
-    left: 2px;
-    right: 2px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.run-result-notification {
     font-size: 30px;
     text-align: center;
-    padding-top: 40px;
+    padding: 50px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 #btn-reload-schema span {
@@ -513,10 +534,17 @@ a {
     
     padding: 10px;
 }
-.QueryListRow:hover {
-    cursor: pointer;
+.QueryListRowSelected {
     background-color: #FAFAFA; 
 }
+.QueryListRowDeleteButton {
+    color: #888;
+    position: absolute;
+    /* top: 5px; */
+    right: 20px;
+    bottom: 20px;
+}
+
 .QueryListContents {
     position: absolute;
     top: 32px;
@@ -571,7 +599,7 @@ a {
 
 .QueryEditorSubheaderItem {
     margin-left: 10px;
-    min-width: 80px;
+    min-width: 90px;
 }
 
 .QueryEditorQueryName {
@@ -610,3 +638,7 @@ a {
 
 
 
+#chart {
+    padding: 10px;
+    height: 100%;
+}

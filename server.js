@@ -93,6 +93,7 @@ app.use(function (req, res, next) {
     res.locals.pageTitle = "";
     res.locals.user = req.user;
     res.locals.isAuthenticated = req.isAuthenticated();
+    res.locals.renderNav = true;
     res.locals.baseUrl = BASE_URL;
     // Expose key-value configs as a common variable passed on to browser
     // TODO: sensitive configs should not go to browser
@@ -132,7 +133,7 @@ var routers = [
     require('./routes/users.js'),
     require('./routes/connections.js'),
     require('./routes/queries.js'),
-    require('./routes/run-query.js'), // ajaxy route used for executing query and getting results
+    require('./routes/query-result.js'), 
     require('./routes/download-results.js'), // streams result download to browser
     require('./routes/schema-info.js'),
     require('./routes/config-values.js'),

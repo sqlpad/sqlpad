@@ -2,12 +2,9 @@ var _ = require('lodash');
 var uaParser = require('ua-parser');
 var uuid = require('uuid');
 var router = require('express').Router();
-var moment = require('moment');
-var request = require('request');
 var config = require('../lib/config.js');
 var Connection = require('../models/Connection.js');
 var Query = require('../models/Query.js');
-var noop = function () {};
 const BASE_URL = config.get('baseUrl');
 
 
@@ -20,14 +17,41 @@ router.get('/queries', function (req, res) {
 });
 
 router.get('/queries/:_id', function (req, res) {
+    var format = req.query.format;
+    if (format == 'table') return res.redirect(BASE_URL + '/query-table/' + req.params._id);
+    else if (format == 'chart') return res.redirect(BASE_URL + '/query-chart/' + req.params._id);
+    else {
+        return res.render('react-applet', {
+            pageTitle: "Query"
+        });
+    }
+});
+
+router.get('/query-table/:_id', function (req, res) {
     return res.render('react-applet', {
-        pageTitle: "Query"
+        renderNav: false,
+        pageTitle: "Query Table"
     });
 });
 
+router.get('/query-chart/:_id', function (req, res) {
+    return res.render('react-applet', {
+        renderNav: false,
+        pageTitle: "Query Chart"
+    });
+});
 
 /*  API routes
 ============================================================================= */
+
+router.delete('/api/queries/:_id', function (req, res) {
+    Query.removeOneById(req.params._id, function (err) {
+        res.json({
+            err: err,
+            success: !err
+        });
+    });
+});
 
 router.get('/api/queries', function (req, res) {
     /*
@@ -147,11 +171,6 @@ router.put('/api/queries/:_id', function (req, res) {
     });
 });
 
-router.delete('/queries/:_id', function (req, res) {
-    Query.removeOneById(req.params._id, function (err) {
-        if (err) console.log(err);
-        return res.redirect(BASE_URL + '/queries');
-    });
-});
+
 
 module.exports = router;

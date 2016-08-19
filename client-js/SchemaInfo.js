@@ -79,7 +79,7 @@ var SchemaInfo = React.createClass({
         })
 
         return (
-            <div className="sidebar">
+            <div>
                 <FormGroup controlId="formControlsSelect" bsSize="small">
                     <FormControl value={this.props.connectionId} componentClass="select" onChange={this.onConnectionChange} className="input-small">
                         <option value="">Choose a connection...</option>

@@ -3,17 +3,19 @@ var moment = require('moment');
 var _ = require('_');
 var uuid = require('uuid');
 var keymaster = require('keymaster');
+var Select = require('react-select');
 var SchemaInfo = require('./SchemaInfo.js');
 var QueryResultDataTable = require('./QueryResultDataTable.js');
 var QueryResultHeader = require('./QueryResultHeader.js');
-var Select = require('react-select');
+var ChartInputs = require('./ChartInputs.js');
+var SqlpadTauChart = require('./SqlpadTauChart.js');
+
 
 import 'whatwg-fetch';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/sql';
 import 'brace/theme/github';
-import {Table, Column, Cell} from 'fixed-data-table'; // react's fixed data table
 
 
 var Row = require('react-bootstrap/lib/Row');
@@ -27,13 +29,11 @@ var Form = require('react-bootstrap/lib/Form');
 var FormGroup = require('react-bootstrap/lib/FormGroup');
 var FormControl = require('react-bootstrap/lib/FormControl');
 var ControlLabel = require('react-bootstrap/lib/ControlLabel');
-var ListGroup = require('react-bootstrap/lib/ListGroup');
-var ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
 var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Modal = require('react-bootstrap/lib/Modal');
-
-var isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
+var Tooltip = require('react-bootstrap/lib/Tooltip');
+var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 
 var QueryDetailsModal = React.createClass({
@@ -56,20 +56,35 @@ var QueryDetailsModal = React.createClass({
     onQueryNameChange: function (e) {
         var newName = e.target.value;
         this.props.onQueryNameChange(newName);
-        //document.title = newName;
     },
     onEntered: function () {
         if (this.input) this.input.focus();
     },
     render: function () {
-        var myCategories = [
-            {
-                id: 'catid',
-                type: 'tag',
-                title: 'tags title',
-                items: ['Array', 'With', 'Tags']
+        var modalNavLink = (href, text) => {
+            var saved = this.props.query._id ? true : false;
+            if (saved) {
+                return (
+                    <li role="presentation">
+                        <a href={href} target="_blank" >
+                            {text} {' '} <Glyphicon glyph="new-window"></Glyphicon> 
+                        </a>
+                    </li>
+                )
+            } else {
+                var tooltip = <Tooltip id="tooltip">Save query to enable table/chart view links</Tooltip>;
+                return (
+                    <OverlayTrigger placement="top" overlay={tooltip}>
+                        <li role="presentation" className="disabled">
+                            <a href={href} target="_blank" onClick={(e) => e.preventDefault()} >
+                                {text} {' '} <Glyphicon glyph="new-window"></Glyphicon> 
+                            </a>
+                        </li>
+                    </OverlayTrigger>
+                )
             }
-        ]
+        }
+
         return (
                 <Modal onEntered={this.onEntered} animation={true} show={this.state.showModal} onHide={this.close} >
                     <Modal.Header closeButton>
@@ -78,14 +93,14 @@ var QueryDetailsModal = React.createClass({
                         <form onSubmit={this.onSubmit}>
                             <FormGroup>
                                 <ControlLabel>Query Name</ControlLabel>
-                                <input className="form-control" ref={(ref) => this.input = ref} type="text" value={this.props.queryName} onChange={this.onQueryNameChange} />
+                                <input className="form-control" ref={(ref) => this.input = ref} type="text" value={this.props.query.name} onChange={this.onQueryNameChange} />
                             </FormGroup>
                             <br/>
                             <FormGroup>
                                 <ControlLabel>Query Tags</ControlLabel>
                                 <Select
                                     name="query-tags-field"
-                                    value={this.props.tags}
+                                    value={this.props.query.tags}
                                     multi={true}
                                     allowCreate={true}
                                     placeholder=""
@@ -93,6 +108,11 @@ var QueryDetailsModal = React.createClass({
                                     onChange={this.props.onQueryTagsChange}
                                 />
                             </FormGroup>
+                            <br/>
+                            <ul className="nav nav-pills nav-justified">
+                                {modalNavLink('?format=table', 'Link to Table')}
+                                {modalNavLink('?format=chart', 'Link to Chart')}
+                            </ul>
                         </form>
                     </Modal.Body>
                     <Modal.Footer>
@@ -126,9 +146,11 @@ var QueryEditor = React.createClass({
                 this.setState({
                     query: json.query
                 });
-            }.bind(this)).catch(function(ex) {
+            }.bind(this))
+            /*.catch(function(ex) {
                 console.error(ex.toString());
             });
+            */
     },
     autoPickConnection: function () {
         if (this.state.connections.length == 1 && this.state.query) {
@@ -256,6 +278,12 @@ var QueryEditor = React.createClass({
             query: query
         });
     },
+    onChartTypeChange: function (e) {
+        var chartType = e.target.value;
+        var query = this.state.query;
+        query.chartConfiguration.chartType = chartType;
+        this.setState({query: query});
+    },
     runQuery: function () {
         var editor = this.editor;
         var selectedText = editor.session.getTextRange(editor.getSelectionRange());
@@ -279,7 +307,7 @@ var QueryEditor = React.createClass({
                 queryText: queryToRun
             })
         }
-        fetch(baseUrl + '/api/run-query', postData)
+        fetch(baseUrl + '/api/query-result', postData)
             .then(function(response) {
                 return response.json();
             }).then(function(json) {
@@ -331,6 +359,39 @@ var QueryEditor = React.createClass({
             return false;
         });
     },
+    onChartConfigurationFieldsChange: function (chartFieldId, queryResultField) {
+        var query = this.state.query;
+        query.chartConfiguration.fields[chartFieldId] = queryResultField;
+        this.setState({
+            query: query
+        });
+    },
+    sqlpadTauChart: undefined,
+    onVisualizeClick: function (e) {
+        this.sqlpadTauChart.renderChart(true);
+    },
+    onTabSelect: function (tabkey) {
+        var renderChartIfVisible = () => {
+            var chartEl = document.getElementById('chart');
+            if (chartEl.clientHeight > 0) {
+                try {
+                    this.sqlpadTauChart.renderChart();
+                } 
+                catch (e) {
+                    console.log("tauchart rendering failed")
+                    console.log(e);
+                }
+            } else {
+                setTimeout(renderChartIfVisible, 20);
+            }
+        }
+        renderChartIfVisible();
+    },
+    onSaveImageClick: function (e) {
+        if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
+            this.sqlpadTauChart.chart.fire('exportTo','png');    
+        }
+    },
     render: function () {
         var tabsFormStyle = {
             position: 'absolute',
@@ -341,7 +402,10 @@ var QueryEditor = React.createClass({
             return {value: t, label: t}
         });
         return (
-            <Tab.Container id="left-tabs-example" defaultActiveKey="sql">
+            <Tab.Container 
+                id="left-tabs-example" 
+                defaultActiveKey="sql"
+                onSelect={this.onTabSelect}>
                 <Col sm={12}>
                     <Row className="clearfix navbar-default">
                         <Nav bsStyle="tabs" className="navbar-left query-editor-nav-pills" style={{width: '100%', paddingLeft: 6}}>
@@ -358,15 +422,14 @@ var QueryEditor = React.createClass({
                                 disabled={this.state.isSaving}>
                                 <span className="shortcut-letter">S</span>{this.state.isSaving ? 'aving' : 'ave'}
                             </Button>
-                            <Button className="QueryEditorSubheaderItem" onClick={this.runQuery}>
-                                <span className="shortcut-letter">R</span>un
+                            <Button className="QueryEditorSubheaderItem" onClick={this.runQuery} disabled={this.state.isRunning}>
+                                <span className="shortcut-letter">R</span>{this.state.isRunning ? 'unning' : 'un'}
                             </Button>
                             <ControlLabel onClick={this.openQueryDetailsModal} className="QueryEditorSubheaderItem QueryEditorQueryName">{(this.state.query.name ? this.state.query.name : "(click to name query)")}</ControlLabel>
                             <QueryDetailsModal 
                                 onQueryNameChange={this.onQueryNameChange} 
                                 onQueryTagsChange={this.onQueryTagsChange}
-                                queryName={this.state.query.name}
-                                tags={this.state.query.tags}
+                                query={this.state.query}
                                 tagOptions={tagOptions}
                                 ref={(ref) => this.queryDetailsModal = ref }/>
                         </Form>
@@ -408,20 +471,57 @@ var QueryEditor = React.createClass({
                                                 runSeconds={this.state.runSeconds}
                                                 queryResult={this.state.queryResult}
                                                 />
-                                            <QueryResultDataTable 
-                                                {...this.props}
-                                                cacheKey={this.state.cacheKey}
-                                                isRunning={this.state.isRunning}
-                                                runQueryStartTime={this.state.runQueryStartTime}
-                                                queryResult={this.state.queryResult}
-                                                queryError={this.state.queryError}
-                                                querySuccess={this.state.querySuccess}
-                                                />
+                                            <div style={{position: 'absolute', top: 29, bottom: 3, left: 0, right: 2}}>
+                                                <QueryResultDataTable 
+                                                    {...this.props}
+                                                    isRunning={this.state.isRunning}
+                                                    runQueryStartTime={this.state.runQueryStartTime}
+                                                    queryResult={this.state.queryResult}
+                                                    queryError={this.state.queryError}
+                                                    querySuccess={this.state.querySuccess}
+                                                    />
+                                            </div>
                                         </div>
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="vis">
-                                    <h1>Vis</h1>
+                                    <div className="sidebar">
+                                        <FormGroup controlId="formControlsSelect" bsSize="small">
+                                            <FormControl 
+                                                value={this.state.query.chartConfiguration.chartType} 
+                                                onChange={this.onChartTypeChange}
+                                                componentClass="select" 
+                                                className="input-small">
+                                                <option value="">Choose a chart type...</option>
+                                                <option value="line">Line</option>
+                                                <option value="bar">Bar - Horizontal</option>
+                                                <option value="verticalbar">Bar - Vertical</option>
+                                                <option value="bubble">Scatterplot</option>
+                                            </FormControl>
+                                        </FormGroup>
+                                        <hr/>
+                                        <ChartInputs 
+                                            chartType={this.state.query.chartConfiguration.chartType} 
+                                            queryChartConfigurationFields={this.state.query.chartConfiguration.fields}
+                                            onChartConfigurationFieldsChange={this.onChartConfigurationFieldsChange}
+                                            queryResult={this.state.queryResult}
+                                            />
+                                        <hr/>
+                                        <Button onClick={this.onVisualizeClick} className={'btn-block'} bsSize={'sm'}>Visualize</Button>
+                                        <Button onClick={this.onSaveImageClick} className={'btn-block'} bsSize={'sm'}>
+                                            <Glyphicon glyph="save" />{" "}
+                                            Save Chart Image
+                                        </Button>
+                                        
+                                    </div>
+                                    <div className="NonSidebar">
+                                        <SqlpadTauChart 
+                                            query={this.state.query}
+                                            queryResult={this.state.queryResult}
+                                            queryError={this.state.queryError}
+                                            isRunning={this.state.isRunning}
+                                            ref={(ref) => this.sqlpadTauChart = ref} />
+                                    </div>
                                 </Tab.Pane>
                             </Tab.Content>
                         </Col>

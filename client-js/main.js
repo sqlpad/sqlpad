@@ -40,6 +40,22 @@ page('/queries/:queryId', getConfig, getTags, function (ctx) {
     )
 })
 
+var QueryTableOnly = require('./QueryTableOnly.js');
+page('/query-table/:queryId', getConfig, function (ctx) {
+    ReactDOM.render(
+        <QueryTableOnly queryId={ctx.params.queryId} />,
+        document.getElementById('react-applet')
+    )
+});
+
+var QueryChartOnly = require('./QueryChartOnly.js');
+page('/query-chart/:queryId', getConfig, function (ctx) {
+    ReactDOM.render(
+        <QueryChartOnly queryId={ctx.params.queryId} />,
+        document.getElementById('react-applet')
+    )
+});
+
 // init page router
 page({click: false});
 
