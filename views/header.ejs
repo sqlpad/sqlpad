@@ -34,24 +34,25 @@
             
             <div class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="<%= (pageTitle && pageTitle == "Queries" ? "active" : "") %>"><a href="<%= baseUrl %>/queries?createdBy=<%= encodeURIComponent(user.email) %>">Queries</a></li>
+                <li><a href="<%= baseUrl %>/queries">Queries</a></li>
                 <li><a href="<%= baseUrl %>/queries/new">New Query</a></li>
-                <% if (isAuthenticated && user.admin) { %>
-                <li class="<%= (pageTitle && pageTitle == "Connections" ? "active" : "") %>"><a href="<%= baseUrl %>/connections">Connections</a></li>
-                <li class="<%= (pageTitle && pageTitle == "Users" ? "active" : "") %>"><a href="<%= baseUrl %>/users">Users</a></li>
-                <li class="<%= (pageTitle && pageTitle == "Configuration" ? "active" : "") %>"><a href="<%= baseUrl %>/config-values">Configuration</a></li>
-                <% } %>
               </ul>
               
               <ul class="nav navbar-nav navbar-right">
                 <% if (isAuthenticated) { %>
                   <li class="dropdown">
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown"><%= user.email.split('@')[0] %> <b class="caret"></b></a>
-                       <ul class="dropdown-menu">
-                         <li><a href="<%= baseUrl %>/signout">Sign Out</a></li>
-                         <li role="presentation" class="divider"></li>
-                         <li><a href="#" data-toggle="modal" data-target="#aboutModal">About SqlPad</a></li>
-                       </ul>                       
+                        <ul class="dropdown-menu">
+                          <% if (user.admin) { %>
+                          <li><a href="<%= baseUrl %>/connections">Connections</a></li>
+                          <li><a href="<%= baseUrl %>/users">Users</a></li>
+                          <li><a href="<%= baseUrl %>/config-values">Configuration</a></li>
+                          <% } %>
+                          <li role="presentation" class="divider"></li>
+                          <li><a href="#" data-toggle="modal" data-target="#aboutModal">About SqlPad</a></li>
+                          <li role="presentation" class="divider"></li>
+                          <li><a href="<%= baseUrl %>/signout">Sign Out</a></li>
+                        </ul>                       
                   </li>
                 <% } else { %>
                   <li><a href="<%= baseUrl %>/signin">Sign In</a></li>
