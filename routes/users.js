@@ -10,6 +10,25 @@ function renderUsers (req, res) {
     });   
 }
 
+router.get('/api/users/current', function (req, res) {
+    if (req.isAuthenticated() && res.locals.user) {
+        res.json({
+            success: true,
+            error: null,
+            user: {
+                _id: res.locals.user.id,
+                email: res.locals.user.email,
+                admin: res.locals.user.admin
+            }
+        });
+    } else {
+        res.json({
+            success: false,
+            error: "No user authenticated"
+        });
+    }     
+});
+
 router.get('/users', renderUsers);
 
 router.post('/users/whitelist', function (req, res) {
