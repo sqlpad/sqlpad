@@ -132,7 +132,7 @@ var routers = [
     require('./routes/users.js'),
     require('./routes/connections.js'),
     require('./routes/queries.js'),
-    require('./routes/run-query.js'), // ajaxy route used for executing query and getting results
+    require('./routes/query-result.js'), 
     require('./routes/download-results.js'), // streams result download to browser
     require('./routes/schema-info.js'),
     require('./routes/config-values.js'),
