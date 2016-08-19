@@ -33,8 +33,6 @@ var Button = require('react-bootstrap/lib/Button');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Modal = require('react-bootstrap/lib/Modal');
 
-var isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
-
 
 var QueryDetailsModal = React.createClass({
     getInitialState: function () {
@@ -56,7 +54,6 @@ var QueryDetailsModal = React.createClass({
     onQueryNameChange: function (e) {
         var newName = e.target.value;
         this.props.onQueryNameChange(newName);
-        //document.title = newName;
     },
     onEntered: function () {
         if (this.input) this.input.focus();
@@ -454,7 +451,6 @@ var QueryEditor = React.createClass({
                                                 />
                                             <QueryResultDataTable 
                                                 {...this.props}
-                                                cacheKey={this.state.cacheKey}
                                                 isRunning={this.state.isRunning}
                                                 runQueryStartTime={this.state.runQueryStartTime}
                                                 queryResult={this.state.queryResult}
