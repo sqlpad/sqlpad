@@ -534,10 +534,17 @@ input[type=checkbox], input[type=radio] {
     
     padding: 10px;
 }
-.QueryListRow:hover {
-    cursor: pointer;
+.QueryListRowSelected {
     background-color: #FAFAFA; 
 }
+.QueryListRowDeleteButton {
+    color: #888;
+    position: absolute;
+    /* top: 5px; */
+    right: 20px;
+    bottom: 20px;
+}
+
 .QueryListContents {
     position: absolute;
     top: 32px;

@@ -28,53 +28,25 @@ var ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
 var HelpBlock = require('react-bootstrap/lib/HelpBlock');
 var InputGroup = require('react-bootstrap/lib/InputGroup');
 var Button = require('react-bootstrap/lib/Button');
-
-var data = {
-    tags: ["line-chart", "bar-chart", "client-one", "client-two", "big-query"],
-    connections: [
-        {_id: "1", name: "postgres PROD connection"},
-        {_id: "2", name: "mysql TEST connection"},
-        {_id: "3", name: 'SQL Server STAGING connection'}
-    ],
-    createdBys: [
-        'rick.bergfalk@gmail.com',
-        'bob@test.com',
-        'fakeperson@notanemail.net'
-    ],
-    selectedTag: '',
-    selectedConnection: '',
-    selectedCreatedBy: '',
-    selectedSortBy: '',
-    searchInput: '',
-    queries: []
-
-}
-
-
-/*
-    State
-        tags: []
-        connections: [connection]
-        
-        selectedTag: ''
-        selectedConnection: ''
-        selectedCreatedBy: ''
-        selectedSortOrder: ''
-        searchInput: ''
-
-        queryListResults: [query]
-  
-  
-    FilterableQueryList
-        QueryListSidebar 
-        QueryList
-            QueryListRow
-        QueryPreview 
-*/
+var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 
 var _ = require('_');
 
 var FilterableQueryList = React.createClass({
+    getInitialState: function () {
+        return {
+            queries: [],
+            connections: [],
+            createdBys: [],
+            tags: [],
+            searchInput: null,
+            selectedConnection: null,
+            selectedTag: null,
+            selectedCreatedBy: null,
+            selectedSortBy: null,
+            selectedQuery: null
+        };
+    },
     handleQueryListRowMouseOver: function (query) {
         this.setState({selectedQuery: query});
     },
@@ -131,20 +103,6 @@ var FilterableQueryList = React.createClass({
             selectedSortBy: sortBy
         })
     },
-    getInitialState: function () {
-        return {
-            queries: [],
-            connections: [],
-            createdBys: [],
-            tags: [],
-            searchInput: null,
-            selectedConnection: null,
-            selectedTag: null,
-            selectedCreatedBy: null,
-            selectedSortBy: null,
-            selectedQuery: null
-        };
-    },
     componentDidMount: function () {
         this.loadConfigValuesFromServer();
     },
@@ -197,6 +155,7 @@ var FilterableQueryList = React.createClass({
                     />
                 <QueryList 
                     queries={filteredQueries} 
+                    selectedQuery={this.state.selectedQuery}
                     handleQueryListRowMouseOver={this.handleQueryListRowMouseOver}/>
                 <QueryPreview 
                     selectedQuery={this.state.selectedQuery} />
@@ -287,11 +246,12 @@ var QueryListSidebar = React.createClass({
 var QueryList = React.createClass({
     render: function () {
         var self = this;
-        var QueryListRows = this.props.queries.map(function (query) {
+        var QueryListRows = this.props.queries.map((query) => {
             return (
                 <QueryListRow 
                     key={query._id} 
                     query={query} 
+                    selectedQuery={this.props.selectedQuery}
                     handleQueryListRowMouseOver={self.props.handleQueryListRowMouseOver}/>
             )
         })
@@ -307,14 +267,16 @@ var QueryList = React.createClass({
 });
 
 var QueryListRow = React.createClass({
+    getInitialState: function () {
+        return {
+            showPreview: false
+        }
+    },
     onMouseOver: function (e) {
         this.props.handleQueryListRowMouseOver(this.props.query);
     },
-    onMouseOut: function (e) {
-        
-    },
     onClick: function (e) {
-        location.href=baseUrl + "/queries/" + this.props.query._id;
+        //location.href=baseUrl + "/queries/" + this.props.query._id;
     },
     render: function () {
         var tagLabels = this.props.query.tags.map((tag) => {
@@ -323,17 +285,25 @@ var QueryListRow = React.createClass({
             )
         })
         var editUrl = baseUrl + "/queries/" + this.props.query._id;
-        var gridUrl = editUrl + "?format=grid";
-        var chartUrl = editUrl + "?format=chart";
+        var tableUrl = baseUrl + "/query-table/" + this.props.query._id; 
+        var chartUrl = baseUrl + "/query-chart/" + this.props.query._id; 
+        var selectedStyle = () => {
+            if (this.props.selectedQuery && this.props.selectedQuery._id == this.props.query._id) {
+                return "list-group-item QueryListRow QueryListRowSelected"
+            } else {
+                return "list-group-item QueryListRow"
+            }
+        }
         return (
             <li
                 onClick={this.onClick}
-                className="list-group-item QueryListRow"
+                className={selectedStyle()}
                 onMouseOver={this.onMouseOver}
                 onMouseOut={this.onMouseOut}>
-                <h4>{this.props.query.name}</h4>
+                <h4><a href={editUrl}>{this.props.query.name}</a></h4>
                 <p>{this.props.query.createdBy} {tagLabels}</p>
-                <p><a href={gridUrl}>grid</a> <a href={chartUrl}>chart</a> </p>
+                <p><a href={tableUrl} target="_blank">table</a> <a href={chartUrl} target="_blank">chart</a> </p>
+                <a className="QueryListRowDeleteButton" href="#"><Glyphicon glyph="trash" /></a>
             </li>
         );
     }
