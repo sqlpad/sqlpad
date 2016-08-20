@@ -29,6 +29,21 @@ router.get('/api/users/current', function (req, res) {
     }     
 });
 
+router.get('/api/users', function (req, res) {
+    User.findAll(function (err, users) {
+        var cleanedUsers = users.map((u) => {
+            delete u.password;
+            delete u.passhash;
+            return u;
+        });
+        res.json({
+            error: err,
+            success: (!err),
+            users: cleanedUsers
+        });
+    })
+});
+
 router.get('/users', renderUsers);
 
 router.post('/users/whitelist', function (req, res) {
