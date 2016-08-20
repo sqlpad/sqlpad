@@ -22,9 +22,13 @@ page('/config-values', function (ctx) {
 });
 
 var FilterableQueryList = require('./FilterableQueryList.js');
-page('/queries', function (ctx) {
+page('/queries', getConfig, getCurrentUser, function (ctx) {
     ReactDOM.render(
-        <FilterableQueryList/>,
+        <FilterableQueryList
+            config={ctx.config}
+            currentUser={ctx.currentUser}
+            users={ctx.users}
+            />,
         document.getElementById('react-applet')
     )
 })
@@ -61,6 +65,22 @@ page({click: false});
 
 
 // client-side middleware
+function getUsers (ctx, next) {
+    fetch(baseUrl + "/api/users", {credentials: 'same-origin'})
+        .then((response) => {
+            return response.json();
+        })
+        .then((json) => {
+            ctx.users = json.users;
+        })
+        .catch(function (ex) {
+            console.error(ex.toString());
+        })
+        .then(() => {
+            next();   
+        })
+}
+
 function getConfig (ctx, next) {
     fetch(baseUrl + "/api/config", {credentials: 'same-origin'})
         .then((response) => {
@@ -74,6 +94,22 @@ function getConfig (ctx, next) {
         })
         .then(() => {
             next();
+        })
+}
+
+function getCurrentUser (ctx, next) {
+    fetch(baseUrl + "/api/users/current", {credentials: 'same-origin'})
+        .then((response) => {
+            return response.json();
+        })
+        .then((json) => {
+            ctx.currentUser = json.user;
+        })
+        .catch(function (ex) {
+            console.error(ex.toString());
+        })
+        .then(() => {
+            next();   
         })
 }
 

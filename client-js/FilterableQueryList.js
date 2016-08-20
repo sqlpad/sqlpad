@@ -45,7 +45,7 @@ var FilterableQueryList = React.createClass({
             searchInput: null,
             selectedConnection: null,
             selectedTag: null,
-            selectedCreatedBy: null,
+            selectedCreatedBy: this.props.currentUser ? this.props.currentUser.email : "",
             selectedSortBy: null,
             selectedQuery: null
         };
@@ -91,9 +91,14 @@ var FilterableQueryList = React.createClass({
             }).then(function(json) {
                 var createdBys = _.uniq(_.pluck(json.queries, 'createdBy'));
                 var tags = _.compact(_.uniq(_.flatten(_.pluck(json.queries, 'tags'))));
+                var selectedCreatedBy = this.state.selectedCreatedBy;
+                if (createdBys.indexOf(this.props.currentUser.email) == -1) {
+                    selectedCreatedBy = '';
+                }
                 this.setState({
                     queries: json.queries,
                     createdBys: createdBys,
+                    selectedCreatedBy: selectedCreatedBy,
                     tags: tags
                 });
             }.bind(this)).catch(function(ex) {
@@ -178,6 +183,7 @@ var FilterableQueryList = React.createClass({
         return (
             <div>
                 <QueryListSidebar 
+                    currentUser={this.props.currentUser}
                     connections={this.state.connections}
                     onConnectionChange={this.onConnectionChange}
                     tags={this.state.tags}
@@ -186,8 +192,9 @@ var FilterableQueryList = React.createClass({
                     createdBys={this.state.createdBys}
                     onCreatedByChange={this.onCreatedByChange}
                     onSortByChange={this.onSortByChange}
+                    selectedCreatedBy={this.state.selectedCreatedBy}
                     />
-                <QueryList 
+                <QueryList
                     queries={filteredQueries} 
                     selectedQuery={this.state.selectedQuery}
                     handleQueryDelete={this.handleQueryDelete}
@@ -258,7 +265,7 @@ var QueryListSidebar = React.createClass({
                     <br/>
                     <FormGroup controlId="formControlsSelect">
                         <ControlLabel>Created By</ControlLabel>
-                        <FormControl componentClass="select" onChange={this.onCreatedByChange}>
+                        <FormControl value={this.props.selectedCreatedBy} componentClass="select" onChange={this.onCreatedByChange}>
                             <option value="">All</option>
                             {createdBySelectOptions}
                         </FormControl>
