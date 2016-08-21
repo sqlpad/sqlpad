@@ -62,9 +62,12 @@ QueryResult.prototype.addRow = function QueryResultAddRow (row) {
             min: null,
             maxValueLength: 0
         };
+        
+        // if there is no value none of what follows will be helpful
+        if (value == null) return;
 
         // if we don't have a data type and we have a value yet lets try and figure it out
-        if (!this.meta[key].datatype && value) {
+        if (!this.meta[key].datatype) {
             if (_.isDate(value)) this.meta[key].datatype = 'date';
             else if (isNumberLike(value)) this.meta[key].datatype = 'number';
             else if (_.isString(value)) {
@@ -75,12 +78,23 @@ QueryResult.prototype.addRow = function QueryResultAddRow (row) {
             }
         }
 
+        // if the datatype is number-like, 
+        // we should check to see if it ever changes to a string
+        // this is hacky, but sometimes data will be 
+        // a mix of number-like and strings that aren't number like
+        // in the event that we get some data that's NOT NUMBER LIKE, 
+        // then we should *really* be recording this as string
+        if (this.meta[key].datatype === 'number') {
+            if (!isNumberLike(value)) {
+                this.meta[key].datatype = 'string';
+                this.meta[key].max = null;
+                this.meta[key].min = null;
+            }
+        }
+
         // if we have a value and are dealing with a number or date, we should get min and max
-        if (
-            value
-            && (this.meta[key].datatype === 'number' || this.meta[key].datatype === 'date')
-            && (isNumberLike(value) || _.isDate(value))
-        ) {
+        if (this.meta[key].datatype === 'number' && isNumberLike(value)) {
+            value = Number(value);
             // if we haven't yet defined a max and this row contains a number
             if (!this.meta[key].max) this.meta[key].max = value;
             // otherwise this field in this row contains a number, and we should see if its bigger
@@ -90,19 +104,17 @@ QueryResult.prototype.addRow = function QueryResultAddRow (row) {
             else if (value < this.meta[key].min) this.meta[key].min = value;
         }
 
-        // if the datatype is number-like, 
-        // we should check to see if it ever changes to a string
-        // this is hacky, but sometimes data will be 
-        // a mix of number-like and strings that aren't number like
-        // in the event that we get some data that's NOT NUMBER LIKE, 
-        // then we should *really* be recording this as string
-        if (this.meta[key].datatype === 'number' && value) {
-            if (!isNumberLike(value)) {
-                this.meta[key].datatype = 'string';
-                this.meta[key].max = null;
-                this.meta[key].min = null;
-            }
+        if (this.meta[key].datatype === 'date' && _.isDate(value)) {
+            // if we haven't yet defined a max and this row contains a number
+            if (!this.meta[key].max) this.meta[key].max = value;
+            // otherwise this field in this row contains a number, and we should see if its bigger
+            else if (value > this.meta[key].max) this.meta[key].max = value;
+            // then do the same thing for min
+            if (!this.meta[key].min) this.meta[key].min = value;
+            else if (value < this.meta[key].min) this.meta[key].min = value;
         }
+
+        
     }.bind(this));
 
     // if we haven't processed the header yet we have now
