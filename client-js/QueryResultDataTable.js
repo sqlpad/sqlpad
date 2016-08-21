@@ -43,8 +43,16 @@ var QueryResultDataTable = React.createClass({
         } else if (this.props.queryResult && this.props.queryResult.rows) {
             var queryResult = this.props.queryResult;
             var columnNodes = queryResult.fields.map(function (field) {
-                    
-                var valueLength = queryResult.meta[field].maxValueLength;
+
+                var fieldMeta = queryResult.meta[field];    
+                var valueLength = fieldMeta.maxValueLength;
+                var maxValue = fieldMeta.max;
+                var minValue = fieldMeta.min;
+
+                if (fieldMeta.datatype == 'number') {
+                    console.log(fieldMeta)
+                }
+
                 if (field.length > valueLength) valueLength = field.length;       
                 var columnWidth = valueLength * 20;
                 if (columnWidth < 200) columnWidth = 200;
@@ -52,24 +60,52 @@ var QueryResultDataTable = React.createClass({
                 var cellWidth = columnWidth - 10;
 
                 var renderValue = (input) => {
-                    if (queryResult.meta[field].datatype == 'date') {
+                    if (fieldMeta.datatype == 'date') {
                         return moment(input).format('MM/DD/YYYY HH:mm:ss');
                     } else {
                         return input;
                     }
                 }
 
+                
                 return (
                     <Column
                         key={field}
                         header={<Cell>{field}</Cell>}
-                        cell={({rowIndex}) => (
-                            <Cell>
-                                <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: cellWidth}}>
-                                    {renderValue(queryResult.rows[rowIndex][field])}
-                                </div>
-                            </Cell>
-                        )}
+                        cell={({rowIndex}) => {
+                            var value = queryResult.rows[rowIndex][field];
+                            var barStyle;
+                            var numberBar;
+                            if (fieldMeta.datatype == 'number') {
+                                value = Number(value);
+                                
+                                var xAxisMin = (fieldMeta.min < 0 ? fieldMeta.min : 0);
+                                var range = fieldMeta.max - (fieldMeta.min < 0 ? fieldMeta.min : 0);
+                                var left = 0;
+                                if (fieldMeta.min < 0 && value < 0) {
+                                    left = Math.abs(fieldMeta.min - value)/range * 100 + '%';
+                                } else if (fieldMeta.min < 0 && value >= 0) {
+                                    left = Math.abs(fieldMeta.min)/range * 100 + '%';
+                                }
+                                barStyle = {
+                                    position: 'absolute',
+                                    left: left,
+                                    top: 0,
+                                    bottom: 0,
+                                    width: (Math.abs(value)/range) * 100 + '%',
+                                    backgroundColor: '#ffcf78'
+                                }
+                                numberBar = <div style={barStyle}></div>;
+                            }
+                            return (
+                                <Cell>
+                                    {numberBar}
+                                    <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: cellWidth, position: 'absolute'}}>
+                                        {renderValue(value)}
+                                    </div>
+                                </Cell>
+                            )
+                        }}
                         width={columnWidth}
                         />
                 )
