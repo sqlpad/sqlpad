@@ -43,15 +43,11 @@ var ChartInputs = React.createClass({
         if (chartInputDefinition && chartInputDefinition.fields) {
             
             var dropdownNodes = chartInputDefinition.fields.map((field) => {
-                
-                var onFieldDropdownChange = (e) => {
-                    this.changeChartConfigurationField(field.fieldId, e.target.value);
-                }
 
                 var onCheckboxChange = (e) => {
                     this.changeChartConfigurationField(field.fieldId, e.target.checked)
                 }
-                
+
                 if (field.inputType == 'field-dropdown') {
                     var optionNodes = queryResultFields.map(function (qrfield) {
                         return (
@@ -82,13 +78,26 @@ var ChartInputs = React.createClass({
                         </FormGroup>
                     )
                 } else if (field.inputType == 'checkbox') {
-
                     var checked = cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
                     return (
                         <FormGroup key={field.fieldId} controlId={field.fieldId} bsSize="small">
                             <Checkbox checked={checked} onChange={onCheckboxChange}>
                                 {field.label}
                             </Checkbox>
+                        </FormGroup>
+                    )
+                } else if (field.inputType == 'textbox') {
+                    var value = queryChartConfigurationFields[field.fieldId];
+                    return (
+                        <FormGroup key={field.fieldId} controlId={field.fieldId} bsSize="small">
+                            <ControlLabel>{field.label}</ControlLabel>
+                            <FormControl 
+                                value={(value == null ? '' : value)}
+                                onChange={(e) => {
+                                    this.changeChartConfigurationField(field.fieldId, e.target.value);
+                                }}  
+                                type="text" 
+                                className="input-small" />
                         </FormGroup>
                     )
                 }

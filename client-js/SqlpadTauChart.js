@@ -94,6 +94,13 @@ var SqlpadTauChart = React.createClass({
                 }
                 if (definitionFieldsById.split.val) chartConfig.color = definitionFieldsById.split.val;
                 if (definitionFieldsById.size.val) chartConfig.size = definitionFieldsById.size.val; 
+                if (definitionFieldsById.yMin.val || definitionFieldsById.yMax.val) {
+                    chartConfig.guide = {
+                        y: {autoScale: false}
+                    };
+                    if (definitionFieldsById.yMin.val) chartConfig.guide.y.min = Number(definitionFieldsById.yMin.val);
+                    if (definitionFieldsById.yMax.val) chartConfig.guide.y.max = Number(definitionFieldsById.yMax.val);
+                }
                 break;
 
             case 'bar': 

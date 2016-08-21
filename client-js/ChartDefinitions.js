@@ -42,6 +42,16 @@ module.exports = [
                 required: false,
                 label: "Show Trendline",
                 inputType: "checkbox"
+            }, {
+                fieldId: 'yMin',
+                required: false,
+                label: 'y Axis Min',
+                inputType: 'textbox'
+            }, {
+                fieldId: 'yMax',
+                required: false,
+                label: 'y Axis Max',
+                inputType: 'textbox'
             }
         ]
     }, {
