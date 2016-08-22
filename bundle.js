@@ -1,19 +1,15 @@
 var fs = require("fs");
 var browserify = require('browserify');
 var watchify = require('watchify');
+var uglifyify = require('uglifyify');
 var rc = require('rc');
 
 var config = rc('sqlpad-dev');
 var exposeConfig = { 
     expose: { 
         jquery: '$', 
-        //ace: 'ace',
-        Slick: 'Slick',
-        d3: 'd3',
-        Bloodhound: 'Bloodhound',
         tauCharts: 'tauCharts',
-        _: '_',
-        ZeroClipboard: 'ZeroClipboard'
+        _: '_'
     } 
 };
 
@@ -30,11 +26,9 @@ if (config.dev) {
     b.plugin(watchify);
     b.transform("babelify", {presets: ["es2015", "react"]});
     b.transform("exposify", exposeConfig);
-
     b.on('log', function (msg) {
         console.log(msg);
     });
-
     b.on('update', bundle);
     bundle();
 } else {
@@ -45,9 +39,10 @@ if (config.dev) {
     });
     b.transform("babelify", {presets: ["es2015", "react"]});
     b.transform("exposify", exposeConfig);
+    b.transform("uglifyify", {global: true});
     bundle();
 }
 
 function bundle() {
-  b.bundle().pipe(fs.createWriteStream("./public/javascripts/browserified.js"));
+    b.bundle().pipe(fs.createWriteStream("./public/javascripts/browserified.js"));
 }

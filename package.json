@@ -101,6 +101,7 @@
     "react-dom": "^15.1.0",
     "react-select": "^1.0.0-beta14",
     "taucharts": "^0.9.1",
+    "uglifyify": "^3.0.2",
     "watchify": "^3.7.0",
     "whatwg-fetch": "^1.0.0"
   },
