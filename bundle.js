@@ -2,9 +2,9 @@ var fs = require("fs");
 var browserify = require('browserify');
 var watchify = require('watchify');
 var uglifyify = require('uglifyify');
-var rc = require('rc');
+var minimist = require('minimist');
+var config = minimist(process.argv.slice(2));
 
-var config = rc('sqlpad-dev');
 var exposeConfig = { 
     expose: { 
         jquery: '$', 
