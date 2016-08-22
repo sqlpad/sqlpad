@@ -6,6 +6,7 @@ var path = require('path');
 var updateNotifier = require('update-notifier');
 var packageJson = require('./package.json');
 var app = express();
+var detectPort = require('detect-port');
 
 
 /*  Automatic notifier thing that an update is available
@@ -158,6 +159,13 @@ routers.forEach(function (router) {
 
 /*	Start the Server
 ============================================================================= */
-http.createServer(app).listen(PORT, IP, function () {
-	console.log('\nWelcome to ' + app.locals.title + '!. Visit http://' + (IP == '0.0.0.0' ? 'localhost' : IP) + ':' + PORT + BASE_URL + ' to get started');
-});
+detectPort(PORT).then(function (_port) {
+    if (PORT != _port) {
+        console.log("\nPort %d already occupied. Using port %d instead.", PORT, _port);
+        config.set('port', _port);
+    }
+    http.createServer(app).listen(_port, IP, function () {
+        console.log('\nWelcome to ' + app.locals.title + '!. Visit http://' + (IP == '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started');
+    });
+})
+    
