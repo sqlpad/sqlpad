@@ -49,10 +49,6 @@ var QueryResultDataTable = React.createClass({
                 var maxValue = fieldMeta.max;
                 var minValue = fieldMeta.min;
 
-                if (fieldMeta.datatype == 'number') {
-                    console.log(fieldMeta)
-                }
-
                 if (field.length > valueLength) valueLength = field.length;       
                 var columnWidth = valueLength * 20;
                 if (columnWidth < 200) columnWidth = 200;
