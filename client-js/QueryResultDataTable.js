@@ -2,6 +2,7 @@ var React = require('react');
 var SecondsTimer = require('./SecondsTimer.js');
 var moment = require('moment');
 import {Table, Column, Cell} from 'fixed-data-table'; // react's fixed data table
+var _ = require('_');
 
 var QueryResultDataTable = React.createClass({
     getInitialState: function () {
@@ -58,6 +59,8 @@ var QueryResultDataTable = React.createClass({
                 var renderValue = (input) => {
                     if (fieldMeta.datatype == 'date') {
                         return moment(input).format('MM/DD/YYYY HH:mm:ss');
+                    } else if (_.isObject(input)) {
+                        return JSON.stringify(input, null, 2);
                     } else {
                         return input;
                     }
