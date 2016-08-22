@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.0.0 (in development)
+
+- Design updates
+    - Redesigned query listing page with instant SQL preview
+    - Query Editor page cleaned up 
+    - New query result grid component with inline bar-charts
+    - New query tags widget
+    - Schema sidebar no longer separates tables and views
+    - New Configuration UI (open ended key/value inputs are no more)
+- New charting options 
+    - line chart y min/max 
+    - line chart line width
+    - chart filters
+- Bug fixes
+    - query result grid displays properly in Firefox
+    - fixed rendering issues with tag input
+    - switching between sql/vis tabs won't reset chart series toggles
+- Updated dependencies
+- Lots of code cleanup (and some new code messes too :)
+
+
 ## 1.17.0
 - empty postgres queries (like executing a comment only) no longer crash sqlpad
 - materialized views are included in schema sidebar for postgres
