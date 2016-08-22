@@ -395,7 +395,7 @@ var QueryEditor = React.createClass({
     render: function () {
         var tabsFormStyle = {
             position: 'absolute',
-            left: "220px"
+            left: "150px"
         }
         document.title = (this.state.query.name ? this.state.query.name : "New Query");
         var tagOptions = this.props.availableTags.map((t) => {
@@ -416,7 +416,7 @@ var QueryEditor = React.createClass({
                                 <span className="glyphicon glyphicon-stats"></span> Vis
                             </NavItem>
                         </Nav>
-                        <Form inline className="navbar-form navbar-left navbar-left-border" style={tabsFormStyle}>
+                        <Form inline className="navbar-form navbar-left navbar-left-border-nope" style={tabsFormStyle}>
                             <Button className="QueryEditorSubheaderItem" 
                                 onClick={this.saveQuery}
                                 disabled={this.state.isSaving}>

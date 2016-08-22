@@ -568,6 +568,9 @@ input[type=checkbox], input[type=radio] {
     line-height: 20px;
     width: 450px;
     color: #00B7FF;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .QueryEditorQueryName:hover {
     color: #23527c;
@@ -589,6 +592,7 @@ input[type=checkbox], input[type=radio] {
     right: 0;
     bottom: 50%;
     left: 0;
+    padding: 5px;
 }
 
 .incomplete-notification {
