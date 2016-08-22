@@ -200,6 +200,7 @@ var FilterableQueryList = React.createClass({
                     handleQueryDelete={this.handleQueryDelete}
                     handleQueryListRowMouseOver={this.handleQueryListRowMouseOver}/>
                 <QueryPreview 
+                    config={this.props.config}
                     selectedQuery={this.state.selectedQuery} />
             </div>
         )
@@ -363,10 +364,10 @@ var QueryListRow = React.createClass({
 });
 
 var QueryPreview = React.createClass({
-    onChange: function (newValue) {
-        
-    },
     render: function () {
+        if (this.editor && this.props.config.editorWordWrap) { 
+            this.editor.session.setUseWrapMode(true);
+        }
         if (this.props.selectedQuery) {
             var query = this.props.selectedQuery;
             var chartType = (query.chartConfiguration && query.chartConfiguration.chartType ? "chart type: " + query.chartConfiguration.chartType : "");
@@ -384,7 +385,6 @@ var QueryPreview = React.createClass({
                         showGutter={false}
                         showPrintMargin={false}
                         highlightActiveLine={false}
-                        onChange={this.onChange}
                         value={this.props.selectedQuery.queryText}
                         editorProps={{$blockScrolling: true}}
                         ref={(ref) => this.editor = (ref ? ref.editor : null) }

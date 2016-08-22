@@ -125,6 +125,14 @@ default = true
 
 [[configItems]]
 interface = "ui"
+key = "editorWordWrap"
+label = "Editor Word Wrap"
+description = "Set to true to enable word wrapping in SQL editor"
+options = [true, false]
+default = false
+
+[[configItems]]
+interface = "ui"
 key = "queryResultMaxRows"
 label = "Query Result Max Rows"
 description = "By default query results are limited to 50,000 records"

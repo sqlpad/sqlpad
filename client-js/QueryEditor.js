@@ -333,7 +333,10 @@ var QueryEditor = React.createClass({
         this.loadConnectionsFromServer();
         if (this.props.queryId != 'new') this.loadQueryFromServer(this.props.queryId);
         
-        if (this.editor) this.editor.focus();
+        if (this.editor) { 
+            this.editor.focus();
+            if (this.props.config.editorWordWrap) this.editor.session.setUseWrapMode(true);
+        }
 
         /*  Shortcuts
         ==============================================================================*/
