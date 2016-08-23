@@ -34,6 +34,7 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 var Modal = require('react-bootstrap/lib/Modal');
 var Tooltip = require('react-bootstrap/lib/Tooltip');
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+var HelpBlock = require('react-bootstrap/lib/HelpBlock');
 
 
 var QueryDetailsModal = React.createClass({
@@ -43,10 +44,18 @@ var QueryDetailsModal = React.createClass({
         }
     },
     close: function () {
+        if (this.saveOnClose) {
+            setTimeout(this.props.saveQuery, 750);
+            this.saveOnClose = false;
+        }
         this.setState({ showModal: false });
     },
     input: undefined,
     open: function () {
+        this.setState({ showModal: true });
+    },
+    openForSave: function () {
+        this.saveOnClose = true;
         this.setState({ showModal: true });
     },
     onSubmit: function (e) {
@@ -84,16 +93,19 @@ var QueryDetailsModal = React.createClass({
                 )
             }
         }
-
+        var validationState = (this.saveOnClose && !this.props.query.name.length ? 'warning' : null);
+        var validationHelp = (this.saveOnClose && !this.props.query.name.length ? <HelpBlock>Query name is required to save query.</HelpBlock> : null);
         return (
                 <Modal onEntered={this.onEntered} animation={true} show={this.state.showModal} onHide={this.close} >
                     <Modal.Header closeButton>
                     </Modal.Header>
                     <Modal.Body>
                         <form onSubmit={this.onSubmit}>
-                            <FormGroup>
+                            <FormGroup validationState={validationState}>
                                 <ControlLabel>Query Name</ControlLabel>
                                 <input className="form-control" ref={(ref) => this.input = ref} type="text" value={this.props.query.name} onChange={this.onQueryNameChange} />
+                                <FormControl.Feedback />
+                                {validationHelp}
                             </FormGroup>
                             <br/>
                             <FormGroup>
@@ -185,6 +197,10 @@ var QueryEditor = React.createClass({
     },
     saveQuery: function () {
         var query = this.state.query;
+        if (!query.name) {
+            this.queryDetailsModal.openForSave();
+            return;
+        }
         this.setState({isSaving: true});
         if (query._id) {
             var opts = {
@@ -432,6 +448,7 @@ var QueryEditor = React.createClass({
                             <QueryDetailsModal 
                                 onQueryNameChange={this.onQueryNameChange} 
                                 onQueryTagsChange={this.onQueryTagsChange}
+                                saveQuery={this.saveQuery}
                                 query={this.state.query}
                                 tagOptions={tagOptions}
                                 ref={(ref) => this.queryDetailsModal = ref }/>
