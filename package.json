@@ -63,7 +63,7 @@
     "sanitize-filename": "1.x.x",
     "serve-favicon": "2.x.x",
     "ua-parser": "0.3.x",
-    "update-notifier": "^0.6.0",
+    "update-notifier": "^1.0.2",
     "uuid": "^2.0.1",
     "vertica": "0.5.x"
   },
