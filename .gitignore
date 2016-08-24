@@ -12,3 +12,5 @@ zedrem.exe
 .idea/*
 
 jsconfig.json
+
+public/javascripts/browserified.js
