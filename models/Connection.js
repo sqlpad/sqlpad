@@ -13,9 +13,10 @@ var schema = {
     database: Joi.string().optional(),
     username: Joi.string().default('', 'Database Username'), // decrypt for presentation, encrypted for storage
     password: Joi.string().default('', 'Database Password'), // decrypt for presentation, encrypted for storage
+    domain: Joi.string().optional(),
     sqlserverEncrypt: Joi.boolean().default(false, 'SQL Server Encrypt'),
-    postgresSsl: Joi.boolean().optional(false, 'Postgres SSL'),
-    mysqlInsecureAuth: Joi.boolean().optional(false, 'Mysql Insecure Auth'),
+    postgresSsl: Joi.boolean().default(false, 'Postgres SSL'),
+    mysqlInsecureAuth: Joi.boolean().default(false, 'Mysql Insecure Auth'),
     createdDate: Joi.date().default(new Date(), 'time of creation'),
     modifiedDate: Joi.date().default(new Date(), 'time of modifcation')
 }
@@ -29,6 +30,7 @@ var Connection = function Connection (data) {
     this.database = data.database;
     this.username = data.username;
     this.password = data.password;
+    this.domain = data.domain; // this is sql server only for now, but could apply to other dbs in future? 
     this.sqlserverEncrypt = data.sqlserverEncrypt;
     this.postgresSsl = data.postgresSsl;
     this.mysqlInsecureAuth = data.mysqlInsecureAuth;

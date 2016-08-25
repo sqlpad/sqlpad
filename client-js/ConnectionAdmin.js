@@ -251,6 +251,9 @@ var ConnectionForm = React.createClass({
     onPasswordChange: function (e) {
         this.props.setConnectionValue('password', e.target.value);
     },
+    onDomainChange: function (e) {
+        this.props.setConnectionValue('domain', e.target.value);
+    },
     onSqlserverEncryptChange: function (e) {
         this.props.setConnectionValue('sqlserverEncrypt', e.target.checked);
     },
@@ -294,6 +297,16 @@ var ConnectionForm = React.createClass({
                     <FormGroup controlId="database-password">
                         <ControlLabel>Database Password</ControlLabel>
                         <FormControl type="password" value={connection.password || ''} onChange={this.onPasswordChange}/>
+                    </FormGroup>
+                )
+            }
+        }
+        var domainInput = () => {
+            if (connection.driver == 'sqlserver') {
+                return (
+                    <FormGroup controlId="domain">
+                        <ControlLabel>Domain</ControlLabel>
+                        <FormControl type="text" value={connection.domain || ''} onChange={this.onDomainChange}/>
                     </FormGroup>
                 )
             }
@@ -359,6 +372,7 @@ var ConnectionForm = React.createClass({
                             <FormControl type="text" value={connection.port || ''} onChange={this.onPortChange}/>
                         </FormGroup>
                         {databaseInput()}
+                        {domainInput()}
                         {usernameInput()}
                         {passwordInput()}
                         {sqlserverEncryptInput()}

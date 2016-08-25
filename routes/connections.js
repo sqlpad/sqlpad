@@ -22,6 +22,7 @@ function connectionFromBody (body) {
         database: body.database,
         username: body.username,
         password: body.password,
+        domain: body.domain,
         sqlserverEncrypt: (body.sqlserverEncrypt ? true : false),
         postgresSsl: (body.postgresSsl ? true : false),
         mysqlInsecureAuth: (body.mysqlInsecureAuth ? true : false)
@@ -97,6 +98,7 @@ router.put('/api/connections/:_id', function (req, res) {
         connection.host = req.body.host;
         connection.port = req.body.port;
         connection.database = req.body.database;
+        connection.domain = req.body.domain;
         connection.sqlserverEncrypt = (req.body.sqlserverEncrypt ? true : false);
         connection.postgresSsl = (req.body.postgresSsl ? true : false);
         connection.mysqlInsecureAuth = (req.body.mysqlInsecureAuth ? true : false);
