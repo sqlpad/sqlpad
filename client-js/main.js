@@ -1,8 +1,6 @@
 //  This is the client side js entry file to be browserified
 
 // old jquery stuff
-require('./connection.js')();
-require('./connection-admin.js')();
 require('./user-admin.js')();
 
 // stuff below is gradually being converted into react applets
