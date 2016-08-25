@@ -21,7 +21,9 @@ var ConnectionController = React.createClass({
     getInitialState: function () {
         return {
             connections: [],
-            selectedConnection: null
+            selectedConnection: null,
+            isTesting: false,
+            isSaving: false
         }
     },
     componentDidMount: function () {
@@ -40,6 +42,9 @@ var ConnectionController = React.createClass({
             .then((json) => {
                 if (json.error) return this.alert('Delete Failed', 'danger');
                 this.alert('Connection Deleted', 'success');
+                if (this.state.selectedConnection && connection._id == this.state.selectedConnection._id) {
+                    this.setState({selectedConnection: null})
+                }
                 this.loadConnectionsFromServer();
             })
             .catch((ex) => {
@@ -51,8 +56,66 @@ var ConnectionController = React.createClass({
             selectedConnection: {}
         })
     },
+    setConnectionValue: function (attribute, value) {
+        var selectedConnection = this.state.selectedConnection;
+        if (selectedConnection) {
+            selectedConnection[attribute] = value;
+            this.setState({selectedConnection: selectedConnection});
+        }
+    },
     alert: function (message, style) {
         if (this.pageAlert) this.pageAlert.alert(message, style);
+    },
+    loadConnectionsFromServer: function () {
+        fetchJson('get', baseUrl + "/api/connections")
+            .then((response) => {
+                return response.json()
+            }).then((json) => {
+                this.setState({connections: json.connections});
+            }).catch(function(ex) {
+                console.error(ex.toString());
+            });
+    },
+    testConnection: function () {
+        this.setState({isTesting: true});
+        fetchJson('POST', this.props.config.baseUrl + '/api/test-connection', this.state.selectedConnection)
+            .then(function(response) {
+                return response.json();
+            })
+            .then((json) => {
+                this.setState({isTesting: false});
+                if (!json.success) return this.alert('Test Failed', 'danger');
+                return this.alert('Test Successful', 'success');
+            })     
+    },
+    saveConnection: function () {
+        this.setState({isSaving: true});
+        if (this.state.selectedConnection._id) {
+            fetchJson('PUT', this.props.config.baseUrl + '/api/connections/' + this.state.selectedConnection._id, this.state.selectedConnection)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((json) => {
+                    this.setState({isSaving: false});
+                    if (json.error) return this.alert('Save Failed', 'danger');
+                    this.alert('Save Successful', 'success');
+                    this.loadConnectionsFromServer();
+                })
+        } else {
+            fetchJson('POST', this.props.config.baseUrl + '/api/connections', this.state.selectedConnection)
+                .then((response) => {
+                    return response.json();
+                })
+                .then((json) => {
+                    this.setState({
+                        isSaving: false,
+                        selectedConnection: json.connection || this.state.selectedConnection
+                    });
+                    if (json.error) return this.alert('Save Failed', 'danger');
+                    this.alert('Save Sucessful', 'success');
+                    this.loadConnectionsFromServer();
+                })
+        }
     },
     render: function () {
         return (
@@ -65,25 +128,16 @@ var ConnectionController = React.createClass({
                     onNewConnectionClick={this.onNewConnectionClick}
                     />
                 <ConnectionForm
-                    alert={this.alert}
-                    config={this.props.config}
                     selectedConnection={this.state.selectedConnection}
-                    loadConnectionsFromServer={this.loadConnectionsFromServer}
+                    setConnectionValue={this.setConnectionValue}
+                    testConnection={this.testConnection}
+                    saveConnection={this.saveConnection}
+                    isTesting={this.state.isTesting}
+                    isSaving={this.state.isSaving}
                     />
                 <PageAlert ref={(ref) => this.pageAlert = ref} />
             </div>
         )
-            
-    },
-    loadConnectionsFromServer: function () {
-        fetchJson('get', baseUrl + "/api/connections")
-            .then((response) => {
-                return response.json()
-            }).then((json) => {
-                this.setState({connections: json.connections});
-            }).catch(function(ex) {
-                console.error(ex.toString());
-            });
     }
 });
 
@@ -103,9 +157,6 @@ var ConnectionList = React.createClass({
         overflowY: 'auto',
         padding: 10
     },
-    onNewConnectionClick: function () {
-        this.props.onNewConnectionClick();
-    },
     render: function () {
         var listRows = this.props.connections.map((connection) => {
             return (
@@ -124,9 +175,8 @@ var ConnectionList = React.createClass({
                 <ListGroup className="ConnectionListContents">
                     {listRows}
                 </ListGroup>
-                <Button onClick={this.onNewConnectionClick}>New Connection</Button>
+                <Button onClick={this.props.onNewConnectionClick}>New Connection</Button>
             </div>
-                
         )
     }
 });
@@ -170,23 +220,6 @@ var ConnectionListRow = React.createClass({
 
 
 var ConnectionForm = React.createClass({
-    getInitialState: function () {
-        return {
-            connection: this.props.selectedConnection,
-            isTesting: false,
-            isSaving: false
-        }
-    },
-    componentWillReceiveProps: function (nextProps) {
-        if (!deepEqual(this.props.connection, nextProps.selectedConnection)) {
-            this.setState({
-                connection: nextProps.selectedConnection
-            });
-        }
-    },
-    loadConnectionsFromServer: function () {
-        this.props.loadConnectionsFromServer();
-    },
     style: {
         position: 'absolute',
         right: 0,
@@ -197,105 +230,44 @@ var ConnectionForm = React.createClass({
         overflowY: 'auto',
         padding: 10
     },
-    testConnection: function () {
-        this.setState({isTesting: true});
-        fetchJson('POST', this.props.config.baseUrl + '/api/test-connection', this.state.connection)
-            .then(function(response) {
-                return response.json();
-            })
-            .then((json) => {
-                setTimeout(() => {
-                    this.setState({isTesting: false});
-                    if (!json.success) return this.props.alert('Test Failed', 'danger');
-                    return this.props.alert('Test Successful', 'success');
-                }, 300);
-            })     
-    },
-    saveConnection: function () {
-        var me = this;
-        this.setState({isSaving: true});
-        if (this.state.connection._id) {
-            fetchJson('PUT', this.props.config.baseUrl + '/api/connections/' + this.state.connection._id, this.state.connection)
-                .then((response) => {
-                    return response.json();
-                })
-                .then((json) => {
-                    this.setState({isSaving: false});
-                    if (json.error) return this.props.alert('Save Failed', 'danger');
-                    this.props.alert('Save Successful', 'success');
-                    me.loadConnectionsFromServer();
-                })
-        } else {
-            fetchJson('POST', this.props.config.baseUrl + '/api/connections', this.state.connection)
-                .then((response) => {
-                    return response.json();
-                })
-                .then((json) => {
-                    this.setState({isSaving: false});
-                    if (json.error) return this.props.alert('Save Failed', 'danger');
-                    this.props.alert('Save Sucessful', 'success');
-                    me.loadConnectionsFromServer();
-                })
-        }
-    },
     onNameChange: function (e) {
-        var connection = this.state.connection;
-        connection.name = e.target.value;
-        this.setState({connection});
+        this.props.setConnectionValue('name', e.target.value);
     },
     onDriverChange: function (e) {
-        var connection = this.state.connection;
-        connection.driver = e.target.value;
-        this.setState({connection});
+        this.props.setConnectionValue('driver', e.target.value);
     },
     onHostChange: function (e) {
-        var connection = this.state.connection;
-        connection.host = e.target.value;
-        this.setState({connection});
+        this.props.setConnectionValue('host', e.target.value);
     },
     onPortChange: function (e) {
-        var connection = this.state.connection;
-        connection.port = e.target.value;
-        this.setState({connection});
+        this.props.setConnectionValue('port', e.target.value);
     },
     onDatabaseChange: function (e) {
-        var connection = this.state.connection;
-        connection.database = e.target.value;
-        this.setState({connection});
+        this.props.setConnectionValue('database', e.target.value);
     },
     onUsernameChange: function (e) {
-        var connection = this.state.connection;
-        connection.username = e.target.value;
-        this.setState({connection});
+        this.props.setConnectionValue('username', e.target.value);
     },
     onPasswordChange: function (e) {
-        var connection = this.state.connection;
-        connection.password = e.target.value;
-        this.setState({connection});
+        this.props.setConnectionValue('password', e.target.value);
     },
     onSqlserverEncryptChange: function (e) {
-        var connection = this.state.connection;
-        connection.sqlserverEncrypt = e.target.checked;
-        this.setState({connection});
+        this.props.setConnectionValue('sqlserverEncrypt', e.target.checked);
     },
     onMysqlInsecureAuthChange: function (e) {
-        var connection = this.state.connection;
-        connection.mysqlInsecureAuth = e.target.checked;
-        this.setState({connection});
+        this.props.setConnectionValue('mysqlInsecureAuth', e.target.checked);
     },
     onPostgresSslChange: function (e) {
-        var connection = this.state.connection;
-        connection.postgresSsl = e.target.checked;
-        this.setState({connection});
+        this.props.setConnectionValue('postgresSsl', e.target.checked);
     },
     render: function () {
-        if (!this.state.connection) {
+        if (!this.props.selectedConnection) {
             return (
                 <div className="ConnectionForm" style={this.style}>
                 </div>   
             );
         }
-        var connection = this.state.connection;
+        var connection = this.props.selectedConnection;
         var databaseInput = () => {
             if (connection.driver != 'crate') {
                 return (
@@ -392,16 +364,15 @@ var ConnectionForm = React.createClass({
                         {sqlserverEncryptInput()}
                         {mysqlInsecureAuthInput()}
                         {postgresSslInput()}
-                        <Button className="connection-button" onClick={this.saveConnection} disabled={this.state.isSaving}>
-                            {this.state.isSaving ? 'Saving...' : 'Save'}
+                        <Button className="connection-button" onClick={this.props.saveConnection} disabled={this.props.isSaving}>
+                            {this.props.isSaving ? 'Saving...' : 'Save'}
                         </Button>
                         {" "}
-                        <Button className="connection-button" onClick={this.testConnection} disabled={this.state.isTesting}>
-                            {this.state.isTesting ? 'Testing...' : 'Test'}
+                        <Button className="connection-button" onClick={this.props.testConnection} disabled={this.props.isTesting}>
+                            {this.props.isTesting ? 'Testing...' : 'Test'}
                         </Button>
                     </Form>
                 </Panel>
-                    
             </div>
         )
     }
