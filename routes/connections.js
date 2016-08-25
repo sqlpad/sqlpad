@@ -7,6 +7,12 @@ var config = require('../lib/config.js');
 var Connection = require('../models/Connection.js');
 var BASE_URL = config.get('baseUrl');
 
+router.get('/connections', function (req, res) {
+    return res.render('react-applet', {
+        pageTitle: "Connections"
+    });
+});
+
 function connectionFromBody (body) {
     return {
         name: body.name,
@@ -24,48 +30,100 @@ function connectionFromBody (body) {
 
 router.get('/api/connections', function (req, res) {
     Connection.findAll(function (err, connections) {
+        connections = connections.map((connection) => {
+            connection.username = decipher(connection.username);
+            connection.password = '';
+            return connection;
+        });
         res.json({
-            err: err,
-            connections: connections
+            error: err,
+            connections: connections 
         });
     });
 });
 
-router.get('/connections', function (req, res) {
-    Connection.findAll(function (err, connections) {
-        res.render('connections', {pageTitle: "Connections", connections: connections});
-    });
-});
-
-router.get('/connections/:_id', function (req, res) {
+router.get('/api/connections/:_id', function (req, res) {
     Connection.findOneById(req.params._id, function (err, connection) {
         if (!connection) {
-            connection = {};
-        } else {
-            connection.username = decipher(connection.username);
-            connection.password = "";
+            return res.json({
+                error: "Connection not found"
+            });
         }
-        res.render('connection', {
+        connection.username = decipher(connection.username);
+        connection.password = "";
+        return res.json({
             connection: connection
         });
     });
 });
 
-router.post('/connections/new', function (req, res) {
+
+// create
+router.post('/api/connections', function (req, res) {
     var connection = new Connection(connectionFromBody(req.body));
-    connection.username = cipher(connection.username);
-    connection.password = cipher(connection.password);
+    connection.username = cipher(connection.username || '');
+    connection.password = cipher(connection.password || '');
     connection.save(function (err, newConnection) {
-        if (err) {
-            console.log(err);
-            res.render('connection', {debug: err});
-        } else {
-            res.redirect(BASE_URL + '/connections');
+        if (err) console.error(err);
+        if (newConnection) {
+            newConnection.username = decipher(connection.username);
+            newConnection.password = "";
         }
+        return res.json({
+            error: err,
+            connection: newConnection
+        })
     });
 });
 
-function testConnection(req, res) {
+// update
+router.put('/api/connections/:_id', function (req, res) {
+    Connection.findOneById(req.params._id, function (err, connection) {
+        if (err) {
+            console.log(err);
+            return res.json({
+                error: err 
+            });
+        }
+        if (!connection) {
+            return res.json({
+                error: "connection not found."
+            });
+        }
+        connection.username = cipher(req.body.username || '');
+        connection.password = cipher(req.body.password || '');
+        connection.name = req.body.name;
+        connection.driver = req.body.driver;
+        connection.host = req.body.host;
+        connection.port = req.body.port;
+        connection.database = req.body.database;
+        connection.sqlserverEncrypt = (req.body.sqlserverEncrypt ? true : false);
+        connection.postgresSsl = (req.body.postgresSsl ? true : false);
+        connection.mysqlInsecureAuth = (req.body.mysqlInsecureAuth ? true : false);
+        connection.save(function (err, connection) {
+            connection.username = decipher(connection.username);
+            connection.password = "";
+            res.json({
+                error: err,
+                connection: connection
+            });
+        }); 
+    });
+});
+
+// delete
+router.delete('/api/connections/:_id', function (req, res) {
+    Connection.removeOneById(req.params._id, function (err) {
+        if (err) console.error(err);
+        return res.json({
+            error: err
+        });
+    });
+});
+
+
+// test connection 
+router.post('/api/test-connection', function testConnection(req, res) {
     var bodyConnection = connectionFromBody(req.body);
     testQuery = "SELECT 'success' AS TestQuery;"
     if (bodyConnection.driver == "crate") {
@@ -76,7 +134,7 @@ function testConnection(req, res) {
             console.log(err);
             res.send({
                 success: false,
-                err: err
+                error: err
             });
         } else {
             res.send({
@@ -85,27 +143,7 @@ function testConnection(req, res) {
             });
         }
     });
-}
-
-router.post('/connections/test', testConnection);
-router.put('/connections/test', testConnection);
-
-router.put('/connections/:_id', function (req, res) {
-    var connection = new Connection(connectionFromBody(req.body));
-    connection.username = cipher(connection.username);
-    connection.password = cipher(connection.password);
-    connection._id = req.params._id;
-    connection.save(function (err, newConnection) {
-        if (err) console.error(err);
-        res.redirect(BASE_URL + '/connections');
-    });
 });
 
-router.delete('/connections/:_id', function (req, res) {
-    Connection.removeOneById(req.params._id, function (err) {
-        if (err) console.error(err);
-        res.redirect(BASE_URL + '/connections');
-    });
-});
 
 module.exports = router;

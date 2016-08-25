@@ -1,8 +1,6 @@
 //  This is the client side js entry file to be browserified
 
 // old jquery stuff
-require('./connection.js')();
-require('./connection-admin.js')();
 require('./user-admin.js')();
 
 // stuff below is gradually being converted into react applets
@@ -12,6 +10,16 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 page.base(baseUrl);
+
+var ConnectionAdmin = require('./ConnectionAdmin.js');
+page('/connections', getConfig, function (ctx) {
+    ReactDOM.render(
+        <ConnectionAdmin 
+            config={ctx.config}/
+            >,
+        document.getElementById('react-applet')
+    );
+})
 
 var ConfigValues = require('./ConfigValues.js');
 page('/config-values', function (ctx) {
