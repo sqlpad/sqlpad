@@ -469,7 +469,6 @@ input[type=checkbox], input[type=radio] {
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
 
-
 /*  React Queries
 ======================================================== */
 
@@ -540,6 +539,22 @@ input[type=checkbox], input[type=radio] {
 }
 
 
+
+
+/*  ListRow
+======================================================== */
+.ListRowSelected {
+    background-color: #FAFAFA; 
+}
+.ListRowDeleteButton {
+    color: #888;
+    position: absolute;
+    /* top: 5px; */
+    right: 20px;
+    bottom: 20px;
+}
+
+
 /*  React Schema Info
 ======================================================== */
 .SchemaInfoViewType {
@@ -553,6 +568,23 @@ input[type=checkbox], input[type=radio] {
     padding-left: 3px;
 }
 
+/*  Connection
+======================================================== */
+.connection-button {
+    width: 100px;
+}
+
+.PageAlert {
+    z-index: 9000;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 0;
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 0;
+}
 
 /*  Query Editor
 ======================================================== */

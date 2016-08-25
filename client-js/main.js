@@ -13,6 +13,16 @@ var ReactDOM = require('react-dom');
 
 page.base(baseUrl);
 
+var ConnectionAdmin = require('./ConnectionAdmin.js');
+page('/connections', getConfig, function (ctx) {
+    ReactDOM.render(
+        <ConnectionAdmin 
+            config={ctx.config}/
+            >,
+        document.getElementById('react-applet')
+    );
+})
+
 var ConfigValues = require('./ConfigValues.js');
 page('/config-values', function (ctx) {
     ReactDOM.render(
