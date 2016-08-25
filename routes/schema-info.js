@@ -8,7 +8,7 @@ var Connection = require('../models/Connection.js');
 var Cache = require('../models/Cache.js');
 var decipher = require('../lib/decipher.js');
 
-var sqldir = path.resolve(__dirname + '/../sql/');
+var sqldir = path.resolve(__dirname + '/../resources/');
 
 var sqlSchemaPostgres = fs.readFileSync(sqldir + '/schema-postgres.sql', {encoding: 'utf8'});
 var sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {encoding: 'utf8'});
