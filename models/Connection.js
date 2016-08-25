@@ -8,11 +8,11 @@ var schema = {
     _id: Joi.string().optional(), // will be auto-gen by nedb
     name: Joi.string().required(),
     driver: Joi.string().required(), // postgres, mysql, etc
-    host: Joi.string().required(),
+    host: Joi.string().optional(),
     port: Joi.any().optional(),
-    database: Joi.string().required(),
-    username: Joi.string().optional(), // decrypt for presentation, encrypted for storage
-    password: Joi.string().optional(), // decrypt for presentation, encrypted for storage
+    database: Joi.string().optional(),
+    username: Joi.string().default('', 'Database Username'), // decrypt for presentation, encrypted for storage
+    password: Joi.string().default('', 'Database Password'), // decrypt for presentation, encrypted for storage
     sqlserverEncrypt: Joi.boolean().default(false, 'SQL Server Encrypt'),
     postgresSsl: Joi.boolean().optional(false, 'Postgres SSL'),
     mysqlInsecureAuth: Joi.boolean().optional(false, 'Mysql Insecure Auth'),
