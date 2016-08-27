@@ -77,6 +77,12 @@ var ConfigValues = React.createClass({
                     </Form>
                     <h2 style={{textAlign: 'center', marginTop: 50}}>Environment Variables</h2>
                     <hr />
+                    <p>
+                        Some configuration is only accessible via environment variables
+                        or command-line-interface (CLI) flags. Below are the current values for these 
+                        variables. Sensitive values are masked. Hover over input for additional information.
+                    </p>
+                    <hr />
                     <ConfigEnvDocumentation configItems={this.state.configItems} />
                 </div>
                 <PageAlert ref={(ref) => this.pageAlert = ref} />
@@ -211,7 +217,7 @@ var ConfigEnvDocumentation = React.createClass({
             } 
         });
         return (
-            <Form horizontal>
+            <Form horizontal style={{marginBottom: 50}}>
                 {configNodes}
             </Form>
         );
