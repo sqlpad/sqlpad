@@ -1,6 +1,7 @@
 var ConfigItem = require('../models/ConfigItem.js');
 var config = require('../lib/config.js');
 var router = require('express').Router();
+var _ = require('lodash');
 
 router.get('/api/config', function (req, res) {
     res.json({
@@ -10,7 +11,18 @@ router.get('/api/config', function (req, res) {
 })
 
 router.get('/api/config-items', function (req, res) {
-    var configItems = ConfigItem.findAll();
+    var configItems = _.cloneDeep(ConfigItem.findAll());
+    configItems = configItems.map(function (item) {
+        if (item.sensitive) {
+            item.effectiveValue = '**********';
+            item.dbValue = '**********';
+            item.default = '**********';
+            item.envValue = '**********';
+            item.cliValue = '**********';
+            item.savedCliValue = '**********';
+        }
+        return item;
+    });
     res.json({
         configItems: configItems
     });

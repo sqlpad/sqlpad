@@ -48,6 +48,7 @@ interface = "env"
 key = "passphrase"
 cliFlag = "passphrase"
 envVar = "SQLPAD_PASSPHRASE"
+sensitive = true
 default = "At least the sensitive bits won't be plain text?"
 example = "any string even gibberish longer the better ad98ckd.l0"
 
@@ -70,6 +71,7 @@ default = false
 interface = "env"
 key = "googleClientId"
 envVar = "GOOGLE_CLIENT_ID"
+sensitive = true
 description = "Google Client ID used for OAuth setup"
 default = ""
 
@@ -77,6 +79,7 @@ default = ""
 interface = "env"
 key = "googleClientSecret"
 envVar = "GOOGLE_CLIENT_SECRET"
+sensitive = true
 description = "Google Client Secret used for OAuth setup"
 default = ""
 

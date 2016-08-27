@@ -49,6 +49,7 @@ var ConfigItem = function (data) {
     this.default        = data.default;
     this.example        = data.example;
     this.options        = data.options;
+    this.sensitive      = data.sensitive || false;
     this.description    = data.description;
     this.label          = data.label;
     this.envValue;
