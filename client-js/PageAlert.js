@@ -20,7 +20,7 @@ var PageAlert = React.createClass({
                 message: null,
                 bsStyle: "info"
             });
-        }, 2000);
+        }, 1500);
     },
     render: function () {
         return (
