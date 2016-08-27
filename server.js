@@ -1,17 +1,14 @@
 #!/usr/bin/env node
 
+// Parse command line flags to see if anything special needs to happen
+require('./lib/cli-flow.js');
 var express = require('express');
 var http = require('http');
 var path = require('path');
 var updateNotifier = require('update-notifier');
 var packageJson = require('./package.json');
-var app = express();
 var detectPort = require('detect-port');
 
-
-/*  Automatic notifier thing that an update is available
-============================================================================= */
-updateNotifier({pkg: packageJson}).notify();
 
 
 /*  Env/Cli Config stuff
@@ -33,6 +30,12 @@ if (DEBUG) {
 }
 
 
+/*  Automatic notifier thing that an update is available
+============================================================================= */
+updateNotifier({pkg: packageJson}).notify();
+
+
+
 /*  Run migrations on data if necessary
 ============================================================================= */
 require('./lib/migrate-schema.js');
@@ -50,11 +53,13 @@ var passport = require('passport');
 var connectFlash = require('connect-flash');
 var errorhandler = require('errorhandler');
 
+var app = express();
+
 app.locals.title = 'SqlPad';
 app.locals.version = packageJson.version;
-app.set('packageJson', packageJson);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('env', (DEBUG ? 'development' : 'production'));
 
 if (DEBUG) app.use(errorhandler());
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
