@@ -22,9 +22,9 @@ page('/connections', getConfig, function (ctx) {
 })
 
 var ConfigValues = require('./ConfigValues.js');
-page('/config-values', function (ctx) {
+page('/config-values', getConfig, function (ctx) {
     ReactDOM.render(
-        <ConfigValues/>,
+        <ConfigValues config={ctx.config} />,
         document.getElementById('react-applet')
     );
 });
