@@ -67,14 +67,6 @@ envVar = "SQLPAD_DEBUG"
 default = false
 
 [[configItems]]
-# a default sqlpad instance should be production unless
-interface = "env"
-key = "env"
-cliFlag = "env"
-envVar = "NODE_ENV"
-default = "production" 
-
-[[configItems]]
 interface = "env"
 key = "googleClientId"
 envVar = "GOOGLE_CLIENT_ID"
