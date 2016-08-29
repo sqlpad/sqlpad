@@ -44,10 +44,6 @@ var ChartInputs = React.createClass({
             
             var dropdownNodes = chartInputDefinition.fields.map((field) => {
 
-                var onCheckboxChange = (e) => {
-                    this.changeChartConfigurationField(field.fieldId, e.target.checked)
-                }
-
                 if (field.inputType == 'field-dropdown') {
                     var optionNodes = queryResultFields.map(function (qrfield) {
                         return (
@@ -81,7 +77,9 @@ var ChartInputs = React.createClass({
                     var checked = cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
                     return (
                         <FormGroup key={field.fieldId} controlId={field.fieldId} bsSize="small">
-                            <Checkbox checked={checked} onChange={onCheckboxChange}>
+                            <Checkbox checked={checked} onChange={(e) => {
+                                this.changeChartConfigurationField(field.fieldId, e.target.checked);
+                            }}>
                                 {field.label}
                             </Checkbox>
                         </FormGroup>
