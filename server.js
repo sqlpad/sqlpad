@@ -17,7 +17,6 @@ const config = require('./lib/config.js');
 const BASE_URL = config.get('baseUrl');
 const IP = config.get('ip');
 const PORT = config.get('port');
-const DISABLE_USERPASS_AUTH = config.get('disableUserpassAuth');
 const GOOGLE_CLIENT_ID = config.get('googleClientId');
 const GOOGLE_CLIENT_SECRET = config.get('googleClientSecret');
 const PUBLIC_URL = config.get('publicUrl');
@@ -137,17 +136,12 @@ var routers = [
     require('./routes/download-results.js'), // streams result download to browser
     require('./routes/schema-info.js'),
     require('./routes/config-values.js'),
-    require('./routes/tags.js')
+    require('./routes/tags.js'),
+    require('./routes/signup-signin-signout.js')
 ];
 
-// if a route should only conditionally exist load it here
-// routers.push(require('./routes/another-router.js'));
-if (!DISABLE_USERPASS_AUTH) {
-    routers.push(require('./routes/signup-signin-signout.js'));
-}
-
 if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && PUBLIC_URL) {
-    console.log("Enabling Google authentication Strategy.")
+    if (DEBUG) console.log("Enabling Google authentication Strategy.")
     routers.push(require('./routes/oauth.js'));
 }
 
