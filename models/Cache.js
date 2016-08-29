@@ -142,11 +142,6 @@ Cache.removeExpired = function CacheRemoveExpired (callback) {
     });
 }
 
-// Every five minutes check and expire cache
-// TODO: Move this out to somewhere else
-//const FIVE_MINUTES = 1000 * 60 * 5;
-//setInterval(Cache.removeExpired, FIVE_MINUTES);
-
 Cache.removeAll = function CacheRemoveAll (callback) {
     // first remove all the cache files
     // then remove the cache db records
@@ -155,5 +150,8 @@ Cache.removeAll = function CacheRemoveAll (callback) {
     });
 }
 
+// Every five minutes check and expire cache
+var FIVE_MINUTES = 1000 * 60 * 5;
+setInterval(Cache.removeExpired, FIVE_MINUTES);
 
 module.exports = Cache;
