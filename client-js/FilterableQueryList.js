@@ -7,7 +7,7 @@ import brace from 'brace';
 import AceEditor from 'react-ace';
 
 import 'brace/mode/sql';
-import 'brace/theme/github';
+import 'brace/theme/sqlserver';
 
 var Grid = require('react-bootstrap/lib/Grid');
 var Row = require('react-bootstrap/lib/Row');
@@ -377,7 +377,7 @@ var QueryPreview = React.createClass({
                     <h4>{this.props.selectedQuery.name}</h4>
                     <AceEditor
                         mode="sql"
-                        theme="github"
+                        theme="sqlserver"
                         name="query-preview-ace-editor"
                         width="100%"
                         height="70%"

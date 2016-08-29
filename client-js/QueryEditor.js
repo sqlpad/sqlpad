@@ -15,7 +15,7 @@ import 'whatwg-fetch';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/sql';
-import 'brace/theme/github';
+import 'brace/theme/sqlserver';
 
 
 var Row = require('react-bootstrap/lib/Row');
@@ -470,7 +470,7 @@ var QueryEditor = React.createClass({
                                         <div className="QueryEditorAceEditorWrapper">
                                             <AceEditor
                                                 mode="sql"
-                                                theme="github"
+                                                theme="sqlserver"
                                                 name="query-ace-editor"
                                                 width="100%"
                                                 height="100%"
