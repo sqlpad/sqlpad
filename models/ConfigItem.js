@@ -124,13 +124,24 @@ ConfigItem.prototype.computeEffectiveValue = function () {
 
     // It is possible that some of our boolean values are stored as text
     // for consumption convenience, those strings should be turned to actual booleans
-    if (typeof this.effectiveValue === "string") {
-        if (this.effectiveValue.toLowerCase() === "true") {
-            this.effectiveValue = true;
-        } else if (this.effectiveValue.toLowerCase() === "false") {
-            this.effectiveValue = false;
+    var valueProps = [
+        'default', 
+        'savedCliValue', 
+        'cliValue', 
+        'envValue', 
+        'dbValue', 
+        'effectiveValue' 
+    ]
+    valueProps.forEach(function (valueProp) {
+        if (typeof this[valueProp] === "string") {
+            if (this[valueProp].toLowerCase() === "true") {
+                this[valueProp] = true;
+            } else if (this[valueProp].toLowerCase() === "false") {
+                this[valueProp] = false;
+            }
         }
-    }
+    }.bind(this));
+        
 }
 
 ConfigItem.prototype.setDbValue = function (value) {
