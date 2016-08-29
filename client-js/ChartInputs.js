@@ -31,6 +31,16 @@ var ControlLabel = require('react-bootstrap/lib/ControlLabel');
 var Checkbox = require('react-bootstrap/lib/Checkbox');
 
 var ChartInputs = React.createClass({
+    getInitialState: function () {
+        return {
+            showAdvanced: false
+        }
+    },
+    toggleAdvanced: function () {
+        this.setState({
+            showAdvanced: !this.state.showAdvanced
+        });
+    },
     changeChartConfigurationField: function (chartFieldId, queryResultField) {
         this.props.onChartConfigurationFieldsChange(chartFieldId, queryResultField);
     },
@@ -40,10 +50,22 @@ var ChartInputs = React.createClass({
         var queryResultFields = (queryResult && queryResult.fields ? queryResult.fields : []);
         var chartInputDefinition = _.findWhere(chartDefinitions, {chartType: this.props.chartType});
 
-        if (chartInputDefinition && chartInputDefinition.fields) {
-            
-            var dropdownNodes = chartInputDefinition.fields.map((field) => {
+        if (!chartInputDefinition || !chartInputDefinition.fields) return null;
 
+        var regularInputDefinitionFields = chartInputDefinition.fields.filter((field) => {
+            return (field.advanced ? true : false) == false;
+        })
+
+        var advancedInputDefinitionFields = chartInputDefinition.fields.filter((field) => {
+            return field.advanced == true;
+        })
+
+        var showAdvancedLink = (advancedInputDefinitionFields.length 
+                ? <a href="#" onClick={this.toggleAdvanced}>{this.state.showAdvanced ? 'hide advanced settings' : 'show advanced settings'}</a>
+                : null )
+
+        var formGroupNodes = (inputDefinitionFields) => {
+            return inputDefinitionFields.map((field) => {
                 if (field.inputType == 'field-dropdown') {
                     var optionNodes = queryResultFields.map(function (qrfield) {
                         return (
@@ -77,9 +99,11 @@ var ChartInputs = React.createClass({
                     var checked = cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
                     return (
                         <FormGroup key={field.fieldId} controlId={field.fieldId} bsSize="small">
-                            <Checkbox checked={checked} onChange={(e) => {
-                                this.changeChartConfigurationField(field.fieldId, e.target.checked);
-                            }}>
+                            <Checkbox 
+                                checked={checked} 
+                                onChange={(e) => {
+                                    this.changeChartConfigurationField(field.fieldId, e.target.checked);
+                                }}>
                                 {field.label}
                             </Checkbox>
                         </FormGroup>
@@ -100,14 +124,21 @@ var ChartInputs = React.createClass({
                     )
                 }
             });
-
-            return (
-                <div>
-                    {dropdownNodes}
-                </div>
-            );
         }
-        return null;
+
+        var advancedFormGroup = () => {
+            if (this.state.showAdvanced) return formGroupNodes(advancedInputDefinitionFields);
+            else return null;
+        }    
+
+        return (
+            <div>
+                {formGroupNodes(regularInputDefinitionFields)}
+                {showAdvancedLink}
+                {advancedFormGroup()}
+            </div>
+        );
+
     }
 });
 

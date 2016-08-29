@@ -506,33 +506,34 @@ var QueryEditor = React.createClass({
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="vis">
                                     <div className="sidebar">
-                                        <FormGroup controlId="formControlsSelect" bsSize="small">
-                                            <FormControl 
-                                                value={this.state.query.chartConfiguration.chartType} 
-                                                onChange={this.onChartTypeChange}
-                                                componentClass="select" 
-                                                className="input-small">
-                                                <option value="">Choose a chart type...</option>
-                                                <option value="line">Line</option>
-                                                <option value="bar">Bar - Horizontal</option>
-                                                <option value="verticalbar">Bar - Vertical</option>
-                                                <option value="bubble">Scatterplot</option>
-                                            </FormControl>
-                                        </FormGroup>
-                                        <hr/>
-                                        <ChartInputs 
-                                            chartType={this.state.query.chartConfiguration.chartType} 
-                                            queryChartConfigurationFields={this.state.query.chartConfiguration.fields}
-                                            onChartConfigurationFieldsChange={this.onChartConfigurationFieldsChange}
-                                            queryResult={this.state.queryResult}
-                                            />
-                                        <hr/>
-                                        <Button onClick={this.onVisualizeClick} className={'btn-block'} bsSize={'sm'}>Visualize</Button>
-                                        <Button onClick={this.onSaveImageClick} className={'btn-block'} bsSize={'sm'}>
-                                            <Glyphicon glyph="save" />{" "}
-                                            Save Chart Image
-                                        </Button>
-                                        
+                                        <div className="sidebar-body">
+                                            <FormGroup controlId="formControlsSelect" bsSize="small">
+                                                <FormControl 
+                                                    value={this.state.query.chartConfiguration.chartType} 
+                                                    onChange={this.onChartTypeChange}
+                                                    componentClass="select" 
+                                                    className="input-small">
+                                                    <option value="">Choose a chart type...</option>
+                                                    <option value="line">Line</option>
+                                                    <option value="bar">Bar - Horizontal</option>
+                                                    <option value="verticalbar">Bar - Vertical</option>
+                                                    <option value="bubble">Scatterplot</option>
+                                                </FormControl>
+                                            </FormGroup>
+                                            <ChartInputs 
+                                                chartType={this.state.query.chartConfiguration.chartType} 
+                                                queryChartConfigurationFields={this.state.query.chartConfiguration.fields}
+                                                onChartConfigurationFieldsChange={this.onChartConfigurationFieldsChange}
+                                                queryResult={this.state.queryResult}
+                                                />
+                                        </div>
+                                        <div className="sidebar-footer">
+                                            <Button onClick={this.onVisualizeClick} className={'btn-block'} bsSize={'sm'}>Visualize</Button>
+                                            <Button onClick={this.onSaveImageClick} className={'btn-block'} bsSize={'sm'}>
+                                                <Glyphicon glyph="save" />{" "}
+                                                Save Chart Image
+                                            </Button>
+                                        </div>
                                     </div>
                                     <div className="NonSidebar">
                                         <SqlpadTauChart 
