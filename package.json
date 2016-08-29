@@ -31,7 +31,7 @@
   "scripts": {
     "test": "mocha --recursive",
     "coverage": "istanbul cover _mocha -- --recursive",
-    "start": "nodemon --ignore 'public/*' --ignore 'client-js/*' server.js --dir ./db --port 3000 --debug",
+    "start": "nodemon --ignore 'public/*' --ignore 'client-js/*' --ignore 'db/*' server.js --dir ./db --port 3000 --debug",
     "bundle": "node bundle.js",
     "bundle-dev": "node bundle.js --dev",
     "disc": "discify ./public/javascripts/browserified.js > disc.html"
