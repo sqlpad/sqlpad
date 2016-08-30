@@ -126,6 +126,30 @@ var SqlpadTauChart = React.createClass({
                     chartConfig.x.unshift(definitionFieldsById.labelFacet.val);
                 }
                 break;
+
+            case 'stacked-bar-horizontal': 
+                chartConfig.x = [definitionFieldsById.barvalue.val];
+                if (definitionFieldsById.valueFacet.val) {
+                    chartConfig.x.unshift(definitionFieldsById.valueFacet.val);
+                }
+                chartConfig.y = [definitionFieldsById.barlabel.val];
+                if (definitionFieldsById.labelFacet.val) {
+                    chartConfig.y.unshift(definitionFieldsById.labelFacet.val);
+                }
+                if (definitionFieldsById.color.val) chartConfig.color = definitionFieldsById.color.val;
+                break;
+            
+            case 'stacked-bar-vertical': 
+                chartConfig.y = [definitionFieldsById.barvalue.val];
+                if (definitionFieldsById.valueFacet.val) {
+                    chartConfig.y.unshift(definitionFieldsById.valueFacet.val);
+                }
+                chartConfig.x = [definitionFieldsById.barlabel.val];
+                if (definitionFieldsById.labelFacet.val) {
+                    chartConfig.x.unshift(definitionFieldsById.labelFacet.val);
+                }
+                if (definitionFieldsById.color.val) chartConfig.color = definitionFieldsById.color.val;
+                break;
             
             case 'bubble': 
                 chartConfig.x = [definitionFieldsById.x.val];

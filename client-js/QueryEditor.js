@@ -9,7 +9,7 @@ var QueryResultDataTable = require('./QueryResultDataTable.js');
 var QueryResultHeader = require('./QueryResultHeader.js');
 var ChartInputs = require('./ChartInputs.js');
 var SqlpadTauChart = require('./SqlpadTauChart.js');
-
+var chartDefinitions = require('./ChartDefinitions.js');
 
 import 'whatwg-fetch';
 import brace from 'brace';
@@ -420,6 +420,11 @@ var QueryEditor = React.createClass({
         var tagOptions = this.props.availableTags.map((t) => {
             return {value: t, label: t}
         });
+        var chartOptions = chartDefinitions.map((d) => {
+            return (
+                <option value={d.chartType}>{d.chartLabel}</option>
+            )
+        })
         return (
             <Tab.Container 
                 id="left-tabs-example" 
@@ -514,10 +519,7 @@ var QueryEditor = React.createClass({
                                                     componentClass="select" 
                                                     className="input-small">
                                                     <option value="">Choose a chart type...</option>
-                                                    <option value="line">Line</option>
-                                                    <option value="bar">Bar - Horizontal</option>
-                                                    <option value="verticalbar">Bar - Vertical</option>
-                                                    <option value="bubble">Scatterplot</option>
+                                                    {chartOptions}
                                                 </FormControl>
                                             </FormGroup>
                                             <ChartInputs 

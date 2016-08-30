@@ -176,11 +176,69 @@ module.exports = [
         chartType: 'stacked-bar-vertical',
         tauChartsType: 'stacked-bar',
         chartLabel: 'Stacked Bar - Vertical',
-        fields: []
+        fields: [
+            {
+                fieldId: 'barlabel',
+                required: true,
+                label: "Bar Label",
+                inputType: "field-dropdown",
+            }, { 
+                fieldId: 'barvalue',
+                required: true,
+                label: "Bar Value",
+                inputType: "field-dropdown"
+            }, {
+                fieldId: 'color',
+                label: "Color",
+                inputType: "field-dropdown",
+                required: false
+            }, {
+                fieldId: 'labelFacet',
+                required: false,
+                label: "Bar Label Facet",
+                inputType: "field-dropdown",
+                forceDimension: true
+            }, {
+                fieldId: 'valueFacet',
+                required: false,
+                label: "Bar Value Facet",
+                inputType: "field-dropdown",
+                forceDimension: true
+            }
+        ]
     }, {
         chartType: 'stacked-bar-horizontal',
         tauChartsType: 'horizontal-stacked-bar',
         chartLabel: 'Stacked Bar - Horizontal',
-        fields: []
+        fields: [
+            {
+                fieldId: 'barlabel',
+                required: true,
+                label: "Bar Label",
+                inputType: "field-dropdown",
+            }, { 
+                fieldId: 'barvalue',
+                required: true,
+                label: "Bar Value",
+                inputType: "field-dropdown"
+            }, {
+                fieldId: 'color',
+                label: "Color",
+                inputType: "field-dropdown",
+                required: false
+            }, {
+                fieldId: 'labelFacet',
+                required: false,
+                label: "Bar Label Facet",
+                inputType: "field-dropdown",
+                forceDimension: true
+            }, {
+                fieldId: 'valueFacet',
+                required: false,
+                label: "Bar Value Facet",
+                inputType: "field-dropdown",
+                forceDimension: true
+            }
+        ]
     }
 ];
