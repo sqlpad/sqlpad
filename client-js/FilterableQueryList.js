@@ -1,13 +1,15 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
 var moment = require('moment');
+var _ = require('_');
 import 'whatwg-fetch';
-
 import brace from 'brace';
 import AceEditor from 'react-ace';
-
 import 'brace/mode/sql';
 import 'brace/theme/sqlserver';
+
+var chartDefinitions = require('./ChartDefinitions.js')
+
 
 var Grid = require('react-bootstrap/lib/Grid');
 var Row = require('react-bootstrap/lib/Row');
@@ -16,13 +18,10 @@ var Nav = require('react-bootstrap/lib/Nav');
 var NavItem = require('react-bootstrap/lib/NavItem');
 var Table = require('react-bootstrap/lib/Table');
 var Label = require('react-bootstrap/lib/Label');
-
 var Form = require('react-bootstrap/lib/Form');
 var FormGroup = require('react-bootstrap/lib/FormGroup');
 var FormControl = require('react-bootstrap/lib/FormControl');
-var Col = require('react-bootstrap/lib/Col');
 var ControlLabel = require('react-bootstrap/lib/ControlLabel');
-var FormControl = require('react-bootstrap/lib/FormControl');
 var ListGroup = require('react-bootstrap/lib/ListGroup');
 var ListGroupItem = require('react-bootstrap/lib/ListGroupItem');
 var HelpBlock = require('react-bootstrap/lib/HelpBlock');
@@ -33,7 +32,6 @@ var Popover = require('react-bootstrap/lib/Popover');
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 
-var _ = require('_');
 
 var FilterableQueryList = React.createClass({
     getInitialState: function () {
@@ -365,12 +363,19 @@ var QueryListRow = React.createClass({
 
 var QueryPreview = React.createClass({
     render: function () {
-        if (this.editor && this.props.config.editorWordWrap) { 
-            this.editor.session.setUseWrapMode(true);
-        }
         if (this.props.selectedQuery) {
+            if (this.editor && this.props.config.editorWordWrap) { 
+                this.editor.session.setUseWrapMode(true);
+            }
             var query = this.props.selectedQuery;
-            var chartType = (query.chartConfiguration && query.chartConfiguration.chartType ? "chart type: " + query.chartConfiguration.chartType : "");
+            var chartTypeLabel = () => {
+                var chartType = (query.chartConfiguration && query.chartConfiguration.chartType ? query.chartConfiguration.chartType : null);
+                var chartDefinition = _.findWhere(chartDefinitions, {chartType: chartType});
+                if (chartDefinition) return (
+                    <h4>Chart: {chartDefinition.chartLabel}</h4>
+                );
+                return null;
+            }
             return (
                 <div className="QueryPreview">
                     <ControlLabel>Preview</ControlLabel>
@@ -389,8 +394,9 @@ var QueryPreview = React.createClass({
                         editorProps={{$blockScrolling: true}}
                         ref={(ref) => this.editor = (ref ? ref.editor : null) }
                     />
-                    <h4>{chartType}</h4>
-                    <h4>{"modified: " + moment(query.modifiedDate).calendar()}</h4>
+                    {chartTypeLabel()}
+                    <h4>Modified: {moment(query.modifiedDate).calendar()}</h4>
+                    <h4>Created By: {query.createdBy}</h4>
                 </div>
             )
         } else {
