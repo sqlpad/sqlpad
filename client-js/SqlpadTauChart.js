@@ -32,7 +32,6 @@ var SqlpadTauChart = React.createClass({
             plugins: [
                 tauCharts.api.plugins.get('tooltip')(),
                 tauCharts.api.plugins.get('legend')(),
-                tauCharts.api.plugins.get('quick-filter')(),
                 tauCharts.api.plugins.get('exportTo')({
                     cssPaths:[baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'],
                     fileName: this.props.query.name || 'unnamed query'
@@ -89,6 +88,9 @@ var SqlpadTauChart = React.createClass({
                 if (definitionFieldsById.yFacet.val) {
                     chartConfig.y.unshift(definitionFieldsById.yFacet.val)
                 }
+                if (definitionFieldsById.filter.val) {
+                    chartConfig.plugins.push(tauCharts.api.plugins.get('quick-filter')());
+                }
                 if (definitionFieldsById.trendline.val) {
                     chartConfig.plugins.push(tauCharts.api.plugins.get('trendline')());
                 }
@@ -134,6 +136,9 @@ var SqlpadTauChart = React.createClass({
                 if (definitionFieldsById.yFacet.val) {
                     chartConfig.y.unshift(definitionFieldsById.yFacet.val)
                 }
+                if (definitionFieldsById.filter.val) {
+                    chartConfig.plugins.push(tauCharts.api.plugins.get('quick-filter')());
+                }
                 if (definitionFieldsById.trendline.val) {
                     chartConfig.plugins.push(tauCharts.api.plugins.get('trendline')());
                 }
@@ -158,17 +163,12 @@ var SqlpadTauChart = React.createClass({
             this.chart.renderTo('#chart');
         } else {
             this.chart.setData(dataRows);
-            // TODO
-            // compare config pre-data 
-            // if it is the same, just update the data
-            // if it is different, destroy chart and do whole thing over
         }
     },
     setData: function (chartData) {
         this.chart.setData(chartData);
     },
     componentWillUnmount() {
-        console.log("TAUCHART UNMOUNT");
 		this.chart.destroy();
 	},
     render: function () {

@@ -38,6 +38,12 @@ module.exports = [
                 inputType: "field-dropdown",
                 forceDimension: true
             }, {
+                fieldId: 'filter',
+                required: false,
+                label: "Quick Filter",
+                inputType: "checkbox",
+                advanced: true
+            }, {
                 fieldId: 'trendline',
                 required: false,
                 label: "Show Trendline",
@@ -153,10 +159,17 @@ module.exports = [
                 inputType: "field-dropdown",
                 forceDimension: true
             }, {
+                fieldId: 'filter',
+                required: false,
+                label: "Quick Filter",
+                inputType: "checkbox",
+                advanced: true
+            }, {
                 fieldId: 'trendline',
                 required: false,
                 label: "Show Trendline",
-                inputType: "checkbox"
+                inputType: "checkbox",
+                advanced: true
             }
         ]
     }, {
