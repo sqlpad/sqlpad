@@ -29,11 +29,6 @@ if (DEBUG) {
 }
 
 
-/*  Automatic notifier thing that an update is available
-============================================================================= */
-updateNotifier({pkg: packageJson}).notify();
-
-
 /*  Express setup
 ============================================================================= */
 var bodyParser = require('body-parser');
@@ -80,6 +75,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(BASE_URL, express.static(path.join(__dirname, 'public')));
 if (DEBUG) app.use(morgan('dev'));
+app.use(require('./middleware/update-available.js'));
 app.use(function (req, res, next) {
     // Boostrap res.locals with any common variables
     res.locals.errors = req.flash('error');

@@ -3,6 +3,10 @@
 // old jquery stuff
 require('./user-admin.js')();
 
+// The update notification is in the nav, which hasn't been moved to react yet.
+// Eventually SqlPad can convert to a full single-page-app but until then...
+$('[data-toggle="popover"]').popover()
+
 // stuff below is gradually being converted into react applets
 // for now page.js is being used to provide a bit of a router 
 var page = require('page');
