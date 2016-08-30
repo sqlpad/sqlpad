@@ -13,7 +13,7 @@ var schema = {
     database: Joi.string().optional(),
     username: Joi.string().default('', 'Database Username'), // decrypt for presentation, encrypted for storage
     password: Joi.string().default('', 'Database Password'), // decrypt for presentation, encrypted for storage
-    domain: Joi.string().optional(),
+    domain: Joi.string().optional().allow(''),
     sqlserverEncrypt: Joi.boolean().default(false, 'SQL Server Encrypt'),
     postgresSsl: Joi.boolean().default(false, 'Postgres SSL'),
     mysqlInsecureAuth: Joi.boolean().default(false, 'Mysql Insecure Auth'),
