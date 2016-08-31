@@ -2,7 +2,7 @@ var React = require('react');
 var fetchJson = require('./fetch-json.js');
 var deepEqual = require('deep-equal');
 var moment = require('moment');
-var PageAlert = require('./PageAlert.js');
+var Alert = require('react-s-alert').default;
 
 var Panel = require('react-bootstrap/lib/Panel');
 var Form = require('react-bootstrap/lib/Form');
@@ -34,16 +34,13 @@ var UserAdmin = React.createClass({
                 return response.json();
             })
             .then((json) => {
-                if (json.error) return this.alert('Delete Failed: ' + json.error.toString(), 'danger');
-                this.alert('User Deleted', 'success');
+                if (json.error) return Alert.error('Delete Failed: ' + json.error.toString());
+                Alert.success('User Deleted');
                 this.loadUsersFromServer();
             })
             .catch((ex) => {
-                return this.alert('Delete Failed', 'danger');
+                return Alert.error('Delete Failed');
             })
-    },
-    alert: function (message, style) {
-        if (this.pageAlert) this.pageAlert.alert(message, style);
     },
     loadUsersFromServer: function () {
         fetchJson('get', baseUrl + "/api/users")
@@ -52,7 +49,7 @@ var UserAdmin = React.createClass({
             }).then((json) => {
                 this.setState({users: json.users});
             }).catch(function(ex) {
-                return this.alert(ex.toString(), 'danger');
+                return Alert.error(ex.toString());
             });
     },
     updateUserRole: function (user) {
@@ -64,8 +61,8 @@ var UserAdmin = React.createClass({
             .then((json) => {
                 this.loadUsersFromServer();
                 this.setState({isSaving: false});
-                if (json.error) return this.alert('Save Failed: ' + json.error.toString(), 'danger');
-                this.alert('Save Successful', 'success');
+                if (json.error) return Alert.error('Update failed: ' + json.error.toString());
+                Alert.success('User Updated');
             })
     },
     render: function () {
@@ -78,11 +75,10 @@ var UserAdmin = React.createClass({
                     currentUser={this.props.currentUser}
                     />
                 <InviteUserForm 
-                    alert={this.alert} 
                     loadUsersFromServer={this.loadUsersFromServer}
                     config={this.props.config}
                     />
-                <PageAlert ref={(ref) => this.pageAlert = ref} />
+                <Alert stack={{limit: 3}} position='bottom-right' />
             </div>
         )
     }
@@ -227,11 +223,8 @@ var InviteUserForm = React.createClass({
                 this.setState({
                     isInviting: false
                 });
-                if (json.error) {
-                    console.log(json.error);
-                    return this.props.alert('Whitelist Failed ' + json.error.toString(), 'danger');
-                }
-                this.props.alert('Whitelist Sucessful', 'success');
+                if (json.error) return Alert.error('Whitelist failed: ' + json.error.toString());
+                Alert.success('User Whitelisted');
                 this.props.loadUsersFromServer();
             })
     },

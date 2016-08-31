@@ -1,6 +1,6 @@
 var React = require('react');
 var fetchJson = require('./fetch-json.js');
-var PageAlert = require('./PageAlert.js');
+var Alert = require('react-s-alert').default;
 
 var Form = require('react-bootstrap/lib/Form');
 var FormGroup = require('react-bootstrap/lib/FormGroup');
@@ -34,14 +34,11 @@ var ConfigValues = React.createClass({
             })
             .then((json) => {
                 if (json.error) {
-                    this.alert('Save Failed', 'danger');
+                    Alert.error('Save failed');
                 } else {
-                    this.alert('Config Value Saved', 'success');
+                    Alert.success('Value saved');
                 }
             })
-    },
-    alert: function (message, style) {
-        if (this.pageAlert) this.pageAlert.alert(message, style);
     },
     getInitialState: function () {
         return {configItems: []};
@@ -85,7 +82,7 @@ var ConfigValues = React.createClass({
                     <hr />
                     <ConfigEnvDocumentation configItems={this.state.configItems} />
                 </div>
-                <PageAlert ref={(ref) => this.pageAlert = ref} />
+                <Alert stack={{limit: 3}} position='bottom-right' />
             </Col>
         );
     }

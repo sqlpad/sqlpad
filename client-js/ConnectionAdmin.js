@@ -1,7 +1,7 @@
 var React = require('react');
 var fetchJson = require('./fetch-json.js');
 var deepEqual = require('deep-equal');
-var PageAlert = require('./PageAlert.js');
+var Alert = require('react-s-alert').default;
 
 var Panel = require('react-bootstrap/lib/Panel');
 var Form = require('react-bootstrap/lib/Form');
@@ -40,15 +40,15 @@ var ConnectionController = React.createClass({
                 return response.json();
             })
             .then((json) => {
-                if (json.error) return this.alert('Delete Failed', 'danger');
-                this.alert('Connection Deleted', 'success');
+                if (json.error) return Alert.error('Delete failed');
+                Alert.success('Connection deleted');
                 if (this.state.selectedConnection && connection._id == this.state.selectedConnection._id) {
                     this.setState({selectedConnection: null})
                 }
                 this.loadConnectionsFromServer();
             })
             .catch((ex) => {
-                return this.alert('Delete Failed', 'danger');
+                return Alert.error('Delete failed');
             })
     },
     onNewConnectionClick: function () {
@@ -62,9 +62,6 @@ var ConnectionController = React.createClass({
             selectedConnection[attribute] = value;
             this.setState({selectedConnection: selectedConnection});
         }
-    },
-    alert: function (message, style) {
-        if (this.pageAlert) this.pageAlert.alert(message, style);
     },
     loadConnectionsFromServer: function () {
         fetchJson('get', baseUrl + "/api/connections")
@@ -84,8 +81,8 @@ var ConnectionController = React.createClass({
             })
             .then((json) => {
                 this.setState({isTesting: false});
-                if (!json.success) return this.alert('Test Failed', 'danger');
-                return this.alert('Test Successful', 'success');
+                if (!json.success) return Alert.error('Test Failed');
+                return Alert.success('Test successful');
             })     
     },
     saveConnection: function () {
@@ -97,8 +94,8 @@ var ConnectionController = React.createClass({
                 })
                 .then((json) => {
                     this.setState({isSaving: false});
-                    if (json.error) return this.alert('Save Failed', 'danger');
-                    this.alert('Save Successful', 'success');
+                    if (json.error) return Alert.error('Save failed');
+                    Alert.success('Connection saved');
                     this.loadConnectionsFromServer();
                 })
         } else {
@@ -111,8 +108,8 @@ var ConnectionController = React.createClass({
                         isSaving: false,
                         selectedConnection: json.connection || this.state.selectedConnection
                     });
-                    if (json.error) return this.alert('Save Failed', 'danger');
-                    this.alert('Save Sucessful', 'success');
+                    if (json.error) return Alert.error('Save failed');
+                    Alert.success('Connection saved');
                     this.loadConnectionsFromServer();
                 })
         }
@@ -135,7 +132,7 @@ var ConnectionController = React.createClass({
                     isTesting={this.state.isTesting}
                     isSaving={this.state.isSaving}
                     />
-                <PageAlert ref={(ref) => this.pageAlert = ref} />
+                <Alert stack={{limit: 3}} position='bottom-right' />
             </div>
         )
     }
