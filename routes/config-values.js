@@ -1,6 +1,7 @@
 var ConfigItem = require('../models/ConfigItem.js');
 var config = require('../lib/config.js');
 var router = require('express').Router();
+var mustBeAdmin = require('../middleware/must-be-admin.js');
 var _ = require('lodash');
 
 router.get('/api/config', function (req, res) {
@@ -28,7 +29,7 @@ router.get('/api/config-items', function (req, res) {
     });
 })
 
-router.post('/api/config-values/:key', function (req, res) {
+router.post('/api/config-values/:key', mustBeAdmin, function (req, res) {
     var key = req.params.key;
     var value = req.body.value;
     var configItem = ConfigItem.findOneByKey(key);
@@ -39,7 +40,7 @@ router.post('/api/config-values/:key', function (req, res) {
     });
 })
 
-router.get('/config-values', function (req, res) {
+router.get('/config-values', mustBeAdmin, function (req, res) {
     return res.render('react-applet', {
         pageTitle: "Configuration"
     });

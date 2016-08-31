@@ -98,16 +98,6 @@ app.use(function (req, res, next) {
 app.use(require('./middleware/auth-redirects.js'));
 
 
-/*  Must Be Admin middleware
-    Some places are restricted to admins.
-    This middleware and middleware assignment handles that.
-============================================================================= */
-const mustBeAdmin = require('./middleware/must-be-admin.js');
-app.use(BASE_URL + '/connections', mustBeAdmin);
-app.use(BASE_URL + '/users', mustBeAdmin);
-app.use(BASE_URL + '/config-values', mustBeAdmin);
-
-
 /*  Passport setup
 ============================================================================= */
 require('./middleware/passport.js');

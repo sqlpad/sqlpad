@@ -2,11 +2,12 @@ var router = require('express').Router();
 var config = require('../lib/config.js');
 const BASE_URL = config.get('baseUrl');
 var User = require('../models/User.js');
+var mustBeAdmin = require('../middleware/must-be-admin.js');
 
-router.get('/users', function (req, res) {
+router.get('/users', mustBeAdmin, function (req, res) {
     return res.render('react-applet', {
         pageTitle: "Users"
-    });  
+    });
 });
 
 router.get('/api/users/current', function (req, res) {
@@ -45,7 +46,7 @@ router.get('/api/users', function (req, res) {
 
 
 // create/whitelist/invite user
-router.post('/api/users', function (req, res) {
+router.post('/api/users', mustBeAdmin, function (req, res) {
     User.findOneByEmail(req.body.email, function (err, user) {
         if (err) {
             console.error(err);
@@ -70,7 +71,7 @@ router.post('/api/users', function (req, res) {
     }); 
 });
 
-router.put('/api/users/:_id', function (req, res) {
+router.put('/api/users/:_id', mustBeAdmin, function (req, res) {
     if (req.user._id === req.params._id && req.user.admin && req.body.admin === false) return res.json({error: "You can't unadmin yourself"});
     User.findOneById(req.params._id, function (err, user) {
         if (err) {
@@ -91,7 +92,7 @@ router.put('/api/users/:_id', function (req, res) {
     });
 });
 
-router.delete('/api/users/:_id', function (req, res) {
+router.delete('/api/users/:_id', mustBeAdmin, function (req, res) {
     if (req.user._id === req.params._id) return json({error: "You can't delete yourself"});
     User.removeOneById(req.params._id, function (err) {
         if (err) {

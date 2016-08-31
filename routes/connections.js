@@ -5,9 +5,11 @@ var cipher = require('../lib/cipher.js');
 var decipher = require('../lib/decipher.js');
 var config = require('../lib/config.js');
 var Connection = require('../models/Connection.js');
+var mustBeAdmin = require('../middleware/must-be-admin.js');
 var BASE_URL = config.get('baseUrl');
 
-router.get('/connections', function (req, res) {
+
+router.get('/connections', mustBeAdmin, function (req, res) {
     return res.render('react-applet', {
         pageTitle: "Connections"
     });
@@ -60,7 +62,7 @@ router.get('/api/connections/:_id', function (req, res) {
 
 
 // create
-router.post('/api/connections', function (req, res) {
+router.post('/api/connections', mustBeAdmin, function (req, res) {
     var connection = new Connection(connectionFromBody(req.body));
     connection.username = cipher(connection.username || '');
     connection.password = cipher(connection.password || '');
@@ -78,7 +80,7 @@ router.post('/api/connections', function (req, res) {
 });
 
 // update
-router.put('/api/connections/:_id', function (req, res) {
+router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
     Connection.findOneById(req.params._id, function (err, connection) {
         if (err) {
             console.log(err);
@@ -114,7 +116,7 @@ router.put('/api/connections/:_id', function (req, res) {
 });
 
 // delete
-router.delete('/api/connections/:_id', function (req, res) {
+router.delete('/api/connections/:_id', mustBeAdmin, function (req, res) {
     Connection.removeOneById(req.params._id, function (err) {
         if (err) console.error(err);
         return res.json({
@@ -125,7 +127,7 @@ router.delete('/api/connections/:_id', function (req, res) {
 
 
 // test connection 
-router.post('/api/test-connection', function testConnection(req, res) {
+router.post('/api/test-connection', mustBeAdmin, function testConnection(req, res) {
     var bodyConnection = connectionFromBody(req.body);
     testQuery = "SELECT 'success' AS TestQuery;"
     if (bodyConnection.driver == "crate") {
