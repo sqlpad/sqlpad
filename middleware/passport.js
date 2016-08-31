@@ -21,6 +21,7 @@ passport.deserializeUser(function(id, done) {
         if (user) {
             done(null, {
                 id: user._id,
+                _id: user._id,
                 admin: user.admin,
                 email: user.email
             });
@@ -42,6 +43,7 @@ passport.use(new passportLocalStrategy({
                 if (isMatch) {
                     return done(null, {
                         id: user._id,
+                        _id: user._id,
                         admin: user.admin,
                         email: user.email
                     });
@@ -103,6 +105,7 @@ function passportGoogleStrategyHandler (request, accessToken, refreshToken, prof
         if (err) return done(err, null);
         return done(null, {
             id: data.user._id,
+            _id: data.user._id,
             email: data.user.email,
             admin: data.user.admin                                
         });
