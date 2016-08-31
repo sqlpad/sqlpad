@@ -1,19 +1,100 @@
 //  This is the client side js entry file to be browserified
+var page = require('page');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var fetchJson = require('./fetch-json.js');
 
 // old jquery stuff
-require('./user-admin.js')();
-
 // The update notification is in the nav, which hasn't been moved to react yet.
 // Eventually SqlPad can convert to a full single-page-app but until then...
 $('[data-toggle="popover"]').popover()
 
-// stuff below is gradually being converted into react applets
-// for now page.js is being used to provide a bit of a router 
-var page = require('page');
-var React = require('react');
-var ReactDOM = require('react-dom');
-
+// account for baseUrl in client-side routing
 page.base(baseUrl);
+
+
+
+/*  client-side middleware
+==============================================================================*/
+function getUsers (ctx, next) {
+    fetchJson('GET', baseUrl + "/api/users")
+        .then((response) => {
+            return response.json();
+        })
+        .then((json) => {
+            ctx.users = json.users;
+        })
+        .catch(function (ex) {
+            console.error(ex.toString());
+        })
+        .then(() => {
+            next();   
+        })
+}
+
+function getConfig (ctx, next) {
+    fetchJson('GET', baseUrl + "/api/config")
+        .then((response) => {
+            return response.json();
+        })
+        .then((json) => {
+            ctx.config = json.config;
+        })
+        .catch(function (ex) {
+            console.error(ex.toString());
+        })
+        .then(() => {
+            next();
+        })
+}
+
+function getCurrentUser (ctx, next) {
+    fetchJson('GET', baseUrl + "/api/users/current")
+        .then((response) => {
+            return response.json();
+        })
+        .then((json) => {
+            ctx.currentUser = json.user;
+        })
+        .catch(function (ex) {
+            console.error(ex.toString());
+        })
+        .then(() => {
+            next();   
+        })
+}
+
+function getTags (ctx, next) {
+    fetchJson('GET', baseUrl + "/api/tags")
+        .then((response) => {
+            return response.json();
+        })
+        .then((json) => {
+            ctx.tags = json.tags;
+        })
+        .catch(function (ex) {
+            console.error(ex.toString());
+        })
+        .then(() => {
+            next();
+        })
+}
+
+
+
+/*  client-side routes
+==============================================================================*/
+
+var UserAdmin = require('./UserAdmin.js');
+page('/users', getConfig, getCurrentUser, function (ctx) {
+    ReactDOM.render(
+        <UserAdmin 
+            config={ctx.config}
+            currentUser={ctx.currentUser}
+            />,
+        document.getElementById('react-applet')
+    );
+})
 
 var ConnectionAdmin = require('./ConnectionAdmin.js');
 page('/connections', getConfig, function (ctx) {
@@ -72,71 +153,8 @@ page('/query-chart/:queryId', getConfig, function (ctx) {
     )
 });
 
-// init page router
+
+
+/*  init router
+==============================================================================*/
 page({click: false});
-
-
-// client-side middleware
-function getUsers (ctx, next) {
-    fetch(baseUrl + "/api/users", {credentials: 'same-origin'})
-        .then((response) => {
-            return response.json();
-        })
-        .then((json) => {
-            ctx.users = json.users;
-        })
-        .catch(function (ex) {
-            console.error(ex.toString());
-        })
-        .then(() => {
-            next();   
-        })
-}
-
-function getConfig (ctx, next) {
-    fetch(baseUrl + "/api/config", {credentials: 'same-origin'})
-        .then((response) => {
-            return response.json();
-        })
-        .then((json) => {
-            ctx.config = json.config;
-        })
-        .catch(function (ex) {
-            console.error(ex.toString());
-        })
-        .then(() => {
-            next();
-        })
-}
-
-function getCurrentUser (ctx, next) {
-    fetch(baseUrl + "/api/users/current", {credentials: 'same-origin'})
-        .then((response) => {
-            return response.json();
-        })
-        .then((json) => {
-            ctx.currentUser = json.user;
-        })
-        .catch(function (ex) {
-            console.error(ex.toString());
-        })
-        .then(() => {
-            next();   
-        })
-}
-
-function getTags (ctx, next) {
-    fetch(baseUrl + "/api/tags", {credentials: 'same-origin'})
-        .then((response) => {
-            return response.json();
-        })
-        .then((json) => {
-            ctx.tags = json.tags;
-        })
-        .catch(function (ex) {
-            console.error(ex.toString());
-        })
-        .then(() => {
-            next();
-        })
-}

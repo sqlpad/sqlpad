@@ -3,12 +3,11 @@ var config = require('../lib/config.js');
 const BASE_URL = config.get('baseUrl');
 var User = require('../models/User.js');
 
-function renderUsers (req, res) {
-    User.findAll(function (err, users) {
-        if (err) console.log(err);
-        res.render('users', {users: users, pageTitle: "Users"});
-    });   
-}
+router.get('/users', function (req, res) {
+    return res.render('react-applet', {
+        pageTitle: "Users"
+    });  
+});
 
 router.get('/api/users/current', function (req, res) {
     if (req.isAuthenticated() && res.locals.user) {
@@ -44,58 +43,64 @@ router.get('/api/users', function (req, res) {
     })
 });
 
-router.get('/users', renderUsers);
 
-router.post('/users/whitelist', function (req, res) {
-    var user = new User({
-        email: req.body.email,
-        admin: (req.body.admin ? true : false)
-    });
-    user.save(function (err, newUser) {
+// create/whitelist/invite user
+router.post('/api/users', function (req, res) {
+    User.findOneByEmail(req.body.email, function (err, user) {
         if (err) {
-            console.log(err);
-            res.location(BASE_URL + '/users');
-            res.locals.debug = "Couldn't add new user for some reason.";
-            renderUsers(req, res);
-        } else {
-            res.redirect(BASE_URL + '/users');
+            console.error(err);
+            return res.json({error: "Problem querying user database"});
         }
-    });
+        if (user) {
+            return res.json({error: "User already exists"});
+        }
+        var newUser = new User({
+            email: req.body.email,
+            admin: (req.body.admin ? true : false)
+        });
+        newUser.save(function (err, user) {
+            if (err) {
+                console.error(err.toString());
+                return res.json({
+                    error: "Problem saving user to database"
+                });
+            }
+            return res.json({});
+        });
+    }); 
 });
 
-router.post('/users/make-admin/:_id', function (req, res) {
+router.put('/api/users/:_id', function (req, res) {
+    if (req.user._id === req.params._id && req.user.admin && req.body.admin === false) return res.json({error: "You can't unadmin yourself"});
     User.findOneById(req.params._id, function (err, user) {
-        if (err) console.error(err);
-        user.admin = true;
+        if (err) {
+            console.error(err);
+            return res.json({error: "Problem querying user database"});
+        }
+        if (!user) return res.json({error: "user not found"});
+        // this route could handle potentially different kinds of updates
+        // only update user properties that are explicitly provided in body
+        if (req.body.admin != null) user.admin = req.body.admin
         user.save(function (err) {
-            if (err) console.error(err);
-            res.redirect(BASE_URL + '/users');
+            if (err) {
+                console.error(err);
+                return res.json({error: "Problem saving user to database"});
+            }
+            return res.json({});
         });
     });
 });
 
-router.post('/users/remove-admin/:_id', function (req, res) {
-    // can't unadmin one's self
-    if (req.user._id === req.params._id) {
-        res.location(BASE_URL + '/users');
-        res.locals.debug = "You can't unadmin yourself!";
-        renderUsers(req, res);
-    } else {
-        User.findOneById(req.params._id, function (err, user) {
-            if (err) console.error(err);
-            user.admin = false;
-            user.save(function (err) {
-                if (err) console.error(err);
-                res.redirect(BASE_URL + '/users');
-            });
-        });
-    }
-});
-
-router.delete('/users/:_id', function (req, res) {
+router.delete('/api/users/:_id', function (req, res) {
+    if (req.user._id === req.params._id) return json({error: "You can't delete yourself"});
     User.removeOneById(req.params._id, function (err) {
-        if (err) console.log(err);
-        res.redirect(BASE_URL + '/users');
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem deleting user in database"
+            });
+        }
+        return res.json({});
     });
 });
       
