@@ -148,3 +148,10 @@ description = "Enable a button to copy an object's full schema path in schema ex
 options = [true, false]
 default = false
 
+[[configItems]]
+interface = "ui"
+key = "tableChartLinksRequireAuth"
+label = "Require Login for Table/Chart Links"
+description = "If set to false, table and chart result links will be operational without having to log in. (These links only execute saved SQL queries, and do not open an endpoint to execute raw SQL.)"
+options = [true, false]
+default = true
