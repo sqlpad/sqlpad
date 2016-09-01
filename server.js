@@ -5,7 +5,6 @@ require('./lib/cli-flow.js');
 var express = require('express');
 var http = require('http');
 var path = require('path');
-var updateNotifier = require('update-notifier');
 var packageJson = require('./package.json');
 var detectPort = require('detect-port');
 
