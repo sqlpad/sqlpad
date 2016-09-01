@@ -1,24 +1,33 @@
 # Changelog
 
-## 2.0.0 (in development)
-
-- Design updates
-    - Redesigned query listing page with instant SQL preview
-    - Query Editor page cleaned up 
-    - New query result grid component with inline bar-charts
-    - New query tags widget
-    - Schema sidebar no longer separates tables and views
-    - New Configuration UI (open ended key/value inputs are no more)
-- New charting options 
-    - line chart y min/max 
-    - line chart line width
-    - chart filters
-- Bug fixes
-    - query result grid displays properly in Firefox
-    - fixed rendering issues with tag input
+## 2.0.0-beta1
+### September 1, 2016
+- UI design updates *everywhere*
+- Query Listing:
+    - preview query contents by hovering over query listing
+    - occassional search/filter weirdness has been fixed
+- Query Editor:
+    - Schema sidebar no longer separates views and tables in hierarchy
+    - New result grid 
+        - inline bar plot rendered for numeric values
+        - display issues fixed for certain browsers
+    - New tags widget for cleaner input
+    - Browser tab name now reflects query name 
+    - Updated taucharts library with stacked bar charts 
+    - Line and Scatterplot charts may have chart filters enabled
+    - 'show advanced settings' in vis editor now has a few advanced settings depending on chart (y min/max, show trendline, show filter)
     - switching between sql/vis tabs won't reset chart series toggles
-- Updated dependencies
-- Lots of code cleanup (and some new code messes too :)
+    - table/chart only links may be set to no longer require login (see configuration page)
+- Configuration:
+    - Specific config inputs and labels - no more open ended key/value inputs
+    - Current environment config documented with assistive popovers
+- Update notification moved in-app
+- Under the hood
+    - updated all the code dependencies
+    - reworked some foundation code for easier future development
+- Known issues / not yet implemented: 
+    - Query tag input does not allow creation
+    - Query auto-refresh not yet implemented 
 
 
 ## 1.17.0
