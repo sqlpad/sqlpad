@@ -33,13 +33,18 @@ function connectionFromBody (body) {
 
 router.get('/api/connections', function (req, res) {
     Connection.findAll(function (err, connections) {
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem querying connection database"
+            });
+        }
         connections = connections.map((connection) => {
             connection.username = decipher(connection.username);
             connection.password = '';
             return connection;
         });
         res.json({
-            error: err,
             connections: connections 
         });
     });
@@ -47,6 +52,12 @@ router.get('/api/connections', function (req, res) {
 
 router.get('/api/connections/:_id', function (req, res) {
     Connection.findOneById(req.params._id, function (err, connection) {
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem querying connection database"
+            });
+        }
         if (!connection) {
             return res.json({
                 error: "Connection not found"
@@ -67,13 +78,17 @@ router.post('/api/connections', mustBeAdmin, function (req, res) {
     connection.username = cipher(connection.username || '');
     connection.password = cipher(connection.password || '');
     connection.save(function (err, newConnection) {
-        if (err) console.error(err);
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem saving connection"
+            });
+        }
         if (newConnection) {
             newConnection.username = decipher(connection.username);
             newConnection.password = "";
         }
         return res.json({
-            error: err,
             connection: newConnection
         })
     });
@@ -83,9 +98,9 @@ router.post('/api/connections', mustBeAdmin, function (req, res) {
 router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
     Connection.findOneById(req.params._id, function (err, connection) {
         if (err) {
-            console.log(err);
+            console.error(err);
             return res.json({
-                error: err 
+                error: "Problem querying connection database" 
             });
         }
         if (!connection) {
@@ -105,10 +120,15 @@ router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
         connection.postgresSsl = (req.body.postgresSsl ? true : false);
         connection.mysqlInsecureAuth = (req.body.mysqlInsecureAuth ? true : false);
         connection.save(function (err, connection) {
+            if (err) {
+                console.error(err);
+                return res.json({
+                    error: "Problem saving connection"
+                });
+            }
             connection.username = decipher(connection.username);
             connection.password = "";
-            res.json({
-                error: err,
+            return res.json({
                 connection: connection
             });
         }); 
@@ -118,10 +138,13 @@ router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
 // delete
 router.delete('/api/connections/:_id', mustBeAdmin, function (req, res) {
     Connection.removeOneById(req.params._id, function (err) {
-        if (err) console.error(err);
-        return res.json({
-            error: err
-        });
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem deleting connection"
+            });
+        }
+        return res.json({});
     });
 });
 
@@ -135,17 +158,14 @@ router.post('/api/test-connection', mustBeAdmin, function testConnection(req, re
     }
     runQuery(testQuery, bodyConnection, function (err, queryResult) {
         if (err) {
-            console.log(err);
-            res.send({
-                success: false,
+            console.error(err);
+            return res.json({
                 error: err
             });
-        } else {
-            res.send({
-                success: true,
-                results: queryResult.rows
-            });
         }
+        return res.send({
+            results: queryResult.rows
+        });
     });
 });
 

@@ -13,8 +13,6 @@ router.get('/users', mustBeAdmin, function (req, res) {
 router.get('/api/users/current', function (req, res) {
     if (req.isAuthenticated() && res.locals.user) {
         res.json({
-            success: true,
-            error: null,
             user: {
                 _id: res.locals.user.id,
                 email: res.locals.user.email,
@@ -22,23 +20,25 @@ router.get('/api/users/current', function (req, res) {
             }
         });
     } else {
-        res.json({
-            success: false,
-            error: "No user authenticated"
-        });
+        // respond with empty object since this isn't really an error
+        res.json({});
     }     
 });
 
 router.get('/api/users', function (req, res) {
     User.findAll(function (err, users) {
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem querying user database"
+            })
+        }
         var cleanedUsers = users.map((u) => {
             delete u.password;
             delete u.passhash;
             return u;
         });
         res.json({
-            error: err,
-            success: (!err),
             users: cleanedUsers
         });
     })

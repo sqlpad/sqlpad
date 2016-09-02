@@ -5,8 +5,7 @@ var mustBeAdmin = require('../middleware/must-be-admin.js');
 var _ = require('lodash');
 
 router.get('/api/config', function (req, res) {
-    res.json({
-        err: null,
+    return res.json({
         config: config.getAllValues()
     });
 })
@@ -24,7 +23,7 @@ router.get('/api/config-items', function (req, res) {
         }
         return item;
     });
-    res.json({
+    return res.json({
         configItems: configItems
     });
 })
@@ -35,8 +34,13 @@ router.post('/api/config-values/:key', mustBeAdmin, function (req, res) {
     var configItem = ConfigItem.findOneByKey(key);
     configItem.setDbValue(value);
     configItem.save(function (err) {
-        if (err) return res.json({error: err});
-        return res.json({success: true});
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem saving config value"
+            });
+        }
+        return res.json({});
     });
 })
 

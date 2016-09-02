@@ -15,14 +15,13 @@ var Query = require('../models/Query.js');
 router.get('/api/query-result/:_queryId', function (req, res) {
     Query.findOneById(req.params._queryId, function (err, query) {
         if (err) {
-            return res.send({
-                success: false,
-                error: err.toString()
+            console.error(err);
+            return res.json({
+                error: "Problem querying query database"
             });
         }
         if (!query) {
-            return res.send({
-                success: false,
+            return res.json({
                 error: "Query not found for that Id (please save query first)"
             });
         }
@@ -34,13 +33,13 @@ router.get('/api/query-result/:_queryId', function (req, res) {
         };
         getQueryResult(data, function (err, queryResult) {
             if (err) {
-                return res.send({
-                    success: false,
-                    error: err.toString()
+                console.error(err);
+                // Return the error here since it might have info on why the query is bad 
+                return res.json({
+                    error: err.toString() 
                 });
             }
-            return res.send({
-                success: true,
+            return res.json({
                 queryResult: queryResult
             });  
         });
@@ -59,13 +58,13 @@ router.post('/api/query-result', function (req, res) {
     };
     getQueryResult(data, function (err, queryResult) {
         if (err) {
-            return res.send({
-                success: false,
-                error: err.toString()
+            console.error(err);
+            // Return the error here since it might have info on why the query is bad 
+            return res.json({
+                error: err.toString() 
             });
         }
         return res.send({
-            success: true,
             queryResult: queryResult
         });  
     });

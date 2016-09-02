@@ -30,13 +30,14 @@ router.get('/api/schema-info/:connectionId',
     function getConnection (req, res, next) {
         Connection.findOneById(res.locals.connectionId, function (err, conn) {
             if (err) {
+                console.error(err);
                 return res.json({
-                    err: err
+                    error: "Problem querying connection database"
                 });
             }
             if (!conn) {
                 return res.json({
-                    err: "No connection found"
+                    error: "Connection not found"
                 });
             }
             res.locals.connection = conn;
@@ -47,6 +48,12 @@ router.get('/api/schema-info/:connectionId',
 
     function getCache (req, res, next) {
         Cache.findOneByCacheKey(res.locals.cacheKey, function (err, cache) {
+            if (err) {
+                console.error(err);
+                return res.json({
+                    error: "Problem querying cache database"
+                })
+            }
             if (!cache || res.locals.reload) {
                 if (!cache) cache = new Cache({cacheKey: res.locals.cacheKey});
                 res.locals.cache = cache;
@@ -70,8 +77,10 @@ router.get('/api/schema-info/:connectionId',
 
                 runQuery(tableAndColumnSql, connection, function (err, queryResult) {
                     if (err) {
-                        console.log(err);
-                        return res.send({success: false});
+                        console.error(err);
+                        return res.json({
+                            error: "Problem running schema info query"    
+                        });
                     } 
                     var bySchema = _.groupBy(queryResult.rows, "table_schema");
                     for (var schema in bySchema) {
@@ -105,8 +114,7 @@ router.get('/api/schema-info/:connectionId',
                 });
             } else {
                 return res.json({
-                    schemaInfo: JSON.parse(cache.schema), 
-                    showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON
+                    schemaInfo: JSON.parse(cache.schema)
                 });
             }
         })
@@ -117,15 +125,19 @@ router.get('/api/schema-info/:connectionId',
             var cache = res.locals.cache;
             cache.schema = JSON.stringify(res.locals.tree);
             cache.save(function (err, newCache) {
-                res.json({
-                    schemaInfo: res.locals.tree, 
-                    showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON
+                if (err) {
+                    console.error(err);
+                    return res.json({
+                        error: "Problem saving cache"
+                    });
+                }
+                return res.json({
+                    schemaInfo: res.locals.tree
                 });
             });
         } else {
             res.json({
-                schemaInfo: res.locals.tree, 
-                showSchemaCopyButton: res.locals.SHOW_SCHEMA_COPY_BUTTON
+                schemaInfo: res.locals.tree
             });
         }
     }

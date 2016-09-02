@@ -46,10 +46,13 @@ router.get('/query-chart/:_id', function (req, res) {
 
 router.delete('/api/queries/:_id', function (req, res) {
     Query.removeOneById(req.params._id, function (err) {
-        res.json({
-            err: err,
-            success: !err
-        });
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem deleting query"
+            });
+        }
+        res.json({});
     });
 });
 
@@ -76,8 +79,13 @@ router.get('/api/queries', function (req, res) {
     });
     */
     Query.findAll(function (err, queries) {
-        res.json({
-            err: err,
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem querying query database"
+            });
+        }
+        return res.json({
             queries: queries
         });
     })
@@ -85,20 +93,24 @@ router.get('/api/queries', function (req, res) {
 
 router.get('/api/queries/:_id', function (req, res) {
     Connection.findAll(function (err, connections) {
+        if (err) {
+            console.error(err);
+            return res.json({
+                error: "Problem querying connection database"
+            });
+        }
         Query.findOneById(req.params._id, function (err, query) {
             if (err) {
+                console.error(err);
                 return res.json({
-                    err: err,
-                    connections: connections,
-                    query: null
+                    error: "Problem querying query database",
+                    connections: connections
                 });
             }
             if (!query) {
                 return res.json({
                     connections: connections,
-                    query: {
-                        // defaults here?
-                    }
+                    query: {}
                 });
             }
             return res.json({
@@ -124,35 +136,31 @@ router.post('/api/queries', function (req, res) {
     });
     query.save(function (err, newQuery) {
         if (err) {
-            console.log(err);
-            res.send({
-                err: err, 
-                success: false
+            console.error(err);
+            return res.json({
+                error: "Problem saving query" 
             });
-        } else {
-            // push query to slack if set up. 
-            // this is async, but save operation doesn't care about when/if finished
-            newQuery.pushQueryToSlackIfSetup(); 
-            res.send({
-                success:true, 
-                query: newQuery
-            });
-        }
+        } 
+        // push query to slack if set up. 
+        // this is async, but save operation doesn't care about when/if finished
+        newQuery.pushQueryToSlackIfSetup(); 
+        res.json({
+            query: newQuery
+        });
     });
 })
 
 router.put('/api/queries/:_id', function (req, res) {
     Query.findOneById(req.params._id, function (err, query) {
         if (err) {
+            console.error(err);
             return res.send({
-                err: err,
-                success: false
+                error: "Problem querying query database"
             });
         }
         if (!query) {
             return res.send({
-                err: "No query found for that Id",
-                success: false
+                error: "No query found for that Id"
             });
         }
         query.name = req.body.name || "";
@@ -163,10 +171,14 @@ router.put('/api/queries/:_id', function (req, res) {
         query.modifiedBy = req.user.email;
         query.save(function (err, newQuery) {
             if (err) {
-                console.log(err);
-                return res.send({success: false, err: err});
+                console.error(err);
+                return res.json({
+                    error: "Problem saving query"
+                });
             }
-            return res.send({success: true, query: newQuery});
+            return res.json({
+                query: newQuery
+            });
         });
     });
 });

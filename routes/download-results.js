@@ -3,10 +3,13 @@ var router = require('express').Router();
 var config = require('../lib/config.js');
 var Cache = require('../models/Cache.js');
 
-router.get('/download-results/:cacheKey.csv', function (req, res) {
+router.get('/download-results/:cacheKey.csv', function (req, res, next) {
     if (config.get('allowCsvDownload')) {
         Cache.findOneByCacheKey(req.params.cacheKey, function (err, cache) {
-            if (err) console.log(err);
+            if (err) {
+                console.error(err);
+                return next(err);
+            }
             var filename = cache.queryName + ".csv";
             res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
             res.setHeader('Content-Type', 'text/csv');
@@ -18,7 +21,10 @@ router.get('/download-results/:cacheKey.csv', function (req, res) {
 router.get('/download-results/:cacheKey.xlsx', function (req, res) {
     if (config.get('allowCsvDownload')) {
         Cache.findOneByCacheKey(req.params.cacheKey, function (err, cache) {
-            if (err) console.log(err);
+            if (err) {
+                console.error(err);
+                return next(err);
+            }
             var filename = cache.queryName + ".xlsx";
             res.setHeader('Content-disposition', 'attachment; filename="' + filename + '"');
             res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
