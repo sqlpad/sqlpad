@@ -422,7 +422,7 @@ var QueryEditor = React.createClass({
         });
         var chartOptions = chartDefinitions.map((d) => {
             return (
-                <option value={d.chartType}>{d.chartLabel}</option>
+                <option key={d.chartType} value={d.chartType}>{d.chartLabel}</option>
             )
         })
         return (
