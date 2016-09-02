@@ -36,9 +36,6 @@ var ConnectionController = React.createClass({
     },
     handleDelete: function (connection) {
         fetchJson('DELETE', this.props.config.baseUrl + '/api/connections/' + connection._id)
-            .then((response) => {
-                return response.json();
-            })
             .then((json) => {
                 if (json.error) return Alert.error('Delete failed');
                 Alert.success('Connection deleted');
@@ -65,20 +62,16 @@ var ConnectionController = React.createClass({
     },
     loadConnectionsFromServer: function () {
         fetchJson('get', baseUrl + "/api/connections")
-            .then((response) => {
-                return response.json()
-            }).then((json) => {
+            .then((json) => {
                 this.setState({connections: json.connections});
-            }).catch(function(ex) {
+            })
+            .catch((ex) => {
                 console.error(ex.toString());
             });
     },
     testConnection: function () {
         this.setState({isTesting: true});
         fetchJson('POST', this.props.config.baseUrl + '/api/test-connection', this.state.selectedConnection)
-            .then(function(response) {
-                return response.json();
-            })
             .then((json) => {
                 this.setState({isTesting: false});
                 if (!json.success) return Alert.error('Test Failed');
@@ -89,9 +82,6 @@ var ConnectionController = React.createClass({
         this.setState({isSaving: true});
         if (this.state.selectedConnection._id) {
             fetchJson('PUT', this.props.config.baseUrl + '/api/connections/' + this.state.selectedConnection._id, this.state.selectedConnection)
-                .then((response) => {
-                    return response.json();
-                })
                 .then((json) => {
                     this.setState({isSaving: false});
                     if (json.error) return Alert.error('Save failed');
@@ -100,9 +90,6 @@ var ConnectionController = React.createClass({
                 })
         } else {
             fetchJson('POST', this.props.config.baseUrl + '/api/connections', this.state.selectedConnection)
-                .then((response) => {
-                    return response.json();
-                })
                 .then((json) => {
                     this.setState({
                         isSaving: false,

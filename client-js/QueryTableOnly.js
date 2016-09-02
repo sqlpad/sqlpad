@@ -1,6 +1,6 @@
 var React = require('react');
+var fetchJson = require('./fetch-json.js');
 var QueryResultDataTable = require('./QueryResultDataTable.js');
-import 'whatwg-fetch';
 var Col = require('react-bootstrap/lib/Col');
 
 var QueryEditor = React.createClass({
@@ -17,10 +17,8 @@ var QueryEditor = React.createClass({
             isRunning: true,
             runQueryStartTime: new Date()
         });
-        fetch(baseUrl + '/api/query-result/' + queryId, {credentials: 'same-origin'})
-            .then(function(response) {
-                return response.json();
-            }).then(function(json) {
+        fetchJson('GET', baseUrl + '/api/query-result/' + queryId)
+            .then((json) => {
                 if (!json.success) {
                     console.log("problem running query");
                     console.log(json.error);
@@ -31,12 +29,13 @@ var QueryEditor = React.createClass({
                     queryError: json.error,
                     queryResult: json.queryResult
                 });
-            }.bind(this)).catch(function(ex) {
+            })
+            .catch((ex) => {
                 console.log('parsing failed', ex);
                 this.setState({
                     isRunning: false
                 });
-            }.bind(this));
+            });
     },
     componentDidMount: function () {
         this.runQuery(this.props.queryId);

@@ -4,7 +4,7 @@ var FormGroup = require('react-bootstrap/lib/FormGroup');
 var FormControl = require('react-bootstrap/lib/FormControl');
 var Glyphicon = require('react-bootstrap/lib/Glyphicon');
 import CopyToClipboard from 'react-copy-to-clipboard';
-import 'whatwg-fetch';
+var fetchJson = require('./fetch-json.js');
 
 
 var SchemaInfo = React.createClass({
@@ -30,20 +30,17 @@ var SchemaInfo = React.createClass({
             });
             var url = baseUrl + "/api/schema-info/" + connectionId;
             if (reload) url = url + "?reload=true";
-            fetch(url, {credentials: 'same-origin'})
-                .then(function(response) {
+            fetchJson('GET', url)
+                .then((json) => {
+                    this.setState({
+                        schemaInfo: json.schemaInfo
+                    });
                     // sometimes refreshes happen so fast and people don't get to enjoy the animation
                     setTimeout(() => {
                         this.setState({loading: false})
                     }, 1000);
-                    return response.json()
-                }.bind(this))
-                .then(function(json) {
-                    this.setState({
-                        schemaInfo: json.schemaInfo
-                    });
-                }.bind(this))
-                .catch(function(ex) {
+                })
+                .catch((ex) => {
                     console.error(ex.toString());
                 });
         } else {

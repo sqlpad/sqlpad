@@ -21,17 +21,12 @@ var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 var ConfigValues = React.createClass({
     loadConfigValuesFromServer: function () {
         fetchJson('GET', this.props.config.baseUrl + "/api/config-items")
-            .then((response) => {
-                return response.json()
-            }).then((json) => {
+            .then((json) => {
                 this.setState({configItems: json.configItems});
             })
     },
     saveConfigValue: function (key, value) {
         fetchJson('POST', this.props.config.baseUrl + '/api/config-values/' + key, {value: value})
-            .then((response) => {
-                return response.json();
-            })
             .then((json) => {
                 if (json.error) {
                     Alert.error('Save failed');

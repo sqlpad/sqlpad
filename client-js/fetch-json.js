@@ -12,5 +12,7 @@ module.exports = (verb, url, body) => {
     if (!verb) throw new Error("You must supply a verb to the fetch wrapper");
     opts.method = verb.toUpperCase();
     if (body) opts.body = JSON.stringify(body);
-    return fetch(url, opts);
+    return fetch(url, opts).then((response) => {
+        return response.json();
+    });
 }

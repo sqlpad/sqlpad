@@ -30,9 +30,6 @@ var UserAdmin = React.createClass({
     },
     handleDelete: function (user) {
         fetchJson('DELETE', this.props.config.baseUrl + '/api/users/' + user._id)
-            .then((response) => {
-                return response.json();
-            })
             .then((json) => {
                 if (json.error) return Alert.error('Delete Failed: ' + json.error.toString());
                 Alert.success('User Deleted');
@@ -44,9 +41,7 @@ var UserAdmin = React.createClass({
     },
     loadUsersFromServer: function () {
         fetchJson('get', baseUrl + "/api/users")
-            .then((response) => {
-                return response.json()
-            }).then((json) => {
+            .then((json) => {
                 this.setState({users: json.users});
             }).catch(function(ex) {
                 return Alert.error(ex.toString());
@@ -55,9 +50,6 @@ var UserAdmin = React.createClass({
     updateUserRole: function (user) {
         this.setState({isSaving: true});
         fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {admin: user.admin})
-            .then((response) => {
-                return response.json();
-            })
             .then((json) => {
                 this.loadUsersFromServer();
                 this.setState({isSaving: false});
@@ -216,9 +208,6 @@ var InviteUserForm = React.createClass({
             isInviting: true
         });
         fetchJson('POST', this.props.config.baseUrl + '/api/users', user)
-            .then((response) => {
-                return response.json();
-            })
             .then((json) => {
                 this.setState({
                     isInviting: false

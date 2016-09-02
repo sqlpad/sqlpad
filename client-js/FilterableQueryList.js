@@ -2,7 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var moment = require('moment');
 var _ = require('_');
-import 'whatwg-fetch';
+var fetchJson = require('./fetch-json.js');
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/sql';
@@ -62,31 +62,20 @@ var FilterableQueryList = React.createClass({
             queries: queries,
             selectedQuery: selectedQuery
         });
-        var opts = {
-            method: 'DELETE',
-            credentials: 'same-origin',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        };
-        fetch(baseUrl + '/api/queries/' + queryId, opts)
-            .then(function(response) {
-                return response.json();
-            }).then(function(json) {
+        fetchJson('DELETE', baseUrl + '/api/queries/' + queryId)
+            .then((json) => {
                 if (!json.success) {
                     console.log("problem deleting query");
                     console.log(json.err);
                 }
-            }).catch(function(ex) {
+            })
+            .catch((ex) => {
                 console.log('parsing failed', ex);
             });
     },
     loadConfigValuesFromServer: function () {
-        fetch(baseUrl + "/api/queries", {credentials: 'same-origin'})
-            .then(function(response) {
-                return response.json()
-            }).then(function(json) {
+        fetchJson('GET', baseUrl + "/api/queries")
+            .then((json) => {
                 var createdBys = _.uniq(_.pluck(json.queries, 'createdBy'));
                 var tags = _.compact(_.uniq(_.flatten(_.pluck(json.queries, 'tags'))));
                 var selectedCreatedBy = this.state.selectedCreatedBy;
@@ -99,15 +88,15 @@ var FilterableQueryList = React.createClass({
                     selectedCreatedBy: selectedCreatedBy,
                     tags: tags
                 });
-            }.bind(this)).catch(function(ex) {
+            })
+            .catch((ex) => {
                 console.error(ex.toString());
             });
-        fetch(baseUrl + "/api/connections", {credentials: 'same-origin'})
-            .then(function(response) {
-                return response.json()
-            }).then(function(json) {
+        fetchJson('GET', baseUrl + "/api/connections")
+            .then((json) => {
                 this.setState({connections: json.connections});
-            }.bind(this)).catch(function(ex) {
+            })
+            .catch((ex) => {
                 console.error(ex.toString());
             });
     },

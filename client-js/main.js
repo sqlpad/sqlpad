@@ -18,13 +18,10 @@ page.base(baseUrl);
 ==============================================================================*/
 function getUsers (ctx, next) {
     fetchJson('GET', baseUrl + "/api/users")
-        .then((response) => {
-            return response.json();
-        })
         .then((json) => {
             ctx.users = json.users;
         })
-        .catch(function (ex) {
+        .catch((ex) => {
             console.error(ex.toString());
         })
         .then(() => {
@@ -34,13 +31,10 @@ function getUsers (ctx, next) {
 
 function getConfig (ctx, next) {
     fetchJson('GET', baseUrl + "/api/config")
-        .then((response) => {
-            return response.json();
-        })
         .then((json) => {
             ctx.config = json.config;
         })
-        .catch(function (ex) {
+        .catch((ex) => {
             console.error(ex.toString());
         })
         .then(() => {
@@ -50,13 +44,10 @@ function getConfig (ctx, next) {
 
 function getCurrentUser (ctx, next) {
     fetchJson('GET', baseUrl + "/api/users/current")
-        .then((response) => {
-            return response.json();
-        })
         .then((json) => {
             ctx.currentUser = json.user;
         })
-        .catch(function (ex) {
+        .catch((ex) => {
             console.error(ex.toString());
         })
         .then(() => {
@@ -66,13 +57,10 @@ function getCurrentUser (ctx, next) {
 
 function getTags (ctx, next) {
     fetchJson('GET', baseUrl + "/api/tags")
-        .then((response) => {
-            return response.json();
-        })
         .then((json) => {
             ctx.tags = json.tags;
         })
-        .catch(function (ex) {
+        .catch((ex) => {
             console.error(ex.toString());
         })
         .then(() => {

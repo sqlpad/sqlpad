@@ -1,5 +1,5 @@
 var React = require('react');
-import 'whatwg-fetch';
+var fetchJson = require('./fetch-json.js');
 var SqlpadTauChart = require('./SqlpadTauChart.js');
 
 var QueryEditor = React.createClass({
@@ -16,20 +16,16 @@ var QueryEditor = React.createClass({
             isRunning: true,
             runQueryStartTime: new Date()
         });
-        fetch(baseUrl + "/api/queries/" + queryId, {credentials: 'same-origin'})
-            .then((response) => {
-                return response.json()
-            }).then((json) => {
+        fetchJson('GET', baseUrl + "/api/queries/" + queryId)
+            .then((json) => {
                 this.setState({
                     query: json.query
                 });
             })
             .then(() => {
-                return fetch(baseUrl + '/api/query-result/' + queryId, {credentials: 'same-origin'})        
+                return fetchJson('GET', baseUrl + '/api/query-result/' + queryId)        
             })
-            .then((response) => {
-                return response.json();
-            }).then((json) => {
+            .then((json) => {
                 if (!json.success) {
                     console.log("problem running query");
                     console.log(json.error);

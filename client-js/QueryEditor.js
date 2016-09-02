@@ -10,8 +10,7 @@ var QueryResultHeader = require('./QueryResultHeader.js');
 var ChartInputs = require('./ChartInputs.js');
 var SqlpadTauChart = require('./SqlpadTauChart.js');
 var chartDefinitions = require('./ChartDefinitions.js');
-
-import 'whatwg-fetch';
+var fetchJson = require('./fetch-json.js');
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/sql';
@@ -138,31 +137,27 @@ var QueryDetailsModal = React.createClass({
 
 var QueryEditor = React.createClass({
     loadConnectionsFromServer: function () {
-        fetch(baseUrl + "/api/connections/", {credentials: 'same-origin'})
-            .then(function(response) {
-                return response.json()
-            }).then(function(json) {
+        fetchJson('GET', baseUrl + "/api/connections/")
+            .then((json) => {
                 this.setState({
                     connections: json.connections
                 });
                 this.autoPickConnection();
-            }.bind(this)).catch(function(ex) {
+            })
+            .catch((ex) => {
                 console.error(ex.toString());
             });
     },
     loadQueryFromServer: function (queryId) {
-        fetch(baseUrl + "/api/queries/" + queryId, {credentials: 'same-origin'})
-            .then(function(response) {
-                return response.json()
-            }).then(function(json) {
+        fetchJson('GET', baseUrl + "/api/queries/" + queryId)
+            .then((json) => {
                 this.setState({
                     query: json.query
                 });
-            }.bind(this))
-            /*.catch(function(ex) {
+            })
+            .catch((ex) => {
                 console.error(ex.toString());
             });
-            */
     },
     autoPickConnection: function () {
         if (this.state.connections.length == 1 && this.state.query) {
@@ -203,19 +198,8 @@ var QueryEditor = React.createClass({
         }
         this.setState({isSaving: true});
         if (query._id) {
-            var opts = {
-                method: 'PUT',
-                credentials: 'same-origin',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(query)
-            }
-            fetch(baseUrl + '/api/queries/' + query._id, opts)
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
+            fetchJson('PUT', baseUrl + '/api/queries/' + query._id, query)
+                .then((json) => {
                     setTimeout(() => {
                         this.setState({isSaving: false});
                     }, 500);
@@ -226,26 +210,16 @@ var QueryEditor = React.createClass({
                     this.setState({
                         query: json.query
                     });
-                }.bind(this)).catch(function(ex) {
+                })
+                .catch((ex) => {
                     setTimeout(() => {
                         this.setState({isSaving: false});
                     }, 500);
                     console.log('parsing failed', ex);
-                }.bind(this));
+                });
         } else {
-            var opts = {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(query)
-            }
-            fetch(baseUrl + '/api/queries', opts)
-                .then(function(response) {
-                    return response.json();
-                }).then(function(json) {
+            fetchJson('POST', baseUrl + '/api/queries', query)
+                .then((json) => {
                     setTimeout(() => {
                         this.setState({isSaving: false});
                     }, 500);
@@ -258,12 +232,13 @@ var QueryEditor = React.createClass({
                     this.setState({
                         query: json.query
                     });
-                }.bind(this)).catch(function(ex) {
+                })
+                .catch((ex) => {
                     setTimeout(() => {
                         this.setState({isSaving: false});
                     }, 500);
                     console.log('parsing failed', ex);
-                }.bind(this));
+                });
         }
     },
     queryDetailsModal: undefined,
@@ -310,23 +285,13 @@ var QueryEditor = React.createClass({
         });
         setTimeout(this.runningTimer, 60);
         var postData = {
-            method: 'POST',
-            credentials: 'same-origin',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                connectionId: this.state.query.connectionId,
-                cacheKey: this.state.cacheKey,
-                queryName: this.state.query.name,
-                queryText: queryToRun
-            })
+            connectionId: this.state.query.connectionId,
+            cacheKey: this.state.cacheKey,
+            queryName: this.state.query.name,
+            queryText: queryToRun
         }
-        fetch(baseUrl + '/api/query-result', postData)
-            .then(function(response) {
-                return response.json();
-            }).then(function(json) {
+        fetchJson('POST', baseUrl + '/api/query-result', postData)
+            .then((json) => {
                 if (!json.success) {
                     console.log("problem running query");
                     console.log(json.error);
@@ -338,12 +303,13 @@ var QueryEditor = React.createClass({
                     queryError: json.error,
                     queryResult: json.queryResult
                 });
-            }.bind(this)).catch(function(ex) {
+            })
+            .catch((ex) => {
                 console.log('parsing failed', ex);
                 this.setState({
                     isRunning: false
                 });
-            }.bind(this));
+            });
     },
     componentDidMount: function () {
         this.loadConnectionsFromServer();
