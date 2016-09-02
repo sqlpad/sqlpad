@@ -1,5 +1,5 @@
 NODEJS_VERSION?=4.3.0
-SQLPAD_VERSION?=1.15.0
+SQLPAD_VERSION?=1.17.3
 DOCKER_NAME=sqlpad/sqlpad
 
 all: template build version push clean
