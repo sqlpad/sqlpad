@@ -22,6 +22,7 @@ var ConfigValues = React.createClass({
     loadConfigValuesFromServer: function () {
         fetchJson('GET', this.props.config.baseUrl + "/api/config-items")
             .then((json) => {
+                if (json.error) Alert.error(json.error);
                 this.setState({configItems: json.configItems});
             })
     },

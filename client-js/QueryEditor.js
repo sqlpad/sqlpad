@@ -11,6 +11,7 @@ var ChartInputs = require('./ChartInputs.js');
 var SqlpadTauChart = require('./SqlpadTauChart.js');
 var chartDefinitions = require('./ChartDefinitions.js');
 var fetchJson = require('./fetch-json.js');
+var Alert = require('react-s-alert').default;
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/sql';
@@ -139,6 +140,7 @@ var QueryEditor = React.createClass({
     loadConnectionsFromServer: function () {
         fetchJson('GET', baseUrl + "/api/connections/")
             .then((json) => {
+                if (json.error) Alert.error(json.error);
                 this.setState({
                     connections: json.connections
                 });
@@ -146,18 +148,21 @@ var QueryEditor = React.createClass({
             })
             .catch((ex) => {
                 console.error(ex.toString());
-            });
+                Alert.error("Something is broken");
+            })
     },
     loadQueryFromServer: function (queryId) {
         fetchJson('GET', baseUrl + "/api/queries/" + queryId)
             .then((json) => {
+                if (json.error) Alert.error(json.error);
                 this.setState({
                     query: json.query
                 });
             })
             .catch((ex) => {
                 console.error(ex.toString());
-            });
+                Alert.error("Something is broken");
+            })
     },
     autoPickConnection: function () {
         if (this.state.connections.length == 1 && this.state.query) {
@@ -200,45 +205,40 @@ var QueryEditor = React.createClass({
         if (query._id) {
             fetchJson('PUT', baseUrl + '/api/queries/' + query._id, query)
                 .then((json) => {
-                    setTimeout(() => {
+                    if (json.error) {
+                        Alert.error(json.error);
                         this.setState({isSaving: false});
-                    }, 500);
-                    if (!json.success) {
-                        console.log("problem saving query");
-                        console.log(json.error);
+                        return;
                     }
+                    Alert.success('Query Saved');
                     this.setState({
+                        isSaving: false,
                         query: json.query
                     });
                 })
                 .catch((ex) => {
-                    setTimeout(() => {
-                        this.setState({isSaving: false});
-                    }, 500);
-                    console.log('parsing failed', ex);
-                });
+                    console.error(ex.toString());
+                    Alert.error("Something is broken");
+                })
         } else {
             fetchJson('POST', baseUrl + '/api/queries', query)
                 .then((json) => {
-                    setTimeout(() => {
+                    if (json.error) {
+                        Alert.error(json.error);
                         this.setState({isSaving: false});
-                    }, 500);
-                    if (!json.success) {
-                        console.log("problem saving query");
-                        console.log(json.error);
-                    } else {
-                        window.history.replaceState({}, json.query.name, baseUrl + "/queries/" + json.query._id);
+                        return;
                     }
+                    window.history.replaceState({}, json.query.name, baseUrl + "/queries/" + json.query._id);
+                    Alert.success('Query Saved');
                     this.setState({
+                        isSaving: false,
                         query: json.query
                     });
                 })
                 .catch((ex) => {
-                    setTimeout(() => {
-                        this.setState({isSaving: false});
-                    }, 500);
-                    console.log('parsing failed', ex);
-                });
+                    console.error(ex.toString());
+                    Alert.error("Something is broken");
+                })
         }
     },
     queryDetailsModal: undefined,
@@ -292,23 +292,17 @@ var QueryEditor = React.createClass({
         }
         fetchJson('POST', baseUrl + '/api/query-result', postData)
             .then((json) => {
-                if (!json.success) {
-                    console.log("problem running query");
-                    console.log(json.error);
-                }
+                if (json.error) Alert.error(json.error);
                 this.setState({
                     isDirty: false, 
                     isRunning: false,
-                    querySuccess: json.success,
                     queryError: json.error,
                     queryResult: json.queryResult
                 });
             })
             .catch((ex) => {
-                console.log('parsing failed', ex);
-                this.setState({
-                    isRunning: false
-                });
+                console.error(ex.toString());
+                Alert.error("Something is broken");
             });
     },
     componentDidMount: function () {
@@ -392,131 +386,133 @@ var QueryEditor = React.createClass({
             )
         })
         return (
-            <Tab.Container 
-                id="left-tabs-example" 
-                defaultActiveKey="sql"
-                onSelect={this.onTabSelect}>
-                <Col sm={12}>
-                    <Row className="clearfix navbar-default">
-                        <Nav bsStyle="tabs" className="navbar-left query-editor-nav-pills" style={{width: '100%', paddingLeft: 6}}>
-                            <NavItem eventKey="sql">
-                                <span className="glyphicon glyphicon-align-left"></span> SQL
-                            </NavItem>
-                            <NavItem eventKey="vis">
-                                <span className="glyphicon glyphicon-stats"></span> Vis
-                            </NavItem>
-                        </Nav>
-                        <Form inline className="navbar-form navbar-left navbar-left-border-nope" style={tabsFormStyle}>
-                            <Button className="QueryEditorSubheaderItem" 
-                                onClick={this.saveQuery}
-                                disabled={this.state.isSaving}>
-                                <span className="shortcut-letter">S</span>{this.state.isSaving ? 'aving' : 'ave'}
-                            </Button>
-                            <Button className="QueryEditorSubheaderItem" onClick={this.runQuery} disabled={this.state.isRunning}>
-                                <span className="shortcut-letter">R</span>{this.state.isRunning ? 'unning' : 'un'}
-                            </Button>
-                            <ControlLabel onClick={this.openQueryDetailsModal} className="QueryEditorSubheaderItem QueryEditorQueryName">{(this.state.query.name ? this.state.query.name : "(click to name query)")}</ControlLabel>
-                            <QueryDetailsModal 
-                                onQueryNameChange={this.onQueryNameChange} 
-                                onQueryTagsChange={this.onQueryTagsChange}
-                                saveQuery={this.saveQuery}
-                                query={this.state.query}
-                                tagOptions={tagOptions}
-                                ref={(ref) => this.queryDetailsModal = ref }/>
-                        </Form>
-                    </Row>
-                    <Row>
-                        <Col sm={12}>
-                            <Tab.Content animation={false}>
-                                <Tab.Pane eventKey="sql">
-                                    <div className="sidebar">
-                                        <SchemaInfo
-                                            {...this.props}
-                                            connections={this.state.connections}
-                                            connectionId={this.state.query.connectionId}
-                                            onConnectionChange={this.onConnectionChange}
-                                            />
-                                    </div>
-                                    <div className="NonSidebar">
-                                        <div className="QueryEditorAceEditorWrapper">
-                                            <AceEditor
-                                                mode="sql"
-                                                theme="sqlserver"
-                                                name="query-ace-editor"
-                                                width="100%"
-                                                height="100%"
-                                                showGutter={false}
-                                                showPrintMargin={false}
-                                                highlightActiveLine={false}
-                                                onChange={this.onQueryTextChange}
-                                                value={this.state.query.queryText}
-                                                editorProps={{$blockScrolling: true}}
-                                                ref={(ref) => this.editor = (ref ? ref.editor : null) }
+            <div>
+                <Tab.Container 
+                    id="left-tabs-example" 
+                    defaultActiveKey="sql"
+                    onSelect={this.onTabSelect}>
+                    <Col sm={12}>
+                        <Row className="clearfix navbar-default">
+                            <Nav bsStyle="tabs" className="navbar-left query-editor-nav-pills" style={{width: '100%', paddingLeft: 6}}>
+                                <NavItem eventKey="sql">
+                                    <span className="glyphicon glyphicon-align-left"></span> SQL
+                                </NavItem>
+                                <NavItem eventKey="vis">
+                                    <span className="glyphicon glyphicon-stats"></span> Vis
+                                </NavItem>
+                            </Nav>
+                            <Form inline className="navbar-form navbar-left navbar-left-border-nope" style={tabsFormStyle}>
+                                <Button className="QueryEditorSubheaderItem" 
+                                    onClick={this.saveQuery}
+                                    disabled={this.state.isSaving}>
+                                    <span className="shortcut-letter">S</span>{this.state.isSaving ? 'aving' : 'ave'}
+                                </Button>
+                                <Button className="QueryEditorSubheaderItem" onClick={this.runQuery} disabled={this.state.isRunning}>
+                                    <span className="shortcut-letter">R</span>{this.state.isRunning ? 'unning' : 'un'}
+                                </Button>
+                                <ControlLabel onClick={this.openQueryDetailsModal} className="QueryEditorSubheaderItem QueryEditorQueryName">{(this.state.query.name ? this.state.query.name : "(click to name query)")}</ControlLabel>
+                                <QueryDetailsModal 
+                                    onQueryNameChange={this.onQueryNameChange} 
+                                    onQueryTagsChange={this.onQueryTagsChange}
+                                    saveQuery={this.saveQuery}
+                                    query={this.state.query}
+                                    tagOptions={tagOptions}
+                                    ref={(ref) => this.queryDetailsModal = ref }/>
+                            </Form>
+                        </Row>
+                        <Row>
+                            <Col sm={12}>
+                                <Tab.Content animation={false}>
+                                    <Tab.Pane eventKey="sql">
+                                        <div className="sidebar">
+                                            <SchemaInfo
+                                                {...this.props}
+                                                connections={this.state.connections}
+                                                connectionId={this.state.query.connectionId}
+                                                onConnectionChange={this.onConnectionChange}
                                                 />
                                         </div>
-                                        <div id="panel-result">
-                                            <QueryResultHeader 
-                                                {...this.props}
-                                                isRunning={this.state.isRunning}
-                                                cacheKey={this.state.cacheKey}
-                                                runSeconds={this.state.runSeconds}
-                                                queryResult={this.state.queryResult}
-                                                />
-                                            <div style={{position: 'absolute', top: 29, bottom: 3, left: 0, right: 2}}>
-                                                <QueryResultDataTable 
-                                                    {...this.props}
-                                                    isRunning={this.state.isRunning}
-                                                    runQueryStartTime={this.state.runQueryStartTime}
-                                                    queryResult={this.state.queryResult}
-                                                    queryError={this.state.queryError}
-                                                    querySuccess={this.state.querySuccess}
+                                        <div className="NonSidebar">
+                                            <div className="QueryEditorAceEditorWrapper">
+                                                <AceEditor
+                                                    mode="sql"
+                                                    theme="sqlserver"
+                                                    name="query-ace-editor"
+                                                    width="100%"
+                                                    height="100%"
+                                                    showGutter={false}
+                                                    showPrintMargin={false}
+                                                    highlightActiveLine={false}
+                                                    onChange={this.onQueryTextChange}
+                                                    value={this.state.query.queryText}
+                                                    editorProps={{$blockScrolling: true}}
+                                                    ref={(ref) => this.editor = (ref ? ref.editor : null) }
                                                     />
                                             </div>
+                                            <div id="panel-result">
+                                                <QueryResultHeader 
+                                                    {...this.props}
+                                                    isRunning={this.state.isRunning}
+                                                    cacheKey={this.state.cacheKey}
+                                                    runSeconds={this.state.runSeconds}
+                                                    queryResult={this.state.queryResult}
+                                                    />
+                                                <div style={{position: 'absolute', top: 29, bottom: 3, left: 0, right: 2}}>
+                                                    <QueryResultDataTable 
+                                                        {...this.props}
+                                                        isRunning={this.state.isRunning}
+                                                        runQueryStartTime={this.state.runQueryStartTime}
+                                                        queryResult={this.state.queryResult}
+                                                        queryError={this.state.queryError}
+                                                        />
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey="vis">
-                                    <div className="sidebar">
-                                        <div className="sidebar-body">
-                                            <FormGroup controlId="formControlsSelect" bsSize="small">
-                                                <FormControl 
-                                                    value={this.state.query.chartConfiguration.chartType} 
-                                                    onChange={this.onChartTypeChange}
-                                                    componentClass="select" 
-                                                    className="input-small">
-                                                    <option value="">Choose a chart type...</option>
-                                                    {chartOptions}
-                                                </FormControl>
-                                            </FormGroup>
-                                            <ChartInputs 
-                                                chartType={this.state.query.chartConfiguration.chartType} 
-                                                queryChartConfigurationFields={this.state.query.chartConfiguration.fields}
-                                                onChartConfigurationFieldsChange={this.onChartConfigurationFieldsChange}
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="vis">
+                                        <div className="sidebar">
+                                            <div className="sidebar-body">
+                                                <FormGroup controlId="formControlsSelect" bsSize="small">
+                                                    <FormControl 
+                                                        value={this.state.query.chartConfiguration.chartType} 
+                                                        onChange={this.onChartTypeChange}
+                                                        componentClass="select" 
+                                                        className="input-small">
+                                                        <option value="">Choose a chart type...</option>
+                                                        {chartOptions}
+                                                    </FormControl>
+                                                </FormGroup>
+                                                <ChartInputs 
+                                                    chartType={this.state.query.chartConfiguration.chartType} 
+                                                    queryChartConfigurationFields={this.state.query.chartConfiguration.fields}
+                                                    onChartConfigurationFieldsChange={this.onChartConfigurationFieldsChange}
+                                                    queryResult={this.state.queryResult}
+                                                    />
+                                            </div>
+                                            <div className="sidebar-footer">
+                                                <Button onClick={this.onVisualizeClick} className={'btn-block'} bsSize={'sm'}>Visualize</Button>
+                                                <Button onClick={this.onSaveImageClick} className={'btn-block'} bsSize={'sm'}>
+                                                    <Glyphicon glyph="save" />{" "}
+                                                    Save Chart Image
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        <div className="NonSidebar">
+                                            <SqlpadTauChart 
+                                                query={this.state.query}
                                                 queryResult={this.state.queryResult}
-                                                />
+                                                queryError={this.state.queryError}
+                                                isRunning={this.state.isRunning}
+                                                ref={(ref) => this.sqlpadTauChart = ref} />
                                         </div>
-                                        <div className="sidebar-footer">
-                                            <Button onClick={this.onVisualizeClick} className={'btn-block'} bsSize={'sm'}>Visualize</Button>
-                                            <Button onClick={this.onSaveImageClick} className={'btn-block'} bsSize={'sm'}>
-                                                <Glyphicon glyph="save" />{" "}
-                                                Save Chart Image
-                                            </Button>
-                                        </div>
-                                    </div>
-                                    <div className="NonSidebar">
-                                        <SqlpadTauChart 
-                                            query={this.state.query}
-                                            queryResult={this.state.queryResult}
-                                            queryError={this.state.queryError}
-                                            isRunning={this.state.isRunning}
-                                            ref={(ref) => this.sqlpadTauChart = ref} />
-                                    </div>
-                                </Tab.Pane>
-                            </Tab.Content>
-                        </Col>
-                    </Row>
-                </Col>
-            </Tab.Container>
+                                    </Tab.Pane>
+                                </Tab.Content>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Tab.Container>
+                <Alert stack={{limit: 3}} position='bottom-right' />
+            </div>
         )    
     }
 })

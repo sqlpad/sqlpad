@@ -35,7 +35,7 @@ var QueryResultDataTable = React.createClass({
                     <SecondsTimer startTime={this.props.runQueryStartTime} />
                 </div>
             );
-        } else if (!this.props.querySuccess && this.props.queryError) {
+        } else if (this.props.queryError) {
             return (
                 <div id="result-grid" className="run-result-notification label-danger">
                     {this.props.queryError}

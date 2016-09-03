@@ -45,7 +45,8 @@ var ConnectionController = React.createClass({
                 this.loadConnectionsFromServer();
             })
             .catch((ex) => {
-                return Alert.error('Delete failed');
+                console.error(ex.toString());
+                Alert.error("Something is broken");
             })
     },
     onNewConnectionClick: function () {
@@ -63,10 +64,12 @@ var ConnectionController = React.createClass({
     loadConnectionsFromServer: function () {
         fetchJson('get', baseUrl + "/api/connections")
             .then((json) => {
+                if (json.error) Alert.error(json.error);
                 this.setState({connections: json.connections});
             })
             .catch((ex) => {
                 console.error(ex.toString());
+                Alert.error("Something is broken");
             });
     },
     testConnection: function () {
@@ -74,9 +77,13 @@ var ConnectionController = React.createClass({
         fetchJson('POST', this.props.config.baseUrl + '/api/test-connection', this.state.selectedConnection)
             .then((json) => {
                 this.setState({isTesting: false});
-                if (!json.success) return Alert.error('Test Failed');
+                if (json.error) return Alert.error('Test Failed');
                 return Alert.success('Test successful');
-            })     
+            })
+            .catch((ex) => {
+                console.error(ex.toString());
+                Alert.error("Something is broken");
+            });
     },
     saveConnection: function () {
         this.setState({isSaving: true});
@@ -88,6 +95,10 @@ var ConnectionController = React.createClass({
                     Alert.success('Connection saved');
                     this.loadConnectionsFromServer();
                 })
+                .catch((ex) => {
+                    console.error(ex.toString());
+                    Alert.error("Something is broken");
+                });
         } else {
             fetchJson('POST', this.props.config.baseUrl + '/api/connections', this.state.selectedConnection)
                 .then((json) => {
@@ -99,6 +110,10 @@ var ConnectionController = React.createClass({
                     Alert.success('Connection saved');
                     this.loadConnectionsFromServer();
                 })
+                .catch((ex) => {
+                    console.error(ex.toString());
+                    Alert.error("Something is broken");
+                });
         }
     },
     render: function () {

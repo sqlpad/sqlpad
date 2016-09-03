@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var moment = require('moment');
 var _ = require('_');
 var fetchJson = require('./fetch-json.js');
+var Alert = require('react-s-alert').default;
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import 'brace/mode/sql';
@@ -64,14 +65,12 @@ var FilterableQueryList = React.createClass({
         });
         fetchJson('DELETE', baseUrl + '/api/queries/' + queryId)
             .then((json) => {
-                if (!json.success) {
-                    console.log("problem deleting query");
-                    console.log(json.err);
-                }
+                if (json.error) Alert.error(json.error);
             })
             .catch((ex) => {
-                console.log('parsing failed', ex);
-            });
+                console.error(ex.toString());
+                Alert.error("Something is broken");
+            })
     },
     loadConfigValuesFromServer: function () {
         fetchJson('GET', baseUrl + "/api/queries")
@@ -91,6 +90,7 @@ var FilterableQueryList = React.createClass({
             })
             .catch((ex) => {
                 console.error(ex.toString());
+                Alert.error("Something is broken");
             });
         fetchJson('GET', baseUrl + "/api/connections")
             .then((json) => {
@@ -98,6 +98,7 @@ var FilterableQueryList = React.createClass({
             })
             .catch((ex) => {
                 console.error(ex.toString());
+                Alert.error("Something is broken");
             });
     },
     onSearchChange: function (searchInput) {
@@ -189,6 +190,7 @@ var FilterableQueryList = React.createClass({
                 <QueryPreview 
                     config={this.props.config}
                     selectedQuery={this.state.selectedQuery} />
+                <Alert stack={{limit: 3}} position='bottom-right' />
             </div>
         )
     }

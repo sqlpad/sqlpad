@@ -32,6 +32,7 @@ var SchemaInfo = React.createClass({
             if (reload) url = url + "?reload=true";
             fetchJson('GET', url)
                 .then((json) => {
+                    if (json.error) console.error(json.error);
                     this.setState({
                         schemaInfo: json.schemaInfo
                     });

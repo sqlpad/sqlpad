@@ -36,15 +36,19 @@ var UserAdmin = React.createClass({
                 this.loadUsersFromServer();
             })
             .catch((ex) => {
-                return Alert.error('Delete Failed');
-            })
+                console.error(ex.toString());
+                Alert.error("Something is broken");
+            });
     },
     loadUsersFromServer: function () {
         fetchJson('get', baseUrl + "/api/users")
             .then((json) => {
+                if (json.error) Alert.error(json.error);
                 this.setState({users: json.users});
-            }).catch(function(ex) {
-                return Alert.error(ex.toString());
+            })
+            .catch((ex) => {
+                console.error(ex.toString());
+                Alert.error("Something is broken");
             });
     },
     updateUserRole: function (user) {
@@ -56,6 +60,10 @@ var UserAdmin = React.createClass({
                 if (json.error) return Alert.error('Update failed: ' + json.error.toString());
                 Alert.success('User Updated');
             })
+            .catch((ex) => {
+                console.error(ex.toString());
+                Alert.error("Something is broken");
+            });
     },
     render: function () {
         return (
@@ -216,6 +224,10 @@ var InviteUserForm = React.createClass({
                 Alert.success('User Whitelisted');
                 this.props.loadUsersFromServer();
             })
+            .catch((ex) => {
+                console.error(ex.toString());
+                Alert.error("Something is broken");
+            });
     },
     render: function () {
         return (

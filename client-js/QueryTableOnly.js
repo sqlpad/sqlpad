@@ -19,19 +19,18 @@ var QueryEditor = React.createClass({
         });
         fetchJson('GET', baseUrl + '/api/query-result/' + queryId)
             .then((json) => {
-                if (!json.success) {
-                    console.log("problem running query");
-                    console.log(json.error);
+                if (json.error) {
+                    console.error("problem running query");
+                    console.error(json.error);
                 }
                 this.setState({
                     isRunning: false,
-                    querySuccess: json.success,
                     queryError: json.error,
                     queryResult: json.queryResult
                 });
             })
             .catch((ex) => {
-                console.log('parsing failed', ex);
+                console.error(ex.toString());
                 this.setState({
                     isRunning: false
                 });
