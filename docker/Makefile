@@ -1,5 +1,5 @@
 NODEJS_VERSION?=4.3.0
-SQLPAD_VERSION?=1.15.0
+SQLPAD_VERSION?=1.17.3
 DOCKER_NAME=sqlpad/sqlpad
 
 all: template build version push clean
@@ -13,7 +13,7 @@ build:
 	docker build -t $(DOCKER_NAME):latest .
 
 version:
-	docker tag -f $(DOCKER_NAME):latest $(DOCKER_NAME):$(SQLPAD_VERSION)
+	docker tag $(DOCKER_NAME):latest $(DOCKER_NAME):$(SQLPAD_VERSION)
 
 push:
 	docker push $(DOCKER_NAME):latest
