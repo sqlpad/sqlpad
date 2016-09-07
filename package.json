@@ -32,7 +32,8 @@
     "email": "rick.bergfalk@gmail.com"
   },
   "scripts": {
-    "test": "mocha --recursive",
+    "standard": "standard",
+    "test": "standard && mocha --recursive",
     "coverage": "istanbul cover _mocha -- --recursive",
     "start": "nodemon --ignore 'public/*' --ignore 'client-js/*' --ignore 'db/*' server.js --dir ./db --port 3000 --debug",
     "bundle": "node bundle.js",
@@ -77,7 +78,6 @@
     "semver-diff": "^2.1.0",
     "serve-favicon": "2.x.x",
     "toml": "^2.3.0",
-    "ua-parser": "0.3.x",
     "uuid": "^2.0.1",
     "vertica": "0.5.x"
   },
@@ -107,6 +107,7 @@
     "react-dom": "^15.1.0",
     "react-s-alert": "^1.1.4",
     "react-select": "^1.0.0-beta14",
+    "standard": "^8.0.0",
     "taucharts": "^0.9.1",
     "uglifyify": "^3.0.2",
     "watchify": "^3.7.0",
@@ -116,6 +117,12 @@
     "presets": [
       "es2015",
       "react"
+    ]
+  },
+  "standard": {
+    "globals": ["$", "_", "fetch"],
+    "ignore": [
+      "/public/"
     ]
   }
 }
