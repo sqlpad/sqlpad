@@ -36,9 +36,9 @@
     "test": "standard && mocha --recursive",
     "coverage": "istanbul cover _mocha -- --recursive",
     "start": "nodemon --ignore 'public/*' --ignore 'client-js/*' --ignore 'db/*' server.js --dir ./db --port 3000 --debug",
-    "bundle": "node bundle.js",
-    "bundle-dev": "node bundle.js --dev",
-    "prepublish": "npm run bundle",
+    "build": "node build.js",
+    "build-dev": "node build.js --dev",
+    "prepublish": "npm run build",
     "disc": "discify ./public/javascripts/browserified.js > disc.html"
   },
   "dependencies": {
