@@ -180,7 +180,7 @@ var SchemaInfoTableItem = React.createClass({
     // we need to reach down into the columns to get the type of this object
     var viewType = () => {
       var type = this.props.columns[0].table_type
-      if (type.toLowerCase().split('')[0] === 'v') return (<span className='data-type'> (view)</span>)
+      if (type.toLowerCase().split('')[0] === 'v') return (<span className='schema-additional-context'> (view)</span>)
     }
     var copyButtonClassName = (this.state.showCopyButton ? 'copy-button label' : 'copy-button label hidden')
     var getCopyToClipboard = () => {
@@ -247,7 +247,7 @@ var SchemaInfoColumnItem = React.createClass({
       <li>
         <span onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} className='schema-info-column'>
           {this.props.column_name}
-          <span className='data-type'> ({this.props.data_type})</span>
+          <span className='schema-additional-context'> ({this.props.data_type})</span>
           {getCopyToClipboard()}
         </span>
       </li>

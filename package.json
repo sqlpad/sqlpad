@@ -120,7 +120,11 @@
     ]
   },
   "standard": {
-    "globals": ["$", "_", "fetch"],
+    "globals": [
+      "$",
+      "_",
+      "fetch"
+    ],
     "ignore": [
       "/public/"
     ]

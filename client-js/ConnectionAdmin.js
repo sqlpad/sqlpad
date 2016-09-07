@@ -362,11 +362,11 @@ var ConnectionForm = React.createClass({
             {sqlserverEncryptInput()}
             {mysqlInsecureAuthInput()}
             {postgresSslInput()}
-            <Button className='connection-button' onClick={this.props.saveConnection} disabled={this.props.isSaving}>
+            <Button style={{width: 100}} onClick={this.props.saveConnection} disabled={this.props.isSaving}>
               {this.props.isSaving ? 'Saving...' : 'Save'}
             </Button>
             {" "}
-            <Button className='connection-button' onClick={this.props.testConnection} disabled={this.props.isTesting}>
+            <Button style={{width: 100}} onClick={this.props.testConnection} disabled={this.props.isTesting}>
               {this.props.isTesting ? 'Testing...' : 'Test'}
             </Button>
           </Form>

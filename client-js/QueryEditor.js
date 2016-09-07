@@ -385,12 +385,12 @@ var QueryEditor = React.createClass({
     return (
       <div>
         <Tab.Container
-          id='left-tabs-example'
+          id='query-editor-tab-container'
           defaultActiveKey='sql'
           onSelect={this.onTabSelect}>
           <Col sm={12}>
             <Row className='clearfix navbar-default'>
-              <Nav bsStyle='tabs' className='navbar-left query-editor-nav-pills' style={{width: '100%', paddingLeft: 6}}>
+              <Nav bsStyle='tabs' className='navbar-left' style={{width: '100%', paddingLeft: 6, marginTop: 6}}>
                 <NavItem eventKey='sql'>
                   <span className='glyphicon glyphicon-align-left' /> SQL
                 </NavItem>
@@ -398,7 +398,7 @@ var QueryEditor = React.createClass({
                   <span className='glyphicon glyphicon-stats' /> Vis
                 </NavItem>
               </Nav>
-              <Form inline className='navbar-form navbar-left navbar-left-border-nope' style={tabsFormStyle}>
+              <Form inline className='navbar-form' style={tabsFormStyle}>
                 <Button className='QueryEditorSubheaderItem'
                   onClick={this.saveQuery}
                   disabled={this.state.isSaving}>

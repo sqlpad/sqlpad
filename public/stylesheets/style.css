@@ -1,39 +1,63 @@
-/* Move down content because we have a fixed navbar that is 50px tall */
+/* Vendor Overrides
+============================================================================ */
 body {
-  /* padding: 50px; */
-  padding-top: 50px;
+  padding-top: 50px; /* because fixed navbar 50px tall */
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
-
-
-
 a {
   color: #00B7FF;
 }
-
 a:hover, a:active, a:focus {
     text-decoration: none;
 }
 
-.error {
-  text-align: center;
+/* Override bootstrap tab colors to match background of sidebar */
+.nav-tabs>li.active>a, .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
+    color: #555;
+    cursor: default;
+    background-color: #fdfdfd;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
 }
 
+/* hide tauchart's ui for export options */
+.graphical-report__layout__header {
+    display: none;
+}
+
+
+/*  Utilities
+============================================================================ */
+.shortcut-letter {
+    text-decoration: underline;
+}
+.hidden {
+    display: none;
+}
+.spinning {
+    -webkit-animation:spin 2s linear infinite;
+    -moz-animation:spin 2s linear infinite;
+    animation:spin 2s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+
+/*  Signin / Signup
+======================================================== */
 .signin {
   max-width: 330px;
   margin: 0 auto;
   padding: 15px;
 }
-
 .signin h2 {
     text-align: center;
     padding-bottom:20px
 }
-
 .signin a:hover, .signin a:focus, .signin a:active {
   text-decoration: none;
 }
-
 .form-signin-footer {
     text-align: center;
     margin-top: 15px;
@@ -72,129 +96,9 @@ a:hover, a:active, a:focus {
   border-top-right-radius: 0;
 }
 
-.main {
-    margin-top: 20px;
-}
 
-
-
-/*  Navbar stuff?
-======================================================== */
-.navbar {
-    margin-bottom: 0;
-}
-
-.navbar-left-border {
-    border-left: 1px solid #fafafa;
-    margin-left: 16px;
-}
-
-.navbar-form .form-control.input-query-name {
-  font-size: 18px;
-  line-height: 20px;
-  width: 450px;
-}
-
-.navbar label.control-label {
-    font-weight: normal;
-}
-
-.form-control {
-    color: #333;
-}
-
-.query-editor-nav-pills {
-    margin-top: 6px;
-}
-
-/*  Query Page
-======================================================== */
-
-#panel-main {
-    position:absolute;
-    top: 101px;
-    left: 0;
-    right:0;
-    bottom:0;
-}
-
-.panel-editor {
-    background-color: #2F3129; /* ace gutter color */
-    background-color: #DDD;
-}
-
-.panel-viz {
-    background-color: #f6f6f6;
-    background-color: #FFF;
-}
-
-.panel-results {
-    padding: 20px;
-}
-
-
-#ace-editor {
-    position: absolute;
-    top: 1px; 
-    bottom: 1px;
-    left: 1px;
-    right: 1px;
-}
-
-
-.connection-dropdown {
-    max-width: 300px;
-    background-color: #555;
-    color: #DADADA;
-    border-color: #888;
-}
-
-
-.tab-content {
-    left: 0;
-    position: absolute;
-    right:0;
-    bottom:0;
-    top:0;
-}
-.tab-pane {
-    position:absolute;
-    left:0;
-    right:0;
-    bottom:0;
-    top:0;
-}
-.tab-pane-main {
-    left: 251px;
-    bottom: 0;
-    top: 2px;
-    right: 0;
-    position: absolute;
-}
-.panel-editor {
-    position: absolute;
-    left:0;
-    top:0; 
-    right:0;
-    height: 50%;
-}
-#panel-result {
-    position: absolute;
-    left:0;
-    right:0;
-    height: 50%;
-    bottom: 0;
-}
-
-
-/* hide tauchart's ui for export options */
-.graphical-report__layout__header {
-    display: none;
-}
-
-/*  DB Info sidebar 
-======================================================== */
-
+/*  Schema Info
+============================================================================ */
 .schema-info {
     padding-left: 0;
     font-size: 12px;
@@ -203,123 +107,16 @@ a:hover, a:active, a:focus {
     padding-left: 10px;
     padding-right: 6px;
 }
-
 .schema-info li {
     list-style-type: none;
     white-space: nowrap;
 }
-
-/* nav above sidebar is f8f8f8 */
-
-.sidebar {
-    padding: 12px;
-    width: 280px;
-    position: fixed;
-    top: 98px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #fdfdfd;
-    border-right: 1px solid #eee;
-    /*
-    background-color: #fcfcfc;
-    border-right: 1px solid #eee;
-    */
-}
-
-.nav-tabs>li.active>a, .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
-    color: #555;
-    cursor: default;
-    background-color: #fdfdfd;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-}
-
-.sidebar-header {
-    display: block;
-    padding-top: 10px;
-    font-size: 12px;
-    line-height: 1.42857143;
-    color: #AAA;
-}
-
-.sidebar-divider {
-    display: block;
-}
-
-.sidebar-body {
-    padding: 12px;
-    width: 280px;
-    position: fixed;
-    top: 98px;
-    bottom: 108px;
-    left: 0;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #fdfdfd;
-    border-right: 1px solid #eee;
-}
-
-.sidebar-footer {
-    padding: 12px;
-    width: 280px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    height: 108px;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #fdfdfd;
-    border-right: 1px solid #eee;
-    border-top: 1px solid #eee;
-    -moz-box-shadow: -4px -4px 4px #fdfdfd;
-    -webkit-box-shadow: -4px -4px 4px #fdfdfd;
-    box-shadow: -4px -4px 4px #fdfdfd;
-}
-
-.sidebar input {
-    width: 100%;
-}
-
-.sidebar input[type=checkbox] {
-    width: 24px;
-}
-
-.sidebar select {
-    width: 100%;
-}
-.sidebar .control-label {
-    font-weight: 600;
-    font-size: 13px;
-}
-
-/* also in sidebar */
-.checkbox label, .radio label {
-    font-weight: 600;
-    font-size: 13px;
-}
-input[type=checkbox], input[type=radio] {
-    margin: 2px 0 0;
-}
-
-.data-type {
-    color: #999;
-}
-
-/* schema-info copy button */
 .schema-info-schema, .schema-info-table, .schema-info-column {
     min-width: 230px;
     display: inline-block;
+}
+.schema-additional-context {
+    color: #999;
 }
 .copy-button {
     background-color: #5bc0de; /* label-info color */
@@ -331,184 +128,98 @@ input[type=checkbox], input[type=radio] {
 .copy-button:hover {
     background-color: orange;
 }
-
-
-.navbar-default {
-  /* background-image: -webkit-linear-gradient(top,#fff 0,#f8f8f8 100%); */
-  background-image: none;
-  /* background-image: -webkit-gradient(linear,left top,left bottom,from(#fff),to(#f8f8f8)); */
-  /* background-image: linear-gradient(to bottom,#fff 0,#f8f8f8 100%); */
-  border-radius: 0;
-  box-shadow: none;
-  /* background-repeat: repeat-x; */
-  /* border-radius: 4px; */
-  /* -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.15),0 1px 5px rgba(0,0,0,.075); */
-  /* box-shadow: inset 0 1px 0 rgba(255,255,255,.15),0 1px 5px rgba(0,0,0,.075); */
-}
-
-/*  Panel Results / Slick grids
-======================================================== */
-
-.panel-result-header {
-    position: absolute;
-    top: 0;
-    left: 0px;
-    right: 0px;
-    height: 30px;
-    border-top: 1px solid #dcdcdc;
-    border-bottom: 1px solid #dcdcdc;
-    background-color: #fdfdfd;
-    padding: .6em;
-    font-weight: 700;
-    line-height: 1;
-    color: #333;
-    white-space: nowrap;
-    vertical-align: baseline;
-    font-size: 90%;
-}
-
-.panel-result-header-item {
-    padding-left: 30px;
-}
-.panel-result-header-item:nth-of-type(1) {
-    padding-left: 5px;
-}
-.panel-result-header-label {
-    color: #777;
-}
-.result-download-link {
-    margin-left: 10px;
-}
-
-#result-grid, #result-grid div {
-  -webkit-box-sizing: content-box;
-     -moz-box-sizing: content-box;
-          box-sizing: content-box;
-}
-
-#result-grid {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-#chart {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
-.run-result-notification {
-    font-size: 30px;
-    text-align: center;
-    padding: 50px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
-
 #btn-reload-schema span {
     display: inline-block;
 }
-
 #btn-reload-schema {
     position: absolute;
     right: 20px;
 }
 
 
-.driver-specific {
-    display: none;
+/*  sidebar
+============================================================================ */
+.sidebar {
+    padding: 12px;
+    width: 280px;
+    position: fixed;
+    top: 98px;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #fdfdfd;
+    border-right: 1px solid #eee;
 }
-
-/*  Bootstrap tagsinput
-======================================================== */
-.bootstrap-tagsinput {
-    margin-bottom: 0;
-    min-width: 200px;
+.NonSidebar {
+    position: fixed;
+    top: 98px;
+    right: 0;
+    bottom: 0;
+    left: 280px;
 }
-
-/*  Twitter Typeahead
-======================================================== */
-
-.twitter-typeahead .tt-query,
-.twitter-typeahead .tt-hint {
-  margin-bottom: 0;
+.sidebar-body {
+    padding: 12px;
+    width: 280px;
+    position: fixed;
+    top: 98px;
+    bottom: 108px;
+    left: 0;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #fdfdfd;
+    border-right: 1px solid #eee;
 }
-
-.twitter-typeahead .tt-hint
-{
-    display: none;
+.sidebar-footer {
+    padding: 12px;
+    width: 280px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    height: 108px;
+    z-index: 1000;
+    display: block;
+    padding: 20px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #fdfdfd;
+    border-right: 1px solid #eee;
+    border-top: 1px solid #eee;
+    -moz-box-shadow: -4px -4px 4px #fdfdfd;
+    -webkit-box-shadow: -4px -4px 4px #fdfdfd;
+    box-shadow: -4px -4px 4px #fdfdfd;
 }
-
-.tt-dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  z-index: 1000;
-  display: none;
-  float: left;
-  min-width: 160px;
-  padding: 5px 0;
-  margin: 2px 0 0;
-  list-style: none;
-  font-size: 14px;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-  background-clip: padding-box;
+.sidebar input {
+    width: 100%;
 }
-.tt-suggestion > p {
-  display: block;
-  padding: 3px 20px;
-  clear: both;
-  font-weight: normal;
-  line-height: 1.428571429;
-  color: #333333;
-  white-space: nowrap;
+.sidebar input[type=checkbox] {
+    width: 24px;
 }
-.tt-suggestion > p:hover,
-.tt-suggestion > p:focus,
-.tt-suggestion.tt-cursor p {
-  color: #ffffff;
-  text-decoration: none;
-  outline: 0;
-  background-color: #428bca;
+.sidebar select {
+    width: 100%;
 }
-
-
-/*  Utility stuff 
-======================================================== */
-.shortcut-letter {
-    text-decoration: underline;
+.sidebar .control-label {
+    font-weight: 600;
+    font-size: 13px;
 }
-.hidden {
-    display: none;
+/* also in sidebar */
+.checkbox label, .radio label {
+    font-weight: 600;
+    font-size: 13px;
 }
-
-.spinning {
-    -webkit-animation:spin 2s linear infinite;
-    -moz-animation:spin 2s linear infinite;
-    animation:spin 2s linear infinite;
+input[type=checkbox], input[type=radio] {
+    margin: 2px 0 0;
 }
-@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
-@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
-@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
 
 /*  React Queries
-======================================================== */
-
-
+============================================================================ */
 .QueryListSidebar {
     position: absolute;
     left: 0px;
@@ -539,7 +250,6 @@ input[type=checkbox], input[type=radio] {
     right: 20px;
     bottom: 20px;
 }
-
 .QueryListContents {
     position: absolute;
     top: 32px;
@@ -559,26 +269,14 @@ input[type=checkbox], input[type=radio] {
     overflow-y: auto;
     padding: 10px;
 }
-
 #query-preview-ace-editor {
-    /*
-    position: absolute;
-    top: 32px;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    overflow-y: auto;
-    margin-bottom: 0px;
-    */
     border-radius: 4px;
     border: 1px solid #DDD;
 }
 
 
-
-
 /*  ListRow
-======================================================== */
+============================================================================ */
 .ListRowSelected {
     background-color: #FAFAFA; 
 }
@@ -592,7 +290,7 @@ input[type=checkbox], input[type=radio] {
 
 
 /*  React Schema Info
-======================================================== */
+============================================================================ */
 .SchemaInfoViewType {
     color: #8a8a8a;
     background-color: #e7e7e7;
@@ -604,32 +302,13 @@ input[type=checkbox], input[type=radio] {
     padding-left: 3px;
 }
 
-/*  Connection
-======================================================== */
-.connection-button {
-    width: 100px;
-}
-
-.PageAlert {
-    z-index: 9000;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-radius: 0;
-    text-align: center;
-    font-size: 18px;
-    margin-bottom: 0;
-}
 
 /*  Query Editor
-======================================================== */
-
+============================================================================ */
 .QueryEditorSubheaderItem {
     margin-left: 10px;
     min-width: 90px;
 }
-
 .QueryEditorQueryName {
     margin-left: 40px;
     font-size: 18px;
@@ -644,16 +323,6 @@ input[type=checkbox], input[type=radio] {
     color: #23527c;
     cursor: pointer;
 }
-
-
-.NonSidebar {
-    position: fixed;
-    top: 98px;
-    right: 0;
-    bottom: 0;
-    left: 280px;
-}
-
 .QueryEditorAceEditorWrapper {
     position: absolute;
     top: 0;
@@ -662,20 +331,76 @@ input[type=checkbox], input[type=radio] {
     left: 0;
     padding: 5px;
 }
-
 .incomplete-notification {
     color: #e31a1c;
 }
-
-
-
-
 #chart {
     padding: 10px;
     height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
-
-
-
-	
+/*  Panel Result
+============================================================================ */
+#panel-result {
+    position: absolute;
+    left:0;
+    right:0;
+    height: 50%;
+    bottom: 0;
+}
+.panel-result-header {
+    position: absolute;
+    top: 0;
+    left: 0px;
+    right: 0px;
+    height: 30px;
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
+    background-color: #fdfdfd;
+    padding: .6em;
+    font-weight: 700;
+    line-height: 1;
+    color: #333;
+    white-space: nowrap;
+    vertical-align: baseline;
+    font-size: 90%;
+}
+.panel-result-header-item {
+    padding-left: 30px;
+}
+.panel-result-header-item:nth-of-type(1) {
+    padding-left: 5px;
+}
+.panel-result-header-label {
+    color: #777;
+}
+.result-download-link {
+    margin-left: 10px;
+}
+#result-grid, #result-grid div {
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+}
+#result-grid {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.run-result-notification {
+    font-size: 30px;
+    text-align: center;
+    padding: 50px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
