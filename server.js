@@ -71,7 +71,6 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(BASE_URL, express.static(path.join(__dirname, 'public')))
 if (DEBUG) app.use(morgan('dev'))
-app.use(require('./middleware/update-available.js'))
 app.use(function (req, res, next) {
     // Boostrap res.locals with any common variables
   res.locals.errors = req.flash('error')
@@ -109,6 +108,7 @@ require('./middleware/passport.js')
 ============================================================================= */
 var routers = [
   require('./routes/homepage.js'),
+  require('./routes/version.js'),
   require('./routes/users.js'),
   require('./routes/connections.js'),
   require('./routes/queries.js'),
