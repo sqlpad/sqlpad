@@ -5,11 +5,6 @@ var ReactDOM = require('react-dom')
 var fetchJson = require('./fetch-json.js')
 const BASE_URL = window.configItems.baseUrl
 
-// old jquery stuff
-// The update notification is in the nav, which hasn't been moved to react yet.
-// Eventually SqlPad can convert to a full single-page-app but until then...
-$('[data-toggle="popover"]').popover()
-
 // account for baseUrl in client-side routing
 page.base(BASE_URL)
 
@@ -56,30 +51,34 @@ function getTags (ctx, next) {
 
 /*  client-side routes
 ============================================================================== */
+var App = require('./App.js')
 
 var UserAdmin = require('./UserAdmin.js')
 page('/users', getConfig, getCurrentUser, function (ctx) {
   ReactDOM.render(
-    <UserAdmin
-      config={ctx.config}
-      currentUser={ctx.currentUser} />,
+    <App config={ctx.config} currentUser={ctx.currentUser}>
+      <UserAdmin config={ctx.config} currentUser={ctx.currentUser} />
+    </App>,
     document.getElementById('react-applet')
   )
 })
 
 var ConnectionAdmin = require('./ConnectionAdmin.js')
-page('/connections', getConfig, function (ctx) {
+page('/connections', getConfig, getCurrentUser, function (ctx) {
   ReactDOM.render(
-    <ConnectionAdmin
-      config={ctx.config} />,
+    <App config={ctx.config} currentUser={ctx.currentUser}>
+      <ConnectionAdmin config={ctx.config} />
+    </App>,
     document.getElementById('react-applet')
   )
 })
 
 var ConfigValues = require('./ConfigValues.js')
-page('/config-values', getConfig, function (ctx) {
+page('/config-values', getConfig, getCurrentUser, function (ctx) {
   ReactDOM.render(
-    <ConfigValues config={ctx.config} />,
+    <App config={ctx.config} currentUser={ctx.currentUser}>
+      <ConfigValues config={ctx.config} />
+    </App>,
     document.getElementById('react-applet')
   )
 })
@@ -87,21 +86,25 @@ page('/config-values', getConfig, function (ctx) {
 var FilterableQueryList = require('./FilterableQueryList.js')
 page('/queries', getConfig, getCurrentUser, function (ctx) {
   ReactDOM.render(
-    <FilterableQueryList
-      config={ctx.config}
-      currentUser={ctx.currentUser}
-      users={ctx.users} />,
+    <App config={ctx.config} currentUser={ctx.currentUser}>
+      <FilterableQueryList
+        config={ctx.config}
+        currentUser={ctx.currentUser}
+        users={ctx.users} />
+    </App>,
     document.getElementById('react-applet')
   )
 })
 
 var QueryEditor = require('./QueryEditor.js')
-page('/queries/:queryId', getConfig, getTags, function (ctx) {
+page('/queries/:queryId', getConfig, getCurrentUser, getTags, function (ctx) {
   ReactDOM.render(
-    <QueryEditor
-      queryId={ctx.params.queryId}
-      availableTags={ctx.tags}
-      config={ctx.config} />,
+    <App config={ctx.config} currentUser={ctx.currentUser}>
+      <QueryEditor
+        queryId={ctx.params.queryId}
+        availableTags={ctx.tags}
+        config={ctx.config} />
+    </App>,
     document.getElementById('react-applet')
   )
 })

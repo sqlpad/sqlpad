@@ -1,53 +1,12 @@
-     </div> <!-- /row -->
-    </div> <!-- /container -->
 
-   <!-- Modal -->
-    <div class="modal" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            <h4 class="modal-title" id="myModalLabel">About SqlPad</h4>
-          </div>
-          <div class="modal-body">
-            <p>
-                <strong>Version</strong>: <%= version %>
-            </p>
-            <p>
-                <strong>Project Page</strong>: <a href="http://rickbergfalk.github.io/sqlpad/" target="_blank">http://rickbergfalk.github.io/sqlpad <span style="margin-left: 4px;" class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a>
-            </p>
-            <hr>
-            <p>
-                <ul class="nav nav-pills nav-justified">
-                  <li role="presentation"><a href="https://github.com/rickbergfalk/sqlpad/issues" target="_blank">Submit an Issue <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></li>
-                  <li role="presentation"><a href="https://github.com/rickbergfalk/sqlpad/blob/master/CHANGELOG.md" target="_blank">Changelog <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></li>
-                  <li role="presentation"><a href="https://github.com/rickbergfalk/sqlpad" target="_blank">GitHub Repository <span class="glyphicon glyphicon-new-window" aria-hidden="true"></span></a></li>
-                </ul>
-            </p>
-
-             </div>
-      </div>
-    </div>
-
-    <!--
-        This stuff has been made available as globals via browserify shim
-        Ideally this would be managed via npm/browserify completely, but it seems really confusing.
-        I'll revisit once I'm a bit more familiar with how browserify performs its magic
-    -->
-    <!-- key-value configs -->
     <script>
       window.configItems = <%- configItemsJSONString %>;
       var baseUrl = <%- JSON.stringify(baseUrl) %>;
     </script>
     <script src="<%= baseUrl %>/javascripts/vendor/underscore-min.js"></script>
-    <script src="<%= baseUrl %>/javascripts/vendor/jquery-2.2.0.min.js"></script>
-    <script src="<%= baseUrl %>/javascripts/vendor/bootstrap.min.js"></script>
     <script src="<%= baseUrl %>/javascripts/vendor/d3.min.js"></script>
     <script src="<%= baseUrl %>/javascripts/vendor/tauCharts/tauCharts.min.js"></script>
     <!-- then finally the browserified/bundled js -->
     <script src="<%= baseUrl %>/javascripts/browserified.js"></script>
-
-    
-
   </body>
 </html>
