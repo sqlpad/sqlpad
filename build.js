@@ -6,7 +6,6 @@ var config = minimist(process.argv.slice(2))
 
 var exposeConfig = {
   expose: {
-    jquery: '$',
     tauCharts: 'tauCharts',
     _: '_'
   }
