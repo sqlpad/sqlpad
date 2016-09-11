@@ -45,7 +45,6 @@
     "async": "^2.0.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.x.x",
-    "connect-flash": "^0.1.1",
     "cookie-parser": "1.x.x",
     "cookie-session": "1.x.x",
     "detect-port": "^1.0.0",

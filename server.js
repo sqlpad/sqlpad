@@ -34,7 +34,6 @@ var cookieParser = require('cookie-parser')
 var cookieSession = require('cookie-session')
 var morgan = require('morgan')
 var passport = require('passport')
-var connectFlash = require('connect-flash')
 var errorhandler = require('errorhandler')
 
 var app = express()
@@ -66,14 +65,12 @@ app.use(methodOverride('_method'))  // method override for action="/resource?_me
 app.use(methodOverride('X-HTTP-Method-Override')) // using a header
 app.use(cookieParser(PASSPHRASE)) // populates req.cookies with an object
 app.use(cookieSession({secret: PASSPHRASE}))
-app.use(connectFlash())
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(BASE_URL, express.static(path.join(__dirname, 'public')))
 if (DEBUG) app.use(morgan('dev'))
 app.use(function (req, res, next) {
   // Boostrap res.locals with any common variables
-  res.locals.errors = req.flash('error')
   res.locals.message = null
   res.locals.navbarConnections = []
   res.locals.debug = null
