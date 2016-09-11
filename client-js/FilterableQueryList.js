@@ -174,7 +174,6 @@ var FilterableQueryList = React.createClass({
         <QueryPreview
           config={this.props.config}
           selectedQuery={this.state.selectedQuery} />
-        <Alert stack={{limit: 3}} position='bottom-right' />
       </div>
     )
   }

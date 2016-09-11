@@ -72,7 +72,6 @@ var ConfigValues = React.createClass({
           <hr />
           <ConfigEnvDocumentation configItems={this.state.configItems} />
         </div>
-        <Alert stack={{limit: 3}} position='bottom-right' />
       </Col>
     )
   }

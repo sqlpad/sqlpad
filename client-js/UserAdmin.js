@@ -72,7 +72,6 @@ var UserAdmin = React.createClass({
         <InviteUserForm
           loadUsersFromServer={this.loadUsersFromServer}
           config={this.props.config} />
-        <Alert stack={{limit: 3}} position='bottom-right' />
       </div>
     )
   }

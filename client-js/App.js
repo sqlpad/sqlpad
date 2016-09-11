@@ -1,4 +1,5 @@
 var React = require('react')
+var Alert = require('react-s-alert').default
 var fetchJson = require('./fetch-json.js')
 var Navbar = require('react-bootstrap/lib/Navbar')
 var Nav = require('react-bootstrap/lib/Nav')
@@ -89,6 +90,7 @@ var App = React.createClass({
             {this.props.children}
           </div>
         </div>
+        <Alert stack={{limit: 3}} position='bottom-right' />
         <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>
           <Modal.Header closeButton>
             <Modal.Title>About SqlPad</Modal.Title>

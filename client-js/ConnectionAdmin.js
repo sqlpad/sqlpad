@@ -128,7 +128,6 @@ var ConnectionController = React.createClass({
           saveConnection={this.saveConnection}
           isTesting={this.state.isTesting}
           isSaving={this.state.isSaving} />
-        <Alert stack={{limit: 3}} position='bottom-right' />
       </div>
     )
   }
