@@ -15,7 +15,7 @@ var b
 
 if (config.dev) {
   b = browserify({
-    entries: ['./client-js/main.js'],
+    entries: ['./client-js/index.js'],
     cache: {},
     packageCache: {},
     debug: true,
@@ -32,7 +32,7 @@ if (config.dev) {
 } else {
   process.env.NODE_ENV = 'production'
   b = browserify({
-    entries: ['./client-js/main.js'],
+    entries: ['./client-js/index.js'],
     fullPaths: true
   })
   b.transform('babelify', {presets: ['es2015', 'react']})
