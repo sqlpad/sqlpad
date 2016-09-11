@@ -56,7 +56,7 @@ app.use(bodyParser.urlencoded({
 // simulate PUT/DELETE via POST in client by <input type="hidden" name="_method" value="put" />
 app.use(methodOverride(function (req, res) {
   if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-        // look in urlencoded POST bodies and delete it
+    // look in urlencoded POST bodies and delete it
     var method = req.body._method
     delete req.body._method
     return method
@@ -72,7 +72,7 @@ app.use(passport.session())
 app.use(BASE_URL, express.static(path.join(__dirname, 'public')))
 if (DEBUG) app.use(morgan('dev'))
 app.use(function (req, res, next) {
-    // Boostrap res.locals with any common variables
+  // Boostrap res.locals with any common variables
   res.locals.errors = req.flash('error')
   res.locals.message = null
   res.locals.navbarConnections = []
@@ -85,8 +85,8 @@ app.use(function (req, res, next) {
   res.locals.isAuthenticated = req.isAuthenticated()
   res.locals.renderNav = true
   res.locals.baseUrl = BASE_URL
-    // Expose key-value configs as a common variable passed on to browser
-    // TODO: sensitive configs should not go to browser
+  // Expose key-value configs as a common variable passed on to browser
+  // TODO: sensitive configs should not go to browser
   res.locals.configItemsJSONString = JSON.stringify(config.getAllValues())
   next()
 })
