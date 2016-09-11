@@ -224,7 +224,7 @@ var InviteUserForm = React.createClass({
             <p>
               Users may only sign up if they have first been whitelisted.
               Once whitelisted, invite them to
-              continue the sign-up process on the <a href='<%= baseUrl %>/signup'>signup page</a>.
+              continue the sign-up process on the <a href={this.props.config.baseUrl + '/signup'}>signup page</a>.
             </p>
             <p>
               <strong>Admins</strong> can add and edit database connections,
