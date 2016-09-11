@@ -10,23 +10,14 @@ page.base(BASE_URL)
 
 /*  client-side middleware
 ============================================================================== */
-function getConfig (ctx, next) {
-  fetchJson('GET', BASE_URL + '/api/config')
+function getApp (ctx, next) {
+  fetchJson('GET', BASE_URL + '/api/app')
     .then((json) => {
       ctx.config = json.config
-    })
-    .catch((ex) => {
-      console.error(ex.toString())
-    })
-    .then(() => {
-      next()
-    })
-}
-
-function getCurrentUser (ctx, next) {
-  fetchJson('GET', BASE_URL + '/api/users/current')
-    .then((json) => {
-      ctx.currentUser = json.user
+      ctx.version = json.version
+      ctx.currentUser = json.currentUser
+      ctx.passport = json.passport
+      ctx.adminRegistrationOpen = json.adminRegistrationOpen
     })
     .catch((ex) => {
       console.error(ex.toString())
@@ -54,7 +45,7 @@ function getTags (ctx, next) {
 var App = require('./App.js')
 
 var UserAdmin = require('./UserAdmin.js')
-page('/users', getConfig, getCurrentUser, function (ctx) {
+page('/users', getApp, function (ctx) {
   ReactDOM.render(
     <App config={ctx.config} currentUser={ctx.currentUser}>
       <UserAdmin config={ctx.config} currentUser={ctx.currentUser} />
@@ -64,7 +55,7 @@ page('/users', getConfig, getCurrentUser, function (ctx) {
 })
 
 var ConnectionAdmin = require('./ConnectionAdmin.js')
-page('/connections', getConfig, getCurrentUser, function (ctx) {
+page('/connections', getApp, function (ctx) {
   ReactDOM.render(
     <App config={ctx.config} currentUser={ctx.currentUser}>
       <ConnectionAdmin config={ctx.config} />
@@ -74,7 +65,7 @@ page('/connections', getConfig, getCurrentUser, function (ctx) {
 })
 
 var ConfigValues = require('./ConfigValues.js')
-page('/config-values', getConfig, getCurrentUser, function (ctx) {
+page('/config-values', getApp, function (ctx) {
   ReactDOM.render(
     <App config={ctx.config} currentUser={ctx.currentUser}>
       <ConfigValues config={ctx.config} />
@@ -84,7 +75,7 @@ page('/config-values', getConfig, getCurrentUser, function (ctx) {
 })
 
 var FilterableQueryList = require('./FilterableQueryList.js')
-page('/queries', getConfig, getCurrentUser, function (ctx) {
+page('/queries', getApp, function (ctx) {
   ReactDOM.render(
     <App config={ctx.config} currentUser={ctx.currentUser}>
       <FilterableQueryList
@@ -97,7 +88,7 @@ page('/queries', getConfig, getCurrentUser, function (ctx) {
 })
 
 var QueryEditor = require('./QueryEditor.js')
-page('/queries/:queryId', getConfig, getCurrentUser, getTags, function (ctx) {
+page('/queries/:queryId', getApp, getTags, function (ctx) {
   ReactDOM.render(
     <App config={ctx.config} currentUser={ctx.currentUser}>
       <QueryEditor
@@ -110,7 +101,7 @@ page('/queries/:queryId', getConfig, getCurrentUser, getTags, function (ctx) {
 })
 
 var QueryTableOnly = require('./QueryTableOnly.js')
-page('/query-table/:queryId', getConfig, function (ctx) {
+page('/query-table/:queryId', getApp, function (ctx) {
   ReactDOM.render(
     <QueryTableOnly
       config={ctx.config}
@@ -120,7 +111,7 @@ page('/query-table/:queryId', getConfig, function (ctx) {
 })
 
 var QueryChartOnly = require('./QueryChartOnly.js')
-page('/query-chart/:queryId', getConfig, function (ctx) {
+page('/query-chart/:queryId', getApp, function (ctx) {
   ReactDOM.render(
     <QueryChartOnly
       config={ctx.config}
