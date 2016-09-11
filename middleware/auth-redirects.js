@@ -17,7 +17,10 @@ module.exports = function authRedirects (req, res, next) {
   if (req.isAuthenticated()) {
     next()
   } else if (req._parsedUrl.pathname === (BASE_URL + '/signin') ||
+             req._parsedUrl.pathname === (BASE_URL + '/api/signin') ||
              req._parsedUrl.pathname === (BASE_URL + '/signup') ||
+             req._parsedUrl.pathname === (BASE_URL + '/api/signup') ||
+             req._parsedUrl.pathname === (BASE_URL + '/api/app') ||
              req._parsedUrl.pathname.indexOf(BASE_URL + '/auth/') === 0) {
     next()
   } else if (req.originalMethod === 'GET' && !config.get('tableChartLinksRequireAuth') && isTableChartUrl(req._parsedUrl.pathname)) {

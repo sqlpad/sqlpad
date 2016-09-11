@@ -100,6 +100,26 @@ page('/queries/:queryId', getApp, getTags, function (ctx) {
   )
 })
 
+var SignIn = require('./SignIn.js')
+page('/signin', getApp, function (ctx) {
+  ReactDOM.render(
+    <SignIn
+      config={ctx.config}
+      passport={ctx.passport} />,
+    document.getElementById('react-applet')
+  )
+})
+
+var SignUp = require('./SignUp.js')
+page('/signup', getApp, function (ctx) {
+  ReactDOM.render(
+    <SignUp
+      config={ctx.config}
+      adminRegistrationOpen={ctx.adminRegistrationOpen} />,
+    document.getElementById('react-applet')
+  )
+})
+
 var QueryTableOnly = require('./QueryTableOnly.js')
 page('/query-table/:queryId', getApp, function (ctx) {
   ReactDOM.render(
