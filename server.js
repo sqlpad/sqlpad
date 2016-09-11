@@ -29,7 +29,6 @@ if (DEBUG) {
 ============================================================================= */
 var bodyParser = require('body-parser')
 var favicon = require('serve-favicon')
-var methodOverride = require('method-override')
 var cookieParser = require('cookie-parser')
 var cookieSession = require('cookie-session')
 var morgan = require('morgan')
@@ -51,18 +50,6 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 
-// custom methodOverride behavior that was used in method-override@1.x.x
-// simulate PUT/DELETE via POST in client by <input type="hidden" name="_method" value="put" />
-app.use(methodOverride(function (req, res) {
-  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-    // look in urlencoded POST bodies and delete it
-    var method = req.body._method
-    delete req.body._method
-    return method
-  }
-}))
-app.use(methodOverride('_method'))  // method override for action="/resource?_method=DELETE"
-app.use(methodOverride('X-HTTP-Method-Override')) // using a header
 app.use(cookieParser(PASSPHRASE)) // populates req.cookies with an object
 app.use(cookieSession({secret: PASSPHRASE}))
 app.use(passport.initialize())
