@@ -4,10 +4,10 @@ var Connection = require('../models/Connection.js')
 var Query = require('../models/Query.js')
 const BASE_URL = config.get('baseUrl')
 
-/*  react-applet get routes
+/*  render page routes
 ============================================================================= */
 router.get('/queries', function (req, res) {
-  return res.render('react-applet', {
+  return res.render('index', {
     pageTitle: 'Queries'
   })
 })
@@ -17,21 +17,21 @@ router.get('/queries/:_id', function (req, res) {
   if (format === 'table') return res.redirect(BASE_URL + '/query-table/' + req.params._id)
   else if (format === 'chart') return res.redirect(BASE_URL + '/query-chart/' + req.params._id)
     else {
-    return res.render('react-applet', {
+    return res.render('index', {
       pageTitle: 'Query'
     })
   }
 })
 
 router.get('/query-table/:_id', function (req, res) {
-  return res.render('react-applet', {
+  return res.render('index', {
     renderNav: false,
     pageTitle: 'Query Table'
   })
 })
 
 router.get('/query-chart/:_id', function (req, res) {
-  return res.render('react-applet', {
+  return res.render('index', {
     renderNav: false,
     pageTitle: 'Query Chart'
   })

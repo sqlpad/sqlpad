@@ -22,7 +22,7 @@ function adminRegistrationOpen (req, res, next) {
 ============================================================================= */
 if (!DISABLE_USERPASS_AUTH) {
   router.get('/signup', function (req, res) {
-    return res.render('react-applet', {
+    return res.render('index', {
       pageTitle: 'Sign Up'
     })
   })
@@ -76,7 +76,7 @@ if (!DISABLE_USERPASS_AUTH) {
 /*  These auth routes should always exist regardless of strategy
 ============================================================================= */
 router.get('/signin', function (req, res) {
-  return res.render('react-applet', {
+  return res.render('index', {
     pageTitle: 'Sign In'
   })
 })
