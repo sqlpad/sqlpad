@@ -50,7 +50,7 @@ page('/users', getApp, function (ctx) {
     <App config={ctx.config} currentUser={ctx.currentUser}>
       <UserAdmin config={ctx.config} currentUser={ctx.currentUser} />
     </App>,
-    document.getElementById('react-applet')
+    document.getElementById('root')
   )
 })
 
@@ -60,7 +60,7 @@ page('/connections', getApp, function (ctx) {
     <App config={ctx.config} currentUser={ctx.currentUser}>
       <ConnectionAdmin config={ctx.config} />
     </App>,
-    document.getElementById('react-applet')
+    document.getElementById('root')
   )
 })
 
@@ -70,7 +70,7 @@ page('/config-values', getApp, function (ctx) {
     <App config={ctx.config} currentUser={ctx.currentUser}>
       <ConfigValues config={ctx.config} />
     </App>,
-    document.getElementById('react-applet')
+    document.getElementById('root')
   )
 })
 
@@ -83,7 +83,7 @@ page('/queries', getApp, function (ctx) {
         currentUser={ctx.currentUser}
         users={ctx.users} />
     </App>,
-    document.getElementById('react-applet')
+    document.getElementById('root')
   )
 })
 
@@ -96,7 +96,7 @@ page('/queries/:queryId', getApp, getTags, function (ctx) {
         availableTags={ctx.tags}
         config={ctx.config} />
     </App>,
-    document.getElementById('react-applet')
+    document.getElementById('root')
   )
 })
 
@@ -106,7 +106,7 @@ page('/signin', getApp, function (ctx) {
     <SignIn
       config={ctx.config}
       passport={ctx.passport} />,
-    document.getElementById('react-applet')
+    document.getElementById('root')
   )
 })
 
@@ -116,7 +116,7 @@ page('/signup', getApp, function (ctx) {
     <SignUp
       config={ctx.config}
       adminRegistrationOpen={ctx.adminRegistrationOpen} />,
-    document.getElementById('react-applet')
+    document.getElementById('root')
   )
 })
 
@@ -126,7 +126,7 @@ page('/query-table/:queryId', getApp, function (ctx) {
     <QueryTableOnly
       config={ctx.config}
       queryId={ctx.params.queryId} />,
-    document.getElementById('react-applet')
+    document.getElementById('root')
   )
 })
 
@@ -136,7 +136,7 @@ page('/query-chart/:queryId', getApp, function (ctx) {
     <QueryChartOnly
       config={ctx.config}
       queryId={ctx.params.queryId} />,
-    document.getElementById('react-applet')
+    document.getElementById('root')
   )
 })
 
