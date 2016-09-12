@@ -4,7 +4,7 @@ var getVersion = require('../lib/get-version.js')
 var config = require('../lib/config.js')
 var User = require('../models/User.js')
 
-router.get('/api/app', function (req, res) {
+router.get('*/api/app', function (req, res) {
   User.adminRegistrationOpen(function (err, open) {
     if (err) {
       console.error(err)

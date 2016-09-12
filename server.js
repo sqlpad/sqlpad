@@ -67,11 +67,7 @@ app.use(function (req, res, next) {
   res.locals.pageTitle = ''
   res.locals.user = req.user
   res.locals.isAuthenticated = req.isAuthenticated()
-  res.locals.renderNav = true
   res.locals.baseUrl = BASE_URL
-  // Expose key-value configs as a common variable passed on to browser
-  // TODO: sensitive configs should not go to browser
-  res.locals.configItemsJSONString = JSON.stringify(config.getAllValues())
   next()
 })
 app.use(require('./middleware/auth-redirects.js'))

@@ -3,143 +3,143 @@ var page = require('page')
 var React = require('react')
 var ReactDOM = require('react-dom')
 var fetchJson = require('./fetch-json.js')
-const BASE_URL = window.configItems.baseUrl
 
-// account for baseUrl in client-side routing
-page.base(BASE_URL)
+fetchJson('GET', 'api/app')
+  .then((json) => {
+    init(json)
+  })
+  .catch((ex) => {
+    console.error(ex.toString())
+  })
 
-/*  client-side middleware
-============================================================================== */
-function getApp (ctx, next) {
-  fetchJson('GET', BASE_URL + '/api/app')
-    .then((json) => {
-      ctx.config = json.config
-      ctx.version = json.version
-      ctx.currentUser = json.currentUser
-      ctx.passport = json.passport
-      ctx.adminRegistrationOpen = json.adminRegistrationOpen
-    })
-    .catch((ex) => {
-      console.error(ex.toString())
-    })
-    .then(() => {
-      next()
-    })
+function init (appData) {
+  var config = appData.config
+  // var version = appData.version
+  var currentUser = appData.currentUser
+  var passport = appData.passport
+  var adminRegistrationOpen = appData.adminRegistrationOpen
+  const BASE_URL = config.baseUrl
+
+  // account for baseUrl in client-side routing
+  page.base(BASE_URL)
+
+  /*  client-side middleware
+  ============================================================================== */
+  function getTags (ctx, next) {
+    fetchJson('GET', BASE_URL + '/api/tags')
+      .then((json) => {
+        ctx.tags = json.tags
+      })
+      .catch((ex) => {
+        console.error(ex.toString())
+      })
+      .then(() => {
+        next()
+      })
+  }
+
+  /*  client-side routes
+  ============================================================================== */
+  var App = require('./App.js')
+  var UserAdmin = require('./UserAdmin.js')
+  var ConnectionAdmin = require('./ConnectionAdmin.js')
+  var ConfigValues = require('./ConfigValues.js')
+  var FilterableQueryList = require('./FilterableQueryList.js')
+  var QueryEditor = require('./QueryEditor.js')
+  var SignIn = require('./SignIn.js')
+  var SignUp = require('./SignUp.js')
+  var QueryTableOnly = require('./QueryTableOnly.js')
+  var QueryChartOnly = require('./QueryChartOnly.js')
+
+  page('/users', function (ctx) {
+    ReactDOM.render(
+      <App config={config} currentUser={currentUser}>
+        <UserAdmin config={config} currentUser={currentUser} />
+      </App>,
+      document.getElementById('root')
+    )
+  })
+
+  page('/connections', function (ctx) {
+    ReactDOM.render(
+      <App config={config} currentUser={currentUser}>
+        <ConnectionAdmin config={config} />
+      </App>,
+      document.getElementById('root')
+    )
+  })
+
+  page('/config-values', function (ctx) {
+    ReactDOM.render(
+      <App config={config} currentUser={currentUser}>
+        <ConfigValues config={config} />
+      </App>,
+      document.getElementById('root')
+    )
+  })
+
+
+  page('/queries', function (ctx) {
+    ReactDOM.render(
+      <App config={config} currentUser={currentUser}>
+        <FilterableQueryList
+          config={config}
+          currentUser={currentUser} />
+      </App>,
+      document.getElementById('root')
+    )
+  })
+
+  page('/queries/:queryId', getTags, function (ctx) {
+    ReactDOM.render(
+      <App config={config} currentUser={currentUser}>
+        <QueryEditor
+          queryId={ctx.params.queryId}
+          availableTags={ctx.tags}
+          config={config} />
+      </App>,
+      document.getElementById('root')
+    )
+  })
+
+  page('/signin', function (ctx) {
+    ReactDOM.render(
+      <SignIn
+        config={config}
+        passport={passport} />,
+      document.getElementById('root')
+    )
+  })
+
+  page('/signup', function (ctx) {
+    ReactDOM.render(
+      <SignUp
+        config={config}
+        adminRegistrationOpen={adminRegistrationOpen} />,
+      document.getElementById('root')
+    )
+  })
+
+  page('/query-table/:queryId', function (ctx) {
+    ReactDOM.render(
+      <QueryTableOnly
+        config={config}
+        queryId={ctx.params.queryId} />,
+      document.getElementById('root')
+    )
+  })
+
+
+  page('/query-chart/:queryId', function (ctx) {
+    ReactDOM.render(
+      <QueryChartOnly
+        config={config}
+        queryId={ctx.params.queryId} />,
+      document.getElementById('root')
+    )
+  })
+
+  /*  init router
+  ============================================================================== */
+  page({click: false})
 }
-
-function getTags (ctx, next) {
-  fetchJson('GET', BASE_URL + '/api/tags')
-    .then((json) => {
-      ctx.tags = json.tags
-    })
-    .catch((ex) => {
-      console.error(ex.toString())
-    })
-    .then(() => {
-      next()
-    })
-}
-
-/*  client-side routes
-============================================================================== */
-var App = require('./App.js')
-
-var UserAdmin = require('./UserAdmin.js')
-page('/users', getApp, function (ctx) {
-  ReactDOM.render(
-    <App config={ctx.config} currentUser={ctx.currentUser}>
-      <UserAdmin config={ctx.config} currentUser={ctx.currentUser} />
-    </App>,
-    document.getElementById('root')
-  )
-})
-
-var ConnectionAdmin = require('./ConnectionAdmin.js')
-page('/connections', getApp, function (ctx) {
-  ReactDOM.render(
-    <App config={ctx.config} currentUser={ctx.currentUser}>
-      <ConnectionAdmin config={ctx.config} />
-    </App>,
-    document.getElementById('root')
-  )
-})
-
-var ConfigValues = require('./ConfigValues.js')
-page('/config-values', getApp, function (ctx) {
-  ReactDOM.render(
-    <App config={ctx.config} currentUser={ctx.currentUser}>
-      <ConfigValues config={ctx.config} />
-    </App>,
-    document.getElementById('root')
-  )
-})
-
-var FilterableQueryList = require('./FilterableQueryList.js')
-page('/queries', getApp, function (ctx) {
-  ReactDOM.render(
-    <App config={ctx.config} currentUser={ctx.currentUser}>
-      <FilterableQueryList
-        config={ctx.config}
-        currentUser={ctx.currentUser}
-        users={ctx.users} />
-    </App>,
-    document.getElementById('root')
-  )
-})
-
-var QueryEditor = require('./QueryEditor.js')
-page('/queries/:queryId', getApp, getTags, function (ctx) {
-  ReactDOM.render(
-    <App config={ctx.config} currentUser={ctx.currentUser}>
-      <QueryEditor
-        queryId={ctx.params.queryId}
-        availableTags={ctx.tags}
-        config={ctx.config} />
-    </App>,
-    document.getElementById('root')
-  )
-})
-
-var SignIn = require('./SignIn.js')
-page('/signin', getApp, function (ctx) {
-  ReactDOM.render(
-    <SignIn
-      config={ctx.config}
-      passport={ctx.passport} />,
-    document.getElementById('root')
-  )
-})
-
-var SignUp = require('./SignUp.js')
-page('/signup', getApp, function (ctx) {
-  ReactDOM.render(
-    <SignUp
-      config={ctx.config}
-      adminRegistrationOpen={ctx.adminRegistrationOpen} />,
-    document.getElementById('root')
-  )
-})
-
-var QueryTableOnly = require('./QueryTableOnly.js')
-page('/query-table/:queryId', getApp, function (ctx) {
-  ReactDOM.render(
-    <QueryTableOnly
-      config={ctx.config}
-      queryId={ctx.params.queryId} />,
-    document.getElementById('root')
-  )
-})
-
-var QueryChartOnly = require('./QueryChartOnly.js')
-page('/query-chart/:queryId', getApp, function (ctx) {
-  ReactDOM.render(
-    <QueryChartOnly
-      config={ctx.config}
-      queryId={ctx.params.queryId} />,
-    document.getElementById('root')
-  )
-})
-
-/*  init router
-============================================================================== */
-page({click: false})
