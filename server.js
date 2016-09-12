@@ -29,12 +29,10 @@ if (DEBUG) {
 ============================================================================= */
 var bodyParser = require('body-parser')
 var favicon = require('serve-favicon')
-var methodOverride = require('method-override')
 var cookieParser = require('cookie-parser')
 var cookieSession = require('cookie-session')
 var morgan = require('morgan')
 var passport = require('passport')
-var connectFlash = require('connect-flash')
 var errorhandler = require('errorhandler')
 
 var app = express()
@@ -52,28 +50,14 @@ app.use(bodyParser.urlencoded({
   extended: true
 }))
 
-// custom methodOverride behavior that was used in method-override@1.x.x
-// simulate PUT/DELETE via POST in client by <input type="hidden" name="_method" value="put" />
-app.use(methodOverride(function (req, res) {
-  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-        // look in urlencoded POST bodies and delete it
-    var method = req.body._method
-    delete req.body._method
-    return method
-  }
-}))
-app.use(methodOverride('_method'))  // method override for action="/resource?_method=DELETE"
-app.use(methodOverride('X-HTTP-Method-Override')) // using a header
 app.use(cookieParser(PASSPHRASE)) // populates req.cookies with an object
 app.use(cookieSession({secret: PASSPHRASE}))
-app.use(connectFlash())
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(BASE_URL, express.static(path.join(__dirname, 'public')))
 if (DEBUG) app.use(morgan('dev'))
 app.use(function (req, res, next) {
-    // Boostrap res.locals with any common variables
-  res.locals.errors = req.flash('error')
+  // Boostrap res.locals with any common variables
   res.locals.message = null
   res.locals.navbarConnections = []
   res.locals.debug = null
@@ -83,11 +67,7 @@ app.use(function (req, res, next) {
   res.locals.pageTitle = ''
   res.locals.user = req.user
   res.locals.isAuthenticated = req.isAuthenticated()
-  res.locals.renderNav = true
   res.locals.baseUrl = BASE_URL
-    // Expose key-value configs as a common variable passed on to browser
-    // TODO: sensitive configs should not go to browser
-  res.locals.configItemsJSONString = JSON.stringify(config.getAllValues())
   next()
 })
 app.use(require('./middleware/auth-redirects.js'))
@@ -108,6 +88,7 @@ require('./middleware/passport.js')
 ============================================================================= */
 var routers = [
   require('./routes/homepage.js'),
+  require('./routes/app.js'),
   require('./routes/version.js'),
   require('./routes/users.js'),
   require('./routes/connections.js'),

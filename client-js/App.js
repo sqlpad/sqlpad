@@ -1,4 +1,5 @@
 var React = require('react')
+var Alert = require('react-s-alert').default
 var fetchJson = require('./fetch-json.js')
 var Navbar = require('react-bootstrap/lib/Navbar')
 var Nav = require('react-bootstrap/lib/Nav')
@@ -14,7 +15,10 @@ var App = React.createClass({
   getInitialState: function () {
     return {
       showAboutModal: false,
-      version: {}
+      currentUser: {},
+      version: {},
+      passport: {},
+      config: {}
     }
   },
   openAboutModal: function () {
@@ -24,9 +28,29 @@ var App = React.createClass({
     this.setState({showAboutModal: false})
   },
   componentDidMount: function () {
-    fetchJson('GET', this.props.config.baseUrl + '/api/version')
+    fetchJson('GET', this.props.config.baseUrl + '/api/app')
       .then((json) => {
-        this.setState({version: json.version})
+        // TODO - would it be good to adopt this all-in-one app route or is this bad?
+        this.setState({
+          currentUser: json.currentUser,
+          version: json.version,
+          passport: json.passport,
+          config: json.config
+        })
+      })
+      .catch((ex) => {
+        console.error(ex.toString())
+        Alert.error('Something is broken')
+      })
+  },
+  signout: function () {
+    fetchJson('GET', this.props.config.baseUrl + '/api/signout')
+      .then((json) => {
+        window.location.assign(this.props.config.baseUrl + '/')
+      })
+      .catch((ex) => {
+        console.error(ex.toString())
+        Alert.error('Problem signing out')
       })
   },
   render: function () {
@@ -59,7 +83,7 @@ var App = React.createClass({
             <MenuItem divider />
             <MenuItem eventKey={3.4} onClick={this.openAboutModal} >About SqlPad</MenuItem>
             <MenuItem divider />
-            <MenuItem eventKey={3.5} href={this.props.config.baseUrl + '/signout'}>Sign Out</MenuItem>
+            <MenuItem eventKey={3.5} onClick={this.signout}>Sign Out</MenuItem>
           </NavDropdown>
         )
       } else {
@@ -67,7 +91,7 @@ var App = React.createClass({
           <NavDropdown eventKey={3} title={this.props.currentUser.email.split('@')[0]} id='user-nav-dropdown'>
             <MenuItem eventKey={3.4} onClick={this.openAboutModal} >About SqlPad</MenuItem>
             <MenuItem divider />
-            <MenuItem eventKey={3.5} href={this.props.config.baseUrl + '/signout'}>Sign Out</MenuItem>
+            <MenuItem eventKey={3.5} onClick={this.signout}>Sign Out</MenuItem>
           </NavDropdown>
         )
       }
@@ -89,6 +113,7 @@ var App = React.createClass({
             {this.props.children}
           </div>
         </div>
+        <Alert stack={{limit: 3}} position='bottom-right' />
         <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>
           <Modal.Header closeButton>
             <Modal.Title>About SqlPad</Modal.Title>

@@ -13,6 +13,13 @@ module.exports = (verb, url, body) => {
   opts.method = verb.toUpperCase()
   if (body) opts.body = JSON.stringify(body)
   return fetch(url, opts).then((response) => {
-    return response.json()
+    if (response.status === 200) {
+      return response.json()
+    } else {
+      console.error(response)
+      return {
+        error: 'Server responded not ok'
+      }
+    }
   })
 }

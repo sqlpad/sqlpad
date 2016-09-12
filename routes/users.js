@@ -3,7 +3,7 @@ var User = require('../models/User.js')
 var mustBeAdmin = require('../middleware/must-be-admin.js')
 
 router.get('/users', mustBeAdmin, function (req, res) {
-  return res.render('react-applet', {
+  return res.render('index', {
     pageTitle: 'Users'
   })
 })
