@@ -23,21 +23,6 @@ function init (appData) {
   // account for baseUrl in client-side routing
   page.base(BASE_URL)
 
-  /*  client-side middleware
-  ============================================================================== */
-  function getTags (ctx, next) {
-    fetchJson('GET', BASE_URL + '/api/tags')
-      .then((json) => {
-        ctx.tags = json.tags
-      })
-      .catch((ex) => {
-        console.error(ex.toString())
-      })
-      .then(() => {
-        next()
-      })
-  }
-
   /*  client-side routes
   ============================================================================== */
   var App = require('./App.js')
@@ -90,12 +75,11 @@ function init (appData) {
     )
   })
 
-  page('/queries/:queryId', getTags, function (ctx) {
+  page('/queries/:queryId', function (ctx) {
     ReactDOM.render(
       <App config={config} currentUser={currentUser}>
         <QueryEditor
           queryId={ctx.params.queryId}
-          availableTags={ctx.tags}
           config={config} />
       </App>,
       document.getElementById('root')

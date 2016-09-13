@@ -303,8 +303,20 @@ var QueryEditor = React.createClass({
         Alert.error('Something is broken')
       })
   },
+  loadTagsFromServer: function () {
+    fetchJson('GET', this.props.config.baseUrl + '/api/tags')
+      .then((json) => {
+        if (json.error) Alert.error(json.error)
+        this.setState({availableTags: json.tags})
+      })
+      .catch((ex) => {
+        console.error(ex.toString())
+        Alert.error('Something is broken')
+      })
+  },
   componentDidMount: function () {
     this.loadConnectionsFromServer()
+    this.loadTagsFromServer()
     if (this.props.queryId !== 'new') this.loadQueryFromServer(this.props.queryId)
 
     if (this.editor) {
@@ -374,7 +386,7 @@ var QueryEditor = React.createClass({
       left: '150px'
     }
     document.title = (this.state.query.name ? this.state.query.name : 'New Query')
-    var tagOptions = this.props.availableTags.map((t) => {
+    var tagOptions = this.state.availableTags.map((t) => {
       return {value: t, label: t}
     })
     var chartOptions = chartDefinitions.map((d) => {
