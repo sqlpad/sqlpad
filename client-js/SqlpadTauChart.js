@@ -193,7 +193,7 @@ var SqlpadTauChart = React.createClass({
     this.chart.setData(chartData)
   },
   componentWillUnmount () {
-    this.chart.destroy()
+    if (this.chart) this.chart.destroy()
   },
   render: function () {
     var runResultNotification = () => {
