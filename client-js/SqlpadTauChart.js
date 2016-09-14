@@ -25,8 +25,15 @@ var SqlpadTauChart = React.createClass({
     var selectedFields = this.props.query.chartConfiguration.fields
     var chartDefinition = _.findWhere(chartDefinitions, {chartType: chartType})
 
+    if (this.chart && (!dataRows.length || !chartDefinition)) {
+      this.chart.destroy()
+    }
+
     // If there's no data just exit the chart render
     if (!dataRows.length) return
+
+    // if there's no chart definition exit the render
+    if (!chartDefinition) return
 
     var chartConfig = {
       type: chartDefinition.tauChartsType,
@@ -49,7 +56,12 @@ var SqlpadTauChart = React.createClass({
       return field
     })
     if (unmetRequiredFields.length) {
-      Alert.error('Unmet required fields: ' + unmetRequiredFields.join(', '))
+      // if rerender is true, a render was explicitly requested by user clicking the vis button
+      // TODO - highlight fields that are required but not provided
+      if (rerender) {
+        Alert.error('Unmet required fields: ' + unmetRequiredFields.map(f => f.label).join(', '))
+      }
+      return
     }
 
     // loop through data rows and convert types as needed
