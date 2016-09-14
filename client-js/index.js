@@ -95,7 +95,6 @@ function init (appData) {
     )
   })
 
-
   page('/queries', mustBeAuthenticated, function (ctx) {
     document.title = 'SqlPad - Queries'
     ReactDOM.render(
@@ -148,7 +147,6 @@ function init (appData) {
       document.getElementById('root')
     )
   })
-
 
   page('/query-chart/:queryId', function (ctx) {
     document.title = 'SqlPad'
