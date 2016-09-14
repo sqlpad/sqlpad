@@ -394,7 +394,7 @@ var QueryEditor = React.createClass({
         setTimeout(renderChartIfVisible, 20)
       }
     }
-    renderChartIfVisible()
+    if (tabkey === 'vis') renderChartIfVisible()
   },
   onSaveImageClick: function (e) {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
