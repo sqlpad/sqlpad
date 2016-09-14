@@ -208,6 +208,11 @@ var InviteUserForm = React.createClass({
         })
         if (json.error) return Alert.error('Whitelist failed: ' + json.error.toString())
         Alert.success('User Whitelisted')
+        this.setState({
+          email: null,
+          role: null,
+          admin: false
+        })
         this.props.loadUsersFromServer()
       })
       .catch((ex) => {
