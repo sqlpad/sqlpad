@@ -175,6 +175,7 @@ var QueryEditor = React.createClass({
     return {
       cacheKey: uuid.v1(),
       connections: [],
+      availableTags: [],
       isSaving: false,
       isRunning: false,
       isDirty: false,
