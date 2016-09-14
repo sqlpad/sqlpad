@@ -14,10 +14,6 @@ fetchJson('GET', 'api/app')
 
 function init (appData) {
   var config = appData.config
-  // var version = appData.version
-  var currentUser = appData.currentUser
-  var passport = appData.passport
-  var adminRegistrationOpen = appData.adminRegistrationOpen
   const BASE_URL = config.baseUrl
 
   // account for baseUrl in client-side routing
@@ -36,11 +32,28 @@ function init (appData) {
   var QueryTableOnly = require('./QueryTableOnly.js')
   var QueryChartOnly = require('./QueryChartOnly.js')
 
+  function getAppData (ctx, next) {
+    fetchJson('GET', 'api/app')
+      .then((json) => {
+        ctx.config = json.config
+        ctx.currentUser = json.currentUser
+        ctx.passport = json.passport
+        ctx.adminRegistrationOpen = json.adminRegistrationOpen
+        ctx.version = json.version
+        next()
+      })
+      .catch((ex) => {
+        console.error(ex.toString())
+      })
+  }
+
+  page('*', getAppData)
+
   page('/users', function (ctx) {
     document.title = 'SqlPad - Users'
     ReactDOM.render(
-      <App config={config} currentUser={currentUser}>
-        <UserAdmin config={config} currentUser={currentUser} />
+      <App config={ctx.config} currentUser={ctx.currentUser}>
+        <UserAdmin config={ctx.config} currentUser={ctx.currentUser} />
       </App>,
       document.getElementById('root')
     )
@@ -49,8 +62,8 @@ function init (appData) {
   page('/connections', function (ctx) {
     document.title = 'SqlPad - Connections'
     ReactDOM.render(
-      <App config={config} currentUser={currentUser}>
-        <ConnectionAdmin config={config} />
+      <App config={ctx.config} currentUser={ctx.currentUser}>
+        <ConnectionAdmin config={ctx.config} />
       </App>,
       document.getElementById('root')
     )
@@ -59,8 +72,8 @@ function init (appData) {
   page('/config-values', function (ctx) {
     document.title = 'SqlPad - Configuration'
     ReactDOM.render(
-      <App config={config} currentUser={currentUser}>
-        <ConfigValues config={config} />
+      <App config={ctx.config} currentUser={ctx.currentUser}>
+        <ConfigValues config={ctx.config} />
       </App>,
       document.getElementById('root')
     )
@@ -70,10 +83,10 @@ function init (appData) {
   page('/queries', function (ctx) {
     document.title = 'SqlPad - Queries'
     ReactDOM.render(
-      <App config={config} currentUser={currentUser}>
+      <App config={ctx.config} currentUser={ctx.currentUser}>
         <FilterableQueryList
-          config={config}
-          currentUser={currentUser} />
+          config={ctx.config}
+          currentUser={ctx.currentUser} />
       </App>,
       document.getElementById('root')
     )
@@ -81,10 +94,10 @@ function init (appData) {
 
   page('/queries/:queryId', function (ctx) {
     ReactDOM.render(
-      <App config={config} currentUser={currentUser}>
+      <App config={ctx.config} currentUser={ctx.currentUser}>
         <QueryEditor
           queryId={ctx.params.queryId}
-          config={config} />
+          config={ctx.config} />
       </App>,
       document.getElementById('root')
     )
@@ -94,8 +107,8 @@ function init (appData) {
     document.title = 'SqlPad - Sign In'
     ReactDOM.render(
       <SignIn
-        config={config}
-        passport={passport} />,
+        config={ctx.config}
+        passport={ctx.passport} />,
       document.getElementById('root')
     )
   })
@@ -104,8 +117,8 @@ function init (appData) {
     document.title = 'SqlPad - Sign Up'
     ReactDOM.render(
       <SignUp
-        config={config}
-        adminRegistrationOpen={adminRegistrationOpen} />,
+        config={ctx.config}
+        adminRegistrationOpen={ctx.adminRegistrationOpen} />,
       document.getElementById('root')
     )
   })
@@ -114,7 +127,7 @@ function init (appData) {
     document.title = 'SqlPad'
     ReactDOM.render(
       <QueryTableOnly
-        config={config}
+        config={ctx.config}
         queryId={ctx.params.queryId} />,
       document.getElementById('root')
     )
@@ -125,7 +138,7 @@ function init (appData) {
     document.title = 'SqlPad'
     ReactDOM.render(
       <QueryChartOnly
-        config={config}
+        config={ctx.config}
         queryId={ctx.params.queryId} />,
       document.getElementById('root')
     )
