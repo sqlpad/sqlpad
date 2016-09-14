@@ -89,6 +89,7 @@ var ConnectionController = React.createClass({
           this.setState({isSaving: false})
           if (json.error) return Alert.error('Save failed')
           Alert.success('Connection saved')
+          this.setState({selectedConnection: null})
           this.loadConnectionsFromServer()
         })
         .catch((ex) => {
@@ -104,6 +105,7 @@ var ConnectionController = React.createClass({
           })
           if (json.error) return Alert.error('Save failed')
           Alert.success('Connection saved')
+          this.setState({selectedConnection: null})
           this.loadConnectionsFromServer()
         })
         .catch((ex) => {
