@@ -16,11 +16,13 @@ router.get('*/api/app', function (req, res) {
       })
     }
     var adminRegistrationOpen = open
-    var user = {}
+    var user
     if (req.isAuthenticated() && res.locals.user) {
-      user._id = res.locals.user.id
-      user.email = res.locals.user.email
-      user.admin = res.locals.user.admin
+      user = {
+        _id: res.locals.user.id,
+        email: res.locals.user.email,
+        admin: res.locals.user.admin
+      }
     }
     res.json({
       adminRegistrationOpen: adminRegistrationOpen,
