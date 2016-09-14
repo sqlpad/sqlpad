@@ -48,6 +48,7 @@ var QueryEditor = React.createClass({
     return (
       <SqlpadTauChart
         query={this.state.query}
+        config={this.props.config}
         queryResult={this.state.queryResult}
         queryError={this.state.queryError}
         isRunning={this.state.isRunning} />
