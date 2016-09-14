@@ -131,6 +131,10 @@ function init (appData) {
     )
   })
 
+  page('*', function () {
+    document.getElementById('root').innerHTML = '<h2>Not found!</h2>'
+  })
+
   /*  init router
   ============================================================================== */
   page()
