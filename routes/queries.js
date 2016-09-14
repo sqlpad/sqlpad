@@ -6,35 +6,13 @@ const BASE_URL = config.get('baseUrl')
 
 /*  render page routes
 ============================================================================= */
-router.get('/queries', function (req, res) {
-  return res.render('index', {
-    pageTitle: 'Queries'
-  })
-})
 
-router.get('/queries/:_id', function (req, res) {
+// NOTE: this non-api route is special since it redirects legacy urls
+router.get('/queries/:_id', function (req, res, next) {
   var format = req.query.format
   if (format === 'table') return res.redirect(BASE_URL + '/query-table/' + req.params._id)
   else if (format === 'chart') return res.redirect(BASE_URL + '/query-chart/' + req.params._id)
-    else {
-    return res.render('index', {
-      pageTitle: 'Query'
-    })
-  }
-})
-
-router.get('/query-table/:_id', function (req, res) {
-  return res.render('index', {
-    renderNav: false,
-    pageTitle: 'Query Table'
-  })
-})
-
-router.get('/query-chart/:_id', function (req, res) {
-  return res.render('index', {
-    renderNav: false,
-    pageTitle: 'Query Chart'
-  })
+  next()
 })
 
 /*  API routes

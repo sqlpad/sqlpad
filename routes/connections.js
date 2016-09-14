@@ -5,11 +5,6 @@ var decipher = require('../lib/decipher.js')
 var Connection = require('../models/Connection.js')
 var mustBeAdmin = require('../middleware/must-be-admin.js')
 
-router.get('/connections', mustBeAdmin, function (req, res) {
-  return res.render('index', {
-    pageTitle: 'Connections'
-  })
-})
 
 function connectionFromBody (body) {
   return {

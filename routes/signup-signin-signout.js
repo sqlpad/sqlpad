@@ -21,12 +21,6 @@ function adminRegistrationOpen (req, res, next) {
 /*  Some routes should only exist if userpath auth is enabled
 ============================================================================= */
 if (!DISABLE_USERPASS_AUTH) {
-  router.get('/signup', function (req, res) {
-    return res.render('index', {
-      pageTitle: 'Sign Up'
-    })
-  })
-
   router.post('/api/signup', adminRegistrationOpen, function (req, res) {
     if (req.body.password !== req.body.passwordConfirmation) {
       return res.json({error: 'Passwords do not match'})
@@ -75,12 +69,6 @@ if (!DISABLE_USERPASS_AUTH) {
 
 /*  These auth routes should always exist regardless of strategy
 ============================================================================= */
-router.get('/signin', function (req, res) {
-  return res.render('index', {
-    pageTitle: 'Sign In'
-  })
-})
-
 router.get('/api/signout', function (req, res) {
   req.session = null
   res.json({})

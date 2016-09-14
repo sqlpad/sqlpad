@@ -110,6 +110,20 @@ routers.forEach(function (router) {
   app.use(BASE_URL, router)
 })
 
+// for any missing api route, return a 404
+app.use(BASE_URL + '/api/', function (req, res) {
+  console.log('reached catch all api route')
+  res.sendStatus(404)
+})
+
+// anything else should render the client-side app
+// client-side routing will take care of things from here
+app.use(function (req, res, next) {
+  return res.render('index', {
+    pageTitle: 'SqlPad'
+  })
+})
+
 /*  Start the Server
 ============================================================================= */
 detectPort(PORT).then(function (_port) {

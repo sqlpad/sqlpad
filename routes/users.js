@@ -2,12 +2,6 @@ var router = require('express').Router()
 var User = require('../models/User.js')
 var mustBeAdmin = require('../middleware/must-be-admin.js')
 
-router.get('/users', mustBeAdmin, function (req, res) {
-  return res.render('index', {
-    pageTitle: 'Users'
-  })
-})
-
 router.get('/api/users/current', function (req, res) {
   if (req.isAuthenticated() && res.locals.user) {
     res.json({

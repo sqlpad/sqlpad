@@ -44,10 +44,4 @@ router.post('/api/config-values/:key', mustBeAdmin, function (req, res) {
   })
 })
 
-router.get('/config-values', mustBeAdmin, function (req, res) {
-  return res.render('index', {
-    pageTitle: 'Configuration'
-  })
-})
-
 module.exports = router

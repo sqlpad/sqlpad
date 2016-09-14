@@ -37,6 +37,7 @@ function init (appData) {
   var QueryChartOnly = require('./QueryChartOnly.js')
 
   page('/users', function (ctx) {
+    document.title = 'SqlPad - Users'
     ReactDOM.render(
       <App config={config} currentUser={currentUser}>
         <UserAdmin config={config} currentUser={currentUser} />
@@ -46,6 +47,7 @@ function init (appData) {
   })
 
   page('/connections', function (ctx) {
+    document.title = 'SqlPad - Connections'
     ReactDOM.render(
       <App config={config} currentUser={currentUser}>
         <ConnectionAdmin config={config} />
@@ -55,6 +57,7 @@ function init (appData) {
   })
 
   page('/config-values', function (ctx) {
+    document.title = 'SqlPad - Configuration'
     ReactDOM.render(
       <App config={config} currentUser={currentUser}>
         <ConfigValues config={config} />
@@ -65,6 +68,7 @@ function init (appData) {
 
 
   page('/queries', function (ctx) {
+    document.title = 'SqlPad - Queries'
     ReactDOM.render(
       <App config={config} currentUser={currentUser}>
         <FilterableQueryList
@@ -87,6 +91,7 @@ function init (appData) {
   })
 
   page('/signin', function (ctx) {
+    document.title = 'SqlPad - Sign In'
     ReactDOM.render(
       <SignIn
         config={config}
@@ -96,6 +101,7 @@ function init (appData) {
   })
 
   page('/signup', function (ctx) {
+    document.title = 'SqlPad - Sign Up'
     ReactDOM.render(
       <SignUp
         config={config}
@@ -105,6 +111,7 @@ function init (appData) {
   })
 
   page('/query-table/:queryId', function (ctx) {
+    document.title = 'SqlPad'
     ReactDOM.render(
       <QueryTableOnly
         config={config}
@@ -115,6 +122,7 @@ function init (appData) {
 
 
   page('/query-chart/:queryId', function (ctx) {
+    document.title = 'SqlPad'
     ReactDOM.render(
       <QueryChartOnly
         config={config}
