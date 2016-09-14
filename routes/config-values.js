@@ -10,7 +10,7 @@ router.get('/api/config', function (req, res) {
   })
 })
 
-router.get('/api/config-items', function (req, res) {
+router.get('/api/config-items', mustBeAdmin, function (req, res) {
   var configItems = _.cloneDeep(ConfigItem.findAll())
   configItems = configItems.map(function (item) {
     if (item.sensitive) {

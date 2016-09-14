@@ -7,6 +7,7 @@ var config = require('../lib/config.js')
 var Connection = require('../models/Connection.js')
 var Cache = require('../models/Cache.js')
 var decipher = require('../lib/decipher.js')
+var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 
 var sqldir = path.join(__dirname, '/../resources/')
 
@@ -15,7 +16,7 @@ var sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {encoding
 var sqlSchemaCrate = fs.readFileSync(sqldir + '/schema-crate.sql', {encoding: 'utf8'})
 var sqlSchemaStandard = fs.readFileSync(sqldir + '/schema-standard.sql', {encoding: 'utf8'})
 
-router.get('/api/schema-info/:connectionId',
+router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
   function initLocals (req, res, next) {
     res.locals.reload = req.query.reload === 'true'
     res.locals.tree = {}

@@ -2,13 +2,15 @@ var router = require('express').Router()
 var config = require('../lib/config.js')
 var Connection = require('../models/Connection.js')
 var Query = require('../models/Query.js')
+var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
+var mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js')
 const BASE_URL = config.get('baseUrl')
 
 /*  render page routes
 ============================================================================= */
 
 // NOTE: this non-api route is special since it redirects legacy urls
-router.get('/queries/:_id', function (req, res, next) {
+router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function (req, res, next) {
   var format = req.query.format
   if (format === 'table') return res.redirect(BASE_URL + '/query-table/' + req.params._id)
   else if (format === 'chart') return res.redirect(BASE_URL + '/query-chart/' + req.params._id)
@@ -18,7 +20,7 @@ router.get('/queries/:_id', function (req, res, next) {
 /*  API routes
 ============================================================================= */
 
-router.delete('/api/queries/:_id', function (req, res) {
+router.delete('/api/queries/:_id', mustBeAuthenticated, function (req, res) {
   Query.removeOneById(req.params._id, function (err) {
     if (err) {
       console.error(err)
@@ -30,7 +32,7 @@ router.delete('/api/queries/:_id', function (req, res) {
   })
 })
 
-router.get('/api/queries', function (req, res) {
+router.get('/api/queries', mustBeAuthenticated, function (req, res) {
   /*
   NOTE: db side filter. implement or?
   var filter = {};
@@ -65,7 +67,7 @@ router.get('/api/queries', function (req, res) {
   })
 })
 
-router.get('/api/queries/:_id', function (req, res) {
+router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, function (req, res) {
   Connection.findAll(function (err, connections) {
     if (err) {
       console.error(err)
@@ -96,7 +98,7 @@ router.get('/api/queries/:_id', function (req, res) {
 })
 
 // create new
-router.post('/api/queries', function (req, res) {
+router.post('/api/queries', mustBeAuthenticated, function (req, res) {
     // previously posted to api/queries/:_id, req.params._id would have been "new"
     // now though we know its new because the client did that for us
   var query = new Query({
@@ -124,7 +126,7 @@ router.post('/api/queries', function (req, res) {
   })
 })
 
-router.put('/api/queries/:_id', function (req, res) {
+router.put('/api/queries/:_id', mustBeAuthenticated, function (req, res) {
   Query.findOneById(req.params._id, function (err, query) {
     if (err) {
       console.error(err)

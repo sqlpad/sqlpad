@@ -4,7 +4,7 @@ var cipher = require('../lib/cipher.js')
 var decipher = require('../lib/decipher.js')
 var Connection = require('../models/Connection.js')
 var mustBeAdmin = require('../middleware/must-be-admin.js')
-
+var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 
 function connectionFromBody (body) {
   return {
@@ -22,7 +22,7 @@ function connectionFromBody (body) {
   }
 }
 
-router.get('/api/connections', function (req, res) {
+router.get('/api/connections', mustBeAuthenticated, function (req, res) {
   Connection.findAll(function (err, connections) {
     if (err) {
       console.error(err)
@@ -41,7 +41,7 @@ router.get('/api/connections', function (req, res) {
   })
 })
 
-router.get('/api/connections/:_id', function (req, res) {
+router.get('/api/connections/:_id', mustBeAuthenticated, function (req, res) {
   Connection.findOneById(req.params._id, function (err, connection) {
     if (err) {
       console.error(err)

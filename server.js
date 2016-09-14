@@ -70,7 +70,6 @@ app.use(function (req, res, next) {
   res.locals.baseUrl = BASE_URL
   next()
 })
-app.use(require('./middleware/auth-redirects.js'))
 
 /*  Passport setup
 ============================================================================= */

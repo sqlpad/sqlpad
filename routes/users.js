@@ -1,6 +1,7 @@
 var router = require('express').Router()
 var User = require('../models/User.js')
 var mustBeAdmin = require('../middleware/must-be-admin.js')
+var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 
 router.get('/api/users/current', function (req, res) {
   if (req.isAuthenticated() && res.locals.user) {
@@ -17,7 +18,7 @@ router.get('/api/users/current', function (req, res) {
   }
 })
 
-router.get('/api/users', function (req, res) {
+router.get('/api/users', mustBeAuthenticated, function (req, res) {
   User.findAll(function (err, users) {
     if (err) {
       console.error(err)

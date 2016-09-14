@@ -8,10 +8,12 @@ var decipher = require('../lib/decipher.js')
 var Connection = require('../models/Connection.js')
 var Cache = require('../models/Cache.js')
 var Query = require('../models/Query.js')
+var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
+var mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js')
 
 // this allows executing a query relying on the saved query text
 // instead of relying on an open endpoint that executes arbitrary sql
-router.get('/api/query-result/:_queryId', function (req, res) {
+router.get('/api/query-result/:_queryId', mustBeAuthenticatedOrChartLink, function (req, res) {
   Query.findOneById(req.params._queryId, function (err, query) {
     if (err) {
       console.error(err)
@@ -47,7 +49,7 @@ router.get('/api/query-result/:_queryId', function (req, res) {
 
 // accepts raw inputs from client
 // used during query editing
-router.post('/api/query-result', function (req, res) {
+router.post('/api/query-result', mustBeAuthenticated, function (req, res) {
   var data = {
     connectionId: req.body.connectionId,
     cacheKey: req.body.cacheKey,
