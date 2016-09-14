@@ -315,6 +315,26 @@ var QueryEditor = React.createClass({
         Alert.error('Something is broken')
       })
   },
+  componentWillReceiveProps: function (nextProps) {
+    if (nextProps.queryId !== this.props.queryId) {
+      if (nextProps.queryId !== 'new') this.loadQueryFromServer(nextProps.queryId)
+      else if (nextProps.queryId === 'new') {
+        this.setState({
+          query: {
+            _id: '',
+            name: '',
+            tags: [],
+            connectionId: '',
+            queryText: '',
+            chartConfiguration: {
+              chartType: '',
+              fields: {} // key value for chart
+            }
+          }
+        })
+      }
+    }
+  },
   componentDidMount: function () {
     this.loadConnectionsFromServer()
     this.loadTagsFromServer()
