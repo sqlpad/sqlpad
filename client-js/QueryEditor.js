@@ -316,23 +316,23 @@ var QueryEditor = React.createClass({
       })
   },
   componentWillReceiveProps: function (nextProps) {
-    if (nextProps.queryId !== this.props.queryId) {
-      if (nextProps.queryId !== 'new') this.loadQueryFromServer(nextProps.queryId)
-      else if (nextProps.queryId === 'new') {
-        this.setState({
-          query: {
-            _id: '',
-            name: '',
-            tags: [],
-            connectionId: '',
-            queryText: '',
-            chartConfiguration: {
-              chartType: '',
-              fields: {} // key value for chart
-            }
+    if (nextProps.queryId !== 'new') this.loadQueryFromServer(nextProps.queryId)
+    else if (nextProps.queryId === 'new') {
+      this.setState({
+        activeTabKey: 'sql',
+        queryResult: undefined,
+        query: {
+          _id: '',
+          name: '',
+          tags: [],
+          connectionId: '',
+          queryText: '',
+          chartConfiguration: {
+            chartType: '',
+            fields: {} // key value for chart
           }
-        })
-      }
+        }
+      })
     }
   },
   componentDidMount: function () {
@@ -381,6 +381,7 @@ var QueryEditor = React.createClass({
     this.sqlpadTauChart.renderChart(true)
   },
   onTabSelect: function (tabkey) {
+    this.setState({activeTabKey: tabkey})
     var renderChartIfVisible = () => {
       var chartEl = document.getElementById('chart')
       if (chartEl.clientHeight > 0) {
@@ -420,6 +421,7 @@ var QueryEditor = React.createClass({
         <Tab.Container
           id='query-editor-tab-container'
           defaultActiveKey='sql'
+          activeKey={this.state.activeTabKey}
           onSelect={this.onTabSelect}>
           <Col sm={12}>
             <Row className='clearfix navbar-default'>
