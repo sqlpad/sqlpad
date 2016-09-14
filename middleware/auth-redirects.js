@@ -23,7 +23,7 @@ module.exports = function authRedirects (req, res, next) {
              req._parsedUrl.pathname === (BASE_URL + '/api/app') ||
              req._parsedUrl.pathname.indexOf(BASE_URL + '/auth/') === 0) {
     next()
-  } else if (req.originalMethod === 'GET' && !config.get('tableChartLinksRequireAuth') && isTableChartUrl(req._parsedUrl.pathname)) {
+  } else if (req.method === 'GET' && !config.get('tableChartLinksRequireAuth') && isTableChartUrl(req._parsedUrl.pathname)) {
     next()
   } else if (res.locals.openAdminRegistration) {
     // if there are no users whitelisted, direct to signup
