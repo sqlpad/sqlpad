@@ -47,9 +47,25 @@ function init (appData) {
       })
   }
 
+  function mustBeAuthenticated (ctx, next) {
+    if (ctx.currentUser) {
+      next()
+    } else {
+      page.redirect('/signin')
+    }
+  }
+
+  function mustBeAdmin (ctx, next) {
+    if (ctx.currentUser && ctx.currentUser.admin) {
+      next()
+    } else {
+      console.log('must be admin')
+    }
+  }
+
   page('*', getAppData)
 
-  page('/users', function (ctx) {
+  page('/users', mustBeAuthenticated, mustBeAdmin, function (ctx) {
     document.title = 'SqlPad - Users'
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
@@ -59,7 +75,7 @@ function init (appData) {
     )
   })
 
-  page('/connections', function (ctx) {
+  page('/connections', mustBeAuthenticated, mustBeAdmin, function (ctx) {
     document.title = 'SqlPad - Connections'
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
@@ -69,7 +85,7 @@ function init (appData) {
     )
   })
 
-  page('/config-values', function (ctx) {
+  page('/config-values', mustBeAuthenticated, mustBeAdmin, function (ctx) {
     document.title = 'SqlPad - Configuration'
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
@@ -80,7 +96,7 @@ function init (appData) {
   })
 
 
-  page('/queries', function (ctx) {
+  page('/queries', mustBeAuthenticated, function (ctx) {
     document.title = 'SqlPad - Queries'
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
@@ -92,7 +108,7 @@ function init (appData) {
     )
   })
 
-  page('/queries/:queryId', function (ctx) {
+  page('/queries/:queryId', mustBeAuthenticated, function (ctx) {
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
         <QueryEditor
