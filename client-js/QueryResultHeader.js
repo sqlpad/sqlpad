@@ -1,10 +1,20 @@
 var React = require('react')
+var SecondsTimer = require('./SecondsTimer.js')
 
 var QueryResultHeader = React.createClass({
   render: function () {
     if (this.props.isRunning || !this.props.queryResult) {
       return (
-        <div className='panel-result-header' />
+        <div className='panel-result-header'>
+          {(this.props.isRunning ? (
+            <span className='panel-result-header-item'>
+              <span className='panel-result-header-label'>Query Run Time: </span>
+              <span className='panel-result-header-value-DELETE'>
+                <SecondsTimer startTime={this.props.runQueryStartTime} /> sec.
+              </span>
+            </span>
+          ) : null)}
+        </div>
       )
     }
     var csvDownloadLink = this.props.config.baseUrl + '/download-results/' + this.props.cacheKey + '.csv'

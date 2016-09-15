@@ -1,5 +1,5 @@
 var React = require('react')
-var SecondsTimer = require('./SecondsTimer.js')
+var SpinKitCube = require('./SpinKitCube.js')
 var moment = require('moment')
 import {Table, Column, Cell} from 'fixed-data-table' // react's fixed data table
 var _ = require('_')
@@ -31,8 +31,7 @@ var QueryResultDataTable = React.createClass({
     if (this.props.isRunning) {
       return (
         <div id='result-grid' className='run-result-notification'>
-          running...<br />
-          <SecondsTimer startTime={this.props.runQueryStartTime} />
+          <SpinKitCube />
         </div>
       )
     } else if (this.props.queryError) {

@@ -1,7 +1,7 @@
 var React = require('react')
 var _ = require('_')
 var chartDefinitions = require('./ChartDefinitions.js')
-var Glyphicon = require('react-bootstrap/lib/Glyphicon')
+var SpinKitCube = require('./SpinKitCube.js')
 var tauCharts = require('tauCharts')
 var deepEqual = require('deep-equal')
 var Alert = require('react-s-alert').default
@@ -209,10 +209,10 @@ var SqlpadTauChart = React.createClass({
   },
   render: function () {
     var runResultNotification = () => {
-      if (!this.chart && this.props.isRunning) {
+      if (this.props.isRunning) {
         return (
-          <div className='run-result-notification'>
-            <Glyphicon glyph='refresh' className='spinning' /> Loading
+          <div className='run-result-notification' style={{backgroundColor: 'rgba(250, 250, 250, 0.5)'}}>
+            <SpinKitCube />
           </div>
         )
       }

@@ -487,6 +487,7 @@ var QueryEditor = React.createClass({
                         <QueryResultHeader
                           {...this.props}
                           isRunning={this.state.isRunning}
+                          runQueryStartTime={this.state.runQueryStartTime}
                           cacheKey={this.state.cacheKey}
                           runSeconds={this.state.runSeconds}
                           queryResult={this.state.queryResult} />
@@ -494,7 +495,6 @@ var QueryEditor = React.createClass({
                           <QueryResultDataTable
                             {...this.props}
                             isRunning={this.state.isRunning}
-                            runQueryStartTime={this.state.runQueryStartTime}
                             queryResult={this.state.queryResult}
                             queryError={this.state.queryError} />
                         </div>
