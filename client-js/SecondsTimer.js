@@ -11,9 +11,9 @@ var SecondsTimer = React.createClass({
     if (this._mounted) {
       var now = new Date()
       this.setState({
-        runSeconds: ((now - this.props.startTime) / 1000).toFixed(3)
+        runSeconds: ((now - this.props.startTime) / 1000).toFixed(0)
       })
-      setTimeout(this.timer, 57)
+      setTimeout(this.timer, 33)
     }
   },
   componentDidMount: function () {
