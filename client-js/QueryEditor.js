@@ -1,7 +1,7 @@
 var React = require('react')
 var uuid = require('uuid')
 var keymaster = require('keymaster')
-var Select = require('react-select')
+import { Creatable } from 'react-select'
 var SchemaInfo = require('./SchemaInfo.js')
 var QueryResultDataTable = require('./QueryResultDataTable.js')
 var QueryResultHeader = require('./QueryResultHeader.js')
@@ -109,11 +109,10 @@ var QueryDetailsModal = React.createClass({
             <br />
             <FormGroup>
               <ControlLabel>Query Tags</ControlLabel>
-              <Select
+              <Creatable
                 name='query-tags-field'
                 value={this.props.query.tags}
                 multi
-                allowCreate
                 placeholder=''
                 options={this.props.tagOptions}
                 onChange={this.props.onQueryTagsChange}
@@ -411,6 +410,11 @@ var QueryEditor = React.createClass({
     var tagOptions = this.state.availableTags.map((t) => {
       return {value: t, label: t}
     })
+    if (this.state.query && this.state.query.tags) {
+      this.state.query.tags.forEach((t) => {
+        tagOptions.push({value: t, label: t})
+      })
+    }
     var chartOptions = chartDefinitions.map((d) => {
       return (
         <option key={d.chartType} value={d.chartType}>{d.chartLabel}</option>

@@ -104,7 +104,7 @@
     "react-copy-to-clipboard": "^4.2.2",
     "react-dom": "^15.1.0",
     "react-s-alert": "^1.1.4",
-    "react-select": "^1.0.0-beta14",
+    "react-select": "^1.0.0-rc.1",
     "standard": "^8.0.0",
     "taucharts": "^0.9.1",
     "uglifyify": "^3.0.2",
