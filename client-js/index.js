@@ -31,6 +31,7 @@ function init (appData) {
   var SignUp = require('./SignUp.js')
   var QueryTableOnly = require('./QueryTableOnly.js')
   var QueryChartOnly = require('./QueryChartOnly.js')
+  var BigCenteredText = require('./BigCenteredText.js')
 
   function getAppData (ctx, next) {
     fetchJson('GET', 'api/app')
@@ -158,8 +159,28 @@ function init (appData) {
     )
   })
 
-  page('*', function () {
-    document.getElementById('root').innerHTML = '<h2>Not found!</h2>'
+  page('*', function (ctx) {
+    document.title = 'SqlPad - Not Found'
+    var Component
+    if (ctx.currentUser) {
+      Component = (
+        <App config={ctx.config} currentUser={ctx.currentUser}>
+          <BigCenteredText>
+            Not Found
+          </BigCenteredText>
+        </App>
+      )
+    } else {
+      Component = (
+        <BigCenteredText>
+          Not Found
+        </BigCenteredText>
+      )
+    }
+    ReactDOM.render(
+      Component,
+      document.getElementById('root')
+    )
   })
 
   /*  init router
