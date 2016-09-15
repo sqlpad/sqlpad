@@ -86,7 +86,7 @@ var QueryResultDataTable = React.createClass({
                   top: 0,
                   bottom: 0,
                   width: (Math.abs(value) / range) * 100 + '%',
-                  backgroundColor: '#ffcf78'
+                  backgroundColor: '#bae6f7'
                 }
                 numberBar = <div style={barStyle} />
               }
