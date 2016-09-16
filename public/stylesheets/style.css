@@ -400,15 +400,6 @@ input[type=checkbox], input[type=radio] {
 .incomplete-notification {
     color: #e31a1c;
 }
-#chart {
-    padding: 10px;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-}
 
 /*  Panel Result
 ============================================================================ */

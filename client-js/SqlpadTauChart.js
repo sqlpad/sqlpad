@@ -15,6 +15,14 @@ var SqlpadTauChart = React.createClass({
     }
   },
   chart: undefined,
+  chartStyle: {
+    padding: '20px 10px 10px 20px',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0
+  },
   renderChart: function (rerender) {
     // This is invoked during following:
     //  - Vis tab enter
@@ -229,7 +237,7 @@ var SqlpadTauChart = React.createClass({
       }
     }
     return (
-      <div id='chart'>
+      <div id='chart' style={this.chartStyle}>
         {runResultNotification()}
         {runResultErrorNotification()}
       </div>
