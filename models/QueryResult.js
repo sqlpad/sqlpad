@@ -6,12 +6,14 @@
     should expect the data to be in this format
 */
 var _ = require('lodash')
+var uuid = require('uuid')
 
 function isNumberLike (n) {
   return (!isNaN(parseFloat(n)) && isFinite(n))
 }
 
 function QueryResult () {
+  this.id = uuid.v1()       // each result has unique id. used to determine whether results changed in React
   this.startTime
   this.stopTime
   this.queryRunTime

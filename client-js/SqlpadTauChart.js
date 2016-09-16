@@ -3,12 +3,13 @@ var _ = require('_')
 var chartDefinitions = require('./ChartDefinitions.js')
 var SpinKitCube = require('./SpinKitCube.js')
 var tauCharts = require('tauCharts')
-var deepEqual = require('deep-equal')
 var Alert = require('react-s-alert').default
 
 var SqlpadTauChart = React.createClass({
   componentDidUpdate: function (prevProps) {
-    if (!deepEqual(prevProps.queryResult, this.props.queryResult)) {
+    var prevResultId = (prevProps.queryResult ? prevProps.queryResult.id : null)
+    var currentResultId = (this.props.queryResult ? this.props.queryResult.id : null)
+    if (prevResultId !== currentResultId) {
       console.log('rendering because queryResults changed')
       this.renderChart()
     }
