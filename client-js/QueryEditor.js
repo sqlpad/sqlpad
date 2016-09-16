@@ -368,6 +368,10 @@ var QueryEditor = React.createClass({
       return false
     })
   },
+  componentWillUnmount: function () {
+    keymaster.unbind('ctrl+s, command+s')
+    keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
+  },
   onChartConfigurationFieldsChange: function (chartFieldId, queryResultField) {
     var query = this.state.query
     query.chartConfiguration.fields[chartFieldId] = queryResultField
