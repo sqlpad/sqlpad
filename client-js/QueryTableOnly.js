@@ -5,7 +5,6 @@ var QueryResultDataTable = require('./QueryResultDataTable.js')
 var QueryEditor = React.createClass({
   getInitialState: function () {
     return {
-      isSaving: false,
       isRunning: false,
       runQueryStartTime: undefined,
       queryResult: undefined
