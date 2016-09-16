@@ -14,6 +14,7 @@ function isNumberLike (n) {
 
 function QueryResult () {
   this.id = uuid.v1()       // each result has unique id. used to determine whether results changed in React
+  this.cacheKey
   this.startTime
   this.stopTime
   this.queryRunTime

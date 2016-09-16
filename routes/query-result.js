@@ -119,6 +119,7 @@ function execRunQuery (data, next) {
   runQuery(data.queryText, data.connection, function (err, queryResult) {
     if (err) return next(err)
     data.queryResult = queryResult
+    data.queryResult.cacheKey = data.cacheKey
     return next(null, data)
   })
 }
