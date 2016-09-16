@@ -344,11 +344,11 @@ var QueryEditor = React.createClass({
       if (this.props.config.editorWordWrap) this.editor.session.setUseWrapMode(true)
     }
 
-        /*  Shortcuts
-        ============================================================================== */
-        // keymaster doesn't fire on input/textarea events by default
-        // since we are only using command/ctrl shortcuts,
-        // we want the event to fire all the time for any element
+    /*  Shortcuts
+    ============================================================================== */
+    // keymaster doesn't fire on input/textarea events by default
+    // since we are only using command/ctrl shortcuts,
+    // we want the event to fire all the time for any element
     keymaster.filter = function (event) {
       return true
     }
@@ -358,9 +358,9 @@ var QueryEditor = React.createClass({
       e.preventDefault()
       return false
     })
-        // there should only ever be 1 QueryEditor on the page,
-        // but just in case there isn't unbind anything previously bound
-        // rather something previously not run than something run more than once
+    // there should only ever be 1 QueryEditor on the page,
+    // but just in case there isn't unbind anything previously bound
+    // rather something previously not run than something run more than once
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
     keymaster('ctrl+r, command+r, ctrl+e, command+e', (e) => {
       this.runQuery()
