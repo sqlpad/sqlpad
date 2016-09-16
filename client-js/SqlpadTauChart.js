@@ -212,7 +212,7 @@ var SqlpadTauChart = React.createClass({
     var runResultNotification = () => {
       if (this.props.isRunning) {
         return (
-          <div className='run-result-notification' style={{backgroundColor: 'rgba(250, 250, 250, 0.5)'}}>
+          <div className='run-result-notification' style={{backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
             <SpinKitCube />
           </div>
         )
