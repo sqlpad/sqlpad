@@ -108,10 +108,8 @@ var App = React.createClass({
             {userMenu()}
           </Nav>
         </Navbar>
-        <div className='container-fluid'>
-          <div className='row'>
+        <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 50}}>
             {this.props.children}
-          </div>
         </div>
         <Alert stack={{limit: 3}} position='bottom-right' />
         <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>
