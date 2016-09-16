@@ -1,5 +1,6 @@
 var React = require('react')
 var SecondsTimer = require('./SecondsTimer.js')
+import IncompleteDataNotification from './components/IncompleteDataNotification'
 
 var QueryResultHeader = React.createClass({
   render: function () {
@@ -32,13 +33,6 @@ var QueryResultHeader = React.createClass({
         )
       }
     }
-    var incompleteNotification = () => {
-      if (this.props.queryResult && this.props.queryResult.incomplete) {
-        return (
-          <span className='panel-result-header-label incomplete-notification'>Incomplete Data (hit record limit)</span>
-        )
-      }
-    }
     return (
       <div className='panel-result-header'>
         <span className='panel-result-header-item'>
@@ -53,7 +47,7 @@ var QueryResultHeader = React.createClass({
           {downloadLinks()}
         </span>
         <span className='panel-result-header-item'>
-          {incompleteNotification()}
+          <IncompleteDataNotification queryResult={this.props.queryResult} />
         </span>
       </div>
     )
