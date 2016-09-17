@@ -452,9 +452,9 @@ input[type=checkbox], input[type=radio] {
     right: 0;
 }
 .run-result-notification {
-    font-size: 30px;
+    font-size: 16px;
     text-align: center;
-    padding: 50px;
+    padding: 20px;
     position: absolute;
     top: 0;
     bottom: 0;
