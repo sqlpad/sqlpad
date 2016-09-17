@@ -17,6 +17,7 @@ var Button = require('react-bootstrap/lib/Button')
 var Glyphicon = require('react-bootstrap/lib/Glyphicon')
 var Popover = require('react-bootstrap/lib/Popover')
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
+import navigateToClickHandler from './utilities/navigateToClickHandler'
 
 var FilterableQueryList = React.createClass({
   getInitialState: function () {
@@ -299,7 +300,6 @@ var QueryListRow = React.createClass({
         <Label bsStyle='info' key={tag} style={{marginLeft: 4}}>{tag}</Label>
       )
     })
-    var editUrl = this.props.config.baseUrl + '/queries/' + this.props.query._id
     var tableUrl = this.props.config.baseUrl + '/query-table/' + this.props.query._id
     var chartUrl = this.props.config.baseUrl + '/query-chart/' + this.props.query._id
     var selectedStyle = () => {
@@ -320,7 +320,7 @@ var QueryListRow = React.createClass({
         className={selectedStyle()}
         onMouseOver={this.onMouseOver}
         onMouseOut={this.onMouseOut} >
-        <h4><a href={editUrl}>{this.props.query.name}</a></h4>
+        <h4><a onClick={navigateToClickHandler('/queries/' + this.props.query._id)} href='#' >{this.props.query.name}</a></h4>
         <p>{this.props.query.createdBy} {tagLabels}</p>
         <p><a href={tableUrl} target='_blank'>table</a> <a href={chartUrl} target='_blank'>chart</a> </p>
         <OverlayTrigger trigger='click' placement='left' container={this} rootClose overlay={popoverClick}>

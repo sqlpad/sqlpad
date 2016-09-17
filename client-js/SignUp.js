@@ -1,6 +1,7 @@
 var React = require('react')
 var fetchJson = require('./fetch-json.js')
 var Alert = require('react-s-alert').default
+var page = require('page')
 
 var SignUp = React.createClass({
   getInitialState: function () {
@@ -24,7 +25,7 @@ var SignUp = React.createClass({
     fetchJson('POST', this.props.config.baseUrl + '/api/signup', this.state)
       .then((json) => {
         if (json.error) return Alert.error(json.error)
-        window.location.assign(this.props.config.baseUrl + '/')
+        page('/')
       })
       .catch((ex) => {
         Alert.error('Problem signing up')

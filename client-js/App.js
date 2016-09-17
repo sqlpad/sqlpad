@@ -10,6 +10,8 @@ var Modal = require('react-bootstrap/lib/Modal')
 var Button = require('react-bootstrap/lib/Button')
 var Popover = require('react-bootstrap/lib/Popover')
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
+import navigateToClickHandler from './utilities/navigateToClickHandler'
+var page = require('page')
 
 var App = React.createClass({
   getInitialState: function () {
@@ -46,7 +48,7 @@ var App = React.createClass({
   signout: function () {
     fetchJson('GET', this.props.config.baseUrl + '/api/signout')
       .then((json) => {
-        window.location.assign(this.props.config.baseUrl + '/')
+        page('/')
       })
       .catch((ex) => {
         console.error(ex.toString())
@@ -77,9 +79,9 @@ var App = React.createClass({
       if (this.props.currentUser.admin) {
         return (
           <NavDropdown eventKey={3} title={this.props.currentUser.email.split('@')[0]} id='user-nav-dropdown'>
-            <MenuItem eventKey={3.1} href={this.props.config.baseUrl + '/connections'}>Connections</MenuItem>
-            <MenuItem eventKey={3.2} href={this.props.config.baseUrl + '/users'}>Users</MenuItem>
-            <MenuItem eventKey={3.3} href={this.props.config.baseUrl + '/config-values'}>Configuration</MenuItem>
+            <MenuItem eventKey={3.1} onClick={navigateToClickHandler('/connections')} >Connections</MenuItem>
+            <MenuItem eventKey={3.2} onClick={navigateToClickHandler('/users')} >Users</MenuItem>
+            <MenuItem eventKey={3.3} onClick={navigateToClickHandler('/config-values')} >Configuration</MenuItem>
             <MenuItem divider />
             <MenuItem eventKey={3.4} onClick={this.openAboutModal} >About SqlPad</MenuItem>
             <MenuItem divider />
@@ -100,7 +102,11 @@ var App = React.createClass({
       <div>
         <Navbar inverse fluid fixedTop>
           <Nav>
-            <NavItem eventKey={1} href={this.props.config.baseUrl + '/queries'}>Queries</NavItem>
+            <NavItem eventKey={1} onClick={navigateToClickHandler('/queries')} >Queries</NavItem>
+            {/*
+              NOTE: /queries/new is *NOT* handled by page.js.
+              clicking new while on new creates weirdness that needs to be worked out.
+            */}
             <NavItem eventKey={2} href={this.props.config.baseUrl + '/queries/new'}>New Query</NavItem>
           </Nav>
           <Nav pullRight>

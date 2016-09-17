@@ -66,6 +66,8 @@ function init (appData) {
 
   page('*', getAppData)
 
+  page.redirect('/', '/queries')
+
   page('/users', mustBeAuthenticated, mustBeAdmin, function (ctx) {
     document.title = 'SqlPad - Users'
     ReactDOM.render(
@@ -185,5 +187,5 @@ function init (appData) {
 
   /*  init router
   ============================================================================== */
-  page()
+  page({click: false})
 }

@@ -1,6 +1,8 @@
 var React = require('react')
 var fetchJson = require('./fetch-json.js')
 var Alert = require('react-s-alert').default
+import navigateToClickHandler from './utilities/navigateToClickHandler'
+var page = require('page')
 
 var SignIn = React.createClass({
   getInitialState: function () {
@@ -20,7 +22,7 @@ var SignIn = React.createClass({
     fetchJson('POST', this.props.config.baseUrl + '/api/signin', this.state)
       .then((json) => {
         if (json.error) return Alert.error('Username or password incorrect')
-        window.location.assign(this.props.config.baseUrl + '/')
+        page('/')
       })
       .catch((ex) => {
         Alert.error('Username or Password incorrect')
@@ -50,7 +52,7 @@ var SignIn = React.createClass({
         </form>
         <div className='form-signin-footer'>
           <p>
-            <a href={this.props.config.baseUrl + '/signup'}>Need to Sign Up?</a>
+            <a onClick={navigateToClickHandler('/signup')} href='#'>Need to Sign Up?</a>
           </p>
         </div>
       </div>
