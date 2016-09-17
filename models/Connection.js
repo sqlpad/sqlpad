@@ -15,6 +15,8 @@ var schema = {
   sqlserverEncrypt: Joi.boolean().default(false, 'SQL Server Encrypt'),
   postgresSsl: Joi.boolean().default(false, 'Postgres SSL'),
   mysqlInsecureAuth: Joi.boolean().default(false, 'Mysql Insecure Auth'),
+  prestoCatalog: Joi.string().optional().allow(''),
+  prestoSchema: Joi.string().optional().allow(''),
   createdDate: Joi.date().default(new Date(), 'time of creation'),
   modifiedDate: Joi.date().default(new Date(), 'time of modifcation')
 }
@@ -32,6 +34,8 @@ var Connection = function Connection (data) {
   this.sqlserverEncrypt = data.sqlserverEncrypt
   this.postgresSsl = data.postgresSsl
   this.mysqlInsecureAuth = data.mysqlInsecureAuth
+  this.prestoCatalog = data.prestoCatalog
+  this.prestoSchema = data.prestoSchema
   this.createdDate = data.createdDate
   this.modifiedDate = data.modifiedDate
 }

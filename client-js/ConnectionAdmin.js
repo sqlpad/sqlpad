@@ -249,6 +249,12 @@ var ConnectionForm = React.createClass({
   onPostgresSslChange: function (e) {
     this.props.setConnectionValue('postgresSsl', e.target.checked)
   },
+  onPrestoCatalogChange: function (e) {
+    this.props.setConnectionValue('prestoCatalog', e.target.value)
+  },
+  onPrestoSchemaChange: function (e) {
+    this.props.setConnectionValue('prestoSchema', e.target.value)
+  },
   render: function () {
     if (!this.props.selectedConnection) {
       return (
@@ -257,7 +263,7 @@ var ConnectionForm = React.createClass({
     }
     var connection = this.props.selectedConnection
     var databaseInput = () => {
-      if (connection.driver !== 'crate') {
+      if (connection.driver !== 'crate' && connection.driver !== 'presto') {
         return (
           <FormGroup controlId='database'>
             <ControlLabel>Database</ControlLabel>
@@ -277,7 +283,7 @@ var ConnectionForm = React.createClass({
       }
     }
     var passwordInput = () => {
-      if (connection.driver !== 'crate') {
+      if (connection.driver !== 'crate' && connection.driver !== 'presto') {
         return (
           <FormGroup controlId='database-password'>
             <ControlLabel>Database Password</ControlLabel>
@@ -341,11 +347,12 @@ var ConnectionForm = React.createClass({
               <ControlLabel>Database Driver</ControlLabel>
               <FormControl componentClass='select' value={connection.driver || ''} onChange={this.onDriverChange}>
                 <option value='' />
+                <option value='crate'>Crate</option>
                 <option value='mysql'>MySQL</option>
                 <option value='postgres'>Postgres</option>
+                <option value='presto'>Presto</option>
                 <option value='sqlserver'>SQL Server</option>
                 <option value='vertica'>Vertica</option>
-                <option value='crate'>Crate</option>
               </FormControl>
             </FormGroup>
             <FormGroup controlId='host'>
@@ -363,6 +370,18 @@ var ConnectionForm = React.createClass({
             {sqlserverEncryptInput()}
             {mysqlInsecureAuthInput()}
             {postgresSslInput()}
+            {(connection.driver === 'presto' ? (
+              <div>
+                <FormGroup controlId='prestoCatalog'>
+                  <ControlLabel>Catalog</ControlLabel>
+                  <FormControl type='text' value={connection.prestoCatalog || ''} onChange={this.onPrestoCatalogChange} />
+                </FormGroup>
+                <FormGroup controlId='prestoSchema'>
+                  <ControlLabel>Schema</ControlLabel>
+                  <FormControl type='text' value={connection.prestoSchema || ''} onChange={this.onPrestoSchemaChange} />
+                </FormGroup>
+              </div>
+            ) : null)}
             <Button style={{width: 100}} onClick={this.props.saveConnection} disabled={this.props.isSaving}>
               {this.props.isSaving ? 'Saving...' : 'Save'}
             </Button>

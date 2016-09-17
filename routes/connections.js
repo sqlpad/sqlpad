@@ -18,7 +18,9 @@ function connectionFromBody (body) {
     domain: body.domain,
     sqlserverEncrypt: (body.sqlserverEncrypt === true),
     postgresSsl: (body.postgresSsl === true),
-    mysqlInsecureAuth: (body.mysqlInsecureAuth === true)
+    mysqlInsecureAuth: (body.mysqlInsecureAuth === true),
+    prestoCatalog: body.prestoCatalog,
+    prestoSchema: body.prestoSchema
   }
 }
 
@@ -109,6 +111,8 @@ router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
     connection.sqlserverEncrypt = (req.body.sqlserverEncrypt === true)
     connection.postgresSsl = (req.body.postgresSsl === true)
     connection.mysqlInsecureAuth = (req.body.mysqlInsecureAuth === true)
+    connection.prestoCatalog = req.body.prestoCatalog
+    connection.prestoSchema = req.body.prestoSchema
     connection.save(function (err, connection) {
       if (err) {
         console.error(err)
@@ -144,6 +148,9 @@ router.post('/api/test-connection', mustBeAdmin, function testConnection (req, r
   var testQuery = "SELECT 'success' AS TestQuery;"
   if (bodyConnection.driver === 'crate') {
     testQuery = 'SELECT name from sys.cluster'
+  }
+  if (bodyConnection.driver === 'presto') {
+    testQuery = "SELECT 'success' AS TestQuery"
   }
   runQuery(testQuery, bodyConnection, function (err, queryResult) {
     if (err) {
