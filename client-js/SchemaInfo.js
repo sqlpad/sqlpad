@@ -104,7 +104,9 @@ var SchemaInfoSchemaItem = React.createClass({
       showTables: this.props.initShowTables
     }
   },
-  onClick: function () {
+  onClick: function (e) {
+    e.stopPropagation()
+    e.preventDefault()
     this.setState({
       showTables: !this.state.showTables
     })
@@ -137,7 +139,9 @@ var SchemaInfoTableItem = React.createClass({
       copyButtonText: 'copy'
     }
   },
-  onClick: function () {
+  onClick: function (e) {
+    e.stopPropagation()
+    e.preventDefault()
     this.setState({
       showColumns: !this.state.showColumns
     })
@@ -225,6 +229,7 @@ var SchemaInfoColumnItem = React.createClass({
   },
   onCopyClick: function (e) {
     e.stopPropagation()
+    e.preventDefault()
   },
   onCopy: function () {
     this.setState({copyButtonText: 'copied'})
