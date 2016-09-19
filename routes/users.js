@@ -13,7 +13,7 @@ router.get('/api/users/current', function (req, res) {
       }
     })
   } else {
-        // respond with empty object since this isn't really an error
+    // respond with empty object since this isn't really an error
     res.json({})
   }
 })
@@ -71,8 +71,8 @@ router.put('/api/users/:_id', mustBeAdmin, function (req, res) {
       return res.json({error: 'Problem querying user database'})
     }
     if (!user) return res.json({error: 'user not found'})
-        // this route could handle potentially different kinds of updates
-        // only update user properties that are explicitly provided in body
+    // this route could handle potentially different kinds of updates
+    // only update user properties that are explicitly provided in body
     if (req.body.role != null) user.role = req.body.role
     user.save(function (err) {
       if (err) {
