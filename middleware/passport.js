@@ -1,6 +1,7 @@
 var passport = require('passport')
 var PassportLocalStrategy = require('passport-local').Strategy
 var PassportGoogleStrategy = require('passport-google-oauth2').Strategy
+var BasicStrategy = require('passport-http').BasicStrategy
 var User = require('../models/User.js')
 var config = require('../lib/config.js')
 var checkWhitelist = require('../lib/check-whitelist.js')
@@ -51,6 +52,20 @@ passport.use(new PassportLocalStrategy({
     })
   })
 }))
+
+passport.use(new BasicStrategy(
+  function (username, password, callback) {
+    User.findOneByEmail(username, function (err, user) {
+      if (err) return callback(err)
+      if (!user) return callback(null, false)
+      user.comparePasswordToHash(password, function (err, isMatch) {
+        if (err) return callback(err)
+        if (!isMatch) return callback(null, false)
+        return callback(null, user)
+      })
+    })
+  }
+))
 
 if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && PUBLIC_URL) {
   passport.use(new PassportGoogleStrategy({

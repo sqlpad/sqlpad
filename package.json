@@ -66,6 +66,7 @@
     "node-xlsx": "^0.7.1",
     "passport": "^0.3.2",
     "passport-google-oauth2": "^0.1.6",
+    "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
     "pg": "^6.0.0",
     "pg-cursor": "^1.0.1",
