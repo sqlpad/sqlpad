@@ -49,7 +49,7 @@ var UserAdmin = React.createClass({
   },
   updateUserRole: function (user) {
     this.setState({isSaving: true})
-    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {admin: user.admin})
+    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {role: user.role})
       .then((json) => {
         this.loadUsersFromServer()
         this.setState({isSaving: false})
@@ -119,7 +119,6 @@ var UserListRow = React.createClass({
   onRoleChange: function (e) {
     var user = this.props.user
     user.role = e.target.value
-    user.admin = (user.role === 'admin')
     this.props.updateUserRole(user)
   },
   formControlStyle: {
@@ -149,7 +148,7 @@ var UserListRow = React.createClass({
             <FormControl
               style={this.formControlStyle}
               componentClass='select'
-              value={this.props.user.admin ? 'admin' : 'editor'}
+              value={this.props.user.role}
               disabled={this.props.currentUser._id === this.props.user._id}
               onChange={this.onRoleChange} >
               <option value='editor'>Editor</option>
@@ -180,7 +179,6 @@ var InviteUserForm = React.createClass({
     return {
       email: null,
       role: null,
-      admin: false,
       isInviting: false
     }
   },
@@ -189,14 +187,13 @@ var InviteUserForm = React.createClass({
   },
   onRoleChange: function (e) {
     this.setState({
-      role: e.target.value,
-      admin: (e.target.value && e.target.value.toLowerCase() === 'admin')
+      role: e.target.value
     })
   },
   onInviteClick: function (e) {
     var user = {
       email: this.state.email,
-      admin: this.state.admin
+      role: this.state.role
     }
     this.setState({
       isInviting: true
@@ -210,8 +207,7 @@ var InviteUserForm = React.createClass({
         Alert.success('User Whitelisted')
         this.setState({
           email: null,
-          role: null,
-          admin: false
+          role: null
         })
         this.props.loadUsersFromServer()
       })

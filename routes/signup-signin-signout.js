@@ -44,7 +44,7 @@ if (!DISABLE_USERPASS_AUTH) {
           user = new User({
             email: req.body.email,
             password: req.body.password,
-            admin: res.locals.adminRegistrationOpen,
+            role: (res.locals.adminRegistrationOpen ? 'admin' : 'editor'),
             signupDate: new Date()
           })
         } else {

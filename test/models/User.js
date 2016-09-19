@@ -4,9 +4,9 @@ var should = require('chai').should()
 var User = require('../../models/User.js')
 
 describe('models/User.js', function () {
-  var regularUser = new User({email: 'regular@test.com'})
-  var adminUser = new User({email: 'admin@test.com', admin: true})
-  var signedUpUser = new User({email: 'signedUp@test.com', password: '1234'})
+  var regularUser = new User({email: 'regular@test.com', role: 'editor'})
+  var adminUser = new User({email: 'admin@test.com', role: 'admin'})
+  var signedUpUser = new User({email: 'signedUp@test.com', role: 'editor', password: '1234'})
 
   before(function before (done) {
     User._removeAll(done)
@@ -62,7 +62,7 @@ describe('models/User.js', function () {
         should.not.exist(err)
         expect(user).to.be.an.instanceof(User)
         expect(user.email).to.equal('admin@test.com')
-        expect(user.admin).to.equal(true)
+        expect(user.role).to.equal('admin')
         done()
       })
     })
@@ -78,7 +78,7 @@ describe('models/User.js', function () {
         should.not.exist(err)
         should.exist(user)
         should.exist(user.email)
-        expect(user.admin).to.equal(false)
+        expect(user.role).to.equal('editor')
         expect(user).to.be.an.instanceof(User)
         expect(user.createdDate).to.be.instanceof(Date)
         expect(user.modifiedDate).to.be.instanceof(Date)

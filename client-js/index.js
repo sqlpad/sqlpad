@@ -57,7 +57,7 @@ function init (appData) {
   }
 
   function mustBeAdmin (ctx, next) {
-    if (ctx.currentUser && ctx.currentUser.admin) {
+    if (ctx.currentUser && ctx.currentUser.role === 'admin') {
       next()
     } else {
       console.log('must be admin')

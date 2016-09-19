@@ -22,7 +22,7 @@ passport.deserializeUser(function (id, done) {
       done(null, {
         id: user._id,
         _id: user._id,
-        admin: user.admin,
+        role: user.role,
         email: user.email
       })
     } else {
@@ -43,7 +43,7 @@ passport.use(new PassportLocalStrategy({
         return done(null, {
           id: user._id,
           _id: user._id,
-          admin: user.admin,
+          role: user.role,
           email: user.email
         })
       }
@@ -81,7 +81,7 @@ function passportGoogleStrategyHandler (request, accessToken, refreshToken, prof
       if (data.openAdminRegistration || checkWhitelist(profile.email)) {
         data.user = new User({
           email: profile.email,
-          admin: data.openAdminRegistration
+          role: (data.openAdminRegistration ? 'admin' : 'editor')
         })
         return next(null, data)
       }
@@ -103,7 +103,7 @@ function passportGoogleStrategyHandler (request, accessToken, refreshToken, prof
       id: data.user._id,
       _id: data.user._id,
       email: data.user.email,
-      admin: data.user.admin
+      role: data.user.role
     })
   })
 }

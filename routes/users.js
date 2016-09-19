@@ -9,7 +9,7 @@ router.get('/api/users/current', function (req, res) {
       user: {
         _id: res.locals.user.id,
         email: res.locals.user.email,
-        admin: res.locals.user.admin
+        role: res.locals.user.role
       }
     })
   } else {
@@ -49,7 +49,7 @@ router.post('/api/users', mustBeAdmin, function (req, res) {
     }
     var newUser = new User({
       email: req.body.email,
-      admin: req.body.admin === true
+      role: req.body.role
     })
     newUser.save(function (err, user) {
       if (err) {
@@ -64,7 +64,7 @@ router.post('/api/users', mustBeAdmin, function (req, res) {
 })
 
 router.put('/api/users/:_id', mustBeAdmin, function (req, res) {
-  if (req.user._id === req.params._id && req.user.admin && req.body.admin === false) return res.json({error: "You can't unadmin yourself"})
+  if (req.user._id === req.params._id && req.user.role === 'admin' && req.body.role !== 'admin') return res.json({error: "You can't unadmin yourself"})
   User.findOneById(req.params._id, function (err, user) {
     if (err) {
       console.error(err)
@@ -73,7 +73,7 @@ router.put('/api/users/:_id', mustBeAdmin, function (req, res) {
     if (!user) return res.json({error: 'user not found'})
         // this route could handle potentially different kinds of updates
         // only update user properties that are explicitly provided in body
-    if (req.body.admin != null) user.admin = req.body.admin
+    if (req.body.role != null) user.role = req.body.role
     user.save(function (err) {
       if (err) {
         console.error(err)

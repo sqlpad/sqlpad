@@ -76,7 +76,7 @@ var App = React.createClass({
       }
     }
     const userMenu = () => {
-      if (this.props.currentUser.admin) {
+      if (this.props.currentUser.role === 'admin') {
         return (
           <NavDropdown eventKey={3} title={this.props.currentUser.email.split('@')[0]} id='user-nav-dropdown'>
             <MenuItem eventKey={3.1} onClick={navigateToClickHandler('/connections')} >Connections</MenuItem>

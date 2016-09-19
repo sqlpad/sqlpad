@@ -21,7 +21,7 @@ router.get('*/api/app', function (req, res) {
       user = {
         _id: res.locals.user.id,
         email: res.locals.user.email,
-        admin: res.locals.user.admin
+        role: res.locals.user.role
       }
     }
     res.json({

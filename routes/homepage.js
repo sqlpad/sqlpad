@@ -16,7 +16,7 @@ router.get('/', function (req, res, next) {
       console.error(err)
       return next(err)
     }
-    if (connections.length === 0 && res.locals.user.admin) {
+    if (connections.length === 0 && res.locals.user.role === 'admin') {
       res.redirect(BASE_URL + '/connections')
     } else {
       res.redirect(BASE_URL + '/queries')

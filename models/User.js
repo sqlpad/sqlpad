@@ -6,7 +6,7 @@ var _ = require('lodash')
 var schema = {
   _id: Joi.string().optional(), // will be auto-gen by nedb
   email: Joi.string().required(),
-  admin: Joi.boolean().default(false, 'admin flag'),
+  role: Joi.string().lowercase().allow('admin', 'editor', 'viewer'),
   passhash: Joi.string().optional(), // may not exist if user hasn't signed up yet
   password: Joi.string().optional().strip(),
   createdDate: Joi.date().default(new Date(), 'time of creation'),
@@ -17,7 +17,7 @@ var schema = {
 var User = function User (data) {
   this._id = data._id
   this.email = data.email
-  this.admin = data.admin || false
+  this.role = data.role
   this.passhash = data.passhash
   this.password = data.password
   this.createdDate = data.createdDate
@@ -92,7 +92,7 @@ User.adminRegistrationOpen = function (callback) {
   // NOTE: previously open admin filter contained
   // createdDate: {$lte: new Date()}
   // (unsure why this was originally checked)
-  db.users.findOne({admin: true}, function (err, doc) {
+  db.users.findOne({role: 'admin'}, function (err, doc) {
     callback(err, (!doc))
   })
 }
