@@ -1,6 +1,7 @@
 var React = require('react')
 var fetchJson = require('./fetch-json.js')
 var moment = require('moment')
+var uuid = require('uuid')
 var Alert = require('react-s-alert').default
 
 var Panel = require('react-bootstrap/lib/Panel')
@@ -61,6 +62,34 @@ var UserAdmin = React.createClass({
         Alert.error('Something is broken')
       })
   },
+  generatePasswordResetLink: function (user) {
+    this.setState({isSaving: true})
+    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {passwordResetId: user.passwordResetId})
+      .then((json) => {
+        this.loadUsersFromServer()
+        this.setState({isSaving: false})
+        if (json.error) return Alert.error('Update failed: ' + json.error.toString())
+        Alert.success('Password link generated')
+      })
+      .catch((ex) => {
+        console.error(ex.toString())
+        Alert.error('Something is broken')
+      })
+  },
+  removePasswordResetLink: function (user) {
+    this.setState({isSaving: true})
+    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {passwordResetId: ''})
+      .then((json) => {
+        this.loadUsersFromServer()
+        this.setState({isSaving: false})
+        if (json.error) return Alert.error('Update failed: ' + json.error.toString())
+        Alert.success('Password reset link removed')
+      })
+      .catch((ex) => {
+        console.error(ex.toString())
+        Alert.error('Something is broken')
+      })
+  },
   render: function () {
     return (
       <div>
@@ -68,6 +97,8 @@ var UserAdmin = React.createClass({
           users={this.state.users}
           handleDelete={this.handleDelete}
           updateUserRole={this.updateUserRole}
+          generatePasswordResetLink={this.generatePasswordResetLink}
+          removePasswordResetLink={this.removePasswordResetLink}
           currentUser={this.props.currentUser} />
         <InviteUserForm
           loadUsersFromServer={this.loadUsersFromServer}
@@ -98,6 +129,8 @@ var UserList = React.createClass({
           user={user}
           handleDelete={this.props.handleDelete}
           updateUserRole={this.props.updateUserRole}
+          generatePasswordResetLink={this.props.generatePasswordResetLink}
+          removePasswordResetLink={this.props.removePasswordResetLink}
           currentUser={this.props.currentUser} />
       )
     })
@@ -121,6 +154,14 @@ var UserListRow = React.createClass({
     user.role = e.target.value
     this.props.updateUserRole(user)
   },
+  generatePasswordResetLink: function () {
+    var user = this.props.user
+    user.passwordResetId = uuid.v4()
+    this.props.generatePasswordResetLink(user)
+  },
+  removePasswordResetLink: function () {
+    this.props.removePasswordResetLink(this.props.user)
+  },
   formControlStyle: {
     minWidth: 200,
     marginLeft: 20
@@ -142,6 +183,11 @@ var UserListRow = React.createClass({
       <li className={getClassNames()}>
         <h4>{this.props.user.email}</h4>
         {signupDate()}
+        <PasswordResetButtonLink
+          passwordResetId={this.props.user.passwordResetId}
+          generatePasswordResetLink={this.generatePasswordResetLink}
+          removePasswordResetLink={this.removePasswordResetLink}
+          />
         <Form inline>
           <FormGroup controlId='role'>
             <ControlLabel>Role</ControlLabel>{" "}
@@ -163,6 +209,26 @@ var UserListRow = React.createClass({
     )
   }
 })
+
+const PasswordResetButtonLink = (props) => {
+  var style = {
+    fontSize: 14,
+    marginTop: 10,
+    marginBottom: 10,
+    display: 'block'
+  }
+  if (props.passwordResetId) {
+    return (
+      <span style={style}>
+        <Button onClick={props.removePasswordResetLink}>remove</Button>{' '}
+        <a href={'/password-reset/' + props.passwordResetId}>Password Reset Link</a>
+      </span>
+    )
+  }
+  return (
+    <Button style={style} onClick={props.generatePasswordResetLink}>Generate Password Reset Link</Button>
+  )
+}
 
 var InviteUserForm = React.createClass({
   style: {

@@ -7,6 +7,7 @@ var schema = {
   _id: Joi.string().optional(), // will be auto-gen by nedb
   email: Joi.string().required(),
   role: Joi.string().lowercase().allow('admin', 'editor', 'viewer'),
+  passwordResetId: Joi.string().guid().optional().empty(''),
   passhash: Joi.string().optional(), // may not exist if user hasn't signed up yet
   password: Joi.string().optional().strip(),
   createdDate: Joi.date().default(new Date(), 'time of creation'),
@@ -18,6 +19,7 @@ var User = function User (data) {
   this._id = data._id
   this.email = data.email
   this.role = data.role
+  this.passwordResetId = data.passwordResetId
   this.passhash = data.passhash
   this.password = data.password
   this.createdDate = data.createdDate
@@ -72,6 +74,14 @@ User.findOneByEmail = function UserFindByEmail (email, callback) {
 
 User.findOneById = function UserFindOneById (id, callback) {
   db.users.findOne({_id: id}).exec(function (err, doc) {
+    if (err) return callback(err)
+    if (!doc) return callback()
+    return callback(err, new User(doc))
+  })
+}
+
+User.findOneByPasswordResetId = function UserFindOneByPasswordResetId (id, callback) {
+  db.users.findOne({passwordResetId: id}).exec(function (err, doc) {
     if (err) return callback(err)
     if (!doc) return callback()
     return callback(err, new User(doc))

@@ -64,7 +64,7 @@ router.post('/api/users', mustBeAdmin, function (req, res) {
 })
 
 router.put('/api/users/:_id', mustBeAdmin, function (req, res) {
-  if (req.user._id === req.params._id && req.user.role === 'admin' && req.body.role !== 'admin') return res.json({error: "You can't unadmin yourself"})
+  if (req.user._id === req.params._id && req.user.role === 'admin' && req.body.role != null) return res.json({error: "You can't unadmin yourself"})
   User.findOneById(req.params._id, function (err, user) {
     if (err) {
       console.error(err)
@@ -74,6 +74,7 @@ router.put('/api/users/:_id', mustBeAdmin, function (req, res) {
     // this route could handle potentially different kinds of updates
     // only update user properties that are explicitly provided in body
     if (req.body.role != null) user.role = req.body.role
+    if (req.body.passwordResetId != null) user.passwordResetId = req.body.passwordResetId
     user.save(function (err) {
       if (err) {
         console.error(err)

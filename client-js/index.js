@@ -29,6 +29,7 @@ function init (appData) {
   var QueryEditor = require('./QueryEditor.js')
   var SignIn = require('./SignIn.js')
   var SignUp = require('./SignUp.js')
+  var PasswordReset = require('./PasswordReset.js')
   var QueryTableOnly = require('./QueryTableOnly.js')
   var QueryChartOnly = require('./QueryChartOnly.js')
   var BigCenteredText = require('./BigCenteredText.js')
@@ -135,6 +136,17 @@ function init (appData) {
     document.title = 'SqlPad - Sign Up'
     ReactDOM.render(
       <SignUp
+        config={ctx.config}
+        adminRegistrationOpen={ctx.adminRegistrationOpen} />,
+      document.getElementById('root')
+    )
+  })
+
+  page('/password-reset/:passwordResetId', function (ctx) {
+    document.title = 'SqlPad - Reset Password'
+    ReactDOM.render(
+      <PasswordReset
+        passwordResetId={ctx.params.passwordResetId}
         config={ctx.config}
         adminRegistrationOpen={ctx.adminRegistrationOpen} />,
       document.getElementById('root')
