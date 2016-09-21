@@ -128,7 +128,7 @@ var ConfigItemInput = React.createClass({
         <span>{this.props.default.toString()}</span>
       )
     }
-    var cliFlag = (this.props.cliFlag && this.props.cliFlag.pop ? '--' + this.props.cliFlag.pop() : '--' + this.props.cliFlag)
+    var cliFlag = (this.props.cliFlag && this.props.cliFlag.pop ? this.props.cliFlag.pop() : this.props.cliFlag)
     var helpPopover = (
       <Popover id='popover-trigger-focus' title={this.props.label}>
         <HelpBlock>{this.props.description}</HelpBlock>
@@ -137,7 +137,7 @@ var ConfigItemInput = React.createClass({
         </HelpBlock>
         {(cliFlag ? (
           <HelpBlock>
-            <strong>CLI Flag:</strong> {cliFlag}
+            <strong>CLI Flag:</strong> --{cliFlag}
           </HelpBlock>
         ) : null)}
         {(this.props.envVar ? (
@@ -177,7 +177,7 @@ var ConfigEnvDocumentation = React.createClass({
           )
         }
         var currentValue = (config.value === '' ? '<empty>' : config.effectiveValue.toString())
-        var cliFlag = (config.cliFlag && config.cliFlag.pop ? '--' + config.cliFlag.pop() : '--' + config.cliFlag)
+        var cliFlag = (config.cliFlag && config.cliFlag.pop ? config.cliFlag.pop() : config.cliFlag)
         var helpPopover = (
           <Popover id='popover-trigger-focus' title={config.envVar}>
             <HelpBlock>
@@ -187,9 +187,11 @@ var ConfigEnvDocumentation = React.createClass({
               <p>
                 <strong>Default:</strong> {defaultValue()}
               </p>
-              <p>
-                <strong>CLI Flag:</strong> {cliFlag}
-              </p>
+              {(cliFlag ? (
+                <p>
+                  <strong>CLI Flag:</strong> --{cliFlag}
+                </p>
+              ) : null)}
               <p>
                 <strong>Environment Variable:</strong> {config.envVar}
               </p>
