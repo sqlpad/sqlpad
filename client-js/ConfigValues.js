@@ -62,7 +62,6 @@ var ConfigValues = React.createClass({
           <Form horizontal>
             {configItemInputNodes}
           </Form>
-          <h2 style={{textAlign: 'center', marginTop: 50}}>Environment Variables</h2>
           <hr />
           <p>
             Some configuration is only accessible via environment variables
