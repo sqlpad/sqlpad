@@ -49,6 +49,8 @@ var ConfigValues = React.createClass({
             options={config.options}
             default={config.default}
             value={config.effectiveValue}
+            cliFlag={config.cliFlag}
+            envVar={config.envVar}
             saveConfigValue={this.saveConfigValue}
           />
         )
@@ -126,10 +128,23 @@ var ConfigItemInput = React.createClass({
         <span>{this.props.default.toString()}</span>
       )
     }
+    var cliFlag = (this.props.cliFlag && this.props.cliFlag.pop ? '--' + this.props.cliFlag.pop() : '--' + this.props.cliFlag)
     var helpPopover = (
       <Popover id='popover-trigger-focus' title={this.props.label}>
         <HelpBlock>{this.props.description}</HelpBlock>
-        <HelpBlock>Default: {defaultValue()}</HelpBlock>
+        <HelpBlock>
+          <strong>Default:</strong> {defaultValue()}
+        </HelpBlock>
+        {(cliFlag ? (
+          <HelpBlock>
+            <strong>CLI Flag:</strong> {cliFlag}
+          </HelpBlock>
+        ) : null)}
+        {(this.props.envVar ? (
+          <HelpBlock>
+            <strong>Environment Variable:</strong> {this.props.envVar}
+          </HelpBlock>
+        ) : null)}
       </Popover>
     )
     return (
@@ -162,8 +177,7 @@ var ConfigEnvDocumentation = React.createClass({
           )
         }
         var currentValue = (config.value === '' ? '<empty>' : config.effectiveValue.toString())
-        var cliFlag = (config.cliFlag && config.cliFlag.pop ? config.cliFlag.pop() : config.cliFlag)
-        if (cliFlag) cliFlag = '--' + cliFlag
+        var cliFlag = (config.cliFlag && config.cliFlag.pop ? '--' + config.cliFlag.pop() : '--' + config.cliFlag)
         var helpPopover = (
           <Popover id='popover-trigger-focus' title={config.envVar}>
             <HelpBlock>
@@ -175,6 +189,9 @@ var ConfigEnvDocumentation = React.createClass({
               </p>
               <p>
                 <strong>CLI Flag:</strong> {cliFlag}
+              </p>
+              <p>
+                <strong>Environment Variable:</strong> {config.envVar}
               </p>
               <p>
                 <strong>Set By:</strong> {config.effectiveValueSource}
