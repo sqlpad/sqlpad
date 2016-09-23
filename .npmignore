@@ -10,3 +10,5 @@ disc.html
 tags
 .zedstate
 .idea/
+docker/
+docker-compose.yml

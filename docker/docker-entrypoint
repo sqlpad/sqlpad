@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sqlpad --dir /var/lib/sqlpad --port 3000 --passphrase $SQL_PAD_PASSWORD --base-url $SQL_PAD_BASE_URL
+exec sqlpad --dir /var/lib/sqlpad --port 3000 $@
