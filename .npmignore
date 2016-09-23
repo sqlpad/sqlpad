@@ -7,3 +7,5 @@ screenshots/
 tags
 .zedstate
 .idea/
+docker/
+docker-compose.yml
