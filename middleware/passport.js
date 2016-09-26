@@ -80,7 +80,7 @@ function passportGoogleStrategyHandler (request, accessToken, refreshToken, prof
   async.waterfall([
     function getOpenAdminRegistration (next) {
       var data = {}
-      User.openAdminRegistration(function (err, openReg) {
+      User.adminRegistrationOpen(function (err, openReg) {
         data.openAdminRegistration = openReg
         next(err, data)
       })
