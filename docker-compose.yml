@@ -1,7 +1,14 @@
+# this file is for developping purpose only
+#
+# HOWTO
+# fist install the node_modules with: docker-compose run --rm web npm -i
+# then run: docker-compose up
+# then you should be able to access the project on http://localhost:3000
 web:
-  build: docker
-  environment:
-    SQL_PAD_PASSWORD: somepassword
-    SQL_PAD_BASE_URL: /path
+  image: node:4.5.0
   ports:
     - "3000:3000"
+  volumes:
+    - .:/var/www
+  working_dir: /var/www
+  command: npm run start
