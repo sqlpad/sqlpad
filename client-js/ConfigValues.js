@@ -43,14 +43,7 @@ var ConfigValues = React.createClass({
         return (
           <ConfigItemInput
             key={config.key}
-            configKey={config.key}
-            label={config.label}
-            description={config.description}
-            options={config.options}
-            default={config.default}
-            value={config.effectiveValue}
-            cliFlag={config.cliFlag}
-            envVar={config.envVar}
+            config={config}
             saveConfigValue={this.saveConfigValue}
           />
         )
@@ -82,56 +75,77 @@ module.exports = ConfigValues
 var ConfigItemInput = React.createClass({
   getInitialState: function () {
     return {
-      value: this.props.value
-    }
-  },
-  inputNode: function () {
-    if (this.props.options) {
-      var optionNodes = this.props.options.map(function (option) {
-        return (
-          <option key={option} value={option}>{option.toString()}</option>
-        )
-      })
-      return (
-        <FormControl
-          componentClass='select'
-          value={this.state.value}
-          onChange={this.handleChange} >
-          {optionNodes}
-        </FormControl>
-      )
-    } else {
-      return (
-        <FormControl
-          type='text'
-          value={this.state.value}
-          placeholder={this.props.label}
-          onChange={this.handleChange}
-          />
-      )
+      value: this.props.config.effectiveValue
     }
   },
   handleChange: function (e) {
     this.setState({
       value: e.target.value
     })
-    this.props.saveConfigValue(this.props.configKey, e.target.value)
+    this.props.saveConfigValue(this.props.config.key, e.target.value)
   },
   render: function () {
+    const config = this.props.config
+    const disabled = (config.effectiveValueSource === 'cli' || config.effectiveValueSource === 'saved cli' || config.effectiveValueSource === 'env')
+
+    let overriddenBy
+    switch (config.effectiveValueSource) {
+      case 'cli':
+        overriddenBy = 'Command Line'
+        break
+      case 'saved cli':
+        overriddenBy = 'Saved Command Line'
+        break
+      case 'env':
+        overriddenBy = 'Environment Variable'
+        break
+    }
+
+    const inputNode = () => {
+      if (config.options) {
+        var optionNodes = config.options.map(function (option) {
+          return (
+            <option key={option} value={option}>{option.toString()}</option>
+          )
+        })
+        return (
+          <FormControl
+            componentClass='select'
+            value={this.state.value}
+            disabled={disabled}
+            onChange={this.handleChange} >
+            {optionNodes}
+          </FormControl>
+        )
+      } else {
+        return (
+          <FormControl
+            type='text'
+            value={this.state.value}
+            disabled={disabled}
+            placeholder={config.label}
+            onChange={this.handleChange}
+            />
+        )
+      }
+    }
+
     var defaultValue = () => {
-      if (this.props.default === '') {
+      if (config.default === '') {
         return (
           <em style={{color: '#999'}}>empty</em>
         )
       }
       return (
-        <span>{this.props.default.toString()}</span>
+        <span>{config.default.toString()}</span>
       )
     }
-    var cliFlag = (this.props.cliFlag && this.props.cliFlag.pop ? this.props.cliFlag.pop() : this.props.cliFlag)
+
+    var cliFlag = (config.cliFlag && config.cliFlag.pop ? config.cliFlag.pop() : config.cliFlag)
+
     var helpPopover = (
-      <Popover id='popover-trigger-focus' title={this.props.label}>
-        <HelpBlock>{this.props.description}</HelpBlock>
+      <Popover id='popover-trigger-focus' title={config.label}>
+        <HelpBlock>{config.description}</HelpBlock>
         <HelpBlock>
           <strong>Default:</strong> {defaultValue()}
         </HelpBlock>
@@ -140,21 +154,32 @@ var ConfigItemInput = React.createClass({
             <strong>CLI Flag:</strong> --{cliFlag}
           </HelpBlock>
         ) : null)}
-        {(this.props.envVar ? (
+        {(config.envVar ? (
           <HelpBlock>
-            <strong>Environment Variable:</strong> {this.props.envVar}
+            <strong>Environment Variable:</strong> {config.envVar}
           </HelpBlock>
+        ) : null)}
+        {(disabled ? (
+          <div>
+            <HelpBlock>
+              <strong>Set By:</strong> {overriddenBy}
+            </HelpBlock>
+            <HelpBlock>
+              When set by command line or environment, item is not configurable via UI.
+            </HelpBlock>
+          </div>
         ) : null)}
       </Popover>
     )
+
     return (
-      <FormGroup controlId={this.props.configKey}>
+      <FormGroup controlId={config.configKey}>
         <Col componentClass={ControlLabel} sm={6}>
-          {this.props.label}
+          {config.label}
         </Col>
         <Col sm={6}>
           <OverlayTrigger trigger={['hover', 'focus']} placement='right' overlay={helpPopover}>
-            {this.inputNode()}
+            {inputNode()}
           </OverlayTrigger>
         </Col>
       </FormGroup>
