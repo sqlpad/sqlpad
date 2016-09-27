@@ -64,6 +64,7 @@
     "nedb": "1.x.x",
     "node-crate": "1.x.x",
     "node-xlsx": "^0.7.1",
+    "nodemailer": "^2.6.0",
     "passport": "^0.3.2",
     "passport-google-oauth2": "^0.1.6",
     "passport-http": "^0.3.0",

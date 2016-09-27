@@ -85,14 +85,6 @@ default = ""
 
 [[configItems]]
 interface = "env"
-key = "publicUrl"
-envVar = "PUBLIC_URL"
-description = "Public URL used for OAuth setup"
-default = ""
-example = "myinstancesqlpad.com"
-
-[[configItems]]
-interface = "env"
 key = "disableUserpassAuth"
 envVar = "DISABLE_USERPASS_AUTH"
 description = "Set to TRUE to disable built-in user authentication. Useful to restrict authentication to OAuth only."
@@ -108,7 +100,7 @@ example = "'baz.com foo.bar.com' will whitelist sara@baz.com and john@foo.bar.co
 default = ""
 
 
-# these are UI only variables. 
+# these are UI variables. 
 
 [[configItems]]
 interface = "ui"
@@ -155,3 +147,59 @@ label = "Require Login for Table/Chart Links"
 description = "If set to false, table and chart result links will be operational without having to log in. (These links only execute saved SQL queries, and do not open an endpoint to execute raw SQL.)"
 options = [true, false]
 default = true
+
+[[configItems]]
+interface = "ui"
+key = "publicUrl"
+envVar = "PUBLIC_URL"
+cliFlag = "public-url"
+label = "Public Url"
+description = "Public URL used for OAuth setup and links in email communications. Protocol is expected to be provided. Example: https://mysqlpad.com"
+default = ""
+
+[[configItems]]
+interface = "ui"
+key = "smtpFrom"
+envVar = "SQLPAD_SMTP_FROM"
+cliFlag = "smtp-from"
+label = "SMTP From"
+description = "From email address for SMTP. Required in order to send invitation emails."
+default = ""
+
+[[configItems]]
+interface = "ui"
+key = "smtpHost"
+envVar = "SQLPAD_SMTP_HOST"
+cliFlag = "smtp-host"
+label = "SMTP Host"
+description = "Host address for SMTP. Required in order to send invitation emails."
+default = ""
+
+[[configItems]]
+interface = "ui"
+key = "smtpSecure"
+envVar = "SQLPAD_SMTP_SECURE"
+cliFlag = "smtp-secure"
+label = "SMTP Use SSL"
+options = [true, false]
+description = "Toggle to use secure connection when using SMTP."
+default = true
+
+[[configItems]]
+interface = "ui"
+key = "smtpUser"
+envVar = "SQLPAD_SMTP_USER"
+cliFlag = "smtp-user"
+label = "SMTP User"
+description = "Username for SMTP. Required in order to send invitation emails."
+default = ""
+
+[[configItems]]
+interface = "ui"
+key = "smtpPassword"
+envVar = "SQLPAD_SMTP_PASSWORD"
+cliFlag = "smtp-password"
+label = "SMTP Password"
+description = "Password for SMTP."
+default = ""
+sensitive = true
