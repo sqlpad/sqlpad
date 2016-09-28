@@ -61,8 +61,8 @@ router.post('/api/users', mustBeAdmin, function (req, res) {
         })
       }
       // send email if SMTP is set up
-      if (config.get('smtpHost') && config.get('smtpUser') && config.get('smtpFrom') && config.get('publicUrl')) {
-        console.log('sending email')
+      if (config.smtpConfigured()) {
+        if (config.get('debug')) console.log('sending email')
         var smtpConfig = {
           host: config.get('smtpHost'),
           port: 465,
@@ -83,7 +83,7 @@ router.post('/api/users', mustBeAdmin, function (req, res) {
           html: '<p>Hello!</p> <p>A colleague has invited you to SqlPad.</p> <p>To sign up, visit <a href="' + signupUrl + '">' + signupUrl + '</a>.</p>'
         }
         transporter.sendMail(mailOptions, function (err, info) {
-          console.log('sent email: ' + info)
+          if (config.get('debug')) console.log('sent email: ' + info)
           if (err) {
             return console.error(err)
           }
