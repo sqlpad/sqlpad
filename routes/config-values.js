@@ -14,12 +14,12 @@ router.get('/api/config-items', mustBeAdmin, function (req, res) {
   var configItems = _.cloneDeep(ConfigItem.findAll())
   configItems = configItems.map(function (item) {
     if (item.sensitive && item.interface === 'env') {
-      item.effectiveValue = '**********'
-      item.dbValue = '**********'
-      item.default = '**********'
-      item.envValue = '**********'
-      item.cliValue = '**********'
-      item.savedCliValue = '**********'
+      item.effectiveValue = item.effectiveValue ? '**********' : ''
+      item.dbValue = item.dbValue ? '**********' : ''
+      item.default = item.default ? '**********' : ''
+      item.envValue = item.envValue ? '**********' : ''
+      item.cliValue = item.cliValue ? '**********' : ''
+      item.savedCliValue = item.savedCliValue ? '**********' : ''
     }
     return item
   })
