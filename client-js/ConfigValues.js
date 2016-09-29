@@ -11,6 +11,29 @@ var ControlLabel = require('react-bootstrap/lib/ControlLabel')
 var HelpBlock = require('react-bootstrap/lib/HelpBlock')
 var Popover = require('react-bootstrap/lib/Popover')
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
+var Glyphicon = require('react-bootstrap/lib/Glyphicon')
+var AutoAffix = require('react-overlays/lib/AutoAffix')
+
+const CheckListItem = (props) => {
+  if (!props.configKey || !props.configItems || !props.configItems.length) {
+    return null
+  }
+  var configItem = props.configItems.find((item) => {
+    return item.key === props.configKey
+  })
+  if (!configItem) {
+    return (
+      <li style={{listStyle: 'none'}}>
+        <strong>{props.configKey} is not in configItems.</strong>
+      </li>
+    )
+  }
+  return (
+    <li style={{listStyle: 'none'}}>
+      <Glyphicon glyph={configItem.effectiveValue ? 'ok' : 'remove'} /> {configItem.label || configItem.envVar}
+    </li>
+  )
+}
 
 var ConfigValues = React.createClass({
   loadConfigValuesFromServer: function () {
@@ -27,11 +50,14 @@ var ConfigValues = React.createClass({
           Alert.error('Save failed')
         } else {
           Alert.success('Value saved')
+          this.loadConfigValuesFromServer()
         }
       })
   },
   getInitialState: function () {
-    return {configItems: []}
+    return {
+      configItems: []
+    }
   },
   componentDidMount: function () {
     this.loadConfigValuesFromServer()
@@ -50,23 +76,53 @@ var ConfigValues = React.createClass({
       }
     })
     return (
-      <Col sm={6} smOffset={2}>
-        <div className='configBox'>
-          <h1 style={{textAlign: 'center'}}>Configuration</h1>
-          <hr />
-          <Form horizontal>
-            {configItemInputNodes}
-          </Form>
-          <hr />
-          <p>
-            Some configuration is only accessible via environment variables
-            or command-line-interface (CLI) flags. Below are the current values for these
-            variables. Sensitive values are masked. Hover over input for additional information.
-          </p>
-          <hr />
-          <ConfigEnvDocumentation configItems={this.state.configItems} />
-        </div>
-      </Col>
+      <div>
+        <Col sm={6} smOffset={1}>
+          <div className='configBox'>
+            <h1 style={{textAlign: 'center'}}>Configuration</h1>
+            <hr />
+            <Form horizontal>
+              {configItemInputNodes}
+            </Form>
+            <hr />
+            <p>
+              Some configuration is only accessible via environment variables
+              or command-line-interface (CLI) flags. Below are the current values for these
+              variables. Sensitive values are masked. Hover over input for additional information.
+            </p>
+            <hr />
+            <ConfigEnvDocumentation configItems={this.state.configItems} />
+          </div>
+        </Col>
+        <Col sm={3} smOffset={1} style={{paddingTop: 90}}>
+          <AutoAffix viewportOffsetTop={95}>
+            <div className='panel panel-default'>
+              <div className='panel-body'>
+                <p>
+                  <strong>Feature Checklist</strong>
+                </p>
+                <p>
+                  Unlock features by providing the required configuration.
+                </p>
+                <hr />
+                <strong>Email</strong>
+                <ul style={{paddingLeft: 20}}>
+                  <CheckListItem configKey={'smtpUser'} configItems={this.state.configItems} />
+                  <CheckListItem configKey={'smtpHost'} configItems={this.state.configItems} />
+                  <CheckListItem configKey={'smtpFrom'} configItems={this.state.configItems} />
+                  <CheckListItem configKey={'publicUrl'} configItems={this.state.configItems} />
+                </ul>
+                <strong>Google OAuth</strong>
+                <ul style={{paddingLeft: 20}}>
+                  <CheckListItem configKey={'googleClientId'} configItems={this.state.configItems} />
+                  <CheckListItem configKey={'googleClientSecret'} configItems={this.state.configItems} />
+                  <CheckListItem configKey={'publicUrl'} configItems={this.state.configItems} />
+                </ul>
+              </div>
+            </div>
+          </AutoAffix>
+        </Col>
+      </div>
     )
   }
 })
