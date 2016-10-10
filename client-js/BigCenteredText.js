@@ -5,6 +5,7 @@ const style = {
   alignItems: 'center',
   justifyContent: 'center',
   position: 'absolute',
+  flexDirection: 'column',
   left: 0,
   right: 0,
   top: 0,
