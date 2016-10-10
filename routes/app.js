@@ -28,6 +28,8 @@ router.get('*/api/app', function (req, res) {
       adminRegistrationOpen: adminRegistrationOpen,
       currentUser: user,
       config: config.getAllValues(),
+      smtpConfigured: config.smtpConfigured(),
+      googleAuthConfigured: config.googleAuthConfigured(),
       version: getVersion(),
       passport: {
         strategies: passport._strategies

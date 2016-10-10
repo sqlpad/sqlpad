@@ -38,6 +38,8 @@ function init (appData) {
     fetchJson('GET', 'api/app')
       .then((json) => {
         ctx.config = json.config
+        ctx.smtpConfigured = json.smtpConfigured
+        ctx.googleAuthConfigured = json.googleAuthConfigured
         ctx.currentUser = json.currentUser
         ctx.passport = json.passport
         ctx.adminRegistrationOpen = json.adminRegistrationOpen
