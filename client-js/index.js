@@ -33,7 +33,7 @@ function init (appData) {
   var PasswordReset = require('./PasswordReset.js')
   var QueryTableOnly = require('./QueryTableOnly.js')
   var QueryChartOnly = require('./QueryChartOnly.js')
-  var BigCenteredText = require('./BigCenteredText.js')
+  var FullscreenMessage = require('./FullscreenMessage.js')
 
   function getAppData (ctx, next) {
     fetchJson('GET', 'api/app')
@@ -158,14 +158,14 @@ function init (appData) {
   page('/password-reset', function (ctx) {
     document.title = 'SqlPad - Password Reset'
     ReactDOM.render(
-      <BigCenteredText>
+      <FullscreenMessage>
         <p>
           Password reset requested.
         </p>
         <p>
           An email has been sent with further instruction.
         </p>
-      </BigCenteredText>,
+      </FullscreenMessage>,
       document.getElementById('root')
     )
   })
@@ -207,16 +207,16 @@ function init (appData) {
     if (ctx.currentUser) {
       Component = (
         <App config={ctx.config} currentUser={ctx.currentUser}>
-          <BigCenteredText>
+          <FullscreenMessage>
             Not Found
-          </BigCenteredText>
+          </FullscreenMessage>
         </App>
       )
     } else {
       Component = (
-        <BigCenteredText>
+        <FullscreenMessage>
           Not Found
-        </BigCenteredText>
+        </FullscreenMessage>
       )
     }
     ReactDOM.render(
