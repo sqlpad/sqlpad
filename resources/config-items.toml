@@ -11,7 +11,7 @@ key = "ip"
 cliFlag = "ip"
 envVar = "SQLPAD_IP"
 default = "0.0.0.0"
-example = ""
+description = "IP address to bind to. By default SqlPad will listen from all available addresses (0.0.0.0)."
 
 [[configItems]]
 interface = "env"
@@ -19,7 +19,7 @@ key = "port"
 cliFlag = "port"
 envVar = "SQLPAD_PORT"
 default = 80
-example = ""
+description = "Port for SqlPad to listen on."
 
 [[configItems]]
 interface = "env"
@@ -27,7 +27,7 @@ key = "dbPath"
 cliFlag = ["db", "dbPath", "dir"]
 envVar = "SQLPAD_DB_PATH"
 default = "$HOME/sqlpad/db"
-example = ""
+description = "Directory to store SqlPad embedded database content. This includes queries, users, query result cache files, etc."
 
 [[configItems]]
 interface = "env"
@@ -35,12 +35,11 @@ key = "baseUrl"
 cliFlag = "base-url"
 envVar = "SQLPAD_BASE_URL"
 default = ""
-example = "/sqlpad"
 description = """\
     Path to mount sqlpad app following domain. 
     For example, if '/sqlpad' is provided, queries page
     would be located at mydomain.com/sqlpad/queries instead of mydomain.com/queries.
-    Useful when subdomain are not an option.
+    Useful when subdomain is not an option.
 """
 
 [[configItems]]
@@ -50,7 +49,7 @@ cliFlag = "passphrase"
 envVar = "SQLPAD_PASSPHRASE"
 sensitive = true
 default = "At least the sensitive bits won't be plain text?"
-example = "any string even gibberish longer the better ad98ckd.l0"
+description = "A string of text used to encrypt sensitive values when stored on disk."
 
 [[configItems]]
 interface = "env"
@@ -58,7 +57,7 @@ key = "admin"
 cliFlag = "admin"
 envVar = "SQLPAD_ADMIN"
 default = ""
-example = "AdminEmail@domain.com"
+description = "Email address to whitelist/give admin permissions to via command line or environment variable. Useful to preset Admin account or to reinstate admin access without access to the UI."
 
 [[configItems]]
 interface = "env"
@@ -66,13 +65,14 @@ key = "debug"
 cliFlag = "debug"
 envVar = "SQLPAD_DEBUG"
 default = false
+description = "Add a variety of logging to console while running SqlPad"
 
 [[configItems]]
 interface = "env"
 key = "googleClientId"
 envVar = "GOOGLE_CLIENT_ID"
 sensitive = true
-description = "Google Client ID used for OAuth setup"
+description = "Google Client ID used for OAuth setup. Note: authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'"
 default = ""
 
 [[configItems]]
@@ -80,7 +80,7 @@ interface = "env"
 key = "googleClientSecret"
 envVar = "GOOGLE_CLIENT_SECRET"
 sensitive = true
-description = "Google Client Secret used for OAuth setup"
+description = "Google Client Secret used for OAuth setup. Note: authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'"
 default = ""
 
 [[configItems]]
@@ -89,15 +89,6 @@ key = "disableUserpassAuth"
 envVar = "DISABLE_USERPASS_AUTH"
 description = "Set to TRUE to disable built-in user authentication. Useful to restrict authentication to OAuth only."
 default = false
-
-[[configItems]]
-interface = "env"
-key = "whitelistedDomains"
-envVar = "WHITELISTED_DOMAINS"
-cliFlag = "whitelisted-domains"
-description = "Allows whitelisting of email domains so individual email addresses do not need to be whitelisted. Domains must be delimited by whitespace."
-example = "'baz.com foo.bar.com' will whitelist sara@baz.com and john@foo.bar.com"
-default = ""
 
 
 # these are UI variables. 
@@ -114,7 +105,7 @@ default = true
 interface = "ui"
 key = "editorWordWrap"
 label = "Editor Word Wrap"
-description = "Set to true to enable word wrapping in SQL editor"
+description = "Set to true to enable word wrapping in SQL editor."
 options = [true, false]
 default = false
 
@@ -122,7 +113,7 @@ default = false
 interface = "ui"
 key = "queryResultMaxRows"
 label = "Query Result Max Rows"
-description = "By default query results are limited to 50,000 records"
+description = "By default query results are limited to 50,000 records."
 default = 50000
 
 [[configItems]]
@@ -203,3 +194,12 @@ label = "SMTP Password"
 description = "Password for SMTP."
 default = ""
 sensitive = true
+
+[[configItems]]
+interface = "ui"
+key = "whitelistedDomains"
+label = "Whitelisted Domains"
+envVar = "WHITELISTED_DOMAINS"
+cliFlag = "whitelisted-domains"
+description = "Allows whitelisting of email domains so individual email addresses do not need to be whitelisted. Domains must be delimited by whitespace. For example, 'baz.com foo.bar.com' will whitelist sara@baz.com and john@foo.bar.com"
+default = ""
