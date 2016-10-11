@@ -1,5 +1,5 @@
 var React = require('react')
-var fetchJson = require('./fetch-json.js')
+var fetchJson = require('./utilities/fetch-json.js')
 var moment = require('moment')
 var uuid = require('uuid')
 var Alert = require('react-s-alert').default

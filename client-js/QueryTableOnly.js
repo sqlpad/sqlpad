@@ -1,9 +1,9 @@
 var React = require('react')
-var fetchJson = require('./fetch-json.js')
+var fetchJson = require('./utilities/fetch-json.js')
 var DropdownButton = require('react-bootstrap/lib/DropdownButton')
 var MenuItem = require('react-bootstrap/lib/MenuItem')
 import IncompleteDataNotification from './components/IncompleteDataNotification'
-var QueryResultDataTable = require('./QueryResultDataTable.js')
+var QueryResultDataTable = require('./components/QueryResultDataTable.js')
 
 var QueryEditor = React.createClass({
   getInitialState: function () {

@@ -2,7 +2,7 @@
 var page = require('page')
 var React = require('react')
 var ReactDOM = require('react-dom')
-var fetchJson = require('./fetch-json.js')
+var fetchJson = require('./utilities/fetch-json.js')
 
 fetchJson('GET', 'api/app')
   .then((json) => {

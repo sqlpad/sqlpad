@@ -2,13 +2,13 @@ var React = require('react')
 var uuid = require('uuid')
 var keymaster = require('keymaster')
 import { Creatable } from 'react-select'
-var SchemaInfo = require('./SchemaInfo.js')
-var QueryResultDataTable = require('./QueryResultDataTable.js')
-var QueryResultHeader = require('./QueryResultHeader.js')
-var ChartInputs = require('./ChartInputs.js')
-var SqlpadTauChart = require('./SqlpadTauChart.js')
-var chartDefinitions = require('./ChartDefinitions.js')
-var fetchJson = require('./fetch-json.js')
+var SchemaInfo = require('./components/SchemaInfo.js')
+var QueryResultDataTable = require('./components/QueryResultDataTable.js')
+var QueryResultHeader = require('./components/QueryResultHeader.js')
+var ChartInputs = require('./components/ChartInputs.js')
+var SqlpadTauChart = require('./components/SqlpadTauChart.js')
+var chartDefinitions = require('./components/ChartDefinitions.js')
+var fetchJson = require('./utilities/fetch-json.js')
 var Alert = require('react-s-alert').default
 import AceEditor from 'react-ace'
 import 'brace/mode/sql'

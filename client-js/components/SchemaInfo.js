@@ -3,7 +3,7 @@ var FormGroup = require('react-bootstrap/lib/FormGroup')
 var FormControl = require('react-bootstrap/lib/FormControl')
 var Glyphicon = require('react-bootstrap/lib/Glyphicon')
 import CopyToClipboard from 'react-copy-to-clipboard'
-var fetchJson = require('./fetch-json.js')
+var fetchJson = require('../utilities/fetch-json.js')
 
 var SchemaInfo = React.createClass({
   getInitialState: function () {

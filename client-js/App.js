@@ -1,6 +1,6 @@
 var React = require('react')
 var Alert = require('react-s-alert').default
-var fetchJson = require('./fetch-json.js')
+var fetchJson = require('./utilities/fetch-json.js')
 var Navbar = require('react-bootstrap/lib/Navbar')
 var Nav = require('react-bootstrap/lib/Nav')
 var NavItem = require('react-bootstrap/lib/NavItem')

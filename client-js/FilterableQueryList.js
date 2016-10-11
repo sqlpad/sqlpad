@@ -1,12 +1,12 @@
 var React = require('react')
 var moment = require('moment')
 var _ = require('_')
-var fetchJson = require('./fetch-json.js')
+var fetchJson = require('./utilities/fetch-json.js')
 var Alert = require('react-s-alert').default
 import AceEditor from 'react-ace'
 import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
-var chartDefinitions = require('./ChartDefinitions.js')
+var chartDefinitions = require('./components/ChartDefinitions.js')
 var Label = require('react-bootstrap/lib/Label')
 var Form = require('react-bootstrap/lib/Form')
 var FormGroup = require('react-bootstrap/lib/FormGroup')

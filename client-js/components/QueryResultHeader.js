@@ -1,6 +1,6 @@
 var React = require('react')
 var SecondsTimer = require('./SecondsTimer.js')
-import IncompleteDataNotification from './components/IncompleteDataNotification'
+import IncompleteDataNotification from './IncompleteDataNotification'
 
 var QueryResultHeader = React.createClass({
   render: function () {
