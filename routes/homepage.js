@@ -16,11 +16,13 @@ router.get('/', function (req, res, next) {
       console.error(err)
       return next(err)
     }
-    if (connections.length === 0 && res.locals.user.role === 'admin') {
-      res.redirect(BASE_URL + '/connections')
-    } else {
-      res.redirect(BASE_URL + '/queries')
+    if (!res.locals.user) {
+      return res.redirect(BASE_URL + '/signin')
     }
+    if (connections.length === 0 && res.locals.user.role === 'admin') {
+      return res.redirect(BASE_URL + '/connections')
+    }
+    res.redirect(BASE_URL + '/queries')
   })
 })
 
