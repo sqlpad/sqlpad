@@ -58,10 +58,10 @@ var QueryEditor = React.createClass({
         <h3 style={{marginLeft: 20}}>{(this.state.query ? this.state.query.name : '')}</h3>
         <div style={{position: 'absolute', top: 20, right: 20}}>
           <IncompleteDataNotification queryResult={this.state.queryResult} />
-          {(this.state.queryResult ? (
+          {(this.state.queryResult && this.props.config.allowCsvDownload ? (
             <DropdownButton title='Export' id='export-dropdown-button' pullRight>
-              {(this.props.config.allowCsvDownload ? (<MenuItem eventKey='2' target='_blank' href={csvDownloadLink}>csv</MenuItem>) : null)}
-              {(this.props.config.allowCsvDownload ? (<MenuItem eventKey='3' target='_blank' href={xlsxDownloadLink}>xlsx</MenuItem>) : null)}
+              <MenuItem eventKey='2' target='_blank' href={csvDownloadLink}>csv</MenuItem>
+              <MenuItem eventKey='3' target='_blank' href={xlsxDownloadLink}>xlsx</MenuItem>
             </DropdownButton>
           ) : null)}
         </div>
