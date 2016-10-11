@@ -29,6 +29,7 @@ function init (appData) {
   var QueryEditor = require('./QueryEditor.js')
   var SignIn = require('./SignIn.js')
   var SignUp = require('./SignUp.js')
+  var ForgotPassword = require('./ForgotPassword.js')
   var PasswordReset = require('./PasswordReset.js')
   var QueryTableOnly = require('./QueryTableOnly.js')
   var QueryChartOnly = require('./QueryChartOnly.js')
@@ -129,6 +130,7 @@ function init (appData) {
     ReactDOM.render(
       <SignIn
         config={ctx.config}
+        smtpConfigured={ctx.smtpConfigured}
         passport={ctx.passport} />,
       document.getElementById('root')
     )
@@ -140,6 +142,30 @@ function init (appData) {
       <SignUp
         config={ctx.config}
         adminRegistrationOpen={ctx.adminRegistrationOpen} />,
+      document.getElementById('root')
+    )
+  })
+
+  page('/forgot-password', function (ctx) {
+    document.title = 'SqlPad - Forgot Password'
+    ReactDOM.render(
+      <ForgotPassword
+        config={ctx.config} />,
+      document.getElementById('root')
+    )
+  })
+
+  page('/password-reset', function (ctx) {
+    document.title = 'SqlPad - Password Reset'
+    ReactDOM.render(
+      <BigCenteredText>
+        <p>
+          Password reset requested.
+        </p>
+        <p>
+          An email has been sent with further instruction.
+        </p>
+      </BigCenteredText>,
       document.getElementById('root')
     )
   })

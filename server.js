@@ -90,6 +90,7 @@ var routers = [
   require('./routes/app.js'),
   require('./routes/version.js'),
   require('./routes/users.js'),
+  require('./routes/forgot-password.js'),
   require('./routes/password-reset.js'),
   require('./routes/connections.js'),
   require('./routes/queries.js'),

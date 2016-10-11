@@ -52,7 +52,8 @@ var SignIn = React.createClass({
         </form>
         <div className='form-signin-footer'>
           <p>
-            <a onClick={navigateToClickHandler('/signup')} href='#'>Need to Sign Up?</a>
+            <a onClick={navigateToClickHandler('/signup')} href='#'>Sign Up</a>
+            {(this.props.smtpConfigured ? <a style={{marginLeft: 50}} onClick={navigateToClickHandler('/forgot-password')} href='#' >Forgot Password</a> : null)}
           </p>
         </div>
       </div>
