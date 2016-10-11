@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.0.0-beta3
+### unreleased
+- Password reset/forogot password functionality added
+    - Admins may generate reset links manually
+    - If smtp is set up forgot password link is enabled
+- EMAIL!
+- Configuration:
+    - Checklist added for OAuth and Email
+    - Item is disabled in UI if value is provided by environment or cli 
+    - sensitive values are only masked if environment variables
+
+## 2.0.0-beta2
+### September 19, 2016
+- Move to single-page-app architecture
+- New query loading animation
+- Title and export options added to chart/table only views
+- Add Presto DB support
+- Basic Auth available for non-admin api
+- More performance improvements
+- Misc bug fixes
+- More code cleanup
+
 ## 2.0.0-beta1
 ### September 1, 2016
 - UI design updates *everywhere*
@@ -28,7 +50,6 @@
 - Known issues / not yet implemented: 
     - Query tag input does not allow creation
     - Query auto-refresh not yet implemented 
-
 
 ## 1.17.0
 - empty postgres queries (like executing a comment only) no longer crash sqlpad
