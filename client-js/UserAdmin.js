@@ -3,7 +3,6 @@ var fetchJson = require('./fetch-json.js')
 var moment = require('moment')
 var uuid = require('uuid')
 var Alert = require('react-s-alert').default
-
 var Panel = require('react-bootstrap/lib/Panel')
 var Form = require('react-bootstrap/lib/Form')
 var FormGroup = require('react-bootstrap/lib/FormGroup')

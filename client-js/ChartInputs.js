@@ -1,5 +1,10 @@
 var React = require('react')
 var _ = require('_')
+var chartDefinitions = require('./ChartDefinitions.js')
+var FormGroup = require('react-bootstrap/lib/FormGroup')
+var FormControl = require('react-bootstrap/lib/FormControl')
+var ControlLabel = require('react-bootstrap/lib/ControlLabel')
+var Checkbox = require('react-bootstrap/lib/Checkbox')
 
 function cleanBoolean (value) {
   if (typeof value === 'string') {
@@ -11,24 +16,6 @@ function cleanBoolean (value) {
   }
   return value
 }
-
-var chartDefinitions = require('./ChartDefinitions.js')
-
-/*
-sqlpad                  taucharts               label
-line                    line                    Line
-bubble                  scatterplot             Scatterplot
-bar                     horizontalBar           Bar - Horizontal
-verticalbar             bar                     Bar - Vertical
-stacked-bar-vertical    stacked-bar             Stacked Bar - Vertical
-stacked-bar-horizontal  horizontal-stacked-bar  Stacked Bar - Horizontal
-
-*/
-
-var FormGroup = require('react-bootstrap/lib/FormGroup')
-var FormControl = require('react-bootstrap/lib/FormControl')
-var ControlLabel = require('react-bootstrap/lib/ControlLabel')
-var Checkbox = require('react-bootstrap/lib/Checkbox')
 
 var ChartInputs = React.createClass({
   getInitialState: function () {
