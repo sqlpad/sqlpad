@@ -3,6 +3,7 @@ db/
 screenshots/
 test/
 coverage/
+docs/
 disc.html
 .DS_Store
 .env
