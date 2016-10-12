@@ -1,7 +1,7 @@
 # Changelog
 
 ## 2.0.0-beta3
-### unreleased
+### October 11, 2016
 - Password reset/forogot password functionality added
     - Admins may generate reset links manually
     - If smtp is set up forgot password link is enabled
