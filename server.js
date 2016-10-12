@@ -130,7 +130,12 @@ app.use(function (req, res, next) {
 detectPort(PORT).then(function (_port) {
   if (PORT !== _port) {
     console.log('\nPort %d already occupied. Using port %d instead.', PORT, _port)
-    config.set('port', _port)
+    // Persist the new port to the in-memory store. This is kinda hacky
+    // Assign value to cliValue since it overrides all other values
+    var ConfigItem = require('./models/ConfigItem.js')
+    portConfigItem = ConfigItem.findOneByKey('port')
+    portConfigItem.cliValue = _port
+    portConfigItem.computeEffectiveValue()
   }
   http.createServer(app).listen(_port, IP, function () {
     console.log('\nWelcome to ' + app.locals.title + '!. Visit http://' + (IP === '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started')
