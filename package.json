@@ -1,6 +1,6 @@
 {
   "name": "sqlpad",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0",
   "description": "Web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate and Vertica.",
   "license": "MIT",
   "author": {
@@ -116,7 +116,7 @@
     "whatwg-fetch": "^1.0.0",
     "fs-extra": "0.24.x",
     "watch": "0.16.x",
-	  "marky-mark": "1.x.x"
+    "marky-mark": "1.x.x"
   },
   "babel": {
     "presets": [
