@@ -110,7 +110,7 @@ var QueryResultDataTable = React.createClass({
             width={this.state.gridWidth}
             height={this.state.gridHeight}
             headerHeight={30}>
-              {columnNodes}
+            {columnNodes}
           </Table>
         </div>
       )

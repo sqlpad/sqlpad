@@ -124,7 +124,7 @@ var SchemaInfoSchemaItem = React.createClass({
       <li key={this.props.schema}>
         <a href='#' onClick={this.onClick} className='schema-info-schema'>{this.props.schema}</a>
         <ul>
-            {tableJsx}
+          {tableJsx}
         </ul>
       </li>
     )

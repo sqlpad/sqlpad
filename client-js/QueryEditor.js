@@ -120,8 +120,8 @@ var QueryDetailsModal = React.createClass({
             </FormGroup>
             <br />
             <ul className='nav nav-pills nav-justified'>
-                {modalNavLink('?format=table', 'Link to Table')}
-                {modalNavLink('?format=chart', 'Link to Chart')}
+              {modalNavLink('?format=table', 'Link to Table')}
+              {modalNavLink('?format=chart', 'Link to Chart')}
             </ul>
           </form>
         </Modal.Body>
@@ -519,7 +519,7 @@ var QueryEditor = React.createClass({
                             componentClass='select'
                             className='input-small'>
                             <option value=''>Choose a chart type...</option>
-                              {chartOptions}
+                            {chartOptions}
                           </FormControl>
                         </FormGroup>
                         <ChartInputs
@@ -531,7 +531,7 @@ var QueryEditor = React.createClass({
                       <div className='sidebar-footer'>
                         <Button onClick={this.onVisualizeClick} className={'btn-block'} bsSize={'sm'}>Visualize</Button>
                         <Button onClick={this.onSaveImageClick} className={'btn-block'} bsSize={'sm'}>
-                          <Glyphicon glyph='save' />{" "}
+                          <Glyphicon glyph='save' />{' '}
                           Save Chart Image
                         </Button>
                       </div>

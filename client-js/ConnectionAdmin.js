@@ -385,7 +385,7 @@ var ConnectionForm = React.createClass({
             <Button style={{width: 100}} onClick={this.props.saveConnection} disabled={this.props.isSaving}>
               {this.props.isSaving ? 'Saving...' : 'Save'}
             </Button>
-            {" "}
+            {' '}
             <Button style={{width: 100}} onClick={this.props.testConnection} disabled={this.props.isTesting}>
               {this.props.isTesting ? 'Testing...' : 'Test'}
             </Button>

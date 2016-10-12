@@ -133,7 +133,7 @@ detectPort(PORT).then(function (_port) {
     // Persist the new port to the in-memory store. This is kinda hacky
     // Assign value to cliValue since it overrides all other values
     var ConfigItem = require('./models/ConfigItem.js')
-    portConfigItem = ConfigItem.findOneByKey('port')
+    var portConfigItem = ConfigItem.findOneByKey('port')
     portConfigItem.cliValue = _port
     portConfigItem.computeEffectiveValue()
   }

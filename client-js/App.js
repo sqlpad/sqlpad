@@ -115,7 +115,7 @@ var App = React.createClass({
           </Nav>
         </Navbar>
         <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, top: 50}}>
-            {this.props.children}
+          {this.props.children}
         </div>
         <Alert stack={{limit: 3}} position='bottom-right' />
         <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>

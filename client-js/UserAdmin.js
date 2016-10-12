@@ -137,7 +137,7 @@ var UserList = React.createClass({
       <div style={this.style}>
         <ControlLabel>Users</ControlLabel>
         <ListGroup>
-            {listRows}
+          {listRows}
         </ListGroup>
       </div>
     )
@@ -189,7 +189,7 @@ var UserListRow = React.createClass({
           />
         <Form inline>
           <FormGroup controlId='role'>
-            <ControlLabel>Role</ControlLabel>{" "}
+            <ControlLabel>Role</ControlLabel>{' '}
             <FormControl
               style={this.formControlStyle}
               componentClass='select'
