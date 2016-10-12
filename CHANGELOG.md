@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.0
+### October 12, 2016
+- (See beta 1 - 3 release notes)
+
 ## 2.0.0-beta3
 ### October 11, 2016
 - Password reset/forogot password functionality added
