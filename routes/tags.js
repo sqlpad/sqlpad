@@ -1,14 +1,24 @@
-var _ = require('lodash');
+var _ = require('lodash')
+var router = require('express').Router()
+var Query = require('../models/Query.js')
+var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 
-module.exports = function (app, router) {
+router.get('/api/tags', mustBeAuthenticated, function (req, res) {
+  Query.findAll(function (err, queries) {
+    if (err) {
+      console.error(err)
+      return res.json({
+        error: 'Problem querying query database'
+      })
+    }
+    var tags = _.uniq(_.flatten(_.map(queries, 'tags'))).sort()
+    tags = tags.filter(function (t) {
+      if (t) return t
+    })
+    res.json({
+      tags: tags
+    })
+  })
+})
 
-    var db = app.get('db');
-    
-    router.get('/tags', function (req, res) {
-        db.queries.find({}, function (err, queries) {
-            var tags = _.uniq(_.flatten(_.map(queries, 'tags'))).sort();
-            res.json(tags);
-        });
-    });
-
-};
+module.exports = router

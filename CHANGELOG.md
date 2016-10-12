@@ -1,5 +1,56 @@
 # Changelog
 
+## 2.0.0-beta3
+### October 11, 2016
+- Password reset/forogot password functionality added
+    - Admins may generate reset links manually
+    - If smtp is set up forgot password link is enabled
+- EMAIL!
+- Configuration:
+    - Checklist added for OAuth and Email
+    - Item is disabled in UI if value is provided by environment or cli 
+    - sensitive values are only masked if environment variables
+
+## 2.0.0-beta2
+### September 19, 2016
+- Move to single-page-app architecture
+- New query loading animation
+- Title and export options added to chart/table only views
+- Add Presto DB support
+- Basic Auth available for non-admin api
+- More performance improvements
+- Misc bug fixes
+- More code cleanup
+
+## 2.0.0-beta1
+### September 1, 2016
+- UI design updates *everywhere*
+- Query Listing:
+    - preview query contents by hovering over query listing
+    - occassional search/filter weirdness has been fixed
+- Query Editor:
+    - Schema sidebar no longer separates views and tables in hierarchy
+    - New result grid 
+        - inline bar plot rendered for numeric values
+        - display issues fixed for certain browsers
+    - New tags widget for cleaner input
+    - Browser tab name now reflects query name 
+    - Updated taucharts library with stacked bar charts 
+    - Line and Scatterplot charts may have chart filters enabled
+    - 'show advanced settings' in vis editor now has a few advanced settings depending on chart (y min/max, show trendline, show filter)
+    - switching between sql/vis tabs won't reset chart series toggles
+    - table/chart only links may be set to no longer require login (see configuration page)
+- Configuration:
+    - Specific config inputs and labels - no more open ended key/value inputs
+    - Current environment config documented with assistive popovers
+- Update notification moved in-app
+- Under the hood
+    - updated all the code dependencies
+    - reworked some foundation code for easier future development
+- Known issues / not yet implemented: 
+    - Query tag input does not allow creation
+    - Query auto-refresh not yet implemented 
+
 ## 1.17.0
 - empty postgres queries (like executing a comment only) no longer crash sqlpad
 - materialized views are included in schema sidebar for postgres

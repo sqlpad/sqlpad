@@ -1,25 +1,29 @@
 /*  Homepage
-    
-    The main homepage/root of the thing. 
-    For now it just redirects the user to a more appropriate page. 
+
+    The main homepage/root of the thing.
+    For now it just redirects the user to a more appropriate page.
     If there are connections in the system, it redirects to the queries listing.
     If there are no connections, the user goes to the connections page
 ============================================================================= */
-module.exports = function (app, router) {
-    var db = app.get('db');
-    var baseUrl = app.get('baseUrl')
+var router = require('express').Router()
+var Connection = require('../models/Connection.js')
+var config = require('../lib/config.js')
+const BASE_URL = config.get('baseUrl')
 
-    router.get('/', function(req, res) {
-        var connectionExists = false;
-        db.connections.findOne({}, function (err, doc) {
-            if (doc) {
-                connectionExists = true;
-            }
-            if (!connectionExists && res.locals.user.admin) {
-                res.redirect(baseUrl + '/connections');
-            } else {
-                res.redirect(baseUrl + '/queries');
-            }
-        });
-    });  
-};
+router.get('/', function (req, res, next) {
+  Connection.findAll(function (err, connections) {
+    if (err) {
+      console.error(err)
+      return next(err)
+    }
+    if (!res.locals.user) {
+      return res.redirect(BASE_URL + '/signin')
+    }
+    if (connections.length === 0 && res.locals.user.role === 'admin') {
+      return res.redirect(BASE_URL + '/connections')
+    }
+    res.redirect(BASE_URL + '/queries')
+  })
+})
+
+module.exports = router

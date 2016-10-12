@@ -1,110 +1,168 @@
-var _ = require('lodash');
-var runQuery = require('../lib/run-query.js');
+var router = require('express').Router()
+var runQuery = require('../lib/run-query.js')
+var cipher = require('../lib/cipher.js')
+var decipher = require('../lib/decipher.js')
+var Connection = require('../models/Connection.js')
+var mustBeAdmin = require('../middleware/must-be-admin.js')
+var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 
 function connectionFromBody (body) {
-    return {
-        name: body.name,
-        driver: body.driver,
-        host: body.host,
-        port: body.port,
-        database: body.database,
-        username: body.username,
-        password: body.password,
-        sqlserverEncrypt: (body.sqlserverEncrypt ? true : false),
-        postgresSsl: (body.postgresSsl ? true : false),
-        mysqlInsecureAuth: (body.mysqlInsecureAuth ? true : false)
-    };
+  return {
+    name: body.name,
+    driver: body.driver,
+    host: body.host,
+    port: body.port,
+    database: body.database,
+    username: body.username,
+    password: body.password,
+    domain: body.domain,
+    sqlserverEncrypt: (body.sqlserverEncrypt === true),
+    postgresSsl: (body.postgresSsl === true),
+    mysqlInsecureAuth: (body.mysqlInsecureAuth === true),
+    prestoCatalog: body.prestoCatalog,
+    prestoSchema: body.prestoSchema
+  }
 }
 
-module.exports = function (app, router) {
-
-    var db = app.get('db');
-    var decipher = app.get('decipher');
-    var cipher = app.get('cipher');
-    var baseUrl = app.get('baseUrl');
-
-    router.get('/connections', function (req, res) {
-        db.connections.find({}).sort({name: 1}).exec(function (err, connections) {
-            connections = _.sortBy(connections, function (c) {
-                return c.name.toLowerCase();
-            });
-            res.render('connections', {pageTitle: "Connections", connections: connections});
-        });
-    });
-
-    router.get('/connections/:_id', function (req, res) {
-        db.connections.findOne({_id: req.params._id}, function (err, connection) {
-            if (!connection) {
-                connection = {};
-            } else {
-                connection.username = decipher(connection.username);
-                connection.password = "";
-            }
-            res.render('connection', {
-                connection: connection
-            });
-        });
-    });
-
-    router.post('/connections/new', function (req, res) {
-        var connection = connectionFromBody(req.body);
-        connection.createdDate = new Date();
-        connection.modifiedDate = new Date();
-        connection.username = cipher(connection.username);
-        connection.password = cipher(connection.password);
-        db.connections.insert(connection, function (err) {
-            if (err) {
-                console.log(err);
-                res.render('connection', {debug: err});
-            } else {
-                res.redirect(baseUrl + '/connections');
-            }
-        });
-    });
-
-    function testConnection(req, res) {
-        var bodyConnection = connectionFromBody(req.body);
-        testQuery = "SELECT 'success' AS TestQuery;"
-        if (bodyConnection.driver == "crate") {
-            testQuery = "SELECT name from sys.cluster";
-        }
-        runQuery(testQuery, bodyConnection, function (err, results) {
-            if (err) {
-                console.log(err);
-                res.send({
-                    success: false,
-                    err: err
-                });
-            } else {
-                res.send({
-                    success: true,
-                    results: results.rows
-                });
-            }
-        });
+router.get('/api/connections', mustBeAuthenticated, function (req, res) {
+  Connection.findAll(function (err, connections) {
+    if (err) {
+      console.error(err)
+      return res.json({
+        error: 'Problem querying connection database'
+      })
     }
+    connections = connections.map((connection) => {
+      connection.username = decipher(connection.username)
+      connection.password = ''
+      return connection
+    })
+    res.json({
+      connections: connections
+    })
+  })
+})
 
-    router.post('/connections/test', testConnection);
-    router.put('/connections/test', testConnection);
+router.get('/api/connections/:_id', mustBeAuthenticated, function (req, res) {
+  Connection.findOneById(req.params._id, function (err, connection) {
+    if (err) {
+      console.error(err)
+      return res.json({
+        error: 'Problem querying connection database'
+      })
+    }
+    if (!connection) {
+      return res.json({
+        error: 'Connection not found'
+      })
+    }
+    connection.username = decipher(connection.username)
+    connection.password = ''
+    return res.json({
+      connection: connection
+    })
+  })
+})
 
-    router.put('/connections/:_id', function (req, res) {
-        var bodyConnection = connectionFromBody(req.body);
-        bodyConnection.username = cipher(bodyConnection.username);
-        bodyConnection.password = cipher(bodyConnection.password);
-        db.connections.findOne({_id: req.params._id}, function (err, connection) {
-            _.merge(connection, bodyConnection);
-            connection.modifiedDate = new Date();
-            db.connections.update({_id: req.params._id}, connection, {}, function (err) {
-                if (err) console.log(err);
-                res.redirect(baseUrl + '/connections');
-            });
-        });
-    });
+// create
+router.post('/api/connections', mustBeAdmin, function (req, res) {
+  var connection = new Connection(connectionFromBody(req.body))
+  connection.username = cipher(connection.username || '')
+  connection.password = cipher(connection.password || '')
+  connection.save(function (err, newConnection) {
+    if (err) {
+      console.error(err)
+      return res.json({
+        error: 'Problem saving connection'
+      })
+    }
+    if (newConnection) {
+      newConnection.username = decipher(connection.username)
+      newConnection.password = ''
+    }
+    return res.json({
+      connection: newConnection
+    })
+  })
+})
 
-    router.delete('/connections/:_id', function (req, res) {
-        db.connections.remove({_id: req.params._id}, function (err) {
-            if (err) console.log(err);
-            res.redirect(baseUrl + '/connections');
-        });
-    });
-};
+// update
+router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
+  Connection.findOneById(req.params._id, function (err, connection) {
+    if (err) {
+      console.error(err)
+      return res.json({
+        error: 'Problem querying connection database'
+      })
+    }
+    if (!connection) {
+      return res.json({
+        error: 'connection not found.'
+      })
+    }
+    connection.username = cipher(req.body.username || '')
+    connection.password = cipher(req.body.password || '')
+    connection.name = req.body.name
+    connection.driver = req.body.driver
+    connection.host = req.body.host
+    connection.port = req.body.port
+    connection.database = req.body.database
+    connection.domain = req.body.domain
+    connection.sqlserverEncrypt = (req.body.sqlserverEncrypt === true)
+    connection.postgresSsl = (req.body.postgresSsl === true)
+    connection.mysqlInsecureAuth = (req.body.mysqlInsecureAuth === true)
+    connection.prestoCatalog = req.body.prestoCatalog
+    connection.prestoSchema = req.body.prestoSchema
+    connection.save(function (err, connection) {
+      if (err) {
+        console.error(err)
+        return res.json({
+          error: 'Problem saving connection'
+        })
+      }
+      connection.username = decipher(connection.username)
+      connection.password = ''
+      return res.json({
+        connection: connection
+      })
+    })
+  })
+})
+
+// delete
+router.delete('/api/connections/:_id', mustBeAdmin, function (req, res) {
+  Connection.removeOneById(req.params._id, function (err) {
+    if (err) {
+      console.error(err)
+      return res.json({
+        error: 'Problem deleting connection'
+      })
+    }
+    return res.json({})
+  })
+})
+
+// test connection
+router.post('/api/test-connection', mustBeAdmin, function testConnection (req, res) {
+  var bodyConnection = connectionFromBody(req.body)
+  var testQuery = "SELECT 'success' AS TestQuery;"
+  if (bodyConnection.driver === 'crate') {
+    testQuery = 'SELECT name from sys.cluster'
+  }
+  if (bodyConnection.driver === 'presto') {
+    testQuery = "SELECT 'success' AS TestQuery"
+  }
+  runQuery(testQuery, bodyConnection, function (err, queryResult) {
+    if (err) {
+      console.error(err)
+      return res.json({
+        error: err
+      })
+    }
+    return res.send({
+      results: queryResult.rows
+    })
+  })
+})
+
+module.exports = router

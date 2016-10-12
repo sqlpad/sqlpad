@@ -1,11 +1,14 @@
 {
   "name": "sqlpad",
-  "version": "1.17.3",
+  "version": "2.0.0-beta.3",
   "description": "Web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate and Vertica.",
   "license": "MIT",
   "author": {
     "name": "Rick Bergfalk",
     "email": "rick.bergfalk@gmail.com"
+  },
+  "engines": {
+    "node": ">=4"
   },
   "contributors": [
     {
@@ -29,41 +32,52 @@
     "email": "rick.bergfalk@gmail.com"
   },
   "scripts": {
-    "start": "nodemon server.js --dir ./db --port 3000 --debug",
-    "watchify": "watchify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim -v",
-    "bundle": "browserify ./client-js/main.js -o ./public/javascripts/browserified.js -t browserify-shim"
+    "standard": "standard",
+    "test": "standard && mocha --recursive",
+    "coverage": "istanbul cover _mocha -- --recursive",
+    "start": "nodemon --ignore 'public/*' --ignore 'client-js/*' --ignore 'db/*' server.js --dir ./db --port 3000 --debug",
+    "build": "node build.js",
+    "build-dev": "node build.js --dev",
+    "prepublish": "npm run build",
+    "disc": "discify ./public/javascripts/browserified.js > disc.html"
   },
   "dependencies": {
+    "async": "^2.0.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.x.x",
-    "connect-flash": "^0.1.1",
     "cookie-parser": "1.x.x",
     "cookie-session": "1.x.x",
+    "detect-port": "^1.0.0",
     "ejs": "^2.3.4",
     "errorhandler": "^1.4.0",
     "express": "4.x.x",
+    "joi": "^9.0.0",
     "json2csv": "^3.0.2",
-    "keymaster": "^1.6.2",
-    "lodash": "^3.10.1",
-    "method-override": "1.x.x",
+    "latest-version": "^2.0.0",
+    "lodash": "^4.13.1",
+    "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
     "moment": "2.x.x",
     "morgan": "1.x.x",
     "mssql": "^3.0.0",
     "mysql": "2.x.x",
     "nedb": "1.x.x",
     "node-crate": "1.x.x",
-    "node-xlsx": "^0.6.0",
+    "node-xlsx": "^0.7.1",
+    "nodemailer": "^2.6.0",
     "passport": "^0.3.2",
     "passport-google-oauth2": "^0.1.6",
+    "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
     "pg": "^6.0.0",
     "pg-cursor": "^1.0.1",
-    "rc": "^1.1.6",
+    "presto-client": "^0.1.0",
     "request": "^2.58.0",
+    "rimraf": "^2.5.4",
     "sanitize-filename": "1.x.x",
+    "semver-diff": "^2.1.0",
     "serve-favicon": "2.x.x",
-    "ua-parser": "0.3.x",
-    "update-notifier": "^1.0.2",
+    "toml": "^2.3.0",
     "uuid": "^2.0.1",
     "vertica": "0.5.x"
   },
@@ -72,24 +86,49 @@
     "sqlpad": "./server.js"
   },
   "devDependencies": {
-    "browserify": "^13.0.0",
-    "browserify-shim": "3.x.x",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-react": "^6.11.1",
+    "babelify": "^7.3.0",
+    "brace": "^0.8.0",
+    "browserify": "^13.0.1",
+    "chai": "^3.5.0",
+    "deep-equal": "^1.0.1",
+    "disc": "^1.3.2",
+    "exposify": "^0.5.0",
+    "fixed-data-table": "^0.6.3",
+    "istanbul": "^0.4.4",
+    "keymaster": "^1.6.2",
+    "mocha": "^3.0.0",
     "nodemon": "^1.8.1",
-    "taucharts": "^0.9.1"
+    "page": "^1.7.1",
+    "react": "^15.1.0",
+    "react-ace": "^3.5.0",
+    "react-bootstrap": "^0.30.0",
+    "react-copy-to-clipboard": "^4.2.2",
+    "react-dom": "^15.1.0",
+    "react-overlays": "^0.6.6",
+    "react-s-alert": "^1.1.4",
+    "react-select": "^1.0.0-rc.1",
+    "standard": "^8.0.0",
+    "taucharts": "^0.9.1",
+    "uglifyify": "^3.0.2",
+    "watchify": "^3.7.0",
+    "whatwg-fetch": "^1.0.0"
   },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
+  "babel": {
+    "presets": [
+      "es2015",
+      "react"
     ]
   },
-  "browserify-shim": {
-    "jquery": "global:$",
-    "ace": "global:ace",
-    "Slick": "global:Slick",
-    "d3": "global:d3",
-    "Bloodhound": "global:Bloodhound",
-    "tauCharts": "global:tauCharts",
-    "_": "global:_",
-    "ZeroClipboard": "global:ZeroClipboard"
+  "standard": {
+    "globals": [
+      "$",
+      "_",
+      "fetch"
+    ],
+    "ignore": [
+      "/public/"
+    ]
   }
 }
