@@ -113,7 +113,10 @@
     "taucharts": "^0.9.1",
     "uglifyify": "^3.0.2",
     "watchify": "^3.7.0",
-    "whatwg-fetch": "^1.0.0"
+    "whatwg-fetch": "^1.0.0",
+    "fs-extra": "0.24.x",
+    "watch": "0.16.x",
+	  "marky-mark": "1.x.x"
   },
   "babel": {
     "presets": [
