@@ -17,6 +17,8 @@ var schema = {
   mysqlInsecureAuth: Joi.boolean().default(false, 'Mysql Insecure Auth'),
   prestoCatalog: Joi.string().optional().allow(''),
   prestoSchema: Joi.string().optional().allow(''),
+  restApiCatalog: Joi.string().optional().allow(''),
+  restApiSchema: Joi.string().optional().allow(''),
   createdDate: Joi.date().default(new Date(), 'time of creation'),
   modifiedDate: Joi.date().default(new Date(), 'time of modifcation')
 }
@@ -36,6 +38,8 @@ var Connection = function Connection (data) {
   this.mysqlInsecureAuth = data.mysqlInsecureAuth
   this.prestoCatalog = data.prestoCatalog
   this.prestoSchema = data.prestoSchema
+  this.restApiCatalog = data.restApiCatalog
+  this.restApiSchema = data.restApiSchema
   this.createdDate = data.createdDate
   this.modifiedDate = data.modifiedDate
 }
