@@ -65,11 +65,14 @@ router.post('/api/users', mustBeAdmin, function (req, res) {
         if (config.get('debug')) console.log('sending email')
         var smtpConfig = {
           host: config.get('smtpHost'),
-          port: 465,
+          port: config.get('smtpPort'),
           secure: config.get('smtpSecure'),
           auth: {
             user: config.get('smtpUser'),
             pass: config.get('smtpPassword')
+          },
+          tls: {
+            ciphers: 'SSLv3'
           }
         }
         var transporter = nodemailer.createTransport(smtpConfig)

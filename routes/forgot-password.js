@@ -25,11 +25,14 @@ router.post('/api/forgot-password', function (req, res) {
       // send email to user
       var smtpConfig = {
         host: config.get('smtpHost'),
-        port: 465,
+        port: config.get('smtpPort'),
         secure: config.get('smtpSecure'),
         auth: {
           user: config.get('smtpUser'),
           pass: config.get('smtpPassword')
+        },
+        tls: {
+          ciphers: 'SSLv3'
         }
       }
       var transporter = nodemailer.createTransport(smtpConfig)

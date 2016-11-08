@@ -168,6 +168,15 @@ default = ""
 
 [[configItems]]
 interface = "ui"
+key = "smtpPort"
+envVar = "SQLPAD_SMTP_PORT"
+cliFlag = "smtp-port"
+label = "SMTP Port"
+description = "Port for SMTP. Required in order to send invitation emails."
+default = ""
+
+[[configItems]]
+interface = "ui"
 key = "smtpSecure"
 envVar = "SQLPAD_SMTP_SECURE"
 cliFlag = "smtp-secure"

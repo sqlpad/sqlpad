@@ -109,6 +109,7 @@ var ConfigValues = React.createClass({
                 <ul style={{paddingLeft: 20}}>
                   <CheckListItem configKey={'smtpUser'} configItems={this.state.configItems} />
                   <CheckListItem configKey={'smtpHost'} configItems={this.state.configItems} />
+                  <CheckListItem configKey={'smtpPort'} configItems={this.state.configItems} />
                   <CheckListItem configKey={'smtpFrom'} configItems={this.state.configItems} />
                   <CheckListItem configKey={'publicUrl'} configItems={this.state.configItems} />
                 </ul>
