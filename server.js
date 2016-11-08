@@ -134,14 +134,16 @@ app.use(function (req, res, next) {
 ============================================================================= */
 
 var fs = require('fs');
-// determine if key pair for cert exists
-var keyPairExists;
-if (fs.accessSync(KEY_PATH,'r') == null && fs.accessSync(CERT_PATH,'r') == null){
-    keyPairExists = true
-}
 
-if (keyPairExists) { //https with http redirect
+// determine if key pair exists for certs
+if (KEY_PATH.replace(/\s/g,"") != "" && CERT_PATH.replace(/\s/g,"") != "") { //https only
     console.log('Launching server with SSL')
+    fs.access(KEY_PATH, fs.constants.R_OK, (err) => {
+        console.log(err ? 'No key found or is not readable' : 'SSL key readable');
+    });
+    fs.access(CERT_PATH, fs.constants.R_OK, (err) => {
+        console.log(err ? 'No cert found or is not readable' : 'SSL certificate readable');
+    });
     detectPort(HTTPS_PORT).then(function (_port) {
         if (HTTPS_PORT !== _port) {
             console.log('\nPort %d already occupied. Using port %d instead.', HTTPS_PORT, _port)
@@ -155,13 +157,13 @@ if (keyPairExists) { //https with http redirect
 
         var privateKey = fs.readFileSync(KEY_PATH, 'utf8');
         var certificate = fs.readFileSync(CERT_PATH, 'utf8');
-        var credentials = {
+        var httpsOptions = {
             key: privateKey,
             cert: certificate,
             passphrase: CERT_PASSPHRASE
         };
 
-        https.createServer(credentials, app).listen(_port, IP, function () {
+        https.createServer(httpsOptions, app).listen(_port, IP, function () {
             console.log('\nWelcome to ' + app.locals.title + '!. Visit https://' + (IP === '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started')
         })
     })
