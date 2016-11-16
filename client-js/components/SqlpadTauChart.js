@@ -228,7 +228,7 @@ var SqlpadTauChart = React.createClass({
       return null
     }
     var runResultErrorNotification = () => {
-      if (this.props.queryError) {
+      if (this.props.queryError && !this.props.isRunning) {
         return (
           <div className='run-result-notification label-danger'>
             {this.props.queryError}
