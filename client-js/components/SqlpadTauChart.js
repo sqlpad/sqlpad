@@ -75,12 +75,15 @@ var SqlpadTauChart = React.createClass({
 
     // loop through data rows and convert types as needed
     dataRows = dataRows.map((row) => {
+      var newRow = {}
       for (var col in row) {
         var datatype = this.props.queryResult.meta[col].datatype
         if (datatype === 'date') {
-          row[col] = new Date(row[col])
+          newRow[col] = new Date(row[col])
         } else if (datatype === 'number') {
-          row[col] = Number(row[col])
+          newRow[col] = Number(row[col])
+        } else {
+          newRow[col] = row[col]
         }
       }
       // HACK -
@@ -92,11 +95,11 @@ var SqlpadTauChart = React.createClass({
       forceDimensionFields.forEach(function (fieldDefinition) {
         var col = fieldDefinition.val
         var colDatatype = (meta[col] ? meta[col].datatype : null)
-        if (col && colDatatype === 'number' && row[col]) {
-          row[col] = row[col].toString()
+        if (col && colDatatype === 'number' && newRow[col]) {
+          newRow[col] = newRow[col].toString()
         }
       })
-      return row
+      return newRow
     })
 
     var definitionFieldsById = _.indexBy(definitionFields, 'fieldId')

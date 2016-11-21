@@ -4,6 +4,20 @@ var moment = require('moment')
 import {Table, Column, Cell} from 'fixed-data-table' // react's fixed data table
 var _ = require('_')
 
+var renderValue = (input, fieldMeta) => {
+  if (input === null || input === undefined) {
+    return <em>null</em>
+  } else if (input === true || input === false) {
+    return input.toString()
+  } else if (fieldMeta.datatype === 'date') {
+    return moment(input).format('MM/DD/YYYY HH:mm:ss')
+  } else if (_.isObject(input)) {
+    return JSON.stringify(input, null, 2)
+  } else {
+    return input
+  }
+}
+
 var QueryResultDataTable = React.createClass({
   getInitialState: function () {
     return {
@@ -52,16 +66,6 @@ var QueryResultDataTable = React.createClass({
         else if (columnWidth > 350) columnWidth = 350
         var cellWidth = columnWidth - 10
 
-        var renderValue = (input) => {
-          if (fieldMeta.datatype === 'date') {
-            return moment(input).format('MM/DD/YYYY HH:mm:ss')
-          } else if (_.isObject(input)) {
-            return JSON.stringify(input, null, 2)
-          } else {
-            return input
-          }
-        }
-
         return (
           <Column
             key={field}
@@ -93,7 +97,7 @@ var QueryResultDataTable = React.createClass({
                 <Cell>
                   {numberBar}
                   <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: cellWidth, position: 'absolute'}}>
-                    {renderValue(value)}
+                    {renderValue(value, fieldMeta)}
                   </div>
                 </Cell>
               )
