@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0
+### November 20, 2016
+- run https via sqlpad directly (see additional setting) (thanks jameswinegar!) 
+- Support non English characters when downloading files (thanks askluyao!)
+- render booleans/null timestamps properly
+
 ## 2.0.0
 ### October 12, 2016
 - (See beta 1 - 3 release notes)
