@@ -64,7 +64,7 @@ var QueryDetailsModal = React.createClass({
   },
   render: function () {
     var modalNavLink = (href, text) => {
-      var saved = (this.props.query._id != null)
+      var saved = !!this.props.query._id
       if (saved) {
         return (
           <li role='presentation'>
