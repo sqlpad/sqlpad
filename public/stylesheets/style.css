@@ -286,22 +286,20 @@ input[type=checkbox], input[type=radio] {
 
 /*  React Queries
 ============================================================================ */
-.QueryListSidebar {
-    position: absolute;
-    left: 0px;
-    width: 20%;
-    top:  0px;
-    bottom: 0px;
-    background-color: #FDFDFD;
-    overflow-y: auto;
-    padding: 10px;
+.QueryListContainer {
+    display: flex;
+    flex-wrap: wrap;
 }
+
+.QueryListSidebar {
+    background-color: #FDFDFD;
+    padding: 10px;
+    flex-basis: 20%;
+}
+
 .QueryList {
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 20%;
-    width: 40%;
+    flex-basis: 40%;
+    position: relative;
     background-color: #FDFDFD;
     
     padding: 10px;
@@ -326,14 +324,9 @@ input[type=checkbox], input[type=radio] {
     margin-bottom: 0px;
 }
 .QueryPreview {
-    position: absolute;
-    top: 0px;
-    bottom: 0px;
-    left: 60%;
-    width: 40%;
     background-color: #FDFDFD;
-    overflow-y: auto;
     padding: 10px;
+    flex-basis: 40%;
 }
 #query-preview-ace-editor {
     border-radius: 4px;

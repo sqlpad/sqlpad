@@ -154,7 +154,7 @@ var FilterableQueryList = React.createClass({
     }
 
     return (
-      <div>
+      <div className='QueryListContainer'>
         <QueryListSidebar
           currentUser={this.props.currentUser}
           connections={this.state.connections}
