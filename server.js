@@ -62,7 +62,7 @@ app.use(passport.session())
 app.use(BASE_URL, express.static(path.join(__dirname, 'public')))
 if (DEBUG) app.use(morgan('dev'))
 app.use(function (req, res, next) {
-  // Boostrap res.locals with any common variables
+  // Bootstrap res.locals with any common variables
   res.locals.message = null
   res.locals.navbarConnections = []
   res.locals.debug = null
