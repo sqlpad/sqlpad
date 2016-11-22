@@ -227,22 +227,19 @@ var SqlpadTauChart = React.createClass({
             <SpinKitCube />
           </div>
         )
-      }
-      return null
-    }
-    var runResultErrorNotification = () => {
-      if (this.props.queryError) {
+      } else if (this.props.queryError) {
         return (
           <div className='run-result-notification label-danger'>
             {this.props.queryError}
           </div>
         )
+      } else {
+        return null
       }
     }
     return (
       <div id='chart' style={this.chartStyle}>
         {runResultNotification()}
-        {runResultErrorNotification()}
       </div>
     )
   }
