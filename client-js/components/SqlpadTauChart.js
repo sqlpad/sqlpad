@@ -7,10 +7,9 @@ var Alert = require('react-s-alert').default
 
 var SqlpadTauChart = React.createClass({
   componentDidUpdate: function (prevProps) {
-    var prevResultId = (prevProps.queryResult ? prevProps.queryResult.id : null)
-    var currentResultId = (this.props.queryResult ? this.props.queryResult.id : null)
-    if (prevResultId !== currentResultId) {
-      console.log('rendering because queryResults changed')
+    if (this.props.isRunning || this.props.queryError) {
+      this.destroyChart()
+    } else if (this.props.renderChart && !this.chart) {
       this.renderChart()
     }
   },
@@ -23,6 +22,12 @@ var SqlpadTauChart = React.createClass({
     left: 0,
     right: 0
   },
+  destroyChart() {
+    if (this.chart) {
+      this.chart.destroy()
+      this.chart = null
+    }
+  },
   renderChart: function (rerender) {
     // This is invoked during following:
     //  - Vis tab enter
@@ -34,8 +39,8 @@ var SqlpadTauChart = React.createClass({
     var selectedFields = this.props.query.chartConfiguration.fields
     var chartDefinition = _.findWhere(chartDefinitions, {chartType: chartType})
 
-    if (this.chart && (!dataRows.length || !chartDefinition)) {
-      this.chart.destroy()
+    if (rerender || !dataRows.length || !chartDefinition) {
+      this.destroyChart()
     }
 
     // If there's no data just exit the chart render
@@ -205,10 +210,6 @@ var SqlpadTauChart = React.createClass({
     if (!this.chart) {
       this.chart = new tauCharts.Chart(chartConfig)
       this.chart.renderTo('#chart')
-    } else if (this.chart && rerender) {
-      this.chart.destroy()
-      this.chart = new tauCharts.Chart(chartConfig)
-      this.chart.renderTo('#chart')
     } else {
       this.chart.setData(dataRows)
     }
@@ -217,7 +218,7 @@ var SqlpadTauChart = React.createClass({
     this.chart.setData(chartData)
   },
   componentWillUnmount () {
-    if (this.chart) this.chart.destroy()
+    this.destroyChart()
   },
   render: function () {
     var runResultNotification = () => {

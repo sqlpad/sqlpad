@@ -380,25 +380,19 @@ var QueryEditor = React.createClass({
     })
   },
   sqlpadTauChart: undefined,
+  hasRows: function () {
+    var queryResult = this.state.queryResult
+    return !!(queryResult && queryResult.rows && queryResult.rows.length)
+  },
+  isChartable: function () {
+    var pending = this.state.isRunning || this.state.queryError
+    return !pending && this.state.activeTabKey === 'vis' && this.hasRows()
+  },
   onVisualizeClick: function (e) {
     this.sqlpadTauChart.renderChart(true)
   },
   onTabSelect: function (tabkey) {
     this.setState({activeTabKey: tabkey})
-    var renderChartIfVisible = () => {
-      var chartEl = document.getElementById('chart')
-      if (chartEl.clientHeight > 0) {
-        try {
-          this.sqlpadTauChart.renderChart()
-        } catch (e) {
-          console.log('tauchart rendering failed')
-          console.log(e)
-        }
-      } else {
-        setTimeout(renderChartIfVisible, 20)
-      }
-    }
-    if (tabkey === 'vis') renderChartIfVisible()
   },
   onSaveImageClick: function (e) {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
@@ -529,7 +523,13 @@ var QueryEditor = React.createClass({
                           queryResult={this.state.queryResult} />
                       </div>
                       <div className='sidebar-footer'>
-                        <Button onClick={this.onVisualizeClick} className={'btn-block'} bsSize={'sm'}>Visualize</Button>
+                        <Button
+                          onClick={this.onVisualizeClick}
+                          disabled={!this.isChartable()}
+                          className={'btn-block'}
+                          bsSize={'sm'}>
+                          Visualize
+                        </Button>
                         <Button onClick={this.onSaveImageClick} className={'btn-block'} bsSize={'sm'}>
                           <Glyphicon glyph='save' />{' '}
                           Save Chart Image
@@ -543,6 +543,7 @@ var QueryEditor = React.createClass({
                         queryResult={this.state.queryResult}
                         queryError={this.state.queryError}
                         isRunning={this.state.isRunning}
+                        renderChart={this.isChartable()}
                         ref={(ref) => {
                           this.sqlpadTauChart = ref
                         }} />
