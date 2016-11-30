@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.1.1
+### November 29, 2016
+- Fix: disabling of links on query details modal (thanks vweevers!)
+- Fix: Vis tab loading indicator behaves same as query tab, hiding error on rerun (thanks vweevers!)
+- Fix: Charts rendered lazily. Query result grid loads faster, large query results won't lock browser until you try to chart. (thanks vweevers!)
+- Fix: Hide local auth form if DISABLE_USERPASS_AUTH=true
+
 ## 2.1.0
 ### November 20, 2016
 - run https via sqlpad directly (see additional setting) (thanks jameswinegar!) 
