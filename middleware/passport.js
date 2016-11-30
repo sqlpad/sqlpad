@@ -11,6 +11,7 @@ const BASE_URL = config.get('baseUrl')
 const GOOGLE_CLIENT_ID = config.get('googleClientId')
 const GOOGLE_CLIENT_SECRET = config.get('googleClientSecret')
 const PUBLIC_URL = config.get('publicUrl')
+const DISABLE_USERPASS_AUTH = config.get('disableUserpassAuth')
 
 passport.serializeUser(function (user, done) {
   done(null, user.id)
@@ -32,40 +33,42 @@ passport.deserializeUser(function (id, done) {
   })
 })
 
-passport.use(new PassportLocalStrategy({
-  usernameField: 'email'
-}, function passportLocalStrategyHandler (email, password, done) {
-  User.findOneByEmail(email, function (err, user) {
-    if (err) return done(err)
-    if (!user) return done(null, false, {message: 'wrong email or password'})
-    user.comparePasswordToHash(password, function (err, isMatch) {
+if (!DISABLE_USERPASS_AUTH) {
+  passport.use(new PassportLocalStrategy({
+    usernameField: 'email'
+  }, function passportLocalStrategyHandler (email, password, done) {
+    User.findOneByEmail(email, function (err, user) {
       if (err) return done(err)
-      if (isMatch) {
-        return done(null, {
-          id: user._id,
-          _id: user._id,
-          role: user.role,
-          email: user.email
-        })
-      }
-      return done(null, false, {message: 'wrong email or password'})
-    })
-  })
-}))
-
-passport.use(new BasicStrategy(
-  function (username, password, callback) {
-    User.findOneByEmail(username, function (err, user) {
-      if (err) return callback(err)
-      if (!user) return callback(null, false)
+      if (!user) return done(null, false, {message: 'wrong email or password'})
       user.comparePasswordToHash(password, function (err, isMatch) {
-        if (err) return callback(err)
-        if (!isMatch) return callback(null, false)
-        return callback(null, user)
+        if (err) return done(err)
+        if (isMatch) {
+          return done(null, {
+            id: user._id,
+            _id: user._id,
+            role: user.role,
+            email: user.email
+          })
+        }
+        return done(null, false, {message: 'wrong email or password'})
       })
     })
-  }
-))
+  }))
+
+  passport.use(new BasicStrategy(
+    function (username, password, callback) {
+      User.findOneByEmail(username, function (err, user) {
+        if (err) return callback(err)
+        if (!user) return callback(null, false)
+        user.comparePasswordToHash(password, function (err, isMatch) {
+          if (err) return callback(err)
+          if (!isMatch) return callback(null, false)
+          return callback(null, user)
+        })
+      })
+    }
+  ))
+}
 
 if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && PUBLIC_URL) {
   passport.use(new PassportGoogleStrategy({
