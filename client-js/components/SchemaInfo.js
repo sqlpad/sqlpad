@@ -66,7 +66,7 @@ var SchemaInfo = React.createClass({
     var refreshClass = (this.state.loading ? 'spinning' : '')
 
     var schemaInfo = this.state.schemaInfo
-    var schemaCount = Object.keys(schemaInfo).length
+    var schemaCount = (schemaInfo ? Object.keys(schemaInfo).length : 0)
     var initShowTables = (schemaCount <= 2)
     var schemaItemNodes = Object.keys(schemaInfo).map((schema) => {
       return (
