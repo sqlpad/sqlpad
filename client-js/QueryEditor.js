@@ -13,6 +13,7 @@ var Alert = require('react-s-alert').default
 import AceEditor from 'react-ace'
 import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
+import 'brace/ext/searchbox'
 
 var Row = require('react-bootstrap/lib/Row')
 var Col = require('react-bootstrap/lib/Col')
