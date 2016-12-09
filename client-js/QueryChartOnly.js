@@ -51,6 +51,14 @@ var QueryEditor = React.createClass({
       this.sqlpadTauChart.chart.fire('exportTo', 'png')
     }
   },
+  hasRows: function () {
+    var queryResult = this.state.queryResult
+    return !!(queryResult && queryResult.rows && queryResult.rows.length)
+  },
+  isChartable: function () {
+    var pending = this.state.isRunning || this.state.queryError
+    return !pending && this.hasRows()
+  },
   render: function () {
     var csvDownloadLink
     var xlsxDownloadLink
@@ -78,6 +86,7 @@ var QueryEditor = React.createClass({
             queryResult={this.state.queryResult}
             queryError={this.state.queryError}
             isRunning={this.state.isRunning}
+            renderChart={this.isChartable()}
             ref={(ref) => {
               this.sqlpadTauChart = ref
             }} />
