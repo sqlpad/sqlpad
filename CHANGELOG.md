@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.2
+### December 9, 2016
+- Fix chart only view not displaying charts
+- Fix query editor search
+- Update dependencies
+
 ## 2.1.1
 ### November 29, 2016
 - Fix: disabling of links on query details modal (thanks vweevers!)
