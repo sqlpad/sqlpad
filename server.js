@@ -132,49 +132,50 @@ app.use(function (req, res, next) {
 
 /*  Start the Server
 ============================================================================= */
-// determine if key pair exists for certs
-if (KEY_PATH && CERT_PATH) { //https only
-  console.log('Launching server with SSL')
-  detectPort(HTTPS_PORT).then(function (_port) {
-    if (HTTPS_PORT !== _port) {
-      console.log('\nPort %d already occupied. Using port %d instead.', HTTPS_PORT, _port)
-      // Persist the new port to the in-memory store. This is kinda hacky
-      // Assign value to cliValue since it overrides all other values
-      var ConfigItem = require('./models/ConfigItem.js')
-      var portConfigItem = ConfigItem.findOneByKey('httpsPort')
-      portConfigItem.cliValue = _port
-      portConfigItem.computeEffectiveValue()
-    }
+require('./lib/db').load(function(err) {
+  if (err) throw err
 
-    var privateKey = fs.readFileSync(KEY_PATH, 'utf8');
-    var certificate = fs.readFileSync(CERT_PATH, 'utf8');
-    var httpsOptions = {
-      key: privateKey,
-      cert: certificate,
-      passphrase: CERT_PASSPHRASE
-    };
+  // determine if key pair exists for certs
+  if (KEY_PATH && CERT_PATH) { //https only
+    console.log('Launching server with SSL')
+    detectPort(HTTPS_PORT).then(function (_port) {
+      if (HTTPS_PORT !== _port) {
+        console.log('\nPort %d already occupied. Using port %d instead.', HTTPS_PORT, _port)
+        // Persist the new port to the in-memory store. This is kinda hacky
+        // Assign value to cliValue since it overrides all other values
+        var ConfigItem = require('./models/ConfigItem.js')
+        var portConfigItem = ConfigItem.findOneByKey('httpsPort')
+        portConfigItem.cliValue = _port
+        portConfigItem.computeEffectiveValue()
+      }
 
-    https.createServer(httpsOptions, app).listen(_port, IP, function () {
-      console.log('\nWelcome to ' + app.locals.title + '!. Visit https://' + (IP === '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started')
+      var privateKey = fs.readFileSync(KEY_PATH, 'utf8');
+      var certificate = fs.readFileSync(CERT_PATH, 'utf8');
+      var httpsOptions = {
+        key: privateKey,
+        cert: certificate,
+        passphrase: CERT_PASSPHRASE
+      };
+
+      https.createServer(httpsOptions, app).listen(_port, IP, function () {
+        console.log('\nWelcome to ' + app.locals.title + '!. Visit https://' + (IP === '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started')
+      })
     })
-  })
-} else { // http only
-  console.log('Launching server WITHOUT SSL')
-  detectPort(PORT).then(function (_port) {
-    if (PORT !== _port) {
-      console.log('\nPort %d already occupied. Using port %d instead.', PORT, _port)
-      // Persist the new port to the in-memory store. This is kinda hacky
-      // Assign value to cliValue since it overrides all other values
-      var ConfigItem = require('./models/ConfigItem.js')
-      var portConfigItem = ConfigItem.findOneByKey('port')
-      portConfigItem.cliValue = _port
-      portConfigItem.computeEffectiveValue()
-    }
-    http.createServer(app).listen(_port, IP, function () {
-      console.log('\nWelcome to ' + app.locals.title + '!. Visit http://' + (IP === '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started')
+  } else { // http only
+    console.log('Launching server WITHOUT SSL')
+    detectPort(PORT).then(function (_port) {
+      if (PORT !== _port) {
+        console.log('\nPort %d already occupied. Using port %d instead.', PORT, _port)
+        // Persist the new port to the in-memory store. This is kinda hacky
+        // Assign value to cliValue since it overrides all other values
+        var ConfigItem = require('./models/ConfigItem.js')
+        var portConfigItem = ConfigItem.findOneByKey('port')
+        portConfigItem.cliValue = _port
+        portConfigItem.computeEffectiveValue()
+      }
+      http.createServer(app).listen(_port, IP, function () {
+        console.log('\nWelcome to ' + app.locals.title + '!. Visit http://' + (IP === '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started')
+      })
     })
-  })
-}
-
-
-
+  }
+})
