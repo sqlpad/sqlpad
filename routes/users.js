@@ -28,13 +28,8 @@ router.get('/api/users', mustBeAuthenticated, function (req, res) {
         error: 'Problem querying user database'
       })
     }
-    var cleanedUsers = users.map((u) => {
-      delete u.password
-      delete u.passhash
-      return u
-    })
     res.json({
-      users: cleanedUsers
+      users: users
     })
   })
 })

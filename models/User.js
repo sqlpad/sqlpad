@@ -89,7 +89,7 @@ User.findOneByPasswordResetId = function UserFindOneByPasswordResetId (id, callb
 }
 
 User.findAll = function UserFindAll (callback) {
-  db.users.find({}).sort({email: 1}).exec(function (err, docs) {
+  db.users.find({}, { password: 0, passhash: 0 }).sort({email: 1}).exec(function (err, docs) {
     if (err) return callback(err)
     var users = docs.map(function (doc) {
       return new User(doc)
