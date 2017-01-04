@@ -32,8 +32,7 @@ if (config.dev) {
 } else {
   process.env.NODE_ENV = 'production'
   b = browserify({
-    entries: ['./client-js/index.js'],
-    fullPaths: true
+    entries: ['./client-js/index.js']
   })
   b.transform('babelify', {presets: ['es2015', 'react']})
   b.transform('exposify', exposeConfig)
