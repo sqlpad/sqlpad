@@ -14,6 +14,8 @@ var schema = {
   domain: Joi.string().optional().allow(''),
   sqlserverEncrypt: Joi.boolean().default(false, 'SQL Server Encrypt'),
   postgresSsl: Joi.boolean().default(false, 'Postgres SSL'),
+  postgresCert: Joi.string().optional(),
+  postgresKey: Joi.string().optional(),
   mysqlInsecureAuth: Joi.boolean().default(false, 'Mysql Insecure Auth'),
   prestoCatalog: Joi.string().optional().allow(''),
   prestoSchema: Joi.string().optional().allow(''),
@@ -33,6 +35,8 @@ var Connection = function Connection (data) {
   this.domain = data.domain // this is sql server only for now, but could apply to other dbs in future?
   this.sqlserverEncrypt = data.sqlserverEncrypt
   this.postgresSsl = data.postgresSsl
+  this.postgresCert = data.postgresCert
+  this.postgresKey = data.postgresKey
   this.mysqlInsecureAuth = data.mysqlInsecureAuth
   this.prestoCatalog = data.prestoCatalog
   this.prestoSchema = data.prestoSchema

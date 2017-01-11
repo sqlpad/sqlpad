@@ -35,7 +35,7 @@
     "standard": "standard",
     "test": "standard && mocha --recursive",
     "coverage": "istanbul cover _mocha -- --recursive",
-    "start": "node-dev server.js --dir ./db --port 3000 --debug",
+    "start": "node-dev server.js --dir ./db --port 3000 --debug --admin nb@asodesk.com",
     "build": "node build.js",
     "build-dev": "node build.js --dev",
     "prepublish": "npm run build",
