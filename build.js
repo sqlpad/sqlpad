@@ -4,13 +4,6 @@ var watchify = require('watchify')
 var minimist = require('minimist')
 var config = minimist(process.argv.slice(2))
 
-var exposeConfig = {
-  expose: {
-    tauCharts: 'tauCharts',
-    _: '_'
-  }
-}
-
 var b
 
 if (config.dev) {
@@ -23,7 +16,6 @@ if (config.dev) {
   })
   b.plugin(watchify)
   b.transform('babelify', {presets: ['es2015', 'react']})
-  b.transform('exposify', exposeConfig)
   b.on('log', function (msg) {
     console.log(msg)
   })
@@ -35,7 +27,6 @@ if (config.dev) {
     entries: ['./client-js/index.js']
   })
   b.transform('babelify', {presets: ['es2015', 'react']})
-  b.transform('exposify', exposeConfig)
   b.transform('uglifyify', {global: true})
   bundle()
 }

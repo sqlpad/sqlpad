@@ -1,8 +1,8 @@
 var React = require('react')
-var _ = require('_')
+var _ = window._
 var chartDefinitions = require('./ChartDefinitions.js')
 var SpinKitCube = require('./SpinKitCube.js')
-var tauCharts = require('tauCharts')
+var tauCharts = window.tauCharts
 var Alert = require('react-s-alert').default
 
 var SqlpadTauChart = React.createClass({
