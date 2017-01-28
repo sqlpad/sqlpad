@@ -5,22 +5,31 @@ var Glyphicon = require('react-bootstrap/lib/Glyphicon')
 import CopyToClipboard from 'react-copy-to-clipboard'
 var fetchJson = require('../utilities/fetch-json.js')
 
-var SchemaInfo = React.createClass({
-  getInitialState: function () {
-    return {
+class SchemaInfo extends React.PureComponent {
+
+  constructor (props) {
+    super(props)
+    this.state = {
       schemaInfo: {},
       loading: false
     }
-  },
-  componentDidMount: function () {
+    // This binding is necessary to make `this` work in the callback
+    this.getSchemaInfo = this.getSchemaInfo.bind(this)
+    this.onConnectionChange = this.onConnectionChange.bind(this)
+    this.onRefreshClick = this.onRefreshClick.bind(this)
+  }
+
+  componentDidMount () {
     if (this.props.connectionId) this.getSchemaInfo(this.props.connectionId)
-  },
-  componentWillReceiveProps: function (nextProps) {
+  }
+
+  componentWillReceiveProps (nextProps) {
     if (this.props.connectionId !== nextProps.connectionId) {
       this.getSchemaInfo(nextProps.connectionId)
     }
-  },
-  getSchemaInfo: function (connectionId, reload) {
+  }
+
+  getSchemaInfo (connectionId, reload) {
     if (connectionId) {
       this.setState({
         schemaInfo: {},
@@ -47,17 +56,20 @@ var SchemaInfo = React.createClass({
         schemaInfo: {}
       })
     }
-  },
-  onConnectionChange: function (e) {
+  }
+
+  onConnectionChange (e) {
     var connectionId = e.target.value
     this.props.onConnectionChange(connectionId)
     this.getSchemaInfo(connectionId)
-  },
-  onRefreshClick: function (e) {
+  }
+
+  onRefreshClick (e) {
     e.preventDefault()
     this.getSchemaInfo(this.props.connectionId, true)
-  },
-  render: function () {
+  }
+
+  render () {
     var connectionSelectOptions = this.props.connections.map(function (conn) {
       return (
         <option key={conn._id} value={conn._id}>{conn.name}</option>
@@ -96,7 +108,7 @@ var SchemaInfo = React.createClass({
       </div>
     )
   }
-})
+}
 
 var SchemaInfoSchemaItem = React.createClass({
   getInitialState: function () {
