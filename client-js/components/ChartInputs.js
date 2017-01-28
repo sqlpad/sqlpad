@@ -1,5 +1,5 @@
 var React = require('react')
-var _ = require('_')
+var _ = window._
 var chartDefinitions = require('./ChartDefinitions.js')
 var FormGroup = require('react-bootstrap/lib/FormGroup')
 var FormControl = require('react-bootstrap/lib/FormControl')

@@ -2,7 +2,7 @@ var React = require('react')
 var SpinKitCube = require('./SpinKitCube.js')
 var moment = require('moment')
 import {Table, Column, Cell} from 'fixed-data-table' // react's fixed data table
-var _ = require('_')
+var _ = window._
 
 var renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {

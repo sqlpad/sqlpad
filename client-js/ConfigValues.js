@@ -1,5 +1,5 @@
 var React = require('react')
-var _ = require('_')
+var _ = window._
 var fetchJson = require('./utilities/fetch-json.js')
 var Alert = require('react-s-alert').default
 var Form = require('react-bootstrap/lib/Form')
