@@ -29,6 +29,8 @@ class QueryResultDataTable extends React.PureComponent {
       gridWidth: 0,
       gridHeight: 0
     }
+    // This binding is necessary to make `this` work in the callback
+    this.handleResize = this.handleResize.bind(this)
   }
 
   handleResize (e) {
