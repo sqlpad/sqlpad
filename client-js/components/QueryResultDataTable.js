@@ -18,14 +18,20 @@ var renderValue = (input, fieldMeta) => {
   }
 }
 
-var QueryResultDataTable = React.createClass({
-  getInitialState: function () {
-    return {
+// NOTE: PureComponent's shallow compare works for this component
+// because the isRunning prop will toggle with each query execution
+// It would otherwise not rerender on change of prop.queryResult alone
+class QueryResultDataTable extends React.PureComponent {
+
+  constructor (props) {
+    super(props)
+    this.state = {
       gridWidth: 0,
       gridHeight: 0
     }
-  },
-  handleResize: function (e) {
+  }
+
+  handleResize (e) {
     var resultGrid = document.getElementById('result-grid')
     if (resultGrid) {
       this.setState({
@@ -33,15 +39,18 @@ var QueryResultDataTable = React.createClass({
         gridWidth: resultGrid.clientWidth
       })
     }
-  },
-  componentDidMount: function () {
+  }
+
+  componentDidMount () {
     window.addEventListener('resize', this.handleResize)
     this.handleResize()
-  },
-  componentWillUnmount: function () {
+  }
+
+  componentWillUnmount () {
     window.removeEventListener('resize', this.handleResize)
-  },
-  render: function () {
+  }
+
+  render () {
     if (this.props.isRunning) {
       return (
         <div id='result-grid' className='run-result-notification'>
@@ -122,6 +131,6 @@ var QueryResultDataTable = React.createClass({
       return <div id='result-grid' />
     }
   }
-})
+}
 
 module.exports = QueryResultDataTable
