@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.3
+### January 28, 2017
+- Ensure strict db startup order (vweevers)
+- Improve query editor performance/reduce SQL editor lag
+
 ## 2.1.2
 ### December 9, 2016
 - Fix chart only view not displaying charts
