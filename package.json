@@ -31,17 +31,20 @@
     "url": "https://github.com/rickbergfalk/sqlpad/issues",
     "email": "rick.bergfalk@gmail.com"
   },
+  "proxy": "http://localhost:3001",
+  "homepage": "http://rickbergfalk.github.io/sqlpad",
   "scripts": {
     "standard": "standard",
     "test": "standard && mocha --recursive",
     "coverage": "istanbul cover _mocha -- --recursive",
-    "start": "node-dev server.js --dir ./db --port 3000 --debug",
-    "build": "node build.js",
-    "build-dev": "node build.js --dev",
     "prepublish": "npm run build",
-    "disc": "discify ./public/javascripts/browserified.js > disc.html"
+    "build": "react-scripts build",
+    "start-server": "node-dev server.js --dir ./db --port 3001 --debug",
+    "start-client": "react-scripts start",
+    "test-client": "react-scripts test --env=jsdom"
   },
   "dependencies": {
+    "@rickbergfalk/sqlpad-react-scripts": "0.0.2",
     "async": "^2.0.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.x.x",
