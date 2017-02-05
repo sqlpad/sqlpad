@@ -1,6 +1,7 @@
 node_modules/
 db/
 coverage/
+build/
 public/javascripts/browserified.js
 disc.html
 .DS_Store
@@ -10,6 +11,7 @@ tags
 zedrem.exe
 .zedstate
 .idea/*
+
 
 jsconfig.json
 
