@@ -150,13 +150,13 @@ require('./lib/db').load(function (err) {
         portConfigItem.computeEffectiveValue()
       }
 
-      var privateKey = fs.readFileSync(KEY_PATH, 'utf8');
-      var certificate = fs.readFileSync(CERT_PATH, 'utf8');
+      var privateKey = fs.readFileSync(KEY_PATH, 'utf8')
+      var certificate = fs.readFileSync(CERT_PATH, 'utf8')
       var httpsOptions = {
         key: privateKey,
         cert: certificate,
         passphrase: CERT_PASSPHRASE
-      };
+      }
 
       https.createServer(httpsOptions, app).listen(_port, IP, function () {
         console.log('\nWelcome to ' + app.locals.title + '!. Visit https://' + (IP === '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started')

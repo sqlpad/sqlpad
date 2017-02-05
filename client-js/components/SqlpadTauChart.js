@@ -22,7 +22,7 @@ var SqlpadTauChart = React.createClass({
     left: 0,
     right: 0
   },
-  destroyChart() {
+  destroyChart () {
     if (this.chart) {
       this.chart.destroy()
       this.chart = null
