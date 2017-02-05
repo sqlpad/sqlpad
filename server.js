@@ -3,6 +3,7 @@
 // Parse command line flags to see if anything special needs to happen
 require('./lib/cli-flow.js')
 var express = require('express')
+const fs = require('fs')
 var http = require('http')
 var https = require('https')
 var path = require('path')
@@ -132,11 +133,11 @@ app.use(function (req, res, next) {
 
 /*  Start the Server
 ============================================================================= */
-require('./lib/db').load(function(err) {
+require('./lib/db').load(function (err) {
   if (err) throw err
 
   // determine if key pair exists for certs
-  if (KEY_PATH && CERT_PATH) { //https only
+  if (KEY_PATH && CERT_PATH) { // https only
     console.log('Launching server with SSL')
     detectPort(HTTPS_PORT).then(function (_port) {
       if (HTTPS_PORT !== _port) {
