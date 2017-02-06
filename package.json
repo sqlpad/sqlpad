@@ -32,7 +32,7 @@
     "email": "rick.bergfalk@gmail.com"
   },
   "proxy": "http://localhost:3001",
-  "homepage": "http://rickbergfalk.github.io/sqlpad",
+  "homepage": "/BASEURL",
   "scripts": {
     "standard": "standard",
     "test": "standard && mocha --recursive",
@@ -44,7 +44,7 @@
     "test-client": "react-scripts test --env=jsdom"
   },
   "dependencies": {
-    "@rickbergfalk/sqlpad-react-scripts": "0.0.2",
+    "@rickbergfalk/sqlpad-react-scripts": "0.1.2",
     "async": "^2.0.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "1.x.x",
