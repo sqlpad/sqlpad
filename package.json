@@ -21,7 +21,10 @@
     "mssql",
     "postgres",
     "postgresql",
-    "mysql"
+    "mysql",
+    "crate",
+    "presto",
+    "vertica"
   ],
   "repository": {
     "type": "git",
