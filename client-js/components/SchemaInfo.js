@@ -36,7 +36,7 @@ class SchemaInfo extends React.PureComponent {
         loading: true
       })
       var url = this.props.config.baseUrl + '/api/schema-info/' + connectionId
-      if (reload) url = url + '?reload=true'
+      if (reload) url += '?reload=true'
       fetchJson('GET', url)
         .then((json) => {
           if (json.error) console.error(json.error)

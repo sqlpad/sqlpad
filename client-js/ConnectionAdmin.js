@@ -12,6 +12,7 @@ var ListGroup = require('react-bootstrap/lib/ListGroup')
 var Glyphicon = require('react-bootstrap/lib/Glyphicon')
 var Popover = require('react-bootstrap/lib/Popover')
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
+const _ = window._
 
 var ConnectionController = React.createClass({
   getInitialState: function () {
