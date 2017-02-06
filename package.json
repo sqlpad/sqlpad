@@ -32,17 +32,18 @@
     "email": "rick.bergfalk@gmail.com"
   },
   "proxy": "http://localhost:3010",
-  "homepage": "/BASEURL",
+  "homepage": "http://BASEURL",
   "scripts": {
     "standard": "standard",
     "test": "standard && mocha --recursive",
+    "test-client": "react-scripts test --env=jsdom",
     "coverage": "istanbul cover _mocha -- --recursive",
+    "start-server-dev": "node-dev server.js --dir ./db --port 3010 --debug",
+    "start-client-dev": "react-scripts start",
     "prepublish": "npm run build",
     "build": "react-scripts build",
-    "start-server": "node-dev server.js --dir ./db --port 3010 --debug",
-    "start": "react-scripts start",
-    "start-client": "react-scripts start",
-    "test-client": "react-scripts test --env=jsdom"
+    "start": "npm run start-server-dev",
+    "build-dev": "npm run start-client-dev"
   },
   "dependencies": {
     "async": "^2.0.1",
@@ -115,8 +116,6 @@
   },
   "standard": {
     "globals": [
-      "$",
-      "_",
       "fetch"
     ],
     "ignore": [
