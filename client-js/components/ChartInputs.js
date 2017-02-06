@@ -109,6 +109,8 @@ var ChartInputs = React.createClass({
                 className='input-small' />
             </FormGroup>
           )
+        } else {
+          throw Error(`field.inputType ${field.inputType} not supported`)
         }
       })
     }

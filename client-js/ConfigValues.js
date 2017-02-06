@@ -64,8 +64,9 @@ var ConfigValues = React.createClass({
     this.saveConfigValue = _.debounce(this.saveConfigValue, 500)
   },
   render: function () {
-    var configItemInputNodes = this.state.configItems.map((config) => {
-      if (config.interface === 'ui') {
+    var configItemInputNodes = this.state.configItems
+      .filter(config => config.interface === 'ui')
+      .map(config => {
         return (
           <ConfigItemInput
             key={config.key}
@@ -73,8 +74,7 @@ var ConfigValues = React.createClass({
             saveConfigValue={this.saveConfigValue}
           />
         )
-      }
-    })
+      })
     return (
       <div>
         <Col sm={6} smOffset={1}>
@@ -145,18 +145,12 @@ var ConfigItemInput = React.createClass({
     const config = this.props.config
     const disabled = (config.effectiveValueSource === 'cli' || config.effectiveValueSource === 'saved cli' || config.effectiveValueSource === 'env')
 
-    let overriddenBy
-    switch (config.effectiveValueSource) {
-      case 'cli':
-        overriddenBy = 'Command Line'
-        break
-      case 'saved cli':
-        overriddenBy = 'Saved Command Line'
-        break
-      case 'env':
-        overriddenBy = 'Environment Variable'
-        break
+    const effectiveValueSourceLabels = {
+      'cli': 'Command Line',
+      'saved cli': 'Saved Command Line',
+      'env': 'Environment Varialbe'
     }
+    const overriddenBy = effectiveValueSourceLabels[config.effectiveValueSource]
 
     const inputNode = () => {
       if (config.options) {
@@ -246,8 +240,9 @@ var ConfigItemInput = React.createClass({
 
 var ConfigEnvDocumentation = React.createClass({
   render: function () {
-    var configNodes = this.props.configItems.map(function (config) {
-      if (config.interface === 'env') {
+    var configNodes = this.props.configItems
+      .filter(config => config.interface === 'env')
+      .map(function (config) {
         var defaultValue = () => {
           if (config.default === '') {
             return (
@@ -298,8 +293,7 @@ var ConfigEnvDocumentation = React.createClass({
             </Col>
           </Row>
         )
-      }
-    })
+      })
     return (
       <Form horizontal style={{marginBottom: 50}}>
         {configNodes}
