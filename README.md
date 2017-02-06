@@ -18,6 +18,11 @@ npm install sqlpad -g
 sqlpad --help
 ```
 
+To update sqlpad installed via npm run 
+```sh
+npm install sqlpad -g
+```
+
 
 ## Development
 
