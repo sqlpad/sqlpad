@@ -14,6 +14,106 @@ var Popover = require('react-bootstrap/lib/Popover')
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
 const _ = window._
 
+const TEXT = 'TEXT'
+const PASSWORD = 'PASSWORD'
+const CHECKBOX = 'CHECKBOX'
+
+
+// fields config for all connection fields except for name and driver
+const fields = {
+  host: {
+    formType: TEXT,
+    label: 'Host/Server/IP Address'
+  },
+  port: {
+    formType: TEXT,
+    label: 'Port (optional)'
+  },
+  database: {
+    formType: TEXT,
+    label: 'Database'
+  },
+  user: {
+    formType: TEXT,
+    label: 'Database Username'
+  },
+  password: {
+    formType: PASSWORD,
+    label: 'Database Password'
+  },
+  domain: {
+    formType: TEXT,
+    label: 'Domain'
+  },
+  sqlserverEncrypt: {
+    formType: CHECKBOX,
+    label: 'Encrypt (necessary for Azure)'
+  },
+  postgresSsl: {
+    formType: CHECKBOX,
+    label: 'Use SSL'
+  },
+  mysqlInsecureAuth: {
+    formType: CHECKBOX,
+    label: 'Use old/insecure pre 4.1 Auth System'
+  },
+  prestoCatalog: {
+    formType: TEXT,
+    label: 'Catalog'
+  },
+  prestoSchema: {
+    formType: TEXT,
+    label: 'Schema'
+  }
+}
+
+const driverFields = {
+  crate: [
+    fields.name,
+    fields.host,
+    fields.port
+  ],
+  mysql: [
+    fields.host,
+    fields.port,
+    fields.database,
+    fields.user,
+    fields.password,
+    fields.mysqlInsecureAuth
+  ],
+  postgres: [
+    fields.host,
+    fields.port,
+    fields.database,
+    fields.user,
+    fields.password,
+    fields.postgresSsl
+  ],
+  presto: [
+    fields.host,
+    fields.port,
+    fields.user,
+    fields.prestoCatalog,
+    fields.prestoSchema
+  ],
+  sqlserver: [
+    fields.host,
+    fields.port,
+    fields.database,
+    fields.domain,
+    fields.user,
+    fields.password,
+    fields.sqlserverEncrypt
+  ],
+  vertica: [
+    fields.host,
+    fields.port,
+    fields.database,
+    fields.user,
+    fields.password
+  ]
+}
+
 var ConnectionController = React.createClass({
   getInitialState: function () {
     return {
