@@ -73,6 +73,9 @@ QueryResult.prototype.addRow = function QueryResultAddRow (row) {
     // if we don't have a data type and we have a value yet lets try and figure it out
     if (!this.meta[key].datatype) {
       if (_.isDate(value)) this.meta[key].datatype = 'date'
+      if (_.isNumber(value)) this.meta[key].datatype = 'number'
+      // BIGINT and aggregate results sometimes come in as strings depending on db driver
+      // if they contain a numeric value we want to treat them as a numeric
       else if (isNumberLike(value)) this.meta[key].datatype = 'number'
       else if (_.isString(value)) {
         this.meta[key].datatype = 'string'
@@ -88,8 +91,9 @@ QueryResult.prototype.addRow = function QueryResultAddRow (row) {
     // a mix of number-like and strings that aren't number like
     // in the event that we get some data that's NOT NUMBER LIKE,
     // then we should *really* be recording this as string
-    if (this.meta[key].datatype === 'number') {
-      if (!isNumberLike(value)) {
+    // also - if first character is 0 revert back to string
+    if (this.meta[key].datatype === 'number' && _.isString(value)) {
+      if (!isNumberLike(value) || value[0] === '0') {
         this.meta[key].datatype = 'string'
         this.meta[key].max = null
         this.meta[key].min = null
