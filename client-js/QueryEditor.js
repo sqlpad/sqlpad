@@ -139,10 +139,16 @@ var QueryEditor = React.createClass({
     fetchJson('GET', this.props.config.baseUrl + '/api/connections/')
       .then((json) => {
         if (json.error) Alert.error(json.error)
+        const connections = json.connections
+        const query = this.state.query
+        // if only 1 connection auto-select it
+        if (connections.length === 1 && this.state.query) {
+          query.connectionId = connections[0]._id
+        }
         this.setState({
-          connections: json.connections
+          connections: connections,
+          query: query
         })
-        this.autoPickConnection()
       })
       .catch((ex) => {
         console.error(ex.toString())
@@ -161,15 +167,6 @@ var QueryEditor = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  autoPickConnection: function () {
-    if (this.state.connections.length === 1 && this.state.query) {
-      var stateQuery = this.state.query
-      stateQuery.connectionId = this.state.connections[0]._id
-      this.setState({
-        query: stateQuery
-      })
-    }
   },
   getInitialState: function () {
     return {

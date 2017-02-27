@@ -25,7 +25,7 @@ var schema = {
   queryText: Joi.string().optional().empty(''),
   chartConfiguration: Joi.object({
     chartType: Joi.string().optional().empty(''),
-        // key value pairings. key=chart property, value=field mapped to property
+    // key value pairings. key=chart property, value=field mapped to property
     fields: Joi.object().unknown(true).optional()
   }).optional(),
   createdDate: Joi.date().default(new Date(), 'time of creation'),
@@ -53,6 +53,15 @@ Query.prototype.save = function QuerySave (callback) {
   var self = this
   this.modifiedDate = new Date()
   this.lastAccessDate = new Date()
+  // clean tags if present
+  // sqlpad v1 saved a lot of bad inputs
+  if (Array.isArray(self.tags)) {
+    self.tags = self.tags.filter(tag => {
+      return typeof tag === 'string' && tag.trim() !== ''
+    }).map(tag => {
+      return tag.trim()
+    })
+  }
   var joiResult = Joi.validate(self, schema)
   if (joiResult.error) return callback(joiResult.error)
   if (self._id) {

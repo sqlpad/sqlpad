@@ -1,8 +1,8 @@
 var React = require('react')
-var _ = require('_')
+var _ = window._
 var chartDefinitions = require('./ChartDefinitions.js')
 var SpinKitCube = require('./SpinKitCube.js')
-var tauCharts = require('tauCharts')
+var tauCharts = window.tauCharts
 var Alert = require('react-s-alert').default
 
 var SqlpadTauChart = React.createClass({
@@ -22,7 +22,7 @@ var SqlpadTauChart = React.createClass({
     left: 0,
     right: 0
   },
-  destroyChart() {
+  destroyChart () {
     if (this.chart) {
       this.chart.destroy()
       this.chart = null
@@ -81,7 +81,7 @@ var SqlpadTauChart = React.createClass({
     // loop through data rows and convert types as needed
     dataRows = dataRows.map((row) => {
       var newRow = {}
-      for (var col in row) {
+      Object.keys(row).forEach(col => {
         var datatype = this.props.queryResult.meta[col].datatype
         if (datatype === 'date') {
           newRow[col] = new Date(row[col])
@@ -90,7 +90,8 @@ var SqlpadTauChart = React.createClass({
         } else {
           newRow[col] = row[col]
         }
-      }
+      })
+
       // HACK -
       // Facets need to be a dimension, not a measure.
       // tauCharts auto detects numbers to be measures
