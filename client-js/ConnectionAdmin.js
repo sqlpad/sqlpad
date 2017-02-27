@@ -350,6 +350,12 @@ var ConnectionForm = React.createClass({
   onPostgresSslChange: function (e) {
     this.props.setConnectionValue('postgresSsl', e.target.checked)
   },
+  onCertChange: function (e) {
+    this.props.setConnectionValue('postgresCert', e.target.value)
+  },
+  onKeyChange: function (e) {
+    this.props.setConnectionValue('postgresKey', e.target.value)
+  },
   onPrestoCatalogChange: function (e) {
     this.props.setConnectionValue('prestoCatalog', e.target.value)
   },
@@ -389,6 +395,26 @@ var ConnectionForm = React.createClass({
           <FormGroup controlId='database-password'>
             <ControlLabel>Database Password</ControlLabel>
             <FormControl type='password' value={connection.password || ''} onChange={this.onPasswordChange} />
+          </FormGroup>
+        )
+      }
+    }
+    var certInput = () => {
+      if (connection.driver === 'postgres') {
+        return (
+          <FormGroup controlId='database-cert'>
+            <ControlLabel>Database Certificate</ControlLabel>
+            <FormControl type='text' value={connection.postgresCert || ''} onChange={this.onCertChange} />
+          </FormGroup>
+        )
+      }
+    }
+    var keyInput = () => {
+      if (connection.driver === 'postgres') {
+        return (
+          <FormGroup controlId='database-key'>
+            <ControlLabel>Database Key</ControlLabel>
+            <FormControl type='text' value={connection.postgresKey || ''} onChange={this.onKeyChange} />
           </FormGroup>
         )
       }
@@ -468,6 +494,8 @@ var ConnectionForm = React.createClass({
             {domainInput()}
             {usernameInput()}
             {passwordInput()}
+            {certInput()}
+            {keyInput()}
             {sqlserverEncryptInput()}
             {mysqlInsecureAuthInput()}
             {postgresSslInput()}
