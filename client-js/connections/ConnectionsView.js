@@ -5,7 +5,7 @@ const _ = window._
 const ConnectionList = require('./ConnectionList')
 const ConnectionForm = require('./ConnectionForm')
 
-class ConnectionController extends React.Component {
+class ConnectionsView extends React.Component {
 
   constructor (props) {
     super(props)
@@ -145,4 +145,4 @@ class ConnectionController extends React.Component {
   }
 }
 
-module.exports = ConnectionController
+module.exports = ConnectionsView
