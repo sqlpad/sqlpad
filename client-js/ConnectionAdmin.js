@@ -53,6 +53,14 @@ const fields = {
     formType: CHECKBOX,
     label: 'Use SSL'
   },
+  postgresCert: {
+    formType: TEXT,
+    label: 'Database Certificate Path'
+  },
+  postgresKey: {
+    formType: TEXT,
+    label: 'Database Key Path'
+  },
   mysqlInsecureAuth: {
     formType: CHECKBOX,
     label: 'Use old/insecure pre 4.1 Auth System'
@@ -87,7 +95,9 @@ const driverFields = {
     fields.database,
     fields.user,
     fields.password,
-    fields.postgresSsl
+    fields.postgresSsl,
+    fields.postgresCert,
+    fields.postgresKey
   ],
   presto: [
     fields.host,
