@@ -14,7 +14,7 @@ var sqldir = path.join(__dirname, '/../resources/')
 var sqlSchemaPostgres = fs.readFileSync(sqldir + '/schema-postgres.sql', {encoding: 'utf8'})
 var sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {encoding: 'utf8'})
 var sqlSchemaCrate = fs.readFileSync(sqldir + '/schema-crate.sql', {encoding: 'utf8'})
-// var sqlSchemaCrateV0 = fs.readFileSync(sqldir + '/schema-crate.v0.sql', {encoding: 'utf8'})
+var sqlSchemaCrateV0 = fs.readFileSync(sqldir + '/schema-crate.v0.sql', {encoding: 'utf8'})
 var sqlSchemaStandard = fs.readFileSync(sqldir + '/schema-standard.sql', {encoding: 'utf8'})
 
 router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
@@ -75,22 +75,36 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
     connection.password = decipher(connection.password)
     connection.maxRows = typeof Number.MAX_SAFE_INTEGER === undefined ? 9007199254740991 : Number.MAX_SAFE_INTEGER
 
-    var tableAndColumnSql = ''
+    let primarySchemaSql = ''
+    let secondarySchemaSql
     if (connection.driver === 'vertica') {
-      tableAndColumnSql = sqlSchemaVertica
+      primarySchemaSql = sqlSchemaVertica
     } else if (connection.driver === 'crate') {
-      tableAndColumnSql = sqlSchemaCrate
+      primarySchemaSql = sqlSchemaCrate
+      secondarySchemaSql = sqlSchemaCrateV0
     } else if (connection.driver === 'postgres') {
-      tableAndColumnSql = sqlSchemaPostgres
+      primarySchemaSql = sqlSchemaPostgres
     } else {
-      tableAndColumnSql = sqlSchemaStandard
+      primarySchemaSql = sqlSchemaStandard
     }
 
-    runQuery(tableAndColumnSql, connection, function (err, queryResult) {
-      if (err) {
+    runQuery(primarySchemaSql, connection, function (err, queryResult) {
+      if (err && !secondarySchemaSql) {
         console.error(err)
         return res.json({
           error: 'Problem running schema info query'
+        })
+      }
+      if (err && secondarySchemaSql) {
+        return runQuery(secondarySchemaSql, connection, function (err, queryResult) {
+          if (err) {
+            console.error(err)
+            return res.json({
+              error: 'Problem running schema info query'
+            })
+          }
+          res.locals.queryResult = queryResult
+          next()
         })
       }
       res.locals.queryResult = queryResult
