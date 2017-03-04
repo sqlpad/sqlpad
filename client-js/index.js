@@ -23,7 +23,7 @@ function init (appData) {
   ============================================================================== */
   var App = require('./App.js')
   var UserAdmin = require('./UserAdmin.js')
-  var ConnectionAdmin = require('./ConnectionAdmin.js')
+  var ConnectionAdmin = require('./connections/ConnectionAdmin.js')
   var ConfigValues = require('./ConfigValues.js')
   var FilterableQueryList = require('./FilterableQueryList.js')
   var QueryEditor = require('./QueryEditor.js')
