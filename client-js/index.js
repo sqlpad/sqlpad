@@ -23,7 +23,7 @@ function init (appData) {
   ============================================================================== */
   var App = require('./App.js')
   var UserAdmin = require('./UserAdmin.js')
-  var ConnectionAdmin = require('./ConnectionAdmin.js')
+  var ConnectionsView = require('./connections/ConnectionsView.js')
   var ConfigValues = require('./ConfigValues.js')
   var FilterableQueryList = require('./FilterableQueryList.js')
   var QueryEditor = require('./QueryEditor.js')
@@ -86,7 +86,7 @@ function init (appData) {
     document.title = 'SqlPad - Connections'
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
-        <ConnectionAdmin config={ctx.config} />
+        <ConnectionsView config={ctx.config} />
       </App>,
       document.getElementById('root')
     )
