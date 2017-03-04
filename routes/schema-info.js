@@ -126,6 +126,7 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
         }
       }
     }
+    // TODO get rid of is_nullable since no plans on using it in UI
     /*
     At this point, tree should look like this:
       {
