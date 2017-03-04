@@ -20,7 +20,9 @@ function connectionFromBody (body) {
     postgresSsl: (body.postgresSsl === true),
     mysqlInsecureAuth: (body.mysqlInsecureAuth === true),
     prestoCatalog: body.prestoCatalog,
-    prestoSchema: body.prestoSchema
+    prestoSchema: body.prestoSchema,
+	restApiCatalog: body.restApiCatalog,
+    restApiSchema: body.restApiSchema
   }
 }
 
@@ -113,6 +115,8 @@ router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
     connection.mysqlInsecureAuth = (req.body.mysqlInsecureAuth === true)
     connection.prestoCatalog = req.body.prestoCatalog
     connection.prestoSchema = req.body.prestoSchema
+	connection.restApiCatalog = req.body.restApiCatalog
+    connection.restApiSchema = req.body.restApiSchema
     connection.save(function (err, connection) {
       if (err) {
         console.error(err)
@@ -152,7 +156,10 @@ router.post('/api/test-connection', mustBeAdmin, function testConnection (req, r
   if (bodyConnection.driver === 'presto') {
     testQuery = "SELECT 'success' AS TestQuery"
   }
-  runQuery(testQuery, bodyConnection, function (err, queryResult) {
+  if (bodyConnection.driver === 'restapi') {
+    testQuery = "TEST_REST_API"
+  }
+  runQuery(testQuery, bodyConnection, function (err, queryResult) {  
     if (err) {
       console.error(err)
       return res.json({

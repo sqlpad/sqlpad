@@ -256,6 +256,12 @@ var ConnectionForm = React.createClass({
   onPrestoSchemaChange: function (e) {
     this.props.setConnectionValue('prestoSchema', e.target.value)
   },
+  onRestApiCatalogChange: function (e) {
+    this.props.setConnectionValue('restApiCatalog', e.target.value)
+  },
+  onRestApiSchemaChange: function (e) {
+    this.props.setConnectionValue('restApiSchema', e.target.value)
+  },
   render: function () {
     if (!this.props.selectedConnection) {
       return (
@@ -264,7 +270,7 @@ var ConnectionForm = React.createClass({
     }
     var connection = this.props.selectedConnection
     var databaseInput = () => {
-      if (connection.driver !== 'crate' && connection.driver !== 'presto') {
+      if (connection.driver !== 'crate' && connection.driver !== 'presto' && connection.driver !== 'restapi') {
         return (
           <FormGroup controlId='database'>
             <ControlLabel>Database</ControlLabel>
@@ -284,7 +290,7 @@ var ConnectionForm = React.createClass({
       }
     }
     var passwordInput = () => {
-      if (connection.driver !== 'crate' && connection.driver !== 'presto') {
+      if (connection.driver !== 'crate' && connection.driver !== 'presto' && connection.driver !== 'restapi') {
         return (
           <FormGroup controlId='database-password'>
             <ControlLabel>Database Password</ControlLabel>
@@ -348,6 +354,7 @@ var ConnectionForm = React.createClass({
               <ControlLabel>Database Driver</ControlLabel>
               <FormControl componentClass='select' value={connection.driver || ''} onChange={this.onDriverChange}>
                 <option value='' />
+				<option value='restapi'>REST API</option>
                 <option value='crate'>Crate</option>
                 <option value='mysql'>MySQL</option>
                 <option value='postgres'>Postgres</option>
@@ -380,6 +387,18 @@ var ConnectionForm = React.createClass({
                 <FormGroup controlId='prestoSchema'>
                   <ControlLabel>Schema</ControlLabel>
                   <FormControl type='text' value={connection.prestoSchema || ''} onChange={this.onPrestoSchemaChange} />
+                </FormGroup>
+              </div>
+            ) : null)}
+			{(connection.driver === 'restapi' ? (
+              <div>
+                <FormGroup controlId='restApiCatalog'>
+                  <ControlLabel>Catalog</ControlLabel>
+                  <FormControl type='text' value={connection.restApiCatalog || ''} onChange={this.onRestApiCatalogChange} />
+                </FormGroup>
+                <FormGroup controlId='restApiSchema'>
+                  <ControlLabel>Schema</ControlLabel>
+                  <FormControl type='text' value={connection.restApiSchema || ''} onChange={this.onRestApiSchemaChange} />
                 </FormGroup>
               </div>
             ) : null)}

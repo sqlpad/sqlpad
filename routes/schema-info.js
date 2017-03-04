@@ -15,6 +15,7 @@ var sqlSchemaPostgres = fs.readFileSync(sqldir + '/schema-postgres.sql', {encodi
 var sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {encoding: 'utf8'})
 var sqlSchemaCrate = fs.readFileSync(sqldir + '/schema-crate.sql', {encoding: 'utf8'})
 var sqlSchemaStandard = fs.readFileSync(sqldir + '/schema-standard.sql', {encoding: 'utf8'})
+var sqlSchemaRestApi = fs.readFileSync(sqldir + '/schema-restapi.sql', {encoding: 'utf8'})
 
 router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
   function initLocals (req, res, next) {
@@ -71,6 +72,8 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
           tableAndColumnSql = sqlSchemaCrate
         } else if (connection.driver === 'postgres') {
           tableAndColumnSql = sqlSchemaPostgres
+        } else if (connection.driver === 'restapi') {
+          tableAndColumnSql = sqlSchemaRestApi
         } else {
           tableAndColumnSql = sqlSchemaStandard
         }
