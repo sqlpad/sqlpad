@@ -22,54 +22,67 @@ const CHECKBOX = 'CHECKBOX'
 // fields config for all connection fields except for name and driver
 const fields = {
   host: {
+    key: 'host',
     formType: TEXT,
     label: 'Host/Server/IP Address'
   },
   port: {
+    key: 'port',
     formType: TEXT,
     label: 'Port (optional)'
   },
   database: {
+    key: 'database',
     formType: TEXT,
     label: 'Database'
   },
-  user: {
+  username: {
+    key: 'username',
     formType: TEXT,
     label: 'Database Username'
   },
   password: {
+    key: 'password',
     formType: PASSWORD,
     label: 'Database Password'
   },
   domain: {
+    key: 'domain',
     formType: TEXT,
     label: 'Domain'
   },
   sqlserverEncrypt: {
+    key: 'sqlserverEncrypt',
     formType: CHECKBOX,
     label: 'Encrypt (necessary for Azure)'
   },
   postgresSsl: {
+    key: 'postgresSsl',
     formType: CHECKBOX,
     label: 'Use SSL'
   },
   postgresCert: {
+    key: 'postgresCert',
     formType: TEXT,
     label: 'Database Certificate Path'
   },
   postgresKey: {
+    key: 'postgresKey',
     formType: TEXT,
     label: 'Database Key Path'
   },
   mysqlInsecureAuth: {
+    key: 'mysqlInsecureAuth',
     formType: CHECKBOX,
     label: 'Use old/insecure pre 4.1 Auth System'
   },
   prestoCatalog: {
+    key: 'prestoCatalog',
     formType: TEXT,
     label: 'Catalog'
   },
   prestoSchema: {
+    key: 'prestoSchema',
     formType: TEXT,
     label: 'Schema'
   }
@@ -77,7 +90,6 @@ const fields = {
 
 const driverFields = {
   crate: [
-    fields.name,
     fields.host,
     fields.port
   ],
@@ -85,7 +97,7 @@ const driverFields = {
     fields.host,
     fields.port,
     fields.database,
-    fields.user,
+    fields.username,
     fields.password,
     fields.mysqlInsecureAuth
   ],
@@ -93,7 +105,7 @@ const driverFields = {
     fields.host,
     fields.port,
     fields.database,
-    fields.user,
+    fields.username,
     fields.password,
     fields.postgresSsl,
     fields.postgresCert,
@@ -102,7 +114,7 @@ const driverFields = {
   presto: [
     fields.host,
     fields.port,
-    fields.user,
+    fields.username,
     fields.prestoCatalog,
     fields.prestoSchema
   ],
@@ -111,7 +123,7 @@ const driverFields = {
     fields.port,
     fields.database,
     fields.domain,
-    fields.user,
+    fields.username,
     fields.password,
     fields.sqlserverEncrypt
   ],
@@ -119,29 +131,41 @@ const driverFields = {
     fields.host,
     fields.port,
     fields.database,
-    fields.user,
+    fields.username,
     fields.password
   ]
 }
 
-var ConnectionController = React.createClass({
-  getInitialState: function () {
-    return {
+class ConnectionController extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.state = {
       connections: [],
       selectedConnection: null,
       isTesting: false,
       isSaving: false
     }
-  },
-  componentDidMount: function () {
+    this.handleSelect = this.handleSelect.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
+    this.onNewConnectionClick = this.onNewConnectionClick.bind(this)
+    this.setConnectionValue = this.setConnectionValue.bind(this)
+    this.loadConnectionsFromServer = this.loadConnectionsFromServer.bind(this)
+    this.testConnection = this.testConnection.bind(this)
+    this.saveConnection = this.saveConnection.bind(this)
+  }
+
+  componentDidMount () {
     this.loadConnectionsFromServer()
-  },
-  handleSelect: function (connection) {
+  }
+
+  handleSelect (connection) {
     this.setState({
       selectedConnection: _.clone(connection)
     })
-  },
-  handleDelete: function (connection) {
+  }
+
+  handleDelete (connection) {
     fetchJson('DELETE', this.props.config.baseUrl + '/api/connections/' + connection._id)
       .then((json) => {
         if (json.error) return Alert.error('Delete failed')
@@ -155,20 +179,23 @@ var ConnectionController = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  onNewConnectionClick: function () {
+  }
+
+  onNewConnectionClick () {
     this.setState({
       selectedConnection: {}
     })
-  },
-  setConnectionValue: function (attribute, value) {
+  }
+
+  setConnectionValue (attribute, value) {
     var selectedConnection = this.state.selectedConnection
     if (selectedConnection) {
       selectedConnection[attribute] = value
       this.setState({selectedConnection: selectedConnection})
     }
-  },
-  loadConnectionsFromServer: function () {
+  }
+
+  loadConnectionsFromServer () {
     fetchJson('get', this.props.config.baseUrl + '/api/connections')
       .then((json) => {
         if (json.error) Alert.error(json.error)
@@ -178,8 +205,9 @@ var ConnectionController = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  testConnection: function () {
+  }
+
+  testConnection () {
     this.setState({isTesting: true})
     fetchJson('POST', this.props.config.baseUrl + '/api/test-connection', this.state.selectedConnection)
       .then((json) => {
@@ -191,8 +219,9 @@ var ConnectionController = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  saveConnection: function () {
+  }
+
+  saveConnection () {
     this.setState({isSaving: true})
     if (this.state.selectedConnection._id) {
       fetchJson('PUT', this.props.config.baseUrl + '/api/connections/' + this.state.selectedConnection._id, this.state.selectedConnection)
@@ -224,8 +253,9 @@ var ConnectionController = React.createClass({
           Alert.error('Something is broken')
         })
     }
-  },
-  render: function () {
+  }
+
+  render () {
     return (
       <div>
         <ConnectionList
@@ -244,54 +274,76 @@ var ConnectionController = React.createClass({
       </div>
     )
   }
-})
+}
 
 module.exports = ConnectionController
 
-var ConnectionList = React.createClass({
-  style: {
-    position: 'absolute',
-    left: 0,
-    width: '50%',
-    top: 0,
-    bottom: 0,
-    backgroundColor: '#FDFDFD',
-    overflowY: 'auto',
-    padding: 10
-  },
-  render: function () {
-    var listRows = this.props.connections.map((connection) => {
+
+const connectionListStyle = {
+  position: 'absolute',
+  left: 0,
+  width: '50%',
+  top: 0,
+  bottom: 0,
+  backgroundColor: '#FDFDFD',
+  overflowY: 'auto',
+  padding: 10
+}
+
+class ConnectionList extends React.Component {
+  render () {
+    const { connections, selectedConnection, handleSelect, handleDelete, onNewConnectionClick } = this.props
+    var listRows = connections.map((connection) => {
       return (
         <ConnectionListRow
           key={connection._id}
           connection={connection}
-          selectedConnection={this.props.selectedConnection}
-          handleSelect={this.props.handleSelect}
-          handleDelete={this.props.handleDelete} />
+          selectedConnection={selectedConnection}
+          handleSelect={handleSelect}
+          handleDelete={handleDelete} />
       )
     })
     return (
-      <div className='ConnectionList' style={this.style}>
+      <div className='ConnectionList' style={connectionListStyle}>
         <ControlLabel>Connections</ControlLabel>
         <ListGroup className='ConnectionListContents'>
           {listRows}
         </ListGroup>
-        <Button onClick={this.props.onNewConnectionClick}>
+        <Button onClick={onNewConnectionClick}>
           New Connection
         </Button>
       </div>
     )
   }
-})
+}
 
-var ConnectionListRow = React.createClass({
-  onDelete: function (e) {
+ConnectionList.propTypes = {
+  connections: React.PropTypes.array.isRequired,
+  selectedConnection: React.PropTypes.object,
+  handleSelect: React.PropTypes.func.isRequired,
+  handleDelete: React.PropTypes.func.isRequired,
+  onNewConnectionClick: React.PropTypes.func.isRequired
+}
+
+
+
+class ConnectionListRow extends React.Component {
+
+  constructor (props) {
+    super(props)
+    this.onDelete = this.onDelete.bind(this)
+    this.onSelect = this.onSelect.bind(this)
+  }
+
+  onDelete (e) {
     this.props.handleDelete(this.props.connection)
-  },
-  onSelect: function (e) {
+  }
+
+  onSelect (e) {
     this.props.handleSelect(this.props.connection)
-  },
-  render: function () {
+  }
+
+  render () {
     var getClassNames = () => {
       if (this.props.selectedConnection && this.props.selectedConnection._id === this.props.connection._id) {
         return 'list-group-item ListRow ListRowSelected'
@@ -314,175 +366,105 @@ var ConnectionListRow = React.createClass({
       </li>
     )
   }
-})
+}
 
-var ConnectionForm = React.createClass({
-  style: {
-    position: 'absolute',
-    right: 0,
-    width: '50%',
-    top: 0,
-    bottom: 0,
-    backgroundColor: '#FDFDFD',
-    overflowY: 'auto',
-    padding: 10
-  },
-  onNameChange: function (e) {
-    this.props.setConnectionValue('name', e.target.value)
-  },
-  onDriverChange: function (e) {
-    this.props.setConnectionValue('driver', e.target.value)
-  },
-  onHostChange: function (e) {
-    this.props.setConnectionValue('host', e.target.value)
-  },
-  onPortChange: function (e) {
-    this.props.setConnectionValue('port', e.target.value)
-  },
-  onDatabaseChange: function (e) {
-    this.props.setConnectionValue('database', e.target.value)
-  },
-  onUsernameChange: function (e) {
-    this.props.setConnectionValue('username', e.target.value)
-  },
-  onPasswordChange: function (e) {
-    this.props.setConnectionValue('password', e.target.value)
-  },
-  onDomainChange: function (e) {
-    this.props.setConnectionValue('domain', e.target.value)
-  },
-  onSqlserverEncryptChange: function (e) {
-    this.props.setConnectionValue('sqlserverEncrypt', e.target.checked)
-  },
-  onMysqlInsecureAuthChange: function (e) {
-    this.props.setConnectionValue('mysqlInsecureAuth', e.target.checked)
-  },
-  onPostgresSslChange: function (e) {
-    this.props.setConnectionValue('postgresSsl', e.target.checked)
-  },
-  onCertChange: function (e) {
-    this.props.setConnectionValue('postgresCert', e.target.value)
-  },
-  onKeyChange: function (e) {
-    this.props.setConnectionValue('postgresKey', e.target.value)
-  },
-  onPrestoCatalogChange: function (e) {
-    this.props.setConnectionValue('prestoCatalog', e.target.value)
-  },
-  onPrestoSchemaChange: function (e) {
-    this.props.setConnectionValue('prestoSchema', e.target.value)
-  },
-  render: function () {
-    if (!this.props.selectedConnection) {
+ConnectionListRow.propTypes = {
+  handleDelete: React.PropTypes.func.isRequired,
+  handleSelect: React.PropTypes.func.isRequired,
+  selectedConnection: React.PropTypes.object,
+  connection: React.PropTypes.object.isRequired
+}
+
+ConnectionListRow.defaultProps = {
+  selectedConnection: {}
+}
+
+
+const connectionFormStyle = {
+  position: 'absolute',
+  right: 0,
+  width: '50%',
+  top: 0,
+  bottom: 0,
+  backgroundColor: '#FDFDFD',
+  overflowY: 'auto',
+  padding: 10
+}
+
+class ConnectionForm extends React.Component {
+  constructor (props) {
+    super(props)
+    this.onTextInputChange = this.onTextInputChange.bind(this)
+    this.onCheckboxChange = this.onCheckboxChange.bind(this)
+  }
+
+  onTextInputChange (e) {
+    this.props.setConnectionValue(e.target.name, e.target.value)
+  }
+
+  onCheckboxChange (e) {
+    this.props.setConnectionValue(e.target.name, e.target.checked)
+  }
+
+  renderDriverFields () {
+    const { selectedConnection } = this.props
+    const connection = selectedConnection
+
+    if (connection.driver) {
+      const fields = driverFields[connection.driver]
+      return fields.map(field => {
+        if (field.formType === TEXT) {
+          const value = connection[field.key] || ''
+          return (
+            <FormGroup key={field.key} controlId={field.key}>
+              <ControlLabel>{field.label}</ControlLabel>
+              <FormControl type='text' name={field.key} value={value} onChange={this.onTextInputChange} />
+            </FormGroup>
+          )
+        } else if (field.formType === PASSWORD) {
+          const value = connection[field.key] || ''
+          // autoComplete='new-password' used to prevent browsers from autofilling username and password
+          // Because we dont return a password, Chrome goes ahead and autofills
+          return (
+            <FormGroup key={field.key} controlId={field.key}>
+              <ControlLabel>{field.label}</ControlLabel>
+              <FormControl type='password' autoComplete='new-password' name={field.key} value={value} onChange={this.onTextInputChange} />
+            </FormGroup>
+          )
+        } else if (field.formType === CHECKBOX) {
+          const checked = connection[field.key] || false
+          return (
+            <FormGroup key={field.key} controlId={field.key}>
+              <Checkbox checked={checked} name={field.key} onChange={this.onCheckboxChange}>
+                {field.label}
+              </Checkbox>
+            </FormGroup>
+          )
+        }
+        return null
+      })
+    }
+  }
+
+  render () {
+    const { selectedConnection, isSaving, isTesting, testConnection, saveConnection } = this.props
+    const connection = selectedConnection
+    if (!selectedConnection) {
       return (
-        <div className='ConnectionForm' style={this.style} />
+        <div className='ConnectionForm' style={connectionFormStyle} />
       )
     }
-    var connection = this.props.selectedConnection
-    var databaseInput = () => {
-      if (connection.driver !== 'crate' && connection.driver !== 'presto') {
-        return (
-          <FormGroup controlId='database'>
-            <ControlLabel>Database</ControlLabel>
-            <FormControl type='text' value={connection.database || ''} onChange={this.onDatabaseChange} />
-          </FormGroup>
-        )
-      }
-    }
-    var usernameInput = () => {
-      if (connection.driver !== 'crate') {
-        return (
-          <FormGroup controlId='database-username'>
-            <ControlLabel>Database Username</ControlLabel>
-            <FormControl type='text' value={connection.username || ''} onChange={this.onUsernameChange} />
-          </FormGroup>
-        )
-      }
-    }
-    var passwordInput = () => {
-      if (connection.driver !== 'crate' && connection.driver !== 'presto') {
-        return (
-          <FormGroup controlId='database-password'>
-            <ControlLabel>Database Password</ControlLabel>
-            <FormControl type='password' value={connection.password || ''} onChange={this.onPasswordChange} />
-          </FormGroup>
-        )
-      }
-    }
-    var certInput = () => {
-      if (connection.driver === 'postgres') {
-        return (
-          <FormGroup controlId='database-cert'>
-            <ControlLabel>Database Certificate</ControlLabel>
-            <FormControl type='text' value={connection.postgresCert || ''} onChange={this.onCertChange} />
-          </FormGroup>
-        )
-      }
-    }
-    var keyInput = () => {
-      if (connection.driver === 'postgres') {
-        return (
-          <FormGroup controlId='database-key'>
-            <ControlLabel>Database Key</ControlLabel>
-            <FormControl type='text' value={connection.postgresKey || ''} onChange={this.onKeyChange} />
-          </FormGroup>
-        )
-      }
-    }
-    var domainInput = () => {
-      if (connection.driver === 'sqlserver') {
-        return (
-          <FormGroup controlId='domain'>
-            <ControlLabel>Domain</ControlLabel>
-            <FormControl type='text' value={connection.domain || ''} onChange={this.onDomainChange} />
-          </FormGroup>
-        )
-      }
-    }
-    var sqlserverEncryptInput = () => {
-      if (connection.driver === 'sqlserver') {
-        return (
-          <FormGroup controlId='sqlserverEncrypt'>
-            <Checkbox checked={connection.sqlserverEncrypt || false} onChange={this.onSqlserverEncryptChange}>
-              Encrypt (necessary for Azure)
-            </Checkbox>
-          </FormGroup>
-        )
-      }
-    }
-    var mysqlInsecureAuthInput = () => {
-      if (connection.driver === 'mysql') {
-        return (
-          <FormGroup controlId='mysqlInsecureAuth'>
-            <Checkbox checked={connection.mysqlInsecureAuth || false} onChange={this.onMysqlInsecureAuthChange}>
-              Use old/insecure pre 4.1 Auth System
-            </Checkbox>
-          </FormGroup>
-        )
-      }
-    }
-    var postgresSslInput = () => {
-      if (connection.driver === 'postgres') {
-        return (
-          <FormGroup controlId='postgresSsl'>
-            <Checkbox checked={connection.postgresSsl || false} onChange={this.onPostgresSslChange}>
-              Use SSL
-            </Checkbox>
-          </FormGroup>
-        )
-      }
-    }
     return (
-      <div className='ConnectionForm' style={this.style}>
+      <div className='ConnectionForm' style={connectionFormStyle}>
         <Panel>
           <Form>
             <FormGroup controlId='name' validationState={(connection.name ? null : 'error')}>
-              <ControlLabel>Friendly Connection Name</ControlLabel>
-              <FormControl type='text' value={connection.name || ''} onChange={this.onNameChange} />
+              <ControlLabel>Connection Name</ControlLabel>
+              <FormControl type='text' name='name' value={connection.name || ''} onChange={this.onTextInputChange} />
             </FormGroup>
             <FormGroup controlId='driver' validationState={(connection.driver ? null : 'error')}>
               <ControlLabel>Database Driver</ControlLabel>
-              <FormControl componentClass='select' value={connection.driver || ''} onChange={this.onDriverChange}>
+              <FormControl componentClass='select' name='driver' value={connection.driver || ''} onChange={this.onTextInputChange}>
                 <option value='' />
                 <option value='crate'>Crate</option>
                 <option value='mysql'>MySQL</option>
@@ -492,45 +474,31 @@ var ConnectionForm = React.createClass({
                 <option value='vertica'>Vertica</option>
               </FormControl>
             </FormGroup>
-            <FormGroup controlId='host'>
-              <ControlLabel>Host/Server/IP Address</ControlLabel>
-              <FormControl type='text' value={connection.host || ''} onChange={this.onHostChange} />
-            </FormGroup>
-            <FormGroup controlId='port'>
-              <ControlLabel>Port (optional)</ControlLabel>
-              <FormControl type='text' value={connection.port || ''} onChange={this.onPortChange} />
-            </FormGroup>
-            {databaseInput()}
-            {domainInput()}
-            {usernameInput()}
-            {passwordInput()}
-            {certInput()}
-            {keyInput()}
-            {sqlserverEncryptInput()}
-            {mysqlInsecureAuthInput()}
-            {postgresSslInput()}
-            {(connection.driver === 'presto' ? (
-              <div>
-                <FormGroup controlId='prestoCatalog'>
-                  <ControlLabel>Catalog</ControlLabel>
-                  <FormControl type='text' value={connection.prestoCatalog || ''} onChange={this.onPrestoCatalogChange} />
-                </FormGroup>
-                <FormGroup controlId='prestoSchema'>
-                  <ControlLabel>Schema</ControlLabel>
-                  <FormControl type='text' value={connection.prestoSchema || ''} onChange={this.onPrestoSchemaChange} />
-                </FormGroup>
-              </div>
-            ) : null)}
-            <Button style={{width: 100}} onClick={this.props.saveConnection} disabled={this.props.isSaving}>
-              {this.props.isSaving ? 'Saving...' : 'Save'}
+            {this.renderDriverFields()}
+            <Button style={{width: 100}} onClick={saveConnection} disabled={isSaving}>
+              {isSaving ? 'Saving...' : 'Save'}
             </Button>
             {' '}
-            <Button style={{width: 100}} onClick={this.props.testConnection} disabled={this.props.isTesting}>
-              {this.props.isTesting ? 'Testing...' : 'Test'}
+            <Button style={{width: 100}} onClick={testConnection} disabled={isTesting}>
+              {isTesting ? 'Testing...' : 'Test'}
             </Button>
           </Form>
         </Panel>
       </div>
     )
   }
-})
+}
+
+ConnectionForm.propTypes = {
+  selectedConnection: React.PropTypes.object,
+  testConnection: React.PropTypes.func.isRequired,
+  saveConnection: React.PropTypes.func.isRequired,
+  isTesting: React.PropTypes.bool,
+  isSaving: React.PropTypes.bool
+}
+
+ConnectionForm.defaultProps = {
+  isTesting: false,
+  isSaving: false,
+  selectedConnection: null
+}
