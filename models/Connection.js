@@ -16,6 +16,7 @@ var schema = {
   postgresSsl: Joi.boolean().default(false, 'Postgres SSL'),
   postgresCert: Joi.string().optional(),
   postgresKey: Joi.string().optional(),
+  postgresCA: Joi.string().optional(),
   mysqlInsecureAuth: Joi.boolean().default(false, 'Mysql Insecure Auth'),
   prestoCatalog: Joi.string().optional().allow(''),
   prestoSchema: Joi.string().optional().allow(''),
