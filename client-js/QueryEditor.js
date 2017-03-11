@@ -338,7 +338,16 @@ var QueryEditor = React.createClass({
     if (this.props.queryId !== 'new') this.loadQueryFromServer(this.props.queryId)
 
     if (this.editor) {
+      // const editor = this.editor
       this.editor.focus()
+      // add custom implementation of liveAutocomplete
+      // built-in live autocomplete does not fire completer after every keypress (probably good reason)
+      // TODO - once autocomplete is understood more maybe switch back to liveAutocomplete
+      // editor.commands.on('afterExec', function (e) {
+      //   if (e.command.name === 'insertstring' && /^[\w.]$/.test(e.args)) {
+      //     editor.execCommand('startAutocomplete')
+      //   }
+      // })
       if (this.props.config.editorWordWrap) this.editor.session.setUseWrapMode(true)
     }
 
@@ -478,7 +487,9 @@ var QueryEditor = React.createClass({
                           highlightActiveLine={false}
                           onChange={this.onQueryTextChange}
                           value={this.state.query.queryText}
-                          editorProps={{$blockScrolling: true}}
+                          editorProps={{$blockScrolling: Infinity}}
+                          enableBasicAutocompletion
+                          enableLiveAutocompletion
                           ref={(ref) => {
                             this.editor = (ref ? ref.editor : null)
                           }} />
