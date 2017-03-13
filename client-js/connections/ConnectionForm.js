@@ -63,6 +63,11 @@ const fields = {
     formType: TEXT,
     label: 'Database Key Path'
   },
+  postgresCA: {
+    key: 'postgresCA',
+    formType: TEXT,
+    label: 'Database CA Path'
+  },
   mysqlInsecureAuth: {
     key: 'mysqlInsecureAuth',
     formType: CHECKBOX,
@@ -101,7 +106,8 @@ const driverFields = {
     fields.password,
     fields.postgresSsl,
     fields.postgresCert,
-    fields.postgresKey
+    fields.postgresKey,
+    fields.postgresCA
   ],
   presto: [
     fields.host,
