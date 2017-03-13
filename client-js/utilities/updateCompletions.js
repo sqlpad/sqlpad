@@ -53,22 +53,22 @@ function updateCompletions (schemaInfo) {
 
   Object.keys(schemaInfo).forEach(schema => {
     schemaCompletions.push({name: schema, value: schema, score: 0, meta: 'schema'})
-    const schemaDot = schema.toLowerCase() + '.'
+    const schemaDot = schema.toUpperCase() + '.'
     if (!dottedMatches[schemaDot]) dottedMatches[schemaDot] = []
 
     Object.keys(schemaInfo[schema]).forEach(table => {
-      const schemaTableDot = schema.toLowerCase() + '.' + table.toLowerCase() + '.'
-      const tableDot = table.toLowerCase() + '.'
+      const schemaTableDot = schema.toUpperCase() + '.' + table.toUpperCase() + '.'
+      const tableDot = table.toUpperCase() + '.'
       if (!dottedMatches[schemaTableDot]) dottedMatches[schemaTableDot] = []
       if (!dottedMatches[tableDot]) dottedMatches[tableDot] = []
 
-      const tableCompletion = {name: table, value: table, score: 0, meta: 'table/view'}
+      const tableCompletion = {name: table, value: table, score: 0, meta: schema}
       tableCompletions.push(tableCompletion)
       dottedMatches[schemaDot].push(tableCompletion)
 
       const columns = schemaInfo[schema][table]
       columns.forEach(column => {
-        const columnCompletion = {name: column.column_name, value: column.column_name, score: 0, meta: column.data_type}
+        const columnCompletion = {name: schema + table + column.column_name, value: column.column_name, score: 0, meta: table}
         columnCompletions.push(columnCompletion)
         dottedMatches[tableDot].push(columnCompletion)
         dottedMatches[schemaTableDot].push(columnCompletion)
@@ -77,7 +77,6 @@ function updateCompletions (schemaInfo) {
   })
 
   const tableWantedCompletions = schemaCompletions.concat(tableCompletions).concat(keywordCompletions)
-  const columnWantedCompletions = tableWantedCompletions.concat(columnCompletions)
 
   const myCompleter = {
     getCompletions: function (editor, session, pos, prefix, callback) {
@@ -101,31 +100,34 @@ function updateCompletions (schemaInfo) {
         dotTokens.pop()
         const dotMatch = dotTokens.join('.') + '.'
         debug('Completing for "%s" even though we got "%s"', dotMatch, precedingToken)
-        return callback(null, dottedMatches[dotMatch.toLowerCase()])
+        return callback(null, dottedMatches[dotMatch.toUpperCase()])
       }
 
-      // TODO consider tables in query for autocomplete later
-
-      for (let i = currentTokens.length - 1; i >= 0; i--) {
-        const token = currentTokens[i]
-        if (columnWantedKeywords.indexOf(token) >= 0) {
-          debug('want column')
-          return callback(null, columnWantedCompletions)
+      // if we are not dealing with a . match try to figure out where we are in the query
+      // and whether the user would like columns or just tables
+      // first look at the current line before cursor, then rest of lines beforehand
+      const currentRow = pos.row
+      for (let r = currentRow; r >= 0; r--) {
+        let line = session.getDocument().getLine(r)
+        let lineTokens
+        // if dealing with current row only use stuff before cursor
+        if (r === currentRow) {
+          line = line.slice(0, pos.column)
         }
-        if (tableWantedKeywords.indexOf(token) >= 0) {
-          debug('want table')
-          return callback(null, tableWantedCompletions)
+        lineTokens = line.split(/\s+/).map(t => t.toUpperCase())
+
+        for (let i = lineTokens.length - 1; i >= 0; i--) {
+          const token = lineTokens[i]
+          if (columnWantedKeywords.indexOf(token) >= 0) {
+            debug('want column')
+            return callback(null, figureColumns(session, dottedMatches))
+          }
+          if (tableWantedKeywords.indexOf(token) >= 0) {
+            debug('want table')
+            return callback(null, tableWantedCompletions)
+          }
         }
       }
-
-      // TODO search previous rows for keywords to figure out where cursor is in a query
-      // const currentRow = pos.row
-      // let tokens = []
-      // for (let r = 0; r <= currentRow; r++) {
-      //   const lineTokens = session.getDocument().getLine(r).split(/\s+/).map(t => t.toUpperCase())
-      //   tokens = tokens.concat(lineTokens)
-      // }
-      // console.log(tokens)
 
       // No keywords found? User probably wants some keywords
       callback(null, keywordCompletions)
@@ -137,4 +139,27 @@ function updateCompletions (schemaInfo) {
     // Note - later on might be able to set a completer for specific editor like:
     // editor.completers = [staticWordCompleter]
   })
+}
+
+
+
+
+
+function figureColumns (session, dottedMatches) {
+  const allTokens = session.getValue().split(/\s+/).map(t => t.toUpperCase())
+  // remove last character from the dotmatch keys
+  // the query will have occurences of schema.table not schema.table.
+  const relevantDottedMatches = {}
+  Object.keys(dottedMatches).map(dotKey => dotKey.slice(0, -1)).forEach(dotKey => {
+    if (allTokens.indexOf(dotKey) >= 0) {
+      relevantDottedMatches[dotKey] = dottedMatches[dotKey + '.']
+    }
+  })
+  debug(relevantDottedMatches)
+  let matches = []
+  Object.keys(relevantDottedMatches).forEach(key => {
+    matches = matches.concat(relevantDottedMatches[key])
+  })
+  debug(matches)
+  return matches
 }
