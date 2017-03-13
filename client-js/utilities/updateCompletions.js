@@ -67,13 +67,13 @@ function updateCompletions (schemaInfo) {
       const TABLE = table.toUpperCase()
       if (!matchMaps.table[TABLE]) matchMaps.table[TABLE] = []
       if (!matchMaps.schemaTable[SCHEMA_TABLE]) matchMaps.schemaTable[SCHEMA_TABLE] = []
-      const tableCompletion = {name: table, value: table, score: 0, meta: schema, schema}
+      const tableCompletion = {name: table, value: table, score: 0, meta: 'table', schema}
       tableCompletions.push(tableCompletion)
       matchMaps.schema[SCHEMA].push(tableCompletion)
 
       const columns = schemaInfo[schema][table]
       columns.forEach(column => {
-        const columnCompletion = {name: schema + table + column.column_name, value: column.column_name, score: 0, meta: table, schema, table}
+        const columnCompletion = {name: schema + table + column.column_name, value: column.column_name, score: 0, meta: 'column', schema, table}
         matchMaps.table[TABLE].push(columnCompletion)
         matchMaps.schemaTable[SCHEMA_TABLE].push(columnCompletion)
       })
