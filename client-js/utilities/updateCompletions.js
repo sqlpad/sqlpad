@@ -90,6 +90,10 @@ function updateCompletions (schemaInfo) {
       Object.keys(matchMaps.schemaTable).forEach(schemaTable => {
         if (allTokens.indexOf(schemaTable) >= 0) {
           relevantDottedMatches[schemaTable] = matchMaps.schemaTable[schemaTable]
+          // HACK - also add relevant matches for table only
+          const firstMatch = matchMaps.schemaTable[schemaTable][0]
+          const table = firstMatch.table.toUpperCase()
+          relevantDottedMatches[table] = matchMaps.table[table]
         }
       })
       Object.keys(matchMaps.table).forEach(table => {
@@ -99,8 +103,7 @@ function updateCompletions (schemaInfo) {
           // we store schema at column match item, so look at first one and use that
           const firstMatch = matchMaps.table[table][0]
           const schemaTable = firstMatch.schema.toUpperCase() + '.' + firstMatch.table.toUpperCase()
-          relevantDottedMatches[schemaTable] = {name: firstMatch.table, value: firstMatch.table, score: 0, meta: firstMatch.schema}
-
+          relevantDottedMatches[schemaTable] = matchMaps.table[table]
         }
       })
       debug('matched found: ', Object.keys(relevantDottedMatches))
