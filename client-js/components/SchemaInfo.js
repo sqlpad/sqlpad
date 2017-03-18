@@ -4,6 +4,7 @@ var FormControl = require('react-bootstrap/lib/FormControl')
 var Glyphicon = require('react-bootstrap/lib/Glyphicon')
 import CopyToClipboard from 'react-copy-to-clipboard'
 var fetchJson = require('../utilities/fetch-json.js')
+const updateCompletions = require('../utilities/updateCompletions.js')
 
 class SchemaInfo extends React.PureComponent {
 
@@ -40,6 +41,7 @@ class SchemaInfo extends React.PureComponent {
       fetchJson('GET', url)
         .then((json) => {
           if (json.error) console.error(json.error)
+          updateCompletions(json.schemaInfo)
           this.setState({
             schemaInfo: json.schemaInfo
           })
