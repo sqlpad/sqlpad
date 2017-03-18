@@ -7,13 +7,10 @@ import 'brace/ext/language_tools'
 
 module.exports = updateCompletions
 
-// TODO rethink algorithm: when table wanted, open to any schema/table
-// when column wanted, look for referenced schemas/tables, and autocomplete off that
-
 // There's stuff below that logs to console a lot
 // documentation on this autocompletion is light
 // and you may find it helpful to print some vars out during dev
-const DEBUG_ON = true
+const DEBUG_ON = false
 
 function debug () {
   if (DEBUG_ON) console.log.apply(null, arguments)
@@ -31,6 +28,11 @@ function debug () {
 function updateCompletions (schemaInfo) {
   debug('updating completions')
   debug(schemaInfo)
+
+  // TODO make this more efficient and less confusing
+  // It'll likely take some restructuring the way schema data is stored.
+  // for example, if <table> is referenced, later on relevant dot matchs should also include the schema of <table>
+  // right now that's hacked in. a formal sqlparser might help here
 
   // In ace, a . resets the prefix var passed to completer
   // we'll need autocomplete on each thing by itself when user uses .
