@@ -340,13 +340,16 @@ var QueryEditor = React.createClass({
     if (this.editor) {
       this.editor.focus()
 
-      // add custom implementation of liveAutocomplete
-      // built-in live autocomplete does not fire completer after every keypress (probably good reason)
-      // TODO - once autocomplete is understood more maybe switch back to liveAutocomplete
+      // augment the built-in behavior of liveAutocomplete
+      // built-in behavior only starts autocomplete when at least 1 character has been typed
+      // In ace the . resets the prefix token and clears the completer
+      // In order to get completions for 'sometable.' we need to fire the completer manually
       const editor = this.editor
       editor.commands.on('afterExec', function (e) {
         if (e.command.name === 'insertstring' && /^[\w.]$/.test(e.args)) {
-          editor.execCommand('startAutocomplete')
+          if (e.args === '.') {
+            editor.execCommand('startAutocomplete')
+          }
         }
       })
       if (this.props.config.editorWordWrap) this.editor.session.setUseWrapMode(true)
