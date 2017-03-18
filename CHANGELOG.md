@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.2.0-beta1
+### March 18, 2017
+- fixed query tag weirdness from previous v1 weirdness
+- leading 0s preserved in query results and treated as strings instead of numbers
+- support for postgres ssl certs (thanks johicks and nikicat)
+- fixed crate v1 schema support (thanks mikethebeer)
+- naive autocomplete!
+- refactored connection admin screen
+- changed build system to fork create-react-app
+
 ## 2.1.3
 ### January 28, 2017
 - Ensure strict db startup order (vweevers)
