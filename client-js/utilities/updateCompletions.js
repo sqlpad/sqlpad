@@ -31,9 +31,6 @@ function debug () {
 function updateCompletions (schemaInfo) {
   debug('updating completions')
   debug(schemaInfo)
-  const keywordCompletions = []
-  const keywords = ['SELECT', 'FROM', 'WHERE', 'INNER', 'FULL', 'LEFT', 'RIGHT', 'OUTER', 'JOIN', 'ON', 'GROUP', 'BY', 'HAVING']
-  keywords.forEach(k => keywordCompletions.push({name: k, value: k, score: 100, meta: 'keyword'}))
 
   // In ace, a . resets the prefix var passed to completer
   // we'll need autocomplete on each thing by itself when user uses .
@@ -80,7 +77,7 @@ function updateCompletions (schemaInfo) {
     })
   })
 
-  const tableWantedCompletions = schemaCompletions.concat(tableCompletions).concat(keywordCompletions)
+  const tableWantedCompletions = schemaCompletions.concat(tableCompletions)
 
   const myCompleter = {
     getCompletions: function (editor, session, pos, prefix, callback) {
@@ -200,7 +197,7 @@ function updateCompletions (schemaInfo) {
         return callback(null, matches.concat(wantedColumnCompletions))
       }
       // No keywords found? User probably wants some keywords
-      callback(null, keywordCompletions)
+      callback(null, null)
     }
   }
 
