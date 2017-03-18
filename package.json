@@ -1,6 +1,6 @@
 {
   "name": "sqlpad",
-  "version": "2.1.3",
+  "version": "2.2.0-beta1",
   "description": "Web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate and Vertica.",
   "license": "MIT",
   "author": {
