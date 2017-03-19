@@ -124,7 +124,7 @@ var App = React.createClass({
           </Modal.Header>
           <Modal.Body>
             <p>
-              <strong>Version</strong>: {this.state.version.latest}
+              <strong>Version</strong>: {this.state.version.current}
             </p>
             <p>
               <strong>Project Page</strong>: <a href='http://rickbergfalk.github.io/sqlpad/' target='_blank'>http://rickbergfalk.github.io/sqlpad <span style={{marginLeft: 4}} className='glyphicon glyphicon-new-window' aria-hidden='true' /></a>
