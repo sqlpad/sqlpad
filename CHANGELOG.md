@@ -1,5 +1,12 @@
 # Changelog
 
+Install latest beta with `npm i -g sqlpad@beta`  
+Rollback to latest stable with `npm i -g sqlpad@2.1.3`  
+
+## 2.2.0-beta2
+### March 19, 2017
+- fixed version displayed in about modal
+
 ## 2.2.0-beta1
 ### March 18, 2017
 - fixed query tag weirdness from previous v1 weirdness
