@@ -83,6 +83,7 @@
     "sanitize-filename": "1.x.x",
     "semver-diff": "^2.1.0",
     "serve-favicon": "2.x.x",
+    "socksjs": "^0.5.0",
     "toml": "^2.3.0",
     "uuid": "^3.0.1",
     "vertica": "0.5.x"

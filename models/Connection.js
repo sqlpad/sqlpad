@@ -17,6 +17,11 @@ var schema = {
   postgresCert: Joi.string().optional(),
   postgresKey: Joi.string().optional(),
   postgresCA: Joi.string().optional(),
+  useSocks: Joi.boolean().default(false, 'Connect to database through SOCKS proxy'),
+  socksHost: Joi.string().optional(),
+  socksPort: Joi.string().optional(),
+  socksUsername: Joi.string().optional(),
+  socksPassword: Joi.string().optional(),
   mysqlInsecureAuth: Joi.boolean().default(false, 'Mysql Insecure Auth'),
   prestoCatalog: Joi.string().optional().allow(''),
   prestoSchema: Joi.string().optional().allow(''),
@@ -38,6 +43,11 @@ var Connection = function Connection (data) {
   this.postgresSsl = data.postgresSsl
   this.postgresCert = data.postgresCert
   this.postgresKey = data.postgresKey
+  this.useSocks = data.useSocks
+  this.socksHost = data.socksHost
+  this.socksPort = data.socksPort
+  this.socksUsername = data.socksUsername
+  this.socksPassword = data.socksPassword
   this.mysqlInsecureAuth = data.mysqlInsecureAuth
   this.prestoCatalog = data.prestoCatalog
   this.prestoSchema = data.prestoSchema

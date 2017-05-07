@@ -68,6 +68,31 @@ const fields = {
     formType: TEXT,
     label: 'Database CA Path'
   },
+  useSocks: {
+    key: 'useSocks',
+    formType: CHECKBOX,
+    label: 'Connect through SOCKS proxy'
+  },
+  socksHost: {
+    key: 'socksHost',
+    formType: TEXT,
+    label: 'Proxy hostname'
+  },
+  socksPort: {
+    key: 'socksPort',
+    formType: TEXT,
+    label: 'Proxy port'
+  },
+  socksUsername: {
+    key: 'socksUsername',
+    formType: TEXT,
+    label: 'Username for socks proxy'
+  },
+  socksPassword: {
+    key: 'socksPassword',
+    formType: TEXT,
+    label: 'Password for socks proxy'
+  },
   mysqlInsecureAuth: {
     key: 'mysqlInsecureAuth',
     formType: CHECKBOX,
@@ -107,7 +132,12 @@ const driverFields = {
     fields.postgresSsl,
     fields.postgresCert,
     fields.postgresKey,
-    fields.postgresCA
+    fields.postgresCA,
+    fields.useSocks,
+    fields.socksHost,
+    fields.socksPort,
+    fields.socksUsername,
+    fields.socksPassword
   ],
   presto: [
     fields.host,
