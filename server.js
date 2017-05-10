@@ -43,7 +43,7 @@ var errorhandler = require('errorhandler')
 
 var app = express()
 
-app.locals.title = 'SqlPad'
+app.locals.title = 'SQLPad'
 app.locals.version = packageJson.version
 app.set('env', (DEBUG ? 'development' : 'production'))
 

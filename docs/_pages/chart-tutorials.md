@@ -4,9 +4,9 @@ title: "Chart Tutorials"
 
 ## Chart Tutorials
 
-Data visualization and charting in SqlPad is handled by the [tauCharts](http://taucharts.com/) library, which is built off of d3.js and incorporates "grammar of graphics" concepts. TauCharts also includes chart facets, allowing for splitting a chart up into group of smaller charts all on a similar scale. 
+Data visualization and charting in SQLPad is handled by the [tauCharts](http://taucharts.com/) library, which is built off of d3.js and incorporates "grammar of graphics" concepts. TauCharts also includes chart facets, allowing for splitting a chart up into group of smaller charts all on a similar scale. 
 
-Below are some examples of the charts you can create with SqlPad, along with the SQL script used to create the charted data. If you use Postgres and would like to follow along, all examples will be using the [npm-postgres-mashup](https://github.com/rickbergfalk/npm-postgres-mashup) database which you can build yourself. (This particular database isn't the most ideal for this work but it should at least provide a good example how you might leverage SqlPad against your own data.)
+Below are some examples of the charts you can create with SQLPad, along with the SQL script used to create the charted data. If you use Postgres and would like to follow along, all examples will be using the [npm-postgres-mashup](https://github.com/rickbergfalk/npm-postgres-mashup) database which you can build yourself. (This particular database isn't the most ideal for this work but it should at least provide a good example how you might leverage SQLPad against your own data.)
 
 
 ## GitHub Punchcard-style Chart

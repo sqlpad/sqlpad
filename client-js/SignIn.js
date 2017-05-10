@@ -69,7 +69,7 @@ var SignIn = React.createClass({
     )
     return (
       <div className='signin'>
-        <h2>SqlPad</h2>
+        <h2>SQLPad</h2>
         {('local' in this.props.passport.strategies ? localForm : null)}
         {('google' in this.props.passport.strategies ? googleForm : null)}
         <Alert stack={{limit: 3}} position='bottom-right' />

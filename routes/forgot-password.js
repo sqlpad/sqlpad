@@ -41,9 +41,9 @@ router.post('/api/forgot-password', function (req, res) {
       var mailOptions = {
         from: config.get('smtpFrom'),
         to: req.body.email,
-        subject: 'SqlPad Password Reset',
-        text: 'Hello! \n\nYou recently requested a password reset for your SqlPad account. \n\nTo reset your password, visit ' + url + '.',
-        html: '<p>Hello!</p> <p>You recently requested a password reset for your SqlPad account.</p> <p>To reset your password, visit <a href="' + url + '">' + url + '</a>.</p>'
+        subject: 'SQLPad Password Reset',
+        text: 'Hello! \n\nYou recently requested a password reset for your SQLPad account. \n\nTo reset your password, visit ' + url + '.',
+        html: '<p>Hello!</p> <p>You recently requested a password reset for your SQLPad account.</p> <p>To reset your password, visit <a href="' + url + '">' + url + '</a>.</p>'
       }
       transporter.sendMail(mailOptions, function (err, info) {
         if (config.get('debug')) console.log('sent email: ' + info)

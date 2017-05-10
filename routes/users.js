@@ -76,9 +76,9 @@ router.post('/api/users', mustBeAdmin, function (req, res) {
         var mailOptions = {
           from: config.get('smtpFrom'),
           to: req.body.email,
-          subject: "You've been invited to SqlPad",
-          text: 'Hello! \n\nA colleague has invited you to SqlPad. \n\nTo sign up, visit ' + signupUrl + '.',
-          html: '<p>Hello!</p> <p>A colleague has invited you to SqlPad.</p> <p>To sign up, visit <a href="' + signupUrl + '">' + signupUrl + '</a>.</p>'
+          subject: "You've been invited to SQLPad",
+          text: 'Hello! \n\nA colleague has invited you to SQLPad. \n\nTo sign up, visit ' + signupUrl + '.',
+          html: '<p>Hello!</p> <p>A colleague has invited you to SQLPad.</p> <p>To sign up, visit <a href="' + signupUrl + '">' + signupUrl + '</a>.</p>'
         }
         transporter.sendMail(mailOptions, function (err, info) {
           if (config.get('debug')) console.log('sent email: ' + info)

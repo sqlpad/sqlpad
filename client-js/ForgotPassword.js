@@ -28,7 +28,7 @@ var ForgotPassword = React.createClass({
     return (
       <div className='signin' >
         <form className='form-signin' role='form' onSubmit={this.resetPassword}>
-          <h2>SqlPad</h2>
+          <h2>SQLPad</h2>
           <input
             name='email'
             type='email'

@@ -5,9 +5,9 @@
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>SqlPad - A web app for running SQL queries and visualizing the results</title>
-  <meta name="keywords" content="SqlPad, node.js, Postgres, postgresql, mysql, microsoft sql server, online sql editor">
-  <meta name="description" content="SqlPad is a web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, and SQL Server. Built with Node.js">
+  <title>SQLPad - A web app for running SQL queries and visualizing the results</title>
+  <meta name="keywords" content="SQLPad, node.js, Postgres, postgresql, mysql, microsoft sql server, online sql editor">
+  <meta name="description" content="SQLPad is a web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, and SQL Server. Built with Node.js">
   <meta name="author" content="Rick Bergfalk">
 
   <!-- Mobile Specific Metas
@@ -59,20 +59,20 @@
                 </h1>
                 <div>
                     <h2 id="installation">Installation</h2>
-<p>SqlPad can be installed on Mac, Linux, and Windows.</p>
-<p>In order to install SqlPad, you&#39;ll first need to install <a href="https://nodejs.org/">Node.js</a>. </p>
+<p>SQLPad can be installed on Mac, Linux, and Windows.</p>
+<p>In order to install SQLPad, you&#39;ll first need to install <a href="https://nodejs.org/">Node.js</a>. </p>
 <p>Once node is installed, open up a command line and run</p>
 <p><code>npm install sqlpad -g</code></p>
-<p>This will install the SqlPad command line utility used to run a SqlPad server. </p>
-<p>To spin up a SqlPad Server, type the following from the command line:</p>
+<p>This will install the SQLPad command line utility used to run a SQLPad server. </p>
+<p>To spin up a SQLPad Server, type the following from the command line:</p>
 <p><code>sqlpad</code></p>
 <p>To get help and see parameters:</p>
 <p><code>sqlpad --help</code></p>
 <h2 id="a-realistic-example-">A Realistic Example:</h2>
 <p><code>sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase</code></p>
-<p>The <strong>dir</strong> argument specifies where to keep the sqlpad query/user/connection files. If not provided, SqlPad will put its files in the user&#39;s home directory under /sqlpad/db.</p>
-<p>The <strong>port</strong> argument specifies the port on which SqlPad should run. The default is port 80, but that may not be available.</p>
-<p>The <strong>passphrase</strong> argument is used to encrypt database connection usernames and passwords, and cookie encryption. If not provided, SqlPad will use the default to at least prevent usernames and passwords from being stored in plaintext. </p>
+<p>The <strong>dir</strong> argument specifies where to keep the sqlpad query/user/connection files. If not provided, SQLPad will put its files in the user&#39;s home directory under /sqlpad/db.</p>
+<p>The <strong>port</strong> argument specifies the port on which SQLPad should run. The default is port 80, but that may not be available.</p>
+<p>The <strong>passphrase</strong> argument is used to encrypt database connection usernames and passwords, and cookie encryption. If not provided, SQLPad will use the default to at least prevent usernames and passwords from being stored in plaintext. </p>
 <p>If a passphrase is ever changed or forgotten, you&#39;ll need to re-add the connection usernames and passwords to each database connection. </p>
 <p>If you ever want to save the arguments you are passing in so you don&#39;t have to remember them, you can save them by passing in the <code>--save</code> argument.</p>
 <p><code>sqlpad --dir ./sqlpad/ --port 3000 --passphrase secret-encryption-phrase --save</code></p>
@@ -82,12 +82,12 @@
 <p>These settings can be forgotten by running </p>
 <p><code>sqlpad --forget</code></p>
 <h2 id="administration">Administration</h2>
-<p>Once SqlPad is running, create an initial admin account by navigating to <a href="http://localhost/signup"><a href="http://localhost/signup">http://localhost/signup</a></a>. </p>
-<p>Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page. Other users may also be given admin rights, allowing them to add/edit database connections and whitelist/modify/remove SqlPad users.</p>
+<p>Once SQLPad is running, create an initial admin account by navigating to <a href="http://localhost/signup"><a href="http://localhost/signup">http://localhost/signup</a></a>. </p>
+<p>Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page. Other users may also be given admin rights, allowing them to add/edit database connections and whitelist/modify/remove SQLPad users.</p>
 <p>If for whatever reason you lose admin rights, and the last-admin-standing won&#39;t give you admin rights back, you can reinstate them to yourself by running</p>
 <p><code>sqlpad --admin yourEmailAddress@domain.com</code></p>
 <h2 id="running-as-a-service">Running as a Service</h2>
-<p>If you are running SqlPad for your team, chances are you&#39;d like SqlPad to start up when your server boots up, and stay running if an unhandled exception occurs. How this is accomplished largely depends on the operating system you are running. </p>
+<p>If you are running SQLPad for your team, chances are you&#39;d like SQLPad to start up when your server boots up, and stay running if an unhandled exception occurs. How this is accomplished largely depends on the operating system you are running. </p>
 <p>Full disclosure - this isn&#39;t my area of expertise so if anyone knows of any better options or better practices, please let me know at rick.bergfalk@gmail.com.</p>
 <p><strong>Windows</strong>: Use <a href="http://nssm.cc/">nssm</a> to create a windows service</p>
 <p><strong>Ubuntu</strong>: Create a job conf file for use with <a href="http://upstart.ubuntu.com/getting-started.html">upstart</a>. </p>
@@ -99,18 +99,18 @@ start on runlevel [2345]
 stop on shutdown
 
 # I used -u to change the user it executes with, 
-# which means by default SqlPad uses that user&#39;s home directory 
+# which means by default SQLPad uses that user&#39;s home directory 
 # for its database files
 exec sudo -u UserAccountToUse /usr/bin/sqlpad --port 3000
 
 respawn</code></pre>
 <p><strong>Mac</strong>: ??? </p>
-<p><strong>Platform agnostic</strong>: Clone or download the GitHub repository and use <a href="https://github.com/foreverjs/forever">forever</a> to run server.js directly. (The downside to this though is that you miss out on updating SqlPad with the easy npm install command, and you still have to run the forever command on startup)</p>
+<p><strong>Platform agnostic</strong>: Clone or download the GitHub repository and use <a href="https://github.com/foreverjs/forever">forever</a> to run server.js directly. (The downside to this though is that you miss out on updating SQLPad with the easy npm install command, and you still have to run the forever command on startup)</p>
 <h2 id="configuration">Configuration</h2>
-<p>Beyond SqlPad&#39;s initial setup options (port, file location, passphrase), there are a few areas where you can opt-in, opt-out, or change the default limits.</p>
+<p>Beyond SQLPad&#39;s initial setup options (port, file location, passphrase), there are a few areas where you can opt-in, opt-out, or change the default limits.</p>
 <p>These settings are configured by either adding a configuration key in the configuration page, or by setting an environment variable (depending on the behavior or feature being modified).</p>
 <h3 id="change-query-result-record-limit">Change query result record limit</h3>
-<p>To change the maximum records returned by a SQL query, add a new item with key <code>queryResultMaxRows</code> and set the value to the max number of rows you would like returned. If the key is missing or set to a non-number, SqlPad will return a maximum of 50,000 rows.</p>
+<p>To change the maximum records returned by a SQL query, add a new item with key <code>queryResultMaxRows</code> and set the value to the max number of rows you would like returned. If the key is missing or set to a non-number, SQLPad will return a maximum of 50,000 rows.</p>
 <h3 id="disable-csv-and-now-xlsx-downloads">Disable CSV (and now XLSX) downloads</h3>
 <p>To disable CSV downloads, visit the &quot;Configuration&quot; page and add a new item with key <code>allowCsvDownload</code> and value <code>false</code>. If the key is missing or set to any other value, CSV downloads will be enabled.</p>
 <h3 id="show-schema-copy-buttons">Show Schema Copy Buttons</h3>
@@ -119,7 +119,7 @@ respawn</code></pre>
 <h3 id="google-oauth-authentication">Google OAuth Authentication</h3>
 <p>Google OAuth authentication can be enabled by setting environment variables <code>GOOGLE_CLIENT_ID</code>, <code>GOOGLE_CLIENT_SECRET</code>, AND <code>PUBLIC_URL</code>. The plain old regular authentication can be disabled by setting environment variable <code>DISABLE_USERPASS_AUTH</code>. </p>
 <h3 id="post-query-to-slack-when-saved">Post Query to Slack When Saved</h3>
-<p>A SqlPad query can be posted to a Slack webhook when saved. To enable, create a configuration item with key <code>slackWebhook</code> and set the value to a Slack incoming webhook URL.</p>
+<p>A SQLPad query can be posted to a Slack webhook when saved. To enable, create a configuration item with key <code>slackWebhook</code> and set the value to a Slack incoming webhook URL.</p>
 <h3 id="whitelist-domains-for-user-administration">Whitelist Domains for User Administration</h3>
 <p>An entire domain can be whitelisted for username administration by setting enviornment variable <code>WHITELISTED_DOMAINS</code></p>
                 </div>
@@ -152,8 +152,8 @@ respawn</code></pre>
                     <div id="mc_embed_signup">
                         <form action="//github.us11.list-manage.com/subscribe/post?u=8314eae319da113739c8e6039&amp;id=673653d22d" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
                             <div id="mc_embed_signup_scroll">
-                            <!-- <h5>Get SqlPad updates in your email</h5> -->
-                            <h6 class="docs-header">Get SqlPad updates in your email</h6>
+                            <!-- <h5>Get SQLPad updates in your email</h5> -->
+                            <h6 class="docs-header">Get SQLPad updates in your email</h6>
                             <div class="mc-field-group">
                                 <label for="mce-EMAIL">Email Address</label>
                                 <input style="color:#000;" class="u-full-width" type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
@@ -175,9 +175,9 @@ respawn</code></pre>
                 <div class="six columns">
                     <h6 class="docs-header">Thank You</h6>
                     <p>
-                        Special thanks to the contributors helping with the SqlPad 
+                        Special thanks to the contributors helping with the SQLPad 
                         development, as well as the creators of all the amazing 
-                        open source libraries used to build SqlPad. 
+                        open source libraries used to build SQLPad. 
                     </p>
                     <p>
                         Without them this project would not be possible.

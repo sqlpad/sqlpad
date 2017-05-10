@@ -1,10 +1,10 @@
-# SqlPad
+# SQLPad
 
 A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, and Presto. Written in Node.js.
 
-![SqlPad Query List](http://rickbergfalk.github.io/sqlpad/images/screenshots/queries.png)
-![SqlPad Query Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/query-editor.png)
-![SqlPad Chart Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/chart-line.png)
+![SQLPad Query List](http://rickbergfalk.github.io/sqlpad/images/screenshots/queries.png)
+![SQLPad Query Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/query-editor.png)
+![SQLPad Chart Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/chart-line.png)
 
 
 ## Installation and Usage

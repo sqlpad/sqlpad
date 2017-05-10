@@ -101,7 +101,7 @@ Rollback to latest stable with `npm i -g sqlpad@2.1.3`
 - materialized views are included in schema sidebar for postgres
 
 ## 1.16.0
-- SqlPad may now be mounted under a base url path by providing --base-url cli flag or SQLPAD_BASE_URL env variable
+- SQLPad may now be mounted under a base url path by providing --base-url cli flag or SQLPAD_BASE_URL env variable
 - Updated taucharts to 0.9.1
 - Legends are now included when saving png chart images
 
@@ -114,7 +114,7 @@ Rollback to latest stable with `npm i -g sqlpad@2.1.3`
 - Add ability to turn off date localization (add config item "localize" set to "false")
 
 ## 1.13.0
-- Add --debug flag to SqlPad cli to enable extra logging
+- Add --debug flag to SQLPad cli to enable extra logging
 - Port and passphrase may be set via environment variables SQLPAD_PORT and SQLPAD_PASSPHRASE
 
 ## 1.12.0
@@ -130,8 +130,8 @@ Rollback to latest stable with `npm i -g sqlpad@2.1.3`
 
 ## 1.9.0
 - Charting now handled by the very cool tauCharts library. It's a bit faster, has facets, grammar of graphics concepts, handles time series data better, trendlines.
-- When changing chart types, SqlPad will remember and reapply the field selections where applicable. 
-- SqlPad database files compacted every 10 minutes, instead of once a day
+- When changing chart types, SQLPad will remember and reapply the field selections where applicable. 
+- SQLPad database files compacted every 10 minutes, instead of once a day
 - Signup page styling is fixed.
 - Schema-item-name copy-to-clipboard buttons now available. Opt in by creating configuration item `showSchemaCopyButton` to `true`.
 - Query results can now be downloaded as xlsx file. (link will be hidden if csv downloads are disabled)
@@ -191,4 +191,4 @@ Rollback to latest stable with `npm i -g sqlpad@2.1.3`
 - Add initial Vertica support via use of Postgres driver
 
 ## 1.0.0
-- SqlPad is released!
+- SQLPad is released!

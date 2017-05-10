@@ -83,7 +83,7 @@ var App = React.createClass({
             <MenuItem eventKey={3.2} onClick={navigateToClickHandler('/users')} >Users</MenuItem>
             <MenuItem eventKey={3.3} onClick={navigateToClickHandler('/config-values')} >Configuration</MenuItem>
             <MenuItem divider />
-            <MenuItem eventKey={3.4} onClick={this.openAboutModal} >About SqlPad</MenuItem>
+            <MenuItem eventKey={3.4} onClick={this.openAboutModal} >About SQLPad</MenuItem>
             <MenuItem divider />
             <MenuItem eventKey={3.5} onClick={this.signout}>Sign Out</MenuItem>
           </NavDropdown>
@@ -91,7 +91,7 @@ var App = React.createClass({
       } else {
         return (
           <NavDropdown eventKey={3} title={this.props.currentUser.email.split('@')[0]} id='user-nav-dropdown'>
-            <MenuItem eventKey={3.4} onClick={this.openAboutModal} >About SqlPad</MenuItem>
+            <MenuItem eventKey={3.4} onClick={this.openAboutModal} >About SQLPad</MenuItem>
             <MenuItem divider />
             <MenuItem eventKey={3.5} onClick={this.signout}>Sign Out</MenuItem>
           </NavDropdown>
@@ -120,7 +120,7 @@ var App = React.createClass({
         <Alert stack={{limit: 3}} position='bottom-right' />
         <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>
           <Modal.Header closeButton>
-            <Modal.Title>About SqlPad</Modal.Title>
+            <Modal.Title>About SQLPad</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <p>

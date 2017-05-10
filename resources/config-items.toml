@@ -11,7 +11,7 @@ key = "ip"
 cliFlag = "ip"
 envVar = "SQLPAD_IP"
 default = "0.0.0.0"
-description = "IP address to bind to. By default SqlPad will listen from all available addresses (0.0.0.0)."
+description = "IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0)."
 
 [[configItems]]
 interface = "env"
@@ -19,7 +19,7 @@ key = "port"
 cliFlag = "port"
 envVar = "SQLPAD_PORT"
 default = 80
-description = "Port for SqlPad to listen on."
+description = "Port for SQLPad to listen on."
 
 [[configItems]]
 interface = "env"
@@ -27,7 +27,7 @@ key = "httpsPort"
 cliFlag = "https-port"
 envVar = "SQLPAD_HTTPS_PORT"
 default = 443
-description = "Port for SqlPad to listen on."
+description = "Port for SQLPad to listen on."
 
 [[configItems]]
 interface = "env"
@@ -35,7 +35,7 @@ key = "dbPath"
 cliFlag = ["db", "dbPath", "dir"]
 envVar = "SQLPAD_DB_PATH"
 default = "$HOME/sqlpad/db"
-description = "Directory to store SqlPad embedded database content. This includes queries, users, query result cache files, etc."
+description = "Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc."
 
 [[configItems]]
 interface = "env"
@@ -98,7 +98,7 @@ key = "debug"
 cliFlag = "debug"
 envVar = "SQLPAD_DEBUG"
 default = false
-description = "Add a variety of logging to console while running SqlPad"
+description = "Add a variety of logging to console while running SQLPad"
 
 [[configItems]]
 interface = "env"

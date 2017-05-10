@@ -39,7 +39,7 @@ var SignUp = React.createClass({
           <div>
             <h4>Admin Registration is Open</h4>
             <p>
-              Welcome to SqlPad!
+              Welcome to SQLPad!
               Since there are no admins currently in the system,
               registration is open to anyone. By signing up, you will
               be granted admin rights, and the system will be locked down.
@@ -53,7 +53,7 @@ var SignUp = React.createClass({
     return (
       <div className='signin' >
         <form className='form-signin' role='form' onSubmit={this.signUp}>
-          <h2>SqlPad</h2>
+          <h2>SQLPad</h2>
           {adminRegistrationOpenIntro()}
           <input
             name='email'

@@ -1,11 +1,11 @@
 ---
-title: "SqlPad 2.0.0 BETA"
+title: "SQLPad 2.0.0 BETA"
 ---
 
 
-## SqlPad 2.0.0-beta.3 is now available on npm!
+## SQLPad 2.0.0-beta.3 is now available on npm!
 
-Over the last couple months I've taken some time to update SqlPad.
+Over the last couple months I've taken some time to update SQLPad.
 These updates include code cleanup, user interface/experience updates, and some new features.
 While the work isn't finished, it is ready for preview.
 I'm anticipating a few more updates throughout the month, with a stable release published October.
@@ -20,23 +20,23 @@ rick.bergfalk@gmail.com
 
 ## Installation
 
-The v2 beta is installed like any other SqlPad version. 
+The v2 beta is installed like any other SQLPad version. 
 
 Because of some minor changes to the user data model, 
-you may want to take a backup of your SqlPad instance before you begin. 
+you may want to take a backup of your SQLPad instance before you begin. 
 
-First stop your existing SqlPad instance.
+First stop your existing SQLPad instance.
 
-Next, locate your SqlPad database directory. 
+Next, locate your SQLPad database directory. 
 By default it is installed in $HOME/sqlpad/db, but you may have changed that with the --dir flag.
-Copy the files in this directory and set them aside in case you ever want to revert back to an earlier version of SqlPad.
+Copy the files in this directory and set them aside in case you ever want to revert back to an earlier version of SQLPad.
 
 To update sqlpad, run `npm install sqlpad -g` from a command prompt. 
-This will update your sqlpad installation to the latest SqlPad beta.
+This will update your sqlpad installation to the latest SQLPad beta.
 
-Once installed, run SqlPad just as you would under version 1.x.x. 
+Once installed, run SQLPad just as you would under version 1.x.x. 
 
-Need to revert back? You can install an older version of SqlPad by specifying a version.
+Need to revert back? You can install an older version of SQLPad by specifying a version.
 For example, to go back to the latest 1.x version run `npm install sqlpad@1.17.3 -g`.
 
 

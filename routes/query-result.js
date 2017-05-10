@@ -105,7 +105,7 @@ function updateCache (data, next) {
     if (!cache) {
       cache = new Cache({cacheKey: data.cacheKey})
     }
-    cache.queryName = sanitize((data.queryName || 'SqlPad Query Results') + ' ' + moment().format('YYYY-MM-DD'))
+    cache.queryName = sanitize((data.queryName || 'SQLPad Query Results') + ' ' + moment().format('YYYY-MM-DD'))
     cache.expiration = expirationDate
     cache.save(function (err, newCache) {
       if (err) return next(err)

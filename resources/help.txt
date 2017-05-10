@@ -1,5 +1,5 @@
 
-SqlPad Help:
+SQLPad Help:
 
 Usage: sqlpad [options]
 

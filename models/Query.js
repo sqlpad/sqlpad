@@ -86,7 +86,7 @@ Query.prototype.pushQueryToSlackIfSetup = function () {
       method: 'post',
       body: {'text': 'New Query <' + PUBLIC_URL + BASE_URL +
                             '/queries/' + this._id + '|' + this.name +
-                            '> saved by ' + this.modifiedBy + ' on SqlPad ```' +
+                            '> saved by ' + this.modifiedBy + ' on SQLPad ```' +
                             this.queryText + '```'},
       json: true,
       url: SLACK_WEBHOOK
