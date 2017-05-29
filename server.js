@@ -145,17 +145,16 @@ if (fs.existsSync(htmlPath)) {
 //
 // https://www.freedesktop.org/software/systemd/man/systemd.socket.html
 // https://www.freedesktop.org/software/systemd/man/sd_listen_fds.html
-function detectPortOrSystemd(port) {
+function detectPortOrSystemd (port) {
   if (String(port).trim() === 'systemd') {
     if (process.env.LISTEN_FDS) {
       console.error('Warning LISTEN_FDS is not defined! Port "systemd" should be only used when starting as a systemd service with socket activation.')
     }
-    return Promise.resolve({fd: 3});
+    return Promise.resolve({fd: 3})
   }
 
-  return detectPort(port);
+  return detectPort(port)
 }
-
 
 /*  Start the Server
 ============================================================================= */

@@ -37,7 +37,7 @@
   "proxy": "http://localhost:3010",
   "homepage": "http://BASEURL",
   "scripts": {
-    "standard": "standard",
+    "standard": "standard --fix",
     "test": "standard && mocha --recursive",
     "test-client": "react-scripts test --env=jsdom",
     "coverage": "istanbul cover _mocha -- --recursive",
