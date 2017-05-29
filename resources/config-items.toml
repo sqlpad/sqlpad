@@ -23,6 +23,14 @@ description = "Port for SQLPad to listen on."
 
 [[configItems]]
 interface = "env"
+key = "systemdSocket"
+cliFlag = "systemd-socket"
+envVar = "SQLPAD_SYSTEMD_SOCKET"
+default = false
+description = "Acquire socket from systemd if available"
+
+[[configItems]]
+interface = "env"
 key = "httpsPort"
 cliFlag = "https-port"
 envVar = "SQLPAD_HTTPS_PORT"

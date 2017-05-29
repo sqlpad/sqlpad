@@ -137,4 +137,4 @@ An entire domain can be whitelisted for username administration by setting envio
 
 ### Systemd socket activation
 
-To use systemd socket activation set port to magic value ```systemd```. For more information see [this pull request](https://github.com/rickbergfalk/sqlpad/pull/185).
+To use systemd socket activation add ```--systemd-socket``` flag. For more information see [this pull request](https://github.com/rickbergfalk/sqlpad/pull/185).
