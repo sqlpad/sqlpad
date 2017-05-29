@@ -1,7 +1,12 @@
 # Changelog
 
+## Installing beta via npm:
 Install latest beta with `npm i -g sqlpad@beta`  
-Rollback to latest stable with `npm i -g sqlpad@2.1.3`  
+Install a specific version `npm i -g sqlpad@2.1.3`  
+
+## 2.2.0
+### May 29, 2017
+- added SOCKS proxy support for postgres (brysgo)
 
 ## 2.2.0-beta2
 ### March 19, 2017
@@ -11,9 +16,9 @@ Rollback to latest stable with `npm i -g sqlpad@2.1.3`
 ### March 18, 2017
 - fixed query tag weirdness from previous v1 weirdness
 - leading 0s preserved in query results and treated as strings instead of numbers
-- support for postgres ssl certs (thanks johicks and nikicat)
-- fixed crate v1 schema support (thanks mikethebeer)
-- naive autocomplete!
+- support for postgres ssl certs (johicks and nikicat)
+- fixed crate v1 schema support (mikethebeer)
+- naive autocomplete
 - refactored connection admin screen
 - changed build system to fork create-react-app
 
@@ -30,15 +35,15 @@ Rollback to latest stable with `npm i -g sqlpad@2.1.3`
 
 ## 2.1.1
 ### November 29, 2016
-- Fix: disabling of links on query details modal (thanks vweevers!)
-- Fix: Vis tab loading indicator behaves same as query tab, hiding error on rerun (thanks vweevers!)
-- Fix: Charts rendered lazily. Query result grid loads faster, large query results won't lock browser until you try to chart. (thanks vweevers!)
+- Fix: disabling of links on query details modal (vweevers)
+- Fix: Vis tab loading indicator behaves same as query tab, hiding error on rerun (vweevers)
+- Fix: Charts rendered lazily. Query result grid loads faster, large query results won't lock browser until you try to chart. (vweevers)
 - Fix: Hide local auth form if DISABLE_USERPASS_AUTH=true
 
 ## 2.1.0
 ### November 20, 2016
-- run https via sqlpad directly (see additional setting) (thanks jameswinegar!) 
-- Support non English characters when downloading files (thanks askluyao!)
+- run https via sqlpad directly (see additional setting) (jameswinegar) 
+- Support non English characters when downloading files (askluyao)
 - render booleans/null timestamps properly
 
 ## 2.0.0
@@ -50,7 +55,7 @@ Rollback to latest stable with `npm i -g sqlpad@2.1.3`
 - Password reset/forogot password functionality added
     - Admins may generate reset links manually
     - If smtp is set up forgot password link is enabled
-- EMAIL!
+- EMAIL
 - Configuration:
     - Checklist added for OAuth and Email
     - Item is disabled in UI if value is provided by environment or cli 
@@ -191,4 +196,4 @@ Rollback to latest stable with `npm i -g sqlpad@2.1.3`
 - Add initial Vertica support via use of Postgres driver
 
 ## 1.0.0
-- SQLPad is released!
+- SQLPad is released
