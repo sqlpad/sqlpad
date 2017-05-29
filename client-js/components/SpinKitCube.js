@@ -1,5 +1,5 @@
 // http://tobiasahlin.com/spinkit/
-var React = require('react')
+import React from 'react'
 
 module.exports = () => (
   <div className='sk-cube-grid'>

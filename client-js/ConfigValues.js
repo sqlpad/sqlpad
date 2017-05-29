@@ -1,4 +1,4 @@
-var React = require('react')
+import React from 'react'
 var _ = window._
 var fetchJson = require('./utilities/fetch-json.js')
 var Alert = require('react-s-alert').default

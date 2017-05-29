@@ -1,37 +1,36 @@
-var React = require('react')
-var uuid = require('uuid')
-var keymaster = require('keymaster')
+import React from 'react'
 import { Creatable } from 'react-select'
-var SchemaInfo = require('./components/SchemaInfo.js')
-var QueryResultDataTable = require('./components/QueryResultDataTable.js')
-var QueryResultHeader = require('./components/QueryResultHeader.js')
-var ChartInputs = require('./components/ChartInputs.js')
-var SqlpadTauChart = require('./components/SqlpadTauChart.js')
-var chartDefinitions = require('./components/ChartDefinitions.js')
-var fetchJson = require('./utilities/fetch-json.js')
-var Alert = require('react-s-alert').default
+import Alert from 'react-s-alert'
 import AceEditor from 'react-ace'
 import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
 import 'brace/ext/searchbox'
+import Row from 'react-bootstrap/lib/Row'
+import Col from 'react-bootstrap/lib/Col'
+import Nav from 'react-bootstrap/lib/Nav'
+import NavItem from 'react-bootstrap/lib/NavItem'
+import Tab from 'react-bootstrap/lib/Tab'
+import Form from 'react-bootstrap/lib/Form'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import Button from 'react-bootstrap/lib/Button'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import Modal from 'react-bootstrap/lib/Modal'
+import Tooltip from 'react-bootstrap/lib/Tooltip'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import HelpBlock from 'react-bootstrap/lib/HelpBlock'
+const uuid = require('uuid')
+const keymaster = require('keymaster')
+const SchemaInfo = require('./components/SchemaInfo.js')
+const QueryResultDataTable = require('./components/QueryResultDataTable.js')
+const QueryResultHeader = require('./components/QueryResultHeader.js')
+const ChartInputs = require('./components/ChartInputs.js')
+const SqlpadTauChart = require('./components/SqlpadTauChart.js')
+const chartDefinitions = require('./components/ChartDefinitions.js')
+const fetchJson = require('./utilities/fetch-json.js')
 
-var Row = require('react-bootstrap/lib/Row')
-var Col = require('react-bootstrap/lib/Col')
-var Nav = require('react-bootstrap/lib/Nav')
-var NavItem = require('react-bootstrap/lib/NavItem')
-var Tab = require('react-bootstrap/lib/Tab')
-var Form = require('react-bootstrap/lib/Form')
-var FormGroup = require('react-bootstrap/lib/FormGroup')
-var FormControl = require('react-bootstrap/lib/FormControl')
-var ControlLabel = require('react-bootstrap/lib/ControlLabel')
-var Button = require('react-bootstrap/lib/Button')
-var Glyphicon = require('react-bootstrap/lib/Glyphicon')
-var Modal = require('react-bootstrap/lib/Modal')
-var Tooltip = require('react-bootstrap/lib/Tooltip')
-var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
-var HelpBlock = require('react-bootstrap/lib/HelpBlock')
-
-var QueryDetailsModal = React.createClass({
+const QueryDetailsModal = React.createClass({
   getInitialState: function () {
     return {
       showModal: false
@@ -134,7 +133,7 @@ var QueryDetailsModal = React.createClass({
   }
 })
 
-var QueryEditor = React.createClass({
+const QueryEditor = React.createClass({
   loadConnectionsFromServer: function () {
     fetchJson('GET', this.props.config.baseUrl + '/api/connections/')
       .then((json) => {

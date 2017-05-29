@@ -1,8 +1,7 @@
-//  This is the client side js entry file to be browserified
-var page = require('page')
-var React = require('react')
-var ReactDOM = require('react-dom')
-var fetchJson = require('./utilities/fetch-json.js')
+import React from 'react'
+const page = require('page')
+const ReactDOM = require('react-dom')
+const fetchJson = require('./utilities/fetch-json.js')
 
 fetchJson('GET', 'api/app')
   .then((json) => {
@@ -13,7 +12,7 @@ fetchJson('GET', 'api/app')
   })
 
 function init (appData) {
-  var config = appData.config
+  const config = appData.config
   const BASE_URL = config.baseUrl
 
   // account for baseUrl in client-side routing

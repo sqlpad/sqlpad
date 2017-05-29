@@ -1,19 +1,19 @@
-var React = require('react')
-var Alert = require('react-s-alert').default
-var fetchJson = require('./utilities/fetch-json.js')
-var Navbar = require('react-bootstrap/lib/Navbar')
-var Nav = require('react-bootstrap/lib/Nav')
-var NavItem = require('react-bootstrap/lib/NavItem')
-var NavDropdown = require('react-bootstrap/lib/NavDropdown')
-var MenuItem = require('react-bootstrap/lib/MenuItem')
-var Modal = require('react-bootstrap/lib/Modal')
-var Button = require('react-bootstrap/lib/Button')
-var Popover = require('react-bootstrap/lib/Popover')
-var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
+import React from 'react'
+import Alert from 'react-s-alert'
+import Navbar from 'react-bootstrap/lib/Navbar'
+import Nav from 'react-bootstrap/lib/Nav'
+import NavItem from 'react-bootstrap/lib/NavItem'
+import NavDropdown from 'react-bootstrap/lib/NavDropdown'
+import MenuItem from 'react-bootstrap/lib/MenuItem'
+import Modal from 'react-bootstrap/lib/Modal'
+import Button from 'react-bootstrap/lib/Button'
+import Popover from 'react-bootstrap/lib/Popover'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import navigateToClickHandler from './utilities/navigateToClickHandler'
-var page = require('page')
+const fetchJson = require('./utilities/fetch-json.js')
+const page = require('page')
 
-var App = React.createClass({
+const App = React.createClass({
   getInitialState: function () {
     return {
       showAboutModal: false,

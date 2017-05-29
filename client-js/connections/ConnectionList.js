@@ -1,4 +1,4 @@
-var React = require('react')
+import React from 'react'
 var ControlLabel = require('react-bootstrap/lib/ControlLabel')
 var Button = require('react-bootstrap/lib/Button')
 var ListGroup = require('react-bootstrap/lib/ListGroup')

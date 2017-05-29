@@ -1,4 +1,4 @@
-var React = require('react')
+import React from 'react'
 var Glyphicon = require('react-bootstrap/lib/Glyphicon')
 var Popover = require('react-bootstrap/lib/Popover')
 var Overlay = require('react-bootstrap/lib/Overlay')

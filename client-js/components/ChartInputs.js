@@ -1,4 +1,4 @@
-var React = require('react')
+import React from 'react'
 var _ = window._
 var chartDefinitions = require('./ChartDefinitions.js')
 var FormGroup = require('react-bootstrap/lib/FormGroup')

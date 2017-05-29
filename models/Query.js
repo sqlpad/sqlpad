@@ -145,4 +145,3 @@ Query._removeAll = function QueryRemoveAll (callback) {
 }
 
 module.exports = Query
-

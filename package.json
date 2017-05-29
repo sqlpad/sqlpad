@@ -109,7 +109,7 @@
     "page": "^1.7.1",
     "react": "^15.1.0",
     "react-ace": "^4.1.0",
-    "react-bootstrap": "^0.30.0",
+    "react-bootstrap": "^0.31.0",
     "react-copy-to-clipboard": "^4.2.2",
     "react-dom": "^15.1.0",
     "react-overlays": "^0.6.6",

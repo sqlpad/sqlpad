@@ -21,8 +21,8 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
   function initLocals (req, res, next) {
     res.locals.reload = req.query.reload === 'true'
     res.locals.tree = {}
-    res.locals.cacheKey
-    res.locals.connection
+    res.locals.cacheKey = null
+    res.locals.connection = null
     res.locals.SHOW_SCHEMA_COPY_BUTTON = config.get('showSchemaCopyButton')
     res.locals.connectionId = req.params.connectionId
     next()
@@ -73,7 +73,7 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
 
     connection.username = decipher(connection.username)
     connection.password = decipher(connection.password)
-    connection.maxRows = typeof Number.MAX_SAFE_INTEGER === undefined ? 9007199254740991 : Number.MAX_SAFE_INTEGER
+    connection.maxRows = typeof Number.MAX_SAFE_INTEGER === 'undefined' ? 9007199254740991 : Number.MAX_SAFE_INTEGER
 
     let primarySchemaSql = ''
     let secondarySchemaSql
