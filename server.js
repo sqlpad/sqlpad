@@ -136,6 +136,26 @@ if (fs.existsSync(htmlPath)) {
   console.error('If not running in dev mode please report this issue.\n')
 }
 
+// When --port=systemd is passed we will assume that sqlpad is launched as a
+// systemd service with socket activation. Systemd passes the socket as file
+// descriptor 3. As sqlpad listens to only one port no further action is
+// required.
+//
+// More info
+//
+// https://www.freedesktop.org/software/systemd/man/systemd.socket.html
+// https://www.freedesktop.org/software/systemd/man/sd_listen_fds.html
+function detectPortOrSystemd(port) {
+  if (String(port).trim() === 'systemd') {
+    if (process.env.LISTEN_FDS) {
+      console.error('Warning LISTEN_FDS is not defined! Port "systemd" should be only used when starting as a systemd service with socket activation.')
+    }
+    return Promise.resolve({fd: 3});
+  }
+
+  return detectPort(port);
+}
+
 
 /*  Start the Server
 ============================================================================= */
@@ -145,7 +165,7 @@ require('./lib/db').load(function (err) {
   // determine if key pair exists for certs
   if (KEY_PATH && CERT_PATH) { // https only
     console.log('Launching server with SSL')
-    detectPort(HTTPS_PORT).then(function (_port) {
+    detectPortOrSystemd(HTTPS_PORT).then(function (_port) {
       if (HTTPS_PORT !== _port) {
         console.log('\nPort %d already occupied. Using port %d instead.', HTTPS_PORT, _port)
         // Persist the new port to the in-memory store. This is kinda hacky
@@ -170,7 +190,7 @@ require('./lib/db').load(function (err) {
     })
   } else { // http only
     console.log('Launching server WITHOUT SSL')
-    detectPort(PORT).then(function (_port) {
+    detectPortOrSystemd(PORT).then(function (_port) {
       if (PORT !== _port) {
         console.log('\nPort %d already occupied. Using port %d instead.', PORT, _port)
         // Persist the new port to the in-memory store. This is kinda hacky

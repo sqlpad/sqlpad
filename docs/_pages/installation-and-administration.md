@@ -135,4 +135,6 @@ A SQLPad query can be posted to a Slack webhook when saved. To enable, create a 
 
 An entire domain can be whitelisted for username administration by setting enviornment variable ```WHITELISTED_DOMAINS```
 
+### Systemd socket activation
 
+To use systemd socket activation set port to magic value ```systemd```. For more information see [this pull request](https://github.com/rickbergfalk/sqlpad/pull/185).
