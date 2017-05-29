@@ -4,6 +4,9 @@
 Install latest beta with `npm i -g sqlpad@beta`  
 Install a specific version `npm i -g sqlpad@2.1.3`  
 
+## next (unreleased)
+- added systemd socket activation support (epeli)
+
 ## 2.2.0
 ### May 29, 2017
 - added SOCKS proxy support for postgres (brysgo)
