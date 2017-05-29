@@ -4,8 +4,9 @@
 Install latest beta with `npm i -g sqlpad@beta`  
 Install a specific version `npm i -g sqlpad@2.1.3`  
 
-## next (unreleased)
+## next (in development)
 - added systemd socket activation support (epeli)
+- added option to disable update check
 
 ## 2.2.0
 ### May 29, 2017
