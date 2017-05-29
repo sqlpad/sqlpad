@@ -245,3 +245,13 @@ envVar = "WHITELISTED_DOMAINS"
 cliFlag = "whitelisted-domains"
 description = "Allows whitelisting of email domains so individual email addresses do not need to be whitelisted. Domains must be delimited by whitespace. For example, 'baz.com foo.bar.com' will whitelist sara@baz.com and john@foo.bar.com"
 default = ""
+
+[[configItems]]
+interface = "ui"
+key = "disableUpdateCheck"
+envVar = "SQLPAD_DISABLE_UPDATE_CHECK"
+cliFlag = "disable-update-check"
+label = "Disable update check"
+options = [true, false]
+description = "If disabled, SQLPad will no longer poll npmjs.com to see if an update is available."
+default = false
