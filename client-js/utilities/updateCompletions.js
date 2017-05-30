@@ -1,5 +1,5 @@
 // import various ace editor things
-var ace = require('brace')
+import * as ace from 'brace'
 import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
 import 'brace/ext/searchbox'

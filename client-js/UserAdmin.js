@@ -1,4 +1,4 @@
-var React = require('react')
+import React from 'react'
 var fetchJson = require('./utilities/fetch-json.js')
 var moment = require('moment')
 var uuid = require('uuid')

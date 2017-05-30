@@ -1,10 +1,10 @@
-var React = require('react')
-var SpinKitCube = require('./SpinKitCube.js')
-var moment = require('moment')
-import {Table, Column, Cell} from 'fixed-data-table' // react's fixed data table
-var _ = window._
+import React from 'react'
+import {Table, Column, Cell} from 'fixed-data-table'
+const SpinKitCube = require('./SpinKitCube.js')
+const moment = require('moment')
+const _ = window._
 
-var renderValue = (input, fieldMeta) => {
+const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {
     return <em>null</em>
   } else if (input === true || input === false) {
@@ -22,7 +22,6 @@ var renderValue = (input, fieldMeta) => {
 // because the isRunning prop will toggle with each query execution
 // It would otherwise not rerender on change of prop.queryResult alone
 class QueryResultDataTable extends React.PureComponent {
-
   constructor (props) {
     super(props)
     this.state = {

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-env mocha */
 require('chai').should()
 

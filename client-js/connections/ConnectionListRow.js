@@ -1,11 +1,10 @@
-var React = require('react')
+import React from 'react'
 var Button = require('react-bootstrap/lib/Button')
 var Glyphicon = require('react-bootstrap/lib/Glyphicon')
 var Popover = require('react-bootstrap/lib/Popover')
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
 
 class ConnectionListRow extends React.Component {
-
   constructor (props) {
     super(props)
     this.onDelete = this.onDelete.bind(this)

@@ -1,4 +1,4 @@
-var React = require('react')
+import React from 'react'
 var Panel = require('react-bootstrap/lib/Panel')
 var Form = require('react-bootstrap/lib/Form')
 var FormGroup = require('react-bootstrap/lib/FormGroup')

@@ -1,8 +1,8 @@
-var React = require('react')
-var SecondsTimer = require('./SecondsTimer.js')
+import React from 'react'
 import IncompleteDataNotification from './IncompleteDataNotification'
+const SecondsTimer = require('./SecondsTimer.js')
 
-var QueryResultHeader = React.createClass({
+const QueryResultHeader = React.createClass({
   render: function () {
     if (this.props.isRunning || !this.props.queryResult) {
       return (
@@ -18,11 +18,11 @@ var QueryResultHeader = React.createClass({
         </div>
       )
     }
-    var csvDownloadLink = this.props.config.baseUrl + '/download-results/' + this.props.cacheKey + '.csv'
-    var xlsxDownloadLink = this.props.config.baseUrl + '/download-results/' + this.props.cacheKey + '.xlsx'
-    var serverSec = (this.props.queryResult ? (this.props.queryResult.queryRunTime / 1000) + ' sec.' : '')
-    var rowCount = (this.props.queryResult && this.props.queryResult.rows ? this.props.queryResult.rows.length : '')
-    var downloadLinks = () => {
+    const csvDownloadLink = this.props.config.baseUrl + '/download-results/' + this.props.cacheKey + '.csv'
+    const xlsxDownloadLink = this.props.config.baseUrl + '/download-results/' + this.props.cacheKey + '.xlsx'
+    const serverSec = (this.props.queryResult ? (this.props.queryResult.queryRunTime / 1000) + ' sec.' : '')
+    const rowCount = (this.props.queryResult && this.props.queryResult.rows ? this.props.queryResult.rows.length : '')
+    const downloadLinks = () => {
       if (this.props.config.allowCsvDownload) {
         return (
           <span>

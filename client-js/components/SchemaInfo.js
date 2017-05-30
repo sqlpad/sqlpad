@@ -1,13 +1,12 @@
-var React = require('react')
-var FormGroup = require('react-bootstrap/lib/FormGroup')
-var FormControl = require('react-bootstrap/lib/FormControl')
-var Glyphicon = require('react-bootstrap/lib/Glyphicon')
+import React from 'react'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import CopyToClipboard from 'react-copy-to-clipboard'
-var fetchJson = require('../utilities/fetch-json.js')
+const fetchJson = require('../utilities/fetch-json.js')
 const updateCompletions = require('../utilities/updateCompletions.js')
 
 class SchemaInfo extends React.PureComponent {
-
   constructor (props) {
     super(props)
     this.state = {

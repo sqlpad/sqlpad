@@ -1,10 +1,10 @@
-var React = require('react')
-var fetchJson = require('./utilities/fetch-json.js')
-var Alert = require('react-s-alert').default
+import React from 'react'
+import Alert from 'react-s-alert'
 import navigateToClickHandler from './utilities/navigateToClickHandler'
-var page = require('page')
+const fetchJson = require('./utilities/fetch-json.js')
+const page = require('page')
 
-var SignIn = React.createClass({
+const SignIn = React.createClass({
   getInitialState: function () {
     return {
       email: '',

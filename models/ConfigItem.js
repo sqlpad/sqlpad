@@ -51,12 +51,12 @@ var ConfigItem = function (data) {
   this.sensitive = data.sensitive || false
   this.description = data.description
   this.label = data.label
-  this.envValue
-  this.cliValue
-  this.savedCliValue
-  this.dbValue
-  this.effectiveValue
-  this.effectiveValueSource
+  this.envValue = null
+  this.cliValue = null
+  this.savedCliValue = null
+  this.dbValue = null
+  this.effectiveValue = null
+  this.effectiveValueSource = null
 
   // assign values as appropriate based on what is available
 

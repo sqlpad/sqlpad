@@ -1,11 +1,11 @@
-var React = require('react')
-var fetchJson = require('./utilities/fetch-json.js')
-var SqlpadTauChart = require('./components/SqlpadTauChart.js')
-var DropdownButton = require('react-bootstrap/lib/DropdownButton')
-var MenuItem = require('react-bootstrap/lib/MenuItem')
+import React from 'react'
+import DropdownButton from 'react-bootstrap/lib/DropdownButton'
+import MenuItem from 'react-bootstrap/lib/MenuItem'
 import IncompleteDataNotification from './components/IncompleteDataNotification'
+const SqlpadTauChart = require('./components/SqlpadTauChart.js')
+const fetchJson = require('./utilities/fetch-json.js')
 
-var QueryEditor = React.createClass({
+const QueryEditor = React.createClass({
   getInitialState: function () {
     return {
       isRunning: false,

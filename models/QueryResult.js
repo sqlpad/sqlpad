@@ -14,10 +14,10 @@ function isNumberLike (n) {
 
 function QueryResult () {
   this.id = uuid.v1()       // each result has unique id. used to determine whether results changed in React
-  this.cacheKey
-  this.startTime
-  this.stopTime
-  this.queryRunTime
+  this.cacheKey = null
+  this.startTime = null
+  this.stopTime = null
+  this.queryRunTime = null
   this.processedInitialHeader = false
   this.fields = []           // array of field names
   this.incomplete = false    // signals whether results were truncated due to MAX_ROWS

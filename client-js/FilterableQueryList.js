@@ -1,25 +1,25 @@
-var React = require('react')
-var moment = require('moment')
-var _ = window._
-var fetchJson = require('./utilities/fetch-json.js')
-var Alert = require('react-s-alert').default
+import React from 'react'
+import moment from 'moment'
+import Alert from 'react-s-alert'
 import AceEditor from 'react-ace'
 import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
-var chartDefinitions = require('./components/ChartDefinitions.js')
-var Label = require('react-bootstrap/lib/Label')
-var Form = require('react-bootstrap/lib/Form')
-var FormGroup = require('react-bootstrap/lib/FormGroup')
-var FormControl = require('react-bootstrap/lib/FormControl')
-var ControlLabel = require('react-bootstrap/lib/ControlLabel')
-var ListGroup = require('react-bootstrap/lib/ListGroup')
-var Button = require('react-bootstrap/lib/Button')
-var Glyphicon = require('react-bootstrap/lib/Glyphicon')
-var Popover = require('react-bootstrap/lib/Popover')
-var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
+import Label from 'react-bootstrap/lib/Label'
+import Form from 'react-bootstrap/lib/Form'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import ListGroup from 'react-bootstrap/lib/ListGroup'
+import Button from 'react-bootstrap/lib/Button'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import Popover from 'react-bootstrap/lib/Popover'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import navigateToClickHandler from './utilities/navigateToClickHandler'
+const fetchJson = require('./utilities/fetch-json.js')
+const chartDefinitions = require('./components/ChartDefinitions.js')
+const _ = window._
 
-var FilterableQueryList = React.createClass({
+const FilterableQueryList = React.createClass({
   getInitialState: function () {
     return {
       queries: [],
