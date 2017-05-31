@@ -1,9 +1,9 @@
 import React from 'react'
+import chartDefinitions from './ChartDefinitions.js'
+import SpinKitCube from './SpinKitCube.js'
+import Alert from 'react-s-alert'
 var _ = window._
-var chartDefinitions = require('./ChartDefinitions.js')
-var SpinKitCube = require('./SpinKitCube.js')
-var tauCharts = window.tauCharts
-var Alert = require('react-s-alert').default
+const tauCharts = window.tauCharts
 
 var SqlpadTauChart = React.createClass({
   componentDidUpdate: function (prevProps) {
@@ -247,4 +247,4 @@ var SqlpadTauChart = React.createClass({
   }
 })
 
-module.exports = SqlpadTauChart
+export default SqlpadTauChart

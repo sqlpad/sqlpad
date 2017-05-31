@@ -20,15 +20,15 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import HelpBlock from 'react-bootstrap/lib/HelpBlock'
-const uuid = require('uuid')
-const keymaster = require('keymaster')
-const SchemaInfo = require('./components/SchemaInfo.js')
-const QueryResultDataTable = require('./components/QueryResultDataTable.js')
-const QueryResultHeader = require('./components/QueryResultHeader.js')
-const ChartInputs = require('./components/ChartInputs.js')
-const SqlpadTauChart = require('./components/SqlpadTauChart.js')
-const chartDefinitions = require('./components/ChartDefinitions.js')
-const fetchJson = require('./utilities/fetch-json.js')
+import fetchJson from './utilities/fetch-json.js'
+import uuid from 'uuid'
+import keymaster from 'keymaster'
+import SchemaInfo from './components/SchemaInfo.js'
+import QueryResultDataTable from './components/QueryResultDataTable.js'
+import QueryResultHeader from './components/QueryResultHeader.js'
+import ChartInputs from './components/ChartInputs.js'
+import SqlpadTauChart from './components/SqlpadTauChart.js'
+import chartDefinitions from './components/ChartDefinitions.js'
 
 const QueryDetailsModal = React.createClass({
   getInitialState: function () {
@@ -572,4 +572,4 @@ const QueryEditor = React.createClass({
   }
 })
 
-module.exports = QueryEditor
+export default QueryEditor

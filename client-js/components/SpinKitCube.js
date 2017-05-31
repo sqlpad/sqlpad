@@ -1,7 +1,7 @@
 // http://tobiasahlin.com/spinkit/
 import React from 'react'
 
-module.exports = () => (
+export default () => (
   <div className='sk-cube-grid'>
     <div className='sk-cube sk-cube1' />
     <div className='sk-cube sk-cube2' />

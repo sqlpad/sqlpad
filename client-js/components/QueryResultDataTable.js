@@ -1,7 +1,7 @@
 import React from 'react'
 import {Table, Column, Cell} from 'fixed-data-table'
-const SpinKitCube = require('./SpinKitCube.js')
-const moment = require('moment')
+import SpinKitCube from './SpinKitCube.js'
+import moment from 'moment'
 const _ = window._
 
 const renderValue = (input, fieldMeta) => {
@@ -134,4 +134,4 @@ class QueryResultDataTable extends React.PureComponent {
   }
 }
 
-module.exports = QueryResultDataTable
+export default QueryResultDataTable

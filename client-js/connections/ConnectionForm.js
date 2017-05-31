@@ -1,11 +1,11 @@
 import React from 'react'
-var Panel = require('react-bootstrap/lib/Panel')
-var Form = require('react-bootstrap/lib/Form')
-var FormGroup = require('react-bootstrap/lib/FormGroup')
-var FormControl = require('react-bootstrap/lib/FormControl')
-var ControlLabel = require('react-bootstrap/lib/ControlLabel')
-var Checkbox = require('react-bootstrap/lib/Checkbox')
-var Button = require('react-bootstrap/lib/Button')
+import Panel from 'react-bootstrap/lib/Panel'
+import Form from 'react-bootstrap/lib/Form'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import Checkbox from 'react-bootstrap/lib/Checkbox'
+import Button from 'react-bootstrap/lib/Button'
 
 const TEXT = 'TEXT'
 const PASSWORD = 'PASSWORD'
@@ -287,4 +287,4 @@ ConnectionForm.defaultProps = {
   selectedConnection: null
 }
 
-module.exports = ConnectionForm
+export default ConnectionForm

@@ -10,8 +10,8 @@ import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import navigateToClickHandler from './utilities/navigateToClickHandler'
-const fetchJson = require('./utilities/fetch-json.js')
-const page = require('page')
+import fetchJson from './utilities/fetch-json.js'
+import page from 'page'
 
 const App = React.createClass({
   getInitialState: function () {
@@ -157,4 +157,4 @@ const App = React.createClass({
   }
 })
 
-module.exports = App
+export default App

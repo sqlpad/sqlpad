@@ -1,4 +1,4 @@
-module.exports = [
+const ChartDefinitions = [
   {
     chartType: 'line',
     tauChartsType: 'line',
@@ -242,3 +242,5 @@ module.exports = [
     ]
   }
 ]
+
+export default ChartDefinitions

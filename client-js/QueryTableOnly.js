@@ -2,8 +2,8 @@ import React from 'react'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import IncompleteDataNotification from './components/IncompleteDataNotification'
-var QueryResultDataTable = require('./components/QueryResultDataTable.js')
-var fetchJson = require('./utilities/fetch-json.js')
+import QueryResultDataTable from './components/QueryResultDataTable.js'
+import fetchJson from './utilities/fetch-json.js'
 
 var QueryEditor = React.createClass({
   getInitialState: function () {
@@ -79,4 +79,4 @@ var QueryEditor = React.createClass({
   }
 })
 
-module.exports = QueryEditor
+export default QueryEditor

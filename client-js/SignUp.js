@@ -1,7 +1,7 @@
 import React from 'react'
-var fetchJson = require('./utilities/fetch-json.js')
-var Alert = require('react-s-alert').default
-var page = require('page')
+import fetchJson from './utilities/fetch-json.js'
+import Alert from 'react-s-alert'
+import page from 'page'
 
 var SignUp = React.createClass({
   getInitialState: function () {
@@ -85,4 +85,4 @@ var SignUp = React.createClass({
   }
 })
 
-module.exports = SignUp
+export default SignUp

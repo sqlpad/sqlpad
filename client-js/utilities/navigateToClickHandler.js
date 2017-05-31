@@ -1,4 +1,4 @@
-var page = require('page')
+import page from 'page'
 
 /*
   navigateTo() returns a function used to navigate to a page via page.js

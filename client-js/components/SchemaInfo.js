@@ -3,8 +3,8 @@ import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import CopyToClipboard from 'react-copy-to-clipboard'
-const fetchJson = require('../utilities/fetch-json.js')
-const updateCompletions = require('../utilities/updateCompletions.js')
+import fetchJson from '../utilities/fetch-json.js'
+import updateCompletions from '../utilities/updateCompletions.js'
 
 class SchemaInfo extends React.PureComponent {
   constructor (props) {
@@ -273,4 +273,4 @@ var SchemaInfoColumnItem = React.createClass({
   }
 })
 
-module.exports = SchemaInfo
+export default SchemaInfo

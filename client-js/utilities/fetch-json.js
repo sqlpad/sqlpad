@@ -1,6 +1,6 @@
 import 'whatwg-fetch'
 
-module.exports = (verb, url, body) => {
+export default function fetchJson (verb, url, body) {
   var opts = {
     method: 'GET',
     credentials: 'same-origin',
