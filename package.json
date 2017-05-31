@@ -93,7 +93,7 @@
     "sqlpad": "./server.js"
   },
   "devDependencies": {
-    "@rickbergfalk/sqlpad-react-scripts": "0.1.2",
+    "@rickbergfalk/sqlpad-react-scripts": "^1.0.7",
     "brace": "^0.10.0",
     "chai": "^4.0.0",
     "deep-equal": "^1.0.1",
