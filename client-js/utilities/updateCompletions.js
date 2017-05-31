@@ -5,7 +5,7 @@ import 'brace/theme/sqlserver'
 import 'brace/ext/searchbox'
 import 'brace/ext/language_tools'
 
-module.exports = updateCompletions
+export default updateCompletions
 
 // There's stuff below that logs to console a lot
 // documentation on this autocompletion is light

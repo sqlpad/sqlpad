@@ -1,8 +1,8 @@
 import React from 'react'
-var Button = require('react-bootstrap/lib/Button')
-var Glyphicon = require('react-bootstrap/lib/Glyphicon')
-var Popover = require('react-bootstrap/lib/Popover')
-var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
+import Button from 'react-bootstrap/lib/Button'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import Popover from 'react-bootstrap/lib/Popover'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 
 class ConnectionListRow extends React.Component {
   constructor (props) {
@@ -55,4 +55,4 @@ ConnectionListRow.defaultProps = {
   selectedConnection: {}
 }
 
-module.exports = ConnectionListRow
+export default ConnectionListRow

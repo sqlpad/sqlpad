@@ -1,10 +1,10 @@
 import React from 'react'
-var _ = window._
-var chartDefinitions = require('./ChartDefinitions.js')
-var FormGroup = require('react-bootstrap/lib/FormGroup')
-var FormControl = require('react-bootstrap/lib/FormControl')
-var ControlLabel = require('react-bootstrap/lib/ControlLabel')
-var Checkbox = require('react-bootstrap/lib/Checkbox')
+import chartDefinitions from './ChartDefinitions.js'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import Checkbox from 'react-bootstrap/lib/Checkbox'
+const _ = window._
 
 function cleanBoolean (value) {
   if (typeof value === 'string') {
@@ -130,4 +130,4 @@ var ChartInputs = React.createClass({
   }
 })
 
-module.exports = ChartInputs
+export default ChartInputs

@@ -1,18 +1,18 @@
 import React from 'react'
-var fetchJson = require('./utilities/fetch-json.js')
-var moment = require('moment')
-var uuid = require('uuid')
-var Alert = require('react-s-alert').default
-var Panel = require('react-bootstrap/lib/Panel')
-var Form = require('react-bootstrap/lib/Form')
-var FormGroup = require('react-bootstrap/lib/FormGroup')
-var FormControl = require('react-bootstrap/lib/FormControl')
-var ControlLabel = require('react-bootstrap/lib/ControlLabel')
-var Button = require('react-bootstrap/lib/Button')
-var ListGroup = require('react-bootstrap/lib/ListGroup')
-var Glyphicon = require('react-bootstrap/lib/Glyphicon')
-var Popover = require('react-bootstrap/lib/Popover')
-var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
+import fetchJson from './utilities/fetch-json.js'
+import moment from 'moment'
+import uuid from 'uuid'
+import Alert from 'react-s-alert'
+import Panel from 'react-bootstrap/lib/Panel'
+import Form from 'react-bootstrap/lib/Form'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import Button from 'react-bootstrap/lib/Button'
+import ListGroup from 'react-bootstrap/lib/ListGroup'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import Popover from 'react-bootstrap/lib/Popover'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 
 var UserAdmin = React.createClass({
   getInitialState: function () {
@@ -107,7 +107,7 @@ var UserAdmin = React.createClass({
   }
 })
 
-module.exports = UserAdmin
+export default UserAdmin
 
 var UserList = React.createClass({
   style: {

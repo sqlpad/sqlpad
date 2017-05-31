@@ -2,8 +2,8 @@ import React from 'react'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import IncompleteDataNotification from './components/IncompleteDataNotification'
-const SqlpadTauChart = require('./components/SqlpadTauChart.js')
-const fetchJson = require('./utilities/fetch-json.js')
+import fetchJson from './utilities/fetch-json.js'
+import SqlpadTauChart from './components/SqlpadTauChart.js'
 
 const QueryEditor = React.createClass({
   getInitialState: function () {
@@ -96,4 +96,4 @@ const QueryEditor = React.createClass({
   }
 })
 
-module.exports = QueryEditor
+export default QueryEditor

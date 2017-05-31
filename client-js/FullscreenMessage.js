@@ -13,7 +13,7 @@ const style = {
   fontSize: 36
 }
 
-module.exports = (props) => (
+export default (props) => (
   <div style={style}>
     {props.children}
   </div>

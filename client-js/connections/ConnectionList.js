@@ -1,8 +1,8 @@
 import React from 'react'
-var ControlLabel = require('react-bootstrap/lib/ControlLabel')
-var Button = require('react-bootstrap/lib/Button')
-var ListGroup = require('react-bootstrap/lib/ListGroup')
-const ConnectionListRow = require('./ConnectionListRow')
+import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import Button from 'react-bootstrap/lib/Button'
+import ListGroup from 'react-bootstrap/lib/ListGroup'
+import ConnectionListRow from './ConnectionListRow'
 
 const connectionListStyle = {
   position: 'absolute',
@@ -50,4 +50,4 @@ ConnectionList.propTypes = {
   onNewConnectionClick: React.PropTypes.func.isRequired
 }
 
-module.exports = ConnectionList
+export default ConnectionList

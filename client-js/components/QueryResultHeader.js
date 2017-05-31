@@ -1,6 +1,6 @@
 import React from 'react'
 import IncompleteDataNotification from './IncompleteDataNotification'
-const SecondsTimer = require('./SecondsTimer.js')
+import SecondsTimer from './SecondsTimer.js'
 
 const QueryResultHeader = React.createClass({
   render: function () {
@@ -54,4 +54,4 @@ const QueryResultHeader = React.createClass({
   }
 })
 
-module.exports = QueryResultHeader
+export default QueryResultHeader

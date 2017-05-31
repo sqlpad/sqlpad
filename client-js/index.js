@@ -1,7 +1,20 @@
 import React from 'react'
-const page = require('page')
-const ReactDOM = require('react-dom')
-const fetchJson = require('./utilities/fetch-json.js')
+import ReactDOM from 'react-dom'
+import fetchJson from './utilities/fetch-json.js'
+import page from 'page'
+import App from './App.js'
+import UserAdmin from './UserAdmin.js'
+import ConnectionsView from './connections/ConnectionsView.js'
+import ConfigValues from './ConfigValues.js'
+import FilterableQueryList from './FilterableQueryList.js'
+import QueryEditor from './QueryEditor.js'
+import SignIn from './SignIn.js'
+import SignUp from './SignUp.js'
+import ForgotPassword from './ForgotPassword.js'
+import PasswordReset from './PasswordReset.js'
+import QueryTableOnly from './QueryTableOnly.js'
+import QueryChartOnly from './QueryChartOnly.js'
+import FullscreenMessage from './FullscreenMessage.js'
 
 fetchJson('GET', 'api/app')
   .then((json) => {
@@ -20,20 +33,6 @@ function init (appData) {
 
   /*  client-side routes
   ============================================================================== */
-  var App = require('./App.js')
-  var UserAdmin = require('./UserAdmin.js')
-  var ConnectionsView = require('./connections/ConnectionsView.js')
-  var ConfigValues = require('./ConfigValues.js')
-  var FilterableQueryList = require('./FilterableQueryList.js')
-  var QueryEditor = require('./QueryEditor.js')
-  var SignIn = require('./SignIn.js')
-  var SignUp = require('./SignUp.js')
-  var ForgotPassword = require('./ForgotPassword.js')
-  var PasswordReset = require('./PasswordReset.js')
-  var QueryTableOnly = require('./QueryTableOnly.js')
-  var QueryChartOnly = require('./QueryChartOnly.js')
-  var FullscreenMessage = require('./FullscreenMessage.js')
-
   function getAppData (ctx, next) {
     fetchJson('GET', 'api/app')
       .then((json) => {

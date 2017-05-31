@@ -30,4 +30,4 @@ var SecondsTimer = React.createClass({
   }
 })
 
-module.exports = SecondsTimer
+export default SecondsTimer

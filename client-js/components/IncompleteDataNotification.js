@@ -1,8 +1,8 @@
 import React from 'react'
-var Glyphicon = require('react-bootstrap/lib/Glyphicon')
-var Popover = require('react-bootstrap/lib/Popover')
-var Overlay = require('react-bootstrap/lib/Overlay')
-var ReactDOM = require('react-dom')
+import ReactDOM from 'react-dom'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import Popover from 'react-bootstrap/lib/Popover'
+import Overlay from 'react-bootstrap/lib/Overlay'
 
 export default React.createClass({
   getInitialState () {

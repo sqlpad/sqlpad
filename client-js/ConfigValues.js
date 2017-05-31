@@ -1,18 +1,18 @@
 import React from 'react'
+import fetchJson from './utilities/fetch-json.js'
+import Alert from 'react-s-alert'
+import Form from 'react-bootstrap/lib/Form'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import Col from 'react-bootstrap/lib/Col'
+import Row from 'react-bootstrap/lib/Row'
+import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import HelpBlock from 'react-bootstrap/lib/HelpBlock'
+import Popover from 'react-bootstrap/lib/Popover'
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import AutoAffix from 'react-overlays/lib/AutoAffix'
 var _ = window._
-var fetchJson = require('./utilities/fetch-json.js')
-var Alert = require('react-s-alert').default
-var Form = require('react-bootstrap/lib/Form')
-var FormGroup = require('react-bootstrap/lib/FormGroup')
-var FormControl = require('react-bootstrap/lib/FormControl')
-var Col = require('react-bootstrap/lib/Col')
-var Row = require('react-bootstrap/lib/Row')
-var ControlLabel = require('react-bootstrap/lib/ControlLabel')
-var HelpBlock = require('react-bootstrap/lib/HelpBlock')
-var Popover = require('react-bootstrap/lib/Popover')
-var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger')
-var Glyphicon = require('react-bootstrap/lib/Glyphicon')
-var AutoAffix = require('react-overlays/lib/AutoAffix')
 
 const CheckListItem = (props) => {
   if (!props.configKey || !props.configItems || !props.configItems.length) {
@@ -127,7 +127,7 @@ var ConfigValues = React.createClass({
     )
   }
 })
-module.exports = ConfigValues
+export default ConfigValues
 
 var ConfigItemInput = React.createClass({
   getInitialState: function () {

@@ -1,8 +1,8 @@
 import React from 'react'
 import Alert from 'react-s-alert'
 import navigateToClickHandler from './utilities/navigateToClickHandler'
-const fetchJson = require('./utilities/fetch-json.js')
-const page = require('page')
+import fetchJson from './utilities/fetch-json.js'
+import page from 'page'
 
 const SignIn = React.createClass({
   getInitialState: function () {
@@ -78,4 +78,4 @@ const SignIn = React.createClass({
   }
 })
 
-module.exports = SignIn
+export default SignIn

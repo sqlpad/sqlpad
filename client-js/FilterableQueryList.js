@@ -15,8 +15,8 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import navigateToClickHandler from './utilities/navigateToClickHandler'
-const fetchJson = require('./utilities/fetch-json.js')
-const chartDefinitions = require('./components/ChartDefinitions.js')
+import fetchJson from './utilities/fetch-json.js'
+import chartDefinitions from './components/ChartDefinitions.js'
 const _ = window._
 
 const FilterableQueryList = React.createClass({
@@ -376,4 +376,4 @@ var QueryPreview = React.createClass({
   }
 })
 
-module.exports = FilterableQueryList
+export default FilterableQueryList
