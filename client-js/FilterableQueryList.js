@@ -320,11 +320,15 @@ var QueryListRow = React.createClass({
         className={selectedStyle()}
         onMouseOver={this.onMouseOver}
         onMouseOut={this.onMouseOut} >
-        <h4><a onClick={navigateToClickHandler('/queries/' + this.props.query._id)} href='#' >{this.props.query.name}</a></h4>
+        <h4><a onClick={navigateToClickHandler('/queries/' + this.props.query._id)} href='#query' >{this.props.query.name}</a></h4>
         <p>{this.props.query.createdBy} {tagLabels}</p>
-        <p><a href={tableUrl} target='_blank'>table</a> <a href={chartUrl} target='_blank'>chart</a> </p>
+        <p>
+          <a href={tableUrl} target='_blank' rel='noopener noreferrer'>table</a>
+          {' '}
+          <a href={chartUrl} target='_blank' rel='noopener noreferrer'>chart</a>
+        </p>
         <OverlayTrigger trigger='click' placement='left' container={this} rootClose overlay={popoverClick}>
-          <a className='QueryListRowDeleteButton' href='#'><Glyphicon glyph='trash' /></a>
+          <a className='QueryListRowDeleteButton' href='#delete'><Glyphicon glyph='trash' /></a>
         </OverlayTrigger>
       </li>
     )

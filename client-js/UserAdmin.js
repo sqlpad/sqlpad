@@ -203,7 +203,7 @@ var UserListRow = React.createClass({
         </Form>
         {(this.props.currentUser._id !== this.props.user._id ? (
           <OverlayTrigger trigger='click' placement='left' container={this} rootClose overlay={popoverClick}>
-            <a className='ListRowDeleteButton' href='#'><Glyphicon glyph='trash' /></a>
+            <a className='ListRowDeleteButton' href='#delete'><Glyphicon glyph='trash' /></a>
           </OverlayTrigger>
         ) : null)}
       </li>

@@ -35,10 +35,10 @@ class ConnectionListRow extends React.Component {
     )
     return (
       <li className={getClassNames()}>
-        <h4><a href='#' onClick={this.onSelect}>{this.props.connection.name}</a></h4>
+        <h4><a href='#connection' onClick={this.onSelect}>{this.props.connection.name}</a></h4>
         <h5>{this.props.connection.driver} {this.props.connection.host}/{this.props.connection.database}</h5>
         <OverlayTrigger trigger='click' placement='left' container={this} rootClose overlay={popoverClick}>
-          <a className='ListRowDeleteButton' href='#'><Glyphicon glyph='trash' /></a>
+          <a className='ListRowDeleteButton' href='#delete'><Glyphicon glyph='trash' /></a>
         </OverlayTrigger>
       </li>
     )

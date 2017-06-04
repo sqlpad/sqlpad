@@ -97,7 +97,7 @@ class SchemaInfo extends React.PureComponent {
         </FormGroup>
         <hr />
         <div id='panel-db-info-container'>
-          <a id='btn-reload-schema' href='#'>
+          <a id='btn-reload-schema' href='#refresh'>
             <Glyphicon glyph='refresh' className={refreshClass} onClick={this.onRefreshClick} />
           </a>
           <div id='panel-db-info'>
@@ -135,7 +135,7 @@ var SchemaInfoSchemaItem = React.createClass({
     }
     return (
       <li key={this.props.schema}>
-        <a href='#' onClick={this.onClick} className='schema-info-schema'>{this.props.schema}</a>
+        <a href='#schema' onClick={this.onClick} className='schema-info-schema'>{this.props.schema}</a>
         <ul>
           {tableJsx}
         </ul>
@@ -211,7 +211,7 @@ var SchemaInfoTableItem = React.createClass({
     }
     return (
       <li key={this.props.table}>
-        <a href='#' onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onClick={this.onClick} className='schema-info-table'>
+        <a href='#schema' onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onClick={this.onClick} className='schema-info-table'>
           {this.props.table} {viewType()}
           {getCopyToClipboard()}
         </a>

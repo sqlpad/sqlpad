@@ -68,7 +68,7 @@ const QueryDetailsModal = React.createClass({
       if (saved) {
         return (
           <li role='presentation'>
-            <a href={href} target='_blank' >
+            <a href={href} target='_blank' rel='noopener noreferrer' >
               {text} {' '} <Glyphicon glyph='new-window' />
             </a>
           </li>
@@ -78,7 +78,7 @@ const QueryDetailsModal = React.createClass({
         return (
           <OverlayTrigger placement='top' overlay={tooltip}>
             <li role='presentation' className='disabled'>
-              <a href={href} target='_blank' onClick={(e) => e.preventDefault()} >
+              <a href={href} target='_blank' rel='noopener noreferrer' onClick={(e) => e.preventDefault()} >
                 {text} {' '} <Glyphicon glyph='new-window' />
               </a>
             </li>
