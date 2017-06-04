@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Popover from 'react-bootstrap/lib/Popover'
@@ -45,10 +46,10 @@ class ConnectionListRow extends React.Component {
 }
 
 ConnectionListRow.propTypes = {
-  handleDelete: React.PropTypes.func.isRequired,
-  handleSelect: React.PropTypes.func.isRequired,
-  selectedConnection: React.PropTypes.object,
-  connection: React.PropTypes.object.isRequired
+  handleDelete: PropTypes.func.isRequired,
+  handleSelect: PropTypes.func.isRequired,
+  selectedConnection: PropTypes.object,
+  connection: PropTypes.object.isRequired
 }
 
 ConnectionListRow.defaultProps = {

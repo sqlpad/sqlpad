@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Panel from 'react-bootstrap/lib/Panel'
 import Form from 'react-bootstrap/lib/Form'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
@@ -274,11 +275,11 @@ class ConnectionForm extends React.Component {
 }
 
 ConnectionForm.propTypes = {
-  selectedConnection: React.PropTypes.object,
-  testConnection: React.PropTypes.func.isRequired,
-  saveConnection: React.PropTypes.func.isRequired,
-  isTesting: React.PropTypes.bool,
-  isSaving: React.PropTypes.bool
+  selectedConnection: PropTypes.object,
+  testConnection: PropTypes.func.isRequired,
+  saveConnection: PropTypes.func.isRequired,
+  isTesting: PropTypes.bool,
+  isSaving: PropTypes.bool
 }
 
 ConnectionForm.defaultProps = {
