@@ -48,7 +48,7 @@ var PasswordReset = React.createClass({
     if (this.state.notFound) {
       return (
         <div className='signin' >
-          <form className='form-signin' role='form' onSubmit={this.resetPassword}>
+          <form className='form-signin' onSubmit={this.resetPassword}>
             <h2>Password Reset<br />Not Found</h2>
           </form>
           <Alert stack={{limit: 3}} position='bottom-right' />
@@ -57,7 +57,7 @@ var PasswordReset = React.createClass({
     }
     return (
       <div className='signin' >
-        <form className='form-signin' role='form' onSubmit={this.resetPassword}>
+        <form className='form-signin' onSubmit={this.resetPassword}>
           <h2>SQLPad</h2>
           <input
             name='email'

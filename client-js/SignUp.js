@@ -52,7 +52,7 @@ var SignUp = React.createClass({
     }
     return (
       <div className='signin' >
-        <form className='form-signin' role='form' onSubmit={this.signUp}>
+        <form className='form-signin' onSubmit={this.signUp}>
           <h2>SQLPad</h2>
           {adminRegistrationOpenIntro()}
           <input
