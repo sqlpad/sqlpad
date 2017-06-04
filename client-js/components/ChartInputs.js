@@ -48,7 +48,7 @@ var ChartInputs = React.createClass({
     })
 
     var showAdvancedLink = (advancedInputDefinitionFields.length
-                ? <a href='#' onClick={this.toggleAdvanced}>{this.state.showAdvanced ? 'hide advanced settings' : 'show advanced settings'}</a>
+                ? <a href='#settings' onClick={this.toggleAdvanced}>{this.state.showAdvanced ? 'hide advanced settings' : 'show advanced settings'}</a>
                 : null)
 
     var formGroupNodes = (inputDefinitionFields) => {

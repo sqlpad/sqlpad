@@ -27,8 +27,8 @@ const QueryResultHeader = React.createClass({
         return (
           <span>
             <span className='panel-result-header-label'>Download: </span>
-            <a className='result-download-link' target='_blank' href={csvDownloadLink}>.csv</a>
-            <a className='result-download-link' target='_blank' href={xlsxDownloadLink}>.xlsx</a>
+            <a className='result-download-link' target='_blank' rel='noopener noreferrer' href={csvDownloadLink}>.csv</a>
+            <a className='result-download-link' target='_blank' rel='noopener noreferrer' href={xlsxDownloadLink}>.xlsx</a>
           </span>
         )
       }
