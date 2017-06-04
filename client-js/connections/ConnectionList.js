@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
 import ListGroup from 'react-bootstrap/lib/ListGroup'
@@ -43,11 +44,11 @@ class ConnectionList extends React.Component {
 }
 
 ConnectionList.propTypes = {
-  connections: React.PropTypes.array.isRequired,
-  selectedConnection: React.PropTypes.object,
-  handleSelect: React.PropTypes.func.isRequired,
-  handleDelete: React.PropTypes.func.isRequired,
-  onNewConnectionClick: React.PropTypes.func.isRequired
+  connections: PropTypes.array.isRequired,
+  selectedConnection: PropTypes.object,
+  handleSelect: PropTypes.func.isRequired,
+  handleDelete: PropTypes.func.isRequired,
+  onNewConnectionClick: PropTypes.func.isRequired
 }
 
 export default ConnectionList
