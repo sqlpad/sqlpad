@@ -26,7 +26,7 @@ npm install sqlpad -g
 
 ## Development
 
-See [wiki](https://github.com/rickbergfalk/sqlpad/wiki/v2-Development-Guide) for development details and project information.
+See [wiki](https://github.com/rickbergfalk/sqlpad/wiki/Development-Guide) for development details and project information.
 
 
 ## Tips
