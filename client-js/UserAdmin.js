@@ -14,17 +14,25 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 
-var UserAdmin = React.createClass({
-  getInitialState: function () {
-    return {
+class UserAdmin extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
       users: [],
       isSaving: false
     }
-  },
-  componentDidMount: function () {
+    this.handleDelete = this.handleDelete.bind(this)
+    this.loadUsersFromServer = this.loadUsersFromServer.bind(this)
+    this.updateUserRole = this.updateUserRole.bind(this)
+    this.generatePasswordResetLink = this.generatePasswordResetLink.bind(this)
+    this.removePasswordResetLink = this.removePasswordResetLink.bind(this)
+  }
+
+  componentDidMount () {
     this.loadUsersFromServer()
-  },
-  handleDelete: function (user) {
+  }
+
+  handleDelete (user) {
     fetchJson('DELETE', this.props.config.baseUrl + '/api/users/' + user._id)
       .then((json) => {
         if (json.error) return Alert.error('Delete Failed: ' + json.error.toString())
@@ -35,8 +43,9 @@ var UserAdmin = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  loadUsersFromServer: function () {
+  }
+
+  loadUsersFromServer () {
     fetchJson('get', this.props.config.baseUrl + '/api/users')
       .then((json) => {
         if (json.error) Alert.error(json.error)
@@ -46,8 +55,9 @@ var UserAdmin = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  updateUserRole: function (user) {
+  }
+
+  updateUserRole (user) {
     this.setState({isSaving: true})
     fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {role: user.role})
       .then((json) => {
@@ -60,22 +70,25 @@ var UserAdmin = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  generatePasswordResetLink: function (user) {
+  }
+
+  generatePasswordResetLink (user) {
     this.setState({isSaving: true})
-    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {passwordResetId: user.passwordResetId})
-      .then((json) => {
+    const passwordResetId = uuid.v4()
+    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, { passwordResetId })
+      .then(json => {
         this.loadUsersFromServer()
         this.setState({isSaving: false})
         if (json.error) return Alert.error('Update failed: ' + json.error.toString())
         Alert.success('Password link generated')
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  removePasswordResetLink: function (user) {
+  }
+
+  removePasswordResetLink (user) {
     this.setState({isSaving: true})
     fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {passwordResetId: ''})
       .then((json) => {
@@ -88,8 +101,9 @@ var UserAdmin = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  render: function () {
+  }
+
+  render () {
     return (
       <div>
         <UserList
@@ -105,22 +119,23 @@ var UserAdmin = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default UserAdmin
 
-var UserList = React.createClass({
-  style: {
-    position: 'absolute',
-    left: 0,
-    width: '60%',
-    top: 0,
-    bottom: 0,
-    backgroundColor: '#FDFDFD',
-    overflowY: 'auto',
-    padding: 10
-  },
-  render: function () {
+const styleUserList = {
+  position: 'absolute',
+  left: 0,
+  width: '60%',
+  top: 0,
+  bottom: 0,
+  backgroundColor: '#FDFDFD',
+  overflowY: 'auto',
+  padding: 10
+}
+
+class UserList extends React.Component {
+  render () {
     var listRows = this.props.users.map((user) => {
       return (
         <UserListRow
@@ -130,11 +145,12 @@ var UserList = React.createClass({
           updateUserRole={this.props.updateUserRole}
           generatePasswordResetLink={this.props.generatePasswordResetLink}
           removePasswordResetLink={this.props.removePasswordResetLink}
-          currentUser={this.props.currentUser} />
+          currentUser={this.props.currentUser}
+        />
       )
     })
     return (
-      <div style={this.style}>
+      <div style={styleUserList}>
         <ControlLabel>Users</ControlLabel>
         <ListGroup>
           {listRows}
@@ -142,66 +158,75 @@ var UserList = React.createClass({
       </div>
     )
   }
-})
+}
 
-var UserListRow = React.createClass({
-  onDelete: function (e) {
+const formControlStyle = {
+  minWidth: 200,
+  marginLeft: 20
+}
+
+class UserListRow extends React.Component {
+  constructor (props) {
+    super(props)
+    this.onDelete = this.onDelete.bind(this)
+    this.onRoleChange = this.onRoleChange.bind(this)
+    this.generatePasswordResetLink = this.generatePasswordResetLink.bind(this)
+    this.removePasswordResetLink = this.removePasswordResetLink.bind(this)
+  }
+
+  onDelete (e) {
     this.props.handleDelete(this.props.user)
-  },
-  onRoleChange: function (e) {
-    var user = this.props.user
+  }
+
+  onRoleChange (e) {
+    const user = this.props.user
     user.role = e.target.value
     this.props.updateUserRole(user)
-  },
-  generatePasswordResetLink: function () {
-    var user = this.props.user
-    user.passwordResetId = uuid.v4()
-    this.props.generatePasswordResetLink(user)
-  },
-  removePasswordResetLink: function () {
+  }
+
+  generatePasswordResetLink () {
+    this.props.generatePasswordResetLink(this.props.user)
+  }
+
+  removePasswordResetLink () {
     this.props.removePasswordResetLink(this.props.user)
-  },
-  formControlStyle: {
-    minWidth: 200,
-    marginLeft: 20
-  },
-  render: function () {
-    var getClassNames = () => {
-      return 'list-group-item ListRow'
-    }
+  }
+
+  render () {
+    const { user, currentUser } = this.props
     const popoverClick = (
       <Popover id='popover-trigger-click' title='Are you sure?'>
         <Button bsStyle='danger' onClick={this.onDelete} style={{width: '100%'}}>delete</Button>
       </Popover>
     )
     var signupDate = () => {
-      if (!this.props.user.signupDate) return (<h5>Signup Date: <em>not signed up yet</em></h5>)
-      return (<h5>Signup Date: {moment(this.props.user.signupDate).calendar()}</h5>)
+      if (!user.signupDate) return (<h5>Signup Date: <em>not signed up yet</em></h5>)
+      return (<h5>Signup Date: {moment(user.signupDate).calendar()}</h5>)
     }
     return (
-      <li className={getClassNames()}>
-        <h4>{this.props.user.email}</h4>
+      <li className={'list-group-item ListRow'}>
+        <h4>{user.email}</h4>
         {signupDate()}
         <PasswordResetButtonLink
-          passwordResetId={this.props.user.passwordResetId}
+          passwordResetId={user.passwordResetId}
           generatePasswordResetLink={this.generatePasswordResetLink}
           removePasswordResetLink={this.removePasswordResetLink}
-          />
+        />
         <Form inline>
           <FormGroup controlId='role'>
             <ControlLabel>Role</ControlLabel>{' '}
             <FormControl
-              style={this.formControlStyle}
+              style={formControlStyle}
               componentClass='select'
-              value={this.props.user.role}
-              disabled={this.props.currentUser._id === this.props.user._id}
+              value={user.role}
+              disabled={currentUser._id === user._id}
               onChange={this.onRoleChange} >
               <option value='editor'>Editor</option>
               <option value='admin'>Admin</option>
             </FormControl>
           </FormGroup>
         </Form>
-        {(this.props.currentUser._id !== this.props.user._id ? (
+        {(currentUser._id !== user._id ? (
           <OverlayTrigger trigger='click' placement='left' container={this} rootClose overlay={popoverClick}>
             <a className='ListRowDeleteButton' href='#delete'><Glyphicon glyph='trash' /></a>
           </OverlayTrigger>
@@ -209,10 +234,10 @@ var UserListRow = React.createClass({
       </li>
     )
   }
-})
+}
 
 const PasswordResetButtonLink = (props) => {
-  var style = {
+  const style = {
     fontSize: 14,
     marginTop: 10,
     marginBottom: 10,
@@ -231,33 +256,41 @@ const PasswordResetButtonLink = (props) => {
   )
 }
 
-var InviteUserForm = React.createClass({
-  style: {
-    position: 'absolute',
-    right: 0,
-    width: '40%',
-    top: 0,
-    bottom: 0,
-    backgroundColor: '#FDFDFD',
-    overflowY: 'auto',
-    padding: 10
-  },
-  getInitialState: function () {
-    return {
+const inviteUserFormStyle = {
+  position: 'absolute',
+  right: 0,
+  width: '40%',
+  top: 0,
+  bottom: 0,
+  backgroundColor: '#FDFDFD',
+  overflowY: 'auto',
+  padding: 10
+}
+
+class InviteUserForm extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
       email: null,
       role: null,
-      isInviting: false
+      isInviting: null
     }
-  },
-  onEmailChange: function (e) {
+    this.onEmailChange = this.onEmailChange.bind(this)
+    this.onRoleChange = this.onRoleChange.bind(this)
+    this.onInviteClick = this.onInviteClick.bind(this)
+  }
+
+  onEmailChange (e) {
     this.setState({email: e.target.value})
-  },
-  onRoleChange: function (e) {
+  }
+
+  onRoleChange (e) {
     this.setState({
       role: e.target.value
     })
-  },
-  onInviteClick: function (e) {
+  }
+
+  onInviteClick (e) {
     var user = {
       email: this.state.email,
       role: this.state.role
@@ -282,10 +315,11 @@ var InviteUserForm = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  render: function () {
+  }
+
+  render () {
     return (
-      <div style={this.style}>
+      <div style={inviteUserFormStyle}>
         <ControlLabel>Invite User</ControlLabel>
         <Panel>
           <Form>
@@ -319,4 +353,4 @@ var InviteUserForm = React.createClass({
       </div>
     )
   }
-})
+}
