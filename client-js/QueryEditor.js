@@ -1,5 +1,4 @@
 import React from 'react'
-import createReactClass from 'create-react-class'
 import { Creatable } from 'react-select'
 import Alert from 'react-s-alert'
 import AceEditor from 'react-ace'
@@ -140,10 +139,10 @@ class QueryDetailsModal extends React.Component {
   }
 }
 
-const QueryEditor = createReactClass({
-  displayName: 'QueryEditor',
+class QueryEditor extends React.Component {
+  displayName = 'QueryEditor';
 
-  loadConnectionsFromServer: function () {
+  loadConnectionsFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/connections/')
       .then((json) => {
         if (json.error) Alert.error(json.error)
@@ -162,9 +161,9 @@ const QueryEditor = createReactClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
+  }
 
-  loadQueryFromServer: function (queryId) {
+  loadQueryFromServer = (queryId) => {
     fetchJson('GET', this.props.config.baseUrl + '/api/queries/' + queryId)
       .then((json) => {
         if (json.error) Alert.error(json.error)
@@ -176,33 +175,31 @@ const QueryEditor = createReactClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
+  }
 
-  getInitialState: function () {
-    return {
-      cacheKey: uuid.v1(),
-      connections: [],
-      availableTags: [],
-      isSaving: false,
-      isRunning: false,
-      isDirty: false,
-      runQueryStartTime: undefined,
-      queryResult: undefined,
-      query: {
-        _id: '',
-        name: '',
-        tags: [],
-        connectionId: '',
-        queryText: '',
-        chartConfiguration: {
-          chartType: '',
-          fields: {} // key value for chart
-        }
+  state = {
+    cacheKey: uuid.v1(),
+    connections: [],
+    availableTags: [],
+    isSaving: false,
+    isRunning: false,
+    isDirty: false,
+    runQueryStartTime: undefined,
+    queryResult: undefined,
+    query: {
+      _id: '',
+      name: '',
+      tags: [],
+      connectionId: '',
+      queryText: '',
+      chartConfiguration: {
+        chartType: '',
+        fields: {} // key value for chart
       }
     }
-  },
+  }
 
-  saveQuery: function () {
+  saveQuery = () => {
     var query = this.state.query
     if (!query.name) {
       this.queryDetailsModal.openForSave()
@@ -247,50 +244,50 @@ const QueryEditor = createReactClass({
           Alert.error('Something is broken')
         })
     }
-  },
+  }
 
-  queryDetailsModal: undefined,
+  queryDetailsModal = undefined;
 
-  openQueryDetailsModal: function () {
+  openQueryDetailsModal = () => {
     this.queryDetailsModal.open()
-  },
+  }
 
-  onConnectionChange: function (connectionId) {
+  onConnectionChange = (connectionId) => {
     var query = this.state.query
     query.connectionId = connectionId
     this.setState({
       query: query
     })
-  },
+  }
 
-  onQueryNameChange: function (name) {
+  onQueryNameChange = (name) => {
     var query = this.state.query
     query.name = name
     this.setState({query: query})
-  },
+  }
 
-  onQueryTagsChange: function (values) {
+  onQueryTagsChange = (values) => {
     var query = this.state.query
     query.tags = values.map(v => v.value)
     this.setState({query: query})
-  },
+  }
 
-  onQueryTextChange: function (queryText) {
+  onQueryTextChange = (queryText) => {
     var query = this.state.query
     query.queryText = queryText
     this.setState({
       query: query
     })
-  },
+  }
 
-  onChartTypeChange: function (e) {
+  onChartTypeChange = (e) => {
     var chartType = e.target.value
     var query = this.state.query
     query.chartConfiguration.chartType = chartType
     this.setState({query: query})
-  },
+  }
 
-  runQuery: function () {
+  runQuery = () => {
     var editor = this.editor
     var selectedText = editor.session.getTextRange(editor.getSelectionRange())
     var queryToRun = selectedText || this.state.query.queryText
@@ -319,9 +316,9 @@ const QueryEditor = createReactClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
+  }
 
-  loadTagsFromServer: function () {
+  loadTagsFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/tags')
       .then((json) => {
         if (json.error) Alert.error(json.error)
@@ -331,9 +328,9 @@ const QueryEditor = createReactClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
+  }
 
-  componentWillReceiveProps: function (nextProps) {
+  componentWillReceiveProps (nextProps) {
     if (nextProps.queryId !== 'new') this.loadQueryFromServer(nextProps.queryId)
     else if (nextProps.queryId === 'new') {
       this.setState({
@@ -352,9 +349,9 @@ const QueryEditor = createReactClass({
         }
       })
     }
-  },
+  }
 
-  componentDidMount: function () {
+  componentDidMount () {
     this.loadConnectionsFromServer()
     this.loadTagsFromServer()
     if (this.props.queryId !== 'new') this.loadQueryFromServer(this.props.queryId)
@@ -400,48 +397,48 @@ const QueryEditor = createReactClass({
       e.preventDefault()
       return false
     })
-  },
+  }
 
-  componentWillUnmount: function () {
+  componentWillUnmount () {
     keymaster.unbind('ctrl+s, command+s')
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
-  },
+  }
 
-  onChartConfigurationFieldsChange: function (chartFieldId, queryResultField) {
+  onChartConfigurationFieldsChange = (chartFieldId, queryResultField) => {
     var query = this.state.query
     query.chartConfiguration.fields[chartFieldId] = queryResultField
     this.setState({
       query: query
     })
-  },
+  }
 
-  sqlpadTauChart: undefined,
+  sqlpadTauChart = undefined;
 
-  hasRows: function () {
+  hasRows = () => {
     var queryResult = this.state.queryResult
     return !!(queryResult && queryResult.rows && queryResult.rows.length)
-  },
+  }
 
-  isChartable: function () {
+  isChartable = () => {
     var pending = this.state.isRunning || this.state.queryError
     return !pending && this.state.activeTabKey === 'vis' && this.hasRows()
-  },
+  }
 
-  onVisualizeClick: function (e) {
+  onVisualizeClick = (e) => {
     this.sqlpadTauChart.renderChart(true)
-  },
+  }
 
-  onTabSelect: function (tabkey) {
+  onTabSelect = (tabkey) => {
     this.setState({activeTabKey: tabkey})
-  },
+  }
 
-  onSaveImageClick: function (e) {
+  onSaveImageClick = (e) => {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
       this.sqlpadTauChart.chart.fire('exportTo', 'png')
     }
-  },
+  }
 
-  render: function () {
+  render () {
     var tabsFormStyle = {
       position: 'absolute',
       left: '150px'
@@ -602,6 +599,6 @@ const QueryEditor = createReactClass({
       </div>
     )
   }
-})
+}
 
 export default QueryEditor
