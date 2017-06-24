@@ -13,23 +13,30 @@ import navigateToClickHandler from './utilities/navigateToClickHandler'
 import fetchJson from './utilities/fetch-json.js'
 import page from 'page'
 
-const App = React.createClass({
-  getInitialState: function () {
-    return {
+class App extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
       showAboutModal: false,
       currentUser: {},
       version: {},
       passport: {},
       config: {}
     }
-  },
-  openAboutModal: function () {
+    this.openAboutModal = this.openAboutModal.bind(this)
+    this.closeAboutModal = this.closeAboutModal.bind(this)
+    this.signout = this.signout.bind(this)
+  }
+
+  openAboutModal () {
     this.setState({showAboutModal: true})
-  },
-  closeAboutModal: function () {
+  }
+
+  closeAboutModal () {
     this.setState({showAboutModal: false})
-  },
-  componentDidMount: function () {
+  }
+
+  componentDidMount () {
     fetchJson('GET', this.props.config.baseUrl + '/api/app')
       .then((json) => {
         // TODO - would it be good to adopt this all-in-one app route or is this bad?
@@ -44,8 +51,9 @@ const App = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  signout: function () {
+  }
+
+  signout () {
     fetchJson('GET', this.props.config.baseUrl + '/api/signout')
       .then((json) => {
         page('/')
@@ -54,9 +62,9 @@ const App = React.createClass({
         console.error(ex.toString())
         Alert.error('Problem signing out')
       })
-  },
-  render: function () {
-    // do stuff
+  }
+
+  render () {
     const popover = (
       <Popover id='modal-popover' title={'Update Available (' + this.state.version.updateType + ')'} >
         Installed Version: {this.state.version.current}
@@ -161,6 +169,6 @@ const App = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default App

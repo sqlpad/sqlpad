@@ -3,25 +3,27 @@ import fetchJson from './utilities/fetch-json.js'
 import Alert from 'react-s-alert'
 import page from 'page'
 
-var PasswordReset = React.createClass({
-  getInitialState: function () {
-    return {
-      email: '',
-      password: '',
-      passwordConfirmation: '',
-      notFound: false
-    }
-  },
-  onEmailChange: function (e) {
+class PasswordReset extends React.Component {
+  state = {
+    email: '',
+    password: '',
+    passwordConfirmation: '',
+    notFound: false
+  };
+
+  onEmailChange = (e) => {
     this.setState({email: e.target.value})
-  },
-  onPasswordChange: function (e) {
+  };
+
+  onPasswordChange = (e) => {
     this.setState({password: e.target.value})
-  },
-  onPasswordConfirmationChange: function (e) {
+  };
+
+  onPasswordConfirmationChange = (e) => {
     this.setState({passwordConfirmation: e.target.value})
-  },
-  resetPassword: function (e) {
+  };
+
+  resetPassword = (e) => {
     e.preventDefault()
     fetchJson('POST', this.props.config.baseUrl + '/api/password-reset/' + this.props.passwordResetId, this.state)
       .then((json) => {
@@ -32,8 +34,9 @@ var PasswordReset = React.createClass({
         Alert.error('Problem resetting password')
         console.error(ex)
       })
-  },
-  componentDidMount: function () {
+  };
+
+  componentDidMount () {
     fetchJson('GET', this.props.config.baseUrl + '/api/password-reset/' + this.props.passwordResetId)
       .then((json) => {
         if (json.error) return Alert.error(json.error)
@@ -43,8 +46,9 @@ var PasswordReset = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  render: function () {
+  }
+
+  render () {
     if (this.state.notFound) {
       return (
         <div className='signin' >
@@ -87,6 +91,6 @@ var PasswordReset = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default PasswordReset

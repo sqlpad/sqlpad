@@ -30,39 +30,45 @@ import ChartInputs from './components/ChartInputs.js'
 import SqlpadTauChart from './components/SqlpadTauChart.js'
 import chartDefinitions from './components/ChartDefinitions.js'
 
-const QueryDetailsModal = React.createClass({
-  getInitialState: function () {
-    return {
-      showModal: false
-    }
-  },
-  close: function () {
+class QueryDetailsModal extends React.Component {
+  state = {
+    showModal: false
+  };
+
+  close = () => {
     if (this.saveOnClose) {
       setTimeout(this.props.saveQuery, 750)
       this.saveOnClose = false
     }
     this.setState({ showModal: false })
-  },
-  input: undefined,
-  open: function () {
+  };
+
+  input = undefined;
+
+  open = () => {
     this.setState({ showModal: true })
-  },
-  openForSave: function () {
+  };
+
+  openForSave = () => {
     this.saveOnClose = true
     this.setState({ showModal: true })
-  },
-  onSubmit: function (e) {
+  };
+
+  onSubmit = (e) => {
     e.preventDefault()
     this.close()
-  },
-  onQueryNameChange: function (e) {
+  };
+
+  onQueryNameChange = (e) => {
     var newName = e.target.value
     this.props.onQueryNameChange(newName)
-  },
-  onEntered: function () {
+  };
+
+  onEntered = () => {
     if (this.input) this.input.focus()
-  },
-  render: function () {
+  };
+
+  render () {
     var modalNavLink = (href, text) => {
       var saved = !!this.props.query._id
       if (saved) {
@@ -131,10 +137,12 @@ const QueryDetailsModal = React.createClass({
       </Modal>
     )
   }
-})
+}
 
-const QueryEditor = React.createClass({
-  loadConnectionsFromServer: function () {
+class QueryEditor extends React.Component {
+  displayName = 'QueryEditor';
+
+  loadConnectionsFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/connections/')
       .then((json) => {
         if (json.error) Alert.error(json.error)
@@ -153,8 +161,9 @@ const QueryEditor = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  loadQueryFromServer: function (queryId) {
+  }
+
+  loadQueryFromServer = (queryId) => {
     fetchJson('GET', this.props.config.baseUrl + '/api/queries/' + queryId)
       .then((json) => {
         if (json.error) Alert.error(json.error)
@@ -166,31 +175,31 @@ const QueryEditor = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  getInitialState: function () {
-    return {
-      cacheKey: uuid.v1(),
-      connections: [],
-      availableTags: [],
-      isSaving: false,
-      isRunning: false,
-      isDirty: false,
-      runQueryStartTime: undefined,
-      queryResult: undefined,
-      query: {
-        _id: '',
-        name: '',
-        tags: [],
-        connectionId: '',
-        queryText: '',
-        chartConfiguration: {
-          chartType: '',
-          fields: {} // key value for chart
-        }
+  }
+
+  state = {
+    cacheKey: uuid.v1(),
+    connections: [],
+    availableTags: [],
+    isSaving: false,
+    isRunning: false,
+    isDirty: false,
+    runQueryStartTime: undefined,
+    queryResult: undefined,
+    query: {
+      _id: '',
+      name: '',
+      tags: [],
+      connectionId: '',
+      queryText: '',
+      chartConfiguration: {
+        chartType: '',
+        fields: {} // key value for chart
       }
     }
-  },
-  saveQuery: function () {
+  }
+
+  saveQuery = () => {
     var query = this.state.query
     if (!query.name) {
       this.queryDetailsModal.openForSave()
@@ -235,42 +244,50 @@ const QueryEditor = React.createClass({
           Alert.error('Something is broken')
         })
     }
-  },
-  queryDetailsModal: undefined,
-  openQueryDetailsModal: function () {
+  }
+
+  queryDetailsModal = undefined;
+
+  openQueryDetailsModal = () => {
     this.queryDetailsModal.open()
-  },
-  onConnectionChange: function (connectionId) {
+  }
+
+  onConnectionChange = (connectionId) => {
     var query = this.state.query
     query.connectionId = connectionId
     this.setState({
       query: query
     })
-  },
-  onQueryNameChange: function (name) {
+  }
+
+  onQueryNameChange = (name) => {
     var query = this.state.query
     query.name = name
     this.setState({query: query})
-  },
-  onQueryTagsChange: function (values) {
+  }
+
+  onQueryTagsChange = (values) => {
     var query = this.state.query
     query.tags = values.map(v => v.value)
     this.setState({query: query})
-  },
-  onQueryTextChange: function (queryText) {
+  }
+
+  onQueryTextChange = (queryText) => {
     var query = this.state.query
     query.queryText = queryText
     this.setState({
       query: query
     })
-  },
-  onChartTypeChange: function (e) {
+  }
+
+  onChartTypeChange = (e) => {
     var chartType = e.target.value
     var query = this.state.query
     query.chartConfiguration.chartType = chartType
     this.setState({query: query})
-  },
-  runQuery: function () {
+  }
+
+  runQuery = () => {
     var editor = this.editor
     var selectedText = editor.session.getTextRange(editor.getSelectionRange())
     var queryToRun = selectedText || this.state.query.queryText
@@ -299,8 +316,9 @@ const QueryEditor = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  loadTagsFromServer: function () {
+  }
+
+  loadTagsFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/tags')
       .then((json) => {
         if (json.error) Alert.error(json.error)
@@ -310,8 +328,9 @@ const QueryEditor = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  componentWillReceiveProps: function (nextProps) {
+  }
+
+  componentWillReceiveProps (nextProps) {
     if (nextProps.queryId !== 'new') this.loadQueryFromServer(nextProps.queryId)
     else if (nextProps.queryId === 'new') {
       this.setState({
@@ -330,8 +349,9 @@ const QueryEditor = React.createClass({
         }
       })
     }
-  },
-  componentDidMount: function () {
+  }
+
+  componentDidMount () {
     this.loadConnectionsFromServer()
     this.loadTagsFromServer()
     if (this.props.queryId !== 'new') this.loadQueryFromServer(this.props.queryId)
@@ -377,39 +397,48 @@ const QueryEditor = React.createClass({
       e.preventDefault()
       return false
     })
-  },
-  componentWillUnmount: function () {
+  }
+
+  componentWillUnmount () {
     keymaster.unbind('ctrl+s, command+s')
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
-  },
-  onChartConfigurationFieldsChange: function (chartFieldId, queryResultField) {
+  }
+
+  onChartConfigurationFieldsChange = (chartFieldId, queryResultField) => {
     var query = this.state.query
     query.chartConfiguration.fields[chartFieldId] = queryResultField
     this.setState({
       query: query
     })
-  },
-  sqlpadTauChart: undefined,
-  hasRows: function () {
+  }
+
+  sqlpadTauChart = undefined;
+
+  hasRows = () => {
     var queryResult = this.state.queryResult
     return !!(queryResult && queryResult.rows && queryResult.rows.length)
-  },
-  isChartable: function () {
+  }
+
+  isChartable = () => {
     var pending = this.state.isRunning || this.state.queryError
     return !pending && this.state.activeTabKey === 'vis' && this.hasRows()
-  },
-  onVisualizeClick: function (e) {
+  }
+
+  onVisualizeClick = (e) => {
     this.sqlpadTauChart.renderChart(true)
-  },
-  onTabSelect: function (tabkey) {
+  }
+
+  onTabSelect = (tabkey) => {
     this.setState({activeTabKey: tabkey})
-  },
-  onSaveImageClick: function (e) {
+  }
+
+  onSaveImageClick = (e) => {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
       this.sqlpadTauChart.chart.fire('exportTo', 'png')
     }
-  },
-  render: function () {
+  }
+
+  render () {
     var tabsFormStyle = {
       position: 'absolute',
       left: '150px'
@@ -570,6 +599,6 @@ const QueryEditor = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default QueryEditor

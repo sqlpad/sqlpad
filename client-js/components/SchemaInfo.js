@@ -111,20 +111,20 @@ class SchemaInfo extends React.PureComponent {
   }
 }
 
-var SchemaInfoSchemaItem = React.createClass({
-  getInitialState: function () {
-    return {
-      showTables: this.props.initShowTables
-    }
-  },
-  onClick: function (e) {
+class SchemaInfoSchemaItem extends React.Component {
+  state = {
+    showTables: this.props.initShowTables
+  };
+
+  onClick = (e) => {
     e.stopPropagation()
     e.preventDefault()
     this.setState({
       showTables: !this.state.showTables
     })
-  },
-  render: function () {
+  };
+
+  render () {
     var tableJsx
     if (this.state.showTables) {
       tableJsx = Object.keys(this.props.tables).map((table) => {
@@ -142,43 +142,47 @@ var SchemaInfoSchemaItem = React.createClass({
       </li>
     )
   }
-})
+}
 
-var SchemaInfoTableItem = React.createClass({
-  getInitialState: function () {
-    return {
-      showColumns: false,
-      showCopyButton: false,
-      copyButtonText: 'copy'
-    }
-  },
-  onClick: function (e) {
+class SchemaInfoTableItem extends React.Component {
+  state = {
+    showColumns: false,
+    showCopyButton: false,
+    copyButtonText: 'copy'
+  };
+
+  onClick = (e) => {
     e.stopPropagation()
     e.preventDefault()
     this.setState({
       showColumns: !this.state.showColumns
     })
-  },
-  onMouseOver: function (e) {
+  };
+
+  onMouseOver = (e) => {
     this.setState({
       showCopyButton: true
     })
-  },
-  onMouseOut: function (e) {
+  };
+
+  onMouseOut = (e) => {
     this.setState({
       showCopyButton: false
     })
-  },
-  onCopyClick: function (e) {
+  };
+
+  onCopyClick = (e) => {
     e.stopPropagation()
-  },
-  onCopy: function () {
+  };
+
+  onCopy = () => {
     this.setState({copyButtonText: 'copied'})
     setTimeout(() => {
       this.setState({copyButtonText: 'copy'})
     }, 2000)
-  },
-  render: function () {
+  };
+
+  render () {
     var columnJsx
     if (this.state.showColumns) {
       columnJsx = this.props.columns.map((column) => {
@@ -221,36 +225,39 @@ var SchemaInfoTableItem = React.createClass({
       </li>
     )
   }
-})
+}
 
-var SchemaInfoColumnItem = React.createClass({
-  getInitialState: function () {
-    return {
-      showCopyButton: false,
-      copyButtonText: 'copy'
-    }
-  },
-  onMouseOver: function (e) {
+class SchemaInfoColumnItem extends React.Component {
+  state = {
+    showCopyButton: false,
+    copyButtonText: 'copy'
+  };
+
+  onMouseOver = (e) => {
     this.setState({
       showCopyButton: true
     })
-  },
-  onMouseOut: function (e) {
+  };
+
+  onMouseOut = (e) => {
     this.setState({
       showCopyButton: false
     })
-  },
-  onCopyClick: function (e) {
+  };
+
+  onCopyClick = (e) => {
     e.stopPropagation()
     e.preventDefault()
-  },
-  onCopy: function () {
+  };
+
+  onCopy = () => {
     this.setState({copyButtonText: 'copied'})
     setTimeout(() => {
       this.setState({copyButtonText: 'copy'})
     }, 2000)
-  },
-  render: function () {
+  };
+
+  render () {
     var copyButtonClassName = (this.state.showCopyButton ? 'copy-button label label-info' : 'copy-button label label-info hidden')
     var getCopyToClipboard = () => {
       if (this.props.config && this.props.config.showSchemaCopyButton) {
@@ -271,6 +278,6 @@ var SchemaInfoColumnItem = React.createClass({
       </li>
     )
   }
-})
+}
 
 export default SchemaInfo

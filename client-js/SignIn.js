@@ -4,20 +4,21 @@ import navigateToClickHandler from './utilities/navigateToClickHandler'
 import fetchJson from './utilities/fetch-json.js'
 import page from 'page'
 
-const SignIn = React.createClass({
-  getInitialState: function () {
-    return {
-      email: '',
-      password: ''
-    }
-  },
-  onEmailChange: function (e) {
+class SignIn extends React.Component {
+  state = {
+    email: '',
+    password: ''
+  };
+
+  onEmailChange = (e) => {
     this.setState({email: e.target.value})
-  },
-  onPasswordChange: function (e) {
+  };
+
+  onPasswordChange = (e) => {
     this.setState({password: e.target.value})
-  },
-  signIn: function (e) {
+  };
+
+  signIn = (e) => {
     e.preventDefault()
     fetchJson('POST', this.props.config.baseUrl + '/api/signin', this.state)
       .then((json) => {
@@ -28,8 +29,9 @@ const SignIn = React.createClass({
         Alert.error('Username or Password incorrect')
         console.error(ex)
       })
-  },
-  render: function () {
+  };
+
+  render () {
     const localForm = (
       <div>
         <form className='form-signin' onSubmit={this.signIn}>
@@ -76,6 +78,6 @@ const SignIn = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SignIn

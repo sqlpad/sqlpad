@@ -1,13 +1,13 @@
 import React from 'react'
 
-var SecondsTimer = React.createClass({
-  _mounted: false,
-  getInitialState: function () {
-    return {
-      runSeconds: 0
-    }
-  },
-  timer: function () {
+class SecondsTimer extends React.Component {
+  state = {
+    runSeconds: 0
+  };
+
+  _mounted = false;
+
+  timer = () => {
     if (this._mounted) {
       var now = new Date()
       this.setState({
@@ -15,19 +15,22 @@ var SecondsTimer = React.createClass({
       })
       setTimeout(this.timer, 33)
     }
-  },
-  componentDidMount: function () {
+  };
+
+  componentDidMount () {
     this._mounted = true
     this.timer()
-  },
-  componentWillUnmount: function () {
+  }
+
+  componentWillUnmount () {
     this._mounted = false
-  },
-  render: function () {
+  }
+
+  render () {
     return (
       <span>{this.state.runSeconds}</span>
     )
   }
-})
+}
 
 export default SecondsTimer

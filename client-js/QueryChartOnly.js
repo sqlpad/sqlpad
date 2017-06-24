@@ -5,15 +5,14 @@ import IncompleteDataNotification from './components/IncompleteDataNotification'
 import fetchJson from './utilities/fetch-json.js'
 import SqlpadTauChart from './components/SqlpadTauChart.js'
 
-const QueryEditor = React.createClass({
-  getInitialState: function () {
-    return {
-      isRunning: false,
-      runQueryStartTime: undefined,
-      queryResult: undefined
-    }
-  },
-  runQuery: function (queryId) {
+class QueryEditor extends React.Component {
+  state = {
+    isRunning: false,
+    runQueryStartTime: undefined,
+    queryResult: undefined
+  };
+
+  runQuery = (queryId) => {
     this.setState({
       isRunning: true,
       runQueryStartTime: new Date()
@@ -42,24 +41,29 @@ const QueryEditor = React.createClass({
           isRunning: false
         })
       })
-  },
-  componentDidMount: function () {
+  };
+
+  componentDidMount () {
     this.runQuery(this.props.queryId)
-  },
-  onSaveImageClick: function (e) {
+  }
+
+  onSaveImageClick = (e) => {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
       this.sqlpadTauChart.chart.fire('exportTo', 'png')
     }
-  },
-  hasRows: function () {
+  };
+
+  hasRows = () => {
     var queryResult = this.state.queryResult
     return !!(queryResult && queryResult.rows && queryResult.rows.length)
-  },
-  isChartable: function () {
+  };
+
+  isChartable = () => {
     var pending = this.state.isRunning || this.state.queryError
     return !pending && this.hasRows()
-  },
-  render: function () {
+  };
+
+  render () {
     var csvDownloadLink
     var xlsxDownloadLink
     if (this.state.queryResult) {
@@ -94,6 +98,6 @@ const QueryEditor = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default QueryEditor

@@ -5,15 +5,14 @@ import IncompleteDataNotification from './components/IncompleteDataNotification'
 import QueryResultDataTable from './components/QueryResultDataTable.js'
 import fetchJson from './utilities/fetch-json.js'
 
-var QueryEditor = React.createClass({
-  getInitialState: function () {
-    return {
-      isRunning: false,
-      runQueryStartTime: undefined,
-      queryResult: undefined
-    }
-  },
-  runQuery: function (queryId) {
+class QueryEditor extends React.Component {
+  state = {
+    isRunning: false,
+    runQueryStartTime: undefined,
+    queryResult: undefined
+  }
+
+  runQuery = (queryId) => {
     this.setState({
       isRunning: true,
       runQueryStartTime: new Date()
@@ -42,11 +41,13 @@ var QueryEditor = React.createClass({
           isRunning: false
         })
       })
-  },
-  componentDidMount: function () {
+  };
+
+  componentDidMount () {
     this.runQuery(this.props.queryId)
-  },
-  render: function () {
+  }
+
+  render () {
     var csvDownloadLink
     var xlsxDownloadLink
     if (this.state.queryResult) {
@@ -77,6 +78,6 @@ var QueryEditor = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default QueryEditor
