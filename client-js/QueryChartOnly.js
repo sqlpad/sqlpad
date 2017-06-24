@@ -43,7 +43,7 @@ class QueryEditor extends React.Component {
       })
   };
 
-  componentDidMount() {
+  componentDidMount () {
     this.runQuery(this.props.queryId)
   }
 
@@ -63,7 +63,7 @@ class QueryEditor extends React.Component {
     return !pending && this.hasRows()
   };
 
-  render() {
+  render () {
     var csvDownloadLink
     var xlsxDownloadLink
     if (this.state.queryResult) {

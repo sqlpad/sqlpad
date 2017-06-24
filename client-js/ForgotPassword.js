@@ -25,7 +25,7 @@ class ForgotPassword extends React.Component {
       })
   };
 
-  render() {
+  render () {
     return (
       <div className='signin' >
         <form className='form-signin' onSubmit={this.resetPassword}>

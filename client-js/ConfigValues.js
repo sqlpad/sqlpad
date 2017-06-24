@@ -60,12 +60,12 @@ class ConfigValues extends React.Component {
       })
   };
 
-  componentDidMount() {
+  componentDidMount () {
     this.loadConfigValuesFromServer()
     this.saveConfigValue = _.debounce(this.saveConfigValue, 500)
   }
 
-  render() {
+  render () {
     var configItemInputNodes = this.state.configItems
       .filter(config => config.interface === 'ui')
       .map(config => {
@@ -144,7 +144,7 @@ class ConfigItemInput extends React.Component {
     this.props.saveConfigValue(this.props.config.key, e.target.value)
   };
 
-  render() {
+  render () {
     const config = this.props.config
     const disabled = (config.effectiveValueSource === 'cli' || config.effectiveValueSource === 'saved cli' || config.effectiveValueSource === 'env')
 
@@ -242,7 +242,7 @@ class ConfigItemInput extends React.Component {
 }
 
 class ConfigEnvDocumentation extends React.Component {
-  render() {
+  render () {
     var configNodes = this.props.configItems
       .filter(config => config.interface === 'env')
       .map(function (config) {

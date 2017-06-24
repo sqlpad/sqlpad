@@ -1,5 +1,5 @@
 import React from 'react'
-import createReactClass from 'create-react-class';
+import createReactClass from 'create-react-class'
 import chartDefinitions from './ChartDefinitions.js'
 import SpinKitCube from './SpinKitCube.js'
 import Alert from 'react-s-alert'
@@ -254,7 +254,7 @@ var SqlpadTauChart = createReactClass({
         {runResultNotification()}
       </div>
     )
-  },
+  }
 })
 
 export default SqlpadTauChart

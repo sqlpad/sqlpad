@@ -35,7 +35,7 @@ class SignUp extends React.Component {
       })
   };
 
-  render() {
+  render () {
     const adminRegistrationOpenIntro = () => {
       if (this.props.adminRegistrationOpen) {
         return (

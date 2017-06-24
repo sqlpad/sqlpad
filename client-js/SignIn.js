@@ -31,7 +31,7 @@ class SignIn extends React.Component {
       })
   };
 
-  render() {
+  render () {
     const localForm = (
       <div>
         <form className='form-signin' onSubmit={this.signIn}>

@@ -32,7 +32,7 @@ class ChartInputs extends React.Component {
     this.props.onChartConfigurationFieldsChange(chartFieldId, queryResultField)
   };
 
-  render() {
+  render () {
     var queryChartConfigurationFields = this.props.queryChartConfigurationFields || {}
     var queryResult = this.props.queryResult
     var queryResultFields = (queryResult && queryResult.fields ? queryResult.fields : [])

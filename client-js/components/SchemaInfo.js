@@ -124,7 +124,7 @@ class SchemaInfoSchemaItem extends React.Component {
     })
   };
 
-  render() {
+  render () {
     var tableJsx
     if (this.state.showTables) {
       tableJsx = Object.keys(this.props.tables).map((table) => {
@@ -182,7 +182,7 @@ class SchemaInfoTableItem extends React.Component {
     }, 2000)
   };
 
-  render() {
+  render () {
     var columnJsx
     if (this.state.showColumns) {
       columnJsx = this.props.columns.map((column) => {
@@ -257,7 +257,7 @@ class SchemaInfoColumnItem extends React.Component {
     }, 2000)
   };
 
-  render() {
+  render () {
     var copyButtonClassName = (this.state.showCopyButton ? 'copy-button label label-info' : 'copy-button label label-info hidden')
     var getCopyToClipboard = () => {
       if (this.props.config && this.props.config.showSchemaCopyButton) {

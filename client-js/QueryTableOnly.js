@@ -10,7 +10,7 @@ class QueryEditor extends React.Component {
     isRunning: false,
     runQueryStartTime: undefined,
     queryResult: undefined
-  };
+  }
 
   runQuery = (queryId) => {
     this.setState({
@@ -43,11 +43,11 @@ class QueryEditor extends React.Component {
       })
   };
 
-  componentDidMount() {
+  componentDidMount () {
     this.runQuery(this.props.queryId)
   }
 
-  render() {
+  render () {
     var csvDownloadLink
     var xlsxDownloadLink
     if (this.state.queryResult) {

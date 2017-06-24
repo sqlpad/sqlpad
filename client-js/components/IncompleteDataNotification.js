@@ -11,7 +11,7 @@ export default class extends React.Component {
     this.setState({ show: !this.state.show })
   };
 
-  render() {
+  render () {
     if (this.props.queryResult && this.props.queryResult.incomplete) {
       const sharedProps = {
         show: this.state.show,

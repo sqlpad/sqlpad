@@ -3,7 +3,7 @@ import IncompleteDataNotification from './IncompleteDataNotification'
 import SecondsTimer from './SecondsTimer.js'
 
 class QueryResultHeader extends React.Component {
-  render() {
+  render () {
     if (this.props.isRunning || !this.props.queryResult) {
       return (
         <div className='panel-result-header'>

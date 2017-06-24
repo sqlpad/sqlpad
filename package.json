@@ -94,6 +94,7 @@
   },
   "devDependencies": {
     "@rickbergfalk/sqlpad-react-scripts": "^1.0.7",
+    "babel-eslint": "^7.2.3",
     "brace": "^0.10.0",
     "chai": "^4.0.0",
     "deep-equal": "^1.0.1",
@@ -121,6 +122,7 @@
     "whatwg-fetch": "^2.0.1"
   },
   "standard": {
+    "parser": "babel-eslint",
     "globals": [
       "fetch"
     ],

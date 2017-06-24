@@ -122,11 +122,11 @@ class FilterableQueryList extends React.Component {
     })
   };
 
-  componentDidMount() {
+  componentDidMount () {
     this.loadConfigValuesFromServer()
   }
 
-  render() {
+  render () {
     var filteredQueries = this.state.queries.map((q) => q)
     if (this.state.selectedTag) {
       filteredQueries = filteredQueries.filter((q) => {
@@ -209,7 +209,7 @@ class QueryListSidebar extends React.Component {
     this.props.onSortByChange(e.target.value)
   };
 
-  render() {
+  render () {
     var connectionSelectOptions = this.props.connections.map(function (conn) {
       return (
         <option key={conn._id} value={conn._id}>{conn.name}</option>
@@ -271,7 +271,7 @@ class QueryListSidebar extends React.Component {
 }
 
 class QueryList extends React.Component {
-  render() {
+  render () {
     var self = this
     var QueryListRows = this.props.queries.map((query) => {
       return (
@@ -308,7 +308,7 @@ class QueryListRow extends React.Component {
     this.props.handleQueryDelete(this.props.query._id)
   };
 
-  render() {
+  render () {
     var tagLabels = this.props.query.tags.map((tag) => {
       return (
         <Label bsStyle='info' key={tag} style={{marginLeft: 4}}>{tag}</Label>
@@ -350,7 +350,7 @@ class QueryListRow extends React.Component {
 }
 
 class QueryPreview extends React.Component {
-  render() {
+  render () {
     if (this.props.selectedQuery) {
       if (this.editor && this.props.config.editorWordWrap) {
         this.editor.session.setUseWrapMode(true)

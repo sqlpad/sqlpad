@@ -36,7 +36,7 @@ class PasswordReset extends React.Component {
       })
   };
 
-  componentDidMount() {
+  componentDidMount () {
     fetchJson('GET', this.props.config.baseUrl + '/api/password-reset/' + this.props.passwordResetId)
       .then((json) => {
         if (json.error) return Alert.error(json.error)
@@ -48,7 +48,7 @@ class PasswordReset extends React.Component {
       })
   }
 
-  render() {
+  render () {
     if (this.state.notFound) {
       return (
         <div className='signin' >

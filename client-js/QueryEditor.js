@@ -1,5 +1,5 @@
 import React from 'react'
-import createReactClass from 'create-react-class';
+import createReactClass from 'create-react-class'
 import { Creatable } from 'react-select'
 import Alert from 'react-s-alert'
 import AceEditor from 'react-ace'
@@ -69,7 +69,7 @@ class QueryDetailsModal extends React.Component {
     if (this.input) this.input.focus()
   };
 
-  render() {
+  render () {
     var modalNavLink = (href, text) => {
       var saved = !!this.props.query._id
       if (saved) {
@@ -601,7 +601,7 @@ const QueryEditor = createReactClass({
         <Alert stack={{limit: 3}} position='bottom-right' />
       </div>
     )
-  },
+  }
 })
 
 export default QueryEditor
