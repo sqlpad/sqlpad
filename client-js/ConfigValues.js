@@ -35,15 +35,20 @@ const CheckListItem = (props) => {
   )
 }
 
-var ConfigValues = React.createClass({
-  loadConfigValuesFromServer: function () {
+class ConfigValues extends React.Component {
+  state = {
+    configItems: []
+  };
+
+  loadConfigValuesFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/config-items')
       .then((json) => {
         if (json.error) Alert.error(json.error)
         this.setState({configItems: json.configItems})
       })
-  },
-  saveConfigValue: function (key, value) {
+  };
+
+  saveConfigValue = (key, value) => {
     fetchJson('POST', this.props.config.baseUrl + '/api/config-values/' + key, {value: value})
       .then((json) => {
         if (json.error) {
@@ -53,17 +58,14 @@ var ConfigValues = React.createClass({
           this.loadConfigValuesFromServer()
         }
       })
-  },
-  getInitialState: function () {
-    return {
-      configItems: []
-    }
-  },
-  componentDidMount: function () {
+  };
+
+  componentDidMount() {
     this.loadConfigValuesFromServer()
     this.saveConfigValue = _.debounce(this.saveConfigValue, 500)
-  },
-  render: function () {
+  }
+
+  render() {
     var configItemInputNodes = this.state.configItems
       .filter(config => config.interface === 'ui')
       .map(config => {
@@ -126,22 +128,23 @@ var ConfigValues = React.createClass({
       </div>
     )
   }
-})
+}
+
 export default ConfigValues
 
-var ConfigItemInput = React.createClass({
-  getInitialState: function () {
-    return {
-      value: this.props.config.effectiveValue
-    }
-  },
-  handleChange: function (e) {
+class ConfigItemInput extends React.Component {
+  state = {
+    value: this.props.config.effectiveValue
+  };
+
+  handleChange = (e) => {
     this.setState({
       value: e.target.value
     })
     this.props.saveConfigValue(this.props.config.key, e.target.value)
-  },
-  render: function () {
+  };
+
+  render() {
     const config = this.props.config
     const disabled = (config.effectiveValueSource === 'cli' || config.effectiveValueSource === 'saved cli' || config.effectiveValueSource === 'env')
 
@@ -236,10 +239,10 @@ var ConfigItemInput = React.createClass({
       </FormGroup>
     )
   }
-})
+}
 
-var ConfigEnvDocumentation = React.createClass({
-  render: function () {
+class ConfigEnvDocumentation extends React.Component {
+  render() {
     var configNodes = this.props.configItems
       .filter(config => config.interface === 'env')
       .map(function (config) {
@@ -300,4 +303,4 @@ var ConfigEnvDocumentation = React.createClass({
       </Form>
     )
   }
-})
+}

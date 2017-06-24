@@ -1,4 +1,5 @@
 import React from 'react'
+import createReactClass from 'create-react-class';
 import { Creatable } from 'react-select'
 import Alert from 'react-s-alert'
 import AceEditor from 'react-ace'
@@ -30,39 +31,45 @@ import ChartInputs from './components/ChartInputs.js'
 import SqlpadTauChart from './components/SqlpadTauChart.js'
 import chartDefinitions from './components/ChartDefinitions.js'
 
-const QueryDetailsModal = React.createClass({
-  getInitialState: function () {
-    return {
-      showModal: false
-    }
-  },
-  close: function () {
+class QueryDetailsModal extends React.Component {
+  state = {
+    showModal: false
+  };
+
+  close = () => {
     if (this.saveOnClose) {
       setTimeout(this.props.saveQuery, 750)
       this.saveOnClose = false
     }
     this.setState({ showModal: false })
-  },
-  input: undefined,
-  open: function () {
+  };
+
+  input = undefined;
+
+  open = () => {
     this.setState({ showModal: true })
-  },
-  openForSave: function () {
+  };
+
+  openForSave = () => {
     this.saveOnClose = true
     this.setState({ showModal: true })
-  },
-  onSubmit: function (e) {
+  };
+
+  onSubmit = (e) => {
     e.preventDefault()
     this.close()
-  },
-  onQueryNameChange: function (e) {
+  };
+
+  onQueryNameChange = (e) => {
     var newName = e.target.value
     this.props.onQueryNameChange(newName)
-  },
-  onEntered: function () {
+  };
+
+  onEntered = () => {
     if (this.input) this.input.focus()
-  },
-  render: function () {
+  };
+
+  render() {
     var modalNavLink = (href, text) => {
       var saved = !!this.props.query._id
       if (saved) {
@@ -131,9 +138,11 @@ const QueryDetailsModal = React.createClass({
       </Modal>
     )
   }
-})
+}
 
-const QueryEditor = React.createClass({
+const QueryEditor = createReactClass({
+  displayName: 'QueryEditor',
+
   loadConnectionsFromServer: function () {
     fetchJson('GET', this.props.config.baseUrl + '/api/connections/')
       .then((json) => {
@@ -154,6 +163,7 @@ const QueryEditor = React.createClass({
         Alert.error('Something is broken')
       })
   },
+
   loadQueryFromServer: function (queryId) {
     fetchJson('GET', this.props.config.baseUrl + '/api/queries/' + queryId)
       .then((json) => {
@@ -167,6 +177,7 @@ const QueryEditor = React.createClass({
         Alert.error('Something is broken')
       })
   },
+
   getInitialState: function () {
     return {
       cacheKey: uuid.v1(),
@@ -190,6 +201,7 @@ const QueryEditor = React.createClass({
       }
     }
   },
+
   saveQuery: function () {
     var query = this.state.query
     if (!query.name) {
@@ -236,10 +248,13 @@ const QueryEditor = React.createClass({
         })
     }
   },
+
   queryDetailsModal: undefined,
+
   openQueryDetailsModal: function () {
     this.queryDetailsModal.open()
   },
+
   onConnectionChange: function (connectionId) {
     var query = this.state.query
     query.connectionId = connectionId
@@ -247,16 +262,19 @@ const QueryEditor = React.createClass({
       query: query
     })
   },
+
   onQueryNameChange: function (name) {
     var query = this.state.query
     query.name = name
     this.setState({query: query})
   },
+
   onQueryTagsChange: function (values) {
     var query = this.state.query
     query.tags = values.map(v => v.value)
     this.setState({query: query})
   },
+
   onQueryTextChange: function (queryText) {
     var query = this.state.query
     query.queryText = queryText
@@ -264,12 +282,14 @@ const QueryEditor = React.createClass({
       query: query
     })
   },
+
   onChartTypeChange: function (e) {
     var chartType = e.target.value
     var query = this.state.query
     query.chartConfiguration.chartType = chartType
     this.setState({query: query})
   },
+
   runQuery: function () {
     var editor = this.editor
     var selectedText = editor.session.getTextRange(editor.getSelectionRange())
@@ -300,6 +320,7 @@ const QueryEditor = React.createClass({
         Alert.error('Something is broken')
       })
   },
+
   loadTagsFromServer: function () {
     fetchJson('GET', this.props.config.baseUrl + '/api/tags')
       .then((json) => {
@@ -311,6 +332,7 @@ const QueryEditor = React.createClass({
         Alert.error('Something is broken')
       })
   },
+
   componentWillReceiveProps: function (nextProps) {
     if (nextProps.queryId !== 'new') this.loadQueryFromServer(nextProps.queryId)
     else if (nextProps.queryId === 'new') {
@@ -331,6 +353,7 @@ const QueryEditor = React.createClass({
       })
     }
   },
+
   componentDidMount: function () {
     this.loadConnectionsFromServer()
     this.loadTagsFromServer()
@@ -378,10 +401,12 @@ const QueryEditor = React.createClass({
       return false
     })
   },
+
   componentWillUnmount: function () {
     keymaster.unbind('ctrl+s, command+s')
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
   },
+
   onChartConfigurationFieldsChange: function (chartFieldId, queryResultField) {
     var query = this.state.query
     query.chartConfiguration.fields[chartFieldId] = queryResultField
@@ -389,26 +414,33 @@ const QueryEditor = React.createClass({
       query: query
     })
   },
+
   sqlpadTauChart: undefined,
+
   hasRows: function () {
     var queryResult = this.state.queryResult
     return !!(queryResult && queryResult.rows && queryResult.rows.length)
   },
+
   isChartable: function () {
     var pending = this.state.isRunning || this.state.queryError
     return !pending && this.state.activeTabKey === 'vis' && this.hasRows()
   },
+
   onVisualizeClick: function (e) {
     this.sqlpadTauChart.renderChart(true)
   },
+
   onTabSelect: function (tabkey) {
     this.setState({activeTabKey: tabkey})
   },
+
   onSaveImageClick: function (e) {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
       this.sqlpadTauChart.chart.fire('exportTo', 'png')
     }
   },
+
   render: function () {
     var tabsFormStyle = {
       position: 'absolute',
@@ -569,7 +601,7 @@ const QueryEditor = React.createClass({
         <Alert stack={{limit: 3}} position='bottom-right' />
       </div>
     )
-  }
+  },
 })
 
 export default QueryEditor

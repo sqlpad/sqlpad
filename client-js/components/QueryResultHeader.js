@@ -2,8 +2,8 @@ import React from 'react'
 import IncompleteDataNotification from './IncompleteDataNotification'
 import SecondsTimer from './SecondsTimer.js'
 
-const QueryResultHeader = React.createClass({
-  render: function () {
+class QueryResultHeader extends React.Component {
+  render() {
     if (this.props.isRunning || !this.props.queryResult) {
       return (
         <div className='panel-result-header'>
@@ -52,6 +52,6 @@ const QueryResultHeader = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default QueryResultHeader

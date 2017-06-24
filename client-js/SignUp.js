@@ -3,24 +3,26 @@ import fetchJson from './utilities/fetch-json.js'
 import Alert from 'react-s-alert'
 import page from 'page'
 
-var SignUp = React.createClass({
-  getInitialState: function () {
-    return {
-      email: '',
-      password: '',
-      passwordConfirmation: ''
-    }
-  },
-  onEmailChange: function (e) {
+class SignUp extends React.Component {
+  state = {
+    email: '',
+    password: '',
+    passwordConfirmation: ''
+  };
+
+  onEmailChange = (e) => {
     this.setState({email: e.target.value})
-  },
-  onPasswordChange: function (e) {
+  };
+
+  onPasswordChange = (e) => {
     this.setState({password: e.target.value})
-  },
-  onPasswordConfirmationChange: function (e) {
+  };
+
+  onPasswordConfirmationChange = (e) => {
     this.setState({passwordConfirmation: e.target.value})
-  },
-  signUp: function (e) {
+  };
+
+  signUp = (e) => {
     e.preventDefault()
     fetchJson('POST', this.props.config.baseUrl + '/api/signup', this.state)
       .then((json) => {
@@ -31,8 +33,9 @@ var SignUp = React.createClass({
         Alert.error('Problem signing up')
         console.error(ex)
       })
-  },
-  render: function () {
+  };
+
+  render() {
     const adminRegistrationOpenIntro = () => {
       if (this.props.adminRegistrationOpen) {
         return (
@@ -83,6 +86,6 @@ var SignUp = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SignUp

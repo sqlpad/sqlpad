@@ -1,11 +1,14 @@
 import React from 'react'
+import createReactClass from 'create-react-class';
 import chartDefinitions from './ChartDefinitions.js'
 import SpinKitCube from './SpinKitCube.js'
 import Alert from 'react-s-alert'
 var _ = window._
 const tauCharts = window.tauCharts
 
-var SqlpadTauChart = React.createClass({
+var SqlpadTauChart = createReactClass({
+  displayName: 'SqlpadTauChart',
+
   componentDidUpdate: function (prevProps) {
     if (this.props.isRunning || this.props.queryError) {
       this.destroyChart()
@@ -13,7 +16,9 @@ var SqlpadTauChart = React.createClass({
       this.renderChart()
     }
   },
+
   chart: undefined,
+
   chartStyle: {
     padding: '20px 10px 10px 20px',
     position: 'absolute',
@@ -22,12 +27,14 @@ var SqlpadTauChart = React.createClass({
     left: 0,
     right: 0
   },
+
   destroyChart () {
     if (this.chart) {
       this.chart.destroy()
       this.chart = null
     }
   },
+
   renderChart: function (rerender) {
     // This is invoked during following:
     //  - Vis tab enter
@@ -215,12 +222,15 @@ var SqlpadTauChart = React.createClass({
       this.chart.setData(dataRows)
     }
   },
+
   setData: function (chartData) {
     this.chart.setData(chartData)
   },
+
   componentWillUnmount () {
     this.destroyChart()
   },
+
   render: function () {
     var runResultNotification = () => {
       if (this.props.isRunning) {
@@ -244,7 +254,7 @@ var SqlpadTauChart = React.createClass({
         {runResultNotification()}
       </div>
     )
-  }
+  },
 })
 
 export default SqlpadTauChart

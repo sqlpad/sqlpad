@@ -19,25 +19,25 @@ import fetchJson from './utilities/fetch-json.js'
 import chartDefinitions from './components/ChartDefinitions.js'
 const _ = window._
 
-const FilterableQueryList = React.createClass({
-  getInitialState: function () {
-    return {
-      queries: [],
-      connections: [],
-      createdBys: [],
-      tags: [],
-      searchInput: null,
-      selectedConnection: null,
-      selectedTag: null,
-      selectedCreatedBy: this.props.currentUser ? this.props.currentUser.email : '',
-      selectedSortBy: null,
-      selectedQuery: null
-    }
-  },
-  handleQueryListRowMouseOver: function (query) {
+class FilterableQueryList extends React.Component {
+  state = {
+    queries: [],
+    connections: [],
+    createdBys: [],
+    tags: [],
+    searchInput: null,
+    selectedConnection: null,
+    selectedTag: null,
+    selectedCreatedBy: this.props.currentUser ? this.props.currentUser.email : '',
+    selectedSortBy: null,
+    selectedQuery: null
+  };
+
+  handleQueryListRowMouseOver = (query) => {
     this.setState({selectedQuery: query})
-  },
-  handleQueryDelete: function (queryId) {
+  };
+
+  handleQueryDelete = (queryId) => {
     var queries = this.state.queries
     var selectedQuery = this.state.selectedQuery
     if (selectedQuery._id === queryId) selectedQuery = null
@@ -56,8 +56,9 @@ const FilterableQueryList = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  loadConfigValuesFromServer: function () {
+  };
+
+  loadConfigValuesFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/queries')
       .then((json) => {
         var createdBys = _.uniq(_.pluck(json.queries, 'createdBy'))
@@ -85,40 +86,47 @@ const FilterableQueryList = React.createClass({
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  },
-  onSearchChange: function (searchInput) {
+  };
+
+  onSearchChange = (searchInput) => {
     this.setState({
       searchInput: searchInput,
       selectedQuery: null
     })
-  },
-  onConnectionChange: function (connectionId) {
+  };
+
+  onConnectionChange = (connectionId) => {
     this.setState({
       selectedConnection: connectionId,
       selectedQuery: null
     })
-  },
-  onTagChange: function (tag) {
+  };
+
+  onTagChange = (tag) => {
     this.setState({
       selectedTag: tag,
       selectedQuery: null
     })
-  },
-  onCreatedByChange: function (createdBy) {
+  };
+
+  onCreatedByChange = (createdBy) => {
     this.setState({
       selectedCreatedBy: createdBy,
       selectedQuery: null
     })
-  },
-  onSortByChange: function (sortBy) {
+  };
+
+  onSortByChange = (sortBy) => {
     this.setState({
       selectedSortBy: sortBy
     })
-  },
-  componentDidMount: function () {
+  };
+
+  componentDidMount() {
     this.loadConfigValuesFromServer()
-  },
-  render: function () {
+  }
+
+  render() {
     var filteredQueries = this.state.queries.map((q) => q)
     if (this.state.selectedTag) {
       filteredQueries = filteredQueries.filter((q) => {
@@ -178,25 +186,30 @@ const FilterableQueryList = React.createClass({
       </div>
     )
   }
-})
+}
 
-var QueryListSidebar = React.createClass({
-  onSearchChange: function (e) {
+class QueryListSidebar extends React.Component {
+  onSearchChange = (e) => {
     this.props.onSearchChange(e.target.value)
-  },
-  onConnectionChange: function (e) {
+  };
+
+  onConnectionChange = (e) => {
     this.props.onConnectionChange(e.target.value)
-  },
-  onTagChange: function (e) {
+  };
+
+  onTagChange = (e) => {
     this.props.onTagChange(e.target.value)
-  },
-  onCreatedByChange: function (e) {
+  };
+
+  onCreatedByChange = (e) => {
     this.props.onCreatedByChange(e.target.value)
-  },
-  onSortByChange: function (e) {
+  };
+
+  onSortByChange = (e) => {
     this.props.onSortByChange(e.target.value)
-  },
-  render: function () {
+  };
+
+  render() {
     var connectionSelectOptions = this.props.connections.map(function (conn) {
       return (
         <option key={conn._id} value={conn._id}>{conn.name}</option>
@@ -255,10 +268,10 @@ var QueryListSidebar = React.createClass({
       </div>
     )
   }
-})
+}
 
-var QueryList = React.createClass({
-  render: function () {
+class QueryList extends React.Component {
+  render() {
     var self = this
     var QueryListRows = this.props.queries.map((query) => {
       return (
@@ -280,21 +293,22 @@ var QueryList = React.createClass({
       </div>
     )
   }
-})
+}
 
-var QueryListRow = React.createClass({
-  getInitialState: function () {
-    return {
-      showPreview: false
-    }
-  },
-  onMouseOver: function (e) {
+class QueryListRow extends React.Component {
+  state = {
+    showPreview: false
+  };
+
+  onMouseOver = (e) => {
     this.props.handleQueryListRowMouseOver(this.props.query)
-  },
-  onDelete: function (e) {
+  };
+
+  onDelete = (e) => {
     this.props.handleQueryDelete(this.props.query._id)
-  },
-  render: function () {
+  };
+
+  render() {
     var tagLabels = this.props.query.tags.map((tag) => {
       return (
         <Label bsStyle='info' key={tag} style={{marginLeft: 4}}>{tag}</Label>
@@ -333,10 +347,10 @@ var QueryListRow = React.createClass({
       </li>
     )
   }
-})
+}
 
-var QueryPreview = React.createClass({
-  render: function () {
+class QueryPreview extends React.Component {
+  render() {
     if (this.props.selectedQuery) {
       if (this.editor && this.props.config.editorWordWrap) {
         this.editor.session.setUseWrapMode(true)
@@ -378,6 +392,6 @@ var QueryPreview = React.createClass({
       )
     }
   }
-})
+}
 
 export default FilterableQueryList

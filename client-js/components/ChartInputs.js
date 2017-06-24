@@ -17,21 +17,22 @@ function cleanBoolean (value) {
   return value
 }
 
-var ChartInputs = React.createClass({
-  getInitialState: function () {
-    return {
-      showAdvanced: false
-    }
-  },
-  toggleAdvanced: function () {
+class ChartInputs extends React.Component {
+  state = {
+    showAdvanced: false
+  };
+
+  toggleAdvanced = () => {
     this.setState({
       showAdvanced: !this.state.showAdvanced
     })
-  },
-  changeChartConfigurationField: function (chartFieldId, queryResultField) {
+  };
+
+  changeChartConfigurationField = (chartFieldId, queryResultField) => {
     this.props.onChartConfigurationFieldsChange(chartFieldId, queryResultField)
-  },
-  render: function () {
+  };
+
+  render() {
     var queryChartConfigurationFields = this.props.queryChartConfigurationFields || {}
     var queryResult = this.props.queryResult
     var queryResultFields = (queryResult && queryResult.fields ? queryResult.fields : [])
@@ -128,6 +129,6 @@ var ChartInputs = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default ChartInputs

@@ -4,14 +4,14 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Popover from 'react-bootstrap/lib/Popover'
 import Overlay from 'react-bootstrap/lib/Overlay'
 
-export default React.createClass({
-  getInitialState () {
-    return { show: false }
-  },
-  toggle () {
+export default class extends React.Component {
+  state = { show: false };
+
+  toggle = () => {
     this.setState({ show: !this.state.show })
-  },
-  render () {
+  };
+
+  render() {
     if (this.props.queryResult && this.props.queryResult.incomplete) {
       const sharedProps = {
         show: this.state.show,
@@ -30,4 +30,4 @@ export default React.createClass({
     }
     return null
   }
-})
+}
