@@ -14,6 +14,7 @@ Visit project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfal
 Quickstart: 
 
 ```sh
+# Assuming node 6 or later is installed
 npm install sqlpad -g 
 sqlpad --help
 ```
@@ -26,7 +27,28 @@ npm install sqlpad -g
 
 ## Development
 
-See [wiki](https://github.com/rickbergfalk/sqlpad/wiki/Development-Guide) for development details and project information.
+**Using docker**
+```sh
+docker-compose run --rm web npm -i
+docker-compose up
+```
+
+**Locally**
+- Clone/download repo
+- Install node 6 or later
+- Install npm5
+- run `npm start` from command line 
+
+At this point you should have both backend and front-end development servers running.
+
+http://localhost:3000 serves react front-end in dev-mode
+http://localhost:3010 serves front-end compiled for production
+
+Both front-end/back-end should auto-refresh/auto-reload on file change.
+
+To build front-end production files run `npm run build`.
+
+See [wiki](https://github.com/rickbergfalk/sqlpad/wiki/Development-Guide) for additional development details and project information.
 
 
 ## Tips
