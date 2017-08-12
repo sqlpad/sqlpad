@@ -8,7 +8,7 @@
     "email": "rick.bergfalk@gmail.com"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "contributors": [
     {
@@ -37,16 +37,15 @@
   "proxy": "http://localhost:3010",
   "homepage": "http://BASEURL",
   "scripts": {
-    "standard": "standard --fix",
-    "test": "standard && mocha --recursive",
-    "test-client": "react-scripts test --env=jsdom",
-    "coverage": "istanbul cover _mocha -- --recursive",
-    "start-server-dev": "node-dev server.js --dir ./db --port 3010 --debug",
-    "start-client-dev": "react-scripts start",
-    "prepublish": "npm run build",
     "build": "react-scripts build",
-    "start": "npm run start-server-dev",
-    "build-dev": "npm run start-client-dev"
+    "coverage": "istanbul cover _mocha -- --recursive",
+    "prepublish": "npm run build",
+    "standard": "standard --fix",
+    "start-client-dev": "react-scripts start",
+    "start-server-dev": "node-dev server.js --dir ./db --port 3010 --debug",
+    "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
+    "test-client": "react-scripts test --env=jsdom",
+    "test": "standard && mocha --recursive"
   },
   "dependencies": {
     "async": "^2.0.1",
@@ -97,6 +96,7 @@
     "babel-eslint": "^7.2.3",
     "brace": "^0.10.0",
     "chai": "^4.0.0",
+    "concurrently": "^3.5.0",
     "deep-equal": "^1.0.1",
     "ejs": "^2.5.6",
     "fixed-data-table": "^0.6.3",

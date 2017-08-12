@@ -1,14 +1,37 @@
-# this file is for developping purpose only
+# This file is for developing purpose only
 #
 # HOWTO
-# fist install the node_modules with: docker-compose run --rm web npm -i
-# then run: docker-compose up
-# then you should be able to access the project on http://localhost:3000
-web:
-  image: node:4.5.0
-  ports:
-    - "3000:3000"
-  volumes:
-    - .:/var/www
-  working_dir: /var/www
-  command: npm run start
+#
+# First install the node_modules with: 
+#   docker-compose run --rm web npm -i
+#
+# Alternatively, you *might* be able to get away with installing node_modules locally
+#
+# Then run: 
+#   docker-compose up
+#
+# You should be able to access the project 
+#   http://localhost:3000 serving react files in dev mode via webpack
+#   http://localhost:3010 serves compiled react files for production
+#
+# TODO Other databases should be added as services (crate, mysql, etc)
+# It would be nice to have the populate with a bit of data and used for testing
+#
+version: '3'
+services:
+  web:
+    image: node:6.11-alpine
+    ports:
+      - "3000:3000"
+      - "3010:3010"
+    volumes:
+      - .:/var/www
+    working_dir: /var/www
+    command: npm start
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres:9.6-alpine
+    environment:
+      POSTGRES_USER: sqlpad
+      POSTGRES_DB: sqlpad
