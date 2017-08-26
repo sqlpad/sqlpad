@@ -53,6 +53,7 @@
     "body-parser": "1.x.x",
     "cookie-parser": "1.x.x",
     "cookie-session": "1.x.x",
+    "date-fns": "^1.28.5",
     "detect-port": "^1.0.0",
     "errorhandler": "^1.4.0",
     "express": "4.x.x",
