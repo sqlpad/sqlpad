@@ -10,7 +10,7 @@ const renderValue = (input, fieldMeta) => {
   } else if (input === true || input === false) {
     return input.toString()
   } else if (fieldMeta.datatype === 'date') {
-    return moment(input).format('MM/DD/YYYY HH:mm:ss')
+    return moment.utc(input).format('MM/DD/YYYY HH:mm:ss')
   } else if (_.isObject(input)) {
     return JSON.stringify(input, null, 2)
   } else {
