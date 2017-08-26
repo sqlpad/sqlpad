@@ -1,37 +1,48 @@
-# This file is for developing purpose only
+# This file is for development purposes
 #
-# HOWTO
-#
-# First install the node_modules with: 
-#   docker-compose run --rm web npm -i
-#
-# Alternatively, you *might* be able to get away with installing node_modules locally
-#
-# Then run: 
+# HOWTO: run
+#   docker-compose build web
 #   docker-compose up
 #
 # You should be able to access the project 
 #   http://localhost:3000 serving react files in dev mode via webpack
 #   http://localhost:3010 serves compiled react files for production
 #
-# TODO Other databases should be added as services (crate, mysql, etc)
-# It would be nice to have the populate with a bit of data and used for testing
+# TODO add other supported databases where possible (crate, mssql, etc)
 #
 version: '3'
 services:
   web:
-    image: node:6.11-alpine
+    build: .
+    command: npm start
+    volumes:
+      - .:/usr/app/
+      - /usr/app/node_modules
     ports:
       - "3000:3000"
       - "3010:3010"
-    volumes:
-      - .:/var/www
-    working_dir: /var/www
-    command: npm start
-    depends_on:
+    links:
       - postgres
+      - mariadb
+      - presto
   postgres:
     image: postgres:9.6-alpine
     environment:
       POSTGRES_USER: sqlpad
       POSTGRES_DB: sqlpad
+  mariadb:
+    image: mariadb:10.3
+    environment:
+      MYSQL_ROOT_PASSWORD: sqlpad
+      MYSQL_DATABASE: sqlpad
+      MYSQL_USER: sqlpad
+      MYSQL_PASSWORD: sqlpad
+  presto:
+    image: johandry/presto:0.167-t.0.3
+    ports: 
+      - "8080:8080"
+    environment:
+      HTTP_SERVER_PORT: 8080
+      PRESTO_MAX_MEMORY: 50
+      PRESTO_MAX_MEMORY_PER_NODE: 1
+      PRESTO_JVM_HEAP_SIZE: 8

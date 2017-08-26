@@ -39,7 +39,7 @@
   "scripts": {
     "build": "react-scripts build",
     "coverage": "istanbul cover _mocha -- --recursive",
-    "prepublish": "npm run build",
+    "prepublishOnly": "npm run build",
     "standard": "standard --fix",
     "start-client-dev": "react-scripts start",
     "start-server-dev": "node-dev server.js --dir ./db --port 3010 --debug",
