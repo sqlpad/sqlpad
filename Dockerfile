@@ -6,8 +6,7 @@ RUN yarn global add npm@5
 
 WORKDIR /usr/app
 
-# TODO what about package-lock.json?
-COPY package.json .
+COPY package.json package-lock.json ./
 
 RUN npm install --quiet
 
