@@ -11,26 +11,20 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
 
 Visit project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
 
-Quickstart: 
-
-```sh
-# Assuming node 6 or later is installed
-npm install sqlpad -g 
-sqlpad --help
-```
-
-To update sqlpad installed via npm run 
-```sh
-npm install sqlpad -g
-```
-
 
 ## Development
 
 **Using docker**
 ```sh
-docker-compose run --rm web npm -i
+# To build initial image (and force rebuild)
+docker-compose build --no-cache web
+docker-compose create --force-recreate web
+# Start sqlpad in dev mode and bring dockerized db's up
 docker-compose up
+# To bring down
+docker-compose down
+# To remove dangling containers volumes etc
+docker system prune
 ```
 
 **Locally**
@@ -39,6 +33,8 @@ docker-compose up
 - Install npm5
 - run `npm start` from command line 
 
+
+**Once Running**
 At this point you should have both backend and front-end development servers running.
 
 http://localhost:3000 serves react front-end in dev-mode
