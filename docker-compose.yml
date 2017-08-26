@@ -33,12 +33,20 @@ services:
       MYSQL_USER: sqlpad
       MYSQL_PASSWORD: sqlpad
   presto:
-    image: johandry/presto:0.167-t.0.3
+    image: johandry/presto:0.167-t.0.3-alpine
     expose: 
       - "8080"
     ports: 
       - "8080:8080"
     environment:
+      HTTP_SERVER_PORT: 8080
+      PRESTO_MAX_MEMORY: .25
+      PRESTO_MAX_MEMORY_PER_NODE: .25
+      PRESTO_JVM_HEAP_SIZE: 1
+  presto-worker:
+    image: johandry/presto:0.167-t.0.3-alpine
+    environment:
+      COORDINATOR: presto
       HTTP_SERVER_PORT: 8080
       PRESTO_MAX_MEMORY: .25
       PRESTO_MAX_MEMORY_PER_NODE: .25
