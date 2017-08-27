@@ -68,6 +68,7 @@
     "mysql": "2.x.x",
     "nedb": "1.x.x",
     "node-crate": "1.x.x",
+    "node-fetch": "^1.7.2",
     "node-xlsx": "^0.7.1",
     "nodemailer": "^2.6.0",
     "passport": "^0.3.2",
