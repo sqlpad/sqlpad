@@ -8,7 +8,7 @@ var schema = {
   driver: Joi.string().required(), // postgres, mysql, etc
   host: Joi.string().optional(),
   port: Joi.any().optional(),
-  database: Joi.string().optional(),
+  database: Joi.string().optional().allow(''),
   username: Joi.string().default('', 'Database Username'), // decrypt for presentation, encrypted for storage
   password: Joi.string().default('', 'Database Password'), // decrypt for presentation, encrypted for storage
   domain: Joi.string().optional().allow(''),
