@@ -5,8 +5,18 @@ Install latest beta with `npm i -g sqlpad@beta`
 Install a specific version `npm i -g sqlpad@2.1.3`  
 
 ## next (in development)
-- added systemd socket activation support (epeli)
-- added option to disable update check
+- New features
+    - Added systemd socket activation support (epeli)
+    - Added option to disable update check
+- Fixes
+    - Fixes MySQL schema sidebar showing extra dbs
+    - Fixes loss of precision of numbers in UI grid (even if they were text)
+    - Fixes Presto driver
+    - Fixes React deprecation warnings
+    - Fixes incorrect date display in UI 
+        - All dates were being localized. now displayed without localization
+- Compatibility notes
+    - Node v6.x now required at minimum
 
 ## 2.2.0
 ### May 29, 2017
