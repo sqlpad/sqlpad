@@ -12,6 +12,7 @@ var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 var sqldir = path.join(__dirname, '/../resources/')
 
 var sqlSchemaPostgres = fs.readFileSync(sqldir + '/schema-postgres.sql', {encoding: 'utf8'})
+var sqlSchemaMysql = fs.readFileSync(sqldir + '/schema-mysql.sql', {encoding: 'utf8'})
 var sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {encoding: 'utf8'})
 var sqlSchemaCrate = fs.readFileSync(sqldir + '/schema-crate.sql', {encoding: 'utf8'})
 var sqlSchemaCrateV0 = fs.readFileSync(sqldir + '/schema-crate.v0.sql', {encoding: 'utf8'})
@@ -84,6 +85,8 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
       secondarySchemaSql = sqlSchemaCrateV0
     } else if (connection.driver === 'postgres') {
       primarySchemaSql = sqlSchemaPostgres
+    } else if (connection.driver === 'mysql') {
+      primarySchemaSql = sqlSchemaMysql
     } else {
       primarySchemaSql = sqlSchemaStandard
     }
