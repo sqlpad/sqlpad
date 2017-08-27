@@ -43,6 +43,8 @@ services:
       PRESTO_MAX_MEMORY: .25
       PRESTO_MAX_MEMORY_PER_NODE: .25
       PRESTO_JVM_HEAP_SIZE: 1
+    links:
+      - presto-worker
   presto-worker:
     image: johandry/presto:0.167-t.0.3-alpine
     environment:
