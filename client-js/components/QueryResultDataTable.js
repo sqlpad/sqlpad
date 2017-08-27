@@ -81,16 +81,16 @@ class QueryResultDataTable extends React.PureComponent {
             key={field}
             header={<Cell>{field}</Cell>}
             cell={({rowIndex}) => {
-              var value = queryResult.rows[rowIndex][field]
-              var barStyle
-              var numberBar
+              const value = queryResult.rows[rowIndex][field]
+              let barStyle
+              let numberBar
               if (fieldMeta.datatype === 'number') {
-                value = Number(value)
-                var range = fieldMeta.max - (fieldMeta.min < 0 ? fieldMeta.min : 0)
-                var left = 0
-                if (fieldMeta.min < 0 && value < 0) {
-                  left = Math.abs(fieldMeta.min - value) / range * 100 + '%'
-                } else if (fieldMeta.min < 0 && value >= 0) {
+                const valueNumber = Number(value)
+                const range = fieldMeta.max - (fieldMeta.min < 0 ? fieldMeta.min : 0)
+                let left = 0
+                if (fieldMeta.min < 0 && valueNumber < 0) {
+                  left = Math.abs(fieldMeta.min - valueNumber) / range * 100 + '%'
+                } else if (fieldMeta.min < 0 && valueNumber >= 0) {
                   left = Math.abs(fieldMeta.min) / range * 100 + '%'
                 }
                 barStyle = {
@@ -98,7 +98,7 @@ class QueryResultDataTable extends React.PureComponent {
                   left: left,
                   top: 0,
                   bottom: 0,
-                  width: (Math.abs(value) / range) * 100 + '%',
+                  width: (Math.abs(valueNumber) / range) * 100 + '%',
                   backgroundColor: '#bae6f7'
                 }
                 numberBar = <div style={barStyle} />
