@@ -113,8 +113,8 @@ These settings are now listed and documented within SQLPad itself on the configu
 
 ### Disable NPM Update Check
 
-By default SQLPad will call npmjs.com every so often to check to see if an update to SQLPad is available. 
-This may be disabled within the configuration page of SQLPad.
+By default SQLPad will call npmjs.com every so often to check to see if an update is available. 
+This may be disabled within the configuration page.
 
 
 ### Google OAuth Authentication
