@@ -23,8 +23,7 @@ To get help and see parameters:
 `sqlpad --help`
 
 
-
-## A Realistic Example:  
+### A Realistic Example:  
 
 `sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase`
 
@@ -63,12 +62,20 @@ If for whatever reason you lose admin rights, and the last-admin-standing won't 
 `sqlpad --admin yourEmailAddress@domain.com`
 
 
+## Updating
+
+If installed via npm, SQLPad may be updated by running ```npm install sqlpad -g```. 
+
+To install a specific version of SQLPad, a version may be specified by running ```npm install sqlpad@2.1.3 -g```. This is useful to rollback to a previous version.
+
+Prior to updating, you may want to take a backup of SQLPad's database. By default these files are located under the users home directory `~/sqlpad/db`, but you may have changed the location using the --dir flag when running SQLPad. 
+
 
 ## Running as a Service
 
 If you are running SQLPad for your team, chances are you'd like SQLPad to start up when your server boots up, and stay running if an unhandled exception occurs. How this is accomplished largely depends on the operating system you are running. 
 
-Full disclosure - this isn't my area of expertise so if anyone knows of any better options or better practices, please let me know at rick.bergfalk@gmail.com.
+Full disclosure - this isn't my area of expertise so if anyone knows of any better options please send a github issue or pull request.
 
 **Windows**: Use [nssm](http://nssm.cc/) to create a windows service
 
@@ -101,39 +108,41 @@ respawn
 
 Beyond SQLPad's initial setup options (port, file location, passphrase), there are a few areas where you can opt-in, opt-out, or change the default limits.
 
-These settings are configured by either adding a configuration key in the configuration page, or by setting an environment variable (depending on the behavior or feature being modified).
+These settings are now listed and documented within SQLPad itself on the configuration page (available to administrator accounts).
 
 
-### Change query result record limit
+### Disable NPM Update Check
 
-To change the maximum records returned by a SQL query, add a new item with key ```queryResultMaxRows``` and set the value to the max number of rows you would like returned. If the key is missing or set to a non-number, SQLPad will return a maximum of 50,000 rows.
-
-
-### Disable CSV (and now XLSX) downloads
-
-To disable CSV downloads, visit the "Configuration" page and add a new item with key ```allowCsvDownload``` and value ```false```. If the key is missing or set to any other value, CSV downloads will be enabled.
-
-
-### Show Schema Copy Buttons
-
-Some databases (like Vertica) require the fully qualified table and column names within a SQL statement. This can be a hassle to remember or type when you have long and complicated names. For convenience, you can enable fully-qualified-name copy buttons that appear in the schema sidebar. When hovering over an item in the schema tree, a copy button will appear. Click it and the schema name, table name, and column name will be copied to your clipboard.
-
-To enable the schema copy buttons, add a new configuration item with key ```showSchemaCopyButton``` with value true.
+By default SQLPad will call npmjs.com every so often to check to see if an update to SQLPad is available. 
+This may be disabled within the configuration page of SQLPad.
 
 
 ### Google OAuth Authentication
 
-Google OAuth authentication can be enabled by setting environment variables ```GOOGLE_CLIENT_ID```, ```GOOGLE_CLIENT_SECRET```, AND ```PUBLIC_URL```. The plain old regular authentication can be disabled by setting environment variable ```DISABLE_USERPASS_AUTH```. 
+Google OAuth authentication can be enabled by setting the necessary environment variables and configuring your Google API config appropriately.
 
+First you'll need to set up your Google API oauth client credentials config. 
 
-### Post Query to Slack When Saved
+For OAuth to work be sure to enable the Google+ API for your Google API project. If this isn't enabled it might be why the user profile isn't being fetched.
 
-A SQLPad query can be posted to a Slack webhook when saved. To enable, create a configuration item with key ```slackWebhook``` and set the value to a Slack incoming webhook URL.
+Next you'll need to set your JavaScript origins and redirect URIs. If you're testing locally, that might look like the below. Remember to consider the base url/mounting path if SQLPad is not running at the root of the domain.
+
+- `Authorized JavaScript origins`: `http://localhost:8080`
+- `Authorized redirect URIs`: `http://localhost:8080/auth/google/callback`
+
+Once the Google API config is set, configure the required settings in SQLPad.
+For OAuth to be useful this usually involves the following:
+
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `PUBLIC_URL`=`http://localhost`
+- `DISABLE_USERPASS_AUTH`=`true` (optional - disables plain local user logins)
 
 
 ### Whitelist Domains for User Administration
 
-An entire domain can be whitelisted for username administration by setting enviornment variable ```WHITELISTED_DOMAINS```
+An entire domain can be whitelisted for username administration by setting enviornment variable ```WHITELISTED_DOMAINS```. This may be particularly useful in combination with OAuth. 
+
 
 ### Systemd socket activation
 

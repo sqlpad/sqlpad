@@ -68,7 +68,7 @@
 <p><code>sqlpad</code></p>
 <p>To get help and see parameters:</p>
 <p><code>sqlpad --help</code></p>
-<h2 id="a-realistic-example-">A Realistic Example:</h2>
+<h3 id="a-realistic-example-">A Realistic Example:</h3>
 <p><code>sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase</code></p>
 <p>The <strong>dir</strong> argument specifies where to keep the sqlpad query/user/connection files. If not provided, SQLPad will put its files in the user&#39;s home directory under /sqlpad/db.</p>
 <p>The <strong>port</strong> argument specifies the port on which SQLPad should run. The default is port 80, but that may not be available.</p>
@@ -86,9 +86,13 @@
 <p>Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page. Other users may also be given admin rights, allowing them to add/edit database connections and whitelist/modify/remove SQLPad users.</p>
 <p>If for whatever reason you lose admin rights, and the last-admin-standing won&#39;t give you admin rights back, you can reinstate them to yourself by running</p>
 <p><code>sqlpad --admin yourEmailAddress@domain.com</code></p>
+<h2 id="updating">Updating</h2>
+<p>If installed via npm, SQLPad may be updated by running <code>npm install sqlpad -g</code>. </p>
+<p>To install a specific version of SQLPad, a version may be specified by running <code>npm install sqlpad@2.1.3 -g</code>. This is useful to rollback to a previous version.</p>
+<p>Prior to updating, you may want to take a backup of SQLPad&#39;s database. By default these files are located under the users home directory <code>~/sqlpad/db</code>, but you may have changed the location using the --dir flag when running SQLPad. </p>
 <h2 id="running-as-a-service">Running as a Service</h2>
 <p>If you are running SQLPad for your team, chances are you&#39;d like SQLPad to start up when your server boots up, and stay running if an unhandled exception occurs. How this is accomplished largely depends on the operating system you are running. </p>
-<p>Full disclosure - this isn&#39;t my area of expertise so if anyone knows of any better options or better practices, please let me know at rick.bergfalk@gmail.com.</p>
+<p>Full disclosure - this isn&#39;t my area of expertise so if anyone knows of any better options please send a github issue or pull request.</p>
 <p><strong>Windows</strong>: Use <a href="http://nssm.cc/">nssm</a> to create a windows service</p>
 <p><strong>Ubuntu</strong>: Create a job conf file for use with <a href="http://upstart.ubuntu.com/getting-started.html">upstart</a>. </p>
 <p>Here&#39;s a script I&#39;ve gotten to work - but again not sure if this is good practice or if there&#39;s a better way to go about it:</p>
@@ -108,20 +112,31 @@ respawn</code></pre>
 <p><strong>Platform agnostic</strong>: Clone or download the GitHub repository and use <a href="https://github.com/foreverjs/forever">forever</a> to run server.js directly. (The downside to this though is that you miss out on updating SQLPad with the easy npm install command, and you still have to run the forever command on startup)</p>
 <h2 id="configuration">Configuration</h2>
 <p>Beyond SQLPad&#39;s initial setup options (port, file location, passphrase), there are a few areas where you can opt-in, opt-out, or change the default limits.</p>
-<p>These settings are configured by either adding a configuration key in the configuration page, or by setting an environment variable (depending on the behavior or feature being modified).</p>
-<h3 id="change-query-result-record-limit">Change query result record limit</h3>
-<p>To change the maximum records returned by a SQL query, add a new item with key <code>queryResultMaxRows</code> and set the value to the max number of rows you would like returned. If the key is missing or set to a non-number, SQLPad will return a maximum of 50,000 rows.</p>
-<h3 id="disable-csv-and-now-xlsx-downloads">Disable CSV (and now XLSX) downloads</h3>
-<p>To disable CSV downloads, visit the &quot;Configuration&quot; page and add a new item with key <code>allowCsvDownload</code> and value <code>false</code>. If the key is missing or set to any other value, CSV downloads will be enabled.</p>
-<h3 id="show-schema-copy-buttons">Show Schema Copy Buttons</h3>
-<p>Some databases (like Vertica) require the fully qualified table and column names within a SQL statement. This can be a hassle to remember or type when you have long and complicated names. For convenience, you can enable fully-qualified-name copy buttons that appear in the schema sidebar. When hovering over an item in the schema tree, a copy button will appear. Click it and the schema name, table name, and column name will be copied to your clipboard.</p>
-<p>To enable the schema copy buttons, add a new configuration item with key <code>showSchemaCopyButton</code> with value true.</p>
+<p>These settings are now listed and documented within SQLPad itself on the configuration page (available to administrator accounts).</p>
+<h3 id="disable-npm-update-check">Disable NPM Update Check</h3>
+<p>By default SQLPad will call npmjs.com every so often to check to see if an update to SQLPad is available. 
+This may be disabled within the configuration page of SQLPad.</p>
 <h3 id="google-oauth-authentication">Google OAuth Authentication</h3>
-<p>Google OAuth authentication can be enabled by setting environment variables <code>GOOGLE_CLIENT_ID</code>, <code>GOOGLE_CLIENT_SECRET</code>, AND <code>PUBLIC_URL</code>. The plain old regular authentication can be disabled by setting environment variable <code>DISABLE_USERPASS_AUTH</code>. </p>
-<h3 id="post-query-to-slack-when-saved">Post Query to Slack When Saved</h3>
-<p>A SQLPad query can be posted to a Slack webhook when saved. To enable, create a configuration item with key <code>slackWebhook</code> and set the value to a Slack incoming webhook URL.</p>
+<p>Google OAuth authentication can be enabled by setting the necessary environment variables and configuring your Google API config appropriately.</p>
+<p>First you&#39;ll need to set up your Google API oauth client credentials config. </p>
+<p>For OAuth to work be sure to enable the Google+ API for your Google API project. If this isn&#39;t enabled it might be why the user profile isn&#39;t being fetched.</p>
+<p>Next you&#39;ll need to set your JavaScript origins and redirect URIs. If you&#39;re testing locally, that might look like the below. Remember to consider the base url/mounting path if SQLPad is not running at the root of the domain.</p>
+<ul>
+<li><code>Authorized JavaScript origins</code>: <code>http://localhost:8080</code></li>
+<li><code>Authorized redirect URIs</code>: <code>http://localhost:8080/auth/google/callback</code></li>
+</ul>
+<p>Once the Google API config is set, configure the required settings in SQLPad.
+For OAuth to be useful this usually involves the following:</p>
+<ul>
+<li><code>GOOGLE_CLIENT_ID</code></li>
+<li><code>GOOGLE_CLIENT_SECRET</code></li>
+<li><code>PUBLIC_URL</code>=<code>http://localhost</code></li>
+<li><code>DISABLE_USERPASS_AUTH</code>=<code>true</code> (optional - disables plain local user logins)</li>
+</ul>
 <h3 id="whitelist-domains-for-user-administration">Whitelist Domains for User Administration</h3>
-<p>An entire domain can be whitelisted for username administration by setting enviornment variable <code>WHITELISTED_DOMAINS</code></p>
+<p>An entire domain can be whitelisted for username administration by setting enviornment variable <code>WHITELISTED_DOMAINS</code>. This may be particularly useful in combination with OAuth. </p>
+<h3 id="systemd-socket-activation">Systemd socket activation</h3>
+<p>To use systemd socket activation add <code>--systemd-socket</code> flag. For more information see <a href="https://github.com/rickbergfalk/sqlpad/pull/185">this pull request</a>.</p>
                 </div>
 		    </div>
 		</div>
