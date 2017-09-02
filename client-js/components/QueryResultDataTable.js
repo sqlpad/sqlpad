@@ -1,5 +1,5 @@
 import React from 'react'
-import {Table, Column, Cell} from 'fixed-data-table'
+import {Table, Column, Cell} from 'fixed-data-table-2'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
 const _ = window._
@@ -117,10 +117,10 @@ class QueryResultDataTable extends React.PureComponent {
                 barStyle = {
                   position: 'absolute',
                   left: left,
-                  top: 0,
+                  height: 2,
                   bottom: 0,
                   width: (Math.abs(valueNumber) / range) * 100 + '%',
-                  backgroundColor: '#bae6f7'
+                  backgroundColor: '#777'
                 }
                 numberBar = <div style={barStyle} />
               }
