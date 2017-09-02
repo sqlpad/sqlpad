@@ -113,7 +113,7 @@
     "react-bootstrap": "^0.31.0",
     "react-copy-to-clipboard": "^5.0.0",
     "react-dom": "^15.1.0",
-    "react-overlays": "^0.7.0",
+    "react-overlays": "^0.8.0",
     "react-s-alert": "^1.1.4",
     "react-select": "^1.0.0-rc.1",
     "standard": "^10.0.2",
