@@ -100,7 +100,7 @@
     "deep-equal": "^1.0.1",
     "ejs": "^2.5.6",
     "fixed-data-table": "^0.6.3",
-    "fs-extra": "^3.0.1",
+    "fs-extra": "^4.0.1",
     "istanbul": "^0.4.4",
     "keymaster": "^1.6.2",
     "marky-mark": "1.x.x",
