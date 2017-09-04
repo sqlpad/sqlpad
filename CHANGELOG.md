@@ -1,13 +1,11 @@
 # Changelog
 
-## Installing beta via npm:
-Install latest beta with `npm i -g sqlpad@beta`  
-Install a specific version `npm i -g sqlpad@2.1.3`  
-
-## next (in development)
+## 2.3.0
+### September 4, 2017
 - New features
     - Added systemd socket activation support (epeli)
     - Added option to disable update check
+    - Resizable data grid columns (slightly buggy)
 - Fixes
     - Fixes MySQL schema sidebar showing extra dbs
     - Fixes loss of precision of numbers in UI grid (even if they were text)
