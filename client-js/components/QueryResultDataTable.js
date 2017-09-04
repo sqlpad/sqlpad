@@ -117,10 +117,10 @@ class QueryResultDataTable extends React.PureComponent {
                 barStyle = {
                   position: 'absolute',
                   left: left,
-                  height: 2,
+                  height: 0,
                   bottom: 0,
                   width: (Math.abs(valueNumber) / range) * 100 + '%',
-                  backgroundColor: '#777'
+                  backgroundColor: '#bae6f7'
                 }
                 numberBar = <div style={barStyle} />
               }
