@@ -1,5 +1,5 @@
 import React from 'react'
-import {Table, Column, Cell} from 'fixed-data-table'
+import {Table, Column, Cell} from 'fixed-data-table-2'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
 const _ = window._
@@ -26,20 +26,31 @@ class QueryResultDataTable extends React.PureComponent {
     super(props)
     this.state = {
       gridWidth: 0,
-      gridHeight: 0
+      gridHeight: 0,
+      columnWidths: {}
     }
     // This binding is necessary to make `this` work in the callback
     this.handleResize = this.handleResize.bind(this)
+    this.handleColumnResizeEnd = this.handleColumnResizeEnd.bind(this)
   }
 
   handleResize (e) {
-    var resultGrid = document.getElementById('result-grid')
+    const resultGrid = document.getElementById('result-grid')
     if (resultGrid) {
       this.setState({
         gridHeight: resultGrid.clientHeight,
         gridWidth: resultGrid.clientWidth
       })
     }
+  }
+
+  handleColumnResizeEnd (newColumnWidth, columnKey) {
+    this.setState(({columnWidths}) => ({
+      columnWidths: {
+        ...columnWidths,
+        [columnKey]: newColumnWidth
+      }
+    }))
   }
 
   componentDidMount () {
@@ -65,20 +76,30 @@ class QueryResultDataTable extends React.PureComponent {
         </div>
       )
     } else if (this.props.queryResult && this.props.queryResult.rows) {
-      var queryResult = this.props.queryResult
-      var columnNodes = queryResult.fields.map(function (field) {
-        var fieldMeta = queryResult.meta[field]
-        var valueLength = fieldMeta.maxValueLength
+      const { columnWidths } = this.state
+      const queryResult = this.props.queryResult
+      const columnNodes = queryResult.fields.map(function (field) {
+        const fieldMeta = queryResult.meta[field]
+        let valueLength = fieldMeta.maxValueLength
 
-        if (field.length > valueLength) valueLength = field.length
-        var columnWidth = valueLength * 20
-        if (columnWidth < 200) columnWidth = 200
-        else if (columnWidth > 350) columnWidth = 350
-        var cellWidth = columnWidth - 10
+        if (field.length > valueLength) {
+          valueLength = field.length
+        }
+        let columnWidthGuess = valueLength * 20
+        if (columnWidthGuess < 200) {
+          columnWidthGuess = 200
+        } else if (columnWidthGuess > 350) {
+          columnWidthGuess = 350
+        }
+        const cellWidth = columnWidthGuess - 10
+
+        const columnWidth = columnWidths[field] || columnWidthGuess
 
         return (
           <Column
+            columnKey={field}
             key={field}
+            isResizable
             header={<Cell>{field}</Cell>}
             cell={({rowIndex}) => {
               const value = queryResult.rows[rowIndex][field]
@@ -123,7 +144,9 @@ class QueryResultDataTable extends React.PureComponent {
             rowsCount={queryResult.rows.length}
             width={this.state.gridWidth}
             height={this.state.gridHeight}
-            headerHeight={30}>
+            headerHeight={30}
+            onColumnResizeEndCallback={this.handleColumnResizeEnd}
+          >
             {columnNodes}
           </Table>
         </div>
