@@ -14,27 +14,11 @@ Visit project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfal
 
 ## Development
 
-**Using docker**
-```sh
-# To build initial image (and force rebuild)
-docker-compose build --no-cache web
-docker-compose create --force-recreate web
-# Start sqlpad in dev mode and bring dockerized db's up
-docker-compose up
-# To bring down
-docker-compose down
-# To remove dangling containers volumes etc
-docker system prune
-```
-
-**Locally**
 - Clone/download repo
-- Install node 6 or later
-- Install npm5
-- run `npm start` from command line 
+- Install node 6 or later (nvm recommended)
+- Install npm5 via `npm i npm -g`
+- run `npm start` 
 
-
-**Once Running**
 At this point you should have both backend and front-end development servers running.
 
 http://localhost:3000 serves react front-end in dev-mode
@@ -45,6 +29,19 @@ Both front-end/back-end should auto-refresh/auto-reload on file change.
 To build front-end production files run `npm run build`.
 
 See [wiki](https://github.com/rickbergfalk/sqlpad/wiki/Development-Guide) for additional development details and project information.
+
+### Databases
+A docker-compose file is provided to provide a variety of SQL database services to develop and test against.
+To run these, first install docker and then run the following commands:
+
+```sh
+# Bring database containers up
+docker-compose up
+# To bring down
+docker-compose down
+# To remove dangling containers volumes etc
+docker system prune
+```
 
 
 ## Tips

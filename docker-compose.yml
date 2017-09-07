@@ -1,30 +1,20 @@
 # This file is for development purposes
-#
-# You should be able to access the project 
-#   http://localhost:3000 serving react files in dev mode via webpack
-#   http://localhost:3010 serves compiled react files for production
+# It runs databases supported by docker for dev/testing
+# It used to have node stuff in a container, 
+# but the development flow got tedious, slow, and buggy. 
+# If there is a better way to do it Issues/Pull Requests are welcome.
 #
 # TODO add other supported databases where possible (crate, mssql, etc)
 #
 version: '3'
 services:
-  web:
-    build: .
-    command: npm start
-    volumes:
-      - .:/usr/app/
-      - /usr/app/node_modules
-    ports:
-      - "3000:3000"
-      - "3010:3010"
-    links:
-      - postgres
-      - mariadb
   postgres:
     image: postgres:9.6-alpine
     environment:
       POSTGRES_USER: sqlpad
       POSTGRES_DB: sqlpad
+    ports: 
+      - "5432:5432"
   mariadb:
     image: mariadb:10.3
     environment:
@@ -32,6 +22,8 @@ services:
       MYSQL_DATABASE: sqlpad
       MYSQL_USER: sqlpad
       MYSQL_PASSWORD: sqlpad
+    ports:
+      - "3306:3306"
   presto:
     image: johandry/presto:0.167-t.0.3-alpine
     expose: 
