@@ -3,36 +3,43 @@
 body {
   padding-top: 50px; /* because fixed navbar 50px tall */
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  display: flex;
+  height: 100vh;
 }
 a {
   color: #00B7FF;
 }
 a:hover, a:active, a:focus {
-    text-decoration: none;
+  text-decoration: none;
+}
+
+#root {
+  display: flex;
+  width: 100%;
 }
 
 /* Override bootstrap tab colors to match background of sidebar */
 .nav-tabs>li.active>a, .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
-    color: #555;
-    cursor: default;
-    background-color: #fdfdfd;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
+  color: #555;
+  cursor: default;
+  background-color: #fdfdfd;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
 }
 
 /* hide tauchart's ui for export options */
 .graphical-report__layout__header {
-    display: none;
+  display: none;
 }
 
 
 /*  Utilities
 ============================================================================ */
 .shortcut-letter {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 .hidden {
-    display: none;
+  display: none;
 }
 .spinning {
     -webkit-animation:spin 2s linear infinite;
@@ -288,6 +295,7 @@ input[type=checkbox], input[type=radio] {
 ============================================================================ */
 .QueryListContainer {
     height: 100%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
 }

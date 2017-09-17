@@ -6,11 +6,7 @@ import ListGroup from 'react-bootstrap/lib/ListGroup'
 import ConnectionListRow from './ConnectionListRow'
 
 const connectionListStyle = {
-  position: 'absolute',
-  left: 0,
-  width: '50%',
-  top: 0,
-  bottom: 0,
+  flexBasis: '50%',
   backgroundColor: '#FDFDFD',
   overflowY: 'auto',
   padding: 10
