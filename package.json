@@ -47,6 +47,14 @@
     "test-client": "react-scripts test --env=jsdom",
     "test": "lint && mocha --recursive"
   },
+  "lint-staged": {
+    "linters": {
+      "!(build|public)/**/*.js": [
+        "prettier-standard",
+        "git add"
+      ]
+    }
+  },
   "dependencies": {
     "async": "^2.0.1",
     "bcrypt-nodejs": "0.0.3",
@@ -102,8 +110,10 @@
     "ejs": "^2.5.6",
     "fixed-data-table-2": "^0.8.0",
     "fs-extra": "^4.0.1",
+    "husky": "^0.14.3",
     "istanbul": "^0.4.4",
     "keymaster": "^1.6.2",
+    "lint-staged": "^4.2.1",
     "marked": "^0.3.3",
     "marky-mark": "1.x.x",
     "mocha": "^3.0.0",
