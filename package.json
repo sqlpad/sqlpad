@@ -40,7 +40,7 @@
     "build": "react-scripts build",
     "coverage": "istanbul cover _mocha -- --recursive",
     "prepublishOnly": "npm run build",
-    "lint": "prettier-standard '!(build|public)/**/*.js'",
+    "lint": "prettier-standard '!(build|public)/**/*.js' && prettier-standard server.js",
     "start-client-dev": "react-scripts start",
     "start-server-dev": "node-dev server.js --dir ./db --port 3010 --debug",
     "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
@@ -50,6 +50,10 @@
   "lint-staged": {
     "linters": {
       "!(build|public)/**/*.js": [
+        "prettier-standard",
+        "git add"
+      ],
+      "server.js": [
         "prettier-standard",
         "git add"
       ]
