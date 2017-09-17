@@ -94,7 +94,7 @@
   },
   "devDependencies": {
     "@rickbergfalk/sqlpad-react-scripts": "^1.0.7",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.0.0",
     "brace": "^0.10.0",
     "chai": "^4.1.2",
     "concurrently": "^3.5.0",
