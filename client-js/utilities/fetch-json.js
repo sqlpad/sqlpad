@@ -5,17 +5,17 @@ export default function fetchJson (method, url, body) {
     method: method.toUpperCase(),
     credentials: 'same-origin',
     headers: {
-      'Accept': 'application/json',
+      Accept: 'application/json',
       'Content-Type': 'application/json',
       'Cache-Control': 'no-cache',
-      'Expires': '-1',
-      'Pragma': 'no-cache'
+      Expires: '-1',
+      Pragma: 'no-cache'
     }
   }
   if (body) {
     opts.body = JSON.stringify(body)
   }
-  return fetch(url, opts).then((response) => {
+  return fetch(url, opts).then(response => {
     if (response.status === 200) {
       return response.json()
     } else {

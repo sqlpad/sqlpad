@@ -47,7 +47,10 @@ function render () {
       moment: moment,
       filename: './layouts/page.ejs'
     })
-    fs.outputFileSync(path.join(__dirname, page.filename, '/index.html'), rendered)
+    fs.outputFileSync(
+      path.join(__dirname, page.filename, '/index.html'),
+      rendered
+    )
   })
 
   // home
@@ -71,7 +74,15 @@ app.listen(4000)
 console.log('Web server now running. View at http://localhost:4000')
 console.log('Press ctrl-c at any time to stop\n')
 
-watch.watchTree(LAYOUTS_DIRECTORY, {ignoreDotFiles: true}, _.debounce(generate, 100, false))
-watch.watchTree(PAGES_DIRECTORY, {ignoreDotFiles: true}, _.debounce(generate, 100, false))
+watch.watchTree(
+  LAYOUTS_DIRECTORY,
+  { ignoreDotFiles: true },
+  _.debounce(generate, 100, false)
+)
+watch.watchTree(
+  PAGES_DIRECTORY,
+  { ignoreDotFiles: true },
+  _.debounce(generate, 100, false)
+)
 
 generate()

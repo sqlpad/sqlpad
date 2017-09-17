@@ -9,40 +9,51 @@ class PasswordReset extends React.Component {
     password: '',
     passwordConfirmation: '',
     notFound: false
-  };
+  }
 
-  onEmailChange = (e) => {
-    this.setState({email: e.target.value})
-  };
+  onEmailChange = e => {
+    this.setState({ email: e.target.value })
+  }
 
-  onPasswordChange = (e) => {
-    this.setState({password: e.target.value})
-  };
+  onPasswordChange = e => {
+    this.setState({ password: e.target.value })
+  }
 
-  onPasswordConfirmationChange = (e) => {
-    this.setState({passwordConfirmation: e.target.value})
-  };
+  onPasswordConfirmationChange = e => {
+    this.setState({ passwordConfirmation: e.target.value })
+  }
 
-  resetPassword = (e) => {
+  resetPassword = e => {
     e.preventDefault()
-    fetchJson('POST', this.props.config.baseUrl + '/api/password-reset/' + this.props.passwordResetId, this.state)
-      .then((json) => {
+    fetchJson(
+      'POST',
+      this.props.config.baseUrl +
+        '/api/password-reset/' +
+        this.props.passwordResetId,
+      this.state
+    )
+      .then(json => {
         if (json.error) return Alert.error(json.error)
         page('/')
       })
-      .catch((ex) => {
+      .catch(ex => {
         Alert.error('Problem resetting password')
         console.error(ex)
       })
-  };
+  }
 
   componentDidMount () {
-    fetchJson('GET', this.props.config.baseUrl + '/api/password-reset/' + this.props.passwordResetId)
-      .then((json) => {
+    fetchJson(
+      'GET',
+      this.props.config.baseUrl +
+        '/api/password-reset/' +
+        this.props.passwordResetId
+    )
+      .then(json => {
         if (json.error) return Alert.error(json.error)
-        if (!json.passwordResetId) this.setState({notFound: true})
+        if (!json.passwordResetId) this.setState({ notFound: true })
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
@@ -51,16 +62,18 @@ class PasswordReset extends React.Component {
   render () {
     if (this.state.notFound) {
       return (
-        <div className='signin' >
+        <div className='signin'>
           <form className='form-signin' onSubmit={this.resetPassword}>
-            <h2>Password Reset<br />Not Found</h2>
+            <h2>
+              Password Reset<br />Not Found
+            </h2>
           </form>
-          <Alert stack={{limit: 3}} position='bottom-right' />
+          <Alert stack={{ limit: 3 }} position='bottom-right' />
         </div>
       )
     }
     return (
-      <div className='signin' >
+      <div className='signin'>
         <form className='form-signin' onSubmit={this.resetPassword}>
           <h2>SQLPad</h2>
           <input
@@ -69,25 +82,30 @@ class PasswordReset extends React.Component {
             className='form-control top-field'
             placeholder='Email address'
             onChange={this.onEmailChange}
-            required />
+            required
+          />
           <input
             name='password'
             type='password'
             className='form-control middle-field'
             placeholder='Password'
             onChange={this.onPasswordChange}
-            required />
+            required
+          />
           <input
             name='passwordConfirmation'
             type='password'
             className='form-control bottom-field'
             placeholder='Confirm Password'
             onChange={this.onPasswordConfirmationChange}
-            required />
+            required
+          />
           <br />
-          <button className='btn btn-lg btn-primary btn-block' type='submit'>Reset Password</button>
+          <button className='btn btn-lg btn-primary btn-block' type='submit'>
+            Reset Password
+          </button>
         </form>
-        <Alert stack={{limit: 3}} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position='bottom-right' />
       </div>
     )
   }

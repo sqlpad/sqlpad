@@ -5,7 +5,9 @@ var Cache = require('../models/Cache.js')
 const getSchemaForConnection = require('../lib/get-schema-for-connection.js')
 var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 
-router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
+router.get(
+  '/api/schema-info/:connectionId',
+  mustBeAuthenticated,
   function initLocals (req, res, next) {
     res.locals.reload = req.query.reload === 'true'
     res.locals.tree = {}
@@ -14,7 +16,6 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
     res.locals.connectionId = req.params.connectionId
     next()
   },
-
   function getConnection (req, res, next) {
     Connection.findOneById(res.locals.connectionId, function (err, conn) {
       if (err) {
@@ -33,7 +34,6 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
       next()
     })
   },
-
   function getCache (req, res, next) {
     Cache.findOneByCacheKey(res.locals.cacheKey, function (err, cache) {
       if (err) {
@@ -48,13 +48,12 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
         })
       }
       if (!cache) {
-        cache = new Cache({cacheKey: res.locals.cacheKey})
+        cache = new Cache({ cacheKey: res.locals.cacheKey })
       }
       res.locals.cache = cache
       next()
     })
   },
-
   function runSchemaQuery (req, res, next) {
     const connection = res.locals.connection
     getSchemaForConnection(connection, function (err, tree) {
@@ -68,7 +67,6 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated,
       next()
     })
   },
-
   function updateCacheAndRender (req, res, next) {
     if (!_.isEmpty(res.locals.tree)) {
       var cache = res.locals.cache

@@ -18,12 +18,16 @@ var _ = require('lodash')
 var minimist = require('minimist')
 
 // various file paths for later
-var userHome = (process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME)
+var userHome =
+  process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME
 var savedCliFilePath = path.join(userHome, '.sqlpadrc')
 var defaultDbPath = path.join(userHome, 'sqlpad/db')
 
 // toml config item definitions
-var tomlFile = fs.readFileSync(path.join(__dirname, '/../resources/config-items.toml'), {encoding: 'utf8'})
+var tomlFile = fs.readFileSync(
+  path.join(__dirname, '/../resources/config-items.toml'),
+  { encoding: 'utf8' }
+)
 var parsedToml = toml.parse(tomlFile)
 var configItemDefinitions = parsedToml.configItems
 
@@ -33,7 +37,7 @@ var argv = minimist(process.argv.slice(2))
 // if saved cli file exists, read it
 var savedCli = {}
 if (fs.existsSync(savedCliFilePath)) {
-  savedCli = JSON.parse(fs.readFileSync(savedCliFilePath, {encoding: 'utf8'}))
+  savedCli = JSON.parse(fs.readFileSync(savedCliFilePath, { encoding: 'utf8' }))
 }
 
 // in-memory store of items
@@ -63,13 +67,13 @@ var ConfigItem = function (data) {
   // special exception. if item is dbPath set default to user home
   if (this.key === 'dbPath') this.default = defaultDbPath
 
-    // populate env value if env var present
+  // populate env value if env var present
   if (this.envVar && process.env[this.envVar]) {
     this.envValue = process.env[this.envVar]
   }
 
-    // populate value from saved cli file
-    // NOTE: there could be multiple cli flags defined
+  // populate value from saved cli file
+  // NOTE: there could be multiple cli flags defined
   if (this.cliFlag && Array.isArray(this.cliFlag)) {
     this.cliFlag.forEach(function (flag) {
       if (savedCli[flag] != null) {
@@ -80,8 +84,8 @@ var ConfigItem = function (data) {
     this.savedCliValue = savedCli[this.cliFlag]
   }
 
-    // populate value from cli flag
-    // NOTE: there could be multiple cli flags defined
+  // populate value from cli flag
+  // NOTE: there could be multiple cli flags defined
   if (this.cliFlag && Array.isArray(this.cliFlag)) {
     this.cliFlag.forEach(function (flag) {
       if (argv[flag] != null) {
@@ -92,12 +96,14 @@ var ConfigItem = function (data) {
     this.cliValue = argv[this.cliFlag]
   }
 
-    // if this config item is for the database path
-    // we should resolve it to ensure it is ready for use
+  // if this config item is for the database path
+  // we should resolve it to ensure it is ready for use
   if (this.key === 'dbPath') {
     if (this.envValue) this.envValue = path.resolve(this.envValue)
     if (this.cliValue) this.cliValue = path.resolve(this.cliValue)
-    if (this.savedCliValue) this.savedCliValue = path.resolve(this.savedCliValue)
+    if (this.savedCliValue) {
+      this.savedCliValue = path.resolve(this.savedCliValue)
+    }
   }
 
   this.computeEffectiveValue()
@@ -121,8 +127,8 @@ ConfigItem.prototype.computeEffectiveValue = function () {
     this.effectiveValueSource = 'default'
   }
 
-    // It is possible that some of our boolean values are stored as text
-    // for consumption convenience, those strings should be turned to actual booleans
+  // It is possible that some of our boolean values are stored as text
+  // for consumption convenience, those strings should be turned to actual booleans
   var valueProps = [
     'default',
     'savedCliValue',
@@ -131,15 +137,17 @@ ConfigItem.prototype.computeEffectiveValue = function () {
     'dbValue',
     'effectiveValue'
   ]
-  valueProps.forEach(function (valueProp) {
-    if (typeof this[valueProp] === 'string') {
-      if (this[valueProp].toLowerCase() === 'true') {
-        this[valueProp] = true
-      } else if (this[valueProp].toLowerCase() === 'false') {
-        this[valueProp] = false
+  valueProps.forEach(
+    function (valueProp) {
+      if (typeof this[valueProp] === 'string') {
+        if (this[valueProp].toLowerCase() === 'true') {
+          this[valueProp] = true
+        } else if (this[valueProp].toLowerCase() === 'false') {
+          this[valueProp] = false
+        }
       }
-    }
-  }.bind(this))
+    }.bind(this)
+  )
 }
 
 ConfigItem.prototype.setDbValue = function (value) {
@@ -155,16 +163,18 @@ ConfigItem.prototype.setDbValue = function (value) {
 ConfigItem.prototype.save = function (callback) {
   var self = this
   if (this.interface !== 'ui') {
-    throw new Error('Config Item ' + this.key + ' must use ui interface to be saved to db')
+    throw new Error(
+      'Config Item ' + this.key + ' must use ui interface to be saved to db'
+    )
   }
-    // get database and save the value there
+  // get database and save the value there
   var db = require('../lib/db.js')
-  db.config.findOne({key: this.key}).exec(function (err, doc) {
+  db.config.findOne({ key: this.key }).exec(function (err, doc) {
     if (err) return callback(err)
     if (doc) {
       doc.value = self.dbValue
       doc.modifiedDate = new Date()
-      db.config.update({_id: doc._id}, doc, {}, function (err) {
+      db.config.update({ _id: doc._id }, doc, {}, function (err) {
         callback(err, self)
       })
     } else {
@@ -192,7 +202,7 @@ configItemDefinitions.forEach(function (itemDefinition) {
 /*  Query methods
 ============================================================================== */
 ConfigItem.findOneByKey = function (key) {
-  return _.find(configItems, {key: key})
+  return _.find(configItems, { key: key })
 }
 
 ConfigItem.findAll = function () {

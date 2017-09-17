@@ -112,10 +112,7 @@ const fields = {
 }
 
 const driverFields = {
-  crate: [
-    fields.host,
-    fields.port
-  ],
+  crate: [fields.host, fields.port],
   mysql: [
     fields.host,
     fields.port,
@@ -203,7 +200,12 @@ class ConnectionForm extends React.Component {
           return (
             <FormGroup key={field.key} controlId={field.key}>
               <ControlLabel>{field.label}</ControlLabel>
-              <FormControl type='text' name={field.key} value={value} onChange={this.onTextInputChange} />
+              <FormControl
+                type='text'
+                name={field.key}
+                value={value}
+                onChange={this.onTextInputChange}
+              />
             </FormGroup>
           )
         } else if (field.formType === PASSWORD) {
@@ -213,14 +215,24 @@ class ConnectionForm extends React.Component {
           return (
             <FormGroup key={field.key} controlId={field.key}>
               <ControlLabel>{field.label}</ControlLabel>
-              <FormControl type='password' autoComplete='new-password' name={field.key} value={value} onChange={this.onTextInputChange} />
+              <FormControl
+                type='password'
+                autoComplete='new-password'
+                name={field.key}
+                value={value}
+                onChange={this.onTextInputChange}
+              />
             </FormGroup>
           )
         } else if (field.formType === CHECKBOX) {
           const checked = connection[field.key] || false
           return (
             <FormGroup key={field.key} controlId={field.key}>
-              <Checkbox checked={checked} name={field.key} onChange={this.onCheckboxChange}>
+              <Checkbox
+                checked={checked}
+                name={field.key}
+                onChange={this.onCheckboxChange}
+              >
                 {field.label}
               </Checkbox>
             </FormGroup>
@@ -232,24 +244,44 @@ class ConnectionForm extends React.Component {
   }
 
   render () {
-    const { selectedConnection, isSaving, isTesting, testConnection, saveConnection } = this.props
+    const {
+      selectedConnection,
+      isSaving,
+      isTesting,
+      testConnection,
+      saveConnection
+    } = this.props
     const connection = selectedConnection
     if (!selectedConnection) {
-      return (
-        <div className='ConnectionForm' style={connectionFormStyle} />
-      )
+      return <div className='ConnectionForm' style={connectionFormStyle} />
     }
     return (
       <div className='ConnectionForm' style={connectionFormStyle}>
         <Panel>
           <Form>
-            <FormGroup controlId='name' validationState={(connection.name ? null : 'error')}>
+            <FormGroup
+              controlId='name'
+              validationState={connection.name ? null : 'error'}
+            >
               <ControlLabel>Connection Name</ControlLabel>
-              <FormControl type='text' name='name' value={connection.name || ''} onChange={this.onTextInputChange} />
+              <FormControl
+                type='text'
+                name='name'
+                value={connection.name || ''}
+                onChange={this.onTextInputChange}
+              />
             </FormGroup>
-            <FormGroup controlId='driver' validationState={(connection.driver ? null : 'error')}>
+            <FormGroup
+              controlId='driver'
+              validationState={connection.driver ? null : 'error'}
+            >
               <ControlLabel>Database Driver</ControlLabel>
-              <FormControl componentClass='select' name='driver' value={connection.driver || ''} onChange={this.onTextInputChange}>
+              <FormControl
+                componentClass='select'
+                name='driver'
+                value={connection.driver || ''}
+                onChange={this.onTextInputChange}
+              >
                 <option value='' />
                 <option value='crate'>Crate</option>
                 <option value='mysql'>MySQL</option>
@@ -260,11 +292,18 @@ class ConnectionForm extends React.Component {
               </FormControl>
             </FormGroup>
             {this.renderDriverFields()}
-            <Button style={{width: 100}} onClick={saveConnection} disabled={isSaving}>
+            <Button
+              style={{ width: 100 }}
+              onClick={saveConnection}
+              disabled={isSaving}
+            >
               {isSaving ? 'Saving...' : 'Save'}
-            </Button>
-            {' '}
-            <Button style={{width: 100}} onClick={testConnection} disabled={isTesting}>
+            </Button>{' '}
+            <Button
+              style={{ width: 100 }}
+              onClick={testConnection}
+              disabled={isTesting}
+            >
               {isTesting ? 'Testing...' : 'Test'}
             </Button>
           </Form>

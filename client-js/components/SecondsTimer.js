@@ -3,9 +3,9 @@ import React from 'react'
 class SecondsTimer extends React.Component {
   state = {
     runSeconds: 0
-  };
+  }
 
-  _mounted = false;
+  _mounted = false
 
   timer = () => {
     if (this._mounted) {
@@ -15,7 +15,7 @@ class SecondsTimer extends React.Component {
       })
       setTimeout(this.timer, 33)
     }
-  };
+  }
 
   componentDidMount () {
     this._mounted = true
@@ -27,9 +27,7 @@ class SecondsTimer extends React.Component {
   }
 
   render () {
-    return (
-      <span>{this.state.runSeconds}</span>
-    )
+    return <span>{this.state.runSeconds}</span>
   }
 }
 

@@ -33,7 +33,7 @@ import chartDefinitions from './components/ChartDefinitions.js'
 class QueryDetailsModal extends React.Component {
   state = {
     showModal: false
-  };
+  }
 
   close = () => {
     if (this.saveOnClose) {
@@ -41,32 +41,32 @@ class QueryDetailsModal extends React.Component {
       this.saveOnClose = false
     }
     this.setState({ showModal: false })
-  };
+  }
 
-  input = undefined;
+  input = undefined
 
   open = () => {
     this.setState({ showModal: true })
-  };
+  }
 
   openForSave = () => {
     this.saveOnClose = true
     this.setState({ showModal: true })
-  };
+  }
 
-  onSubmit = (e) => {
+  onSubmit = e => {
     e.preventDefault()
     this.close()
-  };
+  }
 
-  onQueryNameChange = (e) => {
+  onQueryNameChange = e => {
     var newName = e.target.value
     this.props.onQueryNameChange(newName)
-  };
+  }
 
   onEntered = () => {
     if (this.input) this.input.focus()
-  };
+  }
 
   render () {
     var modalNavLink = (href, text) => {
@@ -74,28 +74,46 @@ class QueryDetailsModal extends React.Component {
       if (saved) {
         return (
           <li role='presentation'>
-            <a href={href} target='_blank' rel='noopener noreferrer' >
-              {text} {' '} <Glyphicon glyph='new-window' />
+            <a href={href} target='_blank' rel='noopener noreferrer'>
+              {text} <Glyphicon glyph='new-window' />
             </a>
           </li>
         )
       } else {
-        var tooltip = <Tooltip id='tooltip'>Save query to enable table/chart view links</Tooltip>
+        var tooltip = (
+          <Tooltip id='tooltip'>
+            Save query to enable table/chart view links
+          </Tooltip>
+        )
         return (
           <OverlayTrigger placement='top' overlay={tooltip}>
             <li role='presentation' className='disabled'>
-              <a href={href} target='_blank' rel='noopener noreferrer' onClick={(e) => e.preventDefault()} >
-                {text} {' '} <Glyphicon glyph='new-window' />
+              <a
+                href={href}
+                target='_blank'
+                rel='noopener noreferrer'
+                onClick={e => e.preventDefault()}
+              >
+                {text} <Glyphicon glyph='new-window' />
               </a>
             </li>
           </OverlayTrigger>
         )
       }
     }
-    var validationState = (this.saveOnClose && !this.props.query.name.length ? 'warning' : null)
-    var validationHelp = (this.saveOnClose && !this.props.query.name.length ? <HelpBlock>Query name is required to save query.</HelpBlock> : null)
+    var validationState =
+      this.saveOnClose && !this.props.query.name.length ? 'warning' : null
+    var validationHelp =
+      this.saveOnClose && !this.props.query.name.length ? (
+        <HelpBlock>Query name is required to save query.</HelpBlock>
+      ) : null
     return (
-      <Modal onEntered={this.onEntered} animation show={this.state.showModal} onHide={this.close} >
+      <Modal
+        onEntered={this.onEntered}
+        animation
+        show={this.state.showModal}
+        onHide={this.close}
+      >
         <Modal.Header closeButton />
         <Modal.Body>
           <form onSubmit={this.onSubmit}>
@@ -103,12 +121,13 @@ class QueryDetailsModal extends React.Component {
               <ControlLabel>Query Name</ControlLabel>
               <input
                 className='form-control'
-                ref={(ref) => {
+                ref={ref => {
                   this.input = ref
                 }}
                 type='text'
                 value={this.props.query.name}
-                onChange={this.onQueryNameChange} />
+                onChange={this.onQueryNameChange}
+              />
               <FormControl.Feedback />
               {validationHelp}
             </FormGroup>
@@ -140,11 +159,11 @@ class QueryDetailsModal extends React.Component {
 }
 
 class QueryEditor extends React.Component {
-  displayName = 'QueryEditor';
+  displayName = 'QueryEditor'
 
   loadConnectionsFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/connections/')
-      .then((json) => {
+      .then(json => {
         if (json.error) Alert.error(json.error)
         const connections = json.connections
         const query = this.state.query
@@ -157,21 +176,21 @@ class QueryEditor extends React.Component {
           query: query
         })
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
   }
 
-  loadQueryFromServer = (queryId) => {
+  loadQueryFromServer = queryId => {
     fetchJson('GET', this.props.config.baseUrl + '/api/queries/' + queryId)
-      .then((json) => {
+      .then(json => {
         if (json.error) Alert.error(json.error)
         this.setState({
           query: json.query
         })
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
@@ -205,13 +224,17 @@ class QueryEditor extends React.Component {
       this.queryDetailsModal.openForSave()
       return
     }
-    this.setState({isSaving: true})
+    this.setState({ isSaving: true })
     if (query._id) {
-      fetchJson('PUT', this.props.config.baseUrl + '/api/queries/' + query._id, query)
-        .then((json) => {
+      fetchJson(
+        'PUT',
+        this.props.config.baseUrl + '/api/queries/' + query._id,
+        query
+      )
+        .then(json => {
           if (json.error) {
             Alert.error(json.error)
-            this.setState({isSaving: false})
+            this.setState({ isSaving: false })
             return
           }
           Alert.success('Query Saved')
@@ -220,39 +243,43 @@ class QueryEditor extends React.Component {
             query: json.query
           })
         })
-        .catch((ex) => {
+        .catch(ex => {
           console.error(ex.toString())
           Alert.error('Something is broken')
         })
     } else {
       fetchJson('POST', this.props.config.baseUrl + '/api/queries', query)
-        .then((json) => {
+        .then(json => {
           if (json.error) {
             Alert.error(json.error)
-            this.setState({isSaving: false})
+            this.setState({ isSaving: false })
             return
           }
-          window.history.replaceState({}, json.query.name, this.props.config.baseUrl + '/queries/' + json.query._id)
+          window.history.replaceState(
+            {},
+            json.query.name,
+            this.props.config.baseUrl + '/queries/' + json.query._id
+          )
           Alert.success('Query Saved')
           this.setState({
             isSaving: false,
             query: json.query
           })
         })
-        .catch((ex) => {
+        .catch(ex => {
           console.error(ex.toString())
           Alert.error('Something is broken')
         })
     }
   }
 
-  queryDetailsModal = undefined;
+  queryDetailsModal = undefined
 
   openQueryDetailsModal = () => {
     this.queryDetailsModal.open()
   }
 
-  onConnectionChange = (connectionId) => {
+  onConnectionChange = connectionId => {
     var query = this.state.query
     query.connectionId = connectionId
     this.setState({
@@ -260,19 +287,19 @@ class QueryEditor extends React.Component {
     })
   }
 
-  onQueryNameChange = (name) => {
+  onQueryNameChange = name => {
     var query = this.state.query
     query.name = name
-    this.setState({query: query})
+    this.setState({ query: query })
   }
 
-  onQueryTagsChange = (values) => {
+  onQueryTagsChange = values => {
     var query = this.state.query
     query.tags = values.map(v => v.value)
-    this.setState({query: query})
+    this.setState({ query: query })
   }
 
-  onQueryTextChange = (queryText) => {
+  onQueryTextChange = queryText => {
     var query = this.state.query
     query.queryText = queryText
     this.setState({
@@ -280,11 +307,11 @@ class QueryEditor extends React.Component {
     })
   }
 
-  onChartTypeChange = (e) => {
+  onChartTypeChange = e => {
     var chartType = e.target.value
     var query = this.state.query
     query.chartConfiguration.chartType = chartType
-    this.setState({query: query})
+    this.setState({ query: query })
   }
 
   runQuery = () => {
@@ -303,7 +330,7 @@ class QueryEditor extends React.Component {
       queryText: queryToRun
     }
     fetchJson('POST', this.props.config.baseUrl + '/api/query-result', postData)
-      .then((json) => {
+      .then(json => {
         if (json.error) Alert.error(json.error)
         this.setState({
           isDirty: false,
@@ -312,7 +339,7 @@ class QueryEditor extends React.Component {
           queryResult: json.queryResult
         })
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
@@ -320,11 +347,11 @@ class QueryEditor extends React.Component {
 
   loadTagsFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/tags')
-      .then((json) => {
+      .then(json => {
         if (json.error) Alert.error(json.error)
-        this.setState({availableTags: json.tags})
+        this.setState({ availableTags: json.tags })
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
@@ -354,7 +381,9 @@ class QueryEditor extends React.Component {
   componentDidMount () {
     this.loadConnectionsFromServer()
     this.loadTagsFromServer()
-    if (this.props.queryId !== 'new') this.loadQueryFromServer(this.props.queryId)
+    if (this.props.queryId !== 'new') {
+      this.loadQueryFromServer(this.props.queryId)
+    }
 
     if (this.editor) {
       this.editor.focus()
@@ -371,7 +400,9 @@ class QueryEditor extends React.Component {
           }
         }
       })
-      if (this.props.config.editorWordWrap) this.editor.session.setUseWrapMode(true)
+      if (this.props.config.editorWordWrap) {
+        this.editor.session.setUseWrapMode(true)
+      }
     }
 
     /*  Shortcuts
@@ -383,7 +414,7 @@ class QueryEditor extends React.Component {
       return true
     }
     keymaster.unbind('ctrl+s, command+s')
-    keymaster('ctrl+s, command+s', (e) => {
+    keymaster('ctrl+s, command+s', e => {
       this.saveQuery()
       e.preventDefault()
       return false
@@ -392,7 +423,7 @@ class QueryEditor extends React.Component {
     // but just in case there isn't unbind anything previously bound
     // rather something previously not run than something run more than once
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
-    keymaster('ctrl+r, command+r, ctrl+e, command+e', (e) => {
+    keymaster('ctrl+r, command+r, ctrl+e, command+e', e => {
       this.runQuery()
       e.preventDefault()
       return false
@@ -412,7 +443,7 @@ class QueryEditor extends React.Component {
     })
   }
 
-  sqlpadTauChart = undefined;
+  sqlpadTauChart = undefined
 
   hasRows = () => {
     var queryResult = this.state.queryResult
@@ -424,15 +455,15 @@ class QueryEditor extends React.Component {
     return !pending && this.state.activeTabKey === 'vis' && this.hasRows()
   }
 
-  onVisualizeClick = (e) => {
+  onVisualizeClick = e => {
     this.sqlpadTauChart.renderChart(true)
   }
 
-  onTabSelect = (tabkey) => {
-    this.setState({activeTabKey: tabkey})
+  onTabSelect = tabkey => {
+    this.setState({ activeTabKey: tabkey })
   }
 
-  onSaveImageClick = (e) => {
+  onSaveImageClick = e => {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
       this.sqlpadTauChart.chart.fire('exportTo', 'png')
     }
@@ -443,18 +474,20 @@ class QueryEditor extends React.Component {
       position: 'absolute',
       left: '150px'
     }
-    document.title = (this.state.query.name ? this.state.query.name : 'New Query')
-    var tagOptions = this.state.availableTags.map((t) => {
-      return {value: t, label: t}
+    document.title = this.state.query.name ? this.state.query.name : 'New Query'
+    var tagOptions = this.state.availableTags.map(t => {
+      return { value: t, label: t }
     })
     if (this.state.query && this.state.query.tags) {
-      this.state.query.tags.forEach((t) => {
-        tagOptions.push({value: t, label: t})
+      this.state.query.tags.forEach(t => {
+        tagOptions.push({ value: t, label: t })
       })
     }
-    var chartOptions = chartDefinitions.map((d) => {
+    var chartOptions = chartDefinitions.map(d => {
       return (
-        <option key={d.chartType} value={d.chartType}>{d.chartLabel}</option>
+        <option key={d.chartType} value={d.chartType}>
+          {d.chartLabel}
+        </option>
       )
     })
     return (
@@ -463,10 +496,15 @@ class QueryEditor extends React.Component {
           id='query-editor-tab-container'
           defaultActiveKey='sql'
           activeKey={this.state.activeTabKey}
-          onSelect={this.onTabSelect}>
+          onSelect={this.onTabSelect}
+        >
           <Col sm={12}>
             <Row className='clearfix navbar-default'>
-              <Nav bsStyle='tabs' className='navbar-left' style={{width: '100%', paddingLeft: 6, marginTop: 6}}>
+              <Nav
+                bsStyle='tabs'
+                className='navbar-left'
+                style={{ width: '100%', paddingLeft: 6, marginTop: 6 }}
+              >
                 <NavItem eventKey='sql'>
                   <span className='glyphicon glyphicon-align-left' /> SQL
                 </NavItem>
@@ -475,24 +513,40 @@ class QueryEditor extends React.Component {
                 </NavItem>
               </Nav>
               <Form inline className='navbar-form' style={tabsFormStyle}>
-                <Button className='QueryEditorSubheaderItem'
+                <Button
+                  className='QueryEditorSubheaderItem'
                   onClick={this.saveQuery}
-                  disabled={this.state.isSaving}>
-                  <span className='shortcut-letter'>S</span>{this.state.isSaving ? 'aving' : 'ave'}
+                  disabled={this.state.isSaving}
+                >
+                  <span className='shortcut-letter'>S</span>
+                  {this.state.isSaving ? 'aving' : 'ave'}
                 </Button>
-                <Button className='QueryEditorSubheaderItem' onClick={this.runQuery} disabled={this.state.isRunning}>
-                  <span className='shortcut-letter'>R</span>{this.state.isRunning ? 'unning' : 'un'}
+                <Button
+                  className='QueryEditorSubheaderItem'
+                  onClick={this.runQuery}
+                  disabled={this.state.isRunning}
+                >
+                  <span className='shortcut-letter'>R</span>
+                  {this.state.isRunning ? 'unning' : 'un'}
                 </Button>
-                <ControlLabel onClick={this.openQueryDetailsModal} className='QueryEditorSubheaderItem QueryEditorQueryName'>{(this.state.query.name ? this.state.query.name : '(click to name query)')}</ControlLabel>
+                <ControlLabel
+                  onClick={this.openQueryDetailsModal}
+                  className='QueryEditorSubheaderItem QueryEditorQueryName'
+                >
+                  {this.state.query.name
+                    ? this.state.query.name
+                    : '(click to name query)'}
+                </ControlLabel>
                 <QueryDetailsModal
                   onQueryNameChange={this.onQueryNameChange}
                   onQueryTagsChange={this.onQueryTagsChange}
                   saveQuery={this.saveQuery}
                   query={this.state.query}
                   tagOptions={tagOptions}
-                  ref={(ref) => {
+                  ref={ref => {
                     this.queryDetailsModal = ref
-                  }} />
+                  }}
+                />
               </Form>
             </Row>
             <Row>
@@ -504,7 +558,8 @@ class QueryEditor extends React.Component {
                         {...this.props}
                         connections={this.state.connections}
                         connectionId={this.state.query.connectionId}
-                        onConnectionChange={this.onConnectionChange} />
+                        onConnectionChange={this.onConnectionChange}
+                      />
                     </div>
                     <div className='NonSidebar'>
                       <div className='QueryEditorAceEditorWrapper'>
@@ -519,12 +574,13 @@ class QueryEditor extends React.Component {
                           highlightActiveLine={false}
                           onChange={this.onQueryTextChange}
                           value={this.state.query.queryText}
-                          editorProps={{$blockScrolling: Infinity}}
+                          editorProps={{ $blockScrolling: Infinity }}
                           enableBasicAutocompletion
                           enableLiveAutocompletion
-                          ref={(ref) => {
-                            this.editor = (ref ? ref.editor : null)
-                          }} />
+                          ref={ref => {
+                            this.editor = ref ? ref.editor : null
+                          }}
+                        />
                       </div>
                       <div id='panel-result'>
                         <QueryResultHeader
@@ -533,13 +589,23 @@ class QueryEditor extends React.Component {
                           runQueryStartTime={this.state.runQueryStartTime}
                           cacheKey={this.state.cacheKey}
                           runSeconds={this.state.runSeconds}
-                          queryResult={this.state.queryResult} />
-                        <div style={{position: 'absolute', top: 29, bottom: 3, left: 0, right: 2}}>
+                          queryResult={this.state.queryResult}
+                        />
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: 29,
+                            bottom: 3,
+                            left: 0,
+                            right: 2
+                          }}
+                        >
                           <QueryResultDataTable
                             {...this.props}
                             isRunning={this.state.isRunning}
                             queryResult={this.state.queryResult}
-                            queryError={this.state.queryError} />
+                            queryError={this.state.queryError}
+                          />
                         </div>
                       </div>
                     </div>
@@ -547,33 +613,50 @@ class QueryEditor extends React.Component {
                   <Tab.Pane eventKey='vis'>
                     <div className='sidebar'>
                       <div className='sidebar-body'>
-                        <FormGroup controlId='formControlsSelect' bsSize='small'>
+                        <FormGroup
+                          controlId='formControlsSelect'
+                          bsSize='small'
+                        >
                           <FormControl
-                            value={this.state.query.chartConfiguration.chartType}
+                            value={
+                              this.state.query.chartConfiguration.chartType
+                            }
                             onChange={this.onChartTypeChange}
                             componentClass='select'
-                            className='input-small'>
+                            className='input-small'
+                          >
                             <option value=''>Choose a chart type...</option>
                             {chartOptions}
                           </FormControl>
                         </FormGroup>
                         <ChartInputs
-                          chartType={this.state.query.chartConfiguration.chartType}
-                          queryChartConfigurationFields={this.state.query.chartConfiguration.fields}
-                          onChartConfigurationFieldsChange={this.onChartConfigurationFieldsChange}
-                          queryResult={this.state.queryResult} />
+                          chartType={
+                            this.state.query.chartConfiguration.chartType
+                          }
+                          queryChartConfigurationFields={
+                            this.state.query.chartConfiguration.fields
+                          }
+                          onChartConfigurationFieldsChange={
+                            this.onChartConfigurationFieldsChange
+                          }
+                          queryResult={this.state.queryResult}
+                        />
                       </div>
                       <div className='sidebar-footer'>
                         <Button
                           onClick={this.onVisualizeClick}
                           disabled={!this.isChartable()}
                           className={'btn-block'}
-                          bsSize={'sm'}>
+                          bsSize={'sm'}
+                        >
                           Visualize
                         </Button>
-                        <Button onClick={this.onSaveImageClick} className={'btn-block'} bsSize={'sm'}>
-                          <Glyphicon glyph='save' />{' '}
-                          Save Chart Image
+                        <Button
+                          onClick={this.onSaveImageClick}
+                          className={'btn-block'}
+                          bsSize={'sm'}
+                        >
+                          <Glyphicon glyph='save' /> Save Chart Image
                         </Button>
                       </div>
                     </div>
@@ -585,9 +668,10 @@ class QueryEditor extends React.Component {
                         queryError={this.state.queryError}
                         isRunning={this.state.isRunning}
                         renderChart={this.isChartable()}
-                        ref={(ref) => {
+                        ref={ref => {
                           this.sqlpadTauChart = ref
-                        }} />
+                        }}
+                      />
                     </div>
                   </Tab.Pane>
                 </Tab.Content>
@@ -595,7 +679,7 @@ class QueryEditor extends React.Component {
             </Row>
           </Col>
         </Tab.Container>
-        <Alert stack={{limit: 3}} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position='bottom-right' />
       </div>
     )
   }

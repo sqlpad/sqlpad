@@ -28,20 +28,22 @@ class FilterableQueryList extends React.Component {
     searchInput: null,
     selectedConnection: null,
     selectedTag: null,
-    selectedCreatedBy: this.props.currentUser ? this.props.currentUser.email : '',
+    selectedCreatedBy: this.props.currentUser
+      ? this.props.currentUser.email
+      : '',
     selectedSortBy: null,
     selectedQuery: null
-  };
+  }
 
-  handleQueryListRowMouseOver = (query) => {
-    this.setState({selectedQuery: query})
-  };
+  handleQueryListRowMouseOver = query => {
+    this.setState({ selectedQuery: query })
+  }
 
-  handleQueryDelete = (queryId) => {
+  handleQueryDelete = queryId => {
     var queries = this.state.queries
     var selectedQuery = this.state.selectedQuery
     if (selectedQuery._id === queryId) selectedQuery = null
-    queries = queries.filter((q) => {
+    queries = queries.filter(q => {
       return q._id !== queryId
     })
     this.setState({
@@ -49,18 +51,18 @@ class FilterableQueryList extends React.Component {
       selectedQuery: selectedQuery
     })
     fetchJson('DELETE', this.props.config.baseUrl + '/api/queries/' + queryId)
-      .then((json) => {
+      .then(json => {
         if (json.error) Alert.error(json.error)
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  };
+  }
 
   loadConfigValuesFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/queries')
-      .then((json) => {
+      .then(json => {
         var createdBys = _.uniq(_.pluck(json.queries, 'createdBy'))
         var tags = _.compact(_.uniq(_.flatten(_.pluck(json.queries, 'tags'))))
         var selectedCreatedBy = this.state.selectedCreatedBy
@@ -74,89 +76,98 @@ class FilterableQueryList extends React.Component {
           tags: tags
         })
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
     fetchJson('GET', this.props.config.baseUrl + '/api/connections')
-      .then((json) => {
-        this.setState({connections: json.connections})
+      .then(json => {
+        this.setState({ connections: json.connections })
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
-  };
+  }
 
-  onSearchChange = (searchInput) => {
+  onSearchChange = searchInput => {
     this.setState({
       searchInput: searchInput,
       selectedQuery: null
     })
-  };
+  }
 
-  onConnectionChange = (connectionId) => {
+  onConnectionChange = connectionId => {
     this.setState({
       selectedConnection: connectionId,
       selectedQuery: null
     })
-  };
+  }
 
-  onTagChange = (tag) => {
+  onTagChange = tag => {
     this.setState({
       selectedTag: tag,
       selectedQuery: null
     })
-  };
+  }
 
-  onCreatedByChange = (createdBy) => {
+  onCreatedByChange = createdBy => {
     this.setState({
       selectedCreatedBy: createdBy,
       selectedQuery: null
     })
-  };
+  }
 
-  onSortByChange = (sortBy) => {
+  onSortByChange = sortBy => {
     this.setState({
       selectedSortBy: sortBy
     })
-  };
+  }
 
   componentDidMount () {
     this.loadConfigValuesFromServer()
   }
 
   render () {
-    var filteredQueries = this.state.queries.map((q) => q)
+    var filteredQueries = this.state.queries.map(q => q)
     if (this.state.selectedTag) {
-      filteredQueries = filteredQueries.filter((q) => {
-        return (q.tags && q.tags.length && q.tags.indexOf(this.state.selectedTag) > -1)
+      filteredQueries = filteredQueries.filter(q => {
+        return (
+          q.tags && q.tags.length && q.tags.indexOf(this.state.selectedTag) > -1
+        )
       })
     }
     if (this.state.selectedCreatedBy) {
-      filteredQueries = filteredQueries.filter((q) => {
-        return (q.createdBy === this.state.selectedCreatedBy)
+      filteredQueries = filteredQueries.filter(q => {
+        return q.createdBy === this.state.selectedCreatedBy
       })
     }
     if (this.state.selectedConnection) {
-      filteredQueries = filteredQueries.filter((q) => {
-        return (q.connectionId === this.state.selectedConnection)
+      filteredQueries = filteredQueries.filter(q => {
+        return q.connectionId === this.state.selectedConnection
       })
     }
     if (this.state.searchInput) {
       var terms = this.state.searchInput.split(' ')
       var termCount = terms.length
-      filteredQueries = filteredQueries.filter((q) => {
+      filteredQueries = filteredQueries.filter(q => {
         var matchedCount = 0
         terms.forEach(function (term) {
           term = term.toLowerCase()
-          if ((q.name && q.name.toLowerCase().search(term) !== -1) || (q.queryText && q.queryText.toLowerCase().search(term) !== -1)) matchedCount++
+          if (
+            (q.name && q.name.toLowerCase().search(term) !== -1) ||
+            (q.queryText && q.queryText.toLowerCase().search(term) !== -1)
+          ) {
+            matchedCount++
+          }
         })
-        return (matchedCount === termCount)
+        return matchedCount === termCount
       })
     }
     if (this.state.selectedSortBy === 'name') {
-      filteredQueries = _.sortBy(filteredQueries, (query) => query.name.toLowerCase())
+      filteredQueries = _.sortBy(filteredQueries, query =>
+        query.name.toLowerCase()
+      )
     } else {
       filteredQueries = _.sortBy(filteredQueries, 'modifiedDate').reverse()
     }
@@ -173,61 +184,70 @@ class FilterableQueryList extends React.Component {
           createdBys={this.state.createdBys}
           onCreatedByChange={this.onCreatedByChange}
           onSortByChange={this.onSortByChange}
-          selectedCreatedBy={this.state.selectedCreatedBy} />
+          selectedCreatedBy={this.state.selectedCreatedBy}
+        />
         <QueryList
           config={this.props.config}
           queries={filteredQueries}
           selectedQuery={this.state.selectedQuery}
           handleQueryDelete={this.handleQueryDelete}
-          handleQueryListRowMouseOver={this.handleQueryListRowMouseOver} />
+          handleQueryListRowMouseOver={this.handleQueryListRowMouseOver}
+        />
         <QueryPreview
           config={this.props.config}
-          selectedQuery={this.state.selectedQuery} />
+          selectedQuery={this.state.selectedQuery}
+        />
       </div>
     )
   }
 }
 
 class QueryListSidebar extends React.Component {
-  onSearchChange = (e) => {
+  onSearchChange = e => {
     this.props.onSearchChange(e.target.value)
-  };
+  }
 
-  onConnectionChange = (e) => {
+  onConnectionChange = e => {
     this.props.onConnectionChange(e.target.value)
-  };
+  }
 
-  onTagChange = (e) => {
+  onTagChange = e => {
     this.props.onTagChange(e.target.value)
-  };
+  }
 
-  onCreatedByChange = (e) => {
+  onCreatedByChange = e => {
     this.props.onCreatedByChange(e.target.value)
-  };
+  }
 
-  onSortByChange = (e) => {
+  onSortByChange = e => {
     this.props.onSortByChange(e.target.value)
-  };
+  }
 
   render () {
     var connectionSelectOptions = this.props.connections.map(function (conn) {
       return (
-        <option key={conn._id} value={conn._id}>{conn.name}</option>
+        <option key={conn._id} value={conn._id}>
+          {conn.name}
+        </option>
       )
     })
     var createdBySelectOptions = this.props.createdBys.map(function (createdBy) {
       return (
-        <option key={createdBy} value={createdBy}>{createdBy}</option>
+        <option key={createdBy} value={createdBy}>
+          {createdBy}
+        </option>
       )
     })
     var tagSelectOptions = this.props.tags.map(function (tag) {
       return (
-        <option key={tag} value={tag}>{tag}</option>
+        <option key={tag} value={tag}>
+          {tag}
+        </option>
       )
     })
     return (
       <div className='QueryListSidebar'>
-        <Form >
+        <Form>
           <FormGroup controlId='formControlsSelect'>
             <ControlLabel>Search</ControlLabel>
             <FormControl type='text' onChange={this.onSearchChange} />
@@ -243,7 +263,10 @@ class QueryListSidebar extends React.Component {
           <br />
           <FormGroup controlId='formControlsSelect'>
             <ControlLabel>Connection</ControlLabel>
-            <FormControl componentClass='select' onChange={this.onConnectionChange}>
+            <FormControl
+              componentClass='select'
+              onChange={this.onConnectionChange}
+            >
               <option value=''>All</option>
               {connectionSelectOptions}
             </FormControl>
@@ -251,7 +274,11 @@ class QueryListSidebar extends React.Component {
           <br />
           <FormGroup controlId='formControlsSelect'>
             <ControlLabel>Created By</ControlLabel>
-            <FormControl value={this.props.selectedCreatedBy} componentClass='select' onChange={this.onCreatedByChange}>
+            <FormControl
+              value={this.props.selectedCreatedBy}
+              componentClass='select'
+              onChange={this.onCreatedByChange}
+            >
               <option value=''>All</option>
               {createdBySelectOptions}
             </FormControl>
@@ -273,7 +300,7 @@ class QueryListSidebar extends React.Component {
 class QueryList extends React.Component {
   render () {
     var self = this
-    var QueryListRows = this.props.queries.map((query) => {
+    var QueryListRows = this.props.queries.map(query => {
       return (
         <QueryListRow
           config={this.props.config}
@@ -281,15 +308,14 @@ class QueryList extends React.Component {
           query={query}
           selectedQuery={this.props.selectedQuery}
           handleQueryDelete={this.props.handleQueryDelete}
-          handleQueryListRowMouseOver={self.props.handleQueryListRowMouseOver} />
+          handleQueryListRowMouseOver={self.props.handleQueryListRowMouseOver}
+        />
       )
     })
     return (
       <div className='QueryList'>
         <ControlLabel>Queries</ControlLabel>
-        <ListGroup className='QueryListContents'>
-          {QueryListRows}
-        </ListGroup>
+        <ListGroup className='QueryListContents'>{QueryListRows}</ListGroup>
       </div>
     )
   }
@@ -298,26 +324,33 @@ class QueryList extends React.Component {
 class QueryListRow extends React.Component {
   state = {
     showPreview: false
-  };
+  }
 
-  onMouseOver = (e) => {
+  onMouseOver = e => {
     this.props.handleQueryListRowMouseOver(this.props.query)
-  };
+  }
 
-  onDelete = (e) => {
+  onDelete = e => {
     this.props.handleQueryDelete(this.props.query._id)
-  };
+  }
 
   render () {
-    var tagLabels = this.props.query.tags.map((tag) => {
+    var tagLabels = this.props.query.tags.map(tag => {
       return (
-        <Label bsStyle='info' key={tag} style={{marginLeft: 4}}>{tag}</Label>
+        <Label bsStyle='info' key={tag} style={{ marginLeft: 4 }}>
+          {tag}
+        </Label>
       )
     })
-    var tableUrl = this.props.config.baseUrl + '/query-table/' + this.props.query._id
-    var chartUrl = this.props.config.baseUrl + '/query-chart/' + this.props.query._id
+    var tableUrl =
+      this.props.config.baseUrl + '/query-table/' + this.props.query._id
+    var chartUrl =
+      this.props.config.baseUrl + '/query-chart/' + this.props.query._id
     var selectedStyle = () => {
-      if (this.props.selectedQuery && this.props.selectedQuery._id === this.props.query._id) {
+      if (
+        this.props.selectedQuery &&
+        this.props.selectedQuery._id === this.props.query._id
+      ) {
         return 'list-group-item QueryListRow QueryListRowSelected'
       } else {
         return 'list-group-item QueryListRow'
@@ -325,7 +358,13 @@ class QueryListRow extends React.Component {
     }
     const popoverClick = (
       <Popover id='popover-trigger-click' title='Are you sure?'>
-        <Button bsStyle='danger' onClick={this.onDelete} style={{width: '100%'}}>delete</Button>
+        <Button
+          bsStyle='danger'
+          onClick={this.onDelete}
+          style={{ width: '100%' }}
+        >
+          delete
+        </Button>
       </Popover>
     )
     return (
@@ -333,16 +372,37 @@ class QueryListRow extends React.Component {
         onClick={this.onClick}
         className={selectedStyle()}
         onMouseOver={this.onMouseOver}
-        onMouseOut={this.onMouseOut} >
-        <h4><a onClick={navigateToClickHandler('/queries/' + this.props.query._id)} href='#query' >{this.props.query.name}</a></h4>
-        <p>{this.props.query.createdBy} {tagLabels}</p>
+        onMouseOut={this.onMouseOut}
+      >
+        <h4>
+          <a
+            onClick={navigateToClickHandler('/queries/' + this.props.query._id)}
+            href='#query'
+          >
+            {this.props.query.name}
+          </a>
+        </h4>
         <p>
-          <a href={tableUrl} target='_blank' rel='noopener noreferrer'>table</a>
-          {' '}
-          <a href={chartUrl} target='_blank' rel='noopener noreferrer'>chart</a>
+          {this.props.query.createdBy} {tagLabels}
         </p>
-        <OverlayTrigger trigger='click' placement='left' container={this} rootClose overlay={popoverClick}>
-          <a className='QueryListRowDeleteButton' href='#delete'><Glyphicon glyph='trash' /></a>
+        <p>
+          <a href={tableUrl} target='_blank' rel='noopener noreferrer'>
+            table
+          </a>{' '}
+          <a href={chartUrl} target='_blank' rel='noopener noreferrer'>
+            chart
+          </a>
+        </p>
+        <OverlayTrigger
+          trigger='click'
+          placement='left'
+          container={this}
+          rootClose
+          overlay={popoverClick}
+        >
+          <a className='QueryListRowDeleteButton' href='#delete'>
+            <Glyphicon glyph='trash' />
+          </a>
         </OverlayTrigger>
       </li>
     )
@@ -357,9 +417,16 @@ class QueryPreview extends React.Component {
       }
       var query = this.props.selectedQuery
       var chartTypeLabel = () => {
-        var chartType = (query.chartConfiguration && query.chartConfiguration.chartType ? query.chartConfiguration.chartType : null)
-        var chartDefinition = _.findWhere(chartDefinitions, {chartType: chartType})
-        return (chartDefinition ? <h4>Chart: {chartDefinition.chartLabel}</h4> : null)
+        var chartType =
+          query.chartConfiguration && query.chartConfiguration.chartType
+            ? query.chartConfiguration.chartType
+            : null
+        var chartDefinition = _.findWhere(chartDefinitions, {
+          chartType: chartType
+        })
+        return chartDefinition ? (
+          <h4>Chart: {chartDefinition.chartLabel}</h4>
+        ) : null
       }
       return (
         <div className='QueryPreview'>
@@ -376,9 +443,9 @@ class QueryPreview extends React.Component {
             showPrintMargin={false}
             highlightActiveLine={false}
             value={this.props.selectedQuery.queryText}
-            editorProps={{$blockScrolling: true}}
-            ref={(ref) => {
-              this.editor = (ref ? ref.editor : null)
+            editorProps={{ $blockScrolling: true }}
+            ref={ref => {
+              this.editor = ref ? ref.editor : null
             }}
           />
           {chartTypeLabel()}
@@ -387,9 +454,7 @@ class QueryPreview extends React.Component {
         </div>
       )
     } else {
-      return (
-        <div className='QueryPreview' />
-      )
+      return <div className='QueryPreview' />
     }
   }
 }

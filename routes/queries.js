@@ -10,10 +10,17 @@ const BASE_URL = config.get('baseUrl')
 ============================================================================= */
 
 // NOTE: this non-api route is special since it redirects legacy urls
-router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function (req, res, next) {
+router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function (
+  req,
+  res,
+  next
+) {
   var format = req.query.format
-  if (format === 'table') return res.redirect(BASE_URL + '/query-table/' + req.params._id)
-  else if (format === 'chart') return res.redirect(BASE_URL + '/query-chart/' + req.params._id)
+  if (format === 'table') {
+    return res.redirect(BASE_URL + '/query-table/' + req.params._id)
+  } else if (format === 'chart') {
+    return res.redirect(BASE_URL + '/query-chart/' + req.params._id)
+  }
   next()
 })
 
@@ -67,7 +74,10 @@ router.get('/api/queries', mustBeAuthenticated, function (req, res) {
   })
 })
 
-router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, function (req, res) {
+router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, function (
+  req,
+  res
+) {
   Connection.findAll(function (err, connections) {
     if (err) {
       console.error(err)
@@ -99,8 +109,8 @@ router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, function (req, r
 
 // create new
 router.post('/api/queries', mustBeAuthenticated, function (req, res) {
-    // previously posted to api/queries/:_id, req.params._id would have been "new"
-    // now though we know its new because the client did that for us
+  // previously posted to api/queries/:_id, req.params._id would have been "new"
+  // now though we know its new because the client did that for us
   var query = new Query({
     name: req.body.name || 'No Name Query',
     tags: req.body.tags,
