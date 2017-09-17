@@ -13,39 +13,43 @@ var mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticate
 
 // this allows executing a query relying on the saved query text
 // instead of relying on an open endpoint that executes arbitrary sql
-router.get('/api/query-result/:_queryId', mustBeAuthenticatedOrChartLink, function (req, res) {
-  Query.findOneById(req.params._queryId, function (err, query) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem querying query database'
-      })
-    }
-    if (!query) {
-      return res.json({
-        error: 'Query not found for that Id (please save query first)'
-      })
-    }
-    var data = {
-      connectionId: query.connectionId,
-      cacheKey: query._id,
-      queryName: query.name,
-      queryText: query.queryText
-    }
-    getQueryResult(data, function (err, queryResult) {
+router.get(
+  '/api/query-result/:_queryId',
+  mustBeAuthenticatedOrChartLink,
+  function (req, res) {
+    Query.findOneById(req.params._queryId, function (err, query) {
       if (err) {
         console.error(err)
-        // Return the error here since it might have info on why the query is bad
         return res.json({
-          error: err.toString()
+          error: 'Problem querying query database'
         })
       }
-      return res.json({
-        queryResult: queryResult
+      if (!query) {
+        return res.json({
+          error: 'Query not found for that Id (please save query first)'
+        })
+      }
+      var data = {
+        connectionId: query.connectionId,
+        cacheKey: query._id,
+        queryName: query.name,
+        queryText: query.queryText
+      }
+      getQueryResult(data, function (err, queryResult) {
+        if (err) {
+          console.error(err)
+          // Return the error here since it might have info on why the query is bad
+          return res.json({
+            error: err.toString()
+          })
+        }
+        return res.json({
+          queryResult: queryResult
+        })
       })
     })
-  })
-})
+  }
+)
 
 // accepts raw inputs from client
 // used during query editing
@@ -71,18 +75,21 @@ router.post('/api/query-result', mustBeAuthenticated, function (req, res) {
 })
 
 function getQueryResult (data, getQueryResultCallback) {
-  async.waterfall([
-    function startwaterfall (waterfallNext) {
-      waterfallNext(null, data)
-    },
-    getConnection,
-    updateCache,
-    execRunQuery,
-    createDownloads
-  ], function (err, data) {
-    var queryResult = (data && data.queryResult ? data.queryResult : null)
-    return getQueryResultCallback(err, queryResult)
-  })
+  async.waterfall(
+    [
+      function startwaterfall (waterfallNext) {
+        waterfallNext(null, data)
+      },
+      getConnection,
+      updateCache,
+      execRunQuery,
+      createDownloads
+    ],
+    function (err, data) {
+      var queryResult = data && data.queryResult ? data.queryResult : null
+      return getQueryResultCallback(err, queryResult)
+    }
+  )
 }
 
 function getConnection (data, next) {
@@ -99,13 +106,17 @@ function getConnection (data, next) {
 
 function updateCache (data, next) {
   var now = new Date()
-  var expirationDate = new Date(now.getTime() + (1000 * 60 * 60 * 8)) // 8 hours in the future.
+  var expirationDate = new Date(now.getTime() + 1000 * 60 * 60 * 8) // 8 hours in the future.
   Cache.findOneByCacheKey(data.cacheKey, function (err, cache) {
     if (err) return next(err)
     if (!cache) {
-      cache = new Cache({cacheKey: data.cacheKey})
+      cache = new Cache({ cacheKey: data.cacheKey })
     }
-    cache.queryName = sanitize((data.queryName || 'SQLPad Query Results') + ' ' + moment().format('YYYY-MM-DD'))
+    cache.queryName = sanitize(
+      (data.queryName || 'SQLPad Query Results') +
+        ' ' +
+        moment().format('YYYY-MM-DD')
+    )
     cache.expiration = expirationDate
     cache.save(function (err, newCache) {
       if (err) return next(err)

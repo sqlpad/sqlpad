@@ -34,12 +34,14 @@ class UserAdmin extends React.Component {
 
   handleDelete (user) {
     fetchJson('DELETE', this.props.config.baseUrl + '/api/users/' + user._id)
-      .then((json) => {
-        if (json.error) return Alert.error('Delete Failed: ' + json.error.toString())
+      .then(json => {
+        if (json.error) {
+          return Alert.error('Delete Failed: ' + json.error.toString())
+        }
         Alert.success('User Deleted')
         this.loadUsersFromServer()
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
@@ -47,39 +49,47 @@ class UserAdmin extends React.Component {
 
   loadUsersFromServer () {
     fetchJson('get', this.props.config.baseUrl + '/api/users')
-      .then((json) => {
+      .then(json => {
         if (json.error) Alert.error(json.error)
-        this.setState({users: json.users})
+        this.setState({ users: json.users })
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
   }
 
   updateUserRole (user) {
-    this.setState({isSaving: true})
-    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {role: user.role})
-      .then((json) => {
+    this.setState({ isSaving: true })
+    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
+      role: user.role
+    })
+      .then(json => {
         this.loadUsersFromServer()
-        this.setState({isSaving: false})
-        if (json.error) return Alert.error('Update failed: ' + json.error.toString())
+        this.setState({ isSaving: false })
+        if (json.error) {
+          return Alert.error('Update failed: ' + json.error.toString())
+        }
         Alert.success('User Updated')
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
   }
 
   generatePasswordResetLink (user) {
-    this.setState({isSaving: true})
+    this.setState({ isSaving: true })
     const passwordResetId = uuid.v4()
-    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, { passwordResetId })
+    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
+      passwordResetId
+    })
       .then(json => {
         this.loadUsersFromServer()
-        this.setState({isSaving: false})
-        if (json.error) return Alert.error('Update failed: ' + json.error.toString())
+        this.setState({ isSaving: false })
+        if (json.error) {
+          return Alert.error('Update failed: ' + json.error.toString())
+        }
         Alert.success('Password link generated')
       })
       .catch(ex => {
@@ -89,15 +99,19 @@ class UserAdmin extends React.Component {
   }
 
   removePasswordResetLink (user) {
-    this.setState({isSaving: true})
-    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {passwordResetId: ''})
-      .then((json) => {
+    this.setState({ isSaving: true })
+    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
+      passwordResetId: ''
+    })
+      .then(json => {
         this.loadUsersFromServer()
-        this.setState({isSaving: false})
-        if (json.error) return Alert.error('Update failed: ' + json.error.toString())
+        this.setState({ isSaving: false })
+        if (json.error) {
+          return Alert.error('Update failed: ' + json.error.toString())
+        }
         Alert.success('Password reset link removed')
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
@@ -112,10 +126,12 @@ class UserAdmin extends React.Component {
           updateUserRole={this.updateUserRole}
           generatePasswordResetLink={this.generatePasswordResetLink}
           removePasswordResetLink={this.removePasswordResetLink}
-          currentUser={this.props.currentUser} />
+          currentUser={this.props.currentUser}
+        />
         <InviteUserForm
           loadUsersFromServer={this.loadUsersFromServer}
-          config={this.props.config} />
+          config={this.props.config}
+        />
       </div>
     )
   }
@@ -136,7 +152,7 @@ const styleUserList = {
 
 class UserList extends React.Component {
   render () {
-    var listRows = this.props.users.map((user) => {
+    var listRows = this.props.users.map(user => {
       return (
         <UserListRow
           key={user._id}
@@ -152,9 +168,7 @@ class UserList extends React.Component {
     return (
       <div style={styleUserList}>
         <ControlLabel>Users</ControlLabel>
-        <ListGroup>
-          {listRows}
-        </ListGroup>
+        <ListGroup>{listRows}</ListGroup>
       </div>
     )
   }
@@ -196,12 +210,24 @@ class UserListRow extends React.Component {
     const { user, currentUser } = this.props
     const popoverClick = (
       <Popover id='popover-trigger-click' title='Are you sure?'>
-        <Button bsStyle='danger' onClick={this.onDelete} style={{width: '100%'}}>delete</Button>
+        <Button
+          bsStyle='danger'
+          onClick={this.onDelete}
+          style={{ width: '100%' }}
+        >
+          delete
+        </Button>
       </Popover>
     )
     var signupDate = () => {
-      if (!user.signupDate) return (<h5>Signup Date: <em>not signed up yet</em></h5>)
-      return (<h5>Signup Date: {moment(user.signupDate).calendar()}</h5>)
+      if (!user.signupDate) {
+        return (
+          <h5>
+            Signup Date: <em>not signed up yet</em>
+          </h5>
+        )
+      }
+      return <h5>Signup Date: {moment(user.signupDate).calendar()}</h5>
     }
     return (
       <li className={'list-group-item ListRow'}>
@@ -220,23 +246,32 @@ class UserListRow extends React.Component {
               componentClass='select'
               value={user.role}
               disabled={currentUser._id === user._id}
-              onChange={this.onRoleChange} >
+              onChange={this.onRoleChange}
+            >
               <option value='editor'>Editor</option>
               <option value='admin'>Admin</option>
             </FormControl>
           </FormGroup>
         </Form>
-        {(currentUser._id !== user._id ? (
-          <OverlayTrigger trigger='click' placement='left' container={this} rootClose overlay={popoverClick}>
-            <a className='ListRowDeleteButton' href='#delete'><Glyphicon glyph='trash' /></a>
+        {currentUser._id !== user._id ? (
+          <OverlayTrigger
+            trigger='click'
+            placement='left'
+            container={this}
+            rootClose
+            overlay={popoverClick}
+          >
+            <a className='ListRowDeleteButton' href='#delete'>
+              <Glyphicon glyph='trash' />
+            </a>
           </OverlayTrigger>
-        ) : null)}
+        ) : null}
       </li>
     )
   }
 }
 
-const PasswordResetButtonLink = (props) => {
+const PasswordResetButtonLink = props => {
   const style = {
     fontSize: 14,
     marginTop: 10,
@@ -247,12 +282,16 @@ const PasswordResetButtonLink = (props) => {
     return (
       <span style={style}>
         <Button onClick={props.removePasswordResetLink}>remove</Button>{' '}
-        <a href={'/password-reset/' + props.passwordResetId}>Password Reset Link</a>
+        <a href={'/password-reset/' + props.passwordResetId}>
+          Password Reset Link
+        </a>
       </span>
     )
   }
   return (
-    <Button style={style} onClick={props.generatePasswordResetLink}>Generate Password Reset Link</Button>
+    <Button style={style} onClick={props.generatePasswordResetLink}>
+      Generate Password Reset Link
+    </Button>
   )
 }
 
@@ -281,7 +320,7 @@ class InviteUserForm extends React.Component {
   }
 
   onEmailChange (e) {
-    this.setState({email: e.target.value})
+    this.setState({ email: e.target.value })
   }
 
   onRoleChange (e) {
@@ -299,11 +338,13 @@ class InviteUserForm extends React.Component {
       isInviting: true
     })
     fetchJson('POST', this.props.config.baseUrl + '/api/users', user)
-      .then((json) => {
+      .then(json => {
         this.setState({
           isInviting: false
         })
-        if (json.error) return Alert.error('Whitelist failed: ' + json.error.toString())
+        if (json.error) {
+          return Alert.error('Whitelist failed: ' + json.error.toString())
+        }
         Alert.success('User Whitelisted')
         this.setState({
           email: null,
@@ -311,7 +352,7 @@ class InviteUserForm extends React.Component {
         })
         this.props.loadUsersFromServer()
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
         Alert.error('Something is broken')
       })
@@ -324,28 +365,45 @@ class InviteUserForm extends React.Component {
         <Panel>
           <Form>
             <p>
-              Users may only sign up if they have first been whitelisted.
-              Once whitelisted, invite them to
-              continue the sign-up process on the <a href={this.props.config.baseUrl + '/signup'}>signup page</a>.
+              Users may only sign up if they have first been whitelisted. Once
+              whitelisted, invite them to continue the sign-up process on the{' '}
+              <a href={this.props.config.baseUrl + '/signup'}>signup page</a>.
             </p>
             <p>
-              <strong>Admins</strong> can add and edit database connections,
-              as well as whitelist/invite users to join.
+              <strong>Admins</strong> can add and edit database connections, as
+              well as whitelist/invite users to join.
             </p>
             <hr />
-            <FormGroup controlId='email' validationState={(this.state.email ? null : 'warning')}>
+            <FormGroup
+              controlId='email'
+              validationState={this.state.email ? null : 'warning'}
+            >
               <ControlLabel>Email</ControlLabel>
-              <FormControl type='text' value={this.state.email || ''} onChange={this.onEmailChange} />
+              <FormControl
+                type='text'
+                value={this.state.email || ''}
+                onChange={this.onEmailChange}
+              />
             </FormGroup>
-            <FormGroup controlId='role' validationState={(this.state.role ? null : 'warning')}>
+            <FormGroup
+              controlId='role'
+              validationState={this.state.role ? null : 'warning'}
+            >
               <ControlLabel>Role</ControlLabel>
-              <FormControl componentClass='select' value={this.state.role || ''} onChange={this.onRoleChange}>
+              <FormControl
+                componentClass='select'
+                value={this.state.role || ''}
+                onChange={this.onRoleChange}
+              >
                 <option value='' />
                 <option value='editor'>Editor</option>
                 <option value='admin'>Admin</option>
               </FormControl>
             </FormGroup>
-            <Button onClick={this.onInviteClick} disabled={this.state.isInviting}>
+            <Button
+              onClick={this.onInviteClick}
+              disabled={this.state.isInviting}
+            >
               Whitelist User
             </Button>
           </Form>

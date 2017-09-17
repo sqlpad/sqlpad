@@ -13,8 +13,4 @@ const style = {
   fontSize: 36
 }
 
-export default (props) => (
-  <div style={style}>
-    {props.children}
-  </div>
-)
+export default props => <div style={style}>{props.children}</div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import {Table, Column, Cell} from 'fixed-data-table-2'
+import { Table, Column, Cell } from 'fixed-data-table-2'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
 const _ = window._
@@ -45,7 +45,7 @@ class QueryResultDataTable extends React.PureComponent {
   }
 
   handleColumnResizeEnd (newColumnWidth, columnKey) {
-    this.setState(({columnWidths}) => ({
+    this.setState(({ columnWidths }) => ({
       columnWidths: {
         ...columnWidths,
         [columnKey]: newColumnWidth
@@ -101,16 +101,18 @@ class QueryResultDataTable extends React.PureComponent {
             key={field}
             isResizable
             header={<Cell>{field}</Cell>}
-            cell={({rowIndex}) => {
+            cell={({ rowIndex }) => {
               const value = queryResult.rows[rowIndex][field]
               let barStyle
               let numberBar
               if (fieldMeta.datatype === 'number') {
                 const valueNumber = Number(value)
-                const range = fieldMeta.max - (fieldMeta.min < 0 ? fieldMeta.min : 0)
+                const range =
+                  fieldMeta.max - (fieldMeta.min < 0 ? fieldMeta.min : 0)
                 let left = 0
                 if (fieldMeta.min < 0 && valueNumber < 0) {
-                  left = Math.abs(fieldMeta.min - valueNumber) / range * 100 + '%'
+                  left =
+                    Math.abs(fieldMeta.min - valueNumber) / range * 100 + '%'
                 } else if (fieldMeta.min < 0 && valueNumber >= 0) {
                   left = Math.abs(fieldMeta.min) / range * 100 + '%'
                 }
@@ -119,7 +121,7 @@ class QueryResultDataTable extends React.PureComponent {
                   left: left,
                   top: 0,
                   bottom: 0,
-                  width: (Math.abs(valueNumber) / range) * 100 + '%',
+                  width: Math.abs(valueNumber) / range * 100 + '%',
                   backgroundColor: '#bae6f7'
                 }
                 numberBar = <div style={barStyle} />
@@ -127,7 +129,15 @@ class QueryResultDataTable extends React.PureComponent {
               return (
                 <Cell>
                   {numberBar}
-                  <div style={{textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', width: cellWidth, position: 'absolute'}}>
+                  <div
+                    style={{
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      width: cellWidth,
+                      position: 'absolute'
+                    }}
+                  >
                     {renderValue(value, fieldMeta)}
                   </div>
                 </Cell>

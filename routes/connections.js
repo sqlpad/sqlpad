@@ -16,8 +16,8 @@ function connectionFromBody (body) {
     username: body.username,
     password: body.password,
     domain: body.domain,
-    sqlserverEncrypt: (body.sqlserverEncrypt === true),
-    postgresSsl: (body.postgresSsl === true),
+    sqlserverEncrypt: body.sqlserverEncrypt === true,
+    postgresSsl: body.postgresSsl === true,
     postgresCert: body.postgresCert,
     postgresKey: body.postgresKey,
     postgresCA: body.postgresCA,
@@ -40,7 +40,7 @@ router.get('/api/connections', mustBeAuthenticated, function (req, res) {
         error: 'Problem querying connection database'
       })
     }
-    connections = connections.map((connection) => {
+    connections = connections.map(connection => {
       connection.username = decipher(connection.username)
       connection.password = ''
       return connection
@@ -154,7 +154,10 @@ router.delete('/api/connections/:_id', mustBeAdmin, function (req, res) {
 })
 
 // test connection
-router.post('/api/test-connection', mustBeAdmin, function testConnection (req, res) {
+router.post('/api/test-connection', mustBeAdmin, function testConnection (
+  req,
+  res
+) {
   var bodyConnection = connectionFromBody(req.body)
   var testQuery = "SELECT 'success' AS TestQuery;"
   if (bodyConnection.driver === 'crate') {

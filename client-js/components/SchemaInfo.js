@@ -38,7 +38,7 @@ class SchemaInfo extends React.PureComponent {
       var url = this.props.config.baseUrl + '/api/schema-info/' + connectionId
       if (reload) url += '?reload=true'
       fetchJson('GET', url)
-        .then((json) => {
+        .then(json => {
           if (json.error) console.error(json.error)
           updateCompletions(json.schemaInfo)
           this.setState({
@@ -46,10 +46,10 @@ class SchemaInfo extends React.PureComponent {
           })
           // sometimes refreshes happen so fast and people don't get to enjoy the animation
           setTimeout(() => {
-            this.setState({loading: false})
+            this.setState({ loading: false })
           }, 1000)
         })
-        .catch((ex) => {
+        .catch(ex => {
           console.error(ex.toString())
         })
     } else {
@@ -73,24 +73,37 @@ class SchemaInfo extends React.PureComponent {
   render () {
     var connectionSelectOptions = this.props.connections.map(function (conn) {
       return (
-        <option key={conn._id} value={conn._id}>{conn.name}</option>
+        <option key={conn._id} value={conn._id}>
+          {conn.name}
+        </option>
       )
     })
-    var refreshClass = (this.state.loading ? 'spinning' : '')
+    var refreshClass = this.state.loading ? 'spinning' : ''
 
     var schemaInfo = this.state.schemaInfo
-    var schemaCount = (schemaInfo ? Object.keys(schemaInfo).length : 0)
-    var initShowTables = (schemaCount <= 2)
-    var schemaItemNodes = Object.keys(schemaInfo).map((schema) => {
+    var schemaCount = schemaInfo ? Object.keys(schemaInfo).length : 0
+    var initShowTables = schemaCount <= 2
+    var schemaItemNodes = Object.keys(schemaInfo).map(schema => {
       return (
-        <SchemaInfoSchemaItem {...this.props} initShowTables={initShowTables} key={schema} schema={schema} tables={schemaInfo[schema]} />
+        <SchemaInfoSchemaItem
+          {...this.props}
+          initShowTables={initShowTables}
+          key={schema}
+          schema={schema}
+          tables={schemaInfo[schema]}
+        />
       )
     })
 
     return (
       <div>
         <FormGroup controlId='formControlsSelect' bsSize='small'>
-          <FormControl value={this.props.connectionId} componentClass='select' onChange={this.onConnectionChange} className='input-small'>
+          <FormControl
+            value={this.props.connectionId}
+            componentClass='select'
+            onChange={this.onConnectionChange}
+            className='input-small'
+          >
             <option value=''>Choose a connection...</option>
             {connectionSelectOptions}
           </FormControl>
@@ -98,12 +111,14 @@ class SchemaInfo extends React.PureComponent {
         <hr />
         <div id='panel-db-info-container'>
           <a id='btn-reload-schema' href='#refresh'>
-            <Glyphicon glyph='refresh' className={refreshClass} onClick={this.onRefreshClick} />
+            <Glyphicon
+              glyph='refresh'
+              className={refreshClass}
+              onClick={this.onRefreshClick}
+            />
           </a>
           <div id='panel-db-info'>
-            <ul className='schema-info schema-info-table'>
-              {schemaItemNodes}
-            </ul>
+            <ul className='schema-info schema-info-table'>{schemaItemNodes}</ul>
           </div>
         </div>
       </div>
@@ -114,31 +129,37 @@ class SchemaInfo extends React.PureComponent {
 class SchemaInfoSchemaItem extends React.Component {
   state = {
     showTables: this.props.initShowTables
-  };
+  }
 
-  onClick = (e) => {
+  onClick = e => {
     e.stopPropagation()
     e.preventDefault()
     this.setState({
       showTables: !this.state.showTables
     })
-  };
+  }
 
   render () {
     var tableJsx
     if (this.state.showTables) {
-      tableJsx = Object.keys(this.props.tables).map((table) => {
+      tableJsx = Object.keys(this.props.tables).map(table => {
         return (
-          <SchemaInfoTableItem {...this.props} key={table} schema={this.props.schema} table={table} columns={this.props.tables[table]} />
+          <SchemaInfoTableItem
+            {...this.props}
+            key={table}
+            schema={this.props.schema}
+            table={table}
+            columns={this.props.tables[table]}
+          />
         )
       })
     }
     return (
       <li key={this.props.schema}>
-        <a href='#schema' onClick={this.onClick} className='schema-info-schema'>{this.props.schema}</a>
-        <ul>
-          {tableJsx}
-        </ul>
+        <a href='#schema' onClick={this.onClick} className='schema-info-schema'>
+          {this.props.schema}
+        </a>
+        <ul>{tableJsx}</ul>
       </li>
     )
   }
@@ -149,43 +170,43 @@ class SchemaInfoTableItem extends React.Component {
     showColumns: false,
     showCopyButton: false,
     copyButtonText: 'copy'
-  };
+  }
 
-  onClick = (e) => {
+  onClick = e => {
     e.stopPropagation()
     e.preventDefault()
     this.setState({
       showColumns: !this.state.showColumns
     })
-  };
+  }
 
-  onMouseOver = (e) => {
+  onMouseOver = e => {
     this.setState({
       showCopyButton: true
     })
-  };
+  }
 
-  onMouseOut = (e) => {
+  onMouseOut = e => {
     this.setState({
       showCopyButton: false
     })
-  };
+  }
 
-  onCopyClick = (e) => {
+  onCopyClick = e => {
     e.stopPropagation()
-  };
+  }
 
   onCopy = () => {
-    this.setState({copyButtonText: 'copied'})
+    this.setState({ copyButtonText: 'copied' })
     setTimeout(() => {
-      this.setState({copyButtonText: 'copy'})
+      this.setState({ copyButtonText: 'copy' })
     }, 2000)
-  };
+  }
 
   render () {
     var columnJsx
     if (this.state.showColumns) {
-      columnJsx = this.props.columns.map((column) => {
+      columnJsx = this.props.columns.map(column => {
         return (
           <SchemaInfoColumnItem
             {...this.props}
@@ -193,7 +214,8 @@ class SchemaInfoTableItem extends React.Component {
             schema={this.props.schema}
             table={this.props.table}
             column_name={column.column_name}
-            data_type={column.data_type} />
+            data_type={column.data_type}
+          />
         )
       })
     }
@@ -201,27 +223,44 @@ class SchemaInfoTableItem extends React.Component {
     // we need to reach down into the columns to get the type of this object
     var viewType = () => {
       var type = this.props.columns[0].table_type
-      if (type.toLowerCase().split('')[0] === 'v') return (<span className='schema-additional-context'> (view)</span>)
+      if (type.toLowerCase().split('')[0] === 'v') {
+        return <span className='schema-additional-context'> (view)</span>
+      }
     }
-    var copyButtonClassName = (this.state.showCopyButton ? 'copy-button label' : 'copy-button label hidden')
+    var copyButtonClassName = this.state.showCopyButton
+      ? 'copy-button label'
+      : 'copy-button label hidden'
     var getCopyToClipboard = () => {
       if (this.props.config && this.props.config.showSchemaCopyButton) {
         return (
-          <CopyToClipboard text={this.props.schema + '.' + this.props.table} onCopy={this.onCopy}>
-            <span id='path-tooltip' onClick={this.onCopyClick} className={copyButtonClassName}>{this.state.copyButtonText}</span>
+          <CopyToClipboard
+            text={this.props.schema + '.' + this.props.table}
+            onCopy={this.onCopy}
+          >
+            <span
+              id='path-tooltip'
+              onClick={this.onCopyClick}
+              className={copyButtonClassName}
+            >
+              {this.state.copyButtonText}
+            </span>
           </CopyToClipboard>
         )
       }
     }
     return (
       <li key={this.props.table}>
-        <a href='#schema' onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} onClick={this.onClick} className='schema-info-table'>
+        <a
+          href='#schema'
+          onMouseOver={this.onMouseOver}
+          onMouseOut={this.onMouseOut}
+          onClick={this.onClick}
+          className='schema-info-table'
+        >
           {this.props.table} {viewType()}
           {getCopyToClipboard()}
         </a>
-        <ul>
-          {columnJsx}
-        </ul>
+        <ul>{columnJsx}</ul>
       </li>
     )
   }
@@ -231,48 +270,72 @@ class SchemaInfoColumnItem extends React.Component {
   state = {
     showCopyButton: false,
     copyButtonText: 'copy'
-  };
+  }
 
-  onMouseOver = (e) => {
+  onMouseOver = e => {
     this.setState({
       showCopyButton: true
     })
-  };
+  }
 
-  onMouseOut = (e) => {
+  onMouseOut = e => {
     this.setState({
       showCopyButton: false
     })
-  };
+  }
 
-  onCopyClick = (e) => {
+  onCopyClick = e => {
     e.stopPropagation()
     e.preventDefault()
-  };
+  }
 
   onCopy = () => {
-    this.setState({copyButtonText: 'copied'})
+    this.setState({ copyButtonText: 'copied' })
     setTimeout(() => {
-      this.setState({copyButtonText: 'copy'})
+      this.setState({ copyButtonText: 'copy' })
     }, 2000)
-  };
+  }
 
   render () {
-    var copyButtonClassName = (this.state.showCopyButton ? 'copy-button label label-info' : 'copy-button label label-info hidden')
+    var copyButtonClassName = this.state.showCopyButton
+      ? 'copy-button label label-info'
+      : 'copy-button label label-info hidden'
     var getCopyToClipboard = () => {
       if (this.props.config && this.props.config.showSchemaCopyButton) {
         return (
-          <CopyToClipboard text={this.props.schema + '.' + this.props.table + '.' + this.props.column_name} onCopy={this.onCopy}>
-            <span id='path-tooltip' onClick={this.onCopyClick} className={copyButtonClassName}>{this.state.copyButtonText}</span>
+          <CopyToClipboard
+            text={
+              this.props.schema +
+              '.' +
+              this.props.table +
+              '.' +
+              this.props.column_name
+            }
+            onCopy={this.onCopy}
+          >
+            <span
+              id='path-tooltip'
+              onClick={this.onCopyClick}
+              className={copyButtonClassName}
+            >
+              {this.state.copyButtonText}
+            </span>
           </CopyToClipboard>
         )
       }
     }
     return (
       <li>
-        <span onMouseOver={this.onMouseOver} onMouseOut={this.onMouseOut} className='schema-info-column'>
+        <span
+          onMouseOver={this.onMouseOver}
+          onMouseOut={this.onMouseOut}
+          className='schema-info-column'
+        >
           {this.props.column_name}
-          <span className='schema-additional-context'> ({this.props.data_type})</span>
+          <span className='schema-additional-context'>
+            {' '}
+            ({this.props.data_type})
+          </span>
           {getCopyToClipboard()}
         </span>
       </li>

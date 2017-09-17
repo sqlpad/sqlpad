@@ -17,10 +17,10 @@ import QueryChartOnly from './QueryChartOnly.js'
 import FullscreenMessage from './FullscreenMessage.js'
 
 fetchJson('GET', 'api/app')
-  .then((json) => {
+  .then(json => {
     init(json)
   })
-  .catch((ex) => {
+  .catch(ex => {
     console.error(ex.toString())
   })
 
@@ -35,7 +35,7 @@ function init (appData) {
   ============================================================================== */
   function getAppData (ctx, next) {
     fetchJson('GET', 'api/app')
-      .then((json) => {
+      .then(json => {
         ctx.config = json.config
         ctx.smtpConfigured = json.smtpConfigured
         ctx.googleAuthConfigured = json.googleAuthConfigured
@@ -45,7 +45,7 @@ function init (appData) {
         ctx.version = json.version
         next()
       })
-      .catch((ex) => {
+      .catch(ex => {
         console.error(ex.toString())
       })
   }
@@ -106,7 +106,8 @@ function init (appData) {
       <App config={ctx.config} currentUser={ctx.currentUser}>
         <FilterableQueryList
           config={ctx.config}
-          currentUser={ctx.currentUser} />
+          currentUser={ctx.currentUser}
+        />
       </App>,
       document.getElementById('root')
     )
@@ -115,9 +116,7 @@ function init (appData) {
   page('/queries/:queryId', mustBeAuthenticated, function (ctx) {
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
-        <QueryEditor
-          queryId={ctx.params.queryId}
-          config={ctx.config} />
+        <QueryEditor queryId={ctx.params.queryId} config={ctx.config} />
       </App>,
       document.getElementById('root')
     )
@@ -129,7 +128,8 @@ function init (appData) {
       <SignIn
         config={ctx.config}
         smtpConfigured={ctx.smtpConfigured}
-        passport={ctx.passport} />,
+        passport={ctx.passport}
+      />,
       document.getElementById('root')
     )
   })
@@ -139,7 +139,8 @@ function init (appData) {
     ReactDOM.render(
       <SignUp
         config={ctx.config}
-        adminRegistrationOpen={ctx.adminRegistrationOpen} />,
+        adminRegistrationOpen={ctx.adminRegistrationOpen}
+      />,
       document.getElementById('root')
     )
   })
@@ -147,8 +148,7 @@ function init (appData) {
   page('/forgot-password', function (ctx) {
     document.title = 'SQLPad - Forgot Password'
     ReactDOM.render(
-      <ForgotPassword
-        config={ctx.config} />,
+      <ForgotPassword config={ctx.config} />,
       document.getElementById('root')
     )
   })
@@ -157,12 +157,8 @@ function init (appData) {
     document.title = 'SQLPad - Password Reset'
     ReactDOM.render(
       <FullscreenMessage>
-        <p>
-          Password reset requested.
-        </p>
-        <p>
-          An email has been sent with further instruction.
-        </p>
+        <p>Password reset requested.</p>
+        <p>An email has been sent with further instruction.</p>
       </FullscreenMessage>,
       document.getElementById('root')
     )
@@ -174,7 +170,8 @@ function init (appData) {
       <PasswordReset
         passwordResetId={ctx.params.passwordResetId}
         config={ctx.config}
-        adminRegistrationOpen={ctx.adminRegistrationOpen} />,
+        adminRegistrationOpen={ctx.adminRegistrationOpen}
+      />,
       document.getElementById('root')
     )
   })
@@ -182,9 +179,7 @@ function init (appData) {
   page('/query-table/:queryId', function (ctx) {
     document.title = 'SQLPad'
     ReactDOM.render(
-      <QueryTableOnly
-        config={ctx.config}
-        queryId={ctx.params.queryId} />,
+      <QueryTableOnly config={ctx.config} queryId={ctx.params.queryId} />,
       document.getElementById('root')
     )
   })
@@ -192,9 +187,7 @@ function init (appData) {
   page('/query-chart/:queryId', function (ctx) {
     document.title = 'SQLPad'
     ReactDOM.render(
-      <QueryChartOnly
-        config={ctx.config}
-        queryId={ctx.params.queryId} />,
+      <QueryChartOnly config={ctx.config} queryId={ctx.params.queryId} />,
       document.getElementById('root')
     )
   })
@@ -205,25 +198,16 @@ function init (appData) {
     if (ctx.currentUser) {
       Component = (
         <App config={ctx.config} currentUser={ctx.currentUser}>
-          <FullscreenMessage>
-            Not Found
-          </FullscreenMessage>
+          <FullscreenMessage>Not Found</FullscreenMessage>
         </App>
       )
     } else {
-      Component = (
-        <FullscreenMessage>
-          Not Found
-        </FullscreenMessage>
-      )
+      Component = <FullscreenMessage>Not Found</FullscreenMessage>
     }
-    ReactDOM.render(
-      Component,
-      document.getElementById('root')
-    )
+    ReactDOM.render(Component, document.getElementById('root'))
   })
 
   /*  init router
   ============================================================================== */
-  page({click: false})
+  page({ click: false })
 }

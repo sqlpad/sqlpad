@@ -23,15 +23,15 @@ function adminRegistrationOpen (req, res, next) {
 if (!DISABLE_USERPASS_AUTH) {
   router.post('/api/signup', adminRegistrationOpen, function (req, res) {
     if (req.body.password !== req.body.passwordConfirmation) {
-      return res.json({error: 'Passwords do not match'})
+      return res.json({ error: 'Passwords do not match' })
     }
     User.findOneByEmail(req.body.email, function (err, user) {
       if (err) {
         console.error(err)
-        return res.json({error: 'Error looking up user by email'})
+        return res.json({ error: 'Error looking up user by email' })
       }
       if (user && user.passhash) {
-        return res.json({error: 'User already signed up'})
+        return res.json({ error: 'User already signed up' })
       }
       if (user) {
         user.password = req.body.password
@@ -40,28 +40,34 @@ if (!DISABLE_USERPASS_AUTH) {
       if (!user) {
         // if open admin registration or whitelisted email create user
         // otherwise exit
-        if (res.locals.adminRegistrationOpen || checkWhitelist(req.body.email)) {
+        if (
+          res.locals.adminRegistrationOpen ||
+          checkWhitelist(req.body.email)
+        ) {
           user = new User({
             email: req.body.email,
             password: req.body.password,
-            role: (res.locals.adminRegistrationOpen ? 'admin' : 'editor'),
+            role: res.locals.adminRegistrationOpen ? 'admin' : 'editor',
             signupDate: new Date()
           })
         } else {
-          return res.json({error: 'Email address not yet whitelisted'})
+          return res.json({ error: 'Email address not yet whitelisted' })
         }
       }
       user.save(function (err, newUser) {
         if (err) {
           console.error(err)
-          return res.json({error: 'Error saving new user to DB'})
+          return res.json({ error: 'Error saving new user to DB' })
         }
         return res.json({})
       })
     })
   })
 
-  router.post('/api/signin', passport.authenticate('local'), function (req, res) {
+  router.post('/api/signin', passport.authenticate('local'), function (
+    req,
+    res
+  ) {
     // if it makes it here, the authentication succeded
     res.json({})
   })

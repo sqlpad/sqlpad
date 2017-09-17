@@ -18,26 +18,29 @@ const connectionListStyle = {
 
 class ConnectionList extends React.Component {
   render () {
-    const { connections, selectedConnection, handleSelect, handleDelete, onNewConnectionClick } = this.props
-    var listRows = connections.map((connection) => {
+    const {
+      connections,
+      selectedConnection,
+      handleSelect,
+      handleDelete,
+      onNewConnectionClick
+    } = this.props
+    var listRows = connections.map(connection => {
       return (
         <ConnectionListRow
           key={connection._id}
           connection={connection}
           selectedConnection={selectedConnection}
           handleSelect={handleSelect}
-          handleDelete={handleDelete} />
+          handleDelete={handleDelete}
+        />
       )
     })
     return (
       <div className='ConnectionList' style={connectionListStyle}>
         <ControlLabel>Connections</ControlLabel>
-        <ListGroup className='ConnectionListContents'>
-          {listRows}
-        </ListGroup>
-        <Button onClick={onNewConnectionClick}>
-          New Connection
-        </Button>
+        <ListGroup className='ConnectionListContents'>{listRows}</ListGroup>
+        <Button onClick={onNewConnectionClick}>New Connection</Button>
       </div>
     )
   }

@@ -39,10 +39,7 @@ Cache.prototype.csvFilePath = function CacheCsvFilePath () {
 Cache.prototype.filePaths = function CacheFilePaths () {
   // these may not exist.
   // eventually actual files should be stored on the cache item
-  return [
-    this.xlsxFilePath(),
-    this.csvFilePath()
-  ]
+  return [this.xlsxFilePath(), this.csvFilePath()]
 }
 
 Cache.prototype.removeFiles = function CacheRemoveFiles () {
@@ -56,7 +53,7 @@ Cache.prototype.removeFiles = function CacheRemoveFiles () {
 
 Cache.prototype.expire = function CacheExpire () {
   this.removeFiles()
-  db.cache.remove({_id: this._id}, {})
+  db.cache.remove({ _id: this._id }, {})
 }
 
 Cache.prototype.writeXlsx = function CacheWriteXlsx (queryResult, callback) {
@@ -73,7 +70,7 @@ Cache.prototype.writeXlsx = function CacheWriteXlsx (queryResult, callback) {
     }
     resultArray.push(row)
   }
-  var xlsxBuffer = xlsx.build([{name: 'query-results', data: resultArray}]) // returns a buffer
+  var xlsxBuffer = xlsx.build([{ name: 'query-results', data: resultArray }]) // returns a buffer
   fs.writeFile(self.xlsxFilePath(), xlsxBuffer, function (err) {
     // if there's an error log it but otherwise continue on
     // we can still send results even if download file failed to create
@@ -87,7 +84,10 @@ Cache.prototype.writeXlsx = function CacheWriteXlsx (queryResult, callback) {
 Cache.prototype.writeCsv = function CacheWriteCsv (queryResult, callback) {
   // TODO - record csv was written for this cache item?
   var self = this
-  json2csv({data: queryResult.rows, fields: queryResult.fields}, function (err, csv) {
+  json2csv({ data: queryResult.rows, fields: queryResult.fields }, function (
+    err,
+    csv
+  ) {
     if (err) {
       console.log(err)
       return callback()
@@ -104,17 +104,22 @@ Cache.prototype.save = function CacheSave (callback) {
   this.modifiedDate = new Date()
   var joiResult = Joi.validate(self, schema)
   if (joiResult.error) return callback(joiResult.error)
-  db.cache.update({cacheKey: self.cacheKey}, joiResult.value, {upsert: true}, function (err) {
-    if (err) return callback(err)
-    return Cache.findOneByCacheKey(self.cacheKey, callback)
-  })
+  db.cache.update(
+    { cacheKey: self.cacheKey },
+    joiResult.value,
+    { upsert: true },
+    function (err) {
+      if (err) return callback(err)
+      return Cache.findOneByCacheKey(self.cacheKey, callback)
+    }
+  )
 }
 
 /*  Query methods
 ============================================================================== */
 
 Cache.findOneByCacheKey = function CacheFindOneByCacheKey (cacheKey, callback) {
-  db.cache.findOne({cacheKey: cacheKey}, function (err, doc) {
+  db.cache.findOne({ cacheKey: cacheKey }, function (err, doc) {
     if (err) return callback(err)
     if (!doc) return callback()
     return callback(err, new Cache(doc))
@@ -123,7 +128,7 @@ Cache.findOneByCacheKey = function CacheFindOneByCacheKey (cacheKey, callback) {
 
 Cache.findExpired = function CacheFindExpired (callback) {
   var now = new Date()
-  db.cache.find({expiration: {$lt: now}}, function (err, docs) {
+  db.cache.find({ expiration: { $lt: now } }, function (err, docs) {
     if (err) return callback(err)
     var caches = docs.map(function (doc) {
       return new Cache(doc)
@@ -152,7 +157,7 @@ Cache.removeAll = function CacheRemoveAll (callback) {
       console.error(err)
       return callback(err)
     }
-    db.cache.remove({}, {multi: true}, callback)
+    db.cache.remove({}, { multi: true }, callback)
   })
 }
 

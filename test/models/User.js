@@ -4,9 +4,13 @@ var should = require('chai').should()
 var User = require('../../models/User.js')
 
 describe('models/User.js', function () {
-  var regularUser = new User({email: 'regular@test.com', role: 'editor'})
-  var adminUser = new User({email: 'admin@test.com', role: 'admin'})
-  var signedUpUser = new User({email: 'signedUp@test.com', role: 'editor', password: '1234'})
+  var regularUser = new User({ email: 'regular@test.com', role: 'editor' })
+  var adminUser = new User({ email: 'admin@test.com', role: 'admin' })
+  var signedUpUser = new User({
+    email: 'signedUp@test.com',
+    role: 'editor',
+    password: '1234'
+  })
 
   before(function before (done) {
     User._removeAll(done)
@@ -46,7 +50,7 @@ describe('models/User.js', function () {
 
   describe('.findAll()', function () {
     it('should return all the existing users', function (done) {
-            // todo
+      // todo
       User.findAll(function (err, users) {
         should.not.exist(err)
         users.should.have.lengthOf(3)
@@ -70,7 +74,7 @@ describe('models/User.js', function () {
 
   describe('new User', function () {
     it('should save without error', function (done) {
-      var user = new User({email: '2@test.com'})
+      var user = new User({ email: '2@test.com' })
       user.save(done)
     })
     it('should have defaults populated', function (done) {

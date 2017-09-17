@@ -57,7 +57,12 @@ function updateCompletions (schemaInfo) {
   }
 
   Object.keys(schemaInfo).forEach(schema => {
-    schemaCompletions.push({name: schema, value: schema, score: 0, meta: 'schema'})
+    schemaCompletions.push({
+      name: schema,
+      value: schema,
+      score: 0,
+      meta: 'schema'
+    })
     const SCHEMA = schema.toUpperCase()
     if (!matchMaps.schema[SCHEMA]) matchMaps.schema[SCHEMA] = []
 
@@ -65,14 +70,29 @@ function updateCompletions (schemaInfo) {
       const SCHEMA_TABLE = SCHEMA + '.' + table.toUpperCase()
       const TABLE = table.toUpperCase()
       if (!matchMaps.table[TABLE]) matchMaps.table[TABLE] = []
-      if (!matchMaps.schemaTable[SCHEMA_TABLE]) matchMaps.schemaTable[SCHEMA_TABLE] = []
-      const tableCompletion = {name: table, value: table, score: 0, meta: 'table', schema}
+      if (!matchMaps.schemaTable[SCHEMA_TABLE]) {
+        matchMaps.schemaTable[SCHEMA_TABLE] = []
+      }
+      const tableCompletion = {
+        name: table,
+        value: table,
+        score: 0,
+        meta: 'table',
+        schema
+      }
       tableCompletions.push(tableCompletion)
       matchMaps.schema[SCHEMA].push(tableCompletion)
 
       const columns = schemaInfo[schema][table]
       columns.forEach(column => {
-        const columnCompletion = {name: schema + table + column.column_name, value: column.column_name, score: 0, meta: 'column', schema, table}
+        const columnCompletion = {
+          name: schema + table + column.column_name,
+          value: column.column_name,
+          score: 0,
+          meta: 'column',
+          schema,
+          table
+        }
         matchMaps.table[TABLE].push(columnCompletion)
         matchMaps.schemaTable[SCHEMA_TABLE].push(columnCompletion)
       })
@@ -84,11 +104,15 @@ function updateCompletions (schemaInfo) {
   const myCompleter = {
     getCompletions: function (editor, session, pos, prefix, callback) {
       // figure out if there are any schemas/tables referenced in query
-      const allTokens = session.getValue().split(/\s+/).map(t => t.toUpperCase())
+      const allTokens = session
+        .getValue()
+        .split(/\s+/)
+        .map(t => t.toUpperCase())
       const relevantDottedMatches = {}
       Object.keys(matchMaps.schemaTable).forEach(schemaTable => {
         if (allTokens.indexOf(schemaTable) >= 0) {
-          relevantDottedMatches[schemaTable] = matchMaps.schemaTable[schemaTable]
+          relevantDottedMatches[schemaTable] =
+            matchMaps.schemaTable[schemaTable]
           // HACK - also add relevant matches for table only
           const firstMatch = matchMaps.schemaTable[schemaTable][0]
           const table = firstMatch.table.toUpperCase()
@@ -101,7 +125,10 @@ function updateCompletions (schemaInfo) {
           // HACK add schemaTable match for this table
           // we store schema at column match item, so look at first one and use that
           const firstMatch = matchMaps.table[table][0]
-          const schemaTable = firstMatch.schema.toUpperCase() + '.' + firstMatch.table.toUpperCase()
+          const schemaTable =
+            firstMatch.schema.toUpperCase() +
+            '.' +
+            firstMatch.table.toUpperCase()
           relevantDottedMatches[schemaTable] = matchMaps.table[table]
         }
       })
@@ -120,10 +147,20 @@ function updateCompletions (schemaInfo) {
         if (match.table) tables[match.table] = match.schema
       })
       Object.keys(schemas).forEach(schema => {
-        wantedColumnCompletions.push({name: schema, value: schema, score: 0, meta: 'schema'})
+        wantedColumnCompletions.push({
+          name: schema,
+          value: schema,
+          score: 0,
+          meta: 'schema'
+        })
       })
       Object.keys(tables).forEach(table => {
-        const tableCompletion = {name: table, value: table, score: 0, meta: 'table'}
+        const tableCompletion = {
+          name: table,
+          value: table,
+          score: 0,
+          meta: 'table'
+        }
         wantedColumnCompletions.push(tableCompletion)
         const SCHEMA = tables[table].toUpperCase()
         if (!relevantDottedMatches[SCHEMA]) relevantDottedMatches[SCHEMA] = []
@@ -167,7 +204,10 @@ function updateCompletions (schemaInfo) {
       debug('WANTED: ', wanted)
 
       const currentLine = session.getDocument().getLine(pos.row)
-      const currentTokens = currentLine.slice(0, pos.column).split(/\s+/).map(t => t.toUpperCase())
+      const currentTokens = currentLine
+        .slice(0, pos.column)
+        .split(/\s+/)
+        .map(t => t.toUpperCase())
       const precedingCharacter = currentLine.slice(pos.column - 1, pos.column)
       const precedingToken = currentTokens[currentTokens.length - 1]
 
@@ -179,7 +219,11 @@ function updateCompletions (schemaInfo) {
         let dotTokens = precedingToken.split('.')
         dotTokens.pop()
         const DOT_MATCH = dotTokens.join('.').toUpperCase()
-        debug('Completing for "%s" even though we got "%s"', DOT_MATCH, precedingToken)
+        debug(
+          'Completing for "%s" even though we got "%s"',
+          DOT_MATCH,
+          precedingToken
+        )
         if (wanted === 'TABLE') {
           // if we're in a table place, a completion should only be for tables, not columns
           return callback(null, matchMaps.schema[DOT_MATCH])
@@ -203,7 +247,7 @@ function updateCompletions (schemaInfo) {
     }
   }
 
-  ace.acequire(['ace/ext/language_tools'], (langTools) => {
+  ace.acequire(['ace/ext/language_tools'], langTools => {
     langTools.setCompleters([myCompleter])
     // Note - later on might be able to set a completer for specific editor like:
     // editor.completers = [staticWordCompleter]

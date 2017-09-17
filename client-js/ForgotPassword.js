@@ -6,28 +6,32 @@ import page from 'page'
 class ForgotPassword extends React.Component {
   state = {
     email: ''
-  };
+  }
 
-  onEmailChange = (e) => {
-    this.setState({email: e.target.value})
-  };
+  onEmailChange = e => {
+    this.setState({ email: e.target.value })
+  }
 
-  resetPassword = (e) => {
+  resetPassword = e => {
     e.preventDefault()
-    fetchJson('POST', this.props.config.baseUrl + '/api/forgot-password', this.state)
-      .then((json) => {
+    fetchJson(
+      'POST',
+      this.props.config.baseUrl + '/api/forgot-password',
+      this.state
+    )
+      .then(json => {
         if (json.error) return Alert.error(json.error)
         page('/password-reset')
       })
-      .catch((ex) => {
+      .catch(ex => {
         Alert.error('Problem resetting password')
         console.error(ex)
       })
-  };
+  }
 
   render () {
     return (
-      <div className='signin' >
+      <div className='signin'>
         <form className='form-signin' onSubmit={this.resetPassword}>
           <h2>SQLPad</h2>
           <input
@@ -36,11 +40,14 @@ class ForgotPassword extends React.Component {
             className='form-control top-field'
             placeholder='Email address'
             onChange={this.onEmailChange}
-            required />
+            required
+          />
           <br />
-          <button className='btn btn-lg btn-primary btn-block' type='submit'>Reset Password</button>
+          <button className='btn btn-lg btn-primary btn-block' type='submit'>
+            Reset Password
+          </button>
         </form>
-        <Alert stack={{limit: 3}} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position='bottom-right' />
       </div>
     )
   }

@@ -8,32 +8,32 @@ class SignUp extends React.Component {
     email: '',
     password: '',
     passwordConfirmation: ''
-  };
+  }
 
-  onEmailChange = (e) => {
-    this.setState({email: e.target.value})
-  };
+  onEmailChange = e => {
+    this.setState({ email: e.target.value })
+  }
 
-  onPasswordChange = (e) => {
-    this.setState({password: e.target.value})
-  };
+  onPasswordChange = e => {
+    this.setState({ password: e.target.value })
+  }
 
-  onPasswordConfirmationChange = (e) => {
-    this.setState({passwordConfirmation: e.target.value})
-  };
+  onPasswordConfirmationChange = e => {
+    this.setState({ passwordConfirmation: e.target.value })
+  }
 
-  signUp = (e) => {
+  signUp = e => {
     e.preventDefault()
     fetchJson('POST', this.props.config.baseUrl + '/api/signup', this.state)
-      .then((json) => {
+      .then(json => {
         if (json.error) return Alert.error(json.error)
         page('/')
       })
-      .catch((ex) => {
+      .catch(ex => {
         Alert.error('Problem signing up')
         console.error(ex)
       })
-  };
+  }
 
   render () {
     const adminRegistrationOpenIntro = () => {
@@ -42,11 +42,10 @@ class SignUp extends React.Component {
           <div>
             <h4>Admin Registration is Open</h4>
             <p>
-              Welcome to SQLPad!
-              Since there are no admins currently in the system,
-              registration is open to anyone. By signing up, you will
-              be granted admin rights, and the system will be locked down.
-              Only people explicitly invited & whitelisted will be able to join.
+              Welcome to SQLPad! Since there are no admins currently in the
+              system, registration is open to anyone. By signing up, you will be
+              granted admin rights, and the system will be locked down. Only
+              people explicitly invited & whitelisted will be able to join.
             </p>
             <br />
           </div>
@@ -54,7 +53,7 @@ class SignUp extends React.Component {
       }
     }
     return (
-      <div className='signin' >
+      <div className='signin'>
         <form className='form-signin' onSubmit={this.signUp}>
           <h2>SQLPad</h2>
           {adminRegistrationOpenIntro()}
@@ -64,25 +63,30 @@ class SignUp extends React.Component {
             className='form-control top-field'
             placeholder='Email address'
             onChange={this.onEmailChange}
-            required />
+            required
+          />
           <input
             name='password'
             type='password'
             className='form-control middle-field'
             placeholder='Password'
             onChange={this.onPasswordChange}
-            required />
+            required
+          />
           <input
             name='passwordConfirmation'
             type='password'
             className='form-control bottom-field'
             placeholder='Confirm Password'
             onChange={this.onPasswordConfirmationChange}
-            required />
+            required
+          />
           <br />
-          <button className='btn btn-lg btn-primary btn-block' type='submit'>Sign up</button>
+          <button className='btn btn-lg btn-primary btn-block' type='submit'>
+            Sign up
+          </button>
         </form>
-        <Alert stack={{limit: 3}} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position='bottom-right' />
       </div>
     )
   }

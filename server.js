@@ -46,17 +46,19 @@ var app = express()
 
 app.locals.title = 'SQLPad'
 app.locals.version = packageJson.version
-app.set('env', (DEBUG ? 'development' : 'production'))
+app.set('env', DEBUG ? 'development' : 'production')
 
 if (DEBUG) app.use(errorhandler())
 app.use(favicon(path.join(__dirname, '/public/images/favicon.ico')))
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({
-  extended: true
-}))
+app.use(
+  bodyParser.urlencoded({
+    extended: true
+  })
+)
 
 app.use(cookieParser(PASSPHRASE)) // populates req.cookies with an object
-app.use(cookieSession({secret: PASSPHRASE}))
+app.use(cookieSession({ secret: PASSPHRASE }))
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(BASE_URL, express.static(path.join(__dirname, 'build')))
@@ -159,9 +161,13 @@ function detectPortOrSystemd (port) {
     // port.
     if (passedSocketCount > 0) {
       console.log('Using port from Systemd')
-      return Promise.resolve({fd: 3})
+      return Promise.resolve({ fd: 3 })
     } else {
-      console.error('Warning: Systemd socket asked but not found. Trying to bind port ' + port + ' manually')
+      console.error(
+        'Warning: Systemd socket asked but not found. Trying to bind port ' +
+          port +
+          ' manually'
+      )
     }
   }
 
@@ -174,11 +180,16 @@ require('./lib/db').load(function (err) {
   if (err) throw err
 
   // determine if key pair exists for certs
-  if (KEY_PATH && CERT_PATH) { // https only
+  if (KEY_PATH && CERT_PATH) {
+    // https only
     console.log('Launching server with SSL')
     detectPortOrSystemd(HTTPS_PORT).then(function (_port) {
       if (!isFdObject(_port) && HTTPS_PORT !== _port) {
-        console.log('\nPort %d already occupied. Using port %d instead.', HTTPS_PORT, _port)
+        console.log(
+          '\nPort %d already occupied. Using port %d instead.',
+          HTTPS_PORT,
+          _port
+        )
         // Persist the new port to the in-memory store. This is kinda hacky
         // Assign value to cliValue since it overrides all other values
         var ConfigItem = require('./models/ConfigItem.js')
@@ -196,14 +207,28 @@ require('./lib/db').load(function (err) {
       }
 
       https.createServer(httpsOptions, app).listen(_port, IP, function () {
-        console.log('\nWelcome to ' + app.locals.title + '!. Visit https://' + (IP === '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started')
+        console.log(
+          '\nWelcome to ' +
+            app.locals.title +
+            '!. Visit https://' +
+            (IP === '0.0.0.0' ? 'localhost' : IP) +
+            ':' +
+            _port +
+            BASE_URL +
+            ' to get started'
+        )
       })
     })
-  } else { // http only
+  } else {
+    // http only
     console.log('Launching server WITHOUT SSL')
     detectPortOrSystemd(PORT).then(function (_port) {
       if (!isFdObject(_port) && PORT !== _port) {
-        console.log('\nPort %d already occupied. Using port %d instead.', PORT, _port)
+        console.log(
+          '\nPort %d already occupied. Using port %d instead.',
+          PORT,
+          _port
+        )
         // Persist the new port to the in-memory store. This is kinda hacky
         // Assign value to cliValue since it overrides all other values
         var ConfigItem = require('./models/ConfigItem.js')
@@ -212,7 +237,16 @@ require('./lib/db').load(function (err) {
         portConfigItem.computeEffectiveValue()
       }
       http.createServer(app).listen(_port, IP, function () {
-        console.log('\nWelcome to ' + app.locals.title + '!. Visit http://' + (IP === '0.0.0.0' ? 'localhost' : IP) + ':' + _port + BASE_URL + ' to get started')
+        console.log(
+          '\nWelcome to ' +
+            app.locals.title +
+            '!. Visit http://' +
+            (IP === '0.0.0.0' ? 'localhost' : IP) +
+            ':' +
+            _port +
+            BASE_URL +
+            ' to get started'
+        )
       })
     })
   }
