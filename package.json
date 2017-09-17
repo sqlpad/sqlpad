@@ -40,13 +40,12 @@
     "build": "react-scripts build",
     "coverage": "istanbul cover _mocha -- --recursive",
     "prepublishOnly": "npm run build",
-    "standard": "standard --fix",
-    "prettier-standard": "prettier-standard '!(build|public)/**/*.js'",
+    "lint": "prettier-standard '!(build|public)/**/*.js'",
     "start-client-dev": "react-scripts start",
     "start-server-dev": "node-dev server.js --dir ./db --port 3010 --debug",
     "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
-    "test": "standard && mocha --recursive"
+    "test": "lint && mocha --recursive"
   },
   "dependencies": {
     "async": "^2.0.1",
