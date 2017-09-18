@@ -148,7 +148,7 @@ class QueryResultDataTable extends React.PureComponent {
         )
       })
       return (
-        <div id='result-grid'>
+        <div id='result-grid' style={{ width: '100%', height: '200px' }}>
           <Table
             rowHeight={30}
             rowsCount={queryResult.rows.length}

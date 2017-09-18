@@ -96,7 +96,16 @@ class SchemaInfo extends React.PureComponent {
     })
 
     return (
-      <div>
+      <div
+        style={{
+          width: '280px',
+          padding: '20px',
+          backgroundColor: '#fdfdfd',
+          borderRight: '1px solid #eee',
+          overflowX: 'hidden',
+          overflowY: 'auto'
+        }}
+      >
         <FormGroup controlId='formControlsSelect' bsSize='small'>
           <FormControl
             value={this.props.connectionId}
@@ -109,17 +118,17 @@ class SchemaInfo extends React.PureComponent {
           </FormControl>
         </FormGroup>
         <hr />
-        <div id='panel-db-info-container'>
-          <a id='btn-reload-schema' href='#refresh'>
+        <div style={{ position: 'relative' }}>
+          <a style={{ position: 'absolute', right: '20px' }} href='#refresh'>
             <Glyphicon
               glyph='refresh'
               className={refreshClass}
               onClick={this.onRefreshClick}
             />
           </a>
-          <div id='panel-db-info'>
-            <ul className='schema-info schema-info-table'>{schemaItemNodes}</ul>
-          </div>
+          <ul className='schema-info schema-info-table'>
+            {schemaItemNodes}
+          </ul>
         </div>
       </div>
     )
@@ -306,10 +315,10 @@ class SchemaInfoColumnItem extends React.Component {
           <CopyToClipboard
             text={
               this.props.schema +
-              '.' +
-              this.props.table +
-              '.' +
-              this.props.column_name
+                '.' +
+                this.props.table +
+                '.' +
+                this.props.column_name
             }
             onCopy={this.onCopy}
           >

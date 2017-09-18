@@ -20,7 +20,6 @@ class SqlpadTauChart extends React.Component {
 
   chartStyle = {
     padding: '20px 10px 10px 20px',
-    position: 'absolute',
     top: 0,
     bottom: 0,
     left: 0,
