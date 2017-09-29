@@ -614,7 +614,7 @@ class QueryEditor extends React.Component {
                   queryResult={this.state.queryResult}
                 />
               </div>
-              <div className='sidebar-footer'>
+              <div className='sidebar-actions-bottom'>
                 <Button
                   onClick={this.onVisualizeClick}
                   disabled={!this.isChartable()}

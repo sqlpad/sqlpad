@@ -96,39 +96,32 @@ class SchemaInfo extends React.PureComponent {
     })
 
     return (
-      <div
-        style={{
-          width: '280px',
-          padding: '20px',
-          backgroundColor: '#fdfdfd',
-          borderRight: '1px solid #eee',
-          overflowX: 'hidden',
-          overflowY: 'auto'
-        }}
-      >
-        <FormGroup controlId='formControlsSelect' bsSize='small'>
-          <FormControl
-            value={this.props.connectionId}
-            componentClass='select'
-            onChange={this.onConnectionChange}
-            className='input-small'
-          >
-            <option value=''>Choose a connection...</option>
-            {connectionSelectOptions}
-          </FormControl>
-        </FormGroup>
-        <hr />
-        <div style={{ position: 'relative' }}>
-          <a style={{ position: 'absolute', right: '20px' }} href='#refresh'>
-            <Glyphicon
-              glyph='refresh'
-              className={refreshClass}
-              onClick={this.onRefreshClick}
-            />
-          </a>
-          <ul className='schema-info schema-info-table'>
-            {schemaItemNodes}
-          </ul>
+      <div className='sidebar'>
+        <div className='sidebar-body'>
+          <FormGroup controlId='formControlsSelect' bsSize='small'>
+            <FormControl
+              value={this.props.connectionId}
+              componentClass='select'
+              onChange={this.onConnectionChange}
+              className='input-small'
+            >
+              <option value=''>Choose a connection...</option>
+              {connectionSelectOptions}
+            </FormControl>
+          </FormGroup>
+          <hr/>
+          <div style={{ position: 'relative' }}>
+            <a style={{ position: 'absolute', right: '20px' }} href='#refresh'>
+              <Glyphicon
+                glyph='refresh'
+                className={refreshClass}
+                onClick={this.onRefreshClick}
+              />
+            </a>
+            <ul className='schema-info schema-info-table'>
+              {schemaItemNodes}
+            </ul>
+          </div>
         </div>
       </div>
     )

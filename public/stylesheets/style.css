@@ -230,12 +230,9 @@ a:hover, a:active, a:focus {
     overflow-x: hidden;
     overflow-y: auto;
 }
-.sidebar-footer {
-    height: 108px;
+.sidebar-actions-bottom {
     padding: 20px;
     border-top: 1px solid #eee;
-    -moz-box-shadow: -4px -4px 4px #fdfdfd;
-    -webkit-box-shadow: -4px -4px 4px #fdfdfd;
     box-shadow: -4px -4px 4px #fdfdfd;
 }
 .sidebar input {
