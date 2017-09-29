@@ -590,16 +590,7 @@ class QueryEditor extends React.Component {
             </div>
           </div>
           <div style={{ display: visDisplay, width: '100%' }}>
-            <div
-              style={{
-                width: '280px',
-                padding: '20px',
-                backgroundColor: '#fdfdfd',
-                borderRight: '1px solid #eee',
-                overflowX: 'hidden',
-                overflowY: 'auto'
-              }}
-            >
+            <div className='sidebar'>
               <div className='sidebar-body'>
                 <FormGroup controlId='formControlsSelect' bsSize='small'>
                   <FormControl
@@ -641,7 +632,7 @@ class QueryEditor extends React.Component {
                 </Button>
               </div>
             </div>
-            <div className='flex-100'>
+            <div className='flex-grow-1'>
               <SqlpadTauChart
                 config={this.props.config}
                 query={this.state.query}

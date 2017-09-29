@@ -55,6 +55,11 @@ a:hover, a:active, a:focus {
   width: 100%;
 }
 
+.flex-grow-1 {
+  display: flex;
+  flex-grow: 1;
+}
+
 /*  spinkit cube http://tobiasahlin.com/spinkit/
 ============================================================================ */
 .sk-cube-grid {
@@ -210,49 +215,24 @@ a:hover, a:active, a:focus {
 /*  sidebar
 ============================================================================ */
 .sidebar {
-    padding: 12px;
+    
     width: 280px;
-    /* position: fixed;
-    top: 98px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    display: block; */
-    padding: 20px;
     overflow-x: hidden;
     overflow-y: auto;
     background-color: #fdfdfd;
     border-right: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
 }
 .sidebar-body {
-    padding: 12px;
-    /* width: 280px;
-    position: fixed;
-    top: 98px;
-    bottom: 108px;
-    left: 0;
-    z-index: 1000; */
-    display: block;
     padding: 20px;
+    flex-grow: 1;
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: #fdfdfd;
-    border-right: 1px solid #eee;
 }
 .sidebar-footer {
-    padding: 12px;
-    width: 280px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
     height: 108px;
-    z-index: 1000;
-    display: block;
     padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: #fdfdfd;
-    border-right: 1px solid #eee;
     border-top: 1px solid #eee;
     -moz-box-shadow: -4px -4px 4px #fdfdfd;
     -webkit-box-shadow: -4px -4px 4px #fdfdfd;
