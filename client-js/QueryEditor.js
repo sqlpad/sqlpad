@@ -641,7 +641,7 @@ class QueryEditor extends React.Component {
                 </Button>
               </div>
             </div>
-            <div className='NonSidebar'>
+            <div className='flex-100'>
               <SqlpadTauChart
                 config={this.props.config}
                 query={this.state.query}

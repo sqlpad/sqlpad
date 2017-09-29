@@ -224,13 +224,6 @@ a:hover, a:active, a:focus {
     background-color: #fdfdfd;
     border-right: 1px solid #eee;
 }
-.NonSidebar {
-    /* position: fixed;
-    top: 98px;
-    right: 0;
-    bottom: 0;
-    left: 280px; */
-}
 .sidebar-body {
     padding: 12px;
     /* width: 280px;
