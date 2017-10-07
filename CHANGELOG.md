@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.1
+### October 7, 2017
+- Force no-cache on fetch requests (fixes some odd IE issues)
+- Fix docker entry point
+
 ## 2.3.0
 ### September 4, 2017
 - New features
