@@ -1,7 +1,7 @@
 /* Vendor Overrides
 ============================================================================ */
 body {
-  padding-top: 50px; /* because fixed navbar 50px tall */
+  /* padding-top: 50px; because fixed navbar 50px tall */
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   display: flex;
   height: 100vh;

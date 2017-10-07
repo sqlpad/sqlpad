@@ -66,37 +66,37 @@ class QueryEditor extends React.Component {
         '.xlsx'
     }
     return (
-      <div
-        style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}
-      >
-        <h3 style={{ marginLeft: 20 }}>
-          {this.state.query ? this.state.query.name : ''}
-        </h3>
-        <div style={{ position: 'absolute', top: 20, right: 20 }}>
-          <IncompleteDataNotification queryResult={this.state.queryResult} />
-          {this.state.queryResult && this.props.config.allowCsvDownload ? (
-            <DropdownButton
-              title='Export'
-              id='export-dropdown-button'
-              pullRight
-            >
-              <MenuItem eventKey='2' target='_blank' href={csvDownloadLink}>
-                csv
-              </MenuItem>
-              <MenuItem eventKey='3' target='_blank' href={xlsxDownloadLink}>
-                xlsx
-              </MenuItem>
-            </DropdownButton>
-          ) : null}
+      <div style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
+        <div>
+          <h3 style={{ marginLeft: 20, display: 'inline-block' }}>
+            {this.state.query ? this.state.query.name : ''}
+          </h3>
+          <div style={{ float: 'right', marginTop: 20, marginRight: 20 }}>
+            <IncompleteDataNotification queryResult={this.state.queryResult} />
+            {this.state.queryResult && this.props.config.allowCsvDownload
+              ? <DropdownButton
+                title='Export'
+                id='export-dropdown-button'
+                pullRight
+                >
+                <MenuItem eventKey='2' target='_blank' href={csvDownloadLink}>
+                    csv
+                  </MenuItem>
+                <MenuItem
+                  eventKey='3'
+                  target='_blank'
+                  href={xlsxDownloadLink}
+                  >
+                    xlsx
+                  </MenuItem>
+              </DropdownButton>
+              : null}
+          </div>
         </div>
         <div
           style={{
-            position: 'absolute',
-            top: 60,
-            right: 20,
-            bottom: 20,
-            left: 20,
-            padding: 40
+            padding: 20,
+            height: 400
           }}
         >
           <QueryResultDataTable
