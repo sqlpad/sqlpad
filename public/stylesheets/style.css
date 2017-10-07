@@ -1,7 +1,6 @@
 /* Vendor Overrides
 ============================================================================ */
 body {
-  /* padding-top: 50px; because fixed navbar 50px tall */
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   display: flex;
   height: 100vh;
@@ -286,7 +285,6 @@ input[type=checkbox], input[type=radio] {
 .QueryListRowDeleteButton {
     color: #888;
     position: absolute;
-    /* top: 5px; */
     right: 20px;
     bottom: 20px;
 }
@@ -318,7 +316,6 @@ input[type=checkbox], input[type=radio] {
 .ListRowDeleteButton {
     color: #888;
     position: absolute;
-    /* top: 5px; */
     right: 20px;
     bottom: 20px;
 }

@@ -160,7 +160,7 @@ class App extends React.Component {
             {userMenu()}
           </Nav>
         </Navbar>
-        <div style={{ display: 'flex', width: '100%' }}>
+        <div style={{ display: 'flex', width: '100%', marginTop: '50px' }}>
           {this.props.children}
         </div>
         <Alert stack={{ limit: 3 }} position='bottom-right' />
