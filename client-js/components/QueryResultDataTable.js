@@ -65,13 +65,13 @@ class QueryResultDataTable extends React.PureComponent {
   render () {
     if (this.props.isRunning) {
       return (
-        <div id='result-grid' className='run-result-notification'>
+        <div id='result-grid' className='result-grid run-result-notification'>
           <SpinKitCube />
         </div>
       )
     } else if (this.props.queryError) {
       return (
-        <div id='result-grid' className='run-result-notification label-danger'>
+        <div id='result-grid' className='result-grid run-result-notification label-danger'>
           {this.props.queryError}
         </div>
       )
@@ -148,7 +148,7 @@ class QueryResultDataTable extends React.PureComponent {
         )
       })
       return (
-        <div id='result-grid'>
+        <div id='result-grid' className='result-grid'>
           <Table
             rowHeight={30}
             rowsCount={queryResult.rows.length}
@@ -162,7 +162,7 @@ class QueryResultDataTable extends React.PureComponent {
         </div>
       )
     } else {
-      return <div id='result-grid' />
+      return <div id='result-grid' className='result-grid' />
     }
   }
 }

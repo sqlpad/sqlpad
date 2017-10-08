@@ -129,7 +129,8 @@ class ConnectionsView extends React.Component {
         .then(json => {
           this.setState({
             isSaving: false,
-            selectedConnection: json.connection || this.state.selectedConnection
+            selectedConnection: json.connection ||
+              this.state.selectedConnection
           })
           if (json.error) return Alert.error('Save failed')
           Alert.success('Connection saved')
@@ -145,7 +146,7 @@ class ConnectionsView extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className='flex-100'>
         <ConnectionList
           connections={this.state.connections}
           selectedConnection={this.state.selectedConnection}

@@ -1,14 +1,20 @@
 /* Vendor Overrides
 ============================================================================ */
 body {
-  padding-top: 50px; /* because fixed navbar 50px tall */
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  display: flex;
+  height: 100vh;
 }
 a {
   color: #00B7FF;
 }
 a:hover, a:active, a:focus {
-    text-decoration: none;
+  text-decoration: none;
+}
+
+#root {
+  display: flex;
+  width: 100%;
 }
 
 /* Override bootstrap tab colors to match background of sidebar */
@@ -43,6 +49,15 @@ a:hover, a:active, a:focus {
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
+.flex-100 {
+  display: flex;
+  width: 100%;
+}
+
+.flex-grow-1 {
+  display: flex;
+  flex-grow: 1;
+}
 
 /*  spinkit cube http://tobiasahlin.com/spinkit/
 ============================================================================ */
@@ -194,71 +209,29 @@ a:hover, a:active, a:focus {
 .copy-button:hover {
     background-color: orange;
 }
-#btn-reload-schema span {
-    display: inline-block;
-}
-#btn-reload-schema {
-    position: absolute;
-    right: 20px;
-}
 
 
 /*  sidebar
 ============================================================================ */
 .sidebar {
-    padding: 12px;
+    
     width: 280px;
-    position: fixed;
-    top: 98px;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
     overflow-x: hidden;
     overflow-y: auto;
     background-color: #fdfdfd;
     border-right: 1px solid #eee;
-}
-.NonSidebar {
-    position: fixed;
-    top: 98px;
-    right: 0;
-    bottom: 0;
-    left: 280px;
+    display: flex;
+    flex-direction: column;
 }
 .sidebar-body {
-    padding: 12px;
-    width: 280px;
-    position: fixed;
-    top: 98px;
-    bottom: 108px;
-    left: 0;
-    z-index: 1000;
-    display: block;
     padding: 20px;
+    flex-grow: 1;
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: #fdfdfd;
-    border-right: 1px solid #eee;
 }
-.sidebar-footer {
-    padding: 12px;
-    width: 280px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    height: 108px;
-    z-index: 1000;
-    display: block;
+.sidebar-actions-bottom {
     padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    background-color: #fdfdfd;
-    border-right: 1px solid #eee;
     border-top: 1px solid #eee;
-    -moz-box-shadow: -4px -4px 4px #fdfdfd;
-    -webkit-box-shadow: -4px -4px 4px #fdfdfd;
     box-shadow: -4px -4px 4px #fdfdfd;
 }
 .sidebar input {
@@ -288,6 +261,7 @@ input[type=checkbox], input[type=radio] {
 ============================================================================ */
 .QueryListContainer {
     height: 100%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
 }
@@ -311,7 +285,6 @@ input[type=checkbox], input[type=radio] {
 .QueryListRowDeleteButton {
     color: #888;
     position: absolute;
-    /* top: 5px; */
     right: 20px;
     bottom: 20px;
 }
@@ -343,7 +316,6 @@ input[type=checkbox], input[type=radio] {
 .ListRowDeleteButton {
     color: #888;
     position: absolute;
-    /* top: 5px; */
     right: 20px;
     bottom: 20px;
 }
@@ -383,32 +355,13 @@ input[type=checkbox], input[type=radio] {
     color: #23527c;
     cursor: pointer;
 }
-.QueryEditorAceEditorWrapper {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 50%;
-    left: 0;
-    padding: 5px;
-}
 .incomplete-notification {
     color: #e31a1c;
 }
 
 /*  Panel Result
 ============================================================================ */
-#panel-result {
-    position: absolute;
-    left:0;
-    right:0;
-    height: 50%;
-    bottom: 0;
-}
 .panel-result-header {
-    position: absolute;
-    top: 0;
-    left: 0px;
-    right: 0px;
     height: 30px;
     border-top: 1px solid #dcdcdc;
     border-bottom: 1px solid #dcdcdc;
@@ -433,28 +386,20 @@ input[type=checkbox], input[type=radio] {
 .result-download-link {
     margin-left: 10px;
 }
-#result-grid, #result-grid div {
-  -webkit-box-sizing: content-box;
-     -moz-box-sizing: content-box;
-          box-sizing: content-box;
-}
-#result-grid {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+.result-grid {
+    width: 100%;
+    flex-grow: 1
 }
 .run-result-notification {
-    font-size: 16px;
-    text-align: center;
-    padding: 20px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: flex;
     align-items: center;
+    display: flex;
+    font-size: 16px;
     justify-content: center;
+    padding: 20px;
+    text-align: center;
+}
+.query-title {
+    font-weight: 500;
+    line-height: 1.1;
+    font-size: 24px;
 }

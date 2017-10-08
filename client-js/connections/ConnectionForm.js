@@ -163,11 +163,7 @@ const driverFields = {
 }
 
 const connectionFormStyle = {
-  position: 'absolute',
-  right: 0,
-  width: '50%',
-  top: 0,
-  bottom: 0,
+  flexBasis: '50%',
   backgroundColor: '#FDFDFD',
   overflowY: 'auto',
   padding: 10

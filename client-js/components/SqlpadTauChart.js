@@ -19,12 +19,7 @@ class SqlpadTauChart extends React.Component {
   chart = undefined
 
   chartStyle = {
-    padding: '20px 10px 10px 20px',
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0
+    padding: '20px 10px 10px 20px'
   }
 
   destroyChart = () => {
@@ -261,7 +256,7 @@ class SqlpadTauChart extends React.Component {
       if (this.props.isRunning) {
         return (
           <div
-            className='run-result-notification'
+            className='flex-100 run-result-notification'
             style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
           >
             <SpinKitCube />
@@ -269,7 +264,7 @@ class SqlpadTauChart extends React.Component {
         )
       } else if (this.props.queryError) {
         return (
-          <div className='run-result-notification label-danger'>
+          <div className='flex-100 run-result-notification label-danger'>
             {this.props.queryError}
           </div>
         )
@@ -278,7 +273,7 @@ class SqlpadTauChart extends React.Component {
       }
     }
     return (
-      <div id='chart' style={this.chartStyle}>
+      <div id='chart' className='flex-100' style={this.chartStyle}>
         {runResultNotification()}
       </div>
     )

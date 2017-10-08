@@ -119,7 +119,7 @@ class UserAdmin extends React.Component {
 
   render () {
     return (
-      <div>
+      <div className='flex-100'>
         <UserList
           users={this.state.users}
           handleDelete={this.handleDelete}
@@ -140,11 +140,7 @@ class UserAdmin extends React.Component {
 export default UserAdmin
 
 const styleUserList = {
-  position: 'absolute',
-  left: 0,
-  width: '60%',
-  top: 0,
-  bottom: 0,
+  flexBasis: '50%',
   backgroundColor: '#FDFDFD',
   overflowY: 'auto',
   padding: 10
@@ -253,19 +249,19 @@ class UserListRow extends React.Component {
             </FormControl>
           </FormGroup>
         </Form>
-        {currentUser._id !== user._id ? (
-          <OverlayTrigger
+        {currentUser._id !== user._id
+          ? <OverlayTrigger
             trigger='click'
             placement='left'
             container={this}
             rootClose
             overlay={popoverClick}
-          >
+            >
             <a className='ListRowDeleteButton' href='#delete'>
               <Glyphicon glyph='trash' />
             </a>
           </OverlayTrigger>
-        ) : null}
+          : null}
       </li>
     )
   }
@@ -296,11 +292,7 @@ const PasswordResetButtonLink = props => {
 }
 
 const inviteUserFormStyle = {
-  position: 'absolute',
-  right: 0,
-  width: '40%',
-  top: 0,
-  bottom: 0,
+  flexBasis: '50%',
   backgroundColor: '#FDFDFD',
   overflowY: 'auto',
   padding: 10
@@ -366,7 +358,8 @@ class InviteUserForm extends React.Component {
           <Form>
             <p>
               Users may only sign up if they have first been whitelisted. Once
-              whitelisted, invite them to continue the sign-up process on the{' '}
+              whitelisted, invite them to continue the sign-up process on the
+              {' '}
               <a href={this.props.config.baseUrl + '/signup'}>signup page</a>.
             </p>
             <p>

@@ -96,29 +96,31 @@ class SchemaInfo extends React.PureComponent {
     })
 
     return (
-      <div>
-        <FormGroup controlId='formControlsSelect' bsSize='small'>
-          <FormControl
-            value={this.props.connectionId}
-            componentClass='select'
-            onChange={this.onConnectionChange}
-            className='input-small'
-          >
-            <option value=''>Choose a connection...</option>
-            {connectionSelectOptions}
-          </FormControl>
-        </FormGroup>
-        <hr />
-        <div id='panel-db-info-container'>
-          <a id='btn-reload-schema' href='#refresh'>
-            <Glyphicon
-              glyph='refresh'
-              className={refreshClass}
-              onClick={this.onRefreshClick}
-            />
-          </a>
-          <div id='panel-db-info'>
-            <ul className='schema-info schema-info-table'>{schemaItemNodes}</ul>
+      <div className='sidebar'>
+        <div className='sidebar-body'>
+          <FormGroup controlId='formControlsSelect' bsSize='small'>
+            <FormControl
+              value={this.props.connectionId}
+              componentClass='select'
+              onChange={this.onConnectionChange}
+              className='input-small'
+            >
+              <option value=''>Choose a connection...</option>
+              {connectionSelectOptions}
+            </FormControl>
+          </FormGroup>
+          <hr/>
+          <div style={{ position: 'relative' }}>
+            <a style={{ position: 'absolute', right: '20px' }} href='#refresh'>
+              <Glyphicon
+                glyph='refresh'
+                className={refreshClass}
+                onClick={this.onRefreshClick}
+              />
+            </a>
+            <ul className='schema-info schema-info-table'>
+              {schemaItemNodes}
+            </ul>
           </div>
         </div>
       </div>
@@ -306,10 +308,10 @@ class SchemaInfoColumnItem extends React.Component {
           <CopyToClipboard
             text={
               this.props.schema +
-              '.' +
-              this.props.table +
-              '.' +
-              this.props.column_name
+                '.' +
+                this.props.table +
+                '.' +
+                this.props.column_name
             }
             onCopy={this.onCopy}
           >
