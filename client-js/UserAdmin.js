@@ -119,7 +119,7 @@ class UserAdmin extends React.Component {
 
   render () {
     return (
-      <div style={{ display: 'flex', width: '100%' }}>
+      <div className='flex-100'>
         <UserList
           users={this.state.users}
           handleDelete={this.handleDelete}

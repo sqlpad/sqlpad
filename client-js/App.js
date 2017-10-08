@@ -138,7 +138,7 @@ class App extends React.Component {
       }
     }
     return (
-      <div style={{ display: 'flex', width: '100%' }}>
+      <div className='flex-100'>
         <Navbar inverse fluid fixedTop>
           <Nav>
             <NavItem eventKey={1} onClick={navigateToClickHandler('/queries')}>
@@ -160,7 +160,7 @@ class App extends React.Component {
             {userMenu()}
           </Nav>
         </Navbar>
-        <div style={{ display: 'flex', width: '100%', marginTop: '50px' }}>
+        <div className='flex-100' style={{ marginTop: '50px' }}>
           {this.props.children}
         </div>
         <Alert stack={{ limit: 3 }} position='bottom-right' />

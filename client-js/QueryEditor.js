@@ -487,7 +487,7 @@ class QueryEditor extends React.Component {
     const sqlDisplay = activeTabKey === 'sql' ? 'flex' : 'none'
     const visDisplay = activeTabKey === 'vis' ? 'flex' : 'none'
     return (
-      <div style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
+      <div className='flex-100' style={{ flexDirection: 'column' }}>
         <div className='clearfix navbar-default'>
           <Nav
             activeKey={this.state.activeTabKey}
