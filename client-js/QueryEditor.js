@@ -581,12 +581,14 @@ class QueryEditor extends React.Component {
                 runSeconds={this.state.runSeconds}
                 queryResult={this.state.queryResult}
               />
-              <QueryResultDataTable
-                {...this.props}
-                isRunning={this.state.isRunning}
-                queryResult={this.state.queryResult}
-                queryError={this.state.queryError}
-              />
+              <div style={{ height: '50%', display: 'flex' }}>
+                <QueryResultDataTable
+                  {...this.props}
+                  isRunning={this.state.isRunning}
+                  queryResult={this.state.queryResult}
+                  queryError={this.state.queryError}
+                />
+              </div>
             </div>
           </div>
           <div style={{ display: visDisplay, width: '100%' }}>

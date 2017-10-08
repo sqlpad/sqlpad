@@ -66,12 +66,15 @@ class QueryEditor extends React.Component {
         '.xlsx'
     }
     return (
-      <div style={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
-        <div>
-          <h3 style={{ marginLeft: 20, display: 'inline-block' }}>
+      <div
+        className='flex-100'
+        style={{ flexDirection: 'column', padding: '16px' }}
+      >
+        <div style={{ height: '50px' }}>
+          <span className='query-title'>
             {this.state.query ? this.state.query.name : ''}
-          </h3>
-          <div style={{ float: 'right', marginTop: 20, marginRight: 20 }}>
+          </span>
+          <div style={{ float: 'right' }}>
             <IncompleteDataNotification queryResult={this.state.queryResult} />
             {this.state.queryResult && this.props.config.allowCsvDownload
               ? <DropdownButton
@@ -93,12 +96,7 @@ class QueryEditor extends React.Component {
               : null}
           </div>
         </div>
-        <div
-          style={{
-            padding: 20,
-            height: 400
-          }}
-        >
+        <div style={{ height: '100%', display: 'flex' }}>
           <QueryResultDataTable
             {...this.props}
             isRunning={this.state.isRunning}
