@@ -1,5 +1,4 @@
 import React from 'react'
-import { Creatable } from 'react-select'
 import Alert from 'react-s-alert'
 import AceEditor from 'react-ace'
 import 'brace/mode/sql'
@@ -13,147 +12,16 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import Modal from 'react-bootstrap/lib/Modal'
-import Tooltip from 'react-bootstrap/lib/Tooltip'
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import HelpBlock from 'react-bootstrap/lib/HelpBlock'
-import fetchJson from './utilities/fetch-json.js'
+import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import keymaster from 'keymaster'
-import SchemaInfo from './components/SchemaInfo.js'
-import QueryResultDataTable from './components/QueryResultDataTable.js'
-import QueryResultHeader from './components/QueryResultHeader.js'
-import ChartInputs from './components/ChartInputs.js'
-import SqlpadTauChart from './components/SqlpadTauChart.js'
-import chartDefinitions from './components/ChartDefinitions.js'
-
-class QueryDetailsModal extends React.Component {
-  state = {
-    showModal: false
-  }
-
-  close = () => {
-    if (this.saveOnClose) {
-      setTimeout(this.props.saveQuery, 750)
-      this.saveOnClose = false
-    }
-    this.setState({ showModal: false })
-  }
-
-  input = undefined
-
-  open = () => {
-    this.setState({ showModal: true })
-  }
-
-  openForSave = () => {
-    this.saveOnClose = true
-    this.setState({ showModal: true })
-  }
-
-  onSubmit = e => {
-    e.preventDefault()
-    this.close()
-  }
-
-  onQueryNameChange = e => {
-    var newName = e.target.value
-    this.props.onQueryNameChange(newName)
-  }
-
-  onEntered = () => {
-    if (this.input) this.input.focus()
-  }
-
-  render () {
-    var modalNavLink = (href, text) => {
-      var saved = !!this.props.query._id
-      if (saved) {
-        return (
-          <li role='presentation'>
-            <a href={href} target='_blank' rel='noopener noreferrer'>
-              {text} <Glyphicon glyph='new-window' />
-            </a>
-          </li>
-        )
-      } else {
-        var tooltip = (
-          <Tooltip id='tooltip'>
-            Save query to enable table/chart view links
-          </Tooltip>
-        )
-        return (
-          <OverlayTrigger placement='top' overlay={tooltip}>
-            <li role='presentation' className='disabled'>
-              <a
-                href={href}
-                target='_blank'
-                rel='noopener noreferrer'
-                onClick={e => e.preventDefault()}
-              >
-                {text} <Glyphicon glyph='new-window' />
-              </a>
-            </li>
-          </OverlayTrigger>
-        )
-      }
-    }
-    var validationState = this.saveOnClose && !this.props.query.name.length
-      ? 'warning'
-      : null
-    var validationHelp = this.saveOnClose && !this.props.query.name.length
-      ? <HelpBlock>Query name is required to save query.</HelpBlock>
-      : null
-    return (
-      <Modal
-        onEntered={this.onEntered}
-        animation
-        show={this.state.showModal}
-        onHide={this.close}
-      >
-        <Modal.Header closeButton />
-        <Modal.Body>
-          <form onSubmit={this.onSubmit}>
-            <FormGroup validationState={validationState}>
-              <ControlLabel>Query Name</ControlLabel>
-              <input
-                className='form-control'
-                ref={ref => {
-                  this.input = ref
-                }}
-                type='text'
-                value={this.props.query.name}
-                onChange={this.onQueryNameChange}
-              />
-              <FormControl.Feedback />
-              {validationHelp}
-            </FormGroup>
-            <br />
-            <FormGroup>
-              <ControlLabel>Query Tags</ControlLabel>
-              <Creatable
-                name='query-tags-field'
-                value={this.props.query.tags}
-                multi
-                placeholder=''
-                options={this.props.tagOptions}
-                onChange={this.props.onQueryTagsChange}
-              />
-            </FormGroup>
-            <br />
-            <ul className='nav nav-pills nav-justified'>
-              {modalNavLink('?format=table', 'Link to Table')}
-              {modalNavLink('?format=chart', 'Link to Chart')}
-            </ul>
-          </form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={this.close}>Close</Button>
-        </Modal.Footer>
-      </Modal>
-    )
-  }
-}
+import SchemaInfo from '../components/SchemaInfo.js'
+import QueryResultDataTable from '../components/QueryResultDataTable.js'
+import QueryResultHeader from '../components/QueryResultHeader.js'
+import ChartInputs from '../components/ChartInputs.js'
+import SqlpadTauChart from '../components/SqlpadTauChart.js'
+import chartDefinitions from '../components/ChartDefinitions.js'
+import QueryDetailsModal from './QueryDetailsModal'
 
 class QueryEditor extends React.Component {
   loadConnectionsFromServer = () => {
@@ -200,6 +68,8 @@ class QueryEditor extends React.Component {
     isRunning: false,
     isDirty: false,
     runQueryStartTime: undefined,
+    showModal: false,
+    saveOnClose: false,
     queryResult: undefined,
     query: {
       _id: '',
@@ -214,10 +84,17 @@ class QueryEditor extends React.Component {
     }
   }
 
+  handleModalHide = () => {
+    if (this.state.saveOnClose) {
+      this.saveQuery()
+    }
+    this.setState({ showModal: false, saveOnClose: false })
+  }
+
   saveQuery = () => {
     var query = this.state.query
     if (!query.name) {
-      this.queryDetailsModal.openForSave()
+      this.setState({ showModal: true, saveOnClose: true })
       return
     }
     this.setState({ isSaving: true })
@@ -269,10 +146,9 @@ class QueryEditor extends React.Component {
     }
   }
 
-  queryDetailsModal = undefined
-
-  openQueryDetailsModal = () => {
-    this.queryDetailsModal.open()
+  handleQueryNameClick = () => {
+    console.log('handleQUeryNameClick')
+    this.setState({ showModal: true })
   }
 
   onConnectionChange = connectionId => {
@@ -521,7 +397,7 @@ class QueryEditor extends React.Component {
               {this.state.isRunning ? 'unning' : 'un'}
             </Button>
             <ControlLabel
-              onClick={this.openQueryDetailsModal}
+              onClick={this.handleQueryNameClick}
               className='QueryEditorSubheaderItem QueryEditorQueryName'
             >
               {this.state.query.name
@@ -529,14 +405,13 @@ class QueryEditor extends React.Component {
                 : '(click to name query)'}
             </ControlLabel>
             <QueryDetailsModal
+              onHide={this.handleModalHide}
               onQueryNameChange={this.onQueryNameChange}
               onQueryTagsChange={this.onQueryTagsChange}
-              saveQuery={this.saveQuery}
               query={this.state.query}
+              saveOnClose={this.state.saveOnClose}
+              showModal={this.state.showModal}
               tagOptions={tagOptions}
-              ref={ref => {
-                this.queryDetailsModal = ref
-              }}
             />
           </Form>
         </div>
