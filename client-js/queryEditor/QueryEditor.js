@@ -146,61 +146,45 @@ class QueryEditor extends React.Component {
     }
   }
 
-  handleQueryNameClick = () => {
-    console.log('handleQUeryNameClick')
-    this.setState({ showModal: true })
+  handleQueryNameClick = () => this.setState({ showModal: true })
+
+  setQueryState = (field, value) => {
+    const { query } = this.state
+    query[field] = value
+    this.setState({ query })
   }
 
   onConnectionChange = connectionId => {
-    var query = this.state.query
-    query.connectionId = connectionId
-    this.setState({
-      query: query
-    })
+    this.setQueryState('connectionId', connectionId)
   }
 
-  onQueryNameChange = name => {
-    var query = this.state.query
-    query.name = name
-    this.setState({ query: query })
-  }
+  onQueryNameChange = name => this.setQueryState('name', name)
 
-  onQueryTagsChange = values => {
-    var query = this.state.query
-    query.tags = values.map(v => v.value)
-    this.setState({ query: query })
-  }
+  onQueryTagsChange = values =>
+    this.setQueryState('tags', values.map(v => v.value))
 
-  onQueryTextChange = queryText => {
-    var query = this.state.query
-    query.queryText = queryText
-    this.setState({
-      query: query
-    })
-  }
+  onQueryTextChange = queryText => this.setQueryState('queryText', queryText)
 
   onChartTypeChange = e => {
-    var chartType = e.target.value
     const { query } = this.state
-    query.chartConfiguration.chartType = chartType
+    query.chartConfiguration.chartType = e.target.value
     this.setState({ query })
   }
 
   runQuery = () => {
     const { cacheKey, query } = this.state
-    var editor = this.editor
-    var selectedText = editor.session.getTextRange(editor.getSelectionRange())
-    var queryToRun = selectedText || query.queryText
+    const selectedText = this.editor.session.getTextRange(
+      this.editor.getSelectionRange()
+    )
     this.setState({
       isRunning: true,
       runQueryStartTime: new Date()
     })
-    setTimeout(this.runningTimer, 60)
-    var postData = {
+    const postData = {
       connectionId: query.connectionId,
       cacheKey,
       queryName: query.name,
-      queryText: queryToRun
+      queryText: selectedText || query.queryText
     }
     fetchJson('POST', this.props.config.baseUrl + '/api/query-result', postData)
       .then(json => {
@@ -254,20 +238,21 @@ class QueryEditor extends React.Component {
 
   componentDidMount () {
     const { config, queryId } = this.props
+    const editor = this.editor
+
     this.loadConnectionsFromServer()
     this.loadTagsFromServer()
     if (queryId !== 'new') {
       this.loadQueryFromServer(queryId)
     }
 
-    if (this.editor) {
-      this.editor.focus()
+    if (editor) {
+      editor.focus()
 
       // augment the built-in behavior of liveAutocomplete
       // built-in behavior only starts autocomplete when at least 1 character has been typed
       // In ace the . resets the prefix token and clears the completer
       // In order to get completions for 'sometable.' we need to fire the completer manually
-      const editor = this.editor
       editor.commands.on('afterExec', function (e) {
         if (e.command.name === 'insertstring' && /^[\w.]$/.test(e.args)) {
           if (e.args === '.') {
@@ -276,7 +261,7 @@ class QueryEditor extends React.Component {
         }
       })
       if (config.editorWordWrap) {
-        this.editor.session.setUseWrapMode(true)
+        editor.session.setUseWrapMode(true)
       }
     }
 
@@ -285,9 +270,7 @@ class QueryEditor extends React.Component {
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts,
     // we want the event to fire all the time for any element
-    keymaster.filter = function (event) {
-      return true
-    }
+    keymaster.filter = () => true
     keymaster.unbind('ctrl+s, command+s')
     keymaster('ctrl+s, command+s', e => {
       this.saveQuery()
