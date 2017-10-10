@@ -4,12 +4,8 @@ import AceEditor from 'react-ace'
 import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
 import 'brace/ext/searchbox'
-import Nav from 'react-bootstrap/lib/Nav'
-import NavItem from 'react-bootstrap/lib/NavItem'
-import Form from 'react-bootstrap/lib/Form'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
-import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import fetchJson from '../utilities/fetch-json.js'
@@ -22,6 +18,7 @@ import ChartInputs from '../components/ChartInputs.js'
 import SqlpadTauChart from '../components/SqlpadTauChart.js'
 import chartDefinitions from '../components/ChartDefinitions.js'
 import QueryDetailsModal from './QueryDetailsModal'
+import EditorNavBar from './EditorNavBar'
 
 const NEW_QUERY = {
   _id: '',
@@ -350,44 +347,16 @@ class QueryEditor extends React.Component {
 
     return (
       <div className='flex-100' style={{ flexDirection: 'column' }}>
-        <div className='clearfix navbar-default'>
-          <Nav
-            activeKey={activeTabKey}
-            bsStyle='pills'
-            className='navbar-left'
-            style={{ paddingLeft: 6, marginTop: 6 }}
-            onSelect={this.onTabSelect}
-          >
-            <NavItem eventKey='sql'>
-              <span className='glyphicon glyphicon-align-left' /> SQL
-            </NavItem>
-            <NavItem eventKey='vis'>
-              <span className='glyphicon glyphicon-stats' /> Vis
-            </NavItem>
-          </Nav>
-          <Form inline className='navbar-form'>
-            <Button
-              className='QueryEditorSubheaderItem'
-              onClick={this.saveQuery}
-              disabled={isSaving}
-            >
-              {isSaving ? 'Saving' : 'Save'}
-            </Button>
-            <Button
-              className='QueryEditorSubheaderItem'
-              onClick={this.runQuery}
-              disabled={isRunning}
-            >
-              {isRunning ? 'Running' : 'Run'}
-            </Button>
-            <ControlLabel
-              onClick={this.handleQueryNameClick}
-              className='QueryEditorSubheaderItem QueryEditorQueryName'
-            >
-              {query.name ? query.name : '(click to name query)'}
-            </ControlLabel>
-          </Form>
-        </div>
+        <EditorNavBar
+          activeTabKey={activeTabKey}
+          onTabSelect={this.onTabSelect}
+          isSaving={isSaving}
+          isRunning={isRunning}
+          onQueryNameClick={this.handleQueryNameClick}
+          onSaveClick={this.saveQuery}
+          onRunClick={this.runQuery}
+          queryName={query.name}
+        />
         <div className='flex-100' style={{ flexGrow: 1 }}>
           <div style={{ display: sqlDisplay, width: '100%' }}>
             <SchemaInfo
