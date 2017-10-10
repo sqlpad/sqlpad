@@ -23,6 +23,18 @@ import SqlpadTauChart from '../components/SqlpadTauChart.js'
 import chartDefinitions from '../components/ChartDefinitions.js'
 import QueryDetailsModal from './QueryDetailsModal'
 
+const NEW_QUERY = {
+  _id: '',
+  name: '',
+  tags: [],
+  connectionId: '',
+  queryText: '',
+  chartConfiguration: {
+    chartType: '',
+    fields: {} // key value for chart
+  }
+}
+
 class QueryEditor extends React.Component {
   state = {
     activeTabKey: 'sql',
@@ -36,17 +48,7 @@ class QueryEditor extends React.Component {
     showModal: false,
     saveOnClose: false,
     queryResult: undefined,
-    query: {
-      _id: '',
-      name: '',
-      tags: [],
-      connectionId: '',
-      queryText: '',
-      chartConfiguration: {
-        chartType: '',
-        fields: {} // key value for chart
-      }
-    }
+    query: NEW_QUERY
   }
 
   loadConnectionsFromServer = () => {
@@ -243,25 +245,14 @@ class QueryEditor extends React.Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.queryId !== 'new') {
-      this.loadQueryFromServer(nextProps.queryId)
-    } else if (nextProps.queryId === 'new') {
-      this.setState({
+    if (nextProps.queryId === 'new') {
+      return this.setState({
         activeTabKey: 'sql',
         queryResult: undefined,
-        query: {
-          _id: '',
-          name: '',
-          tags: [],
-          connectionId: '',
-          queryText: '',
-          chartConfiguration: {
-            chartType: '',
-            fields: {} // key value for chart
-          }
-        }
+        query: NEW_QUERY
       })
     }
+    this.loadQueryFromServer(nextProps.queryId)
   }
 
   componentDidMount () {
