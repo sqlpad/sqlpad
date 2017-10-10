@@ -347,6 +347,7 @@ class QueryEditor extends React.Component {
     })
     const sqlDisplay = activeTabKey === 'sql' ? 'flex' : 'none'
     const visDisplay = activeTabKey === 'vis' ? 'flex' : 'none'
+
     return (
       <div className='flex-100' style={{ flexDirection: 'column' }}>
         <div className='clearfix navbar-default'>
@@ -385,15 +386,6 @@ class QueryEditor extends React.Component {
             >
               {query.name ? query.name : '(click to name query)'}
             </ControlLabel>
-            <QueryDetailsModal
-              onHide={this.handleModalHide}
-              onQueryNameChange={this.onQueryNameChange}
-              onQueryTagsChange={this.onQueryTagsChange}
-              query={query}
-              saveOnClose={saveOnClose}
-              showModal={showModal}
-              tagOptions={tagOptions}
-            />
           </Form>
         </div>
         <div className='flex-100' style={{ flexGrow: 1 }}>
@@ -505,6 +497,15 @@ class QueryEditor extends React.Component {
             </div>
           </div>
         </div>
+        <QueryDetailsModal
+          onHide={this.handleModalHide}
+          onQueryNameChange={this.onQueryNameChange}
+          onQueryTagsChange={this.onQueryTagsChange}
+          query={query}
+          saveOnClose={saveOnClose}
+          showModal={showModal}
+          tagOptions={tagOptions}
+        />
         <Alert stack={{ limit: 3 }} position='bottom-right' />
       </div>
     )
