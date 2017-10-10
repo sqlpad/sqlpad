@@ -17,20 +17,26 @@ a:hover, a:active, a:focus {
   width: 100%;
 }
 
-/* Override bootstrap tab colors to match background of sidebar */
-.nav-tabs>li.active>a, .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
-    color: #555;
-    cursor: default;
-    background-color: #fdfdfd;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
+/* Override navbar flexible height */
+.navbar {
+    height: 50px;
+    margin-bottom: 0px;
+}
+
+/* Override for pills in a navbar */
+.navbar-nav>li>a {
+    padding: 7px 15px;
+    margin-top: 8px;
+}
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+    color: #fff !important;
+    background-color: #337ab7 !important;
 }
 
 /* hide tauchart's ui for export options */
 .graphical-report__layout__header {
     display: none;
 }
-
 
 /*  Utilities
 ============================================================================ */

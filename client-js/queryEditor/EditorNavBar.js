@@ -1,7 +1,7 @@
 import React from 'react'
+import Navbar from 'react-bootstrap/lib/Navbar'
 import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
-import Form from 'react-bootstrap/lib/Form'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
 
@@ -19,14 +19,8 @@ class QueryEditor extends React.Component {
     } = this.props
 
     return (
-      <div className='clearfix navbar-default'>
-        <Nav
-          activeKey={activeTabKey}
-          bsStyle='pills'
-          className='navbar-left'
-          style={{ paddingLeft: 6, marginTop: 6 }}
-          onSelect={onTabSelect}
-        >
+      <Navbar fluid>
+        <Nav activeKey={activeTabKey} bsStyle='pills' onSelect={onTabSelect}>
           <NavItem eventKey='sql'>
             <span className='glyphicon glyphicon-align-left' /> SQL
           </NavItem>
@@ -34,7 +28,7 @@ class QueryEditor extends React.Component {
             <span className='glyphicon glyphicon-stats' /> Vis
           </NavItem>
         </Nav>
-        <Form inline className='navbar-form'>
+        <Navbar.Form>
           <Button
             className='QueryEditorSubheaderItem'
             onClick={onSaveClick}
@@ -55,8 +49,8 @@ class QueryEditor extends React.Component {
           >
             {queryName || '(click to name query)'}
           </ControlLabel>
-        </Form>
-      </div>
+        </Navbar.Form>
+      </Navbar>
     )
   }
 }
