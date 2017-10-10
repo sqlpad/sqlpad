@@ -52,12 +52,12 @@ class QueryEditor extends React.Component {
   loadConnectionsFromServer = () => {
     const { config } = this.props
     const { query } = this.state
-    fetchJson('GET', config.baseUrl + '/api/connections/')
+    fetchJson('GET', `${config.baseUrl}/api/connections/`)
       .then(json => {
-        if (json.error) {
-          Alert.error(json.error)
+        const { error, connections } = json
+        if (error) {
+          Alert.error(error)
         }
-        const connections = json.connections
         // if only 1 connection auto-select it
         if (connections.length === 1 && query) {
           query.connectionId = connections[0]._id
@@ -71,10 +71,14 @@ class QueryEditor extends React.Component {
   }
 
   loadTagsFromServer = () => {
-    fetchJson('GET', this.props.config.baseUrl + '/api/tags')
+    const { config } = this.props
+    fetchJson('GET', `${config.baseUrl}/api/tags`)
       .then(json => {
-        if (json.error) Alert.error(json.error)
-        this.setState({ availableTags: json.tags })
+        const { error, tags } = json
+        if (error) {
+          Alert.error(error)
+        }
+        this.setState({ availableTags: tags })
       })
       .catch(ex => {
         console.error(ex.toString())
@@ -83,12 +87,14 @@ class QueryEditor extends React.Component {
   }
 
   loadQueryFromServer = queryId => {
-    fetchJson('GET', this.props.config.baseUrl + '/api/queries/' + queryId)
+    const { config } = this.props
+    fetchJson('GET', `${config.baseUrl}/api/queries/${queryId}`)
       .then(json => {
-        if (json.error) Alert.error(json.error)
-        this.setState({
-          query: json.query
-        })
+        const { error, query } = json
+        if (error) {
+          Alert.error(error)
+        }
+        this.setState({ query })
       })
       .catch(ex => {
         console.error(ex.toString())
@@ -104,52 +110,45 @@ class QueryEditor extends React.Component {
   }
 
   saveQuery = () => {
-    var query = this.state.query
+    const { query } = this.state
+    const { config } = this.props
     if (!query.name) {
       this.setState({ showModal: true, saveOnClose: true })
       return
     }
     this.setState({ isSaving: true })
     if (query._id) {
-      fetchJson(
-        'PUT',
-        this.props.config.baseUrl + '/api/queries/' + query._id,
-        query
-      )
+      fetchJson('PUT', `${config.baseUrl}/api/queries/${query._id}`, query)
         .then(json => {
-          if (json.error) {
-            Alert.error(json.error)
+          const { error, query } = json
+          if (error) {
+            Alert.error(error)
             this.setState({ isSaving: false })
             return
           }
           Alert.success('Query Saved')
-          this.setState({
-            isSaving: false,
-            query: json.query
-          })
+          this.setState({ isSaving: false, query })
         })
         .catch(ex => {
           console.error(ex.toString())
           Alert.error('Something is broken')
         })
     } else {
-      fetchJson('POST', this.props.config.baseUrl + '/api/queries', query)
+      fetchJson('POST', `${config.baseUrl}/api/queries`, query)
         .then(json => {
-          if (json.error) {
-            Alert.error(json.error)
+          const { error, query } = json
+          if (error) {
+            Alert.error(error)
             this.setState({ isSaving: false })
             return
           }
           window.history.replaceState(
             {},
-            json.query.name,
-            this.props.config.baseUrl + '/queries/' + json.query._id
+            query.name,
+            `${config.baseUrl}/queries/${query._id}`
           )
           Alert.success('Query Saved')
-          this.setState({
-            isSaving: false,
-            query: json.query
-          })
+          this.setState({ isSaving: false, query })
         })
         .catch(ex => {
           console.error(ex.toString())
@@ -228,8 +227,9 @@ class QueryEditor extends React.Component {
   }
 
   isChartable = () => {
-    const pending = this.state.isRunning || this.state.queryError
-    return !pending && this.state.activeTabKey === 'vis' && this.hasRows()
+    const { isRunning, queryError, activeTabKey } = this.state
+    const pending = isRunning || queryError
+    return !pending && activeTabKey === 'vis' && this.hasRows()
   }
 
   onVisualizeClick = () => this.sqlpadTauChart.renderChart(true)
@@ -281,7 +281,7 @@ class QueryEditor extends React.Component {
       // built-in behavior only starts autocomplete when at least 1 character has been typed
       // In ace the . resets the prefix token and clears the completer
       // In order to get completions for 'sometable.' we need to fire the completer manually
-      editor.commands.on('afterExec', function (e) {
+      editor.commands.on('afterExec', e => {
         if (e.command.name === 'insertstring' && /^[\w.]$/.test(e.args)) {
           if (e.args === '.') {
             editor.execCommand('startAutocomplete')
@@ -379,16 +379,14 @@ class QueryEditor extends React.Component {
               onClick={this.saveQuery}
               disabled={isSaving}
             >
-              <span className='shortcut-letter'>S</span>
-              {isSaving ? 'aving' : 'ave'}
+              {isSaving ? 'Saving' : 'Save'}
             </Button>
             <Button
               className='QueryEditorSubheaderItem'
               onClick={this.runQuery}
               disabled={isRunning}
             >
-              <span className='shortcut-letter'>R</span>
-              {isRunning ? 'unning' : 'un'}
+              {isRunning ? 'Running' : 'Run'}
             </Button>
             <ControlLabel
               onClick={this.handleQueryNameClick}

@@ -34,9 +34,6 @@ a:hover, a:active, a:focus {
 
 /*  Utilities
 ============================================================================ */
-.shortcut-letter {
-    text-decoration: underline;
-}
 .hidden {
     display: none;
 }
