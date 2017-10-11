@@ -19,6 +19,7 @@ import SqlpadTauChart from '../components/SqlpadTauChart.js'
 import chartDefinitions from '../components/ChartDefinitions.js'
 import QueryDetailsModal from './QueryDetailsModal'
 import EditorNavBar from './EditorNavBar'
+import FlexTabPane from './FlexTabPane'
 
 const NEW_QUERY = {
   _id: '',
@@ -342,8 +343,6 @@ class QueryEditor extends React.Component {
         </option>
       )
     })
-    const sqlDisplay = activeTabKey === 'sql' ? 'flex' : 'none'
-    const visDisplay = activeTabKey === 'vis' ? 'flex' : 'none'
 
     return (
       <div className='flex-100' style={{ flexDirection: 'column' }}>
@@ -358,7 +357,7 @@ class QueryEditor extends React.Component {
           queryName={query.name}
         />
         <div className='flex-100' style={{ flexGrow: 1 }}>
-          <div style={{ display: sqlDisplay, width: '100%' }}>
+          <FlexTabPane tabKey='sql' activeTabKey={activeTabKey}>
             <SchemaInfo
               {...this.props}
               connections={connections}
@@ -407,8 +406,8 @@ class QueryEditor extends React.Component {
                 />
               </div>
             </div>
-          </div>
-          <div style={{ display: visDisplay, width: '100%' }}>
+          </FlexTabPane>
+          <FlexTabPane tabKey='vis' activeTabKey={activeTabKey}>
             <div className='sidebar'>
               <div className='sidebar-body'>
                 <FormGroup controlId='formControlsSelect' bsSize='small'>
@@ -464,7 +463,7 @@ class QueryEditor extends React.Component {
                 }}
               />
             </div>
-          </div>
+          </FlexTabPane>
         </div>
         <QueryDetailsModal
           onHide={this.handleModalHide}
