@@ -21,6 +21,8 @@ import QueryDetailsModal from './QueryDetailsModal'
 import EditorNavBar from './EditorNavBar'
 import FlexTabPane from './FlexTabPane'
 
+// wat this merge?
+
 const NEW_QUERY = {
   _id: '',
   name: '',
