@@ -1,84 +1,97 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import IncompleteDataNotification from './IncompleteDataNotification'
 import SecondsTimer from './SecondsTimer.js'
 
 class QueryResultHeader extends React.Component {
+  renderDownloadLinks () {
+    const { cacheKey, config } = this.props
+    const csvDownloadLink = `${config.baseUrl}/download-results/${cacheKey}.csv`
+    const xlsxDownloadLink = `${config.baseUrl}/download-results/${cacheKey}.xlsx`
+    if (config.allowCsvDownload) {
+      return (
+        <span>
+          <span className='panel-result-header-label'>Download: </span>
+          <a
+            className='result-download-link'
+            target='_blank'
+            rel='noopener noreferrer'
+            href={csvDownloadLink}
+          >
+            .csv
+          </a>
+          <a
+            className='result-download-link'
+            target='_blank'
+            rel='noopener noreferrer'
+            href={xlsxDownloadLink}
+          >
+            .xlsx
+          </a>
+        </span>
+      )
+    }
+  }
+
   render () {
-    if (this.props.isRunning || !this.props.queryResult) {
+    const { isRunning, queryResult, runQueryStartTime } = this.props
+    if (isRunning || !queryResult) {
       return (
         <div className='panel-result-header'>
-          {this.props.isRunning ? (
-            <span className='panel-result-header-item'>
+          {isRunning
+            ? <span className='panel-result-header-item'>
               <span className='panel-result-header-label'>
-                Query Run Time:{' '}
+                  Query Run Time:{' '}
               </span>
-              <span className='panel-result-header-value-DELETE'>
-                <SecondsTimer startTime={this.props.runQueryStartTime} /> sec.
-              </span>
+              <span>
+                <SecondsTimer startTime={runQueryStartTime} /> sec.
+                </span>
             </span>
-          ) : null}
+            : null}
         </div>
       )
     }
-    const csvDownloadLink =
-      this.props.config.baseUrl +
-      '/download-results/' +
-      this.props.cacheKey +
-      '.csv'
-    const xlsxDownloadLink =
-      this.props.config.baseUrl +
-      '/download-results/' +
-      this.props.cacheKey +
-      '.xlsx'
-    const serverSec = this.props.queryResult
-      ? this.props.queryResult.queryRunTime / 1000 + ' sec.'
+
+    const serverSec = queryResult
+      ? queryResult.queryRunTime / 1000 + ' sec.'
       : ''
-    const rowCount =
-      this.props.queryResult && this.props.queryResult.rows
-        ? this.props.queryResult.rows.length
-        : ''
-    const downloadLinks = () => {
-      if (this.props.config.allowCsvDownload) {
-        return (
-          <span>
-            <span className='panel-result-header-label'>Download: </span>
-            <a
-              className='result-download-link'
-              target='_blank'
-              rel='noopener noreferrer'
-              href={csvDownloadLink}
-            >
-              .csv
-            </a>
-            <a
-              className='result-download-link'
-              target='_blank'
-              rel='noopener noreferrer'
-              href={xlsxDownloadLink}
-            >
-              .xlsx
-            </a>
-          </span>
-        )
-      }
-    }
+    const rowCount = queryResult && queryResult.rows
+      ? queryResult.rows.length
+      : ''
+
     return (
       <div className='panel-result-header'>
         <span className='panel-result-header-item'>
           <span className='panel-result-header-label'>Query Run Time: </span>
-          <span className='panel-result-header-value-DELETE'>{serverSec}</span>
+          {serverSec}
         </span>
         <span className='panel-result-header-item'>
           <span className='panel-result-header-label'>Rows: </span>
-          <span className='panel-result-header-value-DELETE'>{rowCount}</span>
+          {rowCount}
         </span>
-        <span className='panel-result-header-item'>{downloadLinks()}</span>
         <span className='panel-result-header-item'>
-          <IncompleteDataNotification queryResult={this.props.queryResult} />
+          {this.renderDownloadLinks()}
+        </span>
+        <span className='panel-result-header-item'>
+          <IncompleteDataNotification queryResult={queryResult} />
         </span>
       </div>
     )
   }
+}
+
+QueryResultHeader.propTypes = {
+  cacheKey: PropTypes.string,
+  config: PropTypes.object,
+  isRunning: PropTypes.bool,
+  queryResult: PropTypes.object,
+  runQueryStartTime: PropTypes.instanceOf(Date)
+}
+
+QueryResultHeader.defaultProps = {
+  cacheKey: '',
+  config: {},
+  isRunning: false
 }
 
 export default QueryResultHeader
