@@ -305,10 +305,22 @@ class QueryEditor extends React.Component {
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
   }
 
+  getTagOptions () {
+    const { availableTags, query } = this.state
+    const tagOptions = availableTags.map(t => {
+      return { value: t, label: t }
+    })
+    if (query && query.tags) {
+      query.tags.forEach(t => {
+        tagOptions.push({ value: t, label: t })
+      })
+    }
+    return tagOptions
+  }
+
   render () {
     const {
       activeTabKey,
-      availableTags,
       cacheKey,
       connections,
       isRunning,
@@ -322,15 +334,7 @@ class QueryEditor extends React.Component {
       showModal
     } = this.state
 
-    document.title = query.name ? query.name : 'New Query'
-    const tagOptions = availableTags.map(t => {
-      return { value: t, label: t }
-    })
-    if (query && query.tags) {
-      query.tags.forEach(t => {
-        tagOptions.push({ value: t, label: t })
-      })
-    }
+    document.title = query.name || 'New Query'
 
     return (
       <div className='flex-100' style={{ flexDirection: 'column' }}>
@@ -429,7 +433,7 @@ class QueryEditor extends React.Component {
           query={query}
           saveOnClose={saveOnClose}
           showModal={showModal}
-          tagOptions={tagOptions}
+          tagOptions={this.getTagOptions()}
         />
         <Alert stack={{ limit: 3 }} position='bottom-right' />
       </div>
