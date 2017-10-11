@@ -4,22 +4,17 @@ import AceEditor from 'react-ace'
 import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
 import 'brace/ext/searchbox'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import Button from 'react-bootstrap/lib/Button'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import keymaster from 'keymaster'
 import SchemaInfo from '../components/SchemaInfo.js'
 import QueryResultDataTable from '../components/QueryResultDataTable.js'
 import QueryResultHeader from '../components/QueryResultHeader.js'
-import ChartInputs from '../components/ChartInputs.js'
 import SqlpadTauChart from '../components/SqlpadTauChart.js'
-import chartDefinitions from '../components/ChartDefinitions.js'
 import QueryDetailsModal from './QueryDetailsModal'
 import EditorNavBar from './EditorNavBar'
 import FlexTabPane from './FlexTabPane'
+import VisSidebar from './VisSidebar'
 
 const NEW_QUERY = {
   _id: '',
@@ -336,32 +331,25 @@ class QueryEditor extends React.Component {
         tagOptions.push({ value: t, label: t })
       })
     }
-    const chartOptions = chartDefinitions.map(d => {
-      return (
-        <option key={d.chartType} value={d.chartType}>
-          {d.chartLabel}
-        </option>
-      )
-    })
 
     return (
       <div className='flex-100' style={{ flexDirection: 'column' }}>
         <EditorNavBar
           activeTabKey={activeTabKey}
-          onTabSelect={this.onTabSelect}
-          isSaving={isSaving}
           isRunning={isRunning}
+          isSaving={isSaving}
           onQueryNameClick={this.handleQueryNameClick}
-          onSaveClick={this.saveQuery}
           onRunClick={this.runQuery}
+          onSaveClick={this.saveQuery}
+          onTabSelect={this.onTabSelect}
           queryName={query.name}
         />
         <div className='flex-100' style={{ flexGrow: 1 }}>
           <FlexTabPane tabKey='sql' activeTabKey={activeTabKey}>
             <SchemaInfo
               {...this.props}
-              connections={connections}
               connectionId={query.connectionId}
+              connections={connections}
               onConnectionChange={this.onConnectionChange}
             />
             <div
@@ -372,91 +360,60 @@ class QueryEditor extends React.Component {
               }}
             >
               <AceEditor
-                mode='sql'
-                theme='sqlserver'
-                name='query-ace-editor'
-                width='100%'
-                height='50%'
-                showGutter={false}
-                showPrintMargin={false}
-                highlightActiveLine={false}
-                onChange={this.onQueryTextChange}
-                value={query.queryText}
                 editorProps={{ $blockScrolling: Infinity }}
                 enableBasicAutocompletion
                 enableLiveAutocompletion
+                height='50%'
+                highlightActiveLine={false}
+                mode='sql'
+                name='query-ace-editor'
+                onChange={this.onQueryTextChange}
+                showGutter={false}
+                showPrintMargin={false}
+                theme='sqlserver'
+                value={query.queryText}
+                width='100%'
                 ref={ref => {
                   this.editor = ref ? ref.editor : null
                 }}
               />
               <QueryResultHeader
                 {...this.props}
-                isRunning={isRunning}
-                runQueryStartTime={runQueryStartTime}
                 cacheKey={cacheKey}
-                runSeconds={runSeconds}
+                isRunning={isRunning}
                 queryResult={queryResult}
+                runQueryStartTime={runQueryStartTime}
+                runSeconds={runSeconds}
               />
               <div style={{ height: '50%', display: 'flex' }}>
                 <QueryResultDataTable
                   {...this.props}
                   isRunning={isRunning}
-                  queryResult={queryResult}
                   queryError={queryError}
+                  queryResult={queryResult}
                 />
               </div>
             </div>
           </FlexTabPane>
           <FlexTabPane tabKey='vis' activeTabKey={activeTabKey}>
-            <div className='sidebar'>
-              <div className='sidebar-body'>
-                <FormGroup controlId='formControlsSelect' bsSize='small'>
-                  <FormControl
-                    value={query.chartConfiguration.chartType}
-                    onChange={this.onChartTypeChange}
-                    componentClass='select'
-                    className='input-small'
-                  >
-                    <option value=''>Choose a chart type...</option>
-                    {chartOptions}
-                  </FormControl>
-                </FormGroup>
-                <ChartInputs
-                  chartType={query.chartConfiguration.chartType}
-                  queryChartConfigurationFields={
-                    query.chartConfiguration.fields
-                  }
-                  onChartConfigurationFieldsChange={
-                    this.onChartConfigurationFieldsChange
-                  }
-                  queryResult={queryResult}
-                />
-              </div>
-              <div className='sidebar-actions-bottom'>
-                <Button
-                  onClick={this.onVisualizeClick}
-                  disabled={!this.isChartable()}
-                  className={'btn-block'}
-                  bsSize={'sm'}
-                >
-                  Visualize
-                </Button>
-                <Button
-                  onClick={this.onSaveImageClick}
-                  className={'btn-block'}
-                  bsSize={'sm'}
-                >
-                  <Glyphicon glyph='save' /> Save Chart Image
-                </Button>
-              </div>
-            </div>
+            <VisSidebar
+              isChartable={this.isChartable()}
+              onChartConfigurationFieldsChange={
+                this.onChartConfigurationFieldsChange
+              }
+              onChartTypeChange={this.onChartTypeChange}
+              onSaveImageClick={this.onSaveImageClick}
+              onVisualizeClick={this.onVisualizeClick}
+              query={query}
+              queryResult={queryResult}
+            />
             <div className='flex-grow-1'>
               <SqlpadTauChart
                 config={this.props.config}
-                query={query}
-                queryResult={queryResult}
-                queryError={queryError}
                 isRunning={isRunning}
+                query={query}
+                queryError={queryError}
+                queryResult={queryResult}
                 renderChart={this.isChartable()}
                 ref={ref => {
                   this.sqlpadTauChart = ref
