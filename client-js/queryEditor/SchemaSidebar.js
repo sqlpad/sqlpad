@@ -6,7 +6,7 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import fetchJson from '../utilities/fetch-json.js'
 import updateCompletions from '../utilities/updateCompletions.js'
 
-class SchemaInfo extends React.PureComponent {
+class SchemaSidebar extends React.PureComponent {
   state = {
     schemaInfo: {},
     loading: false
@@ -348,4 +348,4 @@ class SchemaInfoColumnItem extends React.Component {
   }
 }
 
-export default SchemaInfo
+export default SchemaSidebar

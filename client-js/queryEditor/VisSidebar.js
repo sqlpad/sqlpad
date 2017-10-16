@@ -8,19 +8,6 @@ import ChartInputs from '../components/ChartInputs.js'
 import chartDefinitions from '../components/ChartDefinitions.js'
 
 class VisSidebar extends React.Component {
-  onSubmit = e => {
-    e.preventDefault()
-    this.close()
-  }
-
-  onQueryNameChange = e => {
-    this.props.onQueryNameChange(e.target.value)
-  }
-
-  onEntered = () => {
-    if (this.input) this.input.focus()
-  }
-
   render () {
     const {
       isChartable,

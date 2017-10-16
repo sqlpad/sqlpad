@@ -7,13 +7,13 @@ import 'brace/ext/searchbox'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import keymaster from 'keymaster'
-import SchemaInfo from '../components/SchemaInfo.js'
 import QueryResultDataTable from '../components/QueryResultDataTable.js'
-import QueryResultHeader from '../components/QueryResultHeader.js'
 import SqlpadTauChart from '../components/SqlpadTauChart.js'
+import QueryResultHeader from './QueryResultHeader.js'
 import QueryDetailsModal from './QueryDetailsModal'
 import EditorNavBar from './EditorNavBar'
 import FlexTabPane from './FlexTabPane'
+import SchemaSidebar from './SchemaSidebar.js'
 import VisSidebar from './VisSidebar'
 
 const NEW_QUERY = {
@@ -351,7 +351,7 @@ class QueryEditor extends React.Component {
         />
         <div className='flex-100' style={{ flexGrow: 1 }}>
           <FlexTabPane tabKey='sql' activeTabKey={activeTabKey}>
-            <SchemaInfo
+            <SchemaSidebar
               {...this.props}
               connectionId={query.connectionId}
               connections={connections}

@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import IncompleteDataNotification from './IncompleteDataNotification'
-import SecondsTimer from './SecondsTimer.js'
+import IncompleteDataNotification
+  from '../components/IncompleteDataNotification'
+import SecondsTimer from '../components/SecondsTimer.js'
 
 class QueryResultHeader extends React.Component {
   renderDownloadLinks () {
