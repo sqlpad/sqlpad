@@ -35,7 +35,6 @@
     "email": "rick.bergfalk@gmail.com"
   },
   "proxy": "http://localhost:3010",
-  "homepage": "http://BASEURL",
   "scripts": {
     "build": "react-scripts build",
     "coverage": "istanbul cover _mocha -- --recursive",
