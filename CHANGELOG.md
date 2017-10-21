@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.2
+### October 21, 2017
+- Fix --base-url config use
+- Refactored layout styling to use flexbox css
+
 ## 2.3.1
 ### October 7, 2017
 - Force no-cache on fetch requests (fixes some odd IE issues)
