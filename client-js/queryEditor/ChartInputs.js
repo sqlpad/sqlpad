@@ -6,7 +6,7 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Checkbox from 'react-bootstrap/lib/Checkbox'
 
-function cleanBoolean (value) {
+function cleanBoolean(value) {
   if (typeof value === 'string') {
     if (value.toLowerCase() === 'true') {
       value = true
@@ -32,7 +32,7 @@ class ChartInputs extends React.Component {
     this.props.onChartConfigurationFieldsChange(chartFieldId, queryResultField)
   }
 
-  renderFormGroup (inputDefinitionFields) {
+  renderFormGroup(inputDefinitionFields) {
     const { queryChartConfigurationFields, queryResult } = this.props
     const queryResultFields = queryResult.fields || []
 
@@ -61,7 +61,7 @@ class ChartInputs extends React.Component {
           <FormGroup
             key={field.fieldId}
             controlId={field.fieldId}
-            bsSize='small'
+            bsSize="small"
           >
             <ControlLabel>{field.label}</ControlLabel>
             <FormControl
@@ -72,10 +72,10 @@ class ChartInputs extends React.Component {
                   e.target.value
                 )
               }}
-              componentClass='select'
-              className='input-small'
+              componentClass="select"
+              className="input-small"
             >
-              <option value='' />
+              <option value="" />
               {optionNodes}
             </FormControl>
           </FormGroup>
@@ -87,7 +87,7 @@ class ChartInputs extends React.Component {
           <FormGroup
             key={field.fieldId}
             controlId={field.fieldId}
-            bsSize='small'
+            bsSize="small"
           >
             <Checkbox
               checked={checked}
@@ -108,7 +108,7 @@ class ChartInputs extends React.Component {
           <FormGroup
             key={field.fieldId}
             controlId={field.fieldId}
-            bsSize='small'
+            bsSize="small"
           >
             <ControlLabel>{field.label}</ControlLabel>
             <FormControl
@@ -119,8 +119,8 @@ class ChartInputs extends React.Component {
                   e.target.value
                 )
               }}
-              type='text'
-              className='input-small'
+              type="text"
+              className="input-small"
             />
           </FormGroup>
         )
@@ -130,12 +130,12 @@ class ChartInputs extends React.Component {
     })
   }
 
-  render () {
+  render() {
     const { chartType } = this.props
     const { showAdvanced } = this.state
 
     const chartDefinition = chartDefinitions.find(
-      def => (def.chartType = chartType)
+      def => def.chartType === chartType
     )
 
     if (!chartDefinition || !chartDefinition.fields) {
@@ -150,11 +150,11 @@ class ChartInputs extends React.Component {
       field => field.advanced === true
     )
 
-    const advancedLink = advancedFields.length
-      ? <a href='#settings' onClick={this.handleAdvancedClick}>
+    const advancedLink = advancedFields.length ? (
+      <a href="#settings" onClick={this.handleAdvancedClick}>
         {showAdvanced ? 'hide advanced settings' : 'show advanced settings'}
       </a>
-      : null
+    ) : null
 
     return (
       <div>
