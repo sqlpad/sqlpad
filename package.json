@@ -1,7 +1,8 @@
 {
   "name": "sqlpad",
   "version": "2.3.2",
-  "description": "Web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate and Vertica.",
+  "description":
+    "Web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate and Vertica.",
   "license": "MIT",
   "author": {
     "name": "Rick Bergfalk",
@@ -38,25 +39,22 @@
   "scripts": {
     "build": "react-scripts build",
     "coverage": "istanbul cover _mocha -- --recursive",
+    "precommit": "lint-staged",
     "prepublishOnly": "npm run build",
-    "lint": "prettier-standard '!(build|public)/**/*.js' && prettier-standard server.js",
+    "lint": "eslint '**/*.js'",
     "start-client-dev": "react-scripts start",
     "start-server-dev": "node-dev server.js --dir ./db --port 3010 --debug",
-    "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
+    "start":
+      "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
     "test": "lint && mocha --recursive"
   },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
   "lint-staged": {
-    "linters": {
-      "!(build|public)/**/*.js": [
-        "prettier-standard",
-        "git add"
-      ],
-      "server.js": [
-        "prettier-standard",
-        "git add"
-      ]
-    }
+    "*.{js,json,css}": ["prettier --write", "git add"]
   },
   "dependencies": {
     "async": "^2.0.1",
@@ -104,11 +102,17 @@
   },
   "devDependencies": {
     "@rickbergfalk/sqlpad-react-scripts": "^1.0.13",
+    "babel-eslint": "^7.2.3",
+    "babel-runtime": "^6.26.0",
     "brace": "^0.10.0",
     "chai": "^4.1.2",
     "concurrently": "^3.5.0",
     "deep-equal": "^1.0.1",
     "ejs": "^2.5.6",
+    "eslint": "^4.9.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.4.0",
     "fixed-data-table-2": "^0.8.0",
     "fs-extra": "^4.0.1",
     "husky": "^0.14.3",
@@ -120,7 +124,7 @@
     "mocha": "^3.0.0",
     "node-dev": "^3.1.3",
     "page": "^1.7.1",
-    "prettier-standard": "^6.0.0",
+    "prettier": "^1.7.4",
     "prop-types": "^15.5.10",
     "react": "^15.1.0",
     "react-ace": "^5.0.1",
