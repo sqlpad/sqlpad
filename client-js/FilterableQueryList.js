@@ -17,7 +17,8 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import navigateToClickHandler from './utilities/navigateToClickHandler'
 import fetchJson from './utilities/fetch-json.js'
 import chartDefinitions from './components/ChartDefinitions.js'
-const _ = window._
+import uniq from 'lodash.uniq'
+import sortBy from 'lodash.sortby'
 
 class FilterableQueryList extends React.Component {
   state = {
@@ -63,8 +64,14 @@ class FilterableQueryList extends React.Component {
   loadConfigValuesFromServer = () => {
     fetchJson('GET', this.props.config.baseUrl + '/api/queries')
       .then(json => {
-        var createdBys = _.uniq(_.pluck(json.queries, 'createdBy'))
-        var tags = _.compact(_.uniq(_.flatten(_.pluck(json.queries, 'tags'))))
+        const queries = json.queries || []
+        const createdBys = uniq(queries.map(q => q.createdBy))
+        const tags = uniq(
+          queries
+            .map(q => q.tags)
+            .reduce((a, b) => a.concat(b), [])
+            .filter(tag => tag)
+        )
         var selectedCreatedBy = this.state.selectedCreatedBy
         if (createdBys.indexOf(this.props.currentUser.email) === -1) {
           selectedCreatedBy = ''
@@ -124,12 +131,12 @@ class FilterableQueryList extends React.Component {
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadConfigValuesFromServer()
   }
 
-  render () {
-    var filteredQueries = this.state.queries.map(q => q)
+  render() {
+    let filteredQueries = this.state.queries.map(q => q)
     if (this.state.selectedTag) {
       filteredQueries = filteredQueries.filter(q => {
         return (
@@ -152,7 +159,7 @@ class FilterableQueryList extends React.Component {
       var termCount = terms.length
       filteredQueries = filteredQueries.filter(q => {
         var matchedCount = 0
-        terms.forEach(function (term) {
+        terms.forEach(function(term) {
           term = term.toLowerCase()
           if (
             (q.name && q.name.toLowerCase().search(term) !== -1) ||
@@ -165,15 +172,15 @@ class FilterableQueryList extends React.Component {
       })
     }
     if (this.state.selectedSortBy === 'name') {
-      filteredQueries = _.sortBy(filteredQueries, query =>
+      filteredQueries = sortBy(filteredQueries, query =>
         query.name.toLowerCase()
       )
     } else {
-      filteredQueries = _.sortBy(filteredQueries, 'modifiedDate').reverse()
+      filteredQueries = sortBy(filteredQueries, 'modifiedDate').reverse()
     }
 
     return (
-      <div className='QueryListContainer'>
+      <div className="QueryListContainer">
         <QueryListSidebar
           currentUser={this.props.currentUser}
           connections={this.state.connections}
@@ -223,22 +230,22 @@ class QueryListSidebar extends React.Component {
     this.props.onSortByChange(e.target.value)
   }
 
-  render () {
-    var connectionSelectOptions = this.props.connections.map(function (conn) {
+  render() {
+    var connectionSelectOptions = this.props.connections.map(function(conn) {
       return (
         <option key={conn._id} value={conn._id}>
           {conn.name}
         </option>
       )
     })
-    var createdBySelectOptions = this.props.createdBys.map(function (createdBy) {
+    var createdBySelectOptions = this.props.createdBys.map(function(createdBy) {
       return (
         <option key={createdBy} value={createdBy}>
           {createdBy}
         </option>
       )
     })
-    var tagSelectOptions = this.props.tags.map(function (tag) {
+    var tagSelectOptions = this.props.tags.map(function(tag) {
       return (
         <option key={tag} value={tag}>
           {tag}
@@ -246,49 +253,49 @@ class QueryListSidebar extends React.Component {
       )
     })
     return (
-      <div className='QueryListSidebar'>
+      <div className="QueryListSidebar">
         <Form>
-          <FormGroup controlId='formControlsSelect'>
+          <FormGroup controlId="formControlsSelect">
             <ControlLabel>Search</ControlLabel>
-            <FormControl type='text' onChange={this.onSearchChange} />
+            <FormControl type="text" onChange={this.onSearchChange} />
           </FormGroup>
           <br />
-          <FormGroup controlId='formControlsSelect'>
+          <FormGroup controlId="formControlsSelect">
             <ControlLabel>Tag</ControlLabel>
-            <FormControl componentClass='select' onChange={this.onTagChange}>
-              <option value=''>All</option>
+            <FormControl componentClass="select" onChange={this.onTagChange}>
+              <option value="">All</option>
               {tagSelectOptions}
             </FormControl>
           </FormGroup>
           <br />
-          <FormGroup controlId='formControlsSelect'>
+          <FormGroup controlId="formControlsSelect">
             <ControlLabel>Connection</ControlLabel>
             <FormControl
-              componentClass='select'
+              componentClass="select"
               onChange={this.onConnectionChange}
             >
-              <option value=''>All</option>
+              <option value="">All</option>
               {connectionSelectOptions}
             </FormControl>
           </FormGroup>
           <br />
-          <FormGroup controlId='formControlsSelect'>
+          <FormGroup controlId="formControlsSelect">
             <ControlLabel>Created By</ControlLabel>
             <FormControl
               value={this.props.selectedCreatedBy}
-              componentClass='select'
+              componentClass="select"
               onChange={this.onCreatedByChange}
             >
-              <option value=''>All</option>
+              <option value="">All</option>
               {createdBySelectOptions}
             </FormControl>
           </FormGroup>
           <br />
-          <FormGroup controlId='formControlsSelect'>
+          <FormGroup controlId="formControlsSelect">
             <ControlLabel>Sort By</ControlLabel>
-            <FormControl componentClass='select' onChange={this.onSortByChange}>
-              <option value='modifiedDate'>Modified Date</option>
-              <option value='name'>Name</option>
+            <FormControl componentClass="select" onChange={this.onSortByChange}>
+              <option value="modifiedDate">Modified Date</option>
+              <option value="name">Name</option>
             </FormControl>
           </FormGroup>
         </Form>
@@ -298,7 +305,7 @@ class QueryListSidebar extends React.Component {
 }
 
 class QueryList extends React.Component {
-  render () {
+  render() {
     var self = this
     var QueryListRows = this.props.queries.map(query => {
       return (
@@ -313,9 +320,9 @@ class QueryList extends React.Component {
       )
     })
     return (
-      <div className='QueryList'>
+      <div className="QueryList">
         <ControlLabel>Queries</ControlLabel>
-        <ListGroup className='QueryListContents'>{QueryListRows}</ListGroup>
+        <ListGroup className="QueryListContents">{QueryListRows}</ListGroup>
       </div>
     )
   }
@@ -334,10 +341,10 @@ class QueryListRow extends React.Component {
     this.props.handleQueryDelete(this.props.query._id)
   }
 
-  render () {
+  render() {
     var tagLabels = this.props.query.tags.map(tag => {
       return (
-        <Label bsStyle='info' key={tag} style={{ marginLeft: 4 }}>
+        <Label bsStyle="info" key={tag} style={{ marginLeft: 4 }}>
           {tag}
         </Label>
       )
@@ -357,9 +364,9 @@ class QueryListRow extends React.Component {
       }
     }
     const popoverClick = (
-      <Popover id='popover-trigger-click' title='Are you sure?'>
+      <Popover id="popover-trigger-click" title="Are you sure?">
         <Button
-          bsStyle='danger'
+          bsStyle="danger"
           onClick={this.onDelete}
           style={{ width: '100%' }}
         >
@@ -377,7 +384,7 @@ class QueryListRow extends React.Component {
         <h4>
           <a
             onClick={navigateToClickHandler('/queries/' + this.props.query._id)}
-            href='#query'
+            href="#query"
           >
             {this.props.query.name}
           </a>
@@ -386,22 +393,22 @@ class QueryListRow extends React.Component {
           {this.props.query.createdBy} {tagLabels}
         </p>
         <p>
-          <a href={tableUrl} target='_blank' rel='noopener noreferrer'>
+          <a href={tableUrl} target="_blank" rel="noopener noreferrer">
             table
           </a>{' '}
-          <a href={chartUrl} target='_blank' rel='noopener noreferrer'>
+          <a href={chartUrl} target="_blank" rel="noopener noreferrer">
             chart
           </a>
         </p>
         <OverlayTrigger
-          trigger='click'
-          placement='left'
+          trigger="click"
+          placement="left"
           container={this}
           rootClose
           overlay={popoverClick}
         >
-          <a className='QueryListRowDeleteButton' href='#delete'>
-            <Glyphicon glyph='trash' />
+          <a className="QueryListRowDeleteButton" href="#delete">
+            <Glyphicon glyph="trash" />
           </a>
         </OverlayTrigger>
       </li>
@@ -410,7 +417,7 @@ class QueryListRow extends React.Component {
 }
 
 class QueryPreview extends React.Component {
-  render () {
+  render() {
     if (this.props.selectedQuery) {
       if (this.editor && this.props.config.editorWordWrap) {
         this.editor.session.setUseWrapMode(true)
@@ -421,23 +428,24 @@ class QueryPreview extends React.Component {
           query.chartConfiguration && query.chartConfiguration.chartType
             ? query.chartConfiguration.chartType
             : null
-        var chartDefinition = _.findWhere(chartDefinitions, {
-          chartType: chartType
-        })
+
+        const chartDefinition = chartDefinitions.find(
+          def => def.chartType === chartType
+        )
         return chartDefinition ? (
           <h4>Chart: {chartDefinition.chartLabel}</h4>
         ) : null
       }
       return (
-        <div className='QueryPreview'>
+        <div className="QueryPreview">
           <ControlLabel>Preview</ControlLabel>
           <h4>{this.props.selectedQuery.name}</h4>
           <AceEditor
-            mode='sql'
-            theme='sqlserver'
-            name='query-preview-ace-editor'
-            width='100%'
-            height='70%'
+            mode="sql"
+            theme="sqlserver"
+            name="query-preview-ace-editor"
+            width="100%"
+            height="70%"
             readOnly
             showGutter={false}
             showPrintMargin={false}
@@ -454,7 +462,7 @@ class QueryPreview extends React.Component {
         </div>
       )
     } else {
-      return <div className='QueryPreview' />
+      return <div className="QueryPreview" />
     }
   }
 }

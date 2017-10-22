@@ -12,7 +12,7 @@ import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import AutoAffix from 'react-overlays/lib/AutoAffix'
-var _ = window._
+import debounce from 'lodash.debounce'
 
 const CheckListItem = props => {
   if (!props.configKey || !props.configItems || !props.configItems.length) {
@@ -64,12 +64,12 @@ class ConfigValues extends React.Component {
     })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadConfigValuesFromServer()
-    this.saveConfigValue = _.debounce(this.saveConfigValue, 500)
+    this.saveConfigValue = debounce(this.saveConfigValue, 500)
   }
 
-  render () {
+  render() {
     var configItemInputNodes = this.state.configItems
       .filter(config => config.interface === 'ui')
       .map(config => {
@@ -84,7 +84,7 @@ class ConfigValues extends React.Component {
     return (
       <div>
         <Col sm={6} smOffset={1}>
-          <div className='configBox'>
+          <div className="configBox">
             <h1 style={{ textAlign: 'center' }}>Configuration</h1>
             <hr />
             <Form horizontal>{configItemInputNodes}</Form>
@@ -101,8 +101,8 @@ class ConfigValues extends React.Component {
         </Col>
         <Col sm={3} smOffset={1} style={{ paddingTop: 90 }}>
           <AutoAffix viewportOffsetTop={95}>
-            <div className='panel panel-default'>
-              <div className='panel-body'>
+            <div className="panel panel-default">
+              <div className="panel-body">
                 <p>
                   <strong>Feature Checklist</strong>
                 </p>
@@ -169,7 +169,7 @@ class ConfigItemInput extends React.Component {
     this.props.saveConfigValue(this.props.config.key, e.target.value)
   }
 
-  render () {
+  render() {
     const config = this.props.config
     const disabled =
       config.effectiveValueSource === 'cli' ||
@@ -185,7 +185,7 @@ class ConfigItemInput extends React.Component {
 
     const inputNode = () => {
       if (config.options) {
-        var optionNodes = config.options.map(function (option) {
+        var optionNodes = config.options.map(function(option) {
           return (
             <option key={option} value={option}>
               {option.toString()}
@@ -194,7 +194,7 @@ class ConfigItemInput extends React.Component {
         })
         return (
           <FormControl
-            componentClass='select'
+            componentClass="select"
             value={this.state.value}
             disabled={disabled}
             onChange={this.handleChange}
@@ -205,7 +205,7 @@ class ConfigItemInput extends React.Component {
       } else {
         return (
           <FormControl
-            type='text'
+            type="text"
             value={this.state.value}
             disabled={disabled}
             placeholder={config.label}
@@ -228,7 +228,7 @@ class ConfigItemInput extends React.Component {
         : config.cliFlag
 
     var helpPopover = (
-      <Popover id='popover-trigger-focus' title={config.label}>
+      <Popover id="popover-trigger-focus" title={config.label}>
         <HelpBlock>{config.description}</HelpBlock>
         <HelpBlock>
           <strong>Default:</strong> {defaultValue()}
@@ -265,7 +265,7 @@ class ConfigItemInput extends React.Component {
         <Col sm={6}>
           <OverlayTrigger
             trigger={['hover', 'focus']}
-            placement='right'
+            placement="right"
             overlay={helpPopover}
           >
             {inputNode()}
@@ -277,10 +277,10 @@ class ConfigItemInput extends React.Component {
 }
 
 class ConfigEnvDocumentation extends React.Component {
-  render () {
+  render() {
     var configNodes = this.props.configItems
       .filter(config => config.interface === 'env')
-      .map(function (config) {
+      .map(function(config) {
         var defaultValue = () => {
           if (config.default === '') {
             return <em style={{ color: '#999' }}>empty</em>
@@ -294,7 +294,7 @@ class ConfigEnvDocumentation extends React.Component {
             ? config.cliFlag.pop()
             : config.cliFlag
         var helpPopover = (
-          <Popover id='popover-trigger-focus' title={config.envVar}>
+          <Popover id="popover-trigger-focus" title={config.envVar}>
             <HelpBlock>
               <p>{config.description}</p>
               <p>
@@ -322,10 +322,10 @@ class ConfigEnvDocumentation extends React.Component {
             <Col sm={6}>
               <OverlayTrigger
                 trigger={['hover', 'focus']}
-                placement='right'
+                placement="right"
                 overlay={helpPopover}
               >
-                <FormControl type='text' value={currentValue} disabled />
+                <FormControl type="text" value={currentValue} disabled />
               </OverlayTrigger>
             </Col>
           </Row>

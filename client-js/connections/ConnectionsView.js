@@ -3,10 +3,9 @@ import fetchJson from '../utilities/fetch-json.js'
 import Alert from 'react-s-alert'
 import ConnectionList from './ConnectionList'
 import ConnectionForm from './ConnectionForm'
-const _ = window._
 
 class ConnectionsView extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       connections: [],
@@ -23,17 +22,17 @@ class ConnectionsView extends React.Component {
     this.saveConnection = this.saveConnection.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadConnectionsFromServer()
   }
 
-  handleSelect (connection) {
+  handleSelect(connection) {
     this.setState({
-      selectedConnection: _.clone(connection)
+      selectedConnection: Object.assign({}, connection)
     })
   }
 
-  handleDelete (connection) {
+  handleDelete(connection) {
     fetchJson(
       'DELETE',
       this.props.config.baseUrl + '/api/connections/' + connection._id
@@ -55,13 +54,13 @@ class ConnectionsView extends React.Component {
       })
   }
 
-  onNewConnectionClick () {
+  onNewConnectionClick() {
     this.setState({
       selectedConnection: {}
     })
   }
 
-  setConnectionValue (attribute, value) {
+  setConnectionValue(attribute, value) {
     var selectedConnection = this.state.selectedConnection
     if (selectedConnection) {
       selectedConnection[attribute] = value
@@ -69,7 +68,7 @@ class ConnectionsView extends React.Component {
     }
   }
 
-  loadConnectionsFromServer () {
+  loadConnectionsFromServer() {
     fetchJson('get', this.props.config.baseUrl + '/api/connections')
       .then(json => {
         if (json.error) Alert.error(json.error)
@@ -81,7 +80,7 @@ class ConnectionsView extends React.Component {
       })
   }
 
-  testConnection () {
+  testConnection() {
     this.setState({ isTesting: true })
     fetchJson(
       'POST',
@@ -99,7 +98,7 @@ class ConnectionsView extends React.Component {
       })
   }
 
-  saveConnection () {
+  saveConnection() {
     this.setState({ isSaving: true })
     if (this.state.selectedConnection._id) {
       fetchJson(
@@ -129,8 +128,7 @@ class ConnectionsView extends React.Component {
         .then(json => {
           this.setState({
             isSaving: false,
-            selectedConnection: json.connection ||
-              this.state.selectedConnection
+            selectedConnection: json.connection || this.state.selectedConnection
           })
           if (json.error) return Alert.error('Save failed')
           Alert.success('Connection saved')
@@ -144,9 +142,9 @@ class ConnectionsView extends React.Component {
     }
   }
 
-  render () {
+  render() {
     return (
-      <div className='flex-100'>
+      <div className="flex-100">
         <ConnectionList
           connections={this.state.connections}
           selectedConnection={this.state.selectedConnection}

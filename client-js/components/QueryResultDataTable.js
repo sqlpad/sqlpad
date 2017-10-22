@@ -2,7 +2,6 @@ import React from 'react'
 import { Table, Column, Cell } from 'fixed-data-table-2'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
-const _ = window._
 
 const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {
@@ -11,7 +10,7 @@ const renderValue = (input, fieldMeta) => {
     return input.toString()
   } else if (fieldMeta.datatype === 'date') {
     return moment.utc(input).format('MM/DD/YYYY HH:mm:ss')
-  } else if (_.isObject(input)) {
+  } else if (typeof input === 'object') {
     return JSON.stringify(input, null, 2)
   } else {
     return input
@@ -22,7 +21,7 @@ const renderValue = (input, fieldMeta) => {
 // because the isRunning prop will toggle with each query execution
 // It would otherwise not rerender on change of prop.queryResult alone
 class QueryResultDataTable extends React.PureComponent {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       gridWidth: 0,
@@ -34,7 +33,7 @@ class QueryResultDataTable extends React.PureComponent {
     this.handleColumnResizeEnd = this.handleColumnResizeEnd.bind(this)
   }
 
-  handleResize (e) {
+  handleResize(e) {
     const resultGrid = document.getElementById('result-grid')
     if (resultGrid) {
       this.setState({
@@ -44,7 +43,7 @@ class QueryResultDataTable extends React.PureComponent {
     }
   }
 
-  handleColumnResizeEnd (newColumnWidth, columnKey) {
+  handleColumnResizeEnd(newColumnWidth, columnKey) {
     this.setState(({ columnWidths }) => ({
       columnWidths: {
         ...columnWidths,
@@ -53,32 +52,35 @@ class QueryResultDataTable extends React.PureComponent {
     }))
   }
 
-  componentDidMount () {
+  componentDidMount() {
     window.addEventListener('resize', this.handleResize)
     this.handleResize()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('resize', this.handleResize)
   }
 
-  render () {
+  render() {
     if (this.props.isRunning) {
       return (
-        <div id='result-grid' className='result-grid run-result-notification'>
+        <div id="result-grid" className="result-grid run-result-notification">
           <SpinKitCube />
         </div>
       )
     } else if (this.props.queryError) {
       return (
-        <div id='result-grid' className='result-grid run-result-notification label-danger'>
+        <div
+          id="result-grid"
+          className="result-grid run-result-notification label-danger"
+        >
           {this.props.queryError}
         </div>
       )
     } else if (this.props.queryResult && this.props.queryResult.rows) {
       const { columnWidths } = this.state
       const queryResult = this.props.queryResult
-      const columnNodes = queryResult.fields.map(function (field) {
+      const columnNodes = queryResult.fields.map(function(field) {
         const fieldMeta = queryResult.meta[field]
         let valueLength = fieldMeta.maxValueLength
 
@@ -148,7 +150,7 @@ class QueryResultDataTable extends React.PureComponent {
         )
       })
       return (
-        <div id='result-grid' className='result-grid'>
+        <div id="result-grid" className="result-grid">
           <Table
             rowHeight={30}
             rowsCount={queryResult.rows.length}
@@ -162,7 +164,7 @@ class QueryResultDataTable extends React.PureComponent {
         </div>
       )
     } else {
-      return <div id='result-grid' className='result-grid' />
+      return <div id="result-grid" className="result-grid" />
     }
   }
 }

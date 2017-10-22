@@ -2,13 +2,12 @@ import React from 'react'
 import chartDefinitions from './ChartDefinitions.js'
 import SpinKitCube from './SpinKitCube.js'
 import Alert from 'react-s-alert'
-var _ = window._
 const tauCharts = window.tauCharts
 
 class SqlpadTauChart extends React.Component {
   displayName = 'SqlpadTauChart'
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (this.props.isRunning || this.props.queryError) {
       this.destroyChart()
     } else if (this.props.renderChart && !this.chart) {
@@ -38,9 +37,9 @@ class SqlpadTauChart extends React.Component {
     var dataRows = this.props.queryResult ? this.props.queryResult.rows : []
     var chartType = this.props.query.chartConfiguration.chartType
     var selectedFields = this.props.query.chartConfiguration.fields
-    var chartDefinition = _.findWhere(chartDefinitions, {
-      chartType: chartType
-    })
+    const chartDefinition = chartDefinitions.find(
+      def => def.chartType === chartType
+    )
 
     if (rerender || !dataRows.length || !chartDefinition) {
       this.destroyChart()
@@ -68,7 +67,7 @@ class SqlpadTauChart extends React.Component {
     }
 
     var unmetRequiredFields = []
-    var definitionFields = chartDefinition.fields.map(function (field) {
+    var definitionFields = chartDefinition.fields.map(function(field) {
       if (field.required && !selectedFields[field.fieldId]) {
         unmetRequiredFields.push(field)
       }
@@ -106,10 +105,10 @@ class SqlpadTauChart extends React.Component {
       // tauCharts auto detects numbers to be measures
       // Here we'll convert a number to a string,
       // to trick tauCharts into thinking its a dimension
-      var forceDimensionFields = _.where(definitionFields, {
-        forceDimension: true
-      })
-      forceDimensionFields.forEach(function (fieldDefinition) {
+      const forceDimensionFields = definitionFields.filter(
+        field => field.forceDimension === true
+      )
+      forceDimensionFields.forEach(function(fieldDefinition) {
         var col = fieldDefinition.val
         var colDatatype = meta[col] ? meta[col].datatype : null
         if (col && colDatatype === 'number' && newRow[col]) {
@@ -119,7 +118,11 @@ class SqlpadTauChart extends React.Component {
       return newRow
     })
 
-    var definitionFieldsById = _.indexBy(definitionFields, 'fieldId')
+    const definitionFieldsById = definitionFields.reduce((agg, field) => {
+      agg[field.fieldId] = field
+      return agg
+    }, {})
+
     switch (chartType) {
       case 'line':
         chartConfig.x = [definitionFieldsById.x.val]
@@ -247,16 +250,16 @@ class SqlpadTauChart extends React.Component {
     this.chart.setData(chartData)
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.destroyChart()
   }
 
-  render () {
+  render() {
     var runResultNotification = () => {
       if (this.props.isRunning) {
         return (
           <div
-            className='flex-100 run-result-notification'
+            className="flex-100 run-result-notification"
             style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
           >
             <SpinKitCube />
@@ -264,7 +267,7 @@ class SqlpadTauChart extends React.Component {
         )
       } else if (this.props.queryError) {
         return (
-          <div className='flex-100 run-result-notification label-danger'>
+          <div className="flex-100 run-result-notification label-danger">
             {this.props.queryError}
           </div>
         )
@@ -273,7 +276,7 @@ class SqlpadTauChart extends React.Component {
       }
     }
     return (
-      <div id='chart' className='flex-100' style={this.chartStyle}>
+      <div id="chart" className="flex-100" style={this.chartStyle}>
         {runResultNotification()}
       </div>
     )
