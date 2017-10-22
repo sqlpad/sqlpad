@@ -1,7 +1,8 @@
 {
   "name": "sqlpad",
   "version": "2.3.2",
-  "description": "Web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate and Vertica.",
+  "description":
+    "Web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate and Vertica.",
   "license": "MIT",
   "author": {
     "name": "Rick Bergfalk",
@@ -38,26 +39,22 @@
   "scripts": {
     "build": "react-scripts build",
     "coverage": "istanbul cover _mocha -- --recursive",
+    "precommit": "lint-staged",
     "prepublishOnly": "npm run build",
     "lint": "eslint '!(build|public)/**/*.js' && eslint server.js",
     "start-client-dev": "react-scripts start",
     "start-server-dev": "node-dev server.js --dir ./db --port 3010 --debug",
-    "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
+    "start":
+      "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
     "test": "lint && mocha --recursive"
   },
-  "prettier": {},
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
   "lint-staged": {
-    "linters": {
-      "!(build|public)/**/*.js": [
-        "prettier-standard",
-        "git add"
-      ],
-      "server.js": [
-        "prettier-standard",
-        "git add"
-      ]
-    }
+    "*.{js,json,css}": ["prettier --write", "git add"]
   },
   "dependencies": {
     "async": "^2.0.1",
