@@ -63,7 +63,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(BASE_URL, express.static(path.join(__dirname, 'build')))
 if (DEBUG) app.use(morgan('dev'))
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
   // Bootstrap res.locals with any common variables
   res.locals.message = null
   res.locals.navbarConnections = []
@@ -114,12 +114,12 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && PUBLIC_URL) {
   routers.push(require('./routes/oauth.js'))
 }
 
-routers.forEach(function (router) {
+routers.forEach(function(router) {
   app.use(BASE_URL, router)
 })
 
 // for any missing api route, return a 404
-app.use(BASE_URL + '/api/', function (req, res) {
+app.use(BASE_URL + '/api/', function(req, res) {
   console.log('reached catch all api route')
   res.sendStatus(404)
 })
@@ -142,7 +142,7 @@ if (fs.existsSync(htmlPath)) {
   console.error('If not running in dev mode please report this issue.\n')
 }
 
-function isFdObject (ob) {
+function isFdObject(ob) {
   return ob && typeof ob.fd === 'number'
 }
 
@@ -154,9 +154,9 @@ function isFdObject (ob) {
 // https://github.com/rickbergfalk/sqlpad/pull/185
 // https://www.freedesktop.org/software/systemd/man/systemd.socket.html
 // https://www.freedesktop.org/software/systemd/man/sd_listen_fds.html
-function detectPortOrSystemd (port) {
+function detectPortOrSystemd(port) {
   if (SYSTEMD_SOCKET) {
-    const passedSocketCount = parseInt(process.env.LISTEN_FDS) || 0
+    const passedSocketCount = parseInt(process.env.LISTEN_FDS, 10) || 0
 
     // LISTEN_FDS contains number of sockets passed by Systemd. At least one
     // must be passed. The sockets are set to file descriptors starting from 3.
@@ -179,14 +179,14 @@ function detectPortOrSystemd (port) {
 
 /*  Start the Server
 ============================================================================= */
-require('./lib/db').load(function (err) {
+require('./lib/db').load(function(err) {
   if (err) throw err
 
   // determine if key pair exists for certs
   if (KEY_PATH && CERT_PATH) {
     // https only
     console.log('Launching server with SSL')
-    detectPortOrSystemd(HTTPS_PORT).then(function (_port) {
+    detectPortOrSystemd(HTTPS_PORT).then(function(_port) {
       if (!isFdObject(_port) && HTTPS_PORT !== _port) {
         console.log(
           '\nPort %d already occupied. Using port %d instead.',
@@ -209,7 +209,7 @@ require('./lib/db').load(function (err) {
         passphrase: CERT_PASSPHRASE
       }
 
-      https.createServer(httpsOptions, app).listen(_port, IP, function () {
+      https.createServer(httpsOptions, app).listen(_port, IP, function() {
         console.log(
           '\nWelcome to ' +
             app.locals.title +
@@ -225,7 +225,7 @@ require('./lib/db').load(function (err) {
   } else {
     // http only
     console.log('Launching server WITHOUT SSL')
-    detectPortOrSystemd(PORT).then(function (_port) {
+    detectPortOrSystemd(PORT).then(function(_port) {
       if (!isFdObject(_port) && PORT !== _port) {
         console.log(
           '\nPort %d already occupied. Using port %d instead.',
@@ -239,7 +239,7 @@ require('./lib/db').load(function (err) {
         portConfigItem.cliValue = _port
         portConfigItem.computeEffectiveValue()
       }
-      http.createServer(app).listen(_port, IP, function () {
+      http.createServer(app).listen(_port, IP, function() {
         console.log(
           '\nWelcome to ' +
             app.locals.title +
