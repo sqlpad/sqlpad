@@ -6,7 +6,7 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
 
 class QueryEditor extends React.Component {
-  render () {
+  render() {
     const {
       activeTabKey,
       onTabSelect,
@@ -20,24 +20,24 @@ class QueryEditor extends React.Component {
 
     return (
       <Navbar fluid>
-        <Nav activeKey={activeTabKey} bsStyle='pills' onSelect={onTabSelect}>
-          <NavItem eventKey='sql'>
-            <span className='glyphicon glyphicon-align-left' /> SQL
+        <Nav activeKey={activeTabKey} bsStyle="pills" onSelect={onTabSelect}>
+          <NavItem eventKey="sql">
+            <span className="glyphicon glyphicon-align-left" /> SQL
           </NavItem>
-          <NavItem eventKey='vis'>
-            <span className='glyphicon glyphicon-stats' /> Vis
+          <NavItem eventKey="vis">
+            <span className="glyphicon glyphicon-stats" /> Vis
           </NavItem>
         </Nav>
         <Navbar.Form>
           <Button
-            className='QueryEditorSubheaderItem'
+            className="QueryEditorSubheaderItem"
             onClick={onSaveClick}
             disabled={isSaving}
           >
             {isSaving ? 'Saving' : 'Save'}
           </Button>
           <Button
-            className='QueryEditorSubheaderItem'
+            className="QueryEditorSubheaderItem"
             onClick={onRunClick}
             disabled={isRunning}
           >
@@ -45,7 +45,7 @@ class QueryEditor extends React.Component {
           </Button>
           <ControlLabel
             onClick={onQueryNameClick}
-            className='QueryEditorSubheaderItem QueryEditorQueryName'
+            className="QueryEditorSubheaderItem QueryEditorQueryName"
           >
             {queryName || '(click to name query)'}
           </ControlLabel>

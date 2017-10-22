@@ -12,14 +12,14 @@ class SchemaSidebar extends React.PureComponent {
     loading: false
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { connectionId } = this.props
     if (connectionId) {
       this.getSchemaInfo(connectionId)
     }
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.connectionId !== nextProps.connectionId) {
       this.getSchemaInfo(nextProps.connectionId)
     }
@@ -70,10 +70,10 @@ class SchemaSidebar extends React.PureComponent {
     this.getSchemaInfo(this.props.connectionId, true)
   }
 
-  render () {
+  render() {
     const { connections, connectionId } = this.props
     const { loading, schemaInfo } = this.state
-    const connectionSelectOptions = connections.map(function (conn) {
+    const connectionSelectOptions = connections.map(function(conn) {
       return (
         <option key={conn._id} value={conn._id}>
           {conn.name}
@@ -97,31 +97,29 @@ class SchemaSidebar extends React.PureComponent {
     })
 
     return (
-      <div className='sidebar'>
-        <div className='sidebar-body'>
-          <FormGroup controlId='formControlsSelect' bsSize='small'>
+      <div className="sidebar">
+        <div className="sidebar-body">
+          <FormGroup controlId="formControlsSelect" bsSize="small">
             <FormControl
               value={connectionId}
-              componentClass='select'
+              componentClass="select"
               onChange={this.handleConnectionChange}
-              className='input-small'
+              className="input-small"
             >
-              <option value=''>Choose a connection...</option>
+              <option value="">Choose a connection...</option>
               {connectionSelectOptions}
             </FormControl>
           </FormGroup>
           <hr />
           <div style={{ position: 'relative' }}>
-            <a style={{ position: 'absolute', right: '20px' }} href='#refresh'>
+            <a style={{ position: 'absolute', right: '20px' }} href="#refresh">
               <Glyphicon
-                glyph='refresh'
+                glyph="refresh"
                 className={refreshClass}
                 onClick={this.handleRefreshClick}
               />
             </a>
-            <ul className='schema-info schema-info-table'>
-              {schemaItemNodes}
-            </ul>
+            <ul className="schema-info schema-info-table">{schemaItemNodes}</ul>
           </div>
         </div>
       </div>
@@ -142,7 +140,7 @@ class SchemaInfoSchemaItem extends React.Component {
     })
   }
 
-  render () {
+  render() {
     const { showTables } = this.state
     const { schema, tables } = this.props
     let tableJsx
@@ -162,9 +160,9 @@ class SchemaInfoSchemaItem extends React.Component {
     return (
       <li key={schema}>
         <a
-          href='#schema'
+          href="#schema"
           onClick={this.handleClick}
-          className='schema-info-schema'
+          className="schema-info-schema"
         >
           {schema}
         </a>
@@ -212,7 +210,7 @@ class SchemaInfoTableItem extends React.Component {
     }, 2000)
   }
 
-  render () {
+  render() {
     const { columns, config, schema, table } = this.props
     const { showColumns, showCopyButton, copyButtonText } = this.state
     let columnJsx
@@ -235,7 +233,7 @@ class SchemaInfoTableItem extends React.Component {
     const viewType = () => {
       const type = columns[0].table_type
       if (type.toLowerCase().split('')[0] === 'v') {
-        return <span className='schema-additional-context'> (view)</span>
+        return <span className="schema-additional-context"> (view)</span>
       }
     }
 
@@ -247,7 +245,7 @@ class SchemaInfoTableItem extends React.Component {
         return (
           <CopyToClipboard text={schema + '.' + table} onCopy={this.handleCopy}>
             <span
-              id='path-tooltip'
+              id="path-tooltip"
               onClick={this.handleCopyClick}
               className={copyButtonClassName}
             >
@@ -260,11 +258,11 @@ class SchemaInfoTableItem extends React.Component {
     return (
       <li key={table}>
         <a
-          href='#schema'
+          href="#schema"
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
           onClick={this.handleClick}
-          className='schema-info-table'
+          className="schema-info-table"
         >
           {table} {viewType()}
           {getCopyToClipboard()}
@@ -305,7 +303,7 @@ class SchemaInfoColumnItem extends React.Component {
     }, 2000)
   }
 
-  render () {
+  render() {
     const { copyButtonText, showCopyButton } = this.state
     const { config, column_name, data_type, schema, table } = this.props
     const copyButtonClassName = showCopyButton
@@ -319,7 +317,7 @@ class SchemaInfoColumnItem extends React.Component {
             onCopy={this.handleCopy}
           >
             <span
-              id='path-tooltip'
+              id="path-tooltip"
               onClick={this.handleCopyClick}
               className={copyButtonClassName}
             >
@@ -334,13 +332,10 @@ class SchemaInfoColumnItem extends React.Component {
         <span
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
-          className='schema-info-column'
+          className="schema-info-column"
         >
           {column_name}
-          <span className='schema-additional-context'>
-            {' '}
-            ({data_type})
-          </span>
+          <span className="schema-additional-context"> ({data_type})</span>
           {getCopyToClipboard()}
         </span>
       </li>

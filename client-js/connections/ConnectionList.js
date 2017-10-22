@@ -13,7 +13,7 @@ const connectionListStyle = {
 }
 
 class ConnectionList extends React.Component {
-  render () {
+  render() {
     const {
       connections,
       selectedConnection,
@@ -33,9 +33,9 @@ class ConnectionList extends React.Component {
       )
     })
     return (
-      <div className='ConnectionList' style={connectionListStyle}>
+      <div className="ConnectionList" style={connectionListStyle}>
         <ControlLabel>Connections</ControlLabel>
-        <ListGroup className='ConnectionListContents'>{listRows}</ListGroup>
+        <ListGroup className="ConnectionListContents">{listRows}</ListGroup>
         <Button onClick={onNewConnectionClick}>New Connection</Button>
       </div>
     )

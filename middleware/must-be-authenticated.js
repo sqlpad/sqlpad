@@ -1,6 +1,6 @@
 var passport = require('passport')
 
-module.exports = function mustBeAuthenticated (req, res, next) {
+module.exports = function mustBeAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next()
   }

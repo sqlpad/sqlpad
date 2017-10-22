@@ -1,6 +1,6 @@
 import 'whatwg-fetch'
 
-export default function fetchJson (method, url, body) {
+export default function fetchJson(method, url, body) {
   const opts = {
     method: method.toUpperCase(),
     credentials: 'same-origin',

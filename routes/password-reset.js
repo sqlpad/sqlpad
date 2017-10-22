@@ -1,8 +1,8 @@
 var router = require('express').Router()
 var User = require('../models/User.js')
 
-router.get('/api/password-reset/:passwordResetId', function (req, res) {
-  User.findOneByPasswordResetId(req.params.passwordResetId, function (
+router.get('/api/password-reset/:passwordResetId', function(req, res) {
+  User.findOneByPasswordResetId(req.params.passwordResetId, function(
     err,
     user
   ) {
@@ -17,8 +17,8 @@ router.get('/api/password-reset/:passwordResetId', function (req, res) {
   })
 })
 
-router.post('/api/password-reset/:passwordResetId', function (req, res) {
-  User.findOneByPasswordResetId(req.params.passwordResetId, function (
+router.post('/api/password-reset/:passwordResetId', function(req, res) {
+  User.findOneByPasswordResetId(req.params.passwordResetId, function(
     err,
     user
   ) {
@@ -37,7 +37,7 @@ router.post('/api/password-reset/:passwordResetId', function (req, res) {
     }
     user.password = req.body.password
     user.passwordResetId = ''
-    user.save(function (err) {
+    user.save(function(err) {
       if (err) {
         console.error(err)
         return res.json({ error: 'Error saving update to DB' })

@@ -1,4 +1,4 @@
-module.exports = function mustBeAdmin (req, res, next) {
+module.exports = function mustBeAdmin(req, res, next) {
   if (req.user.role === 'admin') {
     next()
   } else {

@@ -8,8 +8,8 @@ import page from 'page'
   example: navigateTo('/somepage')
 */
 
-export default function navigateToClickHandler (path) {
-  return function (e) {
+export default function navigateToClickHandler(path) {
+  return function(e) {
     e.preventDefault()
     e.stopPropagation()
     page(path)

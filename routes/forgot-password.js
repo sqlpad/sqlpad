@@ -4,14 +4,14 @@ var uuid = require('uuid')
 var User = require('../models/User.js')
 var config = require('../lib/config.js')
 
-router.post('/api/forgot-password', function (req, res) {
+router.post('/api/forgot-password', function(req, res) {
   if (!req.body.email) {
     return res.json({ error: 'Email address must be provided' })
   }
   if (!config.smtpConfigured()) {
     return res.json({ error: 'Email must be configured' })
   }
-  User.findOneByEmail(req.body.email, function (err, user) {
+  User.findOneByEmail(req.body.email, function(err, user) {
     if (err) {
       console.error(err)
       return res.json({ error: 'Problem querying user database' })
@@ -21,7 +21,7 @@ router.post('/api/forgot-password', function (req, res) {
       return res.json({})
     }
     user.passwordResetId = uuid.v4()
-    user.save(function (err) {
+    user.save(function(err) {
       if (err) {
         console.error(err)
         return res.json({ error: 'Problem saving to user database' })
@@ -62,7 +62,7 @@ router.post('/api/forgot-password', function (req, res) {
           url +
           '</a>.</p>'
       }
-      transporter.sendMail(mailOptions, function (err, info) {
+      transporter.sendMail(mailOptions, function(err, info) {
         if (config.get('debug')) console.log('sent email: ' + info)
         if (err) {
           return console.error(err)

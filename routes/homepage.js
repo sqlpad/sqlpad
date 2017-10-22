@@ -10,8 +10,8 @@ var Connection = require('../models/Connection.js')
 var config = require('../lib/config.js')
 const BASE_URL = config.get('baseUrl')
 
-router.get('/', function (req, res, next) {
-  Connection.findAll(function (err, connections) {
+router.get('/', function(req, res, next) {
+  Connection.findAll(function(err, connections) {
     if (err) {
       console.error(err)
       return next(err)

@@ -14,7 +14,7 @@ import fetchJson from './utilities/fetch-json.js'
 import page from 'page'
 
 class App extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       showAboutModal: false,
@@ -28,15 +28,15 @@ class App extends React.Component {
     this.signout = this.signout.bind(this)
   }
 
-  openAboutModal () {
+  openAboutModal() {
     this.setState({ showAboutModal: true })
   }
 
-  closeAboutModal () {
+  closeAboutModal() {
     this.setState({ showAboutModal: false })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     fetchJson('GET', this.props.config.baseUrl + '/api/app')
       .then(json => {
         // TODO - would it be good to adopt this all-in-one app route or is this bad?
@@ -53,7 +53,7 @@ class App extends React.Component {
       })
   }
 
-  signout () {
+  signout() {
     fetchJson('GET', this.props.config.baseUrl + '/api/signout')
       .then(json => {
         page('/')
@@ -64,10 +64,10 @@ class App extends React.Component {
       })
   }
 
-  render () {
+  render() {
     const popover = (
       <Popover
-        id='modal-popover'
+        id="modal-popover"
         title={'Update Available (' + this.state.version.updateType + ')'}
       >
         Installed Version: {this.state.version.current}
@@ -78,9 +78,9 @@ class App extends React.Component {
     const updateNotification = () => {
       if (this.state.version.updateAvailable) {
         return (
-          <OverlayTrigger overlay={popover} placement='bottom'>
+          <OverlayTrigger overlay={popover} placement="bottom">
             <NavItem eventKey={9}>
-              <span className='glyphicon glyphicon-upload' aria-hidden='true' />
+              <span className="glyphicon glyphicon-upload" aria-hidden="true" />
             </NavItem>
           </OverlayTrigger>
         )
@@ -92,7 +92,7 @@ class App extends React.Component {
           <NavDropdown
             eventKey={3}
             title={this.props.currentUser.email.split('@')[0]}
-            id='user-nav-dropdown'
+            id="user-nav-dropdown"
           >
             <MenuItem
               eventKey={3.1}
@@ -124,7 +124,7 @@ class App extends React.Component {
           <NavDropdown
             eventKey={3}
             title={this.props.currentUser.email.split('@')[0]}
-            id='user-nav-dropdown'
+            id="user-nav-dropdown"
           >
             <MenuItem eventKey={3.4} onClick={this.openAboutModal}>
               About SQLPad
@@ -138,7 +138,7 @@ class App extends React.Component {
       }
     }
     return (
-      <div className='flex-100'>
+      <div className="flex-100">
         <Navbar inverse fluid fixedTop>
           <Nav>
             <NavItem eventKey={1} onClick={navigateToClickHandler('/queries')}>
@@ -160,10 +160,10 @@ class App extends React.Component {
             {userMenu()}
           </Nav>
         </Navbar>
-        <div className='flex-100' style={{ marginTop: '50px' }}>
+        <div className="flex-100" style={{ marginTop: '50px' }}>
           {this.props.children}
         </div>
-        <Alert stack={{ limit: 3 }} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position="bottom-right" />
         <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>
           <Modal.Header closeButton>
             <Modal.Title>About SQLPad</Modal.Title>
@@ -175,56 +175,56 @@ class App extends React.Component {
             <p>
               <strong>Project Page</strong>:{' '}
               <a
-                href='http://rickbergfalk.github.io/sqlpad/'
-                target='_blank'
-                rel='noopener noreferrer'
+                href="http://rickbergfalk.github.io/sqlpad/"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 http://rickbergfalk.github.io/sqlpad{' '}
                 <span
                   style={{ marginLeft: 4 }}
-                  className='glyphicon glyphicon-new-window'
-                  aria-hidden='true'
+                  className="glyphicon glyphicon-new-window"
+                  aria-hidden="true"
                 />
               </a>
             </p>
             <hr />
-            <ul className='nav nav-pills nav-justified'>
-              <li role='presentation'>
+            <ul className="nav nav-pills nav-justified">
+              <li role="presentation">
                 <a
-                  href='https://github.com/rickbergfalk/sqlpad/issues'
-                  target='_blank'
-                  rel='noopener noreferrer'
+                  href="https://github.com/rickbergfalk/sqlpad/issues"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Submit an Issue{' '}
                   <span
-                    className='glyphicon glyphicon-new-window'
-                    aria-hidden='true'
+                    className="glyphicon glyphicon-new-window"
+                    aria-hidden="true"
                   />
                 </a>
               </li>
-              <li role='presentation'>
+              <li role="presentation">
                 <a
-                  href='https://github.com/rickbergfalk/sqlpad/blob/master/CHANGELOG.md'
-                  target='_blank'
-                  rel='noopener noreferrer'
+                  href="https://github.com/rickbergfalk/sqlpad/blob/master/CHANGELOG.md"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   Changelog{' '}
                   <span
-                    className='glyphicon glyphicon-new-window'
-                    aria-hidden='true'
+                    className="glyphicon glyphicon-new-window"
+                    aria-hidden="true"
                   />
                 </a>
               </li>
-              <li role='presentation'>
+              <li role="presentation">
                 <a
-                  href='https://github.com/rickbergfalk/sqlpad'
-                  target='_blank'
-                  rel='noopener noreferrer'
+                  href="https://github.com/rickbergfalk/sqlpad"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   GitHub Repository{' '}
                   <span
-                    className='glyphicon glyphicon-new-window'
-                    aria-hidden='true'
+                    className="glyphicon glyphicon-new-window"
+                    aria-hidden="true"
                   />
                 </a>
               </li>

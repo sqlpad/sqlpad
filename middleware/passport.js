@@ -13,12 +13,12 @@ const GOOGLE_CLIENT_SECRET = config.get('googleClientSecret')
 const PUBLIC_URL = config.get('publicUrl')
 const DISABLE_USERPASS_AUTH = config.get('disableUserpassAuth')
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
   done(null, user.id)
 })
 
-passport.deserializeUser(function (id, done) {
-  User.findOneById(id, function (err, user) {
+passport.deserializeUser(function(id, done) {
+  User.findOneById(id, function(err, user) {
     if (err) return done(err)
     if (user) {
       done(null, {
@@ -39,13 +39,13 @@ if (!DISABLE_USERPASS_AUTH) {
       {
         usernameField: 'email'
       },
-      function passportLocalStrategyHandler (email, password, done) {
-        User.findOneByEmail(email, function (err, user) {
+      function passportLocalStrategyHandler(email, password, done) {
+        User.findOneByEmail(email, function(err, user) {
           if (err) return done(err)
           if (!user) {
             return done(null, false, { message: 'wrong email or password' })
           }
-          user.comparePasswordToHash(password, function (err, isMatch) {
+          user.comparePasswordToHash(password, function(err, isMatch) {
             if (err) return done(err)
             if (isMatch) {
               return done(null, {
@@ -63,11 +63,11 @@ if (!DISABLE_USERPASS_AUTH) {
   )
 
   passport.use(
-    new BasicStrategy(function (username, password, callback) {
-      User.findOneByEmail(username, function (err, user) {
+    new BasicStrategy(function(username, password, callback) {
+      User.findOneByEmail(username, function(err, user) {
         if (err) return callback(err)
         if (!user) return callback(null, false)
-        user.comparePasswordToHash(password, function (err, isMatch) {
+        user.comparePasswordToHash(password, function(err, isMatch) {
           if (err) return callback(err)
           if (!isMatch) return callback(null, false)
           return callback(null, user)
@@ -91,7 +91,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && PUBLIC_URL) {
   )
 }
 
-function passportGoogleStrategyHandler (
+function passportGoogleStrategyHandler(
   request,
   accessToken,
   refreshToken,
@@ -100,20 +100,20 @@ function passportGoogleStrategyHandler (
 ) {
   async.waterfall(
     [
-      function getOpenAdminRegistration (next) {
+      function getOpenAdminRegistration(next) {
         var data = {}
-        User.adminRegistrationOpen(function (err, openReg) {
+        User.adminRegistrationOpen(function(err, openReg) {
           data.openAdminRegistration = openReg
           next(err, data)
         })
       },
-      function getUserForProfileEmail (data, next) {
-        User.findOneByEmail(profile.email, function (err, user) {
+      function getUserForProfileEmail(data, next) {
+        User.findOneByEmail(profile.email, function(err, user) {
           data.user = user
           next(err, data)
         })
       },
-      function createUserIfNeeded (data, next) {
+      function createUserIfNeeded(data, next) {
         if (data.user) return next(null, data)
         if (data.openAdminRegistration || checkWhitelist(profile.email)) {
           data.user = new User({
@@ -129,15 +129,15 @@ function passportGoogleStrategyHandler (
           message: "You haven't been invited by an admin yet."
         })
       },
-      function saveUser (data, next) {
+      function saveUser(data, next) {
         data.user.signupDate = new Date()
-        data.user.save(function (err, newUser) {
+        data.user.save(function(err, newUser) {
           data.user = newUser
           return next(err, data)
         })
       }
     ],
-    function (err, data) {
+    function(err, data) {
       if (err) return done(err, null)
       return done(null, {
         id: data.user._id,

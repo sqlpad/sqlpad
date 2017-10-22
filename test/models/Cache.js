@@ -3,31 +3,31 @@
 // var should = require('chai').should()
 var Cache = require('../../models/Cache.js')
 
-describe.skip('models/Cache.js', function () {
-  before(function before (done) {
+describe.skip('models/Cache.js', function() {
+  before(function before(done) {
     Cache.removeAll(done)
   })
 
-  describe('new Cache', function () {
-    it('should save without error', function (done) {
+  describe('new Cache', function() {
+    it('should save without error', function(done) {
       done()
     })
   })
 
-  describe('.findOneByCacheKey', function () {
-    it('should get the cache item requested', function (done) {
+  describe('.findOneByCacheKey', function() {
+    it('should get the cache item requested', function(done) {
       done()
     })
   })
 
-  describe('.findExpired()', function () {
-    it('should find expired cache items', function (done) {
+  describe('.findExpired()', function() {
+    it('should find expired cache items', function(done) {
       done()
     })
   })
 
-  describe('.removeExpired()', function () {
-    it('should remove expired items', function (done) {
+  describe('.removeExpired()', function() {
+    it('should remove expired items', function(done) {
       done()
     })
   })

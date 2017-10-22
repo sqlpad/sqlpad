@@ -46,7 +46,7 @@ class QueryEditor extends React.Component {
       })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.runQuery(this.props.queryId)
   }
 
@@ -66,7 +66,7 @@ class QueryEditor extends React.Component {
     return !pending && this.hasRows()
   }
 
-  render () {
+  render() {
     var csvDownloadLink
     var xlsxDownloadLink
     if (this.state.queryResult) {
@@ -83,44 +83,40 @@ class QueryEditor extends React.Component {
     }
     return (
       <div
-        className='flex-100'
+        className="flex-100"
         style={{ flexDirection: 'column', padding: '16px' }}
       >
         <div style={{ height: '50px' }}>
-          <span className='query-title'>
+          <span className="query-title">
             {this.state.query ? this.state.query.name : ''}
           </span>
           <div style={{ float: 'right' }}>
             <IncompleteDataNotification queryResult={this.state.queryResult} />
-            {this.state.queryResult
-              ? <DropdownButton
-                title='Export'
-                id='export-dropdown-button'
+            {this.state.queryResult ? (
+              <DropdownButton
+                title="Export"
+                id="export-dropdown-button"
                 pullRight
-                >
-                <MenuItem eventKey='1' onClick={this.onSaveImageClick}>
-                    png
+              >
+                <MenuItem eventKey="1" onClick={this.onSaveImageClick}>
+                  png
+                </MenuItem>
+                {this.props.config.allowCsvDownload ? (
+                  <MenuItem eventKey="2" target="_blank" href={csvDownloadLink}>
+                    csv
                   </MenuItem>
-                {this.props.config.allowCsvDownload
-                    ? <MenuItem
-                      eventKey='2'
-                      target='_blank'
-                      href={csvDownloadLink}
-                      >
-                        csv
-                      </MenuItem>
-                    : null}
-                {this.props.config.allowCsvDownload
-                    ? <MenuItem
-                      eventKey='3'
-                      target='_blank'
-                      href={xlsxDownloadLink}
-                      >
-                        xlsx
-                      </MenuItem>
-                    : null}
+                ) : null}
+                {this.props.config.allowCsvDownload ? (
+                  <MenuItem
+                    eventKey="3"
+                    target="_blank"
+                    href={xlsxDownloadLink}
+                  >
+                    xlsx
+                  </MenuItem>
+                ) : null}
               </DropdownButton>
-              : null}
+            ) : null}
           </div>
         </div>
         <div style={{ height: '100%', display: 'flex' }}>

@@ -29,25 +29,25 @@ class ForgotPassword extends React.Component {
       })
   }
 
-  render () {
+  render() {
     return (
-      <div className='signin'>
-        <form className='form-signin' onSubmit={this.resetPassword}>
+      <div className="signin">
+        <form className="form-signin" onSubmit={this.resetPassword}>
           <h2>SQLPad</h2>
           <input
-            name='email'
-            type='email'
-            className='form-control top-field'
-            placeholder='Email address'
+            name="email"
+            type="email"
+            className="form-control top-field"
+            placeholder="Email address"
             onChange={this.onEmailChange}
             required
           />
           <br />
-          <button className='btn btn-lg btn-primary btn-block' type='submit'>
+          <button className="btn btn-lg btn-primary btn-block" type="submit">
             Reset Password
           </button>
         </form>
-        <Alert stack={{ limit: 3 }} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

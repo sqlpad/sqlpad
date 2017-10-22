@@ -170,21 +170,21 @@ const connectionFormStyle = {
 }
 
 class ConnectionForm extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.onTextInputChange = this.onTextInputChange.bind(this)
     this.onCheckboxChange = this.onCheckboxChange.bind(this)
   }
 
-  onTextInputChange (e) {
+  onTextInputChange(e) {
     this.props.setConnectionValue(e.target.name, e.target.value)
   }
 
-  onCheckboxChange (e) {
+  onCheckboxChange(e) {
     this.props.setConnectionValue(e.target.name, e.target.checked)
   }
 
-  renderDriverFields () {
+  renderDriverFields() {
     const { selectedConnection } = this.props
     const connection = selectedConnection
 
@@ -197,7 +197,7 @@ class ConnectionForm extends React.Component {
             <FormGroup key={field.key} controlId={field.key}>
               <ControlLabel>{field.label}</ControlLabel>
               <FormControl
-                type='text'
+                type="text"
                 name={field.key}
                 value={value}
                 onChange={this.onTextInputChange}
@@ -212,8 +212,8 @@ class ConnectionForm extends React.Component {
             <FormGroup key={field.key} controlId={field.key}>
               <ControlLabel>{field.label}</ControlLabel>
               <FormControl
-                type='password'
-                autoComplete='new-password'
+                type="password"
+                autoComplete="new-password"
                 name={field.key}
                 value={value}
                 onChange={this.onTextInputChange}
@@ -239,7 +239,7 @@ class ConnectionForm extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const {
       selectedConnection,
       isSaving,
@@ -249,42 +249,42 @@ class ConnectionForm extends React.Component {
     } = this.props
     const connection = selectedConnection
     if (!selectedConnection) {
-      return <div className='ConnectionForm' style={connectionFormStyle} />
+      return <div className="ConnectionForm" style={connectionFormStyle} />
     }
     return (
-      <div className='ConnectionForm' style={connectionFormStyle}>
+      <div className="ConnectionForm" style={connectionFormStyle}>
         <Panel>
           <Form>
             <FormGroup
-              controlId='name'
+              controlId="name"
               validationState={connection.name ? null : 'error'}
             >
               <ControlLabel>Connection Name</ControlLabel>
               <FormControl
-                type='text'
-                name='name'
+                type="text"
+                name="name"
                 value={connection.name || ''}
                 onChange={this.onTextInputChange}
               />
             </FormGroup>
             <FormGroup
-              controlId='driver'
+              controlId="driver"
               validationState={connection.driver ? null : 'error'}
             >
               <ControlLabel>Database Driver</ControlLabel>
               <FormControl
-                componentClass='select'
-                name='driver'
+                componentClass="select"
+                name="driver"
                 value={connection.driver || ''}
                 onChange={this.onTextInputChange}
               >
-                <option value='' />
-                <option value='crate'>Crate</option>
-                <option value='mysql'>MySQL</option>
-                <option value='postgres'>Postgres</option>
-                <option value='presto'>Presto</option>
-                <option value='sqlserver'>SQL Server</option>
-                <option value='vertica'>Vertica</option>
+                <option value="" />
+                <option value="crate">Crate</option>
+                <option value="mysql">MySQL</option>
+                <option value="postgres">Postgres</option>
+                <option value="presto">Presto</option>
+                <option value="sqlserver">SQL Server</option>
+                <option value="vertica">Vertica</option>
               </FormControl>
             </FormGroup>
             {this.renderDriverFields()}

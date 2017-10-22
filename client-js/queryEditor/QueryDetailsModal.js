@@ -32,28 +32,28 @@ class QueryDetailsModal extends React.Component {
     const saved = !!query._id
     if (saved) {
       return (
-        <li role='presentation'>
-          <a href={href} target='_blank' rel='noopener noreferrer'>
-            {text} <Glyphicon glyph='new-window' />
+        <li role="presentation">
+          <a href={href} target="_blank" rel="noopener noreferrer">
+            {text} <Glyphicon glyph="new-window" />
           </a>
         </li>
       )
     } else {
       const tooltip = (
-        <Tooltip id='tooltip'>
+        <Tooltip id="tooltip">
           Save query to enable table/chart view links
         </Tooltip>
       )
       return (
-        <OverlayTrigger placement='top' overlay={tooltip}>
-          <li role='presentation' className='disabled'>
+        <OverlayTrigger placement="top" overlay={tooltip}>
+          <li role="presentation" className="disabled">
             <a
               href={href}
-              target='_blank'
-              rel='noopener noreferrer'
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={e => e.preventDefault()}
             >
-              {text} <Glyphicon glyph='new-window' />
+              {text} <Glyphicon glyph="new-window" />
             </a>
           </li>
         </OverlayTrigger>
@@ -61,7 +61,7 @@ class QueryDetailsModal extends React.Component {
     }
   }
 
-  render () {
+  render() {
     const {
       onHide,
       onQueryTagsChange,
@@ -71,9 +71,10 @@ class QueryDetailsModal extends React.Component {
       tagOptions
     } = this.props
     const validationState = saveOnClose && !query.name.length ? 'warning' : null
-    const validationHelp = saveOnClose && !query.name.length
-      ? <HelpBlock>Query name is required to save query.</HelpBlock>
-      : null
+    const validationHelp =
+      saveOnClose && !query.name.length ? (
+        <HelpBlock>Query name is required to save query.</HelpBlock>
+      ) : null
     return (
       <Modal
         animation
@@ -87,10 +88,10 @@ class QueryDetailsModal extends React.Component {
             <FormGroup validationState={validationState}>
               <ControlLabel>Query Name</ControlLabel>
               <input
-                className='form-control'
+                className="form-control"
                 onChange={this.onQueryNameChange}
                 ref={ref => (this.input = ref)}
-                type='text'
+                type="text"
                 value={query.name}
               />
               <FormControl.Feedback />
@@ -101,15 +102,15 @@ class QueryDetailsModal extends React.Component {
               <ControlLabel>Query Tags</ControlLabel>
               <Creatable
                 multi
-                name='query-tags-field'
+                name="query-tags-field"
                 onChange={onQueryTagsChange}
                 options={tagOptions}
-                placeholder=''
+                placeholder=""
                 value={query.tags}
               />
             </FormGroup>
             <br />
-            <ul className='nav nav-pills nav-justified'>
+            <ul className="nav nav-pills nav-justified">
               {this.renderNavLink('?format=table', 'Link to Table')}
               {this.renderNavLink('?format=chart', 'Link to Chart')}
             </ul>

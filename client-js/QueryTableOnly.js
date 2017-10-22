@@ -46,11 +46,11 @@ class QueryEditor extends React.Component {
       })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.runQuery(this.props.queryId)
   }
 
-  render () {
+  render() {
     var csvDownloadLink
     var xlsxDownloadLink
     if (this.state.queryResult) {
@@ -67,33 +67,29 @@ class QueryEditor extends React.Component {
     }
     return (
       <div
-        className='flex-100'
+        className="flex-100"
         style={{ flexDirection: 'column', padding: '16px' }}
       >
         <div style={{ height: '50px' }}>
-          <span className='query-title'>
+          <span className="query-title">
             {this.state.query ? this.state.query.name : ''}
           </span>
           <div style={{ float: 'right' }}>
             <IncompleteDataNotification queryResult={this.state.queryResult} />
-            {this.state.queryResult && this.props.config.allowCsvDownload
-              ? <DropdownButton
-                title='Export'
-                id='export-dropdown-button'
+            {this.state.queryResult && this.props.config.allowCsvDownload ? (
+              <DropdownButton
+                title="Export"
+                id="export-dropdown-button"
                 pullRight
-                >
-                <MenuItem eventKey='2' target='_blank' href={csvDownloadLink}>
-                    csv
-                  </MenuItem>
-                <MenuItem
-                  eventKey='3'
-                  target='_blank'
-                  href={xlsxDownloadLink}
-                  >
-                    xlsx
-                  </MenuItem>
+              >
+                <MenuItem eventKey="2" target="_blank" href={csvDownloadLink}>
+                  csv
+                </MenuItem>
+                <MenuItem eventKey="3" target="_blank" href={xlsxDownloadLink}>
+                  xlsx
+                </MenuItem>
               </DropdownButton>
-              : null}
+            ) : null}
           </div>
         </div>
         <div style={{ height: '100%', display: 'flex' }}>

@@ -8,7 +8,7 @@ import ChartInputs from './ChartInputs.js'
 import chartDefinitions from '../components/ChartDefinitions.js'
 
 class VisSidebar extends React.Component {
-  render () {
+  render() {
     const {
       isChartable,
       onChartConfigurationFieldsChange,
@@ -28,16 +28,16 @@ class VisSidebar extends React.Component {
     })
 
     return (
-      <div className='sidebar'>
-        <div className='sidebar-body'>
-          <FormGroup controlId='formControlsSelect' bsSize='small'>
+      <div className="sidebar">
+        <div className="sidebar-body">
+          <FormGroup controlId="formControlsSelect" bsSize="small">
             <FormControl
               value={query.chartConfiguration.chartType}
               onChange={onChartTypeChange}
-              componentClass='select'
-              className='input-small'
+              componentClass="select"
+              className="input-small"
             >
-              <option value=''>Choose a chart type...</option>
+              <option value="">Choose a chart type...</option>
               {chartOptions}
             </FormControl>
           </FormGroup>
@@ -48,7 +48,7 @@ class VisSidebar extends React.Component {
             queryResult={queryResult}
           />
         </div>
-        <div className='sidebar-actions-bottom'>
+        <div className="sidebar-actions-bottom">
           <Button
             onClick={onVisualizeClick}
             disabled={!isChartable}
@@ -62,7 +62,7 @@ class VisSidebar extends React.Component {
             className={'btn-block'}
             bsSize={'sm'}
           >
-            <Glyphicon glyph='save' /> Save Chart Image
+            <Glyphicon glyph="save" /> Save Chart Image
           </Button>
         </div>
       </div>

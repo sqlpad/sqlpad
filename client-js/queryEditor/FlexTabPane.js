@@ -2,14 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 class FlexTabPane extends React.Component {
-  render () {
+  render() {
     const { activeTabKey, tabKey } = this.props
     const display = activeTabKey === tabKey ? 'flex' : 'none'
-    return (
-      <div style={{ display, width: '100%' }}>
-        {this.props.children}
-      </div>
-    )
+    return <div style={{ display, width: '100%' }}>{this.props.children}</div>
   }
 }
 

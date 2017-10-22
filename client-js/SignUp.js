@@ -35,7 +35,7 @@ class SignUp extends React.Component {
       })
   }
 
-  render () {
+  render() {
     const adminRegistrationOpenIntro = () => {
       if (this.props.adminRegistrationOpen) {
         return (
@@ -53,40 +53,40 @@ class SignUp extends React.Component {
       }
     }
     return (
-      <div className='signin'>
-        <form className='form-signin' onSubmit={this.signUp}>
+      <div className="signin">
+        <form className="form-signin" onSubmit={this.signUp}>
           <h2>SQLPad</h2>
           {adminRegistrationOpenIntro()}
           <input
-            name='email'
-            type='email'
-            className='form-control top-field'
-            placeholder='Email address'
+            name="email"
+            type="email"
+            className="form-control top-field"
+            placeholder="Email address"
             onChange={this.onEmailChange}
             required
           />
           <input
-            name='password'
-            type='password'
-            className='form-control middle-field'
-            placeholder='Password'
+            name="password"
+            type="password"
+            className="form-control middle-field"
+            placeholder="Password"
             onChange={this.onPasswordChange}
             required
           />
           <input
-            name='passwordConfirmation'
-            type='password'
-            className='form-control bottom-field'
-            placeholder='Confirm Password'
+            name="passwordConfirmation"
+            type="password"
+            className="form-control bottom-field"
+            placeholder="Confirm Password"
             onChange={this.onPasswordConfirmationChange}
             required
           />
           <br />
-          <button className='btn btn-lg btn-primary btn-block' type='submit'>
+          <button className="btn btn-lg btn-primary btn-block" type="submit">
             Sign up
           </button>
         </form>
-        <Alert stack={{ limit: 3 }} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

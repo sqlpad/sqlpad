@@ -11,7 +11,7 @@ export default class extends React.Component {
     this.setState({ show: !this.state.show })
   }
 
-  render () {
+  render() {
     if (this.props.queryResult && this.props.queryResult.incomplete) {
       const sharedProps = {
         show: this.state.show,
@@ -23,13 +23,13 @@ export default class extends React.Component {
           onClick={this.toggle}
         >
           <Glyphicon
-            glyph='warning-sign'
-            ref='incompleteDataTarget'
+            glyph="warning-sign"
+            ref="incompleteDataTarget"
             style={{ marginRight: 0 }}
           />{' '}
           Incomplete
-          <Overlay {...sharedProps} placement='bottom'>
-            <Popover id='incomplete-data-popover' title={'Incomplete Data'}>
+          <Overlay {...sharedProps} placement="bottom">
+            <Popover id="incomplete-data-popover" title={'Incomplete Data'}>
               Return fewer rows or increase query result max rows in
               configuration.
             </Popover>

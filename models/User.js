@@ -22,7 +22,7 @@ var schema = {
   signupDate: Joi.date().optional()
 }
 
-var User = function User (data) {
+var User = function User(data) {
   this._id = data._id
   this.email = data.email
   this.role = data.role
@@ -34,13 +34,13 @@ var User = function User (data) {
   this.signupDate = data.signupDate
 }
 
-User.prototype.save = function UserSave (callback) {
+User.prototype.save = function UserSave(callback) {
   var self = this
   this.modifiedDate = new Date()
 
   // if user has password set, we need to hash it before saving
   if (this.password) {
-    bcrypt.hash(this.password, null, null, function (err, hash) {
+    bcrypt.hash(this.password, null, null, function(err, hash) {
       if (err) return callback(err)
       self.passhash = hash
       validateAndSave()
@@ -49,16 +49,16 @@ User.prototype.save = function UserSave (callback) {
     validateAndSave()
   }
 
-  function validateAndSave () {
+  function validateAndSave() {
     var joiResult = Joi.validate(self, schema)
     if (joiResult.error) return callback(joiResult.error)
     db.users.update(
       { email: self.email },
       joiResult.value,
       { upsert: true },
-      function (err) {
+      function(err) {
         if (err) return callback(err)
-        User.findOneByEmail(self.email, function (err, foundUser) {
+        User.findOneByEmail(self.email, function(err, foundUser) {
           if (err || !foundUser) return callback(err)
           self = _.merge(self, foundUser)
           callback(err, foundUser)
@@ -69,7 +69,7 @@ User.prototype.save = function UserSave (callback) {
 }
 
 // callback receives (err, isMatch). isMatch is boolean
-User.prototype.comparePasswordToHash = function comparePasswordToHash (
+User.prototype.comparePasswordToHash = function comparePasswordToHash(
   password,
   callback
 ) {
@@ -79,60 +79,60 @@ User.prototype.comparePasswordToHash = function comparePasswordToHash (
 /*  Query methods
 ============================================================================== */
 
-User.findOneByEmail = function UserFindByEmail (email, callback) {
-  db.users.findOne({ email: email }).exec(function (err, doc) {
+User.findOneByEmail = function UserFindByEmail(email, callback) {
+  db.users.findOne({ email: email }).exec(function(err, doc) {
     if (err) return callback(err)
     if (!doc) return callback()
     return callback(err, new User(doc))
   })
 }
 
-User.findOneById = function UserFindOneById (id, callback) {
-  db.users.findOne({ _id: id }).exec(function (err, doc) {
+User.findOneById = function UserFindOneById(id, callback) {
+  db.users.findOne({ _id: id }).exec(function(err, doc) {
     if (err) return callback(err)
     if (!doc) return callback()
     return callback(err, new User(doc))
   })
 }
 
-User.findOneByPasswordResetId = function UserFindOneByPasswordResetId (
+User.findOneByPasswordResetId = function UserFindOneByPasswordResetId(
   id,
   callback
 ) {
-  db.users.findOne({ passwordResetId: id }).exec(function (err, doc) {
+  db.users.findOne({ passwordResetId: id }).exec(function(err, doc) {
     if (err) return callback(err)
     if (!doc) return callback()
     return callback(err, new User(doc))
   })
 }
 
-User.findAll = function UserFindAll (callback) {
+User.findAll = function UserFindAll(callback) {
   db.users
     .find({}, { password: 0, passhash: 0 })
     .sort({ email: 1 })
-    .exec(function (err, docs) {
+    .exec(function(err, docs) {
       if (err) return callback(err)
-      var users = docs.map(function (doc) {
+      var users = docs.map(function(doc) {
         return new User(doc)
       })
       callback(err, users)
     })
 }
 
-User.adminRegistrationOpen = function (callback) {
+User.adminRegistrationOpen = function(callback) {
   // NOTE: previously open admin filter contained
   // createdDate: {$lte: new Date()}
   // (unsure why this was originally checked)
-  db.users.findOne({ role: 'admin' }, function (err, doc) {
+  db.users.findOne({ role: 'admin' }, function(err, doc) {
     callback(err, !doc)
   })
 }
 
-User.removeOneById = function UserRemoveOneById (id, callback) {
+User.removeOneById = function UserRemoveOneById(id, callback) {
   db.users.remove({ _id: id }, callback)
 }
 
-User._removeAll = function _removeAllUsers (callback) {
+User._removeAll = function _removeAllUsers(callback) {
   db.users.remove({}, { multi: true }, callback)
 }
 

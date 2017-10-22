@@ -46,7 +46,7 @@ var schema = {
   lastAccessDate: Joi.date().default(new Date(), 'time of last access')
 }
 
-var Query = function (data) {
+var Query = function(data) {
   this._id = data._id
   this.name = data.name
   this.tags = data.tags
@@ -60,7 +60,7 @@ var Query = function (data) {
   this.lastAccessDate = data.lastAccessedDate
 }
 
-Query.prototype.save = function QuerySave (callback) {
+Query.prototype.save = function QuerySave(callback) {
   var self = this
   this.modifiedDate = new Date()
   this.lastAccessDate = new Date()
@@ -82,20 +82,20 @@ Query.prototype.save = function QuerySave (callback) {
       { _id: self._id },
       joiResult.value,
       { upsert: true },
-      function (err) {
+      function(err) {
         if (err) return callback(err)
         Query.findOneById(self._id, callback)
       }
     )
   } else {
-    db.queries.insert(joiResult.value, function (err, newDoc) {
+    db.queries.insert(joiResult.value, function(err, newDoc) {
       if (err) return callback(err)
       return callback(null, new Query(newDoc))
     })
   }
 }
 
-Query.prototype.pushQueryToSlackIfSetup = function () {
+Query.prototype.pushQueryToSlackIfSetup = function() {
   const SLACK_WEBHOOK = config.get('slackWebhook')
   if (SLACK_WEBHOOK) {
     const PUBLIC_URL = config.get('publicUrl')
@@ -120,7 +120,7 @@ Query.prototype.pushQueryToSlackIfSetup = function () {
       json: true,
       url: SLACK_WEBHOOK
     }
-    request(options, function (err, httpResponse, body) {
+    request(options, function(err, httpResponse, body) {
       if (err) {
         console.error('Something went wrong while sending to Slack.')
         console.error(err)
@@ -132,35 +132,35 @@ Query.prototype.pushQueryToSlackIfSetup = function () {
 /*  Query methods
 ============================================================================== */
 
-Query.findOneById = function QueryFindOneById (id, callback) {
-  db.queries.findOne({ _id: id }).exec(function (err, doc) {
+Query.findOneById = function QueryFindOneById(id, callback) {
+  db.queries.findOne({ _id: id }).exec(function(err, doc) {
     if (err) return callback(err)
     if (!doc) return callback()
     return callback(null, new Query(doc))
   })
 }
 
-Query.findAll = function QueryFindAll (callback) {
-  db.queries.find({}).exec(function (err, docs) {
+Query.findAll = function QueryFindAll(callback) {
+  db.queries.find({}).exec(function(err, docs) {
     if (err) return callback(err)
-    var queries = docs.map(function (doc) {
+    var queries = docs.map(function(doc) {
       return new Query(doc)
     })
     return callback(null, queries)
   })
 }
 
-Query.findByFilter = function QueryFindByFilter (filter, callback) {
-  db.queries.find(filter).exec(function (err, docs) {
+Query.findByFilter = function QueryFindByFilter(filter, callback) {
+  db.queries.find(filter).exec(function(err, docs) {
     if (err) return callback(err)
-    var queries = docs.map(function (doc) {
+    var queries = docs.map(function(doc) {
       return new Query(doc)
     })
     return callback(null, queries)
   })
 }
 
-Query.prototype.logAccess = function QueryLogAccess (callback) {
+Query.prototype.logAccess = function QueryLogAccess(callback) {
   var self = this
   db.queries.update(
     { _id: self._id },
@@ -170,11 +170,11 @@ Query.prototype.logAccess = function QueryLogAccess (callback) {
   )
 }
 
-Query.removeOneById = function QueryRemoveOneById (id, callback) {
+Query.removeOneById = function QueryRemoveOneById(id, callback) {
   db.queries.remove({ _id: id }, callback)
 }
 
-Query._removeAll = function QueryRemoveAll (callback) {
+Query._removeAll = function QueryRemoveAll(callback) {
   db.queries.remove({}, { multi: true }, callback)
 }
 

@@ -18,7 +18,7 @@ var schema = {
   modifiedDate: Joi.date().default(new Date(), 'time of modification')
 }
 
-var Cache = function Cache (data) {
+var Cache = function Cache(data) {
   this._id = data._id
   this.cacheKey = data.cacheKey
   this.expiration = data.expiration
@@ -28,35 +28,35 @@ var Cache = function Cache (data) {
   this.modifiedDate = data.modifiedDate
 }
 
-Cache.prototype.xlsxFilePath = function CacheXlsxFilePath () {
+Cache.prototype.xlsxFilePath = function CacheXlsxFilePath() {
   return path.join(DB_PATH, '/cache/', this.cacheKey + '.xlsx')
 }
 
-Cache.prototype.csvFilePath = function CacheCsvFilePath () {
+Cache.prototype.csvFilePath = function CacheCsvFilePath() {
   return path.join(DB_PATH, '/cache/', this.cacheKey + '.csv')
 }
 
-Cache.prototype.filePaths = function CacheFilePaths () {
+Cache.prototype.filePaths = function CacheFilePaths() {
   // these may not exist.
   // eventually actual files should be stored on the cache item
   return [this.xlsxFilePath(), this.csvFilePath()]
 }
 
-Cache.prototype.removeFiles = function CacheRemoveFiles () {
+Cache.prototype.removeFiles = function CacheRemoveFiles() {
   var filepaths = this.filePaths()
-  filepaths.forEach(function (fp) {
+  filepaths.forEach(function(fp) {
     if (fs.existsSync(fp)) {
       fs.unlinkSync(fp)
     }
   })
 }
 
-Cache.prototype.expire = function CacheExpire () {
+Cache.prototype.expire = function CacheExpire() {
   this.removeFiles()
   db.cache.remove({ _id: this._id }, {})
 }
 
-Cache.prototype.writeXlsx = function CacheWriteXlsx (queryResult, callback) {
+Cache.prototype.writeXlsx = function CacheWriteXlsx(queryResult, callback) {
   // TODO - record that xlsx was written for this cache item?
   var self = this
   // loop through rows and build out an array of arrays
@@ -71,7 +71,7 @@ Cache.prototype.writeXlsx = function CacheWriteXlsx (queryResult, callback) {
     resultArray.push(row)
   }
   var xlsxBuffer = xlsx.build([{ name: 'query-results', data: resultArray }]) // returns a buffer
-  fs.writeFile(self.xlsxFilePath(), xlsxBuffer, function (err) {
+  fs.writeFile(self.xlsxFilePath(), xlsxBuffer, function(err) {
     // if there's an error log it but otherwise continue on
     // we can still send results even if download file failed to create
     if (err) {
@@ -81,10 +81,10 @@ Cache.prototype.writeXlsx = function CacheWriteXlsx (queryResult, callback) {
   })
 }
 
-Cache.prototype.writeCsv = function CacheWriteCsv (queryResult, callback) {
+Cache.prototype.writeCsv = function CacheWriteCsv(queryResult, callback) {
   // TODO - record csv was written for this cache item?
   var self = this
-  json2csv({ data: queryResult.rows, fields: queryResult.fields }, function (
+  json2csv({ data: queryResult.rows, fields: queryResult.fields }, function(
     err,
     csv
   ) {
@@ -92,14 +92,14 @@ Cache.prototype.writeCsv = function CacheWriteCsv (queryResult, callback) {
       console.log(err)
       return callback()
     }
-    fs.writeFile(self.csvFilePath(), csv, function (err) {
+    fs.writeFile(self.csvFilePath(), csv, function(err) {
       if (err) console.log(err)
       return callback()
     })
   })
 }
 
-Cache.prototype.save = function CacheSave (callback) {
+Cache.prototype.save = function CacheSave(callback) {
   var self = this
   this.modifiedDate = new Date()
   var joiResult = Joi.validate(self, schema)
@@ -108,7 +108,7 @@ Cache.prototype.save = function CacheSave (callback) {
     { cacheKey: self.cacheKey },
     joiResult.value,
     { upsert: true },
-    function (err) {
+    function(err) {
       if (err) return callback(err)
       return Cache.findOneByCacheKey(self.cacheKey, callback)
     }
@@ -118,41 +118,41 @@ Cache.prototype.save = function CacheSave (callback) {
 /*  Query methods
 ============================================================================== */
 
-Cache.findOneByCacheKey = function CacheFindOneByCacheKey (cacheKey, callback) {
-  db.cache.findOne({ cacheKey: cacheKey }, function (err, doc) {
+Cache.findOneByCacheKey = function CacheFindOneByCacheKey(cacheKey, callback) {
+  db.cache.findOne({ cacheKey: cacheKey }, function(err, doc) {
     if (err) return callback(err)
     if (!doc) return callback()
     return callback(err, new Cache(doc))
   })
 }
 
-Cache.findExpired = function CacheFindExpired (callback) {
+Cache.findExpired = function CacheFindExpired(callback) {
   var now = new Date()
-  db.cache.find({ expiration: { $lt: now } }, function (err, docs) {
+  db.cache.find({ expiration: { $lt: now } }, function(err, docs) {
     if (err) return callback(err)
-    var caches = docs.map(function (doc) {
+    var caches = docs.map(function(doc) {
       return new Cache(doc)
     })
     return callback(null, caches)
   })
 }
 
-Cache.removeExpired = function CacheRemoveExpired (callback) {
-  Cache.findExpired(function (err, caches) {
+Cache.removeExpired = function CacheRemoveExpired(callback) {
+  Cache.findExpired(function(err, caches) {
     if (err) {
       console.error(err)
       return callback(err)
     }
-    caches.forEach(function (cache) {
+    caches.forEach(function(cache) {
       cache.expire()
     })
   })
 }
 
-Cache.removeAll = function CacheRemoveAll (callback) {
+Cache.removeAll = function CacheRemoveAll(callback) {
   // first remove all the cache files
   // then remove the cache db records
-  rimraf(path.join(DB_PATH, '/cache/*'), function (err) {
+  rimraf(path.join(DB_PATH, '/cache/*'), function(err) {
     if (err) {
       console.error(err)
       return callback(err)

@@ -40,7 +40,7 @@ var schema = {
   modifiedDate: Joi.date().default(new Date(), 'time of modifcation')
 }
 
-var Connection = function Connection (data) {
+var Connection = function Connection(data) {
   this._id = data._id
   this.name = data.name
   this.driver = data.driver
@@ -66,21 +66,21 @@ var Connection = function Connection (data) {
   this.modifiedDate = data.modifiedDate
 }
 
-Connection.prototype.save = function ConnectionSave (callback) {
+Connection.prototype.save = function ConnectionSave(callback) {
   var self = this
   this.modifiedDate = new Date()
   // TODO - build in auto cypher if rawUsername and rawPassword set?
   var joiResult = Joi.validate(self, schema)
   if (joiResult.error) return callback(joiResult.error)
   if (self._id) {
-    db.connections.update({ _id: self._id }, joiResult.value, {}, function (
+    db.connections.update({ _id: self._id }, joiResult.value, {}, function(
       err
     ) {
       if (err) return callback(err)
       Connection.findOneById(self._id, callback)
     })
   } else {
-    db.connections.insert(joiResult.value, function (err, newDoc) {
+    db.connections.insert(joiResult.value, function(err, newDoc) {
       if (err) return callback(err)
       return callback(null, new Connection(newDoc))
     })
@@ -90,32 +90,32 @@ Connection.prototype.save = function ConnectionSave (callback) {
 /*  Query methods
 ============================================================================== */
 
-Connection.findOneById = function ConnectionFindOneById (id, callback) {
-  db.connections.findOne({ _id: id }).exec(function (err, doc) {
+Connection.findOneById = function ConnectionFindOneById(id, callback) {
+  db.connections.findOne({ _id: id }).exec(function(err, doc) {
     if (err) return callback(err)
     if (!doc) return callback()
     return callback(err, new Connection(doc))
   })
 }
 
-Connection.findAll = function ConnectionFindAll (callback) {
-  db.connections.find({}).exec(function (err, docs) {
+Connection.findAll = function ConnectionFindAll(callback) {
+  db.connections.find({}).exec(function(err, docs) {
     if (err) return callback(err)
-    var connections = docs.map(function (doc) {
+    var connections = docs.map(function(doc) {
       return new Connection(doc)
     })
-    connections = _.sortBy(connections, function (c) {
+    connections = _.sortBy(connections, function(c) {
       return c.name.toLowerCase()
     })
     return callback(null, connections)
   })
 }
 
-Connection.removeOneById = function ConnectionRemoveOneById (id, callback) {
+Connection.removeOneById = function ConnectionRemoveOneById(id, callback) {
   db.connections.remove({ _id: id }, callback)
 }
 
-Connection._removeAll = function _removeAllConnections (callback) {
+Connection._removeAll = function _removeAllConnections(callback) {
   db.connections.remove({}, { multi: true }, callback)
 }
 

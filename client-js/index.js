@@ -24,7 +24,7 @@ fetchJson('GET', 'api/app')
     console.error(ex.toString())
   })
 
-function init (appData) {
+function init(appData) {
   const config = appData.config
   const BASE_URL = config.baseUrl
 
@@ -33,7 +33,7 @@ function init (appData) {
 
   /*  client-side routes
   ============================================================================== */
-  function getAppData (ctx, next) {
+  function getAppData(ctx, next) {
     fetchJson('GET', 'api/app')
       .then(json => {
         ctx.config = json.config
@@ -50,7 +50,7 @@ function init (appData) {
       })
   }
 
-  function mustBeAuthenticated (ctx, next) {
+  function mustBeAuthenticated(ctx, next) {
     if (ctx.currentUser) {
       next()
     } else {
@@ -58,7 +58,7 @@ function init (appData) {
     }
   }
 
-  function mustBeAdmin (ctx, next) {
+  function mustBeAdmin(ctx, next) {
     if (ctx.currentUser && ctx.currentUser.role === 'admin') {
       next()
     } else {
@@ -70,7 +70,7 @@ function init (appData) {
 
   page.redirect('/', '/queries')
 
-  page('/users', mustBeAuthenticated, mustBeAdmin, function (ctx) {
+  page('/users', mustBeAuthenticated, mustBeAdmin, function(ctx) {
     document.title = 'SQLPad - Users'
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
@@ -80,7 +80,7 @@ function init (appData) {
     )
   })
 
-  page('/connections', mustBeAuthenticated, mustBeAdmin, function (ctx) {
+  page('/connections', mustBeAuthenticated, mustBeAdmin, function(ctx) {
     document.title = 'SQLPad - Connections'
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
@@ -90,7 +90,7 @@ function init (appData) {
     )
   })
 
-  page('/config-values', mustBeAuthenticated, mustBeAdmin, function (ctx) {
+  page('/config-values', mustBeAuthenticated, mustBeAdmin, function(ctx) {
     document.title = 'SQLPad - Configuration'
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
@@ -100,7 +100,7 @@ function init (appData) {
     )
   })
 
-  page('/queries', mustBeAuthenticated, function (ctx) {
+  page('/queries', mustBeAuthenticated, function(ctx) {
     document.title = 'SQLPad - Queries'
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
@@ -113,7 +113,7 @@ function init (appData) {
     )
   })
 
-  page('/queries/:queryId', mustBeAuthenticated, function (ctx) {
+  page('/queries/:queryId', mustBeAuthenticated, function(ctx) {
     ReactDOM.render(
       <App config={ctx.config} currentUser={ctx.currentUser}>
         <QueryEditor queryId={ctx.params.queryId} config={ctx.config} />
@@ -122,7 +122,7 @@ function init (appData) {
     )
   })
 
-  page('/signin', function (ctx) {
+  page('/signin', function(ctx) {
     document.title = 'SQLPad - Sign In'
     ReactDOM.render(
       <SignIn
@@ -134,7 +134,7 @@ function init (appData) {
     )
   })
 
-  page('/signup', function (ctx) {
+  page('/signup', function(ctx) {
     document.title = 'SQLPad - Sign Up'
     ReactDOM.render(
       <SignUp
@@ -145,7 +145,7 @@ function init (appData) {
     )
   })
 
-  page('/forgot-password', function (ctx) {
+  page('/forgot-password', function(ctx) {
     document.title = 'SQLPad - Forgot Password'
     ReactDOM.render(
       <ForgotPassword config={ctx.config} />,
@@ -153,7 +153,7 @@ function init (appData) {
     )
   })
 
-  page('/password-reset', function (ctx) {
+  page('/password-reset', function(ctx) {
     document.title = 'SQLPad - Password Reset'
     ReactDOM.render(
       <FullscreenMessage>
@@ -164,7 +164,7 @@ function init (appData) {
     )
   })
 
-  page('/password-reset/:passwordResetId', function (ctx) {
+  page('/password-reset/:passwordResetId', function(ctx) {
     document.title = 'SQLPad - Reset Password'
     ReactDOM.render(
       <PasswordReset
@@ -176,7 +176,7 @@ function init (appData) {
     )
   })
 
-  page('/query-table/:queryId', function (ctx) {
+  page('/query-table/:queryId', function(ctx) {
     document.title = 'SQLPad'
     ReactDOM.render(
       <QueryTableOnly config={ctx.config} queryId={ctx.params.queryId} />,
@@ -184,7 +184,7 @@ function init (appData) {
     )
   })
 
-  page('/query-chart/:queryId', function (ctx) {
+  page('/query-chart/:queryId', function(ctx) {
     document.title = 'SQLPad'
     ReactDOM.render(
       <QueryChartOnly config={ctx.config} queryId={ctx.params.queryId} />,
@@ -192,7 +192,7 @@ function init (appData) {
     )
   })
 
-  page('*', function (ctx) {
+  page('*', function(ctx) {
     document.title = 'SQLPad - Not Found'
     var Component
     if (ctx.currentUser) {

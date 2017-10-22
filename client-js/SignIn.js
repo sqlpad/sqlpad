@@ -31,45 +31,45 @@ class SignIn extends React.Component {
       })
   }
 
-  render () {
+  render() {
     const localForm = (
       <div>
-        <form className='form-signin' onSubmit={this.signIn}>
+        <form className="form-signin" onSubmit={this.signIn}>
           <input
-            name='email'
-            type='email'
-            className='form-control top-field'
-            placeholder='Email address'
+            name="email"
+            type="email"
+            className="form-control top-field"
+            placeholder="Email address"
             onChange={this.onEmailChange}
             required
           />
           <input
-            name='password'
-            type='password'
-            className='form-control bottom-field'
-            placeholder='Password'
+            name="password"
+            type="password"
+            className="form-control bottom-field"
+            placeholder="Password"
             onChange={this.onPasswordChange}
             required
           />
           <br />
           <button
             onClick={this.signIn}
-            className='btn btn-lg btn-primary btn-block'
-            type='submit'
+            className="btn btn-lg btn-primary btn-block"
+            type="submit"
           >
             Sign in
           </button>
         </form>
-        <div className='form-signin-footer'>
+        <div className="form-signin-footer">
           <p>
-            <a onClick={navigateToClickHandler('/signup')} href='#signup'>
+            <a onClick={navigateToClickHandler('/signup')} href="#signup">
               Sign Up
             </a>
             {this.props.smtpConfigured ? (
               <a
                 style={{ marginLeft: 50 }}
                 onClick={navigateToClickHandler('/forgot-password')}
-                href='#forgot'
+                href="#forgot"
               >
                 Forgot Password
               </a>
@@ -81,18 +81,18 @@ class SignIn extends React.Component {
     const googleForm = (
       <div>
         <a href={this.props.config.baseUrl + '/auth/google'}>
-          <button className='btn btn-lg btn-danger btn-block'>
-            <i className='fa fa-google-plus' /> Log in with Google
+          <button className="btn btn-lg btn-danger btn-block">
+            <i className="fa fa-google-plus" /> Log in with Google
           </button>
         </a>
       </div>
     )
     return (
-      <div className='signin'>
+      <div className="signin">
         <h2>SQLPad</h2>
         {'local' in this.props.passport.strategies ? localForm : null}
         {'google' in this.props.passport.strategies ? googleForm : null}
-        <Alert stack={{ limit: 3 }} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

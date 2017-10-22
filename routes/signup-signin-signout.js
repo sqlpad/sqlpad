@@ -11,8 +11,8 @@ const DISABLE_USERPASS_AUTH = config.get('disableUserpassAuth')
 /*    Sign Up
 ============================================================================= */
 
-function adminRegistrationOpen (req, res, next) {
-  User.adminRegistrationOpen(function (err, open) {
+function adminRegistrationOpen(req, res, next) {
+  User.adminRegistrationOpen(function(err, open) {
     res.locals.adminRegistrationOpen = open
     next(err)
   })
@@ -21,11 +21,11 @@ function adminRegistrationOpen (req, res, next) {
 /*  Some routes should only exist if userpath auth is enabled
 ============================================================================= */
 if (!DISABLE_USERPASS_AUTH) {
-  router.post('/api/signup', adminRegistrationOpen, function (req, res) {
+  router.post('/api/signup', adminRegistrationOpen, function(req, res) {
     if (req.body.password !== req.body.passwordConfirmation) {
       return res.json({ error: 'Passwords do not match' })
     }
-    User.findOneByEmail(req.body.email, function (err, user) {
+    User.findOneByEmail(req.body.email, function(err, user) {
       if (err) {
         console.error(err)
         return res.json({ error: 'Error looking up user by email' })
@@ -54,7 +54,7 @@ if (!DISABLE_USERPASS_AUTH) {
           return res.json({ error: 'Email address not yet whitelisted' })
         }
       }
-      user.save(function (err, newUser) {
+      user.save(function(err, newUser) {
         if (err) {
           console.error(err)
           return res.json({ error: 'Error saving new user to DB' })
@@ -64,7 +64,7 @@ if (!DISABLE_USERPASS_AUTH) {
     })
   })
 
-  router.post('/api/signin', passport.authenticate('local'), function (
+  router.post('/api/signin', passport.authenticate('local'), function(
     req,
     res
   ) {
@@ -75,7 +75,7 @@ if (!DISABLE_USERPASS_AUTH) {
 
 /*  These auth routes should always exist regardless of strategy
 ============================================================================= */
-router.get('/api/signout', function (req, res) {
+router.get('/api/signout', function(req, res) {
   req.session = null
   res.json({})
 })

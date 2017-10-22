@@ -12,7 +12,7 @@ export default updateCompletions
 // and you may find it helpful to print some vars out during dev
 const DEBUG_ON = false
 
-function debug () {
+function debug() {
   if (DEBUG_ON) console.log.apply(null, arguments)
 }
 
@@ -25,7 +25,7 @@ function debug () {
  * @todo scoped to an editor instance instead of all instances
  * @param {schemaInfoObject} schemaInfo
  */
-function updateCompletions (schemaInfo) {
+function updateCompletions(schemaInfo) {
   debug('updating completions')
   debug(schemaInfo)
 
@@ -102,7 +102,7 @@ function updateCompletions (schemaInfo) {
   const tableWantedCompletions = schemaCompletions.concat(tableCompletions)
 
   const myCompleter = {
-    getCompletions: function (editor, session, pos, prefix, callback) {
+    getCompletions: function(editor, session, pos, prefix, callback) {
       // figure out if there are any schemas/tables referenced in query
       const allTokens = session
         .getValue()

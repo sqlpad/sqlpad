@@ -6,7 +6,7 @@ var Connection = require('../models/Connection.js')
 var mustBeAdmin = require('../middleware/must-be-admin.js')
 var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 
-function connectionFromBody (body) {
+function connectionFromBody(body) {
   return {
     name: body.name,
     driver: body.driver,
@@ -32,8 +32,8 @@ function connectionFromBody (body) {
   }
 }
 
-router.get('/api/connections', mustBeAuthenticated, function (req, res) {
-  Connection.findAll(function (err, connections) {
+router.get('/api/connections', mustBeAuthenticated, function(req, res) {
+  Connection.findAll(function(err, connections) {
     if (err) {
       console.error(err)
       return res.json({
@@ -51,8 +51,8 @@ router.get('/api/connections', mustBeAuthenticated, function (req, res) {
   })
 })
 
-router.get('/api/connections/:_id', mustBeAuthenticated, function (req, res) {
-  Connection.findOneById(req.params._id, function (err, connection) {
+router.get('/api/connections/:_id', mustBeAuthenticated, function(req, res) {
+  Connection.findOneById(req.params._id, function(err, connection) {
     if (err) {
       console.error(err)
       return res.json({
@@ -73,11 +73,11 @@ router.get('/api/connections/:_id', mustBeAuthenticated, function (req, res) {
 })
 
 // create
-router.post('/api/connections', mustBeAdmin, function (req, res) {
+router.post('/api/connections', mustBeAdmin, function(req, res) {
   var connection = new Connection(connectionFromBody(req.body))
   connection.username = cipher(connection.username || '')
   connection.password = cipher(connection.password || '')
-  connection.save(function (err, newConnection) {
+  connection.save(function(err, newConnection) {
     if (err) {
       console.error(err)
       return res.json({
@@ -95,8 +95,8 @@ router.post('/api/connections', mustBeAdmin, function (req, res) {
 })
 
 // update
-router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
-  Connection.findOneById(req.params._id, function (err, connection) {
+router.put('/api/connections/:_id', mustBeAdmin, function(req, res) {
+  Connection.findOneById(req.params._id, function(err, connection) {
     if (err) {
       console.error(err)
       return res.json({
@@ -124,7 +124,7 @@ router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
     connection.mysqlInsecureAuth = req.body.mysqlInsecureAuth === true
     connection.prestoCatalog = req.body.prestoCatalog
     connection.prestoSchema = req.body.prestoSchema
-    connection.save(function (err, connection) {
+    connection.save(function(err, connection) {
       if (err) {
         console.error(err)
         return res.json({
@@ -141,8 +141,8 @@ router.put('/api/connections/:_id', mustBeAdmin, function (req, res) {
 })
 
 // delete
-router.delete('/api/connections/:_id', mustBeAdmin, function (req, res) {
-  Connection.removeOneById(req.params._id, function (err) {
+router.delete('/api/connections/:_id', mustBeAdmin, function(req, res) {
+  Connection.removeOneById(req.params._id, function(err) {
     if (err) {
       console.error(err)
       return res.json({
@@ -154,7 +154,7 @@ router.delete('/api/connections/:_id', mustBeAdmin, function (req, res) {
 })
 
 // test connection
-router.post('/api/test-connection', mustBeAdmin, function testConnection (
+router.post('/api/test-connection', mustBeAdmin, function testConnection(
   req,
   res
 ) {
@@ -166,7 +166,7 @@ router.post('/api/test-connection', mustBeAdmin, function testConnection (
   if (bodyConnection.driver === 'presto') {
     testQuery = "SELECT 'success' AS TestQuery"
   }
-  runQuery(testQuery, bodyConnection, function (err, queryResult) {
+  runQuery(testQuery, bodyConnection, function(err, queryResult) {
     if (err) {
       console.error(err)
       return res.json({

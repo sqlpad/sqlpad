@@ -12,7 +12,7 @@ const LAYOUTS_DIRECTORY = path.join(__dirname, '/layouts')
 
 var isGenerating = false
 var nextRender = null
-function generate () {
+function generate() {
   if (isGenerating) {
     console.log('already generating - render queued')
     nextRender = true
@@ -28,7 +28,7 @@ function generate () {
   }
 }
 
-function render () {
+function render() {
   isGenerating = true
   const pageLayout = fs.readFileSync('./layouts/page.ejs', 'utf8')
   const homeLayout = fs.readFileSync('./layouts/home.ejs', 'utf8')
@@ -40,7 +40,7 @@ function render () {
   // post.meta.key: yaml content of that key
   // post.meta_key: yaml content of that key
   var pages = mm.parseDirectorySync(PAGES_DIRECTORY)
-  pages.forEach(function (page) {
+  pages.forEach(function(page) {
     page.moment = moment
     var rendered = ejs.render(pageLayout, {
       page: page,
@@ -67,7 +67,7 @@ function render () {
 ============================================================================ */
 var app = express()
 app.use('/sqlpad', express.static(__dirname))
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
   res.redirect('/sqlpad/')
 })
 app.listen(4000)

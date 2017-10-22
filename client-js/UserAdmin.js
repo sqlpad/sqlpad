@@ -15,7 +15,7 @@ import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 
 class UserAdmin extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       users: [],
@@ -28,11 +28,11 @@ class UserAdmin extends React.Component {
     this.removePasswordResetLink = this.removePasswordResetLink.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.loadUsersFromServer()
   }
 
-  handleDelete (user) {
+  handleDelete(user) {
     fetchJson('DELETE', this.props.config.baseUrl + '/api/users/' + user._id)
       .then(json => {
         if (json.error) {
@@ -47,7 +47,7 @@ class UserAdmin extends React.Component {
       })
   }
 
-  loadUsersFromServer () {
+  loadUsersFromServer() {
     fetchJson('get', this.props.config.baseUrl + '/api/users')
       .then(json => {
         if (json.error) Alert.error(json.error)
@@ -59,7 +59,7 @@ class UserAdmin extends React.Component {
       })
   }
 
-  updateUserRole (user) {
+  updateUserRole(user) {
     this.setState({ isSaving: true })
     fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
       role: user.role
@@ -78,7 +78,7 @@ class UserAdmin extends React.Component {
       })
   }
 
-  generatePasswordResetLink (user) {
+  generatePasswordResetLink(user) {
     this.setState({ isSaving: true })
     const passwordResetId = uuid.v4()
     fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
@@ -98,7 +98,7 @@ class UserAdmin extends React.Component {
       })
   }
 
-  removePasswordResetLink (user) {
+  removePasswordResetLink(user) {
     this.setState({ isSaving: true })
     fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
       passwordResetId: ''
@@ -117,9 +117,9 @@ class UserAdmin extends React.Component {
       })
   }
 
-  render () {
+  render() {
     return (
-      <div className='flex-100'>
+      <div className="flex-100">
         <UserList
           users={this.state.users}
           handleDelete={this.handleDelete}
@@ -147,7 +147,7 @@ const styleUserList = {
 }
 
 class UserList extends React.Component {
-  render () {
+  render() {
     var listRows = this.props.users.map(user => {
       return (
         <UserListRow
@@ -176,7 +176,7 @@ const formControlStyle = {
 }
 
 class UserListRow extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.onDelete = this.onDelete.bind(this)
     this.onRoleChange = this.onRoleChange.bind(this)
@@ -184,30 +184,30 @@ class UserListRow extends React.Component {
     this.removePasswordResetLink = this.removePasswordResetLink.bind(this)
   }
 
-  onDelete (e) {
+  onDelete(e) {
     this.props.handleDelete(this.props.user)
   }
 
-  onRoleChange (e) {
+  onRoleChange(e) {
     const user = this.props.user
     user.role = e.target.value
     this.props.updateUserRole(user)
   }
 
-  generatePasswordResetLink () {
+  generatePasswordResetLink() {
     this.props.generatePasswordResetLink(this.props.user)
   }
 
-  removePasswordResetLink () {
+  removePasswordResetLink() {
     this.props.removePasswordResetLink(this.props.user)
   }
 
-  render () {
+  render() {
     const { user, currentUser } = this.props
     const popoverClick = (
-      <Popover id='popover-trigger-click' title='Are you sure?'>
+      <Popover id="popover-trigger-click" title="Are you sure?">
         <Button
-          bsStyle='danger'
+          bsStyle="danger"
           onClick={this.onDelete}
           style={{ width: '100%' }}
         >
@@ -235,33 +235,33 @@ class UserListRow extends React.Component {
           removePasswordResetLink={this.removePasswordResetLink}
         />
         <Form inline>
-          <FormGroup controlId='role'>
+          <FormGroup controlId="role">
             <ControlLabel>Role</ControlLabel>{' '}
             <FormControl
               style={formControlStyle}
-              componentClass='select'
+              componentClass="select"
               value={user.role}
               disabled={currentUser._id === user._id}
               onChange={this.onRoleChange}
             >
-              <option value='editor'>Editor</option>
-              <option value='admin'>Admin</option>
+              <option value="editor">Editor</option>
+              <option value="admin">Admin</option>
             </FormControl>
           </FormGroup>
         </Form>
-        {currentUser._id !== user._id
-          ? <OverlayTrigger
-            trigger='click'
-            placement='left'
+        {currentUser._id !== user._id ? (
+          <OverlayTrigger
+            trigger="click"
+            placement="left"
             container={this}
             rootClose
             overlay={popoverClick}
-            >
-            <a className='ListRowDeleteButton' href='#delete'>
-              <Glyphicon glyph='trash' />
+          >
+            <a className="ListRowDeleteButton" href="#delete">
+              <Glyphicon glyph="trash" />
             </a>
           </OverlayTrigger>
-          : null}
+        ) : null}
       </li>
     )
   }
@@ -299,7 +299,7 @@ const inviteUserFormStyle = {
 }
 
 class InviteUserForm extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       email: null,
@@ -311,17 +311,17 @@ class InviteUserForm extends React.Component {
     this.onInviteClick = this.onInviteClick.bind(this)
   }
 
-  onEmailChange (e) {
+  onEmailChange(e) {
     this.setState({ email: e.target.value })
   }
 
-  onRoleChange (e) {
+  onRoleChange(e) {
     this.setState({
       role: e.target.value
     })
   }
 
-  onInviteClick (e) {
+  onInviteClick(e) {
     var user = {
       email: this.state.email,
       role: this.state.role
@@ -350,7 +350,7 @@ class InviteUserForm extends React.Component {
       })
   }
 
-  render () {
+  render() {
     return (
       <div style={inviteUserFormStyle}>
         <ControlLabel>Invite User</ControlLabel>
@@ -358,8 +358,7 @@ class InviteUserForm extends React.Component {
           <Form>
             <p>
               Users may only sign up if they have first been whitelisted. Once
-              whitelisted, invite them to continue the sign-up process on the
-              {' '}
+              whitelisted, invite them to continue the sign-up process on the{' '}
               <a href={this.props.config.baseUrl + '/signup'}>signup page</a>.
             </p>
             <p>
@@ -368,29 +367,29 @@ class InviteUserForm extends React.Component {
             </p>
             <hr />
             <FormGroup
-              controlId='email'
+              controlId="email"
               validationState={this.state.email ? null : 'warning'}
             >
               <ControlLabel>Email</ControlLabel>
               <FormControl
-                type='text'
+                type="text"
                 value={this.state.email || ''}
                 onChange={this.onEmailChange}
               />
             </FormGroup>
             <FormGroup
-              controlId='role'
+              controlId="role"
               validationState={this.state.role ? null : 'warning'}
             >
               <ControlLabel>Role</ControlLabel>
               <FormControl
-                componentClass='select'
+                componentClass="select"
                 value={this.state.role || ''}
                 onChange={this.onRoleChange}
               >
-                <option value='' />
-                <option value='editor'>Editor</option>
-                <option value='admin'>Admin</option>
+                <option value="" />
+                <option value="editor">Editor</option>
+                <option value="admin">Admin</option>
               </FormControl>
             </FormGroup>
             <Button

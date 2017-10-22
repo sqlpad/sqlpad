@@ -3,7 +3,7 @@
 var expect = require('chai').expect
 var should = require('chai').should()
 
-describe('models/ConfigItem.js', function () {
+describe('models/ConfigItem.js', function() {
   // set any process.env variables here
   // or any process.env.args
   process.argv.push('--debug')
@@ -12,8 +12,8 @@ describe('models/ConfigItem.js', function () {
 
   var ConfigItem = require('../../models/ConfigItem.js')
 
-  describe('ConfigItem', function () {
-    it('should have expected values', function () {
+  describe('ConfigItem', function() {
+    it('should have expected values', function() {
       var debugItem = ConfigItem.findOneByKey('debug')
       expect(debugItem.effectiveValue).to.equal(true)
       expect(debugItem.cliValue).to.equal(true)
@@ -22,41 +22,41 @@ describe('models/ConfigItem.js', function () {
       expect(debugItem.dbValue).to.not.exist
     })
 
-    it('should setDbValue', function () {
+    it('should setDbValue', function() {
       var portItem = ConfigItem.findOneByKey('port')
       portItem.setDbValue('9000')
       expect(portItem.dbValue).to.equal('9000')
     })
 
-    it('should throw error when saving a non-ui item', function () {
+    it('should throw error when saving a non-ui item', function() {
       var portItem = ConfigItem.findOneByKey('port')
       portItem.save.should.throw(Error)
     })
 
-    it('should save without error', function (done) {
+    it('should save without error', function(done) {
       var wrapItem = ConfigItem.findOneByKey('editorWordWrap')
       wrapItem.setDbValue(true)
-      wrapItem.save(function (err) {
+      wrapItem.save(function(err) {
         should.not.exist(err)
         done()
       })
     })
   })
 
-  describe('.findOneByKey()', function () {
+  describe('.findOneByKey()', function() {
     var configItem = ConfigItem.findOneByKey('port')
 
-    it('should get requested config item', function () {
+    it('should get requested config item', function() {
       expect(configItem.key).to.equal('port')
     })
 
-    it('should be instanceOf ConfigItem', function () {
+    it('should be instanceOf ConfigItem', function() {
       expect(configItem).to.be.an.instanceOf(ConfigItem)
     })
   })
 
-  describe('findAll()', function () {
-    it('should get array of ConfigItems', function () {
+  describe('findAll()', function() {
+    it('should get array of ConfigItems', function() {
       var configItems = ConfigItem.findAll()
       configItems.should.have.length.above(1)
       expect(configItems[0]).to.be.an.instanceOf(ConfigItem)

@@ -42,7 +42,7 @@ class PasswordReset extends React.Component {
       })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     fetchJson(
       'GET',
       this.props.config.baseUrl +
@@ -59,53 +59,53 @@ class PasswordReset extends React.Component {
       })
   }
 
-  render () {
+  render() {
     if (this.state.notFound) {
       return (
-        <div className='signin'>
-          <form className='form-signin' onSubmit={this.resetPassword}>
+        <div className="signin">
+          <form className="form-signin" onSubmit={this.resetPassword}>
             <h2>
               Password Reset<br />Not Found
             </h2>
           </form>
-          <Alert stack={{ limit: 3 }} position='bottom-right' />
+          <Alert stack={{ limit: 3 }} position="bottom-right" />
         </div>
       )
     }
     return (
-      <div className='signin'>
-        <form className='form-signin' onSubmit={this.resetPassword}>
+      <div className="signin">
+        <form className="form-signin" onSubmit={this.resetPassword}>
           <h2>SQLPad</h2>
           <input
-            name='email'
-            type='email'
-            className='form-control top-field'
-            placeholder='Email address'
+            name="email"
+            type="email"
+            className="form-control top-field"
+            placeholder="Email address"
             onChange={this.onEmailChange}
             required
           />
           <input
-            name='password'
-            type='password'
-            className='form-control middle-field'
-            placeholder='Password'
+            name="password"
+            type="password"
+            className="form-control middle-field"
+            placeholder="Password"
             onChange={this.onPasswordChange}
             required
           />
           <input
-            name='passwordConfirmation'
-            type='password'
-            className='form-control bottom-field'
-            placeholder='Confirm Password'
+            name="passwordConfirmation"
+            type="password"
+            className="form-control bottom-field"
+            placeholder="Confirm Password"
             onChange={this.onPasswordConfirmationChange}
             required
           />
           <br />
-          <button className='btn btn-lg btn-primary btn-block' type='submit'>
+          <button className="btn btn-lg btn-primary btn-block" type="submit">
             Reset Password
           </button>
         </form>
-        <Alert stack={{ limit: 3 }} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

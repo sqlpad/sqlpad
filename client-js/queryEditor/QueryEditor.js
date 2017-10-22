@@ -46,7 +46,7 @@ class QueryEditor extends React.Component {
 
   sqlpadTauChart = undefined
 
-  getTagOptions () {
+  getTagOptions() {
     const { availableTags, query } = this.state
     const tagOptions = availableTags.map(t => {
       return { value: t, label: t }
@@ -251,7 +251,7 @@ class QueryEditor extends React.Component {
     return !pending && activeTabKey === 'vis' && this.hasRows()
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.queryId === 'new') {
       return this.setState({
         activeTabKey: 'sql',
@@ -262,7 +262,7 @@ class QueryEditor extends React.Component {
     this.loadQueryFromServer(nextProps.queryId)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { config, queryId } = this.props
     const editor = this.editor
 
@@ -314,12 +314,12 @@ class QueryEditor extends React.Component {
     })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     keymaster.unbind('ctrl+s, command+s')
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
   }
 
-  render () {
+  render() {
     const {
       activeTabKey,
       cacheKey,
@@ -338,7 +338,7 @@ class QueryEditor extends React.Component {
     document.title = query.name || 'New Query'
 
     return (
-      <div className='flex-100' style={{ flexDirection: 'column' }}>
+      <div className="flex-100" style={{ flexDirection: 'column' }}>
         <EditorNavBar
           activeTabKey={activeTabKey}
           isRunning={isRunning}
@@ -349,8 +349,8 @@ class QueryEditor extends React.Component {
           onTabSelect={this.handleTabSelect}
           queryName={query.name}
         />
-        <div className='flex-100' style={{ flexGrow: 1 }}>
-          <FlexTabPane tabKey='sql' activeTabKey={activeTabKey}>
+        <div className="flex-100" style={{ flexGrow: 1 }}>
+          <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
             <SchemaSidebar
               {...this.props}
               connectionId={query.connectionId}
@@ -368,16 +368,16 @@ class QueryEditor extends React.Component {
                 editorProps={{ $blockScrolling: Infinity }}
                 enableBasicAutocompletion
                 enableLiveAutocompletion
-                height='50%'
+                height="50%"
                 highlightActiveLine={false}
-                mode='sql'
-                name='query-ace-editor'
+                mode="sql"
+                name="query-ace-editor"
                 onChange={this.handleQueryTextChange}
                 showGutter={false}
                 showPrintMargin={false}
-                theme='sqlserver'
+                theme="sqlserver"
                 value={query.queryText}
-                width='100%'
+                width="100%"
                 ref={ref => {
                   this.editor = ref ? ref.editor : null
                 }}
@@ -400,7 +400,7 @@ class QueryEditor extends React.Component {
               </div>
             </div>
           </FlexTabPane>
-          <FlexTabPane tabKey='vis' activeTabKey={activeTabKey}>
+          <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
             <VisSidebar
               isChartable={this.isChartable()}
               onChartConfigurationFieldsChange={
@@ -412,7 +412,7 @@ class QueryEditor extends React.Component {
               query={query}
               queryResult={queryResult}
             />
-            <div className='flex-grow-1'>
+            <div className="flex-grow-1">
               <SqlpadTauChart
                 config={this.props.config}
                 isRunning={isRunning}
@@ -436,7 +436,7 @@ class QueryEditor extends React.Component {
           showModal={showModal}
           tagOptions={this.getTagOptions()}
         />
-        <Alert stack={{ limit: 3 }} position='bottom-right' />
+        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

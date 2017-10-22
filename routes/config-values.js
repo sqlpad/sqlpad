@@ -4,15 +4,15 @@ var router = require('express').Router()
 var mustBeAdmin = require('../middleware/must-be-admin.js')
 var _ = require('lodash')
 
-router.get('/api/config', function (req, res) {
+router.get('/api/config', function(req, res) {
   return res.json({
     config: config.getAllValues()
   })
 })
 
-router.get('/api/config-items', mustBeAdmin, function (req, res) {
+router.get('/api/config-items', mustBeAdmin, function(req, res) {
   var configItems = _.cloneDeep(ConfigItem.findAll())
-  configItems = configItems.map(function (item) {
+  configItems = configItems.map(function(item) {
     if (item.sensitive && item.interface === 'env') {
       item.effectiveValue = item.effectiveValue ? '**********' : ''
       item.dbValue = item.dbValue ? '**********' : ''
@@ -28,12 +28,12 @@ router.get('/api/config-items', mustBeAdmin, function (req, res) {
   })
 })
 
-router.post('/api/config-values/:key', mustBeAdmin, function (req, res) {
+router.post('/api/config-values/:key', mustBeAdmin, function(req, res) {
   var key = req.params.key
   var value = req.body.value
   var configItem = ConfigItem.findOneByKey(key)
   configItem.setDbValue(value)
-  configItem.save(function (err) {
+  configItem.save(function(err) {
     if (err) {
       console.error(err)
       return res.json({

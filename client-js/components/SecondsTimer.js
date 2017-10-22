@@ -17,16 +17,16 @@ class SecondsTimer extends React.Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this._mounted = true
     this.timer()
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this._mounted = false
   }
 
-  render () {
+  render() {
     return <span>{this.state.runSeconds}</span>
   }
 }

@@ -6,21 +6,21 @@ import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 
 class ConnectionListRow extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.onDelete = this.onDelete.bind(this)
     this.onSelect = this.onSelect.bind(this)
   }
 
-  onDelete (e) {
+  onDelete(e) {
     this.props.handleDelete(this.props.connection)
   }
 
-  onSelect (e) {
+  onSelect(e) {
     this.props.handleSelect(this.props.connection)
   }
 
-  render () {
+  render() {
     var getClassNames = () => {
       if (
         this.props.selectedConnection &&
@@ -32,9 +32,9 @@ class ConnectionListRow extends React.Component {
       }
     }
     const popoverClick = (
-      <Popover id='popover-trigger-click' title='Are you sure?'>
+      <Popover id="popover-trigger-click" title="Are you sure?">
         <Button
-          bsStyle='danger'
+          bsStyle="danger"
           onClick={this.onDelete}
           style={{ width: '100%' }}
         >
@@ -45,7 +45,7 @@ class ConnectionListRow extends React.Component {
     return (
       <li className={getClassNames()}>
         <h4>
-          <a href='#connection' onClick={this.onSelect}>
+          <a href="#connection" onClick={this.onSelect}>
             {this.props.connection.name}
           </a>
         </h4>
@@ -53,14 +53,14 @@ class ConnectionListRow extends React.Component {
           {this.props.connection.driver} {this.props.connection.host}/{this.props.connection.database}
         </h5>
         <OverlayTrigger
-          trigger='click'
-          placement='left'
+          trigger="click"
+          placement="left"
           container={this}
           rootClose
           overlay={popoverClick}
         >
-          <a className='ListRowDeleteButton' href='#delete'>
-            <Glyphicon glyph='trash' />
+          <a className="ListRowDeleteButton" href="#delete">
+            <Glyphicon glyph="trash" />
           </a>
         </OverlayTrigger>
       </li>

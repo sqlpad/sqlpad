@@ -8,11 +8,11 @@
 var _ = require('lodash')
 var uuid = require('uuid')
 
-function isNumberLike (n) {
+function isNumberLike(n) {
   return !isNaN(parseFloat(n)) && isFinite(n)
 }
 
-function QueryResult () {
+function QueryResult() {
   this.id = uuid.v1() // each result has unique id. used to determine whether results changed in React
   this.cacheKey = null
   this.startTime = null
@@ -34,27 +34,27 @@ function QueryResult () {
   this.rows = [] // array of row objects [{col1: value, col2: value}]
 }
 
-QueryResult.prototype.timerStart = function () {
+QueryResult.prototype.timerStart = function() {
   this.startTime = new Date()
   this.stopTime = undefined
 }
 
-QueryResult.prototype.timerStop = function () {
+QueryResult.prototype.timerStop = function() {
   this.stopTime = new Date()
   this.queryRunTime = this.stopTime - this.startTime
 }
 
-QueryResult.prototype.addRows = function QueryResultAddRows (rows) {
-  rows.forEach(function (row) {
+QueryResult.prototype.addRows = function QueryResultAddRows(rows) {
+  rows.forEach(function(row) {
     this.addRow(row)
   }, this)
 }
 
-QueryResult.prototype.addRow = function QueryResultAddRow (row) {
+QueryResult.prototype.addRow = function QueryResultAddRow(row) {
   this.rows.push(row)
   _.forOwn(
     row,
-    function (value, key) {
+    function(value, key) {
       // if this is first row added, record fields in fields array
       if (!this.processedInitialHeader) {
         this.fields.push(key)

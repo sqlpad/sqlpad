@@ -16,8 +16,8 @@ var mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticate
 router.get(
   '/api/query-result/:_queryId',
   mustBeAuthenticatedOrChartLink,
-  function (req, res) {
-    Query.findOneById(req.params._queryId, function (err, query) {
+  function(req, res) {
+    Query.findOneById(req.params._queryId, function(err, query) {
       if (err) {
         console.error(err)
         return res.json({
@@ -35,7 +35,7 @@ router.get(
         queryName: query.name,
         queryText: query.queryText
       }
-      getQueryResult(data, function (err, queryResult) {
+      getQueryResult(data, function(err, queryResult) {
         if (err) {
           console.error(err)
           // Return the error here since it might have info on why the query is bad
@@ -53,14 +53,14 @@ router.get(
 
 // accepts raw inputs from client
 // used during query editing
-router.post('/api/query-result', mustBeAuthenticated, function (req, res) {
+router.post('/api/query-result', mustBeAuthenticated, function(req, res) {
   var data = {
     connectionId: req.body.connectionId,
     cacheKey: req.body.cacheKey,
     queryName: req.body.queryName,
     queryText: req.body.queryText
   }
-  getQueryResult(data, function (err, queryResult) {
+  getQueryResult(data, function(err, queryResult) {
     if (err) {
       console.error(err)
       // Return the error here since it might have info on why the query is bad
@@ -74,10 +74,10 @@ router.post('/api/query-result', mustBeAuthenticated, function (req, res) {
   })
 })
 
-function getQueryResult (data, getQueryResultCallback) {
+function getQueryResult(data, getQueryResultCallback) {
   async.waterfall(
     [
-      function startwaterfall (waterfallNext) {
+      function startwaterfall(waterfallNext) {
         waterfallNext(null, data)
       },
       getConnection,
@@ -85,15 +85,15 @@ function getQueryResult (data, getQueryResultCallback) {
       execRunQuery,
       createDownloads
     ],
-    function (err, data) {
+    function(err, data) {
       var queryResult = data && data.queryResult ? data.queryResult : null
       return getQueryResultCallback(err, queryResult)
     }
   )
 }
 
-function getConnection (data, next) {
-  Connection.findOneById(data.connectionId, function (err, connection) {
+function getConnection(data, next) {
+  Connection.findOneById(data.connectionId, function(err, connection) {
     if (err) return next(err)
     if (!connection) return next('Please choose a connection')
     connection.maxRows = Number(config.get('queryResultMaxRows'))
@@ -104,10 +104,10 @@ function getConnection (data, next) {
   })
 }
 
-function updateCache (data, next) {
+function updateCache(data, next) {
   var now = new Date()
   var expirationDate = new Date(now.getTime() + 1000 * 60 * 60 * 8) // 8 hours in the future.
-  Cache.findOneByCacheKey(data.cacheKey, function (err, cache) {
+  Cache.findOneByCacheKey(data.cacheKey, function(err, cache) {
     if (err) return next(err)
     if (!cache) {
       cache = new Cache({ cacheKey: data.cacheKey })
@@ -118,7 +118,7 @@ function updateCache (data, next) {
         moment().format('YYYY-MM-DD')
     )
     cache.expiration = expirationDate
-    cache.save(function (err, newCache) {
+    cache.save(function(err, newCache) {
       if (err) return next(err)
       data.cache = newCache
       return next(null, data)
@@ -126,8 +126,8 @@ function updateCache (data, next) {
   })
 }
 
-function execRunQuery (data, next) {
-  runQuery(data.queryText, data.connection, function (err, queryResult) {
+function execRunQuery(data, next) {
+  runQuery(data.queryText, data.connection, function(err, queryResult) {
     if (err) return next(err)
     data.queryResult = queryResult
     data.queryResult.cacheKey = data.cacheKey
@@ -135,13 +135,13 @@ function execRunQuery (data, next) {
   })
 }
 
-function createDownloads (data, next) {
+function createDownloads(data, next) {
   const ALLOW_CSV_DOWNLOAD = config.get('allowCsvDownload')
   if (ALLOW_CSV_DOWNLOAD) {
     var queryResult = data.queryResult
     var cache = data.cache
-    cache.writeXlsx(queryResult, function () {
-      cache.writeCsv(queryResult, function () {
+    cache.writeXlsx(queryResult, function() {
+      cache.writeCsv(queryResult, function() {
         return next(null, data)
       })
     })
