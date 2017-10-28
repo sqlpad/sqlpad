@@ -34,24 +34,20 @@ class SchemaSidebar extends React.PureComponent {
       })
       const qs = reload ? '?reload=true' : ''
       const url = `${config.baseUrl}/api/schema-info/${connectionId}${qs}`
-      fetchJson('GET', url)
-        .then(json => {
-          const { error, schemaInfo } = json
-          if (error) {
-            console.error(error)
-          }
-          updateCompletions(schemaInfo)
-          this.setState({
-            schemaInfo: schemaInfo
-          })
-          // sometimes refreshes happen so fast and people don't get to enjoy the animation
-          setTimeout(() => {
-            this.setState({ loading: false })
-          }, 1000)
+      fetchJson('GET', url).then(json => {
+        const { error, schemaInfo } = json
+        if (error) {
+          console.error(error)
+        }
+        updateCompletions(schemaInfo)
+        this.setState({
+          schemaInfo: schemaInfo
         })
-        .catch(ex => {
-          console.error(ex.toString())
-        })
+        // sometimes refreshes happen so fast and people don't get to enjoy the animation
+        setTimeout(() => {
+          this.setState({ loading: false })
+        }, 1000)
+      })
     } else {
       this.setState({
         schemaInfo: {}

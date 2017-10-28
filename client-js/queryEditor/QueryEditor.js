@@ -62,54 +62,39 @@ class QueryEditor extends React.Component {
   loadConnectionsFromServer = () => {
     const { config } = this.props
     const { query } = this.state
-    fetchJson('GET', `${config.baseUrl}/api/connections/`)
-      .then(json => {
-        const { error, connections } = json
-        if (error) {
-          Alert.error(error)
-        }
-        // if only 1 connection auto-select it
-        if (connections.length === 1 && query) {
-          query.connectionId = connections[0]._id
-        }
-        this.setState({ connections, query })
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    fetchJson('GET', `${config.baseUrl}/api/connections/`).then(json => {
+      const { error, connections } = json
+      if (error) {
+        Alert.error(error)
+      }
+      // if only 1 connection auto-select it
+      if (connections.length === 1 && query) {
+        query.connectionId = connections[0]._id
+      }
+      this.setState({ connections, query })
+    })
   }
 
   loadQueryFromServer = queryId => {
     const { config } = this.props
-    fetchJson('GET', `${config.baseUrl}/api/queries/${queryId}`)
-      .then(json => {
-        const { error, query } = json
-        if (error) {
-          Alert.error(error)
-        }
-        this.setState({ query })
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    fetchJson('GET', `${config.baseUrl}/api/queries/${queryId}`).then(json => {
+      const { error, query } = json
+      if (error) {
+        Alert.error(error)
+      }
+      this.setState({ query })
+    })
   }
 
   loadTagsFromServer = () => {
     const { config } = this.props
-    fetchJson('GET', `${config.baseUrl}/api/tags`)
-      .then(json => {
-        const { error, tags } = json
-        if (error) {
-          Alert.error(error)
-        }
-        this.setState({ availableTags: tags })
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    fetchJson('GET', `${config.baseUrl}/api/tags`).then(json => {
+      const { error, tags } = json
+      if (error) {
+        Alert.error(error)
+      }
+      this.setState({ availableTags: tags })
+    })
   }
 
   runQuery = () => {
@@ -127,20 +112,19 @@ class QueryEditor extends React.Component {
       queryName: query.name,
       queryText: selectedText || query.queryText
     }
-    fetchJson('POST', this.props.config.baseUrl + '/api/query-result', postData)
-      .then(json => {
-        if (json.error) Alert.error(json.error)
-        this.setState({
-          isDirty: false,
-          isRunning: false,
-          queryError: json.error,
-          queryResult: json.queryResult
-        })
+    fetchJson(
+      'POST',
+      this.props.config.baseUrl + '/api/query-result',
+      postData
+    ).then(json => {
+      if (json.error) Alert.error(json.error)
+      this.setState({
+        isDirty: false,
+        isRunning: false,
+        queryError: json.error,
+        queryResult: json.queryResult
       })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    })
   }
 
   saveQuery = () => {
@@ -152,42 +136,36 @@ class QueryEditor extends React.Component {
     }
     this.setState({ isSaving: true })
     if (query._id) {
-      fetchJson('PUT', `${config.baseUrl}/api/queries/${query._id}`, query)
-        .then(json => {
-          const { error, query } = json
-          if (error) {
-            Alert.error(error)
-            this.setState({ isSaving: false })
-            return
-          }
-          Alert.success('Query Saved')
-          this.setState({ isSaving: false, query })
-        })
-        .catch(ex => {
-          console.error(ex.toString())
-          Alert.error('Something is broken')
-        })
+      fetchJson(
+        'PUT',
+        `${config.baseUrl}/api/queries/${query._id}`,
+        query
+      ).then(json => {
+        const { error, query } = json
+        if (error) {
+          Alert.error(error)
+          this.setState({ isSaving: false })
+          return
+        }
+        Alert.success('Query Saved')
+        this.setState({ isSaving: false, query })
+      })
     } else {
-      fetchJson('POST', `${config.baseUrl}/api/queries`, query)
-        .then(json => {
-          const { error, query } = json
-          if (error) {
-            Alert.error(error)
-            this.setState({ isSaving: false })
-            return
-          }
-          window.history.replaceState(
-            {},
-            query.name,
-            `${config.baseUrl}/queries/${query._id}`
-          )
-          Alert.success('Query Saved')
-          this.setState({ isSaving: false, query })
-        })
-        .catch(ex => {
-          console.error(ex.toString())
-          Alert.error('Something is broken')
-        })
+      fetchJson('POST', `${config.baseUrl}/api/queries`, query).then(json => {
+        const { error, query } = json
+        if (error) {
+          Alert.error(error)
+          this.setState({ isSaving: false })
+          return
+        }
+        window.history.replaceState(
+          {},
+          query.name,
+          `${config.baseUrl}/queries/${query._id}`
+        )
+        Alert.success('Query Saved')
+        this.setState({ isSaving: false, query })
+      })
     }
   }
 

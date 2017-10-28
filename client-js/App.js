@@ -38,30 +38,20 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetchJson('GET', this.props.config.baseUrl + '/api/app')
-      .then(json => {
-        this.setState({
-          currentUser: json.currentUser,
-          version: json.version,
-          passport: json.passport,
-          config: json.config
-        })
+    fetchJson('GET', this.props.config.baseUrl + '/api/app').then(json => {
+      this.setState({
+        currentUser: json.currentUser,
+        version: json.version,
+        passport: json.passport,
+        config: json.config
       })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    })
   }
 
   signout() {
-    fetchJson('GET', this.props.config.baseUrl + '/api/signout')
-      .then(json => {
-        this.setState({ redirect: true })
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Problem signing out')
-      })
+    fetchJson('GET', this.props.config.baseUrl + '/api/signout').then(json => {
+      this.setState({ redirect: true })
+    })
   }
 
   render() {
