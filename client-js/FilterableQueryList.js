@@ -4,6 +4,7 @@ import Alert from 'react-s-alert'
 import AceEditor from 'react-ace'
 import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
+import { Link } from 'react-router-dom'
 import Label from 'react-bootstrap/lib/Label'
 import Form from 'react-bootstrap/lib/Form'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
@@ -14,7 +15,6 @@ import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import navigateToClickHandler from './utilities/navigateToClickHandler'
 import fetchJson from './utilities/fetch-json.js'
 import chartDefinitions from './components/ChartDefinitions.js'
 import uniq from 'lodash.uniq'
@@ -383,12 +383,9 @@ class QueryListRow extends React.Component {
         onMouseOut={this.onMouseOut}
       >
         <h4>
-          <a
-            onClick={navigateToClickHandler('/queries/' + this.props.query._id)}
-            href="#query"
-          >
+          <Link to={'/queries/' + this.props.query._id}>
             {this.props.query.name}
-          </a>
+          </Link>
         </h4>
         <p>
           {this.props.query.createdBy} {tagLabels}
