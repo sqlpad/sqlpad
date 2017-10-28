@@ -22,26 +22,36 @@ import QueryTableOnly from './QueryTableOnly.js'
 import QueryChartOnly from './QueryChartOnly.js'
 import NotFound from './NotFound.js'
 
-const AuthenticatedRoute = ({ component: Component, currentUser, ...rest }) => (
+const AuthenticatedRoute = ({
+  component: Component,
+  config,
+  currentUser,
+  ...rest
+}) => (
   <Route
     {...rest}
     render={props =>
       currentUser ? (
-        <Component {...props} />
+        <App config={config} currentUser={currentUser}>
+          <Component {...props} />
+        </App>
       ) : (
         <Redirect to={{ pathname: '/signin' }} />
       )}
   />
 )
 
-const AdminRoute = ({ component: Component, currentUser, ...rest }) => (
+// TODO eventually make this a not-authorized redirect
+const AdminRoute = ({ component: Component, config, currentUser, ...rest }) => (
   <Route
     {...rest}
     render={props =>
       currentUser && currentUser.role === 'admin' ? (
-        <Component {...props} />
+        <App config={config} currentUser={currentUser}>
+          <Component {...props} />
+        </App>
       ) : (
-        <Redirect to={{ pathname: '/signin' }} />
+        <Redirect to={{ pathname: '/queries' }} />
       )}
   />
 )
@@ -95,24 +105,22 @@ class Main extends React.Component {
             <AuthenticatedRoute
               exact
               path="/queries"
+              config={config}
               currentUser={currentUser}
               component={() => (
-                <App config={config} currentUser={currentUser}>
-                  <FilterableQueryList
-                    config={config}
-                    currentUser={currentUser}
-                  />
-                </App>
+                <FilterableQueryList
+                  config={config}
+                  currentUser={currentUser}
+                />
               )}
             />
             <AuthenticatedRoute
               exact
               path="/queries/:queryId"
+              config={config}
               currentUser={currentUser}
               component={({ match }) => (
-                <App config={config} currentUser={currentUser}>
-                  <QueryEditor queryId={match.params.queryId} config={config} />
-                </App>
+                <QueryEditor queryId={match.params.queryId} config={config} />
               )}
             />
             <Route
@@ -138,29 +146,25 @@ class Main extends React.Component {
             <AdminRoute
               exect
               path="/users"
+              config={config}
+              currentUser={currentUser}
               component={() => (
-                <App config={config} currentUser={currentUser}>
-                  <UserAdmin config={config} currentUser={currentUser} />
-                </App>
+                <UserAdmin config={config} currentUser={currentUser} />
               )}
             />
             <AdminRoute
               exact
               path="/connections"
-              component={() => (
-                <App config={config} currentUser={currentUser}>
-                  <ConnectionsView config={config} />
-                </App>
-              )}
+              config={config}
+              currentUser={currentUser}
+              component={() => <ConnectionsView config={config} />}
             />
             <AdminRoute
               exact
               path="/config-values"
-              component={() => (
-                <App config={config} currentUser={currentUser}>
-                  <ConfigValues config={config} />
-                </App>
-              )}
+              config={config}
+              currentUser={currentUser}
+              component={() => <ConfigValues config={config} />}
             />
             <Route
               exect
