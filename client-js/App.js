@@ -1,5 +1,4 @@
 import React from 'react'
-import Alert from 'react-s-alert'
 import { Redirect } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import Navbar from 'react-bootstrap/lib/Navbar'

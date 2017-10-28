@@ -185,7 +185,7 @@ class Main extends React.Component {
               )}
             />
           </Switch>
-          <Alert stack={{ limit: 9 }} position="bottom-right" />
+          <Alert stack={{ limit: 3 }} position="bottom-right" />
         </div>
       </Router>
     )
