@@ -95,7 +95,6 @@ class SignIn extends React.Component {
         <h2>SQLPad</h2>
         {'local' in this.props.passport.strategies ? localForm : null}
         {'google' in this.props.passport.strategies ? googleForm : null}
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

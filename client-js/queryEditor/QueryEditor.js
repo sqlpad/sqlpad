@@ -436,7 +436,6 @@ class QueryEditor extends React.Component {
           showModal={showModal}
           tagOptions={this.getTagOptions()}
         />
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

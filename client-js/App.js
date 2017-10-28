@@ -154,7 +154,6 @@ class App extends React.Component {
         <div className="flex-100" style={{ marginTop: '50px' }}>
           {this.props.children}
         </div>
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
         <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>
           <Modal.Header closeButton>
             <Modal.Title>About SQLPad</Modal.Title>

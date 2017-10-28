@@ -95,7 +95,6 @@ class SignUp extends React.Component {
             Sign up
           </button>
         </form>
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

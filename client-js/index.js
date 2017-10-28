@@ -6,6 +6,7 @@ import {
   Redirect,
   Switch
 } from 'react-router-dom'
+import Alert from 'react-s-alert'
 import fetchJson from './utilities/fetch-json.js'
 import App from './App.js'
 import UserAdmin from './UserAdmin.js'
@@ -188,6 +189,7 @@ class Main extends React.Component {
               )}
             />
           </Switch>
+          <Alert stack={{ limit: 3 }} position="bottom-right" />
         </div>
       </Router>
     )

@@ -56,7 +56,6 @@ class ForgotPassword extends React.Component {
             Reset Password
           </button>
         </form>
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

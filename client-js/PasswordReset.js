@@ -74,7 +74,6 @@ class PasswordReset extends React.Component {
               Password Reset<br />Not Found
             </h2>
           </form>
-          <Alert stack={{ limit: 3 }} position="bottom-right" />
         </div>
       )
     }
@@ -111,7 +110,6 @@ class PasswordReset extends React.Component {
             Reset Password
           </button>
         </form>
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }
