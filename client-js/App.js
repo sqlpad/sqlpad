@@ -1,5 +1,6 @@
 import React from 'react'
 import Alert from 'react-s-alert'
+import { Redirect } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import Navbar from 'react-bootstrap/lib/Navbar'
 import Nav from 'react-bootstrap/lib/Nav'
@@ -11,7 +12,6 @@ import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import fetchJson from './utilities/fetch-json.js'
-import page from 'page'
 
 class App extends React.Component {
   constructor(props) {
@@ -21,7 +21,8 @@ class App extends React.Component {
       currentUser: {},
       version: {},
       passport: {},
-      config: {}
+      config: {},
+      redirect: false
     }
     this.openAboutModal = this.openAboutModal.bind(this)
     this.closeAboutModal = this.closeAboutModal.bind(this)
@@ -56,7 +57,7 @@ class App extends React.Component {
   signout() {
     fetchJson('GET', this.props.config.baseUrl + '/api/signout')
       .then(json => {
-        page('/')
+        this.setState({ redirect: true })
       })
       .catch(ex => {
         console.error(ex.toString())
@@ -65,6 +66,10 @@ class App extends React.Component {
   }
 
   render() {
+    const { redirect } = this.state
+    if (redirect) {
+      return <Redirect push to="/signin" />
+    }
     const popover = (
       <Popover
         id="modal-popover"

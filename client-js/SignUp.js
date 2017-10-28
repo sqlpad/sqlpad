@@ -1,13 +1,14 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
 import Alert from 'react-s-alert'
-import page from 'page'
 
 class SignUp extends React.Component {
   state = {
     email: '',
     password: '',
-    passwordConfirmation: ''
+    passwordConfirmation: '',
+    redirect: false
   }
 
   componentDidMount() {
@@ -31,7 +32,7 @@ class SignUp extends React.Component {
     fetchJson('POST', this.props.config.baseUrl + '/api/signup', this.state)
       .then(json => {
         if (json.error) return Alert.error(json.error)
-        page('/')
+        this.setState({ redirect: true })
       })
       .catch(ex => {
         Alert.error('Problem signing up')
@@ -40,6 +41,10 @@ class SignUp extends React.Component {
   }
 
   render() {
+    const { redirect } = this.state
+    if (redirect) {
+      return <Redirect to="/" />
+    }
     const adminRegistrationOpenIntro = () => {
       if (this.props.adminRegistrationOpen) {
         return (
