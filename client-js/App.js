@@ -1,5 +1,7 @@
 import React from 'react'
 import Alert from 'react-s-alert'
+import { Redirect } from 'react-router-dom'
+import { LinkContainer } from 'react-router-bootstrap'
 import Navbar from 'react-bootstrap/lib/Navbar'
 import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
@@ -9,9 +11,7 @@ import Modal from 'react-bootstrap/lib/Modal'
 import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import navigateToClickHandler from './utilities/navigateToClickHandler'
 import fetchJson from './utilities/fetch-json.js'
-import page from 'page'
 
 class App extends React.Component {
   constructor(props) {
@@ -21,7 +21,8 @@ class App extends React.Component {
       currentUser: {},
       version: {},
       passport: {},
-      config: {}
+      config: {},
+      redirect: false
     }
     this.openAboutModal = this.openAboutModal.bind(this)
     this.closeAboutModal = this.closeAboutModal.bind(this)
@@ -39,7 +40,6 @@ class App extends React.Component {
   componentDidMount() {
     fetchJson('GET', this.props.config.baseUrl + '/api/app')
       .then(json => {
-        // TODO - would it be good to adopt this all-in-one app route or is this bad?
         this.setState({
           currentUser: json.currentUser,
           version: json.version,
@@ -56,7 +56,7 @@ class App extends React.Component {
   signout() {
     fetchJson('GET', this.props.config.baseUrl + '/api/signout')
       .then(json => {
-        page('/')
+        this.setState({ redirect: true })
       })
       .catch(ex => {
         console.error(ex.toString())
@@ -65,6 +65,10 @@ class App extends React.Component {
   }
 
   render() {
+    const { redirect } = this.state
+    if (redirect) {
+      return <Redirect push to="/signin" />
+    }
     const popover = (
       <Popover
         id="modal-popover"
@@ -94,21 +98,15 @@ class App extends React.Component {
             title={this.props.currentUser.email.split('@')[0]}
             id="user-nav-dropdown"
           >
-            <MenuItem
-              eventKey={3.1}
-              onClick={navigateToClickHandler('/connections')}
-            >
-              Connections
-            </MenuItem>
-            <MenuItem eventKey={3.2} onClick={navigateToClickHandler('/users')}>
-              Users
-            </MenuItem>
-            <MenuItem
-              eventKey={3.3}
-              onClick={navigateToClickHandler('/config-values')}
-            >
-              Configuration
-            </MenuItem>
+            <LinkContainer to="/connections">
+              <MenuItem eventKey={3.1}>Connections</MenuItem>
+            </LinkContainer>
+            <LinkContainer to="/users">
+              <MenuItem eventKey={3.2}>Users</MenuItem>
+            </LinkContainer>
+            <LinkContainer to="/config-values">
+              <MenuItem eventKey={3.3}>Configuration</MenuItem>
+            </LinkContainer>
             <MenuItem divider />
             <MenuItem eventKey={3.4} onClick={this.openAboutModal}>
               About SQLPad
@@ -141,19 +139,12 @@ class App extends React.Component {
       <div className="flex-100">
         <Navbar inverse fluid fixedTop>
           <Nav>
-            <NavItem eventKey={1} onClick={navigateToClickHandler('/queries')}>
-              Queries
-            </NavItem>
-            {/*
-              NOTE: /queries/new is *NOT* handled by page.js.
-              clicking new while on new creates weirdness that needs to be worked out.
-            */}
-            <NavItem
-              eventKey={2}
-              href={this.props.config.baseUrl + '/queries/new'}
-            >
-              New Query
-            </NavItem>
+            <LinkContainer exact to="/queries">
+              <NavItem eventKey={1}>Queries</NavItem>
+            </LinkContainer>
+            <LinkContainer exact to="/queries/new">
+              <NavItem eventKey={2}>New Query</NavItem>
+            </LinkContainer>
           </Nav>
           <Nav pullRight>
             {updateNotification()}

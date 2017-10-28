@@ -1,13 +1,18 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 import Alert from 'react-s-alert'
-import navigateToClickHandler from './utilities/navigateToClickHandler'
+import { Link } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
-import page from 'page'
 
 class SignIn extends React.Component {
   state = {
     email: '',
-    password: ''
+    password: '',
+    redirect: false
+  }
+
+  componentDidMount() {
+    document.title = 'SQLPad - Sign In'
   }
 
   onEmailChange = e => {
@@ -23,7 +28,7 @@ class SignIn extends React.Component {
     fetchJson('POST', this.props.config.baseUrl + '/api/signin', this.state)
       .then(json => {
         if (json.error) return Alert.error('Username or password incorrect')
-        page('/')
+        this.setState({ redirect: true })
       })
       .catch(ex => {
         Alert.error('Username or Password incorrect')
@@ -32,6 +37,10 @@ class SignIn extends React.Component {
   }
 
   render() {
+    const { redirect } = this.state
+    if (redirect) {
+      return <Redirect push to="/" />
+    }
     const localForm = (
       <div>
         <form className="form-signin" onSubmit={this.signIn}>
@@ -62,17 +71,11 @@ class SignIn extends React.Component {
         </form>
         <div className="form-signin-footer">
           <p>
-            <a onClick={navigateToClickHandler('/signup')} href="#signup">
-              Sign Up
-            </a>
+            <Link to="/signup">Sign Up</Link>
             {this.props.smtpConfigured ? (
-              <a
-                style={{ marginLeft: 50 }}
-                onClick={navigateToClickHandler('/forgot-password')}
-                href="#forgot"
-              >
+              <Link style={{ marginLeft: 50 }} to="/forgot-password">
                 Forgot Password
-              </a>
+              </Link>
             ) : null}
           </p>
         </div>

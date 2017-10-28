@@ -37,7 +37,7 @@ class QueryEditor extends React.Component {
     isDirty: false,
     isRunning: false,
     isSaving: false,
-    query: NEW_QUERY,
+    query: Object.assign({}, NEW_QUERY),
     queryResult: undefined,
     runQueryStartTime: undefined,
     saveOnClose: false,
@@ -256,7 +256,7 @@ class QueryEditor extends React.Component {
       return this.setState({
         activeTabKey: 'sql',
         queryResult: undefined,
-        query: NEW_QUERY
+        query: Object.assign({}, NEW_QUERY)
       })
     }
     this.loadQueryFromServer(nextProps.queryId)

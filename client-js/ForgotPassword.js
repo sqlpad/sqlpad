@@ -1,11 +1,16 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
 import Alert from 'react-s-alert'
-import page from 'page'
 
 class ForgotPassword extends React.Component {
   state = {
-    email: ''
+    email: '',
+    redirect: false
+  }
+
+  componentDidMount() {
+    document.title = 'SQLPad - Forgot Password'
   }
 
   onEmailChange = e => {
@@ -21,7 +26,7 @@ class ForgotPassword extends React.Component {
     )
       .then(json => {
         if (json.error) return Alert.error(json.error)
-        page('/password-reset')
+        this.setState({ redirect: true })
       })
       .catch(ex => {
         Alert.error('Problem resetting password')
@@ -30,6 +35,10 @@ class ForgotPassword extends React.Component {
   }
 
   render() {
+    const { redirect } = this.state
+    if (redirect) {
+      return <Redirect to="/password-reset" />
+    }
     return (
       <div className="signin">
         <form className="form-signin" onSubmit={this.resetPassword}>
