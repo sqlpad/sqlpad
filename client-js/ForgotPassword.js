@@ -23,15 +23,10 @@ class ForgotPassword extends React.Component {
       'POST',
       this.props.config.baseUrl + '/api/forgot-password',
       this.state
-    )
-      .then(json => {
-        if (json.error) return Alert.error(json.error)
-        this.setState({ redirect: true })
-      })
-      .catch(ex => {
-        Alert.error('Problem resetting password')
-        console.error(ex)
-      })
+    ).then(json => {
+      if (json.error) return Alert.error(json.error)
+      this.setState({ redirect: true })
+    })
   }
 
   render() {
@@ -56,7 +51,6 @@ class ForgotPassword extends React.Component {
             Reset Password
           </button>
         </form>
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

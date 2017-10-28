@@ -34,49 +34,37 @@ class UserAdmin extends React.Component {
   }
 
   handleDelete(user) {
-    fetchJson('DELETE', this.props.config.baseUrl + '/api/users/' + user._id)
-      .then(json => {
-        if (json.error) {
-          return Alert.error('Delete Failed: ' + json.error.toString())
-        }
-        Alert.success('User Deleted')
-        this.loadUsersFromServer()
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    fetchJson(
+      'DELETE',
+      this.props.config.baseUrl + '/api/users/' + user._id
+    ).then(json => {
+      if (json.error) {
+        return Alert.error('Delete Failed: ' + json.error.toString())
+      }
+      Alert.success('User Deleted')
+      this.loadUsersFromServer()
+    })
   }
 
   loadUsersFromServer() {
-    fetchJson('get', this.props.config.baseUrl + '/api/users')
-      .then(json => {
-        if (json.error) Alert.error(json.error)
-        this.setState({ users: json.users })
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    fetchJson('get', this.props.config.baseUrl + '/api/users').then(json => {
+      if (json.error) Alert.error(json.error)
+      this.setState({ users: json.users })
+    })
   }
 
   updateUserRole(user) {
     this.setState({ isSaving: true })
     fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
       role: user.role
+    }).then(json => {
+      this.loadUsersFromServer()
+      this.setState({ isSaving: false })
+      if (json.error) {
+        return Alert.error('Update failed: ' + json.error.toString())
+      }
+      Alert.success('User Updated')
     })
-      .then(json => {
-        this.loadUsersFromServer()
-        this.setState({ isSaving: false })
-        if (json.error) {
-          return Alert.error('Update failed: ' + json.error.toString())
-        }
-        Alert.success('User Updated')
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
   }
 
   generatePasswordResetLink(user) {
@@ -84,38 +72,28 @@ class UserAdmin extends React.Component {
     const passwordResetId = uuid.v4()
     fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
       passwordResetId
+    }).then(json => {
+      this.loadUsersFromServer()
+      this.setState({ isSaving: false })
+      if (json.error) {
+        return Alert.error('Update failed: ' + json.error.toString())
+      }
+      Alert.success('Password link generated')
     })
-      .then(json => {
-        this.loadUsersFromServer()
-        this.setState({ isSaving: false })
-        if (json.error) {
-          return Alert.error('Update failed: ' + json.error.toString())
-        }
-        Alert.success('Password link generated')
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
   }
 
   removePasswordResetLink(user) {
     this.setState({ isSaving: true })
     fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
       passwordResetId: ''
+    }).then(json => {
+      this.loadUsersFromServer()
+      this.setState({ isSaving: false })
+      if (json.error) {
+        return Alert.error('Update failed: ' + json.error.toString())
+      }
+      Alert.success('Password reset link removed')
     })
-      .then(json => {
-        this.loadUsersFromServer()
-        this.setState({ isSaving: false })
-        if (json.error) {
-          return Alert.error('Update failed: ' + json.error.toString())
-        }
-        Alert.success('Password reset link removed')
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
   }
 
   render() {
@@ -330,25 +308,24 @@ class InviteUserForm extends React.Component {
     this.setState({
       isInviting: true
     })
-    fetchJson('POST', this.props.config.baseUrl + '/api/users', user)
-      .then(json => {
-        this.setState({
-          isInviting: false
-        })
-        if (json.error) {
-          return Alert.error('Whitelist failed: ' + json.error.toString())
-        }
-        Alert.success('User Whitelisted')
-        this.setState({
-          email: null,
-          role: null
-        })
-        this.props.loadUsersFromServer()
+    fetchJson(
+      'POST',
+      this.props.config.baseUrl + '/api/users',
+      user
+    ).then(json => {
+      this.setState({
+        isInviting: false
       })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
+      if (json.error) {
+        return Alert.error('Whitelist failed: ' + json.error.toString())
+      }
+      Alert.success('User Whitelisted')
+      this.setState({
+        email: null,
+        role: null
       })
+      this.props.loadUsersFromServer()
+    })
   }
 
   render() {

@@ -32,15 +32,10 @@ class PasswordReset extends React.Component {
         '/api/password-reset/' +
         this.props.passwordResetId,
       this.state
-    )
-      .then(json => {
-        if (json.error) return Alert.error(json.error)
-        this.setState({ redirect: true })
-      })
-      .catch(ex => {
-        Alert.error('Problem resetting password')
-        console.error(ex)
-      })
+    ).then(json => {
+      if (json.error) return Alert.error(json.error)
+      this.setState({ redirect: true })
+    })
   }
 
   componentDidMount() {
@@ -50,15 +45,10 @@ class PasswordReset extends React.Component {
       this.props.config.baseUrl +
         '/api/password-reset/' +
         this.props.passwordResetId
-    )
-      .then(json => {
-        if (json.error) return Alert.error(json.error)
-        if (!json.passwordResetId) this.setState({ notFound: true })
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    ).then(json => {
+      if (json.error) return Alert.error(json.error)
+      if (!json.passwordResetId) this.setState({ notFound: true })
+    })
   }
 
   render() {
@@ -74,7 +64,6 @@ class PasswordReset extends React.Component {
               Password Reset<br />Not Found
             </h2>
           </form>
-          <Alert stack={{ limit: 3 }} position="bottom-right" />
         </div>
       )
     }
@@ -111,7 +100,6 @@ class PasswordReset extends React.Component {
             Reset Password
           </button>
         </form>
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

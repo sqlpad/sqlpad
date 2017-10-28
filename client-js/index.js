@@ -6,6 +6,7 @@ import {
   Redirect,
   Switch
 } from 'react-router-dom'
+import Alert from 'react-s-alert'
 import fetchJson from './utilities/fetch-json.js'
 import App from './App.js'
 import UserAdmin from './UserAdmin.js'
@@ -26,23 +27,19 @@ class Main extends React.Component {
   state = {}
 
   componentDidMount() {
-    fetchJson('GET', 'api/app')
-      .then(json => {
-        // NOTE: this was previously run every route.
-        // This may need to be exposed or refreshed intelligently
-        this.setState({
-          config: json.config,
-          smtpConfigured: json.smtpConfigured,
-          googleAuthConfigured: json.googleAuthConfigured,
-          currentUser: json.currentUser,
-          passport: json.passport,
-          adminRegistrationOpen: json.adminRegistrationOpen,
-          version: json.version
-        })
+    fetchJson('GET', 'api/app').then(json => {
+      // NOTE: this was previously run every route.
+      // This may need to be exposed or refreshed intelligently
+      this.setState({
+        config: json.config,
+        smtpConfigured: json.smtpConfigured,
+        googleAuthConfigured: json.googleAuthConfigured,
+        currentUser: json.currentUser,
+        passport: json.passport,
+        adminRegistrationOpen: json.adminRegistrationOpen,
+        version: json.version
       })
-      .catch(ex => {
-        console.error(ex.toString())
-      })
+    })
   }
 
   // TODO eventually make this a not-authorized redirect
@@ -188,6 +185,7 @@ class Main extends React.Component {
               )}
             />
           </Switch>
+          <Alert stack={{ limit: 3 }} position="bottom-right" />
         </div>
       </Router>
     )

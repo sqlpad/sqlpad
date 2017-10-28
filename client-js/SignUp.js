@@ -29,15 +29,14 @@ class SignUp extends React.Component {
 
   signUp = e => {
     e.preventDefault()
-    fetchJson('POST', this.props.config.baseUrl + '/api/signup', this.state)
-      .then(json => {
-        if (json.error) return Alert.error(json.error)
-        this.setState({ redirect: true })
-      })
-      .catch(ex => {
-        Alert.error('Problem signing up')
-        console.error(ex)
-      })
+    fetchJson(
+      'POST',
+      this.props.config.baseUrl + '/api/signup',
+      this.state
+    ).then(json => {
+      if (json.error) return Alert.error(json.error)
+      this.setState({ redirect: true })
+    })
   }
 
   render() {
@@ -95,7 +94,6 @@ class SignUp extends React.Component {
             Sign up
           </button>
         </form>
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
       </div>
     )
   }

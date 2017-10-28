@@ -1,4 +1,5 @@
 import 'whatwg-fetch'
+import Alert from 'react-s-alert'
 
 export default function fetchJson(method, url, body) {
   const opts = {
@@ -15,14 +16,21 @@ export default function fetchJson(method, url, body) {
   if (body) {
     opts.body = JSON.stringify(body)
   }
-  return fetch(url, opts).then(response => {
-    if (response.status === 200) {
-      return response.json()
-    } else {
-      console.error(response)
+  return fetch(url, opts)
+    .then(response => {
+      // API server will send 200 even if error occurs
+      // Eventually this should change to proper status code usage
+      if (response.status === 200) {
+        return response.json()
+      } else {
+        console.error(response)
+        throw new Error('Server responded not ok')
+      }
+    })
+    .catch(error => {
+      Alert.error(error.toString())
       return {
         error: 'Server responded not ok'
       }
-    }
-  })
+    })
 }

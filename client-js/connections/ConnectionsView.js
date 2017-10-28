@@ -37,22 +37,17 @@ class ConnectionsView extends React.Component {
     fetchJson(
       'DELETE',
       this.props.config.baseUrl + '/api/connections/' + connection._id
-    )
-      .then(json => {
-        if (json.error) return Alert.error('Delete failed')
-        Alert.success('Connection deleted')
-        if (
-          this.state.selectedConnection &&
-          connection._id === this.state.selectedConnection._id
-        ) {
-          this.setState({ selectedConnection: null })
-        }
-        this.loadConnectionsFromServer()
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    ).then(json => {
+      if (json.error) return Alert.error('Delete failed')
+      Alert.success('Connection deleted')
+      if (
+        this.state.selectedConnection &&
+        connection._id === this.state.selectedConnection._id
+      ) {
+        this.setState({ selectedConnection: null })
+      }
+      this.loadConnectionsFromServer()
+    })
   }
 
   onNewConnectionClick() {
@@ -70,15 +65,13 @@ class ConnectionsView extends React.Component {
   }
 
   loadConnectionsFromServer() {
-    fetchJson('get', this.props.config.baseUrl + '/api/connections')
-      .then(json => {
-        if (json.error) Alert.error(json.error)
-        this.setState({ connections: json.connections })
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    fetchJson(
+      'get',
+      this.props.config.baseUrl + '/api/connections'
+    ).then(json => {
+      if (json.error) Alert.error(json.error)
+      this.setState({ connections: json.connections })
+    })
   }
 
   testConnection() {
@@ -87,16 +80,11 @@ class ConnectionsView extends React.Component {
       'POST',
       this.props.config.baseUrl + '/api/test-connection',
       this.state.selectedConnection
-    )
-      .then(json => {
-        this.setState({ isTesting: false })
-        if (json.error) return Alert.error('Test Failed')
-        return Alert.success('Test successful')
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    ).then(json => {
+      this.setState({ isTesting: false })
+      if (json.error) return Alert.error('Test Failed')
+      return Alert.success('Test successful')
+    })
   }
 
   saveConnection() {
@@ -108,38 +96,28 @@ class ConnectionsView extends React.Component {
           '/api/connections/' +
           this.state.selectedConnection._id,
         this.state.selectedConnection
-      )
-        .then(json => {
-          this.setState({ isSaving: false })
-          if (json.error) return Alert.error('Save failed')
-          Alert.success('Connection saved')
-          this.setState({ selectedConnection: null })
-          this.loadConnectionsFromServer()
-        })
-        .catch(ex => {
-          console.error(ex.toString())
-          Alert.error('Something is broken')
-        })
+      ).then(json => {
+        this.setState({ isSaving: false })
+        if (json.error) return Alert.error('Save failed')
+        Alert.success('Connection saved')
+        this.setState({ selectedConnection: null })
+        this.loadConnectionsFromServer()
+      })
     } else {
       fetchJson(
         'POST',
         this.props.config.baseUrl + '/api/connections',
         this.state.selectedConnection
-      )
-        .then(json => {
-          this.setState({
-            isSaving: false,
-            selectedConnection: json.connection || this.state.selectedConnection
-          })
-          if (json.error) return Alert.error('Save failed')
-          Alert.success('Connection saved')
-          this.setState({ selectedConnection: null })
-          this.loadConnectionsFromServer()
+      ).then(json => {
+        this.setState({
+          isSaving: false,
+          selectedConnection: json.connection || this.state.selectedConnection
         })
-        .catch(ex => {
-          console.error(ex.toString())
-          Alert.error('Something is broken')
-        })
+        if (json.error) return Alert.error('Save failed')
+        Alert.success('Connection saved')
+        this.setState({ selectedConnection: null })
+        this.loadConnectionsFromServer()
+      })
     }
   }
 

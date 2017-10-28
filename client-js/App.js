@@ -1,5 +1,4 @@
 import React from 'react'
-import Alert from 'react-s-alert'
 import { Redirect } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import Navbar from 'react-bootstrap/lib/Navbar'
@@ -38,30 +37,20 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetchJson('GET', this.props.config.baseUrl + '/api/app')
-      .then(json => {
-        this.setState({
-          currentUser: json.currentUser,
-          version: json.version,
-          passport: json.passport,
-          config: json.config
-        })
+    fetchJson('GET', this.props.config.baseUrl + '/api/app').then(json => {
+      this.setState({
+        currentUser: json.currentUser,
+        version: json.version,
+        passport: json.passport,
+        config: json.config
       })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Something is broken')
-      })
+    })
   }
 
   signout() {
-    fetchJson('GET', this.props.config.baseUrl + '/api/signout')
-      .then(json => {
-        this.setState({ redirect: true })
-      })
-      .catch(ex => {
-        console.error(ex.toString())
-        Alert.error('Problem signing out')
-      })
+    fetchJson('GET', this.props.config.baseUrl + '/api/signout').then(json => {
+      this.setState({ redirect: true })
+    })
   }
 
   render() {
@@ -154,7 +143,6 @@ class App extends React.Component {
         <div className="flex-100" style={{ marginTop: '50px' }}>
           {this.props.children}
         </div>
-        <Alert stack={{ limit: 3 }} position="bottom-right" />
         <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>
           <Modal.Header closeButton>
             <Modal.Title>About SQLPad</Modal.Title>

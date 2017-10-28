@@ -38,12 +38,6 @@ class QueryEditor extends React.Component {
           queryResult: json.queryResult
         })
       })
-      .catch(ex => {
-        console.error(ex.toString())
-        this.setState({
-          isRunning: false
-        })
-      })
   }
 
   componentDidMount() {
