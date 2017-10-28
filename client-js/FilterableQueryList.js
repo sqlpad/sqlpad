@@ -132,6 +132,7 @@ class FilterableQueryList extends React.Component {
   }
 
   componentDidMount() {
+    document.title = 'SQLPad - Queries'
     this.loadConfigValuesFromServer()
   }
 

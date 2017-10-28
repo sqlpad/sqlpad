@@ -43,6 +43,7 @@ class PasswordReset extends React.Component {
   }
 
   componentDidMount() {
+    document.title = 'SQLPad - Password Reset'
     fetchJson(
       'GET',
       this.props.config.baseUrl +

@@ -8,6 +8,10 @@ class ForgotPassword extends React.Component {
     email: ''
   }
 
+  componentDidMount() {
+    document.title = 'SQLPad - Forgot Password'
+  }
+
   onEmailChange = e => {
     this.setState({ email: e.target.value })
   }

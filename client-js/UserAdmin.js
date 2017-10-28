@@ -29,6 +29,7 @@ class UserAdmin extends React.Component {
   }
 
   componentDidMount() {
+    document.title = 'SQLPad - Users'
     this.loadUsersFromServer()
   }
 

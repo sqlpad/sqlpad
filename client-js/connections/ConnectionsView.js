@@ -23,6 +23,7 @@ class ConnectionsView extends React.Component {
   }
 
   componentDidMount() {
+    document.title = 'SQLPad - Connections'
     this.loadConnectionsFromServer()
   }
 

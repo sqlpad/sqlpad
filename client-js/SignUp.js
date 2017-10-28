@@ -10,6 +10,10 @@ class SignUp extends React.Component {
     passwordConfirmation: ''
   }
 
+  componentDidMount() {
+    document.title = 'SQLPad - Sign Up'
+  }
+
   onEmailChange = e => {
     this.setState({ email: e.target.value })
   }

@@ -47,6 +47,7 @@ class QueryEditor extends React.Component {
   }
 
   componentDidMount() {
+    document.title = 'SQLPad'
     this.runQuery(this.props.queryId)
   }
 

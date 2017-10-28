@@ -65,6 +65,7 @@ class ConfigValues extends React.Component {
   }
 
   componentDidMount() {
+    document.title = 'SQLPad - Configuration'
     this.loadConfigValuesFromServer()
     this.saveConfigValue = debounce(this.saveConfigValue, 500)
   }
