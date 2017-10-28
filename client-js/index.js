@@ -144,7 +144,7 @@ class Main extends React.Component {
               )}
             />
             <AdminRoute
-              exect
+              exact
               path="/users"
               config={config}
               currentUser={currentUser}
@@ -167,7 +167,7 @@ class Main extends React.Component {
               component={() => <ConfigValues config={config} />}
             />
             <Route
-              exect
+              exact
               path="/signin"
               component={() => (
                 <SignIn
@@ -178,7 +178,7 @@ class Main extends React.Component {
               )}
             />
             <Route
-              exect
+              exact
               path="/signup"
               component={() => (
                 <SignUp
@@ -188,12 +188,12 @@ class Main extends React.Component {
               )}
             />
             <Route
-              exect
+              exact
               path="/forgot-password"
               component={() => <ForgotPassword config={config} />}
             />
             <Route
-              exect
+              exact
               path="/password-reset/:passwordResetId"
               component={({ match }) => (
                 <PasswordReset
@@ -204,7 +204,7 @@ class Main extends React.Component {
               )}
             />
             <Route
-              exect
+              exact
               path="/password-reset"
               component={() => <PasswordResetRequested />}
             />
