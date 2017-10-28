@@ -22,7 +22,8 @@ class ChartInputs extends React.Component {
     showAdvanced: false
   }
 
-  handleAdvancedClick = () => {
+  handleAdvancedClick = e => {
+    e.preventDefault()
     this.setState({
       showAdvanced: !this.state.showAdvanced
     })
