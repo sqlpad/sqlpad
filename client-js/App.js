@@ -131,8 +131,6 @@ class App extends React.Component {
         )
       }
     }
-    // NOTE /queries/new is not handled by react-router
-    // Clicking new on query edit page needs to reset inputs
     return (
       <div className="flex-100">
         <Navbar inverse fluid fixedTop>
@@ -140,12 +138,9 @@ class App extends React.Component {
             <LinkContainer exact to="/queries">
               <NavItem eventKey={1}>Queries</NavItem>
             </LinkContainer>
-            <NavItem
-              eventKey={2}
-              href={this.props.config.baseUrl + '/queries/new'}
-            >
-              New Query
-            </NavItem>
+            <LinkContainer exact to="/queries/new">
+              <NavItem eventKey={2}>New Query</NavItem>
+            </LinkContainer>
           </Nav>
           <Nav pullRight>
             {updateNotification()}
