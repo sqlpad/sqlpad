@@ -40,7 +40,6 @@ class App extends React.Component {
   componentDidMount() {
     fetchJson('GET', this.props.config.baseUrl + '/api/app')
       .then(json => {
-        // TODO - would it be good to adopt this all-in-one app route or is this bad?
         this.setState({
           currentUser: json.currentUser,
           version: json.version,

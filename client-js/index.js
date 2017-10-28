@@ -54,6 +54,8 @@ class Main extends React.Component {
         path={path}
         render={props =>
           currentUser && currentUser.role === 'admin' ? (
+            // TODO App does own fetching for this stuff
+            // Can App useage just be used within each "page" component
             <App config={config} currentUser={currentUser}>
               <Component {...props} />
             </App>
@@ -90,8 +92,7 @@ class Main extends React.Component {
       smtpConfigured,
       passport
     } = this.state
-    // NOTE react-route allows for composable routes/layout
-    // This should be revisited once this is understood more
+
     if (!config) {
       return null
     }
