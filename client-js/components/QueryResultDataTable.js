@@ -93,7 +93,6 @@ class QueryResultDataTable extends React.PureComponent {
         } else if (columnWidthGuess > 350) {
           columnWidthGuess = 350
         }
-        const cellWidth = columnWidthGuess - 10
 
         const columnWidth = columnWidths[field] || columnWidthGuess
 
@@ -131,15 +130,7 @@ class QueryResultDataTable extends React.PureComponent {
               return (
                 <Cell>
                   {numberBar}
-                  <div
-                    style={{
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      width: cellWidth,
-                      position: 'absolute'
-                    }}
-                  >
+                  <div style={{ whiteSpace: 'nowrap' }}>
                     {renderValue(value, fieldMeta)}
                   </div>
                 </Cell>
