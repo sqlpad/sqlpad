@@ -29,12 +29,7 @@ const AuthenticatedRoute = ({ component: Component, currentUser, ...rest }) => (
       currentUser ? (
         <Component {...props} />
       ) : (
-        <Redirect
-          to={{
-            pathname: '/signin',
-            state: { from: props.location }
-          }}
-        />
+        <Redirect to={{ pathname: '/signin' }} />
       )}
   />
 )
@@ -46,19 +41,10 @@ const AdminRoute = ({ component: Component, currentUser, ...rest }) => (
       currentUser && currentUser.role === 'admin' ? (
         <Component {...props} />
       ) : (
-        <Redirect
-          to={{
-            pathname: '/signin',
-            state: { from: props.location }
-          }}
-        />
+        <Redirect to={{ pathname: '/signin' }} />
       )}
   />
 )
-
-// AUTH = currentUser
-// /queries
-// /queries/:queryId
 
 class Main extends React.Component {
   state = {}
