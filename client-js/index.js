@@ -22,11 +22,39 @@ import QueryTableOnly from './QueryTableOnly.js'
 import QueryChartOnly from './QueryChartOnly.js'
 import NotFound from './NotFound.js'
 
-// TODO FIXME
-// AUTH & ADMIN = currentUser && currentUser.role === 'admin'
-// /connections
-// /users
-// /config-values
+const AuthenticatedRoute = ({ component: Component, currentUser, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      currentUser ? (
+        <Component {...props} />
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/signin',
+            state: { from: props.location }
+          }}
+        />
+      )}
+  />
+)
+
+const AdminRoute = ({ component: Component, currentUser, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      currentUser && currentUser.role === 'admin' ? (
+        <Component {...props} />
+      ) : (
+        <Redirect
+          to={{
+            pathname: '/signin',
+            state: { from: props.location }
+          }}
+        />
+      )}
+  />
+)
 
 // AUTH = currentUser
 // /queries
@@ -78,9 +106,10 @@ class Main extends React.Component {
               path="/"
               component={() => <Redirect to={'/queries'} />}
             />
-            <Route
+            <AuthenticatedRoute
               exact
               path="/queries"
+              currentUser={currentUser}
               component={() => (
                 <App config={config} currentUser={currentUser}>
                   <FilterableQueryList
@@ -90,9 +119,10 @@ class Main extends React.Component {
                 </App>
               )}
             />
-            <Route
+            <AuthenticatedRoute
               exact
               path="/queries/:queryId"
+              currentUser={currentUser}
               component={({ match }) => (
                 <App config={config} currentUser={currentUser}>
                   <QueryEditor queryId={match.params.queryId} config={config} />
@@ -119,12 +149,30 @@ class Main extends React.Component {
                 />
               )}
             />
-            <Route
+            <AdminRoute
               exect
               path="/users"
               component={() => (
                 <App config={config} currentUser={currentUser}>
                   <UserAdmin config={config} currentUser={currentUser} />
+                </App>
+              )}
+            />
+            <AdminRoute
+              exact
+              path="/connections"
+              component={() => (
+                <App config={config} currentUser={currentUser}>
+                  <ConnectionsView config={config} />
+                </App>
+              )}
+            />
+            <AdminRoute
+              exact
+              path="/config-values"
+              component={() => (
+                <App config={config} currentUser={currentUser}>
+                  <ConfigValues config={config} />
                 </App>
               )}
             />
@@ -169,24 +217,6 @@ class Main extends React.Component {
               exect
               path="/password-reset"
               component={() => <PasswordResetRequested />}
-            />
-            <Route
-              exact
-              path="/connections"
-              component={() => (
-                <App config={config} currentUser={currentUser}>
-                  <ConnectionsView config={config} />
-                </App>
-              )}
-            />
-            <Route
-              exact
-              path="/config-values"
-              component={() => (
-                <App config={config} currentUser={currentUser}>
-                  <ConfigValues config={config} />
-                </App>
-              )}
             />
             <Route
               component={() => (
