@@ -9,7 +9,7 @@ import {
 import Alert from 'react-s-alert'
 import fetchJson from './utilities/fetch-json.js'
 import AppNav from './AppNav.js'
-import UserAdmin from './UserAdmin.js'
+import UsersView from './users/UsersView'
 import ConnectionsView from './connections/ConnectionsView.js'
 import ConfigValues from './ConfigValues.js'
 import QueriesView from './queries/QueriesView'
@@ -113,7 +113,7 @@ class Main extends React.Component {
               <QueryEditor queryId={match.params.queryId} config={config} />
             ))}
             {this.adminRoute('/users', () => (
-              <UserAdmin config={config} currentUser={currentUser} />
+              <UsersView config={config} currentUser={currentUser} />
             ))}
             {this.adminRoute('/connections', () => (
               <ConnectionsView config={config} />
