@@ -1,14 +1,14 @@
 import React from 'react'
-import App from './App.js'
+import AppNav from './AppNav.js'
 import FullscreenMessage from './FullscreenMessage.js'
 
 export default props => {
   document.title = 'SQLPad - Not Found'
   if (props.currentUser) {
     return (
-      <App config={props.config} currentUser={props.currentUser}>
+      <AppNav config={props.config} currentUser={props.currentUser}>
         <FullscreenMessage>Not Found</FullscreenMessage>
-      </App>
+      </AppNav>
     )
   }
   return <FullscreenMessage>Not Found</FullscreenMessage>

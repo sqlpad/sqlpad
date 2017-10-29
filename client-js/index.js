@@ -8,7 +8,7 @@ import {
 } from 'react-router-dom'
 import Alert from 'react-s-alert'
 import fetchJson from './utilities/fetch-json.js'
-import App from './App.js'
+import AppNav from './AppNav.js'
 import UserAdmin from './UserAdmin.js'
 import ConnectionsView from './connections/ConnectionsView.js'
 import ConfigValues from './ConfigValues.js'
@@ -57,9 +57,9 @@ class Main extends React.Component {
           currentUser && currentUser.role === 'admin' ? (
             // TODO App does own fetching for this stuff
             // Can App useage just be used within each "page" component
-            <App config={config} currentUser={currentUser}>
+            <AppNav config={config} currentUser={currentUser}>
               <Component {...props} />
-            </App>
+            </AppNav>
           ) : (
             <Redirect to={{ pathname: '/queries' }} />
           )}
@@ -75,9 +75,9 @@ class Main extends React.Component {
         path={path}
         render={props =>
           currentUser ? (
-            <App config={config} currentUser={currentUser}>
+            <AppNav config={config} currentUser={currentUser}>
               <Component {...props} />
-            </App>
+            </AppNav>
           ) : (
             <Redirect to={{ pathname: '/signin' }} />
           )}
