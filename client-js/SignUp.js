@@ -29,11 +29,7 @@ class SignUp extends React.Component {
 
   signUp = e => {
     e.preventDefault()
-    fetchJson(
-      'POST',
-      this.props.config.baseUrl + '/api/signup',
-      this.state
-    ).then(json => {
+    fetchJson('POST', '/api/signup', this.state).then(json => {
       if (json.error) return Alert.error(json.error)
       this.setState({ redirect: true })
     })

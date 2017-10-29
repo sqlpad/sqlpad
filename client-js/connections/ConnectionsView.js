@@ -34,10 +34,7 @@ class ConnectionsView extends React.Component {
   }
 
   handleDelete(connection) {
-    fetchJson(
-      'DELETE',
-      this.props.config.baseUrl + '/api/connections/' + connection._id
-    ).then(json => {
+    fetchJson('DELETE', '/api/connections/' + connection._id).then(json => {
       if (json.error) return Alert.error('Delete failed')
       Alert.success('Connection deleted')
       if (
@@ -65,10 +62,7 @@ class ConnectionsView extends React.Component {
   }
 
   loadConnectionsFromServer() {
-    fetchJson(
-      'get',
-      this.props.config.baseUrl + '/api/connections'
-    ).then(json => {
+    fetchJson('GET', '/api/connections').then(json => {
       if (json.error) Alert.error(json.error)
       this.setState({ connections: json.connections })
     })
@@ -78,7 +72,7 @@ class ConnectionsView extends React.Component {
     this.setState({ isTesting: true })
     fetchJson(
       'POST',
-      this.props.config.baseUrl + '/api/test-connection',
+      '/api/test-connection',
       this.state.selectedConnection
     ).then(json => {
       this.setState({ isTesting: false })
@@ -88,14 +82,13 @@ class ConnectionsView extends React.Component {
   }
 
   saveConnection() {
+    const { selectedConnection } = this.state
     this.setState({ isSaving: true })
     if (this.state.selectedConnection._id) {
       fetchJson(
         'PUT',
-        this.props.config.baseUrl +
-          '/api/connections/' +
-          this.state.selectedConnection._id,
-        this.state.selectedConnection
+        '/api/connections/' + selectedConnection._id,
+        selectedConnection
       ).then(json => {
         this.setState({ isSaving: false })
         if (json.error) return Alert.error('Save failed')
@@ -106,7 +99,7 @@ class ConnectionsView extends React.Component {
     } else {
       fetchJson(
         'POST',
-        this.props.config.baseUrl + '/api/connections',
+        '/api/connections',
         this.state.selectedConnection
       ).then(json => {
         this.setState({

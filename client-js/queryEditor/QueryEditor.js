@@ -57,9 +57,8 @@ class QueryEditor extends React.Component {
   }
 
   loadConnectionsFromServer = () => {
-    const { config } = this.props
     const { query } = this.state
-    fetchJson('GET', `${config.baseUrl}/api/connections/`).then(json => {
+    fetchJson('GET', '/api/connections/').then(json => {
       const { error, connections } = json
       if (error) {
         Alert.error(error)
@@ -73,8 +72,7 @@ class QueryEditor extends React.Component {
   }
 
   loadQueryFromServer = queryId => {
-    const { config } = this.props
-    fetchJson('GET', `${config.baseUrl}/api/queries/${queryId}`).then(json => {
+    fetchJson('GET', `/api/queries/${queryId}`).then(json => {
       const { error, query } = json
       if (error) {
         Alert.error(error)
@@ -84,8 +82,7 @@ class QueryEditor extends React.Component {
   }
 
   loadTagsFromServer = () => {
-    const { config } = this.props
-    fetchJson('GET', `${config.baseUrl}/api/tags`).then(json => {
+    fetchJson('GET', '/api/tags').then(json => {
       const { error, tags } = json
       if (error) {
         Alert.error(error)
@@ -109,11 +106,7 @@ class QueryEditor extends React.Component {
       queryName: query.name,
       queryText: selectedText || query.queryText
     }
-    fetchJson(
-      'POST',
-      this.props.config.baseUrl + '/api/query-result',
-      postData
-    ).then(json => {
+    fetchJson('POST', '/api/query-result', postData).then(json => {
       if (json.error) Alert.error(json.error)
       this.setState({
         isDirty: false,
@@ -133,11 +126,7 @@ class QueryEditor extends React.Component {
     }
     this.setState({ isSaving: true })
     if (query._id) {
-      fetchJson(
-        'PUT',
-        `${config.baseUrl}/api/queries/${query._id}`,
-        query
-      ).then(json => {
+      fetchJson('PUT', `/api/queries/${query._id}`, query).then(json => {
         const { error, query } = json
         if (error) {
           Alert.error(error)
@@ -148,7 +137,7 @@ class QueryEditor extends React.Component {
         this.setState({ isSaving: false, query })
       })
     } else {
-      fetchJson('POST', `${config.baseUrl}/api/queries`, query).then(json => {
+      fetchJson('POST', `/api/queries`, query).then(json => {
         const { error, query } = json
         if (error) {
           Alert.error(error)
