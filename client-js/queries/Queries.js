@@ -12,11 +12,11 @@ import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import fetchJson from './utilities/fetch-json.js'
-import chartDefinitions from './components/ChartDefinitions.js'
+import fetchJson from '../utilities/fetch-json.js'
+import chartDefinitions from '../components/ChartDefinitions.js'
 import uniq from 'lodash.uniq'
 import sortBy from 'lodash.sortby'
-import SqlEditor from './components/SqlEditor'
+import SqlEditor from '../components/SqlEditor'
 
 class FilterableQueryList extends React.Component {
   state = {
