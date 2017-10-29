@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-import chartDefinitions from '../components/ChartDefinitions.js'
-import SqlEditor from '../components/SqlEditor'
+import chartDefinitions from '../utilities/chartDefinitions'
+import SqlEditor from '../common/SqlEditor'
 
 class QueryPreview extends React.Component {
   render() {

@@ -1,8 +1,8 @@
 import React from 'react'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
-import IncompleteDataNotification from './components/IncompleteDataNotification'
-import QueryResultDataTable from './components/QueryResultDataTable.js'
+import IncompleteDataNotification from './common/IncompleteDataNotification'
+import QueryResultDataTable from './common/QueryResultDataTable.js'
 import fetchJson from './utilities/fetch-json.js'
 
 class QueryEditor extends React.Component {

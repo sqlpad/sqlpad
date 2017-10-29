@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import chartDefinitions from '../components/ChartDefinitions.js'
+import chartDefinitions from '../utilities/chartDefinitions.js'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'

@@ -1,4 +1,4 @@
-const ChartDefinitions = [
+const chartDefinitions = [
   {
     chartType: 'line',
     tauChartsType: 'line',
@@ -278,4 +278,4 @@ const ChartDefinitions = [
   }
 ]
 
-export default ChartDefinitions
+export default chartDefinitions

@@ -5,7 +5,7 @@ import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import Button from 'react-bootstrap/lib/Button'
 import ChartInputs from './ChartInputs.js'
-import chartDefinitions from '../components/ChartDefinitions.js'
+import chartDefinitions from '../utilities/chartDefinitions.js'
 
 class VisSidebar extends React.Component {
   render() {
