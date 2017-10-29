@@ -21,7 +21,7 @@ class ConnectionList extends React.Component {
       handleDelete,
       onNewConnectionClick
     } = this.props
-    var listRows = connections.map(connection => {
+    const listRows = connections.map(connection => {
       return (
         <ConnectionListRow
           key={connection._id}
