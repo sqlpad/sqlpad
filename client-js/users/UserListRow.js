@@ -8,12 +8,12 @@ import PasswordResetButtonLink from './PasswordResetButtonLink'
 import DeleteButton from '../common/DeleteButton'
 
 class UserListRow extends React.Component {
-  onDelete = e => {
+  handleDeleteClick = e => {
     const { user, handleDelete } = this.props
     handleDelete(user)
   }
 
-  onRoleChange = e => {
+  handleRoleChange = e => {
     const { user, updateUserRole } = this.props
     user.role = e.target.value
     updateUserRole(user)
@@ -57,7 +57,7 @@ class UserListRow extends React.Component {
               componentClass="select"
               value={user.role}
               disabled={currentUser._id === user._id}
-              onChange={this.onRoleChange}
+              onChange={this.handleRoleChange}
             >
               <option value="editor">Editor</option>
               <option value="admin">Admin</option>
@@ -65,7 +65,7 @@ class UserListRow extends React.Component {
           </FormGroup>
         </Form>
         {currentUser._id !== user._id && (
-          <DeleteButton onClick={this.onDelete} />
+          <DeleteButton onClick={this.handleDeleteClick} />
         )}
       </li>
     )

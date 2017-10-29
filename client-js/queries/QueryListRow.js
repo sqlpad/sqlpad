@@ -4,12 +4,12 @@ import Label from 'react-bootstrap/lib/Label'
 import DeleteButton from '../common/DeleteButton'
 
 class QueryListRow extends React.Component {
-  onMouseOver = e => {
+  handleMouseOver = e => {
     const { handleQueryListRowMouseOver, query } = this.props
     handleQueryListRowMouseOver(query)
   }
 
-  onDelete = e => {
+  handleDeleteClick = e => {
     const { handleQueryDelete, query } = this.props
     handleQueryDelete(query._id)
   }
@@ -35,7 +35,7 @@ class QueryListRow extends React.Component {
       <li
         onClick={this.onClick}
         className={classNames.join(' ')}
-        onMouseOver={this.onMouseOver}
+        onMouseOver={this.handleMouseOver}
         onMouseOut={this.onMouseOut}
       >
         <h4>
@@ -52,7 +52,7 @@ class QueryListRow extends React.Component {
             chart
           </a>
         </p>
-        <DeleteButton onClick={this.onDelete} />
+        <DeleteButton onClick={this.handleDeleteClick} />
       </li>
     )
   }
