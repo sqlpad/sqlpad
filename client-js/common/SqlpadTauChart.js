@@ -1,5 +1,5 @@
 import React from 'react'
-import chartDefinitions from './ChartDefinitions.js'
+import chartDefinitions from '../utilities/chartDefinitions.js'
 import SpinKitCube from './SpinKitCube.js'
 import Alert from 'react-s-alert'
 const tauCharts = window.tauCharts

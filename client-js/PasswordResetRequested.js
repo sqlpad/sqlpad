@@ -1,5 +1,5 @@
 import React from 'react'
-import FullscreenMessage from './FullscreenMessage.js'
+import FullscreenMessage from './common/FullscreenMessage.js'
 
 export default props => {
   document.title = 'SQLPad - Password Reset'

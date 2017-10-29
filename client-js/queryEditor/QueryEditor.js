@@ -3,15 +3,15 @@ import Alert from 'react-s-alert'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import keymaster from 'keymaster'
-import QueryResultDataTable from '../components/QueryResultDataTable.js'
-import SqlpadTauChart from '../components/SqlpadTauChart.js'
+import QueryResultDataTable from '../common/QueryResultDataTable.js'
+import SqlpadTauChart from '../common/SqlpadTauChart.js'
 import QueryResultHeader from './QueryResultHeader.js'
 import QueryDetailsModal from './QueryDetailsModal'
 import EditorNavBar from './EditorNavBar'
 import FlexTabPane from './FlexTabPane'
 import SchemaSidebar from './SchemaSidebar.js'
 import VisSidebar from './VisSidebar'
-import SqlEditor from '../components/SqlEditor'
+import SqlEditor from '../common/SqlEditor'
 
 const NEW_QUERY = {
   _id: '',
