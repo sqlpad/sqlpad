@@ -6,17 +6,9 @@ import UserList from './UserList'
 import InviteUserForm from './InviteUserForm'
 
 class UsersView extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      users: [],
-      isSaving: false
-    }
-    this.handleDelete = this.handleDelete.bind(this)
-    this.loadUsersFromServer = this.loadUsersFromServer.bind(this)
-    this.updateUserRole = this.updateUserRole.bind(this)
-    this.generatePasswordResetLink = this.generatePasswordResetLink.bind(this)
-    this.removePasswordResetLink = this.removePasswordResetLink.bind(this)
+  state = {
+    users: [],
+    isSaving: false
   }
 
   componentDidMount() {
@@ -24,7 +16,7 @@ class UsersView extends React.Component {
     this.loadUsersFromServer()
   }
 
-  handleDelete(user) {
+  handleDelete = user => {
     fetchJson('DELETE', '/api/users/' + user._id).then(json => {
       if (json.error) {
         return Alert.error('Delete Failed: ' + json.error.toString())
@@ -34,14 +26,14 @@ class UsersView extends React.Component {
     })
   }
 
-  loadUsersFromServer() {
+  loadUsersFromServer = () => {
     fetchJson('GET', '/api/users').then(json => {
       if (json.error) Alert.error(json.error)
       this.setState({ users: json.users })
     })
   }
 
-  updateUserRole(user) {
+  updateUserRole = user => {
     this.setState({ isSaving: true })
     fetchJson('PUT', '/api/users/' + user._id, {
       role: user.role
@@ -55,7 +47,7 @@ class UsersView extends React.Component {
     })
   }
 
-  generatePasswordResetLink(user) {
+  generatePasswordResetLink = user => {
     this.setState({ isSaving: true })
     const passwordResetId = uuid.v4()
     fetchJson('PUT', '/api/users/' + user._id, {
@@ -70,7 +62,7 @@ class UsersView extends React.Component {
     })
   }
 
-  removePasswordResetLink(user) {
+  removePasswordResetLink = user => {
     this.setState({ isSaving: true })
     fetchJson('PUT', '/api/users/' + user._id, {
       passwordResetId: ''
@@ -85,6 +77,7 @@ class UsersView extends React.Component {
   }
 
   render() {
+    const { config, currentUser } = this.props
     return (
       <div className="flex-100">
         <UserList
@@ -93,11 +86,11 @@ class UsersView extends React.Component {
           updateUserRole={this.updateUserRole}
           generatePasswordResetLink={this.generatePasswordResetLink}
           removePasswordResetLink={this.removePasswordResetLink}
-          currentUser={this.props.currentUser}
+          currentUser={currentUser}
         />
         <InviteUserForm
           loadUsersFromServer={this.loadUsersFromServer}
-          config={this.props.config}
+          config={config}
         />
       </div>
     )
