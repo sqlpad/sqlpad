@@ -1,6 +1,6 @@
 import React from 'react'
 import AppNav from './AppNav.js'
-import FullscreenMessage from './FullscreenMessage.js'
+import FullscreenMessage from './components/FullscreenMessage.js'
 
 export default props => {
   document.title = 'SQLPad - Not Found'
