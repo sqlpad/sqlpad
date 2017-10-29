@@ -12,7 +12,7 @@ import AppNav from './AppNav.js'
 import UserAdmin from './UserAdmin.js'
 import ConnectionsView from './connections/ConnectionsView.js'
 import ConfigValues from './ConfigValues.js'
-import Queries from './queries/Queries'
+import QueriesView from './queries/QueriesView'
 import QueryEditor from './queryEditor/QueryEditor.js'
 import SignIn from './SignIn.js'
 import SignUp from './SignUp.js'
@@ -107,7 +107,7 @@ class Main extends React.Component {
               component={() => <Redirect to={'/queries'} />}
             />
             {this.authenticatedRoute('/queries', () => (
-              <Queries config={config} currentUser={currentUser} />
+              <QueriesView config={config} currentUser={currentUser} />
             ))}
             {this.authenticatedRoute('/queries/:queryId', ({ match }) => (
               <QueryEditor queryId={match.params.queryId} config={config} />
