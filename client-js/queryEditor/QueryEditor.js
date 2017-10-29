@@ -1,9 +1,5 @@
 import React from 'react'
 import Alert from 'react-s-alert'
-import AceEditor from 'react-ace'
-import 'brace/mode/sql'
-import 'brace/theme/sqlserver'
-import 'brace/ext/searchbox'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import keymaster from 'keymaster'
@@ -15,6 +11,7 @@ import EditorNavBar from './EditorNavBar'
 import FlexTabPane from './FlexTabPane'
 import SchemaSidebar from './SchemaSidebar.js'
 import VisSidebar from './VisSidebar'
+import SqlEditor from '../components/SqlEditor'
 
 const NEW_QUERY = {
   _id: '',
@@ -241,32 +238,12 @@ class QueryEditor extends React.Component {
   }
 
   componentDidMount() {
-    const { config, queryId } = this.props
-    const editor = this.editor
+    const { queryId } = this.props
 
     this.loadConnectionsFromServer()
     this.loadTagsFromServer()
     if (queryId !== 'new') {
       this.loadQueryFromServer(queryId)
-    }
-
-    if (editor) {
-      editor.focus()
-
-      // augment the built-in behavior of liveAutocomplete
-      // built-in behavior only starts autocomplete when at least 1 character has been typed
-      // In ace the . resets the prefix token and clears the completer
-      // In order to get completions for 'sometable.' we need to fire the completer manually
-      editor.commands.on('afterExec', e => {
-        if (e.command.name === 'insertstring' && /^[\w.]$/.test(e.args)) {
-          if (e.args === '.') {
-            editor.execCommand('startAutocomplete')
-          }
-        }
-      })
-      if (config.editorWordWrap) {
-        editor.session.setUseWrapMode(true)
-      }
     }
 
     /*  Shortcuts
@@ -298,6 +275,7 @@ class QueryEditor extends React.Component {
   }
 
   render() {
+    const { config } = this.props
     const {
       activeTabKey,
       cacheKey,
@@ -342,20 +320,11 @@ class QueryEditor extends React.Component {
                 flexGrow: 1
               }}
             >
-              <AceEditor
-                editorProps={{ $blockScrolling: Infinity }}
-                enableBasicAutocompletion
-                enableLiveAutocompletion
-                height="50%"
-                highlightActiveLine={false}
-                mode="sql"
-                name="query-ace-editor"
-                onChange={this.handleQueryTextChange}
-                showGutter={false}
-                showPrintMargin={false}
-                theme="sqlserver"
+              <SqlEditor
+                config={config}
                 value={query.queryText}
-                width="100%"
+                height="50%"
+                onChange={this.handleQueryTextChange}
                 ref={ref => {
                   this.editor = ref ? ref.editor : null
                 }}

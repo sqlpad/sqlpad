@@ -1,9 +1,6 @@
 import React from 'react'
 import moment from 'moment'
 import Alert from 'react-s-alert'
-import AceEditor from 'react-ace'
-import 'brace/mode/sql'
-import 'brace/theme/sqlserver'
 import { Link } from 'react-router-dom'
 import Label from 'react-bootstrap/lib/Label'
 import Form from 'react-bootstrap/lib/Form'
@@ -19,6 +16,7 @@ import fetchJson from './utilities/fetch-json.js'
 import chartDefinitions from './components/ChartDefinitions.js'
 import uniq from 'lodash.uniq'
 import sortBy from 'lodash.sortby'
+import SqlEditor from './components/SqlEditor'
 
 class FilterableQueryList extends React.Component {
   state = {
@@ -407,13 +405,11 @@ class QueryListRow extends React.Component {
 
 class QueryPreview extends React.Component {
   render() {
+    const { config, selectedQuery } = this.props
     if (this.props.selectedQuery) {
-      if (this.editor && this.props.config.editorWordWrap) {
-        this.editor.session.setUseWrapMode(true)
-      }
-      var query = this.props.selectedQuery
-      var chartTypeLabel = () => {
-        var chartType =
+      const query = this.props.selectedQuery
+      const chartTypeLabel = () => {
+        const chartType =
           query.chartConfiguration && query.chartConfiguration.chartType
             ? query.chartConfiguration.chartType
             : null
@@ -428,22 +424,12 @@ class QueryPreview extends React.Component {
       return (
         <div className="QueryPreview">
           <ControlLabel>Preview</ControlLabel>
-          <h4>{this.props.selectedQuery.name}</h4>
-          <AceEditor
-            mode="sql"
-            theme="sqlserver"
-            name="query-preview-ace-editor"
-            width="100%"
+          <h4>{selectedQuery.name}</h4>
+          <SqlEditor
+            config={config}
             height="70%"
             readOnly
-            showGutter={false}
-            showPrintMargin={false}
-            highlightActiveLine={false}
-            value={this.props.selectedQuery.queryText}
-            editorProps={{ $blockScrolling: true }}
-            ref={ref => {
-              this.editor = ref ? ref.editor : null
-            }}
+            value={selectedQuery.queryText}
           />
           {chartTypeLabel()}
           <h4>Modified: {moment(query.modifiedDate).calendar()}</h4>
