@@ -37,7 +37,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    fetchJson('GET', this.props.config.baseUrl + '/api/app').then(json => {
+    fetchJson('GET', '/api/app').then(json => {
       this.setState({
         currentUser: json.currentUser,
         version: json.version,
@@ -48,7 +48,7 @@ class App extends React.Component {
   }
 
   signout() {
-    fetchJson('GET', this.props.config.baseUrl + '/api/signout').then(json => {
+    fetchJson('GET', '/api/signout').then(json => {
       this.setState({ redirect: true })
     })
   }

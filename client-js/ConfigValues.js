@@ -42,17 +42,14 @@ class ConfigValues extends React.Component {
   }
 
   loadConfigValuesFromServer = () => {
-    fetchJson(
-      'GET',
-      this.props.config.baseUrl + '/api/config-items'
-    ).then(json => {
+    fetchJson('GET', '/api/config-items').then(json => {
       if (json.error) Alert.error(json.error)
       this.setState({ configItems: json.configItems })
     })
   }
 
   saveConfigValue = (key, value) => {
-    fetchJson('POST', this.props.config.baseUrl + '/api/config-values/' + key, {
+    fetchJson('POST', '/api/config-values/' + key, {
       value: value
     }).then(json => {
       if (json.error) {

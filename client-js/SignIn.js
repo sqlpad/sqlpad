@@ -25,11 +25,7 @@ class SignIn extends React.Component {
 
   signIn = e => {
     e.preventDefault()
-    fetchJson(
-      'POST',
-      this.props.config.baseUrl + '/api/signin',
-      this.state
-    ).then(json => {
+    fetchJson('POST', '/api/signin', this.state).then(json => {
       if (json.error) return Alert.error('Username or password incorrect')
       this.setState({ redirect: true })
     })

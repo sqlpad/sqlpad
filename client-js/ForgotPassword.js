@@ -19,11 +19,7 @@ class ForgotPassword extends React.Component {
 
   resetPassword = e => {
     e.preventDefault()
-    fetchJson(
-      'POST',
-      this.props.config.baseUrl + '/api/forgot-password',
-      this.state
-    ).then(json => {
+    fetchJson('POST', '/api/forgot-password', this.state).then(json => {
       if (json.error) return Alert.error(json.error)
       this.setState({ redirect: true })
     })

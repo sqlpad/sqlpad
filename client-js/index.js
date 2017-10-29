@@ -27,9 +27,13 @@ class Main extends React.Component {
   state = {}
 
   componentDidMount() {
+    // NOTE: this was previously run every route.
+    // This may need to be exposed or refreshed intelligently
     fetchJson('GET', 'api/app').then(json => {
-      // NOTE: this was previously run every route.
-      // This may need to be exposed or refreshed intelligently
+      // Assign config.baseUrl to global
+      // It doesn't change and is needed for fetch requests
+      // This allows us to simplify the fetch() call
+      window.BASE_URL = json.config.baseUrl
       this.setState({
         config: json.config,
         smtpConfigured: json.smtpConfigured,

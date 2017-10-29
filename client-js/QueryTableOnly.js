@@ -17,7 +17,7 @@ class QueryEditor extends React.Component {
       isRunning: true,
       runQueryStartTime: new Date()
     })
-    fetchJson('GET', this.props.config.baseUrl + '/api/queries/' + queryId)
+    fetchJson('GET', '/api/queries/' + queryId)
       .then(json => {
         if (json.error) console.error(json.error)
         this.setState({
@@ -25,10 +25,7 @@ class QueryEditor extends React.Component {
         })
       })
       .then(() => {
-        return fetchJson(
-          'GET',
-          this.props.config.baseUrl + '/api/query-result/' + queryId
-        )
+        return fetchJson('GET', '/api/query-result/' + queryId)
       })
       .then(json => {
         if (json.error) console.error(json.error)

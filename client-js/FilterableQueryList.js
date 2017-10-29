@@ -49,16 +49,13 @@ class FilterableQueryList extends React.Component {
       queries: queries,
       selectedQuery: selectedQuery
     })
-    fetchJson(
-      'DELETE',
-      this.props.config.baseUrl + '/api/queries/' + queryId
-    ).then(json => {
+    fetchJson('DELETE', '/api/queries/' + queryId).then(json => {
       if (json.error) Alert.error(json.error)
     })
   }
 
   loadConfigValuesFromServer = () => {
-    fetchJson('GET', this.props.config.baseUrl + '/api/queries').then(json => {
+    fetchJson('GET', '/api/queries').then(json => {
       const queries = json.queries || []
       const createdBys = uniq(queries.map(q => q.createdBy))
       const tags = uniq(
@@ -78,10 +75,7 @@ class FilterableQueryList extends React.Component {
         tags: tags
       })
     })
-    fetchJson(
-      'GET',
-      this.props.config.baseUrl + '/api/connections'
-    ).then(json => {
+    fetchJson('GET', '/api/connections').then(json => {
       this.setState({ connections: json.connections })
     })
   }

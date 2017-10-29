@@ -2,6 +2,7 @@ import 'whatwg-fetch'
 import Alert from 'react-s-alert'
 
 export default function fetchJson(method, url, body) {
+  const BASE_URL = window.BASE_URL || ''
   const opts = {
     method: method.toUpperCase(),
     credentials: 'same-origin',
@@ -16,7 +17,7 @@ export default function fetchJson(method, url, body) {
   if (body) {
     opts.body = JSON.stringify(body)
   }
-  return fetch(url, opts)
+  return fetch(BASE_URL + url, opts)
     .then(response => {
       // API server will send 200 even if error occurs
       // Eventually this should change to proper status code usage

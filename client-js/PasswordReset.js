@@ -28,9 +28,7 @@ class PasswordReset extends React.Component {
     e.preventDefault()
     fetchJson(
       'POST',
-      this.props.config.baseUrl +
-        '/api/password-reset/' +
-        this.props.passwordResetId,
+      '/api/password-reset/' + this.props.passwordResetId,
       this.state
     ).then(json => {
       if (json.error) return Alert.error(json.error)
@@ -42,9 +40,7 @@ class PasswordReset extends React.Component {
     document.title = 'SQLPad - Password Reset'
     fetchJson(
       'GET',
-      this.props.config.baseUrl +
-        '/api/password-reset/' +
-        this.props.passwordResetId
+      '/api/password-reset/' + this.props.passwordResetId
     ).then(json => {
       if (json.error) return Alert.error(json.error)
       if (!json.passwordResetId) this.setState({ notFound: true })

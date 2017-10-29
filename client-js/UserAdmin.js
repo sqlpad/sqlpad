@@ -34,10 +34,7 @@ class UserAdmin extends React.Component {
   }
 
   handleDelete(user) {
-    fetchJson(
-      'DELETE',
-      this.props.config.baseUrl + '/api/users/' + user._id
-    ).then(json => {
+    fetchJson('DELETE', '/api/users/' + user._id).then(json => {
       if (json.error) {
         return Alert.error('Delete Failed: ' + json.error.toString())
       }
@@ -47,7 +44,7 @@ class UserAdmin extends React.Component {
   }
 
   loadUsersFromServer() {
-    fetchJson('get', this.props.config.baseUrl + '/api/users').then(json => {
+    fetchJson('GET', '/api/users').then(json => {
       if (json.error) Alert.error(json.error)
       this.setState({ users: json.users })
     })
@@ -55,7 +52,7 @@ class UserAdmin extends React.Component {
 
   updateUserRole(user) {
     this.setState({ isSaving: true })
-    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
+    fetchJson('PUT', '/api/users/' + user._id, {
       role: user.role
     }).then(json => {
       this.loadUsersFromServer()
@@ -70,7 +67,7 @@ class UserAdmin extends React.Component {
   generatePasswordResetLink(user) {
     this.setState({ isSaving: true })
     const passwordResetId = uuid.v4()
-    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
+    fetchJson('PUT', '/api/users/' + user._id, {
       passwordResetId
     }).then(json => {
       this.loadUsersFromServer()
@@ -84,7 +81,7 @@ class UserAdmin extends React.Component {
 
   removePasswordResetLink(user) {
     this.setState({ isSaving: true })
-    fetchJson('PUT', this.props.config.baseUrl + '/api/users/' + user._id, {
+    fetchJson('PUT', '/api/users/' + user._id, {
       passwordResetId: ''
     }).then(json => {
       this.loadUsersFromServer()
@@ -308,11 +305,7 @@ class InviteUserForm extends React.Component {
     this.setState({
       isInviting: true
     })
-    fetchJson(
-      'POST',
-      this.props.config.baseUrl + '/api/users',
-      user
-    ).then(json => {
+    fetchJson('POST', '/api/users', user).then(json => {
       this.setState({
         isInviting: false
       })

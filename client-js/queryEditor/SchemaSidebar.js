@@ -26,15 +26,13 @@ class SchemaSidebar extends React.PureComponent {
   }
 
   getSchemaInfo = (connectionId, reload) => {
-    const { config } = this.props
     if (connectionId) {
       this.setState({
         schemaInfo: {},
         loading: true
       })
       const qs = reload ? '?reload=true' : ''
-      const url = `${config.baseUrl}/api/schema-info/${connectionId}${qs}`
-      fetchJson('GET', url).then(json => {
+      fetchJson('GET', `/api/schema-info/${connectionId}${qs}`).then(json => {
         const { error, schemaInfo } = json
         if (error) {
           console.error(error)
