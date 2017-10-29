@@ -11,7 +11,7 @@ import fetchJson from './utilities/fetch-json.js'
 import AppNav from './AppNav.js'
 import UsersView from './users/UsersView'
 import ConnectionsView from './connections/ConnectionsView.js'
-import ConfigValues from './ConfigValues.js'
+import ConfigurationView from './configuration/ConfigurationView'
 import QueriesView from './queries/QueriesView'
 import QueryEditor from './queryEditor/QueryEditor.js'
 import SignIn from './SignIn.js'
@@ -119,7 +119,7 @@ class Main extends React.Component {
               <ConnectionsView config={config} />
             ))}
             {this.adminRoute('/config-values', () => (
-              <ConfigValues config={config} />
+              <ConfigurationView config={config} />
             ))}
             <Route
               exact
