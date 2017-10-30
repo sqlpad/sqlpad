@@ -308,7 +308,7 @@ SqlpadTauChart.propTypes = {
   query: PropTypes.object,
   queryError: PropTypes.string,
   queryResult: PropTypes.object,
-  renderChart: PropTypes.any
+  renderChart: PropTypes.bool
 }
 
 export default SqlpadTauChart
