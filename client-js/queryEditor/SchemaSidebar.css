@@ -1,0 +1,31 @@
+.schema-info {
+  padding-left: 0;
+  font-size: 12px;
+}
+.schema-info ul {
+  padding-left: 10px;
+  padding-right: 6px;
+}
+.schema-info li {
+  list-style-type: none;
+  white-space: nowrap;
+}
+.schema-info-schema,
+.schema-info-table,
+.schema-info-column {
+  min-width: 230px;
+  display: inline-block;
+}
+.schema-additional-context {
+  color: #999;
+}
+.copy-button {
+  background-color: #5bc0de; /* label-info color */
+  position: absolute;
+  cursor: pointer;
+  right: 20px;
+  width: 40px;
+}
+.copy-button:hover {
+  background-color: orange;
+}

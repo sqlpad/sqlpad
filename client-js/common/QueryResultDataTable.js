@@ -3,6 +3,7 @@ import { Table, Column, Cell } from 'fixed-data-table-2'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
 import '../css/fixed-data-table.css'
+import './QueryResultDataTable.css'
 
 const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {

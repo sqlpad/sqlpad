@@ -1,4 +1,4 @@
-/* Vendor Overrides
+/* core styles
 ============================================================================ */
 body {
   font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
@@ -17,44 +17,6 @@ a:focus {
 #root {
   display: flex;
   width: 100%;
-}
-
-/* Override navbar flexible height */
-.navbar {
-  height: 50px;
-  margin-bottom: 0px;
-}
-
-/* Override for pills in a navbar */
-.navbar-nav > li > a {
-  padding: 7px 15px;
-  margin-top: 8px;
-}
-.nav-pills > li.active > a,
-.nav-pills > li.active > a:focus,
-.nav-pills > li.active > a:hover {
-  color: #fff !important;
-  background-color: #337ab7 !important;
-}
-
-/* Remove active dropdown menu look */
-.dropdown-menu > .active > a,
-.dropdown-menu > .active > a:focus,
-.dropdown-menu > .active > a:hover {
-  color: #333;
-  background-color: transparent;
-}
-
-.dropdown-menu > li > a:focus,
-.dropdown-menu > li > a:hover {
-  color: #262626 !important;
-  text-decoration: none !important;
-  background-color: #f5f5f5 !important;
-}
-
-/* hide tauchart's ui for export options */
-.graphical-report__layout__header {
-  display: none;
 }
 
 /*  Utilities
@@ -94,86 +56,9 @@ a:focus {
   flex-grow: 1;
 }
 
-/*  spinkit cube http://tobiasahlin.com/spinkit/
-============================================================================ */
-.sk-cube-grid {
-  width: 90px;
-  height: 90px;
-  margin: 10px auto;
-}
-.sk-cube-grid .sk-cube {
-  width: 33%;
-  height: 33%;
-  background-color: #333;
-  float: left;
-  -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-  animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
-}
-
-.sk-cube-grid .sk-cube1 {
-  -webkit-animation-delay: 0.2s;
-  animation-delay: 0.2s;
-}
-.sk-cube-grid .sk-cube2 {
-  -webkit-animation-delay: 0.3s;
-  animation-delay: 0.3s;
-}
-.sk-cube-grid .sk-cube3 {
-  -webkit-animation-delay: 0.4s;
-  animation-delay: 0.4s;
-}
-.sk-cube-grid .sk-cube4 {
-  -webkit-animation-delay: 0.1s;
-  animation-delay: 0.1s;
-}
-.sk-cube-grid .sk-cube5 {
-  -webkit-animation-delay: 0.2s;
-  animation-delay: 0.2s;
-}
-.sk-cube-grid .sk-cube6 {
-  -webkit-animation-delay: 0.3s;
-  animation-delay: 0.3s;
-}
-.sk-cube-grid .sk-cube7 {
-  -webkit-animation-delay: 0s;
-  animation-delay: 0s;
-}
-.sk-cube-grid .sk-cube8 {
-  -webkit-animation-delay: 0.1s;
-  animation-delay: 0.1s;
-}
-.sk-cube-grid .sk-cube9 {
-  -webkit-animation-delay: 0.2s;
-  animation-delay: 0.2s;
-}
-
-@-webkit-keyframes sk-cubeGridScaleDelay {
-  0%,
-  70%,
-  100% {
-    -webkit-transform: scale3D(1, 1, 1);
-    transform: scale3D(1, 1, 1);
-  }
-  35% {
-    -webkit-transform: scale3D(0, 0, 1);
-    transform: scale3D(0, 0, 1);
-  }
-}
-
-@keyframes sk-cubeGridScaleDelay {
-  0%,
-  70%,
-  100% {
-    -webkit-transform: scale3D(1, 1, 1);
-    transform: scale3D(1, 1, 1);
-  }
-  35% {
-    -webkit-transform: scale3D(0, 0, 1);
-    transform: scale3D(0, 0, 1);
-  }
-}
-
-/*  Signin / Signup
+/* 
+  Signin / Signup / Password reset
+  Used across auth forms
 ======================================================== */
 .signin {
   max-width: 330px;
@@ -227,41 +112,9 @@ a:focus {
   border-top-right-radius: 0;
 }
 
-/*  Schema Info
-============================================================================ */
-.schema-info {
-  padding-left: 0;
-  font-size: 12px;
-}
-.schema-info ul {
-  padding-left: 10px;
-  padding-right: 6px;
-}
-.schema-info li {
-  list-style-type: none;
-  white-space: nowrap;
-}
-.schema-info-schema,
-.schema-info-table,
-.schema-info-column {
-  min-width: 230px;
-  display: inline-block;
-}
-.schema-additional-context {
-  color: #999;
-}
-.copy-button {
-  background-color: #5bc0de; /* label-info color */
-  position: absolute;
-  cursor: pointer;
-  right: 20px;
-  width: 40px;
-}
-.copy-button:hover {
-  background-color: orange;
-}
-
-/*  sidebar
+/*
+  Sidebar
+  These are used across components
 ============================================================================ */
 .sidebar {
   width: 280px;
@@ -307,136 +160,12 @@ input[type='radio'] {
   margin: 2px 0 0;
 }
 
-/*  React Queries
-============================================================================ */
-.QueryListContainer {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.QueryListSidebar {
-  background-color: #fdfdfd;
-  padding: 10px;
-  flex-basis: 20%;
-}
-
-.QueryList {
-  flex-basis: 40%;
-  position: relative;
-  background-color: #fdfdfd;
-
-  padding: 10px;
-}
-.QueryListRowSelected {
-  background-color: #fafafa;
-}
-.QueryListRowDeleteButton {
-  color: #888;
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-}
-.QueryListContents {
-  position: absolute;
-  top: 32px;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
-  overflow-y: auto;
-  margin-bottom: 0px;
-}
-.QueryPreview {
-  background-color: #fdfdfd;
-  padding: 10px;
-  flex-basis: 40%;
-}
-#query-preview-ace-editor {
-  border-radius: 4px;
-  border: 1px solid #ddd;
-}
-
-/*  ListRow
-============================================================================ */
+/* ConnectionListRow */
 .ListRowSelected {
   background-color: #fafafa;
 }
-.ListRowDeleteButton {
-  color: #888;
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-}
 
-/*  React Schema Info
-============================================================================ */
-.SchemaInfoViewType {
-  color: #8a8a8a;
-  background-color: #e7e7e7;
-  border: 1px solid #d8d8d8;
-  height: 14px;
-  width: 14px;
-  font-size: 10px;
-  display: inline-block;
-  padding-left: 3px;
-}
-
-/*  Query Editor
-============================================================================ */
-.QueryEditorSubheaderItem {
-  margin-left: 10px;
-  min-width: 90px;
-}
-.QueryEditorQueryName {
-  margin-left: 40px;
-  font-size: 18px;
-  line-height: 20px;
-  width: 450px;
-  color: #00b7ff;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.QueryEditorQueryName:hover {
-  color: #23527c;
-  cursor: pointer;
-}
-.incomplete-notification {
-  color: #e31a1c;
-}
-
-/*  Panel Result
-============================================================================ */
-.panel-result-header {
-  height: 30px;
-  border-top: 1px solid #dcdcdc;
-  border-bottom: 1px solid #dcdcdc;
-  background-color: #fdfdfd;
-  padding: 0.6em;
-  font-weight: 700;
-  line-height: 1;
-  color: #333;
-  white-space: nowrap;
-  vertical-align: baseline;
-  font-size: 90%;
-}
-.panel-result-header-item {
-  padding-left: 30px;
-}
-.panel-result-header-item:nth-of-type(1) {
-  padding-left: 5px;
-}
-.panel-result-header-label {
-  color: #777;
-}
-.result-download-link {
-  margin-left: 10px;
-}
-.result-grid {
-  width: 100%;
-  flex-grow: 1;
-}
+/* QueryResultDataTable and SqlpadTauChart */
 .run-result-notification {
   align-items: center;
   display: flex;
@@ -445,6 +174,8 @@ input[type='radio'] {
   padding: 20px;
   text-align: center;
 }
+
+/* QueryChartOnly & QueryTableOnly */
 .query-title {
   font-weight: 500;
   line-height: 1.1;

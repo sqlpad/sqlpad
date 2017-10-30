@@ -1,6 +1,7 @@
-// http://tobiasahlin.com/spinkit/
 import React from 'react'
+import './SpinKitCube.css'
 
+// http://tobiasahlin.com/spinkit/
 export default () => (
   <div className="sk-cube-grid">
     <div className="sk-cube sk-cube1" />
