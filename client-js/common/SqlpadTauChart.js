@@ -1,25 +1,29 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import chartDefinitions from '../utilities/chartDefinitions.js'
 import SpinKitCube from './SpinKitCube.js'
 import Alert from 'react-s-alert'
-const tauCharts = window.tauCharts
+import 'd3'
+import { Chart } from 'taucharts'
+import exportTo from 'taucharts/build/development/plugins/tauCharts.export'
+import trendline from 'taucharts/build/development/plugins/tauCharts.trendline'
+import tooltip from 'taucharts/build/development/plugins/tauCharts.tooltip'
+import legend from 'taucharts/build/development/plugins/tauCharts.legend'
+import quickFilter from 'taucharts/build/development/plugins/tauCharts.quick-filter'
 
 class SqlpadTauChart extends React.Component {
   displayName = 'SqlpadTauChart'
 
   componentDidUpdate(prevProps) {
-    if (this.props.isRunning || this.props.queryError) {
+    const { isRunning, queryError, renderChart } = this.props
+    if (isRunning || queryError) {
       this.destroyChart()
-    } else if (this.props.renderChart && !this.chart) {
+    } else if (renderChart && !this.chart) {
       this.renderChart()
     }
   }
 
   chart = undefined
-
-  chartStyle = {
-    padding: '20px 10px 10px 20px'
-  }
 
   destroyChart = () => {
     if (this.chart) {
@@ -29,14 +33,16 @@ class SqlpadTauChart extends React.Component {
   }
 
   renderChart = rerender => {
+    const { config, queryResult, query } = this.props
     // This is invoked during following:
     //  - Vis tab enter
     //  - Visualize button press (forces rerender)
     //  - new data arrival
-    var meta = this.props.queryResult ? this.props.queryResult.meta : {}
-    var dataRows = this.props.queryResult ? this.props.queryResult.rows : []
-    var chartType = this.props.query.chartConfiguration.chartType
-    var selectedFields = this.props.query.chartConfiguration.fields
+    const meta = queryResult ? queryResult.meta : {}
+    let dataRows = queryResult ? queryResult.rows : []
+    const chartType = query.chartConfiguration.chartType
+    const selectedFields = query.chartConfiguration.fields
+
     const chartDefinition = chartDefinitions.find(
       def => def.chartType === chartType
     )
@@ -51,23 +57,30 @@ class SqlpadTauChart extends React.Component {
     // if there's no chart definition exit the render
     if (!chartDefinition) return
 
-    var chartConfig = {
+    const chartConfig = {
       type: chartDefinition.tauChartsType,
       plugins: [
-        tauCharts.api.plugins.get('tooltip')(),
-        tauCharts.api.plugins.get('legend')(),
-        tauCharts.api.plugins.get('exportTo')({
+        tooltip(),
+        legend(),
+        exportTo({
           cssPaths: [
-            this.props.config.baseUrl +
-              '/javascripts/vendor/tauCharts/tauCharts.min.css'
+            // NOTE: We must ref the file in vendor dir for export images to work
+            // (we don't know what the webpack bundle css path will be)
+            config.baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'
           ],
-          fileName: this.props.query.name || 'unnamed query'
+          fileName: query.name || 'Unnamed query'
         })
-      ]
+      ],
+      settings: {
+        asyncRendering: true,
+        renderingTimeout: 10000,
+        syncRenderingInterval: 50,
+        handleRenderingErrors: true
+      }
     }
 
-    var unmetRequiredFields = []
-    var definitionFields = chartDefinition.fields.map(function(field) {
+    const unmetRequiredFields = []
+    const definitionFields = chartDefinition.fields.map(function(field) {
       if (field.required && !selectedFields[field.fieldId]) {
         unmetRequiredFields.push(field)
       }
@@ -88,9 +101,9 @@ class SqlpadTauChart extends React.Component {
 
     // loop through data rows and convert types as needed
     dataRows = dataRows.map(row => {
-      var newRow = {}
+      const newRow = {}
       Object.keys(row).forEach(col => {
-        var datatype = this.props.queryResult.meta[col].datatype
+        const datatype = queryResult.meta[col].datatype
         if (datatype === 'date') {
           newRow[col] = new Date(row[col])
         } else if (datatype === 'number') {
@@ -109,8 +122,8 @@ class SqlpadTauChart extends React.Component {
         field => field.forceDimension === true
       )
       forceDimensionFields.forEach(function(fieldDefinition) {
-        var col = fieldDefinition.val
-        var colDatatype = meta[col] ? meta[col].datatype : null
+        const col = fieldDefinition.val
+        const colDatatype = meta[col] ? meta[col].datatype : null
         if (col && colDatatype === 'number' && newRow[col]) {
           newRow[col] = newRow[col].toString()
         }
@@ -134,10 +147,10 @@ class SqlpadTauChart extends React.Component {
           chartConfig.y.unshift(definitionFieldsById.yFacet.val)
         }
         if (definitionFieldsById.filter.val) {
-          chartConfig.plugins.push(tauCharts.api.plugins.get('quick-filter')())
+          chartConfig.plugins.push(quickFilter())
         }
         if (definitionFieldsById.trendline.val) {
-          chartConfig.plugins.push(tauCharts.api.plugins.get('trendline')())
+          chartConfig.plugins.push(trendline())
         }
         if (definitionFieldsById.split.val) {
           chartConfig.color = definitionFieldsById.split.val
@@ -218,10 +231,10 @@ class SqlpadTauChart extends React.Component {
           chartConfig.y.unshift(definitionFieldsById.yFacet.val)
         }
         if (definitionFieldsById.filter.val) {
-          chartConfig.plugins.push(tauCharts.api.plugins.get('quick-filter')())
+          chartConfig.plugins.push(quickFilter())
         }
         if (definitionFieldsById.trendline.val) {
-          chartConfig.plugins.push(tauCharts.api.plugins.get('trendline')())
+          chartConfig.plugins.push(trendline())
         }
         if (definitionFieldsById.size.val) {
           chartConfig.size = definitionFieldsById.size.val
@@ -239,7 +252,7 @@ class SqlpadTauChart extends React.Component {
     chartConfig.data = dataRows
 
     if (!this.chart) {
-      this.chart = new tauCharts.Chart(chartConfig)
+      this.chart = new Chart(chartConfig)
       this.chart.renderTo('#chart')
     } else {
       this.chart.setData(dataRows)
@@ -254,33 +267,48 @@ class SqlpadTauChart extends React.Component {
     this.destroyChart()
   }
 
-  render() {
-    var runResultNotification = () => {
-      if (this.props.isRunning) {
-        return (
-          <div
-            className="flex-100 run-result-notification"
-            style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
-          >
-            <SpinKitCube />
-          </div>
-        )
-      } else if (this.props.queryError) {
-        return (
-          <div className="flex-100 run-result-notification label-danger">
-            {this.props.queryError}
-          </div>
-        )
-      } else {
-        return null
-      }
+  renderResultNotification() {
+    const { isRunning, queryError } = this.props
+    if (isRunning) {
+      return (
+        <div
+          className="flex-100 run-result-notification"
+          style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
+        >
+          <SpinKitCube />
+        </div>
+      )
+    } else if (queryError) {
+      return (
+        <div className="flex-100 run-result-notification label-danger">
+          {queryError}
+        </div>
+      )
     }
+  }
+
+  render() {
     return (
-      <div id="chart" className="flex-100" style={this.chartStyle}>
-        {runResultNotification()}
+      <div
+        id="chart"
+        className="flex-100"
+        style={{
+          padding: '20px 10px 10px 20px'
+        }}
+      >
+        {this.renderResultNotification()}
       </div>
     )
   }
+}
+
+SqlpadTauChart.propTypes = {
+  config: PropTypes.object.isRequired,
+  isRunning: PropTypes.bool,
+  query: PropTypes.object,
+  queryError: PropTypes.string,
+  queryResult: PropTypes.object,
+  renderChart: PropTypes.bool
 }
 
 export default SqlpadTauChart
