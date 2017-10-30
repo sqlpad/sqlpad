@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import chartDefinitions from '../utilities/chartDefinitions.js'
 import SpinKitCube from './SpinKitCube.js'
 import Alert from 'react-s-alert'
@@ -14,9 +15,10 @@ class SqlpadTauChart extends React.Component {
   displayName = 'SqlpadTauChart'
 
   componentDidUpdate(prevProps) {
-    if (this.props.isRunning || this.props.queryError) {
+    const { isRunning, queryError, renderChart } = this.props
+    if (isRunning || queryError) {
       this.destroyChart()
-    } else if (this.props.renderChart && !this.chart) {
+    } else if (renderChart && !this.chart) {
       this.renderChart()
     }
   }
@@ -298,6 +300,15 @@ class SqlpadTauChart extends React.Component {
       </div>
     )
   }
+}
+
+SqlpadTauChart.propTypes = {
+  config: PropTypes.object.isRequired,
+  isRunning: PropTypes.bool,
+  query: PropTypes.object,
+  queryError: PropTypes.string,
+  queryResult: PropTypes.object,
+  renderChart: PropTypes.any
 }
 
 export default SqlpadTauChart
