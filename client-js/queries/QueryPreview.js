@@ -46,11 +46,11 @@ class QueryPreview extends React.Component {
 
 QueryPreview.propTypes = {
   config: PropTypes.object.isRequired,
-  selectedQuery: PropTypes.object.isRequired
+  selectedQuery: PropTypes.object
 }
 
 QueryPreview.defaultProps = {
-  selectedConnection: {}
+  selectedQuery: {}
 }
 
 export default QueryPreview
