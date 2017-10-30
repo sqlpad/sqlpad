@@ -31,14 +31,16 @@ class SqlpadTauChart extends React.Component {
   }
 
   renderChart = rerender => {
+    const { queryResult, query } = this.props
     // This is invoked during following:
     //  - Vis tab enter
     //  - Visualize button press (forces rerender)
     //  - new data arrival
-    var meta = this.props.queryResult ? this.props.queryResult.meta : {}
-    var dataRows = this.props.queryResult ? this.props.queryResult.rows : []
-    var chartType = this.props.query.chartConfiguration.chartType
-    var selectedFields = this.props.query.chartConfiguration.fields
+    const meta = queryResult ? queryResult.meta : {}
+    let dataRows = queryResult ? queryResult.rows : []
+    const chartType = query.chartConfiguration.chartType
+    const selectedFields = query.chartConfiguration.fields
+
     const chartDefinition = chartDefinitions.find(
       def => def.chartType === chartType
     )
@@ -53,7 +55,7 @@ class SqlpadTauChart extends React.Component {
     // if there's no chart definition exit the render
     if (!chartDefinition) return
 
-    var chartConfig = {
+    const chartConfig = {
       type: chartDefinition.tauChartsType,
       plugins: [
         tooltip(),
@@ -70,8 +72,8 @@ class SqlpadTauChart extends React.Component {
       ]
     }
 
-    var unmetRequiredFields = []
-    var definitionFields = chartDefinition.fields.map(function(field) {
+    const unmetRequiredFields = []
+    const definitionFields = chartDefinition.fields.map(function(field) {
       if (field.required && !selectedFields[field.fieldId]) {
         unmetRequiredFields.push(field)
       }
@@ -92,9 +94,9 @@ class SqlpadTauChart extends React.Component {
 
     // loop through data rows and convert types as needed
     dataRows = dataRows.map(row => {
-      var newRow = {}
+      const newRow = {}
       Object.keys(row).forEach(col => {
-        var datatype = this.props.queryResult.meta[col].datatype
+        const datatype = queryResult.meta[col].datatype
         if (datatype === 'date') {
           newRow[col] = new Date(row[col])
         } else if (datatype === 'number') {
@@ -113,8 +115,8 @@ class SqlpadTauChart extends React.Component {
         field => field.forceDimension === true
       )
       forceDimensionFields.forEach(function(fieldDefinition) {
-        var col = fieldDefinition.val
-        var colDatatype = meta[col] ? meta[col].datatype : null
+        const col = fieldDefinition.val
+        const colDatatype = meta[col] ? meta[col].datatype : null
         if (col && colDatatype === 'number' && newRow[col]) {
           newRow[col] = newRow[col].toString()
         }
@@ -258,27 +260,27 @@ class SqlpadTauChart extends React.Component {
     this.destroyChart()
   }
 
-  render() {
-    var runResultNotification = () => {
-      if (this.props.isRunning) {
-        return (
-          <div
-            className="flex-100 run-result-notification"
-            style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
-          >
-            <SpinKitCube />
-          </div>
-        )
-      } else if (this.props.queryError) {
-        return (
-          <div className="flex-100 run-result-notification label-danger">
-            {this.props.queryError}
-          </div>
-        )
-      } else {
-        return null
-      }
+  renderResultNotification() {
+    const { isRunning, queryError } = this.props
+    if (isRunning) {
+      return (
+        <div
+          className="flex-100 run-result-notification"
+          style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
+        >
+          <SpinKitCube />
+        </div>
+      )
+    } else if (queryError) {
+      return (
+        <div className="flex-100 run-result-notification label-danger">
+          {queryError}
+        </div>
+      )
     }
+  }
+
+  render() {
     return (
       <div
         id="chart"
@@ -287,7 +289,7 @@ class SqlpadTauChart extends React.Component {
           padding: '20px 10px 10px 20px'
         }}
       >
-        {runResultNotification()}
+        {this.renderResultNotification()}
       </div>
     )
   }
