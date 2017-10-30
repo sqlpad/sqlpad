@@ -5,6 +5,7 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import fetchJson from '../utilities/fetch-json.js'
 import updateCompletions from '../utilities/updateCompletions.js'
+import './SchemaSidebar.css'
 
 class SchemaSidebar extends React.PureComponent {
   state = {

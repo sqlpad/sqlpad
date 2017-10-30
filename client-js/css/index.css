@@ -1,0 +1,183 @@
+/* core styles
+============================================================================ */
+body {
+  font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
+  display: flex;
+  height: 100vh;
+}
+a {
+  color: #00b7ff;
+}
+a:hover,
+a:active,
+a:focus {
+  text-decoration: none;
+}
+
+#root {
+  display: flex;
+  width: 100%;
+}
+
+/*  Utilities
+============================================================================ */
+.hidden {
+  display: none;
+}
+.spinning {
+  -webkit-animation: spin 2s linear infinite;
+  -moz-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.flex-100 {
+  display: flex;
+  width: 100%;
+}
+
+.flex-grow-1 {
+  display: flex;
+  flex-grow: 1;
+}
+
+/* 
+  Signin / Signup / Password reset
+  Used across auth forms
+======================================================== */
+.signin {
+  max-width: 330px;
+  margin: 0 auto;
+  padding: 15px;
+}
+.signin h2 {
+  text-align: center;
+  padding-bottom: 20px;
+}
+.signin a:hover,
+.signin a:focus,
+.signin a:active {
+  text-decoration: none;
+}
+.form-signin-footer {
+  text-align: center;
+  margin-top: 15px;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.top-field {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.middle-field {
+  margin-bottom: -1px;
+  border-radius: 0;
+}
+.bottom-field {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/*
+  Sidebar
+  These are used across components
+============================================================================ */
+.sidebar {
+  width: 280px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: #fdfdfd;
+  border-right: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-body {
+  padding: 20px;
+  flex-grow: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.sidebar-actions-bottom {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  box-shadow: -4px -4px 4px #fdfdfd;
+}
+.sidebar input {
+  width: 100%;
+}
+.sidebar input[type='checkbox'] {
+  width: 24px;
+}
+.sidebar select {
+  width: 100%;
+}
+.sidebar .control-label {
+  font-weight: 600;
+  font-size: 13px;
+}
+/* also in sidebar */
+.checkbox label,
+.radio label {
+  font-weight: 600;
+  font-size: 13px;
+}
+input[type='checkbox'],
+input[type='radio'] {
+  margin: 2px 0 0;
+}
+
+/* ConnectionListRow */
+.ListRowSelected {
+  background-color: #fafafa;
+}
+
+/* QueryResultDataTable and SqlpadTauChart */
+.run-result-notification {
+  align-items: center;
+  display: flex;
+  font-size: 16px;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+
+/* QueryChartOnly & QueryTableOnly */
+.query-title {
+  font-weight: 500;
+  line-height: 1.1;
+  font-size: 24px;
+}
