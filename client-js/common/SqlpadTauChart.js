@@ -31,7 +31,7 @@ class SqlpadTauChart extends React.Component {
   }
 
   renderChart = rerender => {
-    const { queryResult, query } = this.props
+    const { config, queryResult, query } = this.props
     // This is invoked during following:
     //  - Vis tab enter
     //  - Visualize button press (forces rerender)
@@ -64,12 +64,17 @@ class SqlpadTauChart extends React.Component {
           cssPaths: [
             // NOTE: We must ref the file in vendor dir for export images to work
             // (we don't know what the webpack bundle css path will be)
-            this.props.config.baseUrl +
-              '/javascripts/vendor/tauCharts/tauCharts.min.css'
+            config.baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'
           ],
-          fileName: this.props.query.name || 'Unnamed query'
+          fileName: query.name || 'Unnamed query'
         })
-      ]
+      ],
+      settings: {
+        asyncRendering: true,
+        renderingTimeout: 10000,
+        syncRenderingInterval: 50,
+        handleRenderingErrors: true
+      }
     }
 
     const unmetRequiredFields = []
