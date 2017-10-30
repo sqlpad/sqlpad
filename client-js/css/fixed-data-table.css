@@ -22,7 +22,7 @@
 
 .fixedDataTableCellGroupLayout_cellGroup {
   -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  backface-visibility: hidden;
   left: 0;
   overflow: hidden;
   position: absolute;
@@ -98,7 +98,8 @@
   cursor: ew-resize;
 }
 
-.fixedDataTableCellLayout_columnResizerContainer:hover .fixedDataTableCellLayout_columnResizerKnob {
+.fixedDataTableCellLayout_columnResizerContainer:hover
+  .fixedDataTableCellLayout_columnResizerKnob {
   visibility: visible;
 }
 
@@ -134,7 +135,7 @@
   z-index: 10;
 }
 
-body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
+body[dir='rtl'] .fixedDataTableColumnResizerLineLayout_main {
   /* the resizer line is in the wrong position in RTL with no easy fix.
    * Disabling is more useful than displaying it.
    * #167 (github) should look into this and come up with a permanent fix.
@@ -223,7 +224,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 
 .fixedDataTableRowLayout_fixedColumnsDivider {
   -webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
+  backface-visibility: hidden;
   border-left-style: solid;
   border-left-width: 1px;
   left: 0;
@@ -257,13 +258,13 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   overflow: hidden;
   position: absolute;
   -webkit-transition-duration: 250ms;
-          transition-duration: 250ms;
+  transition-duration: 250ms;
   -webkit-transition-timing-function: ease;
-          transition-timing-function: ease;
+  transition-timing-function: ease;
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .ScrollbarLayout_mainVertical {
@@ -271,7 +272,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   right: 0;
   top: 0;
   -webkit-transition-property: background-color width;
-          transition-property: background-color width;
+  transition-property: background-color width;
   width: 15px;
 }
 
@@ -285,7 +286,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   height: 15px;
   left: 0;
   -webkit-transition-property: background-color height;
-          transition-property: background-color height;
+  transition-property: background-color height;
 }
 
 /* Touching the scroll-track directly makes the scroll-track bolder */
@@ -313,7 +314,7 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
   display: block;
   position: absolute;
   -webkit-transition: background-color 250ms ease;
-          transition: background-color 250ms ease;
+  transition: background-color 250ms ease;
 }
 
 .ScrollbarLayout_faceHorizontal {
@@ -382,11 +383,15 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTable_topShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAF0lEQVR4AWPUkNeSBhHCjJoK2twgFisAFagCCp3pJlAAAAAASUVORK5CYII=) repeat-x;
+  background: 0 0
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAF0lEQVR4AWPUkNeSBhHCjJoK2twgFisAFagCCp3pJlAAAAAASUVORK5CYII=)
+    repeat-x;
 }
 
 .public_fixedDataTable_bottomShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==) repeat-x;
+  background: 0 0
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAECAYAAABP2FU6AAAAHElEQVQI12MwNjZmZdAT1+Nm0JDWEGZQk1GTBgAWkwIeAEp52AAAAABJRU5ErkJggg==)
+    repeat-x;
 }
 
 .public_fixedDataTable_horizontalScrollbar .public_Scrollbar_mainHorizontal {
@@ -468,7 +473,9 @@ body[dir="rtl"] .fixedDataTableColumnResizerLineLayout_main {
 }
 
 .public_fixedDataTableRow_columnsShadow {
-  background: 0 0 url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==) repeat-y;
+  background: 0 0
+    url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAABCAYAAAD5PA/NAAAAFklEQVQIHWPSkNeSBmJhTQVtbiDNCgASagIIuJX8OgAAAABJRU5ErkJggg==)
+    repeat-y;
 }
 /**
  * Copyright (c) 2015, Facebook, Inc.
