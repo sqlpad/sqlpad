@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom'
 import Alert from 'react-s-alert'
 import { Link } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
+import GooglePlusIcon from 'react-icons/lib/fa/google-plus'
 
 class SignIn extends React.Component {
   state = {
@@ -32,6 +33,7 @@ class SignIn extends React.Component {
   }
 
   render() {
+    const { passport, smtpConfigured, config } = this.props
     const { redirect } = this.state
     if (redirect) {
       return <Redirect push to="/" />
@@ -67,7 +69,7 @@ class SignIn extends React.Component {
         <div className="form-signin-footer">
           <p>
             <Link to="/signup">Sign Up</Link>
-            {this.props.smtpConfigured ? (
+            {smtpConfigured ? (
               <Link style={{ marginLeft: 50 }} to="/forgot-password">
                 Forgot Password
               </Link>
@@ -78,9 +80,17 @@ class SignIn extends React.Component {
     )
     const googleForm = (
       <div>
-        <a href={this.props.config.baseUrl + '/auth/google'}>
+        <a href={config.baseUrl + '/auth/google'}>
           <button className="btn btn-lg btn-danger btn-block">
-            <i className="fa fa-google-plus" /> Log in with Google
+            <GooglePlusIcon
+              style={{
+                width: '22px',
+                height: '22px',
+                marginRight: '12px',
+                marginBottom: '2px'
+              }}
+            />
+            Log in with Google
           </button>
         </a>
       </div>
@@ -88,8 +98,8 @@ class SignIn extends React.Component {
     return (
       <div className="signin">
         <h2>SQLPad</h2>
-        {'local' in this.props.passport.strategies ? localForm : null}
-        {'google' in this.props.passport.strategies ? googleForm : null}
+        {'local' in passport.strategies ? localForm : null}
+        {'google' in passport.strategies ? googleForm : null}
       </div>
     )
   }
