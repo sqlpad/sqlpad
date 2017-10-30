@@ -2,7 +2,12 @@ import React from 'react'
 import chartDefinitions from '../utilities/chartDefinitions.js'
 import SpinKitCube from './SpinKitCube.js'
 import Alert from 'react-s-alert'
-const tauCharts = window.tauCharts
+import { Chart } from 'taucharts'
+import exportTo from 'taucharts/build/development/plugins/tauCharts.export'
+import trendline from 'taucharts/build/development/plugins/tauCharts.trendline'
+import tooltip from 'taucharts/build/development/plugins/tauCharts.tooltip'
+import legend from 'taucharts/build/development/plugins/tauCharts.legend'
+import quickFilter from 'taucharts/build/development/plugins/tauCharts.quick-filter'
 
 class SqlpadTauChart extends React.Component {
   displayName = 'SqlpadTauChart'
@@ -16,10 +21,6 @@ class SqlpadTauChart extends React.Component {
   }
 
   chart = undefined
-
-  chartStyle = {
-    padding: '20px 10px 10px 20px'
-  }
 
   destroyChart = () => {
     if (this.chart) {
@@ -54,14 +55,16 @@ class SqlpadTauChart extends React.Component {
     var chartConfig = {
       type: chartDefinition.tauChartsType,
       plugins: [
-        tauCharts.api.plugins.get('tooltip')(),
-        tauCharts.api.plugins.get('legend')(),
-        tauCharts.api.plugins.get('exportTo')({
+        tooltip(),
+        legend(),
+        exportTo({
           cssPaths: [
+            // NOTE: We must ref the file in vendor dir for export images to work
+            // (we don't know what the webpack bundle css path will be)
             this.props.config.baseUrl +
               '/javascripts/vendor/tauCharts/tauCharts.min.css'
           ],
-          fileName: this.props.query.name || 'unnamed query'
+          fileName: this.props.query.name || 'Unnamed query'
         })
       ]
     }
@@ -134,10 +137,10 @@ class SqlpadTauChart extends React.Component {
           chartConfig.y.unshift(definitionFieldsById.yFacet.val)
         }
         if (definitionFieldsById.filter.val) {
-          chartConfig.plugins.push(tauCharts.api.plugins.get('quick-filter')())
+          chartConfig.plugins.push(quickFilter())
         }
         if (definitionFieldsById.trendline.val) {
-          chartConfig.plugins.push(tauCharts.api.plugins.get('trendline')())
+          chartConfig.plugins.push(trendline())
         }
         if (definitionFieldsById.split.val) {
           chartConfig.color = definitionFieldsById.split.val
@@ -218,10 +221,10 @@ class SqlpadTauChart extends React.Component {
           chartConfig.y.unshift(definitionFieldsById.yFacet.val)
         }
         if (definitionFieldsById.filter.val) {
-          chartConfig.plugins.push(tauCharts.api.plugins.get('quick-filter')())
+          chartConfig.plugins.push(quickFilter())
         }
         if (definitionFieldsById.trendline.val) {
-          chartConfig.plugins.push(tauCharts.api.plugins.get('trendline')())
+          chartConfig.plugins.push(trendline())
         }
         if (definitionFieldsById.size.val) {
           chartConfig.size = definitionFieldsById.size.val
@@ -239,7 +242,7 @@ class SqlpadTauChart extends React.Component {
     chartConfig.data = dataRows
 
     if (!this.chart) {
-      this.chart = new tauCharts.Chart(chartConfig)
+      this.chart = new Chart(chartConfig)
       this.chart.renderTo('#chart')
     } else {
       this.chart.setData(dataRows)
@@ -276,7 +279,13 @@ class SqlpadTauChart extends React.Component {
       }
     }
     return (
-      <div id="chart" className="flex-100" style={this.chartStyle}>
+      <div
+        id="chart"
+        className="flex-100"
+        style={{
+          padding: '20px 10px 10px 20px'
+        }}
+      >
         {runResultNotification()}
       </div>
     )
