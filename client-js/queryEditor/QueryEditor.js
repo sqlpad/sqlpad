@@ -274,8 +274,8 @@ class QueryEditor extends React.Component {
       e.preventDefault()
       return false
     })
-    keymaster.unbind('alt+r')
-    keymaster('alt+r', e => {
+    keymaster.unbind('alt+r, command+r')
+    keymaster('alt+r, command+r', e => {
       console.log('reformat')
       this.formatQuery()
       e.preventDefault()
@@ -286,7 +286,7 @@ class QueryEditor extends React.Component {
   componentWillUnmount() {
     keymaster.unbind('ctrl+s, command+s')
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
-    keymaster.unbind('alt+r')
+    keymaster.unbind('alt+r, command+r')
   }
 
   render() {
