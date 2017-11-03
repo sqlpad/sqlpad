@@ -94,7 +94,8 @@
     "socksjs": "^0.5.0",
     "toml": "^2.3.3",
     "uuid": "^3.0.1",
-    "vertica": "0.5.x"
+    "vertica": "0.5.x",
+    "sql-formatter": "latest"
   },
   "main": "server.js",
   "bin": {
