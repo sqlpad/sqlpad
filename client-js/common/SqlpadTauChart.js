@@ -75,7 +75,8 @@ class SqlpadTauChart extends React.Component {
         asyncRendering: true,
         renderingTimeout: 10000,
         syncRenderingInterval: 50,
-        handleRenderingErrors: true
+        handleRenderingErrors: true,
+        utcTime: true
       }
     }
 
