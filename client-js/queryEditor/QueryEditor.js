@@ -120,10 +120,9 @@ class QueryEditor extends React.Component {
   }
 
   formatQuery = () => {
-    // select * from table
     const { query } = this.state
-    var result = sqlFormatter.format(query.queryText)
-    this.state.query.queryText = result
+    const result = sqlFormatter.format(query.queryText)
+    query.queryText = result
     this.setState({
       queryText: result
     })
@@ -171,11 +170,6 @@ class QueryEditor extends React.Component {
     const { query } = this.state
     query[field] = value
     this.setState({ query })
-    //console.log(sqlFormatter.format(value))
-    // 回显到querEditor
-    //query[field] = sqlFormatter.format(value)
-    //console.log(query[field])
-    // 6666666666666
   }
 
   handleChartConfigurationFieldsChange = (chartFieldId, queryResultField) => {
@@ -210,7 +204,6 @@ class QueryEditor extends React.Component {
 
   handleQueryTextChange = queryText =>
     this.setQueryState('queryText', queryText)
-  // 使用sqlformatter
 
   handleSaveImageClick = e => {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
@@ -274,9 +267,8 @@ class QueryEditor extends React.Component {
       e.preventDefault()
       return false
     })
-    keymaster.unbind('alt+r, command+r')
-    keymaster('alt+r, command+r', e => {
-      console.log('reformat')
+    keymaster.unbind('alt+r')
+    keymaster('alt+r', e => {
       this.formatQuery()
       e.preventDefault()
       return false
@@ -286,7 +278,7 @@ class QueryEditor extends React.Component {
   componentWillUnmount() {
     keymaster.unbind('ctrl+s, command+s')
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
-    keymaster.unbind('alt+r, command+r')
+    keymaster.unbind('alt+r')
   }
 
   render() {
