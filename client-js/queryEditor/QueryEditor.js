@@ -124,7 +124,7 @@ class QueryEditor extends React.Component {
     const result = sqlFormatter.format(query.queryText)
     query.queryText = result
     this.setState({
-      queryText: result
+      query: query
     })
   }
 
