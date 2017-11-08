@@ -141,6 +141,7 @@
     "react-router-dom": "^4.2.2",
     "react-s-alert": "^1.1.4",
     "react-select": "^1.0.0-rc.1",
+    "sql-formatter": "^2.1.0",
     "taucharts": "^1.2.1",
     "watch": "^1.0.2",
     "whatwg-fetch": "^2.0.1"

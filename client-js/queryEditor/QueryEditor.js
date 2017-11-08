@@ -13,6 +13,7 @@ import SchemaSidebar from './SchemaSidebar.js'
 import VisSidebar from './VisSidebar'
 import SqlEditor from '../common/SqlEditor'
 import './QueryEditor.css'
+import sqlFormatter from 'sql-formatter'
 
 const NEW_QUERY = {
   _id: '',
@@ -115,6 +116,15 @@ class QueryEditor extends React.Component {
         queryError: json.error,
         queryResult: json.queryResult
       })
+    })
+  }
+
+  formatQuery = () => {
+    const { query } = this.state
+    const result = sqlFormatter.format(query.queryText)
+    query.queryText = result
+    this.setState({
+      query: query
     })
   }
 
@@ -257,11 +267,18 @@ class QueryEditor extends React.Component {
       e.preventDefault()
       return false
     })
+    keymaster.unbind('alt+r')
+    keymaster('alt+r', e => {
+      this.formatQuery()
+      e.preventDefault()
+      return false
+    })
   }
 
   componentWillUnmount() {
     keymaster.unbind('ctrl+s, command+s')
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
+    keymaster.unbind('alt+r')
   }
 
   render() {
