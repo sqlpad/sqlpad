@@ -6,8 +6,8 @@ import '../css/fixed-data-table.css'
 import './QueryResultDataTable.css'
 
 const renderValue = (input, fieldMeta) => {
-  if (input === null || input === undefined) {
-    return <em>null</em>
+  if (input === null || input === undefined || input === '') {
+    return 'null'
   } else if (input === true || input === false) {
     return input.toString()
   } else if (fieldMeta.datatype === 'date') {
@@ -85,7 +85,6 @@ class QueryResultDataTable extends React.PureComponent {
       const columnNodes = queryResult.fields.map(function(field) {
         const fieldMeta = queryResult.meta[field]
         let valueLength = fieldMeta.maxValueLength
-
         if (field.length > valueLength) {
           valueLength = field.length
         }
@@ -129,11 +128,27 @@ class QueryResultDataTable extends React.PureComponent {
                 }
                 numberBar = <div style={barStyle} />
               }
+              let inpStyle = {
+                position: 'absolute',
+                bottom: 0,
+                left: '0px',
+                height: '30px',
+                width: 100 + '%',
+                backgroundColor: '#fff',
+                border: '0px',
+                outline: 'medium',
+                textAlign: 'left'
+              }
               return (
                 <Cell>
                   {numberBar}
                   <div style={{ whiteSpace: 'nowrap' }}>
-                    {renderValue(value, fieldMeta)}
+                    <input
+                      type="text"
+                      style={inpStyle}
+                      defaultValue={renderValue(value, fieldMeta)}
+                    />
+                    {/*{renderValue(value, fieldMeta)}*/}
                   </div>
                 </Cell>
               )
