@@ -52,7 +52,7 @@ class Authenticated extends React.Component {
 
 Authenticated.propTypes = {
   admin: PropTypes.bool,
-  Component: PropTypes.any
+  component: PropTypes.func.isRequired
 }
 
 export default Authenticated
