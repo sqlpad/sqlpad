@@ -1,5 +1,6 @@
 import React from 'react'
 import Alert from 'react-s-alert'
+import SplitPane from 'react-split-pane'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import keymaster from 'keymaster'
@@ -281,6 +282,12 @@ class QueryEditor extends React.Component {
     keymaster.unbind('alt+r')
   }
 
+  handlePaneResize = () => {
+    if (this.editor) {
+      this.editor.resize()
+    }
+  }
+
   render() {
     const { config } = this.props
     const {
@@ -312,47 +319,62 @@ class QueryEditor extends React.Component {
           onTabSelect={this.handleTabSelect}
           queryName={query.name}
         />
-        <div className="flex-100" style={{ flexGrow: 1 }}>
+        <div style={{ position: 'relative', flexGrow: 1 }}>
           <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
-            <SchemaSidebar
-              {...this.props}
-              connectionId={query.connectionId}
-              connections={connections}
-              onConnectionChange={this.handleConnectionChange}
-            />
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                flexGrow: 1
-              }}
+            <SplitPane
+              split="vertical"
+              minSize={280}
+              defaultSize={280}
+              maxSize={-100}
+              onChange={this.handlePaneResize}
             >
-              <SqlEditor
-                config={config}
-                value={query.queryText}
-                height="50%"
-                onChange={this.handleQueryTextChange}
-                ref={ref => {
-                  this.editor = ref ? ref.editor : null
-                }}
-              />
-              <QueryResultHeader
+              <SchemaSidebar
                 {...this.props}
-                cacheKey={cacheKey}
-                isRunning={isRunning}
-                queryResult={queryResult}
-                runQueryStartTime={runQueryStartTime}
-                runSeconds={runSeconds}
+                connectionId={query.connectionId}
+                connections={connections}
+                onConnectionChange={this.handleConnectionChange}
               />
-              <div style={{ height: '50%', display: 'flex' }}>
-                <QueryResultDataTable
-                  {...this.props}
-                  isRunning={isRunning}
-                  queryError={queryError}
-                  queryResult={queryResult}
+              <SplitPane
+                split="horizontal"
+                minSize={100}
+                defaultSize={'60%'}
+                maxSize={-100}
+                onChange={this.handlePaneResize}
+              >
+                <SqlEditor
+                  config={config}
+                  value={query.queryText}
+                  onChange={this.handleQueryTextChange}
+                  ref={ref => {
+                    this.editor = ref ? ref.editor : null
+                  }}
                 />
-              </div>
-            </div>
+                <div
+                  style={{
+                    display: 'flex',
+                    height: '100%',
+                    width: '100%',
+                    flexDirection: 'column',
+                    flexGrow: 1
+                  }}
+                >
+                  <QueryResultHeader
+                    {...this.props}
+                    cacheKey={cacheKey}
+                    isRunning={isRunning}
+                    queryResult={queryResult}
+                    runQueryStartTime={runQueryStartTime}
+                    runSeconds={runSeconds}
+                  />
+                  <QueryResultDataTable
+                    {...this.props}
+                    isRunning={isRunning}
+                    queryError={queryError}
+                    queryResult={queryResult}
+                  />
+                </div>
+              </SplitPane>
+            </SplitPane>
           </FlexTabPane>
           <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
             <VisSidebar
