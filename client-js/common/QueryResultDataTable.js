@@ -23,19 +23,13 @@ const renderValue = (input, fieldMeta) => {
 // because the isRunning prop will toggle with each query execution
 // It would otherwise not rerender on change of prop.queryResult alone
 class QueryResultDataTable extends React.PureComponent {
-  constructor(props) {
-    super(props)
-    this.state = {
-      gridWidth: 0,
-      gridHeight: 0,
-      columnWidths: {}
-    }
-    // This binding is necessary to make `this` work in the callback
-    this.handleResize = this.handleResize.bind(this)
-    this.handleColumnResizeEnd = this.handleColumnResizeEnd.bind(this)
+  state = {
+    gridWidth: 0,
+    gridHeight: 0,
+    columnWidths: {}
   }
 
-  handleResize(e) {
+  handleResize = e => {
     const resultGrid = document.getElementById('result-grid')
     if (resultGrid) {
       this.setState({
@@ -45,7 +39,7 @@ class QueryResultDataTable extends React.PureComponent {
     }
   }
 
-  handleColumnResizeEnd(newColumnWidth, columnKey) {
+  handleColumnResizeEnd = (newColumnWidth, columnKey) => {
     this.setState(({ columnWidths }) => ({
       columnWidths: {
         ...columnWidths,

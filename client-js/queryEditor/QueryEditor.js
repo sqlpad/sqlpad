@@ -286,6 +286,9 @@ class QueryEditor extends React.Component {
     if (this.editor) {
       this.editor.resize()
     }
+    if (this.dataTable) {
+      this.dataTable.handleResize()
+    }
   }
 
   render() {
@@ -349,15 +352,7 @@ class QueryEditor extends React.Component {
                     this.editor = ref ? ref.editor : null
                   }}
                 />
-                <div
-                  style={{
-                    display: 'flex',
-                    height: '100%',
-                    width: '100%',
-                    flexDirection: 'column',
-                    flexGrow: 1
-                  }}
-                >
+                <div>
                   <QueryResultHeader
                     {...this.props}
                     cacheKey={cacheKey}
@@ -371,6 +366,7 @@ class QueryEditor extends React.Component {
                     isRunning={isRunning}
                     queryError={queryError}
                     queryResult={queryResult}
+                    ref={ref => (this.dataTable = ref)}
                   />
                 </div>
               </SplitPane>
