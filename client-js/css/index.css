@@ -117,6 +117,7 @@ a:focus {
   These are used across components
 ============================================================================ */
 .sidebar {
+  height: 100%;
   min-width: 280px;
   overflow-x: hidden;
   overflow-y: auto;
