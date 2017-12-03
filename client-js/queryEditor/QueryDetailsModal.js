@@ -61,12 +61,17 @@ class QueryDetailsModal extends React.Component {
 
   render() {
     const {
+      config,
       onHide,
       onQueryTagsChange,
       query,
       showModal,
       tagOptions
     } = this.props
+
+    const tableUrl = `${config.baseUrl}/query-table/${query._id}`
+    const chartUrl = `${config.baseUrl}/query-chart/${query._id}`
+
     return (
       <Modal
         animation
@@ -111,8 +116,8 @@ class QueryDetailsModal extends React.Component {
           <p>Run only a portion of a query by highlighting it first.</p>
           <hr />
           <ul className="nav nav-pills nav-justified">
-            {this.renderNavLink('?format=table', 'Link to Table')}
-            {this.renderNavLink('?format=chart', 'Link to Chart')}
+            {this.renderNavLink(tableUrl, 'Link to Table')}
+            {this.renderNavLink(chartUrl, 'Link to Chart')}
           </ul>
         </Modal.Body>
         <Modal.Footer>
@@ -124,6 +129,7 @@ class QueryDetailsModal extends React.Component {
 }
 
 QueryDetailsModal.propTypes = {
+  config: PropTypes.object.isRequired,
   onHide: PropTypes.func.isRequired,
   onQueryTagsChange: PropTypes.func.isRequired,
   query: PropTypes.object.isRequired,
