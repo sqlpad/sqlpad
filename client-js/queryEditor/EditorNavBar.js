@@ -23,10 +23,12 @@ class EditorNavBar extends React.Component {
       onRunClick,
       onFormatClick,
       queryName,
-      showValidation
+      showValidation,
+      unsavedChanges
     } = this.props
 
     const validationState = showValidation && !queryName.length ? 'error' : null
+    const saveText = unsavedChanges ? 'Save*' : 'Save'
 
     return (
       <Navbar fluid>
@@ -40,19 +42,28 @@ class EditorNavBar extends React.Component {
         </Nav>
         <Navbar.Form>
           <Button
-            style={{ marginLeft: 8 }}
+            style={{ marginLeft: 4, minWidth: 70 }}
             onClick={onSaveClick}
             disabled={isSaving}
           >
-            Save
-          </Button>{' '}
-          <Button onClick={onRunClick} disabled={isRunning}>
+            {saveText}
+          </Button>
+          <Button
+            style={{ marginLeft: 4, minWidth: 70 }}
+            onClick={onRunClick}
+            disabled={isRunning}
+          >
             Run
-          </Button>{' '}
-          <Button onClick={onFormatClick}>Format</Button>{' '}
+          </Button>
+          <Button
+            style={{ marginLeft: 4, minWidth: 70 }}
+            onClick={onFormatClick}
+          >
+            Format
+          </Button>
           <FormGroup
             validationState={validationState}
-            style={{ marginTop: '-1px' }}
+            style={{ marginTop: '-1px', marginLeft: 4 }}
           >
             <FormControl
               style={{
@@ -84,7 +95,8 @@ EditorNavBar.propTypes = {
   onRunClick: PropTypes.func.isRequired,
   onFormatClick: PropTypes.func.isRequired,
   queryName: PropTypes.string.isRequired,
-  showValidation: PropTypes.bool.isRequired
+  showValidation: PropTypes.bool.isRequired,
+  unsavedChanges: PropTypes.bool.isRequired
 }
 
 export default EditorNavBar
