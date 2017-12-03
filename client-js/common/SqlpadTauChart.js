@@ -294,7 +294,7 @@ class SqlpadTauChart extends React.Component {
         id="chart"
         className="flex-100"
         style={{
-          padding: '20px 10px 10px 20px'
+          padding: '16px'
         }}
       >
         {this.renderResultNotification()}

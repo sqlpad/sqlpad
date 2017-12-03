@@ -289,6 +289,9 @@ class QueryEditor extends React.Component {
     if (this.dataTable) {
       this.dataTable.handleResize()
     }
+    if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
+      this.sqlpadTauChart.chart.resize()
+    }
   }
 
   render() {
@@ -383,30 +386,38 @@ class QueryEditor extends React.Component {
             </SplitPane>
           </FlexTabPane>
           <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
-            <VisSidebar
-              isChartable={this.isChartable()}
-              onChartConfigurationFieldsChange={
-                this.handleChartConfigurationFieldsChange
-              }
-              onChartTypeChange={this.handleChartTypeChange}
-              onSaveImageClick={this.handleSaveImageClick}
-              onVisualizeClick={this.handleVisualizeClick}
-              query={query}
-              queryResult={queryResult}
-            />
-            <div className="flex-grow-1">
-              <SqlpadTauChart
-                config={this.props.config}
-                isRunning={isRunning}
+            <SplitPane
+              split="vertical"
+              minSize={280}
+              defaultSize={280}
+              maxSize={-100}
+              onChange={this.handlePaneResize}
+            >
+              <VisSidebar
+                isChartable={this.isChartable()}
+                onChartConfigurationFieldsChange={
+                  this.handleChartConfigurationFieldsChange
+                }
+                onChartTypeChange={this.handleChartTypeChange}
+                onSaveImageClick={this.handleSaveImageClick}
+                onVisualizeClick={this.handleVisualizeClick}
                 query={query}
-                queryError={queryError}
                 queryResult={queryResult}
-                renderChart={this.isChartable()}
-                ref={ref => {
-                  this.sqlpadTauChart = ref
-                }}
               />
-            </div>
+              <div className="flex-grow-1" style={{ height: '100%' }}>
+                <SqlpadTauChart
+                  config={this.props.config}
+                  isRunning={isRunning}
+                  query={query}
+                  queryError={queryError}
+                  queryResult={queryResult}
+                  renderChart={this.isChartable()}
+                  ref={ref => {
+                    this.sqlpadTauChart = ref
+                  }}
+                />
+              </div>
+            </SplitPane>
           </FlexTabPane>
         </div>
         <QueryDetailsModal
