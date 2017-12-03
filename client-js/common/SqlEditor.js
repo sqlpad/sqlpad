@@ -33,7 +33,7 @@ class SqlEditor extends React.Component {
   }
 
   render() {
-    const { config, onChange, readOnly, value } = this.props
+    const { config, onChange, readOnly, value, height } = this.props
 
     if (this.editor && config.editorWordWrap) {
       this.editor.session.setUseWrapMode(true)
@@ -44,7 +44,7 @@ class SqlEditor extends React.Component {
         editorProps={{ $blockScrolling: Infinity }}
         enableBasicAutocompletion
         enableLiveAutocompletion
-        height="50%"
+        height={height}
         highlightActiveLine={false}
         mode="sql"
         name="query-ace-editor"
@@ -72,7 +72,7 @@ SqlEditor.propTypes = {
 }
 
 SqlEditor.defaultProps = {
-  height: '50%',
+  height: '100%',
   readOnly: false,
   value: ''
 }

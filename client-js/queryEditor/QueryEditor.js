@@ -1,5 +1,6 @@
 import React from 'react'
 import Alert from 'react-s-alert'
+import SplitPane from 'react-split-pane'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import keymaster from 'keymaster'
@@ -281,6 +282,18 @@ class QueryEditor extends React.Component {
     keymaster.unbind('alt+r')
   }
 
+  handlePaneResize = () => {
+    if (this.editor) {
+      this.editor.resize()
+    }
+    if (this.dataTable) {
+      this.dataTable.handleResize()
+    }
+    if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
+      this.sqlpadTauChart.chart.resize()
+    }
+  }
+
   render() {
     const { config } = this.props
     const {
@@ -312,73 +325,99 @@ class QueryEditor extends React.Component {
           onTabSelect={this.handleTabSelect}
           queryName={query.name}
         />
-        <div className="flex-100" style={{ flexGrow: 1 }}>
+        <div style={{ position: 'relative', flexGrow: 1 }}>
           <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
-            <SchemaSidebar
-              {...this.props}
-              connectionId={query.connectionId}
-              connections={connections}
-              onConnectionChange={this.handleConnectionChange}
-            />
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                flexGrow: 1
-              }}
+            <SplitPane
+              split="vertical"
+              minSize={150}
+              defaultSize={280}
+              maxSize={-100}
+              onChange={this.handlePaneResize}
             >
-              <SqlEditor
-                config={config}
-                value={query.queryText}
-                height="50%"
-                onChange={this.handleQueryTextChange}
-                ref={ref => {
-                  this.editor = ref ? ref.editor : null
-                }}
-              />
-              <QueryResultHeader
+              <SchemaSidebar
                 {...this.props}
-                cacheKey={cacheKey}
-                isRunning={isRunning}
-                queryResult={queryResult}
-                runQueryStartTime={runQueryStartTime}
-                runSeconds={runSeconds}
+                connectionId={query.connectionId}
+                connections={connections}
+                onConnectionChange={this.handleConnectionChange}
               />
-              <div style={{ height: '50%', display: 'flex' }}>
-                <QueryResultDataTable
-                  {...this.props}
-                  isRunning={isRunning}
-                  queryError={queryError}
-                  queryResult={queryResult}
+              <SplitPane
+                split="horizontal"
+                minSize={100}
+                defaultSize={'60%'}
+                maxSize={-100}
+                onChange={this.handlePaneResize}
+              >
+                <SqlEditor
+                  config={config}
+                  value={query.queryText}
+                  onChange={this.handleQueryTextChange}
+                  ref={ref => {
+                    this.editor = ref ? ref.editor : null
+                  }}
                 />
-              </div>
-            </div>
+                <div>
+                  <QueryResultHeader
+                    {...this.props}
+                    cacheKey={cacheKey}
+                    isRunning={isRunning}
+                    queryResult={queryResult}
+                    runQueryStartTime={runQueryStartTime}
+                    runSeconds={runSeconds}
+                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 30,
+                      bottom: 0,
+                      left: 0,
+                      right: 0
+                    }}
+                  >
+                    <QueryResultDataTable
+                      {...this.props}
+                      isRunning={isRunning}
+                      queryError={queryError}
+                      queryResult={queryResult}
+                      ref={ref => (this.dataTable = ref)}
+                    />
+                  </div>
+                </div>
+              </SplitPane>
+            </SplitPane>
           </FlexTabPane>
           <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
-            <VisSidebar
-              isChartable={this.isChartable()}
-              onChartConfigurationFieldsChange={
-                this.handleChartConfigurationFieldsChange
-              }
-              onChartTypeChange={this.handleChartTypeChange}
-              onSaveImageClick={this.handleSaveImageClick}
-              onVisualizeClick={this.handleVisualizeClick}
-              query={query}
-              queryResult={queryResult}
-            />
-            <div className="flex-grow-1">
-              <SqlpadTauChart
-                config={this.props.config}
-                isRunning={isRunning}
+            <SplitPane
+              split="vertical"
+              minSize={150}
+              defaultSize={280}
+              maxSize={-100}
+              onChange={this.handlePaneResize}
+            >
+              <VisSidebar
+                isChartable={this.isChartable()}
+                onChartConfigurationFieldsChange={
+                  this.handleChartConfigurationFieldsChange
+                }
+                onChartTypeChange={this.handleChartTypeChange}
+                onSaveImageClick={this.handleSaveImageClick}
+                onVisualizeClick={this.handleVisualizeClick}
                 query={query}
-                queryError={queryError}
                 queryResult={queryResult}
-                renderChart={this.isChartable()}
-                ref={ref => {
-                  this.sqlpadTauChart = ref
-                }}
               />
-            </div>
+              <div className="flex-grow-1" style={{ height: '100%' }}>
+                <SqlpadTauChart
+                  config={this.props.config}
+                  isRunning={isRunning}
+                  query={query}
+                  queryError={queryError}
+                  queryResult={queryResult}
+                  renderChart={this.isChartable()}
+                  ref={ref => {
+                    this.sqlpadTauChart = ref
+                  }}
+                />
+              </div>
+            </SplitPane>
           </FlexTabPane>
         </div>
         <QueryDetailsModal

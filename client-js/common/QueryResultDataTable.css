@@ -1,4 +1,12 @@
+/* 
+  With introduction of react-split-pane horizontal pane 
+  layout doesn't play well with flex, so this is reverting back to absolute approach
+*/
 .result-grid {
   width: 100%;
-  flex-grow: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
