@@ -361,13 +361,23 @@ class QueryEditor extends React.Component {
                     runQueryStartTime={runQueryStartTime}
                     runSeconds={runSeconds}
                   />
-                  <QueryResultDataTable
-                    {...this.props}
-                    isRunning={isRunning}
-                    queryError={queryError}
-                    queryResult={queryResult}
-                    ref={ref => (this.dataTable = ref)}
-                  />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: 30,
+                      bottom: 0,
+                      left: 0,
+                      right: 0
+                    }}
+                  >
+                    <QueryResultDataTable
+                      {...this.props}
+                      isRunning={isRunning}
+                      queryError={queryError}
+                      queryResult={queryResult}
+                      ref={ref => (this.dataTable = ref)}
+                    />
+                  </div>
                 </div>
               </SplitPane>
             </SplitPane>
