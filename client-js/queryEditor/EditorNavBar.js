@@ -1,22 +1,32 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Navbar from 'react-bootstrap/lib/Navbar'
 import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
-import ControlLabel from 'react-bootstrap/lib/ControlLabel'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
 import Button from 'react-bootstrap/lib/Button'
+import FormControl from 'react-bootstrap/lib/FormControl'
 
-class QueryEditor extends React.Component {
+class EditorNavBar extends React.Component {
+  onQueryNameChange = e => {
+    this.props.onQueryNameChange(e.target.value)
+  }
+
   render() {
     const {
       activeTabKey,
       onTabSelect,
       isSaving,
       isRunning,
-      onQueryNameClick,
+      onMoreClick,
       onSaveClick,
       onRunClick,
-      queryName
+      onFormatClick,
+      queryName,
+      showValidation
     } = this.props
+
+    const validationState = showValidation && !queryName.length ? 'error' : null
 
     return (
       <Navbar fluid>
@@ -30,29 +40,51 @@ class QueryEditor extends React.Component {
         </Nav>
         <Navbar.Form>
           <Button
-            className="QueryEditorSubheaderItem"
+            style={{ marginLeft: 8 }}
             onClick={onSaveClick}
             disabled={isSaving}
           >
-            {isSaving ? 'Saving' : 'Save'}
-          </Button>
-          <Button
-            className="QueryEditorSubheaderItem"
-            onClick={onRunClick}
-            disabled={isRunning}
+            Save
+          </Button>{' '}
+          <Button onClick={onRunClick} disabled={isRunning}>
+            Run
+          </Button>{' '}
+          <Button onClick={onFormatClick}>Format</Button>{' '}
+          <FormGroup
+            validationState={validationState}
+            style={{ marginTop: '-1px' }}
           >
-            {isRunning ? 'Running' : 'Run'}
-          </Button>
-          <ControlLabel
-            onClick={onQueryNameClick}
-            className="QueryEditorSubheaderItem QueryEditorQueryName"
-          >
-            {queryName || '(click to name query)'}
-          </ControlLabel>
+            <FormControl
+              style={{
+                width: 300,
+                color: '#111',
+                padding: '5px 12px',
+                fontSize: '16px'
+              }}
+              type="text"
+              placeholder="Query name"
+              onChange={this.onQueryNameChange}
+              value={queryName}
+            />
+          </FormGroup>{' '}
+          <Button onClick={onMoreClick}>&hellip;</Button>
         </Navbar.Form>
       </Navbar>
     )
   }
 }
 
-export default QueryEditor
+EditorNavBar.propTypes = {
+  activeTabKey: PropTypes.string.isRequired,
+  onTabSelect: PropTypes.func.isRequired,
+  isSaving: PropTypes.bool.isRequired,
+  isRunning: PropTypes.bool.isRequired,
+  onMoreClick: PropTypes.func.isRequired,
+  onSaveClick: PropTypes.func.isRequired,
+  onRunClick: PropTypes.func.isRequired,
+  onFormatClick: PropTypes.func.isRequired,
+  queryName: PropTypes.string.isRequired,
+  showValidation: PropTypes.bool.isRequired
+}
+
+export default EditorNavBar

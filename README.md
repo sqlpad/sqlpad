@@ -44,11 +44,6 @@ docker system prune
 ```
 
 
-## Tips
-
-If you have highlighted just part of your query, only that part will be executed when you click Run Query.
-
-
 ## License 
 
 MIT

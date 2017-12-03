@@ -2,14 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Creatable } from 'react-select'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Modal from 'react-bootstrap/lib/Modal'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import HelpBlock from 'react-bootstrap/lib/HelpBlock'
 
 class QueryDetailsModal extends React.Component {
   input = undefined
@@ -63,18 +61,17 @@ class QueryDetailsModal extends React.Component {
 
   render() {
     const {
+      config,
       onHide,
       onQueryTagsChange,
       query,
-      saveOnClose,
       showModal,
       tagOptions
     } = this.props
-    const validationState = saveOnClose && !query.name.length ? 'warning' : null
-    const validationHelp =
-      saveOnClose && !query.name.length ? (
-        <HelpBlock>Query name is required to save query.</HelpBlock>
-      ) : null
+
+    const tableUrl = `${config.baseUrl}/query-table/${query._id}`
+    const chartUrl = `${config.baseUrl}/query-chart/${query._id}`
+
     return (
       <Modal
         animation
@@ -85,19 +82,6 @@ class QueryDetailsModal extends React.Component {
         <Modal.Header closeButton />
         <Modal.Body>
           <form onSubmit={this.onSubmit}>
-            <FormGroup validationState={validationState}>
-              <ControlLabel>Query Name</ControlLabel>
-              <input
-                className="form-control"
-                onChange={this.onQueryNameChange}
-                ref={ref => (this.input = ref)}
-                type="text"
-                value={query.name}
-              />
-              <FormControl.Feedback />
-              {validationHelp}
-            </FormGroup>
-            <br />
             <FormGroup>
               <ControlLabel>Query Tags</ControlLabel>
               <Creatable
@@ -109,12 +93,32 @@ class QueryDetailsModal extends React.Component {
                 value={query.tags}
               />
             </FormGroup>
-            <br />
-            <ul className="nav nav-pills nav-justified">
-              {this.renderNavLink('?format=table', 'Link to Table')}
-              {this.renderNavLink('?format=chart', 'Link to Chart')}
-            </ul>
           </form>
+          <hr />
+          <p>
+            <strong>Shortcuts</strong>
+          </p>
+          <ul style={{ paddingLeft: 0 }}>
+            <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+              <code>ctrl+s</code> / <code>command+s</code> : Save
+            </li>
+            <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+              <code>ctrl+return</code> / <code>command+return</code> : Run
+            </li>
+            <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+              <code>shift+return</code> : Format
+            </li>
+          </ul>
+          <hr />
+          <p>
+            <strong>Tip</strong>
+          </p>
+          <p>Run only a portion of a query by highlighting it first.</p>
+          <hr />
+          <ul className="nav nav-pills nav-justified">
+            {this.renderNavLink(tableUrl, 'Link to Table')}
+            {this.renderNavLink(chartUrl, 'Link to Chart')}
+          </ul>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onHide}>Close</Button>
@@ -125,17 +129,15 @@ class QueryDetailsModal extends React.Component {
 }
 
 QueryDetailsModal.propTypes = {
+  config: PropTypes.object.isRequired,
   onHide: PropTypes.func.isRequired,
-  onQueryNameChange: PropTypes.func.isRequired,
   onQueryTagsChange: PropTypes.func.isRequired,
   query: PropTypes.object.isRequired,
-  saveOnClose: PropTypes.bool,
   showModal: PropTypes.bool.isRequired,
   tagOptions: PropTypes.array
 }
 
 QueryDetailsModal.defaultProps = {
-  saveOnClose: false,
   tagOptions: []
 }
 
