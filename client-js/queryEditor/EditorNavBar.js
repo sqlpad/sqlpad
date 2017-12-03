@@ -55,7 +55,12 @@ class EditorNavBar extends React.Component {
             style={{ marginTop: '-1px' }}
           >
             <FormControl
-              style={{ width: 300, color: '#111' }}
+              style={{
+                width: 300,
+                color: '#111',
+                padding: '5px 12px',
+                fontSize: '16px'
+              }}
               type="text"
               placeholder="Query name"
               onChange={this.onQueryNameChange}
