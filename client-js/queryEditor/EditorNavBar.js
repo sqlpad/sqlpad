@@ -63,7 +63,7 @@ class EditorNavBar extends React.Component {
             />
           </FormGroup>{' '}
           <Button onClick={onMoreClick} disabled={isRunning}>
-            ...
+            &hellip;
           </Button>
         </Navbar.Form>
       </Navbar>
