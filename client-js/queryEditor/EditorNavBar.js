@@ -62,9 +62,7 @@ class EditorNavBar extends React.Component {
               value={queryName}
             />
           </FormGroup>{' '}
-          <Button onClick={onMoreClick} disabled={isRunning}>
-            &hellip;
-          </Button>
+          <Button onClick={onMoreClick}>&hellip;</Button>
         </Navbar.Form>
       </Navbar>
     )
