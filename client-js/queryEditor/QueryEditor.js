@@ -1,6 +1,7 @@
 import React from 'react'
 import Alert from 'react-s-alert'
 import SplitPane from 'react-split-pane'
+import { Prompt } from 'react-router-dom'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import keymaster from 'keymaster'
@@ -34,9 +35,9 @@ class QueryEditor extends React.Component {
     availableTags: [],
     cacheKey: uuid.v1(),
     connections: [],
-    isDirty: false,
     isRunning: false,
     isSaving: false,
+    unsavedChanges: false,
     query: Object.assign({}, NEW_QUERY),
     queryResult: undefined,
     runQueryStartTime: undefined,
@@ -112,7 +113,6 @@ class QueryEditor extends React.Component {
     fetchJson('POST', '/api/query-result', postData).then(json => {
       if (json.error) Alert.error(json.error)
       this.setState({
-        isDirty: false,
         isRunning: false,
         queryError: json.error,
         queryResult: json.queryResult
@@ -122,10 +122,10 @@ class QueryEditor extends React.Component {
 
   formatQuery = () => {
     const { query } = this.state
-    const result = sqlFormatter.format(query.queryText)
-    query.queryText = result
+    query.queryText = sqlFormatter.format(query.queryText)
     this.setState({
-      query: query
+      query,
+      unsavedChanges: true
     })
   }
 
@@ -147,7 +147,7 @@ class QueryEditor extends React.Component {
           return
         }
         Alert.success('Query Saved')
-        this.setState({ isSaving: false, query })
+        this.setState({ isSaving: false, unsavedChanges: false, query })
       })
     } else {
       fetchJson('POST', `/api/queries`, query).then(json => {
@@ -171,19 +171,19 @@ class QueryEditor extends React.Component {
   setQueryState = (field, value) => {
     const { query } = this.state
     query[field] = value
-    this.setState({ query })
+    this.setState({ query, unsavedChanges: true })
   }
 
   handleChartConfigurationFieldsChange = (chartFieldId, queryResultField) => {
     const { query } = this.state
     query.chartConfiguration.fields[chartFieldId] = queryResultField
-    this.setState({ query })
+    this.setState({ query, unsavedChanges: true })
   }
 
   handleChartTypeChange = e => {
     const { query } = this.state
     query.chartConfiguration.chartType = e.target.value
-    this.setState({ query })
+    this.setState({ query, unsavedChanges: true })
   }
 
   handleConnectionChange = connectionId => {
@@ -230,7 +230,8 @@ class QueryEditor extends React.Component {
       return this.setState({
         activeTabKey: 'sql',
         queryResult: undefined,
-        query: Object.assign({}, NEW_QUERY)
+        query: Object.assign({}, NEW_QUERY),
+        unsavedChanges: false
       })
     }
     this.loadQueryFromServer(nextProps.queryId)
@@ -324,7 +325,8 @@ class QueryEditor extends React.Component {
       runQueryStartTime,
       runSeconds,
       showModal,
-      showValidation
+      showValidation,
+      unsavedChanges
     } = this.state
 
     document.title = query.name || 'New Query'
@@ -343,6 +345,7 @@ class QueryEditor extends React.Component {
           queryName={query.name}
           onQueryNameChange={this.handleQueryNameChange}
           showValidation={showValidation}
+          unsavedChanges={unsavedChanges}
         />
         <div style={{ position: 'relative', flexGrow: 1 }}>
           <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
@@ -446,6 +449,10 @@ class QueryEditor extends React.Component {
           query={query}
           showModal={showModal}
           tagOptions={this.getTagOptions()}
+        />
+        <Prompt
+          when={unsavedChanges}
+          message={location => `Leave without saving?`}
         />
       </div>
     )
