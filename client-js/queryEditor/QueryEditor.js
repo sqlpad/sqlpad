@@ -262,12 +262,24 @@ class QueryEditor extends React.Component {
     // rather something previously not run than something run more than once
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
     keymaster('ctrl+r, command+r, ctrl+e, command+e', e => {
+      Alert.info('Shortcut changed to ctrl+return / command+return')
+      e.preventDefault()
+      return false
+    })
+    keymaster.unbind('ctrl+return, command+return')
+    keymaster('ctrl+return, command+return', e => {
       this.runQuery()
       e.preventDefault()
       return false
     })
     keymaster.unbind('alt+r')
     keymaster('alt+r', e => {
+      Alert.info('Shortcut changed to shift+return')
+      e.preventDefault()
+      return false
+    })
+    keymaster.unbind('shift+return')
+    keymaster('shift+return', e => {
       this.formatQuery()
       e.preventDefault()
       return false
@@ -275,9 +287,11 @@ class QueryEditor extends React.Component {
   }
 
   componentWillUnmount() {
+    keymaster.unbind('ctrl+return, command+return')
     keymaster.unbind('ctrl+s, command+s')
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
     keymaster.unbind('alt+r')
+    keymaster.unbind('shift+return')
   }
 
   handleFormatClick = () => {
