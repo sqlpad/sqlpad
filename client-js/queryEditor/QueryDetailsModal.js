@@ -88,12 +88,32 @@ class QueryDetailsModal extends React.Component {
                 value={query.tags}
               />
             </FormGroup>
-            <br />
-            <ul className="nav nav-pills nav-justified">
-              {this.renderNavLink('?format=table', 'Link to Table')}
-              {this.renderNavLink('?format=chart', 'Link to Chart')}
-            </ul>
           </form>
+          <hr />
+          <p>
+            <strong>Shortcuts</strong>
+          </p>
+          <ul style={{ paddingLeft: 0 }}>
+            <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+              <code>ctrl+s</code> / <code>command+s</code> : Save
+            </li>
+            <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+              <code>ctrl+return</code> / <code>command+return</code> : Run
+            </li>
+            <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+              <code>shift+return</code> : Format
+            </li>
+          </ul>
+          <hr />
+          <p>
+            <strong>Tip</strong>
+          </p>
+          <p>Run only a portion of a query by highlighting it first.</p>
+          <hr />
+          <ul className="nav nav-pills nav-justified">
+            {this.renderNavLink('?format=table', 'Link to Table')}
+            {this.renderNavLink('?format=chart', 'Link to Chart')}
+          </ul>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={onHide}>Close</Button>
