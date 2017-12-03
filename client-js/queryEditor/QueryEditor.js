@@ -329,7 +329,7 @@ class QueryEditor extends React.Component {
           <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
             <SplitPane
               split="vertical"
-              minSize={280}
+              minSize={150}
               defaultSize={280}
               maxSize={-100}
               onChange={this.handlePaneResize}
@@ -388,7 +388,7 @@ class QueryEditor extends React.Component {
           <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
             <SplitPane
               split="vertical"
-              minSize={280}
+              minSize={150}
               defaultSize={280}
               maxSize={-100}
               onChange={this.handlePaneResize}
