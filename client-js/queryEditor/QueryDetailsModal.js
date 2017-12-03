@@ -2,14 +2,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Creatable } from 'react-select'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Modal from 'react-bootstrap/lib/Modal'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
-import HelpBlock from 'react-bootstrap/lib/HelpBlock'
 
 class QueryDetailsModal extends React.Component {
   input = undefined
@@ -66,15 +64,9 @@ class QueryDetailsModal extends React.Component {
       onHide,
       onQueryTagsChange,
       query,
-      saveOnClose,
       showModal,
       tagOptions
     } = this.props
-    const validationState = saveOnClose && !query.name.length ? 'warning' : null
-    const validationHelp =
-      saveOnClose && !query.name.length ? (
-        <HelpBlock>Query name is required to save query.</HelpBlock>
-      ) : null
     return (
       <Modal
         animation
@@ -85,19 +77,6 @@ class QueryDetailsModal extends React.Component {
         <Modal.Header closeButton />
         <Modal.Body>
           <form onSubmit={this.onSubmit}>
-            <FormGroup validationState={validationState}>
-              <ControlLabel>Query Name</ControlLabel>
-              <input
-                className="form-control"
-                onChange={this.onQueryNameChange}
-                ref={ref => (this.input = ref)}
-                type="text"
-                value={query.name}
-              />
-              <FormControl.Feedback />
-              {validationHelp}
-            </FormGroup>
-            <br />
             <FormGroup>
               <ControlLabel>Query Tags</ControlLabel>
               <Creatable
@@ -126,16 +105,13 @@ class QueryDetailsModal extends React.Component {
 
 QueryDetailsModal.propTypes = {
   onHide: PropTypes.func.isRequired,
-  onQueryNameChange: PropTypes.func.isRequired,
   onQueryTagsChange: PropTypes.func.isRequired,
   query: PropTypes.object.isRequired,
-  saveOnClose: PropTypes.bool,
   showModal: PropTypes.bool.isRequired,
   tagOptions: PropTypes.array
 }
 
 QueryDetailsModal.defaultProps = {
-  saveOnClose: false,
   tagOptions: []
 }
 

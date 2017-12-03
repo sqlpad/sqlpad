@@ -40,8 +40,8 @@ class QueryEditor extends React.Component {
     query: Object.assign({}, NEW_QUERY),
     queryResult: undefined,
     runQueryStartTime: undefined,
-    saveOnClose: false,
-    showModal: false
+    showModal: false,
+    showValidation: false
   }
 
   sqlpadTauChart = undefined
@@ -133,7 +133,8 @@ class QueryEditor extends React.Component {
     const { query } = this.state
     const { config } = this.props
     if (!query.name) {
-      this.setState({ showModal: true, saveOnClose: true })
+      Alert.error('Query name required')
+      this.setState({ showValidation: true })
       return
     }
     this.setState({ isSaving: true })
@@ -190,15 +191,12 @@ class QueryEditor extends React.Component {
   }
 
   handleModalHide = () => {
-    if (this.state.saveOnClose) {
-      this.saveQuery()
-    }
-    this.setState({ showModal: false, saveOnClose: false })
+    this.setState({ showModal: false })
   }
 
   handleQueryNameChange = name => this.setQueryState('name', name)
 
-  handleQueryNameClick = () => this.setState({ showModal: true })
+  handleMoreClick = () => this.setState({ showModal: true })
 
   handleQueryTagsChange = values =>
     this.setQueryState('tags', values.map(v => v.value))
@@ -307,8 +305,8 @@ class QueryEditor extends React.Component {
       queryResult,
       runQueryStartTime,
       runSeconds,
-      saveOnClose,
-      showModal
+      showModal,
+      showValidation
     } = this.state
 
     document.title = query.name || 'New Query'
@@ -319,11 +317,13 @@ class QueryEditor extends React.Component {
           activeTabKey={activeTabKey}
           isRunning={isRunning}
           isSaving={isSaving}
-          onQueryNameClick={this.handleQueryNameClick}
+          onMoreClick={this.handleMoreClick}
           onRunClick={this.runQuery}
           onSaveClick={this.saveQuery}
           onTabSelect={this.handleTabSelect}
           queryName={query.name}
+          onQueryNameChange={this.handleQueryNameChange}
+          showValidation={showValidation}
         />
         <div style={{ position: 'relative', flexGrow: 1 }}>
           <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
@@ -422,10 +422,8 @@ class QueryEditor extends React.Component {
         </div>
         <QueryDetailsModal
           onHide={this.handleModalHide}
-          onQueryNameChange={this.handleQueryNameChange}
           onQueryTagsChange={this.handleQueryTagsChange}
           query={query}
-          saveOnClose={saveOnClose}
           showModal={showModal}
           tagOptions={this.getTagOptions()}
         />
