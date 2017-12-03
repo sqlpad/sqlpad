@@ -20,6 +20,7 @@ class QueryEditor extends React.Component {
       onMoreClick,
       onSaveClick,
       onRunClick,
+      onFormatClick,
       queryName,
       showValidation
     } = this.props
@@ -47,6 +48,7 @@ class QueryEditor extends React.Component {
           <Button onClick={onRunClick} disabled={isRunning}>
             Run
           </Button>{' '}
+          <Button onClick={onFormatClick}>Format</Button>{' '}
           <FormGroup
             validationState={validationState}
             style={{ marginTop: '-1px' }}

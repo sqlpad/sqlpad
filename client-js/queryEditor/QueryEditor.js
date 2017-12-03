@@ -280,6 +280,10 @@ class QueryEditor extends React.Component {
     keymaster.unbind('alt+r')
   }
 
+  handleFormatClick = () => {
+    this.formatQuery()
+  }
+
   handlePaneResize = () => {
     if (this.editor) {
       this.editor.resize()
@@ -320,6 +324,7 @@ class QueryEditor extends React.Component {
           onMoreClick={this.handleMoreClick}
           onRunClick={this.runQuery}
           onSaveClick={this.saveQuery}
+          onFormatClick={this.handleFormatClick}
           onTabSelect={this.handleTabSelect}
           queryName={query.name}
           onQueryNameChange={this.handleQueryNameChange}
