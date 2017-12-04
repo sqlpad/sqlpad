@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.4.0
+### December 3, 2017
+- Added resizable panes to query editor
+- Added SQL formatter to query editor (KochamCie)
+- Added clone query button to query editor
+- Added prompt when navigating away from unsaved query edits
+- Redesigned bar charts in data grid to a more minimal design
+- Redesigned query editor nav bar
+    - Brings query name input out of modal
+    - Adds unsaved changes indicator to save button
+    - Adds shortcut/tip documentation to modal
+    - Uses nav links instead of buttons for less visual noise
+- Updated editor shortcuts
+    - Running query now `ctrl+return` or `command+return`
+    - Format query with `shift+return`
+- Updated tauCharts to latest version
+- Implemented react-router & fix unnecessary page loads on navigation
+- Bundled remaining vendor JavaScript libs
+- Removed external font-awesome dependency from CDN
+- Fixed bigint handling for MySQL
+- Fixed date display in charts
+- Fixed date display for MySQL
+- Fixed cell content not expanding when cell is expanded
+- Fixed unintended page refresh on editor sidebar link clicks
+- Fixed layout bugs from flexbox
+- Lots of misc front-end refactoring
+
 ## 2.3.2
 ### October 21, 2017
 - Fix --base-url config use
