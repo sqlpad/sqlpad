@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.1
+### December 3, 2017
+- Fixed disappearing data table after vis resize
+
 ## 2.4.0
 ### December 3, 2017
 - Added resizable panes to query editor
