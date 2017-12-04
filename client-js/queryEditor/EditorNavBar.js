@@ -18,6 +18,7 @@ class EditorNavBar extends React.Component {
       onTabSelect,
       isSaving,
       isRunning,
+      onCloneClick,
       onMoreClick,
       onSaveClick,
       onRunClick,
@@ -40,30 +41,35 @@ class EditorNavBar extends React.Component {
             <span className="glyphicon glyphicon-stats" /> Vis
           </NavItem>
         </Nav>
-        <Navbar.Form>
-          <Button
-            style={{ marginLeft: 4, minWidth: 70 }}
+        <Nav>
+          <NavItem eventKey={1} href="#" onClick={onCloneClick}>
+            Clone
+          </NavItem>
+          <NavItem eventKey={2} href="#" onClick={onFormatClick}>
+            Format
+          </NavItem>
+          <NavItem
+            style={{ minWidth: 68 }}
+            eventKey={3}
+            href="#"
             onClick={onSaveClick}
             disabled={isSaving}
           >
             {saveText}
-          </Button>
-          <Button
-            style={{ marginLeft: 4, minWidth: 70 }}
+          </NavItem>
+          <NavItem
+            eventKey={4}
+            href="#"
             onClick={onRunClick}
             disabled={isRunning}
           >
             Run
-          </Button>
-          <Button
-            style={{ marginLeft: 4, minWidth: 70 }}
-            onClick={onFormatClick}
-          >
-            Format
-          </Button>
+          </NavItem>
+        </Nav>
+        <Navbar.Form>
           <FormGroup
             validationState={validationState}
-            style={{ marginTop: '-1px', marginLeft: 4 }}
+            style={{ marginTop: '-1px', marginLeft: 12 }}
           >
             <FormControl
               style={{
@@ -77,8 +83,10 @@ class EditorNavBar extends React.Component {
               onChange={this.onQueryNameChange}
               value={queryName}
             />
-          </FormGroup>{' '}
-          <Button onClick={onMoreClick}>&hellip;</Button>
+          </FormGroup>
+          <Button style={{ marginLeft: 4 }} onClick={onMoreClick}>
+            &hellip;
+          </Button>
         </Navbar.Form>
       </Navbar>
     )
@@ -90,6 +98,7 @@ EditorNavBar.propTypes = {
   onTabSelect: PropTypes.func.isRequired,
   isSaving: PropTypes.bool.isRequired,
   isRunning: PropTypes.bool.isRequired,
+  onCloneClick: PropTypes.func.isRequired,
   onMoreClick: PropTypes.func.isRequired,
   onSaveClick: PropTypes.func.isRequired,
   onRunClick: PropTypes.func.isRequired,
