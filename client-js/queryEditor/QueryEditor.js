@@ -308,13 +308,16 @@ class QueryEditor extends React.Component {
     this.formatQuery()
   }
 
-  handlePaneResize = () => {
+  handleSqlPaneResize = () => {
     if (this.editor) {
       this.editor.resize()
     }
     if (this.dataTable) {
       this.dataTable.handleResize()
     }
+  }
+
+  handleVisPaneResize = () => {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
       this.sqlpadTauChart.chart.resize()
     }
@@ -364,7 +367,7 @@ class QueryEditor extends React.Component {
               minSize={150}
               defaultSize={280}
               maxSize={-100}
-              onChange={this.handlePaneResize}
+              onChange={this.handleSqlPaneResize}
             >
               <SchemaSidebar
                 {...this.props}
@@ -377,7 +380,7 @@ class QueryEditor extends React.Component {
                 minSize={100}
                 defaultSize={'60%'}
                 maxSize={-100}
-                onChange={this.handlePaneResize}
+                onChange={this.handleSqlPaneResize}
               >
                 <SqlEditor
                   config={config}
@@ -423,7 +426,7 @@ class QueryEditor extends React.Component {
               minSize={150}
               defaultSize={280}
               maxSize={-100}
-              onChange={this.handlePaneResize}
+              onChange={this.handleVisPaneResize}
             >
               <VisSidebar
                 isChartable={this.isChartable()}
