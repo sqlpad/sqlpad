@@ -120,6 +120,15 @@ class QueryEditor extends React.Component {
     })
   }
 
+  handleCloneClick = () => {
+    const { config } = this.props
+    const { query } = this.state
+    delete query._id
+    query.name = 'Copy of ' + query.name
+    window.history.replaceState({}, query.name, `${config.baseUrl}/queries/new`)
+    this.setState({ query, unsavedChanges: true })
+  }
+
   formatQuery = () => {
     const { query } = this.state
     query.queryText = sqlFormatter.format(query.queryText)
@@ -163,7 +172,7 @@ class QueryEditor extends React.Component {
           `${config.baseUrl}/queries/${query._id}`
         )
         Alert.success('Query Saved')
-        this.setState({ isSaving: false, query })
+        this.setState({ isSaving: false, unsavedChanges: false, query })
       })
     }
   }
@@ -337,12 +346,13 @@ class QueryEditor extends React.Component {
           activeTabKey={activeTabKey}
           isRunning={isRunning}
           isSaving={isSaving}
+          onCloneClick={this.handleCloneClick}
           onMoreClick={this.handleMoreClick}
           onRunClick={this.runQuery}
           onSaveClick={this.saveQuery}
           onFormatClick={this.handleFormatClick}
           onTabSelect={this.handleTabSelect}
-          queryName={query.name}
+          query={query}
           onQueryNameChange={this.handleQueryNameChange}
           showValidation={showValidation}
           unsavedChanges={unsavedChanges}
