@@ -23,13 +23,15 @@ class EditorNavBar extends React.Component {
       onSaveClick,
       onRunClick,
       onFormatClick,
-      queryName,
+      query,
       showValidation,
       unsavedChanges
     } = this.props
 
-    const validationState = showValidation && !queryName.length ? 'error' : null
+    const validationState =
+      showValidation && !query.name.length ? 'error' : null
     const saveText = unsavedChanges ? 'Save*' : 'Save'
+    const cloneDisabled = !query._id
 
     return (
       <Navbar fluid>
@@ -42,7 +44,12 @@ class EditorNavBar extends React.Component {
           </NavItem>
         </Nav>
         <Nav>
-          <NavItem eventKey={1} href="#" onClick={onCloneClick}>
+          <NavItem
+            eventKey={1}
+            href="#"
+            onClick={onCloneClick}
+            disabled={cloneDisabled}
+          >
             Clone
           </NavItem>
           <NavItem eventKey={2} href="#" onClick={onFormatClick}>
@@ -81,7 +88,7 @@ class EditorNavBar extends React.Component {
               type="text"
               placeholder="Query name"
               onChange={this.onQueryNameChange}
-              value={queryName}
+              value={query.name}
             />
           </FormGroup>
           <Button style={{ marginLeft: 4 }} onClick={onMoreClick}>
@@ -103,7 +110,7 @@ EditorNavBar.propTypes = {
   onSaveClick: PropTypes.func.isRequired,
   onRunClick: PropTypes.func.isRequired,
   onFormatClick: PropTypes.func.isRequired,
-  queryName: PropTypes.string.isRequired,
+  query: PropTypes.object.isRequired,
   showValidation: PropTypes.bool.isRequired,
   unsavedChanges: PropTypes.bool.isRequired
 }

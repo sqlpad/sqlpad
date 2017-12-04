@@ -352,7 +352,7 @@ class QueryEditor extends React.Component {
           onSaveClick={this.saveQuery}
           onFormatClick={this.handleFormatClick}
           onTabSelect={this.handleTabSelect}
-          queryName={query.name}
+          query={query}
           onQueryNameChange={this.handleQueryNameChange}
           showValidation={showValidation}
           unsavedChanges={unsavedChanges}
