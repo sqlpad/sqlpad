@@ -344,7 +344,7 @@ class QueryEditor extends React.Component {
     document.title = query.name || 'New Query'
 
     return (
-      <div className="flex-100" style={{ flexDirection: 'column' }}>
+      <div className="flex w-100" style={{ flexDirection: 'column' }}>
         <EditorNavBar
           activeTabKey={activeTabKey}
           isRunning={isRunning}
@@ -439,7 +439,7 @@ class QueryEditor extends React.Component {
                 query={query}
                 queryResult={queryResult}
               />
-              <div className="flex-grow-1" style={{ height: '100%' }}>
+              <div className="flex-auto h-100">
                 <SqlpadTauChart
                   config={this.props.config}
                   isRunning={isRunning}

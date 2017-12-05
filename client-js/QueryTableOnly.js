@@ -59,7 +59,7 @@ class QueryEditor extends React.Component {
     }
     return (
       <div
-        className="flex-100"
+        className="flex w-100"
         style={{ flexDirection: 'column', padding: '16px' }}
       >
         <div style={{ height: '50px' }}>

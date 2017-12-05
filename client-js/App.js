@@ -62,7 +62,7 @@ class App extends React.Component {
 
     return (
       <Router basename={config.baseUrl}>
-        <div className="flex-100">
+        <div className="flex w-100">
           <Switch>
             <Route exact path="/" render={() => <Redirect to={'/queries'} />} />
             <Route

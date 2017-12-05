@@ -46,16 +46,6 @@ a:focus {
   }
 }
 
-.flex-100 {
-  display: flex;
-  width: 100%;
-}
-
-.flex-grow-1 {
-  display: flex;
-  flex-grow: 1;
-}
-
 /* 
   Signin / Signup / Password reset
   Used across auth forms
