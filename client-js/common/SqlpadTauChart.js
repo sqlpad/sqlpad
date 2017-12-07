@@ -272,10 +272,7 @@ class SqlpadTauChart extends React.Component {
     const { isRunning, queryError } = this.props
     if (isRunning) {
       return (
-        <div
-          className="flex w-100 run-result-notification"
-          style={{ backgroundColor: 'rgba(255, 255, 255, 0.5)' }}
-        >
+        <div className="flex w-100 run-result-notification">
           <SpinKitCube />
         </div>
       )
