@@ -281,7 +281,7 @@ class SqlpadTauChart extends React.Component {
       )
     } else if (queryError) {
       return (
-        <div className="flex w-100 run-result-notification label-danger">
+        <div className="flex w-100 run-result-notification bg-light-red">
           {queryError}
         </div>
       )

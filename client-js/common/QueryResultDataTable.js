@@ -68,7 +68,7 @@ class QueryResultDataTable extends React.PureComponent {
       return (
         <div
           id="result-grid"
-          className="result-grid run-result-notification label-danger"
+          className="result-grid run-result-notification bg-light-red"
         >
           {this.props.queryError}
         </div>
