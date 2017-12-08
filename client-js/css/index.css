@@ -146,8 +146,3 @@ input[type='checkbox'],
 input[type='radio'] {
   margin: 2px 0 0;
 }
-
-/* ConnectionListRow */
-.ListRowSelected {
-  background-color: #fafafa;
-}
