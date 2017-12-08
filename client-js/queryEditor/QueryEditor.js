@@ -14,7 +14,6 @@ import FlexTabPane from './FlexTabPane'
 import SchemaSidebar from './SchemaSidebar.js'
 import VisSidebar from './VisSidebar'
 import SqlEditor from '../common/SqlEditor'
-import './QueryEditor.css'
 import sqlFormatter from 'sql-formatter'
 
 const NEW_QUERY = {
