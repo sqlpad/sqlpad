@@ -60,7 +60,10 @@ class QueryResultDataTable extends React.PureComponent {
   render() {
     if (this.props.isRunning) {
       return (
-        <div id="result-grid" className="result-grid run-result-notification">
+        <div
+          id="result-grid"
+          className="result-grid flex items-center justify-center"
+        >
           <SpinKitCube />
         </div>
       )
@@ -68,7 +71,7 @@ class QueryResultDataTable extends React.PureComponent {
       return (
         <div
           id="result-grid"
-          className="result-grid run-result-notification bg-light-red"
+          className={`result-grid flex items-center justify-center f2 bg-light-red`}
         >
           {this.props.queryError}
         </div>

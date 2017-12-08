@@ -268,35 +268,29 @@ class SqlpadTauChart extends React.Component {
     this.destroyChart()
   }
 
-  renderResultNotification() {
+  render() {
     const { isRunning, queryError } = this.props
     if (isRunning) {
       return (
-        <div className="flex w-100 run-result-notification">
+        <div
+          id="chart"
+          className="flex h-100 w-100 items-center justify-center"
+        >
           <SpinKitCube />
         </div>
       )
-    } else if (queryError) {
+    }
+    if (queryError) {
       return (
-        <div className="flex w-100 run-result-notification bg-light-red">
+        <div
+          id="chart"
+          className="flex h-100 w-100 items-center justify-center f2 bg-light-red"
+        >
           {queryError}
         </div>
       )
     }
-  }
-
-  render() {
-    return (
-      <div
-        id="chart"
-        className="flex h-100 w-100"
-        style={{
-          padding: '16px'
-        }}
-      >
-        {this.renderResultNotification()}
-      </div>
-    )
+    return <div id="chart" className="flex h-100 w-100 pa3" />
   }
 }
 

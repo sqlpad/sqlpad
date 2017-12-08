@@ -155,16 +155,6 @@ input[type='radio'] {
   background-color: #fafafa;
 }
 
-/* QueryResultDataTable and SqlpadTauChart */
-.run-result-notification {
-  align-items: center;
-  display: flex;
-  font-size: 16px;
-  justify-content: center;
-  padding: 20px;
-  text-align: center;
-}
-
 /* QueryChartOnly & QueryTableOnly */
 .query-title {
   font-weight: 500;
