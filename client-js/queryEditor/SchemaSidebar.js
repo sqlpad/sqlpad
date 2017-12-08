@@ -5,6 +5,8 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import fetchJson from '../utilities/fetch-json.js'
 import updateCompletions from '../utilities/updateCompletions.js'
+import Sidebar from '../common/Sidebar'
+import SidebarBody from '../common/SidebarBody'
 import './SchemaSidebar.css'
 
 class SchemaSidebar extends React.PureComponent {
@@ -92,8 +94,8 @@ class SchemaSidebar extends React.PureComponent {
     })
 
     return (
-      <div className="sidebar">
-        <div className="sidebar-body">
+      <Sidebar>
+        <SidebarBody>
           <FormGroup controlId="formControlsSelect" bsSize="small">
             <FormControl
               value={connectionId}
@@ -116,8 +118,8 @@ class SchemaSidebar extends React.PureComponent {
             </a>
             <ul className="schema-info schema-info-table">{schemaItemNodes}</ul>
           </div>
-        </div>
-      </div>
+        </SidebarBody>
+      </Sidebar>
     )
   }
 }
