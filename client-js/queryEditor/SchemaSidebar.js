@@ -234,7 +234,7 @@ class SchemaInfoTableItem extends React.Component {
 
     const copyButtonClassName = showCopyButton
       ? 'copy-button label'
-      : 'copy-button label hidden'
+      : 'copy-button label dn'
     const getCopyToClipboard = () => {
       if (config && config.showSchemaCopyButton) {
         return (
@@ -303,7 +303,7 @@ class SchemaInfoColumnItem extends React.Component {
     const { config, column_name, data_type, schema, table } = this.props
     const copyButtonClassName = showCopyButton
       ? 'copy-button label label-info'
-      : 'copy-button label label-info hidden'
+      : 'copy-button label label-info dn'
     const getCopyToClipboard = () => {
       if (config && config.showSchemaCopyButton) {
         return (
