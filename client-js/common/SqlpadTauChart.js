@@ -284,7 +284,7 @@ class SqlpadTauChart extends React.Component {
       return (
         <div
           id="chart"
-          className="flex h-100 w-100 items-center justify-center f2 bg-light-red"
+          className="flex h-100 w-100 items-center justify-center f2 pa4 bg-light-red"
         >
           {queryError}
         </div>
