@@ -40,11 +40,11 @@ class SignIn extends React.Component {
     }
     const localForm = (
       <div>
-        <form className="form-signin" onSubmit={this.signIn}>
+        <form onSubmit={this.signIn}>
           <input
             name="email"
             type="email"
-            className="form-control top-field"
+            className="form-control mt2"
             placeholder="Email address"
             onChange={this.onEmailChange}
             required
@@ -52,36 +52,33 @@ class SignIn extends React.Component {
           <input
             name="password"
             type="password"
-            className="form-control bottom-field"
+            className="form-control mt2"
             placeholder="Password"
             onChange={this.onPasswordChange}
             required
           />
-          <br />
           <button
             onClick={this.signIn}
-            className="btn btn-lg btn-primary btn-block"
+            className="btn btn-primary btn-block mt4"
             type="submit"
           >
             Sign in
           </button>
         </form>
-        <div className="form-signin-footer">
-          <p>
-            <Link to="/signup">Sign Up</Link>
-            {smtpConfigured ? (
-              <Link style={{ marginLeft: 50 }} to="/forgot-password">
-                Forgot Password
-              </Link>
-            ) : null}
-          </p>
+        <div className="tc mt3">
+          <Link to="/signup">Sign Up</Link>
+          {smtpConfigured ? (
+            <Link className="ml5" to="/forgot-password">
+              Forgot Password
+            </Link>
+          ) : null}
         </div>
       </div>
     )
     const googleForm = (
       <div>
         <a href={config.baseUrl + '/auth/google'}>
-          <button className="btn btn-lg btn-danger btn-block">
+          <button className="btn btn-danger btn-block mt3">
             <GooglePlusIcon
               style={{
                 width: '22px',
@@ -96,8 +93,8 @@ class SignIn extends React.Component {
       </div>
     )
     return (
-      <div className="signin">
-        <h2>SQLPad</h2>
+      <div className="pt5 measure center" style={{ width: '300px' }}>
+        <h1 className="f2 tc">SQLPad</h1>
         {'local' in passport.strategies ? localForm : null}
         {'google' in passport.strategies ? googleForm : null}
       </div>

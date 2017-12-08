@@ -54,23 +54,21 @@ class PasswordReset extends React.Component {
     }
     if (notFound) {
       return (
-        <div className="signin">
-          <form className="form-signin" onSubmit={this.resetPassword}>
-            <h2>
-              Password Reset<br />Not Found
-            </h2>
+        <div className="pt5 measure center" style={{ width: '300px' }}>
+          <form onSubmit={this.resetPassword}>
+            <h1 className="f2">Password reset not found</h1>
           </form>
         </div>
       )
     }
     return (
-      <div className="signin">
-        <form className="form-signin" onSubmit={this.resetPassword}>
-          <h2>SQLPad</h2>
+      <div className="pt5 measure center" style={{ width: '300px' }}>
+        <form onSubmit={this.resetPassword}>
+          <h1 className="f2 tc">SQLPad</h1>
           <input
             name="email"
             type="email"
-            className="form-control top-field"
+            className="form-control mt3"
             placeholder="Email address"
             onChange={this.onEmailChange}
             required
@@ -78,7 +76,7 @@ class PasswordReset extends React.Component {
           <input
             name="password"
             type="password"
-            className="form-control middle-field"
+            className="form-control mt3"
             placeholder="Password"
             onChange={this.onPasswordChange}
             required
@@ -86,13 +84,12 @@ class PasswordReset extends React.Component {
           <input
             name="passwordConfirmation"
             type="password"
-            className="form-control bottom-field"
+            className="form-control mt3"
             placeholder="Confirm Password"
             onChange={this.onPasswordConfirmationChange}
             required
           />
-          <br />
-          <button className="btn btn-lg btn-primary btn-block" type="submit">
+          <button className="btn btn-primary btn-block mt3" type="submit">
             Reset Password
           </button>
         </form>

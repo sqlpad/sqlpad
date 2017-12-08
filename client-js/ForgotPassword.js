@@ -31,19 +31,18 @@ class ForgotPassword extends React.Component {
       return <Redirect to="/password-reset" />
     }
     return (
-      <div className="signin">
-        <form className="form-signin" onSubmit={this.resetPassword}>
-          <h2>SQLPad</h2>
+      <div className="pt5 measure center" style={{ width: '300px' }}>
+        <form onSubmit={this.resetPassword}>
+          <h1 className="f2 tc">SQLPad</h1>
           <input
             name="email"
             type="email"
-            className="form-control top-field"
+            className="form-control mt3"
             placeholder="Email address"
             onChange={this.onEmailChange}
             required
           />
-          <br />
-          <button className="btn btn-lg btn-primary btn-block" type="submit">
+          <button className="btn btn-primary btn-block mt3" type="submit">
             Reset Password
           </button>
         </form>

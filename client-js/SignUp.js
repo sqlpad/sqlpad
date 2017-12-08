@@ -41,30 +41,29 @@ class SignUp extends React.Component {
       return <Redirect to="/" />
     }
     const adminRegistrationOpenIntro = () => {
-      if (this.props.adminRegistrationOpen) {
+      if (this.props.adminRegistrationOpen || true) {
         return (
-          <div>
-            <h4>Admin Registration is Open</h4>
+          <div className="mb4">
+            <h2 className="f3 tc">Admin Registration is Open</h2>
             <p>
               Welcome to SQLPad! Since there are no admins currently in the
               system, registration is open to anyone. By signing up, you will be
               granted admin rights, and the system will be locked down. Only
               people explicitly invited & whitelisted will be able to join.
             </p>
-            <br />
           </div>
         )
       }
     }
     return (
-      <div className="signin">
-        <form className="form-signin" onSubmit={this.signUp}>
-          <h2>SQLPad</h2>
+      <div className="pt5 measure center" style={{ width: '300px' }}>
+        <form onSubmit={this.signUp}>
+          <h1 className="f2 tc">SQLPad</h1>
           {adminRegistrationOpenIntro()}
           <input
             name="email"
             type="email"
-            className="form-control top-field"
+            className="form-control mt3"
             placeholder="Email address"
             onChange={this.onEmailChange}
             required
@@ -72,7 +71,7 @@ class SignUp extends React.Component {
           <input
             name="password"
             type="password"
-            className="form-control middle-field"
+            className="form-control mt3"
             placeholder="Password"
             onChange={this.onPasswordChange}
             required
@@ -80,13 +79,12 @@ class SignUp extends React.Component {
           <input
             name="passwordConfirmation"
             type="password"
-            className="form-control bottom-field"
+            className="form-control mt3"
             placeholder="Confirm Password"
             onChange={this.onPasswordConfirmationChange}
             required
           />
-          <br />
-          <button className="btn btn-lg btn-primary btn-block" type="submit">
+          <button className="btn btn-primary btn-block mt3" type="submit">
             Sign up
           </button>
         </form>
