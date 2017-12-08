@@ -1,10 +1,5 @@
 /* core styles
 ============================================================================ */
-body {
-  font: 14px 'Lucida Grande', Helvetica, Arial, sans-serif;
-  display: flex;
-  height: 100vh;
-}
 a {
   color: #00b7ff;
 }
