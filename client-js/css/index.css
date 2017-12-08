@@ -14,11 +14,6 @@ a:focus {
   text-decoration: none;
 }
 
-#root {
-  display: flex;
-  width: 100%;
-}
-
 /*  Utilities
 ============================================================================ */
 .spinning {
