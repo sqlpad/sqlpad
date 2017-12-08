@@ -19,7 +19,7 @@ class QueryList extends React.Component {
       )
     })
     return (
-      <div className="QueryList">
+      <div className="pa2 w-40 relative">
         <ControlLabel>Queries</ControlLabel>
         <ListGroup className="QueryListContents">{QueryListRows}</ListGroup>
       </div>

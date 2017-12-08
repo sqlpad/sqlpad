@@ -154,7 +154,7 @@ class QueriesView extends React.Component {
     }
 
     return (
-      <div className="QueryListContainer">
+      <div className="v-100 w-100 flex">
         <QueryListSidebar
           currentUser={this.props.currentUser}
           connections={this.state.connections}

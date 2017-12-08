@@ -48,7 +48,7 @@ class QueryListSidebar extends React.Component {
       )
     })
     return (
-      <div className="QueryListSidebar">
+      <div className="pa2 w-20">
         <Form>
           <FormGroup controlId="formControlsSelect">
             <ControlLabel>Search</ControlLabel>

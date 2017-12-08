@@ -24,7 +24,7 @@ class QueryPreview extends React.Component {
         ) : null
       }
       return (
-        <div className="QueryPreview">
+        <div className="pa2 w-40">
           <ControlLabel>Preview</ControlLabel>
           <h4>{selectedQuery.name}</h4>
           <SqlEditor
@@ -39,7 +39,7 @@ class QueryPreview extends React.Component {
         </div>
       )
     } else {
-      return <div className="QueryPreview" />
+      return <div className="pa2 w-40" />
     }
   }
 }
