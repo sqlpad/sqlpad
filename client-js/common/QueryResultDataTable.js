@@ -71,7 +71,7 @@ class QueryResultDataTable extends React.PureComponent {
       return (
         <div
           id="result-grid"
-          className={`result-grid flex items-center justify-center f2 pa4 bg-light-red`}
+          className={`result-grid flex items-center justify-center f2 pa4 tc bg-light-red`}
         >
           {this.props.queryError}
         </div>
