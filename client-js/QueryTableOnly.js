@@ -63,7 +63,7 @@ class QueryEditor extends React.Component {
         style={{ flexDirection: 'column', padding: '16px' }}
       >
         <div style={{ height: '50px' }}>
-          <span className="query-title">
+          <span className="f2">
             {this.state.query ? this.state.query.name : ''}
           </span>
           <div style={{ float: 'right' }}>
