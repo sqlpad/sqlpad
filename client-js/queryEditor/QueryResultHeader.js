@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import IncompleteDataNotification from '../common/IncompleteDataNotification'
 import SecondsTimer from '../common/SecondsTimer.js'
-import './QueryResultHeader.css'
 
 class QueryResultHeader extends React.Component {
   renderDownloadLinks() {
@@ -12,9 +11,9 @@ class QueryResultHeader extends React.Component {
     if (config.allowCsvDownload) {
       return (
         <span>
-          <span className="panel-result-header-label">Download: </span>
+          <span className="gray">Download: </span>
           <a
-            className="result-download-link"
+            className="ml3"
             target="_blank"
             rel="noopener noreferrer"
             href={csvDownloadLink}
@@ -22,7 +21,7 @@ class QueryResultHeader extends React.Component {
             .csv
           </a>
           <a
-            className="result-download-link"
+            className="ml3"
             target="_blank"
             rel="noopener noreferrer"
             href={xlsxDownloadLink}
@@ -38,12 +37,13 @@ class QueryResultHeader extends React.Component {
     const { isRunning, queryResult, runQueryStartTime } = this.props
     if (isRunning || !queryResult) {
       return (
-        <div className="panel-result-header">
+        <div
+          className="bb b--moon-gray bg-near-white pa2 nowrap fw6 near-black"
+          style={{ height: '30px' }}
+        >
           {isRunning ? (
-            <span className="panel-result-header-item">
-              <span className="panel-result-header-label">
-                Query Run Time:{' '}
-              </span>
+            <span className="pl1 pr5">
+              <span className="gray">Query Run Time: </span>
               <span>
                 <SecondsTimer startTime={runQueryStartTime} /> sec.
               </span>
@@ -60,19 +60,20 @@ class QueryResultHeader extends React.Component {
       queryResult && queryResult.rows ? queryResult.rows.length : ''
 
     return (
-      <div className="panel-result-header">
-        <span className="panel-result-header-item">
-          <span className="panel-result-header-label">Query Run Time: </span>
+      <div
+        className="bb b--moon-gray bg-near-white pa2 nowrap fw6 near-black"
+        style={{ height: '30px' }}
+      >
+        <span className="pl1 pr5">
+          <span className="gray">Query Run Time: </span>
           {serverSec}
         </span>
-        <span className="panel-result-header-item">
-          <span className="panel-result-header-label">Rows: </span>
+        <span className="pr5">
+          <span className="gray">Rows: </span>
           {rowCount}
         </span>
-        <span className="panel-result-header-item">
-          {this.renderDownloadLinks()}
-        </span>
-        <span className="panel-result-header-item">
+        <span className="pr5">{this.renderDownloadLinks()}</span>
+        <span className="pr5">
           <IncompleteDataNotification queryResult={queryResult} />
         </span>
       </div>
