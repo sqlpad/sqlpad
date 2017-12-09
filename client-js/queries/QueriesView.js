@@ -6,7 +6,6 @@ import fetchJson from '../utilities/fetch-json.js'
 import QueryList from './QueryList'
 import QueryPreview from './QueryPreview'
 import QueryListSidebar from './QueryListSidebar'
-import './QueriesView.css'
 
 class QueriesView extends React.Component {
   state = {
