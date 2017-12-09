@@ -3,7 +3,6 @@ import { Table, Column, Cell } from 'fixed-data-table-2'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
 import '../css/fixed-data-table.css'
-import './QueryResultDataTable.css'
 
 const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {
@@ -62,7 +61,7 @@ class QueryResultDataTable extends React.PureComponent {
       return (
         <div
           id="result-grid"
-          className="result-grid flex items-center justify-center"
+          className="aspect-ratio--object flex items-center justify-center"
         >
           <SpinKitCube />
         </div>
@@ -71,7 +70,7 @@ class QueryResultDataTable extends React.PureComponent {
       return (
         <div
           id="result-grid"
-          className={`result-grid flex items-center justify-center f2 pa4 tc bg-light-red`}
+          className={`aspect-ratio--object flex items-center justify-center f2 pa4 tc bg-light-red`}
         >
           {this.props.queryError}
         </div>
@@ -140,7 +139,7 @@ class QueryResultDataTable extends React.PureComponent {
         )
       })
       return (
-        <div id="result-grid" className="result-grid">
+        <div id="result-grid" className="aspect-ratio--object">
           <Table
             rowHeight={30}
             rowsCount={queryResult.rows.length}
@@ -154,7 +153,7 @@ class QueryResultDataTable extends React.PureComponent {
         </div>
       )
     } else {
-      return <div id="result-grid" className="result-grid" />
+      return <div id="result-grid" className="aspect-ratio--object" />
     }
   }
 }
