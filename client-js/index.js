@@ -7,5 +7,6 @@ import './css/s-alert-default.css'
 import './css/react-split-pane.css'
 import './css/vendorOverrides.css'
 import './css/index.css'
+import 'tachyons/css/tachyons.min.css'
 
 ReactDOM.render(<App />, document.getElementById('root'))

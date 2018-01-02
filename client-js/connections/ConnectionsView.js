@@ -98,7 +98,7 @@ class ConnectionsView extends React.Component {
   render() {
     const { isTesting, isSaving, connections, selectedConnection } = this.state
     return (
-      <div className="flex-100">
+      <div className="flex w-100">
         <ConnectionList
           connections={connections}
           selectedConnection={selectedConnection}

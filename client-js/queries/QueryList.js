@@ -19,9 +19,9 @@ class QueryList extends React.Component {
       )
     })
     return (
-      <div className="QueryList">
+      <div className="pa2 w-40 flex flex-column">
         <ControlLabel>Queries</ControlLabel>
-        <ListGroup className="QueryListContents">{QueryListRows}</ListGroup>
+        <ListGroup className="overflow-y-auto">{QueryListRows}</ListGroup>
       </div>
     )
   }

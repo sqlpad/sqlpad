@@ -1,7 +1,7 @@
 import React from 'react'
 
 export default props => (
-  <div className=" w-100 flex f1 flex-column items-center justify-center">
+  <div className="flex-auto pa4 overflow-x-hidden overflow-y-auto">
     {props.children}
   </div>
 )

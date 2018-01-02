@@ -125,7 +125,7 @@ class App extends React.Component {
       }
     }
     return (
-      <div className="flex-100">
+      <div className="flex w-100">
         <Navbar inverse fluid fixedTop>
           <Nav>
             <LinkContainer exact to="/queries">
@@ -140,7 +140,7 @@ class App extends React.Component {
             {userMenu()}
           </Nav>
         </Navbar>
-        <div className="flex-100" style={{ marginTop: '50px' }}>
+        <div className="flex w-100" style={{ marginTop: '50px' }}>
           {this.props.children}
         </div>
         <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>

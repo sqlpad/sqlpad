@@ -20,26 +20,23 @@ class QueryPreview extends React.Component {
           def => def.chartType === chartType
         )
         return chartDefinition ? (
-          <h4>Chart: {chartDefinition.chartLabel}</h4>
+          <span className="f3">Chart: {chartDefinition.chartLabel}</span>
         ) : null
       }
       return (
-        <div className="QueryPreview">
+        <div className="pa2 w-40 flex flex-column">
           <ControlLabel>Preview</ControlLabel>
-          <h4>{selectedQuery.name}</h4>
-          <SqlEditor
-            config={config}
-            height="70%"
-            readOnly
-            value={selectedQuery.queryText}
-          />
+          <span className="f2">{selectedQuery.name}</span>
+          <SqlEditor config={config} readOnly value={selectedQuery.queryText} />
           {chartTypeLabel()}
-          <h4>Modified: {moment(query.modifiedDate).calendar()}</h4>
-          <h4>Created By: {query.createdBy}</h4>
+          <span className="f3">
+            Modified: {moment(query.modifiedDate).calendar()}
+          </span>
+          <span className="f3">Created By: {query.createdBy}</span>
         </div>
       )
     } else {
-      return <div className="QueryPreview" />
+      return <div className="pa2 w-40" />
     }
   }
 }

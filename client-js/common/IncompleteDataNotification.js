@@ -18,15 +18,8 @@ export default class extends React.Component {
         target: () => ReactDOM.findDOMNode(this.refs.incompleteDataTarget)
       }
       return (
-        <span
-          style={{ color: 'red', cursor: 'pointer', marginRight: 10 }}
-          onClick={this.toggle}
-        >
-          <Glyphicon
-            glyph="warning-sign"
-            ref="incompleteDataTarget"
-            style={{ marginRight: 0 }}
-          />{' '}
+        <span className="red pointer mr2" onClick={this.toggle}>
+          <Glyphicon glyph="warning-sign" ref="incompleteDataTarget" />{' '}
           Incomplete
           <Overlay {...sharedProps} placement="bottom">
             <Popover id="incomplete-data-popover" title={'Incomplete Data'}>

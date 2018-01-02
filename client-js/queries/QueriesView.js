@@ -6,7 +6,6 @@ import fetchJson from '../utilities/fetch-json.js'
 import QueryList from './QueryList'
 import QueryPreview from './QueryPreview'
 import QueryListSidebar from './QueryListSidebar'
-import './QueriesView.css'
 
 class QueriesView extends React.Component {
   state = {
@@ -154,7 +153,7 @@ class QueriesView extends React.Component {
     }
 
     return (
-      <div className="QueryListContainer">
+      <div className="v-100 w-100 flex">
         <QueryListSidebar
           currentUser={this.props.currentUser}
           connections={this.state.connections}

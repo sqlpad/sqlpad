@@ -79,7 +79,7 @@ class UsersView extends React.Component {
   render() {
     const { config, currentUser } = this.props
     return (
-      <div className="flex-100">
+      <div className="flex w-100">
         <UserList
           users={this.state.users}
           handleDelete={this.handleDelete}

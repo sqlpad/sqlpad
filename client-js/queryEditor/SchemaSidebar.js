@@ -5,7 +5,8 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import fetchJson from '../utilities/fetch-json.js'
 import updateCompletions from '../utilities/updateCompletions.js'
-import './SchemaSidebar.css'
+import Sidebar from '../common/Sidebar'
+import SidebarBody from '../common/SidebarBody'
 
 class SchemaSidebar extends React.PureComponent {
   state = {
@@ -92,8 +93,8 @@ class SchemaSidebar extends React.PureComponent {
     })
 
     return (
-      <div className="sidebar">
-        <div className="sidebar-body">
+      <Sidebar>
+        <SidebarBody>
           <FormGroup controlId="formControlsSelect" bsSize="small">
             <FormControl
               value={connectionId}
@@ -114,10 +115,12 @@ class SchemaSidebar extends React.PureComponent {
                 onClick={this.handleRefreshClick}
               />
             </a>
-            <ul className="schema-info schema-info-table">{schemaItemNodes}</ul>
+            <ul className="pl0 f4 dib" style={{ minWidth: '230px' }}>
+              {schemaItemNodes}
+            </ul>
           </div>
-        </div>
-      </div>
+        </SidebarBody>
+      </Sidebar>
     )
   }
 }
@@ -153,15 +156,16 @@ class SchemaInfoSchemaItem extends React.Component {
       })
     }
     return (
-      <li key={schema}>
+      <li className="list" key={schema}>
         <a
           href="#schema"
           onClick={this.handleClick}
-          className="schema-info-schema"
+          className="dib"
+          style={{ minWidth: '230px' }}
         >
           {schema}
         </a>
-        <ul>{tableJsx}</ul>
+        <ul className="pl3">{tableJsx}</ul>
       </li>
     )
   }
@@ -196,9 +200,10 @@ class SchemaInfoTableItem extends React.Component {
 
   handleCopyClick = e => {
     e.stopPropagation()
+    e.preventDefault()
   }
 
-  handleCopy = () => {
+  handleCopy = e => {
     this.setState({ copyButtonText: 'copied' })
     setTimeout(() => {
       this.setState({ copyButtonText: 'copy' })
@@ -228,13 +233,13 @@ class SchemaInfoTableItem extends React.Component {
     const viewType = () => {
       const type = columns[0].table_type
       if (type.toLowerCase().split('')[0] === 'v') {
-        return <span className="schema-additional-context"> (view)</span>
+        return <span className="silver"> (view)</span>
       }
     }
 
     const copyButtonClassName = showCopyButton
-      ? 'copy-button label'
-      : 'copy-button label hidden'
+      ? 'right-2 pointer absolute bg-black hover-bg-hot-pink label'
+      : 'right-2 pointer absolute bg-black hover-bg-hot-pink label dn'
     const getCopyToClipboard = () => {
       if (config && config.showSchemaCopyButton) {
         return (
@@ -251,18 +256,19 @@ class SchemaInfoTableItem extends React.Component {
       }
     }
     return (
-      <li key={table}>
+      <li className="list" key={table}>
         <a
           href="#schema"
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
           onClick={this.handleClick}
-          className="schema-info-table"
+          className="dib"
+          style={{ minWidth: '230px' }}
         >
           {table} {viewType()}
           {getCopyToClipboard()}
         </a>
-        <ul>{columnJsx}</ul>
+        <ul className="pl3">{columnJsx}</ul>
       </li>
     )
   }
@@ -302,8 +308,8 @@ class SchemaInfoColumnItem extends React.Component {
     const { copyButtonText, showCopyButton } = this.state
     const { config, column_name, data_type, schema, table } = this.props
     const copyButtonClassName = showCopyButton
-      ? 'copy-button label label-info'
-      : 'copy-button label label-info hidden'
+      ? 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info'
+      : 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info dn'
     const getCopyToClipboard = () => {
       if (config && config.showSchemaCopyButton) {
         return (
@@ -323,14 +329,15 @@ class SchemaInfoColumnItem extends React.Component {
       }
     }
     return (
-      <li>
+      <li className="list">
         <span
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
-          className="schema-info-column"
+          className="dib"
+          style={{ minWidth: '230px' }}
         >
           {column_name}
-          <span className="schema-additional-context"> ({data_type})</span>
+          <span className="silver"> ({data_type})</span>
           {getCopyToClipboard()}
         </span>
       </li>

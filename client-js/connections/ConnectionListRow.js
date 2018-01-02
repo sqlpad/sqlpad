@@ -18,7 +18,7 @@ class ConnectionListRow extends React.Component {
 
     const classNames =
       selectedConnection && selectedConnection._id === connection._id
-        ? 'list-group-item ListRow ListRowSelected'
+        ? 'list-group-item ListRow bg-near-white'
         : 'list-group-item ListRow'
 
     return (
