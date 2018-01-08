@@ -179,7 +179,7 @@ function detectPortOrSystemd(port) {
 
 /*  Start the Server
 ============================================================================= */
-require('./lib/db').load(function(err) {
+require('./lib/db').onLoad(function(err) {
   if (err) throw err
 
   // determine if key pair exists for certs
