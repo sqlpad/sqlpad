@@ -47,7 +47,7 @@
     "start":
       "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
-    "test": "lint && mocha --recursive"
+    "test": "npm run lint && mocha --recursive"
   },
   "prettier": {
     "semi": false,
