@@ -1,5 +1,7 @@
 # SQLPad
 
+[![Build Status](https://travis-ci.org/rickbergfalk/sqlpad.svg?branch=master)](https://travis-ci.org/rickbergfalk/sqlpad)
+
 A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, and Presto. Written in Node.js.
 
 ![SQLPad Query List](http://rickbergfalk.github.io/sqlpad/images/screenshots/queries.png)
