@@ -8,7 +8,13 @@ describe('lib/config.js', function() {
   process.argv.push('--debug')
   process.env.SQLPAD_DEBUG = 'FALSE'
   process.env.GOOGLE_CLIENT_ID = 'google-client-id'
-  var config = require('../../lib/config.js')
+
+  // This could be loaded elsewhere
+  // Config stuff should be redesigned
+  delete require.cache[require.resolve('../../lib/config.js')]
+  delete require.cache[require.resolve('../../models/ConfigItem')]
+
+  const config = require('../../lib/config.js')
 
   describe('#get()', function() {
     it('should get a value provided by default', function() {
