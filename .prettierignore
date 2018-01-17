@@ -1,3 +1,5 @@
 build/*
 public/*
 db/*
+package.json
+package-lock.json
