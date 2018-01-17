@@ -2,7 +2,7 @@
   ConfigItem behaves a lot differently than other models
 
   All config item data is cached in memory.
-  Config items are defined in a toml file
+  Config items are defined in a js file
   Config item values come from all kinds of sources:
       - Environment variables
       - cli flags
@@ -151,7 +151,7 @@ ConfigItem.prototype.setDbValue = function(value) {
 // Saves a config value to the database
 // Here we are throwing any errors that may come up.
 // The only time this should be used is for saving values from the ui
-// and the UI is built using the Config Item toml file
+// and the UI is built using the configItems.js file
 // If this is trying to save a value not in that file it is being misused
 ConfigItem.prototype.save = function(callback) {
   const self = this
