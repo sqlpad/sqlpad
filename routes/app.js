@@ -1,8 +1,8 @@
-var router = require('express').Router()
-var passport = require('passport')
-var getVersion = require('../lib/get-version.js')
-var config = require('../lib/config.js')
-var User = require('../models/User.js')
+const router = require('express').Router()
+const passport = require('passport')
+const getVersion = require('../lib/get-version.js')
+const config = require('../lib/config.js')
+const User = require('../models/User.js')
 
 // NOTE: this route needs a wildcard because it is fetched as a relative url
 // from the front-end. The static SPA does not know if sqlpad is mounted at
@@ -15,24 +15,33 @@ router.get('*/api/app', function(req, res) {
         error: 'Problem querying users'
       })
     }
-    var adminRegistrationOpen = open
-    var user
-    if (req.isAuthenticated() && res.locals.user) {
-      user = {
-        _id: res.locals.user.id,
-        email: res.locals.user.email,
-        role: res.locals.user.role
-      }
-    }
+    const adminRegistrationOpen = open
+
+    const currentUser =
+      req.isAuthenticated() && res.locals.user
+        ? {
+            _id: res.locals.user.id,
+            email: res.locals.user.email,
+            role: res.locals.user.role
+          }
+        : undefined
+
+    const strategies = Object.keys(
+      passport._strategies
+    ).reduce((prev, curr) => {
+      prev[curr] = true
+      return prev
+    }, {})
+
     res.json({
-      adminRegistrationOpen: adminRegistrationOpen,
-      currentUser: user,
+      adminRegistrationOpen,
+      currentUser,
       config: config.getAllValues(),
       smtpConfigured: config.smtpConfigured(),
       googleAuthConfigured: config.googleAuthConfigured(),
       version: getVersion(),
       passport: {
-        strategies: passport._strategies
+        strategies
       }
     })
   })
