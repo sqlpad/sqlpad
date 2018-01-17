@@ -1,4 +1,5 @@
 node_modules/
+dbtest/
 db/
 coverage/
 build/
