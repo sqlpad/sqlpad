@@ -143,6 +143,7 @@
     "react-select": "^1.0.0-rc.1",
     "react-split-pane": "^0.1.71",
     "sql-formatter": "^2.1.0",
+    "supertest": "^3.0.0",
     "tachyons": "^4.9.0",
     "taucharts": "^1.2.1",
     "watch": "^1.0.2",
