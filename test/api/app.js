@@ -1,3 +1,5 @@
+const request = require('supertest')
+const app = require('../../app')
 const utils = require('../utils')
 
 const expectedKeys = [
@@ -9,42 +11,27 @@ const expectedKeys = [
   'passport'
 ]
 
-const { spawn } = require('child_process')
-const ls = spawn('node', [
-  'server.js',
-  '--dir',
-  './dbtest',
-  '--port',
-  '3010',
-  '--debug'
-])
-
-ls.stdout.on('data', data => {
-  console.log(`stdout: ${data}`)
-})
-
-ls.stderr.on('data', data => {
-  console.log(`stderr: ${data}`)
-})
-
-ls.on('close', code => {
-  console.log(`child process exited with code ${code}`)
-})
-
-setTimeout(function() {
-  describe('api/app', function() {
-    describe('get', function() {
-      it('returns expected values', function() {
-        return utils.get('/api/app').then(data => {
-          utils.expectKeys(data, expectedKeys)
+describe('api/app', function() {
+  describe('get', function() {
+    it('returns expected values', function() {
+      return request(app)
+        .get('/api/app')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then(response => {
+          utils.expectKeys(response.body, expectedKeys)
         })
-      })
+    })
 
-      it('handles unknown baseUrl', function() {
-        return utils.get('/sqlpad/api/app').then(data => {
-          utils.expectKeys(data, expectedKeys)
+    it('handles unknown baseUrl', function() {
+      return request(app)
+        .get('/literally/any/path/api/app')
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then(response => {
+          utils.expectKeys(response.body, expectedKeys)
+          console.log(response.body)
         })
-      })
     })
   })
-}, 4000)
+})
