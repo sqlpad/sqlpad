@@ -30,7 +30,6 @@ describe('api/app', function() {
         .expect(200)
         .then(response => {
           utils.expectKeys(response.body, expectedKeys)
-          console.log(response.body)
         })
     })
   })
