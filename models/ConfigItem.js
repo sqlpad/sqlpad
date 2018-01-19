@@ -2,7 +2,7 @@
   ConfigItem behaves a lot differently than other models
 
   All config item data is cached in memory.
-  Config items are defined in a toml file
+  Config items are defined in a js file
   Config item values come from all kinds of sources:
       - Environment variables
       - cli flags
@@ -11,40 +11,33 @@
 
   That last source it tricky because the nedb database depends on config values to load
 */
-var fs = require('fs')
-var path = require('path')
-var toml = require('toml')
-var _ = require('lodash')
-var minimist = require('minimist')
+const fs = require('fs')
+const path = require('path')
+const _ = require('lodash')
+const minimist = require('minimist')
 
 // various file paths for later
-var userHome =
+const userHome =
   process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME
-var savedCliFilePath = path.join(userHome, '.sqlpadrc')
-var defaultDbPath = path.join(userHome, 'sqlpad/db')
+const savedCliFilePath = path.join(userHome, '.sqlpadrc')
+const defaultDbPath = path.join(userHome, 'sqlpad/db')
 
-// toml config item definitions
-var tomlFile = fs.readFileSync(
-  path.join(__dirname, '/../resources/config-items.toml'),
-  { encoding: 'utf8' }
-)
-var parsedToml = toml.parse(tomlFile)
-var configItemDefinitions = parsedToml.configItems
+const configItemDefinitions = require('../resources/configItems')
 
 // parse command line args
-var argv = minimist(process.argv.slice(2))
+const argv = minimist(process.argv.slice(2))
 
 // if saved cli file exists, read it
-var savedCli = {}
+let savedCli = {}
 if (fs.existsSync(savedCliFilePath)) {
   savedCli = JSON.parse(fs.readFileSync(savedCliFilePath, { encoding: 'utf8' }))
 }
 
 // in-memory store of items
-var configItems = []
+const configItems = []
 
-var ConfigItem = function(data) {
-  var self = this
+const ConfigItem = function(data) {
+  const self = this
   this.interface = data.interface // env or ui
   this.key = data.key
   this.cliFlag = data.cliFlag
@@ -67,7 +60,7 @@ var ConfigItem = function(data) {
   // special exception. if item is dbPath set default to user home
   if (this.key === 'dbPath') this.default = defaultDbPath
 
-  // populate env value if env var present
+  // populate env value if env const present
   if (this.envVar && process.env[this.envVar]) {
     this.envValue = process.env[this.envVar]
   }
@@ -129,7 +122,7 @@ ConfigItem.prototype.computeEffectiveValue = function() {
 
   // It is possible that some of our boolean values are stored as text
   // for consumption convenience, those strings should be turned to actual booleans
-  var valueProps = [
+  const valueProps = [
     'default',
     'savedCliValue',
     'cliValue',
@@ -158,17 +151,17 @@ ConfigItem.prototype.setDbValue = function(value) {
 // Saves a config value to the database
 // Here we are throwing any errors that may come up.
 // The only time this should be used is for saving values from the ui
-// and the UI is built using the Config Item toml file
+// and the UI is built using the configItems.js file
 // If this is trying to save a value not in that file it is being misused
 ConfigItem.prototype.save = function(callback) {
-  var self = this
+  const self = this
   if (this.interface !== 'ui') {
     throw new Error(
       'Config Item ' + this.key + ' must use ui interface to be saved to db'
     )
   }
   // get database and save the value there
-  var db = require('../lib/db.js')
+  const db = require('../lib/db.js')
   db.config.findOne({ key: this.key }).exec(function(err, doc) {
     if (err) return callback(err)
     if (doc) {
@@ -178,7 +171,7 @@ ConfigItem.prototype.save = function(callback) {
         callback(err, self)
       })
     } else {
-      var newConfigValue = {
+      const newConfigValue = {
         key: self.key,
         value: self.dbValue,
         createdDate: new Date(),
@@ -195,7 +188,7 @@ ConfigItem.prototype.save = function(callback) {
     and create config items stored in memory
 ============================================================================== */
 configItemDefinitions.forEach(function(itemDefinition) {
-  var configItem = new ConfigItem(itemDefinition)
+  const configItem = new ConfigItem(itemDefinition)
   configItems.push(configItem)
 })
 
