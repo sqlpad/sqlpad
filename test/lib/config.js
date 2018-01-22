@@ -33,10 +33,4 @@ describe('lib/config.js', function() {
       fn.should.throw(Error)
     })
   })
-
-  describe('#getAllValues', function() {
-    it('should return an object', function() {
-      config.getAllValues().should.exist
-    })
-  })
 })
