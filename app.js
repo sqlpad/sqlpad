@@ -13,11 +13,6 @@ const PUBLIC_URL = config.get('publicUrl')
 const DEBUG = config.get('debug')
 const PASSPHRASE = config.get('passphrase')
 
-if (DEBUG) {
-  console.log('Config Values:')
-  console.log(config.getAllValues())
-}
-
 /*  Express setup
 ============================================================================= */
 const bodyParser = require('body-parser')
