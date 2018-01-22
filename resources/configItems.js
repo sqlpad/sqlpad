@@ -1,3 +1,9 @@
+// NOTE: uiDepencency=true items will be sent to client for front end config use
+// Nothing else sent unless using configuration page/api
+// This is to reduce leaking unnecessary information
+
+// NOTE: sensitve=true items will be masked with *** in configuration page
+
 const configItems = [
   {
     interface: 'env',
@@ -47,6 +53,7 @@ const configItems = [
     cliFlag: 'base-url',
     envVar: 'SQLPAD_BASE_URL',
     default: '',
+    uiDependency: true,
     description:
       "Path to mount sqlpad app following domain. \nFor example, if '/sqlpad' is provided, queries page \nwould be located at mydomain.com/sqlpad/queries instead of mydomain.com/queries. \nUseful when subdomain is not an option."
   },
@@ -134,6 +141,7 @@ const configItems = [
     label: 'Allow CSV/XLSX Download',
     description: 'Set to false to disable csv or xlsx downloads.',
     options: [true, false],
+    uiDependency: true,
     default: true
   },
   {
@@ -142,6 +150,7 @@ const configItems = [
     label: 'Editor Word Wrap',
     description: 'Set to true to enable word wrapping in SQL editor.',
     options: [true, false],
+    uiDependency: true,
     default: false
   },
   {
@@ -149,7 +158,8 @@ const configItems = [
     key: 'queryResultMaxRows',
     label: 'Query Result Max Rows',
     description: 'By default query results are limited to 50,000 records.',
-    default: 50000
+    default: 50000,
+    uiDependency: true
   },
   {
     interface: 'ui',
@@ -165,7 +175,8 @@ const configItems = [
     description:
       "Enable a button to copy an object's full schema path in schema explorer. Useful for databases that require fully qualified names.",
     options: [true, false],
-    default: false
+    default: false,
+    uiDependency: true
   },
   {
     interface: 'ui',
@@ -184,7 +195,8 @@ const configItems = [
     label: 'Public Url',
     description:
       'Public URL used for OAuth setup and links in email communications. Protocol is expected to be provided. Example: https://mysqlpad.com',
-    default: ''
+    default: '',
+    uiDependency: true
   },
   {
     interface: 'ui',

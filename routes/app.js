@@ -34,9 +34,9 @@ router.get('*/api/app', function(req, res) {
       return prev
     }, {})
 
-    // get config items relevant to UI
+    // Get config items relevant to UI
     const uiConfig = ConfigItem.findAll()
-      .filter(item => !item.sensitive)
+      .filter(item => item.uiDependency)
       .reduce((allValues, item) => {
         allValues[item.key] = item.effectiveValue
         return allValues
