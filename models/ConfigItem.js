@@ -46,6 +46,7 @@ const ConfigItem = function(data) {
   this.example = data.example
   this.options = data.options
   this.sensitive = data.sensitive || false
+  this.uiDependency = data.uiDependency || false
   this.description = data.description
   this.label = data.label
   this.envValue = null

@@ -1,17 +1,10 @@
-var ConfigItem = require('../models/ConfigItem.js')
-var config = require('../lib/config.js')
-var router = require('express').Router()
-var mustBeAdmin = require('../middleware/must-be-admin.js')
-var _ = require('lodash')
-
-router.get('/api/config', function(req, res) {
-  return res.json({
-    config: config.getAllValues()
-  })
-})
+const ConfigItem = require('../models/ConfigItem.js')
+const router = require('express').Router()
+const mustBeAdmin = require('../middleware/must-be-admin.js')
+const _ = require('lodash')
 
 router.get('/api/config-items', mustBeAdmin, function(req, res) {
-  var configItems = _.cloneDeep(ConfigItem.findAll())
+  let configItems = _.cloneDeep(ConfigItem.findAll())
   configItems = configItems.map(function(item) {
     if (item.sensitive && item.interface === 'env') {
       item.effectiveValue = item.effectiveValue ? '**********' : ''
@@ -29,9 +22,9 @@ router.get('/api/config-items', mustBeAdmin, function(req, res) {
 })
 
 router.post('/api/config-values/:key', mustBeAdmin, function(req, res) {
-  var key = req.params.key
-  var value = req.body.value
-  var configItem = ConfigItem.findOneByKey(key)
+  const key = req.params.key
+  const value = req.body.value
+  const configItem = ConfigItem.findOneByKey(key)
   configItem.setDbValue(value)
   configItem.save(function(err) {
     if (err) {
