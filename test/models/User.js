@@ -1,12 +1,10 @@
-/* eslint-env mocha */
-var expect = require('chai').expect
-var should = require('chai').should()
-var User = require('../../models/User.js')
+const assert = require('assert')
+const User = require('../../models/User.js')
 
 describe('models/User.js', function() {
-  var regularUser = new User({ email: 'regular@test.com', role: 'editor' })
-  var adminUser = new User({ email: 'admin@test.com', role: 'admin' })
-  var signedUpUser = new User({
+  const regularUser = new User({ email: 'regular@test.com', role: 'editor' })
+  const adminUser = new User({ email: 'admin@test.com', role: 'admin' })
+  const signedUpUser = new User({
     email: 'signedUp@test.com',
     role: 'editor',
     password: '1234'
@@ -19,17 +17,17 @@ describe('models/User.js', function() {
   describe('.openAdminRegistration()', function() {
     it('should return true if no admins exist', function(done) {
       User.adminRegistrationOpen(function(err, open) {
-        should.not.exist(err)
-        expect(open).to.equal(true)
+        assert.ifError(err)
+        assert.equal(open, true, 'open=true')
         done()
       })
     })
     it('should return false if admin exist', function(done) {
       adminUser.save(function(err) {
-        should.not.exist(err)
+        assert.ifError(err)
         User.adminRegistrationOpen(function(err, open) {
-          should.not.exist(err)
-          expect(open).to.equal(false)
+          assert.ifError(err)
+          assert.equal(open, false, 'open=false')
           done()
         })
       })
@@ -39,9 +37,9 @@ describe('models/User.js', function() {
   describe('new User', function() {
     it('should save without error', function(done) {
       regularUser.save(function(err) {
-        should.not.exist(err)
+        assert.ifError(err)
         adminUser.save(function(err) {
-          should.not.exist(err)
+          assert.ifError(err)
           signedUpUser.save(done)
         })
       })
@@ -50,11 +48,10 @@ describe('models/User.js', function() {
 
   describe('.findAll()', function() {
     it('should return all the existing users', function(done) {
-      // todo
       User.findAll(function(err, users) {
-        should.not.exist(err)
-        users.should.have.lengthOf(3)
-        expect(users[0]).to.be.an.instanceof(User)
+        assert.ifError(err)
+        assert.equal(users.length, 3, 'users.length')
+        assert(users[0] instanceof User, 'instanceof User')
         done()
       })
     })
@@ -63,10 +60,10 @@ describe('models/User.js', function() {
   describe('.findOneByEmail()', function() {
     it('should return requested user', function(done) {
       User.findOneByEmail('admin@test.com', function(err, user) {
-        should.not.exist(err)
-        expect(user).to.be.an.instanceof(User)
-        expect(user.email).to.equal('admin@test.com')
-        expect(user.role).to.equal('admin')
+        assert.ifError(err)
+        assert(user instanceof User, 'instanceof User')
+        assert.equal(user.email, 'admin@test.com', 'user.email')
+        assert.equal(user.role, 'admin', 'user.role')
         done()
       })
     })
@@ -74,18 +71,18 @@ describe('models/User.js', function() {
 
   describe('new User', function() {
     it('should save without error', function(done) {
-      var user = new User({ email: '2@test.com' })
+      const user = new User({ email: '2@test.com' })
       user.save(done)
     })
     it('should have defaults populated', function(done) {
       User.findOneByEmail('regular@test.com', function(err, user) {
-        should.not.exist(err)
-        should.exist(user)
-        should.exist(user.email)
-        expect(user.role).to.equal('editor')
-        expect(user).to.be.an.instanceof(User)
-        expect(user.createdDate).to.be.instanceof(Date)
-        expect(user.modifiedDate).to.be.instanceof(Date)
+        assert.ifError(err)
+        assert(user)
+        assert(user.email)
+        assert.equal(user.role, 'editor', 'user.role')
+        assert(user instanceof User, 'instanceOf User')
+        assert(user.createdDate instanceof Date)
+        assert(user.modifiedDate instanceof Date)
         done()
       })
     })
@@ -94,20 +91,20 @@ describe('models/User.js', function() {
   describe('.comparePasswordToHash()', function() {
     it('should return true if password is a match', function(done) {
       User.findOneByEmail('signedUp@test.com', function(err, user) {
-        should.not.exist(err)
+        assert.ifError(err)
         user.comparePasswordToHash('1234', function(err, isMatch) {
-          should.not.exist(err)
-          expect(isMatch).to.equal(true)
+          assert.ifError(err)
+          assert.equal(isMatch, true, 'isMatch')
           done()
         })
       })
     })
     it('should return false if password is not a match', function(done) {
       User.findOneByEmail('signedUp@test.com', function(err, user) {
-        should.not.exist(err)
+        assert.ifError(err)
         user.comparePasswordToHash('wrongpassword', function(err, isMatch) {
-          should.not.exist(err)
-          expect(isMatch).to.equal(false)
+          assert.ifError(err)
+          assert.equal(isMatch, false, 'isMatch')
           done()
         })
       })

@@ -1,8 +1,4 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-env mocha */
-const expect = require('chai').expect
-const should = require('chai').should()
-
+const assert = require('assert')
 const ConfigItem = require('../../models/ConfigItem.js')
 
 describe('models/ConfigItem.js', function() {
@@ -13,29 +9,35 @@ describe('models/ConfigItem.js', function() {
     // process.env.SQLPAD_DEBUG = 'FALSE'
     it.skip('should have expected values', function() {
       const debugItem = ConfigItem.findOneByKey('debug')
-      expect(debugItem.effectiveValue, 'effective').to.equal(true)
-      expect(debugItem.cliValue, 'cli').to.equal(true)
-      expect(debugItem.envValue, 'env').to.equal(false)
-      expect(debugItem.default, 'default').to.equal(false)
-      expect(debugItem.dbValue, 'dbValue').to.not.exist
+      assert.equal(debugItem.effectiveValue, true, 'effectiveValue')
+      assert.equal(debugItem.cliValue, true, 'cliValue')
+      assert.equal(debugItem.envValue, false, 'envValue')
+      assert.equal(debugItem.default, false, 'default')
+      assert.equal(debugItem.dbValue, undefined, 'dbValue')
     })
 
     it('should setDbValue', function() {
       const portItem = ConfigItem.findOneByKey('port')
       portItem.setDbValue('9000')
-      expect(portItem.dbValue).to.equal('9000')
+      assert.equal(portItem.dbValue, '9000', 'dbValue')
     })
 
     it('should throw error when saving a non-ui item', function() {
       const portItem = ConfigItem.findOneByKey('port')
-      portItem.save.should.throw(Error)
+      assert.throws(
+        () => {
+          portItem.save()
+        },
+        Error,
+        'portItem.save expect error'
+      )
     })
 
     it('should save without error', function(done) {
       const wrapItem = ConfigItem.findOneByKey('editorWordWrap')
       wrapItem.setDbValue(true)
       wrapItem.save(function(err) {
-        should.not.exist(err)
+        assert.ifError(err)
         done()
       })
     })
@@ -45,19 +47,19 @@ describe('models/ConfigItem.js', function() {
     const configItem = ConfigItem.findOneByKey('port')
 
     it('should get requested config item', function() {
-      expect(configItem.key).to.equal('port')
+      assert.equal(configItem.key, 'port', 'key is port')
     })
 
     it('should be instanceOf ConfigItem', function() {
-      expect(configItem).to.be.an.instanceOf(ConfigItem)
+      assert(configItem instanceof ConfigItem)
     })
   })
 
   describe('findAll()', function() {
     it('should get array of ConfigItems', function() {
       const configItems = ConfigItem.findAll()
-      configItems.should.have.length.above(1)
-      expect(configItems[0]).to.be.an.instanceOf(ConfigItem)
+      assert(configItems.length > 1, 'more than 1 item')
+      assert(configItems[0] instanceof ConfigItem)
     })
   })
 })
