@@ -1,7 +1,4 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-env mocha */
-require('chai').should()
-
+const assert = require('assert')
 const config = require('../../lib/config.js')
 
 describe('lib/config.js', function() {
@@ -13,19 +10,18 @@ describe('lib/config.js', function() {
 
   describe('#get()', function() {
     it.skip('should get a value provided by default', function() {
-      config.get('port').should.equal(80)
+      assert.equal(config.get('port'), 80, 'port=80')
     })
     it.skip('should get a value provided by environment', function() {
-      config.get('googleClientId').should.equal('google-client-id')
+      assert.equal(
+        config.get('googleClientId', 'google-client-id', 'googleClientId')
+      )
     })
     it.skip('cli should override env var', function() {
-      config.get('debug').should.equal(true)
+      assert.equal(config.get('debug'), true, 'debug=true')
     })
     it('should only accept key in config items', function() {
-      var fn = function() {
-        config.get('non-existent-key')
-      }
-      fn.should.throw(Error)
+      assert.throws(() => config.get('non-existent-key'), Error)
     })
   })
 })

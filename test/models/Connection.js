@@ -1,10 +1,8 @@
-/* eslint-env mocha */
-var expect = require('chai').expect
-var should = require('chai').should()
-var Connection = require('../../models/Connection.js')
+const assert = require('assert')
+const Connection = require('../../models/Connection.js')
 
 describe('models/Connection.js', function() {
-  var testConnection
+  let testConnection
 
   before(function before(done) {
     Connection._removeAll(done)
@@ -13,8 +11,8 @@ describe('models/Connection.js', function() {
   describe('.findAll() with no connections', function() {
     it('should return an empty array', function(done) {
       Connection.findAll(function(err, connections) {
-        should.not.exist(err)
-        connections.should.have.lengthOf(0)
+        assert.ifError(err)
+        assert.equal(connections.length, 0, 'length = 0')
         done()
       })
     })
@@ -31,9 +29,9 @@ describe('models/Connection.js', function() {
         password: 'password'
       })
       testConnection.save(function(err, newConnection) {
-        should.not.exist(err)
-        expect(newConnection).to.be.an.instanceof(Connection)
-        should.exist(newConnection._id)
+        assert.ifError(err)
+        assert(newConnection instanceof Connection, 'should be Connection')
+        assert(newConnection._id, '_id should exist')
         testConnection = newConnection
         done()
       })
@@ -43,9 +41,12 @@ describe('models/Connection.js', function() {
   describe('.findOneById()', function() {
     it('should return requested connection', function(done) {
       Connection.findOneById(testConnection._id, function(err, connection) {
-        should.not.exist(err)
-        expect(connection).to.be.an.instanceof(Connection)
-        expect(connection._id).to.equal(testConnection._id)
+        assert.ifError(err)
+        assert(
+          connection instanceof Connection,
+          'Expect instance of Connection'
+        )
+        assert.equal(connection._id, testConnection._id, '_ids should match')
         done()
       })
     })
@@ -54,9 +55,12 @@ describe('models/Connection.js', function() {
   describe('.findAll()', function() {
     it('should return all connections', function(done) {
       Connection.findAll(function(err, connections) {
-        should.not.exist(err)
-        connections.should.have.lengthOf(1)
-        expect(connections[0]).to.be.an.instanceof(Connection)
+        assert.ifError(err)
+        assert(connections.length === 1, 'connections should have length of 1')
+        assert(
+          connections[0] instanceof Connection,
+          'connection should be instance of Connection'
+        )
         done()
       })
     })
@@ -65,10 +69,14 @@ describe('models/Connection.js', function() {
   describe('.removeOneById()', function() {
     it('should remove the connection', function(done) {
       Connection.removeOneById(testConnection._id, function(err) {
-        should.not.exist(err)
+        assert.ifError(err)
         Connection.findAll(function(err, connections) {
-          should.not.exist(err)
-          connections.should.have.lengthOf(0)
+          assert.ifError(err)
+          assert.equal(
+            connections.length,
+            0,
+            'connections should have lengthof 0'
+          )
           done()
         })
       })

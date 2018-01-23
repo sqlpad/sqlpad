@@ -1,7 +1,5 @@
-/* eslint-env mocha */
-var expect = require('chai').expect
-var should = require('chai').should()
-var Query = require('../../models/Query.js')
+const assert = require('assert')
+const Query = require('../../models/Query.js')
 
 describe('models/Query.js', function() {
   before(function before(done) {
@@ -10,7 +8,7 @@ describe('models/Query.js', function() {
 
   describe('new Query', function() {
     it('should save with all the stuff', function(done) {
-      var query = new Query({
+      const query = new Query({
         _id: 'test-all',
         name: 'test query all',
         tags: ['tag1', 'tag2'],
@@ -27,25 +25,25 @@ describe('models/Query.js', function() {
         modifiedBy: 'test@test.com'
       })
       query.save(function(err, newQuery) {
-        should.not.exist(err)
-        should.exist(newQuery._id)
-        expect(newQuery).to.be.an.instanceof(Query)
+        assert.ifError(err)
+        assert(newQuery._id, '_id should exist')
+        assert(newQuery instanceof Query, 'should be Query')
         done()
       })
     })
 
     it('should save with the least amount of stuff', function(done) {
-      var query = new Query({
+      const query = new Query({
         _id: 'test-least',
         name: 'test query minimal',
         createdBy: 'test@test.com',
         modifiedBy: 'test@test.com'
       })
       query.save(function(err, newQuery) {
-        should.not.exist(err)
-        should.exist(newQuery._id)
-        newQuery.name.should.equal('test query minimal')
-        expect(newQuery).to.be.an.instanceof(Query)
+        assert.ifError(err)
+        assert(newQuery._id, '_id should exist')
+        assert.equal(newQuery.name, 'test query minimal', 'newQuery.name')
+        assert(newQuery instanceof Query, 'instanceOf Query')
         done()
       })
     })
@@ -54,9 +52,9 @@ describe('models/Query.js', function() {
   describe('.findAll', function() {
     it('should get all the queries', function(done) {
       Query.findAll(function(err, queries) {
-        should.not.exist(err)
-        queries.should.have.lengthOf(2)
-        expect(queries[0]).to.be.an.instanceof(Query)
+        assert.ifError(err)
+        assert.equal(queries.length, 2, 'queries.length')
+        assert(queries[0] instanceof Query, 'instance of Query')
         done()
       })
     })
@@ -65,12 +63,12 @@ describe('models/Query.js', function() {
   describe('.findOneById', function() {
     it('should get the query requested', function(done) {
       Query.findAll(function(err, queries) {
-        should.not.exist(err)
-        var id = queries[0]._id
+        assert.ifError(err)
+        const id = queries[0]._id
         Query.findOneById(id, function(err, query) {
-          should.not.exist(err)
-          expect(query).to.be.an.instanceof(Query)
-          query._id.should.equal(id)
+          assert.ifError(err)
+          assert(query instanceof Query, 'instance of Query')
+          assert.equal(query._id, id, '_id = id')
           done()
         })
       })
@@ -80,10 +78,10 @@ describe('models/Query.js', function() {
   describe('.removeOneById', function() {
     it('should remove the query requested', function(done) {
       Query.removeOneById('test-all', function(err) {
-        should.not.exist(err)
+        assert.ifError(err)
         Query.findAll(function(err, queries) {
-          should.not.exist(err)
-          queries.should.have.lengthOf(1)
+          assert.ifError(err)
+          assert.equal(queries.length, 1, 'queries.length')
           done()
         })
       })
