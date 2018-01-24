@@ -4,7 +4,7 @@ const config = require('../../lib/config.js')
 describe('lib/email.js', function() {
   if (config.smtpConfigured() && process.env.SQLPAD_TEST_EMAIL) {
     describe('#send()', function() {
-      it.skip('should send without error', function() {
+      it('should send without error', function() {
         // TODO test other kinds of emails
         return email.send(
           process.env.SQLPAD_TEST_EMAIL,
