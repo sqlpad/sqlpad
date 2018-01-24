@@ -1,8 +1,8 @@
-var router = require('express').Router()
-var nodemailer = require('nodemailer')
-var uuid = require('uuid')
-var User = require('../models/User.js')
-var config = require('../lib/config.js')
+const router = require('express').Router()
+const nodemailer = require('nodemailer')
+const uuid = require('uuid')
+const User = require('../models/User.js')
+const config = require('../lib/config.js')
 
 router.post('/api/forgot-password', function(req, res) {
   if (!req.body.email) {
@@ -27,7 +27,7 @@ router.post('/api/forgot-password', function(req, res) {
         return res.json({ error: 'Problem saving to user database' })
       }
       // send email to user
-      var smtpConfig = {
+      const smtpConfig = {
         host: config.get('smtpHost'),
         port: config.get('smtpPort'),
         secure: config.get('smtpSecure'),
@@ -39,15 +39,15 @@ router.post('/api/forgot-password', function(req, res) {
           ciphers: 'SSLv3'
         }
       }
-      var transporter = nodemailer.createTransport(smtpConfig)
-      var port = config.get('port') === 80 ? '' : ':' + config.get('port')
-      var url =
+      const transporter = nodemailer.createTransport(smtpConfig)
+      const port = config.get('port') === 80 ? '' : ':' + config.get('port')
+      const url =
         config.get('publicUrl') +
         port +
         config.get('baseUrl') +
         '/password-reset/' +
         user.passwordResetId
-      var mailOptions = {
+      const mailOptions = {
         from: config.get('smtpFrom'),
         to: req.body.email,
         subject: 'SQLPad Password Reset',

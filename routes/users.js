@@ -1,9 +1,9 @@
-var router = require('express').Router()
-var nodemailer = require('nodemailer')
-var User = require('../models/User.js')
-var config = require('../lib/config.js')
-var mustBeAdmin = require('../middleware/must-be-admin.js')
-var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
+const router = require('express').Router()
+const nodemailer = require('nodemailer')
+const User = require('../models/User.js')
+const config = require('../lib/config.js')
+const mustBeAdmin = require('../middleware/must-be-admin.js')
+const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 
 router.get('/api/users/current', function(req, res) {
   if (req.isAuthenticated() && res.locals.user) {
@@ -44,7 +44,7 @@ router.post('/api/users', mustBeAdmin, function(req, res) {
     if (user) {
       return res.json({ error: 'User already exists' })
     }
-    var newUser = new User({
+    const newUser = new User({
       email: req.body.email,
       role: req.body.role
     })
@@ -58,7 +58,7 @@ router.post('/api/users', mustBeAdmin, function(req, res) {
       // send email if SMTP is set up
       if (config.smtpConfigured()) {
         if (config.get('debug')) console.log('sending email')
-        var smtpConfig = {
+        const smtpConfig = {
           host: config.get('smtpHost'),
           port: config.get('smtpPort'),
           secure: config.get('smtpSecure'),
@@ -70,15 +70,15 @@ router.post('/api/users', mustBeAdmin, function(req, res) {
             ciphers: 'SSLv3'
           }
         }
-        var transporter = nodemailer.createTransport(smtpConfig)
-        var signupPort =
+        const transporter = nodemailer.createTransport(smtpConfig)
+        const signupPort =
           config.get('port') === 80 ? '' : ':' + config.get('port')
-        var signupUrl =
+        const signupUrl =
           config.get('publicUrl') +
           signupPort +
           config.get('baseUrl') +
           '/signup'
-        var mailOptions = {
+        const mailOptions = {
           from: config.get('smtpFrom'),
           to: req.body.email,
           subject: "You've been invited to SQLPad",
