@@ -1,8 +1,8 @@
 const router = require('express').Router()
-const nodemailer = require('nodemailer')
 const uuid = require('uuid')
 const User = require('../models/User.js')
 const config = require('../lib/config.js')
+const email = require('../lib/email')
 
 router.post('/api/forgot-password', function(req, res) {
   if (!req.body.email) {
@@ -16,58 +16,26 @@ router.post('/api/forgot-password', function(req, res) {
       console.error(err)
       return res.json({ error: 'Problem querying user database' })
     }
+    // If user not found send success regardless
+    // This is not a user-validation service
     if (!user) {
-      // send success regardless. this is not a user-validation service
       return res.json({})
     }
+
     user.passwordResetId = uuid.v4()
     user.save(function(err) {
       if (err) {
         console.error(err)
         return res.json({ error: 'Problem saving to user database' })
       }
-      // send email to user
-      const smtpConfig = {
-        host: config.get('smtpHost'),
-        port: config.get('smtpPort'),
-        secure: config.get('smtpSecure'),
-        auth: {
-          user: config.get('smtpUser'),
-          pass: config.get('smtpPassword')
-        },
-        tls: {
-          ciphers: 'SSLv3'
-        }
-      }
-      const transporter = nodemailer.createTransport(smtpConfig)
-      const port = config.get('port') === 80 ? '' : ':' + config.get('port')
-      const url =
-        config.get('publicUrl') +
-        port +
-        config.get('baseUrl') +
-        '/password-reset/' +
-        user.passwordResetId
-      const mailOptions = {
-        from: config.get('smtpFrom'),
-        to: req.body.email,
-        subject: 'SQLPad Password Reset',
-        text:
-          'Hello! \n\nYou recently requested a password reset for your SQLPad account. \n\nTo reset your password, visit ' +
-          url +
-          '.',
-        html:
-          '<p>Hello!</p> <p>You recently requested a password reset for your SQLPad account.</p> <p>To reset your password, visit <a href="' +
-          url +
-          '">' +
-          url +
-          '</a>.</p>'
-      }
-      transporter.sendMail(mailOptions, function(err, info) {
-        if (config.get('debug')) console.log('sent email: ' + info)
-        if (err) {
-          return console.error(err)
-        }
-      })
+
+      const resetPath = `/password-reset/${user.passwordResetId}`
+
+      // Send email, but do not block response to client
+      email
+        .sendForgotPassword(req.body.email, resetPath)
+        .catch(error => console.error(error))
+
       return res.json({})
     })
   })
