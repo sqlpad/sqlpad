@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>My First Post on SQLPad - A web app for running SQL queries and visualizing the results</title>
+    <link>https://rickbergfalk.github.io/sqlpad/</link>
+    <description>Recent content in My First Post on SQLPad - A web app for running SQL queries and visualizing the results</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 27 Jan 2018 10:36:46 -0500</lastBuildDate>
+    
+	<atom:link href="https://rickbergfalk.github.io/sqlpad/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Installation &amp; Administration</title>
+      <link>https://rickbergfalk.github.io/sqlpad/installation-and-administration/</link>
+      <pubDate>Sun, 28 Jan 2018 11:51:31 -0500</pubDate>
+      
+      <guid>https://rickbergfalk.github.io/sqlpad/installation-and-administration/</guid>
+      <description>Installation SQLPad can be installed on Mac, Linux, and Windows.
+In order to install SQLPad, you&amp;rsquo;ll first need to install Node.js.
+Once node is installed, open up a command line and run
+npm install sqlpad -g
+This will install the SQLPad command line utility used to run a SQLPad server.
+To spin up a SQLPad Server, type the following from the command line:
+sqlpad
+To get help and see parameters:</description>
+    </item>
+    
+  </channel>
+</rss>

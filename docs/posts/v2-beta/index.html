@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  
+  <title>
+      
+&lt;!-- This will override the default value set in baseof.html; i.e., "SQLPad - A web app for running SQL queries and visualizing the results" in the original example-->
+SQLPad 2.0.0 BETA &ndash; SQLPad - A web app for running SQL queries and visualizing the results
+
+    </title>
+  <meta name="keywords" content="SQLPad, node.js, Postgres, postgresql, mysql, microsoft sql server, online sql editor">
+  <meta name="description" content="SQLPad is a web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, and SQL Server. Built with Node.js">
+  <meta name="author" content="Rick Bergfalk">
+
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  
+  <link rel="stylesheet" href="/sqlpad/css/normalize.css">
+  <link rel="stylesheet" href="/sqlpad/css/skeleton.css">
+  <link rel="stylesheet" href="/sqlpad/css/skeleton-home.css">
+
+  
+  <link rel="shortcut icon" href="/sqpad/images/favicon.ico">
+
+</head>
+<body class="">
+    
+
+    
+    <div class="container">
+        
+        
+        <nav class="navbar">
+            <ul class="navbar-list">
+              <li class="navbar-item">
+                  <a class="navbar-link" href="/sqlpad/">Home</a>
+              </li>
+              <li class="navbar-item">
+                  <a class="navbar-link" href="/sqlpad/installation-and-administration">Installation & Administration</a>
+              </li>
+              <li class="navbar-item">
+                  <a class="navbar-link" href="https://github.com/rickbergfalk/sqlpad">GitHub</a>
+              </li>
+            </ul>
+        </nav>
+        <div class="u-cf"></div>
+
+
+
+    
+    
+<h1>SQLPad 2.0.0 BETA</h1>
+
+
+<h2 id="sqlpad-2-0-0-beta-3-is-now-available-on-npm">SQLPad 2.0.0-beta.3 is now available on npm!</h2>
+
+<p>Over the last couple months I&rsquo;ve taken some time to update SQLPad.
+These updates include code cleanup, user interface/experience updates, and some new features.
+While the work isn&rsquo;t finished, it is ready for preview.
+I&rsquo;m anticipating a few more updates throughout the month, with a stable release published October.</p>
+
+<p>If you try it out I&rsquo;d love to get your feedback on it! Feel free to tweet, email, or submit a GitHub issue.</p>
+
+<p>- Rick</p>
+
+<p><a href="https://twitter.com/rickbergfalk">@rickbergfalk</a><br />
+rick.bergfalk@gmail.com</p>
+
+<h2 id="installation">Installation</h2>
+
+<p>The v2 beta is installed like any other SQLPad version.</p>
+
+<p>Because of some minor changes to the user data model,
+you may want to take a backup of your SQLPad instance before you begin.</p>
+
+<p>First stop your existing SQLPad instance.</p>
+
+<p>Next, locate your SQLPad database directory.
+By default it is installed in $HOME/sqlpad/db, but you may have changed that with the &ndash;dir flag.
+Copy the files in this directory and set them aside in case you ever want to revert back to an earlier version of SQLPad.</p>
+
+<p>To update sqlpad, run <code>npm install sqlpad -g</code> from a command prompt.
+This will update your sqlpad installation to the latest SQLPad beta.</p>
+
+<p>Once installed, run SQLPad just as you would under version 1.x.x.</p>
+
+<p>Need to revert back? You can install an older version of SQLPad by specifying a version.
+For example, to go back to the latest 1.x version run <code>npm install sqlpad@1.17.3 -g</code>.</p>
+
+<h2 id="changelog">Changelog</h2>
+
+<ul>
+<li>UI design updates <em>everywhere</em></li>
+<li>Query Listing:
+
+<ul>
+<li>preview query contents by hovering over query listing</li>
+<li>occassional search/filter weirdness has been fixed</li>
+</ul></li>
+<li>Query Editor:
+
+<ul>
+<li>Schema sidebar no longer separates views and tables in hierarchy</li>
+<li>New result grid
+
+<ul>
+<li>inline bar plot rendered for numeric values</li>
+<li>display issues fixed for certain browsers</li>
+</ul></li>
+<li>New tags widget for cleaner input</li>
+<li>Browser tab name now reflects query name</li>
+<li>Updated taucharts library with stacked bar charts</li>
+<li>Line and Scatterplot charts may have chart filters enabled</li>
+<li>&lsquo;show advanced settings&rsquo; in vis editor now has a few advanced settings depending on chart (y min/max, show trendline, show filter)</li>
+<li>switching between sql/vis tabs won&rsquo;t reset chart series toggles</li>
+<li>table/chart only links may be set to no longer require login (see configuration page)</li>
+</ul></li>
+<li>Configuration:
+
+<ul>
+<li>Specific config inputs and labels - no more open ended key/value inputs</li>
+<li>Current environment config documented with assistive popovers</li>
+</ul></li>
+<li>Update notification moved in-app</li>
+<li>Under the hood
+
+<ul>
+<li>updated all the code dependencies</li>
+<li>reworked some foundation code for easier future development</li>
+</ul></li>
+<li>Known issues / not yet implemented:
+
+<ul>
+<li>Query tag input does not allow creation</li>
+<li>Query auto-refresh not yet implemented</li>
+</ul></li>
+</ul>
+
+<h2 id="screenshots">Screenshots</h2>
+
+<div>
+<img class="u-max-full-width" src="/sqlpad/images/screenshots/v2-queries.png"/>
+<img class="u-max-full-width" src="/sqlpad/images/screenshots/v2-query-sql.png"/>
+<img class="u-max-full-width" src="/sqlpad/images/screenshots/v2-query-vis.png"/>
+<img class="u-max-full-width" src="/sqlpad/images/screenshots/v2-connections.png"/>
+<img class="u-max-full-width" src="/sqlpad/images/screenshots/v2-users.png"/>
+<img class="u-max-full-width" src="/sqlpad/images/screenshots/v2-configuration.png"/>
+</div>
+
+
+    
+    
+    <h5>in the baseof doing the stuff</h5>
+    
+
+  </div> 
+    
+    
+  <style>
+      .bgphoto {
+          background-image: url('/sqlpad/images/screenshots/query-editor-blur-red.jpg');
+          background-size: cover;
+          color: #fff;
+          min-height:400px;
+      }
+  </style>
+  <section class="bgphoto">
+      <h2 style="
+          text-align: center;
+          padding-top: 100px;
+          font-size: 8rem;
+      "></h2>
+      <div class="container">
+          <div class="row">
+              <div class="six columns">
+                  
+                  
+                  <div id="mc_embed_signup">
+                      <form action="//github.us11.list-manage.com/subscribe/post?u=8314eae319da113739c8e6039&amp;id=673653d22d" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                          <div id="mc_embed_signup_scroll">
+                          
+                          <h6 class="docs-header">Get SQLPad updates in your email</h6>
+                          <div class="mc-field-group">
+                              <label for="mce-EMAIL">Email Address</label>
+                              <input style="color:#000;" class="u-full-width" type="email" value="" name="EMAIL" class="required email" id="mce-EMAIL">
+                          </div>
+                          <div id="mce-responses" class="clear">
+                              <div class="response" id="mce-error-response" style="display:none"></div>
+                              <div class="response" id="mce-success-response" style="display:none"></div>
+                          </div>    
+                          <div style="position: absolute; left: -5000px;"><input type="text" name="b_8314eae319da113739c8e6039_673653d22d" tabindex="-1" value=""></div>
+                          <div class="clear">
+                              <input class="button-primary" type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="button">
+                          </div>
+                          </div>
+                      </form>
+                  </div>
+                  
+                  
+              </div>
+              <div class="six columns">
+                  <h6 class="docs-header">Thank You</h6>
+                  <p>
+                      Special thanks to the contributors helping with the SQLPad 
+                      development, as well as the creators of all the amazing 
+                      open source libraries used to build SQLPad. 
+                  </p>
+                  <p>
+                      Without them this project would not be possible.
+                  </p>
+              </div>
+          </div>
+      </div>
+      
+      
+      
+  </section>
+  
+  
+  <a href="https://github.com/rickbergfalk/sqlpad">
+    <img style="position: absolute; top: 0; right: 0; border: 0; z-index: 200;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png">
+  </a>
+  
+  
+  <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-54318769-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+  </script>
+</body>
+</html>
