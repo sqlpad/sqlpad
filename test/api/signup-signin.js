@@ -38,6 +38,21 @@ describe('api signup/signin', function() {
           assert(response.body.error, 'Expect error user already signed up')
         })
     })
+
+    it('prevents open signups', function() {
+      return request(app)
+        .post('/api/signup')
+        .send({
+          password: 'notwhitelisted',
+          passwordConfirmation: 'notwhitelisted',
+          email: 'notwhitelisted@test.com'
+        })
+        .expect('Content-Type', /json/)
+        .expect(200)
+        .then(response => {
+          assert(response.body.error, 'Expect error needing whitelist')
+        })
+    })
   })
 
   describe('signin', function() {
