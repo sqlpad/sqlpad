@@ -143,7 +143,6 @@
     "supertest": "^3.0.0",
     "tachyons": "^4.9.1",
     "taucharts": "^1.2.1",
-    "watch": "^1.0.2",
     "whatwg-fetch": "^2.0.1"
   }
 }
