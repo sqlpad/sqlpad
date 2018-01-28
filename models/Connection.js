@@ -115,8 +115,15 @@ Connection.removeOneById = function ConnectionRemoveOneById(id, callback) {
   db.connections.remove({ _id: id }, callback)
 }
 
-Connection._removeAll = function _removeAllConnections(callback) {
-  db.connections.remove({}, { multi: true }, callback)
+Connection._removeAll = () => {
+  return new Promise((resolve, reject) => {
+    db.connections.remove({}, { multi: true }, err => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve()
+    })
+  })
 }
 
 module.exports = Connection

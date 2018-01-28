@@ -174,8 +174,15 @@ Query.removeOneById = function QueryRemoveOneById(id, callback) {
   db.queries.remove({ _id: id }, callback)
 }
 
-Query._removeAll = function QueryRemoveAll(callback) {
-  db.queries.remove({}, { multi: true }, callback)
+Query._removeAll = () => {
+  return new Promise((resolve, reject) => {
+    db.queries.remove({}, { multi: true }, err => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve()
+    })
+  })
 }
 
 module.exports = Query
