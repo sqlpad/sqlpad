@@ -132,8 +132,15 @@ User.removeOneById = function UserRemoveOneById(id, callback) {
   db.users.remove({ _id: id }, callback)
 }
 
-User._removeAll = function _removeAllUsers(callback) {
-  db.users.remove({}, { multi: true }, callback)
+User._removeAll = () => {
+  return new Promise((resolve, reject) => {
+    db.users.remove({}, { multi: true }, err => {
+      if (err) {
+        return reject(err)
+      }
+      return resolve()
+    })
+  })
 }
 
 module.exports = User

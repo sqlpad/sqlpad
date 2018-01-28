@@ -4,8 +4,8 @@ const Connection = require('../../models/Connection.js')
 describe('models/Connection.js', function() {
   let testConnection
 
-  before(function before(done) {
-    Connection._removeAll(done)
+  before(function() {
+    return Connection._removeAll()
   })
 
   describe('.findAll() with no connections', function() {
