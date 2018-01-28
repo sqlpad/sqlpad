@@ -10,8 +10,8 @@ describe('models/User.js', function() {
     password: '1234'
   })
 
-  before(function before(done) {
-    User._removeAll(done)
+  before(function() {
+    return User._removeAll()
   })
 
   describe('.openAdminRegistration()', function() {
