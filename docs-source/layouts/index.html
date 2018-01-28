@@ -1,0 +1,17 @@
+
+{{ define "main" }}
+  <!-- Note that the content for index.html, as a sort of list page, will pull from content/_index.md -->
+  <!-- Note that .Data.Pages is the equivalent of .Site.Pages on the homepage template. -->
+
+  <div class="homepage-content">
+    {{.Content}}
+  </div>
+  <!--
+  <div>
+    {{ range first 10 .Data.Pages }}
+        {{ .Render "summary"}}
+    {{ end }}
+  </div>
+  -->
+
+{{ end }}
