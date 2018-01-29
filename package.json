@@ -85,7 +85,7 @@
     "passport-google-oauth2": "^0.1.6",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
-    "pg": "^6.0.0",
+    "pg": "^7.4.1",
     "pg-cursor": "^1.0.1",
     "request": "^2.58.0",
     "rimraf": "^2.5.4",
