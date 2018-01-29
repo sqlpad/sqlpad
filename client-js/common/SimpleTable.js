@@ -6,7 +6,7 @@ class SimpleTable extends React.Component {
     const { renderHeader, renderBody, className } = this.props
     return (
       <div className={`pa4 ${className}`}>
-        <div class="overflow-auto">
+        <div className="overflow-auto">
           <table className="w-100 center" cellSpacing="0">
             <thead>{renderHeader()}</thead>
             <tbody className="lh-copy">{renderBody()}</tbody>
