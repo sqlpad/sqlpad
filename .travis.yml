@@ -5,6 +5,13 @@ services:
 node_js:
   - "6"
 before_install:
+  - sudo service mysql stop
+  - sudo service postgresql stop
+  # wait for postgresql to shutdown
+  - while sudo lsof -Pi :5432 -sTCP:LISTEN -t; do sleep 1; done
+  # wait for mysql to shutdown
+  - while sudo lsof -Pi :3306 -sTCP:LISTEN -t; do sleep 1; done
+  - docker-compose pull
   - docker-compose up -d
   - npm i -g npm@5
 cache:
