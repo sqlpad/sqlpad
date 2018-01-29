@@ -24,6 +24,10 @@ services:
       MYSQL_PASSWORD: sqlpad
     ports:
       - "3306:3306"
+  # NOTE For testing use
+  # user: sqlpad (can be anything)
+  # catalog: system
+  # schema: metadata
   presto:
     image: johandry/presto:0.167-t.0.3-alpine
     expose: 
