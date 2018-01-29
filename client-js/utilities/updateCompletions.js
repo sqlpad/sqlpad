@@ -29,6 +29,10 @@ function updateCompletions(schemaInfo) {
   debug('updating completions')
   debug(schemaInfo)
 
+  if (schemaInfo === null || schemaInfo === undefined) {
+    return
+  }
+
   // TODO make this more efficient and less confusing
   // It'll likely take some restructuring the way schema data is stored.
   // for example, if <table> is referenced, later on relevant dot matchs should also include the schema of <table>
