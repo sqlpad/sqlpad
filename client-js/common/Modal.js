@@ -18,7 +18,7 @@ class MyModal extends React.Component {
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>{renderBody()}</Modal.Body>
-        <Modal.Footer>{renderFooter()}</Modal.Footer>
+        {renderFooter && <Modal.Footer>{renderFooter()}</Modal.Footer>}
       </Modal>
     )
   }
@@ -37,7 +37,6 @@ MyModal.defaultProps = {
   className: '',
   onHide: () => {},
   renderBody: () => {},
-  renderFooter: () => {},
   show: false,
   title: ''
 }

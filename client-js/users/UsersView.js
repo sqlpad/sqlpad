@@ -80,6 +80,11 @@ class UsersView extends React.Component {
     })
   }
 
+  handleOnInvited = () => {
+    this.loadUsersFromServer()
+    this.setState({ showAddUser: false })
+  }
+
   render() {
     const { config, currentUser } = this.props
     const { users, showAddUser } = this.state
@@ -89,7 +94,7 @@ class UsersView extends React.Component {
         <div>
           <div className="ma4 f1 fl">Users</div>
           <button
-            className="pa4 ma4 fr tc db pv3 bg-animate bg-blue hover-bg-dark-blue white br2"
+            className="pa4 ma4 fr tc db pv3 bg-animate bg-blue hover-bg-dark-blue white"
             onClick={() => this.setState({ showAddUser: true })}
           >
             Add / invite user
@@ -132,7 +137,7 @@ class UsersView extends React.Component {
           renderBody={() => {
             return (
               <InviteUserForm
-                loadUsersFromServer={this.loadUsersFromServer}
+                onInvited={this.handleOnInvited}
                 config={config}
               />
             )

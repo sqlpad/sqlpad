@@ -8,30 +8,25 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
 
 class InviteUserForm extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      email: null,
-      role: null,
-      isInviting: null
-    }
-    this.onEmailChange = this.onEmailChange.bind(this)
-    this.onRoleChange = this.onRoleChange.bind(this)
-    this.onInviteClick = this.onInviteClick.bind(this)
+  state = {
+    email: null,
+    role: null,
+    isInviting: null
   }
 
-  onEmailChange(e) {
+  onEmailChange = e => {
     this.setState({ email: e.target.value })
   }
 
-  onRoleChange(e) {
+  onRoleChange = e => {
     this.setState({
       role: e.target.value
     })
   }
 
-  onInviteClick(e) {
-    var user = {
+  onInviteClick = e => {
+    const { onInvited } = this.props
+    const user = {
       email: this.state.email,
       role: this.state.role
     }
@@ -50,7 +45,7 @@ class InviteUserForm extends React.Component {
         email: null,
         role: null
       })
-      this.props.loadUsersFromServer()
+      onInvited()
     })
   }
 
