@@ -1,17 +1,13 @@
 import React from 'react'
-import Button from 'react-bootstrap/lib/Button'
+import Button from '../common/Button'
 
 const PasswordResetButtonLink = props => {
-  const style = {
-    fontSize: 14,
-    marginTop: 10,
-    marginBottom: 10,
-    display: 'block'
-  }
   if (props.passwordResetId) {
     return (
-      <span style={style}>
-        <Button onClick={props.removePasswordResetLink}>remove</Button>{' '}
+      <span>
+        <Button className="mr4" onClick={props.removePasswordResetLink}>
+          remove
+        </Button>{' '}
         <a href={'/password-reset/' + props.passwordResetId}>
           Password Reset Link
         </a>
@@ -19,7 +15,7 @@ const PasswordResetButtonLink = props => {
     )
   }
   return (
-    <Button style={style} onClick={props.generatePasswordResetLink}>
+    <Button onClick={props.generatePasswordResetLink}>
       Generate Password Reset Link
     </Button>
   )

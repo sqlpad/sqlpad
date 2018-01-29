@@ -7,6 +7,7 @@ import SimpleTable from '../common/SimpleTable'
 import SimpleTh from '../common/SimpleTableTh'
 import UserListRow from './UserListRow'
 import Modal from '../common/Modal'
+import Button from '../common/Button'
 
 class UsersView extends React.Component {
   state = {
@@ -93,12 +94,13 @@ class UsersView extends React.Component {
       <div className="flex w-100 flex-column">
         <div>
           <div className="ma4 f1 fl">Users</div>
-          <button
-            className="pa4 ma4 fr tc db pv3 bg-animate bg-blue hover-bg-dark-blue white"
+          <Button
+            className="ma4 fr"
+            primary
             onClick={() => this.setState({ showAddUser: true })}
           >
             Add / invite user
-          </button>
+          </Button>
         </div>
         <SimpleTable
           className="w-100"
