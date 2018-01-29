@@ -2,13 +2,18 @@ import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import Alert from 'react-s-alert'
-import UserList from './UserList'
 import InviteUserForm from './InviteUserForm'
+import SimpleTable from '../common/SimpleTable'
+import SimpleTh from '../common/SimpleTableTh'
+import UserListRow from './UserListRow'
+import Modal from '../common/Modal'
+import Button from '../common/Button'
 
 class UsersView extends React.Component {
   state = {
     users: [],
-    isSaving: false
+    isSaving: false,
+    showAddUser: false
   }
 
   componentDidMount() {
@@ -76,21 +81,69 @@ class UsersView extends React.Component {
     })
   }
 
+  handleOnInvited = () => {
+    this.loadUsersFromServer()
+    this.setState({ showAddUser: false })
+  }
+
   render() {
     const { config, currentUser } = this.props
+    const { users, showAddUser } = this.state
+
     return (
-      <div className="flex w-100">
-        <UserList
-          users={this.state.users}
-          handleDelete={this.handleDelete}
-          updateUserRole={this.updateUserRole}
-          generatePasswordResetLink={this.generatePasswordResetLink}
-          removePasswordResetLink={this.removePasswordResetLink}
-          currentUser={currentUser}
+      <div className="flex w-100 flex-column">
+        <div>
+          <div className="ma4 f1 fl">Users</div>
+          <Button
+            className="ma4 fr"
+            primary
+            onClick={() => this.setState({ showAddUser: true })}
+          >
+            Add / invite user
+          </Button>
+        </div>
+        <SimpleTable
+          className="w-100"
+          renderHeader={() => {
+            return (
+              <tr>
+                <SimpleTh>Email</SimpleTh>
+                <SimpleTh>Role</SimpleTh>
+                <SimpleTh>Created</SimpleTh>
+                <SimpleTh>Password reset</SimpleTh>
+                <SimpleTh>Delete</SimpleTh>
+              </tr>
+            )
+          }}
+          renderBody={() =>
+            users.map(user => {
+              return (
+                <UserListRow
+                  key={user._id}
+                  user={user}
+                  currentUser={currentUser}
+                  handleDelete={this.handleDelete}
+                  updateUserRole={this.updateUserRole}
+                  generatePasswordResetLink={this.generatePasswordResetLink}
+                  removePasswordResetLink={this.removePasswordResetLink}
+                />
+              )
+            })
+          }
         />
-        <InviteUserForm
-          loadUsersFromServer={this.loadUsersFromServer}
-          config={config}
+
+        <Modal
+          title="Add user"
+          show={showAddUser}
+          onHide={() => this.setState({ showAddUser: false })}
+          renderBody={() => {
+            return (
+              <InviteUserForm
+                onInvited={this.handleOnInvited}
+                config={config}
+              />
+            )
+          }}
         />
       </div>
     )

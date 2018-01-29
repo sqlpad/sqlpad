@@ -6,11 +6,13 @@ import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
 import NavDropdown from 'react-bootstrap/lib/NavDropdown'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
-import Modal from 'react-bootstrap/lib/Modal'
+
 import Button from 'react-bootstrap/lib/Button'
 import Popover from 'react-bootstrap/lib/Popover'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import fetchJson from './utilities/fetch-json.js'
+import Modal from './common/Modal'
+import AboutContent from './AboutContent'
 
 class App extends React.Component {
   constructor(props) {
@@ -54,7 +56,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { redirect } = this.state
+    const { redirect, version = {} } = this.state
     if (redirect) {
       return <Redirect push to="/signin" />
     }
@@ -69,7 +71,7 @@ class App extends React.Component {
       </Popover>
     )
     const updateNotification = () => {
-      if (this.state.version.updateAvailable) {
+      if (version.updateAvailable) {
         return (
           <OverlayTrigger overlay={popover} placement="bottom">
             <NavItem eventKey={9}>
@@ -143,76 +145,15 @@ class App extends React.Component {
         <div className="flex w-100" style={{ marginTop: '50px' }}>
           {this.props.children}
         </div>
-        <Modal show={this.state.showAboutModal} onHide={this.closeAboutModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>About SQLPad</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <p>
-              <strong>Version</strong>: {this.state.version.current}
-            </p>
-            <p>
-              <strong>Project Page</strong>:{' '}
-              <a
-                href="http://rickbergfalk.github.io/sqlpad/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                http://rickbergfalk.github.io/sqlpad{' '}
-                <span
-                  style={{ marginLeft: 4 }}
-                  className="glyphicon glyphicon-new-window"
-                  aria-hidden="true"
-                />
-              </a>
-            </p>
-            <hr />
-            <ul className="nav nav-pills nav-justified">
-              <li role="presentation">
-                <a
-                  href="https://github.com/rickbergfalk/sqlpad/issues"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Submit an Issue{' '}
-                  <span
-                    className="glyphicon glyphicon-new-window"
-                    aria-hidden="true"
-                  />
-                </a>
-              </li>
-              <li role="presentation">
-                <a
-                  href="https://github.com/rickbergfalk/sqlpad/blob/master/CHANGELOG.md"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Changelog{' '}
-                  <span
-                    className="glyphicon glyphicon-new-window"
-                    aria-hidden="true"
-                  />
-                </a>
-              </li>
-              <li role="presentation">
-                <a
-                  href="https://github.com/rickbergfalk/sqlpad"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  GitHub Repository{' '}
-                  <span
-                    className="glyphicon glyphicon-new-window"
-                    aria-hidden="true"
-                  />
-                </a>
-              </li>
-            </ul>
-          </Modal.Body>
-          <Modal.Footer>
+        <Modal
+          title="About SQLPad"
+          show={this.state.showAboutModal}
+          onHide={this.closeAboutModal}
+          renderBody={() => <AboutContent version={version.current} />}
+          renderFooter={() => (
             <Button onClick={this.closeAboutModal}>Close</Button>
-          </Modal.Footer>
-        </Modal>
+          )}
+        />
       </div>
     )
   }
