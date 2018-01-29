@@ -6,11 +6,13 @@ import InviteUserForm from './InviteUserForm'
 import SimpleTable from '../common/SimpleTable'
 import SimpleTh from '../common/SimpleTableTh'
 import UserListRow from './UserListRow'
+import Modal from '../common/Modal'
 
 class UsersView extends React.Component {
   state = {
     users: [],
-    isSaving: false
+    isSaving: false,
+    showAddUser: false
   }
 
   componentDidMount() {
@@ -80,12 +82,21 @@ class UsersView extends React.Component {
 
   render() {
     const { config, currentUser } = this.props
-    const { users } = this.state
+    const { users, showAddUser } = this.state
 
     return (
-      <div className="flex w-100">
+      <div className="flex w-100 flex-column">
+        <div>
+          <div className="ma4 f1 fl">Users</div>
+          <button
+            className="pa4 ma4 fr tc db pv3 bg-animate bg-blue hover-bg-dark-blue white br2"
+            onClick={() => this.setState({ showAddUser: true })}
+          >
+            Add / invite user
+          </button>
+        </div>
         <SimpleTable
-          className="w-60"
+          className="w-100"
           renderHeader={() => {
             return (
               <tr>
@@ -113,9 +124,19 @@ class UsersView extends React.Component {
             })
           }
         />
-        <InviteUserForm
-          loadUsersFromServer={this.loadUsersFromServer}
-          config={config}
+
+        <Modal
+          title="Add user"
+          show={showAddUser}
+          onHide={() => this.setState({ showAddUser: false })}
+          renderBody={() => {
+            return (
+              <InviteUserForm
+                loadUsersFromServer={this.loadUsersFromServer}
+                config={config}
+              />
+            )
+          }}
         />
       </div>
     )
