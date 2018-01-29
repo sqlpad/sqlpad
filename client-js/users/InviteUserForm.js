@@ -9,7 +9,7 @@ import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
 
 const inviteUserFormStyle = {
-  flexBasis: '50%',
+  flexBasis: '40%',
   backgroundColor: '#FDFDFD',
   overflowY: 'auto',
   padding: 10

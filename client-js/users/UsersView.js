@@ -2,8 +2,10 @@ import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import Alert from 'react-s-alert'
-import UserList from './UserList'
 import InviteUserForm from './InviteUserForm'
+import SimpleTable from '../common/SimpleTable'
+import SimpleTh from '../common/SimpleTableTh'
+import UserListRow from './UserListRow'
 
 class UsersView extends React.Component {
   state = {
@@ -78,15 +80,38 @@ class UsersView extends React.Component {
 
   render() {
     const { config, currentUser } = this.props
+    const { users } = this.state
+
     return (
       <div className="flex w-100">
-        <UserList
-          users={this.state.users}
-          handleDelete={this.handleDelete}
-          updateUserRole={this.updateUserRole}
-          generatePasswordResetLink={this.generatePasswordResetLink}
-          removePasswordResetLink={this.removePasswordResetLink}
-          currentUser={currentUser}
+        <SimpleTable
+          className="w-60"
+          renderHeader={() => {
+            return (
+              <tr>
+                <SimpleTh>Email</SimpleTh>
+                <SimpleTh>Role</SimpleTh>
+                <SimpleTh>Created</SimpleTh>
+                <SimpleTh>Password reset</SimpleTh>
+                <SimpleTh>Delete</SimpleTh>
+              </tr>
+            )
+          }}
+          renderBody={() =>
+            users.map(user => {
+              return (
+                <UserListRow
+                  key={user._id}
+                  user={user}
+                  currentUser={currentUser}
+                  handleDelete={this.handleDelete}
+                  updateUserRole={this.updateUserRole}
+                  generatePasswordResetLink={this.generatePasswordResetLink}
+                  removePasswordResetLink={this.removePasswordResetLink}
+                />
+              )
+            })
+          }
         />
         <InviteUserForm
           loadUsersFromServer={this.loadUsersFromServer}

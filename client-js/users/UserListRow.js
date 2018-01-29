@@ -6,6 +6,7 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import PasswordResetButtonLink from './PasswordResetButtonLink'
 import DeleteButton from '../common/DeleteButton'
+import SimpleTd from '../common/SimpleTableTd'
 
 class UserListRow extends React.Component {
   handleDeleteClick = e => {
@@ -38,36 +39,41 @@ class UserListRow extends React.Component {
     )
 
     return (
-      <li className={'list-group-item ListRow'}>
-        <h4>{user.email}</h4>
-        <h5>{signupDate}</h5>
-        <PasswordResetButtonLink
-          passwordResetId={user.passwordResetId}
-          generatePasswordResetLink={this.generatePasswordResetLink}
-          removePasswordResetLink={this.removePasswordResetLink}
-        />
-        <Form inline>
-          <FormGroup controlId="role">
-            <ControlLabel>Role</ControlLabel>{' '}
-            <FormControl
-              style={{
-                minWidth: 200,
-                marginLeft: 20
-              }}
-              componentClass="select"
-              value={user.role}
-              disabled={currentUser._id === user._id}
-              onChange={this.handleRoleChange}
-            >
-              <option value="editor">Editor</option>
-              <option value="admin">Admin</option>
-            </FormControl>
-          </FormGroup>
-        </Form>
-        {currentUser._id !== user._id && (
-          <DeleteButton onClick={this.handleDeleteClick} />
-        )}
-      </li>
+      <tr>
+        <SimpleTd>{user.email}</SimpleTd>
+        <SimpleTd>
+          <Form inline>
+            <FormGroup controlId="role">
+              <FormControl
+                style={{
+                  minWidth: 200,
+                  marginLeft: 0
+                }}
+                componentClass="select"
+                value={user.role}
+                disabled={currentUser._id === user._id}
+                onChange={this.handleRoleChange}
+              >
+                <option value="editor">Editor</option>
+                <option value="admin">Admin</option>
+              </FormControl>
+            </FormGroup>
+          </Form>
+        </SimpleTd>
+        <SimpleTd>{signupDate}</SimpleTd>
+        <SimpleTd>
+          <PasswordResetButtonLink
+            passwordResetId={user.passwordResetId}
+            generatePasswordResetLink={this.generatePasswordResetLink}
+            removePasswordResetLink={this.removePasswordResetLink}
+          />
+        </SimpleTd>
+        <SimpleTd className={'relative'}>
+          {currentUser._id !== user._id && (
+            <DeleteButton onClick={this.handleDeleteClick} />
+          )}
+        </SimpleTd>
+      </tr>
     )
   }
 }
