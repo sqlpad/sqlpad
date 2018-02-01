@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const express = require('express')
+const helmet = require('helmet')
 const config = require('./lib/config.js')
 const packageJson = require('./package.json')
 
@@ -24,6 +25,10 @@ const passport = require('passport')
 const errorhandler = require('errorhandler')
 
 const app = express()
+
+// Use default helmet protections and add referrerPolicy
+app.use(helmet())
+app.use(helmet.referrerPolicy({ policy: 'same-origin' }))
 
 app.locals.title = 'SQLPad'
 app.locals.version = packageJson.version
