@@ -155,7 +155,7 @@ class ConnectionsView extends React.Component {
                   <SimpleTd>{connection.database}</SimpleTd>
                   <SimpleTd>{connection.prestoCatalog}</SimpleTd>
                   <SimpleTd>{connection.prestoSchema}</SimpleTd>
-                  <SimpleTd className={'relative'}>
+                  <SimpleTd>
                     <DeleteButton
                       onClick={() => this.handleDelete(connection)}
                     />

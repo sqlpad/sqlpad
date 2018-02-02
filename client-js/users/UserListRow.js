@@ -67,7 +67,7 @@ class UserListRow extends React.Component {
             removePasswordResetLink={this.removePasswordResetLink}
           />
         </SimpleTd>
-        <SimpleTd className={'relative'}>
+        <SimpleTd>
           {currentUser._id !== user._id && (
             <DeleteButton onClick={this.handleDeleteClick} />
           )}

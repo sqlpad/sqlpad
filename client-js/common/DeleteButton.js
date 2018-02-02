@@ -7,11 +7,11 @@ import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 
 class DeleteButton extends React.Component {
   render() {
-    const { onClick } = this.props
+    const { className, onClick } = this.props
     const popoverClick = (
       <Popover id="popover-trigger-click" title="Are you sure?">
         <Button bsStyle="danger" onClick={onClick} className="w-100">
-          delete
+          Delete
         </Button>
       </Popover>
     )
@@ -22,7 +22,7 @@ class DeleteButton extends React.Component {
         rootClose
         overlay={popoverClick}
       >
-        <a className="absolute right-2 bottom-2 mid-gray" href="#delete">
+        <a className={`mid-gray ${className}`} href="#delete">
           <Glyphicon glyph="trash" />
         </a>
       </OverlayTrigger>
@@ -31,7 +31,12 @@ class DeleteButton extends React.Component {
 }
 
 DeleteButton.propTypes = {
-  onClick: PropTypes.func.isRequired
+  onClick: PropTypes.func.isRequired,
+  className: PropTypes.string
+}
+
+DeleteButton.defaultProps = {
+  className: ''
 }
 
 export default DeleteButton
