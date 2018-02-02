@@ -1,13 +1,19 @@
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
 import Alert from 'react-s-alert'
-import ConnectionList from './ConnectionList'
 import ConnectionForm from './ConnectionForm'
+import SimpleTable from '../common/SimpleTable'
+import SimpleTh from '../common/SimpleTableTh'
+import Modal from '../common/Modal'
+import Button from '../common/Button'
+import DeleteButton from '../common/DeleteButton'
+import SimpleTd from '../common/SimpleTableTd'
 
 class ConnectionsView extends React.Component {
   state = {
+    showModal: false,
     connections: [],
-    selectedConnection: null,
+    selectedConnection: {},
     isTesting: false,
     isSaving: false
   }
@@ -19,7 +25,8 @@ class ConnectionsView extends React.Component {
 
   handleSelect = connection => {
     this.setState({
-      selectedConnection: Object.assign({}, connection)
+      selectedConnection: Object.assign({}, connection),
+      showModal: true
     })
   }
 
@@ -35,9 +42,10 @@ class ConnectionsView extends React.Component {
     })
   }
 
-  onNewConnectionClick = () => {
+  handleNewConnectionClick = () => {
     this.setState({
-      selectedConnection: {}
+      selectedConnection: {},
+      showModal: true
     })
   }
 
@@ -96,23 +104,83 @@ class ConnectionsView extends React.Component {
   }
 
   render() {
-    const { isTesting, isSaving, connections, selectedConnection } = this.state
+    const {
+      showModal,
+      isTesting,
+      isSaving,
+      connections,
+      selectedConnection
+    } = this.state
     return (
-      <div className="flex w-100">
-        <ConnectionList
-          connections={connections}
-          selectedConnection={selectedConnection}
-          handleSelect={this.handleSelect}
-          handleDelete={this.handleDelete}
-          onNewConnectionClick={this.onNewConnectionClick}
+      <div className="flex w-100 flex-column">
+        <div>
+          <div className="ma4 f1 fl">Connections</div>
+          <Button
+            className="ma4 fr"
+            primary
+            onClick={this.handleNewConnectionClick}
+          >
+            Add connection
+          </Button>
+        </div>
+        <SimpleTable
+          className="w-100"
+          renderHeader={() => {
+            return (
+              <tr>
+                <SimpleTh>Name</SimpleTh>
+                <SimpleTh>Driver</SimpleTh>
+                <SimpleTh>Host</SimpleTh>
+                <SimpleTh>Database</SimpleTh>
+                <SimpleTh>Catalog</SimpleTh>
+                <SimpleTh>Schema</SimpleTh>
+                <SimpleTh>Delete</SimpleTh>
+              </tr>
+            )
+          }}
+          renderBody={() =>
+            connections.map(connection => {
+              return (
+                <tr key={connection._id}>
+                  <SimpleTd>
+                    <a
+                      href="#connection"
+                      onClick={() => this.handleSelect(connection)}
+                    >
+                      {connection.name}
+                    </a>
+                  </SimpleTd>
+                  <SimpleTd>{connection.driver}</SimpleTd>
+                  <SimpleTd>{connection.host}</SimpleTd>
+                  <SimpleTd>{connection.database}</SimpleTd>
+                  <SimpleTd>{connection.prestoCatalog}</SimpleTd>
+                  <SimpleTd>{connection.prestoSchema}</SimpleTd>
+                  <SimpleTd className={'relative'}>
+                    <DeleteButton
+                      onClick={() => this.handleDelete(connection)}
+                    />
+                  </SimpleTd>
+                </tr>
+              )
+            })
+          }
         />
-        <ConnectionForm
-          selectedConnection={selectedConnection}
-          setConnectionValue={this.setConnectionValue}
-          testConnection={this.testConnection}
-          saveConnection={this.saveConnection}
-          isTesting={isTesting}
-          isSaving={isSaving}
+        <Modal
+          title={selectedConnection._id ? 'Edit connection' : 'Add connection'}
+          show={showModal}
+          onHide={() => this.setState({ showModal: false })}
+          renderBody={() => {
+            return (
+              <ConnectionForm
+                selectedConnection={selectedConnection}
+                setConnectionValue={this.setConnectionValue}
+                testConnection={this.testConnection}
+                saveConnection={this.saveConnection}
+                isTesting={isTesting}
+                isSaving={isSaving}
+              />
+            )
+          }}
         />
       </div>
     )
