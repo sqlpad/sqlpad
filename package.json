@@ -65,6 +65,7 @@
     "errorhandler": "^1.4.0",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "hdb": "^0.15.3",
     "helmet": "^3.10.0",
     "joi": "^12.0.0",
     "json2csv": "^3.11.5",

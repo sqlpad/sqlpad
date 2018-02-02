@@ -36,6 +36,13 @@ var schema = {
   prestoSchema: Joi.string()
     .optional()
     .allow(''),
+  hanaSchema: Joi.string()
+    .optional()
+    .allow(''),
+  hanaport: Joi.string().default('', '39015'),
+  hanadatabase: Joi.string()
+    .optional()
+    .allow(''),
   createdDate: Joi.date().default(new Date(), 'time of creation'),
   modifiedDate: Joi.date().default(new Date(), 'time of modifcation')
 }
@@ -62,6 +69,9 @@ var Connection = function Connection(data) {
   this.mysqlInsecureAuth = data.mysqlInsecureAuth
   this.prestoCatalog = data.prestoCatalog
   this.prestoSchema = data.prestoSchema
+  this.hanaSchema = data.hanaSchema
+  this.hanaport = data.hanaport
+  this.hanadatabase = data.hanadatabase
   this.createdDate = data.createdDate
   this.modifiedDate = data.modifiedDate
 }
