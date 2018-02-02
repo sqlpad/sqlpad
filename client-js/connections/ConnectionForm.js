@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Panel from 'react-bootstrap/lib/Panel'
 import Form from 'react-bootstrap/lib/Form'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
@@ -162,25 +161,12 @@ const driverFields = {
   ]
 }
 
-const connectionFormStyle = {
-  flexBasis: '50%',
-  backgroundColor: '#FDFDFD',
-  overflowY: 'auto',
-  padding: 10
-}
-
 class ConnectionForm extends React.Component {
-  constructor(props) {
-    super(props)
-    this.onTextInputChange = this.onTextInputChange.bind(this)
-    this.onCheckboxChange = this.onCheckboxChange.bind(this)
-  }
-
-  onTextInputChange(e) {
+  onTextInputChange = e => {
     this.props.setConnectionValue(e.target.name, e.target.value)
   }
 
-  onCheckboxChange(e) {
+  onCheckboxChange = e => {
     this.props.setConnectionValue(e.target.name, e.target.checked)
   }
 
@@ -249,61 +235,59 @@ class ConnectionForm extends React.Component {
     } = this.props
     const connection = selectedConnection
     if (!selectedConnection) {
-      return <div className="ConnectionForm" style={connectionFormStyle} />
+      return <div />
     }
     return (
-      <div className="ConnectionForm" style={connectionFormStyle}>
-        <Panel>
-          <Form>
-            <FormGroup
-              controlId="name"
-              validationState={connection.name ? null : 'error'}
+      <div>
+        <Form>
+          <FormGroup
+            controlId="name"
+            validationState={connection.name ? null : 'error'}
+          >
+            <ControlLabel>Connection Name</ControlLabel>
+            <FormControl
+              type="text"
+              name="name"
+              value={connection.name || ''}
+              onChange={this.onTextInputChange}
+            />
+          </FormGroup>
+          <FormGroup
+            controlId="driver"
+            validationState={connection.driver ? null : 'error'}
+          >
+            <ControlLabel>Database Driver</ControlLabel>
+            <FormControl
+              componentClass="select"
+              name="driver"
+              value={connection.driver || ''}
+              onChange={this.onTextInputChange}
             >
-              <ControlLabel>Connection Name</ControlLabel>
-              <FormControl
-                type="text"
-                name="name"
-                value={connection.name || ''}
-                onChange={this.onTextInputChange}
-              />
-            </FormGroup>
-            <FormGroup
-              controlId="driver"
-              validationState={connection.driver ? null : 'error'}
-            >
-              <ControlLabel>Database Driver</ControlLabel>
-              <FormControl
-                componentClass="select"
-                name="driver"
-                value={connection.driver || ''}
-                onChange={this.onTextInputChange}
-              >
-                <option value="" />
-                <option value="crate">Crate</option>
-                <option value="mysql">MySQL</option>
-                <option value="postgres">Postgres</option>
-                <option value="presto">Presto</option>
-                <option value="sqlserver">SQL Server</option>
-                <option value="vertica">Vertica</option>
-              </FormControl>
-            </FormGroup>
-            {this.renderDriverFields()}
-            <Button
-              style={{ width: 100 }}
-              onClick={saveConnection}
-              disabled={isSaving}
-            >
-              {isSaving ? 'Saving...' : 'Save'}
-            </Button>{' '}
-            <Button
-              style={{ width: 100 }}
-              onClick={testConnection}
-              disabled={isTesting}
-            >
-              {isTesting ? 'Testing...' : 'Test'}
-            </Button>
-          </Form>
-        </Panel>
+              <option value="" />
+              <option value="crate">Crate</option>
+              <option value="mysql">MySQL</option>
+              <option value="postgres">Postgres</option>
+              <option value="presto">Presto</option>
+              <option value="sqlserver">SQL Server</option>
+              <option value="vertica">Vertica</option>
+            </FormControl>
+          </FormGroup>
+          {this.renderDriverFields()}
+          <Button
+            style={{ width: 100 }}
+            onClick={saveConnection}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Saving...' : 'Save'}
+          </Button>{' '}
+          <Button
+            style={{ width: 100 }}
+            onClick={testConnection}
+            disabled={isTesting}
+          >
+            {isTesting ? 'Testing...' : 'Test'}
+          </Button>
+        </Form>
       </div>
     )
   }

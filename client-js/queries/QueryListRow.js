@@ -52,7 +52,10 @@ class QueryListRow extends React.Component {
             chart
           </a>
         </p>
-        <DeleteButton onClick={this.handleDeleteClick} />
+        <DeleteButton
+          className="absolute right-2 bottom-2"
+          onClick={this.handleDeleteClick}
+        />
       </li>
     )
   }
