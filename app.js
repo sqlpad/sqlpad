@@ -1,7 +1,10 @@
 const fs = require('fs')
 const path = require('path')
+const crypto = require('crypto')
 const express = require('express')
 const helmet = require('helmet')
+const session = require('express-session')
+const MemoryStore = require('memorystore')(session)
 const config = require('./lib/config.js')
 const packageJson = require('./package.json')
 
@@ -12,14 +15,11 @@ const GOOGLE_CLIENT_ID = config.get('googleClientId')
 const GOOGLE_CLIENT_SECRET = config.get('googleClientSecret')
 const PUBLIC_URL = config.get('publicUrl')
 const DEBUG = config.get('debug')
-const PASSPHRASE = config.get('passphrase')
 
 /*  Express setup
 ============================================================================= */
 const bodyParser = require('body-parser')
 const favicon = require('serve-favicon')
-const cookieParser = require('cookie-parser')
-const cookieSession = require('cookie-session')
 const morgan = require('morgan')
 const passport = require('passport')
 const errorhandler = require('errorhandler')
@@ -45,8 +45,25 @@ app.use(
   })
 )
 
-app.use(cookieParser(PASSPHRASE))
-app.use(cookieSession({ secret: PASSPHRASE }))
+// Cookie secrets are generated randomly at server start
+// SQLPad (currently) is designed for running as a single instance
+// so this should be okay unless SQLPad is frequently restarting
+const cookieSecrets = [1, 2, 3, 4].map(n =>
+  crypto.randomBytes(64).toString('hex')
+)
+const ONE_HOUR = 1000 * 60 * 60
+app.use(
+  session({
+    store: new MemoryStore({
+      checkPeriod: ONE_HOUR
+    }),
+    saveUninitialized: false,
+    resave: false,
+    cookie: { maxAge: ONE_HOUR },
+    secret: cookieSecrets
+  })
+)
+
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(BASE_URL, express.static(path.join(__dirname, 'build')))
