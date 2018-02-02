@@ -162,17 +162,11 @@ const driverFields = {
 }
 
 class ConnectionForm extends React.Component {
-  constructor(props) {
-    super(props)
-    this.onTextInputChange = this.onTextInputChange.bind(this)
-    this.onCheckboxChange = this.onCheckboxChange.bind(this)
-  }
-
-  onTextInputChange(e) {
+  onTextInputChange = e => {
     this.props.setConnectionValue(e.target.name, e.target.value)
   }
 
-  onCheckboxChange(e) {
+  onCheckboxChange = e => {
     this.props.setConnectionValue(e.target.name, e.target.checked)
   }
 
