@@ -33,7 +33,9 @@ class ConnectionsView extends React.Component {
   handleDelete = connection => {
     const { selectedConnection } = this.state
     fetchJson('DELETE', '/api/connections/' + connection._id).then(json => {
-      if (json.error) return Alert.error('Delete failed')
+      if (json.error) {
+        return Alert.error('Delete failed')
+      }
       Alert.success('Connection deleted')
       if (selectedConnection && connection._id === selectedConnection._id) {
         this.setState({ selectedConnection: null })
@@ -59,7 +61,9 @@ class ConnectionsView extends React.Component {
 
   loadConnectionsFromServer = () => {
     fetchJson('GET', '/api/connections').then(json => {
-      if (json.error) Alert.error(json.error)
+      if (json.error) {
+        Alert.error(json.error)
+      }
       this.setState({ connections: json.connections })
     })
   }
@@ -69,7 +73,9 @@ class ConnectionsView extends React.Component {
     this.setState({ isTesting: true })
     fetchJson('POST', '/api/test-connection', selectedConnection).then(json => {
       this.setState({ isTesting: false })
-      if (json.error) return Alert.error('Test Failed')
+      if (json.error) {
+        return Alert.error('Test Failed')
+      }
       return Alert.success('Test successful')
     })
   }
@@ -84,9 +90,11 @@ class ConnectionsView extends React.Component {
         selectedConnection
       ).then(json => {
         this.setState({ isSaving: false })
-        if (json.error) return Alert.error('Save failed')
+        if (json.error) {
+          return Alert.error('Save failed')
+        }
         Alert.success('Connection saved')
-        this.setState({ selectedConnection: null })
+        this.setState({ selectedConnection: {}, showModal: false })
         this.loadConnectionsFromServer()
       })
     } else {
@@ -95,9 +103,11 @@ class ConnectionsView extends React.Component {
           isSaving: false,
           selectedConnection: json.connection || selectedConnection
         })
-        if (json.error) return Alert.error('Save failed')
+        if (json.error) {
+          return Alert.error('Save failed')
+        }
         Alert.success('Connection saved')
-        this.setState({ selectedConnection: null })
+        this.setState({ selectedConnection: {}, showModal: false })
         this.loadConnectionsFromServer()
       })
     }
