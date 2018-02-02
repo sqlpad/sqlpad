@@ -17,11 +17,14 @@ export default function fetchJson(method, url, body) {
   if (body) {
     opts.body = JSON.stringify(body)
   }
+
   return fetch(BASE_URL + url, opts)
     .then(response => {
       // API server will send 200 even if error occurs
       // Eventually this should change to proper status code usage
-      if (response.status === 200) {
+      if (response.redirected) {
+        return (window.location = response.url)
+      } else if (response.status === 200) {
         return response.json()
       } else {
         console.error(response)
