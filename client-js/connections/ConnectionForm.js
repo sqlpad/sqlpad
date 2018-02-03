@@ -107,6 +107,21 @@ const fields = {
     key: 'prestoSchema',
     formType: TEXT,
     label: 'Schema'
+  },
+  hanaSchema: {
+    key: 'hanaSchema',
+    formType: TEXT,
+    label: 'Schema (optional)'
+  },
+  hanadatabase: {
+    key: 'hanadatabase',
+    formType: TEXT,
+    label: 'Tenant'
+  },
+  hanaport: {
+    key: 'hanaport',
+    formType: TEXT,
+    label: 'Port (e.g. 39015)'
   }
 }
 
@@ -158,6 +173,14 @@ const driverFields = {
     fields.database,
     fields.username,
     fields.password
+  ],
+  hdb: [
+    fields.host,
+    fields.hanaport,
+    fields.username,
+    fields.password,
+    fields.hanadatabase,
+    fields.hanaSchema
   ]
 }
 
@@ -270,6 +293,7 @@ class ConnectionForm extends React.Component {
               <option value="presto">Presto</option>
               <option value="sqlserver">SQL Server</option>
               <option value="vertica">Vertica</option>
+              <option value="hdb">SAP HANA</option>
             </FormControl>
           </FormGroup>
           {this.renderDriverFields()}

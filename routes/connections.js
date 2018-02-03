@@ -28,7 +28,10 @@ function connectionFromBody(body) {
     socksPassword: body.socksPassword,
     mysqlInsecureAuth: body.mysqlInsecureAuth === true,
     prestoCatalog: body.prestoCatalog,
-    prestoSchema: body.prestoSchema
+    prestoSchema: body.prestoSchema,
+    hanaSchema: body.hanaSchema,
+    hanadatabase: body.hanadatabase,
+    hanaport: body.hanaport
   }
 }
 
@@ -124,6 +127,9 @@ router.put('/api/connections/:_id', mustBeAdmin, function(req, res) {
     connection.mysqlInsecureAuth = req.body.mysqlInsecureAuth === true
     connection.prestoCatalog = req.body.prestoCatalog
     connection.prestoSchema = req.body.prestoSchema
+    connection.hanaSchema = req.body.hanaSchema
+    connection.hanadatabase = req.body.hanadatabase
+    connection.hanaport = req.body.hanaport
     connection.save(function(err, connection) {
       if (err) {
         console.error(err)
@@ -165,6 +171,9 @@ router.post('/api/test-connection', mustBeAdmin, function testConnection(
   }
   if (bodyConnection.driver === 'presto') {
     testQuery = "SELECT 'success' AS TestQuery"
+  }
+  if (bodyConnection.driver === 'hdb') {
+    testQuery = 'select * from DUMMY'
   }
   runQuery(testQuery, bodyConnection, function(err, queryResult) {
     if (err) {

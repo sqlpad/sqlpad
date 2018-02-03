@@ -216,16 +216,29 @@ class SchemaInfoTableItem extends React.Component {
     let columnJsx
     if (showColumns) {
       columnJsx = columns.map(column => {
-        return (
-          <SchemaInfoColumnItem
-            {...this.props}
-            column_name={column.column_name}
-            data_type={column.data_type}
-            key={column.column_name}
-            schema={schema}
-            table={table}
-          />
-        )
+        if (column.column_name) {
+          return (
+            <SchemaInfoColumnItem
+              {...this.props}
+              column_name={column.column_name}
+              data_type={column.data_type}
+              key={column.column_name}
+              schema={schema}
+              table={table}
+            />
+          )
+        } else {
+          return (
+            <SchemaInfoColumnItem
+              {...this.props}
+              column_name={column.COLUMN_NAME}
+              data_type={column.DATA_TYPE}
+              key={column.COLUMN_NAME}
+              schema={schema}
+              table={table}
+            />
+          )
+        }
       })
     }
     // this is hacky, but because of the way we're passing the schema info around
