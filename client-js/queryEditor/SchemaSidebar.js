@@ -80,17 +80,19 @@ class SchemaSidebar extends React.PureComponent {
 
     const schemaCount = schemaInfo ? Object.keys(schemaInfo).length : 0
     const initShowTables = schemaCount <= 2
-    const schemaItemNodes = Object.keys(schemaInfo).map(schema => {
-      return (
-        <SchemaInfoSchemaItem
-          {...this.props}
-          initShowTables={initShowTables}
-          key={schema}
-          schema={schema}
-          tables={schemaInfo[schema]}
-        />
-      )
-    })
+    const schemaItemNodes = schemaInfo
+      ? Object.keys(schemaInfo).map(schema => {
+          return (
+            <SchemaInfoSchemaItem
+              {...this.props}
+              initShowTables={initShowTables}
+              key={schema}
+              schema={schema}
+              tables={schemaInfo[schema]}
+            />
+          )
+        })
+      : null
 
     return (
       <Sidebar>
