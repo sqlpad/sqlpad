@@ -45,9 +45,11 @@ QueryResult.prototype.timerStop = function() {
 }
 
 QueryResult.prototype.addRows = function QueryResultAddRows(rows) {
-  rows.forEach(function(row) {
-    this.addRow(row)
-  }, this)
+  if (rows && rows.length) {
+    rows.forEach(function(row) {
+      this.addRow(row)
+    }, this)
+  }
 }
 
 QueryResult.prototype.addRow = function QueryResultAddRow(row) {
