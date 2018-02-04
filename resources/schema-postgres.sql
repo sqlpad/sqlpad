@@ -1,5 +1,4 @@
 select 
-    case cls.relkind when 'r' then 'Tables' when 'v' then 'Views' when 'm' then 'Views' end as table_type,
     ns.nspname as table_schema, 
     cls.relname as table_name, 
     attr.attname as column_name,
