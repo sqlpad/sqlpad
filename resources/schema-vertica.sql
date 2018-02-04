@@ -1,5 +1,4 @@
 SELECT 
-    (CASE vat.table_type WHEN 'TABLE' THEN 'Tables' WHEN 'VIEW' THEN 'Views' ELSE vat.table_type END) AS table_type, 
     vt.table_schema, 
     vt.table_name, 
     vc.column_name, 
@@ -12,7 +11,6 @@ FROM
 WHERE 
     vt.table_schema NOT IN ('V_CATALOG') AND vat.table_type = 'TABLE' 
 ORDER BY 
-    vat.table_type, 
     vt.table_schema, 
     vt.table_name, 
     vc.ordinal_position

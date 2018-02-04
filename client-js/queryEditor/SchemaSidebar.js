@@ -243,14 +243,6 @@ class SchemaInfoTableItem extends React.Component {
         }
       })
     }
-    // this is hacky, but because of the way we're passing the schema info around
-    // we need to reach down into the columns to get the type of this object
-    const viewType = () => {
-      const type = columns[0].table_type
-      if (type.toLowerCase().split('')[0] === 'v') {
-        return <span className="silver"> (view)</span>
-      }
-    }
 
     const copyButtonClassName = showCopyButton
       ? 'right-2 pointer absolute bg-black hover-bg-hot-pink label'
@@ -280,7 +272,7 @@ class SchemaInfoTableItem extends React.Component {
           className="dib"
           style={{ minWidth: '230px' }}
         >
-          {table} {viewType()}
+          {table}
           {getCopyToClipboard()}
         </a>
         <ul className="pl3">{columnJsx}</ul>
