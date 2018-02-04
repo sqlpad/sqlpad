@@ -2,8 +2,7 @@ select
     ns.nspname as table_schema, 
     cls.relname as table_name, 
     attr.attname as column_name,
-    trim(leading '_' from tp.typname) as data_type,
-    case attr.attnotnull when true then 'NO' when false then 'YES' end as is_nullable
+    trim(leading '_' from tp.typname) as data_type
 from 
 	pg_catalog.pg_attribute as attr
 	join pg_catalog.pg_class as cls on cls.oid = attr.attrelid

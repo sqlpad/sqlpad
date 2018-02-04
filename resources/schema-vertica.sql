@@ -2,8 +2,7 @@ SELECT
     vt.table_schema, 
     vt.table_name, 
     vc.column_name, 
-    vc.data_type, 
-    (CASE vc.is_nullable WHEN 't' THEN 'YES' ELSE 'NO' END)  as is_nullable 
+    vc.data_type
 FROM 
     V_CATALOG.TABLES vt 
     JOIN V_CATALOG.ALL_TABLES vat ON vt.table_id = vat.table_id 
