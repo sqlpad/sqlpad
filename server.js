@@ -64,7 +64,6 @@ db.onLoad(function(err) {
   // determine if key pair exists for certs
   if (KEY_PATH && CERT_PATH) {
     // https only
-    console.log('Launching server with SSL')
     detectPortOrSystemd(HTTPS_PORT).then(function(_port) {
       if (!isFdObject(_port) && HTTPS_PORT !== _port) {
         console.log(
@@ -103,7 +102,6 @@ db.onLoad(function(err) {
     })
   } else {
     // http only
-    console.log('Launching server WITHOUT SSL')
     detectPortOrSystemd(PORT).then(function(_port) {
       if (!isFdObject(_port) && PORT !== _port) {
         console.log(
