@@ -1,5 +1,4 @@
 select 
-    'YES' as is_nullable, 
     tables.schema_name as table_schema, 
     tables.table_name as table_name, 
     column_name, 
