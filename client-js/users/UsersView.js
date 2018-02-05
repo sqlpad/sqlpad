@@ -99,7 +99,7 @@ class UsersView extends React.Component {
             primary
             onClick={() => this.setState({ showAddUser: true })}
           >
-            Add / invite user
+            New user
           </Button>
         </div>
         <SimpleTable
@@ -133,7 +133,7 @@ class UsersView extends React.Component {
         />
 
         <Modal
-          title="Add user"
+          title="New user"
           show={showAddUser}
           onHide={() => this.setState({ showAddUser: false })}
           renderBody={() => {

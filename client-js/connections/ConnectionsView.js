@@ -130,7 +130,7 @@ class ConnectionsView extends React.Component {
             primary
             onClick={this.handleNewConnectionClick}
           >
-            Add connection
+            New connection
           </Button>
         </div>
         <SimpleTable
@@ -190,7 +190,7 @@ class ConnectionsView extends React.Component {
           }
         />
         <Modal
-          title={selectedConnection._id ? 'Edit connection' : 'Add connection'}
+          title={selectedConnection._id ? 'Edit connection' : 'New connection'}
           show={showModal}
           onHide={() => this.setState({ showModal: false })}
           renderBody={() => {
