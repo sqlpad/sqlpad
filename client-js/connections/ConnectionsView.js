@@ -141,8 +141,7 @@ class ConnectionsView extends React.Component {
                 <SimpleTh>Name</SimpleTh>
                 <SimpleTh>Driver</SimpleTh>
                 <SimpleTh>Host</SimpleTh>
-                <SimpleTh>Database / Tenant</SimpleTh>
-                <SimpleTh>Catalog</SimpleTh>
+                <SimpleTh>Database / Tenant / Catalog</SimpleTh>
                 <SimpleTh>Schema</SimpleTh>
                 <SimpleTh>Delete</SimpleTh>
               </tr>
@@ -151,13 +150,18 @@ class ConnectionsView extends React.Component {
           renderBody={() =>
             connections.map(connection => {
               let db_name = connection.database
-              let db_schema = connection.prestoSchema
+              let db_schema = ''
               let db_port = connection.port ? ':' + connection.port : ''
+
               if (connection.driver === 'hdb') {
                 db_name = connection.hanadatabase
                 db_schema = connection.hanaSchema
                 db_port = connection.hanaport ? ':' + connection.hanaport : ''
+              } else if (connection.driver === 'presto') {
+                db_name = connection.prestoCatalog
+                db_schema = connection.prestoSchema
               }
+
               return (
                 <tr key={connection._id}>
                   <SimpleTd>
@@ -174,7 +178,6 @@ class ConnectionsView extends React.Component {
                     {db_port}
                   </SimpleTd>
                   <SimpleTd>{db_name}</SimpleTd>
-                  <SimpleTd>{connection.prestoCatalog}</SimpleTd>
                   <SimpleTd>{db_schema}</SimpleTd>
                   <SimpleTd>
                     <DeleteButton
