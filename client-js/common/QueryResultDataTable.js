@@ -2,7 +2,7 @@ import React from 'react'
 import { Table, Column, Cell } from 'fixed-data-table-2'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
-import '../css/fixed-data-table.css'
+import 'fixed-data-table-2/dist/fixed-data-table.css'
 
 const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {
