@@ -150,13 +150,13 @@ class ConnectionsView extends React.Component {
           }}
           renderBody={() =>
             connections.map(connection => {
-              var db_name = connection.database
-              var db_schema = connection.prestoSchema
-              var db_port = ':' + connection.port
+              let db_name = connection.database
+              let db_schema = connection.prestoSchema
+              let db_port = connection.port ? ':' + connection.port : ''
               if (connection.driver === 'hdb') {
                 db_name = connection.hanadatabase
                 db_schema = connection.hanaSchema
-                db_port = ':' + connection.hanaport
+                db_port = connection.hanaport ? ':' + connection.hanaport : ''
               }
               return (
                 <tr key={connection._id}>
