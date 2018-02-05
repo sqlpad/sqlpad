@@ -2,7 +2,7 @@
 
 ## 2.5.0
 
-### In development
+### February 5, 2018
 
 * Added support for SAP HANA (ccmehil)
 * Many security improvements
@@ -14,6 +14,9 @@
   * Sessions now expire (1 hour)
   * Limited amount of config info sent to front end
 * Updated styling for User and Connection admin pages (bringing boring tables back. updates to rest of app to follow)
+* Schema sidebar updates
+  * Limits presto schema sidebar to schema if provided in connection info
+  * Removed (view) label on views
 
 ## 2.4.2
 
