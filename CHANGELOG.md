@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.1
+
+### February 5, 2018
+
+* Fix early session expiration / extend session expiration every response
+
 ## 2.5.0
 
 ### February 5, 2018
