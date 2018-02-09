@@ -1,5 +1,8 @@
 # /node_modules/* and /bower_components/* ignored by default
 
 build/*
-public/*
 db/*
+docker/*
+docs-source/*
+docs/*
+public/*
