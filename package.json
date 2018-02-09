@@ -1,21 +1,11 @@
 {
   "name": "sqlpad",
   "version": "2.5.1",
-  "description": "Web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate and Vertica.",
+  "description": "Web app. Write SQL and visualize the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica and SAP HANA.",
   "license": "MIT",
-  "author": {
-    "name": "Rick Bergfalk",
-    "email": "rick.bergfalk@gmail.com"
-  },
   "engines": {
     "node": ">=6"
   },
-  "contributors": [
-    {
-      "name": "D. Can Celasun",
-      "email": "dcelasun@gmail.com"
-    }
-  ],
   "keywords": [
     "sql",
     "mssql",
@@ -24,15 +14,16 @@
     "mysql",
     "crate",
     "presto",
-    "vertica"
+    "vertica",
+    "sap",
+    "hana"
   ],
   "repository": {
     "type": "git",
     "url": "git://github.com/rickbergfalk/sqlpad"
   },
   "bugs": {
-    "url": "https://github.com/rickbergfalk/sqlpad/issues",
-    "email": "rick.bergfalk@gmail.com"
+    "url": "https://github.com/rickbergfalk/sqlpad/issues"
   },
   "proxy": "http://localhost:3010",
   "scripts": {
@@ -97,7 +88,7 @@
     "uuid": "^3.2.1",
     "vertica": "^0.5.5"
   },
-  "main": "./server/server.js",
+  "main": "./server/app.js",
   "bin": {
     "sqlpad": "./server/server.js"
   },
