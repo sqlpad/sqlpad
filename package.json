@@ -42,10 +42,10 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint '**/*.js'",
     "start-client-dev": "react-scripts start",
-    "start-server-dev": "node-dev server.js --dir ./db --port 3010 --debug",
+    "start-server-dev": "node-dev server/server.js --dir ../db --port 3010 --debug",
     "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
-    "test": "npm run lint && mocha --recursive --exit"
+    "test": "npm run lint && mocha server/test --recursive --exit"
   },
   "prettier": {
     "semi": false,
@@ -98,9 +98,9 @@
     "uuid": "^3.2.1",
     "vertica": "^0.5.5"
   },
-  "main": "server.js",
+  "main": "./server/server.js",
   "bin": {
-    "sqlpad": "./server.js"
+    "sqlpad": "./server/server.js"
   },
   "devDependencies": {
     "@rickbergfalk/sqlpad-react-scripts": "^1.0.13",

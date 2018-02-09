@@ -27,12 +27,13 @@ router.get('*/api/app', function(req, res) {
           }
         : undefined
 
-    const strategies = Object.keys(
-      passport._strategies
-    ).reduce((prev, curr) => {
-      prev[curr] = true
-      return prev
-    }, {})
+    const strategies = Object.keys(passport._strategies).reduce(
+      (prev, curr) => {
+        prev[curr] = true
+        return prev
+      },
+      {}
+    )
 
     // Get config items relevant to UI
     const uiConfig = ConfigItem.findAll()

@@ -2,7 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var minimist = require('minimist')
 var argv = minimist(process.argv.slice(2))
-var packageJson = require('../package.json')
+var packageJson = require('../../package.json')
 var userHome =
   process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME
 var savedCliFilePath = path.join(userHome, '.sqlpadrc')
