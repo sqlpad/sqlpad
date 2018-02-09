@@ -37,7 +37,6 @@
   "proxy": "http://localhost:3010",
   "scripts": {
     "build": "react-scripts build",
-    "coverage": "istanbul cover _mocha -- --recursive --exit",
     "precommit": "lint-staged",
     "prepublishOnly": "npm run build",
     "lint": "eslint '**/*.js'",
@@ -117,7 +116,6 @@
     "eslint-plugin-react": "^7.6.0",
     "fixed-data-table-2": "^0.8.9",
     "husky": "^0.14.3",
-    "istanbul": "^0.4.4",
     "keymaster": "^1.6.2",
     "lint-staged": "^6.1.0",
     "lodash.debounce": "^4.0.8",
