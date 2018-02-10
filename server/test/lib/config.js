@@ -3,8 +3,8 @@ const config = require('../../lib/config.js')
 
 const defaultConfig = require('../../lib/config/default')
 const envConfig = require('../../lib/config/env')
-const fileConfig = require('../../lib/config/file')
 const cliConfig = require('../../lib/config/cli')
+const nonUiConfig = require('../../lib/config/nonUi')
 
 describe('config', function() {
   it('default', function() {
@@ -18,17 +18,6 @@ describe('config', function() {
     assert.equal(conf.port, 8000, 'conf.port')
   })
 
-  it('file', function() {
-    const conf = fileConfig({
-      'key-path': 'key/path',
-      cert: 'cert/path',
-      admin: 'admin@email.com'
-    })
-    assert.equal(conf.keyPath, 'key/path', 'keyPath')
-    assert.equal(conf.certPath, 'cert/path', 'certPath')
-    assert.equal(conf.admin, 'admin@email.com', 'admin')
-  })
-
   it('cli', function() {
     const conf = cliConfig({
       'key-path': 'key/path',
@@ -38,6 +27,11 @@ describe('config', function() {
     assert.equal(conf.keyPath, 'key/path', 'keyPath')
     assert.equal(conf.certPath, 'cert/path', 'certPath')
     assert.equal(conf.admin, 'admin@email.com', 'admin')
+  })
+
+  // TODO test better
+  it('nonUI', function() {
+    assert(Object.keys(nonUiConfig).length > 5)
   })
 })
 

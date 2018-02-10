@@ -1,16 +1,14 @@
 /*
   Gets config values from cli
 */
-const minimist = require('minimist')
-const argv = minimist(process.argv.slice(2))
 const definitions = require('../../resources/configItems')
 
 /**
- * Gets config values from file (saved cli)
- * @param {object} argvConf optional
+ * Gets config values from argv param
+ * @param {object} argv
  * @returns {object} configMap
  */
-module.exports = function getCliConfig(argvConf = argv) {
+module.exports = function getCliConfig(argv) {
   return definitions
     .filter(definition => definition.hasOwnProperty('cliFlag'))
     .reduce((confMap, definition) => {
@@ -20,8 +18,8 @@ module.exports = function getCliConfig(argvConf = argv) {
       // TODO make consistent then deprecate old ones
       const flags = Array.isArray(cliFlag) ? cliFlag : [cliFlag]
       flags.forEach(flag => {
-        if (argvConf[flag] != null) {
-          confMap[key] = argvConf[flag]
+        if (argv[flag] != null) {
+          confMap[key] = argv[flag]
         }
       })
       return confMap
