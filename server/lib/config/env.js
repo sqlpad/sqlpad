@@ -1,5 +1,5 @@
 /*
-  Gets config values from environment vars as defined in configuration definitions file
+  Gets config values from environment
 */
 const definitions = require('../../resources/configItems')
 

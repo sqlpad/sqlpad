@@ -1,6 +1,5 @@
 /*
-  Gets file config values as defined in configuration definitions file
-  Some of these have special logic behind them, like dbPath
+  Gets config values from saved (cli) file
 */
 const fs = require('fs')
 const path = require('path')

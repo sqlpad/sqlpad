@@ -1,5 +1,5 @@
 /*
-  Gets default config values as defined in configuration definitions file
+  Gets default config values
   Some of these have special logic behind them, like dbPath
 */
 const path = require('path')
