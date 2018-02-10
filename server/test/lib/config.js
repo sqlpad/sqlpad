@@ -1,21 +1,21 @@
 const assert = require('assert')
 const config = require('../../lib/config.js')
 
-const envConfig = require('../../lib/config/env')
 const defaultConfig = require('../../lib/config/default')
+const envConfig = require('../../lib/config/env')
 const fileConfig = require('../../lib/config/file')
 const cliConfig = require('../../lib/config/cli')
 
 describe('config', function() {
-  it('env config', function() {
-    const conf = envConfig({ SQLPAD_PORT: 8000 })
-    assert.equal(conf.port, 8000, 'conf.port')
-  })
-
-  it('default config', function() {
+  it('default', function() {
     const conf = defaultConfig()
     assert.equal(conf.port, 80, 'default port')
     assert(conf.dbPath !== '$HOME/sqlpad/db', 'dbPath should change')
+  })
+
+  it('env', function() {
+    const conf = envConfig({ SQLPAD_PORT: 8000 })
+    assert.equal(conf.port, 8000, 'conf.port')
   })
 
   it('file', function() {
