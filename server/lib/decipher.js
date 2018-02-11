@@ -1,11 +1,15 @@
-var crypto = require('crypto')
-var algorithm = 'aes256'
-var config = require('./config.js')
+const crypto = require('crypto')
+const algorithm = 'aes256'
+const { passphrase } = require('../lib/config/nonUi')()
 
+/**
+ * @param {string} gibberish ciphered value that needs deciphering
+ * @returns {string} deciphered value
+ */
 module.exports = function decipher(gibberish) {
-  var returnValue = ''
+  let returnValue = ''
   try {
-    var myDecipher = crypto.createDecipher(algorithm, config.get('passphrase'))
+    const myDecipher = crypto.createDecipher(algorithm, passphrase)
     returnValue =
       myDecipher.update(gibberish, 'hex', 'utf8') + myDecipher.final('utf8')
   } catch (e) {
