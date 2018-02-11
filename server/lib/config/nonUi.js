@@ -16,15 +16,20 @@ const savedArgv = fs.existsSync(filePath)
   ? JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }))
   : {}
 
-const defaultConf = getDefault()
-const cliConf = getCli(argv)
-const savedCliConf = getCli(savedArgv)
-const envConf = getEnv()
+const defaultConfig = getDefault()
+const cliConfig = getCli(argv)
+const savedCliConfig = getCli(savedArgv)
+const envConfig = getEnv()
 
 /**
  * Get all config item values sans values from UI/db
  * @returns {object} configMap
  */
-module.exports = function getConfig() {
-  return Object.assign({}, defaultConf, envConf, savedCliConf, cliConf)
+exports.getConfig = function getConfig() {
+  return Object.assign({}, defaultConfig, envConfig, savedCliConfig, cliConfig)
 }
+
+exports.defaultConfig = defaultConfig
+exports.cliConfig = cliConfig
+exports.savedCliConfig = savedCliConfig
+exports.envConfig = envConfig
