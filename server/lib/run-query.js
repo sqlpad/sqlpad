@@ -7,7 +7,7 @@ var vertica = require('vertica')
 var crate = require('node-crate')
 var presto = require('./presto.js')
 var hdb = require('hdb')
-var config = require('./config.js')
+const { debug } = require('./config/nonUi')()
 var QueryResult = require('../models/QueryResult.js')
 var createSocksConnection = require('./socks.js')
 
@@ -19,7 +19,7 @@ module.exports = function runQuery(query, connection, callback) {
   })
   clients[conn.driver](query, conn, queryResult, function(err, queryResult) {
     queryResult.timerStop()
-    if (config.get('debug')) {
+    if (debug) {
       var resultRowCount =
         queryResult && queryResult.rows && queryResult.rows.length
           ? queryResult.rows.length
