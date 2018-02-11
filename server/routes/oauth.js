@@ -1,7 +1,6 @@
 var passport = require('passport')
 var router = require('express').Router()
-var config = require('../lib/config.js')
-const BASE_URL = config.get('baseUrl')
+const { baseUrl } = require('../lib/config/nonUi')()
 
 router.get(
   '/auth/google',
@@ -11,8 +10,8 @@ router.get(
 router.get(
   '/auth/google/callback',
   passport.authenticate('google', {
-    successRedirect: BASE_URL + '/',
-    failureRedirect: BASE_URL + '/signin'
+    successRedirect: baseUrl + '/',
+    failureRedirect: baseUrl + '/signin'
   })
 )
 

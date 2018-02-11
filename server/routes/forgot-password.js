@@ -1,10 +1,11 @@
 const router = require('express').Router()
 const uuid = require('uuid')
 const User = require('../models/User.js')
-const config = require('../lib/config.js')
 const email = require('../lib/email')
 
 router.post('/api/forgot-password', function(req, res) {
+  const { config } = req
+
   if (!req.body.email) {
     return res.json({ error: 'Email address must be provided' })
   }

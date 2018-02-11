@@ -1,10 +1,9 @@
 var router = require('express').Router()
-var config = require('../lib/config.js')
 var Connection = require('../models/Connection.js')
 var Query = require('../models/Query.js')
 var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 var mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js')
-const BASE_URL = config.get('baseUrl')
+const { baseUrl } = require('../lib/config/nonUi')()
 
 /*  render page routes
 ============================================================================= */
@@ -17,9 +16,9 @@ router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
 ) {
   var format = req.query.format
   if (format === 'table') {
-    return res.redirect(BASE_URL + '/query-table/' + req.params._id)
+    return res.redirect(baseUrl + '/query-table/' + req.params._id)
   } else if (format === 'chart') {
-    return res.redirect(BASE_URL + '/query-chart/' + req.params._id)
+    return res.redirect(baseUrl + '/query-chart/' + req.params._id)
   }
   next()
 })
