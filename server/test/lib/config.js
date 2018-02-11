@@ -1,6 +1,7 @@
 const assert = require('assert')
 const config = require('../../lib/config.js')
 
+const configItems = require('../../resources/configItems')
 const defaultConfig = require('../../lib/config/default')
 const envConfig = require('../../lib/config/env')
 const cliConfig = require('../../lib/config/cli')
@@ -29,9 +30,8 @@ describe('config', function() {
     assert.equal(conf.admin, 'admin@email.com', 'admin')
   })
 
-  // TODO test better
   it('nonUI', function() {
-    assert(Object.keys(nonUiConfig).length > 5)
+    assert.equal(Object.keys(nonUiConfig).length, configItems.length)
   })
 })
 
