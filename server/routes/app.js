@@ -1,7 +1,6 @@
 const router = require('express').Router()
 const passport = require('passport')
 const getVersion = require('../lib/get-version.js')
-const config = require('../lib/config.js')
 const User = require('../models/User.js')
 const ConfigItem = require('../models/ConfigItem.js')
 
@@ -9,6 +8,8 @@ const ConfigItem = require('../models/ConfigItem.js')
 // from the front-end. The static SPA does not know if sqlpad is mounted at
 // the root of a domain or if there is a base-url provided in the config
 router.get('*/api/app', function(req, res) {
+  const { config } = req
+
   User.adminRegistrationOpen(function(err, open) {
     if (err) {
       console.error(err)

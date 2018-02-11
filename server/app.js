@@ -72,6 +72,10 @@ if (DEBUG) {
   app.use(morgan('dev'))
 }
 app.use(function(req, res, next) {
+  // Add config ref to req
+  // TODO eventually pull UI/db config values here
+  req.config = config
+
   // Bootstrap res.locals with any common variables
   res.locals.message = null
   res.locals.navbarConnections = []
