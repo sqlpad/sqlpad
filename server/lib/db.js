@@ -1,7 +1,7 @@
 var path = require('path')
 var Datastore = require('nedb')
 var ConfigItem = require('../models/ConfigItem.js')
-var config = require('./config/nonUi')()
+var config = require('./config/nonUi').getConfig()
 var mkdirp = require('mkdirp')
 var async = require('async')
 

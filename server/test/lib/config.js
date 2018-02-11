@@ -5,7 +5,7 @@ const configItems = require('../../resources/configItems')
 const defaultConfig = require('../../lib/config/default')
 const envConfig = require('../../lib/config/env')
 const cliConfig = require('../../lib/config/cli')
-const nonUiConfig = require('../../lib/config/nonUi')
+const nonUiConfig = require('../../lib/config/nonUi').getConfig()
 
 describe('config', function() {
   it('default', function() {
@@ -31,7 +31,7 @@ describe('config', function() {
   })
 
   it('nonUI', function() {
-    assert.equal(Object.keys(nonUiConfig()).length, configItems.length)
+    assert.equal(Object.keys(nonUiConfig).length, configItems.length)
   })
 })
 

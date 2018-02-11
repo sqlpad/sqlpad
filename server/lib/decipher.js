@@ -1,6 +1,6 @@
 const crypto = require('crypto')
 const algorithm = 'aes256'
-const { passphrase } = require('../lib/config/nonUi')()
+const { passphrase } = require('../lib/config/nonUi').getConfig()
 
 /**
  * @param {string} gibberish ciphered value that needs deciphering

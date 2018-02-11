@@ -12,7 +12,7 @@ const {
   googleClientSecret,
   publicUrl,
   disableUserpassAuth
-} = require('../lib/config/nonUi')()
+} = require('../lib/config/nonUi').getConfig()
 
 passport.serializeUser(function(user, done) {
   done(null, user.id)

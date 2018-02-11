@@ -7,7 +7,7 @@ var vertica = require('vertica')
 var crate = require('node-crate')
 var presto = require('./presto.js')
 var hdb = require('hdb')
-const { debug } = require('./config/nonUi')()
+const { debug } = require('./config/nonUi').getConfig()
 var QueryResult = require('../models/QueryResult.js')
 var createSocksConnection = require('./socks.js')
 
