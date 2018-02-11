@@ -1,6 +1,3 @@
-/*
-  Gets config values from cli
-*/
 const definitions = require('../../resources/configItems')
 
 /**
