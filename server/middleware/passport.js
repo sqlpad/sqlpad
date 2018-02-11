@@ -114,8 +114,14 @@ function passportGoogleStrategyHandler(
         })
       },
       function createUserIfNeeded(data, next) {
-        if (data.user) return next(null, data)
-        if (data.openAdminRegistration || checkWhitelist(profile.email)) {
+        if (data.user) {
+          return next(null, data)
+        }
+        const whitelistedDomains = config.get('whitelistedDomains')
+        if (
+          data.openAdminRegistration ||
+          checkWhitelist(whitelistedDomains, profile.email)
+        ) {
           data.user = new User({
             email: profile.email,
             role: data.openAdminRegistration ? 'admin' : 'editor'
