@@ -1,11 +1,13 @@
 var path = require('path')
 var Datastore = require('nedb')
 var ConfigItem = require('../models/ConfigItem.js')
-var config = require('./config.js')
+var config = require('./config/nonUi')()
 var mkdirp = require('mkdirp')
 var async = require('async')
-const DB_PATH = config.get('dbPath')
-const DEBUG = config.get('debug')
+
+const DB_PATH = config.dbPath
+const DEBUG = config.debug
+const PORT = config.port
 
 mkdirp.sync(path.join(DB_PATH, '/cache'))
 
@@ -49,7 +51,9 @@ async.series(
       async.eachSeries(
         db.instances,
         function(dbname, next) {
-          if (DEBUG) console.log('Loading %s..', dbname)
+          if (DEBUG) {
+            console.log('Loading %s..', dbname)
+          }
           db[dbname].loadDatabase(next)
         },
         next
@@ -92,7 +96,7 @@ function setConfigDbValues(next) {
 }
 
 function ensureAdmin(next) {
-  var adminEmail = config.get('admin')
+  const adminEmail = config.admin
   if (!adminEmail) return next()
 
   // if an admin was passed in the command line, check to see if a user exists with that email
@@ -132,7 +136,7 @@ function ensureAdmin(next) {
           )
           console.log(
             '\nPlease visit http://localhost:' +
-              config.get('port') +
+              PORT +
               '/signup/ to complete registration.'
           )
           next()
