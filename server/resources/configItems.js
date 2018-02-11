@@ -129,6 +129,16 @@ const configItems = [
   },
   {
     interface: 'env',
+    key: 'publicUrl',
+    envVar: 'PUBLIC_URL',
+    cliFlag: 'public-url',
+    description:
+      'Public URL used for OAuth setup and links in email communications. Protocol is expected to be provided. Example: https://mysqlpad.com',
+    default: '',
+    uiDependency: true
+  },
+  {
+    interface: 'env',
     key: 'disableUserpassAuth',
     envVar: 'DISABLE_USERPASS_AUTH',
     description:
@@ -186,17 +196,6 @@ const configItems = [
       'If set to false, table and chart result links will be operational without having to log in. (These links only execute saved SQL queries, and do not open an endpoint to execute raw SQL.)',
     options: [true, false],
     default: true
-  },
-  {
-    interface: 'ui',
-    key: 'publicUrl',
-    envVar: 'PUBLIC_URL',
-    cliFlag: 'public-url',
-    label: 'Public Url',
-    description:
-      'Public URL used for OAuth setup and links in email communications. Protocol is expected to be provided. Example: https://mysqlpad.com',
-    default: '',
-    uiDependency: true
   },
   {
     interface: 'ui',
