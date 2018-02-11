@@ -1,3 +1,4 @@
+var async = require('async')
 var passport = require('passport')
 var PassportLocalStrategy = require('passport-local').Strategy
 var PassportGoogleStrategy = require('passport-google-oauth2').Strategy
@@ -5,13 +6,13 @@ var BasicStrategy = require('passport-http').BasicStrategy
 var User = require('../models/User.js')
 var config = require('../lib/config.js')
 var checkWhitelist = require('../lib/check-whitelist.js')
-var async = require('async')
-
-const BASE_URL = config.get('baseUrl')
-const GOOGLE_CLIENT_ID = config.get('googleClientId')
-const GOOGLE_CLIENT_SECRET = config.get('googleClientSecret')
-const PUBLIC_URL = config.get('publicUrl')
-const DISABLE_USERPASS_AUTH = config.get('disableUserpassAuth')
+const {
+  baseUrl,
+  googleClientId,
+  googleClientSecret,
+  publicUrl,
+  disableUserpassAuth
+} = require('../lib/config/nonUi')()
 
 passport.serializeUser(function(user, done) {
   done(null, user.id)
@@ -33,7 +34,7 @@ passport.deserializeUser(function(id, done) {
   })
 })
 
-if (!DISABLE_USERPASS_AUTH) {
+if (!disableUserpassAuth) {
   passport.use(
     new PassportLocalStrategy(
       {
@@ -77,13 +78,13 @@ if (!DISABLE_USERPASS_AUTH) {
   )
 }
 
-if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET && PUBLIC_URL) {
+if (googleClientId && googleClientSecret && publicUrl) {
   passport.use(
     new PassportGoogleStrategy(
       {
-        clientID: GOOGLE_CLIENT_ID,
-        clientSecret: GOOGLE_CLIENT_SECRET,
-        callbackURL: PUBLIC_URL + BASE_URL + '/auth/google/callback',
+        clientID: googleClientId,
+        clientSecret: googleClientSecret,
+        callbackURL: publicUrl + baseUrl + '/auth/google/callback',
         passReqToCallback: true
       },
       passportGoogleStrategyHandler
