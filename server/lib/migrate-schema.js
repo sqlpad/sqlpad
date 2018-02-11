@@ -1,12 +1,10 @@
 var fs = require('fs')
 var path = require('path')
 var async = require('async')
-var config = require('./config.js')
 var db = require('./db.js')
 var Cache = require('../models/Cache.js')
-const DB_PATH = config.get('dbPath')
-const DEBUG = config.get('debug')
-var schemaVersionFilePath = path.join(DB_PATH + '/schemaVersion.json')
+const { dbPath, debug } = require('../lib/config/nonUi')()
+var schemaVersionFilePath = path.join(dbPath + '/schemaVersion.json')
 
 // migrations must increment by 1
 var migrations = {
@@ -59,7 +57,9 @@ var migrations = {
 function runMigrations(currentVersion, callback) {
   var nextVersion = currentVersion + 1
   if (migrations[nextVersion]) {
-    if (DEBUG) console.log('Migrating schema to v%d', nextVersion)
+    if (debug) {
+      console.log('Migrating schema to v%d', nextVersion)
+    }
     migrations[nextVersion](function(err) {
       if (err) return callback(err)
 
@@ -85,7 +85,9 @@ module.exports = function migrateSchema(callback) {
     })
 
     if (currentVersion === latestVersion) {
-      if (DEBUG) console.log('Schema is up to date (v%d).', latestVersion)
+      if (debug) {
+        console.log('Schema is up to date (v%d).', latestVersion)
+      }
       return callback()
     }
 
