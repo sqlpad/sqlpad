@@ -1,12 +1,11 @@
 var passport = require('passport')
 var router = require('express').Router()
-var config = require('../lib/config.js')
 var checkWhitelist = require('../lib/check-whitelist')
 var User = require('../models/User.js')
 
 // NOTE: getting config here during module init is okay
 // since these configs are set via env or cli
-const DISABLE_USERPASS_AUTH = config.get('disableUserpassAuth')
+const { disableUserpassAuth } = require('../lib/config/nonUi')()
 
 /*    Sign Up
 ============================================================================= */
@@ -20,7 +19,7 @@ function adminRegistrationOpen(req, res, next) {
 
 /*  Some routes should only exist if userpath auth is enabled
 ============================================================================= */
-if (!DISABLE_USERPASS_AUTH) {
+if (!disableUserpassAuth) {
   router.post('/api/signup', adminRegistrationOpen, function(req, res) {
     if (req.body.password !== req.body.passwordConfirmation) {
       return res.json({ error: 'Passwords do not match' })

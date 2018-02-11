@@ -1,6 +1,5 @@
 const router = require('express').Router()
 const User = require('../models/User.js')
-const config = require('../lib/config.js')
 const email = require('../lib/email')
 const mustBeAdmin = require('../middleware/must-be-admin.js')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
@@ -36,6 +35,7 @@ router.get('/api/users', mustBeAuthenticated, function(req, res) {
 
 // create/whitelist/invite user
 router.post('/api/users', mustBeAdmin, function(req, res) {
+  const { config } = req
   User.findOneByEmail(req.body.email, function(err, user) {
     if (err) {
       console.error(err)

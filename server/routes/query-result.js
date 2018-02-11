@@ -3,7 +3,6 @@ var sanitize = require('sanitize-filename')
 var moment = require('moment')
 var async = require('async')
 var router = require('express').Router()
-var config = require('../lib/config.js')
 var decipher = require('../lib/decipher.js')
 var Connection = require('../models/Connection.js')
 var Cache = require('../models/Cache.js')
@@ -58,7 +57,8 @@ router.post('/api/query-result', mustBeAuthenticated, function(req, res) {
     connectionId: req.body.connectionId,
     cacheKey: req.body.cacheKey,
     queryName: req.body.queryName,
-    queryText: req.body.queryText
+    queryText: req.body.queryText,
+    config: req.config
   }
   getQueryResult(data, function(err, queryResult) {
     if (err) {
@@ -96,7 +96,7 @@ function getConnection(data, next) {
   Connection.findOneById(data.connectionId, function(err, connection) {
     if (err) return next(err)
     if (!connection) return next('Please choose a connection')
-    connection.maxRows = Number(config.get('queryResultMaxRows'))
+    connection.maxRows = Number(data.config.get('queryResultMaxRows'))
     connection.username = decipher(connection.username)
     connection.password = decipher(connection.password)
     data.connection = connection
@@ -136,8 +136,7 @@ function execRunQuery(data, next) {
 }
 
 function createDownloads(data, next) {
-  const ALLOW_CSV_DOWNLOAD = config.get('allowCsvDownload')
-  if (ALLOW_CSV_DOWNLOAD) {
+  if (data.config.get('allowCsvDownload')) {
     var queryResult = data.queryResult
     var cache = data.cache
     cache.writeXlsx(queryResult, function() {

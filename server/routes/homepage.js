@@ -7,10 +7,11 @@
 ============================================================================= */
 var router = require('express').Router()
 var Connection = require('../models/Connection.js')
-var config = require('../lib/config.js')
-const BASE_URL = config.get('baseUrl')
 
 router.get('/', function(req, res, next) {
+  const { config } = req
+  const BASE_URL = config.get('baseUrl')
+
   Connection.findAll(function(err, connections) {
     if (err) {
       console.error(err)
