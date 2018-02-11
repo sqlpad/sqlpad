@@ -2,11 +2,10 @@ var fs = require('fs')
 var path = require('path')
 var Joi = require('joi')
 var db = require('../lib/db.js')
-var config = require('../lib/config.js')
-const DB_PATH = config.get('dbPath')
 var rimraf = require('rimraf')
 var xlsx = require('node-xlsx')
 var json2csv = require('json2csv')
+const { dbPath } = require('../lib/config/nonUi')()
 
 var schema = {
   _id: Joi.string().optional(), // will be auto-gen by nedb
@@ -29,11 +28,11 @@ var Cache = function Cache(data) {
 }
 
 Cache.prototype.xlsxFilePath = function CacheXlsxFilePath() {
-  return path.join(DB_PATH, '/cache/', this.cacheKey + '.xlsx')
+  return path.join(dbPath, '/cache/', this.cacheKey + '.xlsx')
 }
 
 Cache.prototype.csvFilePath = function CacheCsvFilePath() {
-  return path.join(DB_PATH, '/cache/', this.cacheKey + '.csv')
+  return path.join(dbPath, '/cache/', this.cacheKey + '.csv')
 }
 
 Cache.prototype.filePaths = function CacheFilePaths() {
@@ -152,7 +151,7 @@ Cache.removeExpired = function CacheRemoveExpired(callback) {
 Cache.removeAll = function CacheRemoveAll(callback) {
   // first remove all the cache files
   // then remove the cache db records
-  rimraf(path.join(DB_PATH, '/cache/*'), function(err) {
+  rimraf(path.join(dbPath, '/cache/*'), function(err) {
     if (err) {
       console.error(err)
       return callback(err)
