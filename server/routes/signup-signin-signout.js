@@ -40,9 +40,10 @@ if (!DISABLE_USERPASS_AUTH) {
       if (!user) {
         // if open admin registration or whitelisted email create user
         // otherwise exit
+        const whitelistedDomains = req.config.get('whitelistedDomains')
         if (
           res.locals.adminRegistrationOpen ||
-          checkWhitelist(req.body.email)
+          checkWhitelist(whitelistedDomains, req.body.email)
         ) {
           user = new User({
             email: req.body.email,
