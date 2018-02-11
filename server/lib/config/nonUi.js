@@ -21,4 +21,10 @@ const cliConf = getCli(argv)
 const savedCliConf = getCli(savedArgv)
 const envConf = getEnv()
 
-module.exports = Object.assign({}, defaultConf, envConf, savedCliConf, cliConf)
+/**
+ * Get all config item values sans values from UI/db
+ * @returns {object} configMap
+ */
+module.exports = function getConfig() {
+  return Object.assign({}, defaultConf, envConf, savedCliConf, cliConf)
+}

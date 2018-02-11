@@ -31,7 +31,7 @@ describe('config', function() {
   })
 
   it('nonUI', function() {
-    assert.equal(Object.keys(nonUiConfig).length, configItems.length)
+    assert.equal(Object.keys(nonUiConfig()).length, configItems.length)
   })
 })
 
