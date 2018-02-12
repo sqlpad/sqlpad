@@ -1,5 +1,6 @@
 const assert = require('assert')
-const config = require('../../lib/config.js')
+const configUtil = require('../../lib/config')
+const db = require('../../lib/db')
 
 const configItems = require('../../resources/configItems')
 const defaultConfig = require('../../lib/config/default')
@@ -35,7 +36,7 @@ describe('config', function() {
   })
 })
 
-describe('lib/config.js', function() {
+describe('lib/config', function() {
   // TODO test when control is inverted/dependencies injected
   // set any process.env variables or args here
   // process.argv.push('--debug')
@@ -44,18 +45,14 @@ describe('lib/config.js', function() {
 
   describe('#get()', function() {
     it.skip('should get a value provided by default', function() {
-      assert.equal(config.get('port'), 80, 'port=80')
-    })
-    it.skip('should get a value provided by environment', function() {
-      assert.equal(
-        config.get('googleClientId', 'google-client-id', 'googleClientId')
-      )
-    })
-    it.skip('cli should override env var', function() {
-      assert.equal(config.get('debug'), true, 'debug=true')
+      return configUtil.getHelper(db).then(config => {
+        assert.equal(config.get('port'), 80, 'port=80')
+      })
     })
     it('should only accept key in config items', function() {
-      assert.throws(() => config.get('non-existent-key'), Error)
+      return configUtil.getHelper(db).then(config => {
+        assert.throws(() => config.get('non-existent-key'), Error)
+      })
     })
   })
 })
