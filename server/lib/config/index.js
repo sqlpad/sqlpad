@@ -2,11 +2,11 @@ const nonUi = require('./nonUi')
 const ui = require('./ui')
 
 /**
- * Gets config from all sources, and returns config helper with getters
+ * Gets config helper using all config sources
  * @param {db} db
  * @returns {Promise} configHelper
  */
-module.exports = function getAllConfig(db) {
+exports.getHelper = function getAllConfig(db) {
   const { defaultConfig, envConfig, savedCliConfig, cliConfig } = nonUi
   return ui(db).then(uiConfig => {
     const all = Object.assign(
