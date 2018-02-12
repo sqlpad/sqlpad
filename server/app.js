@@ -5,7 +5,8 @@ const express = require('express')
 const helmet = require('helmet')
 const session = require('express-session')
 const MemoryStore = require('memorystore')(session)
-const config = require('./lib/config.js')
+const configUtil = require('./lib/config')
+const db = require('./lib/db')
 const packageJson = require('../package.json')
 const {
   baseUrl,
@@ -72,21 +73,28 @@ if (debug) {
 }
 app.use(function(req, res, next) {
   // Add config ref to req
-  // TODO eventually pull UI/db config values here
-  req.config = config
-
-  // Bootstrap res.locals with any common variables
-  res.locals.message = null
-  res.locals.navbarConnections = []
-  res.locals.debug = null
-  res.locals.query = null
-  res.locals.queryMenu = false
-  res.locals.session = req.session || null
-  res.locals.pageTitle = ''
-  res.locals.user = req.user
-  res.locals.isAuthenticated = req.isAuthenticated()
-  res.locals.baseUrl = baseUrl
-  next()
+  configUtil
+    .getHelper(db)
+    .then(config => {
+      req.config = config
+      // Bootstrap res.locals with any common variables
+      // TODO figure out if these can be removed
+      res.locals.message = null
+      res.locals.navbarConnections = []
+      res.locals.debug = null
+      res.locals.query = null
+      res.locals.queryMenu = false
+      res.locals.session = req.session || null
+      res.locals.pageTitle = ''
+      res.locals.user = req.user
+      res.locals.isAuthenticated = req.isAuthenticated()
+      res.locals.baseUrl = baseUrl
+      next()
+    })
+    .catch(error => {
+      console.error('Error getting config helper', error)
+      next(error)
+    })
 })
 
 /*  Passport setup
