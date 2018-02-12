@@ -4,28 +4,21 @@ const mustBeAdmin = require('../middleware/must-be-admin.js')
 router.get('/api/config-items', mustBeAdmin, function(req, res) {
   const { config } = req
 
-  return config
-    .getItems()
-    .then(configItems => {
-      return res.json({
-        configItems: configItems.map(function(item) {
-          if (item.sensitive && item.interface === 'env') {
-            item.effectiveValue = item.effectiveValue ? '**********' : ''
-            item.dbValue = item.dbValue ? '**********' : ''
-            item.default = item.default ? '**********' : ''
-            item.envValue = item.envValue ? '**********' : ''
-            item.cliValue = item.cliValue ? '**********' : ''
-            item.savedCliValue = item.savedCliValue ? '**********' : ''
-          }
-          return item
-        })
-      })
-    })
-    .catch(error => {
-      return res.json({
-        error: 'Problem getting config items'
-      })
-    })
+  const configItems = config.getItems().map(function(item) {
+    if (item.sensitive && item.interface === 'env') {
+      item.effectiveValue = item.effectiveValue ? '**********' : ''
+      item.dbValue = item.dbValue ? '**********' : ''
+      item.default = item.default ? '**********' : ''
+      item.envValue = item.envValue ? '**********' : ''
+      item.cliValue = item.cliValue ? '**********' : ''
+      item.savedCliValue = item.savedCliValue ? '**********' : ''
+    }
+    return item
+  })
+
+  return res.json({
+    configItems: configItems
+  })
 })
 
 router.post('/api/config-values/:key', mustBeAdmin, function(req, res) {
