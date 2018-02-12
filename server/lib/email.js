@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer')
 const configUtil = require('./config')
 const db = require('./db')
-const { baseUrl, port, publicUrl } = require('./config').getConfig()
+const { baseUrl, port, publicUrl } = require('./config').getPreDbConfig()
 
 /**
  * Get full sqlpad url

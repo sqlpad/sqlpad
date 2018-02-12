@@ -3,7 +3,7 @@ var Connection = require('../models/Connection.js')
 var Query = require('../models/Query.js')
 var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 var mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js')
-const { baseUrl } = require('../lib/config').getConfig()
+const { baseUrl } = require('../lib/config').getPreDbConfig()
 
 /*  render page routes
 ============================================================================= */

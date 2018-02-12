@@ -6,7 +6,7 @@ const configItems = require('../../resources/configItems')
 const fromDefault = require('../../lib/config/fromDefault')
 const fromEnv = require('../../lib/config/fromEnv')
 const fromCli = require('../../lib/config/fromCli')
-const nonUiConfig = require('../../lib/config').getConfig()
+const nonUiConfig = require('../../lib/config').getPreDbConfig()
 
 describe('config', function() {
   it('default', function() {

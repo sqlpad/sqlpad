@@ -72,7 +72,7 @@ function makeSave(db) {
  * Get all config item values sans values from UI/db
  * @returns {object} configMap
  */
-exports.getConfig = function getConfig() {
+exports.getPreDbConfig = function getPreDbConfig() {
   return Object.assign({}, defaultConfig, envConfig, savedCliConfig, cliConfig)
 }
 

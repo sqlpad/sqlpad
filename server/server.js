@@ -18,7 +18,7 @@ const {
   keyPath,
   certPath,
   systemdSocket
-} = require('./lib/config').getConfig()
+} = require('./lib/config').getPreDbConfig()
 const db = require('./lib/db')
 
 function isFdObject(ob) {

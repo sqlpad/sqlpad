@@ -1,6 +1,6 @@
 var path = require('path')
 var Datastore = require('nedb')
-const { admin, dbPath, debug, port } = require('./config').getConfig()
+const { admin, dbPath, debug, port } = require('./config').getPreDbConfig()
 var mkdirp = require('mkdirp')
 var async = require('async')
 
