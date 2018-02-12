@@ -68,6 +68,20 @@ function makeSave(db) {
   }
 }
 
+function setBy(cliConfig, savedCliConfig, envConfig, dbConfig, key) {
+  if (cliConfig[key]) {
+    return 'cli'
+  } else if (savedCliConfig[key]) {
+    return 'saved cli'
+  } else if (envConfig[key]) {
+    return 'env'
+  } else if (dbConfig[key]) {
+    return 'db'
+  } else {
+    return 'default'
+  }
+}
+
 /**
  * Get all config item values sans values from UI/db
  * @returns {object} configMap
@@ -82,11 +96,11 @@ exports.getPreDbConfig = function getPreDbConfig() {
  * @returns {Promise} configHelper
  */
 exports.getHelper = function getHelper(db) {
-  return fromDb(db).then(uiConfig => {
+  return fromDb(db).then(dbConfig => {
     const all = Object.assign(
       {},
       defaultConfig,
-      uiConfig,
+      dbConfig,
       envConfig,
       savedCliConfig,
       cliConfig
@@ -103,10 +117,17 @@ exports.getHelper = function getHelper(db) {
         return definitions.map(definition => {
           return Object.assign({}, definition, {
             effectiveValue: all[definition.key],
+            effectiveValueSource: setBy(
+              cliConfig,
+              savedCliConfig,
+              envConfig,
+              dbConfig,
+              definition.key
+            ),
             envValue: envConfig[definition.key],
             cliValue: cliConfig[definition.key],
             savedCliValue: savedCliConfig[definition.key],
-            dbValue: uiConfig[definition.key]
+            dbValue: dbConfig[definition.key]
           })
         })
       },
