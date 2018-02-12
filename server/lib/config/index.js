@@ -10,9 +10,7 @@ function makeSave(db) {
       if (definition.interface !== 'ui') {
         return reject(
           new Error(
-            'Config Item ' +
-              this.key +
-              ' must use ui interface to be saved to db'
+            `Config Item ${key} must use ui interface to be saved to db`
           )
         )
       }
