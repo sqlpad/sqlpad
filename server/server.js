@@ -71,12 +71,8 @@ db.onLoad(function(err) {
           httpsPort,
           _port
         )
-        // Persist the new port to the in-memory store. This is kinda hacky
-        // Assign value to cliValue since it overrides all other values
-        const ConfigItem = require('./models/ConfigItem.js')
-        const portConfigItem = ConfigItem.findOneByKey('httpsPort')
-        portConfigItem.cliValue = _port
-        portConfigItem.computeEffectiveValue()
+        // TODO FIXME XXX  Persist the new port to the in-memory store.
+        // config.set('httpsPort', _port)
       }
 
       const privateKey = fs.readFileSync(keyPath, 'utf8')
@@ -109,12 +105,8 @@ db.onLoad(function(err) {
           port,
           _port
         )
-        // Persist the new port to the in-memory store. This is kinda hacky
-        // Assign value to cliValue since it overrides all other values
-        const ConfigItem = require('./models/ConfigItem.js')
-        const portConfigItem = ConfigItem.findOneByKey('port')
-        portConfigItem.cliValue = _port
-        portConfigItem.computeEffectiveValue()
+        // TODO FIXME XXX  Persist the new port to the in-memory store.
+        // config.set('port', _port)
       }
       http.createServer(app).listen(_port, ip, function() {
         console.log(
