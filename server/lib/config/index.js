@@ -1,6 +1,27 @@
-const nonUi = require('./nonUi')
-const ui = require('./ui')
+const fs = require('fs')
+const path = require('path')
+const minimist = require('minimist')
 const definitions = require('../../resources/configItems')
+const fromDb = require('./fromDb')
+const fromDefault = require('./fromDefault')
+const fromEnv = require('./fromEnv')
+const fromCli = require('./fromCli')
+
+// argv
+const argv = minimist(process.argv.slice(2))
+
+// Saved argv
+const userHome =
+  process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME
+const filePath = path.join(userHome, '.sqlpadrc')
+const savedArgv = fs.existsSync(filePath)
+  ? JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }))
+  : {}
+
+const defaultConfig = fromDefault()
+const cliConfig = fromCli(argv)
+const savedCliConfig = fromCli(savedArgv)
+const envConfig = fromEnv()
 
 function makeSave(db) {
   return function save(key, value) {
@@ -48,13 +69,20 @@ function makeSave(db) {
 }
 
 /**
+ * Get all config item values sans values from UI/db
+ * @returns {object} configMap
+ */
+exports.getConfig = function getConfig() {
+  return Object.assign({}, defaultConfig, envConfig, savedCliConfig, cliConfig)
+}
+
+/**
  * Gets config helper using all config sources
  * @param {db} db
  * @returns {Promise} configHelper
  */
 exports.getHelper = function getAllConfig(db) {
-  const { defaultConfig, envConfig, savedCliConfig, cliConfig } = nonUi
-  return ui(db).then(uiConfig => {
+  return fromDb(db).then(uiConfig => {
     const all = Object.assign(
       {},
       defaultConfig,

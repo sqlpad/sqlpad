@@ -18,7 +18,7 @@ const {
   keyPath,
   certPath,
   systemdSocket
-} = require('./lib/config/nonUi').getConfig()
+} = require('./lib/config').getConfig()
 const db = require('./lib/db')
 
 function isFdObject(ob) {

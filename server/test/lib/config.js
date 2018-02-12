@@ -3,25 +3,25 @@ const configUtil = require('../../lib/config')
 const db = require('../../lib/db')
 
 const configItems = require('../../resources/configItems')
-const defaultConfig = require('../../lib/config/default')
-const envConfig = require('../../lib/config/env')
-const cliConfig = require('../../lib/config/cli')
-const nonUiConfig = require('../../lib/config/nonUi').getConfig()
+const fromDefault = require('../../lib/config/fromDefault')
+const fromEnv = require('../../lib/config/fromEnv')
+const fromCli = require('../../lib/config/fromCli')
+const nonUiConfig = require('../../lib/config').getConfig()
 
 describe('config', function() {
   it('default', function() {
-    const conf = defaultConfig()
+    const conf = fromDefault()
     assert.equal(conf.port, 80, 'default port')
     assert(conf.dbPath !== '$HOME/sqlpad/db', 'dbPath should change')
   })
 
   it('env', function() {
-    const conf = envConfig({ SQLPAD_PORT: 8000 })
+    const conf = fromEnv({ SQLPAD_PORT: 8000 })
     assert.equal(conf.port, 8000, 'conf.port')
   })
 
   it('cli', function() {
-    const conf = cliConfig({
+    const conf = fromCli({
       'key-path': 'key/path',
       cert: 'cert/path',
       admin: 'admin@email.com'
@@ -44,7 +44,7 @@ describe('lib/config', function() {
   // process.env.GOOGLE_CLIENT_ID = 'google-client-id'
 
   describe('#get()', function() {
-    it.skip('should get a value provided by default', function() {
+    it('should get a value provided by default', function() {
       return configUtil.getHelper(db).then(config => {
         assert.equal(config.get('port'), 80, 'port=80')
       })

@@ -1,6 +1,6 @@
 var passport = require('passport')
 var router = require('express').Router()
-const { baseUrl } = require('../lib/config/nonUi').getConfig()
+const { baseUrl } = require('../lib/config').getConfig()
 
 router.get(
   '/auth/google',

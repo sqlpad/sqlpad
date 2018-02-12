@@ -14,7 +14,7 @@ const {
   googleClientSecret,
   publicUrl,
   debug
-} = require('./lib/config/nonUi').getConfig()
+} = require('./lib/config').getConfig()
 
 /*  Express setup
 ============================================================================= */
