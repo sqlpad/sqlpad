@@ -23,6 +23,7 @@ exports.getHelper = function getAllConfig(db) {
         if (!all.hasOwnProperty(key)) {
           throw new Error(`config item ${key} not defined in configItems.js`)
         }
+        return all[key]
       },
       smtpConfigured: () =>
         all.smtpHost &&
