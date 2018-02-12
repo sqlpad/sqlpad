@@ -81,7 +81,7 @@ exports.getConfig = function getConfig() {
  * @param {db} db
  * @returns {Promise} configHelper
  */
-exports.getHelper = function getAllConfig(db) {
+exports.getHelper = function getHelper(db) {
   return fromDb(db).then(uiConfig => {
     const all = Object.assign(
       {},
