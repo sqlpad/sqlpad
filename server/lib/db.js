@@ -1,6 +1,5 @@
 var path = require('path')
 var Datastore = require('nedb')
-var ConfigItem = require('../models/ConfigItem.js')
 const { admin, dbPath, debug, port } = require('./config/nonUi').getConfig()
 var mkdirp = require('mkdirp')
 var async = require('async')
@@ -68,7 +67,6 @@ async.series(
     function index(next) {
       db.config.ensureIndex({ fieldName: 'key', unique: true }, next)
     },
-    setConfigDbValues,
     ensureAdmin,
     setAutocompaction
   ],
@@ -78,18 +76,6 @@ async.series(
     onLoads.forEach(fn => fn(err))
   }
 )
-
-// loop through items in the config nedb and set the dbValue cache
-function setConfigDbValues(next) {
-  db.config.find({}, function(err, dbItems) {
-    if (err) return next(err)
-    dbItems.forEach(function(item) {
-      var configItem = ConfigItem.findOneByKey(item.key)
-      if (configItem) configItem.setDbValue(item.value)
-    })
-    next()
-  })
-}
 
 function ensureAdmin(next) {
   const adminEmail = admin
