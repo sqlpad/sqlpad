@@ -1,9 +1,11 @@
-const ConfigItem = require('../models/ConfigItem.js')
 const router = require('express').Router()
 const mustBeAdmin = require('../middleware/must-be-admin.js')
 
 router.get('/api/config-items', mustBeAdmin, function(req, res) {
-  return ConfigItem.findAll()
+  const { config } = req
+
+  return config
+    .getItems()
     .then(configItems => {
       return res.json({
         configItems: configItems.map(function(item) {
@@ -27,9 +29,11 @@ router.get('/api/config-items', mustBeAdmin, function(req, res) {
 })
 
 router.post('/api/config-values/:key', mustBeAdmin, function(req, res) {
+  const { config } = req
   const key = req.params.key
   const value = req.body.value
-  ConfigItem.save(key, value)
+  config
+    .save(key, value)
     .then(() => res.json({}))
     .catch(error => {
       console.error(error)
