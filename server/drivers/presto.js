@@ -1,6 +1,26 @@
 const presto = require('./presto.js')
 
-exports.runQuery = function(query, connection, queryResult, callback) {
+function getPrestoSchemaSql(catalog, schema) {
+  const schemaSql = schema ? `AND table_schema = '${schema}'` : ''
+  return `
+    SELECT 
+      c.table_schema, 
+      c.table_name, 
+      c.column_name, 
+      c.data_type
+    FROM 
+      INFORMATION_SCHEMA.COLUMNS c
+    WHERE
+      table_catalog = '${catalog}'
+      ${schemaSql}
+    ORDER BY 
+      c.table_schema, 
+      c.table_name, 
+      c.ordinal_position
+  `
+}
+
+function runQuery(query, connection, queryResult, callback) {
   const port = connection.port || 8080
   const prestoConfig = {
     url: `http://${connection.host}:${port}`,
@@ -36,4 +56,9 @@ exports.runQuery = function(query, connection, queryResult, callback) {
       console.error({ error })
       return callback(error.message, queryResult)
     })
+}
+
+module.exports = {
+  getPrestoSchemaSql,
+  runQuery
 }

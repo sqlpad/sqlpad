@@ -4,6 +4,7 @@ const decipher = require('./decipher.js')
 const crateDriver = require('../drivers/crate')
 const postgresDriver = require('../drivers/pg')
 const verticaDriver = require('../drivers/vertica')
+const prestoDriver = require('../drivers/presto')
 
 function getStandardSchemaSql(whereSql = '') {
   return `
@@ -19,26 +20,6 @@ function getStandardSchemaSql(whereSql = '') {
     ORDER BY 
       t.table_schema, 
       t.table_name, 
-      c.ordinal_position
-  `
-}
-
-function getPrestoSchemaSql(catalog, schema) {
-  const schemaSql = schema ? `AND table_schema = '${schema}'` : ''
-  return `
-    SELECT 
-      c.table_schema, 
-      c.table_name, 
-      c.column_name, 
-      c.data_type
-    FROM 
-      INFORMATION_SCHEMA.COLUMNS c
-    WHERE
-      table_catalog = '${catalog}'
-      ${schemaSql}
-    ORDER BY 
-      c.table_schema, 
-      c.table_name, 
       c.ordinal_position
   `
 }
@@ -65,7 +46,10 @@ function getPrimarySql(connection) {
   } else if (connection.driver === 'crate') {
     return crateDriver.SCHEMA_SQL_V1
   } else if (connection.driver === 'presto') {
-    return getPrestoSchemaSql(connection.prestoCatalog, connection.prestoSchema)
+    return prestoDriver.getPrestoSchemaSql(
+      connection.prestoCatalog,
+      connection.prestoSchema
+    )
   } else if (connection.driver === 'postgres') {
     return postgresDriver.SCHEMA_SQL
   } else if (connection.driver === 'hdb') {
