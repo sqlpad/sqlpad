@@ -131,6 +131,14 @@ exports.getHelper = function getHelper(db) {
           })
         })
       },
+      getUiConfig: () => {
+        return definitions
+          .filter(item => item.uiDependency)
+          .reduce((configMap, item) => {
+            configMap[item.key] = all[item.key]
+            return configMap
+          }, {})
+      },
       save: makeSave(db),
       smtpConfigured: () =>
         all.smtpHost &&

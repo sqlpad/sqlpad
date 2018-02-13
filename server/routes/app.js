@@ -2,7 +2,6 @@ const router = require('express').Router()
 const passport = require('passport')
 const getVersion = require('../lib/get-version.js')
 const User = require('../models/User.js')
-const configItems = require('../lib/config/configItems')
 
 // NOTE: this route needs a wildcard because it is fetched as a relative url
 // from the front-end. The static SPA does not know if sqlpad is mounted at
@@ -36,18 +35,10 @@ router.get('*/api/app', function(req, res) {
       {}
     )
 
-    // Get config items relevant to UI
-    const uiConfig = configItems
-      .filter(item => item.uiDependency)
-      .reduce((configMap, item) => {
-        configMap[item.key] = config.get(item.key)
-        return configMap
-      }, {})
-
     res.json({
       adminRegistrationOpen,
       currentUser,
-      config: uiConfig,
+      config: config.getUiConfig(),
       smtpConfigured: config.smtpConfigured(),
       googleAuthConfigured: config.googleAuthConfigured(),
       version: getVersion(),
