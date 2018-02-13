@@ -1,4 +1,4 @@
-var SocksConnection = require('socksjs')
+const SocksConnection = require('socksjs')
 
 module.exports = function(connection) {
   if (connection.useSocks) {
