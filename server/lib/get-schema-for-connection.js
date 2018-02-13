@@ -4,12 +4,11 @@ const fs = require('fs')
 const path = require('path')
 const decipher = require('./decipher.js')
 const crateDriver = require('../drivers/crate')
+const postgresDriver = require('../drivers/pg')
 
 const sqldir = path.join(__dirname, '/../resources/')
 
-const sqlSchemaPostgres = fs.readFileSync(sqldir + '/schema-postgres.sql', {
-  encoding: 'utf8'
-})
+const sqlSchemaPostgres = postgresDriver.SCHEMA_SQL
 const sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {
   encoding: 'utf8'
 })
