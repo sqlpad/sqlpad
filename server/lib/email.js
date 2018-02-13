@@ -1,15 +1,17 @@
 const nodemailer = require('nodemailer')
-const config = require('./config')
+const configUtil = require('./config')
+const db = require('./db')
+const { baseUrl, port, publicUrl } = require('./config').getPreDbConfig()
 
 /**
  * Get full sqlpad url
  * @param {string} path - path (leading slash)
  */
 function fullUrl(path) {
-  const port = config.get('port') === 80 ? '' : ':' + config.get('port')
-  const publicUrl = config.get('publicUrl')
-  const baseUrl = config.get('baseUrl')
-  return `${publicUrl}${port}${baseUrl}${path}`
+  const urlPort = port === 80 ? '' : ':' + port
+  const urlPublicUrl = publicUrl
+  const urlBaseUrl = baseUrl
+  return `${urlPublicUrl}${urlPort}${urlBaseUrl}${path}`
 }
 
 function sendForgotPassword(to, passwordResetPath) {
@@ -35,43 +37,45 @@ function sendInvite(to) {
 }
 
 function send(to, subject, text, html) {
-  if (!config.smtpConfigured()) {
-    console.error('email.send() called without being configured')
-    return Promise.resolve()
-  }
-  if (config.get('debug')) {
-    console.log('sending email')
-  }
-  const smtpConfig = {
-    host: config.get('smtpHost'),
-    port: config.get('smtpPort'),
-    secure: config.get('smtpSecure'),
-    auth: {
-      user: config.get('smtpUser'),
-      pass: config.get('smtpPassword')
-    },
-    tls: {
-      ciphers: 'SSLv3'
+  return configUtil.getHelper(db).then(config => {
+    if (!config.smtpConfigured()) {
+      console.error('email.send() called without being configured')
+      return
     }
-  }
-  return new Promise((resolve, reject) => {
-    const transporter = nodemailer.createTransport(smtpConfig)
-    const mailOptions = {
-      from: config.get('smtpFrom'),
-      to,
-      subject,
-      text,
-      html
+    if (config.get('debug')) {
+      console.log('sending email')
     }
-    transporter.sendMail(mailOptions, function(err, info) {
-      if (config.get('debug')) {
-        console.log('sent email: ' + info)
+    const smtpConfig = {
+      host: config.get('smtpHost'),
+      port: config.get('smtpPort'),
+      secure: config.get('smtpSecure'),
+      auth: {
+        user: config.get('smtpUser'),
+        pass: config.get('smtpPassword')
+      },
+      tls: {
+        ciphers: 'SSLv3'
       }
-      if (err) {
-        console.error(err)
-        return reject(err)
+    }
+    return new Promise((resolve, reject) => {
+      const transporter = nodemailer.createTransport(smtpConfig)
+      const mailOptions = {
+        from: config.get('smtpFrom'),
+        to,
+        subject,
+        text,
+        html
       }
-      resolve(info)
+      transporter.sendMail(mailOptions, function(err, info) {
+        if (config.get('debug')) {
+          console.log('sent email: ' + info)
+        }
+        if (err) {
+          console.error(err)
+          return reject(err)
+        }
+        resolve(info)
+      })
     })
   })
 }

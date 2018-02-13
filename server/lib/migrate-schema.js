@@ -3,7 +3,7 @@ var path = require('path')
 var async = require('async')
 var db = require('./db.js')
 var Cache = require('../models/Cache.js')
-const { dbPath, debug } = require('../lib/config/nonUi')()
+const { dbPath, debug } = require('../lib/config').getPreDbConfig()
 var schemaVersionFilePath = path.join(dbPath + '/schemaVersion.json')
 
 // migrations must increment by 1

@@ -5,7 +5,7 @@ var db = require('../lib/db.js')
 var rimraf = require('rimraf')
 var xlsx = require('node-xlsx')
 var json2csv = require('json2csv')
-const { dbPath } = require('../lib/config/nonUi')()
+const { dbPath } = require('../lib/config').getPreDbConfig()
 
 var schema = {
   _id: Joi.string().optional(), // will be auto-gen by nedb

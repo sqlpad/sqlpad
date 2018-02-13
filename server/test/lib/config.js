@@ -1,26 +1,27 @@
 const assert = require('assert')
-const config = require('../../lib/config.js')
+const configUtil = require('../../lib/config')
+const db = require('../../lib/db')
 
 const configItems = require('../../resources/configItems')
-const defaultConfig = require('../../lib/config/default')
-const envConfig = require('../../lib/config/env')
-const cliConfig = require('../../lib/config/cli')
-const nonUiConfig = require('../../lib/config/nonUi')
+const fromDefault = require('../../lib/config/fromDefault')
+const fromEnv = require('../../lib/config/fromEnv')
+const fromCli = require('../../lib/config/fromCli')
+const nonUiConfig = require('../../lib/config').getPreDbConfig()
 
 describe('config', function() {
   it('default', function() {
-    const conf = defaultConfig()
+    const conf = fromDefault()
     assert.equal(conf.port, 80, 'default port')
     assert(conf.dbPath !== '$HOME/sqlpad/db', 'dbPath should change')
   })
 
   it('env', function() {
-    const conf = envConfig({ SQLPAD_PORT: 8000 })
+    const conf = fromEnv({ SQLPAD_PORT: 8000 })
     assert.equal(conf.port, 8000, 'conf.port')
   })
 
   it('cli', function() {
-    const conf = cliConfig({
+    const conf = fromCli({
       'key-path': 'key/path',
       cert: 'cert/path',
       admin: 'admin@email.com'
@@ -31,11 +32,11 @@ describe('config', function() {
   })
 
   it('nonUI', function() {
-    assert.equal(Object.keys(nonUiConfig()).length, configItems.length)
+    assert.equal(Object.keys(nonUiConfig).length, configItems.length)
   })
 })
 
-describe('lib/config.js', function() {
+describe('lib/config', function() {
   // TODO test when control is inverted/dependencies injected
   // set any process.env variables or args here
   // process.argv.push('--debug')
@@ -43,19 +44,15 @@ describe('lib/config.js', function() {
   // process.env.GOOGLE_CLIENT_ID = 'google-client-id'
 
   describe('#get()', function() {
-    it.skip('should get a value provided by default', function() {
-      assert.equal(config.get('port'), 80, 'port=80')
-    })
-    it.skip('should get a value provided by environment', function() {
-      assert.equal(
-        config.get('googleClientId', 'google-client-id', 'googleClientId')
-      )
-    })
-    it.skip('cli should override env var', function() {
-      assert.equal(config.get('debug'), true, 'debug=true')
+    it('should get a value provided by default', function() {
+      return configUtil.getHelper(db).then(config => {
+        assert.equal(config.get('port'), 80, 'port=80')
+      })
     })
     it('should only accept key in config items', function() {
-      assert.throws(() => config.get('non-existent-key'), Error)
+      return configUtil.getHelper(db).then(config => {
+        assert.throws(() => config.get('non-existent-key'), Error)
+      })
     })
   })
 })

@@ -9,17 +9,17 @@ const detectPort = require('detect-port')
 require('./lib/cli-flow.js')
 
 const app = require('./app')
-const config = require('./lib/config')
+const {
+  baseUrl,
+  ip,
+  port,
+  httpsPort,
+  certPassphrase,
+  keyPath,
+  certPath,
+  systemdSocket
+} = require('./lib/config').getPreDbConfig()
 const db = require('./lib/db')
-
-const BASE_URL = config.get('baseUrl')
-const IP = config.get('ip')
-const PORT = config.get('port')
-const HTTPS_PORT = config.get('httpsPort')
-const CERT_PASSPHRASE = config.get('certPassphrase')
-const KEY_PATH = config.get('keyPath')
-const CERT_PATH = config.get('certPath')
-const SYSTEMD_SOCKET = config.get('systemdSocket')
 
 function isFdObject(ob) {
   return ob && typeof ob.fd === 'number'
@@ -34,7 +34,7 @@ function isFdObject(ob) {
 // https://www.freedesktop.org/software/systemd/man/systemd.socket.html
 // https://www.freedesktop.org/software/systemd/man/sd_listen_fds.html
 function detectPortOrSystemd(port) {
-  if (SYSTEMD_SOCKET) {
+  if (systemdSocket) {
     const passedSocketCount = parseInt(process.env.LISTEN_FDS, 10) || 0
 
     // LISTEN_FDS contains number of sockets passed by Systemd. At least one
@@ -62,69 +62,61 @@ db.onLoad(function(err) {
   if (err) throw err
 
   // determine if key pair exists for certs
-  if (KEY_PATH && CERT_PATH) {
+  if (keyPath && certPath) {
     // https only
-    detectPortOrSystemd(HTTPS_PORT).then(function(_port) {
-      if (!isFdObject(_port) && HTTPS_PORT !== _port) {
+    detectPortOrSystemd(httpsPort).then(function(_port) {
+      if (!isFdObject(_port) && httpsPort !== _port) {
         console.log(
           '\nPort %d already occupied. Using port %d instead.',
-          HTTPS_PORT,
+          httpsPort,
           _port
         )
-        // Persist the new port to the in-memory store. This is kinda hacky
-        // Assign value to cliValue since it overrides all other values
-        const ConfigItem = require('./models/ConfigItem.js')
-        const portConfigItem = ConfigItem.findOneByKey('httpsPort')
-        portConfigItem.cliValue = _port
-        portConfigItem.computeEffectiveValue()
+        // TODO FIXME XXX  Persist the new port to the in-memory store.
+        // config.set('httpsPort', _port)
       }
 
-      const privateKey = fs.readFileSync(KEY_PATH, 'utf8')
-      const certificate = fs.readFileSync(CERT_PATH, 'utf8')
+      const privateKey = fs.readFileSync(keyPath, 'utf8')
+      const certificate = fs.readFileSync(certPath, 'utf8')
       const httpsOptions = {
         key: privateKey,
         cert: certificate,
-        passphrase: CERT_PASSPHRASE
+        passphrase: certPassphrase
       }
 
-      https.createServer(httpsOptions, app).listen(_port, IP, function() {
+      https.createServer(httpsOptions, app).listen(_port, ip, function() {
         console.log(
           '\nWelcome to ' +
             app.locals.title +
             '!. Visit https://' +
-            (IP === '0.0.0.0' ? 'localhost' : IP) +
+            (ip === '0.0.0.0' ? 'localhost' : ip) +
             ':' +
             _port +
-            BASE_URL +
+            baseUrl +
             ' to get started'
         )
       })
     })
   } else {
     // http only
-    detectPortOrSystemd(PORT).then(function(_port) {
-      if (!isFdObject(_port) && PORT !== _port) {
+    detectPortOrSystemd(port).then(function(_port) {
+      if (!isFdObject(_port) && port !== _port) {
         console.log(
           '\nPort %d already occupied. Using port %d instead.',
-          PORT,
+          port,
           _port
         )
-        // Persist the new port to the in-memory store. This is kinda hacky
-        // Assign value to cliValue since it overrides all other values
-        const ConfigItem = require('./models/ConfigItem.js')
-        const portConfigItem = ConfigItem.findOneByKey('port')
-        portConfigItem.cliValue = _port
-        portConfigItem.computeEffectiveValue()
+        // TODO FIXME XXX  Persist the new port to the in-memory store.
+        // config.set('port', _port)
       }
-      http.createServer(app).listen(_port, IP, function() {
+      http.createServer(app).listen(_port, ip, function() {
         console.log(
           '\nWelcome to ' +
             app.locals.title +
             '!. Visit http://' +
-            (IP === '0.0.0.0' ? 'localhost' : IP) +
+            (ip === '0.0.0.0' ? 'localhost' : ip) +
             ':' +
             _port +
-            BASE_URL +
+            baseUrl +
             ' to get started'
         )
       })

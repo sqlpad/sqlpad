@@ -1,15 +1,10 @@
 var path = require('path')
 var Datastore = require('nedb')
-var ConfigItem = require('../models/ConfigItem.js')
-var config = require('./config/nonUi')()
+const { admin, dbPath, debug, port } = require('./config').getPreDbConfig()
 var mkdirp = require('mkdirp')
 var async = require('async')
 
-const DB_PATH = config.dbPath
-const DEBUG = config.debug
-const PORT = config.port
-
-mkdirp.sync(path.join(DB_PATH, '/cache'))
+mkdirp.sync(path.join(dbPath, '/cache'))
 
 /*
     Usage:
@@ -28,13 +23,13 @@ let loadError = null
 const onLoads = []
 
 var db = (module.exports = {
-  users: new Datastore({ filename: path.join(DB_PATH, 'users.db') }),
+  users: new Datastore({ filename: path.join(dbPath, 'users.db') }),
   connections: new Datastore({
-    filename: path.join(DB_PATH, 'connections.db')
+    filename: path.join(dbPath, 'connections.db')
   }),
-  queries: new Datastore({ filename: path.join(DB_PATH, 'queries.db') }),
-  cache: new Datastore({ filename: path.join(DB_PATH, 'cache.db') }),
-  config: new Datastore({ filename: path.join(DB_PATH, 'config.db') }),
+  queries: new Datastore({ filename: path.join(dbPath, 'queries.db') }),
+  cache: new Datastore({ filename: path.join(dbPath, 'cache.db') }),
+  config: new Datastore({ filename: path.join(dbPath, 'config.db') }),
   instances: ['users', 'connections', 'queries', 'cache', 'config'],
   onLoad: function(fn) {
     if (loaded) {
@@ -51,7 +46,7 @@ async.series(
       async.eachSeries(
         db.instances,
         function(dbname, next) {
-          if (DEBUG) {
+          if (debug) {
             console.log('Loading %s..', dbname)
           }
           db[dbname].loadDatabase(next)
@@ -72,7 +67,6 @@ async.series(
     function index(next) {
       db.config.ensureIndex({ fieldName: 'key', unique: true }, next)
     },
-    setConfigDbValues,
     ensureAdmin,
     setAutocompaction
   ],
@@ -83,20 +77,8 @@ async.series(
   }
 )
 
-// loop through items in the config nedb and set the dbValue cache
-function setConfigDbValues(next) {
-  db.config.find({}, function(err, dbItems) {
-    if (err) return next(err)
-    dbItems.forEach(function(item) {
-      var configItem = ConfigItem.findOneByKey(item.key)
-      if (configItem) configItem.setDbValue(item.value)
-    })
-    next()
-  })
-}
-
 function ensureAdmin(next) {
-  const adminEmail = config.admin
+  const adminEmail = admin
   if (!adminEmail) return next()
 
   // if an admin was passed in the command line, check to see if a user exists with that email
@@ -136,7 +118,7 @@ function ensureAdmin(next) {
           )
           console.log(
             '\nPlease visit http://localhost:' +
-              PORT +
+              port +
               '/signup/ to complete registration.'
           )
           next()

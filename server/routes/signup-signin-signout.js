@@ -5,7 +5,7 @@ var User = require('../models/User.js')
 
 // NOTE: getting config here during module init is okay
 // since these configs are set via env or cli
-const { disableUserpassAuth } = require('../lib/config/nonUi')()
+const { disableUserpassAuth } = require('../lib/config').getPreDbConfig()
 
 /*    Sign Up
 ============================================================================= */

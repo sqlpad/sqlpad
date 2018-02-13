@@ -4,7 +4,8 @@ var PassportLocalStrategy = require('passport-local').Strategy
 var PassportGoogleStrategy = require('passport-google-oauth2').Strategy
 var BasicStrategy = require('passport-http').BasicStrategy
 var User = require('../models/User.js')
-var config = require('../lib/config.js')
+const configUtil = require('../lib/config')
+const db = require('../lib/db')
 var checkWhitelist = require('../lib/check-whitelist.js')
 const {
   baseUrl,
@@ -12,7 +13,7 @@ const {
   googleClientSecret,
   publicUrl,
   disableUserpassAuth
-} = require('../lib/config/nonUi')()
+} = require('../lib/config').getPreDbConfig()
 
 passport.serializeUser(function(user, done) {
   done(null, user.id)
@@ -114,11 +115,20 @@ function passportGoogleStrategyHandler(
           next(err, data)
         })
       },
+      function getConfigHelper(data, next) {
+        configUtil
+          .getHelper(db)
+          .then(config => {
+            data.config = config
+            next(null, data)
+          })
+          .catch(error => next(error))
+      },
       function createUserIfNeeded(data, next) {
         if (data.user) {
           return next(null, data)
         }
-        const whitelistedDomains = config.get('whitelistedDomains')
+        const whitelistedDomains = data.config.get('whitelistedDomains')
         if (
           data.openAdminRegistration ||
           checkWhitelist(whitelistedDomains, profile.email)
