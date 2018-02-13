@@ -5,6 +5,7 @@ const crateDriver = require('../drivers/crate')
 const postgresDriver = require('../drivers/pg')
 const verticaDriver = require('../drivers/vertica')
 const prestoDriver = require('../drivers/presto')
+const hanaDriver = require('../drivers/hdb')
 
 function getStandardSchemaSql(whereSql = '') {
   return `
@@ -24,22 +25,6 @@ function getStandardSchemaSql(whereSql = '') {
   `
 }
 
-function getHANASchemaSql(whereSql = '') {
-  return `
-    SELECT 
-      columns.SCHEMA_NAME as table_schema, 
-      columns.TABLE_NAME as table_name, 
-      columns.COLUMN_NAME as column_name, 
-      columns.DATA_TYPE_NAME as data_type
-    FROM 
-      SYS.TABLES tables
-      JOIN SYS.COLUMNS columns ON tables.SCHEMA_NAME = columns.SCHEMA_NAME AND tables.TABLE_NAME = columns.TABLE_NAME
-    ${whereSql}
-    ORDER BY 
-     columns.POSITION
-  `
-}
-
 function getPrimarySql(connection) {
   if (connection.driver === 'vertica') {
     return verticaDriver.SCHEMA_SQL
@@ -55,11 +40,9 @@ function getPrimarySql(connection) {
   } else if (connection.driver === 'hdb') {
     if (connection.database) {
       if (connection.hanaSchema) {
-        return getHANASchemaSql(
-          `WHERE tables.SCHEMA_NAME = '${connection.hanaSchema}'`
-        )
+        return hanaDriver.getHANASchemaSql(connection.hanaSchema)
       } else {
-        return getHANASchemaSql()
+        return hanaDriver.getHANASchemaSql()
       }
     }
   } else if (connection.driver === 'mysql') {
