@@ -2,7 +2,7 @@ const assert = require('assert')
 const configUtil = require('../../lib/config')
 const db = require('../../lib/db')
 
-const configItems = require('../../resources/configItems')
+const configItems = require('../../lib/config/configItems')
 const fromDefault = require('../../lib/config/fromDefault')
 const fromEnv = require('../../lib/config/fromEnv')
 const fromCli = require('../../lib/config/fromCli')

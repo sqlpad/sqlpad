@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const minimist = require('minimist')
-const definitions = require('../../resources/configItems')
+const definitions = require('./configItems')
 const fromDb = require('./fromDb')
 const fromDefault = require('./fromDefault')
 const fromEnv = require('./fromEnv')
@@ -113,23 +113,43 @@ exports.getHelper = function getHelper(db) {
         }
         return all[key]
       },
-      getItems: () => {
-        return definitions.map(definition => {
-          return Object.assign({}, definition, {
-            effectiveValue: all[definition.key],
-            effectiveValueSource: setBy(
-              cliConfig,
-              savedCliConfig,
-              envConfig,
-              dbConfig,
-              definition.key
-            ),
-            envValue: envConfig[definition.key],
-            cliValue: cliConfig[definition.key],
-            savedCliValue: savedCliConfig[definition.key],
-            dbValue: dbConfig[definition.key]
+      getConfigItems: () => {
+        return definitions
+          .map(definition => {
+            return Object.assign({}, definition, {
+              effectiveValue: all[definition.key],
+              effectiveValueSource: setBy(
+                cliConfig,
+                savedCliConfig,
+                envConfig,
+                dbConfig,
+                definition.key
+              ),
+              envValue: envConfig[definition.key],
+              cliValue: cliConfig[definition.key],
+              savedCliValue: savedCliConfig[definition.key],
+              dbValue: dbConfig[definition.key]
+            })
           })
-        })
+          .map(item => {
+            if (item.sensitive && item.interface === 'env') {
+              item.effectiveValue = item.effectiveValue ? '**********' : ''
+              item.dbValue = item.dbValue ? '**********' : ''
+              item.default = item.default ? '**********' : ''
+              item.envValue = item.envValue ? '**********' : ''
+              item.cliValue = item.cliValue ? '**********' : ''
+              item.savedCliValue = item.savedCliValue ? '**********' : ''
+            }
+            return item
+          })
+      },
+      getUiConfig: () => {
+        return definitions
+          .filter(item => item.uiDependency)
+          .reduce((configMap, item) => {
+            configMap[item.key] = all[item.key]
+            return configMap
+          }, {})
       },
       save: makeSave(db),
       smtpConfigured: () =>
