@@ -3,6 +3,7 @@ const _ = require('lodash')
 const fs = require('fs')
 const path = require('path')
 const decipher = require('./decipher.js')
+const crateDriver = require('../drivers/crate')
 
 const sqldir = path.join(__dirname, '/../resources/')
 
@@ -12,12 +13,8 @@ const sqlSchemaPostgres = fs.readFileSync(sqldir + '/schema-postgres.sql', {
 const sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {
   encoding: 'utf8'
 })
-const sqlSchemaCrate = fs.readFileSync(sqldir + '/schema-crate.sql', {
-  encoding: 'utf8'
-})
-const sqlSchemaCrateV0 = fs.readFileSync(sqldir + '/schema-crate.v0.sql', {
-  encoding: 'utf8'
-})
+const sqlSchemaCrate = crateDriver.SCHEMA_SQL_V1
+const sqlSchemaCrateV0 = crateDriver.SCHEMA_SQL_V0
 
 // TODO - eventually replace these functions with something driver methods
 // What I'm thinking is each db driver will have a set of api functions implemented
