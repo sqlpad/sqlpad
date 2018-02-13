@@ -1,15 +1,63 @@
-var fs = require('fs')
-var path = require('path')
-var minimist = require('minimist')
-var argv = minimist(process.argv.slice(2))
-var packageJson = require('../../package.json')
-var userHome =
+const fs = require('fs')
+const path = require('path')
+const minimist = require('minimist')
+const argv = minimist(process.argv.slice(2))
+const packageJson = require('../../package.json')
+const userHome =
   process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME
-var savedCliFilePath = path.join(userHome, '.sqlpadrc')
+const savedCliFilePath = path.join(userHome, '.sqlpadrc')
+
+const helpText = `
+
+SQLPad Help:
+
+Usage: sqlpad [options]
+
+Options: 
+
+  --passphrase [phrase]   Passphrase for modest encryption
+                            optional, default: *******
+                            environment var: SQLPAD_PASSPHRASE
+  --dir [path]            Data directory 
+                            optional, default: $HOME/sqlpad/db
+                            environment var: SQLPAD_DB_PATH
+  --ip [ip]               IP address to bind to
+                            optional, default: 0.0.0.0 (all IPs)
+                            environment var: SQLPAD_IP
+  --port [port]           Port to run on 
+                            optional, default: 80
+                            environment var: SQLPAD_PORT
+  --base-url [path]       Base url to mount sqlpad routes to 
+                            optional, default: ''
+                            environment var: SQLPAD_BASE_URL
+  --admin [emailaddress]  Whitelist/add admin permission to email provided.
+                            optional, default: ''
+                            environment var: SQLPAD_ADMIN
+  --debug                 Enable extra console logging
+                            optional, default: false
+                            environment var: SQLPAD_DEBUG (set to TRUE)
+
+  --save                  Saves above parameters to file for future use.
+  --forget                Forget parameters previously saved.
+
+  See configuration management page in-application for 
+  additional settings and further documentation.
+
+Example: 
+
+  sqlpad --dir ./sqlpaddata --ip 127.0.0.1 --port 3000 --passphrase secr3t
+
+`
 
 // If version is requested show version then exit
 if (argv.v || argv.version) {
   console.log('SQLPad version ' + packageJson.version)
+  process.exit()
+}
+
+// If help is requested show help
+if (argv.h || argv.help) {
+  console.log(helpText)
   process.exit()
 }
 
@@ -32,15 +80,5 @@ if (argv.forget) {
     )
   }
   console.log('Exiting...')
-  process.exit()
-}
-
-// If help is requested show help
-if (argv.h || argv.help) {
-  var helpText = fs.readFileSync(
-    path.join(__dirname, '/../resources/help.txt'),
-    { encoding: 'utf8' }
-  )
-  console.log(helpText)
   process.exit()
 }
