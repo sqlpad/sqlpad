@@ -1,121 +1,38 @@
 const runQuery = require('./run-query.js')
 const _ = require('lodash')
-const fs = require('fs')
-const path = require('path')
 const decipher = require('./decipher.js')
-
-const sqldir = path.join(__dirname, '/../resources/')
-
-const sqlSchemaPostgres = fs.readFileSync(sqldir + '/schema-postgres.sql', {
-  encoding: 'utf8'
-})
-const sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {
-  encoding: 'utf8'
-})
-const sqlSchemaCrate = fs.readFileSync(sqldir + '/schema-crate.sql', {
-  encoding: 'utf8'
-})
-const sqlSchemaCrateV0 = fs.readFileSync(sqldir + '/schema-crate.v0.sql', {
-  encoding: 'utf8'
-})
-
-// TODO - eventually replace these functions with something driver methods
-// What I'm thinking is each db driver will have a set of api functions implemented
-// They would be like driver.runQuery() and driver.getSchema()
-// For now this restructuring is a help to break this out of the route logic
-
-function getStandardSchemaSql(whereSql = '') {
-  return `
-    SELECT 
-      t.table_schema, 
-      t.table_name, 
-      c.column_name, 
-      c.data_type
-    FROM 
-      INFORMATION_SCHEMA.TABLES t 
-      JOIN INFORMATION_SCHEMA.COLUMNS c ON t.table_schema = c.table_schema AND t.table_name = c.table_name 
-    ${whereSql}
-    ORDER BY 
-      t.table_schema, 
-      t.table_name, 
-      c.ordinal_position
-  `
-}
-
-function getPrestoSchemaSql(catalog, schema) {
-  const schemaSql = schema ? `AND table_schema = '${schema}'` : ''
-  return `
-    SELECT 
-      c.table_schema, 
-      c.table_name, 
-      c.column_name, 
-      c.data_type
-    FROM 
-      INFORMATION_SCHEMA.COLUMNS c
-    WHERE
-      table_catalog = '${catalog}'
-      ${schemaSql}
-    ORDER BY 
-      c.table_schema, 
-      c.table_name, 
-      c.ordinal_position
-  `
-}
-
-function getHANASchemaSql(whereSql = '') {
-  return `
-    SELECT 
-      columns.SCHEMA_NAME as table_schema, 
-      columns.TABLE_NAME as table_name, 
-      columns.COLUMN_NAME as column_name, 
-      columns.DATA_TYPE_NAME as data_type
-    FROM 
-      SYS.TABLES tables
-      JOIN SYS.COLUMNS columns ON tables.SCHEMA_NAME = columns.SCHEMA_NAME AND tables.TABLE_NAME = columns.TABLE_NAME
-    ${whereSql}
-    ORDER BY 
-     columns.POSITION
-  `
-}
+const crateDriver = require('../drivers/crate')
+const postgresDriver = require('../drivers/pg')
+const verticaDriver = require('../drivers/vertica')
+const prestoDriver = require('../drivers/presto')
+const hanaDriver = require('../drivers/hdb')
+const mysqlDriver = require('../drivers/mysql')
+const mssqlDriver = require('../drivers/mssql')
 
 function getPrimarySql(connection) {
   if (connection.driver === 'vertica') {
-    return sqlSchemaVertica
+    return verticaDriver.SCHEMA_SQL
   } else if (connection.driver === 'crate') {
-    return sqlSchemaCrate
+    return crateDriver.SCHEMA_SQL_V1
   } else if (connection.driver === 'presto') {
-    return getPrestoSchemaSql(connection.prestoCatalog, connection.prestoSchema)
+    return prestoDriver.getPrestoSchemaSql(
+      connection.prestoCatalog,
+      connection.prestoSchema
+    )
   } else if (connection.driver === 'postgres') {
-    return sqlSchemaPostgres
+    return postgresDriver.SCHEMA_SQL
   } else if (connection.driver === 'hdb') {
-    if (connection.database) {
-      if (connection.hanaSchema) {
-        return getHANASchemaSql(
-          `WHERE tables.SCHEMA_NAME = '${connection.hanaSchema}'`
-        )
-      } else {
-        return getHANASchemaSql()
-      }
-    }
+    return hanaDriver.getHANASchemaSql(connection.hanaSchema)
   } else if (connection.driver === 'mysql') {
-    if (connection.database) {
-      return getStandardSchemaSql(
-        `WHERE t.table_schema = '${connection.database}'`
-      )
-    }
-    return getStandardSchemaSql(
-      `WHERE t.table_schema NOT IN ('mysql', 'performance_schema', 'information_schema')`
-    )
-  } else {
-    return getStandardSchemaSql(
-      `WHERE t.table_schema NOT IN ('information_schema') `
-    )
+    return mysqlDriver.getSchemaSql(connection.database)
+  } else if (connection.driver === 'sqlserver') {
+    return mssqlDriver.getSchemaSql()
   }
 }
 
 function getSecondarySql(connection) {
   if (connection.driver === 'crate') {
-    return sqlSchemaCrateV0
+    return crateDriver.SCHEMA_SQL_V0
   }
 }
 
@@ -185,10 +102,8 @@ function formatResults(queryResult, doneCallback) {
 }
 
 function formatHANAResults(queryResult, doneCallback) {
-  //console.log(queryResult.rows)
   const tree = {}
   const bySchema = _.groupBy(queryResult.rows, 'TABLE_SCHEMA')
-  //console.log(bySchema)
   for (const schema in bySchema) {
     if (bySchema.hasOwnProperty(schema)) {
       tree[schema] = {}
