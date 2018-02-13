@@ -39,13 +39,7 @@ function getPrimarySql(connection) {
   } else if (connection.driver === 'postgres') {
     return postgresDriver.SCHEMA_SQL
   } else if (connection.driver === 'hdb') {
-    if (connection.database) {
-      if (connection.hanaSchema) {
-        return hanaDriver.getHANASchemaSql(connection.hanaSchema)
-      } else {
-        return hanaDriver.getHANASchemaSql()
-      }
-    }
+    return hanaDriver.getHANASchemaSql(connection.hanaSchema)
   } else if (connection.driver === 'mysql') {
     return mysqlDriver.getSchemaSql(connection.database)
   } else {
