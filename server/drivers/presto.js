@@ -1,4 +1,4 @@
-const presto = require('./presto.js')
+const presto = require('./_presto')
 
 function getPrestoSchemaSql(catalog, schema) {
   const schemaSql = schema ? `AND table_schema = '${schema}'` : ''
