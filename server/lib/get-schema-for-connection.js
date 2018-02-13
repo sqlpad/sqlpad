@@ -1,24 +1,9 @@
 const runQuery = require('./run-query.js')
 const _ = require('lodash')
-const fs = require('fs')
-const path = require('path')
 const decipher = require('./decipher.js')
 const crateDriver = require('../drivers/crate')
 const postgresDriver = require('../drivers/pg')
-
-const sqldir = path.join(__dirname, '/../resources/')
-
-const sqlSchemaPostgres = postgresDriver.SCHEMA_SQL
-const sqlSchemaVertica = fs.readFileSync(sqldir + '/schema-vertica.sql', {
-  encoding: 'utf8'
-})
-const sqlSchemaCrate = crateDriver.SCHEMA_SQL_V1
-const sqlSchemaCrateV0 = crateDriver.SCHEMA_SQL_V0
-
-// TODO - eventually replace these functions with something driver methods
-// What I'm thinking is each db driver will have a set of api functions implemented
-// They would be like driver.runQuery() and driver.getSchema()
-// For now this restructuring is a help to break this out of the route logic
+const verticaDriver = require('../drivers/vertica')
 
 function getStandardSchemaSql(whereSql = '') {
   return `
@@ -76,13 +61,13 @@ function getHANASchemaSql(whereSql = '') {
 
 function getPrimarySql(connection) {
   if (connection.driver === 'vertica') {
-    return sqlSchemaVertica
+    return verticaDriver.SCHEMA_SQL
   } else if (connection.driver === 'crate') {
-    return sqlSchemaCrate
+    return crateDriver.SCHEMA_SQL_V1
   } else if (connection.driver === 'presto') {
     return getPrestoSchemaSql(connection.prestoCatalog, connection.prestoSchema)
   } else if (connection.driver === 'postgres') {
-    return sqlSchemaPostgres
+    return postgresDriver.SCHEMA_SQL
   } else if (connection.driver === 'hdb') {
     if (connection.database) {
       if (connection.hanaSchema) {
@@ -111,7 +96,7 @@ function getPrimarySql(connection) {
 
 function getSecondarySql(connection) {
   if (connection.driver === 'crate') {
-    return sqlSchemaCrateV0
+    return crateDriver.SCHEMA_SQL_V0
   }
 }
 
@@ -181,10 +166,8 @@ function formatResults(queryResult, doneCallback) {
 }
 
 function formatHANAResults(queryResult, doneCallback) {
-  //console.log(queryResult.rows)
   const tree = {}
   const bySchema = _.groupBy(queryResult.rows, 'TABLE_SCHEMA')
-  //console.log(bySchema)
   for (const schema in bySchema) {
     if (bySchema.hasOwnProperty(schema)) {
       tree[schema] = {}
