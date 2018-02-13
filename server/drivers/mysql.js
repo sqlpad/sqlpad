@@ -1,6 +1,6 @@
 const mysql = require('mysql')
 
-exports.runQuery = function(query, connection, queryResult, callback) {
+function runQuery(query, connection, queryResult, callback) {
   const myConnection = mysql.createConnection({
     multipleStatements: true,
     host: connection.host,
@@ -55,4 +55,8 @@ exports.runQuery = function(query, connection, queryResult, callback) {
         myConnection.end()
       })
   })
+}
+
+module.exports = {
+  runQuery
 }

@@ -1,6 +1,6 @@
 const mssql = require('mssql')
 
-exports.runQuery = function(query, connection, queryResult, callback) {
+function runQuery(query, connection, queryResult, callback) {
   const sqlconfig = {
     user: connection.username,
     password: connection.password,
@@ -77,4 +77,8 @@ exports.runQuery = function(query, connection, queryResult, callback) {
       })
     }
   })
+}
+
+module.exports = {
+  runQuery
 }
