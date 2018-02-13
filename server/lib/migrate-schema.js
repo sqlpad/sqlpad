@@ -2,7 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var async = require('async')
 var db = require('./db.js')
-var Cache = require('../models/Cache.js')
+const rimraf = require('rimraf')
 const { dbPath, debug } = require('../lib/config').getPreDbConfig()
 var schemaVersionFilePath = path.join(dbPath + '/schemaVersion.json')
 
@@ -30,7 +30,15 @@ var migrations = {
   },
   2: function(done) {
     // reset cache because it wasn't being cleaned up properly before
-    Cache.removeAll(done)
+    // first remove all the cache files
+    // then remove the cache db records
+    rimraf(path.join(dbPath, '/cache/*'), function(err) {
+      if (err) {
+        console.error(err)
+        return done(err)
+      }
+      db.cache.remove({}, { multi: true }, done)
+    })
   },
   3: function(done) {
     // change admin flag to role to allow for future viewer role

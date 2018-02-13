@@ -2,7 +2,6 @@ var fs = require('fs')
 var path = require('path')
 var Joi = require('joi')
 var db = require('../lib/db.js')
-var rimraf = require('rimraf')
 var xlsx = require('node-xlsx')
 var json2csv = require('json2csv')
 const { dbPath } = require('../lib/config').getPreDbConfig()
@@ -145,18 +144,6 @@ Cache.removeExpired = function CacheRemoveExpired(callback) {
     caches.forEach(function(cache) {
       cache.expire()
     })
-  })
-}
-
-Cache.removeAll = function CacheRemoveAll(callback) {
-  // first remove all the cache files
-  // then remove the cache db records
-  rimraf(path.join(dbPath, '/cache/*'), function(err) {
-    if (err) {
-      console.error(err)
-      return callback(err)
-    }
-    db.cache.remove({}, { multi: true }, callback)
   })
 }
 
