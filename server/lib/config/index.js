@@ -113,23 +113,35 @@ exports.getHelper = function getHelper(db) {
         }
         return all[key]
       },
-      getItems: () => {
-        return definitions.map(definition => {
-          return Object.assign({}, definition, {
-            effectiveValue: all[definition.key],
-            effectiveValueSource: setBy(
-              cliConfig,
-              savedCliConfig,
-              envConfig,
-              dbConfig,
-              definition.key
-            ),
-            envValue: envConfig[definition.key],
-            cliValue: cliConfig[definition.key],
-            savedCliValue: savedCliConfig[definition.key],
-            dbValue: dbConfig[definition.key]
+      getConfigItems: () => {
+        return definitions
+          .map(definition => {
+            return Object.assign({}, definition, {
+              effectiveValue: all[definition.key],
+              effectiveValueSource: setBy(
+                cliConfig,
+                savedCliConfig,
+                envConfig,
+                dbConfig,
+                definition.key
+              ),
+              envValue: envConfig[definition.key],
+              cliValue: cliConfig[definition.key],
+              savedCliValue: savedCliConfig[definition.key],
+              dbValue: dbConfig[definition.key]
+            })
           })
-        })
+          .map(item => {
+            if (item.sensitive && item.interface === 'env') {
+              item.effectiveValue = item.effectiveValue ? '**********' : ''
+              item.dbValue = item.dbValue ? '**********' : ''
+              item.default = item.default ? '**********' : ''
+              item.envValue = item.envValue ? '**********' : ''
+              item.cliValue = item.cliValue ? '**********' : ''
+              item.savedCliValue = item.savedCliValue ? '**********' : ''
+            }
+            return item
+          })
       },
       getUiConfig: () => {
         return definitions
