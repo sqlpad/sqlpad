@@ -7,24 +7,7 @@ const verticaDriver = require('../drivers/vertica')
 const prestoDriver = require('../drivers/presto')
 const hanaDriver = require('../drivers/hdb')
 const mysqlDriver = require('../drivers/mysql')
-
-function getStandardSchemaSql(whereSql = '') {
-  return `
-    SELECT 
-      t.table_schema, 
-      t.table_name, 
-      c.column_name, 
-      c.data_type
-    FROM 
-      INFORMATION_SCHEMA.TABLES t 
-      JOIN INFORMATION_SCHEMA.COLUMNS c ON t.table_schema = c.table_schema AND t.table_name = c.table_name 
-    ${whereSql}
-    ORDER BY 
-      t.table_schema, 
-      t.table_name, 
-      c.ordinal_position
-  `
-}
+const mssqlDriver = require('../drivers/mssql')
 
 function getPrimarySql(connection) {
   if (connection.driver === 'vertica') {
@@ -42,10 +25,8 @@ function getPrimarySql(connection) {
     return hanaDriver.getHANASchemaSql(connection.hanaSchema)
   } else if (connection.driver === 'mysql') {
     return mysqlDriver.getSchemaSql(connection.database)
-  } else {
-    return getStandardSchemaSql(
-      `WHERE t.table_schema NOT IN ('information_schema') `
-    )
+  } else if (connection.driver === 'sqlserver') {
+    return mssqlDriver.getSchemaSql()
   }
 }
 

@@ -1,5 +1,24 @@
 const mssql = require('mssql')
 
+function getSchemaSql() {
+  return `
+    SELECT 
+      t.table_schema, 
+      t.table_name, 
+      c.column_name, 
+      c.data_type
+    FROM 
+      INFORMATION_SCHEMA.TABLES t 
+      JOIN INFORMATION_SCHEMA.COLUMNS c ON t.table_schema = c.table_schema AND t.table_name = c.table_name 
+    WHERE 
+      t.table_schema NOT IN ('information_schema') 
+    ORDER BY 
+      t.table_schema, 
+      t.table_name, 
+      c.ordinal_position
+  `
+}
+
 function runQuery(query, connection, queryResult, callback) {
   const sqlconfig = {
     user: connection.username,
@@ -80,5 +99,6 @@ function runQuery(query, connection, queryResult, callback) {
 }
 
 module.exports = {
+  getSchemaSql,
   runQuery
 }
