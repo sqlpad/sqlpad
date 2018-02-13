@@ -1,5 +1,30 @@
 const mysql = require('mysql')
 
+function getSchemaSql(database) {
+  const whereSql = database
+    ? `WHERE t.table_schema = '${database}'`
+    : `WHERE t.table_schema NOT IN (
+        'mysql', 
+        'performance_schema', 
+        'information_schema'
+      )`
+  return `
+    SELECT 
+      t.table_schema, 
+      t.table_name, 
+      c.column_name, 
+      c.data_type
+    FROM 
+      INFORMATION_SCHEMA.TABLES t 
+      JOIN INFORMATION_SCHEMA.COLUMNS c ON t.table_schema = c.table_schema AND t.table_name = c.table_name 
+    ${whereSql}
+    ORDER BY 
+      t.table_schema, 
+      t.table_name, 
+      c.ordinal_position
+  `
+}
+
 function runQuery(query, connection, queryResult, callback) {
   const myConnection = mysql.createConnection({
     multipleStatements: true,
@@ -58,5 +83,6 @@ function runQuery(query, connection, queryResult, callback) {
 }
 
 module.exports = {
+  getSchemaSql,
   runQuery
 }

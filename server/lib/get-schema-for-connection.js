@@ -6,6 +6,7 @@ const postgresDriver = require('../drivers/pg')
 const verticaDriver = require('../drivers/vertica')
 const prestoDriver = require('../drivers/presto')
 const hanaDriver = require('../drivers/hdb')
+const mysqlDriver = require('../drivers/mysql')
 
 function getStandardSchemaSql(whereSql = '') {
   return `
@@ -46,14 +47,7 @@ function getPrimarySql(connection) {
       }
     }
   } else if (connection.driver === 'mysql') {
-    if (connection.database) {
-      return getStandardSchemaSql(
-        `WHERE t.table_schema = '${connection.database}'`
-      )
-    }
-    return getStandardSchemaSql(
-      `WHERE t.table_schema NOT IN ('mysql', 'performance_schema', 'information_schema')`
-    )
+    return mysqlDriver.getSchemaSql(connection.database)
   } else {
     return getStandardSchemaSql(
       `WHERE t.table_schema NOT IN ('information_schema') `
