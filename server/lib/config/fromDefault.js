@@ -1,5 +1,5 @@
 const path = require('path')
-const definitions = require('../../resources/configItems')
+const definitions = require('./configItems')
 
 /**
  * Gets default config values

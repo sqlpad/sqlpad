@@ -2,7 +2,7 @@ const router = require('express').Router()
 const passport = require('passport')
 const getVersion = require('../lib/get-version.js')
 const User = require('../models/User.js')
-const configItems = require('../resources/configItems')
+const configItems = require('../lib/config/configItems')
 
 // NOTE: this route needs a wildcard because it is fetched as a relative url
 // from the front-end. The static SPA does not know if sqlpad is mounted at

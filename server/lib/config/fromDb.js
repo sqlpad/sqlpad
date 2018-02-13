@@ -1,4 +1,4 @@
-const definitions = require('../../resources/configItems')
+const definitions = require('./configItems')
 
 const uiKeys = definitions
   .filter(definition => definition.interface === 'ui')
