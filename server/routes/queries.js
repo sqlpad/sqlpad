@@ -3,7 +3,6 @@ var Connection = require('../models/Connection.js')
 var Query = require('../models/Query.js')
 var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 var mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js')
-const { baseUrl } = require('../lib/config').getPreDbConfig()
 
 /*  render page routes
 ============================================================================= */
@@ -14,11 +13,16 @@ router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
   res,
   next
 ) {
+  const { config } = req
   var format = req.query.format
   if (format === 'table') {
-    return res.redirect(baseUrl + '/query-table/' + req.params._id)
+    return res.redirect(
+      config.get('baseUrl') + '/query-table/' + req.params._id
+    )
   } else if (format === 'chart') {
-    return res.redirect(baseUrl + '/query-chart/' + req.params._id)
+    return res.redirect(
+      config.get('baseUrl') + '/query-chart/' + req.params._id
+    )
   }
   next()
 })
