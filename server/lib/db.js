@@ -1,28 +1,17 @@
-var path = require('path')
-var Datastore = require('nedb')
+const path = require('path')
+const Datastore = require('nedb')
+const mkdirp = require('mkdirp')
+const async = require('async')
 const { admin, dbPath, debug, port } = require('./config').getPreDbConfig()
-var mkdirp = require('mkdirp')
-var async = require('async')
+const migrateSchema = require('./migrate-schema.js')
 
 mkdirp.sync(path.join(dbPath, '/cache'))
-
-/*
-    Usage:
-
-    db.js provides link to initialized nedb instance
-
-    var db = require('db.js');
-
-    // reference an nedb instance like users:
-    db.users
-
-============================================================================== */
 
 let loaded = false
 let loadError = null
 const onLoads = []
 
-var db = (module.exports = {
+const db = (module.exports = {
   users: new Datastore({ filename: path.join(dbPath, 'users.db') }),
   connections: new Datastore({
     filename: path.join(dbPath, 'connections.db')
@@ -55,8 +44,9 @@ async.series(
       )
     },
     function migrate(next) {
-      // NOTE since this depends on db.js we require during function call and NOT at top
-      require('./migrate-schema.js')(next)
+      migrateSchema(db)
+        .then(next)
+        .catch(next)
     },
     function index(next) {
       db.users.ensureIndex({ fieldName: 'email', unique: true }, next)

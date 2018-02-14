@@ -7,7 +7,6 @@ const session = require('express-session')
 const MemoryStore = require('memorystore')(session)
 const configUtil = require('./lib/config')
 const db = require('./lib/db')
-const packageJson = require('../package.json')
 const {
   baseUrl,
   googleClientId,
