@@ -12,28 +12,35 @@ const clients = {
   hdb: require('../drivers/hdb').runQuery
 }
 
+// TODO log this debug information in another format somewhere useful
+function getInfo(connection, queryResult, query) {
+  const resultRowCount =
+    queryResult && queryResult.rows && queryResult.rows.length
+      ? queryResult.rows.length
+      : 0
+
+  return `
+--- lib/run-query.js ---
+CONNECTION:  ${connection.name}
+START TIME:  ${queryResult.startTime.toISOString()}
+END TIME:    ${queryResult.stopTime.toISOString()}
+ELAPSED MS:  ${queryResult.queryRunTime}
+RESULT ROWS: ${resultRowCount}
+QUERY: 
+${query}
+`
+}
+
 module.exports = function runQuery(query, connection, callback) {
-  var queryResult = new QueryResult()
+  const queryResult = new QueryResult()
   queryResult.timerStart()
-  var conn = Object.assign({}, connection, {
+  const conn = Object.assign({}, connection, {
     stream: createSocksConnection(connection)
   })
-  clients[conn.driver](query, conn, queryResult, function(err, queryResult) {
+  clients[conn.driver](query, conn, queryResult, (err, queryResult) => {
     queryResult.timerStop()
     if (debug) {
-      var resultRowCount =
-        queryResult && queryResult.rows && queryResult.rows.length
-          ? queryResult.rows.length
-          : 0
-      console.log('\n--- lib/run-query.js ---')
-      console.log('CONNECTION: ' + conn.name)
-      console.log('START TIME: ' + queryResult.startTime.toISOString())
-      console.log('END TIME: ' + queryResult.stopTime.toISOString())
-      console.log('ELAPSED MS: ' + queryResult.queryRunTime)
-      console.log('RESULT ROWS: ' + resultRowCount)
-      console.log('QUERY: ')
-      console.log(query)
-      console.log()
+      console.log(getInfo(conn, queryResult, query))
     }
     callback(err, queryResult)
   })
