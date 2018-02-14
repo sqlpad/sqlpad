@@ -14,13 +14,13 @@ const migrations = {
       // user.signupDate should be used when user is initially signed up.
       // NOTE: using db directly here to avoid model schema conflicts
       // and extra model logic (like modified date updates)
-      db.users.find({}).exec(function(err, docs) {
+      db.users.find({}).exec((err, docs) => {
         if (err) {
           return reject(err)
         }
         async.eachSeries(
           docs,
-          function(doc, callback) {
+          (doc, callback) => {
             doc.signupDate = doc.createdDate
             doc.createdDate = doc.createdDate || new Date()
             doc.modifiedDate = doc.modifiedDate || new Date()
@@ -89,16 +89,14 @@ function runMigrations(db, currentVersion) {
       .then(() => {
         // write new schemaVersion file
         const json = JSON.stringify({ schemaVersion: nextVersion })
-        fs.writeFile(schemaVersionFilePath, json, function(err) {
+        fs.writeFile(schemaVersionFilePath, json, err => {
           if (err) {
             return reject(err)
           }
           resolve(runMigrations(db, nextVersion))
         })
       })
-      .catch(err => {
-        return reject(err)
-      })
+      .catch(reject)
   })
 }
 
@@ -109,7 +107,7 @@ function runMigrations(db, currentVersion) {
  */
 module.exports = function migrateSchema(db) {
   return new Promise((resolve, reject) => {
-    fs.readFile(schemaVersionFilePath, 'utf8', function(err, json) {
+    fs.readFile(schemaVersionFilePath, 'utf8', (err, json) => {
       if (err && err.code !== 'ENOENT') {
         return reject(err)
       }
