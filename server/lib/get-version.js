@@ -1,7 +1,6 @@
 const packageJson = require('../../package.json')
 const latestVersion = require('latest-version')
 const semverDiff = require('semver-diff')
-const _ = require('lodash')
 const db = require('./db.js')
 const configUtil = require('./config')
 
@@ -12,6 +11,18 @@ const version = {
   updateType: null,
   current: packageJson.version,
   latest: null
+}
+
+function logUpdateAvailable(version) {
+  console.log(`
+  ===================================================================
+  Update available (${version.updateType})
+  Current version: ${version.current}
+  Latest  version: ${version.latest}
+
+  run npm i -g ${packageJson.name} to update
+  ===================================================================
+  `)
 }
 
 function checkForUpdate() {
@@ -27,15 +38,7 @@ function checkForUpdate() {
         if (difference) {
           version.updateAvailable = true
           version.updateType = difference
-          console.log('\n' + '='.repeat(70))
-          console.log('update available (%s)', version.updateType)
-          console.log(
-            'current version: %s      latest: %s',
-            version.curent,
-            version.latest
-          )
-          console.log("run 'npm i -g " + packageJson.name + "' to update.")
-          console.log('='.repeat(70) + '\n')
+          logUpdateAvailable(version)
         }
       })
     })
@@ -48,5 +51,5 @@ setInterval(checkForUpdate, ONE_DAY)
 setTimeout(checkForUpdate, 5000)
 
 module.exports = function() {
-  return _.clone(version)
+  return Object.assign({}, version)
 }
