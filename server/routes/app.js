@@ -19,11 +19,11 @@ router.get('*/api/app', function(req, res) {
     const adminRegistrationOpen = open
 
     const currentUser =
-      req.isAuthenticated() && res.locals.user
+      req.isAuthenticated() && req.user
         ? {
-            _id: res.locals.user.id,
-            email: res.locals.user.email,
-            role: res.locals.user.role
+            _id: req.user.id,
+            email: req.user.email,
+            role: req.user.role
           }
         : undefined
 

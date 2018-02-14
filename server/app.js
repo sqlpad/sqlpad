@@ -30,8 +30,6 @@ const app = express()
 app.use(helmet())
 app.use(helmet.referrerPolicy({ policy: 'same-origin' }))
 
-app.locals.title = 'SQLPad'
-app.locals.version = packageJson.version
 app.set('env', debug ? 'development' : 'production')
 
 if (debug) {
@@ -71,24 +69,13 @@ app.use(baseUrl, express.static(path.join(__dirname, '../build')))
 if (debug) {
   app.use(morgan('dev'))
 }
+
+// Add config helper to req
 app.use(function(req, res, next) {
-  // Add config ref to req
   configUtil
     .getHelper(db)
     .then(config => {
       req.config = config
-      // Bootstrap res.locals with any common variables
-      // TODO figure out if these can be removed
-      res.locals.message = null
-      res.locals.navbarConnections = []
-      res.locals.debug = null
-      res.locals.query = null
-      res.locals.queryMenu = false
-      res.locals.session = req.session || null
-      res.locals.pageTitle = ''
-      res.locals.user = req.user
-      res.locals.isAuthenticated = req.isAuthenticated()
-      res.locals.baseUrl = baseUrl
       next()
     })
     .catch(error => {

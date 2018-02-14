@@ -17,10 +17,10 @@ router.get('/', function(req, res, next) {
       console.error(err)
       return next(err)
     }
-    if (!res.locals.user) {
+    if (!req.user) {
       return res.redirect(BASE_URL + '/signin')
     }
-    if (connections.length === 0 && res.locals.user.role === 'admin') {
+    if (connections.length === 0 && req.user.role === 'admin') {
       return res.redirect(BASE_URL + '/connections')
     }
     res.redirect(BASE_URL + '/queries')

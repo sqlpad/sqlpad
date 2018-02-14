@@ -5,12 +5,12 @@ const mustBeAdmin = require('../middleware/must-be-admin.js')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 
 router.get('/api/users/current', function(req, res) {
-  if (req.isAuthenticated() && res.locals.user) {
+  if (req.isAuthenticated() && req.user) {
     res.json({
       user: {
-        _id: res.locals.user.id,
-        email: res.locals.user.email,
-        role: res.locals.user.role
+        _id: req.user.id,
+        email: req.user.email,
+        role: req.user.role
       }
     })
   } else {
