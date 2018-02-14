@@ -11,7 +11,7 @@ let loaded = false
 let loadError = null
 const onLoads = []
 
-const db = (module.exports = {
+const db = {
   users: new Datastore({ filename: path.join(dbPath, 'users.db') }),
   connections: new Datastore({
     filename: path.join(dbPath, 'connections.db')
@@ -26,7 +26,9 @@ const db = (module.exports = {
     }
     onLoads.push(fn)
   }
-})
+}
+
+module.exports = db
 
 // Load dbs, migrate data, and apply indexes
 async.series(
