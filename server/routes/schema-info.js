@@ -8,16 +8,8 @@ var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 router.get(
   '/api/schema-info/:connectionId',
   mustBeAuthenticated,
-  function initLocals(req, res, next) {
-    res.locals.reload = req.query.reload === 'true'
-    res.locals.tree = {}
-    res.locals.cacheKey = null
-    res.locals.connection = null
-    res.locals.connectionId = req.params.connectionId
-    next()
-  },
   function getConnection(req, res, next) {
-    Connection.findOneById(res.locals.connectionId, function(err, conn) {
+    Connection.findOneById(req.params.connectionId, function(err, conn) {
       if (err) {
         console.error(err)
         return res.json({
@@ -30,32 +22,33 @@ router.get(
         })
       }
       res.locals.connection = conn
-      res.locals.cacheKey = 'schemaCache:' + res.locals.connectionId
       next()
     })
   },
   function getCache(req, res, next) {
-    Cache.findOneByCacheKey(res.locals.cacheKey, function(err, cache) {
+    const reload = req.query.reload === 'true'
+    const cacheKey = 'schemaCache:' + req.params.connectionId
+    Cache.findOneByCacheKey(cacheKey, function(err, cache) {
       if (err) {
         console.error(err)
         return res.json({
           error: 'Problem querying cache database'
         })
       }
-      if (cache && !res.locals.reload) {
+      if (cache && !reload) {
         return res.json({
           schemaInfo: JSON.parse(cache.schema)
         })
       }
       if (!cache) {
-        cache = new Cache({ cacheKey: res.locals.cacheKey })
+        cache = new Cache({ cacheKey })
       }
       res.locals.cache = cache
       next()
     })
   },
   function runSchemaQuery(req, res, next) {
-    const connection = res.locals.connection
+    const { connection } = res.locals
     getSchemaForConnection(connection, function(err, tree) {
       if (err) {
         console.error(err)
@@ -68,9 +61,9 @@ router.get(
     })
   },
   function updateCacheAndRender(req, res, next) {
-    if (!_.isEmpty(res.locals.tree)) {
-      var cache = res.locals.cache
-      cache.schema = JSON.stringify(res.locals.tree)
+    const { cache, tree } = res.locals
+    if (!_.isEmpty(tree)) {
+      cache.schema = JSON.stringify(tree)
       cache.save(function(err, newCache) {
         if (err) {
           console.error(err)
@@ -79,12 +72,12 @@ router.get(
           })
         }
         return res.json({
-          schemaInfo: res.locals.tree
+          schemaInfo: tree
         })
       })
     } else {
       res.json({
-        schemaInfo: res.locals.tree
+        schemaInfo: tree
       })
     }
   }

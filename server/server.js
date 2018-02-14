@@ -84,16 +84,9 @@ db.onLoad(function(err) {
       }
 
       https.createServer(httpsOptions, app).listen(_port, ip, function() {
-        console.log(
-          '\nWelcome to ' +
-            app.locals.title +
-            '!. Visit https://' +
-            (ip === '0.0.0.0' ? 'localhost' : ip) +
-            ':' +
-            _port +
-            baseUrl +
-            ' to get started'
-        )
+        const hostIp = ip === '0.0.0.0' ? 'localhost' : ip
+        const url = `https://${hostIp}:${_port}${baseUrl}`
+        console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`)
       })
     })
   } else {
@@ -109,16 +102,9 @@ db.onLoad(function(err) {
         // config.set('port', _port)
       }
       http.createServer(app).listen(_port, ip, function() {
-        console.log(
-          '\nWelcome to ' +
-            app.locals.title +
-            '!. Visit http://' +
-            (ip === '0.0.0.0' ? 'localhost' : ip) +
-            ':' +
-            _port +
-            baseUrl +
-            ' to get started'
-        )
+        const hostIp = ip === '0.0.0.0' ? 'localhost' : ip
+        const url = `http://${hostIp}:${_port}${baseUrl}`
+        console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`)
       })
     })
   }

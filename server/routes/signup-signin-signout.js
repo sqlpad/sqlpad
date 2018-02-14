@@ -7,9 +7,6 @@ var User = require('../models/User.js')
 // since these configs are set via env or cli
 const { disableUserpassAuth } = require('../lib/config').getPreDbConfig()
 
-/*    Sign Up
-============================================================================= */
-
 function adminRegistrationOpen(req, res, next) {
   User.adminRegistrationOpen(function(err, open) {
     res.locals.adminRegistrationOpen = open
