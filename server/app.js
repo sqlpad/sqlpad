@@ -92,7 +92,6 @@ require('./middleware/passport.js')
 const routers = [
   require('./routes/homepage.js'),
   require('./routes/app.js'),
-  require('./routes/version.js'),
   require('./routes/users.js'),
   require('./routes/forgot-password.js'),
   require('./routes/password-reset.js'),
