@@ -99,6 +99,10 @@ User.findAll = () =>
     .exec()
     .then(docs => docs.map(doc => new User(doc)))
 
+/**
+ * Returns boolean regarding whether admin registration should be open or not
+ * @returns {Promise<boolean>} administrationOpen
+ */
 User.adminRegistrationOpen = () =>
   db.users.findOne({ role: 'admin' }).then(doc => !doc)
 
