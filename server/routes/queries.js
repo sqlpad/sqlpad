@@ -14,16 +14,12 @@ router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
   res,
   next
 ) {
-  const { config } = req
-  var format = req.query.format
+  const { config, query, params } = req
+  const { format } = query
   if (format === 'table') {
-    return res.redirect(
-      config.get('baseUrl') + '/query-table/' + req.params._id
-    )
+    return res.redirect(config.get('baseUrl') + '/query-table/' + params._id)
   } else if (format === 'chart') {
-    return res.redirect(
-      config.get('baseUrl') + '/query-chart/' + req.params._id
-    )
+    return res.redirect(config.get('baseUrl') + '/query-chart/' + params._id)
   }
   next()
 })
