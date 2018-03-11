@@ -1,8 +1,9 @@
-var router = require('express').Router()
-var Connection = require('../models/Connection.js')
-var Query = require('../models/Query.js')
-var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
-var mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js')
+const router = require('express').Router()
+const Connection = require('../models/Connection.js')
+const Query = require('../models/Query.js')
+const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
+const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js')
+const sendError = require('../lib/sendError')
 
 /*  render page routes
 ============================================================================= */
@@ -31,15 +32,9 @@ router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
 ============================================================================= */
 
 router.delete('/api/queries/:_id', mustBeAuthenticated, function(req, res) {
-  Query.removeOneById(req.params._id, function(err) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem deleting query'
-      })
-    }
-    res.json({})
-  })
+  return Query.removeOneById(req.params._id)
+    .then(() => res.json({}))
+    .catch(error => sendError(res, error, 'Problem deleting query'))
 })
 
 router.get('/api/queries', mustBeAuthenticated, function(req, res) {
@@ -64,38 +59,19 @@ router.get('/api/queries', mustBeAuthenticated, function(req, res) {
 
   });
   */
-  Query.findAll(function(err, queries) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem querying query database'
-      })
-    }
-    return res.json({
-      queries: queries
-    })
-  })
+  return Query.findAll()
+    .then(queries => res.json({ queries }))
+    .catch(error => sendError(res, error, 'Problem querying query database'))
 })
 
 router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, function(
   req,
   res
 ) {
-  Connection.findAll(function(err, connections) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem querying connection database'
-      })
-    }
-    Query.findOneById(req.params._id, function(err, query) {
-      if (err) {
-        console.error(err)
-        return res.json({
-          error: 'Problem querying query database',
-          connections: connections
-        })
-      }
+  // TODO only return queries
+  return Promise.all([Connection.findAll(), Query.findOneById(req.params._id)])
+    .then(data => {
+      const [connections, query] = data
       if (!query) {
         return res.json({
           connections: connections,
@@ -107,14 +83,12 @@ router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, function(
         query: query
       })
     })
-  })
+    .catch(error => sendError('Problem getting query'))
 })
 
 // create new
 router.post('/api/queries', mustBeAuthenticated, function(req, res) {
-  // previously posted to api/queries/:_id, req.params._id would have been "new"
-  // now though we know its new because the client did that for us
-  var query = new Query({
+  const query = new Query({
     name: req.body.name || 'No Name Query',
     tags: req.body.tags,
     connectionId: req.body.connectionId,
@@ -123,53 +97,35 @@ router.post('/api/queries', mustBeAuthenticated, function(req, res) {
     createdBy: req.user.email,
     modifiedBy: req.user.email
   })
-  query.save(function(err, newQuery) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem saving query'
-      })
-    }
-    // push query to slack if set up.
-    // this is async, but save operation doesn't care about when/if finished
-    newQuery.pushQueryToSlackIfSetup()
-    res.json({
-      query: newQuery
-    })
-  })
-})
-
-router.put('/api/queries/:_id', mustBeAuthenticated, function(req, res) {
-  Query.findOneById(req.params._id, function(err, query) {
-    if (err) {
-      console.error(err)
-      return res.send({
-        error: 'Problem querying query database'
-      })
-    }
-    if (!query) {
-      return res.send({
-        error: 'No query found for that Id'
-      })
-    }
-    query.name = req.body.name || ''
-    query.tags = req.body.tags
-    query.connectionId = req.body.connectionId
-    query.queryText = req.body.queryText
-    query.chartConfiguration = req.body.chartConfiguration
-    query.modifiedBy = req.user.email
-    query.save(function(err, newQuery) {
-      if (err) {
-        console.error(err)
-        return res.json({
-          error: 'Problem saving query'
-        })
-      }
+  return query
+    .save()
+    .then(newQuery => {
+      // This is async, but save operation doesn't care about when/if finished
+      newQuery.pushQueryToSlackIfSetup()
       return res.json({
         query: newQuery
       })
     })
-  })
+    .catch(error => sendError(res, error, 'Problem saving query'))
+})
+
+router.put('/api/queries/:_id', mustBeAuthenticated, function(req, res) {
+  return Query.findOneById(req.params._id)
+    .then(query => {
+      if (!query) {
+        return sendError(res, null, 'Query not found')
+      }
+
+      query.name = req.body.name || ''
+      query.tags = req.body.tags
+      query.connectionId = req.body.connectionId
+      query.queryText = req.body.queryText
+      query.chartConfiguration = req.body.chartConfiguration
+      query.modifiedBy = req.user.email
+
+      return query.save().then(newQuery => res.json({ query: newQuery }))
+    })
+    .catch(error => sendError(res, error, 'Problem saving query'))
 })
 
 module.exports = router
