@@ -1,13 +1,8 @@
-/*  Homepage
-
-    The main homepage/root of the thing.
-    For now it just redirects the user to a more appropriate page.
-    If there are connections in the system, it redirects to the queries listing.
-    If there are no connections, the user goes to the connections page
-============================================================================= */
 var router = require('express').Router()
 var Connection = require('../models/Connection.js')
 
+// TODO FIXME - This was meant to redirect user to appropriate page depending on state of setup
+// I do not think it works anymore and should be revisited (this can be done client-side too)
 router.get('/', function(req, res, next) {
   const { config } = req
   const BASE_URL = config.get('baseUrl')
