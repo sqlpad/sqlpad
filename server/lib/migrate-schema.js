@@ -1,6 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-const async = require('async')
 const rimraf = require('rimraf')
 const { dbPath, debug } = require('../lib/config').getPreDbConfig()
 const schemaVersionFilePath = path.join(dbPath + '/schemaVersion.json')
@@ -8,27 +7,20 @@ const schemaVersionFilePath = path.join(dbPath + '/schemaVersion.json')
 // migrations must increment by 1
 const migrations = {
   1: db =>
-    new Promise((resolve, reject) => {
-      // from now on, user.createdDate is when the user record was createdDate
-      // instead of when the user signed up
-      // user.signupDate should be used when user is initially signed up.
-      // NOTE: using db directly here to avoid model schema conflicts
-      // and extra model logic (like modified date updates)
-      db.users.find({}).exec((err, docs) => {
-        if (err) {
-          return reject(err)
-        }
-        async.eachSeries(
-          docs,
-          (doc, callback) => {
-            doc.signupDate = doc.createdDate
-            doc.createdDate = doc.createdDate || new Date()
-            doc.modifiedDate = doc.modifiedDate || new Date()
-            db.users.update({ _id: doc._id }, doc, {}, callback)
-          },
-          resolve
-        )
-      })
+    // from now on, user.createdDate is when the user record was createdDate
+    // instead of when the user signed up
+    // user.signupDate should be used when user is initially signed up.
+    // NOTE: using db directly here to avoid model schema conflicts
+    // and extra model logic (like modified date updates)
+    db.users.find({}).then(docs => {
+      return Promise.all(
+        docs.map(doc => {
+          doc.signupDate = doc.createdDate
+          doc.createdDate = doc.createdDate || new Date()
+          doc.modifiedDate = doc.modifiedDate || new Date()
+          return db.users.update({ _id: doc._id }, doc, {})
+        })
+      )
     }),
   2: db =>
     new Promise((resolve, reject) => {
@@ -44,27 +36,20 @@ const migrations = {
       })
     }),
   3: db =>
-    new Promise((resolve, reject) => {
-      // change admin flag to role to allow for future viewer role
-      // NOTE: using db directly here to avoid model schema conflicts
-      // and extra model logic (like modified date updates)
-      db.users.find({}).exec((err, docs) => {
-        if (err) {
-          return reject(err)
-        }
-        async.eachSeries(
-          docs,
-          (doc, callback) => {
-            if (doc.admin) {
-              doc.role = 'admin'
-            } else {
-              doc.role = 'editor'
-            }
-            db.users.update({ _id: doc._id }, doc, {}, callback)
-          },
-          resolve
-        )
-      })
+    // change admin flag to role to allow for future viewer role
+    // NOTE: using db directly here to avoid model schema conflicts
+    // and extra model logic (like modified date updates)
+    db.users.find({}).then(docs => {
+      return Promise.all(
+        docs.map(doc => {
+          if (doc.admin) {
+            doc.role = 'admin'
+          } else {
+            doc.role = 'editor'
+          }
+          return db.users.update({ _id: doc._id }, doc, {})
+        })
+      )
     })
 }
 
