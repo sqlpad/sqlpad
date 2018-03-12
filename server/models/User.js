@@ -83,13 +83,13 @@ User.prototype.comparePasswordToHash = function comparePasswordToHash(
 /*  Query methods
 ============================================================================== */
 User.findOneByEmail = email =>
-  db.users.findOne({ email: email }).then(doc => new User(doc))
+  db.users.findOne({ email }).then(doc => doc && new User(doc))
 
 User.findOneById = id =>
-  db.users.findOne({ _id: id }).then(doc => new User(doc))
+  db.users.findOne({ _id: id }).then(doc => doc && new User(doc))
 
 User.findOneByPasswordResetId = id =>
-  db.users.findOne({ passwordResetId: id }).then(doc => new User(doc))
+  db.users.findOne({ passwordResetId: id }).then(doc => doc && new User(doc))
 
 User.findAll = () =>
   db.users

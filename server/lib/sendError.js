@@ -9,6 +9,6 @@ module.exports = function sendError(res, error, message) {
     console.error(error)
   }
   return res.json({
-    error: message || error ? error.toString() : 'Something happened'
+    error: message || (error ? error.toString() : 'Something happened')
   })
 }
