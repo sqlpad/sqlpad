@@ -7,7 +7,7 @@ describe('models/Query.js', function() {
   })
 
   describe('new Query', function() {
-    it('should save with all the stuff', function(done) {
+    it('should save with all the stuff', function() {
       const query = new Query({
         _id: 'test-all',
         name: 'test query all',
@@ -24,65 +24,53 @@ describe('models/Query.js', function() {
         createdBy: 'test@test.com',
         modifiedBy: 'test@test.com'
       })
-      query.save(function(err, newQuery) {
-        assert.ifError(err)
+      return query.save().then(newQuery => {
         assert(newQuery._id, '_id should exist')
         assert(newQuery instanceof Query, 'should be Query')
-        done()
       })
     })
 
-    it('should save with the least amount of stuff', function(done) {
+    it('should save with the least amount of stuff', function() {
       const query = new Query({
         _id: 'test-least',
         name: 'test query minimal',
         createdBy: 'test@test.com',
         modifiedBy: 'test@test.com'
       })
-      query.save(function(err, newQuery) {
-        assert.ifError(err)
+      return query.save().then(newQuery => {
         assert(newQuery._id, '_id should exist')
         assert.equal(newQuery.name, 'test query minimal', 'newQuery.name')
         assert(newQuery instanceof Query, 'instanceOf Query')
-        done()
       })
     })
   })
 
   describe('.findAll', function() {
-    it('should get all the queries', function(done) {
-      Query.findAll(function(err, queries) {
-        assert.ifError(err)
+    it('should get all the queries', function() {
+      return Query.findAll().then(queries => {
         assert.equal(queries.length, 2, 'queries.length')
         assert(queries[0] instanceof Query, 'instance of Query')
-        done()
       })
     })
   })
 
   describe('.findOneById', function() {
-    it('should get the query requested', function(done) {
-      Query.findAll(function(err, queries) {
-        assert.ifError(err)
+    it('should get the query requested', function() {
+      return Query.findAll().then(queries => {
         const id = queries[0]._id
-        Query.findOneById(id, function(err, query) {
-          assert.ifError(err)
+        return Query.findOneById(id).then(query => {
           assert(query instanceof Query, 'instance of Query')
           assert.equal(query._id, id, '_id = id')
-          done()
         })
       })
     })
   })
 
   describe('.removeOneById', function() {
-    it('should remove the query requested', function(done) {
-      Query.removeOneById('test-all', function(err) {
-        assert.ifError(err)
-        Query.findAll(function(err, queries) {
-          assert.ifError(err)
+    it('should remove the query requested', function() {
+      return Query.removeOneById('test-all').then(() => {
+        return Query.findAll().then(queries => {
           assert.equal(queries.length, 1, 'queries.length')
-          done()
         })
       })
     })
