@@ -48,7 +48,6 @@
     ]
   },
   "dependencies": {
-    "async": "^2.6.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "detect-port": "^1.2.2",
