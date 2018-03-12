@@ -24,12 +24,7 @@ function resetWithUser() {
       password: 'admin',
       role: 'admin'
     })
-    return new Promise((resolve, reject) => {
-      user.save((err, newUser) => {
-        if (err) return reject(err)
-        return resolve(newUser)
-      })
-    })
+    return user.save()
   })
 }
 
