@@ -1,64 +1,55 @@
-var passport = require('passport')
-var router = require('express').Router()
-var checkWhitelist = require('../lib/check-whitelist')
-var User = require('../models/User.js')
+const passport = require('passport')
+const router = require('express').Router()
+const checkWhitelist = require('../lib/check-whitelist')
+const User = require('../models/User.js')
+const sendError = require('../lib/sendError')
 
 // NOTE: getting config here during module init is okay
 // since these configs are set via env or cli
 const { disableUserpassAuth } = require('../lib/config').getPreDbConfig()
 
-function adminRegistrationOpen(req, res, next) {
-  User.adminRegistrationOpen(function(err, open) {
-    res.locals.adminRegistrationOpen = open
-    next(err)
-  })
-}
-
 /*  Some routes should only exist if userpath auth is enabled
 ============================================================================= */
 if (!disableUserpassAuth) {
-  router.post('/api/signup', adminRegistrationOpen, function(req, res) {
+  router.post('/api/signup', function(req, res) {
+    const whitelistedDomains = req.config.get('whitelistedDomains')
+
     if (req.body.password !== req.body.passwordConfirmation) {
-      return res.json({ error: 'Passwords do not match' })
+      return sendError(res, null, 'Passwords do not match')
     }
-    User.findOneByEmail(req.body.email, function(err, user) {
-      if (err) {
-        console.error(err)
-        return res.json({ error: 'Error looking up user by email' })
-      }
-      if (user && user.passhash) {
-        return res.json({ error: 'User already signed up' })
-      }
-      if (user) {
-        user.password = req.body.password
-        user.signupDate = new Date()
-      }
-      if (!user) {
-        // if open admin registration or whitelisted email create user
-        // otherwise exit
-        const whitelistedDomains = req.config.get('whitelistedDomains')
-        if (
-          res.locals.adminRegistrationOpen ||
-          checkWhitelist(whitelistedDomains, req.body.email)
-        ) {
-          user = new User({
-            email: req.body.email,
-            password: req.body.password,
-            role: res.locals.adminRegistrationOpen ? 'admin' : 'editor',
-            signupDate: new Date()
-          })
-        } else {
-          return res.json({ error: 'Email address not yet whitelisted' })
+    return Promise.all([
+      User.findOneByEmail(req.body.email),
+      User.adminRegistrationOpen()
+    ])
+      .then(data => {
+        let [user, adminRegistrationOpen] = data
+        if (user && user.passhash) {
+          return sendError(res, null, 'User already signed up')
         }
-      }
-      user.save(function(err, newUser) {
-        if (err) {
-          console.error(err)
-          return res.json({ error: 'Error saving new user to DB' })
+        if (user) {
+          user.password = req.body.password
+          user.signupDate = new Date()
         }
-        return res.json({})
+        if (!user) {
+          // if open admin registration or whitelisted email create user
+          // otherwise exit
+          if (
+            adminRegistrationOpen ||
+            checkWhitelist(whitelistedDomains, req.body.email)
+          ) {
+            user = new User({
+              email: req.body.email,
+              password: req.body.password,
+              role: adminRegistrationOpen ? 'admin' : 'editor',
+              signupDate: new Date()
+            })
+          } else {
+            return sendError(res, null, 'Email address not whitelisted')
+          }
+        }
+        return user.save().then(newUser => res.json({}))
       })
-    })
+      .catch(error => sendError(res, error, 'Error saving user'))
   })
 
   router.post('/api/signin', passport.authenticate('local'), function(
