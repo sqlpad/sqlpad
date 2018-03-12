@@ -1,7 +1,6 @@
 const Joi = require('joi')
 const db = require('../lib/db.js')
 const bcrypt = require('bcrypt-nodejs')
-const _ = require('lodash')
 
 const schema = {
   _id: Joi.string().optional(), // will be auto-gen by nedb

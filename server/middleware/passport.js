@@ -1,4 +1,3 @@
-const async = require('async')
 const passport = require('passport')
 const PassportLocalStrategy = require('passport-local').Strategy
 const PassportGoogleStrategy = require('passport-google-oauth2').Strategy
