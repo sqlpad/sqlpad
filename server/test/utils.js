@@ -2,6 +2,7 @@ const assert = require('assert')
 const User = require('../models/User')
 const Query = require('../models/Query')
 const Connection = require('../models/Connection')
+const db = require('../lib/db')
 
 function expectKeys(data, expectedKeys) {
   Object.keys(data).forEach(key =>
@@ -10,10 +11,12 @@ function expectKeys(data, expectedKeys) {
 }
 
 function reset() {
+  // TODO just use nedb directly here, remove _removeAll methods
   return Promise.all([
     User._removeAll(),
     Query._removeAll(),
-    Connection._removeAll()
+    Connection._removeAll(),
+    db.config.remove({}, { multi: true })
   ])
 }
 
