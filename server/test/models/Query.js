@@ -1,9 +1,10 @@
 const assert = require('assert')
 const Query = require('../../models/Query.js')
+const utils = require('../utils')
 
 describe('models/Query.js', function() {
   before(function() {
-    return Query._removeAll()
+    return utils.reset()
   })
 
   describe('new Query', function() {

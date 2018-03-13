@@ -105,6 +105,4 @@ Connection.findAll = () =>
 
 Connection.removeOneById = id => db.connections.remove({ _id: id })
 
-Connection._removeAll = () => db.connections.remove({}, { multi: true })
-
 module.exports = Connection

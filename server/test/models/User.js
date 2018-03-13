@@ -1,5 +1,6 @@
 const assert = require('assert')
 const User = require('../../models/User.js')
+const utils = require('../utils')
 
 describe('models/User.js', function() {
   let regularUser = new User({ email: 'regular@test.com', role: 'editor' })
@@ -11,7 +12,7 @@ describe('models/User.js', function() {
   })
 
   before(function() {
-    return User._removeAll()
+    return utils.reset()
   })
 
   describe('.openAdminRegistration()', function() {

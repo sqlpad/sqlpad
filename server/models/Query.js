@@ -145,6 +145,4 @@ Query.prototype.logAccess = function logAccess() {
 
 Query.removeOneById = id => db.queries.remove({ _id: id })
 
-Query._removeAll = () => db.queries.remove({}, { multi: true })
-
 module.exports = Query

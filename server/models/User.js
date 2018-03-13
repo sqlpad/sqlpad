@@ -107,6 +107,4 @@ User.adminRegistrationOpen = () =>
 
 User.removeOneById = id => db.users.remove({ _id: id })
 
-User._removeAll = () => db.users.remove({}, { multi: true })
-
 module.exports = User

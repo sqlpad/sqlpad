@@ -1,11 +1,12 @@
 const assert = require('assert')
 const Connection = require('../../models/Connection.js')
+const utils = require('../utils')
 
 describe('models/Connection.js', function() {
   let testConnection
 
   before(function() {
-    return Connection._removeAll()
+    return utils.reset()
   })
 
   describe('.findAll() with no connections', function() {
