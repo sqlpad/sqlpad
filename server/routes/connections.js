@@ -1,5 +1,4 @@
 const router = require('express').Router()
-const runQuery = require('../lib/run-query.js')
 const cipher = require('../lib/cipher.js')
 const decipher = require('../lib/decipher.js')
 const Connection = require('../models/Connection.js')
@@ -125,29 +124,6 @@ router.delete('/api/connections/:_id', mustBeAdmin, function(req, res) {
   return Connection.removeOneById(req.params._id)
     .then(() => res.json({}))
     .catch(error => sendError(res, error, 'Problem deleting connection'))
-})
-
-router.post('/api/test-connection', mustBeAdmin, function(req, res) {
-  const bodyConnection = connectionFromBody(req.body)
-  let testQuery = "SELECT 'success' AS TestQuery;"
-  // TODO move this to drivers implementation
-  if (bodyConnection.driver === 'crate') {
-    testQuery = 'SELECT name from sys.cluster'
-  }
-  if (bodyConnection.driver === 'presto') {
-    testQuery = "SELECT 'success' AS TestQuery"
-  }
-  if (bodyConnection.driver === 'hdb') {
-    testQuery = 'select * from DUMMY'
-  }
-  runQuery(testQuery, bodyConnection, function(err, queryResult) {
-    if (err) {
-      return sendError(res, err)
-    }
-    return res.send({
-      results: queryResult.rows
-    })
-  })
 })
 
 module.exports = router

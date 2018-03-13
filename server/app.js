@@ -96,6 +96,7 @@ const routers = [
   require('./routes/forgot-password.js'),
   require('./routes/password-reset.js'),
   require('./routes/connections.js'),
+  require('./routes/test-connection.js'),
   require('./routes/queries.js'),
   require('./routes/query-result.js'),
   require('./routes/download-results.js'), // streams result download to browser
