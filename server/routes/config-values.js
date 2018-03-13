@@ -2,13 +2,6 @@ const router = require('express').Router()
 const mustBeAdmin = require('../middleware/must-be-admin.js')
 const sendError = require('../lib/sendError')
 
-router.get('/api/config-items', mustBeAdmin, function(req, res) {
-  const { config } = req
-  return res.json({
-    configItems: config.getConfigItems()
-  })
-})
-
 router.post('/api/config-values/:key', mustBeAdmin, function(req, res) {
   const { body, config, params } = req
   config
