@@ -13,6 +13,7 @@ const schema = {
     .allow(''),
   username: Joi.string().default('', 'Database Username'), // decrypt for presentation, encrypted for storage
   password: Joi.string().default('', 'Database Password'), // decrypt for presentation, encrypted for storage
+  // this is sql server only for now, but could apply to other dbs in future?
   domain: Joi.string()
     .optional()
     .allow(''),
@@ -39,7 +40,10 @@ const schema = {
   hanaSchema: Joi.string()
     .optional()
     .allow(''),
-  hanaport: Joi.string().default('', '39015'),
+  hanaport: Joi.string()
+    .optional()
+    .allow('')
+    .default('', '39015'),
   hanadatabase: Joi.string()
     .optional()
     .allow(''),
@@ -48,32 +52,7 @@ const schema = {
 }
 
 const Connection = function Connection(data) {
-  this._id = data._id
-  this.name = data.name
-  this.driver = data.driver
-  this.host = data.host
-  this.port = data.port
-  this.database = data.database
-  this.username = data.username
-  this.password = data.password
-  this.domain = data.domain // this is sql server only for now, but could apply to other dbs in future?
-  this.sqlserverEncrypt = data.sqlserverEncrypt
-  this.postgresSsl = data.postgresSsl
-  this.postgresCert = data.postgresCert
-  this.postgresKey = data.postgresKey
-  this.useSocks = data.useSocks
-  this.socksHost = data.socksHost
-  this.socksPort = data.socksPort
-  this.socksUsername = data.socksUsername
-  this.socksPassword = data.socksPassword
-  this.mysqlInsecureAuth = data.mysqlInsecureAuth
-  this.prestoCatalog = data.prestoCatalog
-  this.prestoSchema = data.prestoSchema
-  this.hanaSchema = data.hanaSchema
-  this.hanaport = data.hanaport
-  this.hanadatabase = data.hanadatabase
-  this.createdDate = data.createdDate
-  this.modifiedDate = data.modifiedDate
+  Object.assign(this, data)
 }
 
 Connection.prototype.save = function save() {
