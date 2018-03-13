@@ -18,14 +18,23 @@ function reset() {
 }
 
 function resetWithUser() {
-  return reset().then(() => {
-    const user = new User({
-      email: 'admin@test.com',
-      password: 'admin',
-      role: 'admin'
+  return reset()
+    .then(() => {
+      const user = new User({
+        email: 'admin@test.com',
+        password: 'admin',
+        role: 'admin'
+      })
+      return user.save()
     })
-    return user.save()
-  })
+    .then(() => {
+      const user = new User({
+        email: 'editor@test.com',
+        password: 'editor',
+        role: 'editor'
+      })
+      return user.save()
+    })
 }
 
 module.exports = {

@@ -6,35 +6,6 @@ const mustBeAdmin = require('../middleware/must-be-admin.js')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 const sendError = require('../lib/sendError')
 
-function connectionFromBody(body) {
-  return {
-    name: body.name,
-    driver: body.driver,
-    host: body.host,
-    port: body.port,
-    database: body.database,
-    username: body.username,
-    password: body.password,
-    domain: body.domain,
-    sqlserverEncrypt: body.sqlserverEncrypt === true,
-    postgresSsl: body.postgresSsl === true,
-    postgresCert: body.postgresCert,
-    postgresKey: body.postgresKey,
-    postgresCA: body.postgresCA,
-    useSocks: body.useSocks,
-    socksHost: body.socksHost,
-    socksPort: body.socksPort,
-    socksUsername: body.socksUsername,
-    socksPassword: body.socksPassword,
-    mysqlInsecureAuth: body.mysqlInsecureAuth === true,
-    prestoCatalog: body.prestoCatalog,
-    prestoSchema: body.prestoSchema,
-    hanaSchema: body.hanaSchema,
-    hanadatabase: body.hanadatabase,
-    hanaport: body.hanaport
-  }
-}
-
 function decipherConnection(connection) {
   if (connection.username) {
     connection.username = decipher(connection.username)
@@ -72,7 +43,11 @@ router.get('/api/connections/:_id', mustBeAuthenticated, function(req, res) {
 
 // create
 router.post('/api/connections', mustBeAdmin, function(req, res) {
-  const connection = new Connection(connectionFromBody(req.body))
+  const bodyConnection = Object.assign({}, req.body, {
+    sqlserverEncrypt: req.body.sqlserverEncrypt === true,
+    mysqlInsecureAuth: req.body.mysqlInsecureAuth === true
+  })
+  const connection = new Connection(bodyConnection)
   connection.username = cipher(connection.username || '')
   connection.password = cipher(connection.password || '')
   return connection
@@ -92,25 +67,12 @@ router.put('/api/connections/:_id', mustBeAdmin, function(req, res) {
       if (!connection) {
         return sendError(res, null, 'Connection not found')
       }
-      connection.username = cipher(req.body.username || '')
-      connection.password = cipher(req.body.password || '')
-      connection.name = req.body.name
-      connection.driver = req.body.driver
-      connection.host = req.body.host
-      connection.port = req.body.port
-      connection.database = req.body.database
-      connection.domain = req.body.domain
-      connection.sqlserverEncrypt = req.body.sqlserverEncrypt === true
-      connection.postgresSsl = req.body.postgresSsl === true
-      connection.postgresCert = req.body.postgresCert
-      connection.postgresKey = req.body.postgresKey
-      connection.postgresCA = req.body.postgresCA
-      connection.mysqlInsecureAuth = req.body.mysqlInsecureAuth === true
-      connection.prestoCatalog = req.body.prestoCatalog
-      connection.prestoSchema = req.body.prestoSchema
-      connection.hanaSchema = req.body.hanaSchema
-      connection.hanadatabase = req.body.hanadatabase
-      connection.hanaport = req.body.hanaport
+      Object.assign(connection, req.body, {
+        sqlserverEncrypt: req.body.sqlserverEncrypt === true,
+        mysqlInsecureAuth: req.body.mysqlInsecureAuth === true,
+        username: cipher(req.body.username || ''),
+        password: cipher(req.body.password || '')
+      })
       return connection.save().then(connection =>
         res.json({
           connection: decipherConnection(connection)
