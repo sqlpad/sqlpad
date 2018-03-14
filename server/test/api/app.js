@@ -22,31 +22,29 @@ const expectedConfigKeys = [
 ]
 
 describe('api/app', function() {
-  describe('get', function() {
-    it('returns expected values', function() {
-      return request(app)
-        .get('/api/app')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then(response => {
-          utils.expectKeys(response.body, expectedKeys)
-          utils.expectKeys(response.body.config, expectedConfigKeys)
-          assert.equal(
-            Object.keys(response.body.config).length,
-            expectedConfigKeys.length,
-            'config should only have keys specified'
-          )
-        })
-    })
+  it('returns expected values', function() {
+    return request(app)
+      .get('/api/app')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then(response => {
+        utils.expectKeys(response.body, expectedKeys)
+        utils.expectKeys(response.body.config, expectedConfigKeys)
+        assert.equal(
+          Object.keys(response.body.config).length,
+          expectedConfigKeys.length,
+          'config should only have keys specified'
+        )
+      })
+  })
 
-    it('handles unknown baseUrl', function() {
-      return request(app)
-        .get('/literally/any/path/api/app')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then(response => {
-          utils.expectKeys(response.body, expectedKeys)
-        })
-    })
+  it('handles unknown baseUrl', function() {
+    return request(app)
+      .get('/literally/any/path/api/app')
+      .expect('Content-Type', /json/)
+      .expect(200)
+      .then(response => {
+        utils.expectKeys(response.body, expectedKeys)
+      })
   })
 })
