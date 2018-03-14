@@ -18,17 +18,6 @@ describe('api/password-reset', function() {
     return utils.resetWithUser()
   })
 
-  it('Gets password reset', function() {
-    return setReset().then(passwordResetId => {
-      return request(app)
-        .get(`/api/password-reset/${passwordResetId}`)
-        .auth('admin@test.com', 'admin')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then(response => assert(!response.body.error, 'Expect no error'))
-    })
-  })
-
   it('Allows resetting password', function() {
     return setReset().then(passwordResetId => {
       return request(app)

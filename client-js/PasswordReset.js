@@ -31,20 +31,15 @@ class PasswordReset extends React.Component {
       '/api/password-reset/' + this.props.passwordResetId,
       this.state
     ).then(json => {
-      if (json.error) return Alert.error(json.error)
+      if (json.error) {
+        return Alert.error(json.error)
+      }
       this.setState({ redirect: true })
     })
   }
 
   componentDidMount() {
     document.title = 'SQLPad - Password Reset'
-    fetchJson(
-      'GET',
-      '/api/password-reset/' + this.props.passwordResetId
-    ).then(json => {
-      if (json.error) return Alert.error(json.error)
-      if (!json.passwordResetId) this.setState({ notFound: true })
-    })
   }
 
   render() {

@@ -2,19 +2,7 @@ const router = require('express').Router()
 const User = require('../models/User.js')
 const sendError = require('../lib/sendError')
 
-// This route is just to verify that the passwordReset is valid
-// TODO This could be removed and validated on POST
-router.get('/api/password-reset/:passwordResetId', function(req, res) {
-  return User.findOneByPasswordResetId(req.params.passwordResetId)
-    .then(user => {
-      if (!user) {
-        return res.json({})
-      }
-      return res.json({ passwordResetId: req.params.passwordResetId })
-    })
-    .catch(error => sendError(res, error, 'Problem querying user database'))
-})
-
+// This route used to set new password given a passwordResetId
 router.post('/api/password-reset/:passwordResetId', function(req, res) {
   return User.findOneByPasswordResetId(req.params.passwordResetId)
     .then(user => {
