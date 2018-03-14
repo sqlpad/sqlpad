@@ -5,20 +5,6 @@ const mustBeAdmin = require('../middleware/must-be-admin.js')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 const sendError = require('../lib/sendError')
 
-router.get('/api/users/current', function(req, res) {
-  if (req.isAuthenticated() && req.user) {
-    return res.json({
-      user: {
-        _id: req.user.id,
-        email: req.user.email,
-        role: req.user.role
-      }
-    })
-  }
-  // respond with empty object since this isn't really an error
-  return res.json({})
-})
-
 router.get('/api/users', mustBeAuthenticated, function(req, res) {
   return User.findAll()
     .then(users => res.json({ users }))
