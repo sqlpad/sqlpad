@@ -27,7 +27,7 @@ router.post('/api/users', mustBeAdmin, function(req, res) {
         if (config.smtpConfigured()) {
           email.sendInvite(req.body.email).catch(error => console.error(error))
         }
-        return res.json({})
+        return res.json({ user })
       })
     })
     .catch(error => sendError(res, error, 'Problem saving user'))
@@ -51,7 +51,7 @@ router.put('/api/users/:_id', mustBeAdmin, function(req, res) {
       if (body.passwordResetId != null) {
         user.passwordResetId = body.passwordResetId
       }
-      return user.save().then(() => res.json({}))
+      return user.save().then(() => res.json({ user }))
     })
     .catch(error => sendError(res, error, 'Problem saving user'))
 })
