@@ -116,7 +116,7 @@ Cache.prototype.save = function save() {
 /*  Query methods
 ============================================================================== */
 Cache.findOneByCacheKey = cacheKey =>
-  db.cache.findOne({ cacheKey: cacheKey }).then(doc => new Cache(doc))
+  db.cache.findOne({ cacheKey }).then(doc => doc && new Cache(doc))
 
 Cache.findExpired = () =>
   db.cache
