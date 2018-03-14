@@ -2,6 +2,8 @@ const router = require('express').Router()
 const User = require('../models/User.js')
 const sendError = require('../lib/sendError')
 
+// This route is just to verify that the passwordReset is valid
+// TODO This could be removed and validated on POST
 router.get('/api/password-reset/:passwordResetId', function(req, res) {
   return User.findOneByPasswordResetId(req.params.passwordResetId)
     .then(user => {
@@ -17,13 +19,13 @@ router.post('/api/password-reset/:passwordResetId', function(req, res) {
   return User.findOneByPasswordResetId(req.params.passwordResetId)
     .then(user => {
       if (!user) {
-        return res.json({ error: 'Password reset permissions not found' })
+        return sendError(res, null, 'Password reset permissions not found')
       }
       if (req.body.email !== user.email) {
-        return res.json({ error: 'Incorrect email address' })
+        return sendError(res, null, 'Incorrect email address')
       }
       if (req.body.password !== req.body.passwordConfirmation) {
-        return res.json({ error: 'Passwords do not match' })
+        return sendError(res, null, 'Passwords do not match')
       }
       user.password = req.body.password
       user.passwordResetId = ''
