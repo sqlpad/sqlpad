@@ -1,6 +1,4 @@
 const assert = require('assert')
-const request = require('supertest')
-const app = require('../../app')
 const utils = require('../utils')
 
 describe('api/connections', function() {
@@ -11,24 +9,16 @@ describe('api/connections', function() {
   })
 
   it('Returns empty array', function() {
-    return request(app)
-      .get('/api/connections')
-      .auth('admin@test.com', 'admin')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        const { body } = response
-        assert(!body.error, 'Expect no error')
-        assert(Array.isArray(body.connections), 'connections is an array')
-        assert.equal(body.connections.length, 0, '0 length')
-      })
+    return utils.get('admin', '/api/connections').then(body => {
+      assert(!body.error, 'Expect no error')
+      assert(Array.isArray(body.connections), 'connections is an array')
+      assert.equal(body.connections.length, 0, '0 length')
+    })
   })
 
   it('Creates connection', function() {
-    return request(app)
-      .post('/api/connections')
-      .auth('admin@test.com', 'admin')
-      .send({
+    return utils
+      .post('admin', '/api/connections', {
         driver: 'postgres',
         name: 'test connection',
         host: 'localhost',
@@ -36,10 +26,7 @@ describe('api/connections', function() {
         username: 'username',
         password: 'password'
       })
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        const { body } = response
+      .then(body => {
         assert(!body.error, 'no error')
         assert(body.connection._id, 'has _id')
         assert.equal(body.connection.driver, 'postgres')
@@ -48,22 +35,14 @@ describe('api/connections', function() {
   })
 
   it('Gets array of 1', function() {
-    return request(app)
-      .get('/api/connections')
-      .auth('admin@test.com', 'admin')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        const { body } = response
-        assert.equal(body.connections.length, 1, '0 length')
-      })
+    return utils
+      .get('admin', '/api/connections')
+      .then(body => assert.equal(body.connections.length, 1, '0 length'))
   })
 
   it('Updates connection', function() {
-    return request(app)
-      .put(`/api/connections/${connection._id}`)
-      .auth('admin@test.com', 'admin')
-      .send({
+    return utils
+      .put('admin', `/api/connections/${connection._id}`, {
         driver: 'postgres',
         name: 'test connection update',
         host: 'localhost',
@@ -71,10 +50,7 @@ describe('api/connections', function() {
         username: 'username',
         password: 'password'
       })
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        const { body } = response
+      .then(body => {
         assert(!body.error, 'no error')
         assert(body.connection._id, 'has _id')
         assert.equal(body.connection.name, 'test connection update')
@@ -82,62 +58,45 @@ describe('api/connections', function() {
   })
 
   it('Gets updated connection', function() {
-    return request(app)
-      .get(`/api/connections/${connection._id}`)
-      .auth('admin@test.com', 'admin')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        const { body } = response
+    return utils
+      .get('admin', `/api/connections/${connection._id}`)
+      .then(body => {
         assert(!body.error, 'no error')
         assert.equal(body.connection.name, 'test connection update')
       })
   })
 
   it('Requires authentication', function() {
-    return request(app)
-      .get(`/api/connections/${connection._id}`)
-      .expect(302) // redirect
+    return utils.get(null, `/api/connections/${connection._id}`, 302)
   })
 
   it('Create requires admin', function() {
-    return request(app)
-      .post('/api/connections')
-      .auth('editor@test.com', 'editor')
-      .send({
+    return utils.post(
+      'editor',
+      '/api/connections',
+      {
         driver: 'postgres',
         name: 'test connection 2',
         host: 'localhost',
         database: 'testdb',
         username: 'username',
         password: 'password'
-      })
-      .expect(500)
+      },
+      500
+    )
   })
 
   it('Deletes connection', function() {
-    return request(app)
-      .delete(`/api/connections/${connection._id}`)
-      .auth('admin@test.com', 'admin')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        const { body } = response
-        assert(!body.error, 'no error')
-      })
+    return utils
+      .del('admin', `/api/connections/${connection._id}`)
+      .then(body => assert(!body.error, 'no error'))
   })
 
   it('Returns empty array', function() {
-    return request(app)
-      .get('/api/connections')
-      .auth('admin@test.com', 'admin')
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        const { body } = response
-        assert(!body.error, 'Expect no error')
-        assert(Array.isArray(body.connections), 'connections is an array')
-        assert.equal(body.connections.length, 0, '0 length')
-      })
+    return utils.get('admin', '/api/connections').then(body => {
+      assert(!body.error, 'Expect no error')
+      assert(Array.isArray(body.connections), 'connections is an array')
+      assert.equal(body.connections.length, 0, '0 length')
+    })
   })
 })
