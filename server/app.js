@@ -13,7 +13,7 @@ const {
   googleClientSecret,
   publicUrl,
   debug
-} = require('./lib/config').getPreDbConfig()
+} = configUtil.getPreDbConfig()
 
 /*  Express setup
 ============================================================================= */
