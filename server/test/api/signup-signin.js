@@ -1,6 +1,4 @@
 const assert = require('assert')
-const request = require('supertest')
-const app = require('../../app')
 const utils = require('../utils')
 
 describe('api/signup', function() {
@@ -9,48 +7,33 @@ describe('api/signup', function() {
   })
 
   it('allows new user signup', function() {
-    return request(app)
-      .post('/api/signup')
-      .send({
+    return utils
+      .post(null, '/api/signup', {
         password: 'admin',
         passwordConfirmation: 'admin',
         email: 'admin@test.com'
       })
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        assert(!response.body.error, 'Expect no error')
-      })
+      .then(body => assert(!body.error, 'Expect no error'))
   })
 
   it('prevents duplicate signups', function() {
-    return request(app)
-      .post('/api/signup')
-      .send({
+    return utils
+      .post(null, '/api/signup', {
         password: 'admin',
         passwordConfirmation: 'admin',
         email: 'admin@test.com'
       })
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        assert(response.body.error, 'Expect error user already signed up')
-      })
+      .then(body => assert(body.error, 'Expect error user already signed up'))
   })
 
   it('prevents open signups', function() {
-    return request(app)
-      .post('/api/signup')
-      .send({
+    return utils
+      .post(null, '/api/signup', {
         password: 'notwhitelisted',
         passwordConfirmation: 'notwhitelisted',
         email: 'notwhitelisted@test.com'
       })
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        assert(response.body.error, 'Expect error needing whitelist')
-      })
+      .then(body => assert(body.error, 'Expect error needing whitelist'))
   })
 })
 
@@ -59,16 +42,11 @@ describe('api/signin', function() {
     return utils.resetWithUser()
   })
   it('signs in user', function() {
-    return request(app)
-      .post('/api/signin')
-      .send({
+    return utils
+      .post(null, '/api/signin', {
         password: 'admin',
         email: 'admin@test.com'
       })
-      .expect('Content-Type', /json/)
-      .expect(200)
-      .then(response => {
-        assert(!response.body.error, 'Expect no error')
-      })
+      .then(body => assert(!body.error, 'Expect no error'))
   })
 })
