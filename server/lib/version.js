@@ -47,9 +47,12 @@ function checkForUpdate() {
     })
 }
 
-setInterval(checkForUpdate, ONE_DAY)
-setTimeout(checkForUpdate, 5000)
-
-module.exports = function() {
-  return Object.assign({}, version)
+module.exports = {
+  get: function() {
+    return Object.assign({}, version)
+  },
+  scheduleUpdateChecks: function() {
+    setInterval(checkForUpdate, ONE_DAY)
+    setTimeout(checkForUpdate, 5000)
+  }
 }

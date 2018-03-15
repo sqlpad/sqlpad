@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const passport = require('passport')
-const getVersion = require('../lib/get-version.js')
+const version = require('../lib/version.js')
 const User = require('../models/User.js')
 const sendError = require('../lib/sendError')
 
@@ -35,7 +35,7 @@ router.get('*/api/app', function(req, res) {
         config: config.getUiConfig(),
         smtpConfigured: config.smtpConfigured(),
         googleAuthConfigured: config.googleAuthConfigured(),
-        version: getVersion(),
+        version: version.get(),
         passport: {
           strategies
         }

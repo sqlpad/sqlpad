@@ -6,6 +6,7 @@ const helmet = require('helmet')
 const session = require('express-session')
 const MemoryStore = require('memorystore')(session)
 const configUtil = require('./lib/config')
+const version = require('./lib/version')
 const db = require('./lib/db')
 const {
   baseUrl,
@@ -14,6 +15,11 @@ const {
   publicUrl,
   debug
 } = configUtil.getPreDbConfig()
+
+if (!debug) {
+  // Note actual checks will only happen if not disabled via config
+  version.scheduleUpdateChecks()
+}
 
 /*  Express setup
 ============================================================================= */
