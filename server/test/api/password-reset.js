@@ -1,6 +1,4 @@
 const assert = require('assert')
-const request = require('supertest')
-const app = require('../../app')
 const utils = require('../utils')
 const uuid = require('uuid')
 const User = require('../../models/User')
@@ -20,65 +18,49 @@ describe('api/password-reset', function() {
 
   it('Allows resetting password', function() {
     return setReset().then(passwordResetId => {
-      return request(app)
-        .post(`/api/password-reset/${passwordResetId}`)
-        .auth('admin@test.com', 'admin')
-        .send({
+      return utils
+        .post('admin', `/api/password-reset/${passwordResetId}`, {
           email: 'admin@test.com',
           password: 'admin',
           passwordConfirmation: 'admin'
         })
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then(response => assert(!response.body.error, 'Expect no error'))
+        .then(body => assert(!body.error, 'Expect no error'))
     })
   })
 
   it('Errors for wrong passwordResetId', function() {
     return setReset().then(passwordResetId => {
-      return request(app)
-        .post(`/api/password-reset/123`)
-        .auth('admin@test.com', 'admin')
-        .send({
+      return utils
+        .post('admin', `/api/password-reset/123`, {
           email: 'admin@test.com',
           password: 'admin',
           passwordConfirmation: 'admin'
         })
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then(response => assert(response.body.error, 'Expect error'))
+        .then(body => assert(body.error, 'Expect error'))
     })
   })
 
   it('Errors for wrong email', function() {
     return setReset().then(passwordResetId => {
-      return request(app)
-        .post(`/api/password-reset/${passwordResetId}`)
-        .auth('admin@test.com', 'admin')
-        .send({
+      return utils
+        .post('admin', `/api/password-reset/${passwordResetId}`, {
           email: 'wrongemail@test.com',
           password: 'admin',
           passwordConfirmation: 'admin'
         })
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then(response => assert(response.body.error, 'Expect error'))
+        .then(body => assert(body.error, 'Expect error'))
     })
   })
 
   it('Errors for mismatched passwords', function() {
     return setReset().then(passwordResetId => {
-      return request(app)
-        .post(`/api/password-reset/${passwordResetId}`)
-        .auth('admin@test.com', 'admin')
-        .send({
+      return utils
+        .post('admin', `/api/password-reset/${passwordResetId}`, {
           email: 'admin@test.com',
           password: 'admin2',
           passwordConfirmation: 'admin'
         })
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then(response => assert(response.body.error, 'Expect error'))
+        .then(body => assert(body.error, 'Expect error'))
     })
   })
 })
