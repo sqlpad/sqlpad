@@ -22,14 +22,14 @@ router.get(
         return Cache.findOneByCacheKey(cacheKey)
       })
       .then(foundCache => {
-        if (foundCache && !reload) {
-          return JSON.parse(foundCache.schema)
-        }
-
         if (foundCache) {
           cache = foundCache
         } else {
           cache = new Cache({ cacheKey })
+        }
+
+        if (foundCache && !reload) {
+          return JSON.parse(foundCache.schema)
         }
 
         return getSchemaForConnectionPromise(connection)
