@@ -2,7 +2,6 @@ const assert = require('assert')
 const utils = require('../utils')
 
 describe('api/schema-info', function() {
-  this.timeout(60000)
   let connection
 
   before(function() {
@@ -11,7 +10,7 @@ describe('api/schema-info', function() {
         .post('admin', '/api/connections', {
           driver: 'postgres',
           name: 'sqlpad',
-          host: 'localhost',
+          host: '127.0.0.1',
           port: 5432,
           database: 'sqlpad',
           username: 'sqlpad',
