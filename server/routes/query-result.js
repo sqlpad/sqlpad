@@ -25,7 +25,8 @@ router.get(
           connectionId: query.connectionId,
           cacheKey: query._id,
           queryName: query.name,
-          queryText: query.queryText
+          queryText: query.queryText,
+          config: req.config
         }
         // NOTE: Sends actual error here since it might have info on why the query is bad
         return getQueryResult(data)
