@@ -11,6 +11,7 @@ describe('api/schema-info', function() {
           driver: 'postgres',
           name: 'sqlpad',
           host: 'localhost',
+          port: 5432,
           database: 'sqlpad',
           username: 'sqlpad',
           password: 'sqlpad'
