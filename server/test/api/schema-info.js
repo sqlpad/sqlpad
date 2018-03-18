@@ -10,8 +10,7 @@ describe('api/schema-info', function() {
         .post('admin', '/api/connections', {
           driver: 'postgres',
           name: 'sqlpad',
-          host: '127.0.0.1',
-          port: 5432,
+          host: 'localhost',
           database: 'sqlpad',
           username: 'sqlpad',
           password: 'sqlpad'

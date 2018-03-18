@@ -7,10 +7,8 @@ node_js:
 before_install:
   - sudo service mysql stop
   - sudo service postgresql stop
-  - lsof -i :5432
   - docker-compose pull postgres
   - docker-compose up -d postgres
-  - lsof -i :5432
   - npm i -g npm@5
 cache:
   directories:
