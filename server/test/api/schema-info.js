@@ -2,6 +2,7 @@ const assert = require('assert')
 const utils = require('../utils')
 
 describe('api/schema-info', function() {
+  this.timeout(60000)
   let connection
 
   before(function() {
