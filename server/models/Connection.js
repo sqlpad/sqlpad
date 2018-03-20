@@ -1,8 +1,8 @@
-var Joi = require('joi')
-var db = require('../lib/db.js')
-var _ = require('lodash')
+const Joi = require('joi')
+const db = require('../lib/db.js')
+const _ = require('lodash')
 
-var schema = {
+const schema = {
   _id: Joi.string().optional(), // will be auto-gen by nedb
   name: Joi.string().required(),
   driver: Joi.string().required(), // postgres, mysql, etc
@@ -13,6 +13,7 @@ var schema = {
     .allow(''),
   username: Joi.string().default('', 'Database Username'), // decrypt for presentation, encrypted for storage
   password: Joi.string().default('', 'Database Password'), // decrypt for presentation, encrypted for storage
+  // this is sql server only for now, but could apply to other dbs in future?
   domain: Joi.string()
     .optional()
     .allow(''),
@@ -39,7 +40,10 @@ var schema = {
   hanaSchema: Joi.string()
     .optional()
     .allow(''),
-  hanaport: Joi.string().default('', '39015'),
+  hanaport: Joi.string()
+    .optional()
+    .allow('')
+    .default('', '39015'),
   hanadatabase: Joi.string()
     .optional()
     .allow(''),
@@ -47,93 +51,37 @@ var schema = {
   modifiedDate: Joi.date().default(new Date(), 'time of modifcation')
 }
 
-var Connection = function Connection(data) {
-  this._id = data._id
-  this.name = data.name
-  this.driver = data.driver
-  this.host = data.host
-  this.port = data.port
-  this.database = data.database
-  this.username = data.username
-  this.password = data.password
-  this.domain = data.domain // this is sql server only for now, but could apply to other dbs in future?
-  this.sqlserverEncrypt = data.sqlserverEncrypt
-  this.postgresSsl = data.postgresSsl
-  this.postgresCert = data.postgresCert
-  this.postgresKey = data.postgresKey
-  this.useSocks = data.useSocks
-  this.socksHost = data.socksHost
-  this.socksPort = data.socksPort
-  this.socksUsername = data.socksUsername
-  this.socksPassword = data.socksPassword
-  this.mysqlInsecureAuth = data.mysqlInsecureAuth
-  this.prestoCatalog = data.prestoCatalog
-  this.prestoSchema = data.prestoSchema
-  this.hanaSchema = data.hanaSchema
-  this.hanaport = data.hanaport
-  this.hanadatabase = data.hanadatabase
-  this.createdDate = data.createdDate
-  this.modifiedDate = data.modifiedDate
+const Connection = function Connection(data) {
+  Object.assign(this, data)
 }
 
-Connection.prototype.save = function ConnectionSave(callback) {
-  var self = this
+Connection.prototype.save = function save() {
+  const self = this
   this.modifiedDate = new Date()
   // TODO - build in auto cypher if rawUsername and rawPassword set?
-  var joiResult = Joi.validate(self, schema)
-  if (joiResult.error) return callback(joiResult.error)
-  if (self._id) {
-    db.connections.update({ _id: self._id }, joiResult.value, {}, function(
-      err
-    ) {
-      if (err) return callback(err)
-      Connection.findOneById(self._id, callback)
-    })
-  } else {
-    db.connections.insert(joiResult.value, function(err, newDoc) {
-      if (err) return callback(err)
-      return callback(null, new Connection(newDoc))
-    })
+  const joiResult = Joi.validate(self, schema)
+  if (joiResult.error) {
+    return Promise.reject(joiResult.error)
   }
+  if (self._id) {
+    return db.connections
+      .update({ _id: self._id }, joiResult.value, {})
+      .then(() => Connection.findOneById(self._id))
+  }
+  return db.connections.insert(joiResult.value).then(doc => new Connection(doc))
 }
 
 /*  Query methods
 ============================================================================== */
+Connection.findOneById = id =>
+  db.connections.findOne({ _id: id }).then(doc => new Connection(doc))
 
-Connection.findOneById = function ConnectionFindOneById(id, callback) {
-  db.connections.findOne({ _id: id }).exec(function(err, doc) {
-    if (err) return callback(err)
-    if (!doc) return callback()
-    return callback(err, new Connection(doc))
+Connection.findAll = () =>
+  db.connections.find({}).then(docs => {
+    const connections = docs.map(doc => new Connection(doc))
+    return _.sortBy(connections, c => c.name.toLowerCase())
   })
-}
 
-Connection.findAll = function ConnectionFindAll(callback) {
-  db.connections.find({}).exec(function(err, docs) {
-    if (err) return callback(err)
-    var connections = docs.map(function(doc) {
-      return new Connection(doc)
-    })
-    connections = _.sortBy(connections, function(c) {
-      return c.name.toLowerCase()
-    })
-    return callback(null, connections)
-  })
-}
-
-Connection.removeOneById = function ConnectionRemoveOneById(id, callback) {
-  db.connections.remove({ _id: id }, callback)
-}
-
-Connection._removeAll = () => {
-  return new Promise((resolve, reject) => {
-    db.connections.remove({}, { multi: true }, err => {
-      if (err) {
-        return reject(err)
-      }
-      return resolve()
-    })
-  })
-}
+Connection.removeOneById = id => db.connections.remove({ _id: id })
 
 module.exports = Connection

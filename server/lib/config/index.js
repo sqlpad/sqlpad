@@ -25,45 +25,27 @@ const envConfig = fromEnv()
 
 function makeSave(db) {
   return function save(key, value) {
-    return new Promise((resolve, reject) => {
-      const definition = definitions.find(definition => definition.key === key)
+    const definition = definitions.find(definition => definition.key === key)
 
-      if (definition.interface !== 'ui') {
-        return reject(
-          new Error(
-            `Config Item ${key} must use ui interface to be saved to db`
-          )
-        )
+    if (definition.interface !== 'ui') {
+      return Promise.reject(
+        new Error(`Config Item ${key} must use ui interface to be saved to db`)
+      )
+    }
+
+    return db.config.findOne({ key }).then(doc => {
+      if (doc) {
+        doc.value = value
+        doc.modifiedDate = new Date()
+        return db.config.update({ _id: doc._id }, doc, {})
       }
-
-      db.config.findOne({ key }).exec(function(err, doc) {
-        if (err) {
-          return reject(err)
-        }
-        if (doc) {
-          doc.value = value
-          doc.modifiedDate = new Date()
-          db.config.update({ _id: doc._id }, doc, {}, function(err) {
-            if (err) {
-              return reject(err)
-            }
-            return resolve(null, doc)
-          })
-        } else {
-          const newConfigValue = {
-            key,
-            value,
-            createdDate: new Date(),
-            modifiedDate: new Date()
-          }
-          db.config.insert(newConfigValue, function(err) {
-            if (err) {
-              return reject(err)
-            }
-            return resolve(null, newConfigValue)
-          })
-        }
-      })
+      const newConfigValue = {
+        key,
+        value,
+        createdDate: new Date(),
+        modifiedDate: new Date()
+      }
+      return db.config.insert(newConfigValue)
     })
   }
 }

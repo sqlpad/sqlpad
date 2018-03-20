@@ -1,86 +1,65 @@
-var _ = require('lodash')
-var router = require('express').Router()
-var Connection = require('../models/Connection.js')
-var Cache = require('../models/Cache.js')
+const router = require('express').Router()
+const Connection = require('../models/Connection.js')
+const Cache = require('../models/Cache.js')
 const getSchemaForConnection = require('../lib/get-schema-for-connection.js')
-var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
+const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
+const sendError = require('../lib/sendError')
 
 router.get(
   '/api/schema-info/:connectionId',
   mustBeAuthenticated,
-  function getConnection(req, res, next) {
-    Connection.findOneById(req.params.connectionId, function(err, conn) {
-      if (err) {
-        console.error(err)
-        return res.json({
-          error: 'Problem querying connection database'
-        })
-      }
-      if (!conn) {
-        return res.json({
-          error: 'Connection not found'
-        })
-      }
-      res.locals.connection = conn
-      next()
-    })
-  },
-  function getCache(req, res, next) {
+  function getConnection(req, res) {
     const reload = req.query.reload === 'true'
     const cacheKey = 'schemaCache:' + req.params.connectionId
-    Cache.findOneByCacheKey(cacheKey, function(err, cache) {
-      if (err) {
-        console.error(err)
-        return res.json({
-          error: 'Problem querying cache database'
-        })
-      }
-      if (cache && !reload) {
-        return res.json({
-          schemaInfo: JSON.parse(cache.schema)
-        })
-      }
-      if (!cache) {
-        cache = new Cache({ cacheKey })
-      }
-      res.locals.cache = cache
-      next()
-    })
-  },
-  function runSchemaQuery(req, res, next) {
-    const { connection } = res.locals
-    getSchemaForConnection(connection, function(err, tree) {
-      if (err) {
-        console.error(err)
-        return res.json({
-          error: 'Problem running schema info query'
-        })
-      }
-      res.locals.tree = tree
-      next()
-    })
-  },
-  function updateCacheAndRender(req, res, next) {
-    const { cache, tree } = res.locals
-    if (!_.isEmpty(tree)) {
-      cache.schema = JSON.stringify(tree)
-      cache.save(function(err, newCache) {
-        if (err) {
-          console.error(err)
-          return res.json({
-            error: 'Problem saving cache'
-          })
+    let connection, cache
+
+    return Connection.findOneById(req.params.connectionId)
+      .then(conn => {
+        if (!conn) {
+          throw new Error('Connection not found')
         }
-        return res.json({
-          schemaInfo: tree
-        })
+        connection = conn
+        return Cache.findOneByCacheKey(cacheKey)
       })
-    } else {
-      res.json({
-        schemaInfo: tree
+      .then(foundCache => {
+        if (foundCache) {
+          cache = foundCache
+        } else {
+          cache = new Cache({ cacheKey })
+        }
+
+        if (foundCache && !reload) {
+          return JSON.parse(foundCache.schema)
+        }
+
+        return getSchemaForConnectionPromise(connection)
       })
-    }
+      .then(schemaInfo => {
+        if (Object.keys(schemaInfo).length) {
+          cache.schema = JSON.stringify(schemaInfo)
+          return cache.save().then(() => schemaInfo)
+        }
+        return schemaInfo
+      })
+      .then(schemaInfo => res.json({ schemaInfo }))
+      .catch(error => {
+        if (error.message === 'Connection not found') {
+          return sendError(res, error)
+        }
+        sendError(res, error, 'Problem getting schema info')
+      })
   }
 )
+
+function getSchemaForConnectionPromise(connection) {
+  return new Promise((resolve, reject) => {
+    getSchemaForConnection(connection, function(err, tree) {
+      if (err) {
+        reject(err)
+      }
+      resolve(tree)
+    })
+  })
+}
 
 module.exports = router

@@ -43,16 +43,14 @@ describe('lib/config', function() {
   // process.env.SQLPAD_DEBUG = 'FALSE'
   // process.env.GOOGLE_CLIENT_ID = 'google-client-id'
 
-  describe('#get()', function() {
-    it('should get a value provided by default', function() {
-      return configUtil.getHelper(db).then(config => {
-        assert.equal(config.get('port'), 80, 'port=80')
-      })
+  it('.get() should get a value provided by default', function() {
+    return configUtil.getHelper(db).then(config => {
+      assert.equal(config.get('port'), 80, 'port=80')
     })
-    it('should only accept key in config items', function() {
-      return configUtil.getHelper(db).then(config => {
-        assert.throws(() => config.get('non-existent-key'), Error)
-      })
+  })
+  it('.get() should only accept key in config items', function() {
+    return configUtil.getHelper(db).then(config => {
+      assert.throws(() => config.get('non-existent-key'), Error)
     })
   })
 })

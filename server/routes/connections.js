@@ -1,191 +1,91 @@
-var router = require('express').Router()
-var runQuery = require('../lib/run-query.js')
-var cipher = require('../lib/cipher.js')
-var decipher = require('../lib/decipher.js')
-var Connection = require('../models/Connection.js')
-var mustBeAdmin = require('../middleware/must-be-admin.js')
-var mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
+const router = require('express').Router()
+const cipher = require('../lib/cipher.js')
+const decipher = require('../lib/decipher.js')
+const Connection = require('../models/Connection.js')
+const mustBeAdmin = require('../middleware/must-be-admin.js')
+const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
+const sendError = require('../lib/sendError')
 
-function connectionFromBody(body) {
-  return {
-    name: body.name,
-    driver: body.driver,
-    host: body.host,
-    port: body.port,
-    database: body.database,
-    username: body.username,
-    password: body.password,
-    domain: body.domain,
-    sqlserverEncrypt: body.sqlserverEncrypt === true,
-    postgresSsl: body.postgresSsl === true,
-    postgresCert: body.postgresCert,
-    postgresKey: body.postgresKey,
-    postgresCA: body.postgresCA,
-    useSocks: body.useSocks,
-    socksHost: body.socksHost,
-    socksPort: body.socksPort,
-    socksUsername: body.socksUsername,
-    socksPassword: body.socksPassword,
-    mysqlInsecureAuth: body.mysqlInsecureAuth === true,
-    prestoCatalog: body.prestoCatalog,
-    prestoSchema: body.prestoSchema,
-    hanaSchema: body.hanaSchema,
-    hanadatabase: body.hanadatabase,
-    hanaport: body.hanaport
+function decipherConnection(connection) {
+  if (connection.username) {
+    connection.username = decipher(connection.username)
   }
+  connection.password = ''
+  return connection
 }
 
 router.get('/api/connections', mustBeAuthenticated, function(req, res) {
-  Connection.findAll(function(err, connections) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem querying connection database'
+  return Connection.findAll()
+    .then(connections =>
+      res.json({
+        connections: connections.map(decipherConnection)
       })
-    }
-    connections = connections.map(connection => {
-      connection.username = decipher(connection.username)
-      connection.password = ''
-      return connection
-    })
-    res.json({
-      connections: connections
-    })
-  })
+    )
+    .catch(error =>
+      sendError(res, error, 'Problem querying connection database')
+    )
 })
 
 router.get('/api/connections/:_id', mustBeAuthenticated, function(req, res) {
-  Connection.findOneById(req.params._id, function(err, connection) {
-    if (err) {
-      console.error(err)
+  Connection.findOneById(req.params._id)
+    .then(connection => {
+      if (!connection) {
+        return sendError(res, null, 'Connection not found')
+      }
       return res.json({
-        error: 'Problem querying connection database'
+        connection: decipherConnection(connection)
       })
-    }
-    if (!connection) {
-      return res.json({
-        error: 'Connection not found'
-      })
-    }
-    connection.username = decipher(connection.username)
-    connection.password = ''
-    return res.json({
-      connection: connection
     })
-  })
+    .catch(error =>
+      sendError(res, error, 'Problem querying connection database')
+    )
 })
 
 // create
 router.post('/api/connections', mustBeAdmin, function(req, res) {
-  var connection = new Connection(connectionFromBody(req.body))
+  const bodyConnection = Object.assign({}, req.body, {
+    sqlserverEncrypt: req.body.sqlserverEncrypt === true,
+    mysqlInsecureAuth: req.body.mysqlInsecureAuth === true
+  })
+  const connection = new Connection(bodyConnection)
   connection.username = cipher(connection.username || '')
   connection.password = cipher(connection.password || '')
-  connection.save(function(err, newConnection) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem saving connection'
+  return connection
+    .save()
+    .then(newConnection =>
+      res.json({
+        connection: decipherConnection(newConnection)
       })
-    }
-    if (newConnection) {
-      newConnection.username = decipher(connection.username)
-      newConnection.password = ''
-    }
-    return res.json({
-      connection: newConnection
-    })
-  })
+    )
+    .catch(error => sendError(res, error, 'Problem saving connection'))
 })
 
 // update
 router.put('/api/connections/:_id', mustBeAdmin, function(req, res) {
-  Connection.findOneById(req.params._id, function(err, connection) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem querying connection database'
-      })
-    }
-    if (!connection) {
-      return res.json({
-        error: 'connection not found.'
-      })
-    }
-    connection.username = cipher(req.body.username || '')
-    connection.password = cipher(req.body.password || '')
-    connection.name = req.body.name
-    connection.driver = req.body.driver
-    connection.host = req.body.host
-    connection.port = req.body.port
-    connection.database = req.body.database
-    connection.domain = req.body.domain
-    connection.sqlserverEncrypt = req.body.sqlserverEncrypt === true
-    connection.postgresSsl = req.body.postgresSsl === true
-    connection.postgresCert = req.body.postgresCert
-    connection.postgresKey = req.body.postgresKey
-    connection.postgresCA = req.body.postgresCA
-    connection.mysqlInsecureAuth = req.body.mysqlInsecureAuth === true
-    connection.prestoCatalog = req.body.prestoCatalog
-    connection.prestoSchema = req.body.prestoSchema
-    connection.hanaSchema = req.body.hanaSchema
-    connection.hanadatabase = req.body.hanadatabase
-    connection.hanaport = req.body.hanaport
-    connection.save(function(err, connection) {
-      if (err) {
-        console.error(err)
-        return res.json({
-          error: 'Problem saving connection'
-        })
+  return Connection.findOneById(req.params._id)
+    .then(connection => {
+      if (!connection) {
+        return sendError(res, null, 'Connection not found')
       }
-      connection.username = decipher(connection.username)
-      connection.password = ''
-      return res.json({
-        connection: connection
+      Object.assign(connection, req.body, {
+        sqlserverEncrypt: req.body.sqlserverEncrypt === true,
+        mysqlInsecureAuth: req.body.mysqlInsecureAuth === true,
+        username: cipher(req.body.username || ''),
+        password: cipher(req.body.password || '')
       })
+      return connection.save().then(connection =>
+        res.json({
+          connection: decipherConnection(connection)
+        })
+      )
     })
-  })
+    .catch(error => sendError(res, error, 'Problem saving connection'))
 })
 
-// delete
 router.delete('/api/connections/:_id', mustBeAdmin, function(req, res) {
-  Connection.removeOneById(req.params._id, function(err) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem deleting connection'
-      })
-    }
-    return res.json({})
-  })
-})
-
-// test connection
-router.post('/api/test-connection', mustBeAdmin, function testConnection(
-  req,
-  res
-) {
-  var bodyConnection = connectionFromBody(req.body)
-  var testQuery = "SELECT 'success' AS TestQuery;"
-  if (bodyConnection.driver === 'crate') {
-    testQuery = 'SELECT name from sys.cluster'
-  }
-  if (bodyConnection.driver === 'presto') {
-    testQuery = "SELECT 'success' AS TestQuery"
-  }
-  if (bodyConnection.driver === 'hdb') {
-    testQuery = 'select * from DUMMY'
-  }
-  runQuery(testQuery, bodyConnection, function(err, queryResult) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: err
-      })
-    }
-    return res.send({
-      results: queryResult.rows
-    })
-  })
+  return Connection.removeOneById(req.params._id)
+    .then(() => res.json({}))
+    .catch(error => sendError(res, error, 'Problem deleting connection'))
 })
 
 module.exports = router

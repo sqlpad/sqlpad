@@ -6,6 +6,7 @@ const helmet = require('helmet')
 const session = require('express-session')
 const MemoryStore = require('memorystore')(session)
 const configUtil = require('./lib/config')
+const version = require('./lib/version')
 const db = require('./lib/db')
 const {
   baseUrl,
@@ -13,7 +14,12 @@ const {
   googleClientSecret,
   publicUrl,
   debug
-} = require('./lib/config').getPreDbConfig()
+} = configUtil.getPreDbConfig()
+
+if (!debug) {
+  // Note actual checks will only happen if not disabled via config
+  version.scheduleUpdateChecks()
+}
 
 /*  Express setup
 ============================================================================= */
@@ -96,10 +102,12 @@ const routers = [
   require('./routes/forgot-password.js'),
   require('./routes/password-reset.js'),
   require('./routes/connections.js'),
+  require('./routes/test-connection.js'),
   require('./routes/queries.js'),
   require('./routes/query-result.js'),
   require('./routes/download-results.js'), // streams result download to browser
   require('./routes/schema-info.js'),
+  require('./routes/config-items.js'),
   require('./routes/config-values.js'),
   require('./routes/tags.js'),
   require('./routes/signup-signin-signout.js')

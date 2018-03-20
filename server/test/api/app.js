@@ -1,6 +1,4 @@
 const assert = require('assert')
-const request = require('supertest')
-const app = require('../../app')
 const utils = require('../utils')
 
 const expectedKeys = [
@@ -22,31 +20,21 @@ const expectedConfigKeys = [
 ]
 
 describe('api/app', function() {
-  describe('get', function() {
-    it('returns expected values', function() {
-      return request(app)
-        .get('/api/app')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then(response => {
-          utils.expectKeys(response.body, expectedKeys)
-          utils.expectKeys(response.body.config, expectedConfigKeys)
-          assert.equal(
-            Object.keys(response.body.config).length,
-            expectedConfigKeys.length,
-            'config should only have keys specified'
-          )
-        })
+  it('returns expected values', function() {
+    return utils.get(null, '/api/app').then(body => {
+      utils.expectKeys(body, expectedKeys)
+      utils.expectKeys(body.config, expectedConfigKeys)
+      assert.equal(
+        Object.keys(body.config).length,
+        expectedConfigKeys.length,
+        'config should only have keys specified'
+      )
     })
+  })
 
-    it('handles unknown baseUrl', function() {
-      return request(app)
-        .get('/literally/any/path/api/app')
-        .expect('Content-Type', /json/)
-        .expect(200)
-        .then(response => {
-          utils.expectKeys(response.body, expectedKeys)
-        })
-    })
+  it('handles unknown baseUrl', function() {
+    return utils
+      .get(null, '/literally/any/path/api/app')
+      .then(body => utils.expectKeys(body, expectedKeys))
   })
 })

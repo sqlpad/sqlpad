@@ -10,22 +10,17 @@ const uiKeys = definitions
  * @returns {Promise} configMap as a Promise
  */
 module.exports = function getUiConfig(db) {
-  return new Promise((resolve, reject) => {
-    if (!db) {
-      return reject(new Error('db not provided'))
+  if (!db) {
+    return Promise.reject(new Error('db not provided'))
+  }
+  return db.config.find({}).then(docs => {
+    if (!docs || !docs.length) {
+      return {}
     }
-    db.config.find({}, function(err, docs) {
-      if (err) {
-        return reject(err)
-      }
-      if (!docs || !docs.length) {
-        return resolve({})
-      }
-      const configMap = {}
-      docs.filter(doc => uiKeys.includes(doc.key)).forEach(doc => {
-        configMap[doc.key] = doc.value
-      })
-      return resolve(configMap)
+    const configMap = {}
+    docs.filter(doc => uiKeys.includes(doc.key)).forEach(doc => {
+      configMap[doc.key] = doc.value
     })
+    return configMap
   })
 }

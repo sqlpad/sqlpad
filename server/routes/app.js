@@ -1,7 +1,8 @@
 const router = require('express').Router()
 const passport = require('passport')
-const getVersion = require('../lib/get-version.js')
+const version = require('../lib/version.js')
 const User = require('../models/User.js')
+const sendError = require('../lib/sendError')
 
 // NOTE: this route needs a wildcard because it is fetched as a relative url
 // from the front-end. The static SPA does not know if sqlpad is mounted at
@@ -9,44 +10,38 @@ const User = require('../models/User.js')
 router.get('*/api/app', function(req, res) {
   const { config } = req
 
-  User.adminRegistrationOpen(function(err, open) {
-    if (err) {
-      console.error(err)
-      return res.json({
-        error: 'Problem querying users'
+  return User.adminRegistrationOpen()
+    .then(adminRegistrationOpen => {
+      const currentUser =
+        req.isAuthenticated() && req.user
+          ? {
+              _id: req.user.id,
+              email: req.user.email,
+              role: req.user.role
+            }
+          : undefined
+
+      const strategies = Object.keys(passport._strategies).reduce(
+        (prev, curr) => {
+          prev[curr] = true
+          return prev
+        },
+        {}
+      )
+
+      res.json({
+        adminRegistrationOpen,
+        currentUser,
+        config: config.getUiConfig(),
+        smtpConfigured: config.smtpConfigured(),
+        googleAuthConfigured: config.googleAuthConfigured(),
+        version: version.get(),
+        passport: {
+          strategies
+        }
       })
-    }
-    const adminRegistrationOpen = open
-
-    const currentUser =
-      req.isAuthenticated() && req.user
-        ? {
-            _id: req.user.id,
-            email: req.user.email,
-            role: req.user.role
-          }
-        : undefined
-
-    const strategies = Object.keys(passport._strategies).reduce(
-      (prev, curr) => {
-        prev[curr] = true
-        return prev
-      },
-      {}
-    )
-
-    res.json({
-      adminRegistrationOpen,
-      currentUser,
-      config: config.getUiConfig(),
-      smtpConfigured: config.smtpConfigured(),
-      googleAuthConfigured: config.googleAuthConfigured(),
-      version: getVersion(),
-      passport: {
-        strategies
-      }
     })
-  })
+    .catch(error => sendError(res, error, 'Problem querying users'))
 })
 
 module.exports = router

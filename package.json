@@ -35,7 +35,7 @@
     "start-server-dev": "node-dev server/server.js --dir ./db --port 3010 --debug",
     "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
-    "test": "npm run lint && mocha server/test --recursive --exit"
+    "test": "npm run lint && mocha server/test --timeout 10000 --recursive --exit"
   },
   "prettier": {
     "semi": false,
@@ -48,7 +48,6 @@
     ]
   },
   "dependencies": {
-    "async": "^2.6.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "detect-port": "^1.2.2",
@@ -69,6 +68,7 @@
     "mssql": "^3.0.0",
     "mysql": "^2.15.0",
     "nedb": "^1.8.0",
+    "nedb-promise": "^2.0.1",
     "node-crate": "^1.0.27",
     "node-fetch": "^1.7.2",
     "node-xlsx": "^0.11.2",
