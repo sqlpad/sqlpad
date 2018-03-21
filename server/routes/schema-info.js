@@ -9,7 +9,7 @@ function getSchemaForConnectionPromise(connection) {
   return new Promise((resolve, reject) => {
     getSchemaForConnection(connection, function(err, tree) {
       if (err) {
-        reject(err)
+        return reject(err)
       }
       resolve(tree)
     })
