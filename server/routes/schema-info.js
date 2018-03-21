@@ -33,8 +33,8 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
         throw new Error('Connection not found')
       }
 
-      if (cache && !reload) {
-        return res.json({ schemaInfo: JSON.parse(cache.schema) })
+      if (cache && !reload && typeof cache.schema !== 'string') {
+        return res.json({ schemaInfo: cache.schema })
       }
 
       if (!cache) {
@@ -42,7 +42,7 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
       }
 
       return getSchemaForConnectionPromise(conn).then(schemaInfo => {
-        cache.schema = JSON.stringify(schemaInfo)
+        cache.schema = schemaInfo
         return cache.save().then(() => res.json({ schemaInfo }))
       })
     })

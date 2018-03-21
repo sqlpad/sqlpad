@@ -11,7 +11,7 @@ const schema = {
   cacheKey: Joi.string().required(), // unique, manually provided
   expiration: Joi.date().optional(), // item and associated cache files are removed on expiration
   queryName: Joi.string().optional(), // used for file names if a file is downloaded
-  schema: Joi.string().optional(), // schema tree in JSON if that's what we're caching
+  schema: Joi.any().optional(), // schema tree in JSON if that's what we're caching
   createdDate: Joi.date().default(new Date(), 'time of creation'),
   modifiedDate: Joi.date().default(new Date(), 'time of modification')
 }
