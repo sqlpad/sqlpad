@@ -42,8 +42,11 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
       }
 
       return getSchemaForConnectionPromise(conn).then(schemaInfo => {
-        cache.schema = schemaInfo
-        return cache.save().then(() => res.json({ schemaInfo }))
+        if (Object.keys(schemaInfo).length) {
+          cache.schema = schemaInfo
+          cache.save().catch(error => console.log(error))
+        }
+        return res.json({ schemaInfo })
       })
     })
     .catch(error => {
