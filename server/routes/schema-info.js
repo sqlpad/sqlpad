@@ -23,8 +23,8 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
   const reload = req.query.reload === 'true'
   const cacheKey = 'schemaCache:' + req.params.connectionId
   return Promise.all([
-    Connection.findOneById(req.params.connectionId),
-    Cache.findOneByCacheKey(cacheKey)
+    Connection.findOneById(req.params.connectionId)
+    // Cache.findOneByCacheKey(cacheKey)
   ])
     .then(results => {
       let [conn, cache] = results
