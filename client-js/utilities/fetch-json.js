@@ -18,7 +18,12 @@ export default function fetchJson(method, url, body) {
     opts.body = JSON.stringify(body)
   }
 
-  return fetch(BASE_URL + url, opts)
+  let fetchUrl = BASE_URL + url
+  if (BASE_URL && url.substring(0, 1) !== '/') {
+    fetchUrl = BASE_URL + '/' + url
+  }
+
+  return fetch(fetchUrl, opts)
     .then(response => {
       // API server will send 200 even if error occurs
       // Eventually this should change to proper status code usage
