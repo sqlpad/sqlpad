@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.2
+
+### March 27, 2018
+
+* Fix error when updating connection
+* Fix SQLPAD_BASE_URL / --base-url use
+
 ## 2.5.1
 
 ### February 5, 2018
