@@ -63,17 +63,28 @@ function getSchemaForConnection(connection, doneCallback) {
         return formatResults(queryResult, doneCallback)
       })
     }
-    if (connection.driver === 'hdb') {
-      return formatHANAResults(queryResult, doneCallback)
-    } else {
-      return formatResults(queryResult, doneCallback)
-    }
+    return formatResults(queryResult, doneCallback)
   })
 }
 
 function formatResults(queryResult, doneCallback) {
+  if (!queryResult || !queryResult.rows || !queryResult.rows.length) {
+    return doneCallback(null, {})
+  }
+
+  // queryResult row casing may not always be consistent with what is specified in query
+  // HANA is always uppercase despire aliasing as lower case for example
+  // To account for this loop through rows and normalize the case
+  const rows = queryResult.rows.map(row => {
+    const cleanRow = {}
+    Object.keys(row).forEach(key => {
+      cleanRow[key.toLowerCase()] = row[key]
+    })
+    return cleanRow
+  })
+
   const tree = {}
-  const bySchema = _.groupBy(queryResult.rows, 'table_schema')
+  const bySchema = _.groupBy(rows, 'table_schema')
   for (const schema in bySchema) {
     if (bySchema.hasOwnProperty(schema)) {
       tree[schema] = {}
@@ -98,23 +109,6 @@ function formatResults(queryResult, doneCallback) {
       }
     }
   */
-  return doneCallback(null, tree)
-}
-
-function formatHANAResults(queryResult, doneCallback) {
-  const tree = {}
-  const bySchema = _.groupBy(queryResult.rows, 'TABLE_SCHEMA')
-  for (const schema in bySchema) {
-    if (bySchema.hasOwnProperty(schema)) {
-      tree[schema] = {}
-      const byTableName = _.groupBy(bySchema[schema], 'TABLE_NAME')
-      for (const tableName in byTableName) {
-        if (byTableName.hasOwnProperty(tableName)) {
-          tree[schema][tableName] = byTableName[tableName]
-        }
-      }
-    }
-  }
   return doneCallback(null, tree)
 }
 
