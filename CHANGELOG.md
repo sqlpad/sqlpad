@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.3
+
+### March 29, 2018
+
+* Fix SAP HANA schema not being cached due to dots in column name
+
 ## 2.5.2
 
 ### March 27, 2018
