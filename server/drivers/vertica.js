@@ -18,7 +18,7 @@ const SCHEMA_SQL = `
     vc.ordinal_position
 `
 
-function runQuery(query, connection, queryResult, callback) {
+function runQuery(query, connection, queryResult) {
   const params = {
     host: connection.host,
     port: connection.port ? connection.port : 5433,
@@ -26,11 +26,12 @@ function runQuery(query, connection, queryResult, callback) {
     password: connection.password,
     database: connection.database
   }
-  const client = vertica.connect(params, function(err) {
-    if (err) {
-      callback(err, queryResult)
-      client.disconnect()
-    } else {
+  return new Promise((resolve, reject) => {
+    const client = vertica.connect(params, function(err) {
+      if (err) {
+        client.disconnect()
+        return reject(err)
+      }
       let finished = false
       let rowCounter = 0
       const fields = []
@@ -60,7 +61,7 @@ function runQuery(query, connection, queryResult, callback) {
             finished = true
             client.disconnect()
             queryResult.incomplete = true
-            callback(err, queryResult)
+            return resolve(queryResult)
           }
         }
       })
@@ -69,7 +70,7 @@ function runQuery(query, connection, queryResult, callback) {
         if (!finished) {
           finished = true
           client.disconnect()
-          callback(err, queryResult)
+          return resolve(queryResult)
         }
       })
 
@@ -77,10 +78,10 @@ function runQuery(query, connection, queryResult, callback) {
         if (!finished) {
           finished = true
           client.disconnect()
-          callback(err, queryResult)
+          return reject(err)
         }
       })
-    }
+    })
   })
 }
 

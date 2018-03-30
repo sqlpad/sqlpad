@@ -20,7 +20,7 @@ function getPrestoSchemaSql(catalog, schema) {
   `
 }
 
-function runQuery(query, connection, queryResult, callback) {
+function runQuery(query, connection, queryResult) {
   const port = connection.port || 8080
   const prestoConfig = {
     url: `http://${connection.host}:${port}`,
@@ -32,12 +32,11 @@ function runQuery(query, connection, queryResult, callback) {
     .send(prestoConfig, query)
     .then(result => {
       if (!result) {
-        const missingResult = 'No result returned'
-        return callback(missingResult, queryResult)
+        throw new Error('No result returned')
       }
       let { data, columns, error } = result
       if (error) {
-        return callback(error.message, queryResult)
+        throw new Error(error.message)
       }
       if (data.length > connection.maxRows) {
         queryResult.incomplete = true
@@ -50,11 +49,11 @@ function runQuery(query, connection, queryResult, callback) {
         }
         queryResult.addRow(row)
       }
-      return callback(null, queryResult)
+      return queryResult
     })
     .catch(error => {
       console.error({ error })
-      return callback(error.message, queryResult)
+      throw error
     })
 }
 
