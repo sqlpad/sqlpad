@@ -16,14 +16,9 @@ router.post('/api/test-connection', mustBeAdmin, function(req, res) {
   if (body.driver === 'hdb') {
     testQuery = 'select * from DUMMY'
   }
-  runQuery(testQuery, body, function(err, queryResult) {
-    if (err) {
-      return sendError(res, err)
-    }
-    return res.send({
-      results: queryResult.rows
-    })
-  })
+  return runQuery(testQuery, body)
+    .then(queryResult => res.send({ results: queryResult.rows }))
+    .catch(error => sendError(res, error))
 })
 
 module.exports = router

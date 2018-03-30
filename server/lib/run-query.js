@@ -31,17 +31,23 @@ ${query}
 `
 }
 
-module.exports = function runQuery(query, connection, callback) {
+/**
+ * Run query using driver implementation of connection
+ * @param {*} query
+ * @param {*} connection
+ * @returns {Promise}
+ */
+module.exports = function runQuery(query, connection) {
   const queryResult = new QueryResult()
   queryResult.timerStart()
   const conn = Object.assign({}, connection, {
     stream: createSocksConnection(connection)
   })
-  clients[conn.driver](query, conn, queryResult, (err, queryResult) => {
+  return clients[conn.driver](query, conn, queryResult).then(queryResult => {
     queryResult.timerStop()
     if (debug) {
       console.log(getInfo(conn, queryResult, query))
     }
-    callback(err, queryResult)
+    return queryResult
   })
 }

@@ -81,15 +81,9 @@ function getQueryResult(data) {
     })
     .then(newCache => {
       data.cache = newCache
-      return new Promise((resolve, reject) => {
-        runQuery(data.queryText, data.connection, function(err, queryResult) {
-          if (err) {
-            return reject(err)
-          }
-          data.queryResult = queryResult
-          data.queryResult.cacheKey = data.cacheKey
-          return resolve()
-        })
+      return runQuery(data.queryText, data.connection).then(queryResult => {
+        data.queryResult = queryResult
+        data.queryResult.cacheKey = data.cacheKey
       })
     })
     .then(() => {
