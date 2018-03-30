@@ -25,7 +25,7 @@ function getSchemaSql(database) {
   `
 }
 
-function runQuery(query, connection, queryResult, callback) {
+function runQuery(query, connection, queryResult) {
   const myConnection = mysql.createConnection({
     multipleStatements: true,
     host: connection.host,
@@ -37,48 +37,56 @@ function runQuery(query, connection, queryResult, callback) {
     timezone: 'Z',
     supportBigNumbers: true
   })
-  myConnection.connect(function(err) {
-    if (err) {
-      return callback(err, queryResult)
-    }
-    let rowCounter = 0
-    let queryError
-    let resultsSent = false
-    function continueOn() {
-      if (!resultsSent) {
-        resultsSent = true
-        callback(queryError, queryResult)
+
+  return new Promise((resolve, reject) => {
+    myConnection.connect(err => {
+      if (err) {
+        return reject(err)
       }
-    }
-    const myQuery = myConnection.query(query)
-    myQuery
-      .on('error', function(err) {
-        // Handle error,
-        // an 'end' event will be emitted after this as well
-        // so we'll call the callback there.
-        queryError = err
-      })
-      .on('result', function(row) {
-        rowCounter++
-        if (rowCounter <= connection.maxRows) {
-          // if we haven't hit the max yet add row to results
-          queryResult.addRow(row)
-        } else {
-          // Too many rows! pause that connection.
-          // It sounds like there is no way to close query stream
-          // you just have to close the connection
-          myConnection.pause()
-          queryResult.incomplete = true
-          continueOn() // return records to client before closing connection
-          myConnection.end()
+      let rowCounter = 0
+      let queryError
+      let resultsSent = false
+
+      function continueOn() {
+        if (!resultsSent) {
+          resultsSent = true
+          if (queryError) {
+            return reject(queryError)
+          }
+          return resolve(queryResult)
         }
-      })
-      .on('end', function() {
-        // all rows have been received
-        // This will not fire if we end the connection early
-        continueOn()
-        myConnection.end()
-      })
+      }
+
+      const myQuery = myConnection.query(query)
+      myQuery
+        .on('error', function(err) {
+          // Handle error,
+          // an 'end' event will be emitted after this as well
+          // so we'll call the callback there.
+          queryError = err
+        })
+        .on('result', function(row) {
+          rowCounter++
+          if (rowCounter <= connection.maxRows) {
+            // if we haven't hit the max yet add row to results
+            queryResult.addRow(row)
+          } else {
+            // Too many rows! pause that connection.
+            // It sounds like there is no way to close query stream
+            // you just have to close the connection
+            myConnection.pause()
+            queryResult.incomplete = true
+            continueOn() // return records to client before closing connection
+            myConnection.end()
+          }
+        })
+        .on('end', function() {
+          // all rows have been received
+          // This will not fire if we end the connection early
+          continueOn()
+          myConnection.end()
+        })
+    })
   })
 }
 

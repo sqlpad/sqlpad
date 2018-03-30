@@ -24,7 +24,7 @@ const SCHEMA_SQL = `
     attr.attnum
 `
 
-function runQuery(query, connection, queryResult, callback) {
+function runQuery(query, connection, queryResult) {
   const pgConfig = {
     user: connection.username,
     password: connection.password,
@@ -45,21 +45,27 @@ function runQuery(query, connection, queryResult, callback) {
   }
   if (connection.port) pgConfig.port = connection.port
 
-  const client = new pg.Client(pgConfig)
-  client.connect(function(err) {
-    if (err) {
-      callback(err, queryResult)
-      client.end()
-    } else {
+  return new Promise((resolve, reject) => {
+    const client = new pg.Client(pgConfig)
+    client.connect(err => {
+      if (err) {
+        client.end()
+        return reject(err)
+      }
       const cursor = client.query(new PgCursor(query))
-      cursor.read(connection.maxRows + 1, function(err, rows) {
+      cursor.read(connection.maxRows + 1, (err, rows) => {
         if (err) {
           // pg_cursor can't handle multi-statements at the moment
-          // as a work around we'll retry the query the old way, but we lose the  maxRows protection
-          client.query(query, function(err, result) {
-            if (result && result.rows) queryResult.addRows(result.rows)
-            callback(err, queryResult)
+          // as a work around we'll retry the query the old way, but we lose the maxRows protection
+          client.query(query, (err, result) => {
             client.end()
+            if (err) {
+              return reject(err)
+            }
+            if (result && result.rows) {
+              queryResult.addRows(result.rows)
+            }
+            return resolve(queryResult)
           })
         } else {
           queryResult.addRows(rows)
@@ -67,8 +73,12 @@ function runQuery(query, connection, queryResult, callback) {
             queryResult.incomplete = true
             queryResult.rows.pop() // get rid of that extra record. we only get 1 more than the max to see if there would have been more...
           }
-          callback(err, queryResult)
-          cursor.close(function(err) {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(queryResult)
+          }
+          cursor.close(err => {
             if (err) {
               console.log('error closing pg-cursor:')
               console.log(err)
@@ -77,7 +87,7 @@ function runQuery(query, connection, queryResult, callback) {
           })
         }
       })
-    }
+    })
   })
 }
 

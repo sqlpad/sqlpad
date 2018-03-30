@@ -36,40 +36,9 @@ function getSecondarySql(connection) {
   }
 }
 
-function getSchemaForConnection(connection, doneCallback) {
-  connection.username = decipher(connection.username)
-  connection.password = decipher(connection.password)
-  connection.maxRows =
-    typeof Number.MAX_SAFE_INTEGER === 'undefined'
-      ? 9007199254740991
-      : Number.MAX_SAFE_INTEGER
-
-  const primarySchemaSql = getPrimarySql(connection)
-
-  runQuery(primarySchemaSql, connection, function(err, queryResult) {
-    const secondarySchemaSql = getSecondarySql(connection)
-    if (err && !secondarySchemaSql) {
-      console.error(err)
-      return doneCallback(err)
-    }
-    if (err && secondarySchemaSql) {
-      return runQuery(secondarySchemaSql, connection, function(
-        err,
-        queryResult
-      ) {
-        if (err) {
-          return doneCallback(err)
-        }
-        return formatResults(queryResult, doneCallback)
-      })
-    }
-    return formatResults(queryResult, doneCallback)
-  })
-}
-
-function formatResults(queryResult, doneCallback) {
+function formatResults(queryResult) {
   if (!queryResult || !queryResult.rows || !queryResult.rows.length) {
-    return doneCallback(null, {})
+    return {}
   }
 
   // queryResult row casing may not always be consistent with what is specified in query
@@ -109,7 +78,33 @@ function formatResults(queryResult, doneCallback) {
       }
     }
   */
-  return doneCallback(null, tree)
+  return tree
+}
+
+/**
+ * Gets schema for connection
+ * @param {*} connection
+ * @returns {Promise}
+ */
+function getSchemaForConnection(connection) {
+  connection.username = decipher(connection.username)
+  connection.password = decipher(connection.password)
+  connection.maxRows = Number.MAX_SAFE_INTEGER
+
+  const primarySchemaSql = getPrimarySql(connection)
+
+  return runQuery(primarySchemaSql, connection)
+    .then(queryResult => formatResults(queryResult))
+    .catch(error => {
+      const secondarySchemaSql = getSecondarySql(connection)
+      if (!secondarySchemaSql) {
+        console.error(error)
+        throw error
+      }
+      return runQuery(secondarySchemaSql, connection).then(queryResult =>
+        formatResults(queryResult)
+      )
+    })
 }
 
 module.exports = getSchemaForConnection

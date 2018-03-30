@@ -30,42 +30,42 @@ const SCHEMA_SQL_V1 = `
 `
 
 // TODO - crate driver should honor max rows restriction
-function runQuery(query, connection, queryResult, callback) {
-  const crateConfig = {
-    host: connection.host
-  }
-  if (connection.port) {
-    crate.connect(crateConfig.host, connection.port)
-  } else {
-    crate.connect(crateConfig.host)
-  }
-  query = query.replace(/;$/, '')
-  crate
-    .execute(query)
-    .success(function(res) {
-      const results = {
-        rows: [],
-        fields: []
-      }
-      for (const row in res.rows) {
-        results.rows[row] = {}
-        for (let val in res.rows[row]) {
-          const columnName = res.cols[val]
-          const type = res.col_types[val]
-          val = res.rows[row][val]
-          if (type === 11) {
-            val = new Date(val)
-          }
-          results.rows[row][columnName] = val
-          results.fields[row] = columnName
+function runQuery(query, connection, queryResult) {
+  return new Promise((resolve, reject) => {
+    const crateConfig = {
+      host: connection.host
+    }
+    if (connection.port) {
+      crate.connect(crateConfig.host, connection.port)
+    } else {
+      crate.connect(crateConfig.host)
+    }
+    query = query.replace(/;$/, '')
+    crate
+      .execute(query)
+      .success(function(res) {
+        const results = {
+          rows: [],
+          fields: []
         }
-      }
-      queryResult.addRows(results.rows)
-      callback(null, queryResult)
-    })
-    .error(function(err) {
-      callback(err.message, queryResult)
-    })
+        for (const row in res.rows) {
+          results.rows[row] = {}
+          for (let val in res.rows[row]) {
+            const columnName = res.cols[val]
+            const type = res.col_types[val]
+            val = res.rows[row][val]
+            if (type === 11) {
+              val = new Date(val)
+            }
+            results.rows[row][columnName] = val
+            results.fields[row] = columnName
+          }
+        }
+        queryResult.addRows(results.rows)
+        return resolve(queryResult)
+      })
+      .error(err => reject(err.message))
+  })
 }
 
 function getSchemaForConnection(connection, doneCallback) {

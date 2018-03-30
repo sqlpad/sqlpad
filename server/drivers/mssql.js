@@ -19,7 +19,7 @@ function getSchemaSql() {
   `
 }
 
-function runQuery(query, connection, queryResult, callback) {
+function runQuery(query, connection, queryResult) {
   const sqlconfig = {
     user: connection.username,
     password: connection.password,
@@ -33,10 +33,12 @@ function runQuery(query, connection, queryResult, callback) {
       encrypt: connection.sqlserverEncrypt
     }
   }
-  const mssqlConnection = new mssql.Connection(sqlconfig, function(err) {
-    if (err) {
-      callback(err, queryResult)
-    } else {
+
+  return new Promise((resolve, reject) => {
+    const mssqlConnection = new mssql.Connection(sqlconfig, err => {
+      if (err) {
+        return reject(err)
+      }
       let rowCounter = 0
       let queryError
       let resultsSent = false
@@ -46,7 +48,10 @@ function runQuery(query, connection, queryResult, callback) {
       const continueOn = function() {
         if (!resultsSent) {
           resultsSent = true
-          callback(queryError, queryResult)
+          if (queryError) {
+            return reject(queryError)
+          }
+          return resolve(queryResult)
         }
       }
 
@@ -94,7 +99,7 @@ function runQuery(query, connection, queryResult, callback) {
         continueOn()
         mssqlConnection.close() // I don't think this does anything using the tedious driver. but maybe someday it will
       })
-    }
+    })
   })
 }
 

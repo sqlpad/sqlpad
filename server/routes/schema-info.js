@@ -5,17 +5,6 @@ const getSchemaForConnection = require('../lib/get-schema-for-connection.js')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 const sendError = require('../lib/sendError')
 
-function getSchemaForConnectionPromise(connection) {
-  return new Promise((resolve, reject) => {
-    getSchemaForConnection(connection, function(err, tree) {
-      if (err) {
-        return reject(err)
-      }
-      resolve(tree)
-    })
-  })
-}
-
 router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
   req,
   res
@@ -47,7 +36,7 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
         cache = new Cache({ cacheKey })
       }
 
-      return getSchemaForConnectionPromise(conn).then(schemaInfo => {
+      return getSchemaForConnection(conn).then(schemaInfo => {
         if (Object.keys(schemaInfo).length) {
           // Schema needs to be stringified as JSON
           // Column names could have dots in name (incompatible with nedb)
