@@ -34,8 +34,13 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
         throw new Error('Connection not found')
       }
 
-      if (cache && !reload && typeof cache.schema !== 'string') {
-        return res.json({ schemaInfo: cache.schema })
+      if (cache && !reload) {
+        const schemaInfo =
+          typeof cache.schema === 'string'
+            ? JSON.parse(cache.schema)
+            : cache.schema
+
+        return res.json({ schemaInfo })
       }
 
       if (!cache) {
@@ -44,7 +49,9 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
 
       return getSchemaForConnectionPromise(conn).then(schemaInfo => {
         if (Object.keys(schemaInfo).length) {
-          cache.schema = schemaInfo
+          // Schema needs to be stringified as JSON
+          // Column names could have dots in name (incompatible with nedb)
+          cache.schema = JSON.stringify(schemaInfo)
           cache.save().catch(error => console.log(error))
         }
         return res.json({ schemaInfo })
