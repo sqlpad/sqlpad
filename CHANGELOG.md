@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.4
+
+### April 1, 2018
+
+* Fix cache migration (fixes unresponsive schema/query on new installs)
+* Fix password reset link when using --base-url
+
 ## 2.5.3
 
 ### March 29, 2018
