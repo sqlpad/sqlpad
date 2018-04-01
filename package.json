@@ -35,7 +35,7 @@
     "start-server-dev": "node-dev server/server.js --dir ./db --port 3010 --debug",
     "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
-    "test": "npm run lint && mocha server/test --timeout 10000 --recursive --exit"
+    "test": "rm -rf ./dbtest && npm run lint && SQLPAD_DB_PATH='./dbtest' mocha server/test --timeout 10000 --recursive --exit"
   },
   "prettier": {
     "semi": false,

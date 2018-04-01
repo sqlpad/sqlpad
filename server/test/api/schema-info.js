@@ -24,7 +24,7 @@ describe('api/schema-info', function() {
 
   // This test fails in TravisCI during Cache.findOneByCacheKey(cacheKey)
   // This works locally however
-  it.skip('Gets schema-info', function() {
+  it('Gets schema-info', function() {
     return utils
       .get('admin', `/api/schema-info/${connection._id}`)
       .then(body => {

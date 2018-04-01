@@ -32,7 +32,13 @@ const migrations = {
           console.error(err)
           return reject(err)
         }
-        db.cache.remove({}, { multi: true }, resolve)
+        db.cache
+          .remove({}, { multi: true })
+          .then(() => resolve())
+          .catch(error => {
+            console.error(error)
+            return reject(error)
+          })
       })
     }),
   3: db =>
