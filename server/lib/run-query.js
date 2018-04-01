@@ -1,6 +1,5 @@
 const { debug } = require('./config').getPreDbConfig()
 const QueryResult = require('../models/QueryResult.js')
-const createSocksConnection = require('./socks.js')
 
 const clients = {
   mysql: require('../drivers/mysql').runQuery,
@@ -40,14 +39,13 @@ ${query}
 module.exports = function runQuery(query, connection) {
   const queryResult = new QueryResult()
   queryResult.timerStart()
-  const conn = Object.assign({}, connection, {
-    stream: createSocksConnection(connection)
-  })
-  return clients[conn.driver](query, conn, queryResult).then(queryResult => {
-    queryResult.timerStop()
-    if (debug) {
-      console.log(getInfo(conn, queryResult, query))
+  return clients[connection.driver](query, connection, queryResult).then(
+    queryResult => {
+      queryResult.timerStop()
+      if (debug) {
+        console.log(getInfo(connection, queryResult, query))
+      }
+      return queryResult
     }
-    return queryResult
-  })
+  )
 }

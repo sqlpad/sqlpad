@@ -1,6 +1,24 @@
 const fs = require('fs')
 const pg = require('pg')
 const PgCursor = require('pg-cursor')
+const SocksConnection = require('socksjs')
+
+function createSocksConnection(connection) {
+  if (connection.useSocks) {
+    return new SocksConnection(
+      {
+        host: connection.host,
+        port: connection.port
+      },
+      {
+        host: connection.socksHost,
+        port: connection.socksPort,
+        user: connection.socksUsername,
+        pass: connection.socksPassword
+      }
+    )
+  }
+}
 
 const SCHEMA_SQL = `
   select 
@@ -31,7 +49,7 @@ function runQuery(query, connection, queryResult) {
     database: connection.database,
     host: connection.host,
     ssl: connection.postgresSsl,
-    stream: connection.stream
+    stream: createSocksConnection(connection)
   }
   // TODO cache key/cert values
   if (connection.postgresKey && connection.postgresCert) {
