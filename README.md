@@ -4,13 +4,21 @@
 
 A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, and Presto. Written in Node.js.
 
-## Heads up! Directory structure will be changing as things are refactored
-
 ![SQLPad Query Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/query-editor.png)
 
 ## Installation, Usage, Screenshots
 
 Visit project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
+
+## Using Docker Image
+
+The docker image runs on port 3000 and uses `/var/lib/sqlpad` for the embedded database directory.
+
+Some configuration is exposed via environment variables. See [configItems.js](https://github.com/rickbergfalk/sqlpad/blob/master/server/lib/config/configItems.js) for details on environment variables considered (`envVar` field).
+
+See [docker-validation](https://github.com/rickbergfalk/sqlpad/tree/master/docker-validation) folder for example docker-compose setup with SQL Server.
+
+## Heads up! Directory structure will be changing as things are refactored
 
 ## Development
 
