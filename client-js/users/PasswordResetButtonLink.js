@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from '../common/Button'
+import { Link } from 'react-router-dom'
 
 const PasswordResetButtonLink = props => {
   if (props.passwordResetId) {
@@ -8,9 +9,9 @@ const PasswordResetButtonLink = props => {
         <Button className="mr4" onClick={props.removePasswordResetLink}>
           remove
         </Button>{' '}
-        <a href={'/password-reset/' + props.passwordResetId}>
+        <Link to={'/password-reset/' + props.passwordResetId}>
           Password Reset Link
-        </a>
+        </Link>
       </span>
     )
   }
