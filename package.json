@@ -32,7 +32,7 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint '**/*.js'",
     "start-client-dev": "react-scripts start",
-    "start-server-dev": "node-dev server/server.js --dir ./db --port 3010 --debug",
+    "start-server-dev": "node-dev server/server.js --dir ./db --port 3010 --debug --base-url '/sqlpad'",
     "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
     "test": "rm -rf ./dbtest && npm run lint && SQLPAD_DB_PATH='./dbtest' mocha server/test --timeout 10000 --recursive --exit"
