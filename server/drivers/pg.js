@@ -43,16 +43,13 @@ const SCHEMA_SQL = `
 `
 
 function runQuery(query, connection, queryResult) {
-  // apply socks connection config
-  const stream = createSocksConnection(connection)
-
   const pgConfig = {
     user: connection.username,
     password: connection.password,
     database: connection.database,
     host: connection.host,
     ssl: connection.postgresSsl,
-    stream
+    stream: createSocksConnection(connection)
   }
   // TODO cache key/cert values
   if (connection.postgresKey && connection.postgresCert) {
