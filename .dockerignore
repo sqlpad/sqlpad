@@ -1,0 +1,13 @@
+.DS_Store
+.env
+.idea/
+build/
+coverage/
+db/
+dbtest/
+docker-validation/
+docs-source/
+docs/
+node_modules/
+server/test/
+docker-compose.yml

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec sqlpad --dir /var/lib/sqlpad --port 3000 $@
