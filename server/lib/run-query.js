@@ -1,33 +1,34 @@
 const { debug } = require('./config').getPreDbConfig()
 const QueryResult = require('../models/QueryResult.js')
 
-const clients = {
-  mysql: require('../drivers/mysql').runQuery,
-  crate: require('../drivers/crate').runQuery,
-  presto: require('../drivers/presto').runQuery,
-  postgres: require('../drivers/pg').runQuery,
-  sqlserver: require('../drivers/mssql').runQuery,
-  vertica: require('../drivers/vertica').runQuery,
-  hdb: require('../drivers/hdb').runQuery
+const drivers = {
+  mysql: require('../drivers/mysql'),
+  crate: require('../drivers/crate'),
+  presto: require('../drivers/presto'),
+  postgres: require('../drivers/pg'),
+  sqlserver: require('../drivers/mssql'),
+  vertica: require('../drivers/vertica'),
+  hdb: require('../drivers/hdb')
 }
 
-// TODO log this debug information in another format somewhere useful
-function getInfo(connection, queryResult, query) {
-  const resultRowCount =
-    queryResult && queryResult.rows && queryResult.rows.length
-      ? queryResult.rows.length
-      : 0
+function logInfo(connection, queryResult, query) {
+  if (debug) {
+    const connectionName = connection.name
+    const rowCount =
+      queryResult && queryResult.rows ? queryResult.rows.length : 0
+    const { startTime, stopTime, queryRunTime } = queryResult
 
-  return `
---- lib/run-query.js ---
-CONNECTION:  ${connection.name}
-START TIME:  ${queryResult.startTime.toISOString()}
-END TIME:    ${queryResult.stopTime.toISOString()}
-ELAPSED MS:  ${queryResult.queryRunTime}
-RESULT ROWS: ${resultRowCount}
-QUERY: 
-${query}
-`
+    console.log(
+      JSON.stringify({
+        connectionName,
+        startTime,
+        stopTime,
+        queryRunTime,
+        rowCount,
+        query
+      })
+    )
+  }
 }
 
 /**
@@ -37,15 +38,16 @@ ${query}
  * @returns {Promise}
  */
 module.exports = function runQuery(query, connection) {
-  const queryResult = new QueryResult()
-  queryResult.timerStart()
-  return clients[connection.driver](query, connection, queryResult).then(
-    queryResult => {
-      queryResult.timerStop()
-      if (debug) {
-        console.log(getInfo(connection, queryResult, query))
-      }
-      return queryResult
+  const driver = drivers[connection.driver]
+  if (!driver.runQuery) {
+    return Promise.reject(`${connection.driver}.runQuery() not implemented`)
+  }
+  return driver.runQuery(query, connection).then(queryResult => {
+    if (!queryResult instanceof QueryResult) {
+      throw new Error(`${connection.driver}.runQuery must return QueryResult`)
     }
-  )
+    queryResult.finalize()
+    logInfo(connection, queryResult, query)
+    return queryResult
+  })
 }

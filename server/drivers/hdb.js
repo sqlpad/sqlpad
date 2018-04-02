@@ -1,4 +1,5 @@
 const hdb = require('hdb')
+const QueryResult = require('../models/QueryResult')
 
 function getHANASchemaSql(schema) {
   const whereSql = schema ? `WHERE tables.SCHEMA_NAME = '${schema}'` : ''
@@ -17,7 +18,8 @@ function getHANASchemaSql(schema) {
   `
 }
 
-function runQuery(query, connection, queryResult) {
+function runQuery(query, connection) {
+  const queryResult = new QueryResult()
   return new Promise((resolve, reject) => {
     const client = hdb.createClient({
       host: connection.host,

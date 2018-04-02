@@ -1,4 +1,5 @@
 const mssql = require('mssql')
+const QueryResult = require('../models/QueryResult')
 
 function getSchemaSql() {
   return `
@@ -19,7 +20,8 @@ function getSchemaSql() {
   `
 }
 
-function runQuery(query, connection, queryResult) {
+function runQuery(query, connection) {
+  const queryResult = new QueryResult()
   const sqlconfig = {
     user: connection.username,
     password: connection.password,
