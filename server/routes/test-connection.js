@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const runQuery = require('../lib/run-query.js')
+const { runQuery } = require('../drivers/index')
 const mustBeAdmin = require('../middleware/must-be-admin.js')
 const sendError = require('../lib/sendError')
 

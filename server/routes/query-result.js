@@ -1,7 +1,7 @@
-const runQuery = require('../lib/run-query.js')
 const sanitize = require('sanitize-filename')
 const moment = require('moment')
 const router = require('express').Router()
+const { runQuery } = require('../drivers/index')
 const decipher = require('../lib/decipher.js')
 const Connection = require('../models/Connection.js')
 const Cache = require('../models/Cache.js')
