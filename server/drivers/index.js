@@ -3,7 +3,7 @@ const QueryResult = require('../models/QueryResult.js')
 
 function validateFunction(path, driver, functionName) {
   if (typeof driver[functionName] !== 'function') {
-    console.error(`${path} missing .runQuery() function implementation`)
+    console.error(`${path} missing .${functionName}() implementation`)
     process.exit(1)
   }
 }
@@ -36,7 +36,7 @@ function runQuery(query, connection) {
 
   return driver.runQuery(query, connection).then(queryResult => {
     if (!queryResult instanceof QueryResult) {
-      throw new Error(`${connection.driver}.runQuery must return QueryResult`)
+      throw new Error(`${connection.driver}.runQuery() must return QueryResult`)
     }
     queryResult.finalize()
 
