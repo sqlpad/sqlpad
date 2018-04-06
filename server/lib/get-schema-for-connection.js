@@ -1,5 +1,5 @@
-const runQuery = require('./run-query.js')
 const _ = require('lodash')
+const { runQuery } = require('../drivers/index')
 const decipher = require('./decipher.js')
 const crateDriver = require('../drivers/crate')
 const postgresDriver = require('../drivers/pg')

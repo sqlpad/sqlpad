@@ -1,4 +1,5 @@
 const vertica = require('vertica')
+const QueryResult = require('../models/QueryResult')
 
 const SCHEMA_SQL = `
   SELECT 
@@ -18,7 +19,8 @@ const SCHEMA_SQL = `
     vc.ordinal_position
 `
 
-function runQuery(query, connection, queryResult) {
+function runQuery(query, connection) {
+  const queryResult = new QueryResult()
   const params = {
     host: connection.host,
     port: connection.port ? connection.port : 5433,
@@ -85,7 +87,17 @@ function runQuery(query, connection, queryResult) {
   })
 }
 
+/**
+ * Test connectivity of connection
+ * @param {*} connection
+ */
+function testConnection(connection) {
+  const query = "SELECT 'success' AS TestQuery;"
+  return runQuery(query, connection)
+}
+
 module.exports = {
   runQuery,
-  SCHEMA_SQL
+  SCHEMA_SQL,
+  testConnection
 }

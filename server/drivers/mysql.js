@@ -1,4 +1,5 @@
 const mysql = require('mysql')
+const QueryResult = require('../models/QueryResult')
 
 function getSchemaSql(database) {
   const whereSql = database
@@ -25,7 +26,8 @@ function getSchemaSql(database) {
   `
 }
 
-function runQuery(query, connection, queryResult) {
+function runQuery(query, connection) {
+  const queryResult = new QueryResult()
   const myConnection = mysql.createConnection({
     multipleStatements: true,
     host: connection.host,
@@ -90,7 +92,17 @@ function runQuery(query, connection, queryResult) {
   })
 }
 
+/**
+ * Test connectivity of connection
+ * @param {*} connection
+ */
+function testConnection(connection) {
+  const query = "SELECT 'success' AS TestQuery;"
+  return runQuery(query, connection)
+}
+
 module.exports = {
   getSchemaSql,
-  runQuery
+  runQuery,
+  testConnection
 }

@@ -1,4 +1,5 @@
 const crate = require('node-crate')
+const QueryResult = require('../models/QueryResult')
 
 // old crate called table_schema schema_name
 const SCHEMA_SQL_V0 = `
@@ -30,7 +31,8 @@ const SCHEMA_SQL_V1 = `
 `
 
 // TODO - crate driver should honor max rows restriction
-function runQuery(query, connection, queryResult) {
+function runQuery(query, connection) {
+  const queryResult = new QueryResult()
   return new Promise((resolve, reject) => {
     const crateConfig = {
       host: connection.host
@@ -68,13 +70,18 @@ function runQuery(query, connection, queryResult) {
   })
 }
 
-function getSchemaForConnection(connection, doneCallback) {
-  // TODO
+/**
+ * Test connectivity of connection
+ * @param {*} connection
+ */
+function testConnection(connection) {
+  const query = 'SELECT name from sys.cluster'
+  return runQuery(query, connection)
 }
 
 module.exports = {
-  getSchemaForConnection,
   runQuery,
   SCHEMA_SQL_V0,
-  SCHEMA_SQL_V1
+  SCHEMA_SQL_V1,
+  testConnection
 }

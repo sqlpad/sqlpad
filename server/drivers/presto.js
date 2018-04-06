@@ -1,4 +1,5 @@
 const presto = require('./_presto')
+const QueryResult = require('../models/QueryResult')
 
 function getPrestoSchemaSql(catalog, schema) {
   const schemaSql = schema ? `AND table_schema = '${schema}'` : ''
@@ -20,7 +21,8 @@ function getPrestoSchemaSql(catalog, schema) {
   `
 }
 
-function runQuery(query, connection, queryResult) {
+function runQuery(query, connection) {
+  const queryResult = new QueryResult()
   const port = connection.port || 8080
   const prestoConfig = {
     url: `http://${connection.host}:${port}`,
@@ -57,7 +59,18 @@ function runQuery(query, connection, queryResult) {
     })
 }
 
+/**
+ * Test connectivity of connection
+ * @param {*} connection
+ */
+function testConnection(connection) {
+  // Presto cannot have ; at end of query
+  const query = "SELECT 'success' AS TestQuery"
+  return runQuery(query, connection)
+}
+
 module.exports = {
   getPrestoSchemaSql,
-  runQuery
+  runQuery,
+  testConnection
 }

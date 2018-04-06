@@ -2,6 +2,7 @@ const fs = require('fs')
 const pg = require('pg')
 const PgCursor = require('pg-cursor')
 const SocksConnection = require('socksjs')
+const QueryResult = require('../models/QueryResult')
 
 function createSocksConnection(connection) {
   if (connection.useSocks) {
@@ -42,7 +43,8 @@ const SCHEMA_SQL = `
     attr.attnum
 `
 
-function runQuery(query, connection, queryResult) {
+function runQuery(query, connection) {
+  const queryResult = new QueryResult()
   const pgConfig = {
     user: connection.username,
     password: connection.password,
@@ -109,7 +111,17 @@ function runQuery(query, connection, queryResult) {
   })
 }
 
+/**
+ * Test connectivity of connection
+ * @param {*} connection
+ */
+function testConnection(connection) {
+  const query = "SELECT 'success' AS TestQuery;"
+  return runQuery(query, connection)
+}
+
 module.exports = {
   runQuery,
-  SCHEMA_SQL
+  SCHEMA_SQL,
+  testConnection
 }
