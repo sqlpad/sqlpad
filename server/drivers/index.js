@@ -1,4 +1,4 @@
-const { debug } = require('./config').getPreDbConfig()
+const { debug } = require('../lib/config').getPreDbConfig()
 const QueryResult = require('../models/QueryResult.js')
 
 function validateFunction(path, driver, functionName) {
