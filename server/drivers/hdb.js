@@ -50,7 +50,17 @@ function runQuery(query, connection) {
   })
 }
 
+/**
+ * Test connectivity of connection
+ * @param {*} connection
+ */
+function testConnection(connection) {
+  const query = 'select * from DUMMY'
+  return runQuery(query, connection)
+}
+
 module.exports = {
   getHANASchemaSql,
-  runQuery
+  runQuery,
+  testConnection
 }

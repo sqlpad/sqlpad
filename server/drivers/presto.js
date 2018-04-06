@@ -59,7 +59,18 @@ function runQuery(query, connection) {
     })
 }
 
+/**
+ * Test connectivity of connection
+ * @param {*} connection
+ */
+function testConnection(connection) {
+  // Presto cannot have ; at end of query
+  const query = "SELECT 'success' AS TestQuery"
+  return runQuery(query, connection)
+}
+
 module.exports = {
   getPrestoSchemaSql,
-  runQuery
+  runQuery,
+  testConnection
 }

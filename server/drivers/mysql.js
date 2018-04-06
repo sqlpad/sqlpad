@@ -92,7 +92,17 @@ function runQuery(query, connection) {
   })
 }
 
+/**
+ * Test connectivity of connection
+ * @param {*} connection
+ */
+function testConnection(connection) {
+  const query = "SELECT 'success' AS TestQuery;"
+  return runQuery(query, connection)
+}
+
 module.exports = {
   getSchemaSql,
-  runQuery
+  runQuery,
+  testConnection
 }

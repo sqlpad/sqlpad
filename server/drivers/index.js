@@ -1,12 +1,18 @@
 const { debug } = require('./config').getPreDbConfig()
 const QueryResult = require('../models/QueryResult.js')
 
-function requireValidate(path) {
-  const driver = require(path)
-  if (typeof driver.runQuery !== 'function') {
+function validateFunction(path, driver, functionName) {
+  if (typeof driver[functionName] !== 'function') {
     console.error(`${path} missing .runQuery() function implementation`)
     process.exit(1)
   }
+}
+
+function requireValidate(path) {
+  const driver = require(path)
+  validateFunction(path, driver, 'runQuery')
+  validateFunction(path, driver, 'testConnection')
+  return driver
 }
 
 const drivers = {
@@ -56,6 +62,12 @@ function runQuery(query, connection) {
   })
 }
 
+function testConnection(connection) {
+  const driver = drivers[connection.driver]
+  return driver.testConnection(connection)
+}
+
 module.exports = {
-  runQuery
+  runQuery,
+  testConnection
 }

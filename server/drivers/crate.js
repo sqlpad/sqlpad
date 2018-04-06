@@ -70,13 +70,18 @@ function runQuery(query, connection) {
   })
 }
 
-function getSchemaForConnection(connection, doneCallback) {
-  // TODO
+/**
+ * Test connectivity of connection
+ * @param {*} connection
+ */
+function testConnection(connection) {
+  const query = 'SELECT name from sys.cluster'
+  return runQuery(query, connection)
 }
 
 module.exports = {
-  getSchemaForConnection,
   runQuery,
   SCHEMA_SQL_V0,
-  SCHEMA_SQL_V1
+  SCHEMA_SQL_V1,
+  testConnection
 }
