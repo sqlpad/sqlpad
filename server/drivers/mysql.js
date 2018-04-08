@@ -113,7 +113,41 @@ function getSchema(connection) {
   )
 }
 
+const fields = [
+  {
+    key: 'host',
+    formType: 'TEXT',
+    label: 'Host/Server/IP Address'
+  },
+  {
+    key: 'port',
+    formType: 'TEXT',
+    label: 'Port (optional)'
+  },
+  {
+    key: 'database',
+    formType: 'TEXT',
+    label: 'Database'
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username'
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password'
+  },
+  {
+    key: 'mysqlInsecureAuth',
+    formType: 'CHECKBOX',
+    label: 'Use old/insecure pre 4.1 Auth System'
+  }
+]
+
 module.exports = {
+  fields,
   getSchema,
   runQuery,
   testConnection

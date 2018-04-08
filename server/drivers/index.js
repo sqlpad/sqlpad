@@ -9,11 +9,20 @@ function validateFunction(path, driver, functionName) {
   }
 }
 
+function validateArray(path, driver, arrayName) {
+  const arr = driver[arrayName]
+  if (!Array.isArray(arr)) {
+    console.error(`${path} missing ${arrayName} array`)
+    process.exit(1)
+  }
+}
+
 function requireValidate(path) {
   const driver = require(path)
   validateFunction(path, driver, 'getSchema')
   validateFunction(path, driver, 'runQuery')
   validateFunction(path, driver, 'testConnection')
+  validateArray(path, driver, 'fields')
   return driver
 }
 
@@ -81,6 +90,15 @@ function getSchema(connection) {
   const driver = drivers[connection.driver]
   return driver.getSchema(connection)
 }
+
+// TODO write function to get all driver fields
+// TODO write function to get fields for certain driver
+// TODO write function to validate connection input
+// - if a field is defined not any of the fields,
+//   throw error as this is an implementation problem
+// - if a field is provided from a different driver, strip it out
+// TODO add API route to get drivers
+// TODO change connection saving to be function driven
 
 module.exports = {
   getSchema,

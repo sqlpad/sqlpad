@@ -97,7 +97,21 @@ function getSchema(connection) {
     )
 }
 
+const fields = [
+  {
+    key: 'host',
+    formType: 'TEXT',
+    label: 'Host/Server/IP Address'
+  },
+  {
+    key: 'port',
+    formType: 'TEXT',
+    label: 'Port (optional)'
+  }
+]
+
 module.exports = {
+  fields,
   getSchema,
   runQuery,
   testConnection

@@ -84,7 +84,36 @@ function getSchema(connection) {
   )
 }
 
+const fields = [
+  {
+    key: 'host',
+    formType: 'TEXT',
+    label: 'Host/Server/IP Address'
+  },
+  {
+    key: 'port',
+    formType: 'TEXT',
+    label: 'Port (optional)'
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username'
+  },
+  {
+    key: 'prestoCatalog',
+    formType: 'TEXT',
+    label: 'Catalog'
+  },
+  {
+    key: 'prestoSchema',
+    formType: 'TEXT',
+    label: 'Schema'
+  }
+]
+
 module.exports = {
+  fields,
   getSchema,
   runQuery,
   testConnection

@@ -71,7 +71,41 @@ function getSchema(connection) {
   )
 }
 
+const fields = [
+  {
+    key: 'host',
+    formType: 'TEXT',
+    label: 'Host/Server/IP Address'
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username'
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password'
+  },
+  {
+    key: 'hanaSchema',
+    formType: 'TEXT',
+    label: 'Schema (optional)'
+  },
+  {
+    key: 'hanadatabase',
+    formType: 'TEXT',
+    label: 'Tenant'
+  },
+  {
+    key: 'hanaport',
+    formType: 'TEXT',
+    label: 'Port (e.g. 39015)'
+  }
+]
+
 module.exports = {
+  fields,
   getSchema,
   runQuery,
   testConnection
