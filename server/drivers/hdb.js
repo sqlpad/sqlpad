@@ -1,7 +1,8 @@
 const hdb = require('hdb')
 const QueryResult = require('../models/QueryResult')
+const { formatSchemaQueryResults } = require('./utils')
 
-function getHANASchemaSql(schema) {
+function getSchemaSql(schema) {
   const whereSql = schema ? `WHERE tables.SCHEMA_NAME = '${schema}'` : ''
   return `
     SELECT 
@@ -59,8 +60,19 @@ function testConnection(connection) {
   return runQuery(query, connection)
 }
 
+/**
+ * Get schema for connection
+ * @param {*} connection
+ */
+function getSchema(connection) {
+  const schemaSql = getSchemaSql(connection.hanaSchema)
+  return runQuery(schemaSql, connection).then(queryResult =>
+    formatSchemaQueryResults(queryResult)
+  )
+}
+
 module.exports = {
-  getHANASchemaSql,
+  getSchema,
   runQuery,
   testConnection
 }

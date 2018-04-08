@@ -3,6 +3,7 @@ const pg = require('pg')
 const PgCursor = require('pg-cursor')
 const SocksConnection = require('socksjs')
 const QueryResult = require('../models/QueryResult')
+const { formatSchemaQueryResults } = require('./utils')
 
 function createSocksConnection(connection) {
   if (connection.useSocks) {
@@ -120,8 +121,18 @@ function testConnection(connection) {
   return runQuery(query, connection)
 }
 
+/**
+ * Get schema for connection
+ * @param {*} connection
+ */
+function getSchema(connection) {
+  return runQuery(SCHEMA_SQL, connection).then(queryResult =>
+    formatSchemaQueryResults(queryResult)
+  )
+}
+
 module.exports = {
+  getSchema,
   runQuery,
-  SCHEMA_SQL,
   testConnection
 }

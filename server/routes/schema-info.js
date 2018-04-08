@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const Connection = require('../models/Connection.js')
 const Cache = require('../models/Cache.js')
-const getSchemaForConnection = require('../lib/get-schema-for-connection.js')
+const driver = require('../drivers')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 const sendError = require('../lib/sendError')
 
@@ -36,7 +36,7 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
         cache = new Cache({ cacheKey })
       }
 
-      return getSchemaForConnection(conn).then(schemaInfo => {
+      return driver.getSchema(conn).then(schemaInfo => {
         if (Object.keys(schemaInfo).length) {
           // Schema needs to be stringified as JSON
           // Column names could have dots in name (incompatible with nedb)

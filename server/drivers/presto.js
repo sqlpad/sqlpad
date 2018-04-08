@@ -1,5 +1,6 @@
 const presto = require('./_presto')
 const QueryResult = require('../models/QueryResult')
+const { formatSchemaQueryResults } = require('./utils')
 
 function getPrestoSchemaSql(catalog, schema) {
   const schemaSql = schema ? `AND table_schema = '${schema}'` : ''
@@ -69,8 +70,22 @@ function testConnection(connection) {
   return runQuery(query, connection)
 }
 
+/**
+ * Get schema for connection
+ * @param {*} connection
+ */
+function getSchema(connection) {
+  const schemaSql = getPrestoSchemaSql(
+    connection.prestoCatalog,
+    connection.prestoSchema
+  )
+  return runQuery(schemaSql, connection).then(queryResult =>
+    formatSchemaQueryResults(queryResult)
+  )
+}
+
 module.exports = {
-  getPrestoSchemaSql,
+  getSchema,
   runQuery,
   testConnection
 }
