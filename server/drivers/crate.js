@@ -1,5 +1,6 @@
 const crate = require('node-crate')
 const QueryResult = require('../models/QueryResult')
+const { formatSchemaQueryResults } = require('./utils')
 
 // old crate called table_schema schema_name
 const SCHEMA_SQL_V0 = `
@@ -79,9 +80,25 @@ function testConnection(connection) {
   return runQuery(query, connection)
 }
 
+/**
+ * Get schema for connection
+ * NOTE: Crate DB v1's schema query is not compatible with v0's schema query
+ * In the event v1 query does not work, try v0
+ * If that errors out as well, then let that error bubble up
+ * @param {*} connection
+ */
+function getSchema(connection) {
+  return runQuery(SCHEMA_SQL_V1, connection)
+    .then(queryResult => formatSchemaQueryResults(queryResult))
+    .catch(error =>
+      runQuery(SCHEMA_SQL_V0, connection).then(queryResult =>
+        formatSchemaQueryResults(queryResult)
+      )
+    )
+}
+
 module.exports = {
+  getSchema,
   runQuery,
-  SCHEMA_SQL_V0,
-  SCHEMA_SQL_V1,
   testConnection
 }

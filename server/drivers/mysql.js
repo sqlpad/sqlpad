@@ -1,5 +1,6 @@
 const mysql = require('mysql')
 const QueryResult = require('../models/QueryResult')
+const { formatSchemaQueryResults } = require('./utils')
 
 function getSchemaSql(database) {
   const whereSql = database
@@ -101,8 +102,19 @@ function testConnection(connection) {
   return runQuery(query, connection)
 }
 
+/**
+ * Get schema for connection
+ * @param {*} connection
+ */
+function getSchema(connection) {
+  const schemaSql = getSchemaSql(connection.database)
+  return runQuery(schemaSql, connection).then(queryResult =>
+    formatSchemaQueryResults(queryResult)
+  )
+}
+
 module.exports = {
-  getSchemaSql,
+  getSchema,
   runQuery,
   testConnection
 }

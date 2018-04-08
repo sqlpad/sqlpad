@@ -1,5 +1,6 @@
 const vertica = require('vertica')
 const QueryResult = require('../models/QueryResult')
+const { formatSchemaQueryResults } = require('./utils')
 
 const SCHEMA_SQL = `
   SELECT 
@@ -96,8 +97,18 @@ function testConnection(connection) {
   return runQuery(query, connection)
 }
 
+/**
+ * Get schema for connection
+ * @param {*} connection
+ */
+function getSchema(connection) {
+  return runQuery(SCHEMA_SQL, connection).then(queryResult =>
+    formatSchemaQueryResults(queryResult)
+  )
+}
+
 module.exports = {
+  getSchema,
   runQuery,
-  SCHEMA_SQL,
   testConnection
 }

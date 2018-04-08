@@ -1,5 +1,6 @@
 const { debug } = require('../lib/config').getPreDbConfig()
 const QueryResult = require('../models/QueryResult.js')
+const decipher = require('../lib/decipher')
 
 function validateFunction(path, driver, functionName) {
   if (typeof driver[functionName] !== 'function') {
@@ -10,6 +11,7 @@ function validateFunction(path, driver, functionName) {
 
 function requireValidate(path) {
   const driver = require(path)
+  validateFunction(path, driver, 'getSchema')
   validateFunction(path, driver, 'runQuery')
   validateFunction(path, driver, 'testConnection')
   return driver
@@ -67,7 +69,21 @@ function testConnection(connection) {
   return driver.testConnection(connection)
 }
 
+/**
+ * Gets schema for connection
+ * @param {*} connection
+ * @returns {Promise}
+ */
+function getSchema(connection) {
+  connection.username = decipher(connection.username)
+  connection.password = decipher(connection.password)
+  connection.maxRows = Number.MAX_SAFE_INTEGER
+  const driver = drivers[connection.driver]
+  return driver.getSchema(connection)
+}
+
 module.exports = {
+  getSchema,
   runQuery,
   testConnection
 }
