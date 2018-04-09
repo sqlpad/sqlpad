@@ -17,24 +17,37 @@ function validateArray(path, driver, arrayName) {
   }
 }
 
-function requireValidate(path) {
+const drivers = {}
+
+function requireValidate(driverName, path) {
+  if (drivers[driverName]) {
+    throw new Error(`${driverName} already loaded`)
+  }
+
   const driver = require(path)
   validateFunction(path, driver, 'getSchema')
   validateFunction(path, driver, 'runQuery')
   validateFunction(path, driver, 'testConnection')
   validateArray(path, driver, 'fields')
-  return driver
+
+  driver.fieldsByKey = {}
+
+  driver.fields.forEach(field => {
+    driver.fieldsByKey[field.key] = field
+  })
+
+  drivers[driverName] = driver
 }
 
-const drivers = {
-  mysql: requireValidate('../drivers/mysql'),
-  crate: requireValidate('../drivers/crate'),
-  presto: requireValidate('../drivers/presto'),
-  postgres: requireValidate('../drivers/pg'),
-  sqlserver: requireValidate('../drivers/mssql'),
-  vertica: requireValidate('../drivers/vertica'),
-  hdb: requireValidate('../drivers/hdb')
-}
+// Loads and validates drivers
+// Will populate drivers {} map
+requireValidate('crate', '../drivers/crate')
+requireValidate('hdb', '../drivers/hdb')
+requireValidate('mysql', '../drivers/mysql')
+requireValidate('postgres', '../drivers/pg')
+requireValidate('presto', '../drivers/presto')
+requireValidate('sqlserver', '../drivers/mssql')
+requireValidate('vertica', '../drivers/vertica')
 
 /**
  * Run query using driver implementation of connection
@@ -91,8 +104,22 @@ function getSchema(connection) {
   return driver.getSchema(connection)
 }
 
-// TODO write function to get all driver fields
-// TODO write function to get fields for certain driver
+/**
+ * @param {string} [driverName]
+ */
+function getDriverFieldsByName(driverName) {
+  if (driverName) {
+    if (!drivers[driverName]) {
+      throw new Error(`Driver ${driverName} does not exist`)
+    }
+    return drivers[driverName].fieldsByKey
+  }
+  return Object.keys(drivers).reduce((fieldsByKey, driverName) => {
+    fieldsByKey[driverName] = drivers[driverName].fieldsByKey
+    return fieldsByKey
+  }, {})
+}
+
 // TODO write function to validate connection input
 // - if a field is defined not any of the fields,
 //   throw error as this is an implementation problem
@@ -101,6 +128,7 @@ function getSchema(connection) {
 // TODO change connection saving to be function driven
 
 module.exports = {
+  getDriverFieldsByName,
   getSchema,
   runQuery,
   testConnection
