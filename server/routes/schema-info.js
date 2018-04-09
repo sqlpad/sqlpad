@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const Connection = require('../models/Connection.js')
+const connections = require('../models/connections')
 const Cache = require('../models/Cache.js')
 const driver = require('../drivers')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
@@ -12,7 +12,7 @@ router.get('/api/schema-info/:connectionId', mustBeAuthenticated, function(
   const reload = req.query.reload === 'true'
   const cacheKey = 'schemaCache:' + req.params.connectionId
   return Promise.all([
-    Connection.findOneById(req.params.connectionId),
+    connections.findOneById(req.params.connectionId),
     // This has problems in TravisCI for some reason...
     Cache.findOneByCacheKey(cacheKey)
   ])
