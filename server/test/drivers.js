@@ -10,20 +10,28 @@ describe('drivers', function() {
     assert(typeof drivers.testConnection === 'function')
   })
 
-  it('getDriverFieldsByName()', function() {
-    const postgresFields = drivers.getDriverFieldsByName('postgres')
-    assert(postgresFields.host, 'has host')
-    assert(postgresFields.postgresSsl, 'has postgres specific field')
-    assert(!postgresFields.sqlserverEncrypt, 'only has postgres fields')
+  it('getDrivers()', function() {
+    const postgres = drivers.getDrivers('postgres')
+    assert.equal(postgres.name, 'postgres')
+    assert(Array.isArray(postgres.fields))
+    assert(
+      postgres.fields.find(field => field.key === 'postgresSsl'),
+      'has postgres specific field'
+    )
+    assert(
+      !postgres.fields.find(field => field.key === 'sqlserverEncrypt'),
+      'only has postgres fields'
+    )
 
-    const allByDriverName = drivers.getDriverFieldsByName()
-    assert(allByDriverName.crate, 'crate')
-    assert(allByDriverName.hdb, 'hdb')
-    assert(allByDriverName.mysql, 'mysql')
-    assert(allByDriverName.postgres, 'postgres')
-    assert(allByDriverName.presto, 'presto')
-    assert(allByDriverName.sqlserver, 'sqlserver')
-    assert(allByDriverName.vertica, 'vertica')
+    const driverItems = drivers.getDrivers()
+    assert(Array.isArray(driverItems), 'driverItems is array')
+    assert(driverItems.find(item => item.name === 'crate'))
+    assert(driverItems.find(item => item.name === 'hdb'))
+    assert(driverItems.find(item => item.name === 'mysql'))
+    assert(driverItems.find(item => item.name === 'postgres'))
+    assert(driverItems.find(item => item.name === 'presto'))
+    assert(driverItems.find(item => item.name === 'sqlserver'))
+    assert(driverItems.find(item => item.name === 'vertica'))
   })
 
   it('validateConnection()', function() {

@@ -108,17 +108,22 @@ function getSchema(connection) {
 /**
  * @param {string} [driverName]
  */
-function getDriverFieldsByName(driverName) {
+function getDrivers(driverName) {
   if (driverName) {
     if (!drivers[driverName]) {
       throw new Error(`Driver ${driverName} does not exist`)
     }
-    return drivers[driverName].fieldsByKey
+    return {
+      name: driverName,
+      fields: drivers[driverName].fields
+    }
   }
-  return Object.keys(drivers).reduce((fieldsByKey, driverName) => {
-    fieldsByKey[driverName] = drivers[driverName].fieldsByKey
-    return fieldsByKey
-  }, {})
+  return Object.keys(drivers).map(driverName => {
+    return {
+      name: driverName,
+      fields: drivers[driverName].fields
+    }
+  })
 }
 
 /**
@@ -167,7 +172,7 @@ function validateConnection(connection) {
 // TODO change connection saving to be function driven
 
 module.exports = {
-  getDriverFieldsByName,
+  getDrivers,
   getSchema,
   runQuery,
   testConnection,
