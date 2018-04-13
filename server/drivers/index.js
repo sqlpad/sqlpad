@@ -3,6 +3,14 @@ const QueryResult = require('../models/QueryResult.js')
 const decipher = require('../lib/decipher')
 const utils = require('./utils')
 
+const drivers = {}
+
+/**
+ * Validate that the driver implementation has a function by name provided
+ * @param {string} path
+ * @param {object} driver
+ * @param {string} functionName
+ */
 function validateFunction(path, driver, functionName) {
   if (typeof driver[functionName] !== 'function') {
     console.error(`${path} missing .${functionName}() implementation`)
@@ -10,6 +18,12 @@ function validateFunction(path, driver, functionName) {
   }
 }
 
+/**
+ * Validate that the driver implementation has an array by name provided
+ * @param {string} path
+ * @param {object} driver
+ * @param {string} arrayName
+ */
 function validateArray(path, driver, arrayName) {
   const arr = driver[arrayName]
   if (!Array.isArray(arr)) {
@@ -18,8 +32,11 @@ function validateArray(path, driver, arrayName) {
   }
 }
 
-const drivers = {}
-
+/**
+ * Require driver implementation for provided path
+ * and validate that it meets implementation spec as possible
+ * @param {string} path
+ */
 function requireValidate(path) {
   const driver = require(path)
 
@@ -100,14 +117,20 @@ function runQuery(query, connection) {
   })
 }
 
+/**
+ * Test connection passed in using the driver implementation
+ * Returns QueryResult of test query
+ * @param {object} connection
+ */
 function testConnection(connection) {
   const driver = drivers[connection.driver]
   return driver.testConnection(connection)
 }
 
 /**
- * Gets schema for connection
- * @param {*} connection
+ * Gets schema (sometimes called schemaInfo) for connection
+ * This data is used by client to build schema tree in editor sidebar
+ * @param {object} connection
  * @returns {Promise}
  */
 function getSchema(connection) {
@@ -119,19 +142,10 @@ function getSchema(connection) {
 }
 
 /**
- * @param {string} [id]
+ * Gets array of driver objects
+ * @returns {array} drivers
  */
-function getDrivers(id) {
-  if (id) {
-    if (!drivers[id]) {
-      throw new Error(`Driver ${id} does not exist`)
-    }
-    return {
-      id,
-      name: drivers[id].name,
-      fields: drivers[id].fields
-    }
-  }
+function getDrivers() {
   return Object.keys(drivers).map(id => {
     return {
       id,
@@ -182,9 +196,6 @@ function validateConnection(connection) {
 
   return cleanedConnection
 }
-
-// TODO add API route to get drivers
-// TODO change connection saving to be function driven
 
 module.exports = {
   getDrivers,
