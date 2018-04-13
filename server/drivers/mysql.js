@@ -2,6 +2,9 @@ const mysql = require('mysql')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'mysql'
+const name = 'MySQL'
+
 function getSchemaSql(database) {
   const whereSql = database
     ? `WHERE t.table_schema = '${database}'`
@@ -147,6 +150,8 @@ const fields = [
 ]
 
 module.exports = {
+  id,
+  name,
   fields,
   getSchema,
   runQuery,

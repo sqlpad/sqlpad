@@ -2,6 +2,9 @@ const hdb = require('hdb')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'hdb'
+const name = 'SAP HANA'
+
 function getSchemaSql(schema) {
   const whereSql = schema ? `WHERE tables.SCHEMA_NAME = '${schema}'` : ''
   return `
@@ -105,6 +108,8 @@ const fields = [
 ]
 
 module.exports = {
+  id,
+  name,
   fields,
   getSchema,
   runQuery,

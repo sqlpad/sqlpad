@@ -2,6 +2,9 @@ const crate = require('node-crate')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'crate'
+const name = 'Crate'
+
 // old crate called table_schema schema_name
 const SCHEMA_SQL_V0 = `
   select 
@@ -111,6 +114,8 @@ const fields = [
 ]
 
 module.exports = {
+  id,
+  name,
   fields,
   getSchema,
   runQuery,

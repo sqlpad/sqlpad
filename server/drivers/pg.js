@@ -5,6 +5,9 @@ const SocksConnection = require('socksjs')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'postgres'
+const name = 'Postgres'
+
 function createSocksConnection(connection) {
   if (connection.useSocks) {
     return new SocksConnection(
@@ -205,6 +208,8 @@ const fields = [
 ]
 
 module.exports = {
+  id,
+  name,
   fields,
   getSchema,
   runQuery,

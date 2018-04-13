@@ -2,6 +2,9 @@ const mssql = require('mssql')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'sqlserver'
+const name = 'SQL Server'
+
 const SCHEMA_SQL = `
   SELECT 
     t.table_schema, 
@@ -162,6 +165,8 @@ const fields = [
 ]
 
 module.exports = {
+  id,
+  name,
   fields,
   getSchema,
   runQuery,

@@ -2,6 +2,9 @@ const vertica = require('vertica')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'vertica'
+const name = 'Vertica'
+
 const SCHEMA_SQL = `
   SELECT 
     vt.table_schema, 
@@ -136,6 +139,8 @@ const fields = [
 ]
 
 module.exports = {
+  id,
+  name,
   fields,
   getSchema,
   runQuery,

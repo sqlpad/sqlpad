@@ -20,12 +20,25 @@ function validateArray(path, driver, arrayName) {
 
 const drivers = {}
 
-function requireValidate(driverName, path) {
-  if (drivers[driverName]) {
-    throw new Error(`${driverName} already loaded`)
+function requireValidate(path) {
+  const driver = require(path)
+
+  if (!driver.id) {
+    console.error(`${path} must export a unique id`)
+    process.exit(1)
   }
 
-  const driver = require(path)
+  if (!driver.name) {
+    console.error(`${path} must export a name`)
+    process.exit(1)
+  }
+
+  if (drivers[driver.id]) {
+    console.error(`Driver with id ${driver.id} already loaded`)
+    console.error(`Ensure ${path} has a unique id exported`)
+    process.exit(1)
+  }
+
   validateFunction(path, driver, 'getSchema')
   validateFunction(path, driver, 'runQuery')
   validateFunction(path, driver, 'testConnection')
@@ -37,18 +50,18 @@ function requireValidate(driverName, path) {
     driver.fieldsByKey[field.key] = field
   })
 
-  drivers[driverName] = driver
+  drivers[driver.id] = driver
 }
 
 // Loads and validates drivers
 // Will populate drivers {} map
-requireValidate('crate', '../drivers/crate')
-requireValidate('hdb', '../drivers/hdb')
-requireValidate('mysql', '../drivers/mysql')
-requireValidate('postgres', '../drivers/pg')
-requireValidate('presto', '../drivers/presto')
-requireValidate('sqlserver', '../drivers/mssql')
-requireValidate('vertica', '../drivers/vertica')
+requireValidate('../drivers/crate')
+requireValidate('../drivers/hdb')
+requireValidate('../drivers/mysql')
+requireValidate('../drivers/pg')
+requireValidate('../drivers/presto')
+requireValidate('../drivers/mssql')
+requireValidate('../drivers/vertica')
 
 /**
  * Run query using driver implementation of connection
@@ -106,22 +119,24 @@ function getSchema(connection) {
 }
 
 /**
- * @param {string} [driverName]
+ * @param {string} [id]
  */
-function getDrivers(driverName) {
-  if (driverName) {
-    if (!drivers[driverName]) {
-      throw new Error(`Driver ${driverName} does not exist`)
+function getDrivers(id) {
+  if (id) {
+    if (!drivers[id]) {
+      throw new Error(`Driver ${id} does not exist`)
     }
     return {
-      name: driverName,
-      fields: drivers[driverName].fields
+      id,
+      name: drivers[id].name,
+      fields: drivers[id].fields
     }
   }
-  return Object.keys(drivers).map(driverName => {
+  return Object.keys(drivers).map(id => {
     return {
-      name: driverName,
-      fields: drivers[driverName].fields
+      id,
+      name: drivers[id].name,
+      fields: drivers[id].fields
     }
   })
 }
