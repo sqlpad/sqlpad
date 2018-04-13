@@ -48,8 +48,6 @@ router.post('/api/connections', mustBeAdmin, function(req, res) {
   const { body } = req
 
   const connection = Object.assign({}, body, {
-    sqlserverEncrypt: body.sqlserverEncrypt === true,
-    mysqlInsecureAuth: body.mysqlInsecureAuth === true,
     username: cipher(body.username || ''),
     password: cipher(body.password || '')
   })
@@ -76,8 +74,7 @@ router.put('/api/connections/:_id', mustBeAdmin, function(req, res) {
       }
 
       Object.assign(connection, body, {
-        sqlserverEncrypt: body.sqlserverEncrypt === true,
-        mysqlInsecureAuth: body.mysqlInsecureAuth === true,
+        // TODO move cipher/decipher to connection find/save
         username: cipher(body.username || ''),
         password: cipher(body.password || '')
       })
