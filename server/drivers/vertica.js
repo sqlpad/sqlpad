@@ -2,6 +2,9 @@ const vertica = require('vertica')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'vertica'
+const name = 'Vertica'
+
 const SCHEMA_SQL = `
   SELECT 
     vt.table_schema, 
@@ -107,7 +110,38 @@ function getSchema(connection) {
   )
 }
 
+const fields = [
+  {
+    key: 'host',
+    formType: 'TEXT',
+    label: 'Host/Server/IP Address'
+  },
+  {
+    key: 'port',
+    formType: 'TEXT',
+    label: 'Port (optional)'
+  },
+  {
+    key: 'database',
+    formType: 'TEXT',
+    label: 'Database'
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username'
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password'
+  }
+]
+
 module.exports = {
+  id,
+  name,
+  fields,
   getSchema,
   runQuery,
   testConnection

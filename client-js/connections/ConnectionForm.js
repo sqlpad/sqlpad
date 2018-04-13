@@ -6,185 +6,29 @@ import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Checkbox from 'react-bootstrap/lib/Checkbox'
 import Button from 'react-bootstrap/lib/Button'
+import fetchJson from '../utilities/fetch-json.js'
 
 const TEXT = 'TEXT'
 const PASSWORD = 'PASSWORD'
 const CHECKBOX = 'CHECKBOX'
 
-// fields config for all connection fields except for name and driver
-const fields = {
-  host: {
-    key: 'host',
-    formType: TEXT,
-    label: 'Host/Server/IP Address'
-  },
-  port: {
-    key: 'port',
-    formType: TEXT,
-    label: 'Port (optional)'
-  },
-  database: {
-    key: 'database',
-    formType: TEXT,
-    label: 'Database'
-  },
-  username: {
-    key: 'username',
-    formType: TEXT,
-    label: 'Database Username'
-  },
-  password: {
-    key: 'password',
-    formType: PASSWORD,
-    label: 'Database Password'
-  },
-  domain: {
-    key: 'domain',
-    formType: TEXT,
-    label: 'Domain'
-  },
-  sqlserverEncrypt: {
-    key: 'sqlserverEncrypt',
-    formType: CHECKBOX,
-    label: 'Encrypt (necessary for Azure)'
-  },
-  postgresSsl: {
-    key: 'postgresSsl',
-    formType: CHECKBOX,
-    label: 'Use SSL'
-  },
-  postgresCert: {
-    key: 'postgresCert',
-    formType: TEXT,
-    label: 'Database Certificate Path'
-  },
-  postgresKey: {
-    key: 'postgresKey',
-    formType: TEXT,
-    label: 'Database Key Path'
-  },
-  postgresCA: {
-    key: 'postgresCA',
-    formType: TEXT,
-    label: 'Database CA Path'
-  },
-  useSocks: {
-    key: 'useSocks',
-    formType: CHECKBOX,
-    label: 'Connect through SOCKS proxy'
-  },
-  socksHost: {
-    key: 'socksHost',
-    formType: TEXT,
-    label: 'Proxy hostname'
-  },
-  socksPort: {
-    key: 'socksPort',
-    formType: TEXT,
-    label: 'Proxy port'
-  },
-  socksUsername: {
-    key: 'socksUsername',
-    formType: TEXT,
-    label: 'Username for socks proxy'
-  },
-  socksPassword: {
-    key: 'socksPassword',
-    formType: TEXT,
-    label: 'Password for socks proxy'
-  },
-  mysqlInsecureAuth: {
-    key: 'mysqlInsecureAuth',
-    formType: CHECKBOX,
-    label: 'Use old/insecure pre 4.1 Auth System'
-  },
-  prestoCatalog: {
-    key: 'prestoCatalog',
-    formType: TEXT,
-    label: 'Catalog'
-  },
-  prestoSchema: {
-    key: 'prestoSchema',
-    formType: TEXT,
-    label: 'Schema'
-  },
-  hanaSchema: {
-    key: 'hanaSchema',
-    formType: TEXT,
-    label: 'Schema (optional)'
-  },
-  hanadatabase: {
-    key: 'hanadatabase',
-    formType: TEXT,
-    label: 'Tenant'
-  },
-  hanaport: {
-    key: 'hanaport',
-    formType: TEXT,
-    label: 'Port (e.g. 39015)'
-  }
-}
-
-const driverFields = {
-  crate: [fields.host, fields.port],
-  mysql: [
-    fields.host,
-    fields.port,
-    fields.database,
-    fields.username,
-    fields.password,
-    fields.mysqlInsecureAuth
-  ],
-  postgres: [
-    fields.host,
-    fields.port,
-    fields.database,
-    fields.username,
-    fields.password,
-    fields.postgresSsl,
-    fields.postgresCert,
-    fields.postgresKey,
-    fields.postgresCA,
-    fields.useSocks,
-    fields.socksHost,
-    fields.socksPort,
-    fields.socksUsername,
-    fields.socksPassword
-  ],
-  presto: [
-    fields.host,
-    fields.port,
-    fields.username,
-    fields.prestoCatalog,
-    fields.prestoSchema
-  ],
-  sqlserver: [
-    fields.host,
-    fields.port,
-    fields.database,
-    fields.domain,
-    fields.username,
-    fields.password,
-    fields.sqlserverEncrypt
-  ],
-  vertica: [
-    fields.host,
-    fields.port,
-    fields.database,
-    fields.username,
-    fields.password
-  ],
-  hdb: [
-    fields.host,
-    fields.hanaport,
-    fields.username,
-    fields.password,
-    fields.hanadatabase,
-    fields.hanaSchema
-  ]
-}
-
 class ConnectionForm extends React.Component {
+  state = {
+    drivers: []
+  }
+
+  componentDidMount() {
+    this.loadDriversFromServer()
+  }
+
+  // TODO move this to app load - no reason this will change
+  loadDriversFromServer = () => {
+    fetchJson('GET', '/api/drivers').then(json => {
+      console.log(json)
+      this.setState({ drivers: json.drivers })
+    })
+  }
+
   onTextInputChange = e => {
     this.props.setConnectionValue(e.target.name, e.target.value)
   }
@@ -195,10 +39,19 @@ class ConnectionForm extends React.Component {
 
   renderDriverFields() {
     const { selectedConnection } = this.props
+    const { drivers } = this.state
     const connection = selectedConnection
 
-    if (connection.driver) {
-      const fields = driverFields[connection.driver]
+    if (connection.driver && drivers.length) {
+      // NOTE connection.driver is driverId
+      const driver = drivers.find(driver => driver.id === connection.driver)
+
+      if (!driver) {
+        console.error(`Driver ${connection.driver} not found`)
+        return null
+      }
+
+      const { fields } = driver
       return fields.map(field => {
         if (field.formType === TEXT) {
           const value = connection[field.key] || ''
@@ -256,10 +109,27 @@ class ConnectionForm extends React.Component {
       testConnection,
       saveConnection
     } = this.props
-    const connection = selectedConnection
-    if (!selectedConnection) {
-      return <div />
+    const { drivers } = this.state
+
+    const driverSelectOptions = [<option key="none" value="" />]
+
+    if (!drivers.length) {
+      driverSelectOptions.push(
+        <option key="loading" value="">
+          Loading...
+        </option>
+      )
+    } else {
+      drivers.forEach(driver =>
+        driverSelectOptions.push(
+          <option key={driver.id} value={driver.id}>
+            {driver.name}
+          </option>
+        )
+      )
     }
+
+    const connection = selectedConnection
     return (
       <div>
         <Form>
@@ -286,14 +156,7 @@ class ConnectionForm extends React.Component {
               value={connection.driver || ''}
               onChange={this.onTextInputChange}
             >
-              <option value="" />
-              <option value="crate">Crate</option>
-              <option value="mysql">MySQL</option>
-              <option value="postgres">Postgres</option>
-              <option value="presto">Presto</option>
-              <option value="sqlserver">SQL Server</option>
-              <option value="vertica">Vertica</option>
-              <option value="hdb">SAP HANA</option>
+              {driverSelectOptions}
             </FormControl>
           </FormGroup>
           {this.renderDriverFields()}

@@ -5,6 +5,9 @@ const SocksConnection = require('socksjs')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'postgres'
+const name = 'Postgres'
+
 function createSocksConnection(connection) {
   if (connection.useSocks) {
     return new SocksConnection(
@@ -131,7 +134,83 @@ function getSchema(connection) {
   )
 }
 
+const fields = [
+  {
+    key: 'host',
+    formType: 'TEXT',
+    label: 'Host/Server/IP Address'
+  },
+  {
+    key: 'port',
+    formType: 'TEXT',
+    label: 'Port (optional)'
+  },
+  {
+    key: 'database',
+    formType: 'TEXT',
+    label: 'Database'
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username'
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password'
+  },
+  {
+    key: 'postgresSsl',
+    formType: 'CHECKBOX',
+    label: 'Use SSL'
+  },
+  {
+    key: 'postgresCert',
+    formType: 'TEXT',
+    label: 'Database Certificate Path'
+  },
+  {
+    key: 'postgresKey',
+    formType: 'TEXT',
+    label: 'Database Key Path'
+  },
+  {
+    key: 'postgresCA',
+    formType: 'TEXT',
+    label: 'Database CA Path'
+  },
+  {
+    key: 'useSocks',
+    formType: 'CHECKBOX',
+    label: 'Connect through SOCKS proxy'
+  },
+  {
+    key: 'socksHost',
+    formType: 'TEXT',
+    label: 'Proxy hostname'
+  },
+  {
+    key: 'socksPort',
+    formType: 'TEXT',
+    label: 'Proxy port'
+  },
+  {
+    key: 'socksUsername',
+    formType: 'TEXT',
+    label: 'Username for socks proxy'
+  },
+  {
+    key: 'socksPassword',
+    formType: 'TEXT',
+    label: 'Password for socks proxy'
+  }
+]
+
 module.exports = {
+  id,
+  name,
+  fields,
   getSchema,
   runQuery,
   testConnection

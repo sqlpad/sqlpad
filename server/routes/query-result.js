@@ -3,7 +3,7 @@ const moment = require('moment')
 const router = require('express').Router()
 const { runQuery } = require('../drivers/index')
 const decipher = require('../lib/decipher.js')
-const Connection = require('../models/Connection.js')
+const connections = require('../models/connections.js')
 const Cache = require('../models/Cache.js')
 const Query = require('../models/Query.js')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
@@ -54,7 +54,8 @@ router.post('/api/query-result', mustBeAuthenticated, function(req, res) {
 })
 
 function getQueryResult(data) {
-  return Connection.findOneById(data.connectionId)
+  return connections
+    .findOneById(data.connectionId)
     .then(connection => {
       if (!connection) {
         throw new Error('Please choose a connection')

@@ -2,6 +2,9 @@ const hdb = require('hdb')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'hdb'
+const name = 'SAP HANA'
+
 function getSchemaSql(schema) {
   const whereSql = schema ? `WHERE tables.SCHEMA_NAME = '${schema}'` : ''
   return `
@@ -71,7 +74,43 @@ function getSchema(connection) {
   )
 }
 
+const fields = [
+  {
+    key: 'host',
+    formType: 'TEXT',
+    label: 'Host/Server/IP Address'
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username'
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password'
+  },
+  {
+    key: 'hanaSchema',
+    formType: 'TEXT',
+    label: 'Schema (optional)'
+  },
+  {
+    key: 'hanadatabase',
+    formType: 'TEXT',
+    label: 'Tenant'
+  },
+  {
+    key: 'hanaport',
+    formType: 'TEXT',
+    label: 'Port (e.g. 39015)'
+  }
+]
+
 module.exports = {
+  id,
+  name,
+  fields,
   getSchema,
   runQuery,
   testConnection

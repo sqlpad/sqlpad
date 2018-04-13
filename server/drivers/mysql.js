@@ -2,6 +2,9 @@ const mysql = require('mysql')
 const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
+const id = 'mysql'
+const name = 'MySQL'
+
 function getSchemaSql(database) {
   const whereSql = database
     ? `WHERE t.table_schema = '${database}'`
@@ -113,7 +116,43 @@ function getSchema(connection) {
   )
 }
 
+const fields = [
+  {
+    key: 'host',
+    formType: 'TEXT',
+    label: 'Host/Server/IP Address'
+  },
+  {
+    key: 'port',
+    formType: 'TEXT',
+    label: 'Port (optional)'
+  },
+  {
+    key: 'database',
+    formType: 'TEXT',
+    label: 'Database'
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username'
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password'
+  },
+  {
+    key: 'mysqlInsecureAuth',
+    formType: 'CHECKBOX',
+    label: 'Use old/insecure pre 4.1 Auth System'
+  }
+]
+
 module.exports = {
+  id,
+  name,
+  fields,
   getSchema,
   runQuery,
   testConnection

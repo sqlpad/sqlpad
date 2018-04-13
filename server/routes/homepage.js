@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const Connection = require('../models/Connection.js')
+const connections = require('../models/connections.js')
 const sendError = require('../lib/sendError')
 
 // TODO FIXME - This was meant to redirect user to appropriate page depending on state of setup
@@ -8,12 +8,13 @@ router.get('/', function(req, res, next) {
   const { config } = req
   const BASE_URL = config.get('baseUrl')
 
-  return Connection.findAll()
-    .then(connections => {
+  return connections
+    .findAll()
+    .then(docs => {
       if (!req.user) {
         return res.redirect(BASE_URL + '/signin')
       }
-      if (connections.length === 0 && req.user.role === 'admin') {
+      if (docs.length === 0 && req.user.role === 'admin') {
         return res.redirect(BASE_URL + '/connections')
       }
       return res.redirect(BASE_URL + '/queries')

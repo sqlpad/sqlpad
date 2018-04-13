@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const Connection = require('../models/Connection.js')
+const connections = require('../models/connections.js')
 const Query = require('../models/Query.js')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js')
@@ -65,17 +65,17 @@ router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, function(
   res
 ) {
   // TODO only return queries
-  return Promise.all([Connection.findAll(), Query.findOneById(req.params._id)])
+  return Promise.all([connections.findAll(), Query.findOneById(req.params._id)])
     .then(data => {
-      const [connections, query] = data
+      const [docs, query] = data
       if (!query) {
         return res.json({
-          connections: connections,
+          connections: docs,
           query: {}
         })
       }
       return res.json({
-        connections: connections,
+        connections: docs,
         query: query
       })
     })
