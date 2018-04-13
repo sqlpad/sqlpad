@@ -10,7 +10,7 @@ describe('api/drivers', function() {
     return utils.get('editor', '/api/drivers').then(body => {
       const { drivers, error } = body
       assert(!error, 'Expect no error')
-      assert(drivers.find(i => i.name === 'postgres'), 'has postgres')
+      assert(drivers.find(i => i.id === 'postgres'), 'has postgres')
     })
   })
 })

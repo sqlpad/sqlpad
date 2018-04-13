@@ -12,7 +12,8 @@ describe('drivers', function() {
 
   it('getDrivers()', function() {
     const postgres = drivers.getDrivers('postgres')
-    assert.equal(postgres.name, 'postgres')
+    assert.equal(postgres.id, 'postgres')
+    assert.equal(postgres.name, 'Postgres')
     assert(Array.isArray(postgres.fields))
     assert(
       postgres.fields.find(field => field.key === 'postgresSsl'),
@@ -25,13 +26,13 @@ describe('drivers', function() {
 
     const driverItems = drivers.getDrivers()
     assert(Array.isArray(driverItems), 'driverItems is array')
-    assert(driverItems.find(item => item.name === 'crate'))
-    assert(driverItems.find(item => item.name === 'hdb'))
-    assert(driverItems.find(item => item.name === 'mysql'))
-    assert(driverItems.find(item => item.name === 'postgres'))
-    assert(driverItems.find(item => item.name === 'presto'))
-    assert(driverItems.find(item => item.name === 'sqlserver'))
-    assert(driverItems.find(item => item.name === 'vertica'))
+    assert(driverItems.find(item => item.id === 'crate'))
+    assert(driverItems.find(item => item.id === 'hdb'))
+    assert(driverItems.find(item => item.id === 'mysql'))
+    assert(driverItems.find(item => item.id === 'postgres'))
+    assert(driverItems.find(item => item.id === 'presto'))
+    assert(driverItems.find(item => item.id === 'sqlserver'))
+    assert(driverItems.find(item => item.id === 'vertica'))
   })
 
   it('validateConnection()', function() {
