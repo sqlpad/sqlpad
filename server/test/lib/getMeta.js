@@ -14,7 +14,8 @@ describe('lib/getMeta.js', function() {
         decimalString: null,
         number: null,
         string: null,
-        date: null
+        date: null,
+        numberString: null
       },
       {
         alwaysNull: null,
@@ -22,7 +23,8 @@ describe('lib/getMeta.js', function() {
         decimalString: '0.999',
         number: 30,
         string: 'abcdefg',
-        date: d2
+        date: d2,
+        numberString: 100
       },
       {
         alwaysNull: null,
@@ -30,7 +32,8 @@ describe('lib/getMeta.js', function() {
         decimalString: '0.111',
         number: 0,
         string: '0',
-        date: d1
+        date: d1,
+        numberString: 0
       },
       {
         alwaysNull: null,
@@ -38,7 +41,8 @@ describe('lib/getMeta.js', function() {
         decimalString: null,
         number: null,
         string: 'abc',
-        date: null
+        date: null,
+        numberString: null
       }
     ]
 
@@ -67,5 +71,9 @@ describe('lib/getMeta.js', function() {
     assert.equal(meta.date.datatype, 'date', 'date.datatype')
     assert.equal(meta.date.max.getTime(), d2.getTime(), 'date.max')
     assert.equal(meta.date.min.getTime(), d1.getTime(), 'date.min')
+
+    assert.equal(meta.numberString.datatype, 'number', 'numberString.datatype')
+    assert.equal(meta.numberString.max, 100, 'numberString.max')
+    assert.equal(meta.numberString.min, 0, 'numberString.min')
   })
 })
