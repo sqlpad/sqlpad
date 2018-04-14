@@ -89,6 +89,8 @@ requireValidate('../drivers/vertica')
 function runQuery(query, connection) {
   const driver = drivers[connection.driver]
 
+  // TODO change runQuery implementations to return rows collection
+  // and remove dependency on QueryResult
   return driver.runQuery(query, connection).then(queryResult => {
     if (!queryResult instanceof QueryResult) {
       throw new Error(`${connection.driver}.runQuery() must return QueryResult`)
@@ -117,6 +119,7 @@ function runQuery(query, connection) {
   })
 }
 
+// TODO change testConnection to return boolean
 /**
  * Test connection passed in using the driver implementation
  * Returns QueryResult of test query
