@@ -97,7 +97,6 @@ require('./middleware/passport.js')
 ============================================================================= */
 const routers = [
   require('./routes/homepage.js'),
-  require('./routes/app.js'),
   require('./routes/drivers.js'),
   require('./routes/users.js'),
   require('./routes/forgot-password.js'),
@@ -121,11 +120,16 @@ if (googleClientId && googleClientSecret && publicUrl) {
   routers.push(require('./routes/oauth.js'))
 }
 
+// Add all core routes to the baseUrl except for the */api/app route
 routers.forEach(function(router) {
   app.use(baseUrl, router)
 })
 
+// Add '*/api/app' route last and without baseUrl
+app.use(require('./routes/app.js'))
+
 // For any missing api route, return a 404
+// NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
 app.use(baseUrl + '/api/', function(req, res) {
   console.log('reached catch all api route')
   res.sendStatus(404)
