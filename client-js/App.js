@@ -30,6 +30,9 @@ class App extends React.Component {
       // Assign config.baseUrl to global
       // It doesn't change and is needed for fetch requests
       // This allows us to simplify the fetch() call
+      if (!json.config) {
+        return
+      }
       window.BASE_URL = json.config.baseUrl
       this.setState({
         config: json.config,
@@ -56,8 +59,14 @@ class App extends React.Component {
       passport
     } = this.state
 
+    // If there is no config a lot of the app is not functional
+    // Instead just load the Alert component so alerts can fire if needed
     if (!config) {
-      return null
+      return (
+        <div className="flex w-100">
+          <Alert stack={{ limit: 3 }} position="bottom-right" />
+        </div>
+      )
     }
 
     return (
