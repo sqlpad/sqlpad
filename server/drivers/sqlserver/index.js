@@ -1,5 +1,5 @@
 const mssql = require('mssql')
-const { formatSchemaQueryResults } = require('./utils')
+const { formatSchemaQueryResults } = require('../utils')
 
 const id = 'sqlserver'
 const name = 'SQL Server'
