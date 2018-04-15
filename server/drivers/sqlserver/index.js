@@ -35,7 +35,8 @@ function runQuery(query, connection) {
     port: connection.port ? connection.port : 1433,
     database: connection.database,
     domain: connection.domain,
-    requestTimeout: 1000 * 60 * 60, // one hour
+    // Set timeout to 1 hour for long running query support
+    requestTimeout: 1000 * 60 * 60,
     options: {
       appName: 'SQLPad',
       encrypt: connection.sqlserverEncrypt
@@ -62,7 +63,7 @@ function runQuery(query, connection) {
       request.query(query)
 
       request.on('row', row => {
-        // special handling if columns were not given names
+        // Special handling if columns were not given names
         if (row[''] && row[''].length) {
           for (let i = 0; i < row[''].length; i++) {
             row['UNNAMED COLUMN ' + (i + 1)] = row[''][i]
@@ -70,13 +71,16 @@ function runQuery(query, connection) {
           delete row['']
         }
         if (rows.length < connection.maxRows) {
-          // if we haven't hit the max yet add row to results
           return rows.push(row)
         }
+        // If reached it means we received a row event for more than maxRows
+        // If we haven't flagged incomplete yet, flag it,
+        // Resolve what we have and cancel request
+        // Note that this will yield a cancel error
         if (!incomplete) {
           incomplete = true
           resolve({ rows, incomplete })
-          request.cancel() // running this will yeild a cancel error
+          request.cancel()
         }
       })
 
