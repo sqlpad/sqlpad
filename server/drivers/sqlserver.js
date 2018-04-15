@@ -21,6 +21,12 @@ const SCHEMA_SQL = `
     c.ordinal_position
 `
 
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
   const sqlconfig = {
     user: connection.username,

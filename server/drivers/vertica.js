@@ -22,6 +22,12 @@ const SCHEMA_SQL = `
     vc.ordinal_position
 `
 
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
   const params = {
     host: connection.host,

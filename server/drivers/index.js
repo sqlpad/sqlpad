@@ -102,8 +102,6 @@ function runQuery(query, connection) {
     rows: []
   }
 
-  // TODO change runQuery implementations to return rows collection
-  // and remove dependency on QueryResult
   return driver.runQuery(query, connection).then(results => {
     const { rows, incomplete } = results
     if (!Array.isArray(rows)) {

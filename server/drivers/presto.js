@@ -24,6 +24,12 @@ function getPrestoSchemaSql(catalog, schema) {
   `
 }
 
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
   let incomplete = false
   const rows = []

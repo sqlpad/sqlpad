@@ -29,6 +29,12 @@ function getSchemaSql(database) {
   `
 }
 
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
   const myConnection = mysql.createConnection({
     multipleStatements: true,

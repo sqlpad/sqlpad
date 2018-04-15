@@ -21,6 +21,12 @@ function getSchemaSql(schema) {
   `
 }
 
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
   return new Promise((resolve, reject) => {
     const client = hdb.createClient({

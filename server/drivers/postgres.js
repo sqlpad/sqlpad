@@ -46,6 +46,12 @@ const SCHEMA_SQL = `
     attr.attnum
 `
 
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
   const pgConfig = {
     user: connection.username,

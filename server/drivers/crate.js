@@ -34,6 +34,12 @@ const SCHEMA_SQL_V1 = `
 `
 
 // TODO - crate driver should honor max rows restriction
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
   return new Promise((resolve, reject) => {
     const crateConfig = {
