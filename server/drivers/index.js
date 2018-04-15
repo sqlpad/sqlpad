@@ -1,7 +1,8 @@
+const uuid = require('uuid')
 const { debug } = require('../lib/config').getPreDbConfig()
-const QueryResult = require('../models/QueryResult.js')
 const decipher = require('../lib/decipher')
 const utils = require('./utils')
+const getMeta = require('../lib/getMeta')
 
 const drivers = {}
 
@@ -89,18 +90,36 @@ requireValidate('../drivers/vertica')
 function runQuery(query, connection) {
   const driver = drivers[connection.driver]
 
+  const queryResult = {
+    id: uuid.v4(),
+    cacheKey: null,
+    startTime: new Date(),
+    stopTime: null,
+    queryRunTime: null,
+    fields: [],
+    incomplete: false,
+    meta: {},
+    rows: []
+  }
+
   // TODO change runQuery implementations to return rows collection
   // and remove dependency on QueryResult
-  return driver.runQuery(query, connection).then(queryResult => {
-    if (!queryResult instanceof QueryResult) {
-      throw new Error(`${connection.driver}.runQuery() must return QueryResult`)
+  return driver.runQuery(query, connection).then(results => {
+    const { rows, incomplete } = results
+    if (!Array.isArray(rows)) {
+      throw new Error(`${connection.driver}.runQuery() must return array`)
     }
-    queryResult.finalize()
+
+    queryResult.incomplete = incomplete || false
+    queryResult.rows = rows
+    queryResult.stopTime = new Date()
+    queryResult.queryRunTime = queryResult.stopTime - queryResult.startTime
+    queryResult.meta = getMeta(rows)
+    queryResult.fields = Object.keys(queryResult.meta)
 
     if (debug) {
       const connectionName = connection.name
-      const rowCount =
-        queryResult && queryResult.rows ? queryResult.rows.length : 0
+      const rowCount = rows.length
       const { startTime, stopTime, queryRunTime } = queryResult
 
       console.log(

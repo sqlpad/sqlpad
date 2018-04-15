@@ -2,7 +2,6 @@ const fs = require('fs')
 const pg = require('pg')
 const PgCursor = require('pg-cursor')
 const SocksConnection = require('socksjs')
-const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
 const id = 'postgres'
@@ -48,7 +47,6 @@ const SCHEMA_SQL = `
 `
 
 function runQuery(query, connection) {
-  const queryResult = new QueryResult()
   const pgConfig = {
     user: connection.username,
     password: connection.password,
@@ -77,39 +75,35 @@ function runQuery(query, connection) {
         return reject(err)
       }
       const cursor = client.query(new PgCursor(query))
-      cursor.read(connection.maxRows + 1, (err, rows) => {
+      return cursor.read(connection.maxRows + 1, (err, rows) => {
         if (err) {
           // pg_cursor can't handle multi-statements at the moment
           // as a work around we'll retry the query the old way, but we lose the maxRows protection
-          client.query(query, (err, result) => {
+          return client.query(query, (err, result) => {
             client.end()
             if (err) {
               return reject(err)
             }
-            if (result && result.rows) {
-              queryResult.addRows(result.rows)
-            }
-            return resolve(queryResult)
-          })
-        } else {
-          queryResult.addRows(rows)
-          if (rows.length === connection.maxRows + 1) {
-            queryResult.incomplete = true
-            queryResult.rows.pop() // get rid of that extra record. we only get 1 more than the max to see if there would have been more...
-          }
-          if (err) {
-            reject(err)
-          } else {
-            resolve(queryResult)
-          }
-          cursor.close(err => {
-            if (err) {
-              console.log('error closing pg-cursor:')
-              console.log(err)
-            }
-            client.end()
+            return resolve({ rows: result.rows })
           })
         }
+        let incomplete = false
+        if (rows.length === connection.maxRows + 1) {
+          incomplete = true
+          rows.pop() // get rid of that extra record. we only get 1 more than the max to see if there would have been more...
+        }
+        if (err) {
+          reject(err)
+        } else {
+          resolve({ rows, incomplete })
+        }
+        cursor.close(err => {
+          if (err) {
+            console.log('error closing pg-cursor:')
+            console.log(err)
+          }
+          client.end()
+        })
       })
     })
   })

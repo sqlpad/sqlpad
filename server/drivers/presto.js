@@ -1,5 +1,4 @@
 const presto = require('./_presto')
-const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
 const id = 'presto'
@@ -26,7 +25,8 @@ function getPrestoSchemaSql(catalog, schema) {
 }
 
 function runQuery(query, connection) {
-  const queryResult = new QueryResult()
+  let incomplete = false
+  const rows = []
   const port = connection.port || 8080
   const prestoConfig = {
     url: `http://${connection.host}:${port}`,
@@ -45,17 +45,17 @@ function runQuery(query, connection) {
         throw new Error(error.message)
       }
       if (data.length > connection.maxRows) {
-        queryResult.incomplete = true
+        incomplete = true
         data = data.slice(0, connection.maxRows)
       }
-      for (var r = 0; r < data.length; r++) {
-        var row = {}
-        for (var c = 0; c < columns.length; c++) {
+      for (let r = 0; r < data.length; r++) {
+        const row = {}
+        for (let c = 0; c < columns.length; c++) {
           row[columns[c].name] = data[r][c]
         }
-        queryResult.addRow(row)
+        rows.push(row)
       }
-      return queryResult
+      return { rows, incomplete }
     })
     .catch(error => {
       console.error({ error })

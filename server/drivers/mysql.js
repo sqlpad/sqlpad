@@ -1,5 +1,4 @@
 const mysql = require('mysql')
-const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
 const id = 'mysql'
@@ -31,7 +30,6 @@ function getSchemaSql(database) {
 }
 
 function runQuery(query, connection) {
-  const queryResult = new QueryResult()
   const myConnection = mysql.createConnection({
     multipleStatements: true,
     host: connection.host,
@@ -45,6 +43,9 @@ function runQuery(query, connection) {
   })
 
   return new Promise((resolve, reject) => {
+    let incomplete = false
+    const rows = []
+
     myConnection.connect(err => {
       if (err) {
         return reject(err)
@@ -59,7 +60,7 @@ function runQuery(query, connection) {
           if (queryError) {
             return reject(queryError)
           }
-          return resolve(queryResult)
+          return resolve({ rows, incomplete })
         }
       }
 
@@ -75,13 +76,13 @@ function runQuery(query, connection) {
           rowCounter++
           if (rowCounter <= connection.maxRows) {
             // if we haven't hit the max yet add row to results
-            queryResult.addRow(row)
+            rows.push(row)
           } else {
             // Too many rows! pause that connection.
             // It sounds like there is no way to close query stream
             // you just have to close the connection
             myConnection.pause()
-            queryResult.incomplete = true
+            incomplete = true
             continueOn() // return records to client before closing connection
             myConnection.end()
           }
