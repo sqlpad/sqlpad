@@ -2,7 +2,7 @@ const fs = require('fs')
 const pg = require('pg')
 const PgCursor = require('pg-cursor')
 const SocksConnection = require('socksjs')
-const { formatSchemaQueryResults } = require('./utils')
+const { formatSchemaQueryResults } = require('../utils')
 
 const id = 'postgres'
 const name = 'Postgres'
@@ -108,7 +108,14 @@ function runQuery(query, connection) {
             console.log('error closing pg-cursor:')
             console.log(err)
           }
-          client.end()
+          // Calling end() without setImmediate causes error within node-pg
+          setImmediate(() => {
+            client.end(error => {
+              if (error) {
+                console.error(error)
+              }
+            })
+          })
         })
       })
     })
