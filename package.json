@@ -35,7 +35,7 @@
     "start-server-dev": "node-dev server/server.js --dir ./db --port 3010 --debug --base-url '/sqlpad'",
     "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
-    "test": "rm -rf ./dbtest && npm run lint && SQLPAD_DB_PATH='./dbtest' mocha server/test --timeout 10000 --recursive --exit"
+    "test": "rimraf dbtest && npm run lint && SQLPAD_DB_PATH='./dbtest' mocha server/test --timeout 10000 --recursive --exit"
   },
   "prettier": {
     "semi": false,
@@ -65,7 +65,7 @@
     "mkdirp": "^0.5.1",
     "moment": "^2.22.0",
     "morgan": "^1.9.0",
-    "mssql": "^3.0.0",
+    "mssql": "^4.1.0",
     "mysql": "^2.15.0",
     "nedb": "^1.8.0",
     "nedb-promise": "^2.0.1",
