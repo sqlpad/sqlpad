@@ -138,10 +138,10 @@ function runQuery(query, connection) {
   })
 }
 
-// TODO change testConnection to return boolean
 /**
  * Test connection passed in using the driver implementation
- * Returns QueryResult of test query
+ * As long as promise resolves without error
+ * it is considered a successful connection config
  * @param {object} connection
  */
 function testConnection(connection) {
