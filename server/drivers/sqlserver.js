@@ -1,5 +1,4 @@
 const mssql = require('mssql')
-const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
 const id = 'sqlserver'
@@ -22,8 +21,13 @@ const SCHEMA_SQL = `
     c.ordinal_position
 `
 
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
-  const queryResult = new QueryResult()
   const sqlconfig = {
     user: connection.username,
     password: connection.password,
@@ -37,6 +41,9 @@ function runQuery(query, connection) {
       encrypt: connection.sqlserverEncrypt
     }
   }
+
+  let incomplete
+  const rows = []
 
   return new Promise((resolve, reject) => {
     const mssqlConnection = new mssql.Connection(sqlconfig, err => {
@@ -55,17 +62,17 @@ function runQuery(query, connection) {
           if (queryError) {
             return reject(queryError)
           }
-          return resolve(queryResult)
+          return resolve({ rows, incomplete })
         }
       }
 
-      var request = new mssql.Request(mssqlConnection)
+      const request = new mssql.Request(mssqlConnection)
       request.query(query)
 
       request.on('row', function(row) {
         // special handling if columns were not given names
         if (row[''] && row[''].length) {
-          for (var i = 0; i < row[''].length; i++) {
+          for (let i = 0; i < row[''].length; i++) {
             row['UNNAMED COLUMN ' + (i + 1)] = row[''][i]
           }
           delete row['']
@@ -73,12 +80,12 @@ function runQuery(query, connection) {
         rowCounter++
         if (rowCounter <= connection.maxRows) {
           // if we haven't hit the max yet add row to results
-          queryResult.addRow(row)
+          rows.push(row)
         } else {
           if (!tooManyHandled) {
             tooManyHandled = true
             // Too many rows!
-            queryResult.incomplete = true
+            incomplete = true
             continueOn()
             console.log('Row limit hit - Attempting to cancel query...')
             request.cancel() // running this will yeild a cancel error

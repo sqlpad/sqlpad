@@ -1,16 +1,11 @@
 const _ = require('lodash')
-const QueryResult = require('../models/QueryResult.js')
 
 /**
  * Formats schema query results into
  * a nested map of objects representing schema tree
- * @param {QueryResult} queryResult
+ * @param {object} queryResult
  */
 function formatSchemaQueryResults(queryResult) {
-  if (!queryResult instanceof QueryResult) {
-    throw new Error('queryResult not instance of QueryResult')
-  }
-
   if (!queryResult || !queryResult.rows || !queryResult.rows.length) {
     return {}
   }

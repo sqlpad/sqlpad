@@ -1,5 +1,4 @@
 const hdb = require('hdb')
-const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
 const id = 'hdb'
@@ -22,8 +21,13 @@ function getSchemaSql(schema) {
   `
 }
 
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
-  const queryResult = new QueryResult()
   return new Promise((resolve, reject) => {
     const client = hdb.createClient({
       host: connection.host,
@@ -43,12 +47,11 @@ function runQuery(query, connection) {
         return reject(err)
       }
       return client.exec(query, (err, rows) => {
-        queryResult.addRows(rows)
         client.disconnect()
         if (err) {
           return reject(err)
         }
-        return resolve(queryResult)
+        return resolve({ rows })
       })
     })
   })

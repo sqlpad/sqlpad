@@ -1,5 +1,4 @@
 const crate = require('node-crate')
-const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
 const id = 'crate'
@@ -35,8 +34,13 @@ const SCHEMA_SQL_V1 = `
 `
 
 // TODO - crate driver should honor max rows restriction
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
-  const queryResult = new QueryResult()
   return new Promise((resolve, reject) => {
     const crateConfig = {
       host: connection.host
@@ -67,8 +71,7 @@ function runQuery(query, connection) {
             results.fields[row] = columnName
           }
         }
-        queryResult.addRows(results.rows)
-        return resolve(queryResult)
+        return resolve(results)
       })
       .error(err => reject(err.message))
   })

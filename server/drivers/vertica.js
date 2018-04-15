@@ -1,5 +1,4 @@
 const vertica = require('vertica')
-const QueryResult = require('../models/QueryResult')
 const { formatSchemaQueryResults } = require('./utils')
 
 const id = 'vertica'
@@ -23,8 +22,13 @@ const SCHEMA_SQL = `
     vc.ordinal_position
 `
 
+/**
+ * Run query for connection
+ * Should return { rows, incomplete }
+ * @param {string} query
+ * @param {object} connection
+ */
 function runQuery(query, connection) {
-  const queryResult = new QueryResult()
   const params = {
     host: connection.host,
     port: connection.port ? connection.port : 5433,
@@ -32,6 +36,10 @@ function runQuery(query, connection) {
     password: connection.password,
     database: connection.database
   }
+
+  let incomplete = false
+  const rows = []
+
   return new Promise((resolve, reject) => {
     const client = vertica.connect(params, function(err) {
       if (err) {
@@ -60,14 +68,14 @@ function runQuery(query, connection) {
               resultRow[fields[item]] = row[item]
             }
           }
-          queryResult.addRow(resultRow)
+          rows.push(resultRow)
           rowCounter++
         } else {
           if (!finished) {
             finished = true
             client.disconnect()
-            queryResult.incomplete = true
-            return resolve(queryResult)
+            incomplete = true
+            return resolve({ rows, incomplete })
           }
         }
       })
@@ -76,7 +84,7 @@ function runQuery(query, connection) {
         if (!finished) {
           finished = true
           client.disconnect()
-          return resolve(queryResult)
+          return resolve({ rows, incomplete })
         }
       })
 
