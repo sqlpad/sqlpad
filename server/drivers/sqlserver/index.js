@@ -28,17 +28,22 @@ const SCHEMA_SQL = `
  * @param {object} connection
  */
 function runQuery(query, connection) {
-  const sqlconfig = {
+  const config = {
     user: connection.username,
     password: connection.password,
     server: connection.host,
     port: connection.port ? connection.port : 1433,
     database: connection.database,
     domain: connection.domain,
-    stream: true,
     requestTimeout: 1000 * 60 * 60, // one hour
     options: {
+      appName: 'SQLPad',
       encrypt: connection.sqlserverEncrypt
+    },
+    pool: {
+      max: 1,
+      min: 0,
+      idleTimeoutMillis: 1000
     }
   }
 
@@ -46,30 +51,17 @@ function runQuery(query, connection) {
   const rows = []
 
   return new Promise((resolve, reject) => {
-    const mssqlConnection = new mssql.Connection(sqlconfig, err => {
+    const pool = new mssql.ConnectionPool(config, err => {
       if (err) {
         return reject(err)
       }
-      let rowCounter = 0
-      let queryError
-      let resultsSent = false
-      let tooManyHandled = false
 
-      // For SQL Server, this can be called more than once safely
-      const continueOn = function() {
-        if (!resultsSent) {
-          resultsSent = true
-          if (queryError) {
-            return reject(queryError)
-          }
-          return resolve({ rows, incomplete })
-        }
-      }
-
-      const request = new mssql.Request(mssqlConnection)
+      const request = new mssql.Request(pool)
+      // Stream set a config level doesn't seem to work
+      request.stream = true
       request.query(query)
 
-      request.on('row', function(row) {
+      request.on('row', row => {
         // special handling if columns were not given names
         if (row[''] && row[''].length) {
           for (let i = 0; i < row[''].length; i++) {
@@ -77,40 +69,34 @@ function runQuery(query, connection) {
           }
           delete row['']
         }
-        rowCounter++
-        if (rowCounter <= connection.maxRows) {
+        if (rows.length < connection.maxRows) {
           // if we haven't hit the max yet add row to results
-          rows.push(row)
-        } else {
-          if (!tooManyHandled) {
-            tooManyHandled = true
-            // Too many rows!
-            incomplete = true
-            continueOn()
-            console.log('Row limit hit - Attempting to cancel query...')
-            request.cancel() // running this will yeild a cancel error
-          }
+          return rows.push(row)
+        }
+        if (!incomplete) {
+          incomplete = true
+          resolve({ rows, incomplete })
+          request.cancel() // running this will yeild a cancel error
         }
       })
 
-      request.on('error', function(err) {
-        // May be emitted multiple times
-        // for now I guess we just set queryError to be the most recent error?
-        if (err.code === 'ECANCEL') {
-          console.log('Query cancelled successfully')
-        } else {
-          console.log('mssql query error:')
-          console.log(err)
-          queryError = err
+      // Error events may fire multiple times
+      // If we get an ECANCEL error and too many rows were handled it was intentional
+      request.on('error', err => {
+        if (err.code === 'ECANCEL' && incomplete) {
+          return
         }
+        return reject(err)
       })
 
-      request.on('done', function(returnValue) {
-        // Always emitted as the last one
-        continueOn()
-        mssqlConnection.close() // I don't think this does anything using the tedious driver. but maybe someday it will
+      // Always emitted as the last one
+      request.on('done', () => {
+        resolve({ rows, incomplete })
+        pool.close()
       })
     })
+
+    pool.on('error', err => reject(err))
   })
 }
 
