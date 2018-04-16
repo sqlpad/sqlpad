@@ -60,4 +60,17 @@ describe('drivers/crate', function() {
         assert.equal(results.rows.length, 2, 'row length')
       })
   })
+
+  it('returns descriptive error message', function() {
+    let error
+    return crate
+      .runQuery('SELECT * FROM missing_table;', connection)
+      .catch(e => {
+        error = e
+      })
+      .then(() => {
+        assert(error)
+        assert(error.toString().indexOf('missing_table') > -1)
+      })
+  })
 })
