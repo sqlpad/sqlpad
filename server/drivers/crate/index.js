@@ -45,33 +45,32 @@ const SCHEMA_SQL_V1 = `
  */
 function runQuery(query, connection) {
   const { maxRows } = connection
-  return new Promise((resolve, reject) => {
-    const crateConfig = {
-      host: connection.host
-    }
-    if (connection.port) {
-      crate.connect(crateConfig.host, connection.port)
-    } else {
-      crate.connect(crateConfig.host)
-    }
-    crate
-      .execute(query)
-      .success(res => {
-        const results = {
-          rows: res.json,
-          incomplete: false
-        }
-        const limit = maxRows < CRATE_LIMIT ? maxRows : CRATE_LIMIT
+  const limit = maxRows < CRATE_LIMIT ? maxRows : CRATE_LIMIT
 
-        if (results.rows.length >= limit) {
-          results.incomplete = true
-          results.rows = results.rows.slice(0, limit)
-        }
+  if (connection.port) {
+    crate.connect(connection.host, connection.port)
+  } else {
+    crate.connect(connection.host)
+  }
 
-        return resolve(results)
-      })
-      .error(err => reject(err.message))
-  })
+  return crate
+    .execute(query)
+    .then(res => {
+      const results = {
+        rows: res.json,
+        incomplete: false
+      }
+
+      if (results.rows.length >= limit) {
+        results.incomplete = true
+        results.rows = results.rows.slice(0, limit)
+      }
+
+      return results
+    })
+    .catch(err => {
+      throw new Error(err.message)
+    })
 }
 
 /**
