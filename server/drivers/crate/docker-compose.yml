@@ -1,0 +1,8 @@
+version: '3'
+services:
+  crate:
+    image: 'crate:2.3'
+    ports:
+      - 4200:4200
+    environment:
+      - CRATE_HEAP_SIZE=1g
