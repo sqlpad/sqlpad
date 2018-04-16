@@ -69,7 +69,7 @@
     "mysql": "^2.15.0",
     "nedb": "^1.8.0",
     "nedb-promise": "^2.0.1",
-    "node-crate": "^1.0.27",
+    "node-crate": "^2.0.3",
     "node-fetch": "^1.7.2",
     "node-xlsx": "^0.11.2",
     "nodemailer": "^4.6.4",

@@ -1,8 +1,12 @@
 const crate = require('node-crate')
-const { formatSchemaQueryResults } = require('./utils')
+const { formatSchemaQueryResults } = require('../utils')
 
 const id = 'crate'
 const name = 'Crate'
+
+// NOTE per crate docs: If a client using the HTTP or Transport protocol is used a default limit of 10000 is implicitly added.
+// node-crate uses the REST API, so it is assumed this is a limit
+const CRATE_LIMIT = 10000
 
 // old crate called table_schema schema_name
 const SCHEMA_SQL_V0 = `
@@ -33,7 +37,6 @@ const SCHEMA_SQL_V1 = `
     and columns.table_name = tables.table_name
 `
 
-// TODO - crate driver should honor max rows restriction
 /**
  * Run query for connection
  * Should return { rows, incomplete }
@@ -41,40 +44,33 @@ const SCHEMA_SQL_V1 = `
  * @param {object} connection
  */
 function runQuery(query, connection) {
-  return new Promise((resolve, reject) => {
-    const crateConfig = {
-      host: connection.host
-    }
-    if (connection.port) {
-      crate.connect(crateConfig.host, connection.port)
-    } else {
-      crate.connect(crateConfig.host)
-    }
-    query = query.replace(/;$/, '')
-    crate
-      .execute(query)
-      .success(function(res) {
-        const results = {
-          rows: [],
-          fields: []
-        }
-        for (const row in res.rows) {
-          results.rows[row] = {}
-          for (let val in res.rows[row]) {
-            const columnName = res.cols[val]
-            const type = res.col_types[val]
-            val = res.rows[row][val]
-            if (type === 11) {
-              val = new Date(val)
-            }
-            results.rows[row][columnName] = val
-            results.fields[row] = columnName
-          }
-        }
-        return resolve(results)
-      })
-      .error(err => reject(err.message))
-  })
+  const { maxRows } = connection
+  const limit = maxRows < CRATE_LIMIT ? maxRows : CRATE_LIMIT
+
+  if (connection.port) {
+    crate.connect(connection.host, connection.port)
+  } else {
+    crate.connect(connection.host)
+  }
+
+  return crate
+    .execute(query)
+    .then(res => {
+      const results = {
+        rows: res.json,
+        incomplete: false
+      }
+
+      if (results.rows.length >= limit) {
+        results.incomplete = true
+        results.rows = results.rows.slice(0, limit)
+      }
+
+      return results
+    })
+    .catch(err => {
+      throw new Error(err.message)
+    })
 }
 
 /**
