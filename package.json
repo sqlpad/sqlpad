@@ -70,7 +70,7 @@
     "nedb": "^1.8.0",
     "nedb-promise": "^2.0.1",
     "node-crate": "^2.0.3",
-    "node-fetch": "^1.7.2",
+    "node-fetch": "^2.1.2",
     "node-xlsx": "^0.11.2",
     "nodemailer": "^4.6.4",
     "passport": "^0.4.0",
