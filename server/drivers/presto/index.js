@@ -1,5 +1,5 @@
 const presto = require('./_presto')
-const { formatSchemaQueryResults } = require('./utils')
+const { formatSchemaQueryResults } = require('../utils')
 
 const id = 'presto'
 const name = 'Presto'
