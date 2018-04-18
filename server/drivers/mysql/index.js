@@ -1,5 +1,5 @@
 const mysql = require('mysql')
-const { formatSchemaQueryResults } = require('./utils')
+const { formatSchemaQueryResults } = require('../utils')
 
 const id = 'mysql'
 const name = 'MySQL'
@@ -56,7 +56,6 @@ function runQuery(query, connection) {
       if (err) {
         return reject(err)
       }
-      let rowCounter = 0
       let queryError
       let resultsSent = false
 
@@ -79,25 +78,33 @@ function runQuery(query, connection) {
           queryError = err
         })
         .on('result', function(row) {
-          rowCounter++
-          if (rowCounter <= connection.maxRows) {
-            // if we haven't hit the max yet add row to results
-            rows.push(row)
-          } else {
-            // Too many rows! pause that connection.
-            // It sounds like there is no way to close query stream
-            // you just have to close the connection
-            myConnection.pause()
-            incomplete = true
-            continueOn() // return records to client before closing connection
-            myConnection.end()
+          // If we haven't hit the max yet add row to results
+          if (rows.length < connection.maxRows) {
+            return rows.push(row)
           }
+
+          // Too many rows
+          incomplete = true
+
+          // Stop the query stream
+          myConnection.pause()
+
+          // Destroy the underlying connection
+          // Calling end() will wait and eventually time out
+          myConnection.destroy()
+          continueOn()
         })
         .on('end', function() {
           // all rows have been received
           // This will not fire if we end the connection early
-          continueOn()
-          myConnection.end()
+          // myConnection.end()
+          // myConnection.destroy()
+          myConnection.end(error => {
+            if (error) {
+              console.error('Error ending MySQL connection', error)
+            }
+            continueOn()
+          })
         })
     })
   })
