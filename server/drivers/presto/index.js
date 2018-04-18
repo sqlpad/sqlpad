@@ -40,33 +40,24 @@ function runQuery(query, connection) {
     catalog: connection.prestoCatalog,
     schema: connection.prestoSchema
   }
-  return presto
-    .send(prestoConfig, query)
-    .then(result => {
-      if (!result) {
-        throw new Error('No result returned')
+  return presto.send(prestoConfig, query).then(result => {
+    if (!result) {
+      throw new Error('No result returned')
+    }
+    let { data, columns } = result
+    if (data.length > connection.maxRows) {
+      incomplete = true
+      data = data.slice(0, connection.maxRows)
+    }
+    for (let r = 0; r < data.length; r++) {
+      const row = {}
+      for (let c = 0; c < columns.length; c++) {
+        row[columns[c].name] = data[r][c]
       }
-      let { data, columns, error } = result
-      if (error) {
-        throw new Error(error.message)
-      }
-      if (data.length > connection.maxRows) {
-        incomplete = true
-        data = data.slice(0, connection.maxRows)
-      }
-      for (let r = 0; r < data.length; r++) {
-        const row = {}
-        for (let c = 0; c < columns.length; c++) {
-          row[columns[c].name] = data[r][c]
-        }
-        rows.push(row)
-      }
-      return { rows, incomplete }
-    })
-    .catch(error => {
-      console.error({ error })
-      throw error
-    })
+      rows.push(row)
+    }
+    return { rows, incomplete }
+  })
 }
 
 /**
