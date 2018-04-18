@@ -49,9 +49,9 @@ function updateResults(results, statement) {
 
 function handleStatementAndGetMore(results, statement, config) {
   if (statement.error) {
-    console.error(statement.error) // has .errorName and .message
-    results.error = statement.error
-    return Promise.resolve(results)
+    // A lot of other error data available,
+    // but error.message contains the detail on syntax issue
+    return Promise.reject(statement.error.message)
   }
   results = updateResults(results, statement)
   if (!statement.nextUri) {
