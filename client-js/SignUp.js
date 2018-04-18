@@ -41,7 +41,7 @@ class SignUp extends React.Component {
       return <Redirect to="/" />
     }
     const adminRegistrationOpenIntro = () => {
-      if (this.props.adminRegistrationOpen || true) {
+      if (this.props.adminRegistrationOpen) {
         return (
           <div className="mb4">
             <h2 className="f3 tc">Admin Registration is Open</h2>
