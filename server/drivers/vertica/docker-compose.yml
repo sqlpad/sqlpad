@@ -1,0 +1,6 @@
+version: '3'
+services:
+  vertica:
+    image: jbfavre/vertica:latest
+    ports:
+      - "5433:5433"
