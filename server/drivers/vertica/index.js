@@ -1,5 +1,5 @@
 const vertica = require('vertica')
-const { formatSchemaQueryResults } = require('./utils')
+const { formatSchemaQueryResults } = require('../utils')
 
 const id = 'vertica'
 const name = 'Vertica'
@@ -37,46 +37,37 @@ function runQuery(query, connection) {
     database: connection.database
   }
 
-  let incomplete = false
-  const rows = []
-
   return new Promise((resolve, reject) => {
     const client = vertica.connect(params, function(err) {
       if (err) {
         client.disconnect()
         return reject(err)
       }
+
+      let incomplete = false
+      const rows = []
       let finished = false
-      let rowCounter = 0
-      const fields = []
+      let columnNames = []
 
       const verticaQuery = client.query(query)
 
-      verticaQuery.on('fields', function(f) {
-        for (const i in f) {
-          if (f.hasOwnProperty(i)) {
-            fields.push(f[i]['name'])
-          }
-        }
+      verticaQuery.on('fields', fields => {
+        columnNames = fields.map(field => field.name)
       })
 
       verticaQuery.on('row', function(row) {
-        if (rowCounter < connection.maxRows) {
+        if (rows.length < connection.maxRows) {
           const resultRow = {}
-          for (const item in row) {
-            if (row.hasOwnProperty(item)) {
-              resultRow[fields[item]] = row[item]
-            }
-          }
-          rows.push(resultRow)
-          rowCounter++
-        } else {
-          if (!finished) {
-            finished = true
-            client.disconnect()
-            incomplete = true
-            return resolve({ rows, incomplete })
-          }
+          row.forEach((value, index) => {
+            resultRow[columnNames[index]] = value
+          })
+          return rows.push(resultRow)
+        }
+        if (!finished) {
+          finished = true
+          client.disconnect()
+          incomplete = true
+          return resolve({ rows, incomplete })
         }
       })
 
