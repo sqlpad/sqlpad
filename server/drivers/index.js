@@ -105,7 +105,7 @@ function runQuery(query, connection) {
   return driver.runQuery(query, connection).then(results => {
     const { rows, incomplete } = results
     if (!Array.isArray(rows)) {
-      throw new Error(`${connection.driver}.runQuery() must return array`)
+      throw new Error(`${connection.driver}.runQuery() must return rows array`)
     }
 
     queryResult.incomplete = incomplete || false
