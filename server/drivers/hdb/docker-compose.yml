@@ -1,0 +1,18 @@
+version: '3'
+services:
+  hana:
+    image: store/saplabs/hanaexpress:2.00.022.00.20171211.1
+    ports:
+      - "39013:39013" 
+      - "39017:39017"
+      - "39041-39045:39041-39045"
+      - "1128-1129:1128-1129" 
+      - "59013-59014:59013-59014"
+    environment:
+      - LOCAL_HANA_PASSSWORD=SQLPad1!
+    sysctls:
+      - net.ipv4.ip_local_port_range=40000 60999
+    entrypoint:
+      - sh
+      - -c
+      - echo "{\"master_password\":\"$$LOCAL_HANA_PASSSWORD\"}" > /tmp/hana_password.json; cat /tmp/hana_password.json;/run_hana --agree-to-sap-license --passwords-url file:///tmp/hana_password.json

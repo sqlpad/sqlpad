@@ -1,5 +1,5 @@
 const hdb = require('hdb')
-const { formatSchemaQueryResults } = require('./utils')
+const { formatSchemaQueryResults } = require('../utils')
 
 const id = 'hdb'
 const name = 'SAP HANA'
@@ -28,6 +28,9 @@ function getSchemaSql(schema) {
  * @param {object} connection
  */
 function runQuery(query, connection) {
+  // TODO implement maxRows support
+  let incomplete = false
+
   return new Promise((resolve, reject) => {
     const client = hdb.createClient({
       host: connection.host,
@@ -46,12 +49,23 @@ function runQuery(query, connection) {
         console.error('Connect error', err)
         return reject(err)
       }
-      return client.exec(query, (err, rows) => {
+      return client.exec(query, (err, result) => {
+        let rows = []
+
+        // Result could be anything
+        // Sometimes its array of rows, other times a number (like rows inserted?)
+        // Also could be null
+        if (Array.isArray(result)) {
+          rows = result
+        } else {
+          rows = [{ result: result }]
+        }
+
         client.disconnect()
         if (err) {
           return reject(err)
         }
-        return resolve({ rows })
+        return resolve({ rows: rows, incomplete })
       })
     })
   })
@@ -84,6 +98,11 @@ const fields = [
     label: 'Host/Server/IP Address'
   },
   {
+    key: 'hanaport',
+    formType: 'TEXT',
+    label: 'Port (e.g. 39015)'
+  },
+  {
     key: 'username',
     formType: 'TEXT',
     label: 'Database Username'
@@ -94,19 +113,14 @@ const fields = [
     label: 'Database Password'
   },
   {
-    key: 'hanaSchema',
-    formType: 'TEXT',
-    label: 'Schema (optional)'
-  },
-  {
     key: 'hanadatabase',
     formType: 'TEXT',
     label: 'Tenant'
   },
   {
-    key: 'hanaport',
+    key: 'hanaSchema',
     formType: 'TEXT',
-    label: 'Port (e.g. 39015)'
+    label: 'Schema (optional)'
   }
 ]
 
