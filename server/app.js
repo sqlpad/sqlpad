@@ -31,8 +31,13 @@ const errorhandler = require('errorhandler')
 
 const app = express()
 
-// Use default helmet protections and add referrerPolicy
-app.use(helmet())
+// Default helmet protections, minus frameguard (becaue of sqlpad iframe embed), adding referrerPolicy
+app.use(helmet.dnsPrefetchControl())
+app.use(helmet.hidePoweredBy())
+app.use(helmet.hsts({}))
+app.use(helmet.ieNoOpen())
+app.use(helmet.noSniff())
+app.use(helmet.xssFilter())
 app.use(helmet.referrerPolicy({ policy: 'same-origin' }))
 
 app.set('env', debug ? 'development' : 'production')
