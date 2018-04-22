@@ -28,8 +28,7 @@ function getSchemaSql(schema) {
  * @param {object} connection
  */
 function runQuery(query, connection) {
-  // TODO implement maxRows support
-  let incomplete = false
+  const incomplete = false
 
   return new Promise((resolve, reject) => {
     const client = hdb.createClient({
@@ -40,32 +39,55 @@ function runQuery(query, connection) {
       password: connection.password,
       schema: connection.hanaSchema
     })
+
     client.on('error', err => {
       console.error('Network connection error', err)
       return reject(err)
     })
+
     client.connect(err => {
       if (err) {
         console.error('Connect error', err)
         return reject(err)
       }
-      return client.exec(query, (err, result) => {
+      return client.execute(query, function(err, rs) {
         let rows = []
 
-        // Result could be anything
-        // Sometimes its array of rows, other times a number (like rows inserted?)
-        // Also could be null
-        if (Array.isArray(result)) {
-          rows = result
-        } else {
-          rows = [{ result: result }]
-        }
-
-        client.disconnect()
         if (err) {
+          client.disconnect()
           return reject(err)
         }
-        return resolve({ rows: rows, incomplete })
+
+        if (!rs) {
+          client.disconnect()
+          return resolve({ rows, incomplete })
+        }
+
+        if (!rs.createObjectStream) {
+          // Could be row count or something
+          client.disconnect()
+          return resolve({ rows: [{ result: rs }], incomplete })
+        }
+
+        const stream = rs.createObjectStream()
+
+        stream.on('data', data => {
+          if (rows.length < connection.maxRows) {
+            return rows.push(data)
+          }
+          client.disconnect()
+          return resolve({ rows, incomplete: true })
+        })
+
+        stream.on('error', error => {
+          client.disconnect()
+          return reject(error)
+        })
+
+        stream.on('finish', () => {
+          client.disconnect()
+          return resolve({ rows, incomplete })
+        })
       })
     })
   })
