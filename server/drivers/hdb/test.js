@@ -59,7 +59,7 @@ describe('drivers/hdb', function() {
   })
 
   // TODO not yet implemented
-  it.skip('runQuery over limit', function() {
+  it('runQuery over limit', function() {
     const limitedConnection = Object.assign({}, connection, { maxRows: 2 })
     return hdb
       .runQuery('SELECT * FROM test;', limitedConnection)
