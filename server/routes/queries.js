@@ -34,27 +34,6 @@ router.delete('/api/queries/:_id', mustBeAuthenticated, function(req, res) {
 })
 
 router.get('/api/queries', mustBeAuthenticated, function(req, res) {
-  /*
-  NOTE: db side filter. implement or?
-  var filter = {};
-  if (req.query && req.query.tag) {
-      filter.tags = req.query.tag;
-  }
-  if (req.query && req.query.connection) {
-      filter.connectionId = req.query.connection;
-  }
-  if (req.query && req.query.createdBy) {
-      filter.createdBy =
-  }
-  if (req.query && req.query.search) {
-      var nameRegExp = new RegExp(req.query.search, "i");
-      var queryTextRegExp = new RegExp(req.query.search, "i");
-      filter.$or = [{queryText: {$regex: queryTextRegExp}}, {name: {$regex: nameRegExp}}];
-  }
-  Query.findByFilter(filter, function (err, queries) {
-
-  });
-  */
   return Query.findAll()
     .then(queries => res.json({ queries }))
     .catch(error => sendError(res, error, 'Problem querying query database'))
