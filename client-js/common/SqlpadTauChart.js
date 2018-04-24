@@ -32,6 +32,8 @@ class SqlpadTauChart extends React.Component {
     }
   }
 
+  // TODO - Some of these checks should move to render method
+  // If chart is invalid config, a message should show there instead of Alert
   renderChart = rerender => {
     const { config, queryResult, query } = this.props
     // This is invoked during following:
@@ -43,6 +45,22 @@ class SqlpadTauChart extends React.Component {
     const chartType = query.chartConfiguration.chartType
     const selectedFields = query.chartConfiguration.fields
 
+    // It is possible that the query no longer has columns referenced in vis config
+    // If that happens, alert the user, and avoid trying to render the chart
+    const missingColumns = []
+    Object.keys(selectedFields).forEach(key => {
+      const columnName = selectedFields[key]
+      if (!meta[columnName]) {
+        missingColumns.push(columnName)
+      }
+    })
+    if (missingColumns.length) {
+      missingColumns.forEach(column => {
+        Alert.error(`${column} not in query result`)
+      })
+      return
+    }
+
     const chartDefinition = chartDefinitions.find(
       def => def.chartType === chartType
     )
@@ -52,10 +70,14 @@ class SqlpadTauChart extends React.Component {
     }
 
     // If there's no data just exit the chart render
-    if (!dataRows.length) return
+    if (!dataRows.length) {
+      return
+    }
 
     // if there's no chart definition exit the render
-    if (!chartDefinition) return
+    if (!chartDefinition) {
+      return
+    }
 
     const chartConfig = {
       type: chartDefinition.tauChartsType,
@@ -81,7 +103,7 @@ class SqlpadTauChart extends React.Component {
     }
 
     const unmetRequiredFields = []
-    const definitionFields = chartDefinition.fields.map(function(field) {
+    const definitionFields = chartDefinition.fields.map(field => {
       if (field.required && !selectedFields[field.fieldId]) {
         unmetRequiredFields.push(field)
       }
