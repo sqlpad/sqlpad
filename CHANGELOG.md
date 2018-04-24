@@ -1,5 +1,28 @@
 # Changelog
 
+## 2.5.5
+
+### April 23, 2018
+
+* Remove frameguard protection (fixes iframe embeds)
+* Use CDN for bootstrap font (fixes missing icons when using baseUrl)
+* Update dependencies
+* Fix 0 values classified as string in query results
+* Fix UI chart error when referencing columns no longer returned by query
+* Fix SQLPad crash postgres queries exceeding max row limit
+* Only show admin registration open message if admin registration is actually open
+* Fix baseUrl of undefined error
+* A lot of driver refactoring
+  * Driver implementations now consolidated at /server/drivers
+  * All drivers now tested
+* New docker build process/root-level Dockerfile
+
+## 2.5.4
+
+### April 1, 2018
+
+* Fixed password reset link when using base url
+
 ## 2.5.3
 
 ### March 29, 2018
