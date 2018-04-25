@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.6
+
+### April 25, 2018
+
+* Revert chart fix from 2.5.5 preventing charts from rendering
+
 ## 2.5.5
 
 ### April 23, 2018
