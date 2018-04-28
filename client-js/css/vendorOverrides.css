@@ -48,6 +48,10 @@
   flex: auto;
 }
 
+.ReactVirtualized__Table__headerRow {
+  text-transform: unset;
+}
+
 .DragHandle {
   flex: 0 0 16px;
   z-index: 2;
