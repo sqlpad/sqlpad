@@ -1,6 +1,5 @@
 const uuid = require('uuid')
 const { debug } = require('../lib/config').getPreDbConfig()
-const decipher = require('../lib/decipher')
 const utils = require('./utils')
 const getMeta = require('../lib/getMeta')
 
@@ -154,8 +153,6 @@ function testConnection(connection) {
  * @returns {Promise}
  */
 function getSchema(connection) {
-  connection.username = decipher(connection.username)
-  connection.password = decipher(connection.password)
   connection.maxRows = Number.MAX_SAFE_INTEGER
   const driver = drivers[connection.driver]
   return driver.getSchema(connection)

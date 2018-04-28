@@ -1,15 +1,10 @@
 const router = require('express').Router()
-const cipher = require('../lib/cipher.js')
-const decipher = require('../lib/decipher.js')
 const connections = require('../models/connections.js')
 const mustBeAdmin = require('../middleware/must-be-admin.js')
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js')
 const sendError = require('../lib/sendError')
 
-function decipherConnection(connection) {
-  if (connection.username) {
-    connection.username = decipher(connection.username)
-  }
+function removePassword(connection) {
   connection.password = ''
   return connection
 }
@@ -19,7 +14,7 @@ router.get('/api/connections', mustBeAuthenticated, function(req, res) {
     .findAll()
     .then(docs =>
       res.json({
-        connections: docs.map(decipherConnection)
+        connections: docs.map(removePassword)
       })
     )
     .catch(error =>
@@ -35,7 +30,7 @@ router.get('/api/connections/:_id', mustBeAuthenticated, function(req, res) {
         return sendError(res, null, 'Connection not found')
       }
       return res.json({
-        connection: decipherConnection(connection)
+        connection: removePassword(connection)
       })
     })
     .catch(error =>
@@ -43,29 +38,18 @@ router.get('/api/connections/:_id', mustBeAuthenticated, function(req, res) {
     )
 })
 
-// create
 router.post('/api/connections', mustBeAdmin, function(req, res) {
-  const { body } = req
-
-  const connection = Object.assign({}, body, {
-    username: cipher(body.username || ''),
-    password: cipher(body.password || '')
-  })
-
   return connections
-    .save(connection)
+    .save(req.body)
     .then(newConnection =>
       res.json({
-        connection: decipherConnection(newConnection)
+        connection: removePassword(newConnection)
       })
     )
     .catch(error => sendError(res, error, 'Problem saving connection'))
 })
 
-// update
 router.put('/api/connections/:_id', mustBeAdmin, function(req, res) {
-  const { body } = req
-
   return connections
     .findOneById(req.params._id)
     .then(connection => {
@@ -73,15 +57,11 @@ router.put('/api/connections/:_id', mustBeAdmin, function(req, res) {
         return sendError(res, null, 'Connection not found')
       }
 
-      Object.assign(connection, body, {
-        // TODO move cipher/decipher to connection find/save
-        username: cipher(body.username || ''),
-        password: cipher(body.password || '')
-      })
+      Object.assign(connection, req.body)
 
       return connections.save(connection).then(connection =>
         res.json({
-          connection: decipherConnection(connection)
+          connection: removePassword(connection)
         })
       )
     })

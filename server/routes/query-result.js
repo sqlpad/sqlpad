@@ -2,7 +2,6 @@ const sanitize = require('sanitize-filename')
 const moment = require('moment')
 const router = require('express').Router()
 const { runQuery } = require('../drivers/index')
-const decipher = require('../lib/decipher.js')
 const connections = require('../models/connections.js')
 const Cache = require('../models/Cache.js')
 const Query = require('../models/Query.js')
@@ -61,8 +60,6 @@ function getQueryResult(data) {
         throw new Error('Please choose a connection')
       }
       connection.maxRows = Number(data.config.get('queryResultMaxRows'))
-      connection.username = decipher(connection.username)
-      connection.password = decipher(connection.password)
       data.connection = connection
       return Cache.findOneByCacheKey(data.cacheKey)
     })

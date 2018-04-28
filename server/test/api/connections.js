@@ -30,6 +30,7 @@ describe('api/connections', function() {
         assert(!body.error, 'no error')
         assert(body.connection._id, 'has _id')
         assert.equal(body.connection.driver, 'postgres')
+        assert.equal(body.connection.username, 'username')
         connection = body.connection
       })
   })
@@ -54,6 +55,8 @@ describe('api/connections', function() {
         assert(!body.error, 'no error')
         assert(body.connection._id, 'has _id')
         assert.equal(body.connection.name, 'test connection update')
+        assert.equal(body.connection.driver, 'postgres')
+        assert.equal(body.connection.username, 'username')
       })
   })
 
