@@ -59,7 +59,7 @@ describe('api/users', function() {
         email: 'user2@test.com',
         role: 'editor'
       },
-      500
+      403
     )
   })
 

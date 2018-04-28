@@ -85,7 +85,7 @@ describe('api/connections', function() {
         username: 'username',
         password: 'password'
       },
-      500
+      403
     )
   })
 

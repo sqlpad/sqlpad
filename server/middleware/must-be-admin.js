@@ -4,9 +4,8 @@ module.exports = [
   mustBeAuthenticated,
   function mustBeAdmin(req, res, next) {
     if (req.user.role === 'admin') {
-      next()
-    } else {
-      next(new Error('You must be an admin to do that'))
+      return next()
     }
+    return res.status(403).json({ error: 'Forbidden' })
   }
 ]
