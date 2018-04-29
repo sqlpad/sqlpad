@@ -3,7 +3,7 @@ import { MultiGrid } from 'react-virtualized'
 import Draggable from 'react-draggable'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
-import 'react-virtualized/styles.css' // only needs to be imported once
+import 'react-virtualized/styles.css'
 
 const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {
