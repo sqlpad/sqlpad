@@ -1,5 +1,5 @@
 import React from 'react'
-import { Column, Table } from 'react-virtualized'
+import { MultiGrid } from 'react-virtualized'
 import Draggable from 'react-draggable'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
@@ -53,8 +53,8 @@ class QueryResultDataTable extends React.PureComponent {
             valueLength = field.length
           }
           let columnWidthGuess = valueLength * 20
-          if (columnWidthGuess < 200) {
-            columnWidthGuess = 200
+          if (columnWidthGuess < 100) {
+            columnWidthGuess = 100
           } else if (columnWidthGuess > 350) {
             columnWidthGuess = 350
           }
@@ -75,43 +75,31 @@ class QueryResultDataTable extends React.PureComponent {
     window.removeEventListener('resize', this.handleResize)
   }
 
-  renderColumns() {
-    const { queryResult } = this.props
-    const { columnWidths } = this.state
-
-    return queryResult.fields.map(field => {
-      return (
-        <Column
-          headerRenderer={this.headerRenderer}
-          cellRenderer={this.cellRenderer}
-          key={field}
-          dataKey={field}
-          label={field}
-          width={columnWidths[field]}
-        />
-      )
-    })
-  }
-
-  headerRenderer = ({
-    columnData,
-    dataKey,
-    disableSort,
-    label,
-    sortBy,
-    sortDirection
+  headerCellRenderer = ({
+    columnIndex,
+    isScrolling,
+    isVisible,
+    key,
+    parent,
+    rowIndex,
+    style
   }) => {
+    const { queryResult } = this.props
+    const dataKey = queryResult.fields[columnIndex]
+
     return (
-      <React.Fragment key={dataKey}>
-        <div className="ReactVirtualized__Table__headerTruncatedText">
-          {label}
-        </div>
+      <div
+        className={'flex bb b--moon-gray justify-between ph2 fw7 bg-near-white'}
+        key={key}
+        style={Object.assign({}, style, { lineHeight: '30px' })}
+      >
+        <div>{dataKey}</div>
         <Draggable
           axis="x"
           defaultClassName="DragHandle"
           defaultClassNameDragging="DragHandleActive"
           onDrag={(event, { deltaX }) =>
-            this.resizeRow({
+            this.resizeColumn({
               dataKey,
               deltaX
             })
@@ -121,23 +109,24 @@ class QueryResultDataTable extends React.PureComponent {
         >
           <span className="DragHandleIcon">⋮</span>
         </Draggable>
-      </React.Fragment>
+      </div>
     )
   }
 
-  cellRenderer = ({
-    cellData,
-    columnData,
+  dataCellRenderer = ({
     columnIndex,
-    dataKey,
     isScrolling,
-    rowData,
-    rowIndex
+    isVisible,
+    key,
+    parent,
+    rowIndex,
+    style
   }) => {
     const { queryResult } = this.props
+    const dataKey = queryResult.fields[columnIndex]
     const fieldMeta = queryResult.meta[dataKey]
 
-    const value = rowData[dataKey]
+    const value = queryResult.rows[rowIndex - 1][dataKey]
     let barStyle
     let numberBar
     if (fieldMeta.datatype === 'number') {
@@ -159,30 +148,49 @@ class QueryResultDataTable extends React.PureComponent {
       }
       numberBar = <div style={barStyle} />
     }
+
+    const backgroundColor = rowIndex % 2 === 0 ? 'bg-near-white' : ''
     return (
-      <div className="relative" style={{ lineHeight: '30px' }}>
+      <div
+        className={'relative bb b--light-gray ph2 ' + backgroundColor}
+        key={key}
+        style={Object.assign({}, style, { lineHeight: '30px' })}
+      >
         {numberBar}
-        <div style={{ whiteSpace: 'nowrap' }}>
-          {renderValue(value, fieldMeta)}
-        </div>
+        <div className="truncate">{renderValue(value, fieldMeta)}</div>
       </div>
     )
   }
 
-  rowClassName = ({ index }) => {
-    return index % 2 === 0 ? 'bg-near-white' : ''
+  cellRenderer = params => {
+    if (params.rowIndex === 0) {
+      return this.headerCellRenderer(params)
+    }
+    return this.dataCellRenderer(params)
   }
 
-  resizeRow = ({ dataKey, deltaX }) => {
+  resizeColumn = ({ dataKey, deltaX }) => {
     this.setState(prevState => {
       const prevWidths = prevState.columnWidths
+      const newWidth = prevWidths[dataKey] + deltaX
       return {
         columnWidths: {
           ...prevWidths,
-          [dataKey]: prevWidths[dataKey] + deltaX
+          [dataKey]: newWidth > 100 ? newWidth : 100
         }
       }
     })
+    if (this.ref) {
+      this.ref.recomputeGridSize()
+    }
+  }
+
+  getColumnWidth = ({ index }) => {
+    const { columnWidths } = this.state
+    const { queryResult } = this.props
+    const dataKey = queryResult.fields[index]
+    const width = columnWidths[dataKey]
+    return width
   }
 
   render() {
@@ -212,19 +220,21 @@ class QueryResultDataTable extends React.PureComponent {
     }
 
     if (queryResult && queryResult.rows) {
+      // Add extra row to account for header row
+      const rowCount = queryResult.rows.length + 1
       return (
         <div id="result-grid" className="aspect-ratio--object">
-          <Table
+          <MultiGrid
             width={gridWidth}
             height={gridHeight}
-            headerHeight={30}
             rowHeight={30}
-            rowCount={queryResult.rows.length}
-            rowGetter={({ index }) => queryResult.rows[index]}
-            rowClassName={this.rowClassName}
-          >
-            {this.renderColumns()}
-          </Table>
+            ref={ref => (this.ref = ref)}
+            columnWidth={this.getColumnWidth}
+            columnCount={queryResult.fields.length}
+            rowCount={rowCount}
+            cellRenderer={this.cellRenderer}
+            fixedRowCount={1}
+          />
         </div>
       )
     }
