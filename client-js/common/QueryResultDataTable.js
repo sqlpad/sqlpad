@@ -19,6 +19,28 @@ const renderValue = (input, fieldMeta) => {
   }
 }
 
+const renderNumberBar = (value, fieldMeta) => {
+  if (fieldMeta.datatype === 'number') {
+    const valueNumber = Number(value)
+    const range = fieldMeta.max - (fieldMeta.min < 0 ? fieldMeta.min : 0)
+    let left = 0
+    if (fieldMeta.min < 0 && valueNumber < 0) {
+      left = Math.abs(fieldMeta.min - valueNumber) / range * 100 + '%'
+    } else if (fieldMeta.min < 0 && valueNumber >= 0) {
+      left = Math.abs(fieldMeta.min) / range * 100 + '%'
+    }
+    const barStyle = {
+      position: 'absolute',
+      left: left,
+      bottom: 0,
+      height: '2px',
+      width: Math.abs(valueNumber) / range * 100 + '%',
+      backgroundColor: '#555'
+    }
+    return <div style={barStyle} />
+  }
+}
+
 // NOTE: PureComponent's shallow compare works for this component
 // because the isRunning prop will toggle with each query execution
 // It would otherwise not rerender on change of prop.queryResult alone
@@ -75,15 +97,7 @@ class QueryResultDataTable extends React.PureComponent {
     window.removeEventListener('resize', this.handleResize)
   }
 
-  headerCellRenderer = ({
-    columnIndex,
-    isScrolling,
-    isVisible,
-    key,
-    parent,
-    rowIndex,
-    style
-  }) => {
+  headerCellRenderer = ({ columnIndex, key, style }) => {
     const { queryResult } = this.props
     const dataKey = queryResult.fields[columnIndex]
 
@@ -113,41 +127,13 @@ class QueryResultDataTable extends React.PureComponent {
     )
   }
 
-  dataCellRenderer = ({
-    columnIndex,
-    isScrolling,
-    isVisible,
-    key,
-    parent,
-    rowIndex,
-    style
-  }) => {
+  dataCellRenderer = ({ columnIndex, key, rowIndex, style }) => {
     const { queryResult } = this.props
     const dataKey = queryResult.fields[columnIndex]
     const fieldMeta = queryResult.meta[dataKey]
 
+    // Account for extra row that was used for header row
     const value = queryResult.rows[rowIndex - 1][dataKey]
-    let barStyle
-    let numberBar
-    if (fieldMeta.datatype === 'number') {
-      const valueNumber = Number(value)
-      const range = fieldMeta.max - (fieldMeta.min < 0 ? fieldMeta.min : 0)
-      let left = 0
-      if (fieldMeta.min < 0 && valueNumber < 0) {
-        left = Math.abs(fieldMeta.min - valueNumber) / range * 100 + '%'
-      } else if (fieldMeta.min < 0 && valueNumber >= 0) {
-        left = Math.abs(fieldMeta.min) / range * 100 + '%'
-      }
-      barStyle = {
-        position: 'absolute',
-        left: left,
-        bottom: 0,
-        height: '2px',
-        width: Math.abs(valueNumber) / range * 100 + '%',
-        backgroundColor: '#555'
-      }
-      numberBar = <div style={barStyle} />
-    }
 
     const backgroundColor = rowIndex % 2 === 0 ? 'bg-near-white' : ''
     return (
@@ -156,7 +142,7 @@ class QueryResultDataTable extends React.PureComponent {
         key={key}
         style={Object.assign({}, style, { lineHeight: '30px' })}
       >
-        {numberBar}
+        {renderNumberBar(value, fieldMeta)}
         <div className="truncate">{renderValue(value, fieldMeta)}</div>
       </div>
     )
