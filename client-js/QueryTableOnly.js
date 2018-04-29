@@ -84,8 +84,8 @@ class QueryEditor extends React.Component {
             ) : null}
           </div>
         </div>
-        <div style={{ height: '100%', display: 'flex' }}>
-          <div style={{ position: 'relative', width: '100%' }}>
+        <div className="flex h-100 ba b--moon-gray">
+          <div className="relative w-100">
             <QueryResultDataTable
               {...this.props}
               isRunning={this.state.isRunning}
