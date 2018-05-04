@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.5.7
+
+### May 4, 2018
+
+* Implement data grid using react-virtualized (fixes resizable columns)
+* Fix chart rendering error when columns no longer returned by query are referenced
+* Allow case insensitive user lookup by email (fixes case sensitive signup/signin issues)
+
 ## 2.5.6
 
 ### April 25, 2018
