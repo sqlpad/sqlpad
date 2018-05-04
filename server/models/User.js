@@ -83,7 +83,9 @@ User.prototype.comparePasswordToHash = function comparePasswordToHash(
 /*  Query methods
 ============================================================================== */
 User.findOneByEmail = email =>
-  db.users.findOne({ email }).then(doc => doc && new User(doc))
+  db.users
+    .findOne({ email: { $regex: new RegExp(email, 'i') } })
+    .then(doc => doc && new User(doc))
 
 User.findOneById = id =>
   db.users.findOne({ _id: id }).then(doc => doc && new User(doc))

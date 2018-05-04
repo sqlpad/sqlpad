@@ -20,7 +20,7 @@ router.post('/api/users', mustBeAdmin, function(req, res) {
         return sendError(res, null, 'User already exists')
       }
       const newUser = new User({
-        email: req.body.email,
+        email: req.body.email.toLowerCase(),
         role: req.body.role
       })
       return newUser.save().then(user => {

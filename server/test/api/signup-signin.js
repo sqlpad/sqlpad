@@ -35,6 +35,23 @@ describe('api/signup', function() {
       })
       .then(body => assert(body.error, 'Expect error needing whitelist'))
   })
+
+  it('supports case insensitive login', function() {
+    return utils
+      .post('admin', '/api/users', {
+        email: 'userCase@test.com',
+        role: 'editor'
+      })
+      .then(body => {
+        assert(!body.error, 'no error')
+        return utils.post(null, '/api/signup', {
+          password: 'password',
+          passwordConfirmation: 'password',
+          email: 'Usercase@test.com'
+        })
+      })
+      .then(body => assert(!body.error, 'Expect no error'))
+  })
 })
 
 describe('api/signin', function() {
