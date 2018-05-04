@@ -6,7 +6,7 @@ import Alert from 'react-s-alert'
 import 'd3'
 import { Chart } from 'taucharts'
 import exportTo from 'taucharts/build/development/plugins/tauCharts.export'
-import trendline from 'taucharts/build/development/plugins/tauCharts.trendline'
+import tcTrendline from 'taucharts/build/development/plugins/tauCharts.trendline'
 import tooltip from 'taucharts/build/development/plugins/tauCharts.tooltip'
 import legend from 'taucharts/build/development/plugins/tauCharts.legend'
 import quickFilter from 'taucharts/build/development/plugins/tauCharts.quick-filter'
@@ -32,6 +32,36 @@ class SqlpadTauChart extends React.Component {
     }
   }
 
+  hasUnmetFields = rerender => {
+    const { query } = this.props
+    const chartType = query.chartConfiguration.chartType
+    const selectedFields = query.chartConfiguration.fields
+
+    const unmetRequiredFields = []
+    const chartDefinition = chartDefinitions.find(
+      def => def.chartType === chartType
+    )
+
+    chartDefinition.fields.forEach(field => {
+      if (field.required && !selectedFields[field.fieldId]) {
+        unmetRequiredFields.push(field)
+      }
+    })
+
+    if (unmetRequiredFields.length) {
+      // if rerender is true, a render was explicitly requested by user clicking the vis button
+      // TODO - highlight fields that are required but not provided
+      if (rerender) {
+        Alert.error(
+          'Unmet required fields: ' +
+            unmetRequiredFields.map(f => f.label).join(', ')
+        )
+      }
+    }
+
+    return unmetRequiredFields.length ? true : false
+  }
+
   renderChart = rerender => {
     const { config, queryResult, query } = this.props
     // This is invoked during following:
@@ -52,10 +82,18 @@ class SqlpadTauChart extends React.Component {
     }
 
     // If there's no data just exit the chart render
-    if (!dataRows.length) return
+    if (!dataRows.length) {
+      return
+    }
 
     // if there's no chart definition exit the render
-    if (!chartDefinition) return
+    if (!chartDefinition) {
+      return
+    }
+
+    if (this.hasUnmetFields(rerender)) {
+      return
+    }
 
     const chartConfig = {
       type: chartDefinition.tauChartsType,
@@ -80,26 +118,6 @@ class SqlpadTauChart extends React.Component {
       }
     }
 
-    const unmetRequiredFields = []
-    const definitionFields = chartDefinition.fields.map(function(field) {
-      if (field.required && !selectedFields[field.fieldId]) {
-        unmetRequiredFields.push(field)
-      }
-      field.val = selectedFields[field.fieldId]
-      return field
-    })
-    if (unmetRequiredFields.length) {
-      // if rerender is true, a render was explicitly requested by user clicking the vis button
-      // TODO - highlight fields that are required but not provided
-      if (rerender) {
-        Alert.error(
-          'Unmet required fields: ' +
-            unmetRequiredFields.map(f => f.label).join(', ')
-        )
-      }
-      return
-    }
-
     // loop through data rows and convert types as needed
     dataRows = dataRows.map(row => {
       const newRow = {}
@@ -119,11 +137,11 @@ class SqlpadTauChart extends React.Component {
       // tauCharts auto detects numbers to be measures
       // Here we'll convert a number to a string,
       // to trick tauCharts into thinking its a dimension
-      const forceDimensionFields = definitionFields.filter(
+      const forceDimensionFields = chartDefinition.fields.filter(
         field => field.forceDimension === true
       )
-      forceDimensionFields.forEach(function(fieldDefinition) {
-        const col = fieldDefinition.val
+      forceDimensionFields.forEach(fieldDefinition => {
+        const col = selectedFields[fieldDefinition.fieldId]
         const colDatatype = meta[col] ? meta[col].datatype : null
         if (col && colDatatype === 'number' && newRow[col]) {
           newRow[col] = newRow[col].toString()
@@ -132,116 +150,141 @@ class SqlpadTauChart extends React.Component {
       return newRow
     })
 
-    const definitionFieldsById = definitionFields.reduce((agg, field) => {
-      agg[field.fieldId] = field
-      return agg
+    // Some chartConfiguration.fields may reference columns that no longer exist
+    // TODO after this is cleaned up, then unmet fields needs to be checked
+    const cleanedChartConfigurationFields = Object.keys(
+      query.chartConfiguration.fields
+    ).reduce((fieldsMap, field) => {
+      const col = query.chartConfiguration.fields[field]
+      if (meta[col]) {
+        fieldsMap[field] = col
+      }
+      return fieldsMap
     }, {})
+
+    const {
+      x,
+      xFacet,
+      y,
+      yFacet,
+      filter,
+      trendline,
+      split,
+      size,
+      yMin,
+      yMax,
+      barvalue,
+      valueFacet,
+      barlabel,
+      labelFacet,
+      color
+    } = cleanedChartConfigurationFields
 
     switch (chartType) {
       case 'line':
-        chartConfig.x = [definitionFieldsById.x.val]
-        if (definitionFieldsById.xFacet.val) {
-          chartConfig.x.unshift(definitionFieldsById.xFacet.val)
+        chartConfig.x = [x]
+        if (xFacet) {
+          chartConfig.x.unshift(xFacet)
         }
-        chartConfig.y = [definitionFieldsById.y.val]
-        if (definitionFieldsById.yFacet.val) {
-          chartConfig.y.unshift(definitionFieldsById.yFacet.val)
+        chartConfig.y = [y]
+        if (yFacet) {
+          chartConfig.y.unshift(yFacet)
         }
-        if (definitionFieldsById.filter.val) {
+        if (filter) {
           chartConfig.plugins.push(quickFilter())
         }
-        if (definitionFieldsById.trendline.val) {
+        if (trendline) {
           chartConfig.plugins.push(trendline())
         }
-        if (definitionFieldsById.split.val) {
-          chartConfig.color = definitionFieldsById.split.val
+        if (split) {
+          chartConfig.color = split
         }
-        if (definitionFieldsById.size.val) {
-          chartConfig.size = definitionFieldsById.size.val
+        if (size) {
+          chartConfig.size = size
         }
-        if (definitionFieldsById.yMin.val || definitionFieldsById.yMax.val) {
+        if (yMin || yMax) {
           chartConfig.guide = {
             y: { autoScale: false }
           }
-          if (definitionFieldsById.yMin.val) {
-            chartConfig.guide.y.min = Number(definitionFieldsById.yMin.val)
+          if (yMin) {
+            chartConfig.guide.y.min = Number(yMin)
           }
-          if (definitionFieldsById.yMax.val) {
-            chartConfig.guide.y.max = Number(definitionFieldsById.yMax.val)
+          if (yMax) {
+            chartConfig.guide.y.max = Number(yMax)
           }
         }
         break
 
       case 'bar':
-        chartConfig.x = [definitionFieldsById.barvalue.val]
-        if (definitionFieldsById.valueFacet.val) {
-          chartConfig.x.unshift(definitionFieldsById.valueFacet.val)
+        chartConfig.x = [barvalue]
+        if (valueFacet) {
+          chartConfig.x.unshift(valueFacet)
         }
-        chartConfig.y = [definitionFieldsById.barlabel.val]
-        if (definitionFieldsById.labelFacet.val) {
-          chartConfig.y.unshift(definitionFieldsById.labelFacet.val)
+        chartConfig.y = [barlabel]
+        if (labelFacet) {
+          chartConfig.y.unshift(labelFacet)
         }
         break
 
       case 'verticalbar':
-        chartConfig.y = [definitionFieldsById.barvalue.val]
-        if (definitionFieldsById.valueFacet.val) {
-          chartConfig.y.unshift(definitionFieldsById.valueFacet.val)
+        chartConfig.y = [barvalue]
+        if (valueFacet) {
+          chartConfig.y.unshift(valueFacet)
         }
-        chartConfig.x = [definitionFieldsById.barlabel.val]
-        if (definitionFieldsById.labelFacet.val) {
-          chartConfig.x.unshift(definitionFieldsById.labelFacet.val)
+        chartConfig.x = [barlabel]
+        if (labelFacet) {
+          chartConfig.x.unshift(labelFacet)
         }
         break
 
       case 'stacked-bar-horizontal':
-        chartConfig.x = [definitionFieldsById.barvalue.val]
-        if (definitionFieldsById.valueFacet.val) {
-          chartConfig.x.unshift(definitionFieldsById.valueFacet.val)
+        chartConfig.x = [barvalue]
+        if (valueFacet) {
+          chartConfig.x.unshift(valueFacet)
         }
-        chartConfig.y = [definitionFieldsById.barlabel.val]
-        if (definitionFieldsById.labelFacet.val) {
-          chartConfig.y.unshift(definitionFieldsById.labelFacet.val)
+        chartConfig.y = [barlabel]
+        if (labelFacet) {
+          chartConfig.y.unshift(labelFacet)
         }
-        if (definitionFieldsById.color.val) {
-          chartConfig.color = definitionFieldsById.color.val
+        if (color) {
+          chartConfig.color = color
         }
         break
 
       case 'stacked-bar-vertical':
-        chartConfig.y = [definitionFieldsById.barvalue.val]
-        if (definitionFieldsById.valueFacet.val) {
-          chartConfig.y.unshift(definitionFieldsById.valueFacet.val)
+        chartConfig.y = [barvalue]
+        if (valueFacet) {
+          chartConfig.y.unshift(valueFacet)
         }
-        chartConfig.x = [definitionFieldsById.barlabel.val]
-        if (definitionFieldsById.labelFacet.val) {
-          chartConfig.x.unshift(definitionFieldsById.labelFacet.val)
+        chartConfig.x = [barlabel]
+        if (labelFacet) {
+          chartConfig.x.unshift(labelFacet)
         }
-        if (definitionFieldsById.color.val) {
-          chartConfig.color = definitionFieldsById.color.val
+        if (color) {
+          chartConfig.color = color
         }
         break
 
       case 'bubble':
-        chartConfig.x = [definitionFieldsById.x.val]
-        if (definitionFieldsById.xFacet.val) {
-          chartConfig.x.unshift(definitionFieldsById.xFacet.val)
+        chartConfig.x = [x]
+        if (xFacet) {
+          chartConfig.x.unshift(xFacet)
         }
-        chartConfig.y = [definitionFieldsById.y.val]
-        if (definitionFieldsById.yFacet.val) {
-          chartConfig.y.unshift(definitionFieldsById.yFacet.val)
+        chartConfig.y = [y]
+        if (yFacet) {
+          chartConfig.y.unshift(yFacet)
         }
-        if (definitionFieldsById.filter.val) {
+        if (filter) {
           chartConfig.plugins.push(quickFilter())
         }
-        if (definitionFieldsById.trendline.val) {
-          chartConfig.plugins.push(trendline())
+        if (trendline) {
+          chartConfig.plugins.push(tcTrendline())
         }
-        if (definitionFieldsById.size.val) {
-          chartConfig.size = definitionFieldsById.size.val
+        if (size) {
+          chartConfig.size = size
         }
-        if (definitionFieldsById.color.val) {
-          chartConfig.color = definitionFieldsById.color.val
+        if (color) {
+          chartConfig.color = color
         }
         break
 
