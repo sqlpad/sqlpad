@@ -32,34 +32,22 @@ class SqlpadTauChart extends React.Component {
     }
   }
 
-  hasUnmetFields = rerender => {
-    const { query } = this.props
-    const chartType = query.chartConfiguration.chartType
-    const selectedFields = query.chartConfiguration.fields
-
-    const unmetRequiredFields = []
+  getUnmetFields = (chartType, selectedFieldMap) => {
     const chartDefinition = chartDefinitions.find(
       def => def.chartType === chartType
     )
+    if (!chartDefinition) {
+      throw new Error(`Unknown chartType ${chartType}`)
+    }
+    const unmetRequiredFields = []
 
     chartDefinition.fields.forEach(field => {
-      if (field.required && !selectedFields[field.fieldId]) {
+      if (field.required && !selectedFieldMap[field.fieldId]) {
         unmetRequiredFields.push(field)
       }
     })
 
-    if (unmetRequiredFields.length) {
-      // if rerender is true, a render was explicitly requested by user clicking the vis button
-      // TODO - highlight fields that are required but not provided
-      if (rerender) {
-        Alert.error(
-          'Unmet required fields: ' +
-            unmetRequiredFields.map(f => f.label).join(', ')
-        )
-      }
-    }
-
-    return unmetRequiredFields.length ? true : false
+    return unmetRequiredFields
   }
 
   renderChart = rerender => {
@@ -88,10 +76,6 @@ class SqlpadTauChart extends React.Component {
 
     // if there's no chart definition exit the render
     if (!chartDefinition) {
-      return
-    }
-
-    if (this.hasUnmetFields(rerender)) {
       return
     }
 
@@ -151,16 +135,41 @@ class SqlpadTauChart extends React.Component {
     })
 
     // Some chartConfiguration.fields may reference columns that no longer exist
-    // TODO after this is cleaned up, then unmet fields needs to be checked
+    // Remove them from a copy of chartConfigurationFields
+    // Unless they aren't column mapping fields (like trendline, quickfilter)
     const cleanedChartConfigurationFields = Object.keys(
       query.chartConfiguration.fields
     ).reduce((fieldsMap, field) => {
-      const col = query.chartConfiguration.fields[field]
-      if (meta[col]) {
-        fieldsMap[field] = col
+      const fieldDefinition = chartDefinition.fields.find(
+        f => f.fieldId === field
+      )
+      const value = query.chartConfiguration.fields[field]
+
+      if (fieldDefinition && fieldDefinition.inputType !== 'field-dropdown') {
+        fieldsMap[field] = value
+      } else if (meta[value]) {
+        fieldsMap[field] = value
       }
       return fieldsMap
     }, {})
+
+    // Now that non-existing columns are removed from the configuration fields
+    // Validate that the chart required fields are provided
+    const unmetFields = this.getUnmetFields(
+      chartType,
+      cleanedChartConfigurationFields
+    )
+
+    if (unmetFields.length) {
+      // if rerender is true, a render was explicitly requested by user clicking the vis button
+      // TODO - highlight fields that are required but not provided or clear values no longer relevant
+      if (rerender) {
+        Alert.error(
+          'Unmet required fields: ' + unmetFields.map(f => f.label).join(', ')
+        )
+      }
+      return
+    }
 
     const {
       x,
@@ -194,7 +203,7 @@ class SqlpadTauChart extends React.Component {
           chartConfig.plugins.push(quickFilter())
         }
         if (trendline) {
-          chartConfig.plugins.push(trendline())
+          chartConfig.plugins.push(tcTrendline())
         }
         if (split) {
           chartConfig.color = split
