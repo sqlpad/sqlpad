@@ -50,6 +50,7 @@
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
+    "cassandra-driver": "^3.5.0",
     "detect-port": "^1.2.2",
     "errorhandler": "^1.4.0",
     "express": "^4.16.3",
