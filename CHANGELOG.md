@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.6.0
+
+### May 5, 2018
+
+* Add Cassandra support
+* Sort driver dropdown in connection form
+
 ## 2.5.8
 
 ### May 5, 2018
