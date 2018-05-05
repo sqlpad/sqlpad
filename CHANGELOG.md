@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.8
+
+### May 5, 2018
+
+* Extend data grid to full width of container
+
 ## 2.5.7
 
 ### May 4, 2018
