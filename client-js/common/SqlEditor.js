@@ -32,6 +32,15 @@ class SqlEditor extends React.Component {
     }
   }
 
+  handleSelection = selection => {
+    const { onSelectionChange } = this.props
+    const { editor } = this
+    if (editor && editor.session) {
+      const selectedText = editor.session.getTextRange(selection.getRange())
+      onSelectionChange(selectedText)
+    }
+  }
+
   render() {
     const { config, onChange, readOnly, value, height } = this.props
 
@@ -49,6 +58,7 @@ class SqlEditor extends React.Component {
         mode="sql"
         name="query-ace-editor"
         onChange={onChange || noop}
+        onSelectionChange={this.handleSelection}
         showGutter={false}
         showPrintMargin={false}
         theme="sqlserver"
@@ -67,12 +77,14 @@ SqlEditor.propTypes = {
   config: PropTypes.object.isRequired,
   height: PropTypes.string,
   onChange: PropTypes.func,
+  onSelectionChange: PropTypes.func,
   readOnly: PropTypes.bool,
   value: PropTypes.string
 }
 
 SqlEditor.defaultProps = {
   height: '100%',
+  onSelectionChange: () => {},
   readOnly: false,
   value: ''
 }
