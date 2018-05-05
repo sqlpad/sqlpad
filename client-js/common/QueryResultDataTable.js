@@ -101,49 +101,79 @@ class QueryResultDataTable extends React.PureComponent {
     const { queryResult } = this.props
     const dataKey = queryResult.fields[columnIndex]
 
+    // If dataKey is present this is an actual header to render
+    if (dataKey) {
+      return (
+        <div
+          className={
+            'flex bb b--moon-gray justify-between ph2 fw7 bg-near-white'
+          }
+          key={key}
+          style={Object.assign({}, style, { lineHeight: '30px' })}
+        >
+          <div>{dataKey}</div>
+          <Draggable
+            axis="x"
+            defaultClassName="DragHandle"
+            defaultClassNameDragging="DragHandleActive"
+            onDrag={(event, { deltaX }) =>
+              this.resizeColumn({
+                dataKey,
+                deltaX
+              })
+            }
+            position={{ x: 0 }}
+            zIndex={999}
+          >
+            <span className="DragHandleIcon">⋮</span>
+          </Draggable>
+        </div>
+      )
+    }
+
+    // If this is a dummy header cell render an empty header cell
     return (
       <div
         className={'flex bb b--moon-gray justify-between ph2 fw7 bg-near-white'}
         key={key}
         style={Object.assign({}, style, { lineHeight: '30px' })}
-      >
-        <div>{dataKey}</div>
-        <Draggable
-          axis="x"
-          defaultClassName="DragHandle"
-          defaultClassNameDragging="DragHandleActive"
-          onDrag={(event, { deltaX }) =>
-            this.resizeColumn({
-              dataKey,
-              deltaX
-            })
-          }
-          position={{ x: 0 }}
-          zIndex={999}
-        >
-          <span className="DragHandleIcon">⋮</span>
-        </Draggable>
-      </div>
+      />
     )
   }
 
   dataCellRenderer = ({ columnIndex, key, rowIndex, style }) => {
     const { queryResult } = this.props
     const dataKey = queryResult.fields[columnIndex]
-    const fieldMeta = queryResult.meta[dataKey]
-
-    // Account for extra row that was used for header row
-    const value = queryResult.rows[rowIndex - 1][dataKey]
-
     const backgroundColor = rowIndex % 2 === 0 ? 'bg-near-white' : ''
+
+    // If dataKey is present this is a real data cell to render
+    if (dataKey) {
+      const fieldMeta = queryResult.meta[dataKey]
+
+      // Account for extra row that was used for header row
+      const value = queryResult.rows[rowIndex - 1][dataKey]
+
+      return (
+        <div
+          className={'relative bb b--light-gray ph2 ' + backgroundColor}
+          key={key}
+          style={Object.assign({}, style, { lineHeight: '30px' })}
+        >
+          {renderNumberBar(value, fieldMeta)}
+          <div className="truncate">{renderValue(value, fieldMeta)}</div>
+        </div>
+      )
+    }
+
+    // If no dataKey this is a dummy cell.
+    // It should render nothing, but match the row's style
     return (
       <div
         className={'relative bb b--light-gray ph2 ' + backgroundColor}
         key={key}
         style={Object.assign({}, style, { lineHeight: '30px' })}
       >
-        {renderNumberBar(value, fieldMeta)}
-        <div className="truncate">{renderValue(value, fieldMeta)}</div>
+        <div className="truncate" />
       </div>
     )
   }
@@ -171,12 +201,27 @@ class QueryResultDataTable extends React.PureComponent {
     }
   }
 
+  // NOTE
+  // An empty dummy column is added to the grid for visual purposes
+  // If dataKey was found this is a real column of data from the query result
+  // If not, it's the dummy column at the end, and it should fill the rest of the grid width
   getColumnWidth = ({ index }) => {
     const { columnWidths } = this.state
     const { queryResult } = this.props
     const dataKey = queryResult.fields[index]
-    const width = columnWidths[dataKey]
-    return width
+    const { gridWidth } = this.state
+
+    if (dataKey) {
+      const width = columnWidths[dataKey]
+      return width
+    }
+
+    const totalWidthFilled = queryResult.fields
+      .map(key => columnWidths[key])
+      .reduce((prev, curr) => prev + curr, 0)
+
+    const fakeColumnWidth = gridWidth - totalWidthFilled
+    return fakeColumnWidth < 10 ? 10 : fakeColumnWidth
   }
 
   render() {
@@ -208,6 +253,8 @@ class QueryResultDataTable extends React.PureComponent {
     if (queryResult && queryResult.rows) {
       // Add extra row to account for header row
       const rowCount = queryResult.rows.length + 1
+      // Add extra column to fill remaining grid width if necessary
+      const columnCount = queryResult.fields.length + 1
       return (
         <div id="result-grid" className="aspect-ratio--object">
           <MultiGrid
@@ -216,7 +263,7 @@ class QueryResultDataTable extends React.PureComponent {
             rowHeight={30}
             ref={ref => (this.ref = ref)}
             columnWidth={this.getColumnWidth}
-            columnCount={queryResult.fields.length}
+            columnCount={columnCount}
             rowCount={rowCount}
             cellRenderer={this.cellRenderer}
             fixedRowCount={1}
