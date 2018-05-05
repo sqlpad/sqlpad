@@ -120,7 +120,7 @@ class ConnectionForm extends React.Component {
         </option>
       )
     } else {
-      drivers.forEach(driver =>
+      drivers.sort((a, b) => a.name > b.name).forEach(driver =>
         driverSelectOptions.push(
           <option key={driver.id} value={driver.id}>
             {driver.name}
