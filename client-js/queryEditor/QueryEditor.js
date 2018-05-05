@@ -41,7 +41,8 @@ class QueryEditor extends React.Component {
     queryResult: undefined,
     runQueryStartTime: undefined,
     showModal: false,
-    showValidation: false
+    showValidation: false,
+    selectedText: ''
   }
 
   sqlpadTauChart = undefined
@@ -95,10 +96,7 @@ class QueryEditor extends React.Component {
   }
 
   runQuery = () => {
-    const { cacheKey, query } = this.state
-    const selectedText = this.editor.session.getTextRange(
-      this.editor.getSelectionRange()
-    )
+    const { cacheKey, query, selectedText } = this.state
     this.setState({
       isRunning: true,
       runQueryStartTime: new Date()
@@ -211,6 +209,10 @@ class QueryEditor extends React.Component {
 
   handleQueryTextChange = queryText =>
     this.setQueryState('queryText', queryText)
+
+  handleQuerySelectionChange = selectedText => {
+    this.setState({ selectedText })
+  }
 
   handleSaveImageClick = e => {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
@@ -388,6 +390,7 @@ class QueryEditor extends React.Component {
                   ref={ref => {
                     this.editor = ref ? ref.editor : null
                   }}
+                  onSelectionChange={this.handleQuerySelectionChange}
                 />
                 <div>
                   <QueryResultHeader
