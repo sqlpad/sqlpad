@@ -79,6 +79,7 @@ requireValidate('../drivers/postgres')
 requireValidate('../drivers/presto')
 requireValidate('../drivers/sqlserver')
 requireValidate('../drivers/vertica')
+requireValidate('../drivers/cassandra')
 
 /**
  * Run query using driver implementation of connection

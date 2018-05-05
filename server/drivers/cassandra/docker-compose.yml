@@ -1,0 +1,11 @@
+version: '3'
+services:
+  cassandra:
+    image: scylladb/scylla:latest
+    ports:
+      - "7000:7000"
+      - "7001:7001" 
+      - "9042:9042"
+      - "9160:9160"
+      - "10000:10000"
+    
