@@ -1,7 +1,7 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 
 class SignUp extends React.Component {
   state = {
@@ -30,7 +30,7 @@ class SignUp extends React.Component {
   signUp = e => {
     e.preventDefault()
     fetchJson('POST', '/api/signup', this.state).then(json => {
-      if (json.error) return Alert.error(json.error)
+      if (json.error) return message.error(json.error)
       this.setState({ redirect: true })
     })
   }

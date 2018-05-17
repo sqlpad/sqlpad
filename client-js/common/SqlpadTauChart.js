@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import chartDefinitions from '../utilities/chartDefinitions.js'
 import SpinKitCube from './SpinKitCube.js'
-import Alert from 'react-s-alert'
 import 'd3'
 import { Chart } from 'taucharts'
 import exportTo from 'taucharts/build/development/plugins/tauCharts.export'
@@ -10,6 +9,7 @@ import tcTrendline from 'taucharts/build/development/plugins/tauCharts.trendline
 import tooltip from 'taucharts/build/development/plugins/tauCharts.tooltip'
 import legend from 'taucharts/build/development/plugins/tauCharts.legend'
 import quickFilter from 'taucharts/build/development/plugins/tauCharts.quick-filter'
+import message from 'antd/lib/message'
 
 class SqlpadTauChart extends React.Component {
   displayName = 'SqlpadTauChart'
@@ -164,7 +164,7 @@ class SqlpadTauChart extends React.Component {
       // if rerender is true, a render was explicitly requested by user clicking the vis button
       // TODO - highlight fields that are required but not provided or clear values no longer relevant
       if (rerender) {
-        Alert.error(
+        message.error(
           'Unmet required fields: ' + unmetFields.map(f => f.label).join(', ')
         )
       }

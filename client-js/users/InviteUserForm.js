@@ -1,6 +1,6 @@
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 import Form from 'react-bootstrap/lib/Form'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
@@ -38,9 +38,9 @@ class InviteUserForm extends React.Component {
         isInviting: false
       })
       if (json.error) {
-        return Alert.error('Whitelist failed: ' + json.error.toString())
+        return message.error('Whitelist failed: ' + json.error.toString())
       }
-      Alert.success('User Whitelisted')
+      message.success('User Whitelisted')
       this.setState({
         email: null,
         role: null

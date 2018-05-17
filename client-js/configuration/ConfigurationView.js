@@ -1,5 +1,5 @@
 import React from 'react'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 import Col from 'react-bootstrap/lib/Col'
 import Form from 'react-bootstrap/lib/Form'
 import AutoAffix from 'react-overlays/lib/AutoAffix'
@@ -16,7 +16,7 @@ class ConfigurationView extends React.Component {
 
   loadConfigValuesFromServer = () => {
     fetchJson('GET', '/api/config-items').then(json => {
-      if (json.error) Alert.error(json.error)
+      if (json.error) message.error(json.error)
       this.setState({ configItems: json.configItems })
     })
   }
@@ -26,9 +26,9 @@ class ConfigurationView extends React.Component {
       value: value
     }).then(json => {
       if (json.error) {
-        Alert.error('Save failed')
+        message.error('Save failed')
       } else {
-        Alert.success('Value saved')
+        message.success('Value saved')
         this.loadConfigValuesFromServer()
       }
     })

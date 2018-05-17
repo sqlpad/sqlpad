@@ -1,6 +1,6 @@
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 import ConnectionForm from './ConnectionForm'
 import SimpleTable from '../common/SimpleTable'
 import SimpleTh from '../common/SimpleTableTh'
@@ -34,9 +34,9 @@ class ConnectionsView extends React.Component {
     const { selectedConnection } = this.state
     fetchJson('DELETE', '/api/connections/' + connection._id).then(json => {
       if (json.error) {
-        return Alert.error('Delete failed')
+        return message.error('Delete failed')
       }
-      Alert.success('Connection deleted')
+      message.success('Connection deleted')
       if (selectedConnection && connection._id === selectedConnection._id) {
         this.setState({ selectedConnection: null })
       }
@@ -62,7 +62,7 @@ class ConnectionsView extends React.Component {
   loadConnectionsFromServer = () => {
     fetchJson('GET', '/api/connections').then(json => {
       if (json.error) {
-        Alert.error(json.error)
+        message.error(json.error)
       }
       this.setState({ connections: json.connections })
     })
@@ -74,9 +74,9 @@ class ConnectionsView extends React.Component {
     fetchJson('POST', '/api/test-connection', selectedConnection).then(json => {
       this.setState({ isTesting: false })
       if (json.error) {
-        return Alert.error('Test Failed')
+        return message.error('Test Failed')
       }
-      return Alert.success('Test successful')
+      return message.success('Test successful')
     })
   }
 
@@ -91,9 +91,9 @@ class ConnectionsView extends React.Component {
       ).then(json => {
         this.setState({ isSaving: false })
         if (json.error) {
-          return Alert.error('Save failed')
+          return message.error('Save failed')
         }
-        Alert.success('Connection saved')
+        message.success('Connection saved')
         this.setState({ selectedConnection: {}, showModal: false })
         this.loadConnectionsFromServer()
       })
@@ -104,9 +104,9 @@ class ConnectionsView extends React.Component {
           selectedConnection: json.connection || selectedConnection
         })
         if (json.error) {
-          return Alert.error('Save failed')
+          return message.error('Save failed')
         }
-        Alert.success('Connection saved')
+        message.success('Connection saved')
         this.setState({ selectedConnection: {}, showModal: false })
         this.loadConnectionsFromServer()
       })

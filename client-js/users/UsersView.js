@@ -1,7 +1,7 @@
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 import InviteUserForm from './InviteUserForm'
 import SimpleTable from '../common/SimpleTable'
 import SimpleTh from '../common/SimpleTableTh'
@@ -24,16 +24,16 @@ class UsersView extends React.Component {
   handleDelete = user => {
     fetchJson('DELETE', '/api/users/' + user._id).then(json => {
       if (json.error) {
-        return Alert.error('Delete Failed: ' + json.error.toString())
+        return message.error('Delete Failed: ' + json.error.toString())
       }
-      Alert.success('User Deleted')
+      message.success('User Deleted')
       this.loadUsersFromServer()
     })
   }
 
   loadUsersFromServer = () => {
     fetchJson('GET', '/api/users').then(json => {
-      if (json.error) Alert.error(json.error)
+      if (json.error) message.error(json.error)
       this.setState({ users: json.users })
     })
   }
@@ -46,9 +46,9 @@ class UsersView extends React.Component {
       this.loadUsersFromServer()
       this.setState({ isSaving: false })
       if (json.error) {
-        return Alert.error('Update failed: ' + json.error.toString())
+        return message.error('Update failed: ' + json.error.toString())
       }
-      Alert.success('User Updated')
+      message.success('User Updated')
     })
   }
 
@@ -61,9 +61,9 @@ class UsersView extends React.Component {
       this.loadUsersFromServer()
       this.setState({ isSaving: false })
       if (json.error) {
-        return Alert.error('Update failed: ' + json.error.toString())
+        return message.error('Update failed: ' + json.error.toString())
       }
-      Alert.success('Password link generated')
+      message.success('Password link generated')
     })
   }
 
@@ -75,9 +75,9 @@ class UsersView extends React.Component {
       this.loadUsersFromServer()
       this.setState({ isSaving: false })
       if (json.error) {
-        return Alert.error('Update failed: ' + json.error.toString())
+        return message.error('Update failed: ' + json.error.toString())
       }
-      Alert.success('Password reset link removed')
+      message.success('Password reset link removed')
     })
   }
 

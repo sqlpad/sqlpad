@@ -1,7 +1,7 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 
 class PasswordReset extends React.Component {
   state = {
@@ -32,7 +32,7 @@ class PasswordReset extends React.Component {
       this.state
     ).then(json => {
       if (json.error) {
-        return Alert.error(json.error)
+        return message.error(json.error)
       }
       this.setState({ redirect: true })
     })

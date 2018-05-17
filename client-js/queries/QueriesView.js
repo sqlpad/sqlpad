@@ -1,5 +1,5 @@
 import React from 'react'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 import uniq from 'lodash.uniq'
 import sortBy from 'lodash.sortby'
 import fetchJson from '../utilities/fetch-json.js'
@@ -39,7 +39,7 @@ class QueriesView extends React.Component {
       selectedQuery: selectedQuery
     })
     fetchJson('DELETE', '/api/queries/' + queryId).then(json => {
-      if (json.error) Alert.error(json.error)
+      if (json.error) message.error(json.error)
     })
   }
 

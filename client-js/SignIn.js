@@ -1,6 +1,6 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 import { Link } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
 import GooglePlusIcon from 'react-icons/lib/fa/google-plus'
@@ -27,7 +27,7 @@ class SignIn extends React.Component {
   signIn = e => {
     e.preventDefault()
     fetchJson('POST', '/api/signin', this.state).then(json => {
-      if (json.error) return Alert.error('Username or password incorrect')
+      if (json.error) return message.error('Username or password incorrect')
       this.setState({ redirect: true })
     })
   }

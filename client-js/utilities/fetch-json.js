@@ -1,5 +1,5 @@
 import 'whatwg-fetch'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 
 export default function fetchJson(method, url, body) {
   const BASE_URL = window.BASE_URL || ''
@@ -37,7 +37,7 @@ export default function fetchJson(method, url, body) {
       }
     })
     .catch(error => {
-      Alert.error(error.toString())
+      message.error(error.toString())
       return {
         error: 'Server responded not ok'
       }
