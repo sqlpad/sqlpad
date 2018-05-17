@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Creatable } from 'react-select'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Button from 'react-bootstrap/lib/Button'
@@ -8,14 +7,10 @@ import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import Modal from 'react-bootstrap/lib/Modal'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import EditableTagGroup from '../common/EditableTagGroup'
 
 class QueryDetailsModal extends React.Component {
   input = undefined
-
-  onSubmit = e => {
-    e.preventDefault()
-    this.close()
-  }
 
   onQueryNameChange = e => {
     this.props.onQueryNameChange(e.target.value)
@@ -81,19 +76,14 @@ class QueryDetailsModal extends React.Component {
       >
         <Modal.Header closeButton />
         <Modal.Body>
-          <form onSubmit={this.onSubmit}>
-            <FormGroup>
-              <ControlLabel>Query Tags</ControlLabel>
-              <Creatable
-                multi
-                name="query-tags-field"
-                onChange={onQueryTagsChange}
-                options={tagOptions}
-                placeholder=""
-                value={query.tags}
-              />
-            </FormGroup>
-          </form>
+          <FormGroup>
+            <ControlLabel>Query Tags</ControlLabel>
+            <EditableTagGroup
+              tags={query.tags}
+              onChange={onQueryTagsChange}
+              tagOptions={tagOptions}
+            />
+          </FormGroup>
           <hr />
           <p>
             <strong>Shortcuts</strong>

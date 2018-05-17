@@ -49,12 +49,12 @@ class QueryEditor extends React.Component {
 
   getTagOptions() {
     const { availableTags, query } = this.state
-    const tagOptions = availableTags.map(t => {
-      return { value: t, label: t }
-    })
+    const tagOptions = availableTags.slice()
     if (query && query.tags) {
       query.tags.forEach(t => {
-        tagOptions.push({ value: t, label: t })
+        if (tagOptions.indexOf(t) === -1) {
+          tagOptions.push(t)
+        }
       })
     }
     return tagOptions
@@ -204,8 +204,7 @@ class QueryEditor extends React.Component {
 
   handleMoreClick = () => this.setState({ showModal: true })
 
-  handleQueryTagsChange = values =>
-    this.setQueryState('tags', values.map(v => v.value))
+  handleQueryTagsChange = values => this.setQueryState('tags', values)
 
   handleQueryTextChange = queryText =>
     this.setQueryState('queryText', queryText)
