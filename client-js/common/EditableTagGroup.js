@@ -21,25 +21,33 @@ class EditableTagGroup extends React.Component {
   }
 
   showInput = () => {
-    this.setState({ inputVisible: true }, () => this.input.focus())
+    this.setState({ inputValue: '', inputVisible: true }, () =>
+      this.input.focus()
+    )
   }
 
   handleInputChange = value => {
     this.setState({ inputValue: value })
   }
 
-  handleInputConfirm = () => {
-    const { inputValue } = this.state
+  handleInputBlur = () => {
+    this.setState({
+      inputValue: '',
+      inputVisible: false
+    })
+  }
+
+  handleInputSelect = value => {
     let { tags, onChange } = this.props
 
-    if (inputValue && tags.indexOf(inputValue) === -1) {
-      tags = [...tags, inputValue]
+    if (value && tags.indexOf(value) === -1) {
+      tags = [...tags, value]
     }
 
     this.setState(
       {
-        inputVisible: false,
-        inputValue: ''
+        inputValue: '',
+        inputVisible: false
       },
       () => {
         onChange(tags)
@@ -84,8 +92,8 @@ class EditableTagGroup extends React.Component {
             size="small"
             value={inputValue}
             onChange={this.handleInputChange}
-            onBlur={this.handleInputConfirm}
-            onSelect={this.handleInputConfirm}
+            onSelect={this.handleInputSelect}
+            onBlur={this.handleInputBlur}
           />
         )}
         {!inputVisible && (
