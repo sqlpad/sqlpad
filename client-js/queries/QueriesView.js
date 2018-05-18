@@ -5,7 +5,7 @@ import Divider from 'antd/lib/divider'
 import uniq from 'lodash.uniq'
 import sortBy from 'lodash.sortby'
 import fetchJson from '../utilities/fetch-json.js'
-import QueryListSidebar from './QueryListSidebar'
+import QueriesFilters from './QueriesFilters'
 import { Link } from 'react-router-dom'
 import chartDefinitions from '../utilities/chartDefinitions'
 import SqlEditor from '../common/SqlEditor'
@@ -285,7 +285,7 @@ class QueriesView extends React.Component {
 
     return (
       <div className="v-100 w-100 flex flex-column">
-        <QueryListSidebar
+        <QueriesFilters
           currentUser={currentUser}
           connections={connections}
           onConnectionChange={this.onConnectionChange}

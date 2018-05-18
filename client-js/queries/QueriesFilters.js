@@ -4,7 +4,7 @@ import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
-class QueryListSidebar extends React.Component {
+class QueriesFilters extends React.Component {
   onSearchChange = e => {
     this.props.onSearchChange(e.target.value)
   }
@@ -99,4 +99,4 @@ class QueryListSidebar extends React.Component {
   }
 }
 
-export default QueryListSidebar
+export default QueriesFilters
