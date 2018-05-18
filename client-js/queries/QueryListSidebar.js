@@ -48,22 +48,22 @@ class QueryListSidebar extends React.Component {
       )
     })
     return (
-      <div className="pa2 w-20">
-        <Form>
-          <FormGroup controlId="formControlsSelect">
+      <div className="pa2 w-100">
+        <Form className="flex w-100">
+          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
             <ControlLabel>Search</ControlLabel>
             <FormControl type="text" onChange={this.onSearchChange} />
           </FormGroup>
-          <br />
-          <FormGroup controlId="formControlsSelect">
+
+          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
             <ControlLabel>Tag</ControlLabel>
             <FormControl componentClass="select" onChange={this.onTagChange}>
               <option value="">All</option>
               {tagSelectOptions}
             </FormControl>
           </FormGroup>
-          <br />
-          <FormGroup controlId="formControlsSelect">
+
+          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
             <ControlLabel>Connection</ControlLabel>
             <FormControl
               componentClass="select"
@@ -73,8 +73,8 @@ class QueryListSidebar extends React.Component {
               {connectionSelectOptions}
             </FormControl>
           </FormGroup>
-          <br />
-          <FormGroup controlId="formControlsSelect">
+
+          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
             <ControlLabel>Created By</ControlLabel>
             <FormControl
               value={this.props.selectedCreatedBy}
@@ -85,8 +85,8 @@ class QueryListSidebar extends React.Component {
               {createdBySelectOptions}
             </FormControl>
           </FormGroup>
-          <br />
-          <FormGroup controlId="formControlsSelect">
+
+          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
             <ControlLabel>Sort By</ControlLabel>
             <FormControl componentClass="select" onChange={this.onSortByChange}>
               <option value="modifiedDate">Modified Date</option>
