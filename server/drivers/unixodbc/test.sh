@@ -25,6 +25,5 @@ test_db_name=/tmp/tmp_sqlpad.db
 rm ${test_db_name}
 export ODBC_CONNECTION_STRING="Driver={SQLite3};Database=${test_db_name}"
 
-#npx mocha ./test.js
-npx mocha ./test_sqlite.js
+npx mocha ./test.js
 
