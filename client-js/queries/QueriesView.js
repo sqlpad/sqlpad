@@ -3,7 +3,6 @@ import message from 'antd/lib/message'
 import Table from 'antd/lib/table'
 import Divider from 'antd/lib/divider'
 import uniq from 'lodash.uniq'
-import sortBy from 'lodash.sortby'
 import fetchJson from '../utilities/fetch-json.js'
 import QueriesFilters from './QueriesFilters'
 import { Link } from 'react-router-dom'
@@ -29,7 +28,6 @@ class QueriesView extends React.Component {
     selectedCreatedBy: this.props.currentUser
       ? this.props.currentUser.email
       : '',
-    selectedSortBy: null,
     selectedQuery: null
   }
 
@@ -68,7 +66,7 @@ class QueriesView extends React.Component {
           .reduce((a, b) => a.concat(b), [])
           .filter(tag => tag)
       )
-      var selectedCreatedBy = this.state.selectedCreatedBy
+      let selectedCreatedBy = this.state.selectedCreatedBy
       if (createdBys.indexOf(this.props.currentUser.email) === -1) {
         selectedCreatedBy = ''
       }
@@ -112,26 +110,71 @@ class QueriesView extends React.Component {
     })
   }
 
-  onSortByChange = sortBy => {
-    this.setState({
-      selectedSortBy: sortBy
-    })
-  }
-
   componentDidMount() {
     document.title = 'SQLPad - Queries'
     this.loadConfigValuesFromServer()
   }
 
-  renderTable() {
+  nameRender = (text, record) => {
+    return <Link to={'/queries/' + record._id}>{record.name}</Link>
+  }
+
+  nameOnCell = record => {
+    return {
+      onMouseEnter: () => this.handleQueryMouseOver(record),
+      onMouseLeave: () => this.handleQueryMouseLeave(record)
+    }
+  }
+
+  nameSorter = (a, b) => a.name.localeCompare(b.name)
+
+  createdBySorter = (a, b) => a.createdBy.localeCompare(b.createdBy)
+
+  modifiedSorter = (a, b) => {
+    return moment(a.modifiedDate).toDate() - moment(b.modifiedDate).toDate()
+  }
+
+  modifiedRender = (text, record) => moment(record.modifiedDate).calendar()
+
+  chartRender = (rext, record) => {
+    const chartType =
+      record.chartConfiguration && record.chartConfiguration.chartType
+        ? record.chartConfiguration.chartType
+        : null
+
+    const chartDefinition = chartDefinitions.find(
+      def => def.chartType === chartType
+    )
+
+    return chartDefinition ? chartDefinition.chartLabel : null
+  }
+
+  actionsRender = (text, record) => {
     const { config } = this.props
+    const tableUrl = `${config.baseUrl}/query-table/${record._id}`
+    const chartUrl = `${config.baseUrl}/query-chart/${record._id}`
+    return (
+      <span>
+        <a href={tableUrl} target="_blank" rel="noopener noreferrer">
+          table
+        </a>
+        <Divider type="vertical" />
+        <a href={chartUrl} target="_blank" rel="noopener noreferrer">
+          chart
+        </a>
+        <Divider type="vertical" />
+        <DeleteButton onClick={() => this.handleQueryDelete(record._id)} />
+      </span>
+    )
+  }
+
+  renderTable() {
     const {
       queries,
       selectedTag,
       selectedCreatedBy,
       selectedConnection,
-      searchInput,
-      selectedSortBy
+      searchInput
     } = this.state
 
     let filteredQueries = queries.map(q => {
@@ -170,96 +213,36 @@ class QueriesView extends React.Component {
         return matchedCount === termCount
       })
     }
-    if (selectedSortBy === 'name') {
-      filteredQueries = sortBy(filteredQueries, query =>
-        query.name.toLowerCase()
-      )
-    } else {
-      filteredQueries = sortBy(filteredQueries, 'modifiedDate').reverse()
-    }
-
-    const decorated = filteredQueries.map(query => {
-      const chartType =
-        query.chartConfiguration && query.chartConfiguration.chartType
-          ? query.chartConfiguration.chartType
-          : null
-
-      const chartDefinition = chartDefinitions.find(
-        def => def.chartType === chartType
-      )
-
-      query.chartLabel = chartDefinition ? chartDefinition.chartLabel : null
-
-      return query
-    })
 
     return (
       <Table
         locale={{ emptyText: 'No queries found' }}
-        dataSource={decorated}
+        dataSource={filteredQueries}
         pagination={false}
         className="w-100"
       >
         <Column
           title="Name"
           key="name"
-          onCell={record => {
-            return {
-              onMouseEnter: () => this.handleQueryMouseOver(record),
-              onMouseLeave: () => this.handleQueryMouseLeave(record)
-            }
-          }}
-          render={(text, record) => {
-            return <Link to={'/queries/' + record._id}>{record.name}</Link>
-          }}
+          onCell={this.nameOnCell}
+          render={this.nameRender}
+          sorter={this.nameSorter}
         />
-        <Column title="Created by" dataIndex="createdBy" key="createdBy" />
+        <Column
+          title="Created by"
+          dataIndex="createdBy"
+          key="createdBy"
+          sorter={this.createdBySorter}
+        />
         <Column
           title="Modified"
           key="modifiedCalendar"
-          render={(text, record) => {
-            return moment(record.modifiedDate).calendar()
-          }}
+          defaultSortOrder="descend"
+          sorter={this.modifiedSorter}
+          render={this.modifiedRender}
         />
-        <Column
-          title="Chart"
-          key="chartType"
-          render={(text, record) => {
-            const chartType =
-              record.chartConfiguration && record.chartConfiguration.chartType
-                ? record.chartConfiguration.chartType
-                : null
-
-            const chartDefinition = chartDefinitions.find(
-              def => def.chartType === chartType
-            )
-
-            return chartDefinition ? chartDefinition.chartLabel : null
-          }}
-        />
-        <Column
-          title="Actions"
-          key="action"
-          render={(text, record) => {
-            const tableUrl = `${config.baseUrl}/query-table/${record._id}`
-            const chartUrl = `${config.baseUrl}/query-chart/${record._id}`
-            return (
-              <span>
-                <a href={tableUrl} target="_blank" rel="noopener noreferrer">
-                  table
-                </a>
-                <Divider type="vertical" />
-                <a href={chartUrl} target="_blank" rel="noopener noreferrer">
-                  chart
-                </a>
-                <Divider type="vertical" />
-                <DeleteButton
-                  onClick={() => this.handleQueryDelete(record._id)}
-                />
-              </span>
-            )
-          }}
-        />
+        <Column title="Chart" key="chartType" render={this.chartRender} />
+        <Column title="Actions" key="action" render={this.actionsRender} />
       </Table>
     )
   }
@@ -284,7 +267,7 @@ class QueriesView extends React.Component {
     const { connections, createdBys, selectedCreatedBy, tags } = this.state
 
     return (
-      <div className="v-100 w-100 flex flex-column">
+      <div className="v-100 w-100 flex flex-column overflow-y-scroll">
         <QueriesFilters
           currentUser={currentUser}
           connections={connections}
@@ -294,13 +277,9 @@ class QueriesView extends React.Component {
           onTagChange={this.onTagChange}
           createdBys={createdBys}
           onCreatedByChange={this.onCreatedByChange}
-          onSortByChange={this.onSortByChange}
           selectedCreatedBy={selectedCreatedBy}
         />
-
-        <div className="pa2 v-100 w-100 flex overflow-y-scroll">
-          {this.renderTable()}
-        </div>
+        <div className="pa2">{this.renderTable()}</div>
         {this.renderPreview()}
       </div>
     )
