@@ -136,17 +136,8 @@ class QueriesView extends React.Component {
 
   modifiedRender = (text, record) => moment(record.modifiedDate).calendar()
 
-  chartRender = (rext, record) => {
-    const chartType =
-      record.chartConfiguration && record.chartConfiguration.chartType
-        ? record.chartConfiguration.chartType
-        : null
-
-    const chartDefinition = chartDefinitions.find(
-      def => def.chartType === chartType
-    )
-
-    return chartDefinition ? chartDefinition.chartLabel : null
+  connectionSorter = (a, b) => {
+    return a.connectionName.localeCompare(b.connectionName)
   }
 
   actionsRender = (text, record) => {
@@ -168,14 +159,47 @@ class QueriesView extends React.Component {
     )
   }
 
+  getDecoratedQueries() {
+    const { queries, connections } = this.state
+
+    // Create index of lookups
+    // TODO this should come from API
+    const connectionsById = connections.reduce((connMap, connection) => {
+      connMap[connection._id] = connection
+      return connMap
+    }, {})
+
+    const chartsByType = chartDefinitions.reduce((chartMap, chartDef) => {
+      chartMap[chartDef.chartType] = chartDef
+      return chartMap
+    }, {})
+
+    return queries.map(query => {
+      const connection = connectionsById[query.connectionId]
+      query.connectionName = connection ? connection.name : ''
+
+      // This too could be decorated by API?
+      const chartType =
+        query.chartConfiguration && query.chartConfiguration.chartType
+          ? query.chartConfiguration.chartType
+          : null
+
+      const chartDefinition = chartsByType[chartType]
+      query.chart = chartDefinition ? chartDefinition.chartLabel : ''
+
+      return query
+    })
+  }
+
   renderTable() {
     const {
-      queries,
       selectedTag,
       selectedCreatedBy,
       selectedConnection,
       searchInput
     } = this.state
+
+    const queries = this.getDecoratedQueries()
 
     let filteredQueries = queries.map(q => {
       q.key = q._id
@@ -229,6 +253,12 @@ class QueriesView extends React.Component {
           sorter={this.nameSorter}
         />
         <Column
+          title="Connection"
+          key="connection"
+          dataIndex="connectionName"
+          sorter={this.connectionSorter}
+        />
+        <Column
           title="Created by"
           dataIndex="createdBy"
           key="createdBy"
@@ -241,7 +271,7 @@ class QueriesView extends React.Component {
           sorter={this.modifiedSorter}
           render={this.modifiedRender}
         />
-        <Column title="Chart" key="chartType" render={this.chartRender} />
+        <Column title="Chart" key="chartType" dataIndex="chart" />
         <Column title="Actions" key="action" render={this.actionsRender} />
       </Table>
     )
