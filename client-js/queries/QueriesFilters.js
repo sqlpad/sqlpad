@@ -21,10 +21,6 @@ class QueriesFilters extends React.Component {
     this.props.onCreatedByChange(e.target.value)
   }
 
-  onSortByChange = e => {
-    this.props.onSortByChange(e.target.value)
-  }
-
   render() {
     var connectionSelectOptions = this.props.connections.map(function(conn) {
       return (
@@ -83,14 +79,6 @@ class QueriesFilters extends React.Component {
             >
               <option value="">All</option>
               {createdBySelectOptions}
-            </FormControl>
-          </FormGroup>
-
-          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
-            <ControlLabel>Sort By</ControlLabel>
-            <FormControl componentClass="select" onChange={this.onSortByChange}>
-              <option value="modifiedDate">Modified Date</option>
-              <option value="name">Name</option>
             </FormControl>
           </FormGroup>
         </Form>
