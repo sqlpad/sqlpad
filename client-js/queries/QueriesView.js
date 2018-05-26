@@ -368,7 +368,7 @@ class QueriesView extends React.Component {
   }
 
   renderFilters() {
-    const { connections, createdBys, selectedCreatedBy, tags } = this.state
+    const { createdBys, selectedCreatedBy, tags } = this.state
 
     const createdBySelectOptions = createdBys.map(createdBy => {
       return (
