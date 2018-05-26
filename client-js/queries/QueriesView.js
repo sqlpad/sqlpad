@@ -104,13 +104,6 @@ class QueriesView extends React.Component {
     })
   }
 
-  onTagChange = tag => {
-    this.setState({
-      selectedTag: tag,
-      selectedQuery: null
-    })
-  }
-
   onCreatedByChange = createdBy => {
     this.setState({
       selectedCreatedBy: createdBy,
@@ -368,19 +361,12 @@ class QueriesView extends React.Component {
   }
 
   renderFilters() {
-    const { createdBys, selectedCreatedBy, tags } = this.state
+    const { createdBys, selectedCreatedBy } = this.state
 
     const createdBySelectOptions = createdBys.map(createdBy => {
       return (
         <option key={createdBy} value={createdBy}>
           {createdBy}
-        </option>
-      )
-    })
-    const tagSelectOptions = tags.map(tag => {
-      return (
-        <option key={tag} value={tag}>
-          {tag}
         </option>
       )
     })
@@ -393,17 +379,6 @@ class QueriesView extends React.Component {
               type="text"
               onChange={e => this.onSearchChange(e.target.value)}
             />
-          </FormGroup>
-
-          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
-            <ControlLabel>Tag</ControlLabel>
-            <FormControl
-              componentClass="select"
-              onChange={e => this.onTagChange(e.target.value)}
-            >
-              <option value="">All</option>
-              {tagSelectOptions}
-            </FormControl>
           </FormGroup>
 
           <FormGroup className="pa2 w-20" controlId="formControlsSelect">
