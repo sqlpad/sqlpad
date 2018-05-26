@@ -2,19 +2,34 @@ import React from 'react'
 import message from 'antd/lib/message'
 import Table from 'antd/lib/table'
 import Divider from 'antd/lib/divider'
+import Popconfirm from 'antd/lib/popconfirm'
+import Button from 'antd/lib/button'
+import Select from 'antd/lib/select'
+import Tag from 'antd/lib/tag'
+import Icon from 'antd/lib/icon'
 import uniq from 'lodash.uniq'
 import fetchJson from '../utilities/fetch-json.js'
-import QueriesFilters from './QueriesFilters'
 import { Link } from 'react-router-dom'
 import chartDefinitions from '../utilities/chartDefinitions'
 import SqlEditor from '../common/SqlEditor'
 import moment from 'moment'
-import DeleteButton from '../common/DeleteButton'
+
+import Form from 'react-bootstrap/lib/Form'
+import FormGroup from 'react-bootstrap/lib/FormGroup'
+import FormControl from 'react-bootstrap/lib/FormControl'
+import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 
 import 'antd/lib/table/style/css'
 import 'antd/lib/divider/style/css'
+import 'antd/lib/popconfirm/style/css'
+import 'antd/lib/button/style/css'
+import 'antd/lib/tag/style/css'
 
+const { Option } = Select
 const { Column } = Table
+
+const popoverClasses =
+  'flex pa2 shadow-3 br2 bw1 ba b--near-white bg-near-white'
 
 class QueriesView extends React.Component {
   state = {
@@ -24,7 +39,7 @@ class QueriesView extends React.Component {
     tags: [],
     searchInput: null,
     selectedConnection: null,
-    selectedTag: null,
+    selectedTags: [],
     selectedCreatedBy: this.props.currentUser
       ? this.props.currentUser.email
       : '',
@@ -140,6 +155,12 @@ class QueriesView extends React.Component {
     return a.connectionName.localeCompare(b.connectionName)
   }
 
+  tagsRender = (text, record) => {
+    if (record.tags && record.tags.length) {
+      return record.tags.map(tag => <Tag key={tag}>{tag}</Tag>)
+    }
+  }
+
   actionsRender = (text, record) => {
     const { config } = this.props
     const tableUrl = `${config.baseUrl}/query-table/${record._id}`
@@ -154,7 +175,15 @@ class QueriesView extends React.Component {
           chart
         </a>
         <Divider type="vertical" />
-        <DeleteButton onClick={() => this.handleQueryDelete(record._id)} />
+        <Popconfirm
+          title="Are you sure?"
+          onConfirm={e => this.handleQueryDelete(record._id)}
+          onCancel={() => {}}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button icon="delete" type="danger" />
+        </Popconfirm>
       </span>
     )
   }
@@ -175,6 +204,8 @@ class QueriesView extends React.Component {
     }, {})
 
     return queries.map(query => {
+      query.key = query._id
+
       const connection = connectionsById[query.connectionId]
       query.connectionName = connection ? connection.name : ''
 
@@ -193,21 +224,24 @@ class QueriesView extends React.Component {
 
   renderTable() {
     const {
-      selectedTag,
+      selectedTags,
       selectedCreatedBy,
       selectedConnection,
-      searchInput
+      searchInput,
+      tags
     } = this.state
 
-    const queries = this.getDecoratedQueries()
+    let filteredQueries = this.getDecoratedQueries()
 
-    let filteredQueries = queries.map(q => {
-      q.key = q._id
-      return q
-    })
-    if (selectedTag) {
+    if (selectedTags.length) {
       filteredQueries = filteredQueries.filter(q => {
-        return q.tags && q.tags.length && q.tags.indexOf(selectedTag) > -1
+        if (!q.tags || !q.tags.length) {
+          return false
+        }
+        const matchedTags = selectedTags.filter(
+          selectedTag => q.tags.indexOf(selectedTag) > -1
+        )
+        return selectedTags.length === matchedTags.length
       })
     }
     if (selectedCreatedBy) {
@@ -221,11 +255,11 @@ class QueriesView extends React.Component {
       })
     }
     if (searchInput) {
-      var terms = searchInput.split(' ')
-      var termCount = terms.length
+      const terms = searchInput.split(' ')
+      const termCount = terms.length
       filteredQueries = filteredQueries.filter(q => {
-        var matchedCount = 0
-        terms.forEach(function(term) {
+        let matchedCount = 0
+        terms.forEach(term => {
           term = term.toLowerCase()
           if (
             (q.name && q.name.toLowerCase().search(term) !== -1) ||
@@ -259,6 +293,45 @@ class QueriesView extends React.Component {
           sorter={this.connectionSorter}
         />
         <Column
+          title="Tags"
+          key="tags"
+          render={this.tagsRender}
+          filterDropdown={
+            <div className={popoverClasses}>
+              <Select
+                mode="multiple"
+                ref={ele => (this.tagsFilter = ele)}
+                className="w5 pr2"
+                placeholder="Filter by tag"
+                value={selectedTags}
+                onChange={selectedTags => this.setState({ selectedTags })}
+              >
+                {tags.map(tag => <Option key={tag}>{tag}</Option>)}
+              </Select>
+            </div>
+          }
+          filterIcon={
+            <Icon
+              type="filter"
+              style={{
+                color:
+                  this.state.selectedTags && this.state.selectedTags.length
+                    ? '#108ee9'
+                    : '#aaa'
+              }}
+            />
+          }
+          filterDropdownVisible={this.state.tagFilterDropdownVisible}
+          onFilterDropdownVisibleChange={visible => {
+            this.setState(
+              {
+                tagFilterDropdownVisible: visible
+              },
+              () => this.tagsFilter && this.tagsFilter.focus()
+            )
+          }}
+        />
+        <Column
           title="Created by"
           dataIndex="createdBy"
           key="createdBy"
@@ -272,7 +345,7 @@ class QueriesView extends React.Component {
           render={this.modifiedRender}
         />
         <Column title="Chart" key="chartType" dataIndex="chart" />
-        <Column title="Actions" key="action" render={this.actionsRender} />
+        <Column key="action" render={this.actionsRender} />
       </Table>
     )
   }
@@ -292,23 +365,80 @@ class QueriesView extends React.Component {
     }
   }
 
-  render() {
-    const { currentUser } = this.props
+  renderFilters() {
     const { connections, createdBys, selectedCreatedBy, tags } = this.state
 
+    const createdBySelectOptions = createdBys.map(createdBy => {
+      return (
+        <option key={createdBy} value={createdBy}>
+          {createdBy}
+        </option>
+      )
+    })
+    const tagSelectOptions = tags.map(tag => {
+      return (
+        <option key={tag} value={tag}>
+          {tag}
+        </option>
+      )
+    })
+    return (
+      <div className="pa2 w-100">
+        <Form className="flex w-100">
+          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
+            <ControlLabel>Search</ControlLabel>
+            <FormControl
+              type="text"
+              onChange={e => this.onSearchChange(e.target.value)}
+            />
+          </FormGroup>
+
+          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
+            <ControlLabel>Tag</ControlLabel>
+            <FormControl
+              componentClass="select"
+              onChange={e => this.onTagChange(e.target.value)}
+            >
+              <option value="">All</option>
+              {tagSelectOptions}
+            </FormControl>
+          </FormGroup>
+
+          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
+            <ControlLabel>Connection</ControlLabel>
+            <FormControl
+              componentClass="select"
+              onChange={e => this.onConnectionChange(e.target.value)}
+            >
+              <option value="">All</option>
+              {connections.map(conn => (
+                <option key={conn._id} value={conn._id}>
+                  {conn.name}
+                </option>
+              ))}
+            </FormControl>
+          </FormGroup>
+
+          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
+            <ControlLabel>Created By</ControlLabel>
+            <FormControl
+              value={selectedCreatedBy}
+              componentClass="select"
+              onChange={e => this.onCreatedByChange(e.target.value)}
+            >
+              <option value="">All</option>
+              {createdBySelectOptions}
+            </FormControl>
+          </FormGroup>
+        </Form>
+      </div>
+    )
+  }
+
+  render() {
     return (
       <div className="v-100 w-100 flex flex-column overflow-y-scroll">
-        <QueriesFilters
-          currentUser={currentUser}
-          connections={connections}
-          onConnectionChange={this.onConnectionChange}
-          tags={tags}
-          onSearchChange={this.onSearchChange}
-          onTagChange={this.onTagChange}
-          createdBys={createdBys}
-          onCreatedByChange={this.onCreatedByChange}
-          selectedCreatedBy={selectedCreatedBy}
-        />
+        {this.renderFilters()}
         <div className="pa2">{this.renderTable()}</div>
         {this.renderPreview()}
       </div>
