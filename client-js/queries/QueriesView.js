@@ -104,13 +104,6 @@ class QueriesView extends React.Component {
     })
   }
 
-  onCreatedByChange = createdBy => {
-    this.setState({
-      selectedCreatedBy: createdBy,
-      selectedQuery: null
-    })
-  }
-
   componentDidMount() {
     document.title = 'SQLPad - Queries'
     this.loadConfigValuesFromServer()
@@ -208,6 +201,13 @@ class QueriesView extends React.Component {
     })
   }
 
+  handleTableChange = (pagination, filters, sorter) => {
+    // filters is an object with keys based on column dataIndex
+    // the value will be an array of selected values
+    const { createdBy } = filters
+    this.setState({ selectedCreatedBy: createdBy[0] || '' })
+  }
+
   renderTable() {
     const {
       selectedTags,
@@ -215,6 +215,7 @@ class QueriesView extends React.Component {
       selectedConnection,
       searchInput,
       connections,
+      createdBys,
       tags
     } = this.state
 
@@ -229,11 +230,6 @@ class QueriesView extends React.Component {
           selectedTag => q.tags.indexOf(selectedTag) > -1
         )
         return selectedTags.length === matchedTags.length
-      })
-    }
-    if (selectedCreatedBy) {
-      filteredQueries = filteredQueries.filter(q => {
-        return q.createdBy === selectedCreatedBy
       })
     }
     if (selectedConnection) {
@@ -261,6 +257,10 @@ class QueriesView extends React.Component {
 
     const connectionFilters = connections.map(connection => {
       return { text: connection.name, value: connection._id }
+    })
+
+    const createdByFilters = createdBys.map(email => {
+      return { text: email, value: email }
     })
 
     return (
@@ -331,6 +331,10 @@ class QueriesView extends React.Component {
           dataIndex="createdBy"
           key="createdBy"
           sorter={this.createdBySorter}
+          filters={createdByFilters}
+          filterMultiple={false}
+          onFilter={(value, record) => record.createdBy === value}
+          filteredValue={selectedCreatedBy ? [selectedCreatedBy] : []}
         />
         <Column
           title="Modified"
@@ -361,36 +365,15 @@ class QueriesView extends React.Component {
   }
 
   renderFilters() {
-    const { createdBys, selectedCreatedBy } = this.state
-
-    const createdBySelectOptions = createdBys.map(createdBy => {
-      return (
-        <option key={createdBy} value={createdBy}>
-          {createdBy}
-        </option>
-      )
-    })
     return (
       <div className="pa2 w-100">
         <Form className="flex w-100">
-          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
+          <FormGroup className="pa2 w-30" controlId="formControlsSelect">
             <ControlLabel>Search</ControlLabel>
             <FormControl
               type="text"
               onChange={e => this.onSearchChange(e.target.value)}
             />
-          </FormGroup>
-
-          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
-            <ControlLabel>Created By</ControlLabel>
-            <FormControl
-              value={selectedCreatedBy}
-              componentClass="select"
-              onChange={e => this.onCreatedByChange(e.target.value)}
-            >
-              <option value="">All</option>
-              {createdBySelectOptions}
-            </FormControl>
           </FormGroup>
         </Form>
       </div>
