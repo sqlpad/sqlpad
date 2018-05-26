@@ -7,6 +7,7 @@ import Button from 'antd/lib/button'
 import Select from 'antd/lib/select'
 import Tag from 'antd/lib/tag'
 import Icon from 'antd/lib/icon'
+import Input from 'antd/lib/input'
 import uniq from 'lodash.uniq'
 import fetchJson from '../utilities/fetch-json.js'
 import { Link } from 'react-router-dom'
@@ -14,11 +15,7 @@ import chartDefinitions from '../utilities/chartDefinitions'
 import SqlEditor from '../common/SqlEditor'
 import moment from 'moment'
 
-import Form from 'react-bootstrap/lib/Form'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-
+import 'antd/lib/input/style/css'
 import 'antd/lib/table/style/css'
 import 'antd/lib/divider/style/css'
 import 'antd/lib/popconfirm/style/css'
@@ -27,6 +24,7 @@ import 'antd/lib/tag/style/css'
 
 const { Option } = Select
 const { Column } = Table
+const { Search } = Input
 
 const popoverClasses =
   'flex pa2 shadow-3 br2 bw1 ba b--near-white bg-near-white'
@@ -97,10 +95,9 @@ class QueriesView extends React.Component {
     })
   }
 
-  onSearchChange = searchInput => {
+  onSearchChange = e => {
     this.setState({
-      searchInput: searchInput,
-      selectedQuery: null
+      searchInput: e.target.value
     })
   }
 
@@ -212,7 +209,6 @@ class QueriesView extends React.Component {
     const {
       selectedTags,
       selectedCreatedBy,
-      selectedConnection,
       searchInput,
       connections,
       createdBys,
@@ -232,11 +228,7 @@ class QueriesView extends React.Component {
         return selectedTags.length === matchedTags.length
       })
     }
-    if (selectedConnection) {
-      filteredQueries = filteredQueries.filter(q => {
-        return q.connectionId === selectedConnection
-      })
-    }
+
     if (searchInput) {
       const terms = searchInput.split(' ')
       const termCount = terms.length
@@ -365,17 +357,15 @@ class QueriesView extends React.Component {
   }
 
   renderFilters() {
+    const { searchInput } = this.state
     return (
       <div className="pa2 w-100">
-        <Form className="flex w-100">
-          <FormGroup className="pa2 w-30" controlId="formControlsSelect">
-            <ControlLabel>Search</ControlLabel>
-            <FormControl
-              type="text"
-              onChange={e => this.onSearchChange(e.target.value)}
-            />
-          </FormGroup>
-        </Form>
+        <Search
+          className="pa2 w-30"
+          placeholder="Search"
+          value={searchInput}
+          onChange={this.onSearchChange}
+        />
       </div>
     )
   }
