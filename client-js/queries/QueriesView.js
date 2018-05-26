@@ -37,6 +37,7 @@ class QueriesView extends React.Component {
     connections: [],
     createdBys: [],
     tags: [],
+    tagFilterDropdownVisible: false,
     searchInput: null,
     selectedConnection: null,
     selectedTags: [],
