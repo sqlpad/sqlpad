@@ -39,7 +39,6 @@ class QueriesView extends React.Component {
     tags: [],
     tagFilterDropdownVisible: false,
     searchInput: null,
-    selectedConnection: null,
     selectedTags: [],
     selectedCreatedBy: this.props.currentUser
       ? this.props.currentUser.email
@@ -101,13 +100,6 @@ class QueriesView extends React.Component {
   onSearchChange = searchInput => {
     this.setState({
       searchInput: searchInput,
-      selectedQuery: null
-    })
-  }
-
-  onConnectionChange = connectionId => {
-    this.setState({
-      selectedConnection: connectionId,
       selectedQuery: null
     })
   }
@@ -229,6 +221,7 @@ class QueriesView extends React.Component {
       selectedCreatedBy,
       selectedConnection,
       searchInput,
+      connections,
       tags
     } = this.state
 
@@ -273,11 +266,16 @@ class QueriesView extends React.Component {
       })
     }
 
+    const connectionFilters = connections.map(connection => {
+      return { text: connection.name, value: connection._id }
+    })
+
     return (
       <Table
         locale={{ emptyText: 'No queries found' }}
         dataSource={filteredQueries}
         pagination={false}
+        onChange={this.handleTableChange}
         className="w-100"
       >
         <Column
@@ -292,6 +290,9 @@ class QueriesView extends React.Component {
           key="connection"
           dataIndex="connectionName"
           sorter={this.connectionSorter}
+          filters={connectionFilters}
+          filterMultiple={false}
+          onFilter={(value, record) => record.connectionId === value}
         />
         <Column
           title="Tags"
@@ -402,21 +403,6 @@ class QueriesView extends React.Component {
             >
               <option value="">All</option>
               {tagSelectOptions}
-            </FormControl>
-          </FormGroup>
-
-          <FormGroup className="pa2 w-20" controlId="formControlsSelect">
-            <ControlLabel>Connection</ControlLabel>
-            <FormControl
-              componentClass="select"
-              onChange={e => this.onConnectionChange(e.target.value)}
-            >
-              <option value="">All</option>
-              {connections.map(conn => (
-                <option key={conn._id} value={conn._id}>
-                  {conn.name}
-                </option>
-              ))}
             </FormControl>
           </FormGroup>
 
