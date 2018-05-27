@@ -4,6 +4,7 @@ import Table from 'antd/lib/table'
 import Divider from 'antd/lib/divider'
 import Popconfirm from 'antd/lib/popconfirm'
 import Button from 'antd/lib/button'
+import Select from 'antd/lib/select'
 import Tag from 'antd/lib/tag'
 import Input from 'antd/lib/input'
 import uniq from 'lodash.uniq'
@@ -20,6 +21,7 @@ import 'antd/lib/popconfirm/style/css'
 import 'antd/lib/button/style/css'
 import 'antd/lib/tag/style/css'
 
+const { Option } = Select
 const { Column } = Table
 const { Search } = Input
 
@@ -32,6 +34,7 @@ class QueriesView extends React.Component {
     tagFilterDropdownVisible: false,
     searchInput: null,
     selectedTags: [],
+    selectedConnection: '',
     selectedCreatedBy: this.props.currentUser
       ? this.props.currentUser.email
       : '',
@@ -186,21 +189,12 @@ class QueriesView extends React.Component {
     })
   }
 
-  handleTableChange = (pagination, filters, sorter) => {
-    // filters is an object with keys based on column dataIndex
-    // the value will be an array of selected values
-    const { createdBy, tags } = filters
-    this.setState({ selectedCreatedBy: createdBy[0] || '', selectedTags: tags })
-  }
-
   renderTable() {
     const {
-      selectedTags,
-      selectedCreatedBy,
       searchInput,
-      connections,
-      createdBys,
-      tags
+      selectedConnection,
+      selectedCreatedBy,
+      selectedTags
     } = this.state
 
     let filteredQueries = this.getDecoratedQueries()
@@ -235,20 +229,23 @@ class QueriesView extends React.Component {
       })
     }
 
-    const connectionFilters = connections.map(connection => {
-      return { text: connection.name, value: connection._id }
-    })
+    if (selectedConnection) {
+      filteredQueries = filteredQueries.filter(
+        q => q.connectionId === selectedConnection
+      )
+    }
 
-    const createdByFilters = createdBys.map(email => {
-      return { text: email, value: email }
-    })
+    if (selectedCreatedBy) {
+      filteredQueries = filteredQueries.filter(
+        q => q.createdBy === selectedCreatedBy
+      )
+    }
 
     return (
       <Table
         locale={{ emptyText: 'No queries found' }}
         dataSource={filteredQueries}
         pagination={false}
-        onChange={this.handleTableChange}
         className="w-100"
       >
         <Column
@@ -262,27 +259,9 @@ class QueriesView extends React.Component {
           title="Connection"
           key="connection"
           dataIndex="connectionName"
-          filters={connectionFilters}
-          filterMultiple={false}
-          onFilter={(value, record) => record.connectionId === value}
         />
-        <Column
-          title="Tags"
-          key="tags"
-          render={this.tagsRender}
-          filters={tags.map(tag => {
-            return { text: tag, value: tag }
-          })}
-        />
-        <Column
-          title="Created by"
-          dataIndex="createdBy"
-          key="createdBy"
-          filters={createdByFilters}
-          filterMultiple={false}
-          onFilter={(value, record) => record.createdBy === value}
-          filteredValue={selectedCreatedBy ? [selectedCreatedBy] : []}
-        />
+        <Column title="Tags" key="tags" render={this.tagsRender} />
+        <Column title="Created by" dataIndex="createdBy" key="createdBy" />
         <Column
           title="Modified"
           key="modifiedCalendar"
@@ -312,16 +291,55 @@ class QueriesView extends React.Component {
   }
 
   renderFilters() {
-    const { searchInput } = this.state
+    const {
+      connections,
+      createdBys,
+      searchInput,
+      selectedConnection,
+      selectedCreatedBy,
+      selectedTags,
+      tags
+    } = this.state
     return (
-      <div className="pa3 w-100 flex justify-between bg-near-white">
+      <div className="pa3 w-100 bg-near-white">
         <Search
-          className="w-30"
+          className="w-20 mr2"
           placeholder="Search"
           value={searchInput}
           onChange={this.onSearchChange}
         />
-        <Link to={'/queries/new'}>
+        <Select
+          className="w-20 mr2"
+          placeholder="Filter by connection"
+          value={selectedConnection}
+          onChange={selectedConnection => this.setState({ selectedConnection })}
+        >
+          <Option key="all" value="">
+            All connections
+          </Option>
+          {connections.map(c => <Option key={c._id}>{c.name}</Option>)}
+        </Select>
+        <Select
+          className="w-20 mr2"
+          mode="multiple"
+          placeholder="Filter by tag"
+          value={selectedTags}
+          onChange={selectedTags => this.setState({ selectedTags })}
+        >
+          {tags.map(tag => <Option key={tag}>{tag}</Option>)}
+        </Select>
+        <Select
+          className="w-20 mr2"
+          placeholder="Filter by created by"
+          value={selectedCreatedBy}
+          onChange={selectedCreatedBy => this.setState({ selectedCreatedBy })}
+        >
+          <Option key="all" value="">
+            All authors
+          </Option>
+          {createdBys.map(c => <Option key={c}>{c}</Option>)}
+        </Select>
+        <Link to={'/queries/new'} className="fr">
           <Button type="primary">New Query</Button>
         </Link>
       </div>
