@@ -156,7 +156,7 @@ class App extends React.Component {
                 key="about"
                 onClick={() => {
                   Modal.info({
-                    width: 6660,
+                    width: 650,
                     title: 'About SQLPad',
                     maskClosable: true,
                     content: <AboutContent version={version.current} />,
