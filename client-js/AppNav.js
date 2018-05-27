@@ -1,9 +1,10 @@
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
-import Button from 'react-bootstrap/lib/Button'
 import fetchJson from './utilities/fetch-json.js'
-import Modal from './common/Modal'
 import AboutContent from './AboutContent'
+
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
 
 import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
@@ -14,9 +15,6 @@ import 'antd/lib/menu/style/css'
 import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
 
-import Popover from 'antd/lib/popover'
-import 'antd/lib/popover/style/css'
-
 const { Content, Sider } = Layout
 
 class App extends React.Component {
@@ -24,7 +22,6 @@ class App extends React.Component {
     super(props)
     this.state = {
       collapsed: true,
-      showAboutModal: false,
       currentUser: {},
       version: {},
       passport: {},
@@ -35,14 +32,6 @@ class App extends React.Component {
 
   onCollapse = collapsed => {
     this.setState({ collapsed })
-  }
-
-  openAboutModal = () => {
-    this.setState({ showAboutModal: true })
-  }
-
-  closeAboutModal = () => {
-    this.setState({ showAboutModal: false })
   }
 
   componentDidMount() {
@@ -65,31 +54,27 @@ class App extends React.Component {
   renderUpdateNotification() {
     const { version = {} } = this.state
 
-    // TODO FIXME - Convert update available to modal
-    // version.updateAvailable = true
-    // version.updateType = 'minor'
-    // version.latest = 'latest'
-    // version.current = 'current'
-
-    const content = (
-      <div>
-        Installed Version: {version.current}
-        <br />
-        Latest: {version.latest}
-      </div>
-    )
-
     if (version.updateAvailable) {
       return (
-        <Menu.Item key="update">
-          <Popover
-            content={content}
-            title={'Update Available (' + version.updateType + ')'}
-            trigger="hover"
-          >
-            <Icon type="exclamation-circle-o" />
-            <span>Update available</span>
-          </Popover>
+        <Menu.Item
+          key="update"
+          onClick={() => {
+            Modal.info({
+              title: 'Update Available (' + version.updateType + ')',
+              maskClosable: true,
+              content: (
+                <div>
+                  Installed Version: {version.current}
+                  <br />
+                  Latest: {version.latest}
+                </div>
+              ),
+              onOk() {}
+            })
+          }}
+        >
+          <Icon type="exclamation-circle-o" />
+          <span>Update available</span>
         </Menu.Item>
       )
     }
@@ -167,7 +152,18 @@ class App extends React.Component {
 
               <Menu theme="dark" selectable={false} mode="inline">
                 {this.renderUpdateNotification()}
-                <Menu.Item key="about" onClick={this.openAboutModal}>
+                <Menu.Item
+                  key="about"
+                  onClick={() => {
+                    Modal.info({
+                      width: 650,
+                      title: 'About SQLPad',
+                      maskClosable: true,
+                      content: <AboutContent version={version.current} />,
+                      onOk() {}
+                    })
+                  }}
+                >
                   <Icon type="question-circle-o" />
                   <span>About</span>
                 </Menu.Item>
@@ -182,15 +178,6 @@ class App extends React.Component {
             <Content className="flex w-100">{this.props.children}</Content>
           </Layout>
         </Layout>
-        <Modal
-          title="About SQLPad"
-          show={this.state.showAboutModal}
-          onHide={this.closeAboutModal}
-          renderBody={() => <AboutContent version={version.current} />}
-          renderFooter={() => (
-            <Button onClick={this.closeAboutModal}>Close</Button>
-          )}
-        />
       </div>
     )
   }
