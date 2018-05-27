@@ -125,8 +125,8 @@ class App extends React.Component {
                       history.push('/connections')
                     }}
                   >
-                    <Icon type="link" />
-                    <span>Connections</span>
+                    <Icon type="database" />
+                    <span>DB connections</span>
                   </Menu.Item>
                   <Menu.Item
                     key="users"
@@ -134,7 +134,7 @@ class App extends React.Component {
                       history.push('/users')
                     }}
                   >
-                    <Icon type="user" />
+                    <Icon type="team" />
                     <span>Users</span>
                   </Menu.Item>
                   <Menu.Item
