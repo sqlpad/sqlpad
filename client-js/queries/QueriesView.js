@@ -21,6 +21,11 @@ import 'antd/lib/popconfirm/style/css'
 import 'antd/lib/button/style/css'
 import 'antd/lib/tag/style/css'
 
+// import Layout from 'antd/lib/layout'
+// import 'antd/lib/layout/style/css'
+
+// const { Header, Content, Footer, Sider } = Layout
+
 const { Option } = Select
 const { Column } = Table
 const { Search } = Input
@@ -301,15 +306,15 @@ class QueriesView extends React.Component {
       tags
     } = this.state
     return (
-      <div className="pa3 w-100 bg-near-white">
+      <div className="pa3 w-100 flex bg-near-white">
         <Search
-          className="w-20 mr2"
+          className="w-25 mr2"
           placeholder="Search"
           value={searchInput}
           onChange={this.onSearchChange}
         />
         <Select
-          className="w-20 mr2"
+          className="w-25 mr2"
           placeholder="Filter by connection"
           value={selectedConnection}
           onChange={selectedConnection => this.setState({ selectedConnection })}
@@ -320,7 +325,7 @@ class QueriesView extends React.Component {
           {connections.map(c => <Option key={c._id}>{c.name}</Option>)}
         </Select>
         <Select
-          className="w-20 mr2"
+          className="w-25 mr2"
           mode="multiple"
           placeholder="Filter by tag"
           value={selectedTags}
@@ -329,7 +334,7 @@ class QueriesView extends React.Component {
           {tags.map(tag => <Option key={tag}>{tag}</Option>)}
         </Select>
         <Select
-          className="w-20 mr2"
+          className="w-25 mr2"
           placeholder="Filter by created by"
           value={selectedCreatedBy}
           onChange={selectedCreatedBy => this.setState({ selectedCreatedBy })}
@@ -339,16 +344,19 @@ class QueriesView extends React.Component {
           </Option>
           {createdBys.map(c => <Option key={c}>{c}</Option>)}
         </Select>
-        <Link to={'/queries/new'} className="fr">
-          <Button type="primary">New Query</Button>
-        </Link>
       </div>
     )
   }
 
   render() {
     return (
-      <div className="v-100 w-100 flex flex-column overflow-y-scroll">
+      <div className="flex w-100 flex-column">
+        <div>
+          <div className="ma3 f1 fl">Queries</div>
+          <Link to={'/queries/new'} className="ma4 fr">
+            <Button type="primary">New Query</Button>
+          </Link>
+        </div>
         {this.renderFilters()}
         <div className="pa2">{this.renderTable()}</div>
         {this.renderPreview()}
