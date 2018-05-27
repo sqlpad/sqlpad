@@ -87,98 +87,97 @@ class App extends React.Component {
     }
 
     return (
-      <div className="flex w-100">
-        <Layout style={{ minHeight: '100vh' }}>
-          <Sider
-            collapsible
-            collapsed={this.state.collapsed}
-            onCollapse={this.onCollapse}
+      <Layout style={{ minHeight: '100vh' }}>
+        <Sider
+          className="overflow-y-scroll"
+          collapsible
+          collapsed={this.state.collapsed}
+          onCollapse={this.onCollapse}
+        >
+          <div
+            style={{ minHeight: '100vh', paddingBottom: '50px' }}
+            className="flex flex-column justify-between"
           >
-            <div
-              style={{ minHeight: '100vh', paddingBottom: '50px' }}
-              className="flex flex-column justify-between"
-            >
-              <Route
-                render={({ history }) => (
-                  <Menu theme="dark" selectable={false} mode="inline">
-                    <Menu.Item
-                      key="queries"
-                      onClick={() => {
-                        history.push('/queries')
-                      }}
-                    >
-                      <Icon type="file-text" />
-                      <span>Queries</span>
-                    </Menu.Item>
-                    <Menu.Item
-                      key="new-query"
-                      onClick={() => {
-                        history.push('/queries/new')
-                      }}
-                    >
-                      <Icon type="plus" />
-                      <span>New Query</span>
-                    </Menu.Item>
-                    <Menu.Item
-                      key="connections"
-                      onClick={() => {
-                        history.push('/connections')
-                      }}
-                    >
-                      <Icon type="link" />
-                      <span>Connections</span>
-                    </Menu.Item>
-                    <Menu.Item
-                      key="users"
-                      onClick={() => {
-                        history.push('/users')
-                      }}
-                    >
-                      <Icon type="user" />
-                      <span>Users</span>
-                    </Menu.Item>
-                    <Menu.Item
-                      key="configuration"
-                      onClick={() => {
-                        history.push('/config-values')
-                      }}
-                    >
-                      <Icon type="setting" />
-                      <span>Configuration</span>
-                    </Menu.Item>
-                  </Menu>
-                )}
-              />
+            <Route
+              render={({ history }) => (
+                <Menu theme="dark" selectable={false} mode="inline">
+                  <Menu.Item
+                    key="queries"
+                    onClick={() => {
+                      history.push('/queries')
+                    }}
+                  >
+                    <Icon type="file-text" />
+                    <span>Queries</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="new-query"
+                    onClick={() => {
+                      history.push('/queries/new')
+                    }}
+                  >
+                    <Icon type="plus" />
+                    <span>New Query</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="connections"
+                    onClick={() => {
+                      history.push('/connections')
+                    }}
+                  >
+                    <Icon type="link" />
+                    <span>Connections</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="users"
+                    onClick={() => {
+                      history.push('/users')
+                    }}
+                  >
+                    <Icon type="user" />
+                    <span>Users</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="configuration"
+                    onClick={() => {
+                      history.push('/config-values')
+                    }}
+                  >
+                    <Icon type="setting" />
+                    <span>Configuration</span>
+                  </Menu.Item>
+                </Menu>
+              )}
+            />
 
-              <Menu theme="dark" selectable={false} mode="inline">
-                {this.renderUpdateNotification()}
-                <Menu.Item
-                  key="about"
-                  onClick={() => {
-                    Modal.info({
-                      width: 650,
-                      title: 'About SQLPad',
-                      maskClosable: true,
-                      content: <AboutContent version={version.current} />,
-                      onOk() {}
-                    })
-                  }}
-                >
-                  <Icon type="question-circle-o" />
-                  <span>About</span>
-                </Menu.Item>
-                <Menu.Item key="signout" onClick={this.signout}>
-                  <Icon type="logout" />
-                  <span>Sign out</span>
-                </Menu.Item>
-              </Menu>
-            </div>
-          </Sider>
-          <Layout className="flex w-100 bg-white">
-            <Content className="flex w-100">{this.props.children}</Content>
-          </Layout>
+            <Menu theme="dark" selectable={false} mode="inline">
+              {this.renderUpdateNotification()}
+              <Menu.Item
+                key="about"
+                onClick={() => {
+                  Modal.info({
+                    width: 6660,
+                    title: 'About SQLPad',
+                    maskClosable: true,
+                    content: <AboutContent version={version.current} />,
+                    onOk() {}
+                  })
+                }}
+              >
+                <Icon type="question-circle-o" />
+                <span>About</span>
+              </Menu.Item>
+              <Menu.Item key="signout" onClick={this.signout}>
+                <Icon type="logout" />
+                <span>Sign out</span>
+              </Menu.Item>
+            </Menu>
+          </div>
+        </Sider>
+        <Layout className="flex w-100 bg-white">
+          <Content className="flex w-100">{this.props.children}</Content>
         </Layout>
-      </div>
+      </Layout>
     )
   }
 }
