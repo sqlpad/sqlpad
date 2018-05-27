@@ -24,6 +24,12 @@ import 'antd/lib/tag/style/css'
 import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
 
+import Popover from 'antd/lib/popover'
+import 'antd/lib/popover/style/css'
+
+import Icon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
+
 const { Header, Content } = Layout
 
 const { Option } = Select
@@ -42,29 +48,16 @@ class QueriesView extends React.Component {
     selectedConnection: '',
     selectedCreatedBy: this.props.currentUser
       ? this.props.currentUser.email
-      : '',
-    selectedQuery: null
-  }
-
-  handleQueryMouseOver = query => {
-    this.setState({ selectedQuery: query })
-  }
-
-  handleQueryMouseLeave = query => {
-    this.setState({ selectedQuery: null })
+      : ''
   }
 
   handleQueryDelete = queryId => {
-    let { queries, selectedQuery } = this.state
-    if (selectedQuery && selectedQuery._id === queryId) {
-      selectedQuery = null
-    }
+    let { queries } = this.state
     queries = queries.filter(q => {
       return q._id !== queryId
     })
     this.setState({
-      queries: queries,
-      selectedQuery: selectedQuery
+      queries
     })
     fetchJson('DELETE', '/api/queries/' + queryId).then(json => {
       if (json.error) message.error(json.error)
@@ -112,11 +105,22 @@ class QueriesView extends React.Component {
     return <Link to={'/queries/' + record._id}>{record.name}</Link>
   }
 
-  nameOnCell = record => {
-    return {
-      onMouseEnter: () => this.handleQueryMouseOver(record),
-      onMouseLeave: () => this.handleQueryMouseLeave(record)
-    }
+  previewRender = (text, record) => {
+    const { config } = this.props
+    return (
+      <Popover
+        content={
+          <div style={{ width: '600px', height: '300px' }}>
+            <SqlEditor config={config} readOnly value={record.queryText} />
+          </div>
+        }
+        placement="right"
+        title={record.name}
+        trigger="hover"
+      >
+        <Icon type="code-o" />
+      </Popover>
+    )
   }
 
   nameSorter = (a, b) => a.name.localeCompare(b.name)
@@ -256,10 +260,10 @@ class QueriesView extends React.Component {
         <Column
           title="Name"
           key="name"
-          onCell={this.nameOnCell}
           render={this.nameRender}
           sorter={this.nameSorter}
         />
+        <Column title="" key="preview" render={this.previewRender} />
         <Column
           title="Connection"
           key="connection"
@@ -278,21 +282,6 @@ class QueriesView extends React.Component {
         <Column key="action" render={this.actionsRender} />
       </Table>
     )
-  }
-
-  renderPreview() {
-    const { config } = this.props
-    const { selectedQuery } = this.state
-    if (selectedQuery) {
-      return (
-        <div
-          className="pa2 w-50 shadow-1 br2 bw4 ba b--black absolute flex flex-column bg-white"
-          style={{ top: 150, bottom: 20, right: 20 }}
-        >
-          <SqlEditor config={config} readOnly value={selectedQuery.queryText} />
-        </div>
-      )
-    }
   }
 
   renderFilters() {
@@ -363,7 +352,6 @@ class QueriesView extends React.Component {
         <Content className="ma4">
           {this.renderFilters()}
           <div className="bg-white">{this.renderTable()}</div>
-          {this.renderPreview()}
         </Content>
       </Layout>
     )
