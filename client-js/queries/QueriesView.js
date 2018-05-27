@@ -119,17 +119,11 @@ class QueriesView extends React.Component {
 
   nameSorter = (a, b) => a.name.localeCompare(b.name)
 
-  createdBySorter = (a, b) => a.createdBy.localeCompare(b.createdBy)
-
   modifiedSorter = (a, b) => {
     return moment(a.modifiedDate).toDate() - moment(b.modifiedDate).toDate()
   }
 
   modifiedRender = (text, record) => moment(record.modifiedDate).calendar()
-
-  connectionSorter = (a, b) => {
-    return a.connectionName.localeCompare(b.connectionName)
-  }
 
   tagsRender = (text, record) => {
     if (record.tags && record.tags.length) {
@@ -274,7 +268,6 @@ class QueriesView extends React.Component {
           title="Connection"
           key="connection"
           dataIndex="connectionName"
-          sorter={this.connectionSorter}
           filters={connectionFilters}
           filterMultiple={false}
           onFilter={(value, record) => record.connectionId === value}
@@ -322,7 +315,6 @@ class QueriesView extends React.Component {
           title="Created by"
           dataIndex="createdBy"
           key="createdBy"
-          sorter={this.createdBySorter}
           filters={createdByFilters}
           filterMultiple={false}
           onFilter={(value, record) => record.createdBy === value}
