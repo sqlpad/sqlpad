@@ -359,13 +359,16 @@ class QueriesView extends React.Component {
   renderFilters() {
     const { searchInput } = this.state
     return (
-      <div className="pa2 w-100">
+      <div className="pa3 w-100 flex justify-between bg-near-white">
         <Search
-          className="pa2 w-30"
+          className="w-30"
           placeholder="Search"
           value={searchInput}
           onChange={this.onSearchChange}
         />
+        <Link to={'/queries/new'}>
+          <Button type="primary">New Query</Button>
+        </Link>
       </div>
     )
   }
