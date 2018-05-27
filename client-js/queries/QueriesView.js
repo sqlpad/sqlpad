@@ -4,9 +4,7 @@ import Table from 'antd/lib/table'
 import Divider from 'antd/lib/divider'
 import Popconfirm from 'antd/lib/popconfirm'
 import Button from 'antd/lib/button'
-import Select from 'antd/lib/select'
 import Tag from 'antd/lib/tag'
-import Icon from 'antd/lib/icon'
 import Input from 'antd/lib/input'
 import uniq from 'lodash.uniq'
 import fetchJson from '../utilities/fetch-json.js'
@@ -22,12 +20,8 @@ import 'antd/lib/popconfirm/style/css'
 import 'antd/lib/button/style/css'
 import 'antd/lib/tag/style/css'
 
-const { Option } = Select
 const { Column } = Table
 const { Search } = Input
-
-const popoverClasses =
-  'flex pa2 shadow-3 br2 bw1 ba b--near-white bg-near-white'
 
 class QueriesView extends React.Component {
   state = {
@@ -195,8 +189,8 @@ class QueriesView extends React.Component {
   handleTableChange = (pagination, filters, sorter) => {
     // filters is an object with keys based on column dataIndex
     // the value will be an array of selected values
-    const { createdBy } = filters
-    this.setState({ selectedCreatedBy: createdBy[0] || '' })
+    const { createdBy, tags } = filters
+    this.setState({ selectedCreatedBy: createdBy[0] || '', selectedTags: tags })
   }
 
   renderTable() {
@@ -276,40 +270,9 @@ class QueriesView extends React.Component {
           title="Tags"
           key="tags"
           render={this.tagsRender}
-          filterDropdown={
-            <div className={popoverClasses}>
-              <Select
-                mode="multiple"
-                ref={ele => (this.tagsFilter = ele)}
-                className="w5 pr2"
-                placeholder="Filter by tag"
-                value={selectedTags}
-                onChange={selectedTags => this.setState({ selectedTags })}
-              >
-                {tags.map(tag => <Option key={tag}>{tag}</Option>)}
-              </Select>
-            </div>
-          }
-          filterIcon={
-            <Icon
-              type="filter"
-              style={{
-                color:
-                  this.state.selectedTags && this.state.selectedTags.length
-                    ? '#108ee9'
-                    : '#aaa'
-              }}
-            />
-          }
-          filterDropdownVisible={this.state.tagFilterDropdownVisible}
-          onFilterDropdownVisibleChange={visible => {
-            this.setState(
-              {
-                tagFilterDropdownVisible: visible
-              },
-              () => this.tagsFilter && this.tagsFilter.focus()
-            )
-          }}
+          filters={tags.map(tag => {
+            return { text: tag, value: tag }
+          })}
         />
         <Column
           title="Created by"
