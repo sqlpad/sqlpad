@@ -21,10 +21,10 @@ import 'antd/lib/popconfirm/style/css'
 import 'antd/lib/button/style/css'
 import 'antd/lib/tag/style/css'
 
-// import Layout from 'antd/lib/layout'
-// import 'antd/lib/layout/style/css'
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
 
-// const { Header, Content, Footer, Sider } = Layout
+const { Header, Content } = Layout
 
 const { Option } = Select
 const { Column } = Table
@@ -306,7 +306,7 @@ class QueriesView extends React.Component {
       tags
     } = this.state
     return (
-      <div className="pa3 w-100 flex bg-near-white">
+      <div className="pt4 pb4 w-100 flex">
         <Search
           className="w-25 mr2"
           placeholder="Search"
@@ -350,17 +350,22 @@ class QueriesView extends React.Component {
 
   render() {
     return (
-      <div className="flex w-100 flex-column">
-        <div>
-          <div className="ma3 f1 fl">Queries</div>
-          <Link to={'/queries/new'} className="ma4 fr">
+      <Layout
+        style={{ minHeight: '100vh' }}
+        className="flex w-100 flex-column h-100"
+      >
+        <Header className=" pr4 pl4">
+          <div className="f1 fl white">Queries</div>
+          <Link to={'/queries/new'} className="fr">
             <Button type="primary">New Query</Button>
           </Link>
-        </div>
-        {this.renderFilters()}
-        <div className="pa2">{this.renderTable()}</div>
-        {this.renderPreview()}
-      </div>
+        </Header>
+        <Content className="ma4">
+          {this.renderFilters()}
+          <div className="bg-white">{this.renderTable()}</div>
+          {this.renderPreview()}
+        </Content>
+      </Layout>
     )
   }
 }
