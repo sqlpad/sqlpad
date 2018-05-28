@@ -8,6 +8,9 @@ import Checkbox from 'react-bootstrap/lib/Checkbox'
 import Button from 'react-bootstrap/lib/Button'
 import fetchJson from '../utilities/fetch-json.js'
 
+import Tag from 'antd/lib/tag'
+import 'antd/lib/tag/style/css'
+
 const TEXT = 'TEXT'
 const PASSWORD = 'PASSWORD'
 const CHECKBOX = 'CHECKBOX'
@@ -107,7 +110,9 @@ class ConnectionForm extends React.Component {
       isSaving,
       isTesting,
       testConnection,
-      saveConnection
+      saveConnection,
+      testFailed,
+      testSuccess
     } = this.props
     const { drivers } = this.state
 
@@ -174,6 +179,12 @@ class ConnectionForm extends React.Component {
           >
             {isTesting ? 'Testing...' : 'Test'}
           </Button>
+          {testSuccess && (
+            <Tag className="ml2 b--dark-green bg-green white">Success</Tag>
+          )}
+          {testFailed && (
+            <Tag className="ml2 b--dark-red bg-red white">Failed</Tag>
+          )}
         </Form>
       </div>
     )
@@ -181,17 +192,21 @@ class ConnectionForm extends React.Component {
 }
 
 ConnectionForm.propTypes = {
+  isSaving: PropTypes.bool,
+  isTesting: PropTypes.bool,
+  saveConnection: PropTypes.func.isRequired,
   selectedConnection: PropTypes.object,
   testConnection: PropTypes.func.isRequired,
-  saveConnection: PropTypes.func.isRequired,
-  isTesting: PropTypes.bool,
-  isSaving: PropTypes.bool
+  testFailed: PropTypes.bool,
+  testSuccess: PropTypes.bool
 }
 
 ConnectionForm.defaultProps = {
-  isTesting: false,
   isSaving: false,
-  selectedConnection: null
+  isTesting: false,
+  selectedConnection: null,
+  testFailed: false,
+  testSuccess: false
 }
 
 export default ConnectionForm
