@@ -95,7 +95,11 @@ class App extends React.Component {
           onCollapse={this.onCollapse}
         >
           <div
-            style={{ minHeight: '100vh', paddingBottom: '50px' }}
+            style={{
+              minHeight: '100vh',
+              paddingBottom: '50px',
+              paddingTop: '64px'
+            }}
             className="flex flex-column justify-between"
           >
             <Route
