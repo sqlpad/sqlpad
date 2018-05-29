@@ -186,7 +186,7 @@ class ConnectionsView extends React.Component {
           render={(text, record) => {
             return (
               <Popconfirm
-                title="Are you sure?"
+                title="Delete connection?"
                 onConfirm={e => this.handleDelete(record)}
                 onCancel={() => {}}
                 okText="Yes"
@@ -216,6 +216,7 @@ class ConnectionsView extends React.Component {
         title={selectedConnection._id ? 'Edit connection' : 'New connection'}
         visible={showModal}
         footer={null}
+        width={'700px'}
         destroyOnClose={true}
         onCancel={() =>
           this.setState({

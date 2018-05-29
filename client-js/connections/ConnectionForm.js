@@ -1,15 +1,29 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Form from 'react-bootstrap/lib/Form'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-import Checkbox from 'react-bootstrap/lib/Checkbox'
-import Button from 'react-bootstrap/lib/Button'
 import fetchJson from '../utilities/fetch-json.js'
+
+import 'antd/dist/antd.css'
 
 import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
+
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+
+import Checkbox from 'antd/lib/checkbox'
+import 'antd/lib/checkbox/style/css'
+
+import Form from 'antd/lib/form'
+import 'antd/lib/form/style/css'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+
+const FormItem = Form.Item
+const { Option } = Select
 
 const TEXT = 'TEXT'
 const PASSWORD = 'PASSWORD'
@@ -27,7 +41,6 @@ class ConnectionForm extends React.Component {
   // TODO move this to app load - no reason this will change
   loadDriversFromServer = () => {
     fetchJson('GET', '/api/drivers').then(json => {
-      console.log(json)
       this.setState({ drivers: json.drivers })
     })
   }
@@ -39,6 +52,9 @@ class ConnectionForm extends React.Component {
   onCheckboxChange = e => {
     this.props.setConnectionValue(e.target.name, e.target.checked)
   }
+
+  getSelectChangeHandler = fieldName => value =>
+    this.props.setConnectionValue(fieldName, value)
 
   renderDriverFields() {
     const { selectedConnection } = this.props
@@ -59,36 +75,35 @@ class ConnectionForm extends React.Component {
         if (field.formType === TEXT) {
           const value = connection[field.key] || ''
           return (
-            <FormGroup key={field.key} controlId={field.key}>
-              <ControlLabel>{field.label}</ControlLabel>
-              <FormControl
-                type="text"
+            <FormItem key={field.key}>
+              <label className="near-black">{field.label}</label>
+              <Input
                 name={field.key}
                 value={value}
                 onChange={this.onTextInputChange}
               />
-            </FormGroup>
+            </FormItem>
           )
         } else if (field.formType === PASSWORD) {
           const value = connection[field.key] || ''
           // autoComplete='new-password' used to prevent browsers from autofilling username and password
           // Because we dont return a password, Chrome goes ahead and autofills
           return (
-            <FormGroup key={field.key} controlId={field.key}>
-              <ControlLabel>{field.label}</ControlLabel>
-              <FormControl
+            <FormItem key={field.key}>
+              <label className="near-black">{field.label}</label>
+              <Input
                 type="password"
                 autoComplete="new-password"
                 name={field.key}
                 value={value}
                 onChange={this.onTextInputChange}
               />
-            </FormGroup>
+            </FormItem>
           )
         } else if (field.formType === CHECKBOX) {
           const checked = connection[field.key] || false
           return (
-            <FormGroup key={field.key} controlId={field.key}>
+            <FormItem key={field.key}>
               <Checkbox
                 checked={checked}
                 name={field.key}
@@ -96,7 +111,7 @@ class ConnectionForm extends React.Component {
               >
                 {field.label}
               </Checkbox>
-            </FormGroup>
+            </FormItem>
           )
         }
         return null
@@ -116,20 +131,20 @@ class ConnectionForm extends React.Component {
     } = this.props
     const { drivers } = this.state
 
-    const driverSelectOptions = [<option key="none" value="" />]
+    const driverSelectOptions = [<Option key="none" value="" />]
 
     if (!drivers.length) {
       driverSelectOptions.push(
-        <option key="loading" value="">
+        <Option key="loading" value="">
           Loading...
-        </option>
+        </Option>
       )
     } else {
       drivers.sort((a, b) => a.name > b.name).forEach(driver =>
         driverSelectOptions.push(
-          <option key={driver.id} value={driver.id}>
+          <Option key={driver.id} value={driver.id} name="driver">
             {driver.name}
-          </option>
+          </Option>
         )
       )
     }
@@ -137,55 +152,47 @@ class ConnectionForm extends React.Component {
     const connection = selectedConnection
     return (
       <div>
-        <Form>
-          <FormGroup
-            controlId="name"
-            validationState={connection.name ? null : 'error'}
-          >
-            <ControlLabel>Connection Name</ControlLabel>
-            <FormControl
-              type="text"
+        <Form layout="vertical">
+          <FormItem validateStatus={connection.name ? null : 'error'}>
+            <label className="near-black">Connection name</label>
+            <Input
               name="name"
               value={connection.name || ''}
               onChange={this.onTextInputChange}
             />
-          </FormGroup>
-          <FormGroup
-            controlId="driver"
-            validationState={connection.driver ? null : 'error'}
-          >
-            <ControlLabel>Database Driver</ControlLabel>
-            <FormControl
-              componentClass="select"
+          </FormItem>
+          <FormItem validateStatus={connection.driver ? null : 'error'}>
+            <label className="near-black">Driver</label>
+            <Select
               name="driver"
               value={connection.driver || ''}
-              onChange={this.onTextInputChange}
+              onChange={this.getSelectChangeHandler('driver')}
             >
               {driverSelectOptions}
-            </FormControl>
-          </FormGroup>
+            </Select>
+          </FormItem>
           {this.renderDriverFields()}
-          <Button
-            style={{ width: 100 }}
-            onClick={saveConnection}
-            disabled={isSaving}
-          >
-            {isSaving ? 'Saving...' : 'Save'}
-          </Button>{' '}
-          <Button
-            style={{ width: 100 }}
-            onClick={testConnection}
-            disabled={isTesting}
-          >
-            {isTesting ? 'Testing...' : 'Test'}
-          </Button>
-          {testSuccess && (
-            <Tag className="ml2 b--dark-green bg-green white">Success</Tag>
-          )}
-          {testFailed && (
-            <Tag className="ml2 b--dark-red bg-red white">Failed</Tag>
-          )}
         </Form>
+        <Button
+          style={{ width: 100 }}
+          onClick={saveConnection}
+          disabled={isSaving}
+        >
+          {isSaving ? 'Saving...' : 'Save'}
+        </Button>{' '}
+        <Button
+          style={{ width: 100 }}
+          onClick={testConnection}
+          disabled={isTesting}
+        >
+          {isTesting ? 'Testing...' : 'Test'}
+        </Button>
+        {testSuccess && (
+          <Tag className="ml2 b--dark-green bg-green white">Success</Tag>
+        )}
+        {testFailed && (
+          <Tag className="ml2 b--dark-red bg-red white">Failed</Tag>
+        )}
       </div>
     )
   }
