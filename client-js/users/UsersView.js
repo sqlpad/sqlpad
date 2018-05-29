@@ -7,7 +7,14 @@ import SimpleTable from '../common/SimpleTable'
 import SimpleTh from '../common/SimpleTableTh'
 import UserListRow from './UserListRow'
 import Modal from '../common/Modal'
-import Button from '../common/Button'
+
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
+const { Header, Content } = Layout
 
 class UsersView extends React.Component {
   state = {
@@ -91,61 +98,68 @@ class UsersView extends React.Component {
     const { users, showAddUser } = this.state
 
     return (
-      <div className="flex w-100 flex-column">
-        <div>
-          <div className="ma4 f1 fl">Users</div>
-          <Button
-            className="ma4 fr"
-            primary
-            onClick={() => this.setState({ showAddUser: true })}
-          >
-            New user
-          </Button>
-        </div>
-        <SimpleTable
-          className="w-100"
-          renderHeader={() => {
-            return (
-              <tr>
-                <SimpleTh>Email</SimpleTh>
-                <SimpleTh>Role</SimpleTh>
-                <SimpleTh>Created</SimpleTh>
-                <SimpleTh>Password reset</SimpleTh>
-                <SimpleTh>Delete</SimpleTh>
-              </tr>
-            )
-          }}
-          renderBody={() =>
-            users.map(user => {
+      <Layout
+        style={{ minHeight: '100vh' }}
+        className="flex w-100 flex-column h-100"
+      >
+        <Header className=" pr4 pl4">
+          <div className="f1 fl white">Users</div>
+          <div className="fr">
+            <Button
+              type="primary"
+              onClick={() => this.setState({ showAddUser: true })}
+            >
+              New user
+            </Button>
+          </div>
+        </Header>
+        <Content className="ma4">
+          <div className="bg-white">
+            <SimpleTable
+              className="w-100"
+              renderHeader={() => {
+                return (
+                  <tr>
+                    <SimpleTh>Email</SimpleTh>
+                    <SimpleTh>Role</SimpleTh>
+                    <SimpleTh>Created</SimpleTh>
+                    <SimpleTh>Password reset</SimpleTh>
+                    <SimpleTh>Delete</SimpleTh>
+                  </tr>
+                )
+              }}
+              renderBody={() =>
+                users.map(user => {
+                  return (
+                    <UserListRow
+                      key={user._id}
+                      user={user}
+                      currentUser={currentUser}
+                      handleDelete={this.handleDelete}
+                      updateUserRole={this.updateUserRole}
+                      generatePasswordResetLink={this.generatePasswordResetLink}
+                      removePasswordResetLink={this.removePasswordResetLink}
+                    />
+                  )
+                })
+              }
+            />
+          </div>
+          <Modal
+            title="New user"
+            show={showAddUser}
+            onHide={() => this.setState({ showAddUser: false })}
+            renderBody={() => {
               return (
-                <UserListRow
-                  key={user._id}
-                  user={user}
-                  currentUser={currentUser}
-                  handleDelete={this.handleDelete}
-                  updateUserRole={this.updateUserRole}
-                  generatePasswordResetLink={this.generatePasswordResetLink}
-                  removePasswordResetLink={this.removePasswordResetLink}
+                <InviteUserForm
+                  onInvited={this.handleOnInvited}
+                  config={config}
                 />
               )
-            })
-          }
-        />
-
-        <Modal
-          title="New user"
-          show={showAddUser}
-          onHide={() => this.setState({ showAddUser: false })}
-          renderBody={() => {
-            return (
-              <InviteUserForm
-                onInvited={this.handleOnInvited}
-                config={config}
-              />
-            )
-          }}
-        />
-      </div>
+            }}
+          />
+        </Content>
+      </Layout>
     )
   }
 }
