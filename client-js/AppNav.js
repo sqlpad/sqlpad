@@ -82,6 +82,8 @@ class App extends React.Component {
 
   render() {
     const { redirect, version = {} } = this.state
+    const { currentUser } = this.props
+
     if (redirect) {
       return <Redirect push to="/signin" />
     }
@@ -123,33 +125,39 @@ class App extends React.Component {
                     <Icon type="plus" />
                     <span>New Query</span>
                   </Menu.Item>
-                  <Menu.Item
-                    key="connections"
-                    onClick={() => {
-                      history.push('/connections')
-                    }}
-                  >
-                    <Icon type="database" />
-                    <span>DB connections</span>
-                  </Menu.Item>
-                  <Menu.Item
-                    key="users"
-                    onClick={() => {
-                      history.push('/users')
-                    }}
-                  >
-                    <Icon type="team" />
-                    <span>Users</span>
-                  </Menu.Item>
-                  <Menu.Item
-                    key="configuration"
-                    onClick={() => {
-                      history.push('/config-values')
-                    }}
-                  >
-                    <Icon type="setting" />
-                    <span>Configuration</span>
-                  </Menu.Item>
+                  {currentUser.role === 'admin' && (
+                    <Menu.Item
+                      key="connections"
+                      onClick={() => {
+                        history.push('/connections')
+                      }}
+                    >
+                      <Icon type="database" />
+                      <span>DB connections</span>
+                    </Menu.Item>
+                  )}
+                  {currentUser.role === 'admin' && (
+                    <Menu.Item
+                      key="users"
+                      onClick={() => {
+                        history.push('/users')
+                      }}
+                    >
+                      <Icon type="team" />
+                      <span>Users</span>
+                    </Menu.Item>
+                  )}
+                  {currentUser.role === 'admin' && (
+                    <Menu.Item
+                      key="configuration"
+                      onClick={() => {
+                        history.push('/config-values')
+                      }}
+                    >
+                      <Icon type="setting" />
+                      <span>Configuration</span>
+                    </Menu.Item>
+                  )}
                 </Menu>
               )}
             />
