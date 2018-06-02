@@ -61,10 +61,10 @@ class QueryDetailsModal extends React.Component {
     return (
       <Modal
         width={'600px'}
-        destroyOnClose={true}
         visible={showModal}
+        cancelText={null}
         onCancel={onHide}
-        onOk={onHide}
+        footer={null}
       >
         <FormGroup>
           <ControlLabel>Query Tags</ControlLabel>
