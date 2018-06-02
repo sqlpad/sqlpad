@@ -1,11 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import DropdownButton from 'react-bootstrap/lib/DropdownButton'
 import MenuItem from 'react-bootstrap/lib/MenuItem'
 import IncompleteDataNotification from './common/IncompleteDataNotification'
 import QueryResultDataTable from './common/QueryResultDataTable.js'
 import fetchJson from './utilities/fetch-json.js'
 
-class QueryEditor extends React.Component {
+class QueryTableOnly extends React.Component {
   state = {
     isRunning: false,
     runQueryStartTime: undefined,
@@ -43,32 +44,37 @@ class QueryEditor extends React.Component {
   }
 
   render() {
-    var csvDownloadLink
-    var xlsxDownloadLink
-    if (this.state.queryResult) {
-      csvDownloadLink =
-        this.props.config.baseUrl +
-        '/download-results/' +
-        this.state.queryResult.cacheKey +
-        '.csv'
-      xlsxDownloadLink =
-        this.props.config.baseUrl +
-        '/download-results/' +
-        this.state.queryResult.cacheKey +
-        '.xlsx'
+    const {
+      isRunning,
+      query,
+      queryError,
+      queryResult,
+      querySuccess,
+      runQueryStartTime
+    } = this.state
+    const { config } = this.props
+    const { baseUrl, allowCsvDownload } = config
+
+    let csvDownloadLink
+    let xlsxDownloadLink
+    if (queryResult) {
+      const { cacheKey } = queryResult
+      csvDownloadLink = `${baseUrl}/download-results/${cacheKey}.csv`
+      xlsxDownloadLink = `${baseUrl}/download-results/${cacheKey}.xlsx`
     }
+
+    const incomplete = queryResult ? queryResult.incomplete : false
+
     return (
       <div
         className="flex w-100"
         style={{ flexDirection: 'column', padding: '16px' }}
       >
         <div style={{ height: '50px' }}>
-          <span className="f2">
-            {this.state.query ? this.state.query.name : ''}
-          </span>
+          <span className="f2">{query ? query.name : ''}</span>
           <div style={{ float: 'right' }}>
-            <IncompleteDataNotification queryResult={this.state.queryResult} />
-            {this.state.queryResult && this.props.config.allowCsvDownload ? (
+            <IncompleteDataNotification incomplete={incomplete} />
+            {queryResult && allowCsvDownload ? (
               <DropdownButton
                 title="Export"
                 id="export-dropdown-button"
@@ -88,11 +94,11 @@ class QueryEditor extends React.Component {
           <div className="relative w-100">
             <QueryResultDataTable
               {...this.props}
-              isRunning={this.state.isRunning}
-              runQueryStartTime={this.state.runQueryStartTime}
-              queryResult={this.state.queryResult}
-              queryError={this.state.queryError}
-              querySuccess={this.state.querySuccess}
+              isRunning={isRunning}
+              runQueryStartTime={runQueryStartTime}
+              queryResult={queryResult}
+              queryError={queryError}
+              querySuccess={querySuccess}
             />
           </div>
         </div>
@@ -101,4 +107,8 @@ class QueryEditor extends React.Component {
   }
 }
 
-export default QueryEditor
+QueryTableOnly.propTypes = {
+  config: PropTypes.object.isRequired
+}
+
+export default QueryTableOnly
