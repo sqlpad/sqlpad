@@ -2,8 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import EditableTagGroup from '../common/EditableTagGroup'
+
+import Icon from 'antd/lib/icon'
 
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
@@ -23,7 +24,7 @@ class QueryDetailsModal extends React.Component {
       return (
         <li role="presentation">
           <a href={href} target="_blank" rel="noopener noreferrer">
-            {text} <Glyphicon glyph="new-window" />
+            {text} <Icon type="export" />
           </a>
         </li>
       )
@@ -37,7 +38,7 @@ class QueryDetailsModal extends React.Component {
               rel="noopener noreferrer"
               onClick={e => e.preventDefault()}
             >
-              {text} <Glyphicon glyph="new-window" />
+              {text} <Icon type="export" />
             </a>
           </li>
         </Tooltip>
