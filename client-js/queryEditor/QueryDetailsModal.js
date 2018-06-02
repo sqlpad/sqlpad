@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import Tooltip from 'react-bootstrap/lib/Tooltip'
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import EditableTagGroup from '../common/EditableTagGroup'
 
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
+
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 class QueryDetailsModal extends React.Component {
   onQueryNameChange = e => {
@@ -27,13 +28,8 @@ class QueryDetailsModal extends React.Component {
         </li>
       )
     } else {
-      const tooltip = (
-        <Tooltip id="tooltip">
-          Save query to enable table/chart view links
-        </Tooltip>
-      )
       return (
-        <OverlayTrigger placement="top" overlay={tooltip}>
+        <Tooltip title="Save query to enable table/chart view links">
           <li role="presentation" className="disabled">
             <a
               href={href}
@@ -44,7 +40,7 @@ class QueryDetailsModal extends React.Component {
               {text} <Glyphicon glyph="new-window" />
             </a>
           </li>
-        </OverlayTrigger>
+        </Tooltip>
       )
     }
   }
