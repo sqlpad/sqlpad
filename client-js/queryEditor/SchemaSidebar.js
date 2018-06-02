@@ -1,12 +1,16 @@
 import React from 'react'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import fetchJson from '../utilities/fetch-json.js'
 import updateCompletions from '../utilities/updateCompletions.js'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
+
+import Icon from 'antd/lib/icon'
+
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
 
 class SchemaSidebar extends React.PureComponent {
   state = {
@@ -111,11 +115,13 @@ class SchemaSidebar extends React.PureComponent {
           <hr />
           <div style={{ position: 'relative' }}>
             <a style={{ position: 'absolute', right: '20px' }} href="#refresh">
-              <Glyphicon
-                glyph="refresh"
-                className={refreshClass}
-                onClick={this.handleRefreshClick}
-              />
+              <Tooltip title="Refresh schema">
+                <Icon
+                  type="reload"
+                  className={' ' + refreshClass}
+                  onClick={this.handleRefreshClick}
+                />
+              </Tooltip>
             </a>
             <ul className="pl0 f4 dib" style={{ minWidth: '230px' }}>
               {schemaItemNodes}
