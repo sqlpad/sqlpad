@@ -166,7 +166,11 @@ class ConnectionsView extends React.Component {
           key="name"
           render={(text, record) => {
             return (
-              <a href="#connection" onClick={() => this.handleSelect(record)}>
+              <a
+                className="f3"
+                href="#connection"
+                onClick={() => this.handleSelect(record)}
+              >
                 {record.name}
               </a>
             )
