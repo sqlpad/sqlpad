@@ -2,8 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import fetchJson from '../utilities/fetch-json.js'
 
-import 'antd/dist/antd.css'
-
 import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
 
