@@ -1,10 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import DropdownButton from 'react-bootstrap/lib/DropdownButton'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
 import IncompleteDataNotification from './common/IncompleteDataNotification'
 import QueryResultDataTable from './common/QueryResultDataTable.js'
 import fetchJson from './utilities/fetch-json.js'
+
+import Icon from 'antd/lib/icon'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
+import Menu from 'antd/lib/menu'
+import 'antd/lib/menu/style/css'
+
+import Dropdown from 'antd/lib/dropdown'
+import 'antd/lib/dropdown/style/css'
 
 class QueryTableOnly extends React.Component {
   state = {
@@ -43,6 +52,43 @@ class QueryTableOnly extends React.Component {
     this.runQuery(this.props.queryId)
   }
 
+  renderExportButton() {
+    const { queryResult } = this.state
+    const { config } = this.props
+    const { baseUrl, allowCsvDownload } = config
+
+    if (!queryResult || !allowCsvDownload) {
+      return
+    }
+
+    const { cacheKey } = queryResult
+    const csvDownloadLink = `${baseUrl}/download-results/${cacheKey}.csv`
+    const xlsxDownloadLink = `${baseUrl}/download-results/${cacheKey}.xlsx`
+
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <a target="_blank" href={csvDownloadLink}>
+            csv
+          </a>
+        </Menu.Item>
+        <Menu.Item>
+          <a target="_blank" href={xlsxDownloadLink}>
+            xlsx
+          </a>
+        </Menu.Item>
+      </Menu>
+    )
+
+    return (
+      <Dropdown overlay={menu}>
+        <Button>
+          Export <Icon type="down" />
+        </Button>
+      </Dropdown>
+    )
+  }
+
   render() {
     const {
       isRunning,
@@ -52,16 +98,6 @@ class QueryTableOnly extends React.Component {
       querySuccess,
       runQueryStartTime
     } = this.state
-    const { config } = this.props
-    const { baseUrl, allowCsvDownload } = config
-
-    let csvDownloadLink
-    let xlsxDownloadLink
-    if (queryResult) {
-      const { cacheKey } = queryResult
-      csvDownloadLink = `${baseUrl}/download-results/${cacheKey}.csv`
-      xlsxDownloadLink = `${baseUrl}/download-results/${cacheKey}.xlsx`
-    }
 
     const incomplete = queryResult ? queryResult.incomplete : false
 
@@ -74,20 +110,7 @@ class QueryTableOnly extends React.Component {
           <span className="f2">{query ? query.name : ''}</span>
           <div style={{ float: 'right' }}>
             <IncompleteDataNotification incomplete={incomplete} />
-            {queryResult && allowCsvDownload ? (
-              <DropdownButton
-                title="Export"
-                id="export-dropdown-button"
-                pullRight
-              >
-                <MenuItem eventKey="2" target="_blank" href={csvDownloadLink}>
-                  csv
-                </MenuItem>
-                <MenuItem eventKey="3" target="_blank" href={xlsxDownloadLink}>
-                  xlsx
-                </MenuItem>
-              </DropdownButton>
-            ) : null}
+            {this.renderExportButton()}
           </div>
         </div>
         <div className="flex h-100 ba b--moon-gray">
