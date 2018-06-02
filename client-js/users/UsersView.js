@@ -204,7 +204,7 @@ class UsersView extends React.Component {
         title="New user"
         visible={showAddUser}
         footer={null}
-        width={'700px'}
+        width={'500px'}
         destroyOnClose={true}
         onCancel={() => this.setState({ showAddUser: false })}
       >
