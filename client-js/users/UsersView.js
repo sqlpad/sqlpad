@@ -3,7 +3,6 @@ import fetchJson from '../utilities/fetch-json.js'
 import uuid from 'uuid'
 import message from 'antd/lib/message'
 import InviteUserForm from './InviteUserForm'
-import Modal from '../common/Modal'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
 
@@ -21,6 +20,9 @@ import 'antd/lib/button/style/css'
 
 import Select from 'antd/lib/select'
 import 'antd/lib/select/style/css'
+
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
 
 const { Header, Content } = Layout
 const { Column } = Table
@@ -194,10 +196,24 @@ class UsersView extends React.Component {
     )
   }
 
-  render() {
+  renderModal() {
     const { config } = this.props
     const { showAddUser } = this.state
+    return (
+      <Modal
+        title="New user"
+        visible={showAddUser}
+        footer={null}
+        width={'700px'}
+        destroyOnClose={true}
+        onCancel={() => this.setState({ showAddUser: false })}
+      >
+        <InviteUserForm onInvited={this.handleOnInvited} config={config} />
+      </Modal>
+    )
+  }
 
+  render() {
     return (
       <Layout
         style={{ minHeight: '100vh' }}
@@ -216,19 +232,7 @@ class UsersView extends React.Component {
         </Header>
         <Content className="ma4">
           <div className="bg-white">{this.renderTable()}</div>
-          <Modal
-            title="New user"
-            show={showAddUser}
-            onHide={() => this.setState({ showAddUser: false })}
-            renderBody={() => {
-              return (
-                <InviteUserForm
-                  onInvited={this.handleOnInvited}
-                  config={config}
-                />
-              )
-            }}
-          />
+          {this.renderModal()}
         </Content>
       </Layout>
     )
