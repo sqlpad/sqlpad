@@ -1,11 +1,21 @@
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
 import message from 'antd/lib/message'
-import Form from 'react-bootstrap/lib/Form'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-import Button from 'react-bootstrap/lib/Button'
+
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+
+import Form from 'antd/lib/form'
+import 'antd/lib/form/style/css'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+
+const FormItem = Form.Item
+const { Option } = Select
 
 class InviteUserForm extends React.Component {
   state = {
@@ -18,10 +28,8 @@ class InviteUserForm extends React.Component {
     this.setState({ email: e.target.value })
   }
 
-  onRoleChange = e => {
-    this.setState({
-      role: e.target.value
-    })
+  onRoleChange = role => {
+    this.setState({ role })
   }
 
   onInviteClick = e => {
@@ -50,46 +58,44 @@ class InviteUserForm extends React.Component {
   }
 
   render() {
+    const { config } = this.props
+    const { email, role, isInviting } = this.state
+
     return (
       <div>
-        <Form>
-          <p>
-            Users may only sign up if they have first been whitelisted. Once
-            whitelisted, invite them to continue the sign-up process on the{' '}
-            <a href={this.props.config.baseUrl + '/signup'}>signup page</a>.
-          </p>
-          <p>
-            <strong>Admins</strong> can add and edit database connections, as
-            well as whitelist/invite users to join.
-          </p>
-          <hr />
-          <FormGroup
-            controlId="email"
-            validationState={this.state.email ? null : 'warning'}
-          >
-            <ControlLabel>Email</ControlLabel>
-            <FormControl
-              type="text"
-              value={this.state.email || ''}
+        <p>
+          Users may only sign up if they have first been whitelisted. Once
+          whitelisted, invite them to continue the sign-up process on the{' '}
+          <a href={config.baseUrl + '/signup'}>signup page</a>.
+        </p>
+        <p>
+          <strong>Admins</strong> can add and edit database connections, as well
+          as whitelist/invite users to join.
+        </p>
+        <hr />
+        <Form layout="vertical">
+          <FormItem validateStatus={email ? null : 'error'}>
+            <label className="near-black">Email</label>
+            <Input
+              name="email"
+              type="email"
+              value={email || ''}
               onChange={this.onEmailChange}
             />
-          </FormGroup>
-          <FormGroup
-            controlId="role"
-            validationState={this.state.role ? null : 'warning'}
+          </FormItem>
+          <FormItem validateStatus={role ? null : 'error'}>
+            <label className="near-black">Role</label>
+            <Select name="role" value={role || ''} onChange={this.onRoleChange}>
+              <Option value="editor">Editor</Option>
+              <Option value="admin">Admin</Option>
+            </Select>
+          </FormItem>
+          <Button
+            className="align-right"
+            type="primary"
+            onClick={this.onInviteClick}
+            disabled={isInviting}
           >
-            <ControlLabel>Role</ControlLabel>
-            <FormControl
-              componentClass="select"
-              value={this.state.role || ''}
-              onChange={this.onRoleChange}
-            >
-              <option value="" />
-              <option value="editor">Editor</option>
-              <option value="admin">Admin</option>
-            </FormControl>
-          </FormGroup>
-          <Button onClick={this.onInviteClick} disabled={this.state.isInviting}>
             Whitelist User
           </Button>
         </Form>
