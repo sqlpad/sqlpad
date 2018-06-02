@@ -2,22 +2,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-import Button from 'react-bootstrap/lib/Button'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import Modal from 'react-bootstrap/lib/Modal'
 import Tooltip from 'react-bootstrap/lib/Tooltip'
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
 import EditableTagGroup from '../common/EditableTagGroup'
 
-class QueryDetailsModal extends React.Component {
-  input = undefined
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
 
+class QueryDetailsModal extends React.Component {
   onQueryNameChange = e => {
     this.props.onQueryNameChange(e.target.value)
-  }
-
-  onEntered = () => {
-    if (this.input) this.input.focus()
   }
 
   renderNavLink = (href, text) => {
@@ -69,50 +64,45 @@ class QueryDetailsModal extends React.Component {
 
     return (
       <Modal
-        animation
-        onEntered={this.onEntered}
-        onHide={onHide}
-        show={showModal}
+        width={'600px'}
+        destroyOnClose={true}
+        visible={showModal}
+        onCancel={onHide}
+        onOk={onHide}
       >
-        <Modal.Header closeButton />
-        <Modal.Body>
-          <FormGroup>
-            <ControlLabel>Query Tags</ControlLabel>
-            <EditableTagGroup
-              tags={query.tags}
-              onChange={onQueryTagsChange}
-              tagOptions={tagOptions}
-            />
-          </FormGroup>
-          <hr />
-          <p>
-            <strong>Shortcuts</strong>
-          </p>
-          <ul style={{ paddingLeft: 0 }}>
-            <li style={{ listStyleType: 'none', marginBottom: 8 }}>
-              <code>ctrl+s</code> / <code>command+s</code> : Save
-            </li>
-            <li style={{ listStyleType: 'none', marginBottom: 8 }}>
-              <code>ctrl+return</code> / <code>command+return</code> : Run
-            </li>
-            <li style={{ listStyleType: 'none', marginBottom: 8 }}>
-              <code>shift+return</code> : Format
-            </li>
-          </ul>
-          <hr />
-          <p>
-            <strong>Tip</strong>
-          </p>
-          <p>Run only a portion of a query by highlighting it first.</p>
-          <hr />
-          <ul className="nav nav-pills nav-justified">
-            {this.renderNavLink(tableUrl, 'Link to Table')}
-            {this.renderNavLink(chartUrl, 'Link to Chart')}
-          </ul>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onHide}>Close</Button>
-        </Modal.Footer>
+        <FormGroup>
+          <ControlLabel>Query Tags</ControlLabel>
+          <EditableTagGroup
+            tags={query.tags}
+            onChange={onQueryTagsChange}
+            tagOptions={tagOptions}
+          />
+        </FormGroup>
+        <hr />
+        <p>
+          <strong>Shortcuts</strong>
+        </p>
+        <ul style={{ paddingLeft: 0 }}>
+          <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+            <code>ctrl+s</code> / <code>command+s</code> : Save
+          </li>
+          <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+            <code>ctrl+return</code> / <code>command+return</code> : Run
+          </li>
+          <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+            <code>shift+return</code> : Format
+          </li>
+        </ul>
+        <hr />
+        <p>
+          <strong>Tip</strong>
+        </p>
+        <p>Run only a portion of a query by highlighting it first.</p>
+        <hr />
+        <ul className="nav nav-pills nav-justified">
+          {this.renderNavLink(tableUrl, 'Link to Table')}
+          {this.renderNavLink(chartUrl, 'Link to Chart')}
+        </ul>
       </Modal>
     )
   }
