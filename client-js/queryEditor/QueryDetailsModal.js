@@ -1,7 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import ControlLabel from 'react-bootstrap/lib/ControlLabel'
 import EditableTagGroup from '../common/EditableTagGroup'
 
 import Icon from 'antd/lib/icon'
@@ -67,17 +65,15 @@ class QueryDetailsModal extends React.Component {
         onCancel={onHide}
         footer={null}
       >
-        <FormGroup>
-          <ControlLabel>Query Tags</ControlLabel>
-          <EditableTagGroup
-            tags={query.tags}
-            onChange={onQueryTagsChange}
-            tagOptions={tagOptions}
-          />
-        </FormGroup>
+        <label>Query Tags</label>
+        <EditableTagGroup
+          tags={query.tags}
+          onChange={onQueryTagsChange}
+          tagOptions={tagOptions}
+        />
         <hr />
         <p>
-          <strong>Shortcuts</strong>
+          <label>Shortcuts</label>
         </p>
         <ul style={{ paddingLeft: 0 }}>
           <li style={{ listStyleType: 'none', marginBottom: 8 }}>
