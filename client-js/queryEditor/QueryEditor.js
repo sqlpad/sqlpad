@@ -219,7 +219,9 @@ class QueryEditor extends React.Component {
     }
   }
 
-  handleTabSelect = activeTabKey => this.setState({ activeTabKey })
+  handleTabSelect = e => {
+    this.setState({ activeTabKey: e.target.value })
+  }
 
   handleVisualizeClick = () => this.sqlpadTauChart.renderChart(true)
 

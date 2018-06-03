@@ -3,9 +3,22 @@ import PropTypes from 'prop-types'
 import Navbar from 'react-bootstrap/lib/Navbar'
 import Nav from 'react-bootstrap/lib/Nav'
 import NavItem from 'react-bootstrap/lib/NavItem'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import Button from 'react-bootstrap/lib/Button'
-import FormControl from 'react-bootstrap/lib/FormControl'
+
+import Icon from 'antd/lib/icon'
+
+import Radio from 'antd/lib/radio'
+import 'antd/lib/radio/style/css'
+
+import Form from 'antd/lib/form'
+import 'antd/lib/form/style/css'
+
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
+const FormItem = Form.Item
 
 class EditorNavBar extends React.Component {
   onQueryNameChange = e => {
@@ -33,16 +46,25 @@ class EditorNavBar extends React.Component {
     const saveText = unsavedChanges ? 'Save*' : 'Save'
     const cloneDisabled = !query._id
 
+    console.log('activeTabKey ', activeTabKey)
+
     return (
       <Navbar fluid>
-        <Nav activeKey={activeTabKey} bsStyle="pills" onSelect={onTabSelect}>
-          <NavItem eventKey="sql">
-            <span className="glyphicon glyphicon-align-left" /> SQL
-          </NavItem>
-          <NavItem eventKey="vis">
-            <span className="glyphicon glyphicon-stats" /> Vis
-          </NavItem>
+        <Nav>
+          <Radio.Group
+            className="mt3"
+            value={activeTabKey}
+            onChange={onTabSelect}
+          >
+            <Radio.Button value="sql">
+              <Icon type="code-o" /> SQL
+            </Radio.Button>
+            <Radio.Button value="vis">
+              <Icon type="bar-chart" /> Vis
+            </Radio.Button>
+          </Radio.Group>
         </Nav>
+
         <Nav>
           <NavItem
             eventKey={1}
@@ -74,24 +96,21 @@ class EditorNavBar extends React.Component {
           </NavItem>
         </Nav>
         <Navbar.Form>
-          <FormGroup
-            validationState={validationState}
-            style={{ marginTop: '-1px', marginLeft: 12 }}
-          >
-            <FormControl
+          <FormItem className="ml4 dib" validateStatus={validationState}>
+            <Input
               style={{
                 width: 300,
                 color: '#111',
                 padding: '5px 12px',
-                fontSize: '16px'
+                fontSize: '16px',
+                display: 'inline-block'
               }}
-              type="text"
               placeholder="Query name"
-              onChange={this.onQueryNameChange}
               value={query.name}
+              onChange={this.onQueryNameChange}
             />
-          </FormGroup>
-          <Button style={{ marginLeft: 4 }} onClick={onMoreClick}>
+          </FormItem>
+          <Button className="ml2 mt1" onClick={onMoreClick}>
             &hellip;
           </Button>
         </Navbar.Form>
