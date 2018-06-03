@@ -1,6 +1,5 @@
 import React from 'react'
 import message from 'antd/lib/message'
-import Form from 'react-bootstrap/lib/Form'
 import debounce from 'lodash.debounce'
 import CheckListItem from './CheckListItem'
 import ConfigEnvDocumentation from './ConfigEnvDocumentation'
@@ -158,9 +157,7 @@ class ConfigurationView extends React.Component {
         </Header>
         <Content className="ma4">
           <Row gutter={16}>
-            <Col span={16}>
-              <Form horizontal>{this.renderConfigInputs()}</Form>
-            </Col>
+            <Col span={16}>{this.renderConfigInputs()}</Col>
             <Col span={8}>
               <div className="bg-white ba br2 b--light-gray pa4">
                 <p>
