@@ -3,11 +3,13 @@ import PropTypes from 'prop-types'
 import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
-import Button from 'react-bootstrap/lib/Button'
 import ChartInputs from './ChartInputs.js'
 import chartDefinitions from '../utilities/chartDefinitions.js'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 class VisSidebar extends React.Component {
   render() {
@@ -52,18 +54,13 @@ class VisSidebar extends React.Component {
         </SidebarBody>
         <div className="pa4 bt b--near-white">
           <Button
+            className="w-100 mb3"
             onClick={onVisualizeClick}
             disabled={!isChartable}
-            className={'btn-block'}
-            bsSize={'sm'}
           >
             Visualize
           </Button>
-          <Button
-            onClick={onSaveImageClick}
-            className={'btn-block'}
-            bsSize={'sm'}
-          >
+          <Button className="w-100 mb3" onClick={onSaveImageClick}>
             <Glyphicon glyph="save" /> Save Chart Image
           </Button>
         </div>
