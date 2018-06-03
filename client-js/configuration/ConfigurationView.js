@@ -76,12 +76,12 @@ class ConfigurationView extends React.Component {
     }
     const overriddenBy = effectiveValueSourceLabels[config.effectiveValueSource]
 
-    var defaultValue = () => {
-      if (config.default === '') {
-        return <em style={{ color: '#999' }}>empty</em>
-      }
-      return <span>{config.default.toString()}</span>
-    }
+    const defaultValue =
+      config.default === '' ? (
+        <em style={{ color: '#999' }}>empty</em>
+      ) : (
+        <span>{config.default.toString()}</span>
+      )
 
     const cliFlag =
       config.cliFlag && config.cliFlag.pop
@@ -92,7 +92,7 @@ class ConfigurationView extends React.Component {
       <div style={{ width: '300px' }}>
         <p>{config.description}</p>
         <p>
-          <strong>Default:</strong> {defaultValue()}
+          <strong>Default:</strong> {defaultValue}
         </p>
         {cliFlag && (
           <p>
