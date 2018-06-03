@@ -124,19 +124,6 @@ class ConfigurationView extends React.Component {
     const uiConfigItems = configItems.filter(
       config => config.interface === 'ui'
     )
-
-    // const configs = configItems
-    //   .filter(config => config.interface === 'ui')
-    //   .map(config => {
-    //     return (
-    //       <ConfigItemInput
-    //         key={config.key}
-    //         config={config}
-    //         saveConfigValue={this.saveConfigValue}
-    //       />
-    //     )
-    //   })
-
     return (
       <Table
         className="bg-white w-100"
