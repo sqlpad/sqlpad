@@ -1,8 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Navbar from 'react-bootstrap/lib/Navbar'
-import Nav from 'react-bootstrap/lib/Nav'
-import NavItem from 'react-bootstrap/lib/NavItem'
 
 import Icon from 'antd/lib/icon'
 
@@ -47,72 +44,46 @@ class EditorNavBar extends React.Component {
     const cloneDisabled = !query._id
 
     return (
-      <Navbar fluid>
-        <Nav>
-          <Radio.Group
-            className="mt3"
-            value={activeTabKey}
-            onChange={onTabSelect}
-          >
-            <Radio.Button value="sql">
-              <Icon type="code-o" /> SQL
-            </Radio.Button>
-            <Radio.Button value="vis">
-              <Icon type="bar-chart" /> Vis
-            </Radio.Button>
-          </Radio.Group>
-        </Nav>
-
-        <Nav>
-          <NavItem
-            eventKey={1}
-            href="#"
-            onClick={onCloneClick}
-            disabled={cloneDisabled}
-          >
-            Clone
-          </NavItem>
-          <NavItem eventKey={2} href="#" onClick={onFormatClick}>
-            Format
-          </NavItem>
-          <NavItem
-            style={{ minWidth: 68 }}
-            eventKey={3}
-            href="#"
-            onClick={onSaveClick}
-            disabled={isSaving}
-          >
-            {saveText}
-          </NavItem>
-          <NavItem
-            eventKey={4}
-            href="#"
-            onClick={onRunClick}
-            disabled={isRunning}
-          >
-            Run
-          </NavItem>
-        </Nav>
-        <Navbar.Form>
-          <FormItem className="ml4 dib" validateStatus={validationState}>
+      <div className="w-100">
+        <Form layout="inline">
+          <FormItem>
+            <Radio.Group value={activeTabKey} onChange={onTabSelect}>
+              <Radio.Button value="sql">
+                <Icon type="code-o" /> SQL
+              </Radio.Button>
+              <Radio.Button value="vis">
+                <Icon type="bar-chart" /> Vis
+              </Radio.Button>
+            </Radio.Group>
+          </FormItem>
+          <FormItem>
+            <Button onClick={onCloneClick} disabled={cloneDisabled}>
+              Clone
+            </Button>
+            <Button onClick={onFormatClick}>Format</Button>
+            <Button
+              style={{ minWidth: 68 }}
+              onClick={onSaveClick}
+              disabled={isSaving}
+            >
+              {saveText}
+            </Button>
+            <Button onClick={onRunClick} disabled={isRunning}>
+              Run
+            </Button>
+          </FormItem>
+          <FormItem validateStatus={validationState}>
             <Input
-              style={{
-                width: 300,
-                color: '#111',
-                padding: '5px 12px',
-                fontSize: '16px',
-                display: 'inline-block'
-              }}
               placeholder="Query name"
               value={query.name}
               onChange={this.onQueryNameChange}
             />
           </FormItem>
-          <Button className="ml2 mt1" onClick={onMoreClick}>
-            &hellip;
-          </Button>
-        </Navbar.Form>
-      </Navbar>
+          <FormItem>
+            <Button onClick={onMoreClick}>&hellip;</Button>
+          </FormItem>
+        </Form>
+      </div>
     )
   }
 }
