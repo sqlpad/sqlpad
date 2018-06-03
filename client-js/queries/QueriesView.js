@@ -102,11 +102,7 @@ class QueriesView extends React.Component {
   }
 
   nameRender = (text, record) => {
-    return (
-      <Link className="f3" to={'/queries/' + record._id}>
-        {record.name}
-      </Link>
-    )
+    return <Link to={'/queries/' + record._id}>{record.name}</Link>
   }
 
   previewRender = (text, record) => {
