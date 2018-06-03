@@ -16,11 +16,7 @@ import 'antd/lib/row/style/css'
 import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
 
-import Table from 'antd/lib/table'
-import 'antd/lib/table/style/css'
-
 const { Header, Content } = Layout
-const { Column } = Table
 
 class ConfigurationView extends React.Component {
   state = {
@@ -55,15 +51,18 @@ class ConfigurationView extends React.Component {
 
   renderValueInput = (text, record) => {
     return (
-      <ConfigItemInput
-        key={record.key}
-        config={record}
-        saveConfigValue={this.saveConfigValue}
-      />
+      <div>
+        <label>{record.label}</label>
+        <ConfigItemInput
+          key={record.key}
+          config={record}
+          saveConfigValue={this.saveConfigValue}
+        />
+      </div>
     )
   }
 
-  renderInfo = (text, config) => {
+  renderInfo = config => {
     const disabled =
       config.effectiveValueSource === 'cli' ||
       config.effectiveValueSource === 'saved cli' ||
@@ -78,7 +77,7 @@ class ConfigurationView extends React.Component {
 
     const defaultValue =
       config.default === '' ? (
-        <em style={{ color: '#999' }}>empty</em>
+        <em>empty</em>
       ) : (
         <span>{config.default.toString()}</span>
       )
@@ -89,25 +88,25 @@ class ConfigurationView extends React.Component {
         : config.cliFlag
 
     return (
-      <div style={{ width: '300px' }}>
+      <div className="mt4">
         <p>{config.description}</p>
         <p>
-          <strong>Default:</strong> {defaultValue}
+          <span>Default:</span> {defaultValue}
         </p>
         {cliFlag && (
           <p>
-            <strong>CLI Flag:</strong> --{cliFlag}
+            <span>CLI Flag:</span> --{cliFlag}
           </p>
         )}
         {config.envVar && (
           <p>
-            <strong>Environment Variable:</strong> {config.envVar}
+            <span>Environment Variable:</span> {config.envVar}
           </p>
         )}
         {disabled && (
           <div>
             <p>
-              <strong>Set By:</strong> {overriddenBy}
+              <span>Set By:</span> {overriddenBy}
             </p>
             <p>
               When set by command line or environment, item is not configurable
@@ -125,16 +124,26 @@ class ConfigurationView extends React.Component {
       config => config.interface === 'ui'
     )
     return (
-      <Table
-        className="bg-white w-100"
-        locale={{ emptyText: 'No connections found' }}
-        dataSource={uiConfigItems}
-        pagination={false}
-      >
-        <Column title="Setting" key="envVar" dataIndex="label" />
-        <Column title="Value" key="value" render={this.renderValueInput} />
-        <Column title="Info" key="info" render={this.renderInfo} />
-      </Table>
+      <div className="bg-white w-100 pa4">
+        {uiConfigItems.map(config => {
+          return (
+            <Row key={config.key} className="mt5 bb b--near-white" gutter={16}>
+              <Col span={10}>
+                <div>
+                  <label>{config.label}</label>
+                  <ConfigItemInput
+                    config={config}
+                    saveConfigValue={this.saveConfigValue}
+                  />
+                </div>
+              </Col>
+              <Col span={14}>
+                <div>{this.renderInfo(config)}</div>
+              </Col>
+            </Row>
+          )
+        })}
+      </div>
     )
   }
 
