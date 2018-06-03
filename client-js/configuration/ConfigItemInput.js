@@ -1,5 +1,12 @@
 import React from 'react'
-import FormControl from 'react-bootstrap/lib/FormControl'
+
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+
+const { Option } = Select
 
 class ConfigItemInput extends React.Component {
   state = {
@@ -13,6 +20,13 @@ class ConfigItemInput extends React.Component {
     this.props.saveConfigValue(this.props.config.key, e.target.value)
   }
 
+  handleSelectChange = value => {
+    this.setState({
+      value
+    })
+    this.props.saveConfigValue(this.props.config.key, value)
+  }
+
   render() {
     const { config } = this.props
     const disabled =
@@ -23,29 +37,29 @@ class ConfigItemInput extends React.Component {
     if (config.options) {
       const optionNodes = config.options.map(option => {
         return (
-          <option key={option} value={option}>
+          <Option key={option} value={option}>
             {option.toString()}
-          </option>
+          </Option>
         )
       })
       return (
-        <FormControl
-          componentClass="select"
-          value={this.state.value}
+        <Select
+          className="w-100"
           disabled={disabled}
-          onChange={this.handleChange}
+          onChange={this.handleSelectChange}
+          value={this.state.value}
         >
           {optionNodes}
-        </FormControl>
+        </Select>
       )
     } else {
       return (
-        <FormControl
-          type="text"
-          value={this.state.value}
+        <Input
+          className="w-100"
           disabled={disabled}
-          placeholder={config.label}
           onChange={this.handleChange}
+          placeholder={config.label}
+          value={this.state.value}
         />
       )
     }
