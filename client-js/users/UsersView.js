@@ -126,7 +126,7 @@ class UsersView extends React.Component {
     const { currentUser } = this.props
     return (
       <Select
-        className="w5"
+        className="w4"
         name="role"
         disabled={currentUser._id === record._id}
         value={record.role || ''}
@@ -146,12 +146,12 @@ class UsersView extends React.Component {
       return (
         <span>
           <Button
-            className="w5 mr3"
+            className="w4 mr3"
             onClick={() => this.removePasswordResetLink(record)}
           >
             Remove
           </Button>
-          <Link className="w5" to={'/password-reset/' + record.passwordResetId}>
+          <Link className="w4" to={'/password-reset/' + record.passwordResetId}>
             Reset Link
           </Link>
         </span>
@@ -159,7 +159,7 @@ class UsersView extends React.Component {
     }
     return (
       <Button
-        className="w5"
+        className="w4"
         onClick={() => this.generatePasswordResetLink(record)}
       >
         Generate Link
