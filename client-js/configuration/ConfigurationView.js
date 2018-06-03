@@ -16,7 +16,11 @@ import 'antd/lib/row/style/css'
 import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
 
+import Table from 'antd/lib/table'
+import 'antd/lib/table/style/css'
+
 const { Header, Content } = Layout
+const { Column } = Table
 
 class ConfigurationView extends React.Component {
   state = {
@@ -49,18 +53,105 @@ class ConfigurationView extends React.Component {
     this.saveConfigValue = debounce(this.saveConfigValue, 500)
   }
 
+  renderValueInput = (text, record) => {
+    return (
+      <ConfigItemInput
+        key={record.key}
+        config={record}
+        saveConfigValue={this.saveConfigValue}
+      />
+    )
+  }
+
+  renderInfo = (text, config) => {
+    const disabled =
+      config.effectiveValueSource === 'cli' ||
+      config.effectiveValueSource === 'saved cli' ||
+      config.effectiveValueSource === 'env'
+
+    const effectiveValueSourceLabels = {
+      cli: 'Command Line',
+      'saved cli': 'Saved Command Line',
+      env: 'Environment Varialbe'
+    }
+    const overriddenBy = effectiveValueSourceLabels[config.effectiveValueSource]
+
+    var defaultValue = () => {
+      if (config.default === '') {
+        return <em style={{ color: '#999' }}>empty</em>
+      }
+      return <span>{config.default.toString()}</span>
+    }
+
+    const cliFlag =
+      config.cliFlag && config.cliFlag.pop
+        ? config.cliFlag.pop()
+        : config.cliFlag
+
+    return (
+      <div style={{ width: '300px' }}>
+        <p>{config.description}</p>
+        <p>
+          <strong>Default:</strong> {defaultValue()}
+        </p>
+        {cliFlag && (
+          <p>
+            <strong>CLI Flag:</strong> --{cliFlag}
+          </p>
+        )}
+        {config.envVar && (
+          <p>
+            <strong>Environment Variable:</strong> {config.envVar}
+          </p>
+        )}
+        {disabled && (
+          <div>
+            <p>
+              <strong>Set By:</strong> {overriddenBy}
+            </p>
+            <p>
+              When set by command line or environment, item is not configurable
+              via UI.
+            </p>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  renderConfigInputs() {
+    const { configItems } = this.state
+    const uiConfigItems = configItems.filter(
+      config => config.interface === 'ui'
+    )
+
+    // const configs = configItems
+    //   .filter(config => config.interface === 'ui')
+    //   .map(config => {
+    //     return (
+    //       <ConfigItemInput
+    //         key={config.key}
+    //         config={config}
+    //         saveConfigValue={this.saveConfigValue}
+    //       />
+    //     )
+    //   })
+
+    return (
+      <Table
+        className="bg-white w-100"
+        locale={{ emptyText: 'No connections found' }}
+        dataSource={uiConfigItems}
+        pagination={false}
+      >
+        <Column title="Setting" key="envVar" dataIndex="label" />
+        <Column title="Value" key="value" render={this.renderValueInput} />
+        <Column title="Info" key="info" render={this.renderInfo} />
+      </Table>
+    )
+  }
+
   render() {
-    var configItemInputNodes = this.state.configItems
-      .filter(config => config.interface === 'ui')
-      .map(config => {
-        return (
-          <ConfigItemInput
-            key={config.key}
-            config={config}
-            saveConfigValue={this.saveConfigValue}
-          />
-        )
-      })
     return (
       <Layout
         style={{ minHeight: '100vh' }}
@@ -72,7 +163,7 @@ class ConfigurationView extends React.Component {
         <Content className="ma4">
           <Row gutter={16}>
             <Col span={16}>
-              <Form horizontal>{configItemInputNodes}</Form>
+              <Form horizontal>{this.renderConfigInputs()}</Form>
             </Col>
             <Col span={8}>
               <div className="panel panel-default">
