@@ -53,8 +53,16 @@ class UsersView extends React.Component {
 
   loadUsersFromServer = () => {
     fetchJson('GET', '/api/users').then(json => {
-      if (json.error) message.error(json.error)
-      this.setState({ users: json.users })
+      if (json.error) {
+        message.error(json.error)
+      }
+      if (json.users) {
+        const users = json.users.map(user => {
+          user.key = user._id
+          return user
+        })
+        this.setState({ users })
+      }
     })
   }
 
