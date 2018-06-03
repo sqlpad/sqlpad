@@ -5,6 +5,7 @@ import CheckListItem from './CheckListItem'
 import ConfigEnvDocumentation from './ConfigEnvDocumentation'
 import ConfigItemInput from './ConfigItemInput'
 import fetchJson from '../utilities/fetch-json.js'
+import Header from '../common/Header'
 
 import Col from 'antd/lib/col'
 import 'antd/lib/col/style/css'
@@ -15,7 +16,7 @@ import 'antd/lib/row/style/css'
 import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
 
-const { Header, Content } = Layout
+const { Content } = Layout
 
 class ConfigurationView extends React.Component {
   state = {
@@ -152,9 +153,7 @@ class ConfigurationView extends React.Component {
         style={{ minHeight: '100vh' }}
         className="flex w-100 flex-column h-100"
       >
-        <Header className=" pr4 pl4">
-          <div className="f1 fl white">Configuration</div>
-        </Header>
+        <Header title="Configuration" />
         <Content className="ma4">
           <Row gutter={16}>
             <Col span={16}>{this.renderConfigInputs()}</Col>

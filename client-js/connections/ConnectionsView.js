@@ -1,6 +1,7 @@
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
 import ConnectionForm from './ConnectionForm'
+import Header from '../common/Header'
 
 import message from 'antd/lib/message'
 
@@ -19,7 +20,7 @@ import 'antd/lib/layout/style/css'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
 
-const { Header, Content } = Layout
+const { Content } = Layout
 const { Column } = Table
 
 class ConnectionsView extends React.Component {
@@ -246,13 +247,10 @@ class ConnectionsView extends React.Component {
         style={{ minHeight: '100vh' }}
         className="flex w-100 flex-column h-100"
       >
-        <Header className=" pr4 pl4">
-          <div className="f1 fl white">Connections</div>
-          <div className="fr">
-            <Button type="primary" onClick={this.handleNewConnectionClick}>
-              New connection
-            </Button>
-          </div>
+        <Header title="Connections">
+          <Button type="primary" onClick={this.handleNewConnectionClick}>
+            New connection
+          </Button>
         </Header>
         <Content className="ma4">
           <div className="bg-white">{this.renderTable()}</div>

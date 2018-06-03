@@ -12,6 +12,7 @@ import fetchJson from '../utilities/fetch-json.js'
 import { Link } from 'react-router-dom'
 import chartDefinitions from '../utilities/chartDefinitions'
 import SqlEditor from '../common/SqlEditor'
+import Header from '../common/Header'
 import moment from 'moment'
 
 import 'antd/lib/input/style/css'
@@ -30,7 +31,7 @@ import 'antd/lib/popover/style/css'
 import Icon from 'antd/lib/icon'
 import 'antd/lib/icon/style/css'
 
-const { Header, Content } = Layout
+const { Content } = Layout
 
 const { Option } = Select
 const { Column } = Table
@@ -343,9 +344,8 @@ class QueriesView extends React.Component {
         style={{ minHeight: '100vh' }}
         className="flex w-100 flex-column h-100"
       >
-        <Header className=" pr4 pl4">
-          <div className="f1 fl white">Queries</div>
-          <Link to={'/queries/new'} className="fr">
+        <Header title="Queries">
+          <Link to={'/queries/new'}>
             <Button type="primary">New Query</Button>
           </Link>
         </Header>

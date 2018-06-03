@@ -5,6 +5,7 @@ import message from 'antd/lib/message'
 import InviteUserForm from './InviteUserForm'
 import moment from 'moment'
 import { Link } from 'react-router-dom'
+import Header from '../common/Header'
 
 import Table from 'antd/lib/table'
 import 'antd/lib/table/style/css'
@@ -24,7 +25,7 @@ import 'antd/lib/select/style/css'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
 
-const { Header, Content } = Layout
+const { Content } = Layout
 const { Column } = Table
 const { Option } = Select
 
@@ -219,16 +220,13 @@ class UsersView extends React.Component {
         style={{ minHeight: '100vh' }}
         className="flex w-100 flex-column h-100"
       >
-        <Header className=" pr4 pl4">
-          <div className="f1 fl white">Users</div>
-          <div className="fr">
-            <Button
-              type="primary"
-              onClick={() => this.setState({ showAddUser: true })}
-            >
-              New user
-            </Button>
-          </div>
+        <Header title="Users">
+          <Button
+            type="primary"
+            onClick={() => this.setState({ showAddUser: true })}
+          >
+            New user
+          </Button>
         </Header>
         <Content className="ma4">
           <div className="bg-white">{this.renderTable()}</div>
