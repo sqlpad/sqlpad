@@ -12,7 +12,7 @@ class ConfigEnvDocumentation extends React.Component {
 
   renderInfo = (text, record) => {
     return (
-      <div style={{ width: '200px' }}>
+      <div style={{ width: '300px' }}>
         <p>{record.description}</p>
       </div>
     )
