@@ -186,9 +186,9 @@ class QueryEditor extends React.Component {
     this.setState({ query, unsavedChanges: true })
   }
 
-  handleChartTypeChange = e => {
+  handleChartTypeChange = value => {
     const { query } = this.state
-    query.chartConfiguration.chartType = e.target.value
+    query.chartConfiguration.chartType = value
     this.setState({ query, unsavedChanges: true })
   }
 
