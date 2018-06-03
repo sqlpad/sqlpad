@@ -153,54 +153,50 @@ class ConfigurationView extends React.Component {
               <Form horizontal>{this.renderConfigInputs()}</Form>
             </Col>
             <Col span={8}>
-              <div className="panel panel-default">
-                <div className="panel-body">
-                  <p>
-                    <strong>Feature Checklist</strong>
-                  </p>
-                  <p>
-                    Unlock features by providing the required configuration.
-                  </p>
-                  <hr />
-                  <strong>Email</strong>
-                  <ul style={{ paddingLeft: 20 }}>
-                    <CheckListItem
-                      configKey={'smtpUser'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'smtpHost'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'smtpPort'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'smtpFrom'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'publicUrl'}
-                      configItems={this.state.configItems}
-                    />
-                  </ul>
-                  <strong>Google OAuth</strong>
-                  <ul style={{ paddingLeft: 20 }}>
-                    <CheckListItem
-                      configKey={'googleClientId'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'googleClientSecret'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'publicUrl'}
-                      configItems={this.state.configItems}
-                    />
-                  </ul>
-                </div>
+              <div className="bg-white ba br2 b--light-gray pa4">
+                <p>
+                  <strong>Feature Checklist</strong>
+                </p>
+                <p>Unlock features by providing the required configuration.</p>
+                <hr />
+                <strong>Email</strong>
+                <ul style={{ paddingLeft: 20 }}>
+                  <CheckListItem
+                    configKey={'smtpUser'}
+                    configItems={this.state.configItems}
+                  />
+                  <CheckListItem
+                    configKey={'smtpHost'}
+                    configItems={this.state.configItems}
+                  />
+                  <CheckListItem
+                    configKey={'smtpPort'}
+                    configItems={this.state.configItems}
+                  />
+                  <CheckListItem
+                    configKey={'smtpFrom'}
+                    configItems={this.state.configItems}
+                  />
+                  <CheckListItem
+                    configKey={'publicUrl'}
+                    configItems={this.state.configItems}
+                  />
+                </ul>
+                <strong>Google OAuth</strong>
+                <ul style={{ paddingLeft: 20 }}>
+                  <CheckListItem
+                    configKey={'googleClientId'}
+                    configItems={this.state.configItems}
+                  />
+                  <CheckListItem
+                    configKey={'googleClientSecret'}
+                    configItems={this.state.configItems}
+                  />
+                  <CheckListItem
+                    configKey={'publicUrl'}
+                    configItems={this.state.configItems}
+                  />
+                </ul>
               </div>
             </Col>
           </Row>
