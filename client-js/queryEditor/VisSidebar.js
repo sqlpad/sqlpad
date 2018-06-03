@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import FormGroup from 'react-bootstrap/lib/FormGroup'
 import FormControl from 'react-bootstrap/lib/FormControl'
 import ChartInputs from './ChartInputs.js'
 import chartDefinitions from '../utilities/chartDefinitions.js'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
+
+import Icon from 'antd/lib/icon'
 
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
@@ -61,7 +62,7 @@ class VisSidebar extends React.Component {
             Visualize
           </Button>
           <Button className="w-100 mb3" onClick={onSaveImageClick}>
-            <Glyphicon glyph="save" /> Save Chart Image
+            <Icon type="download" /> Save Chart Image
           </Button>
         </div>
       </Sidebar>
