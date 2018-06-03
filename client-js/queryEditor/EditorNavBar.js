@@ -46,8 +46,6 @@ class EditorNavBar extends React.Component {
     const saveText = unsavedChanges ? 'Save*' : 'Save'
     const cloneDisabled = !query._id
 
-    console.log('activeTabKey ', activeTabKey)
-
     return (
       <Navbar fluid>
         <Nav>
