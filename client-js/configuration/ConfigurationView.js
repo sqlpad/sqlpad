@@ -72,18 +72,7 @@ class ConfigurationView extends React.Component {
         <Content className="ma4">
           <Row gutter={16}>
             <Col span={16}>
-              <div>
-                <Form horizontal>{configItemInputNodes}</Form>
-                <hr />
-                <p>
-                  Some configuration is only accessible via environment
-                  variables or command-line-interface (CLI) flags. Below are the
-                  current values for these variables. Sensitive values are
-                  masked. Hover over input for additional information.
-                </p>
-                <hr />
-                <ConfigEnvDocumentation configItems={this.state.configItems} />
-              </div>
+              <Form horizontal>{configItemInputNodes}</Form>
             </Col>
             <Col span={8}>
               <div className="panel panel-default">
@@ -135,6 +124,23 @@ class ConfigurationView extends React.Component {
                   </ul>
                 </div>
               </div>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <hr />
+              <p>
+                Some configuration is only accessible via environment variables
+                or command-line-interface (CLI) flags. Below are the current
+                values for these variables. Sensitive values are masked. Hover
+                over input for additional information.
+              </p>
+              <hr />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <ConfigEnvDocumentation configItems={this.state.configItems} />
             </Col>
           </Row>
         </Content>
