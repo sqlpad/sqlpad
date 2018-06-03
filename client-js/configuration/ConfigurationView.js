@@ -1,12 +1,17 @@
 import React from 'react'
 import message from 'antd/lib/message'
-import Col from 'react-bootstrap/lib/Col'
 import Form from 'react-bootstrap/lib/Form'
 import debounce from 'lodash.debounce'
 import CheckListItem from './CheckListItem'
 import ConfigEnvDocumentation from './ConfigEnvDocumentation'
 import ConfigItemInput from './ConfigItemInput'
 import fetchJson from '../utilities/fetch-json.js'
+
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
 
 import Layout from 'antd/lib/layout'
 import 'antd/lib/layout/style/css'
@@ -65,9 +70,9 @@ class ConfigurationView extends React.Component {
           <div className="f1 fl white">Configuration</div>
         </Header>
         <Content className="ma4">
-          <div className="bg-white">
-            <Col sm={6} smOffset={1}>
-              <div className="configBox">
+          <Row gutter={16}>
+            <Col span={16}>
+              <div>
                 <Form horizontal>{configItemInputNodes}</Form>
                 <hr />
                 <p>
@@ -80,7 +85,7 @@ class ConfigurationView extends React.Component {
                 <ConfigEnvDocumentation configItems={this.state.configItems} />
               </div>
             </Col>
-            <Col sm={3} smOffset={1}>
+            <Col span={8}>
               <div className="panel panel-default">
                 <div className="panel-body">
                   <p>
@@ -131,7 +136,7 @@ class ConfigurationView extends React.Component {
                 </div>
               </div>
             </Col>
-          </div>
+          </Row>
         </Content>
       </Layout>
     )
