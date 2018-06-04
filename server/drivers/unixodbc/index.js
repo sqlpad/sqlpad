@@ -99,7 +99,7 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  schema_sql = connection.schema_sql ? connection.schema_sql : SCHEMA_SQL_INFORMATION_SCHEMA;
+  const schema_sql = connection.schema_sql ? connection.schema_sql : SCHEMA_SQL_INFORMATION_SCHEMA;
   return runQuery(schema_sql, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
   )
