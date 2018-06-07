@@ -64,7 +64,12 @@ class SignIn extends React.Component {
             onChange={this.onPasswordChange}
             required
           />
-          <Button onClick={this.signIn} className="w-100 mt4" htmlType="submit">
+          <Button
+            onClick={this.signIn}
+            className="w-100 mt4"
+            htmlType="submit"
+            type="primary"
+          >
             Sign in
           </Button>
         </form>
@@ -81,7 +86,7 @@ class SignIn extends React.Component {
     const googleForm = (
       <div>
         <a href={config.baseUrl + '/auth/google'}>
-          <Button className="w-100 mt3">
+          <Button className="w-100 mt3" type="primary">
             <Icon type="google" />
             Sign in with Google
           </Button>

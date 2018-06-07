@@ -88,7 +88,7 @@ class SignUp extends React.Component {
             onChange={this.onPasswordConfirmationChange}
             required
           />
-          <Button className="w-100 mt3" htmlType="submit">
+          <Button className="w-100 mt3" htmlType="submit" type="primary">
             Sign up
           </Button>
         </form>
