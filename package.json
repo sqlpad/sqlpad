@@ -122,7 +122,6 @@
     "react-copy-to-clipboard": "^5.0.0",
     "react-dom": "^16.3.2",
     "react-draggable": "^3.0.5",
-    "react-icons": "^2.2.7",
     "react-router-dom": "^4.2.2",
     "react-split-pane": "^0.1.77",
     "react-virtualized": "^9.18.5",
