@@ -61,15 +61,15 @@ class VisSidebar extends React.Component {
             queryResult={queryResult}
           />
         </SidebarBody>
-        <div className="pa4 bt b--near-white">
+        <div className="pa2 bt b--near-white">
           <Button
-            className="w-100 mb3"
+            className="w-100 mb1"
             onClick={onVisualizeClick}
             disabled={!isChartable}
           >
             Visualize
           </Button>
-          <Button className="w-100 mb3" onClick={onSaveImageClick}>
+          <Button className="w-100 mb1" onClick={onSaveImageClick}>
             <Icon type="download" /> Save Chart Image
           </Button>
         </div>

@@ -130,7 +130,7 @@ class SchemaSidebar extends React.PureComponent {
                 />
               </Tooltip>
             </a>
-            <ul className="pl0 f4 dib" style={{ minWidth: '230px' }}>
+            <ul className="pl0 dib" style={{ minWidth: '230px' }}>
               {schemaItemNodes}
             </ul>
           </div>

@@ -23,6 +23,8 @@ function cleanBoolean(value) {
   return value
 }
 
+const inputClassName = 'mt3 mb3'
+
 class ChartInputs extends React.Component {
   state = {
     showAdvanced: false
@@ -68,7 +70,7 @@ class ChartInputs extends React.Component {
           )
         }
         return (
-          <div className="mt4 mb3" key={field.fieldId}>
+          <div className={inputClassName} key={field.fieldId}>
             <label>{field.label}</label>
             <Select
               allowClear
@@ -95,7 +97,7 @@ class ChartInputs extends React.Component {
         const checked =
           cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false
         return (
-          <div className="mt4 mb3" key={field.fieldId}>
+          <div className={inputClassName} key={field.fieldId}>
             <Checkbox
               checked={checked}
               name={field.key}
@@ -113,7 +115,7 @@ class ChartInputs extends React.Component {
       } else if (field.inputType === 'textbox') {
         const value = queryChartConfigurationFields[field.fieldId] || ''
         return (
-          <div className="mt4 mb3" key={field.fieldId}>
+          <div className={inputClassName} key={field.fieldId}>
             <label>{field.label}</label>
             <Input
               value={value}
