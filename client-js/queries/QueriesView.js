@@ -10,7 +10,6 @@ import Input from 'antd/lib/input'
 import uniq from 'lodash.uniq'
 import fetchJson from '../utilities/fetch-json.js'
 import { Link } from 'react-router-dom'
-import chartDefinitions from '../utilities/chartDefinitions'
 import SqlEditor from '../common/SqlEditor'
 import Header from '../common/Header'
 import moment from 'moment'
@@ -175,25 +174,11 @@ class QueriesView extends React.Component {
       return connMap
     }, {})
 
-    const chartsByType = chartDefinitions.reduce((chartMap, chartDef) => {
-      chartMap[chartDef.chartType] = chartDef
-      return chartMap
-    }, {})
-
     return queries.map(query => {
       query.key = query._id
 
       const connection = connectionsById[query.connectionId]
       query.connectionName = connection ? connection.name : ''
-
-      // This too could be decorated by API?
-      const chartType =
-        query.chartConfiguration && query.chartConfiguration.chartType
-          ? query.chartConfiguration.chartType
-          : null
-
-      const chartDefinition = chartsByType[chartType]
-      query.chart = chartDefinition ? chartDefinition.chartLabel : ''
 
       return query
     })
@@ -279,7 +264,6 @@ class QueriesView extends React.Component {
           sorter={this.modifiedSorter}
           render={this.modifiedRender}
         />
-        <Column title="Chart" key="chartType" dataIndex="chart" />
         <Column key="action" render={this.actionsRender} />
       </Table>
     )
