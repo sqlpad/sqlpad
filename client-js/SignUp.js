@@ -43,29 +43,27 @@ class SignUp extends React.Component {
 
   render() {
     const { redirect } = this.state
+    const { adminRegistrationOpen } = this.props
+
     if (redirect) {
       return <Redirect to="/" />
     }
-    const adminRegistrationOpenIntro = () => {
-      if (this.props.adminRegistrationOpen) {
-        return (
-          <div className="mb4">
-            <h2 className="f3 tc">Admin Registration is Open</h2>
-            <p>
-              Welcome to SQLPad! Since there are no admins currently in the
-              system, registration is open to anyone. By signing up, you will be
-              granted admin rights, and the system will be locked down. Only
-              people explicitly invited & whitelisted will be able to join.
-            </p>
-          </div>
-        )
-      }
-    }
+
     return (
       <div className="pt5 measure center" style={{ width: '300px' }}>
         <form onSubmit={this.signUp}>
           <h1 className="f2 tc">SQLPad</h1>
-          {adminRegistrationOpenIntro()}
+          {adminRegistrationOpen && (
+            <div className="mb4">
+              <h2 className="f3 tc">Admin registration open</h2>
+              <p>
+                Welcome to SQLPad! Since there are no admins currently
+                registered, signup is open to anyone. By signing up, you will be
+                granted admin rights, and signup will be restricted to
+                whitelisted email addresses/domains
+              </p>
+            </div>
+          )}
           <Input
             name="email"
             type="email"
