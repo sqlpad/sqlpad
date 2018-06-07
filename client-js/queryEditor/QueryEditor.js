@@ -61,17 +61,19 @@ class QueryEditor extends React.Component {
   }
 
   loadConnectionsFromServer = () => {
-    const { query } = this.state
     fetchJson('GET', '/api/connections/').then(json => {
       const { error, connections } = json
       if (error) {
         Alert.error(error)
       }
       // if only 1 connection auto-select it
+      const { query } = this.state
       if (connections.length === 1 && query) {
         query.connectionId = connections[0]._id
+        this.setState({ connections, query })
+      } else {
+        this.setState({ connections })
       }
-      this.setState({ connections, query })
     })
   }
 
