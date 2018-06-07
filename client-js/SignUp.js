@@ -3,6 +3,12 @@ import { Redirect } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
 import message from 'antd/lib/message'
 
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
 class SignUp extends React.Component {
   state = {
     email: '',
@@ -60,33 +66,33 @@ class SignUp extends React.Component {
         <form onSubmit={this.signUp}>
           <h1 className="f2 tc">SQLPad</h1>
           {adminRegistrationOpenIntro()}
-          <input
+          <Input
             name="email"
             type="email"
-            className="form-control mt3"
+            className="mt3"
             placeholder="Email address"
             onChange={this.onEmailChange}
             required
           />
-          <input
+          <Input
             name="password"
             type="password"
-            className="form-control mt3"
+            className="mt3"
             placeholder="Password"
             onChange={this.onPasswordChange}
             required
           />
-          <input
+          <Input
             name="passwordConfirmation"
             type="password"
-            className="form-control mt3"
+            className="mt3"
             placeholder="Confirm Password"
             onChange={this.onPasswordConfirmationChange}
             required
           />
-          <button className="btn btn-primary btn-block mt3" type="submit">
+          <Button className="w-100 mt3" htmlType="submit">
             Sign up
-          </button>
+          </Button>
         </form>
       </div>
     )
