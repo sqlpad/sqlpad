@@ -44,7 +44,7 @@ class EditorNavBar extends React.Component {
     const cloneDisabled = !query._id
 
     return (
-      <div className="w-100">
+      <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
         <Form layout="inline">
           <FormItem>
             <Radio.Group value={activeTabKey} onChange={onTabSelect}>
@@ -57,23 +57,26 @@ class EditorNavBar extends React.Component {
             </Radio.Group>
           </FormItem>
           <FormItem>
-            <Button onClick={onCloneClick} disabled={cloneDisabled}>
-              Clone
-            </Button>
-            <Button onClick={onFormatClick}>Format</Button>
-            <Button
-              style={{ minWidth: 68 }}
-              onClick={onSaveClick}
-              disabled={isSaving}
-            >
-              {saveText}
-            </Button>
-            <Button onClick={onRunClick} disabled={isRunning}>
-              Run
-            </Button>
+            <Button.Group>
+              <Button onClick={onCloneClick} disabled={cloneDisabled}>
+                Clone
+              </Button>
+              <Button onClick={onFormatClick}>Format</Button>
+              <Button
+                style={{ minWidth: 75 }}
+                onClick={onSaveClick}
+                disabled={isSaving}
+              >
+                {saveText}
+              </Button>
+              <Button type="primary" onClick={onRunClick} disabled={isRunning}>
+                Run
+              </Button>
+            </Button.Group>
           </FormItem>
           <FormItem validateStatus={validationState}>
             <Input
+              className="w5"
               placeholder="Query name"
               value={query.name}
               onChange={this.onQueryNameChange}
