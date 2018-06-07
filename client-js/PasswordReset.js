@@ -14,7 +14,6 @@ class PasswordReset extends React.Component {
     email: '',
     password: '',
     passwordConfirmation: '',
-    notFound: false,
     redirect: false
   }
 
@@ -49,18 +48,9 @@ class PasswordReset extends React.Component {
   }
 
   render() {
-    const { notFound, redirect } = this.state
+    const { redirect } = this.state
     if (redirect) {
       return <Redirect to="/" />
-    }
-    if (notFound) {
-      return (
-        <div className="pt5 measure center" style={{ width: '300px' }}>
-          <form onSubmit={this.resetPassword}>
-            <h1 className="f2">Password reset not found</h1>
-          </form>
-        </div>
-      )
     }
     return (
       <div className="pt5 measure center" style={{ width: '300px' }}>
