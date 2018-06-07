@@ -3,6 +3,12 @@ import { Redirect } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
 import message from 'antd/lib/message'
 
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
 class PasswordReset extends React.Component {
   state = {
     email: '',
@@ -60,33 +66,33 @@ class PasswordReset extends React.Component {
       <div className="pt5 measure center" style={{ width: '300px' }}>
         <form onSubmit={this.resetPassword}>
           <h1 className="f2 tc">SQLPad</h1>
-          <input
+          <Input
             name="email"
             type="email"
-            className="form-control mt3"
+            className="mt3"
             placeholder="Email address"
             onChange={this.onEmailChange}
             required
           />
-          <input
+          <Input
             name="password"
             type="password"
-            className="form-control mt3"
+            className="mt3"
             placeholder="Password"
             onChange={this.onPasswordChange}
             required
           />
-          <input
+          <Input
             name="passwordConfirmation"
             type="password"
-            className="form-control mt3"
+            className="mt3"
             placeholder="Confirm Password"
             onChange={this.onPasswordConfirmationChange}
             required
           />
-          <button className="btn btn-primary btn-block mt3" type="submit">
+          <Button className="w-100 mt3" htmlType="submit">
             Reset Password
-          </button>
+          </Button>
         </form>
       </div>
     )
