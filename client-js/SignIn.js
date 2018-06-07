@@ -3,7 +3,14 @@ import { Redirect } from 'react-router-dom'
 import message from 'antd/lib/message'
 import { Link } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
-import GooglePlusIcon from 'react-icons/lib/fa/google-plus'
+
+import Icon from 'antd/lib/icon'
+
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
 
 class SignIn extends React.Component {
   state = {
@@ -41,29 +48,25 @@ class SignIn extends React.Component {
     const localForm = (
       <div>
         <form onSubmit={this.signIn}>
-          <input
+          <Input
             name="email"
             type="email"
-            className="form-control mt2"
+            className="mt2"
             placeholder="Email address"
             onChange={this.onEmailChange}
             required
           />
-          <input
+          <Input
             name="password"
             type="password"
-            className="form-control mt2"
+            className="mt2"
             placeholder="Password"
             onChange={this.onPasswordChange}
             required
           />
-          <button
-            onClick={this.signIn}
-            className="btn btn-primary btn-block mt4"
-            type="submit"
-          >
+          <Button onClick={this.signIn} className="w-100 mt4" htmlType="submit">
             Sign in
-          </button>
+          </Button>
         </form>
         <div className="tc mt3">
           <Link to="/signup">Sign Up</Link>
@@ -78,25 +81,18 @@ class SignIn extends React.Component {
     const googleForm = (
       <div>
         <a href={config.baseUrl + '/auth/google'}>
-          <button className="btn btn-danger btn-block mt3">
-            <GooglePlusIcon
-              style={{
-                width: '22px',
-                height: '22px',
-                marginRight: '12px',
-                marginBottom: '2px'
-              }}
-            />
-            Log in with Google
-          </button>
+          <Button className="w-100 mt3">
+            <Icon type="google" />
+            Sign in with Google
+          </Button>
         </a>
       </div>
     )
     return (
       <div className="pt5 measure center" style={{ width: '300px' }}>
         <h1 className="f2 tc">SQLPad</h1>
-        {'local' in passport.strategies ? localForm : null}
-        {'google' in passport.strategies ? googleForm : null}
+        {'local' in passport.strategies && localForm}
+        {'google' in passport.strategies && googleForm}
       </div>
     )
   }
