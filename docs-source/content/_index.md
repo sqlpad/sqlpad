@@ -168,8 +168,8 @@ draft: false
         <div class="eight columns">
             <h6 class="docs-header">Is SQLPad For Me?</h6>
             <p>
-                SQLPad aims to a SQL query environment with a focus on exploring and analyzing data via SQL,
-                and will likely not adopt a dashboard use case. 
+                SQLPad aims to be a SQL query environment with a focus on exploring and analyzing data via SQL,
+                and it will likely not adopt a dashboard use case. 
                 If you're looking for open-source dashboard software or something more advanced, 
                 check out <a href="http://redash.io/">Re:dash</a>, 
                 <a href="http://www.metabase.com/">Metabase</a>, 
