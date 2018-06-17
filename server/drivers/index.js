@@ -37,8 +37,20 @@ function validateArray(path, driver, arrayName) {
  * and validate that it meets implementation spec as possible
  * @param {string} path
  */
-function requireValidate(path) {
-  const driver = require(path)
+function requireValidate(path, optional=false) {
+  let driver;
+
+  try {
+    driver = require(path)
+  } catch (er) {
+    if (optional) {
+      console.log('optional driver ' + path + ' not available');
+      return;
+    } else {
+      // rethrow
+      throw er;
+    }
+  }
 
   if (!driver.id) {
     console.error(`${path} must export a unique id`)
@@ -78,6 +90,7 @@ requireValidate('../drivers/mysql')
 requireValidate('../drivers/postgres')
 requireValidate('../drivers/presto')
 requireValidate('../drivers/sqlserver')
+requireValidate('../drivers/unixodbc', true)
 requireValidate('../drivers/vertica')
 requireValidate('../drivers/cassandra')
 
