@@ -93,6 +93,9 @@
   "bin": {
     "sqlpad": "./server/server.js"
   },
+  "optionalDependencies": {
+    "odbc": "^1.4.1"
+  },
   "devDependencies": {
     "@rickbergfalk/sqlpad-react-scripts": "^1.0.13",
     "babel-eslint": "^7.2.3",
