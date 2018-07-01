@@ -2,13 +2,17 @@
 
 [![Build Status](https://travis-ci.org/rickbergfalk/sqlpad.svg?branch=master)](https://travis-ci.org/rickbergfalk/sqlpad)
 
-A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, and Presto. Written in Node.js.
+A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, Presto, and SAP HANA. Other databases potentially supported via [unix odbc support](https://github.com/rickbergfalk/sqlpad/wiki/ODBC). 
 
-![SQLPad Query Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/query-editor.png)
+## Heads up! New v3 branch has been started for new/breaking development
+
+If you are working on a feature, or want to run the cutting edge, look to that branch. Expect breakage until things are finalized. See [v3 branch](https://github.com/rickbergfalk/sqlpad/tree/v3) for more details.
 
 ## Installation, Usage, Screenshots
 
 Visit project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
+
+![SQLPad Query Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/query-editor.png)
 
 ## Using Docker Image
 
@@ -17,8 +21,6 @@ The docker image runs on port 3000 and uses `/var/lib/sqlpad` for the embedded d
 Some configuration is exposed via environment variables. See [configItems.js](https://github.com/rickbergfalk/sqlpad/blob/master/server/lib/config/configItems.js) for details on environment variables considered (`envVar` field).
 
 See [docker-validation](https://github.com/rickbergfalk/sqlpad/tree/master/docker-validation) folder for example docker-compose setup with SQL Server.
-
-## Heads up! There will be quite a bit of refactoring over next few months.
 
 ## Development
 
