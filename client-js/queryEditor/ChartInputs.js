@@ -1,10 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import chartDefinitions from '../utilities/chartDefinitions.js'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import ControlLabel from 'react-bootstrap/lib/ControlLabel'
-import Checkbox from 'react-bootstrap/lib/Checkbox'
+
+import Checkbox from 'antd/lib/checkbox'
+import 'antd/lib/checkbox/style/css'
+
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+const { Option } = Select
 
 function cleanBoolean(value) {
   if (typeof value === 'string') {
@@ -16,6 +22,8 @@ function cleanBoolean(value) {
   }
   return value
 }
+
+const inputClassName = 'mt3 mb3'
 
 class ChartInputs extends React.Component {
   state = {
@@ -41,57 +49,58 @@ class ChartInputs extends React.Component {
       if (field.inputType === 'field-dropdown') {
         const optionNodes = queryResultFields.map(qrfield => {
           return (
-            <option key={qrfield} value={qrfield}>
+            <Option key={qrfield} value={qrfield}>
               {qrfield}
-            </option>
+            </Option>
           )
         })
         const selectedQueryResultField =
           queryChartConfigurationFields[field.fieldId]
-        if (queryResultFields.indexOf(selectedQueryResultField) === -1) {
+        if (
+          selectedQueryResultField &&
+          queryResultFields.indexOf(selectedQueryResultField) === -1
+        ) {
           optionNodes.push(
-            <option
+            <Option
               key={'selectedQueryResultField'}
               value={selectedQueryResultField}
             >
               {selectedQueryResultField}
-            </option>
+            </Option>
           )
         }
         return (
-          <FormGroup
-            key={field.fieldId}
-            controlId={field.fieldId}
-            bsSize="small"
-          >
-            <ControlLabel>{field.label}</ControlLabel>
-            <FormControl
+          <div className={inputClassName} key={field.fieldId}>
+            <label>{field.label}</label>
+            <Select
+              allowClear
+              showSearch
+              className="w-100"
+              optionFilterProp="children"
               value={selectedQueryResultField}
-              onChange={e => {
-                this.changeChartConfigurationField(
-                  field.fieldId,
-                  e.target.value
-                )
+              notFoundContent="No fields available"
+              onChange={value => {
+                this.changeChartConfigurationField(field.fieldId, value)
               }}
-              componentClass="select"
-              className="input-small"
+              filterOption={(input, option) =>
+                option.props.value &&
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
             >
-              <option value="" />
               {optionNodes}
-            </FormControl>
-          </FormGroup>
+            </Select>
+          </div>
         )
       } else if (field.inputType === 'checkbox') {
         const checked =
           cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false
         return (
-          <FormGroup
-            key={field.fieldId}
-            controlId={field.fieldId}
-            bsSize="small"
-          >
+          <div className={inputClassName} key={field.fieldId}>
             <Checkbox
               checked={checked}
+              name={field.key}
               onChange={e => {
                 this.changeChartConfigurationField(
                   field.fieldId,
@@ -101,18 +110,14 @@ class ChartInputs extends React.Component {
             >
               {field.label}
             </Checkbox>
-          </FormGroup>
+          </div>
         )
       } else if (field.inputType === 'textbox') {
         const value = queryChartConfigurationFields[field.fieldId] || ''
         return (
-          <FormGroup
-            key={field.fieldId}
-            controlId={field.fieldId}
-            bsSize="small"
-          >
-            <ControlLabel>{field.label}</ControlLabel>
-            <FormControl
+          <div className={inputClassName} key={field.fieldId}>
+            <label>{field.label}</label>
+            <Input
               value={value}
               onChange={e => {
                 this.changeChartConfigurationField(
@@ -120,10 +125,9 @@ class ChartInputs extends React.Component {
                   e.target.value
                 )
               }}
-              type="text"
-              className="input-small"
+              className="w-100"
             />
-          </FormGroup>
+          </div>
         )
       } else {
         throw Error(`field.inputType ${field.inputType} not supported`)

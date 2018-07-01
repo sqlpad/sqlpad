@@ -1,41 +1,37 @@
 import React from 'react'
-import { Redirect } from 'react-router-dom'
-import { LinkContainer } from 'react-router-bootstrap'
-import Navbar from 'react-bootstrap/lib/Navbar'
-import Nav from 'react-bootstrap/lib/Nav'
-import NavItem from 'react-bootstrap/lib/NavItem'
-import NavDropdown from 'react-bootstrap/lib/NavDropdown'
-import MenuItem from 'react-bootstrap/lib/MenuItem'
-
-import Button from 'react-bootstrap/lib/Button'
-import Popover from 'react-bootstrap/lib/Popover'
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger'
+import { Redirect, Route } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
-import Modal from './common/Modal'
 import AboutContent from './AboutContent'
+
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
+
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+
+import Menu from 'antd/lib/menu'
+import 'antd/lib/menu/style/css'
+
+import Icon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
+
+const { Content, Sider } = Layout
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      showAboutModal: false,
+      collapsed: true,
       currentUser: {},
       version: {},
       passport: {},
       config: {},
       redirect: false
     }
-    this.openAboutModal = this.openAboutModal.bind(this)
-    this.closeAboutModal = this.closeAboutModal.bind(this)
-    this.signout = this.signout.bind(this)
   }
 
-  openAboutModal() {
-    this.setState({ showAboutModal: true })
-  }
-
-  closeAboutModal() {
-    this.setState({ showAboutModal: false })
+  onCollapse = collapsed => {
+    this.setState({ collapsed })
   }
 
   componentDidMount() {
@@ -49,112 +45,151 @@ class App extends React.Component {
     })
   }
 
-  signout() {
+  signout = () => {
     fetchJson('GET', '/api/signout').then(json => {
       this.setState({ redirect: true })
     })
   }
 
+  renderUpdateNotification() {
+    const { version = {} } = this.state
+
+    if (version.updateAvailable) {
+      return (
+        <Menu.Item
+          key="update"
+          onClick={() => {
+            Modal.info({
+              title: 'Update Available (' + version.updateType + ')',
+              maskClosable: true,
+              content: (
+                <div>
+                  Installed Version: {version.current}
+                  <br />
+                  Latest: {version.latest}
+                </div>
+              ),
+              onOk() {}
+            })
+          }}
+        >
+          <Icon type="exclamation-circle-o" />
+          <span>Update available</span>
+        </Menu.Item>
+      )
+    }
+  }
+
   render() {
     const { redirect, version = {} } = this.state
+    const { currentUser } = this.props
+
     if (redirect) {
       return <Redirect push to="/signin" />
     }
-    const popover = (
-      <Popover
-        id="modal-popover"
-        title={'Update Available (' + this.state.version.updateType + ')'}
-      >
-        Installed Version: {this.state.version.current}
-        <br />
-        Latest: {this.state.version.latest}
-      </Popover>
-    )
-    const updateNotification = () => {
-      if (version.updateAvailable) {
-        return (
-          <OverlayTrigger overlay={popover} placement="bottom">
-            <NavItem eventKey={9}>
-              <span className="glyphicon glyphicon-upload" aria-hidden="true" />
-            </NavItem>
-          </OverlayTrigger>
-        )
-      }
-    }
-    const userMenu = () => {
-      if (this.props.currentUser.role === 'admin') {
-        return (
-          <NavDropdown
-            eventKey={3}
-            title={this.props.currentUser.email.split('@')[0]}
-            id="user-nav-dropdown"
-          >
-            <LinkContainer to="/connections">
-              <MenuItem eventKey={3.1}>Connections</MenuItem>
-            </LinkContainer>
-            <LinkContainer to="/users">
-              <MenuItem eventKey={3.2}>Users</MenuItem>
-            </LinkContainer>
-            <LinkContainer to="/config-values">
-              <MenuItem eventKey={3.3}>Configuration</MenuItem>
-            </LinkContainer>
-            <MenuItem divider />
-            <MenuItem eventKey={3.4} onClick={this.openAboutModal}>
-              About SQLPad
-            </MenuItem>
-            <MenuItem divider />
-            <MenuItem eventKey={3.5} onClick={this.signout}>
-              Sign Out
-            </MenuItem>
-          </NavDropdown>
-        )
-      } else {
-        return (
-          <NavDropdown
-            eventKey={3}
-            title={this.props.currentUser.email.split('@')[0]}
-            id="user-nav-dropdown"
-          >
-            <MenuItem eventKey={3.4} onClick={this.openAboutModal}>
-              About SQLPad
-            </MenuItem>
-            <MenuItem divider />
-            <MenuItem eventKey={3.5} onClick={this.signout}>
-              Sign Out
-            </MenuItem>
-          </NavDropdown>
-        )
-      }
-    }
+
     return (
-      <div className="flex w-100">
-        <Navbar inverse fluid fixedTop>
-          <Nav>
-            <LinkContainer exact to="/queries">
-              <NavItem eventKey={1}>Queries</NavItem>
-            </LinkContainer>
-            <LinkContainer exact to="/queries/new">
-              <NavItem eventKey={2}>New Query</NavItem>
-            </LinkContainer>
-          </Nav>
-          <Nav pullRight>
-            {updateNotification()}
-            {userMenu()}
-          </Nav>
-        </Navbar>
-        <div className="flex w-100" style={{ marginTop: '50px' }}>
-          {this.props.children}
-        </div>
-        <Modal
-          title="About SQLPad"
-          show={this.state.showAboutModal}
-          onHide={this.closeAboutModal}
-          renderBody={() => <AboutContent version={version.current} />}
-          renderFooter={() => (
-            <Button onClick={this.closeAboutModal}>Close</Button>
-          )}
-        />
-      </div>
+      <Layout style={{ minHeight: '100vh' }}>
+        <Sider
+          className="overflow-y-scroll"
+          collapsible
+          collapsed={this.state.collapsed}
+          onCollapse={this.onCollapse}
+        >
+          <div
+            style={{
+              minHeight: '100vh',
+              paddingBottom: '50px',
+              paddingTop: '64px'
+            }}
+            className="flex flex-column justify-between"
+          >
+            <Route
+              render={({ history }) => (
+                <Menu theme="dark" selectable={false} mode="inline">
+                  <Menu.Item
+                    key="queries"
+                    onClick={() => {
+                      history.push('/queries')
+                    }}
+                  >
+                    <Icon type="file-text" />
+                    <span>Queries</span>
+                  </Menu.Item>
+                  <Menu.Item
+                    key="new-query"
+                    onClick={() => {
+                      history.push('/queries/new')
+                    }}
+                  >
+                    <Icon type="plus" />
+                    <span>New Query</span>
+                  </Menu.Item>
+                  {currentUser.role === 'admin' && (
+                    <Menu.Item
+                      key="connections"
+                      onClick={() => {
+                        history.push('/connections')
+                      }}
+                    >
+                      <Icon type="database" />
+                      <span>DB connections</span>
+                    </Menu.Item>
+                  )}
+                  {currentUser.role === 'admin' && (
+                    <Menu.Item
+                      key="users"
+                      onClick={() => {
+                        history.push('/users')
+                      }}
+                    >
+                      <Icon type="team" />
+                      <span>Users</span>
+                    </Menu.Item>
+                  )}
+                  {currentUser.role === 'admin' && (
+                    <Menu.Item
+                      key="configuration"
+                      onClick={() => {
+                        history.push('/config-values')
+                      }}
+                    >
+                      <Icon type="setting" />
+                      <span>Configuration</span>
+                    </Menu.Item>
+                  )}
+                </Menu>
+              )}
+            />
+
+            <Menu theme="dark" selectable={false} mode="inline">
+              {this.renderUpdateNotification()}
+              <Menu.Item
+                key="about"
+                onClick={() => {
+                  Modal.info({
+                    width: 650,
+                    title: 'About SQLPad',
+                    maskClosable: true,
+                    content: <AboutContent version={version.current} />,
+                    onOk() {}
+                  })
+                }}
+              >
+                <Icon type="question-circle-o" />
+                <span>About</span>
+              </Menu.Item>
+              <Menu.Item key="signout" onClick={this.signout}>
+                <Icon type="logout" />
+                <span>Sign out</span>
+              </Menu.Item>
+            </Menu>
+          </div>
+        </Sider>
+        <Layout className="flex w-100 bg-white">
+          <Content className="flex w-100">{this.props.children}</Content>
+        </Layout>
+      </Layout>
     )
   }
 }

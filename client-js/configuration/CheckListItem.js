@@ -1,11 +1,11 @@
 import React from 'react'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
+import Icon from 'antd/lib/icon'
 
 const CheckListItem = props => {
   if (!props.configKey || !props.configItems || !props.configItems.length) {
     return null
   }
-  var configItem = props.configItems.find(item => {
+  const configItem = props.configItems.find(item => {
     return item.key === props.configKey
   })
   if (!configItem) {
@@ -17,7 +17,7 @@ const CheckListItem = props => {
   }
   return (
     <li style={{ listStyle: 'none' }}>
-      <Glyphicon glyph={configItem.effectiveValue ? 'ok' : 'remove'} />{' '}
+      <Icon type={configItem.effectiveValue ? 'check' : 'close'} />{' '}
       {configItem.label || configItem.envVar}
     </li>
   )

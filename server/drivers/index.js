@@ -37,18 +37,18 @@ function validateArray(path, driver, arrayName) {
  * and validate that it meets implementation spec as possible
  * @param {string} path
  */
-function requireValidate(path, optional=false) {
-  let driver;
+function requireValidate(path, optional = false) {
+  let driver
 
   try {
     driver = require(path)
   } catch (er) {
     if (optional) {
-      console.log('optional driver ' + path + ' not available');
-      return;
+      console.log('optional driver ' + path + ' not available')
+      return
     } else {
       // rethrow
-      throw er;
+      throw er
     }
   }
 

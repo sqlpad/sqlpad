@@ -7,7 +7,9 @@ class QueryResultHeader extends React.Component {
   renderDownloadLinks() {
     const { cacheKey, config } = this.props
     const csvDownloadLink = `${config.baseUrl}/download-results/${cacheKey}.csv`
-    const xlsxDownloadLink = `${config.baseUrl}/download-results/${cacheKey}.xlsx`
+    const xlsxDownloadLink = `${
+      config.baseUrl
+    }/download-results/${cacheKey}.xlsx`
     if (config.allowCsvDownload) {
       return (
         <span>
@@ -59,6 +61,8 @@ class QueryResultHeader extends React.Component {
     const rowCount =
       queryResult && queryResult.rows ? queryResult.rows.length : ''
 
+    const incomplete = queryResult ? queryResult.incomplete : false
+
     return (
       <div
         className="bb b--moon-gray bg-near-white pa2 nowrap fw6 near-black"
@@ -74,7 +78,7 @@ class QueryResultHeader extends React.Component {
         </span>
         <span className="pr5">{this.renderDownloadLinks()}</span>
         <span className="pr5">
-          <IncompleteDataNotification queryResult={queryResult} />
+          <IncompleteDataNotification incomplete={incomplete} />
         </span>
       </div>
     )

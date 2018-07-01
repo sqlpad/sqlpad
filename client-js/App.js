@@ -5,7 +5,7 @@ import {
   Redirect,
   Switch
 } from 'react-router-dom'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 import fetchJson from './utilities/fetch-json.js'
 import UsersView from './users/UsersView'
 import ConnectionsView from './connections/ConnectionsView.js'
@@ -21,6 +21,13 @@ import QueryTableOnly from './QueryTableOnly.js'
 import QueryChartOnly from './QueryChartOnly.js'
 import NotFound from './NotFound.js'
 import Authenticated from './Authenticated'
+
+// Configure message notification globally
+message.config({
+  top: 60,
+  duration: 2,
+  maxCount: 3
+})
 
 class App extends React.Component {
   state = {}
@@ -59,14 +66,8 @@ class App extends React.Component {
       passport
     } = this.state
 
-    // If there is no config a lot of the app is not functional
-    // Instead just load the Alert component so alerts can fire if needed
     if (!config) {
-      return (
-        <div className="flex w-100">
-          <Alert stack={{ limit: 3 }} position="bottom-right" />
-        </div>
-      )
+      return <div className="flex w-100" />
     }
 
     return (
@@ -178,7 +179,6 @@ class App extends React.Component {
               )}
             />
           </Switch>
-          <Alert stack={{ limit: 3 }} position="bottom-right" />
         </div>
       </Router>
     )

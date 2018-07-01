@@ -2,7 +2,7 @@ const assert = require('assert')
 const unixodbc = require('./index.js')
 
 const connection = {
-  connection_string: process.env.ODBC_CONNECTION_STRING,  // I.e. ensure os variable is set to connection string
+  connection_string: process.env.ODBC_CONNECTION_STRING, // I.e. ensure os variable is set to connection string
   schema_sql: `
     SELECT
         'dba' as table_schema,
@@ -13,7 +13,7 @@ const connection = {
     WHERE type = 'table';
 `
 }
-const test_schema_name =  'dba'  // sqlite3 does not really have owner
+const test_schema_name = 'dba' // sqlite3 does not really have owner
 
 const createTable = 'CREATE TABLE test (id integer);' // NOTE test(s) will fail if table already exists, expect empty database
 const insert1 = 'INSERT INTO test (id) VALUES (1);'

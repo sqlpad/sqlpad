@@ -1,12 +1,18 @@
 import React from 'react'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import fetchJson from '../utilities/fetch-json.js'
 import updateCompletions from '../utilities/updateCompletions.js'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
+
+import Icon from 'antd/lib/icon'
+
+import Tooltip from 'antd/lib/tooltip'
+import 'antd/lib/tooltip/style/css'
+
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+const { Option } = Select
 
 class SchemaSidebar extends React.PureComponent {
   state = {
@@ -55,8 +61,7 @@ class SchemaSidebar extends React.PureComponent {
     }
   }
 
-  handleConnectionChange = e => {
-    const connectionId = e.target.value
+  handleConnectionChange = connectionId => {
     this.props.onConnectionChange(connectionId)
     this.getSchemaInfo(connectionId)
   }
@@ -71,9 +76,9 @@ class SchemaSidebar extends React.PureComponent {
     const { loading, schemaInfo } = this.state
     const connectionSelectOptions = connections.map(function(conn) {
       return (
-        <option key={conn._id} value={conn._id}>
+        <Option key={conn._id} value={conn._id}>
           {conn.name}
-        </option>
+        </Option>
       )
     })
     const refreshClass = loading ? 'spinning' : ''
@@ -97,27 +102,35 @@ class SchemaSidebar extends React.PureComponent {
     return (
       <Sidebar>
         <SidebarBody>
-          <FormGroup controlId="formControlsSelect" bsSize="small">
-            <FormControl
-              value={connectionId}
-              componentClass="select"
-              onChange={this.handleConnectionChange}
-              className="input-small"
-            >
-              <option value="">Choose a connection...</option>
-              {connectionSelectOptions}
-            </FormControl>
-          </FormGroup>
+          <Select
+            showSearch
+            placeholder="Choose a connection"
+            className="w-100"
+            optionFilterProp="children"
+            value={connectionId}
+            onChange={this.handleConnectionChange}
+            filterOption={(input, option) =>
+              option.props.value &&
+              option.props.children
+                .toLowerCase()
+                .indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            <Option value="">Choose a connection...</Option>
+            {connectionSelectOptions}
+          </Select>
           <hr />
           <div style={{ position: 'relative' }}>
             <a style={{ position: 'absolute', right: '20px' }} href="#refresh">
-              <Glyphicon
-                glyph="refresh"
-                className={refreshClass}
-                onClick={this.handleRefreshClick}
-              />
+              <Tooltip title="Refresh schema">
+                <Icon
+                  type="reload"
+                  className={' ' + refreshClass}
+                  onClick={this.handleRefreshClick}
+                />
+              </Tooltip>
             </a>
-            <ul className="pl0 f4 dib" style={{ minWidth: '230px' }}>
+            <ul className="pl0 dib" style={{ minWidth: '230px' }}>
               {schemaItemNodes}
             </ul>
           </div>

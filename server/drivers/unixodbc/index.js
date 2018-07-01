@@ -41,47 +41,49 @@ function runQuery(query, connection) {
   // TODO use connection pool
   // TODO handle connection.maxRows
 
-  let cn = config.connection_string;
+  let cn = config.connection_string
 
   // Not all drivers require auth
   if (config.user) {
-    cn = cn + ';Uid=' + config.user;
+    cn = cn + ';Uid=' + config.user
   }
   if (config.password) {
-    cn = cn + ';Pwd=' + config.password;
+    cn = cn + ';Pwd=' + config.password
   }
 
-  return openConnection(cn).then(connectionStatus => {
-    return executeQuery(query)
-  }).then(queryResult => {
-    odbc.close();  // TODO consider putting into finally()?
-    return Promise.resolve({rows: queryResult, incomplete: false})
-  })
-    .catch(function (e) {
-      console.error(e, e.stack);
+  return openConnection(cn)
+    .then(connectionStatus => {
+      return executeQuery(query)
+    })
+    .then(queryResult => {
+      odbc.close() // TODO consider putting into finally()?
+      return Promise.resolve({ rows: queryResult, incomplete: false })
+    })
+    .catch(function(e) {
+      console.error(e, e.stack)
     })
 }
 
 function executeQuery(sqlString) {
   return new Promise((resolve, reject) => {
-    odbc.query(sqlString, function (err, data) {
+    odbc.query(sqlString, function(err, data) {
       if (err) {
-        reject(err);
+        reject(err)
       }
-      resolve(data);
+      resolve(data)
     })
-  });
+  })
 }
 
 function openConnection(connectionString) {
   return new Promise((resolve, reject) => {
-    odbc.open(connectionString, function (err) {
+    odbc.open(connectionString, function(err) {
       if (err) {
         reject(err)
       }
-      resolve("Connection Open");
+      resolve('Connection Open')
     })
-  });
+  })
 }
 
 /**
@@ -99,7 +101,9 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  const schema_sql = connection.schema_sql ? connection.schema_sql : SCHEMA_SQL_INFORMATION_SCHEMA;
+  const schema_sql = connection.schema_sql
+    ? connection.schema_sql
+    : SCHEMA_SQL_INFORMATION_SCHEMA
   return runQuery(schema_sql, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
   )
@@ -109,12 +113,14 @@ const fields = [
   {
     key: 'connection_string',
     formType: 'TEXT',
-    label: 'ODBC connection string. Examples:\ndsn=NAME\nDriver={SQLite3};Database=/tmp/my.db\n"Driver={Ingres};Server=VNODE;Database=mydb"'
+    label:
+      'ODBC connection string. Examples:\ndsn=NAME\nDriver={SQLite3};Database=/tmp/my.db\n"Driver={Ingres};Server=VNODE;Database=mydb"'
   },
   {
     key: 'schema_sql',
     formType: 'TEXT',
-    label: 'Database sql to lookup schema (optional, if ommited default to checking INFORMATION_SCHEMA)'
+    label:
+      'Database sql to lookup schema (optional, if ommited default to checking INFORMATION_SCHEMA)'
   },
   {
     key: 'username',
@@ -136,4 +142,3 @@ module.exports = {
   runQuery,
   testConnection
 }
-

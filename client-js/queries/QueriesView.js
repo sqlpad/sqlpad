@@ -1,11 +1,40 @@
 import React from 'react'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
+import Table from 'antd/lib/table'
+import Divider from 'antd/lib/divider'
+import Popconfirm from 'antd/lib/popconfirm'
+import Button from 'antd/lib/button'
+import Select from 'antd/lib/select'
+import Tag from 'antd/lib/tag'
+import Input from 'antd/lib/input'
 import uniq from 'lodash.uniq'
-import sortBy from 'lodash.sortby'
 import fetchJson from '../utilities/fetch-json.js'
-import QueryList from './QueryList'
-import QueryPreview from './QueryPreview'
-import QueryListSidebar from './QueryListSidebar'
+import { Link } from 'react-router-dom'
+import SqlEditor from '../common/SqlEditor'
+import Header from '../common/Header'
+import moment from 'moment'
+
+import 'antd/lib/input/style/css'
+import 'antd/lib/table/style/css'
+import 'antd/lib/divider/style/css'
+import 'antd/lib/popconfirm/style/css'
+import 'antd/lib/button/style/css'
+import 'antd/lib/tag/style/css'
+
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+
+import Popover from 'antd/lib/popover'
+import 'antd/lib/popover/style/css'
+
+import Icon from 'antd/lib/icon'
+import 'antd/lib/icon/style/css'
+
+const { Content } = Layout
+
+const { Option } = Select
+const { Column } = Table
+const { Search } = Input
 
 class QueriesView extends React.Component {
   state = {
@@ -13,33 +42,25 @@ class QueriesView extends React.Component {
     connections: [],
     createdBys: [],
     tags: [],
+    tagFilterDropdownVisible: false,
     searchInput: null,
-    selectedConnection: null,
-    selectedTag: null,
+    selectedTags: [],
+    selectedConnection: '',
     selectedCreatedBy: this.props.currentUser
       ? this.props.currentUser.email
-      : '',
-    selectedSortBy: null,
-    selectedQuery: null
-  }
-
-  handleQueryListRowMouseOver = query => {
-    this.setState({ selectedQuery: query })
+      : ''
   }
 
   handleQueryDelete = queryId => {
-    var queries = this.state.queries
-    var selectedQuery = this.state.selectedQuery
-    if (selectedQuery._id === queryId) selectedQuery = null
+    let { queries } = this.state
     queries = queries.filter(q => {
       return q._id !== queryId
     })
     this.setState({
-      queries: queries,
-      selectedQuery: selectedQuery
+      queries
     })
     fetchJson('DELETE', '/api/queries/' + queryId).then(json => {
-      if (json.error) Alert.error(json.error)
+      if (json.error) message.error(json.error)
     })
   }
 
@@ -53,7 +74,7 @@ class QueriesView extends React.Component {
           .reduce((a, b) => a.concat(b), [])
           .filter(tag => tag)
       )
-      var selectedCreatedBy = this.state.selectedCreatedBy
+      let selectedCreatedBy = this.state.selectedCreatedBy
       if (createdBys.indexOf(this.props.currentUser.email) === -1) {
         selectedCreatedBy = ''
       }
@@ -69,37 +90,9 @@ class QueriesView extends React.Component {
     })
   }
 
-  onSearchChange = searchInput => {
+  onSearchChange = e => {
     this.setState({
-      searchInput: searchInput,
-      selectedQuery: null
-    })
-  }
-
-  onConnectionChange = connectionId => {
-    this.setState({
-      selectedConnection: connectionId,
-      selectedQuery: null
-    })
-  }
-
-  onTagChange = tag => {
-    this.setState({
-      selectedTag: tag,
-      selectedQuery: null
-    })
-  }
-
-  onCreatedByChange = createdBy => {
-    this.setState({
-      selectedCreatedBy: createdBy,
-      selectedQuery: null
-    })
-  }
-
-  onSortByChange = sortBy => {
-    this.setState({
-      selectedSortBy: sortBy
+      searchInput: e.target.value
     })
   }
 
@@ -108,31 +101,117 @@ class QueriesView extends React.Component {
     this.loadConfigValuesFromServer()
   }
 
-  render() {
-    let filteredQueries = this.state.queries.map(q => q)
-    if (this.state.selectedTag) {
+  nameRender = (text, record) => {
+    return <Link to={'/queries/' + record._id}>{record.name}</Link>
+  }
+
+  previewRender = (text, record) => {
+    const { config } = this.props
+    return (
+      <Popover
+        content={
+          <div style={{ width: '600px', height: '300px' }}>
+            <SqlEditor config={config} readOnly value={record.queryText} />
+          </div>
+        }
+        placement="right"
+        title={record.name}
+        trigger="hover"
+      >
+        <Icon type="code-o" />
+      </Popover>
+    )
+  }
+
+  nameSorter = (a, b) => a.name.localeCompare(b.name)
+
+  modifiedSorter = (a, b) => {
+    return moment(a.modifiedDate).toDate() - moment(b.modifiedDate).toDate()
+  }
+
+  modifiedRender = (text, record) => moment(record.modifiedDate).calendar()
+
+  tagsRender = (text, record) => {
+    if (record.tags && record.tags.length) {
+      return record.tags.map(tag => <Tag key={tag}>{tag}</Tag>)
+    }
+  }
+
+  actionsRender = (text, record) => {
+    const { config } = this.props
+    const tableUrl = `${config.baseUrl}/query-table/${record._id}`
+    const chartUrl = `${config.baseUrl}/query-chart/${record._id}`
+    return (
+      <span>
+        <a href={tableUrl} target="_blank" rel="noopener noreferrer">
+          table
+        </a>
+        <Divider type="vertical" />
+        <a href={chartUrl} target="_blank" rel="noopener noreferrer">
+          chart
+        </a>
+        <Divider type="vertical" />
+        <Popconfirm
+          title="Are you sure?"
+          onConfirm={e => this.handleQueryDelete(record._id)}
+          onCancel={() => {}}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button icon="delete" type="danger" />
+        </Popconfirm>
+      </span>
+    )
+  }
+
+  getDecoratedQueries() {
+    const { queries, connections } = this.state
+
+    // Create index of lookups
+    // TODO this should come from API
+    const connectionsById = connections.reduce((connMap, connection) => {
+      connMap[connection._id] = connection
+      return connMap
+    }, {})
+
+    return queries.map(query => {
+      query.key = query._id
+
+      const connection = connectionsById[query.connectionId]
+      query.connectionName = connection ? connection.name : ''
+
+      return query
+    })
+  }
+
+  renderTable() {
+    const {
+      searchInput,
+      selectedConnection,
+      selectedCreatedBy,
+      selectedTags
+    } = this.state
+
+    let filteredQueries = this.getDecoratedQueries()
+
+    if (selectedTags.length) {
       filteredQueries = filteredQueries.filter(q => {
-        return (
-          q.tags && q.tags.length && q.tags.indexOf(this.state.selectedTag) > -1
+        if (!q.tags || !q.tags.length) {
+          return false
+        }
+        const matchedTags = selectedTags.filter(
+          selectedTag => q.tags.indexOf(selectedTag) > -1
         )
+        return selectedTags.length === matchedTags.length
       })
     }
-    if (this.state.selectedCreatedBy) {
+
+    if (searchInput) {
+      const terms = searchInput.split(' ')
+      const termCount = terms.length
       filteredQueries = filteredQueries.filter(q => {
-        return q.createdBy === this.state.selectedCreatedBy
-      })
-    }
-    if (this.state.selectedConnection) {
-      filteredQueries = filteredQueries.filter(q => {
-        return q.connectionId === this.state.selectedConnection
-      })
-    }
-    if (this.state.searchInput) {
-      var terms = this.state.searchInput.split(' ')
-      var termCount = terms.length
-      filteredQueries = filteredQueries.filter(q => {
-        var matchedCount = 0
-        terms.forEach(function(term) {
+        let matchedCount = 0
+        terms.forEach(term => {
           term = term.toLowerCase()
           if (
             (q.name && q.name.toLowerCase().search(term) !== -1) ||
@@ -144,40 +223,121 @@ class QueriesView extends React.Component {
         return matchedCount === termCount
       })
     }
-    if (this.state.selectedSortBy === 'name') {
-      filteredQueries = sortBy(filteredQueries, query =>
-        query.name.toLowerCase()
+
+    if (selectedConnection) {
+      filteredQueries = filteredQueries.filter(
+        q => q.connectionId === selectedConnection
       )
-    } else {
-      filteredQueries = sortBy(filteredQueries, 'modifiedDate').reverse()
+    }
+
+    if (selectedCreatedBy) {
+      filteredQueries = filteredQueries.filter(
+        q => q.createdBy === selectedCreatedBy
+      )
     }
 
     return (
-      <div className="v-100 w-100 flex">
-        <QueryListSidebar
-          currentUser={this.props.currentUser}
-          connections={this.state.connections}
-          onConnectionChange={this.onConnectionChange}
-          tags={this.state.tags}
-          onSearchChange={this.onSearchChange}
-          onTagChange={this.onTagChange}
-          createdBys={this.state.createdBys}
-          onCreatedByChange={this.onCreatedByChange}
-          onSortByChange={this.onSortByChange}
-          selectedCreatedBy={this.state.selectedCreatedBy}
+      <Table
+        locale={{ emptyText: 'No queries found' }}
+        dataSource={filteredQueries}
+        pagination={false}
+        className="w-100"
+      >
+        <Column
+          title="Name"
+          key="name"
+          render={this.nameRender}
+          sorter={this.nameSorter}
         />
-        <QueryList
-          config={this.props.config}
-          queries={filteredQueries}
-          selectedQuery={this.state.selectedQuery}
-          handleQueryDelete={this.handleQueryDelete}
-          handleQueryListRowMouseOver={this.handleQueryListRowMouseOver}
+        <Column title="" key="preview" render={this.previewRender} />
+        <Column
+          title="Connection"
+          key="connection"
+          dataIndex="connectionName"
         />
-        <QueryPreview
-          config={this.props.config}
-          selectedQuery={this.state.selectedQuery}
+        <Column title="Tags" key="tags" render={this.tagsRender} />
+        <Column title="Created by" dataIndex="createdBy" key="createdBy" />
+        <Column
+          title="Modified"
+          key="modifiedCalendar"
+          defaultSortOrder="descend"
+          sorter={this.modifiedSorter}
+          render={this.modifiedRender}
         />
+        <Column key="action" render={this.actionsRender} />
+      </Table>
+    )
+  }
+
+  renderFilters() {
+    const {
+      connections,
+      createdBys,
+      searchInput,
+      selectedConnection,
+      selectedCreatedBy,
+      selectedTags,
+      tags
+    } = this.state
+    return (
+      <div className="pt4 pb4 w-100 flex">
+        <Search
+          className="w-25 mr2"
+          placeholder="Search"
+          value={searchInput}
+          onChange={this.onSearchChange}
+        />
+        <Select
+          className="w-25 mr2"
+          placeholder="Filter by connection"
+          value={selectedConnection}
+          onChange={selectedConnection => this.setState({ selectedConnection })}
+        >
+          <Option key="all" value="">
+            All connections
+          </Option>
+          {connections.map(c => <Option key={c._id}>{c.name}</Option>)}
+        </Select>
+        <Select
+          className="w-25 mr2"
+          mode="multiple"
+          placeholder="Filter by tag"
+          value={selectedTags}
+          onChange={selectedTags => this.setState({ selectedTags })}
+        >
+          {tags.map(tag => <Option key={tag}>{tag}</Option>)}
+        </Select>
+        <Select
+          className="w-25 mr2"
+          placeholder="Filter by created by"
+          value={selectedCreatedBy}
+          onChange={selectedCreatedBy => this.setState({ selectedCreatedBy })}
+        >
+          <Option key="all" value="">
+            All authors
+          </Option>
+          {createdBys.map(c => <Option key={c}>{c}</Option>)}
+        </Select>
       </div>
+    )
+  }
+
+  render() {
+    return (
+      <Layout
+        style={{ minHeight: '100vh' }}
+        className="flex w-100 flex-column h-100"
+      >
+        <Header title="Queries">
+          <Link to={'/queries/new'}>
+            <Button type="primary">New Query</Button>
+          </Link>
+        </Header>
+        <Content className="ma4">
+          {this.renderFilters()}
+          <div className="bg-white">{this.renderTable()}</div>
+        </Content>
+      </Layout>
     )
   }
 }

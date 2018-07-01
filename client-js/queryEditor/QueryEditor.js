@@ -1,5 +1,5 @@
 import React from 'react'
-import Alert from 'react-s-alert'
+import message from 'antd/lib/message'
 import SplitPane from 'react-split-pane'
 import { Prompt } from 'react-router-dom'
 import fetchJson from '../utilities/fetch-json.js'
@@ -49,12 +49,12 @@ class QueryEditor extends React.Component {
 
   getTagOptions() {
     const { availableTags, query } = this.state
-    const tagOptions = availableTags.map(t => {
-      return { value: t, label: t }
-    })
+    const tagOptions = availableTags.slice()
     if (query && query.tags) {
       query.tags.forEach(t => {
-        tagOptions.push({ value: t, label: t })
+        if (tagOptions.indexOf(t) === -1) {
+          tagOptions.push(t)
+        }
       })
     }
     return tagOptions
@@ -64,7 +64,7 @@ class QueryEditor extends React.Component {
     fetchJson('GET', '/api/connections/').then(json => {
       const { error, connections } = json
       if (error) {
-        Alert.error(error)
+        message.error(error)
       }
       // if only 1 connection auto-select it
       const { query } = this.state
@@ -81,7 +81,7 @@ class QueryEditor extends React.Component {
     fetchJson('GET', `/api/queries/${queryId}`).then(json => {
       const { error, query } = json
       if (error) {
-        Alert.error(error)
+        message.error(error)
       }
       this.setState({ query })
     })
@@ -91,7 +91,7 @@ class QueryEditor extends React.Component {
     fetchJson('GET', '/api/tags').then(json => {
       const { error, tags } = json
       if (error) {
-        Alert.error(error)
+        message.error(error)
       }
       this.setState({ availableTags: tags })
     })
@@ -110,7 +110,7 @@ class QueryEditor extends React.Component {
       queryText: selectedText || query.queryText
     }
     fetchJson('POST', '/api/query-result', postData).then(json => {
-      if (json.error) Alert.error(json.error)
+      if (json.error) message.error(json.error)
       this.setState({
         isRunning: false,
         queryError: json.error,
@@ -141,7 +141,7 @@ class QueryEditor extends React.Component {
     const { query } = this.state
     const { config } = this.props
     if (!query.name) {
-      Alert.error('Query name required')
+      message.error('Query name required')
       this.setState({ showValidation: true })
       return
     }
@@ -150,18 +150,18 @@ class QueryEditor extends React.Component {
       fetchJson('PUT', `/api/queries/${query._id}`, query).then(json => {
         const { error, query } = json
         if (error) {
-          Alert.error(error)
+          message.error(error)
           this.setState({ isSaving: false })
           return
         }
-        Alert.success('Query Saved')
+        message.success('Query Saved')
         this.setState({ isSaving: false, unsavedChanges: false, query })
       })
     } else {
       fetchJson('POST', `/api/queries`, query).then(json => {
         const { error, query } = json
         if (error) {
-          Alert.error(error)
+          message.error(error)
           this.setState({ isSaving: false })
           return
         }
@@ -170,7 +170,7 @@ class QueryEditor extends React.Component {
           query.name,
           `${config.baseUrl}/queries/${query._id}`
         )
-        Alert.success('Query Saved')
+        message.success('Query Saved')
         this.setState({ isSaving: false, unsavedChanges: false, query })
       })
     }
@@ -188,9 +188,9 @@ class QueryEditor extends React.Component {
     this.setState({ query, unsavedChanges: true })
   }
 
-  handleChartTypeChange = e => {
+  handleChartTypeChange = value => {
     const { query } = this.state
-    query.chartConfiguration.chartType = e.target.value
+    query.chartConfiguration.chartType = value
     this.setState({ query, unsavedChanges: true })
   }
 
@@ -206,8 +206,7 @@ class QueryEditor extends React.Component {
 
   handleMoreClick = () => this.setState({ showModal: true })
 
-  handleQueryTagsChange = values =>
-    this.setQueryState('tags', values.map(v => v.value))
+  handleQueryTagsChange = values => this.setQueryState('tags', values)
 
   handleQueryTextChange = queryText =>
     this.setQueryState('queryText', queryText)
@@ -222,7 +221,9 @@ class QueryEditor extends React.Component {
     }
   }
 
-  handleTabSelect = activeTabKey => this.setState({ activeTabKey })
+  handleTabSelect = e => {
+    this.setState({ activeTabKey: e.target.value })
+  }
 
   handleVisualizeClick = () => this.sqlpadTauChart.renderChart(true)
 
@@ -275,7 +276,7 @@ class QueryEditor extends React.Component {
     // rather something previously not run than something run more than once
     keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
     keymaster('ctrl+r, command+r, ctrl+e, command+e', e => {
-      Alert.info('Shortcut changed to ctrl+return / command+return')
+      message.info('Shortcut changed to ctrl+return / command+return')
       e.preventDefault()
       return false
     })
@@ -287,7 +288,7 @@ class QueryEditor extends React.Component {
     })
     keymaster.unbind('alt+r')
     keymaster('alt+r', e => {
-      Alert.info('Shortcut changed to shift+return')
+      message.info('Shortcut changed to shift+return')
       e.preventDefault()
       return false
     })

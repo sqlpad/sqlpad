@@ -1,11 +1,21 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Navbar from 'react-bootstrap/lib/Navbar'
-import Nav from 'react-bootstrap/lib/Nav'
-import NavItem from 'react-bootstrap/lib/NavItem'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import Button from 'react-bootstrap/lib/Button'
-import FormControl from 'react-bootstrap/lib/FormControl'
+
+import Icon from 'antd/lib/icon'
+
+import Radio from 'antd/lib/radio'
+import 'antd/lib/radio/style/css'
+
+import Form from 'antd/lib/form'
+import 'antd/lib/form/style/css'
+
+import Input from 'antd/lib/input'
+import 'antd/lib/input/style/css'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
+const FormItem = Form.Item
 
 class EditorNavBar extends React.Component {
   onQueryNameChange = e => {
@@ -34,68 +44,49 @@ class EditorNavBar extends React.Component {
     const cloneDisabled = !query._id
 
     return (
-      <Navbar fluid>
-        <Nav activeKey={activeTabKey} bsStyle="pills" onSelect={onTabSelect}>
-          <NavItem eventKey="sql">
-            <span className="glyphicon glyphicon-align-left" /> SQL
-          </NavItem>
-          <NavItem eventKey="vis">
-            <span className="glyphicon glyphicon-stats" /> Vis
-          </NavItem>
-        </Nav>
-        <Nav>
-          <NavItem
-            eventKey={1}
-            href="#"
-            onClick={onCloneClick}
-            disabled={cloneDisabled}
-          >
-            Clone
-          </NavItem>
-          <NavItem eventKey={2} href="#" onClick={onFormatClick}>
-            Format
-          </NavItem>
-          <NavItem
-            style={{ minWidth: 68 }}
-            eventKey={3}
-            href="#"
-            onClick={onSaveClick}
-            disabled={isSaving}
-          >
-            {saveText}
-          </NavItem>
-          <NavItem
-            eventKey={4}
-            href="#"
-            onClick={onRunClick}
-            disabled={isRunning}
-          >
-            Run
-          </NavItem>
-        </Nav>
-        <Navbar.Form>
-          <FormGroup
-            validationState={validationState}
-            style={{ marginTop: '-1px', marginLeft: 12 }}
-          >
-            <FormControl
-              style={{
-                width: 300,
-                color: '#111',
-                padding: '5px 12px',
-                fontSize: '16px'
-              }}
-              type="text"
+      <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
+        <Form layout="inline">
+          <FormItem>
+            <Radio.Group value={activeTabKey} onChange={onTabSelect}>
+              <Radio.Button value="sql">
+                <Icon type="code-o" /> SQL
+              </Radio.Button>
+              <Radio.Button value="vis">
+                <Icon type="bar-chart" /> Vis
+              </Radio.Button>
+            </Radio.Group>
+          </FormItem>
+          <FormItem>
+            <Button.Group>
+              <Button onClick={onCloneClick} disabled={cloneDisabled}>
+                Clone
+              </Button>
+              <Button onClick={onFormatClick}>Format</Button>
+              <Button
+                style={{ minWidth: 75 }}
+                onClick={onSaveClick}
+                disabled={isSaving}
+              >
+                {saveText}
+              </Button>
+              <Button type="primary" onClick={onRunClick} disabled={isRunning}>
+                Run
+              </Button>
+            </Button.Group>
+          </FormItem>
+          <FormItem validateStatus={validationState}>
+            <Input
+              className="w5"
               placeholder="Query name"
-              onChange={this.onQueryNameChange}
               value={query.name}
+              onChange={this.onQueryNameChange}
             />
-          </FormGroup>
-          <Button style={{ marginLeft: 4 }} onClick={onMoreClick}>
-            &hellip;
-          </Button>
-        </Navbar.Form>
-      </Navbar>
+          </FormItem>
+          <FormItem>
+            <Button onClick={onMoreClick}>&hellip;</Button>
+          </FormItem>
+        </Form>
+      </div>
     )
   }
 }

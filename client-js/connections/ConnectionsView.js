@@ -1,13 +1,27 @@
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
-import Alert from 'react-s-alert'
 import ConnectionForm from './ConnectionForm'
-import SimpleTable from '../common/SimpleTable'
-import SimpleTh from '../common/SimpleTableTh'
-import Modal from '../common/Modal'
-import Button from '../common/Button'
-import DeleteButton from '../common/DeleteButton'
-import SimpleTd from '../common/SimpleTableTd'
+import Header from '../common/Header'
+
+import message from 'antd/lib/message'
+
+import Table from 'antd/lib/table'
+import 'antd/lib/table/style/css'
+
+import Popconfirm from 'antd/lib/popconfirm'
+import 'antd/lib/popconfirm/style/css'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+
+import Modal from 'antd/lib/modal'
+import 'antd/lib/modal/style/css'
+
+const { Content } = Layout
+const { Column } = Table
 
 class ConnectionsView extends React.Component {
   state = {
@@ -15,7 +29,9 @@ class ConnectionsView extends React.Component {
     connections: [],
     selectedConnection: {},
     isTesting: false,
-    isSaving: false
+    isSaving: false,
+    testSuccess: false,
+    testFailed: false
   }
 
   componentDidMount() {
@@ -34,9 +50,9 @@ class ConnectionsView extends React.Component {
     const { selectedConnection } = this.state
     fetchJson('DELETE', '/api/connections/' + connection._id).then(json => {
       if (json.error) {
-        return Alert.error('Delete failed')
+        return message.error('Delete failed')
       }
-      Alert.success('Connection deleted')
+      message.success('Connection deleted')
       if (selectedConnection && connection._id === selectedConnection._id) {
         this.setState({ selectedConnection: null })
       }
@@ -55,14 +71,18 @@ class ConnectionsView extends React.Component {
     const { selectedConnection } = this.state
     if (selectedConnection) {
       selectedConnection[attribute] = value
-      this.setState({ selectedConnection })
+      this.setState({
+        selectedConnection,
+        testFailed: false,
+        testSuccess: false
+      })
     }
   }
 
   loadConnectionsFromServer = () => {
     fetchJson('GET', '/api/connections').then(json => {
       if (json.error) {
-        Alert.error(json.error)
+        message.error(json.error)
       }
       this.setState({ connections: json.connections })
     })
@@ -72,11 +92,11 @@ class ConnectionsView extends React.Component {
     const { selectedConnection } = this.state
     this.setState({ isTesting: true })
     fetchJson('POST', '/api/test-connection', selectedConnection).then(json => {
-      this.setState({ isTesting: false })
-      if (json.error) {
-        return Alert.error('Test Failed')
-      }
-      return Alert.success('Test successful')
+      this.setState({
+        isTesting: false,
+        testFailed: json.error ? true : false,
+        testSuccess: json.error ? false : true
+      })
     })
   }
 
@@ -91,9 +111,9 @@ class ConnectionsView extends React.Component {
       ).then(json => {
         this.setState({ isSaving: false })
         if (json.error) {
-          return Alert.error('Save failed')
+          return message.error('Save failed')
         }
-        Alert.success('Connection saved')
+        message.success('Connection saved')
         this.setState({ selectedConnection: {}, showModal: false })
         this.loadConnectionsFromServer()
       })
@@ -104,109 +124,139 @@ class ConnectionsView extends React.Component {
           selectedConnection: json.connection || selectedConnection
         })
         if (json.error) {
-          return Alert.error('Save failed')
+          return message.error('Save failed')
         }
-        Alert.success('Connection saved')
+        message.success('Connection saved')
         this.setState({ selectedConnection: {}, showModal: false })
         this.loadConnectionsFromServer()
       })
     }
   }
 
-  render() {
+  renderTable() {
+    const { connections } = this.state
+
+    const decoratedConnections = connections.map(connection => {
+      connection.key = connection._id
+      connection.displayDatabase = connection.database
+      connection.displaySchema = ''
+      let displayPort = connection.port ? ':' + connection.port : ''
+
+      if (connection.driver === 'hdb') {
+        connection.displayDatabase = connection.hanadatabase
+        connection.displaySchema = connection.hanaSchema
+        displayPort = connection.hanaport ? ':' + connection.hanaport : ''
+      } else if (connection.driver === 'presto') {
+        connection.displayDatabase = connection.prestoCatalog
+        connection.displaySchema = connection.prestoSchema
+      }
+
+      connection.displayHost = (connection.host || '') + displayPort
+      return connection
+    })
+
+    return (
+      <Table
+        locale={{ emptyText: 'No connections found' }}
+        dataSource={decoratedConnections}
+        pagination={false}
+        className="w-100"
+      >
+        <Column
+          title="Name"
+          key="name"
+          render={(text, record) => {
+            return (
+              <a href="#connection" onClick={() => this.handleSelect(record)}>
+                {record.name}
+              </a>
+            )
+          }}
+        />
+        <Column title="Driver" key="driver" dataIndex="driver" />
+        <Column title="Host" key="host" dataIndex="displayHost" />
+        <Column
+          title="Database / Tenant / Catalog"
+          key="database"
+          dataIndex="displayDatabase"
+        />
+        <Column title="Schema" key="schema" dataIndex="displaySchema" />
+        <Column
+          title="Delete"
+          key="delete"
+          render={(text, record) => {
+            return (
+              <Popconfirm
+                title="Delete connection?"
+                onConfirm={e => this.handleDelete(record)}
+                onCancel={() => {}}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button icon="delete" type="danger" />
+              </Popconfirm>
+            )
+          }}
+        />
+      </Table>
+    )
+  }
+
+  renderModal() {
     const {
       showModal,
       isTesting,
       isSaving,
-      connections,
-      selectedConnection
+      selectedConnection,
+      testFailed,
+      testSuccess
     } = this.state
+
     return (
-      <div className="flex w-100 flex-column">
-        <div>
-          <div className="ma4 f1 fl">Connections</div>
-          <Button
-            className="ma4 fr"
-            primary
-            onClick={this.handleNewConnectionClick}
-          >
+      <Modal
+        title={selectedConnection._id ? 'Edit connection' : 'New connection'}
+        visible={showModal}
+        footer={null}
+        width={'600px'}
+        destroyOnClose={true}
+        onCancel={() =>
+          this.setState({
+            showModal: false,
+            testFailed: false,
+            testSuccess: false
+          })
+        }
+      >
+        <ConnectionForm
+          selectedConnection={selectedConnection}
+          setConnectionValue={this.setConnectionValue}
+          testConnection={this.testConnection}
+          saveConnection={this.saveConnection}
+          isTesting={isTesting}
+          isSaving={isSaving}
+          testFailed={testFailed}
+          testSuccess={testSuccess}
+        />
+      </Modal>
+    )
+  }
+
+  render() {
+    return (
+      <Layout
+        style={{ minHeight: '100vh' }}
+        className="flex w-100 flex-column h-100"
+      >
+        <Header title="Connections">
+          <Button type="primary" onClick={this.handleNewConnectionClick}>
             New connection
           </Button>
-        </div>
-        <SimpleTable
-          className="w-100"
-          renderHeader={() => {
-            return (
-              <tr>
-                <SimpleTh>Name</SimpleTh>
-                <SimpleTh>Driver</SimpleTh>
-                <SimpleTh>Host</SimpleTh>
-                <SimpleTh>Database / Tenant / Catalog</SimpleTh>
-                <SimpleTh>Schema</SimpleTh>
-                <SimpleTh>Delete</SimpleTh>
-              </tr>
-            )
-          }}
-          renderBody={() =>
-            connections.map(connection => {
-              let db_name = connection.database
-              let db_schema = ''
-              let db_port = connection.port ? ':' + connection.port : ''
-
-              if (connection.driver === 'hdb') {
-                db_name = connection.hanadatabase
-                db_schema = connection.hanaSchema
-                db_port = connection.hanaport ? ':' + connection.hanaport : ''
-              } else if (connection.driver === 'presto') {
-                db_name = connection.prestoCatalog
-                db_schema = connection.prestoSchema
-              }
-
-              return (
-                <tr key={connection._id}>
-                  <SimpleTd>
-                    <a
-                      href="#connection"
-                      onClick={() => this.handleSelect(connection)}
-                    >
-                      {connection.name}
-                    </a>
-                  </SimpleTd>
-                  <SimpleTd>{connection.driver}</SimpleTd>
-                  <SimpleTd>
-                    {connection.host}
-                    {db_port}
-                  </SimpleTd>
-                  <SimpleTd>{db_name}</SimpleTd>
-                  <SimpleTd>{db_schema}</SimpleTd>
-                  <SimpleTd>
-                    <DeleteButton
-                      onClick={() => this.handleDelete(connection)}
-                    />
-                  </SimpleTd>
-                </tr>
-              )
-            })
-          }
-        />
-        <Modal
-          title={selectedConnection._id ? 'Edit connection' : 'New connection'}
-          show={showModal}
-          onHide={() => this.setState({ showModal: false })}
-          renderBody={() => {
-            return (
-              <ConnectionForm
-                selectedConnection={selectedConnection}
-                setConnectionValue={this.setConnectionValue}
-                testConnection={this.testConnection}
-                saveConnection={this.saveConnection}
-                isTesting={isTesting}
-                isSaving={isSaving}
-              />
-            )
-          }}
-        />
-      </div>
+        </Header>
+        <Content className="ma4">
+          <div className="bg-white">{this.renderTable()}</div>
+          {this.renderModal()}
+        </Content>
+      </Layout>
     )
   }
 }

@@ -1,13 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Glyphicon from 'react-bootstrap/lib/Glyphicon'
-import FormGroup from 'react-bootstrap/lib/FormGroup'
-import FormControl from 'react-bootstrap/lib/FormControl'
-import Button from 'react-bootstrap/lib/Button'
 import ChartInputs from './ChartInputs.js'
 import chartDefinitions from '../utilities/chartDefinitions.js'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
+
+import Icon from 'antd/lib/icon'
+
+import Button from 'antd/lib/button'
+import 'antd/lib/button/style/css'
+
+import Select from 'antd/lib/select'
+import 'antd/lib/select/style/css'
+const { Option } = Select
 
 class VisSidebar extends React.Component {
   render() {
@@ -23,26 +28,32 @@ class VisSidebar extends React.Component {
 
     const chartOptions = chartDefinitions.map(d => {
       return (
-        <option key={d.chartType} value={d.chartType}>
+        <Option key={d.chartType} value={d.chartType}>
           {d.chartLabel}
-        </option>
+        </Option>
       )
     })
 
     return (
       <Sidebar>
         <SidebarBody>
-          <FormGroup controlId="formControlsSelect" bsSize="small">
-            <FormControl
-              value={query.chartConfiguration.chartType}
-              onChange={onChartTypeChange}
-              componentClass="select"
-              className="input-small"
-            >
-              <option value="">Choose a chart type...</option>
-              {chartOptions}
-            </FormControl>
-          </FormGroup>
+          <Select
+            allowClear
+            showSearch
+            className="w-100"
+            optionFilterProp="children"
+            value={query.chartConfiguration.chartType}
+            notFoundContent="No charts available"
+            onChange={onChartTypeChange}
+            filterOption={(input, option) =>
+              option.props.value &&
+              option.props.children
+                .toLowerCase()
+                .indexOf(input.toLowerCase()) >= 0
+            }
+          >
+            {chartOptions}
+          </Select>
           <ChartInputs
             chartType={query.chartConfiguration.chartType}
             queryChartConfigurationFields={query.chartConfiguration.fields}
@@ -50,21 +61,16 @@ class VisSidebar extends React.Component {
             queryResult={queryResult}
           />
         </SidebarBody>
-        <div className="pa4 bt b--near-white">
+        <div className="pa2 bt b--near-white">
           <Button
+            className="w-100 mb1"
             onClick={onVisualizeClick}
             disabled={!isChartable}
-            className={'btn-block'}
-            bsSize={'sm'}
           >
             Visualize
           </Button>
-          <Button
-            onClick={onSaveImageClick}
-            className={'btn-block'}
-            bsSize={'sm'}
-          >
-            <Glyphicon glyph="save" /> Save Chart Image
+          <Button className="w-100 mb1" onClick={onSaveImageClick}>
+            <Icon type="download" /> Save Chart Image
           </Button>
         </div>
       </Sidebar>

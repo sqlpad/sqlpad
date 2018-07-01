@@ -1,13 +1,22 @@
 import React from 'react'
-import Alert from 'react-s-alert'
-import Col from 'react-bootstrap/lib/Col'
-import Form from 'react-bootstrap/lib/Form'
-import AutoAffix from 'react-overlays/lib/AutoAffix'
+import message from 'antd/lib/message'
 import debounce from 'lodash.debounce'
 import CheckListItem from './CheckListItem'
 import ConfigEnvDocumentation from './ConfigEnvDocumentation'
 import ConfigItemInput from './ConfigItemInput'
 import fetchJson from '../utilities/fetch-json.js'
+import Header from '../common/Header'
+
+import Col from 'antd/lib/col'
+import 'antd/lib/col/style/css'
+
+import Row from 'antd/lib/row'
+import 'antd/lib/row/style/css'
+
+import Layout from 'antd/lib/layout'
+import 'antd/lib/layout/style/css'
+
+const { Content } = Layout
 
 class ConfigurationView extends React.Component {
   state = {
@@ -16,7 +25,7 @@ class ConfigurationView extends React.Component {
 
   loadConfigValuesFromServer = () => {
     fetchJson('GET', '/api/config-items').then(json => {
-      if (json.error) Alert.error(json.error)
+      if (json.error) message.error(json.error)
       this.setState({ configItems: json.configItems })
     })
   }
@@ -26,9 +35,9 @@ class ConfigurationView extends React.Component {
       value: value
     }).then(json => {
       if (json.error) {
-        Alert.error('Save failed')
+        message.error('Save failed')
       } else {
-        Alert.success('Value saved')
+        message.success('Value saved')
         this.loadConfigValuesFromServer()
       }
     })
@@ -40,40 +49,116 @@ class ConfigurationView extends React.Component {
     this.saveConfigValue = debounce(this.saveConfigValue, 500)
   }
 
-  render() {
-    var configItemInputNodes = this.state.configItems
-      .filter(config => config.interface === 'ui')
-      .map(config => {
-        return (
-          <ConfigItemInput
-            key={config.key}
-            config={config}
-            saveConfigValue={this.saveConfigValue}
-          />
-        )
-      })
+  renderValueInput = (text, record) => {
     return (
       <div>
-        <Col sm={6} smOffset={1}>
-          <div className="configBox">
-            <h1 style={{ textAlign: 'center' }}>Configuration</h1>
-            <hr />
-            <Form horizontal>{configItemInputNodes}</Form>
-            <hr />
+        <label>{record.label}</label>
+        <ConfigItemInput
+          key={record.key}
+          config={record}
+          saveConfigValue={this.saveConfigValue}
+        />
+      </div>
+    )
+  }
+
+  renderInfo = config => {
+    const disabled =
+      config.effectiveValueSource === 'cli' ||
+      config.effectiveValueSource === 'saved cli' ||
+      config.effectiveValueSource === 'env'
+
+    const effectiveValueSourceLabels = {
+      cli: 'Command Line',
+      'saved cli': 'Saved Command Line',
+      env: 'Environment Varialbe'
+    }
+    const overriddenBy = effectiveValueSourceLabels[config.effectiveValueSource]
+
+    const defaultValue =
+      config.default === '' ? (
+        <em>empty</em>
+      ) : (
+        <span>{config.default.toString()}</span>
+      )
+
+    const cliFlag =
+      config.cliFlag && config.cliFlag.pop
+        ? config.cliFlag.pop()
+        : config.cliFlag
+
+    return (
+      <div className="mt4">
+        <p>{config.description}</p>
+        <p>
+          <span>Default:</span> {defaultValue}
+        </p>
+        {cliFlag && (
+          <p>
+            <span>CLI Flag:</span> --{cliFlag}
+          </p>
+        )}
+        {config.envVar && (
+          <p>
+            <span>Environment Variable:</span> {config.envVar}
+          </p>
+        )}
+        {disabled && (
+          <div>
             <p>
-              Some configuration is only accessible via environment variables or
-              command-line-interface (CLI) flags. Below are the current values
-              for these variables. Sensitive values are masked. Hover over input
-              for additional information.
+              <span>Set By:</span> {overriddenBy}
             </p>
-            <hr />
-            <ConfigEnvDocumentation configItems={this.state.configItems} />
+            <p>
+              When set by command line or environment, item is not configurable
+              via UI.
+            </p>
           </div>
-        </Col>
-        <Col sm={3} smOffset={1} style={{ paddingTop: 90 }}>
-          <AutoAffix viewportOffsetTop={95}>
-            <div className="panel panel-default">
-              <div className="panel-body">
+        )}
+      </div>
+    )
+  }
+
+  renderConfigInputs() {
+    const { configItems } = this.state
+    const uiConfigItems = configItems.filter(
+      config => config.interface === 'ui'
+    )
+    return (
+      <div className="bg-white w-100 pa4">
+        {uiConfigItems.map(config => {
+          return (
+            <Row key={config.key} className="mt5 bb b--near-white" gutter={16}>
+              <Col span={10}>
+                <div>
+                  <label>{config.label}</label>
+                  <ConfigItemInput
+                    config={config}
+                    saveConfigValue={this.saveConfigValue}
+                  />
+                </div>
+              </Col>
+              <Col span={14}>
+                <div>{this.renderInfo(config)}</div>
+              </Col>
+            </Row>
+          )
+        })}
+      </div>
+    )
+  }
+
+  render() {
+    return (
+      <Layout
+        style={{ minHeight: '100vh' }}
+        className="flex w-100 flex-column h-100"
+      >
+        <Header title="Configuration" />
+        <Content className="ma4">
+          <Row gutter={16}>
+            <Col span={16}>{this.renderConfigInputs()}</Col>
+            <Col span={8}>
+              <div className="bg-white ba br2 b--light-gray pa4">
                 <p>
                   <strong>Feature Checklist</strong>
                 </p>
@@ -118,10 +203,27 @@ class ConfigurationView extends React.Component {
                   />
                 </ul>
               </div>
-            </div>
-          </AutoAffix>
-        </Col>
-      </div>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <hr />
+              <p>
+                Some configuration is only accessible via environment variables
+                or command-line-interface (CLI) flags. Below are the current
+                values for these variables. Sensitive values are masked. Hover
+                over input for additional information.
+              </p>
+              <hr />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <ConfigEnvDocumentation configItems={this.state.configItems} />
+            </Col>
+          </Row>
+        </Content>
+      </Layout>
     )
   }
 }
