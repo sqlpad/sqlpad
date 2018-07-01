@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.7.0
+
+### July 1, 2018
+
+* Add optional odbc support. See [ODBC wiki page](https://github.com/rickbergfalk/sqlpad/wiki/ODBC) for more detais
+
+## 2.6.1
+
+### June 17, 2018
+
+* Fix query editor loading when connections load slowly
+
 ## 2.6.0
 
 ### May 5, 2018

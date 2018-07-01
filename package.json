@@ -1,6 +1,6 @@
 {
   "name": "sqlpad",
-  "version": "2.6.0",
+  "version": "2.7.0",
   "description": "Web app. Write SQL and visualize the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica and SAP HANA.",
   "license": "MIT",
   "engines": {
@@ -92,6 +92,9 @@
   "main": "./server/app.js",
   "bin": {
     "sqlpad": "./server/server.js"
+  },
+  "optionalDependencies": {
+    "odbc": "^1.4.1"
   },
   "devDependencies": {
     "@rickbergfalk/sqlpad-react-scripts": "^1.0.13",
