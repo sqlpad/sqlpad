@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.0
+
+### July 1, 2018
+
+* Add optional odbc support. See [ODBC wiki page](https://github.com/rickbergfalk/sqlpad/wiki/ODBC) for more detais
+
 ## 2.6.1
 
 ### June 17, 2018
