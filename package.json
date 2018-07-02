@@ -97,8 +97,11 @@
     "odbc": "^1.4.1"
   },
   "devDependencies": {
+    "babel-eslint": "^8.2.5",
     "concurrently": "^3.5.1",
     "eslint": "^4.19.1",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-plugin-flowtype": "^2.49.3",
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.7.0",
