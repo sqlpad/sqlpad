@@ -27,11 +27,11 @@
   },
   "proxy": "http://localhost:3010",
   "scripts": {
-    "build": "react-scripts build",
+    "build": "npm run build --prefix client",
     "precommit": "lint-staged",
     "prepublishOnly": "npm run build",
     "lint": "eslint '**/*.js'",
-    "start-client-dev": "react-scripts start",
+    "start-client-dev": "npm start --prefix client",
     "start-server-dev": "node-dev server/server.js --dir ./db --port 3010 --debug --base-url '/sqlpad'",
     "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
     "test-client": "react-scripts test --env=jsdom",
