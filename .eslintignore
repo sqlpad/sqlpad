@@ -1,8 +1,10 @@
 # /node_modules/* and /bower_components/* ignored by default
-
-build/*
+client/build/*
+client/public/*
+client/node_modules/*
 db/*
+dbtest/*
+docker-validation/*
 docker/*
 docs-source/*
 docs/*
-public/*

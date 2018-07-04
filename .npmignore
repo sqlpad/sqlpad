@@ -8,4 +8,5 @@ docker/
 docs/
 docs-source/
 node_modules/
+client/node_modules/
 server/test/
