@@ -2,7 +2,7 @@
 .env
 .idea/*
 .vscode/settings.json
-build/
+client/build/
 coverage/
 db/
 dbtest/

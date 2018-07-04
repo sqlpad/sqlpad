@@ -1,6 +1,9 @@
 *.html
-build/*
+client/build/*
+client/public/*
+client/package.json
+client/package-lock.json
 db/*
+dbtest/*
 package-lock.json
 package.json
-public/*
