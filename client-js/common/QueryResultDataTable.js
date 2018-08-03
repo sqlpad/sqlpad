@@ -224,6 +224,20 @@ class QueryResultDataTable extends React.PureComponent {
     return fakeColumnWidth < 10 ? 10 : fakeColumnWidth
   }
 
+  handleScrollBug = () => {
+    // There's a strange bug when using Chrome.
+    // When the Ace editor is focused, and the user scrolls horizontally on result grid
+    // the cursor appears to stay focused on the Ace editor, but no input is accepted other than deletes.
+    // The frozen input behavior goes away if another element is given focus,
+    // and then the user clicks on the Ace editor again.
+    // Fortunately clearing focus on the focused element and refocusing it fixes this bug.
+    const element = document.activeElement
+    if (element) {
+      element.blur()
+      element.focus()
+    }
+  }
+
   render() {
     const { isRunning, queryError, queryResult } = this.props
     const { gridHeight, gridWidth } = this.state
@@ -267,6 +281,7 @@ class QueryResultDataTable extends React.PureComponent {
             rowCount={rowCount}
             cellRenderer={this.cellRenderer}
             fixedRowCount={1}
+            onScroll={this.handleScrollBug}
           />
         </div>
       )
