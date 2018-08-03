@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.1
+
+### August 2, 2018
+
+* Fix query editor not responding to input after query result scroll
+
 ## 2.7.0
 
 ### July 1, 2018
