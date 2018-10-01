@@ -224,6 +224,7 @@ class SchemaInfoTableItem extends React.Component {
               {...this.props}
               column_name={column.column_name}
               data_type={column.data_type}
+              col_desc={column.col_desc}
               key={column.column_name}
               schema={schema}
               table={table}
@@ -313,7 +314,7 @@ class SchemaInfoColumnItem extends React.Component {
 
   render() {
     const { copyButtonText, showCopyButton } = this.state
-    const { config, column_name, data_type, schema, table } = this.props
+    const { config, column_name, data_type, col_desc, schema, table } = this.props
     const copyButtonClassName = showCopyButton
       ? 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info'
       : 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info dn'
@@ -335,20 +336,38 @@ class SchemaInfoColumnItem extends React.Component {
         )
       }
     }
-    return (
-      <li className="list">
-        <span
-          onMouseOver={this.handleMouseOver}
-          onMouseOut={this.handleMouseOut}
-          className="dib"
-          style={{ minWidth: '230px' }}
-        >
-          {column_name}
-          <span className="silver"> ({data_type})</span>
-          {getCopyToClipboard()}
-        </span>
-      </li>
-    )
+    if (col_desc) {
+      return (
+        <li className="list">
+          <span
+            onMouseOver={this.handleMouseOver}
+            onMouseOut={this.handleMouseOut}
+            className="dib"
+            style={{ minWidth: '230px' }}
+          >
+            {column_name}
+            <span className="silver"> ({data_type})</span>
+            - {col_desc}
+            {getCopyToClipboard()}
+          </span>
+        </li>
+      )
+    } else {
+      return (
+        <li className="list">
+          <span
+            onMouseOver={this.handleMouseOver}
+            onMouseOut={this.handleMouseOut}
+            className="dib"
+            style={{ minWidth: '230px' }}
+          >
+            {column_name}
+            <span className="silver"> ({data_type})</span>
+            {getCopyToClipboard()}
+          </span>
+        </li>
+      )
+    }
   }
 }
 
