@@ -343,38 +343,23 @@ class SchemaInfoColumnItem extends React.Component {
         )
       }
     }
-    if (column_description) {
-      return (
-        <li className="list">
-          <span
-            onMouseOver={this.handleMouseOver}
-            onMouseOut={this.handleMouseOut}
-            className="dib"
-            style={{ minWidth: '230px' }}
-          >
-            {column_name}
-            <span className="silver"> ({data_type})</span>
-            - {column_description}
-            {getCopyToClipboard()}
-          </span>
-        </li>
-      )
-    } else {
-      return (
-        <li className="list">
-          <span
-            onMouseOver={this.handleMouseOver}
-            onMouseOut={this.handleMouseOut}
-            className="dib"
-            style={{ minWidth: '230px' }}
-          >
-            {column_name}
-            <span className="silver"> ({data_type})</span>
-            {getCopyToClipboard()}
-          </span>
-        </li>
-      )
-    }
+
+    const description = column_description && ` - ${column_description}`
+    return (
+      <li className="list">
+        <span
+          onMouseOver={this.handleMouseOver}
+          onMouseOut={this.handleMouseOut}
+          className="dib"
+          style={{ minWidth: '230px' }}
+        >
+          {column_name}
+          <span className="silver"> ({data_type})</span>
+          {description}
+          {getCopyToClipboard()}
+        </span>
+      </li>
+    )
   }
 }
 
