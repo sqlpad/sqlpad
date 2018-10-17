@@ -37,18 +37,18 @@ function validateArray(path, driver, arrayName) {
  * and validate that it meets implementation spec as possible
  * @param {string} path
  */
-function requireValidate(path, optional=false) {
-  let driver;
+function requireValidate(path, optional = false) {
+  let driver
 
   try {
     driver = require(path)
   } catch (er) {
     if (optional) {
-      console.log('optional driver ' + path + ' not available');
-      return;
+      console.log('optional driver ' + path + ' not available')
+      return
     } else {
       // rethrow
-      throw er;
+      throw er
     }
   }
 
@@ -98,9 +98,10 @@ requireValidate('../drivers/cassandra')
  * Run query using driver implementation of connection
  * @param {*} query
  * @param {*} connection
+ * @param {object} user
  * @returns {Promise}
  */
-function runQuery(query, connection) {
+function runQuery(query, connection, user) {
   const driver = drivers[connection.driver]
 
   const queryResult = {
@@ -135,6 +136,8 @@ function runQuery(query, connection) {
 
       console.log(
         JSON.stringify({
+          userId: user._id,
+          userEmail: user.email,
           connectionName,
           startTime,
           stopTime,
