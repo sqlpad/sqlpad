@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.8.0
+
+### October 17, 2018
+
+* Add postgres column description to schema sidebar
+* Log user id and email in debug mode
+* Replace memory-based session store with file-based
+
 ## 2.7.1
 
 ### August 2, 2018
