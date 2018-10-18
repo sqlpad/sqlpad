@@ -29,7 +29,8 @@ const SCHEMA_SQL = `
     ns.nspname as table_schema, 
     cls.relname as table_name, 
     attr.attname as column_name,
-    trim(leading '_' from tp.typname) as data_type
+    trim(leading '_' from tp.typname) as data_type,
+    pg_catalog.col_description(attr.attrelid, attr.attnum) as column_description
   from 
     pg_catalog.pg_attribute as attr
     join pg_catalog.pg_class as cls on cls.oid = attr.attrelid

@@ -40,11 +40,12 @@ router.get(
 // Used during query editing
 router.post('/api/query-result', mustBeAuthenticated, function(req, res) {
   const data = {
-    connectionId: req.body.connectionId,
     cacheKey: req.body.cacheKey,
+    config: req.config,
+    connectionId: req.body.connectionId,
     queryName: req.body.queryName,
     queryText: req.body.queryText,
-    config: req.config
+    user: req.user
   }
 
   return getQueryResult(data)
@@ -79,10 +80,12 @@ function getQueryResult(data) {
     })
     .then(newCache => {
       data.cache = newCache
-      return runQuery(data.queryText, data.connection).then(queryResult => {
-        data.queryResult = queryResult
-        data.queryResult.cacheKey = data.cacheKey
-      })
+      return runQuery(data.queryText, data.connection, data.user).then(
+        queryResult => {
+          data.queryResult = queryResult
+          data.queryResult.cacheKey = data.cacheKey
+        }
+      )
     })
     .then(() => {
       if (data.config.get('allowCsvDownload')) {

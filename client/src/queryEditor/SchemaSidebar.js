@@ -237,6 +237,7 @@ class SchemaInfoTableItem extends React.Component {
               {...this.props}
               column_name={column.column_name}
               data_type={column.data_type}
+              column_description={column.column_description}
               key={column.column_name}
               schema={schema}
               table={table}
@@ -326,7 +327,14 @@ class SchemaInfoColumnItem extends React.Component {
 
   render() {
     const { copyButtonText, showCopyButton } = this.state
-    const { config, column_name, data_type, schema, table } = this.props
+    const {
+      config,
+      column_name,
+      data_type,
+      column_description,
+      schema,
+      table
+    } = this.props
     const copyButtonClassName = showCopyButton
       ? 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info'
       : 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info dn'
@@ -348,6 +356,8 @@ class SchemaInfoColumnItem extends React.Component {
         )
       }
     }
+
+    const description = column_description && ` - ${column_description}`
     return (
       <li className="list">
         <span
@@ -358,6 +368,7 @@ class SchemaInfoColumnItem extends React.Component {
         >
           {column_name}
           <span className="silver"> ({data_type})</span>
+          {description}
           {getCopyToClipboard()}
         </span>
       </li>
