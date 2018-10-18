@@ -7,4 +7,3 @@ coverage/
 db/
 dbtest/
 node_modules/
-sessions

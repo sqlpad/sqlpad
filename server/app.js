@@ -13,6 +13,7 @@ const {
   googleClientId,
   googleClientSecret,
   publicUrl,
+  dbPath,
   debug
 } = configUtil.getPreDbConfig()
 
@@ -64,7 +65,9 @@ app.use(
 
 app.use(
   session({
-    store: new FileStore({}),
+    store: new FileStore({
+      path: path.join(dbPath, '/sessions')
+    }),
     saveUninitialized: false,
     resave: true,
     rolling: true,
