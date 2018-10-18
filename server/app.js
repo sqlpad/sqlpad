@@ -4,7 +4,7 @@ const crypto = require('crypto')
 const express = require('express')
 const helmet = require('helmet')
 const session = require('express-session')
-const MemoryStore = require('memorystore')(session)
+const FileStore = require('session-file-store')(session)
 const configUtil = require('./lib/config')
 const version = require('./lib/version')
 const db = require('./lib/db')
@@ -15,6 +15,15 @@ const {
   publicUrl,
   debug
 } = configUtil.getPreDbConfig()
+
+// Cookie secrets are generated randomly at server start
+// SQLPad (currently) is designed for running as a single instance
+// so this should be okay unless SQLPad is frequently restarting
+const cookieSecrets = debug
+  ? 'devmode'
+  : [1, 2, 3, 4].map(n => crypto.randomBytes(64).toString('hex'))
+
+const ONE_HOUR_MS = 1000 * 60 * 60
 
 if (!debug) {
   // Note actual checks will only happen if not disabled via config
@@ -53,22 +62,13 @@ app.use(
   })
 )
 
-// Cookie secrets are generated randomly at server start
-// SQLPad (currently) is designed for running as a single instance
-// so this should be okay unless SQLPad is frequently restarting
-const cookieSecrets = [1, 2, 3, 4].map(n =>
-  crypto.randomBytes(64).toString('hex')
-)
-const ONE_HOUR = 1000 * 60 * 60
 app.use(
   session({
-    store: new MemoryStore({
-      checkPeriod: ONE_HOUR
-    }),
+    store: new FileStore({}),
     saveUninitialized: false,
-    resave: false,
+    resave: true,
     rolling: true,
-    cookie: { maxAge: ONE_HOUR },
+    cookie: { maxAge: ONE_HOUR_MS },
     secret: cookieSecrets
   })
 )

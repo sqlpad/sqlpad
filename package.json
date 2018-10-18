@@ -61,7 +61,6 @@
     "json2csv": "^3.11.5",
     "latest-version": "^3.1.0",
     "lodash": "^4.17.10",
-    "memorystore": "^1.6.0",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.22.1",
@@ -85,6 +84,7 @@
     "sanitize-filename": "^1.6.1",
     "semver-diff": "^2.1.0",
     "serve-favicon": "^2.5.0",
+    "session-file-store": "^1.2.0",
     "socksjs": "^0.5.0",
     "uuid": "^3.2.1",
     "vertica": "^0.5.5"
