@@ -8,7 +8,7 @@ import {
 import message from 'antd/lib/message'
 import fetchJson from './utilities/fetch-json.js'
 import UsersView from './users/UsersView'
-import ConnectionsView from './connections/ConnectionsView.js'
+import ConnectionsViewContainer from './connections/ConnectionsViewContainer.js'
 import ConfigurationView from './configuration/ConfigurationView'
 import QueriesView from './queries/QueriesView'
 import QueryEditorContainer from './queryEditor/QueryEditorContainer.js'
@@ -101,7 +101,10 @@ class App extends React.Component {
               exact
               path="/connections"
               render={() => (
-                <Authenticated admin={true} component={ConnectionsView} />
+                <Authenticated
+                  admin={true}
+                  component={ConnectionsViewContainer}
+                />
               )}
             />
             <Route

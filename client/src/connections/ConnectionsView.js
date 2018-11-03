@@ -26,17 +26,12 @@ const { Column } = Table
 class ConnectionsView extends React.Component {
   state = {
     showModal: false,
-    connections: [],
-    selectedConnection: {},
-    isTesting: false,
-    isSaving: false,
-    testSuccess: false,
-    testFailed: false
+    selectedConnection: {}
   }
 
   componentDidMount() {
     document.title = 'SQLPad - Connections'
-    this.loadConnectionsFromServer()
+    this.props.loadConnections()
   }
 
   handleSelect = connection => {
@@ -46,19 +41,7 @@ class ConnectionsView extends React.Component {
     })
   }
 
-  handleDelete = connection => {
-    const { selectedConnection } = this.state
-    fetchJson('DELETE', '/api/connections/' + connection._id).then(json => {
-      if (json.error) {
-        return message.error('Delete failed')
-      }
-      message.success('Connection deleted')
-      if (selectedConnection && connection._id === selectedConnection._id) {
-        this.setState({ selectedConnection: null })
-      }
-      this.loadConnectionsFromServer()
-    })
-  }
+  handleDelete = async connection => this.props.deleteConnection(connection._id)
 
   handleNewConnectionClick = () => {
     this.setState({
@@ -72,69 +55,24 @@ class ConnectionsView extends React.Component {
     if (selectedConnection) {
       selectedConnection[attribute] = value
       this.setState({
-        selectedConnection,
-        testFailed: false,
-        testSuccess: false
+        selectedConnection
       })
     }
-  }
-
-  loadConnectionsFromServer = () => {
-    fetchJson('GET', '/api/connections').then(json => {
-      if (json.error) {
-        message.error(json.error)
-      }
-      this.setState({ connections: json.connections })
-    })
   }
 
   testConnection = () => {
     const { selectedConnection } = this.state
-    this.setState({ isTesting: true })
-    fetchJson('POST', '/api/test-connection', selectedConnection).then(json => {
-      this.setState({
-        isTesting: false,
-        testFailed: json.error ? true : false,
-        testSuccess: json.error ? false : true
-      })
-    })
+    return this.props.testConnection(selectedConnection)
   }
 
-  saveConnection = () => {
+  saveConnection = async () => {
     const { selectedConnection } = this.state
-    this.setState({ isSaving: true })
-    if (selectedConnection._id) {
-      fetchJson(
-        'PUT',
-        '/api/connections/' + selectedConnection._id,
-        selectedConnection
-      ).then(json => {
-        this.setState({ isSaving: false })
-        if (json.error) {
-          return message.error('Save failed')
-        }
-        message.success('Connection saved')
-        this.setState({ selectedConnection: {}, showModal: false })
-        this.loadConnectionsFromServer()
-      })
-    } else {
-      fetchJson('POST', '/api/connections', selectedConnection).then(json => {
-        this.setState({
-          isSaving: false,
-          selectedConnection: json.connection || selectedConnection
-        })
-        if (json.error) {
-          return message.error('Save failed')
-        }
-        message.success('Connection saved')
-        this.setState({ selectedConnection: {}, showModal: false })
-        this.loadConnectionsFromServer()
-      })
-    }
+    await this.props.saveConnection(selectedConnection)
+    this.setState({ selectedConnection: {}, showModal: false })
   }
 
   renderTable() {
-    const { connections } = this.state
+    const { connections } = this.props
 
     const decoratedConnections = connections.map(connection => {
       connection.key = connection._id
@@ -203,14 +141,8 @@ class ConnectionsView extends React.Component {
   }
 
   renderModal() {
-    const {
-      showModal,
-      isTesting,
-      isSaving,
-      selectedConnection,
-      testFailed,
-      testSuccess
-    } = this.state
+    const { showModal, selectedConnection } = this.state
+    const { saving, testing, testFailed, testSuccess } = this.props
 
     return (
       <Modal
@@ -232,8 +164,8 @@ class ConnectionsView extends React.Component {
           setConnectionValue={this.setConnectionValue}
           testConnection={this.testConnection}
           saveConnection={this.saveConnection}
-          isTesting={isTesting}
-          isSaving={isSaving}
+          isTesting={testing}
+          isSaving={saving}
           testFailed={testFailed}
           testSuccess={testSuccess}
         />
