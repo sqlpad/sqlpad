@@ -11,20 +11,7 @@ class ConnectionsContainer extends Container {
     loading: false,
     loadingError: null,
     saving: false,
-    savingError: null,
-    testFailed: false,
-    testing: false,
-    testSuccess: false
-  }
-
-  testConnection = async connection => {
-    this.setState({ testing: true })
-    const json = await fetchJson('POST', '/api/test-connection', connection)
-    return this.setState({
-      testing: false,
-      testFailed: json.error ? true : false,
-      testSuccess: json.error ? false : true
-    })
+    savingError: null
   }
 
   deleteConnection = async connectionId => {
