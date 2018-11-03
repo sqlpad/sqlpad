@@ -1,7 +1,7 @@
 import React from 'react'
 import { Subscribe } from 'unstated'
-import ConnectionsContainer from '../containers/connections'
-import ConnectionEditContainer from '../containers/ConnectionEdit'
+import ConnectionsContainer from '../containers/ConnectionsContainer'
+import ConnectionEditContainer from '../containers/ConnectionEditContainer'
 import ModalContainer from '../containers/ModalContainer'
 import Header from '../common/Header'
 import DidMount from '../common/DidMount'
@@ -28,11 +28,11 @@ function ConnectionsView() {
 
       <Header title="Connections">
         <Subscribe to={[ConnectionEditContainer, ModalContainer]}>
-          {(editContainer, modalContainer) => (
+          {(connectionEditContainer, modalContainer) => (
             <Button
               type="primary"
               onClick={async () => {
-                await editContainer.editConnection()
+                await connectionEditContainer.editConnection()
                 return modalContainer.show('New connection')
               }}
             >
@@ -52,7 +52,9 @@ function ConnectionsView() {
       </Content>
 
       <Subscribe to={[ConnectionsContainer]}>
-        {connections => <DidMount>{connections.loadConnections}</DidMount>}
+        {connectionsContainer => (
+          <DidMount>{connectionsContainer.loadConnections}</DidMount>
+        )}
       </Subscribe>
     </Layout>
   )

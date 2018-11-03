@@ -1,7 +1,7 @@
 import React from 'react'
 import { Subscribe } from 'unstated'
-import ConnectionsContainer from '../containers/connections'
-import ConnectionEditContainer from '../containers/ConnectionEdit'
+import ConnectionsContainer from '../containers/ConnectionsContainer'
+import ConnectionEditContainer from '../containers/ConnectionEditContainer'
 import ModalContainer from '../containers/ModalContainer'
 
 import Table from 'antd/lib/table'

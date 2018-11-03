@@ -1,15 +1,15 @@
 import React from 'react'
 import { Subscribe } from 'unstated'
-import ConnectionsContainer from '../containers/connections'
+import ConnectionsContainer from '../containers/ConnectionsContainer'
 import QueryEditor from './QueryEditor'
 
 function QueryEditorContainer(props) {
   return (
     <Subscribe to={[ConnectionsContainer]}>
-      {connections => (
+      {connectionsContainer => (
         <QueryEditor
-          connections={connections.state.connections}
-          loadConnections={connections.loadConnections}
+          connections={connectionsContainer.state.connections}
+          loadConnections={connectionsContainer.loadConnections}
           {...props}
         />
       )}

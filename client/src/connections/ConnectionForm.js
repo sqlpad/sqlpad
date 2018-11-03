@@ -1,8 +1,8 @@
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
 import { Subscribe } from 'unstated'
-import ConnectionsContainer from '../containers/connections'
-import ConnectionEditContainer from '../containers/ConnectionEdit'
+import ConnectionsContainer from '../containers/ConnectionsContainer'
+import ConnectionEditContainer from '../containers/ConnectionEditContainer'
 import ModalContainer from '../containers/ModalContainer'
 
 import Tag from 'antd/lib/tag'
@@ -144,7 +144,6 @@ class ConnectionForm extends React.Component {
           const { saveConnection } = connectionsContainer
           const {
             saving,
-            savingError,
             testing,
             testSuccess,
             testFailed
