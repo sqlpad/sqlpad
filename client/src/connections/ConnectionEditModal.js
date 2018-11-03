@@ -1,5 +1,6 @@
 import React from 'react'
 import { Subscribe } from 'unstated'
+import ConnectionForm from './ConnectionForm'
 import ModalContainer from '../containers/ModalContainer'
 import Modal from 'antd/lib/modal'
 import 'antd/lib/modal/style/css'
@@ -16,7 +17,7 @@ function ConnectionEditModal({ children }) {
           destroyOnClose={true}
           onCancel={modalContainer.close}
         >
-          {children}
+          <ConnectionForm />
         </Modal>
       )}
     </Subscribe>

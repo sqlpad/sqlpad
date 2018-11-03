@@ -8,7 +8,6 @@ import DidMount from '../common/DidMount'
 import DocumentTitle from '../common/DocumentTitle'
 import ConnectionEditModal from './ConnectionEditModal'
 import ConnectionsTable from './ConnectionsTable'
-import ConnectionForm from './ConnectionForm'
 
 import Button from 'antd/lib/button'
 import 'antd/lib/button/style/css'
@@ -46,9 +45,7 @@ function ConnectionsView() {
         <div className="bg-white">
           <ConnectionsTable />
         </div>
-        <ConnectionEditModal>
-          <ConnectionForm />
-        </ConnectionEditModal>
+        <ConnectionEditModal />
       </Content>
 
       <Subscribe to={[ConnectionsContainer]}>
