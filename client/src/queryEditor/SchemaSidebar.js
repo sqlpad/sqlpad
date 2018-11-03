@@ -4,15 +4,12 @@ import fetchJson from '../utilities/fetch-json.js'
 import updateCompletions from '../utilities/updateCompletions.js'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
+import ConnectionDropDown from './ConnectionDropdown'
 
 import Icon from 'antd/lib/icon'
 
 import Tooltip from 'antd/lib/tooltip'
 import 'antd/lib/tooltip/style/css'
-
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
-const { Option } = Select
 
 class SchemaSidebar extends React.PureComponent {
   state = {
@@ -72,15 +69,8 @@ class SchemaSidebar extends React.PureComponent {
   }
 
   render() {
-    const { connections, connectionId } = this.props
+    const { connectionId } = this.props
     const { loading, schemaInfo } = this.state
-    const connectionSelectOptions = connections.map(function(conn) {
-      return (
-        <Option key={conn._id} value={conn._id}>
-          {conn.name}
-        </Option>
-      )
-    })
     const refreshClass = loading ? 'spinning' : ''
 
     const schemaCount = schemaInfo ? Object.keys(schemaInfo).length : 0
@@ -102,23 +92,10 @@ class SchemaSidebar extends React.PureComponent {
     return (
       <Sidebar>
         <SidebarBody>
-          <Select
-            showSearch
-            placeholder="Choose a connection"
-            className="w-100"
-            optionFilterProp="children"
+          <ConnectionDropDown
             value={connectionId}
             onChange={this.handleConnectionChange}
-            filterOption={(input, option) =>
-              option.props.value &&
-              option.props.children
-                .toLowerCase()
-                .indexOf(input.toLowerCase()) >= 0
-            }
-          >
-            <Option value="">Choose a connection...</Option>
-            {connectionSelectOptions}
-          </Select>
+          />
           <hr />
           <div style={{ position: 'relative' }}>
             <a style={{ position: 'absolute', right: '20px' }} href="#refresh">

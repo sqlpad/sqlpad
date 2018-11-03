@@ -11,7 +11,7 @@ import UsersView from './users/UsersView'
 import ConnectionsView from './connections/ConnectionsView.js'
 import ConfigurationView from './configuration/ConfigurationView'
 import QueriesView from './queries/QueriesView'
-import QueryEditor from './queryEditor/QueryEditor.js'
+import QueryEditorContainer from './queryEditor/QueryEditorContainer.js'
 import SignIn from './SignIn.js'
 import SignUp from './SignUp.js'
 import ForgotPassword from './ForgotPassword.js'
@@ -86,7 +86,7 @@ class App extends React.Component {
               render={({ match }) => (
                 <Authenticated
                   queryId={match.params.queryId}
-                  component={QueryEditor}
+                  component={QueryEditorContainer}
                 />
               )}
             />
