@@ -2,7 +2,6 @@ import React from 'react'
 import { Subscribe } from 'unstated'
 import ConnectionsContainer from '../containers/ConnectionsContainer'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
-import ModalContainer from '../containers/ModalContainer'
 import Header from '../common/Header'
 import DidMount from '../common/DidMount'
 import DocumentTitle from '../common/DocumentTitle'
@@ -26,14 +25,11 @@ function ConnectionsView() {
       <DocumentTitle>SQLPad - Connections</DocumentTitle>
 
       <Header title="Connections">
-        <Subscribe to={[ConnectionEditContainer, ModalContainer]}>
-          {(connectionEditContainer, modalContainer) => (
+        <Subscribe to={[ConnectionEditContainer]}>
+          {connectionEditContainer => (
             <Button
               type="primary"
-              onClick={async () => {
-                await connectionEditContainer.editConnection()
-                return modalContainer.show('New connection')
-              }}
+              onClick={() => connectionEditContainer.editConnection({})}
             >
               New connection
             </Button>

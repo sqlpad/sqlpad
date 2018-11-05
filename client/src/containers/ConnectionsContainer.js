@@ -9,11 +9,10 @@ class ConnectionsContainer extends Container {
     connections: [],
     lastUpdated: null,
     loading: false,
-    loadingError: null,
-    saving: false,
-    savingError: null
+    loadingError: null
   }
 
+  // Calls delete API and updates store
   deleteConnection = async connectionId => {
     const json = await fetchJson('DELETE', '/api/connections/' + connectionId)
     // TODO should errors be messaged like this or should they be captured in state?
@@ -26,46 +25,21 @@ class ConnectionsContainer extends Container {
     return this.setState({ connections })
   }
 
-  saveConnection = async connection => {
-    const { saving } = this.state
-    if (saving) {
-      return
-    }
-
-    this.setState({ saving: true })
-
-    // Update existing
-    if (connection._id) {
-      const json = await fetchJson(
-        'PUT',
-        '/api/connections/' + connection._id,
-        connection
-      )
-
-      if (json.error) {
-        return this.setState({ saving: false, savingError: json.error })
-      }
-
+  // Updates store (is not resonponsible for API call)
+  addUpdateConnection = async connection => {
+    const found = this.state.connections.find(c => c._id === connection._id)
+    if (found) {
       const connections = this.state.connections.map(c => {
         if (c._id === connection._id) {
           return connection
         }
         return c
       })
-
-      return this.setState({ saving: false, connections })
+      return this.setState({ connections })
     }
 
-    // Save new
-    const json = await fetchJson('POST', '/api/connections', connection)
-
-    if (json.error) {
-      return this.setState({ saving: false, savingError: json.error })
-    }
-
-    const connections = [json.connection].concat(this.state.connections)
-
-    return this.setState({ saving: false, connections })
+    const connections = [connection].concat(this.state.connections)
+    return this.setState({ connections })
   }
 
   loadConnections = async force => {

@@ -2,7 +2,6 @@ import React from 'react'
 import { Subscribe } from 'unstated'
 import ConnectionsContainer from '../containers/ConnectionsContainer'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
-import ModalContainer from '../containers/ModalContainer'
 
 import Table from 'antd/lib/table'
 import 'antd/lib/table/style/css'
@@ -18,10 +17,8 @@ const { Column } = Table
 class ConnectionsTable extends React.Component {
   render() {
     return (
-      <Subscribe
-        to={[ConnectionsContainer, ConnectionEditContainer, ModalContainer]}
-      >
-        {(connectionsContainer, connectionEditContainer, modalContainer) => {
+      <Subscribe to={[ConnectionsContainer, ConnectionEditContainer]}>
+        {(connectionsContainer, connectionEditContainer) => {
           const decoratedConnections = connectionsContainer.state.connections.map(
             connection => {
               connection.key = connection._id
@@ -59,10 +56,9 @@ class ConnectionsTable extends React.Component {
                   return (
                     <a
                       href="#connection"
-                      onClick={async () => {
-                        await connectionEditContainer.editConnection(record)
-                        return modalContainer.show('Edit connection')
-                      }}
+                      onClick={() =>
+                        connectionEditContainer.editConnection(record)
+                      }
                     >
                       {record.name}
                     </a>

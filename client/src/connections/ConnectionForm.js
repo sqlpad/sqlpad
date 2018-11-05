@@ -3,7 +3,6 @@ import fetchJson from '../utilities/fetch-json.js'
 import { Subscribe } from 'unstated'
 import ConnectionsContainer from '../containers/ConnectionsContainer'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
-import ModalContainer from '../containers/ModalContainer'
 
 import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
@@ -137,11 +136,8 @@ class ConnectionForm extends React.Component {
     }
 
     return (
-      <Subscribe
-        to={[ConnectionsContainer, ConnectionEditContainer, ModalContainer]}
-      >
-        {(connectionsContainer, connectionEditContainer, modalContainer) => {
-          const { saveConnection } = connectionsContainer
+      <Subscribe to={[ConnectionsContainer, ConnectionEditContainer]}>
+        {(connectionsContainer, connectionEditContainer) => {
           const {
             saving,
             testing,
@@ -151,9 +147,9 @@ class ConnectionForm extends React.Component {
           const connectionEdits =
             connectionEditContainer.state.connectionEdits || {}
           const {
-            cancelEdit,
             setConnectionValue,
-            testConnection
+            testConnection,
+            saveConnection
           } = connectionEditContainer
 
           const { name = '', driver = '' } = connectionEdits
@@ -186,10 +182,10 @@ class ConnectionForm extends React.Component {
               <Button
                 style={{ width: 100 }}
                 onClick={async () => {
-                  await saveConnection(connectionEdits)
-                  // TODO if save fails then what
-                  await modalContainer.close()
-                  await cancelEdit()
+                  const { connection, error } = await saveConnection()
+                  if (!error) {
+                    connectionsContainer.addUpdateConnection(connection)
+                  }
                 }}
                 disabled={saving}
               >
