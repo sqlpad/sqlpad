@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import ConnectionDropDown from './ConnectionDropdown'
 
 import Icon from 'antd/lib/icon'
 
@@ -35,7 +36,9 @@ class EditorNavBar extends React.Component {
       onFormatClick,
       query,
       showValidation,
-      unsavedChanges
+      unsavedChanges,
+      connectionId,
+      onConnectionChange
     } = this.props
 
     const validationState =
@@ -46,6 +49,12 @@ class EditorNavBar extends React.Component {
     return (
       <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
         <Form layout="inline">
+          <FormItem>
+            <ConnectionDropDown
+              value={connectionId}
+              onChange={onConnectionChange}
+            />
+          </FormItem>
           <FormItem>
             <Radio.Group value={activeTabKey} onChange={onTabSelect}>
               <Radio.Button value="sql">

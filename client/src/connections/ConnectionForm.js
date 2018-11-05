@@ -1,6 +1,8 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import fetchJson from '../utilities/fetch-json.js'
+import { Subscribe } from 'unstated'
+import ConnectionsContainer from '../containers/ConnectionsContainer'
+import ConnectionEditContainer from '../containers/ConnectionEditContainer'
 
 import Tag from 'antd/lib/tag'
 import 'antd/lib/tag/style/css'
@@ -43,47 +45,38 @@ class ConnectionForm extends React.Component {
     })
   }
 
-  onTextInputChange = e => {
-    this.props.setConnectionValue(e.target.name, e.target.value)
-  }
-
-  onCheckboxChange = e => {
-    this.props.setConnectionValue(e.target.name, e.target.checked)
-  }
-
-  getSelectChangeHandler = fieldName => value =>
-    this.props.setConnectionValue(fieldName, value)
-
-  renderDriverFields() {
-    const { selectedConnection } = this.props
+  renderDriverFields(connectionEdits, setConnectionValue) {
     const { drivers } = this.state
-    const connection = selectedConnection
 
-    if (connection.driver && drivers.length) {
+    if (connectionEdits.driver && drivers.length) {
       // NOTE connection.driver is driverId
-      const driver = drivers.find(driver => driver.id === connection.driver)
+      const driver = drivers.find(
+        driver => driver.id === connectionEdits.driver
+      )
 
       if (!driver) {
-        console.error(`Driver ${connection.driver} not found`)
+        console.error(`Driver ${connectionEdits.driver} not found`)
         return null
       }
 
       const { fields } = driver
       return fields.map(field => {
         if (field.formType === TEXT) {
-          const value = connection[field.key] || ''
+          const value = connectionEdits[field.key] || ''
           return (
             <FormItem key={field.key}>
               <label className="near-black">{field.label}</label>
               <Input
                 name={field.key}
                 value={value}
-                onChange={this.onTextInputChange}
+                onChange={e =>
+                  setConnectionValue(e.target.name, e.target.value)
+                }
               />
             </FormItem>
           )
         } else if (field.formType === PASSWORD) {
-          const value = connection[field.key] || ''
+          const value = connectionEdits[field.key] || ''
           // autoComplete='new-password' used to prevent browsers from autofilling username and password
           // Because we dont return a password, Chrome goes ahead and autofills
           return (
@@ -94,18 +87,22 @@ class ConnectionForm extends React.Component {
                 autoComplete="new-password"
                 name={field.key}
                 value={value}
-                onChange={this.onTextInputChange}
+                onChange={e =>
+                  setConnectionValue(e.target.name, e.target.value)
+                }
               />
             </FormItem>
           )
         } else if (field.formType === CHECKBOX) {
-          const checked = connection[field.key] || false
+          const checked = connectionEdits[field.key] || false
           return (
             <FormItem key={field.key}>
               <Checkbox
                 checked={checked}
                 name={field.key}
-                onChange={this.onCheckboxChange}
+                onChange={e =>
+                  setConnectionValue(e.target.name, e.target.checked)
+                }
               >
                 {field.label}
               </Checkbox>
@@ -118,15 +115,6 @@ class ConnectionForm extends React.Component {
   }
 
   render() {
-    const {
-      selectedConnection,
-      isSaving,
-      isTesting,
-      testConnection,
-      saveConnection,
-      testFailed,
-      testSuccess
-    } = this.props
     const { drivers } = this.state
 
     const driverSelectOptions = [<Option key="none" value="" />]
@@ -147,71 +135,80 @@ class ConnectionForm extends React.Component {
       )
     }
 
-    const connection = selectedConnection
     return (
-      <div>
-        <Form layout="vertical">
-          <FormItem validateStatus={connection.name ? null : 'error'}>
-            <label className="near-black">Connection name</label>
-            <Input
-              name="name"
-              value={connection.name || ''}
-              onChange={this.onTextInputChange}
-            />
-          </FormItem>
-          <FormItem validateStatus={connection.driver ? null : 'error'}>
-            <label className="near-black">Driver</label>
-            <Select
-              name="driver"
-              value={connection.driver || ''}
-              onChange={this.getSelectChangeHandler('driver')}
-            >
-              {driverSelectOptions}
-            </Select>
-          </FormItem>
-          {this.renderDriverFields()}
-        </Form>
-        <Button
-          style={{ width: 100 }}
-          onClick={saveConnection}
-          disabled={isSaving}
-        >
-          {isSaving ? 'Saving...' : 'Save'}
-        </Button>{' '}
-        <Button
-          style={{ width: 100 }}
-          onClick={testConnection}
-          disabled={isTesting}
-        >
-          {isTesting ? 'Testing...' : 'Test'}
-        </Button>
-        {testSuccess && (
-          <Tag className="ml2 b--dark-green bg-green white">Success</Tag>
-        )}
-        {testFailed && (
-          <Tag className="ml2 b--dark-red bg-red white">Failed</Tag>
-        )}
-      </div>
+      <Subscribe to={[ConnectionsContainer, ConnectionEditContainer]}>
+        {(connectionsContainer, connectionEditContainer) => {
+          const {
+            connectionEdits,
+            saving,
+            testing,
+            testSuccess,
+            testFailed
+          } = connectionEditContainer.state
+          const {
+            setConnectionValue,
+            testConnection,
+            saveConnection
+          } = connectionEditContainer
+
+          const { name = '', driver = '' } = connectionEdits
+
+          return (
+            <div>
+              <Form layout="vertical" autoComplete="off">
+                <FormItem validateStatus={name ? null : 'error'}>
+                  <label className="near-black">Connection name</label>
+                  <Input
+                    name="name"
+                    value={name}
+                    onChange={e =>
+                      setConnectionValue(e.target.name, e.target.value)
+                    }
+                  />
+                </FormItem>
+                <FormItem validateStatus={driver ? null : 'error'}>
+                  <label className="near-black">Driver</label>
+                  <Select
+                    name="driver"
+                    value={driver}
+                    onChange={value => setConnectionValue('driver', value)}
+                  >
+                    {driverSelectOptions}
+                  </Select>
+                </FormItem>
+                {this.renderDriverFields(connectionEdits, setConnectionValue)}
+              </Form>
+              <Button
+                style={{ width: 100 }}
+                onClick={async () => {
+                  const { connection, error } = await saveConnection()
+                  if (!error) {
+                    connectionsContainer.addUpdateConnection(connection)
+                  }
+                }}
+                disabled={saving}
+              >
+                {saving ? 'Saving...' : 'Save'}
+              </Button>{' '}
+              <Button
+                style={{ width: 100 }}
+                onClick={() => testConnection(connectionEdits)}
+                disabled={testing}
+              >
+                {testing ? 'Testing...' : 'Test'}
+              </Button>
+              {testSuccess && (
+                <Tag className="ml2 b--dark-green bg-green white">Success</Tag>
+              )}
+              {testFailed && (
+                <Tag className="ml2 b--dark-red bg-red white">Failed</Tag>
+              )}
+            </div>
+          )
+        }}
+      </Subscribe>
     )
   }
-}
-
-ConnectionForm.propTypes = {
-  isSaving: PropTypes.bool,
-  isTesting: PropTypes.bool,
-  saveConnection: PropTypes.func.isRequired,
-  selectedConnection: PropTypes.object,
-  testConnection: PropTypes.func.isRequired,
-  testFailed: PropTypes.bool,
-  testSuccess: PropTypes.bool
-}
-
-ConnectionForm.defaultProps = {
-  isSaving: false,
-  isTesting: false,
-  selectedConnection: null,
-  testFailed: false,
-  testSuccess: false
 }
 
 export default ConnectionForm

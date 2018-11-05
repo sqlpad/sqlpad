@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import message from 'antd/lib/message'
 import SplitPane from 'react-split-pane'
 import { Prompt } from 'react-router-dom'
@@ -33,7 +34,6 @@ class QueryEditor extends React.Component {
     activeTabKey: 'sql',
     availableTags: [],
     cacheKey: uuid.v1(),
-    connections: [],
     isRunning: false,
     isSaving: false,
     unsavedChanges: false,
@@ -60,21 +60,15 @@ class QueryEditor extends React.Component {
     return tagOptions
   }
 
-  loadConnectionsFromServer = () => {
-    fetchJson('GET', '/api/connections/').then(json => {
-      const { error, connections } = json
-      if (error) {
-        message.error(error)
-      }
-      // if only 1 connection auto-select it
-      const { query } = this.state
-      if (connections.length === 1 && query) {
-        query.connectionId = connections[0]._id
-        this.setState({ connections, query })
-      } else {
-        this.setState({ connections })
-      }
-    })
+  componentDidUpdate(prevProps) {
+    const { query } = this.state
+    const { connections } = this.props
+
+    // if only 1 connection auto-select it
+    if (connections.length === 1 && query && !query.connectionId) {
+      query.connectionId = connections[0]._id
+      this.setState({ connections, query })
+    }
   }
 
   loadQueryFromServer = queryId => {
@@ -251,9 +245,9 @@ class QueryEditor extends React.Component {
   }
 
   componentDidMount() {
-    const { queryId } = this.props
+    const { queryId, loadConnections } = this.props
 
-    this.loadConnectionsFromServer()
+    loadConnections()
     this.loadTagsFromServer()
     if (queryId !== 'new') {
       this.loadQueryFromServer(queryId)
@@ -332,7 +326,6 @@ class QueryEditor extends React.Component {
     const {
       activeTabKey,
       cacheKey,
-      connections,
       isRunning,
       isSaving,
       query,
@@ -363,6 +356,8 @@ class QueryEditor extends React.Component {
           onQueryNameChange={this.handleQueryNameChange}
           showValidation={showValidation}
           unsavedChanges={unsavedChanges}
+          connectionId={query.connectionId}
+          onConnectionChange={this.handleConnectionChange}
         />
         <div style={{ position: 'relative', flexGrow: 1 }}>
           <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
@@ -376,8 +371,6 @@ class QueryEditor extends React.Component {
               <SchemaSidebar
                 {...this.props}
                 connectionId={query.connectionId}
-                connections={connections}
-                onConnectionChange={this.handleConnectionChange}
               />
               <SplitPane
                 split="horizontal"
@@ -475,6 +468,11 @@ class QueryEditor extends React.Component {
       </div>
     )
   }
+}
+
+QueryEditor.propTypes = {
+  connections: PropTypes.array.isRequired,
+  loadConnections: PropTypes.func.isRequired
 }
 
 export default QueryEditor
