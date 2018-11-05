@@ -3,7 +3,7 @@ import { Container } from 'unstated'
 
 const INITIAL_STATE = {
   visible: false,
-  connectionEdits: null,
+  connectionEdits: {},
   testFailed: false,
   testing: false,
   testSuccess: false,
@@ -15,14 +15,14 @@ const INITIAL_STATE = {
 class ConnectionEditContainer extends Container {
   state = INITIAL_STATE
 
-  editConnection = (connection = {}) => {
+  editConnection = connection => {
     this.setState({
       connectionEdits: Object.assign({}, connection),
       testFailed: false,
       testing: false,
       testSuccess: false,
       visible: true,
-      title: connection._id ? 'New connection' : 'Edit connection'
+      title: connection && connection._id ? 'New connection' : 'Edit connection'
     })
   }
 

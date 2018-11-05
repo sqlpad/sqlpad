@@ -139,13 +139,12 @@ class ConnectionForm extends React.Component {
       <Subscribe to={[ConnectionsContainer, ConnectionEditContainer]}>
         {(connectionsContainer, connectionEditContainer) => {
           const {
+            connectionEdits,
             saving,
             testing,
             testSuccess,
             testFailed
           } = connectionEditContainer.state
-          const connectionEdits =
-            connectionEditContainer.state.connectionEdits || {}
           const {
             setConnectionValue,
             testConnection,

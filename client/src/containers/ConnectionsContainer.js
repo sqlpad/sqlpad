@@ -1,8 +1,11 @@
 import fetchJson from '../utilities/fetch-json.js'
 import { Container } from 'unstated'
 import message from 'antd/lib/message'
+import sortBy from 'lodash.sortby'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
+
+const sortFunctions = [connection => connection.name.toLowerCase()]
 
 class ConnectionsContainer extends Container {
   state = {
@@ -10,6 +13,10 @@ class ConnectionsContainer extends Container {
     lastUpdated: null,
     loading: false,
     loadingError: null
+  }
+
+  setConnections = connections => {
+    return this.setState({ connections: sortBy(connections, sortFunctions) })
   }
 
   // Calls delete API and updates store
@@ -35,11 +42,10 @@ class ConnectionsContainer extends Container {
         }
         return c
       })
-      return this.setState({ connections })
+      return this.setConnections(connections)
     }
 
-    const connections = [connection].concat(this.state.connections)
-    return this.setState({ connections })
+    return this.setConnections([connection].concat(this.state.connections))
   }
 
   loadConnections = async force => {
