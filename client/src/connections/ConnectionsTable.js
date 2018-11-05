@@ -1,5 +1,6 @@
 import React from 'react'
 import { Subscribe } from 'unstated'
+import Component from '@reactions/component'
 import ConnectionsContainer from '../containers/ConnectionsContainer'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
 
@@ -43,56 +44,59 @@ class ConnectionsTable extends React.Component {
           )
 
           return (
-            <Table
-              locale={{ emptyText: 'No connections found' }}
-              dataSource={decoratedConnections}
-              pagination={false}
-              className="w-100"
-            >
-              <Column
-                title="Name"
-                key="name"
-                render={(text, record) => {
-                  return (
-                    <a
-                      href="#connection"
-                      onClick={() =>
-                        connectionEditContainer.editConnection(record)
-                      }
-                    >
-                      {record.name}
-                    </a>
-                  )
-                }}
-              />
-              <Column title="Driver" key="driver" dataIndex="driver" />
-              <Column title="Host" key="host" dataIndex="displayHost" />
-              <Column
-                title="Database / Tenant / Catalog"
-                key="database"
-                dataIndex="displayDatabase"
-              />
-              <Column title="Schema" key="schema" dataIndex="displaySchema" />
-              <Column
-                title="Delete"
-                key="delete"
-                render={(text, record) => {
-                  return (
-                    <Popconfirm
-                      title="Delete connection?"
-                      onConfirm={e =>
-                        connectionsContainer.deleteConnection(record._id)
-                      }
-                      onCancel={() => {}}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <Button icon="delete" type="danger" />
-                    </Popconfirm>
-                  )
-                }}
-              />
-            </Table>
+            <div>
+              <Component didMount={connectionsContainer.loadConnections} />
+              <Table
+                locale={{ emptyText: 'No connections found' }}
+                dataSource={decoratedConnections}
+                pagination={false}
+                className="w-100"
+              >
+                <Column
+                  title="Name"
+                  key="name"
+                  render={(text, record) => {
+                    return (
+                      <a
+                        href="#connection"
+                        onClick={() =>
+                          connectionEditContainer.editConnection(record)
+                        }
+                      >
+                        {record.name}
+                      </a>
+                    )
+                  }}
+                />
+                <Column title="Driver" key="driver" dataIndex="driver" />
+                <Column title="Host" key="host" dataIndex="displayHost" />
+                <Column
+                  title="Database / Tenant / Catalog"
+                  key="database"
+                  dataIndex="displayDatabase"
+                />
+                <Column title="Schema" key="schema" dataIndex="displaySchema" />
+                <Column
+                  title="Delete"
+                  key="delete"
+                  render={(text, record) => {
+                    return (
+                      <Popconfirm
+                        title="Delete connection?"
+                        onConfirm={e =>
+                          connectionsContainer.deleteConnection(record._id)
+                        }
+                        onCancel={() => {}}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <Button icon="delete" type="danger" />
+                      </Popconfirm>
+                    )
+                  }}
+                />
+              </Table>
+            </div>
           )
         }}
       </Subscribe>

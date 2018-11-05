@@ -1,7 +1,5 @@
 import React from 'react'
 import { Subscribe } from 'unstated'
-import Component from '@reactions/component'
-import ConnectionsContainer from '../containers/ConnectionsContainer'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
 import Header from '../common/Header'
 import DocumentTitle from '../common/DocumentTitle'
@@ -43,12 +41,6 @@ function ConnectionsView() {
         </div>
         <ConnectionEditModal />
       </Content>
-
-      <Subscribe to={[ConnectionsContainer]}>
-        {connectionsContainer => (
-          <Component didMount={connectionsContainer.loadConnections} />
-        )}
-      </Subscribe>
     </Layout>
   )
 }
