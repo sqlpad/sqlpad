@@ -1,26 +1,14 @@
-import React from 'react'
-import fetchJson from '../utilities/fetch-json.js'
-import { Subscribe } from 'unstated'
-import ConnectionsContainer from '../containers/ConnectionsContainer'
-import ConnectionEditContainer from '../containers/ConnectionEditContainer'
-
-import Tag from 'antd/lib/tag'
-import 'antd/lib/tag/style/css'
-
-import Input from 'antd/lib/input'
-import 'antd/lib/input/style/css'
-
-import Checkbox from 'antd/lib/checkbox'
-import 'antd/lib/checkbox/style/css'
-
-import Form from 'antd/lib/form'
-import 'antd/lib/form/style/css'
-
 import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
-
+import Checkbox from 'antd/lib/checkbox'
+import Form from 'antd/lib/form'
+import Input from 'antd/lib/input'
 import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
+import Tag from 'antd/lib/tag'
+import React from 'react'
+import { Subscribe } from 'unstated'
+import ConnectionEditContainer from '../containers/ConnectionEditContainer'
+import ConnectionsContainer from '../containers/ConnectionsContainer'
+import fetchJson from '../utilities/fetch-json.js'
 
 const FormItem = Form.Item
 const { Option } = Select

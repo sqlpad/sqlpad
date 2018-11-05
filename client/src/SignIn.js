@@ -1,16 +1,10 @@
-import React from 'react'
-import { Redirect } from 'react-router-dom'
-import message from 'antd/lib/message'
-import { Link } from 'react-router-dom'
-import fetchJson from './utilities/fetch-json.js'
-
-import Icon from 'antd/lib/icon'
-
-import Input from 'antd/lib/input'
-import 'antd/lib/input/style/css'
-
 import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
+import Icon from 'antd/lib/icon'
+import Input from 'antd/lib/input'
+import message from 'antd/lib/message'
+import React from 'react'
+import { Link, Redirect } from 'react-router-dom'
+import fetchJson from './utilities/fetch-json.js'
 
 class SignIn extends React.Component {
   state = {

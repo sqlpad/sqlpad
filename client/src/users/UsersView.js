@@ -1,29 +1,17 @@
-import React from 'react'
-import fetchJson from '../utilities/fetch-json.js'
-import uuid from 'uuid'
-import message from 'antd/lib/message'
-import InviteUserForm from './InviteUserForm'
-import moment from 'moment'
-import { Link } from 'react-router-dom'
-import Header from '../common/Header'
-
-import Table from 'antd/lib/table'
-import 'antd/lib/table/style/css'
-
-import Popconfirm from 'antd/lib/popconfirm'
-import 'antd/lib/popconfirm/style/css'
-
-import Layout from 'antd/lib/layout'
-import 'antd/lib/layout/style/css'
-
 import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
-
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
-
+import Layout from 'antd/lib/layout'
+import message from 'antd/lib/message'
 import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/css'
+import Popconfirm from 'antd/lib/popconfirm'
+import Select from 'antd/lib/select'
+import Table from 'antd/lib/table'
+import moment from 'moment'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import uuid from 'uuid'
+import Header from '../common/Header'
+import fetchJson from '../utilities/fetch-json.js'
+import InviteUserForm from './InviteUserForm'
 
 const { Content } = Layout
 const { Column } = Table

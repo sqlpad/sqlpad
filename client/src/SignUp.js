@@ -1,13 +1,9 @@
+import Button from 'antd/lib/button'
+import Input from 'antd/lib/input'
+import message from 'antd/lib/message'
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import fetchJson from './utilities/fetch-json.js'
-import message from 'antd/lib/message'
-
-import Input from 'antd/lib/input'
-import 'antd/lib/input/style/css'
-
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
 
 class SignUp extends React.Component {
   state = {

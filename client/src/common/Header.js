@@ -1,8 +1,6 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
 import Layout from 'antd/lib/layout'
-import 'antd/lib/layout/style/css'
+import PropTypes from 'prop-types'
+import React from 'react'
 
 class Header extends React.Component {
   render() {

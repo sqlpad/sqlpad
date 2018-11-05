@@ -1,10 +1,6 @@
-import React from 'react'
-
 import Input from 'antd/lib/input'
-import 'antd/lib/input/style/css'
-
 import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
+import React from 'react'
 
 const { Option } = Select
 

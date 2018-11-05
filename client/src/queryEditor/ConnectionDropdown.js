@@ -1,8 +1,7 @@
+import Select from 'antd/lib/select'
 import React from 'react'
 import { Subscribe } from 'unstated'
 import ConnectionsContainer from '../containers/ConnectionsContainer'
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
 
 const { Option } = Select
 

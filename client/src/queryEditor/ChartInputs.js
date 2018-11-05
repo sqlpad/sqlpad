@@ -1,15 +1,10 @@
-import React from 'react'
+import Checkbox from 'antd/lib/checkbox'
+import Input from 'antd/lib/input'
+import Select from 'antd/lib/select'
 import PropTypes from 'prop-types'
+import React from 'react'
 import chartDefinitions from '../utilities/chartDefinitions.js'
 
-import Checkbox from 'antd/lib/checkbox'
-import 'antd/lib/checkbox/style/css'
-
-import Input from 'antd/lib/input'
-import 'antd/lib/input/style/css'
-
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
 const { Option } = Select
 
 function cleanBoolean(value) {

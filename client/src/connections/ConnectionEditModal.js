@@ -1,9 +1,8 @@
+import Modal from 'antd/lib/modal'
 import React from 'react'
 import { Subscribe } from 'unstated'
-import ConnectionForm from './ConnectionForm'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
-import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/css'
+import ConnectionForm from './ConnectionForm'
 
 function ConnectionEditModal({ children }) {
   return (

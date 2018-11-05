@@ -1,20 +1,11 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import ConnectionDropDown from './ConnectionDropdown'
-
-import Icon from 'antd/lib/icon'
-
-import Radio from 'antd/lib/radio'
-import 'antd/lib/radio/style/css'
-
-import Form from 'antd/lib/form'
-import 'antd/lib/form/style/css'
-
-import Input from 'antd/lib/input'
-import 'antd/lib/input/style/css'
-
 import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
+import Form from 'antd/lib/form'
+import Icon from 'antd/lib/icon'
+import Input from 'antd/lib/input'
+import Radio from 'antd/lib/radio'
+import PropTypes from 'prop-types'
+import React from 'react'
+import ConnectionDropDown from './ConnectionDropdown'
 
 const FormItem = Form.Item
 

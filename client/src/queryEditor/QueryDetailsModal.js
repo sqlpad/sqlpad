@@ -1,14 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import EditableTagGroup from '../common/EditableTagGroup'
-
 import Icon from 'antd/lib/icon'
-
 import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/css'
-
 import Tooltip from 'antd/lib/tooltip'
-import 'antd/lib/tooltip/style/css'
+import PropTypes from 'prop-types'
+import React from 'react'
+import EditableTagGroup from '../common/EditableTagGroup'
 
 class QueryDetailsModal extends React.Component {
   onQueryNameChange = e => {

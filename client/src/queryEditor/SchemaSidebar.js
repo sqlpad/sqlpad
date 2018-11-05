@@ -1,14 +1,11 @@
+import Icon from 'antd/lib/icon'
+import Tooltip from 'antd/lib/tooltip'
 import React from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
-import fetchJson from '../utilities/fetch-json.js'
-import updateCompletions from '../utilities/updateCompletions.js'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
-
-import Icon from 'antd/lib/icon'
-
-import Tooltip from 'antd/lib/tooltip'
-import 'antd/lib/tooltip/style/css'
+import fetchJson from '../utilities/fetch-json.js'
+import updateCompletions from '../utilities/updateCompletions.js'
 
 class SchemaSidebar extends React.PureComponent {
   state = {

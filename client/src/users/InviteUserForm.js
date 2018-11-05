@@ -1,18 +1,10 @@
+import Button from 'antd/lib/button'
+import Form from 'antd/lib/form'
+import Input from 'antd/lib/input'
+import message from 'antd/lib/message'
+import Select from 'antd/lib/select'
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
-import message from 'antd/lib/message'
-
-import Input from 'antd/lib/input'
-import 'antd/lib/input/style/css'
-
-import Form from 'antd/lib/form'
-import 'antd/lib/form/style/css'
-
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
-
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
 
 const FormItem = Form.Item
 const { Option } = Select

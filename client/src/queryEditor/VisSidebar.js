@@ -1,17 +1,13 @@
-import React from 'react'
+import Button from 'antd/lib/button'
+import Icon from 'antd/lib/icon'
+import Select from 'antd/lib/select'
 import PropTypes from 'prop-types'
-import ChartInputs from './ChartInputs.js'
-import chartDefinitions from '../utilities/chartDefinitions.js'
+import React from 'react'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
+import chartDefinitions from '../utilities/chartDefinitions.js'
+import ChartInputs from './ChartInputs.js'
 
-import Icon from 'antd/lib/icon'
-
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
-
-import Select from 'antd/lib/select'
-import 'antd/lib/select/style/css'
 const { Option } = Select
 
 class VisSidebar extends React.Component {

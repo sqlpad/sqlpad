@@ -1,10 +1,7 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
 import Icon from 'antd/lib/icon'
-
 import Tooltip from 'antd/lib/tooltip'
-import 'antd/lib/tooltip/style/css'
+import PropTypes from 'prop-types'
+import React from 'react'
 
 class IncompleteDataNotification extends React.Component {
   render() {

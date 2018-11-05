@@ -1,17 +1,11 @@
+import Component from '@reactions/component'
+import Button from 'antd/lib/button'
+import Popconfirm from 'antd/lib/popconfirm'
+import Table from 'antd/lib/table'
 import React from 'react'
 import { Subscribe } from 'unstated'
-import Component from '@reactions/component'
-import ConnectionsContainer from '../containers/ConnectionsContainer'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
-
-import Table from 'antd/lib/table'
-import 'antd/lib/table/style/css'
-
-import Popconfirm from 'antd/lib/popconfirm'
-import 'antd/lib/popconfirm/style/css'
-
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
+import ConnectionsContainer from '../containers/ConnectionsContainer'
 
 const { Column } = Table
 

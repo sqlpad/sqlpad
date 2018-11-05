@@ -1,19 +1,12 @@
-import React from 'react'
+import Button from 'antd/lib/button'
+import Dropdown from 'antd/lib/dropdown'
+import Icon from 'antd/lib/icon'
+import Menu from 'antd/lib/menu'
 import PropTypes from 'prop-types'
+import React from 'react'
 import IncompleteDataNotification from './common/IncompleteDataNotification'
 import QueryResultDataTable from './common/QueryResultDataTable.js'
 import fetchJson from './utilities/fetch-json.js'
-
-import Icon from 'antd/lib/icon'
-
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
-
-import Menu from 'antd/lib/menu'
-import 'antd/lib/menu/style/css'
-
-import Dropdown from 'antd/lib/dropdown'
-import 'antd/lib/dropdown/style/css'
 
 class QueryTableOnly extends React.Component {
   state = {

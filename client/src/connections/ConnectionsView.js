@@ -1,16 +1,12 @@
+import Button from 'antd/lib/button'
+import Layout from 'antd/lib/layout'
 import React from 'react'
 import { Subscribe } from 'unstated'
-import ConnectionEditContainer from '../containers/ConnectionEditContainer'
-import Header from '../common/Header'
 import DocumentTitle from '../common/DocumentTitle'
+import Header from '../common/Header'
+import ConnectionEditContainer from '../containers/ConnectionEditContainer'
 import ConnectionEditModal from './ConnectionEditModal'
 import ConnectionsTable from './ConnectionsTable'
-
-import Button from 'antd/lib/button'
-import 'antd/lib/button/style/css'
-
-import Layout from 'antd/lib/layout'
-import 'antd/lib/layout/style/css'
 
 const { Content } = Layout
 

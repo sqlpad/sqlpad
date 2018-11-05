@@ -1,12 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-
-import Tag from 'antd/lib/tag'
-import Icon from 'antd/lib/icon'
 import AutoComplete from 'antd/lib/auto-complete'
-import 'antd/lib/tag/style/css'
-import 'antd/lib/auto-complete/style/css'
-import 'antd/lib/icon/style/css'
+import Icon from 'antd/lib/icon'
+import Tag from 'antd/lib/tag'
+import PropTypes from 'prop-types'
+import React from 'react'
 
 class EditableTagGroup extends React.Component {
   state = {

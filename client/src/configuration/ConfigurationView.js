@@ -1,20 +1,14 @@
-import React from 'react'
+import Col from 'antd/lib/col'
+import Layout from 'antd/lib/layout'
 import message from 'antd/lib/message'
+import Row from 'antd/lib/row'
 import debounce from 'lodash.debounce'
+import React from 'react'
+import Header from '../common/Header'
+import fetchJson from '../utilities/fetch-json.js'
 import CheckListItem from './CheckListItem'
 import ConfigEnvDocumentation from './ConfigEnvDocumentation'
 import ConfigItemInput from './ConfigItemInput'
-import fetchJson from '../utilities/fetch-json.js'
-import Header from '../common/Header'
-
-import Col from 'antd/lib/col'
-import 'antd/lib/col/style/css'
-
-import Row from 'antd/lib/row'
-import 'antd/lib/row/style/css'
-
-import Layout from 'antd/lib/layout'
-import 'antd/lib/layout/style/css'
 
 const { Content } = Layout
 

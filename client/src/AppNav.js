@@ -1,19 +1,11 @@
+import Icon from 'antd/lib/icon'
+import Layout from 'antd/lib/layout'
+import Menu from 'antd/lib/menu'
+import Modal from 'antd/lib/modal'
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
-import fetchJson from './utilities/fetch-json.js'
 import AboutContent from './AboutContent'
-
-import Modal from 'antd/lib/modal'
-import 'antd/lib/modal/style/css'
-
-import Layout from 'antd/lib/layout'
-import 'antd/lib/layout/style/css'
-
-import Menu from 'antd/lib/menu'
-import 'antd/lib/menu/style/css'
-
-import Icon from 'antd/lib/icon'
-import 'antd/lib/icon/style/css'
+import fetchJson from './utilities/fetch-json.js'
 
 const { Content, Sider } = Layout
 
