@@ -4,7 +4,6 @@ import fetchJson from '../utilities/fetch-json.js'
 import updateCompletions from '../utilities/updateCompletions.js'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
-import ConnectionDropDown from './ConnectionDropdown'
 
 import Icon from 'antd/lib/icon'
 
@@ -58,18 +57,12 @@ class SchemaSidebar extends React.PureComponent {
     }
   }
 
-  handleConnectionChange = connectionId => {
-    this.props.onConnectionChange(connectionId)
-    this.getSchemaInfo(connectionId)
-  }
-
   handleRefreshClick = e => {
     e.preventDefault()
     this.getSchemaInfo(this.props.connectionId, true)
   }
 
   render() {
-    const { connectionId } = this.props
     const { loading, schemaInfo } = this.state
     const refreshClass = loading ? 'spinning' : ''
 
@@ -92,11 +85,6 @@ class SchemaSidebar extends React.PureComponent {
     return (
       <Sidebar>
         <SidebarBody>
-          <ConnectionDropDown
-            value={connectionId}
-            onChange={this.handleConnectionChange}
-          />
-          <hr />
           <div style={{ position: 'relative' }}>
             <a style={{ position: 'absolute', right: '20px' }} href="#refresh">
               <Tooltip title="Refresh schema">

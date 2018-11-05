@@ -356,6 +356,8 @@ class QueryEditor extends React.Component {
           onQueryNameChange={this.handleQueryNameChange}
           showValidation={showValidation}
           unsavedChanges={unsavedChanges}
+          connectionId={query.connectionId}
+          onConnectionChange={this.handleConnectionChange}
         />
         <div style={{ position: 'relative', flexGrow: 1 }}>
           <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
@@ -369,7 +371,6 @@ class QueryEditor extends React.Component {
               <SchemaSidebar
                 {...this.props}
                 connectionId={query.connectionId}
-                onConnectionChange={this.handleConnectionChange}
               />
               <SplitPane
                 split="horizontal"

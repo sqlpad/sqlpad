@@ -13,7 +13,9 @@ function ConnectionDropdown({ onChange, value }) {
         <Select
           showSearch
           placeholder="Choose a connection"
-          className="w-100"
+          // TODO className is overridden by antdesign css?
+          // className="w5"
+          style={{ width: 260 }}
           optionFilterProp="children"
           value={value}
           onChange={onChange}
