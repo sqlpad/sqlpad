@@ -1,9 +1,9 @@
 import React from 'react'
 import { Subscribe } from 'unstated'
+import Component from '@reactions/component'
 import ConnectionsContainer from '../containers/ConnectionsContainer'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
 import Header from '../common/Header'
-import DidMount from '../common/DidMount'
 import DocumentTitle from '../common/DocumentTitle'
 import ConnectionEditModal from './ConnectionEditModal'
 import ConnectionsTable from './ConnectionsTable'
@@ -46,7 +46,7 @@ function ConnectionsView() {
 
       <Subscribe to={[ConnectionsContainer]}>
         {connectionsContainer => (
-          <DidMount>{connectionsContainer.loadConnections}</DidMount>
+          <Component didMount={connectionsContainer.loadConnections} />
         )}
       </Subscribe>
     </Layout>
