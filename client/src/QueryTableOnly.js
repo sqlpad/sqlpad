@@ -1,9 +1,6 @@
-import Button from 'antd/lib/button'
-import Dropdown from 'antd/lib/dropdown'
-import Icon from 'antd/lib/icon'
-import Menu from 'antd/lib/menu'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ExportButton from './common/ExportButton.js'
 import IncompleteDataNotification from './common/IncompleteDataNotification'
 import QueryResultDataTable from './common/QueryResultDataTable.js'
 import fetchJson from './utilities/fetch-json.js'
@@ -45,43 +42,6 @@ class QueryTableOnly extends React.Component {
     this.runQuery(this.props.queryId)
   }
 
-  renderExportButton() {
-    const { queryResult } = this.state
-    const { config } = this.props
-    const { baseUrl, allowCsvDownload } = config
-
-    if (!queryResult || !allowCsvDownload) {
-      return
-    }
-
-    const { cacheKey } = queryResult
-    const csvDownloadLink = `${baseUrl}/download-results/${cacheKey}.csv`
-    const xlsxDownloadLink = `${baseUrl}/download-results/${cacheKey}.xlsx`
-
-    const menu = (
-      <Menu>
-        <Menu.Item>
-          <a target="_blank" href={csvDownloadLink}>
-            csv
-          </a>
-        </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" href={xlsxDownloadLink}>
-            xlsx
-          </a>
-        </Menu.Item>
-      </Menu>
-    )
-
-    return (
-      <Dropdown overlay={menu}>
-        <Button>
-          Export <Icon type="down" />
-        </Button>
-      </Dropdown>
-    )
-  }
-
   render() {
     const {
       isRunning,
@@ -93,6 +53,7 @@ class QueryTableOnly extends React.Component {
     } = this.state
 
     const incomplete = queryResult ? queryResult.incomplete : false
+    const cacheKey = queryResult ? queryResult.cacheKey : null
 
     return (
       <div
@@ -103,13 +64,12 @@ class QueryTableOnly extends React.Component {
           <span className="f2">{query ? query.name : ''}</span>
           <div style={{ float: 'right' }}>
             <IncompleteDataNotification incomplete={incomplete} />
-            {this.renderExportButton()}
+            <ExportButton cacheKey={cacheKey} />
           </div>
         </div>
         <div className="flex h-100 ba b--moon-gray">
           <div className="relative w-100">
             <QueryResultDataTable
-              {...this.props}
               isRunning={isRunning}
               runQueryStartTime={runQueryStartTime}
               queryResult={queryResult}
@@ -124,7 +84,7 @@ class QueryTableOnly extends React.Component {
 }
 
 QueryTableOnly.propTypes = {
-  config: PropTypes.object.isRequired
+  queryId: PropTypes.string.isRequired
 }
 
 export default QueryTableOnly

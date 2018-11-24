@@ -1,9 +1,6 @@
-import Button from 'antd/lib/button'
-import Dropdown from 'antd/lib/dropdown'
-import Icon from 'antd/lib/icon'
-import Menu from 'antd/lib/menu'
 import PropTypes from 'prop-types'
 import React from 'react'
+import ExportButton from './common/ExportButton.js'
 import IncompleteDataNotification from './common/IncompleteDataNotification'
 import SqlpadTauChart from './common/SqlpadTauChart.js'
 import fetchJson from './utilities/fetch-json.js'
@@ -61,53 +58,11 @@ class QueryChartOnly extends React.Component {
     return !pending && this.hasRows()
   }
 
-  renderExportButton() {
-    const { queryResult } = this.state
-    const { config } = this.props
-    const { baseUrl, allowCsvDownload } = config
-
-    if (!queryResult) {
-      return
-    }
-
-    const { cacheKey } = queryResult
-    const csvDownloadLink = `${baseUrl}/download-results/${cacheKey}.csv`
-    const xlsxDownloadLink = `${baseUrl}/download-results/${cacheKey}.xlsx`
-
-    const menu = (
-      <Menu>
-        <Menu.Item onClick={this.onSaveImageClick}>png</Menu.Item>
-        {allowCsvDownload && (
-          <Menu.Item>
-            <a target="_blank" href={csvDownloadLink}>
-              csv
-            </a>
-          </Menu.Item>
-        )}
-        {allowCsvDownload && (
-          <Menu.Item>
-            <a target="_blank" href={xlsxDownloadLink}>
-              xlsx
-            </a>
-          </Menu.Item>
-        )}
-      </Menu>
-    )
-
-    return (
-      <Dropdown overlay={menu}>
-        <Button>
-          Export <Icon type="down" />
-        </Button>
-      </Dropdown>
-    )
-  }
-
   render() {
     const { query, queryResult, queryError, isRunning } = this.state
-    const { config } = this.props
 
     const incomplete = queryResult ? queryResult.incomplete : false
+    const cacheKey = queryResult ? queryResult.cacheKey : null
 
     return (
       <div
@@ -118,13 +73,15 @@ class QueryChartOnly extends React.Component {
           <span className="f2">{query ? query.name : ''}</span>
           <div style={{ float: 'right' }}>
             <IncompleteDataNotification incomplete={incomplete} />
-            {this.renderExportButton()}
+            <ExportButton
+              cacheKey={cacheKey}
+              onSaveImageClick={this.onSaveImageClick}
+            />
           </div>
         </div>
         <div style={{ height: '100%', display: 'flex' }}>
           <SqlpadTauChart
             query={query}
-            config={config}
             queryResult={queryResult}
             queryError={queryError}
             isRunning={isRunning}
@@ -140,7 +97,7 @@ class QueryChartOnly extends React.Component {
 }
 
 QueryChartOnly.propTypes = {
-  config: PropTypes.object.isRequired
+  queryId: PropTypes.string.isRequired
 }
 
 export default QueryChartOnly
