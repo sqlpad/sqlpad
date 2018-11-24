@@ -1,3 +1,4 @@
+import Component from '@reactions/component'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Redirect } from 'react-router-dom'
@@ -7,10 +8,11 @@ import AppContainer from './containers/AppContainer'
 
 class Authenticated extends React.Component {
   state = {
-    loading: true
+    refreshedAppContext: false
   }
 
   render() {
+    const { refreshedAppContext } = this.state
     const { admin, component, ...rest } = this.props
 
     return (
@@ -18,9 +20,15 @@ class Authenticated extends React.Component {
         {appContainer => {
           const { config, currentUser } = appContainer.state
 
-          // TODO is this necessary?
-          if (!config) {
-            return <Component didMount={appContainer.refreshAppContext} />
+          if (!refreshedAppContext) {
+            return (
+              <Component
+                didMount={async () => {
+                  await appContainer.refreshAppContext()
+                  this.setState({ refreshedAppContext: true })
+                }}
+              />
+            )
           }
 
           if (!currentUser) {
@@ -31,11 +39,15 @@ class Authenticated extends React.Component {
             return <Redirect to={{ pathname: '/queries' }} />
           }
 
-          const Component = component
+          const PropComponent = component
 
           return (
             <AppNav>
-              <Component config={config} currentUser={currentUser} {...rest} />
+              <PropComponent
+                config={config}
+                currentUser={currentUser}
+                {...rest}
+              />
             </AppNav>
           )
         }}
