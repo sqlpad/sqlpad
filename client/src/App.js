@@ -8,10 +8,10 @@ import {
   Switch
 } from 'react-router-dom'
 import { Subscribe } from 'unstated'
-import AppContainer from '../containers/AppContainer'
 import Authenticated from './Authenticated'
 import ConfigurationView from './configuration/ConfigurationView'
 import ConnectionsView from './connections/ConnectionsView.js'
+import AppContainer from './containers/AppContainer'
 import ForgotPassword from './ForgotPassword.js'
 import NotFound from './NotFound.js'
 import PasswordReset from './PasswordReset.js'

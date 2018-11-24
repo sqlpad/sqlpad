@@ -5,7 +5,7 @@ import message from 'antd/lib/message'
 import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
 import { Subscribe } from 'unstated'
-import AppContainer from '../containers/AppContainer'
+import AppContainer from './containers/AppContainer'
 import fetchJson from './utilities/fetch-json.js'
 
 class SignIn extends React.Component {

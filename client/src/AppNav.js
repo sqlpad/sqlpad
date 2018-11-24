@@ -6,8 +6,8 @@ import Modal from 'antd/lib/modal'
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import { Subscribe } from 'unstated'
-import AppContainer from '../containers/AppContainer'
 import AboutContent from './AboutContent'
+import AppContainer from './containers/AppContainer'
 import fetchJson from './utilities/fetch-json.js'
 
 const { Content, Sider } = Layout
