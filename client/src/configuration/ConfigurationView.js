@@ -4,6 +4,7 @@ import message from 'antd/lib/message'
 import Row from 'antd/lib/row'
 import debounce from 'lodash.debounce'
 import React from 'react'
+import AppNav from '../AppNav'
 import Header from '../common/Header'
 import fetchJson from '../utilities/fetch-json.js'
 import CheckListItem from './CheckListItem'
@@ -143,81 +144,85 @@ class ConfigurationView extends React.Component {
 
   render() {
     return (
-      <Layout
-        style={{ minHeight: '100vh' }}
-        className="flex w-100 flex-column h-100"
-      >
-        <Header title="Configuration" />
-        <Content className="ma4">
-          <Row gutter={16}>
-            <Col span={16}>{this.renderConfigInputs()}</Col>
-            <Col span={8}>
-              <div className="bg-white ba br2 b--light-gray pa4">
-                <p>
-                  <strong>Feature Checklist</strong>
-                </p>
-                <p>Unlock features by providing the required configuration.</p>
+      <AppNav>
+        <Layout
+          style={{ minHeight: '100vh' }}
+          className="flex w-100 flex-column h-100"
+        >
+          <Header title="Configuration" />
+          <Content className="ma4">
+            <Row gutter={16}>
+              <Col span={16}>{this.renderConfigInputs()}</Col>
+              <Col span={8}>
+                <div className="bg-white ba br2 b--light-gray pa4">
+                  <p>
+                    <strong>Feature Checklist</strong>
+                  </p>
+                  <p>
+                    Unlock features by providing the required configuration.
+                  </p>
+                  <hr />
+                  <strong>Email</strong>
+                  <ul style={{ paddingLeft: 20 }}>
+                    <CheckListItem
+                      configKey={'smtpUser'}
+                      configItems={this.state.configItems}
+                    />
+                    <CheckListItem
+                      configKey={'smtpHost'}
+                      configItems={this.state.configItems}
+                    />
+                    <CheckListItem
+                      configKey={'smtpPort'}
+                      configItems={this.state.configItems}
+                    />
+                    <CheckListItem
+                      configKey={'smtpFrom'}
+                      configItems={this.state.configItems}
+                    />
+                    <CheckListItem
+                      configKey={'publicUrl'}
+                      configItems={this.state.configItems}
+                    />
+                  </ul>
+                  <strong>Google OAuth</strong>
+                  <ul style={{ paddingLeft: 20 }}>
+                    <CheckListItem
+                      configKey={'googleClientId'}
+                      configItems={this.state.configItems}
+                    />
+                    <CheckListItem
+                      configKey={'googleClientSecret'}
+                      configItems={this.state.configItems}
+                    />
+                    <CheckListItem
+                      configKey={'publicUrl'}
+                      configItems={this.state.configItems}
+                    />
+                  </ul>
+                </div>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
                 <hr />
-                <strong>Email</strong>
-                <ul style={{ paddingLeft: 20 }}>
-                  <CheckListItem
-                    configKey={'smtpUser'}
-                    configItems={this.state.configItems}
-                  />
-                  <CheckListItem
-                    configKey={'smtpHost'}
-                    configItems={this.state.configItems}
-                  />
-                  <CheckListItem
-                    configKey={'smtpPort'}
-                    configItems={this.state.configItems}
-                  />
-                  <CheckListItem
-                    configKey={'smtpFrom'}
-                    configItems={this.state.configItems}
-                  />
-                  <CheckListItem
-                    configKey={'publicUrl'}
-                    configItems={this.state.configItems}
-                  />
-                </ul>
-                <strong>Google OAuth</strong>
-                <ul style={{ paddingLeft: 20 }}>
-                  <CheckListItem
-                    configKey={'googleClientId'}
-                    configItems={this.state.configItems}
-                  />
-                  <CheckListItem
-                    configKey={'googleClientSecret'}
-                    configItems={this.state.configItems}
-                  />
-                  <CheckListItem
-                    configKey={'publicUrl'}
-                    configItems={this.state.configItems}
-                  />
-                </ul>
-              </div>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <hr />
-              <p>
-                Some configuration is only accessible via environment variables
-                or command-line-interface (CLI) flags. Below are the current
-                values for these variables. Sensitive values are masked. Hover
-                over input for additional information.
-              </p>
-              <hr />
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={24}>
-              <ConfigEnvDocumentation configItems={this.state.configItems} />
-            </Col>
-          </Row>
-        </Content>
-      </Layout>
+                <p>
+                  Some configuration is only accessible via environment
+                  variables or command-line-interface (CLI) flags. Below are the
+                  current values for these variables. Sensitive values are
+                  masked. Hover over input for additional information.
+                </p>
+                <hr />
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={24}>
+                <ConfigEnvDocumentation configItems={this.state.configItems} />
+              </Col>
+            </Row>
+          </Content>
+        </Layout>
+      </AppNav>
     )
   }
 }
