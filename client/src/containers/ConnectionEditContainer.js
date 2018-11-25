@@ -1,5 +1,5 @@
-import fetchJson from '../utilities/fetch-json.js'
 import { Container } from 'unstated'
+import fetchJson from '../utilities/fetch-json.js'
 
 const INITIAL_STATE = {
   visible: false,
@@ -22,7 +22,7 @@ class ConnectionEditContainer extends Container {
       testing: false,
       testSuccess: false,
       visible: true,
-      title: connection && connection._id ? 'New connection' : 'Edit connection'
+      title: connection && connection._id ? 'Edit connection' : 'New connection'
     })
   }
 
