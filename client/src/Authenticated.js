@@ -18,7 +18,7 @@ class Authenticated extends React.Component {
     return (
       <Subscribe to={[AppContainer]}>
         {appContainer => {
-          const { config, currentUser } = appContainer.state
+          const { currentUser } = appContainer.state
 
           if (!refreshedAppContext) {
             return (
@@ -43,11 +43,7 @@ class Authenticated extends React.Component {
 
           return (
             <AppNav>
-              <PropComponent
-                config={config}
-                currentUser={currentUser}
-                {...rest}
-              />
+              <PropComponent {...rest} />
             </AppNav>
           )
         }}

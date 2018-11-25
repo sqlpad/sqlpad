@@ -8,8 +8,10 @@ import Table from 'antd/lib/table'
 import moment from 'moment'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Subscribe } from 'unstated'
 import uuid from 'uuid'
 import Header from '../common/Header'
+import AppContainer from '../containers/AppContainer'
 import fetchJson from '../utilities/fetch-json.js'
 import InviteUserForm from './InviteUserForm'
 
@@ -111,21 +113,28 @@ class UsersView extends React.Component {
   }
 
   roleRender = (text, record) => {
-    const { currentUser } = this.props
     return (
-      <Select
-        className="w4"
-        name="role"
-        disabled={currentUser._id === record._id}
-        value={record.role || ''}
-        onChange={value => {
-          record.role = value
-          return this.updateUserRole(record)
+      <Subscribe to={[AppContainer]}>
+        {appContainer => {
+          const { currentUser } = appContainer.state
+
+          return (
+            <Select
+              className="w4"
+              name="role"
+              disabled={currentUser && currentUser._id === record._id}
+              value={record.role || ''}
+              onChange={value => {
+                record.role = value
+                return this.updateUserRole(record)
+              }}
+            >
+              <Option value="editor">Editor</Option>
+              <Option value="admin">Admin</Option>
+            </Select>
+          )
         }}
-      >
-        <Option value="editor">Editor</Option>
-        <Option value="admin">Admin</Option>
-      </Select>
+      </Subscribe>
     )
   }
 
@@ -194,7 +203,6 @@ class UsersView extends React.Component {
   }
 
   renderModal() {
-    const { config } = this.props
     const { showAddUser } = this.state
     return (
       <Modal
@@ -205,7 +213,7 @@ class UsersView extends React.Component {
         destroyOnClose={true}
         onCancel={() => this.setState({ showAddUser: false })}
       >
-        <InviteUserForm onInvited={this.handleOnInvited} config={config} />
+        <InviteUserForm onInvited={this.handleOnInvited} />
       </Modal>
     )
   }

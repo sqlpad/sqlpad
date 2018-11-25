@@ -13,8 +13,10 @@ import uniq from 'lodash.uniq'
 import moment from 'moment'
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { Subscribe } from 'unstated'
 import Header from '../common/Header'
 import SqlEditor from '../common/SqlEditor'
+import AppContainer from '../containers/AppContainer'
 import fetchJson from '../utilities/fetch-json.js'
 
 const { Content } = Layout
@@ -62,7 +64,8 @@ class QueriesView extends React.Component {
           .filter(tag => tag)
       )
       let selectedCreatedBy = this.state.selectedCreatedBy
-      if (createdBys.indexOf(this.props.currentUser.email) === -1) {
+      const email = this.props.currentUser && this.props.currentUser.email
+      if (createdBys.indexOf(email) === -1) {
         selectedCreatedBy = ''
       }
       this.setState({
@@ -93,12 +96,11 @@ class QueriesView extends React.Component {
   }
 
   previewRender = (text, record) => {
-    const { config } = this.props
     return (
       <Popover
         content={
           <div style={{ width: '600px', height: '300px' }}>
-            <SqlEditor config={config} readOnly value={record.queryText} />
+            <SqlEditor readOnly value={record.queryText} />
           </div>
         }
         placement="right"
@@ -125,29 +127,35 @@ class QueriesView extends React.Component {
   }
 
   actionsRender = (text, record) => {
-    const { config } = this.props
-    const tableUrl = `${config.baseUrl}/query-table/${record._id}`
-    const chartUrl = `${config.baseUrl}/query-chart/${record._id}`
     return (
-      <span>
-        <a href={tableUrl} target="_blank" rel="noopener noreferrer">
-          table
-        </a>
-        <Divider type="vertical" />
-        <a href={chartUrl} target="_blank" rel="noopener noreferrer">
-          chart
-        </a>
-        <Divider type="vertical" />
-        <Popconfirm
-          title="Are you sure?"
-          onConfirm={e => this.handleQueryDelete(record._id)}
-          onCancel={() => {}}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button icon="delete" type="danger" />
-        </Popconfirm>
-      </span>
+      <Subscribe to={[AppContainer]}>
+        {appContainer => {
+          const { config } = appContainer.state
+          const tableUrl = `${config.baseUrl}/query-table/${record._id}`
+          const chartUrl = `${config.baseUrl}/query-chart/${record._id}`
+          return (
+            <span>
+              <a href={tableUrl} target="_blank" rel="noopener noreferrer">
+                table
+              </a>
+              <Divider type="vertical" />
+              <a href={chartUrl} target="_blank" rel="noopener noreferrer">
+                chart
+              </a>
+              <Divider type="vertical" />
+              <Popconfirm
+                title="Are you sure?"
+                onConfirm={e => this.handleQueryDelete(record._id)}
+                onCancel={() => {}}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button icon="delete" type="danger" />
+              </Popconfirm>
+            </span>
+          )
+        }}
+      </Subscribe>
     )
   }
 
