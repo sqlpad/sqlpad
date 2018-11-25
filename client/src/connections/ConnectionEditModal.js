@@ -1,4 +1,4 @@
-import Modal from 'antd/lib/modal'
+import Drawer from 'antd/lib/drawer'
 import React from 'react'
 import { Subscribe } from 'unstated'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
@@ -8,16 +8,20 @@ function ConnectionEditModal({ children }) {
   return (
     <Subscribe to={[ConnectionEditContainer]}>
       {connectionEditContainer => (
-        <Modal
+        <Drawer
           title={connectionEditContainer.state.title}
           visible={!!connectionEditContainer.state.visible}
-          footer={null}
-          width={'600px'}
+          width={600}
           destroyOnClose={true}
-          onCancel={connectionEditContainer.cancelEdit}
+          onClose={connectionEditContainer.cancelEdit}
+          style={{
+            height: 'calc(100% - 55px)',
+            overflow: 'auto',
+            paddingBottom: 53
+          }}
         >
           <ConnectionForm />
-        </Modal>
+        </Drawer>
       )}
     </Subscribe>
   )
