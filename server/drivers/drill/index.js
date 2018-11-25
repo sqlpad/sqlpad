@@ -30,6 +30,7 @@ function getDrillSchemaSql(catalog, schema) {
  * @param {string} query
  * @param {object} connection
  */
+
 function runQuery(query, connection) {
   let incomplete = false
   const rows = []
@@ -42,24 +43,20 @@ function runQuery(query, connection) {
   }
   const client = new drill.Client(drillConfig)
 
-  return client.query(query, function(error, data, columns) {
-    //console.log({data: data['rows'], columns: data['columns'], error: error});
-    const result = data['rows']
-
+  //return client.query(query, function(error, data, columns) {
+  return client.query(drillConfig, query).then(result => {
     if (!result) {
       throw new Error('No result returned')
     }
-
     if (result.length > connection.maxRows) {
       incomplete = true
-      data['rows'] = data['rows'].slice(0, connection.maxRows)
+      result['rows'] = result['rows'].slice(0, connection.maxRows)
     }
-    for (let r = 0; r < data['rows'].length; r++) {
+    for (let r = 0; r < result['rows'].length; r++) {
       const row = {}
-      for (let c = 0; c < data['columns'].length; c++) {
-        row[data['columns'][c]] = data['rows'][r][data['columns'][c]]
+      for (let c = 0; c < result['columns'].length; c++) {
+        row[result['columns'][c]] = result['rows'][r][result['columns'][c]]
       }
-      console.log(row)
       rows.push(row)
     }
     return { rows, incomplete }
@@ -82,8 +79,8 @@ function testConnection(connection) {
  */
 function getSchema(connection) {
   const schemaSql = getDrillSchemaSql(
-    connection.prestoCatalog,
-    connection.prestoSchema
+    connection.drillCatalog
+    //connection.drillSchema
   )
   return runQuery(schemaSql, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)

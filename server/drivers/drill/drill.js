@@ -13,13 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+const fetch = require('node-fetch')
 
 var Util = require('util')
 var request = require('request')
 var url = require('url')
 
 exports.version = 'unknown'
-//module.exports  = Drill;
 
 var Client = (exports.Client = function(args) {
   if (!args) args = {}
@@ -64,26 +64,50 @@ Client.prototype.getSchemata = function() {
   //query('SHOW DATABASES')
 }
 
-Client.prototype.query = function(queryString, callback) {
-  let href = url.format({
+Client.prototype.query = function(config, query) {
+  const href = url.format({
     protocol: this.protocol,
     hostname: 'localhost',
     pathname: '/query.json',
     port: 8047
   })
-  let headers = {
+  const headers = {
     'Content-Type': 'application/json; charset=UTF-8',
     Accept: 'application/json'
   }
-  let queryOptions = {
+  const queryOptions = {
     uri: href,
     method: 'POST',
     headers: headers,
-    json: { queryType: 'SQL', query: queryString }
+    json: { queryType: 'SQL', query: query }
   }
-  request(queryOptions, function(error, response, body) {
+  const queryInfo = {
+    queryType: 'SQL',
+    query: query
+  }
+  const body = JSON.stringify(queryInfo)
+  return fetch('http://localhost:8047/query.json', {
+    method: 'POST',
+    headers: headers,
+    body: body
+  })
+    .then(function(data) {
+      return data.json()
+    })
+    .then(function(jsonData) {
+      //do stuff with the data
+      console.log(jsonData)
+      return jsonData
+    })
+    .catch(function(e) {
+      console.log('There was a problem with the request' + e)
+    })
+  /*return request(queryOptions, function(error, response, body) {
     if (!error && response.statusCode === 200) {
       callback(null, body)
     } //TODO Add error handling
-  })
+    return body
+  })*/
 }
+
+module.exports = { Client }
