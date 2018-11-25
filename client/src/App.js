@@ -62,7 +62,7 @@ class App extends React.Component {
               exact
               path="/users"
               render={() => (
-                <Authenticated admin={true}>
+                <Authenticated admin>
                   <UsersView />
                 </Authenticated>
               )}
@@ -71,7 +71,7 @@ class App extends React.Component {
               exact
               path="/connections"
               render={() => (
-                <Authenticated admin={true}>
+                <Authenticated admin>
                   <ConnectionsView />
                 </Authenticated>
               )}
@@ -80,7 +80,7 @@ class App extends React.Component {
               exact
               path="/config-values"
               render={() => (
-                <Authenticated admin={true}>
+                <Authenticated admin>
                   <ConfigurationView />
                 </Authenticated>
               )}
