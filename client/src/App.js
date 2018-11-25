@@ -1,26 +1,28 @@
+import Component from '@reactions/component'
+import message from 'antd/lib/message'
 import React from 'react'
 import {
   BrowserRouter as Router,
-  Route,
   Redirect,
+  Route,
   Switch
 } from 'react-router-dom'
-import message from 'antd/lib/message'
-import fetchJson from './utilities/fetch-json.js'
-import UsersView from './users/UsersView'
-import ConnectionsView from './connections/ConnectionsView.js'
+import { Subscribe } from 'unstated'
+import Authenticated from './Authenticated'
 import ConfigurationView from './configuration/ConfigurationView'
-import QueriesView from './queries/QueriesView'
-import QueryEditorContainer from './queryEditor/QueryEditorContainer.js'
-import SignIn from './SignIn.js'
-import SignUp from './SignUp.js'
+import ConnectionsView from './connections/ConnectionsView.js'
+import AppContainer from './containers/AppContainer'
 import ForgotPassword from './ForgotPassword.js'
+import NotFound from './NotFound.js'
 import PasswordReset from './PasswordReset.js'
 import PasswordResetRequested from './PasswordResetRequested.js'
-import QueryTableOnly from './QueryTableOnly.js'
+import QueriesView from './queries/QueriesView'
 import QueryChartOnly from './QueryChartOnly.js'
-import NotFound from './NotFound.js'
-import Authenticated from './Authenticated'
+import QueryEditorContainer from './queryEditor/QueryEditorContainer.js'
+import QueryTableOnly from './QueryTableOnly.js'
+import SignIn from './SignIn.js'
+import SignUp from './SignUp.js'
+import UsersView from './users/UsersView'
 
 // Configure message notification globally
 message.config({
@@ -30,45 +32,8 @@ message.config({
 })
 
 class App extends React.Component {
-  state = {}
-
-  refreshAppContext = () => {
-    return fetchJson('GET', 'api/app').then(json => {
-      // Assign config.baseUrl to global
-      // It doesn't change and is needed for fetch requests
-      // This allows us to simplify the fetch() call
-      if (!json.config) {
-        return
-      }
-      window.BASE_URL = json.config.baseUrl
-      this.setState({
-        config: json.config,
-        smtpConfigured: json.smtpConfigured,
-        googleAuthConfigured: json.googleAuthConfigured,
-        currentUser: json.currentUser,
-        passport: json.passport,
-        adminRegistrationOpen: json.adminRegistrationOpen,
-        version: json.version
-      })
-    })
-  }
-
-  componentDidMount() {
-    this.refreshAppContext()
-  }
-
-  render() {
-    const {
-      adminRegistrationOpen,
-      config,
-      currentUser,
-      smtpConfigured,
-      passport
-    } = this.state
-
-    if (!config) {
-      return <div className="flex w-100" />
-    }
+  renderRoutes(appState) {
+    const { config, currentUser } = appState
 
     return (
       <Router basename={config.baseUrl}>
@@ -115,57 +80,28 @@ class App extends React.Component {
               exact
               path="/query-table/:queryId"
               render={({ match }) => (
-                <QueryTableOnly
-                  config={config}
-                  queryId={match.params.queryId}
-                />
+                <QueryTableOnly queryId={match.params.queryId} />
               )}
             />
             <Route
               exact
               path="/query-chart/:queryId"
               render={({ match }) => (
-                <QueryChartOnly
-                  config={config}
-                  queryId={match.params.queryId}
-                />
+                <QueryChartOnly queryId={match.params.queryId} />
               )}
             />
-            <Route
-              exact
-              path="/signin"
-              render={() => (
-                <SignIn
-                  config={config}
-                  smtpConfigured={smtpConfigured}
-                  passport={passport}
-                />
-              )}
-            />
-            <Route
-              exact
-              path="/signup"
-              render={() => (
-                <SignUp
-                  config={config}
-                  adminRegistrationOpen={adminRegistrationOpen}
-                />
-              )}
-            />
+            <Route exact path="/signin" render={() => <SignIn />} />
+            <Route exact path="/signup" render={() => <SignUp />} />
             <Route
               exact
               path="/forgot-password"
-              render={() => <ForgotPassword config={config} />}
+              render={() => <ForgotPassword />}
             />
             <Route
               exact
               path="/password-reset/:passwordResetId"
               render={({ match }) => (
-                <PasswordReset
-                  passwordResetId={match.params.passwordResetId}
-                  config={config}
-                  adminRegistrationOpen={adminRegistrationOpen}
-                />
+                <PasswordReset passwordResetId={match.params.passwordResetId} />
               )}
             />
             <Route
@@ -181,6 +117,23 @@ class App extends React.Component {
           </Switch>
         </div>
       </Router>
+    )
+  }
+
+  render() {
+    return (
+      <Subscribe to={[AppContainer]}>
+        {appContainer => {
+          if (appContainer.state.config) {
+            return this.renderRoutes(appContainer.state)
+          }
+          return (
+            <div className="flex w-100">
+              <Component didMount={appContainer.refreshAppContext} />
+            </div>
+          )
+        }}
+      </Subscribe>
     )
   }
 }

@@ -1,51 +1,53 @@
-import React from 'react'
+import Component from '@reactions/component'
 import PropTypes from 'prop-types'
+import React from 'react'
 import { Redirect } from 'react-router-dom'
-import fetchJson from './utilities/fetch-json.js'
+import { Subscribe } from 'unstated'
 import AppNav from './AppNav.js'
+import AppContainer from './containers/AppContainer'
 
 class Authenticated extends React.Component {
   state = {
-    loading: true
-  }
-
-  componentDidMount() {
-    return fetchJson('GET', 'api/app').then(json => {
-      this.setState({
-        loading: false,
-        config: json.config,
-        smtpConfigured: json.smtpConfigured,
-        googleAuthConfigured: json.googleAuthConfigured,
-        currentUser: json.currentUser,
-        passport: json.passport,
-        adminRegistrationOpen: json.adminRegistrationOpen,
-        version: json.version
-      })
-    })
+    refreshedAppContext: false
   }
 
   render() {
+    const { refreshedAppContext } = this.state
     const { admin, component, ...rest } = this.props
-    const { config, currentUser, loading } = this.state
-
-    if (loading) {
-      return null
-    }
-
-    if (!currentUser) {
-      return <Redirect to={{ pathname: '/signin' }} />
-    }
-
-    if (admin && currentUser.role !== 'admin') {
-      return <Redirect to={{ pathname: '/queries' }} />
-    }
-
-    const Component = component
 
     return (
-      <AppNav config={config} currentUser={currentUser}>
-        <Component config={config} currentUser={currentUser} {...rest} />
-      </AppNav>
+      <Subscribe to={[AppContainer]}>
+        {appContainer => {
+          const { currentUser } = appContainer.state
+
+          if (!refreshedAppContext) {
+            return (
+              <Component
+                didMount={async () => {
+                  await appContainer.refreshAppContext()
+                  this.setState({ refreshedAppContext: true })
+                }}
+              />
+            )
+          }
+
+          if (!currentUser) {
+            return <Redirect to={{ pathname: '/signin' }} />
+          }
+
+          if (admin && currentUser.role !== 'admin') {
+            return <Redirect to={{ pathname: '/queries' }} />
+          }
+
+          const PropComponent = component
+
+          return (
+            <AppNav>
+              <PropComponent {...rest} />
+            </AppNav>
+          )
+        }}
+      </Subscribe>
     )
   }
 }

@@ -1,9 +1,11 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import React from 'react'
 import AceEditor from 'react-ace'
+import { Subscribe } from 'unstated'
+import AppContainer from '../containers/AppContainer'
+import 'brace/ext/searchbox'
 import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
-import 'brace/ext/searchbox'
 
 const noop = () => {}
 
@@ -89,4 +91,15 @@ SqlEditor.defaultProps = {
   value: ''
 }
 
-export default SqlEditor
+const SqlEditorContainer = props => {
+  return (
+    <Subscribe to={[AppContainer]}>
+      {appContainer => {
+        const { config } = appContainer.state
+        return <SqlEditor {...props} config={config} />
+      }}
+    </Subscribe>
+  )
+}
+
+export default SqlEditorContainer

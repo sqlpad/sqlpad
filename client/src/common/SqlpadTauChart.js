@@ -1,15 +1,15 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import chartDefinitions from '../utilities/chartDefinitions.js'
-import SpinKitCube from './SpinKitCube.js'
+import message from 'antd/lib/message'
 import 'd3'
+import PropTypes from 'prop-types'
+import React from 'react'
 import { Chart } from 'taucharts'
 import exportTo from 'taucharts/build/development/plugins/tauCharts.export'
-import tcTrendline from 'taucharts/build/development/plugins/tauCharts.trendline'
-import tooltip from 'taucharts/build/development/plugins/tauCharts.tooltip'
 import legend from 'taucharts/build/development/plugins/tauCharts.legend'
 import quickFilter from 'taucharts/build/development/plugins/tauCharts.quick-filter'
-import message from 'antd/lib/message'
+import tooltip from 'taucharts/build/development/plugins/tauCharts.tooltip'
+import tcTrendline from 'taucharts/build/development/plugins/tauCharts.trendline'
+import chartDefinitions from '../utilities/chartDefinitions.js'
+import SpinKitCube from './SpinKitCube.js'
 
 class SqlpadTauChart extends React.Component {
   displayName = 'SqlpadTauChart'
@@ -51,7 +51,7 @@ class SqlpadTauChart extends React.Component {
   }
 
   renderChart = rerender => {
-    const { config, queryResult, query } = this.props
+    const { queryResult, query } = this.props
     // This is invoked during following:
     //  - Vis tab enter
     //  - Visualize button press (forces rerender)
@@ -88,7 +88,7 @@ class SqlpadTauChart extends React.Component {
           cssPaths: [
             // NOTE: We must ref the file in vendor dir for export images to work
             // (we don't know what the webpack bundle css path will be)
-            config.baseUrl + '/javascripts/vendor/tauCharts/tauCharts.min.css'
+            window.BASE_URL + '/javascripts/vendor/tauCharts/tauCharts.min.css'
           ],
           fileName: query.name || 'Unnamed query'
         })
@@ -301,7 +301,7 @@ class SqlpadTauChart extends React.Component {
         console.error('unknown chart type')
     }
 
-    // Add data to chart config
+    // Add data to chart chartConfig
     chartConfig.data = dataRows
 
     if (!this.chart) {
@@ -347,7 +347,6 @@ class SqlpadTauChart extends React.Component {
 }
 
 SqlpadTauChart.propTypes = {
-  config: PropTypes.object.isRequired,
   isRunning: PropTypes.bool,
   query: PropTypes.object,
   queryError: PropTypes.string,
