@@ -64,8 +64,15 @@ if (!disableUserpassAuth) {
 /*  These auth routes should always exist regardless of strategy
 ============================================================================= */
 router.get('/api/signout', function(req, res) {
-  req.session = null
-  res.json({})
+  if (!req.session) {
+    return res.json({})
+  }
+  req.session.destroy(function(err) {
+    if (err) {
+      console.error(err)
+    }
+    res.json({})
+  })
 })
 
 module.exports = router
