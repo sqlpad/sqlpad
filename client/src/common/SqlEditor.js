@@ -1,11 +1,13 @@
+// NOTE this import 'brace' must occur before the importing of brace extensions
+import 'brace'
+import 'brace/ext/searchbox'
+import 'brace/mode/sql'
+import 'brace/theme/sqlserver'
 import PropTypes from 'prop-types'
 import React from 'react'
 import AceEditor from 'react-ace'
 import { Subscribe } from 'unstated'
 import AppContainer from '../containers/AppContainer'
-import 'brace/ext/searchbox'
-import 'brace/mode/sql'
-import 'brace/theme/sqlserver'
 
 const noop = () => {}
 
@@ -91,15 +93,17 @@ SqlEditor.defaultProps = {
   value: ''
 }
 
-const SqlEditorContainer = props => {
-  return (
-    <Subscribe to={[AppContainer]}>
-      {appContainer => {
-        const { config } = appContainer.state
-        return <SqlEditor {...props} config={config} />
-      }}
-    </Subscribe>
-  )
+class SqlEditorContainer extends React.Component {
+  render() {
+    return (
+      <Subscribe to={[AppContainer]}>
+        {appContainer => {
+          const { config } = appContainer.state
+          return <SqlEditor {...this.props} config={config} />
+        }}
+      </Subscribe>
+    )
+  }
 }
 
 export default SqlEditorContainer
