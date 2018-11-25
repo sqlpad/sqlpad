@@ -1,21 +1,21 @@
-import React from 'react'
-import PropTypes from 'prop-types'
 import message from 'antd/lib/message'
-import SplitPane from 'react-split-pane'
-import { Prompt } from 'react-router-dom'
-import fetchJson from '../utilities/fetch-json.js'
-import uuid from 'uuid'
 import keymaster from 'keymaster'
+import PropTypes from 'prop-types'
+import React from 'react'
+import { Prompt } from 'react-router-dom'
+import SplitPane from 'react-split-pane'
+import sqlFormatter from 'sql-formatter'
+import uuid from 'uuid'
 import QueryResultDataTable from '../common/QueryResultDataTable.js'
+import SqlEditor from '../common/SqlEditor'
 import SqlpadTauChart from '../common/SqlpadTauChart.js'
-import QueryResultHeader from './QueryResultHeader.js'
-import QueryDetailsModal from './QueryDetailsModal'
+import fetchJson from '../utilities/fetch-json.js'
 import EditorNavBar from './EditorNavBar'
 import FlexTabPane from './FlexTabPane'
+import QueryDetailsModal from './QueryDetailsModal'
+import QueryResultHeader from './QueryResultHeader.js'
 import SchemaSidebar from './SchemaSidebar.js'
 import VisSidebar from './VisSidebar'
-import SqlEditor from '../common/SqlEditor'
-import sqlFormatter from 'sql-formatter'
 
 const NEW_QUERY = {
   _id: '',
@@ -62,12 +62,27 @@ class QueryEditor extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { query } = this.state
-    const { connections } = this.props
+    const { connections, queryId } = this.props
+
+    if (queryId !== prevProps.queryId) {
+      if (queryId === 'new') {
+        return this.setState({
+          activeTabKey: 'sql',
+          queryResult: undefined,
+          query: Object.assign({}, NEW_QUERY),
+          unsavedChanges: false
+        })
+      }
+      return this.loadQueryFromServer(queryId)
+    }
 
     // if only 1 connection auto-select it
     if (connections.length === 1 && query && !query.connectionId) {
-      query.connectionId = connections[0]._id
-      this.setState({ connections, query })
+      return this.setState({
+        query: Object.assign({}, query, {
+          connectionId: connections[0]._id
+        })
+      })
     }
   }
 
@@ -230,18 +245,6 @@ class QueryEditor extends React.Component {
     const { isRunning, queryError, activeTabKey } = this.state
     const pending = isRunning || queryError
     return !pending && activeTabKey === 'vis' && this.hasRows()
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.queryId === 'new') {
-      return this.setState({
-        activeTabKey: 'sql',
-        queryResult: undefined,
-        query: Object.assign({}, NEW_QUERY),
-        unsavedChanges: false
-      })
-    }
-    this.loadQueryFromServer(nextProps.queryId)
   }
 
   componentDidMount() {
