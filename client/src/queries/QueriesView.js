@@ -14,6 +14,7 @@ import moment from 'moment'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Subscribe } from 'unstated'
+import AppNav from '../AppNav'
 import Header from '../common/Header'
 import SqlEditor from '../common/SqlEditor'
 import AppContainer from '../containers/AppContainer'
@@ -319,20 +320,22 @@ class QueriesView extends React.Component {
 
   render() {
     return (
-      <Layout
-        style={{ minHeight: '100vh' }}
-        className="flex w-100 flex-column h-100"
-      >
-        <Header title="Queries">
-          <Link to={'/queries/new'}>
-            <Button type="primary">New Query</Button>
-          </Link>
-        </Header>
-        <Content className="ma4">
-          {this.renderFilters()}
-          <div className="bg-white">{this.renderTable()}</div>
-        </Content>
-      </Layout>
+      <AppNav>
+        <Layout
+          style={{ minHeight: '100vh' }}
+          className="flex w-100 flex-column h-100"
+        >
+          <Header title="Queries">
+            <Link to={'/queries/new'}>
+              <Button type="primary">New Query</Button>
+            </Link>
+          </Header>
+          <Content className="ma4">
+            {this.renderFilters()}
+            <div className="bg-white">{this.renderTable()}</div>
+          </Content>
+        </Layout>
+      </AppNav>
     )
   }
 }

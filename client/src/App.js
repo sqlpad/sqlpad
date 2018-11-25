@@ -33,7 +33,7 @@ message.config({
 
 class App extends React.Component {
   renderRoutes(appState) {
-    const { config, currentUser } = appState
+    const { config } = appState
 
     return (
       <Router basename={config.baseUrl}>
@@ -43,37 +43,46 @@ class App extends React.Component {
             <Route
               exact
               path="/queries"
-              render={props => <Authenticated component={QueriesView} />}
+              render={props => (
+                <Authenticated>
+                  <QueriesView />
+                </Authenticated>
+              )}
             />
             <Route
               exact
               path="/queries/:queryId"
               render={({ match }) => (
-                <Authenticated
-                  queryId={match.params.queryId}
-                  component={QueryEditorContainer}
-                />
+                <Authenticated>
+                  <QueryEditorContainer queryId={match.params.queryId} />
+                </Authenticated>
               )}
             />
             <Route
               exact
               path="/users"
               render={() => (
-                <Authenticated admin={true} component={UsersView} />
+                <Authenticated admin={true}>
+                  <UsersView />
+                </Authenticated>
               )}
             />
             <Route
               exact
               path="/connections"
               render={() => (
-                <Authenticated admin={true} component={ConnectionsView} />
+                <Authenticated admin={true}>
+                  <ConnectionsView />
+                </Authenticated>
               )}
             />
             <Route
               exact
               path="/config-values"
               render={() => (
-                <Authenticated admin={true} component={ConfigurationView} />
+                <Authenticated admin={true}>
+                  <ConfigurationView />
+                </Authenticated>
               )}
             />
             <Route
@@ -109,11 +118,7 @@ class App extends React.Component {
               path="/password-reset"
               render={() => <PasswordResetRequested />}
             />
-            <Route
-              render={() => (
-                <NotFound config={config} currentUser={currentUser} />
-              )}
-            />
+            <Route render={() => <NotFound />} />
           </Switch>
         </div>
       </Router>

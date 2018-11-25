@@ -1,4 +1,3 @@
-import Component from '@reactions/component'
 import Icon from 'antd/lib/icon'
 import Layout from 'antd/lib/layout'
 import Menu from 'antd/lib/menu'
@@ -42,7 +41,6 @@ class App extends React.Component {
 
           return (
             <Layout style={{ minHeight: '100vh' }}>
-              <Component didMount={appContainer.refreshAppContext} />
               <Sider
                 className="overflow-y-scroll"
                 collapsible

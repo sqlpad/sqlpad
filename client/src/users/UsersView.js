@@ -10,6 +10,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Subscribe } from 'unstated'
 import uuid from 'uuid'
+import AppNav from '../AppNav'
 import Header from '../common/Header'
 import AppContainer from '../containers/AppContainer'
 import fetchJson from '../utilities/fetch-json.js'
@@ -220,23 +221,25 @@ class UsersView extends React.Component {
 
   render() {
     return (
-      <Layout
-        style={{ minHeight: '100vh' }}
-        className="flex w-100 flex-column h-100"
-      >
-        <Header title="Users">
-          <Button
-            type="primary"
-            onClick={() => this.setState({ showAddUser: true })}
-          >
-            New user
-          </Button>
-        </Header>
-        <Content className="ma4">
-          <div className="bg-white">{this.renderTable()}</div>
-          {this.renderModal()}
-        </Content>
-      </Layout>
+      <AppNav>
+        <Layout
+          style={{ minHeight: '100vh' }}
+          className="flex w-100 flex-column h-100"
+        >
+          <Header title="Users">
+            <Button
+              type="primary"
+              onClick={() => this.setState({ showAddUser: true })}
+            >
+              New user
+            </Button>
+          </Header>
+          <Content className="ma4">
+            <div className="bg-white">{this.renderTable()}</div>
+            {this.renderModal()}
+          </Content>
+        </Layout>
+      </AppNav>
     )
   }
 }

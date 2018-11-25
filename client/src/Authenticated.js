@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import { Subscribe } from 'unstated'
-import AppNav from './AppNav.js'
 import AppContainer from './containers/AppContainer'
 
 class Authenticated extends React.Component {
@@ -13,7 +12,7 @@ class Authenticated extends React.Component {
 
   render() {
     const { refreshedAppContext } = this.state
-    const { admin, component, ...rest } = this.props
+    const { admin, children } = this.props
 
     return (
       <Subscribe to={[AppContainer]}>
@@ -39,13 +38,7 @@ class Authenticated extends React.Component {
             return <Redirect to={{ pathname: '/queries' }} />
           }
 
-          const PropComponent = component
-
-          return (
-            <AppNav>
-              <PropComponent {...rest} />
-            </AppNav>
-          )
+          return children
         }}
       </Subscribe>
     )
@@ -53,8 +46,7 @@ class Authenticated extends React.Component {
 }
 
 Authenticated.propTypes = {
-  admin: PropTypes.bool,
-  component: PropTypes.func.isRequired
+  admin: PropTypes.bool
 }
 
 export default Authenticated
