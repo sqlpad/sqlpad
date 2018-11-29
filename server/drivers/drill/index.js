@@ -1,3 +1,19 @@
+/*
+Copyright 2017 Charles S. Givre
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 const drill = require('./drill.js')
 const { formatSchemaQueryResults } = require('../utils')
 
@@ -34,12 +50,15 @@ function getDrillSchemaSql(catalog, schema) {
 function runQuery(query, connection) {
   let incomplete = false
   const rows = []
-  const port = connection.port || 8074
+  const port = connection.port || 8047
+
   const drillConfig = {
-    url: `http://${connection.host}:${port}`,
+    host: connection.host,
+    port: connection.port,
     user: connection.username,
-    catalog: connection.drillCatalog
-    //schema: connection.drillSchema
+    password: connection.password,
+    defaultSchema: connection.drillDefaultSchema,
+    ssl: connection.ssl || false
   }
   const client = new drill.Client(drillConfig)
 
@@ -47,6 +66,10 @@ function runQuery(query, connection) {
   return client.query(drillConfig, query).then(result => {
     if (!result) {
       throw new Error('No result returned')
+    } else if (result.errorMessage && result.errorMessage.length > 0) {
+      console.log('Error with query: ' + query)
+      console.log(result.errorMessage)
+      throw new Error(result.errorMessage.split('\n')[0])
     }
     if (result.length > connection.maxRows) {
       incomplete = true
@@ -69,7 +92,6 @@ function runQuery(query, connection) {
  */
 function testConnection(connection) {
   const query = "SELECT 'success'  FROM (VALUES(1))"
-  //const query = "SELECT * FROM cp.`employee.json` LIMIT 2"
   return runQuery(query, connection)
 }
 
@@ -114,7 +136,7 @@ const fields = [
     label: 'Default Schema'
   },
   {
-    key: 'drillUseSSL',
+    key: 'ssl',
     formType: 'CHECKBOX',
     label: 'Use SSL to connect to Drill'
   }

@@ -14,30 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 const fetch = require('node-fetch')
-
-var Util = require('util')
 var request = require('request')
 var url = require('url')
 
-exports.version = 'unknown'
+exports.version = '1.0'
 
 var Client = (exports.Client = function(args) {
   if (!args) args = {}
 
   this.host = args.host || 'localhost'
-  this.port = args.port || 8074
+  this.port = args.port || 8047
   this.user = args.user || process.env.USER
   this.ssl = args.ssl || false
-
+  this.protocol = 'http'
   if (this.ssl) {
     this.protocol = 'https'
-  } else {
-    this.protocol = 'http'
   }
 })
 
 Client.prototype.execute = function(queryString, callback) {
-  let href = url.format({
+  const href = url.format({
     protocol: this.protocol,
     hostname: 'localhost',
     pathname: '/query.json',
@@ -61,32 +57,22 @@ Client.prototype.execute = function(queryString, callback) {
 }
 
 Client.prototype.getSchemata = function() {
-  //query('SHOW DATABASES')
+  return this.query('SHOW DATABASES')
 }
 
 Client.prototype.query = function(config, query) {
-  const href = url.format({
-    protocol: this.protocol,
-    hostname: 'localhost',
-    pathname: '/query.json',
-    port: 8047
-  })
   const headers = {
     'Content-Type': 'application/json; charset=UTF-8',
     Accept: 'application/json'
   }
-  const queryOptions = {
-    uri: href,
-    method: 'POST',
-    headers: headers,
-    json: { queryType: 'SQL', query: query }
-  }
+  const restURL =
+    this.protocol + '://' + this.host + ':' + this.port + '/query.json'
   const queryInfo = {
     queryType: 'SQL',
     query: query
   }
   const body = JSON.stringify(queryInfo)
-  return fetch('http://localhost:8047/query.json', {
+  return fetch(restURL, {
     method: 'POST',
     headers: headers,
     body: body
@@ -95,19 +81,13 @@ Client.prototype.query = function(config, query) {
       return data.json()
     })
     .then(function(jsonData) {
-      //do stuff with the data
-      console.log(jsonData)
       return jsonData
     })
     .catch(function(e) {
+      //TODO Send error message to JSON
       console.log('There was a problem with the request' + e)
+      return e
     })
-  /*return request(queryOptions, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-      callback(null, body)
-    } //TODO Add error handling
-    return body
-  })*/
 }
 
 module.exports = { Client }

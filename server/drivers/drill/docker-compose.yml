@@ -3,4 +3,4 @@ services:
   drill:
     image: harisekhon/apache-drill:latest
     ports:
-    - "8074:8074"
+    - "8047:8047"
