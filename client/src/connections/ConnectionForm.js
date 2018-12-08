@@ -17,6 +17,30 @@ const TEXT = 'TEXT'
 const PASSWORD = 'PASSWORD'
 const CHECKBOX = 'CHECKBOX'
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 }
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 }
+  }
+}
+
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0
+    },
+    sm: {
+      span: 16,
+      offset: 8
+    }
+  }
+}
+
 class ConnectionForm extends React.Component {
   state = {
     drivers: []
@@ -52,8 +76,8 @@ class ConnectionForm extends React.Component {
         if (field.formType === TEXT) {
           const value = connectionEdits[field.key] || ''
           return (
-            <FormItem key={field.key}>
-              <label className="near-black">{field.label}</label>
+            <FormItem {...formItemLayout} key={field.key} label={field.label}>
+              {/* <label className="near-black">{field.label}</label> */}
               <Input
                 name={field.key}
                 value={value}
@@ -68,8 +92,8 @@ class ConnectionForm extends React.Component {
           // autoComplete='new-password' used to prevent browsers from autofilling username and password
           // Because we dont return a password, Chrome goes ahead and autofills
           return (
-            <FormItem key={field.key}>
-              <label className="near-black">{field.label}</label>
+            <FormItem {...formItemLayout} key={field.key} label={field.label}>
+              {/* <label className="near-black">{field.label}</label> */}
               <Input
                 type="password"
                 autoComplete="new-password"
@@ -84,7 +108,7 @@ class ConnectionForm extends React.Component {
         } else if (field.formType === CHECKBOX) {
           const checked = connectionEdits[field.key] || false
           return (
-            <FormItem key={field.key}>
+            <FormItem {...tailFormItemLayout} key={field.key}>
               <Checkbox
                 checked={checked}
                 name={field.key}
@@ -144,8 +168,11 @@ class ConnectionForm extends React.Component {
           return (
             <div>
               <Form layout="vertical" autoComplete="off">
-                <FormItem validateStatus={name ? null : 'error'}>
-                  <label className="near-black">Connection name</label>
+                <FormItem
+                  {...formItemLayout}
+                  validateStatus={name ? null : 'error'}
+                  label={'Connection name'}
+                >
                   <Input
                     name="name"
                     value={name}
@@ -154,8 +181,11 @@ class ConnectionForm extends React.Component {
                     }
                   />
                 </FormItem>
-                <FormItem validateStatus={driver ? null : 'error'}>
-                  <label className="near-black">Driver</label>
+                <FormItem
+                  {...formItemLayout}
+                  label="Driver"
+                  validateStatus={driver ? null : 'error'}
+                >
                   <Select
                     name="driver"
                     value={driver}
@@ -165,32 +195,37 @@ class ConnectionForm extends React.Component {
                   </Select>
                 </FormItem>
                 {this.renderDriverFields(connectionEdits, setConnectionValue)}
+
+                <FormItem {...tailFormItemLayout}>
+                  <Button
+                    style={{ width: 100 }}
+                    onClick={async () => {
+                      const { connection, error } = await saveConnection()
+                      if (!error) {
+                        connectionsContainer.addUpdateConnection(connection)
+                      }
+                    }}
+                    disabled={saving}
+                  >
+                    {saving ? 'Saving...' : 'Save'}
+                  </Button>{' '}
+                  <Button
+                    style={{ width: 100 }}
+                    onClick={() => testConnection(connectionEdits)}
+                    disabled={testing}
+                  >
+                    {testing ? 'Testing...' : 'Test'}
+                  </Button>
+                  {testSuccess && (
+                    <Tag className="ml2 b--dark-green bg-green white">
+                      Success
+                    </Tag>
+                  )}
+                  {testFailed && (
+                    <Tag className="ml2 b--dark-red bg-red white">Failed</Tag>
+                  )}
+                </FormItem>
               </Form>
-              <Button
-                style={{ width: 100 }}
-                onClick={async () => {
-                  const { connection, error } = await saveConnection()
-                  if (!error) {
-                    connectionsContainer.addUpdateConnection(connection)
-                  }
-                }}
-                disabled={saving}
-              >
-                {saving ? 'Saving...' : 'Save'}
-              </Button>{' '}
-              <Button
-                style={{ width: 100 }}
-                onClick={() => testConnection(connectionEdits)}
-                disabled={testing}
-              >
-                {testing ? 'Testing...' : 'Test'}
-              </Button>
-              {testSuccess && (
-                <Tag className="ml2 b--dark-green bg-green white">Success</Tag>
-              )}
-              {testFailed && (
-                <Tag className="ml2 b--dark-red bg-red white">Failed</Tag>
-              )}
             </div>
           )
         }}
