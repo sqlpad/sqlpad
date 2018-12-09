@@ -16,8 +16,7 @@ function ConnectionEditModal({ children }) {
           onClose={connectionEditContainer.cancelEdit}
           style={{
             height: 'calc(100% - 55px)',
-            overflow: 'auto',
-            paddingBottom: 53
+            overflow: 'auto'
           }}
         >
           <ConnectionForm />

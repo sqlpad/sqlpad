@@ -1,9 +1,9 @@
 import Button from 'antd/lib/button'
 import Checkbox from 'antd/lib/checkbox'
 import Form from 'antd/lib/form'
+import Icon from 'antd/lib/icon'
 import Input from 'antd/lib/input'
 import Select from 'antd/lib/select'
-import Tag from 'antd/lib/tag'
 import React from 'react'
 import { Subscribe } from 'unstated'
 import ConnectionEditContainer from '../containers/ConnectionEditContainer'
@@ -166,39 +166,56 @@ class ConnectionForm extends React.Component {
           const { name = '', driver = '' } = connectionEdits
 
           return (
-            <div>
-              <Form layout="vertical" autoComplete="off">
-                <FormItem
-                  {...formItemLayout}
-                  validateStatus={name ? null : 'error'}
-                  label={'Connection name'}
-                >
-                  <Input
-                    name="name"
-                    value={name}
-                    onChange={e =>
-                      setConnectionValue(e.target.name, e.target.value)
-                    }
-                  />
-                </FormItem>
-                <FormItem
-                  {...formItemLayout}
-                  label="Driver"
-                  validateStatus={driver ? null : 'error'}
-                >
-                  <Select
-                    name="driver"
-                    value={driver}
-                    onChange={value => setConnectionValue('driver', value)}
+            <div style={{ height: '100%' }}>
+              <Form
+                layout="vertical"
+                autoComplete="off"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%'
+                }}
+              >
+                <div style={{ overflowY: 'auto', flexGrow: 1, height: '100%' }}>
+                  <FormItem
+                    {...formItemLayout}
+                    validateStatus={name ? null : 'error'}
+                    label={'Connection name'}
                   >
-                    {driverSelectOptions}
-                  </Select>
-                </FormItem>
-                {this.renderDriverFields(connectionEdits, setConnectionValue)}
+                    <Input
+                      name="name"
+                      value={name}
+                      onChange={e =>
+                        setConnectionValue(e.target.name, e.target.value)
+                      }
+                    />
+                  </FormItem>
+                  <FormItem
+                    {...formItemLayout}
+                    label="Driver"
+                    validateStatus={driver ? null : 'error'}
+                  >
+                    <Select
+                      name="driver"
+                      value={driver}
+                      onChange={value => setConnectionValue('driver', value)}
+                    >
+                      {driverSelectOptions}
+                    </Select>
+                  </FormItem>
 
-                <FormItem {...tailFormItemLayout}>
+                  {this.renderDriverFields(connectionEdits, setConnectionValue)}
+                </div>
+                <div
+                  style={{
+                    borderTop: '1px solid #e8e8e8',
+                    paddingTop: '22px',
+                    textAlign: 'right'
+                  }}
+                >
                   <Button
-                    style={{ width: 100 }}
+                    style={{ width: 120 }}
+                    type="primary"
                     onClick={async () => {
                       const { connection, error } = await saveConnection()
                       if (!error) {
@@ -210,21 +227,29 @@ class ConnectionForm extends React.Component {
                     {saving ? 'Saving...' : 'Save'}
                   </Button>{' '}
                   <Button
-                    style={{ width: 100 }}
+                    style={{ width: 120 }}
                     onClick={() => testConnection(connectionEdits)}
                     disabled={testing}
                   >
                     {testing ? 'Testing...' : 'Test'}
+                    {!testing &&
+                      testSuccess && (
+                        <Icon
+                          type="check-circle"
+                          theme="twoTone"
+                          twoToneColor="#52c41a"
+                        />
+                      )}
+                    {!testing &&
+                      testFailed && (
+                        <Icon
+                          type="close-circle"
+                          theme="twoTone"
+                          twoToneColor="#eb2f96"
+                        />
+                      )}
                   </Button>
-                  {testSuccess && (
-                    <Tag className="ml2 b--dark-green bg-green white">
-                      Success
-                    </Tag>
-                  )}
-                  {testFailed && (
-                    <Tag className="ml2 b--dark-red bg-red white">Failed</Tag>
-                  )}
-                </FormItem>
+                </div>
               </Form>
             </div>
           )
