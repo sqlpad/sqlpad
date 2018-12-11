@@ -4,8 +4,7 @@ import Icon from 'antd/lib/icon'
 import Menu from 'antd/lib/menu'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Subscribe } from 'unstated'
-import AppContainer from '../containers/AppContainer'
+import AppContext from '../containers/AppContext'
 
 class ExportButton extends React.Component {
   render() {
@@ -16,9 +15,9 @@ class ExportButton extends React.Component {
     }
 
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          const { config } = appContainer.state
+      <AppContext.Consumer>
+        {appContext => {
+          const { config } = appContext
           if (!config) {
             return
           }
@@ -58,7 +57,7 @@ class ExportButton extends React.Component {
             </Dropdown>
           )
         }}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 }

@@ -6,8 +6,7 @@ import 'brace/theme/sqlserver'
 import PropTypes from 'prop-types'
 import React from 'react'
 import AceEditor from 'react-ace'
-import { Subscribe } from 'unstated'
-import AppContainer from '../containers/AppContainer'
+import AppContext from '../containers/AppContext'
 
 const noop = () => {}
 
@@ -96,12 +95,11 @@ SqlEditor.defaultProps = {
 class SqlEditorContainer extends React.Component {
   render() {
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          const { config } = appContainer.state
-          return <SqlEditor {...this.props} config={config} />
+      <AppContext.Consumer>
+        {appContext => {
+          return <SqlEditor {...this.props} config={appContext.config} />
         }}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 }

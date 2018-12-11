@@ -4,9 +4,8 @@ import Menu from 'antd/lib/menu'
 import Modal from 'antd/lib/modal'
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
-import { Subscribe } from 'unstated'
 import AboutContent from './AboutContent'
-import AppContainer from './containers/AppContainer'
+import AppContext from './containers/AppContext'
 import fetchJson from './utilities/fetch-json.js'
 
 const { Content, Sider } = Layout
@@ -35,9 +34,9 @@ class App extends React.Component {
     }
 
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          const { currentUser, version } = appContainer.state
+      <AppContext.Consumer>
+        {appContext => {
+          const { currentUser, version } = appContext
 
           return (
             <Layout style={{ minHeight: '100vh' }}>
@@ -170,7 +169,7 @@ class App extends React.Component {
             </Layout>
           )
         }}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 }

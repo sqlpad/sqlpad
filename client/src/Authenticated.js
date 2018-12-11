@@ -2,8 +2,7 @@ import Component from '@reactions/component'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-import { Subscribe } from 'unstated'
-import AppContainer from './containers/AppContainer'
+import AppContext from './containers/AppContext'
 
 class Authenticated extends React.Component {
   state = {
@@ -15,15 +14,15 @@ class Authenticated extends React.Component {
     const { admin, children } = this.props
 
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          const { currentUser } = appContainer.state
+      <AppContext.Consumer>
+        {appContext => {
+          const { currentUser } = appContext
 
           if (!refreshedAppContext) {
             return (
               <Component
                 didMount={async () => {
-                  await appContainer.refreshAppContext()
+                  await appContext.refreshAppContext()
                   this.setState({ refreshedAppContext: true })
                 }}
               />
@@ -40,7 +39,7 @@ class Authenticated extends React.Component {
 
           return children
         }}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 }

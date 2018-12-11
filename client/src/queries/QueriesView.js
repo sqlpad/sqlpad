@@ -13,11 +13,10 @@ import uniq from 'lodash.uniq'
 import moment from 'moment'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Subscribe } from 'unstated'
 import AppNav from '../AppNav'
 import Header from '../common/Header'
 import SqlEditor from '../common/SqlEditor'
-import AppContainer from '../containers/AppContainer'
+import AppContext from '../containers/AppContext'
 import fetchJson from '../utilities/fetch-json.js'
 
 const { Content } = Layout
@@ -129,9 +128,9 @@ class QueriesView extends React.Component {
 
   actionsRender = (text, record) => {
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          const { config } = appContainer.state
+      <AppContext.Consumer>
+        {appContext => {
+          const { config } = appContext
           const tableUrl = `${config.baseUrl}/query-table/${record._id}`
           const chartUrl = `${config.baseUrl}/query-chart/${record._id}`
           return (
@@ -156,7 +155,7 @@ class QueriesView extends React.Component {
             </span>
           )
         }}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 

@@ -4,8 +4,7 @@ import Input from 'antd/lib/input'
 import message from 'antd/lib/message'
 import React from 'react'
 import { Link, Redirect } from 'react-router-dom'
-import { Subscribe } from 'unstated'
-import AppContainer from './containers/AppContainer'
+import AppContext from './containers/AppContext'
 import fetchJson from './utilities/fetch-json.js'
 
 class SignIn extends React.Component {
@@ -42,9 +41,9 @@ class SignIn extends React.Component {
     }
 
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          const { config, smtpConfigured, passport } = appContainer.state
+      <AppContext.Consumer>
+        {appContext => {
+          const { config, smtpConfigured, passport } = appContext
           if (!config) {
             return
           }
@@ -107,7 +106,7 @@ class SignIn extends React.Component {
             </div>
           )
         }}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 }

@@ -1,4 +1,3 @@
-import Component from '@reactions/component'
 import message from 'antd/lib/message'
 import React from 'react'
 import {
@@ -7,11 +6,10 @@ import {
   Route,
   Switch
 } from 'react-router-dom'
-import { Subscribe } from 'unstated'
 import Authenticated from './Authenticated'
 import ConfigurationView from './configuration/ConfigurationView'
 import ConnectionsView from './connections/ConnectionsView.js'
-import AppContainer from './containers/AppContainer'
+import AppContext from './containers/AppContext'
 import ForgotPassword from './ForgotPassword.js'
 import NotFound from './NotFound.js'
 import PasswordReset from './PasswordReset.js'
@@ -32,9 +30,7 @@ message.config({
 })
 
 class App extends React.Component {
-  renderRoutes(appState) {
-    const { config } = appState
-
+  renderRoutes(config) {
     return (
       <Router basename={config.baseUrl}>
         <div className="flex w-100">
@@ -127,18 +123,14 @@ class App extends React.Component {
 
   render() {
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          if (appContainer.state.config) {
-            return this.renderRoutes(appContainer.state)
+      <AppContext.Consumer>
+        {appContext => {
+          if (appContext.config) {
+            return this.renderRoutes(appContext.config)
           }
-          return (
-            <div className="flex w-100">
-              <Component didMount={appContainer.refreshAppContext} />
-            </div>
-          )
+          return null
         }}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 }
