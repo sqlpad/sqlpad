@@ -4,8 +4,7 @@ import Input from 'antd/lib/input'
 import message from 'antd/lib/message'
 import Select from 'antd/lib/select'
 import React from 'react'
-import { Subscribe } from 'unstated'
-import AppContainer from '../containers/AppContainer'
+import AppContext from '../containers/AppContext'
 import fetchJson from '../utilities/fetch-json.js'
 
 const FormItem = Form.Item
@@ -55,16 +54,15 @@ class InviteUserForm extends React.Component {
     const { email, role, isInviting } = this.state
 
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => (
+      <AppContext.Consumer>
+        {appContext => (
           <div>
             <p>
               Users may only sign up if they have first been whitelisted. Once
               whitelisted, invite them to continue the sign-up process on the{' '}
               <a
                 href={
-                  appContainer.state.config &&
-                  appContainer.state.config.baseUrl + '/signup'
+                  appContext.config && appContext.config.baseUrl + '/signup'
                 }
               >
                 signup page
@@ -107,7 +105,7 @@ class InviteUserForm extends React.Component {
             </Form>
           </div>
         )}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 }

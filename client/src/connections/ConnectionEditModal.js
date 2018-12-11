@@ -1,28 +1,31 @@
 import Drawer from 'antd/lib/drawer'
 import React from 'react'
-import { Subscribe } from 'unstated'
-import ConnectionEditContainer from '../containers/ConnectionEditContainer'
 import ConnectionForm from './ConnectionForm'
 
-function ConnectionEditModal({ children }) {
+function ConnectionEditModal({
+  connectionId,
+  visible,
+  onClose,
+  onConnectionSaved
+}) {
+  const title = connectionId ? 'Edit connection' : 'New connection'
   return (
-    <Subscribe to={[ConnectionEditContainer]}>
-      {connectionEditContainer => (
-        <Drawer
-          title={connectionEditContainer.state.title}
-          visible={!!connectionEditContainer.state.visible}
-          width={600}
-          destroyOnClose={true}
-          onClose={connectionEditContainer.cancelEdit}
-          style={{
-            height: 'calc(100% - 55px)',
-            overflow: 'auto'
-          }}
-        >
-          <ConnectionForm />
-        </Drawer>
-      )}
-    </Subscribe>
+    <Drawer
+      title={title}
+      visible={visible}
+      width={600}
+      destroyOnClose={true}
+      onClose={onClose}
+      style={{
+        height: 'calc(100% - 55px)',
+        overflow: 'auto'
+      }}
+    >
+      <ConnectionForm
+        connectionId={connectionId}
+        onConnectionSaved={onConnectionSaved}
+      />
+    </Drawer>
   )
 }
 

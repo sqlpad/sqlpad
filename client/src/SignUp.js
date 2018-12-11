@@ -3,8 +3,7 @@ import Input from 'antd/lib/input'
 import message from 'antd/lib/message'
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-import { Subscribe } from 'unstated'
-import AppContainer from './containers/AppContainer'
+import AppContext from './containers/AppContext'
 import fetchJson from './utilities/fetch-json.js'
 
 class SignUp extends React.Component {
@@ -47,9 +46,9 @@ class SignUp extends React.Component {
     }
 
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          const { adminRegistrationOpen } = appContainer.state
+      <AppContext.Consumer>
+        {appContext => {
+          const { adminRegistrationOpen } = appContext
 
           return (
             <div className="pt5 measure center" style={{ width: '300px' }}>
@@ -97,7 +96,7 @@ class SignUp extends React.Component {
             </div>
           )
         }}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 }

@@ -8,11 +8,10 @@ import Table from 'antd/lib/table'
 import moment from 'moment'
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Subscribe } from 'unstated'
 import uuid from 'uuid'
 import AppNav from '../AppNav'
 import Header from '../common/Header'
-import AppContainer from '../containers/AppContainer'
+import AppContext from '../containers/AppContext'
 import fetchJson from '../utilities/fetch-json.js'
 import InviteUserForm from './InviteUserForm'
 
@@ -115,9 +114,9 @@ class UsersView extends React.Component {
 
   roleRender = (text, record) => {
     return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          const { currentUser } = appContainer.state
+      <AppContext.Consumer>
+        {appContext => {
+          const { currentUser } = appContext
 
           return (
             <Select
@@ -135,7 +134,7 @@ class UsersView extends React.Component {
             </Select>
           )
         }}
-      </Subscribe>
+      </AppContext.Consumer>
     )
   }
 

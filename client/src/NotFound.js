@@ -1,15 +1,14 @@
 import React from 'react'
-import { Subscribe } from 'unstated'
 import AppNav from './AppNav.js'
 import FullscreenMessage from './common/FullscreenMessage.js'
-import AppContainer from './containers/AppContainer'
+import AppContext from './containers/AppContext'
 
 export default () => {
   return (
-    <Subscribe to={[AppContainer]}>
-      {appContainer => {
+    <AppContext.Consumer>
+      {appContext => {
         document.title = 'SQLPad - Not Found'
-        const { currentUser } = appContainer.state
+        const { currentUser } = appContext
 
         if (currentUser) {
           return (
@@ -20,6 +19,6 @@ export default () => {
         }
         return <FullscreenMessage>Not Found</FullscreenMessage>
       }}
-    </Subscribe>
+    </AppContext.Consumer>
   )
 }

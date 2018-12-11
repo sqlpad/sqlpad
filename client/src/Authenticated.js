@@ -1,47 +1,30 @@
-import Component from '@reactions/component'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-import { Subscribe } from 'unstated'
-import AppContainer from './containers/AppContainer'
+import AppContext from './containers/AppContext'
 
 class Authenticated extends React.Component {
-  state = {
-    refreshedAppContext: false
+  static contextType = AppContext
+
+  componentDidMount() {
+    const appContext = this.context
+    appContext.refreshAppContext()
   }
 
   render() {
-    const { refreshedAppContext } = this.state
+    const appContext = this.context
     const { admin, children } = this.props
+    const { currentUser } = appContext
 
-    return (
-      <Subscribe to={[AppContainer]}>
-        {appContainer => {
-          const { currentUser } = appContainer.state
+    if (!currentUser) {
+      return <Redirect to={{ pathname: '/signin' }} />
+    }
 
-          if (!refreshedAppContext) {
-            return (
-              <Component
-                didMount={async () => {
-                  await appContainer.refreshAppContext()
-                  this.setState({ refreshedAppContext: true })
-                }}
-              />
-            )
-          }
+    if (admin && currentUser.role !== 'admin') {
+      return <Redirect to={{ pathname: '/queries' }} />
+    }
 
-          if (!currentUser) {
-            return <Redirect to={{ pathname: '/signin' }} />
-          }
-
-          if (admin && currentUser.role !== 'admin') {
-            return <Redirect to={{ pathname: '/queries' }} />
-          }
-
-          return children
-        }}
-      </Subscribe>
-    )
+    return children
   }
 }
 
