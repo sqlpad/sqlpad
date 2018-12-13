@@ -1,46 +1,30 @@
-import Component from '@reactions/component'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Redirect } from 'react-router-dom'
 import AppContext from './containers/AppContext'
 
 class Authenticated extends React.Component {
-  state = {
-    refreshedAppContext: false
+  static contextType = AppContext
+
+  componentDidMount() {
+    const appContext = this.context
+    appContext.refreshAppContext()
   }
 
   render() {
-    const { refreshedAppContext } = this.state
+    const appContext = this.context
     const { admin, children } = this.props
+    const { currentUser } = appContext
 
-    return (
-      <AppContext.Consumer>
-        {appContext => {
-          const { currentUser } = appContext
+    if (!currentUser) {
+      return <Redirect to={{ pathname: '/signin' }} />
+    }
 
-          if (!refreshedAppContext) {
-            return (
-              <Component
-                didMount={async () => {
-                  await appContext.refreshAppContext()
-                  this.setState({ refreshedAppContext: true })
-                }}
-              />
-            )
-          }
+    if (admin && currentUser.role !== 'admin') {
+      return <Redirect to={{ pathname: '/queries' }} />
+    }
 
-          if (!currentUser) {
-            return <Redirect to={{ pathname: '/signin' }} />
-          }
-
-          if (admin && currentUser.role !== 'admin') {
-            return <Redirect to={{ pathname: '/queries' }} />
-          }
-
-          return children
-        }}
-      </AppContext.Consumer>
-    )
+    return children
   }
 }
 
