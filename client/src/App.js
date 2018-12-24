@@ -10,6 +10,7 @@ import Authenticated from './Authenticated'
 import ConfigurationView from './configuration/ConfigurationView'
 import ConnectionsView from './connections/ConnectionsView.js'
 import AppContext from './containers/AppContext'
+import ConnectionsContextProvider from './containers/ConnectionsContextProvider'
 import ForgotPassword from './ForgotPassword.js'
 import NotFound from './NotFound.js'
 import PasswordReset from './PasswordReset.js'
@@ -50,7 +51,9 @@ class App extends React.Component {
               path="/queries/:queryId"
               render={({ match }) => (
                 <Authenticated>
-                  <QueryEditorContainer queryId={match.params.queryId} />
+                  <ConnectionsContextProvider>
+                    <QueryEditorContainer queryId={match.params.queryId} />
+                  </ConnectionsContextProvider>
                 </Authenticated>
               )}
             />
@@ -68,7 +71,9 @@ class App extends React.Component {
               path="/connections"
               render={() => (
                 <Authenticated admin>
-                  <ConnectionsView />
+                  <ConnectionsContextProvider>
+                    <ConnectionsView />
+                  </ConnectionsContextProvider>
                 </Authenticated>
               )}
             />
