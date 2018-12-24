@@ -42,8 +42,6 @@ class ConnectionsView extends React.Component {
     const { connectionId, showEdit } = this.state
     const { connections, deleteConnection } = this.context
 
-    console.log(this.context)
-
     const decoratedConnections = connections.map(connection => {
       connection.key = connection._id
       connection.displayDatabase = connection.database
