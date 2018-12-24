@@ -33,9 +33,12 @@ export class AppContextProvider extends React.Component {
   }
 
   render() {
+    const { config } = this.state
+
+    // Don't render children until config is sorted out
     return (
       <AppContext.Provider value={this.state}>
-        {this.props.children}
+        {config ? this.props.children : null}
       </AppContext.Provider>
     )
   }

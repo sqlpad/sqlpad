@@ -1,8 +1,7 @@
 import React from 'react'
-import { Subscribe } from 'unstated'
 import AppNav from '../AppNav'
 import AppContext from '../containers/AppContext'
-import ConnectionsContainer from '../containers/ConnectionsContainer'
+import ConnectionsContext from '../containers/ConnectionsContext'
 import QueryEditor from './QueryEditor'
 
 function QueryEditorContainer(props) {
@@ -10,16 +9,15 @@ function QueryEditorContainer(props) {
     <AppNav>
       <AppContext.Consumer>
         {appContext => (
-          <Subscribe to={[ConnectionsContainer]}>
-            {connectionsContainer => (
+          <ConnectionsContext.Consumer>
+            {connectionsContext => (
               <QueryEditor
-                connections={connectionsContainer.state.connections}
-                loadConnections={connectionsContainer.loadConnections}
+                connections={connectionsContext.connections}
                 {...appContext}
                 {...props}
               />
             )}
-          </Subscribe>
+          </ConnectionsContext.Consumer>
         )}
       </AppContext.Consumer>
     </AppNav>

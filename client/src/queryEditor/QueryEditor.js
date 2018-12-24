@@ -248,9 +248,8 @@ class QueryEditor extends React.Component {
   }
 
   componentDidMount() {
-    const { queryId, loadConnections } = this.props
+    const { queryId } = this.props
 
-    loadConnections()
     this.loadTagsFromServer()
     if (queryId !== 'new') {
       this.loadQueryFromServer(queryId)
@@ -474,8 +473,7 @@ class QueryEditor extends React.Component {
 }
 
 QueryEditor.propTypes = {
-  connections: PropTypes.array.isRequired,
-  loadConnections: PropTypes.func.isRequired
+  connections: PropTypes.array.isRequired
 }
 
 export default QueryEditor

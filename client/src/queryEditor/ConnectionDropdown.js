@@ -1,14 +1,13 @@
 import Select from 'antd/lib/select'
 import React from 'react'
-import { Subscribe } from 'unstated'
-import ConnectionsContainer from '../containers/ConnectionsContainer'
+import ConnectionsContext from '../containers/ConnectionsContext'
 
 const { Option } = Select
 
 function ConnectionDropdown({ onChange, value }) {
   return (
-    <Subscribe to={[ConnectionsContainer]}>
-      {connectionsContainer => (
+    <ConnectionsContext.Consumer>
+      {context => (
         <Select
           showSearch
           placeholder="Choose a connection"
@@ -25,7 +24,7 @@ function ConnectionDropdown({ onChange, value }) {
           }
         >
           <Option value="">Choose a connection...</Option>
-          {connectionsContainer.state.connections.map(conn => {
+          {context.connections.map(conn => {
             return (
               <Option key={conn._id} value={conn._id}>
                 {conn.name}
@@ -34,7 +33,7 @@ function ConnectionDropdown({ onChange, value }) {
           })}
         </Select>
       )}
-    </Subscribe>
+    </ConnectionsContext.Consumer>
   )
 }
 
