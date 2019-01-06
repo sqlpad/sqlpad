@@ -1,14 +1,16 @@
 FROM node:8-alpine
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV NODE_ENV production
 
 WORKDIR /usr/app
 
 COPY . .
 
-RUN npm install \
+RUN npm install --prefix client \
+    && npm install \
     && npm run build \
-    && npm prune --production \
+    && rm -rf client/node_modules \
     && npm cache clean --force 
     
 WORKDIR /var/lib/sqlpad
