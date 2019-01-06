@@ -25,7 +25,6 @@
     "sql-formatter": "^2.3.2",
     "tachyons": "^4.11.1",
     "taucharts": "^1.2.1",
-    "unstated": "^2.1.1",
     "whatwg-fetch": "^2.0.4"
   },
   "scripts": {
