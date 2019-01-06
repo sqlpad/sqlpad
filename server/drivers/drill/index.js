@@ -34,7 +34,6 @@ function getDrillSchemaSql(catalog, schema) {
 function runQuery(query, connection) {
   let incomplete = false
   const rows = []
-  const port = connection.port || 8047
 
   const drillConfig = {
     host: connection.host,
