@@ -49,10 +49,12 @@ export class ConnectionsContextProvider extends React.Component {
             }
             return c
           })
-          return this.setConnections(connections)
+          return this.state.setConnections(connections)
         }
 
-        return this.setConnections([connection].concat(this.state.connections))
+        return this.state.setConnections(
+          [connection].concat(this.state.connections)
+        )
       },
 
       loadConnections: async force => {
