@@ -2,11 +2,15 @@
 
 [![Build Status](https://travis-ci.org/rickbergfalk/sqlpad.svg?branch=master)](https://travis-ci.org/rickbergfalk/sqlpad)
 
-A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, Presto, and SAP HANA. Other databases potentially supported via [unix odbc support](https://github.com/rickbergfalk/sqlpad/wiki/ODBC). 
+A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, Presto, and SAP HANA. Other databases potentially supported via [unix odbc support](https://github.com/rickbergfalk/sqlpad/wiki/ODBC).
 
-## Heads up! New v3 branch has been started for new/breaking development
+## Version 3 Work in progress
 
-If you are working on a feature, or want to run the cutting edge, look to that branch. Expect breakage until things are finalized. See [v3 branch](https://github.com/rickbergfalk/sqlpad/tree/v3) for more details.
+Version 3 work has been promoted to master branch and is functional but not ready for release.
+
+This work involves a directory restructuring and a front-end react component framework migration from react-bootstrap to antd.
+
+Version 3 will not contain any breaking back-end changes. It should be possible to try v3 out with a given SQLPad database, and revert back to v2 if desired.
 
 ## Installation, Usage, Screenshots
 
@@ -24,20 +28,39 @@ See [docker-validation](https://github.com/rickbergfalk/sqlpad/tree/master/docke
 
 ## Development
 
-* Clone/download repo
-* Install node 6 or later (nvm recommended)
-* Install npm5 via `npm i npm -g`
-* Install npm modules by running `npm install`
-* run `npm start`
+* Clone/download this repo
+* Install node 8 or later ([nvm recommended](https://github.com/creationix/nvm))
+* Ensure you have the latest npm
 
-At this point you should have both backend and front-end development servers running.
+  ```sh
+  npm install npm -g
+  ```
+
+* Install dependencies (front and back)
+
+  ```sh
+  npm ci --prefix client
+  npm ci
+  ```
+
+* Build front-end
+
+  ```sh
+  npm run build
+  ```
+
+* Start dev server
+
+  ```sh
+  npm start
+  ```
+
+At this point you should have both back-end and front-end development servers running.
 
 http://localhost:3000 serves react front-end in dev-mode
 http://localhost:3010 serves front-end compiled for production
 
-Both front-end/back-end should auto-refresh/auto-reload on file change.
-
-To build front-end production files run `npm run build`.
+When viewing the front end in development mode, the page will automatically refresh on front-end file change. The back-end server will always auto-restart on file change.
 
 ### Databases
 
