@@ -1,4 +1,4 @@
-const packageJson = require('../../package.json')
+const packageJson = require('../package.json')
 const latestVersion = require('latest-version')
 const semverDiff = require('semver-diff')
 const db = require('./db.js')
