@@ -31,11 +31,8 @@
     "precommit": "lint-staged",
     "prepublishOnly": "npm run build",
     "lint": "eslint '**/*.js'",
-    "start-client-dev": "npm start --prefix client",
-    "start-server-dev": "node-dev server/server.js --dir ./db --port 3010 --debug --base-url '/sqlpad'",
-    "start": "concurrently \"npm run start-server-dev\" \"npm run start-client-dev\"",
-    "test-client": "react-scripts test --env=jsdom",
-    "test": "rimraf dbtest && npm run lint && SQLPAD_DB_PATH='./dbtest' mocha test --timeout 10000 --recursive --exit"
+    "start": "node-dev server.js --dir ../db --port 3010 --debug --base-url '/sqlpad'",
+    "test": "rimraf ../dbtest && npm run lint && SQLPAD_DB_PATH='../dbtest' mocha test --timeout 10000 --recursive --exit"
   },
   "prettier": {
     "semi": false,
