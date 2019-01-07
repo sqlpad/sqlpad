@@ -11,17 +11,8 @@
 .idea/
 build/static/css/*.map
 build/static/js/*.map
-client-js/
-coverage/
-db/
-dbtest/
-docker-compose.yml
 docker-entrypoint
 docker-publish.sh
 Dockerfile
-docker/
-docs/
-docs-source/
 node_modules/
-client/node_modules/
 server/test/
