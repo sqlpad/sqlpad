@@ -27,9 +27,8 @@
     "url": "https://github.com/rickbergfalk/sqlpad/issues"
   },
   "scripts": {
-    "build": "npm run build --prefix client",
     "precommit": "lint-staged",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "../scripts/build.sh",
     "lint": "eslint '**/*.js'",
     "start": "node-dev server.js --dir ../db --port 3010 --debug --base-url '/sqlpad'",
     "test": "rimraf ../dbtest && npm run lint && SQLPAD_DB_PATH='../dbtest' mocha test --timeout 10000 --recursive --exit"
