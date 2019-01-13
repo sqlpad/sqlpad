@@ -55,7 +55,7 @@ app.set('env', debug ? 'development' : 'production')
 if (debug) {
   app.use(errorhandler())
 }
-app.use(favicon(path.join(__dirname, '../client/public/favicon.ico')))
+app.use(favicon(path.join(__dirname, '/public/favicon.ico')))
 app.use(bodyParser.json())
 app.use(
   bodyParser.urlencoded({
