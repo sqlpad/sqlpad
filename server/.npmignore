@@ -1,0 +1,13 @@
+.dockerignore
+.eslintrc
+.prettierignore
+.DS_Store
+.env
+.idea/
+public/static/css/*.map
+public/static/js/*.map
+docker-entrypoint
+docker-publish.sh
+Dockerfile
+node_modules/
+test/

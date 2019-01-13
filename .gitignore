@@ -3,6 +3,7 @@
 .idea/*
 .vscode/settings.json
 client/build/
+server/public
 coverage/
 db/
 dbtest/

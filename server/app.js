@@ -55,7 +55,7 @@ app.set('env', debug ? 'development' : 'production')
 if (debug) {
   app.use(errorhandler())
 }
-app.use(favicon(path.join(__dirname, '../client/public/favicon.ico')))
+app.use(favicon(path.join(__dirname, '/public/favicon.ico')))
 app.use(bodyParser.json())
 app.use(
   bodyParser.urlencoded({
@@ -78,7 +78,7 @@ app.use(
 
 app.use(passport.initialize())
 app.use(passport.session())
-app.use(baseUrl, express.static(path.join(__dirname, '../client/build')))
+app.use(baseUrl, express.static(path.join(__dirname, 'public')))
 if (debug) {
   app.use(morgan('dev'))
 }
@@ -147,11 +147,8 @@ app.use(baseUrl + '/api/', function(req, res) {
 // Client-side routing will take care of things from here
 // Because index.html will be served via static plugin,
 // we need to rename it to something else and switch out the URLs to consider the baseUrl
-const indexPath = path.join(__dirname, '../client/build/index.html')
-const indexTemplatePath = path.join(
-  __dirname,
-  '../client/build/index-template.html'
-)
+const indexPath = path.join(__dirname, 'public/index.html')
+const indexTemplatePath = path.join(__dirname, 'public/index-template.html')
 
 if (fs.existsSync(indexPath)) {
   fs.renameSync(indexPath, indexTemplatePath)

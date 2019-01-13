@@ -26,52 +26,94 @@ Some configuration is exposed via environment variables. See [configItems.js](ht
 
 See [docker-validation](https://github.com/rickbergfalk/sqlpad/tree/master/docker-validation) folder for example docker-compose setup with SQL Server.
 
-## Development
+## Building
 
-* Clone/download this repo
-* Install node 8 or later ([nvm recommended](https://github.com/creationix/nvm))
-* Ensure you have the latest npm
+- Clone/download this repo
+- Install node 8 or later ([nvm recommended](https://github.com/creationix/nvm))
+- Ensure you have the latest npm
 
   ```sh
   npm install npm -g
   ```
 
-* Install dependencies (front and back)
+- Install dependencies and build the UI
 
   ```sh
-  npm ci --prefix client
-  npm ci
+  scripts/build.sh
   ```
 
-* Build front-end
+At this point you can run the SQLPad server with the frontend built for production use:
+
+```sh
+cd server
+node server.js --dir ../db --port 3010 --base-url '/sqlpad'
+```
+
+If prefered, SQLPad can be installed as a global module using the local files in this repo. This allows running SQLPad via the cli in any directory, just as if you had installed it with `npm install sqlpad -g`
+
+```sh
+cd server
+node install -g
+
+# Now from somewhere else you can run sqlpad like
+cd ~
+sqlpad --dir ../db --port 3010 --base-url '/sqlpad'
+```
+
+A docker image may be built using the Dockerfile located in `server` directory. See `docker-publish.sh` for example docker build command.
+
+## Development
+
+- Clone/download this repo
+- Install node 8 or later ([nvm recommended](https://github.com/creationix/nvm))
+- Ensure you have the latest npm
 
   ```sh
-  npm run build
+  npm install npm -g
   ```
 
-* Start dev server
+- Install dependencies and build the UI
 
   ```sh
-  npm start
+  scripts/build.sh
   ```
 
-At this point you should have both back-end and front-end development servers running.
+- Open 2 terminal sessions in the root of this repo.
 
-http://localhost:3000 serves react front-end in dev-mode
-http://localhost:3010 serves front-end compiled for production
+  In one install the backend dependencies and start the development server
 
-When viewing the front end in development mode, the page will automatically refresh on front-end file change. The back-end server will always auto-restart on file change.
+  ```sh
+  npm start --prefix server
+  ```
 
-### Databases
+  In the other install frontend dependencies and start the devleopment server
+
+  ```sh
+  npm start --prefix client
+  ```
+
+At this point you should have both backend and frontend development servers running.
+
+http://localhost:3000 serves React-based frontend in dev-mode  
+http://localhost:3010 serves frontend compiled for production
+
+When viewing the frontend in development mode, the page will automatically refresh on frontend file change. The backend server will auto-restart on backend file change.
+
+### Optional step
 
 A docker-compose file with is provided to provide an empty postgres database to test with.
-If you have docker installed you can do the following:
+If you have docker installed, in a third terminal session you can do the following:
 
 ```sh
 # Bring database containers up in background
+docker-compose up
+
+# control-c will stop the databases in docker compose
+
+# If you would like to run this in the background, run
 docker-compose up -d
 
-# To bring database down
+# To bring database down from background
 docker-compose down
 
 # To remove dangling containers volumes etc

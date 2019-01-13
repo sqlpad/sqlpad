@@ -7,10 +7,7 @@ WORKDIR /usr/app
 
 COPY . .
 
-RUN npm install --prefix client \
-    && npm install \
-    && npm run build \
-    && rm -rf client/node_modules \
+RUN npm ci \
     && npm cache clean --force 
     
 WORKDIR /var/lib/sqlpad

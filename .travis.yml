@@ -12,4 +12,10 @@ before_install:
   - npm i -g npm@5
 cache:
   directories:
-    - "node_modules"
+    - "client/node_modules"
+    - "server/node_modules"
+install:
+  - scripts/build.sh
+script:
+  - scripts/lint.sh
+  - npm run test --prefix server

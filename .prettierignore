@@ -5,5 +5,5 @@ client/package.json
 client/package-lock.json
 db/*
 dbtest/*
-package-lock.json
-package.json
+server/package-lock.json
+server/package.json
