@@ -26,10 +26,35 @@
     "taucharts": "^1.2.1",
     "whatwg-fetch": "^2.0.4"
   },
+  "devDependencies": {
+    "babel-eslint": "^8.2.5",
+    "concurrently": "^3.5.1",
+    "eslint": "^4.19.1",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-plugin-flowtype": "^2.49.3",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.7.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.1.1",
+    "prettier": "^1.12.1"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
+  "lint-staged": {
+    "*.{js,json,css}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "scripts": {
-    "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint '**/*.js'",
+    "precommit": "lint-staged",
+    "start": "react-scripts start",
+    "test": "react-scripts test --env=jsdom"
   }
 }
