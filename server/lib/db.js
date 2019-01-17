@@ -28,6 +28,8 @@ const db = {
   }
 }
 
+let foo
+
 module.exports = db
 
 // Load dbs, migrate data, and apply indexes
