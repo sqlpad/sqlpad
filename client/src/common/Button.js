@@ -33,11 +33,9 @@ Button.propTypes = {
   primary: PropTypes.bool
 }
 
-let foo;
-
 Button.defaultProps = {
   className: '',
   onClick: () => {}
-};
+}
 
 export default Button
