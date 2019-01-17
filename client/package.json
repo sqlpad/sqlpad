@@ -43,8 +43,18 @@
     "semi": false,
     "singleQuote": true
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
-    "*.{js,json,css}": [
+    "*.{json,css}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.js": [
+      "eslint --fix",
       "prettier --write",
       "git add"
     ]
