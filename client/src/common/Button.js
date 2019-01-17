@@ -27,8 +27,6 @@ class Button extends React.Component {
   }
 }
 
-let foo;
-
 Button.propTypes = {
   className: PropTypes.string,
   onClick: PropTypes.func,
@@ -38,6 +36,6 @@ Button.propTypes = {
 Button.defaultProps = {
   className: '',
   onClick: () => {}
-};
+}
 
 export default Button
