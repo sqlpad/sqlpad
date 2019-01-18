@@ -113,30 +113,29 @@ class App extends React.Component {
                   />
 
                   <Menu theme="dark" selectable={false} mode="inline">
-                    {version &&
-                      version.updateAvailable && (
-                        <Menu.Item
-                          key="update"
-                          onClick={() => {
-                            Modal.info({
-                              title:
-                                'Update Available (' + version.updateType + ')',
-                              maskClosable: true,
-                              content: (
-                                <div>
-                                  Installed Version: {version.current}
-                                  <br />
-                                  Latest: {version.latest}
-                                </div>
-                              ),
-                              onOk() {}
-                            })
-                          }}
-                        >
-                          <Icon type="exclamation-circle-o" />
-                          <span>Update available</span>
-                        </Menu.Item>
-                      )}
+                    {version && version.updateAvailable && (
+                      <Menu.Item
+                        key="update"
+                        onClick={() => {
+                          Modal.info({
+                            title:
+                              'Update Available (' + version.updateType + ')',
+                            maskClosable: true,
+                            content: (
+                              <div>
+                                Installed Version: {version.current}
+                                <br />
+                                Latest: {version.latest}
+                              </div>
+                            ),
+                            onOk() {}
+                          })
+                        }}
+                      >
+                        <Icon type="exclamation-circle-o" />
+                        <span>Update available</span>
+                      </Menu.Item>
+                    )}
                     <Menu.Item
                       key="about"
                       onClick={() => {

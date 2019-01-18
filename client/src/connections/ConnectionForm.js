@@ -211,13 +211,15 @@ class ConnectionForm extends React.Component {
         </Option>
       )
     } else {
-      drivers.sort((a, b) => a.name > b.name).forEach(driver =>
-        driverSelectOptions.push(
-          <Option key={driver.id} value={driver.id} name="driver">
-            {driver.name}
-          </Option>
+      drivers
+        .sort((a, b) => a.name > b.name)
+        .forEach(driver =>
+          driverSelectOptions.push(
+            <Option key={driver.id} value={driver.id} name="driver">
+              {driver.name}
+            </Option>
+          )
         )
-      )
     }
 
     return (
@@ -282,22 +284,20 @@ class ConnectionForm extends React.Component {
               disabled={testing}
             >
               {testing ? 'Testing...' : 'Test'}
-              {!testing &&
-                testSuccess && (
-                  <Icon
-                    type="check-circle"
-                    theme="twoTone"
-                    twoToneColor="#52c41a"
-                  />
-                )}
-              {!testing &&
-                testFailed && (
-                  <Icon
-                    type="close-circle"
-                    theme="twoTone"
-                    twoToneColor="#eb2f96"
-                  />
-                )}
+              {!testing && testSuccess && (
+                <Icon
+                  type="check-circle"
+                  theme="twoTone"
+                  twoToneColor="#52c41a"
+                />
+              )}
+              {!testing && testFailed && (
+                <Icon
+                  type="close-circle"
+                  theme="twoTone"
+                  twoToneColor="#eb2f96"
+                />
+              )}
             </Button>
           </div>
         </Form>

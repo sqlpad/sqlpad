@@ -291,7 +291,9 @@ class QueriesView extends React.Component {
           <Option key="all" value="">
             All connections
           </Option>
-          {connections.map(c => <Option key={c._id}>{c.name}</Option>)}
+          {connections.map(c => (
+            <Option key={c._id}>{c.name}</Option>
+          ))}
         </Select>
         <Select
           className="w-25 mr2"
@@ -300,7 +302,9 @@ class QueriesView extends React.Component {
           value={selectedTags}
           onChange={selectedTags => this.setState({ selectedTags })}
         >
-          {tags.map(tag => <Option key={tag}>{tag}</Option>)}
+          {tags.map(tag => (
+            <Option key={tag}>{tag}</Option>
+          ))}
         </Select>
         <Select
           className="w-25 mr2"
@@ -311,7 +315,9 @@ class QueriesView extends React.Component {
           <Option key="all" value="">
             All authors
           </Option>
-          {createdBys.map(c => <Option key={c}>{c}</Option>)}
+          {createdBys.map(c => (
+            <Option key={c}>{c}</Option>
+          ))}
         </Select>
       </div>
     )

@@ -66,7 +66,8 @@ class InviteUserForm extends React.Component {
                 }
               >
                 signup page
-              </a>.
+              </a>
+              .
             </p>
             <p>
               <strong>Admins</strong> can add and edit database connections, as

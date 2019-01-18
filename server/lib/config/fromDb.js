@@ -18,9 +18,11 @@ module.exports = function getUiConfig(db) {
       return {}
     }
     const configMap = {}
-    docs.filter(doc => uiKeys.includes(doc.key)).forEach(doc => {
-      configMap[doc.key] = doc.value
-    })
+    docs
+      .filter(doc => uiKeys.includes(doc.key))
+      .forEach(doc => {
+        configMap[doc.key] = doc.value
+      })
     return configMap
   })
 }

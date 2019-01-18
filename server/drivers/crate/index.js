@@ -48,7 +48,10 @@ function runQuery(query, connection) {
   const limit = maxRows < CRATE_LIMIT ? maxRows : CRATE_LIMIT
 
   if (connection.port) {
-    crate.connect(connection.host, connection.port)
+    crate.connect(
+      connection.host,
+      connection.port
+    )
   } else {
     crate.connect(connection.host)
   }
