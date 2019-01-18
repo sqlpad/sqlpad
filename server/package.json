@@ -27,11 +27,9 @@
     "url": "https://github.com/rickbergfalk/sqlpad/issues"
   },
   "scripts": {
-    "precommit": "lint-staged",
     "prepublishOnly": "../scripts/build.sh",
-    "lint": "eslint '**/*.js'",
     "start": "node-dev server.js --dir ../db --port 3010 --debug --base-url '/sqlpad'",
-    "test": "rimraf ../dbtest && npm run lint && SQLPAD_DB_PATH='../dbtest' mocha test --timeout 10000 --recursive --exit"
+    "test": "rimraf ../dbtest && SQLPAD_DB_PATH='../dbtest' mocha test --timeout 10000 --recursive --exit"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
