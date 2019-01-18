@@ -1,6 +1,3 @@
-*.html
-package-lock.json
-package.json
 client/build
 client/node_modules
 client/public
@@ -11,3 +8,4 @@ docs
 docs-source
 scripts
 server/node_modules
+server/public
