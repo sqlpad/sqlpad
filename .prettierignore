@@ -11,3 +11,4 @@ docs
 docs-source
 scripts
 server/node_modules
+server/public
