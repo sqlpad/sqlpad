@@ -99,6 +99,16 @@ http://localhost:3010 serves frontend compiled for production
 
 When viewing the frontend in development mode, the page will automatically refresh on frontend file change. The backend server will auto-restart on backend file change.
 
+ESLint and Prettier are used to enforce code patterns and formatting in this project. A precommit hook should enforce and warn about these checks. If that is not set up however you may find these terminal commands useful.
+
+```sh
+# To check lint
+npm run lint
+
+# To fix (some) errors and formatting automatically
+npm run fixlint
+```
+
 ### Optional step
 
 A docker-compose file with is provided to provide an empty postgres database to test with.
