@@ -6,6 +6,7 @@ cd $SCRIPTS_DIR/..
 SQLPAD_DIR=`pwd`
 
 # Install node modules per package-lock.json
+npm ci
 npm ci --prefix "$SQLPAD_DIR/client"
 npm ci --prefix "$SQLPAD_DIR/server"
 

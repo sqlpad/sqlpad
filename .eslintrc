@@ -1,0 +1,10 @@
+{
+  "extends": "react-app",
+  "env": {
+    "mocha": true
+  },
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}

@@ -3,7 +3,7 @@ language: node_js
 services:
   - docker
 node_js:
-  - "6"
+  - '6'
 before_install:
   - sudo service mysql stop
   - sudo service postgresql stop
@@ -12,10 +12,11 @@ before_install:
   - npm i -g npm@5
 cache:
   directories:
-    - "client/node_modules"
-    - "server/node_modules"
+    - 'node_modules'
+    - 'client/node_modules'
+    - 'server/node_modules'
 install:
   - scripts/build.sh
 script:
-  - scripts/lint.sh
+  - npm run lint
   - npm run test --prefix server
