@@ -36,7 +36,8 @@
     ]
   },
   "scripts": {
-    "lint": "eslint --fix '**/*.js' && prettier --write '**/*.js'",
+    "fixlint": "eslint --fix '**/*.js' && prettier --write '**/*.js'",
+    "lint": "eslint '**/*.js'",
     "precommit": "lint-staged"
   }
 }
