@@ -1,3 +1,4 @@
+import { Col, Row } from 'antd'
 import Button from 'antd/lib/button'
 import Divider from 'antd/lib/divider'
 import Icon from 'antd/lib/icon'
@@ -275,51 +276,61 @@ class QueriesView extends React.Component {
       tags
     } = this.state
     return (
-      <div className="pt4 pb4 w-100 flex">
-        <Search
-          className="w-25 mr2"
-          placeholder="Search"
-          value={searchInput}
-          onChange={this.onSearchChange}
-        />
-        <Select
-          className="w-25 mr2"
-          placeholder="Filter by connection"
-          value={selectedConnection}
-          onChange={selectedConnection => this.setState({ selectedConnection })}
-        >
-          <Option key="all" value="">
-            All connections
-          </Option>
-          {connections.map(c => (
-            <Option key={c._id}>{c.name}</Option>
-          ))}
-        </Select>
-        <Select
-          className="w-25 mr2"
-          mode="multiple"
-          placeholder="Filter by tag"
-          value={selectedTags}
-          onChange={selectedTags => this.setState({ selectedTags })}
-        >
-          {tags.map(tag => (
-            <Option key={tag}>{tag}</Option>
-          ))}
-        </Select>
-        <Select
-          className="w-25 mr2"
-          placeholder="Filter by created by"
-          value={selectedCreatedBy}
-          onChange={selectedCreatedBy => this.setState({ selectedCreatedBy })}
-        >
-          <Option key="all" value="">
-            All authors
-          </Option>
-          {createdBys.map(c => (
-            <Option key={c}>{c}</Option>
-          ))}
-        </Select>
-      </div>
+      <Row gutter={16}>
+        <Col className="pb3" span={6}>
+          <Search
+            className="w-100"
+            placeholder="Search"
+            value={searchInput}
+            onChange={this.onSearchChange}
+          />
+        </Col>
+        <Col className="gutter-row" span={6}>
+          <Select
+            className="w-100"
+            placeholder="Filter by connection"
+            value={selectedConnection}
+            onChange={selectedConnection =>
+              this.setState({ selectedConnection })
+            }
+          >
+            <Option key="all" value="">
+              All connections
+            </Option>
+            {connections.map(c => (
+              <Option key={c._id}>{c.name}</Option>
+            ))}
+          </Select>
+        </Col>
+        <Col className="gutter-row" span={6}>
+          <Select
+            className="w-100"
+            mode="multiple"
+            placeholder="Filter by tag"
+            value={selectedTags}
+            onChange={selectedTags => this.setState({ selectedTags })}
+          >
+            {tags.map(tag => (
+              <Option key={tag}>{tag}</Option>
+            ))}
+          </Select>
+        </Col>
+        <Col className="gutter-row" span={6}>
+          <Select
+            className="w-100"
+            placeholder="Filter by created by"
+            value={selectedCreatedBy}
+            onChange={selectedCreatedBy => this.setState({ selectedCreatedBy })}
+          >
+            <Option key="all" value="">
+              All authors
+            </Option>
+            {createdBys.map(c => (
+              <Option key={c}>{c}</Option>
+            ))}
+          </Select>
+        </Col>
+      </Row>
     )
   }
 
