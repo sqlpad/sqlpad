@@ -2,7 +2,7 @@ import Drawer from 'antd/lib/drawer'
 import React from 'react'
 import ConnectionForm from './ConnectionForm'
 
-function ConnectionEditModal({
+function ConnectionEditDrawer({
   connectionId,
   visible,
   onClose,
@@ -29,4 +29,4 @@ function ConnectionEditModal({
   )
 }
 
-export default ConnectionEditModal
+export default ConnectionEditDrawer

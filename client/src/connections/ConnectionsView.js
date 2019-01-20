@@ -7,7 +7,7 @@ import AppNav from '../AppNav'
 import DocumentTitle from '../common/DocumentTitle'
 import Header from '../common/Header'
 import { ConnectionsContext } from '../connections/ConnectionsStore'
-import ConnectionEditModal from './ConnectionEditModal'
+import ConnectionEditDrawer from './ConnectionEditDrawer'
 
 const { Content } = Layout
 const { Column } = Table
@@ -134,7 +134,7 @@ class ConnectionsView extends React.Component {
                 </Table>
               </div>
             </div>
-            <ConnectionEditModal
+            <ConnectionEditDrawer
               connectionId={connectionId}
               visible={showEdit}
               onClose={this.onModalClose}
