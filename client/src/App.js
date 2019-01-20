@@ -8,9 +8,9 @@ import {
 } from 'react-router-dom'
 import Authenticated from './Authenticated'
 import ConfigurationView from './configuration/ConfigurationView'
+import ConnectionsStore from './connections/ConnectionsStore'
 import ConnectionsView from './connections/ConnectionsView.js'
 import AppContext from './containers/AppContext'
-import ConnectionsContextProvider from './containers/ConnectionsContextProvider'
 import ForgotPassword from './ForgotPassword.js'
 import NotFound from './NotFound.js'
 import PasswordReset from './PasswordReset.js'
@@ -51,9 +51,9 @@ class App extends React.Component {
               path="/queries/:queryId"
               render={({ match }) => (
                 <Authenticated>
-                  <ConnectionsContextProvider>
+                  <ConnectionsStore>
                     <QueryEditorContainer queryId={match.params.queryId} />
-                  </ConnectionsContextProvider>
+                  </ConnectionsStore>
                 </Authenticated>
               )}
             />
@@ -71,9 +71,9 @@ class App extends React.Component {
               path="/connections"
               render={() => (
                 <Authenticated admin>
-                  <ConnectionsContextProvider>
+                  <ConnectionsStore>
                     <ConnectionsView />
-                  </ConnectionsContextProvider>
+                  </ConnectionsStore>
                 </Authenticated>
               )}
             />

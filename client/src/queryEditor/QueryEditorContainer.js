@@ -1,7 +1,7 @@
 import React from 'react'
 import AppNav from '../AppNav'
+import { ConnectionsContext } from '../connections/ConnectionsStore'
 import AppContext from '../containers/AppContext'
-import ConnectionsContext from '../containers/ConnectionsContext'
 import QueryEditor from './QueryEditor'
 
 function QueryEditorContainer(props) {
@@ -13,6 +13,7 @@ function QueryEditorContainer(props) {
             {connectionsContext => (
               <QueryEditor
                 connections={connectionsContext.connections}
+                loadConnections={connectionsContext.loadConnections}
                 {...appContext}
                 {...props}
               />

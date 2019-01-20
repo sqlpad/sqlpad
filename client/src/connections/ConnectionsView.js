@@ -6,7 +6,7 @@ import React from 'react'
 import AppNav from '../AppNav'
 import DocumentTitle from '../common/DocumentTitle'
 import Header from '../common/Header'
-import ConnectionsContext from '../containers/ConnectionsContext'
+import { ConnectionsContext } from '../connections/ConnectionsStore'
 import ConnectionEditModal from './ConnectionEditModal'
 
 const { Content } = Layout
@@ -18,6 +18,10 @@ class ConnectionsView extends React.Component {
   state = {
     connectionId: null,
     showEdit: false
+  }
+
+  componentDidMount() {
+    this.context.loadConnections()
   }
 
   editConnection = connection => {

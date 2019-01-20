@@ -1,6 +1,6 @@
 import Select from 'antd/lib/select'
 import React from 'react'
-import ConnectionsContext from '../containers/ConnectionsContext'
+import { ConnectionsContext } from '../connections/ConnectionsStore'
 
 const { Option } = Select
 

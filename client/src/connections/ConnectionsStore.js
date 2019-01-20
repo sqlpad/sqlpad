@@ -2,13 +2,14 @@ import message from 'antd/lib/message'
 import sortBy from 'lodash.sortby'
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
-import ConnectionsContext from './ConnectionsContext'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
 
 const sortFunctions = [connection => connection.name.toLowerCase()]
 
-export class ConnectionsContextProvider extends React.Component {
+export const ConnectionsContext = React.createContext({})
+
+export class ConnectionsStore extends React.Component {
   constructor() {
     super()
     this.state = {
@@ -87,10 +88,6 @@ export class ConnectionsContextProvider extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.state.loadConnections()
-  }
-
   render() {
     return (
       <ConnectionsContext.Provider value={this.state}>
@@ -100,4 +97,14 @@ export class ConnectionsContextProvider extends React.Component {
   }
 }
 
-export default ConnectionsContextProvider
+export function withConnections(Component) {
+  return function ConnectedComponent(props) {
+    return (
+      <ConnectionsContext.Consumer>
+        {connections => <Component {...props} connections={connections} />}
+      </ConnectionsContext.Consumer>
+    )
+  }
+}
+
+export default ConnectionsStore
