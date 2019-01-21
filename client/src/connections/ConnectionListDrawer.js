@@ -1,5 +1,6 @@
 import Button from 'antd/lib/button'
 import Drawer from 'antd/lib/drawer'
+import Icon from 'antd/lib/icon'
 import List from 'antd/lib/list'
 import Popconfirm from 'antd/lib/popconfirm'
 import React from 'react'
@@ -39,6 +40,8 @@ class ConnectionListDrawer extends React.Component {
     const { connectionId, showEdit } = this.state
     const { connections, deleteConnection } = connectionsContext
 
+    // TODO - server driver implementations should implement functions
+    // that get decorated normalized display values
     const decoratedConnections = connections.map(connection => {
       connection.key = connection._id
       connection.displayDatabase = connection.database
@@ -58,6 +61,10 @@ class ConnectionListDrawer extends React.Component {
       return connection
     })
 
+    // The last "connection" list item will be an input to add a connection
+    // This is just something simple to branch off of in List.renderItem prop
+    decoratedConnections.push('ADD_BUTTON')
+
     return (
       <Drawer
         title="Connections"
@@ -75,6 +82,20 @@ class ConnectionListDrawer extends React.Component {
           itemLayout="horizontal"
           dataSource={decoratedConnections}
           renderItem={item => {
+            if (item === 'ADD_BUTTON') {
+              return (
+                <List.Item>
+                  <Button
+                    size="large"
+                    className="w-100"
+                    onClick={this.newConnection}
+                  >
+                    <Icon type="plus" /> Add connection
+                  </Button>
+                </List.Item>
+              )
+            }
+
             let description = ''
             if (item.user) {
               description = item.user + '@'
