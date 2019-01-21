@@ -2,6 +2,7 @@ import Icon from 'antd/lib/icon'
 import Layout from 'antd/lib/layout'
 import Menu from 'antd/lib/menu'
 import Modal from 'antd/lib/modal'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import AboutContent from './AboutContent'
@@ -10,7 +11,7 @@ import fetchJson from './utilities/fetch-json.js'
 
 const { Content, Sider } = Layout
 
-class App extends React.Component {
+class AppNav extends React.Component {
   state = {
     collapsed: true,
     redirect: false
@@ -28,6 +29,7 @@ class App extends React.Component {
 
   render() {
     const { redirect } = this.state
+    const { pageMenuItems } = this.props
 
     if (redirect) {
       return <Redirect push to="/signin" />
@@ -108,6 +110,10 @@ class App extends React.Component {
                             <span>Configuration</span>
                           </Menu.Item>
                         )}
+                        {pageMenuItems && pageMenuItems.length && (
+                          <Menu.Divider />
+                        )}
+                        {pageMenuItems}
                       </Menu>
                     )}
                   />
@@ -173,4 +179,8 @@ class App extends React.Component {
   }
 }
 
-export default App
+AppNav.propTypes = {
+  pageMenuItems: PropTypes.arrayOf(PropTypes.node)
+}
+
+export default AppNav
