@@ -77,6 +77,17 @@ class AppNav extends React.Component {
                           <Icon type="plus" />
                           <span>New Query</span>
                         </Menu.Item>
+
+                        {pageMenuItems && pageMenuItems.length && (
+                          <Menu.Divider />
+                        )}
+                        {pageMenuItems}
+                      </Menu>
+                    )}
+                  />
+                  <Route
+                    render={({ history }) => (
+                      <Menu theme="dark" selectable={false} mode="inline">
                         {currentUser.role === 'admin' && (
                           <Menu.Item
                             key="connections"
@@ -110,62 +121,57 @@ class AppNav extends React.Component {
                             <span>Configuration</span>
                           </Menu.Item>
                         )}
-                        {pageMenuItems && pageMenuItems.length && (
-                          <Menu.Divider />
+                        {version && version.updateAvailable && (
+                          <Menu.Item
+                            key="update"
+                            onClick={() => {
+                              Modal.info({
+                                title:
+                                  'Update Available (' +
+                                  version.updateType +
+                                  ')',
+                                maskClosable: true,
+                                content: (
+                                  <div>
+                                    Installed Version: {version.current}
+                                    <br />
+                                    Latest: {version.latest}
+                                  </div>
+                                ),
+                                onOk() {}
+                              })
+                            }}
+                          >
+                            <Icon type="exclamation-circle-o" />
+                            <span>Update available</span>
+                          </Menu.Item>
                         )}
-                        {pageMenuItems}
+                        <Menu.Item
+                          key="about"
+                          onClick={() => {
+                            Modal.info({
+                              width: 650,
+                              title: 'About SQLPad',
+                              maskClosable: true,
+                              content: (
+                                <AboutContent
+                                  version={version && version.current}
+                                />
+                              ),
+                              onOk() {}
+                            })
+                          }}
+                        >
+                          <Icon type="question-circle-o" />
+                          <span>About</span>
+                        </Menu.Item>
+                        <Menu.Item key="signout" onClick={this.signout}>
+                          <Icon type="logout" />
+                          <span>Sign out</span>
+                        </Menu.Item>
                       </Menu>
                     )}
                   />
-
-                  <Menu theme="dark" selectable={false} mode="inline">
-                    {version && version.updateAvailable && (
-                      <Menu.Item
-                        key="update"
-                        onClick={() => {
-                          Modal.info({
-                            title:
-                              'Update Available (' + version.updateType + ')',
-                            maskClosable: true,
-                            content: (
-                              <div>
-                                Installed Version: {version.current}
-                                <br />
-                                Latest: {version.latest}
-                              </div>
-                            ),
-                            onOk() {}
-                          })
-                        }}
-                      >
-                        <Icon type="exclamation-circle-o" />
-                        <span>Update available</span>
-                      </Menu.Item>
-                    )}
-                    <Menu.Item
-                      key="about"
-                      onClick={() => {
-                        Modal.info({
-                          width: 650,
-                          title: 'About SQLPad',
-                          maskClosable: true,
-                          content: (
-                            <AboutContent
-                              version={version && version.current}
-                            />
-                          ),
-                          onOk() {}
-                        })
-                      }}
-                    >
-                      <Icon type="question-circle-o" />
-                      <span>About</span>
-                    </Menu.Item>
-                    <Menu.Item key="signout" onClick={this.signout}>
-                      <Icon type="logout" />
-                      <span>Sign out</span>
-                    </Menu.Item>
-                  </Menu>
                 </div>
               </Sider>
               <Layout className="flex w-100 bg-white">
