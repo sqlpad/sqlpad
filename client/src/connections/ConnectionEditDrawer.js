@@ -6,7 +6,8 @@ function ConnectionEditDrawer({
   connectionId,
   visible,
   onClose,
-  onConnectionSaved
+  onConnectionSaved,
+  placement
 }) {
   const title = connectionId ? 'Edit connection' : 'New connection'
   return (
@@ -16,6 +17,7 @@ function ConnectionEditDrawer({
       width={600}
       destroyOnClose={true}
       onClose={onClose}
+      placement={placement || 'right'}
       style={{
         height: 'calc(100% - 55px)',
         overflow: 'auto'
