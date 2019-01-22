@@ -25,14 +25,25 @@ class ConnectionListDrawer extends React.Component {
     this.setState({ showEdit: true, connectionId: null })
   }
 
-  onModalClose = () => {
+  handleEditDrawerClose = () => {
     this.setState({ showEdit: false, connectionId: null })
   }
 
   handleConnectionSaved = connection => {
-    const { addUpdateConnection } = this.props.connectionsContext
+    const { connectionId } = this.state
+    const { onClose, connectionsContext } = this.props
+    const { addUpdateConnection, selectConnection } = connectionsContext
     addUpdateConnection(connection)
-    this.onModalClose()
+
+    // If there was not a connectionId previously passed to edit drawer
+    // this is a new connection
+    // New connections can be selected and then all the drawer closed
+    if (!connectionId) {
+      this.setState({ showEdit: false, connectionId: null }, onClose)
+      selectConnection(connection._id)
+    } else {
+      this.setState({ showEdit: false, connectionId: null })
+    }
   }
 
   render() {
@@ -162,7 +173,7 @@ class ConnectionListDrawer extends React.Component {
         <ConnectionEditDrawer
           connectionId={connectionId}
           visible={showEdit}
-          onClose={this.onModalClose}
+          onClose={this.handleEditDrawerClose}
           onConnectionSaved={this.handleConnectionSaved}
           placement="left"
         />
