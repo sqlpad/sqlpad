@@ -51,9 +51,7 @@ class App extends React.Component {
               path="/queries/:queryId"
               render={({ match }) => (
                 <Authenticated>
-                  <ConnectionsStore>
-                    <QueryEditorContainer queryId={match.params.queryId} />
-                  </ConnectionsStore>
+                  <QueryEditorContainer queryId={match.params.queryId} />
                 </Authenticated>
               )}
             />
@@ -71,9 +69,7 @@ class App extends React.Component {
               path="/connections"
               render={() => (
                 <Authenticated admin>
-                  <ConnectionsStore>
-                    <ConnectionsView />
-                  </ConnectionsStore>
+                  <ConnectionsView />
                 </Authenticated>
               )}
             />
@@ -131,7 +127,11 @@ class App extends React.Component {
       <AppContext.Consumer>
         {appContext => {
           if (appContext.config) {
-            return this.renderRoutes(appContext.config)
+            return (
+              <ConnectionsStore>
+                {this.renderRoutes(appContext.config)}
+              </ConnectionsStore>
+            )
           }
           return null
         }}
