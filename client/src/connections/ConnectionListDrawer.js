@@ -4,6 +4,7 @@ import Icon from 'antd/lib/icon'
 import List from 'antd/lib/list'
 import Popconfirm from 'antd/lib/popconfirm'
 import React from 'react'
+import { withAppContext } from '../containers/withAppContext'
 import ConnectionEditDrawer from './ConnectionEditDrawer'
 import { withConnectionsContext } from './ConnectionsStore'
 
@@ -47,8 +48,9 @@ class ConnectionListDrawer extends React.Component {
   }
 
   render() {
-    const { connectionsContext, visible, onClose } = this.props
+    const { appContext, connectionsContext, visible, onClose } = this.props
     const { connectionId, showEdit } = this.state
+    const { currentUser } = appContext
     const {
       selectConnection,
       selectedConnectionId,
@@ -79,7 +81,9 @@ class ConnectionListDrawer extends React.Component {
 
     // The last "connection" list item will be an input to add a connection
     // This is just something simple to branch off of in List.renderItem prop
-    decoratedConnections.push('ADD_BUTTON')
+    if (currentUser.role === 'admin') {
+      decoratedConnections.push('ADD_BUTTON')
+    }
 
     return (
       <Drawer
@@ -124,38 +128,47 @@ class ConnectionListDrawer extends React.Component {
               .filter(part => part && part.trim())
               .join(' / ')
 
+            const actions = []
+
+            if (selectedConnectionId === item._id) {
+              actions.push(
+                <Button className="w4" disabled>
+                  selected
+                </Button>
+              )
+            } else {
+              actions.push(
+                <Button
+                  className="w4"
+                  onClick={() => {
+                    selectConnection(item._id)
+                    onClose()
+                  }}
+                >
+                  select
+                </Button>
+              )
+            }
+
+            if (currentUser.role === 'admin') {
+              actions.push(
+                <Button onClick={() => this.editConnection(item)}>edit</Button>
+              )
+              actions.push(
+                <Popconfirm
+                  title="Delete connection?"
+                  onConfirm={e => deleteConnection(item._id)}
+                  onCancel={() => {}}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <Button icon="delete" type="danger" />
+                </Popconfirm>
+              )
+            }
+
             return (
-              <List.Item
-                actions={[
-                  selectedConnectionId === item._id ? (
-                    <Button className="w4" disabled>
-                      selected
-                    </Button>
-                  ) : (
-                    <Button
-                      className="w4"
-                      onClick={() => {
-                        selectConnection(item._id)
-                        onClose()
-                      }}
-                    >
-                      select
-                    </Button>
-                  ),
-                  <Button onClick={() => this.editConnection(item)}>
-                    edit
-                  </Button>,
-                  <Popconfirm
-                    title="Delete connection?"
-                    onConfirm={e => deleteConnection(item._id)}
-                    onCancel={() => {}}
-                    okText="Yes"
-                    cancelText="No"
-                  >
-                    <Button icon="delete" type="danger" />
-                  </Popconfirm>
-                ]}
-              >
+              <List.Item actions={actions}>
                 <List.Item.Meta
                   title={item.name}
                   description={
@@ -182,4 +195,4 @@ class ConnectionListDrawer extends React.Component {
   }
 }
 
-export default withConnectionsContext(ConnectionListDrawer)
+export default withAppContext(withConnectionsContext(ConnectionListDrawer))
