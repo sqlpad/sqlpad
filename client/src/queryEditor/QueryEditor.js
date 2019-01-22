@@ -61,8 +61,7 @@ class QueryEditor extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { query } = this.state
-    const { connections, queryId } = this.props
+    const { queryId } = this.props
 
     if (queryId !== prevProps.queryId) {
       if (queryId === 'new') {
@@ -75,24 +74,17 @@ class QueryEditor extends React.Component {
       }
       return this.loadQueryFromServer(queryId)
     }
-
-    // if only 1 connection auto-select it
-    if (connections.length === 1 && query && !query.connectionId) {
-      return this.setState({
-        query: Object.assign({}, query, {
-          connectionId: connections[0]._id
-        })
-      })
-    }
   }
 
   loadQueryFromServer = queryId => {
+    const { selectConnection } = this.props
     fetchJson('GET', `/api/queries/${queryId}`).then(json => {
       const { error, query } = json
       if (error) {
         message.error(error)
       }
       this.setState({ query })
+      selectConnection(query.connectionId)
     })
   }
 
@@ -108,12 +100,14 @@ class QueryEditor extends React.Component {
 
   runQuery = () => {
     const { cacheKey, query, selectedText } = this.state
+    const { selectedConnectionId } = this.props
+
     this.setState({
       isRunning: true,
       runQueryStartTime: new Date()
     })
     const postData = {
-      connectionId: query.connectionId,
+      connectionId: selectedConnectionId,
       cacheKey,
       queryName: query.name,
       queryText: selectedText || query.queryText
@@ -148,15 +142,18 @@ class QueryEditor extends React.Component {
 
   saveQuery = () => {
     const { query } = this.state
-    const { config } = this.props
+    const { config, selectedConnectionId } = this.props
     if (!query.name) {
       message.error('Query name required')
       this.setState({ showValidation: true })
       return
     }
     this.setState({ isSaving: true })
+    const queryData = Object.assign({}, query, {
+      connectionId: selectedConnectionId
+    })
     if (query._id) {
-      fetchJson('PUT', `/api/queries/${query._id}`, query).then(json => {
+      fetchJson('PUT', `/api/queries/${query._id}`, queryData).then(json => {
         const { error, query } = json
         if (error) {
           message.error(error)
@@ -167,7 +164,7 @@ class QueryEditor extends React.Component {
         this.setState({ isSaving: false, unsavedChanges: false, query })
       })
     } else {
-      fetchJson('POST', `/api/queries`, query).then(json => {
+      fetchJson('POST', `/api/queries`, queryData).then(json => {
         const { error, query } = json
         if (error) {
           message.error(error)
@@ -203,9 +200,8 @@ class QueryEditor extends React.Component {
     this.setState({ query, unsavedChanges: true })
   }
 
-  handleConnectionChange = connectionId => {
-    this.setQueryState('connectionId', connectionId)
-  }
+  handleConnectionChange = connectionId =>
+    this.props.selectConnection(connectionId)
 
   handleModalHide = () => {
     this.setState({ showModal: false })
@@ -247,10 +243,10 @@ class QueryEditor extends React.Component {
     return !pending && activeTabKey === 'vis' && this.hasRows()
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const { queryId, loadConnections } = this.props
 
-    loadConnections()
+    await loadConnections()
     this.loadTagsFromServer()
     if (queryId !== 'new') {
       this.loadQueryFromServer(queryId)
@@ -359,8 +355,6 @@ class QueryEditor extends React.Component {
           onQueryNameChange={this.handleQueryNameChange}
           showValidation={showValidation}
           unsavedChanges={unsavedChanges}
-          connectionId={query.connectionId}
-          onConnectionChange={this.handleConnectionChange}
         />
         <div style={{ position: 'relative', flexGrow: 1 }}>
           <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
@@ -474,7 +468,10 @@ class QueryEditor extends React.Component {
 }
 
 QueryEditor.propTypes = {
-  connections: PropTypes.array.isRequired
+  connections: PropTypes.array.isRequired,
+  selectedConnectionId: PropTypes.string,
+  selectConnection: PropTypes.func,
+  loadConnections: PropTypes.func
 }
 
 export default QueryEditor

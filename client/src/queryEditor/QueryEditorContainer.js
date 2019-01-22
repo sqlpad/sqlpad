@@ -31,6 +31,8 @@ class QueryEditorContainer extends React.Component {
                 <QueryEditor
                   connections={connectionsContext.connections}
                   loadConnections={connectionsContext.loadConnections}
+                  selectedConnectionId={connectionsContext.selectedConnectionId}
+                  selectConnection={connectionsContext.selectConnection}
                   {...appContext}
                   {...this.props}
                 />

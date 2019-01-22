@@ -13,10 +13,13 @@ export class ConnectionsStore extends React.Component {
   constructor() {
     super()
     this.state = {
+      selectedConnectionId: null,
       connections: [],
       lastUpdated: null,
       loading: false,
       loadingError: null,
+
+      selectConnection: id => this.setState({ selectedConnectionId: id }),
 
       setConnections: connections => {
         return this.setState({
@@ -60,6 +63,7 @@ export class ConnectionsStore extends React.Component {
 
       loadConnections: async force => {
         const { lastUpdated, loading, connections } = this.state
+
         if (loading) {
           return
         }
@@ -77,7 +81,14 @@ export class ConnectionsStore extends React.Component {
           if (error) {
             message.error(error)
           }
+
+          let { selectedConnectionId } = this.state
+          if (connections && connections.length === 1) {
+            selectedConnectionId = connections[0]._id
+          }
+
           return this.setState({
+            selectedConnectionId,
             loadingError: error,
             connections,
             loading: false,

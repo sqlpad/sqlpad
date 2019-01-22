@@ -38,7 +38,12 @@ class ConnectionListDrawer extends React.Component {
   render() {
     const { connectionsContext, visible, onClose } = this.props
     const { connectionId, showEdit } = this.state
-    const { connections, deleteConnection } = connectionsContext
+    const {
+      selectConnection,
+      selectedConnectionId,
+      connections,
+      deleteConnection
+    } = connectionsContext
 
     // TODO - server driver implementations should implement functions
     // that get decorated normalized display values
@@ -111,7 +116,21 @@ class ConnectionListDrawer extends React.Component {
             return (
               <List.Item
                 actions={[
-                  <Button>select</Button>,
+                  selectedConnectionId === item._id ? (
+                    <Button className="w4" disabled>
+                      selected
+                    </Button>
+                  ) : (
+                    <Button
+                      className="w4"
+                      onClick={() => {
+                        selectConnection(item._id)
+                        onClose()
+                      }}
+                    >
+                      select
+                    </Button>
+                  ),
                   <Button onClick={() => this.editConnection(item)}>
                     edit
                   </Button>,
