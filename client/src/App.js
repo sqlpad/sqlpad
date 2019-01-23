@@ -9,7 +9,6 @@ import {
 import Authenticated from './Authenticated'
 import ConfigurationView from './configuration/ConfigurationView'
 import ConnectionsStore from './connections/ConnectionsStore'
-import ConnectionsView from './connections/ConnectionsView.js'
 import AppContext from './containers/AppContext'
 import ForgotPassword from './ForgotPassword.js'
 import NotFound from './NotFound.js'
@@ -61,15 +60,6 @@ class App extends React.Component {
               render={() => (
                 <Authenticated admin>
                   <UsersView />
-                </Authenticated>
-              )}
-            />
-            <Route
-              exact
-              path="/connections"
-              render={() => (
-                <Authenticated admin>
-                  <ConnectionsView />
                 </Authenticated>
               )}
             />

@@ -77,10 +77,6 @@ class AppNav extends React.Component {
                           <Icon type="plus" />
                           <span>New Query</span>
                         </Menu.Item>
-
-                        {pageMenuItems && pageMenuItems.length && (
-                          <Menu.Divider />
-                        )}
                         {pageMenuItems}
                       </Menu>
                     )}
@@ -88,17 +84,6 @@ class AppNav extends React.Component {
                   <Route
                     render={({ history }) => (
                       <Menu theme="dark" selectable={false} mode="inline">
-                        {currentUser.role === 'admin' && (
-                          <Menu.Item
-                            key="connections"
-                            onClick={() => {
-                              history.push('/connections')
-                            }}
-                          >
-                            <Icon type="database" />
-                            <span>DB connections</span>
-                          </Menu.Item>
-                        )}
                         {currentUser.role === 'admin' && (
                           <Menu.Item
                             key="users"
