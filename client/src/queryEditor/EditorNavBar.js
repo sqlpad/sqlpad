@@ -27,9 +27,7 @@ class EditorNavBar extends React.Component {
       onFormatClick,
       query,
       showValidation,
-      unsavedChanges,
-      connectionId,
-      onConnectionChange
+      unsavedChanges
     } = this.props
 
     const validationState =
@@ -41,10 +39,7 @@ class EditorNavBar extends React.Component {
       <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
         <Form layout="inline">
           <FormItem>
-            <ConnectionDropDown
-              value={connectionId}
-              onChange={onConnectionChange}
-            />
+            <ConnectionDropDown />
           </FormItem>
           <FormItem>
             <Radio.Group value={activeTabKey} onChange={onTabSelect}>

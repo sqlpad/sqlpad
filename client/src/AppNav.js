@@ -2,6 +2,7 @@ import Icon from 'antd/lib/icon'
 import Layout from 'antd/lib/layout'
 import Menu from 'antd/lib/menu'
 import Modal from 'antd/lib/modal'
+import PropTypes from 'prop-types'
 import React from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import AboutContent from './AboutContent'
@@ -10,7 +11,7 @@ import fetchJson from './utilities/fetch-json.js'
 
 const { Content, Sider } = Layout
 
-class App extends React.Component {
+class AppNav extends React.Component {
   state = {
     collapsed: true,
     redirect: false
@@ -28,6 +29,7 @@ class App extends React.Component {
 
   render() {
     const { redirect } = this.state
+    const { pageMenuItems } = this.props
 
     if (redirect) {
       return <Redirect push to="/signin" />
@@ -75,17 +77,13 @@ class App extends React.Component {
                           <Icon type="plus" />
                           <span>New Query</span>
                         </Menu.Item>
-                        {currentUser.role === 'admin' && (
-                          <Menu.Item
-                            key="connections"
-                            onClick={() => {
-                              history.push('/connections')
-                            }}
-                          >
-                            <Icon type="database" />
-                            <span>DB connections</span>
-                          </Menu.Item>
-                        )}
+                        {pageMenuItems}
+                      </Menu>
+                    )}
+                  />
+                  <Route
+                    render={({ history }) => (
+                      <Menu theme="dark" selectable={false} mode="inline">
                         {currentUser.role === 'admin' && (
                           <Menu.Item
                             key="users"
@@ -108,58 +106,57 @@ class App extends React.Component {
                             <span>Configuration</span>
                           </Menu.Item>
                         )}
+                        {version && version.updateAvailable && (
+                          <Menu.Item
+                            key="update"
+                            onClick={() => {
+                              Modal.info({
+                                title:
+                                  'Update Available (' +
+                                  version.updateType +
+                                  ')',
+                                maskClosable: true,
+                                content: (
+                                  <div>
+                                    Installed Version: {version.current}
+                                    <br />
+                                    Latest: {version.latest}
+                                  </div>
+                                ),
+                                onOk() {}
+                              })
+                            }}
+                          >
+                            <Icon type="exclamation-circle-o" />
+                            <span>Update available</span>
+                          </Menu.Item>
+                        )}
+                        <Menu.Item
+                          key="about"
+                          onClick={() => {
+                            Modal.info({
+                              width: 650,
+                              title: 'About SQLPad',
+                              maskClosable: true,
+                              content: (
+                                <AboutContent
+                                  version={version && version.current}
+                                />
+                              ),
+                              onOk() {}
+                            })
+                          }}
+                        >
+                          <Icon type="question-circle-o" />
+                          <span>About</span>
+                        </Menu.Item>
+                        <Menu.Item key="signout" onClick={this.signout}>
+                          <Icon type="logout" />
+                          <span>Sign out</span>
+                        </Menu.Item>
                       </Menu>
                     )}
                   />
-
-                  <Menu theme="dark" selectable={false} mode="inline">
-                    {version && version.updateAvailable && (
-                      <Menu.Item
-                        key="update"
-                        onClick={() => {
-                          Modal.info({
-                            title:
-                              'Update Available (' + version.updateType + ')',
-                            maskClosable: true,
-                            content: (
-                              <div>
-                                Installed Version: {version.current}
-                                <br />
-                                Latest: {version.latest}
-                              </div>
-                            ),
-                            onOk() {}
-                          })
-                        }}
-                      >
-                        <Icon type="exclamation-circle-o" />
-                        <span>Update available</span>
-                      </Menu.Item>
-                    )}
-                    <Menu.Item
-                      key="about"
-                      onClick={() => {
-                        Modal.info({
-                          width: 650,
-                          title: 'About SQLPad',
-                          maskClosable: true,
-                          content: (
-                            <AboutContent
-                              version={version && version.current}
-                            />
-                          ),
-                          onOk() {}
-                        })
-                      }}
-                    >
-                      <Icon type="question-circle-o" />
-                      <span>About</span>
-                    </Menu.Item>
-                    <Menu.Item key="signout" onClick={this.signout}>
-                      <Icon type="logout" />
-                      <span>Sign out</span>
-                    </Menu.Item>
-                  </Menu>
                 </div>
               </Sider>
               <Layout className="flex w-100 bg-white">
@@ -173,4 +170,8 @@ class App extends React.Component {
   }
 }
 
-export default App
+AppNav.propTypes = {
+  pageMenuItems: PropTypes.arrayOf(PropTypes.node)
+}
+
+export default AppNav

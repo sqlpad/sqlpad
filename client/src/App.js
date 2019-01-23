@@ -8,9 +8,8 @@ import {
 } from 'react-router-dom'
 import Authenticated from './Authenticated'
 import ConfigurationView from './configuration/ConfigurationView'
-import ConnectionsView from './connections/ConnectionsView.js'
+import ConnectionsStore from './connections/ConnectionsStore'
 import AppContext from './containers/AppContext'
-import ConnectionsContextProvider from './containers/ConnectionsContextProvider'
 import ForgotPassword from './ForgotPassword.js'
 import NotFound from './NotFound.js'
 import PasswordReset from './PasswordReset.js'
@@ -51,9 +50,7 @@ class App extends React.Component {
               path="/queries/:queryId"
               render={({ match }) => (
                 <Authenticated>
-                  <ConnectionsContextProvider>
-                    <QueryEditorContainer queryId={match.params.queryId} />
-                  </ConnectionsContextProvider>
+                  <QueryEditorContainer queryId={match.params.queryId} />
                 </Authenticated>
               )}
             />
@@ -63,17 +60,6 @@ class App extends React.Component {
               render={() => (
                 <Authenticated admin>
                   <UsersView />
-                </Authenticated>
-              )}
-            />
-            <Route
-              exact
-              path="/connections"
-              render={() => (
-                <Authenticated admin>
-                  <ConnectionsContextProvider>
-                    <ConnectionsView />
-                  </ConnectionsContextProvider>
                 </Authenticated>
               )}
             />
@@ -131,7 +117,11 @@ class App extends React.Component {
       <AppContext.Consumer>
         {appContext => {
           if (appContext.config) {
-            return this.renderRoutes(appContext.config)
+            return (
+              <ConnectionsStore>
+                {this.renderRoutes(appContext.config)}
+              </ConnectionsStore>
+            )
           }
           return null
         }}

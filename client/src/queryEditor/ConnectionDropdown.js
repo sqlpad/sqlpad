@@ -1,10 +1,10 @@
 import Select from 'antd/lib/select'
 import React from 'react'
-import ConnectionsContext from '../containers/ConnectionsContext'
+import { ConnectionsContext } from '../connections/ConnectionsStore'
 
 const { Option } = Select
 
-function ConnectionDropdown({ onChange, value }) {
+function ConnectionDropdown() {
   return (
     <ConnectionsContext.Consumer>
       {context => (
@@ -15,8 +15,8 @@ function ConnectionDropdown({ onChange, value }) {
           // className="w5"
           style={{ width: 260 }}
           optionFilterProp="children"
-          value={value}
-          onChange={onChange}
+          value={context.selectedConnectionId}
+          onChange={id => context.selectConnection(id)}
           filterOption={(input, option) =>
             option.props.value &&
             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=

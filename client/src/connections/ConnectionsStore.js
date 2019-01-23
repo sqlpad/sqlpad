@@ -2,20 +2,24 @@ import message from 'antd/lib/message'
 import sortBy from 'lodash.sortby'
 import React from 'react'
 import fetchJson from '../utilities/fetch-json.js'
-import ConnectionsContext from './ConnectionsContext'
 
 const ONE_HOUR_MS = 1000 * 60 * 60
 
 const sortFunctions = [connection => connection.name.toLowerCase()]
 
-export class ConnectionsContextProvider extends React.Component {
+export const ConnectionsContext = React.createContext({})
+
+export class ConnectionsStore extends React.Component {
   constructor() {
     super()
     this.state = {
+      selectedConnectionId: null,
       connections: [],
       lastUpdated: null,
       loading: false,
       loadingError: null,
+
+      selectConnection: id => this.setState({ selectedConnectionId: id }),
 
       setConnections: connections => {
         return this.setState({
@@ -59,6 +63,7 @@ export class ConnectionsContextProvider extends React.Component {
 
       loadConnections: async force => {
         const { lastUpdated, loading, connections } = this.state
+
         if (loading) {
           return
         }
@@ -76,7 +81,14 @@ export class ConnectionsContextProvider extends React.Component {
           if (error) {
             message.error(error)
           }
+
+          let { selectedConnectionId } = this.state
+          if (connections && connections.length === 1) {
+            selectedConnectionId = connections[0]._id
+          }
+
           return this.setState({
+            selectedConnectionId,
             loadingError: error,
             connections,
             loading: false,
@@ -85,10 +97,6 @@ export class ConnectionsContextProvider extends React.Component {
         }
       }
     }
-  }
-
-  componentDidMount() {
-    this.state.loadConnections()
   }
 
   render() {
@@ -100,4 +108,16 @@ export class ConnectionsContextProvider extends React.Component {
   }
 }
 
-export default ConnectionsContextProvider
+export function withConnectionsContext(Component) {
+  return function ConnectedComponent(props) {
+    return (
+      <ConnectionsContext.Consumer>
+        {connectionsContext => (
+          <Component {...props} connectionsContext={connectionsContext} />
+        )}
+      </ConnectionsContext.Consumer>
+    )
+  }
+}
+
+export default ConnectionsStore
