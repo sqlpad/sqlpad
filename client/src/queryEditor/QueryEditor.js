@@ -365,10 +365,7 @@ class QueryEditor extends React.Component {
               maxSize={-100}
               onChange={this.handleSqlPaneResize}
             >
-              <SchemaSidebar
-                {...this.props}
-                connectionId={query.connectionId}
-              />
+              <SchemaSidebar {...this.props} />
               <SplitPane
                 split="horizontal"
                 minSize={100}

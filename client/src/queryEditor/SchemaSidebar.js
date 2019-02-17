@@ -4,8 +4,19 @@ import React from 'react'
 import CopyToClipboard from 'react-copy-to-clipboard'
 import Sidebar from '../common/Sidebar'
 import SidebarBody from '../common/SidebarBody'
+import { ConnectionsContext } from '../connections/ConnectionsStore'
 import fetchJson from '../utilities/fetch-json.js'
 import updateCompletions from '../utilities/updateCompletions.js'
+
+const SchemaSidebarContainer = props => {
+  return (
+    <ConnectionsContext.Consumer>
+      {context => (
+        <SchemaSidebar {...props} connectionId={context.selectedConnectionId} />
+      )}
+    </ConnectionsContext.Consumer>
+  )
+}
 
 class SchemaSidebar extends React.PureComponent {
   state = {
@@ -338,4 +349,4 @@ class SchemaInfoColumnItem extends React.Component {
   }
 }
 
-export default SchemaSidebar
+export default SchemaSidebarContainer
