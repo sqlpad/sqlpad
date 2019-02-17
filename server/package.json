@@ -81,6 +81,7 @@
     "odbc": "^1.4.1"
   },
   "devDependencies": {
+    "faker": "^4.1.0",
     "mocha": "^5.2.0",
     "node-dev": "^3.1.3",
     "supertest": "^3.3.0"
