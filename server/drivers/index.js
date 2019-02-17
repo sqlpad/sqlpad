@@ -94,6 +94,7 @@ requireValidate('../drivers/sqlserver')
 requireValidate('../drivers/unixodbc', true)
 requireValidate('../drivers/vertica')
 requireValidate('../drivers/cassandra')
+requireValidate('../drivers/mock')
 
 /**
  * Run query using driver implementation of connection
