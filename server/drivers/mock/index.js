@@ -15,7 +15,53 @@ async function runQuery(query, connection) {
   // Someday this mock could get fancy and change output based on some connection value
   // For now validate that it is getting passed
   const { maxRows } = connection
-  const rows = []
+
+  // To determine the content of this mock query, inspect values from comments
+  // Example format
+  // -- dimension department 5
+  // -- dimension <somefieldname> <numberofdistinctvalues>
+  // -- limit 100
+  // -- orderby <fieldname>
+  // -- orderby <fieldname2>
+  const dimensions = []
+  const orderbys = []
+  let limit
+
+  query
+    .split('\n')
+    .map(line => line.trim())
+    .filter(line => line.startsWith('--'))
+    .map(line => line.replace('--', ''))
+    .forEach(line => {
+      const [type, v1, v2] = line.split(' ').map(part => part.trim())
+      if (type === 'dimension') {
+        dimensions.push({ name: v1, number: v2 || 5 })
+      } else if (type === 'limit') {
+        limit = v1
+      } else if (type === 'orderby') {
+        orderbys.push({ name: v1 })
+      }
+    })
+
+  const dataFuncs = {
+    department: faker.commerce.department,
+    color: faker.commerce.color,
+    price: faker.commerce.price
+  }
+
+  const rows = dimensions.reduce((rows, field, index) => {
+    if (index === 0) {
+      if (dataFuncs[field.name]) {
+        for (let i = 0; i < field.number; i++) {
+          rows.push({ [field.name]: dataFuncs[field.name]() })
+        }
+      } else {
+        throw new Error(`${field.name} not supported`)
+      }
+      return rows
+    }
+    return rows
+  }, [])
 
   // const departments = Array(5)
   //   .fill(1)
@@ -60,7 +106,9 @@ function getSchema(connection) {
     ],
     incomplete: false
   }
-  return Promise.resolve(() => formatSchemaQueryResults(fakeSchemaQueryResult))
+  return Promise.resolve().then(() =>
+    formatSchemaQueryResults(fakeSchemaQueryResult)
+  )
 }
 
 const fields = [
