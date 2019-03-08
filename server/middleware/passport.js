@@ -83,7 +83,6 @@ if (!disableUserpassAuth) {
 }
 
 if (googleClientId && googleClientSecret && publicUrl) {
-  console.log('USING THE GOOGLE')
   passport.use(
     new PassportGoogleStrategy(
       {
@@ -91,7 +90,7 @@ if (googleClientId && googleClientSecret && publicUrl) {
         clientSecret: googleClientSecret,
         callbackURL: publicUrl + baseUrl + '/auth/google/callback',
         // This option tells the strategy to use the userinfo endpoint instead
-        userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
+        userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo?alt=json'
       },
       passportGoogleStrategyHandler
     )
@@ -104,10 +103,17 @@ function passportGoogleStrategyHandler(
   profile,
   done
 ) {
-  console.log(profile)
+  const email = profile && profile._json && profile._json.email
+
+  if (!email) {
+    return done(null, false, {
+      message: 'email not provided from Google'
+    })
+  }
+
   return Promise.all([
     User.adminRegistrationOpen(),
-    User.findOneByEmail(profile.email),
+    User.findOneByEmail(email),
     configUtil.getHelper(db)
   ])
     .then(data => {
@@ -120,12 +126,9 @@ function passportGoogleStrategyHandler(
         })
       }
       const whitelistedDomains = config.get('whitelistedDomains')
-      if (
-        openAdminRegistration ||
-        checkWhitelist(whitelistedDomains, profile.email)
-      ) {
+      if (openAdminRegistration || checkWhitelist(whitelistedDomains, email)) {
         user = new User({
-          email: profile.email,
+          email,
           role: openAdminRegistration ? 'admin' : 'editor',
           signupDate: new Date()
         })
