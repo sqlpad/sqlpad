@@ -4,7 +4,7 @@ const { baseUrl } = require('../lib/config').getPreDbConfig()
 
 router.get(
   '/auth/google',
-  passport.authenticate('google', { scope: ['email'] })
+  passport.authenticate('google', { scope: ['profile'] })
 )
 
 router.get(

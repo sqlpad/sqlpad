@@ -1,6 +1,6 @@
 const passport = require('passport')
 const PassportLocalStrategy = require('passport-local').Strategy
-const PassportGoogleStrategy = require('passport-google-oauth2').Strategy
+const PassportGoogleStrategy = require('passport-google-oauth20').Strategy
 const BasicStrategy = require('passport-http').BasicStrategy
 const User = require('../models/User.js')
 const configUtil = require('../lib/config')
@@ -83,13 +83,15 @@ if (!disableUserpassAuth) {
 }
 
 if (googleClientId && googleClientSecret && publicUrl) {
+  console.log('USING THE GOOGLE')
   passport.use(
     new PassportGoogleStrategy(
       {
         clientID: googleClientId,
         clientSecret: googleClientSecret,
         callbackURL: publicUrl + baseUrl + '/auth/google/callback',
-        passReqToCallback: true
+        // This option tells the strategy to use the userinfo endpoint instead
+        userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
       },
       passportGoogleStrategyHandler
     )
@@ -97,12 +99,12 @@ if (googleClientId && googleClientSecret && publicUrl) {
 }
 
 function passportGoogleStrategyHandler(
-  request,
   accessToken,
   refreshToken,
   profile,
   done
 ) {
+  console.log(profile)
   return Promise.all([
     User.adminRegistrationOpen(),
     User.findOneByEmail(profile.email),
