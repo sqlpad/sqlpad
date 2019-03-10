@@ -26,16 +26,21 @@ describe('drivers/mock', function() {
 
   it('runQuery under limit', function() {
     const c = Object.assign({}, connection, { maxRows: 10000 })
-    return mock.runQuery('SELECT * FROM doesnt matter;', c).then(results => {
+    const query = `
+      -- dimensions = product 5
+    `
+    return mock.runQuery(query, c).then(results => {
       assert(!results.incomplete, 'not incomplete')
-      // TODO make actual length based on something in query
-      assert.equal(results.rows.length, 1000, 'row length')
+      assert.equal(results.rows.length, 5, 'row length')
     })
   })
 
   it('runQuery over limit', function() {
     const c = Object.assign({}, connection, { maxRows: 10 })
-    return mock.runQuery('SELECT * FROM doesnt matter;', c).then(results => {
+    const query = `
+      -- dimensions = product 10, color 10, orderdate 500
+    `
+    return mock.runQuery(query, c).then(results => {
       assert(results.incomplete, 'incomplete')
       assert.equal(results.rows.length, 10, 'row length')
     })
