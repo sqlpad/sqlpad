@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.1
+
+### March 7, 2019
+
+* Fix Google oauth for Google+ API shutdown
+
 ## 2.8.0
 
 ### October 17, 2018
