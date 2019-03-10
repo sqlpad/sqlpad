@@ -1,6 +1,6 @@
 const passport = require('passport')
 const PassportLocalStrategy = require('passport-local').Strategy
-const PassportGoogleStrategy = require('passport-google-oauth2').Strategy
+const PassportGoogleStrategy = require('passport-google-oauth20').Strategy
 const BasicStrategy = require('passport-http').BasicStrategy
 const User = require('../models/User.js')
 const configUtil = require('../lib/config')
@@ -89,7 +89,8 @@ if (googleClientId && googleClientSecret && publicUrl) {
         clientID: googleClientId,
         clientSecret: googleClientSecret,
         callbackURL: publicUrl + baseUrl + '/auth/google/callback',
-        passReqToCallback: true
+        // This option tells the strategy to use the userinfo endpoint instead
+        userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo?alt=json'
       },
       passportGoogleStrategyHandler
     )
@@ -97,15 +98,22 @@ if (googleClientId && googleClientSecret && publicUrl) {
 }
 
 function passportGoogleStrategyHandler(
-  request,
   accessToken,
   refreshToken,
   profile,
   done
 ) {
+  const email = profile && profile._json && profile._json.email
+
+  if (!email) {
+    return done(null, false, {
+      message: 'email not provided from Google'
+    })
+  }
+
   return Promise.all([
     User.adminRegistrationOpen(),
-    User.findOneByEmail(profile.email),
+    User.findOneByEmail(email),
     configUtil.getHelper(db)
   ])
     .then(data => {
@@ -118,12 +126,9 @@ function passportGoogleStrategyHandler(
         })
       }
       const whitelistedDomains = config.get('whitelistedDomains')
-      if (
-        openAdminRegistration ||
-        checkWhitelist(whitelistedDomains, profile.email)
-      ) {
+      if (openAdminRegistration || checkWhitelist(whitelistedDomains, email)) {
         user = new User({
-          email: profile.email,
+          email,
           role: openAdminRegistration ? 'admin' : 'editor',
           signupDate: new Date()
         })
