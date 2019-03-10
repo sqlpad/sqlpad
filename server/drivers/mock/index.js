@@ -112,6 +112,10 @@ async function runQuery(query, connection) {
         .split('=')
         .map(p => p.trim().toLowerCase())
 
+      if (!fieldData) {
+        return
+      }
+
       // fieldData is something like <fieldname> <direction>, <field2> <direction>
       // or 100
       fieldData
@@ -197,21 +201,39 @@ function testConnection(connection) {
   return runQuery(query, connection)
 }
 
+const schemaRows = []
+const columns = [
+  { name: 'product', type: 'TEXT', description: 'item sold' },
+  { name: 'color', type: 'TEXT', description: 'color of item' },
+  { name: 'department', type: 'TEXT', description: 'department of sale' },
+  { name: 'orderdate', type: 'TIMESTAMP', description: 'date of order' },
+  {
+    name: 'orderdatetime',
+    type: 'TIMESTAMP',
+    description: 'date and time of order'
+  }
+]
+Array(500)
+  .fill(true)
+  .forEach((value, tableIndex) => {
+    columns.forEach(column => {
+      schemaRows.push({
+        table_schema: 'public',
+        table_name: 'fake_sales_table_' + tableIndex,
+        column_name: column.name,
+        data_type: column.type,
+        column_description: column.description
+      })
+    })
+  })
+
 /**
  * Get schema for connection
  * @param {*} connection
  */
 function getSchema(connection) {
   const fakeSchemaQueryResult = {
-    rows: [
-      {
-        table_schema: 'public',
-        table_name: 'foo_table',
-        column_name: 'foo_column',
-        data_type: 'INTEGER',
-        column_description: 'This is a description.'
-      }
-    ],
+    rows: schemaRows,
     incomplete: false
   }
   return Promise.resolve().then(() =>
