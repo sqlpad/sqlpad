@@ -40,16 +40,16 @@
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "hdb": "^0.15.4",
-    "helmet": "^3.15.0",
+    "helmet": "^3.16.0",
     "joi": "^12.0.0",
     "json2csv": "^3.11.5",
     "latest-version": "^3.1.0",
     "lodash": "^4.17.11",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
-    "moment": "^2.23.0",
+    "moment": "^2.24.0",
     "morgan": "^1.9.1",
-    "mssql": "^4.3.0",
+    "mssql": "^4.3.5",
     "mysql": "^2.16.0",
     "nedb": "^1.8.0",
     "nedb-promise": "^2.0.1",
@@ -61,7 +61,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
-    "pg": "^7.8.0",
+    "pg": "^7.8.2",
     "pg-cursor": "^1.0.1",
     "request": "^2.88.0",
     "rimraf": "^2.6.3",
@@ -83,6 +83,6 @@
   "devDependencies": {
     "mocha": "^5.2.0",
     "node-dev": "^3.1.3",
-    "supertest": "^3.3.0"
+    "supertest": "^3.4.2"
   }
 }
