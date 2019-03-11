@@ -73,9 +73,9 @@
     "uuid": "^3.3.2",
     "vertica": "^0.5.5"
   },
-  "main": "./server/app.js",
+  "main": "./app.js",
   "bin": {
-    "sqlpad": "./server/server.js"
+    "sqlpad": "./server.js"
   },
   "optionalDependencies": {
     "odbc": "^1.4.1"
