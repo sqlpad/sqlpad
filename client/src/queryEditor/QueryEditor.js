@@ -306,9 +306,6 @@ class QueryEditor extends React.Component {
   }
 
   handleSqlPaneResize = () => {
-    if (this.editor) {
-      this.editor.resize()
-    }
     if (this.dataTable) {
       this.dataTable.handleResize()
     }
@@ -377,9 +374,6 @@ class QueryEditor extends React.Component {
                   config={config}
                   value={query.queryText}
                   onChange={this.handleQueryTextChange}
-                  ref={ref => {
-                    this.editor = ref ? ref.editor : null
-                  }}
                   onSelectionChange={this.handleQuerySelectionChange}
                 />
                 <div>

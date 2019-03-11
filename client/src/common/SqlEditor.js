@@ -5,12 +5,20 @@ import 'brace/mode/sql'
 import 'brace/theme/sqlserver'
 import PropTypes from 'prop-types'
 import React from 'react'
+import Measure from 'react-measure'
 import AceEditor from 'react-ace'
 import AppContext from '../containers/AppContext'
 
 const noop = () => {}
 
 class SqlEditor extends React.Component {
+  state = {
+    dimensions: {
+      width: -1,
+      height: -1
+    }
+  }
+
   componentDidMount() {
     const { config, onChange } = this.props
     const editor = this.editor
@@ -44,41 +52,54 @@ class SqlEditor extends React.Component {
     }
   }
 
+  handleRef = ref => {
+    this.editor = ref ? ref.editor : null
+  }
+
   render() {
-    const { config, onChange, readOnly, value, height } = this.props
+    const { config, onChange, readOnly, value } = this.props
+    const { width, height } = this.state.dimensions
 
     if (this.editor && config.editorWordWrap) {
       this.editor.session.setUseWrapMode(true)
     }
 
     return (
-      <AceEditor
-        editorProps={{ $blockScrolling: Infinity }}
-        enableBasicAutocompletion
-        enableLiveAutocompletion
-        height={height}
-        highlightActiveLine={false}
-        mode="sql"
-        name="query-ace-editor"
-        onChange={onChange || noop}
-        onSelectionChange={this.handleSelection}
-        showGutter={false}
-        showPrintMargin={false}
-        theme="sqlserver"
-        readOnly={readOnly}
-        value={value}
-        width="100%"
-        ref={ref => {
-          this.editor = ref ? ref.editor : null
+      <Measure
+        bounds
+        onResize={contentRect => {
+          this.setState({ dimensions: contentRect.bounds })
         }}
-      />
+      >
+        {({ measureRef }) => (
+          <div ref={measureRef} className="h-100 w-100">
+            <AceEditor
+              editorProps={{ $blockScrolling: Infinity }}
+              enableBasicAutocompletion
+              enableLiveAutocompletion
+              height={height + 'px'}
+              highlightActiveLine={false}
+              mode="sql"
+              name="query-ace-editor"
+              onChange={onChange || noop}
+              onSelectionChange={this.handleSelection}
+              showGutter={false}
+              showPrintMargin={false}
+              theme="sqlserver"
+              readOnly={readOnly}
+              value={value}
+              width={width + 'px'}
+              ref={this.handleRef}
+            />
+          </div>
+        )}
+      </Measure>
     )
   }
 }
 
 SqlEditor.propTypes = {
   config: PropTypes.object.isRequired,
-  height: PropTypes.string,
   onChange: PropTypes.func,
   onSelectionChange: PropTypes.func,
   readOnly: PropTypes.bool,
@@ -86,7 +107,6 @@ SqlEditor.propTypes = {
 }
 
 SqlEditor.defaultProps = {
-  height: '100%',
   onSelectionChange: () => {},
   readOnly: false,
   value: ''
