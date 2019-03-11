@@ -3,13 +3,11 @@ language: node_js
 services:
   - docker
 node_js:
-  - '6'
+  - '8'
 before_install:
   - sudo service mysql stop
   - sudo service postgresql stop
-  - docker-compose pull
-  - docker-compose up -d
-  - npm i -g npm@5
+  - npm i -g npm@6
 cache:
   directories:
     - 'node_modules'

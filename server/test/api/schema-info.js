@@ -8,7 +8,7 @@ describe('api/schema-info', function() {
     return utils.resetWithUser().then(() => {
       return utils
         .post('admin', '/api/connections', {
-          driver: 'postgres',
+          driver: 'mock',
           name: 'sqlpad',
           host: 'localhost',
           database: 'sqlpad',
@@ -22,8 +22,6 @@ describe('api/schema-info', function() {
     })
   })
 
-  // This test fails in TravisCI during Cache.findOneByCacheKey(cacheKey)
-  // This works locally however
   it('Gets schema-info', function() {
     return utils
       .get('admin', `/api/schema-info/${connection._id}`)

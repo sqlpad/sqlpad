@@ -94,7 +94,8 @@ requireValidate('../drivers/sqlserver')
 requireValidate('../drivers/unixodbc', true)
 requireValidate('../drivers/vertica')
 requireValidate('../drivers/cassandra')
-if (debug) {
+
+if (debug || process.env.SQLPAD_TEST === 'true') {
   requireValidate('../drivers/mock')
 }
 

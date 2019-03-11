@@ -43,9 +43,12 @@ describe('lib/config', function() {
   // process.env.SQLPAD_DEBUG = 'FALSE'
   // process.env.GOOGLE_CLIENT_ID = 'google-client-id'
 
+  // TODO current config helper test will pick up saved sqlpad config on system if it exists
+  // This makes testing difficult when a sqlpad configuration is saved.
+  // Loading a config should likely be explicit
   it('.get() should get a value provided by default', function() {
     return configUtil.getHelper(db).then(config => {
-      assert.equal(config.get('port'), 80, 'port=80')
+      assert.equal(config.get('httpsPort'), 443, 'httpsPort=443')
     })
   })
   it('.get() should only accept key in config items', function() {
