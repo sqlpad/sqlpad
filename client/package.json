@@ -17,6 +17,7 @@
     "react-copy-to-clipboard": "^5.0.0",
     "react-dom": "^16.8.4",
     "react-draggable": "^3.2.1",
+    "react-measure": "^2.2.4",
     "react-router-dom": "^4.2.2",
     "react-scripts": "^2.1.8",
     "react-split-pane": "^0.1.84",
