@@ -95,6 +95,10 @@ requireValidate('../drivers/unixodbc', true)
 requireValidate('../drivers/vertica')
 requireValidate('../drivers/cassandra')
 
+if (debug || process.env.SQLPAD_TEST === 'true') {
+  requireValidate('../drivers/mock')
+}
+
 /**
  * Run query using driver implementation of connection
  * @param {*} query

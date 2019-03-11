@@ -86,7 +86,7 @@ A docker image may be built using the Dockerfile located in `server` directory. 
   npm start --prefix server
   ```
 
-  In the other install frontend dependencies and start the devleopment server
+  In the other install frontend dependencies and start the development server
 
   ```sh
   npm start --prefix client
@@ -109,35 +109,27 @@ npm run lint
 npm run fixlint
 ```
 
-### Optional step
+### Mock driver
 
-A docker-compose file with is provided to provide an empty postgres database to test with.
-If you have docker installed, in a third terminal session you can do the following:
+When SQLPad server is run in debug mode, a mock driver implementation is available to generate data. The data returned by the query run is determined by information parsed from the comment block. The rest of the query may be anything.
 
-```sh
-# Bring database containers up in background
-docker-compose up
+Measure fields will contain random data.
 
-# control-c will stop the databases in docker compose
+```sql
+-- At least one dimension field is required. MUST include number of unique values
+-- orderdate and orderdatetime should not be used at same time
+-- dimensions = department 10, color 10, product 10, orderdate|orderdatetime 500
 
-# If you would like to run this in the background, run
-docker-compose up -d
+-- Optional measures
+-- measures = cost, revenue, profit
 
-# To bring database down from background
-docker-compose down
+-- Optional order by. MUST be a dimension or measure returned and MUST include direction
+-- orderby = department asc, product desc
 
-# To remove dangling containers volumes etc
-docker system prune
-```
+-- Optional limit
+-- limit = 100
 
-To connect to the database within SQLPad during development use the following settings:
-
-```
-driver: postgres
-host: localhost
-database: sqlpad
-username: sqlpad
-password: sqlpad
+SELECT * FROM the_actual_query_doesnt_matter
 ```
 
 ## License
