@@ -1,6 +1,7 @@
 import React from 'react'
 import { MultiGrid } from 'react-virtualized'
 import Draggable from 'react-draggable'
+import Measure from 'react-measure'
 import SpinKitCube from './SpinKitCube.js'
 import moment from 'moment'
 import 'react-virtualized/styles.css'
@@ -46,19 +47,11 @@ const renderNumberBar = (value, fieldMeta) => {
 // It would otherwise not rerender on change of prop.queryResult alone
 class QueryResultDataTable extends React.PureComponent {
   state = {
-    gridWidth: 0,
-    gridHeight: 0,
+    dimensions: {
+      width: -1,
+      height: -1
+    },
     columnWidths: {}
-  }
-
-  handleResize = e => {
-    const resultGrid = document.getElementById('result-grid')
-    if (resultGrid) {
-      this.setState({
-        gridHeight: resultGrid.clientHeight,
-        gridWidth: resultGrid.clientWidth
-      })
-    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -86,15 +79,6 @@ class QueryResultDataTable extends React.PureComponent {
       })
     }
     return { columnWidths }
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize)
-    this.handleResize()
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize)
   }
 
   headerCellRenderer = ({ columnIndex, key, style }) => {
@@ -209,18 +193,17 @@ class QueryResultDataTable extends React.PureComponent {
     const { columnWidths } = this.state
     const { queryResult } = this.props
     const dataKey = queryResult.fields[index]
-    const { gridWidth } = this.state
+    const { width } = this.state.dimensions
 
     if (dataKey) {
-      const width = columnWidths[dataKey]
-      return width
+      return columnWidths[dataKey]
     }
 
     const totalWidthFilled = queryResult.fields
       .map(key => columnWidths[key])
       .reduce((prev, curr) => prev + curr, 0)
 
-    const fakeColumnWidth = gridWidth - totalWidthFilled
+    const fakeColumnWidth = width - totalWidthFilled
     return fakeColumnWidth < 10 ? 10 : fakeColumnWidth
   }
 
@@ -240,7 +223,7 @@ class QueryResultDataTable extends React.PureComponent {
 
   render() {
     const { isRunning, queryError, queryResult } = this.props
-    const { gridHeight, gridWidth } = this.state
+    const { height, width } = this.state.dimensions
 
     if (isRunning) {
       return (
@@ -269,21 +252,35 @@ class QueryResultDataTable extends React.PureComponent {
       const rowCount = queryResult.rows.length + 1
       // Add extra column to fill remaining grid width if necessary
       const columnCount = queryResult.fields.length + 1
+
       return (
-        <div id="result-grid" className="aspect-ratio--object">
-          <MultiGrid
-            width={gridWidth}
-            height={gridHeight}
-            rowHeight={30}
-            ref={ref => (this.ref = ref)}
-            columnWidth={this.getColumnWidth}
-            columnCount={columnCount}
-            rowCount={rowCount}
-            cellRenderer={this.cellRenderer}
-            fixedRowCount={1}
-            onScroll={this.handleScrollBug}
-          />
-        </div>
+        <Measure
+          bounds
+          onResize={contentRect => {
+            this.setState({ dimensions: contentRect.bounds })
+          }}
+        >
+          {({ measureRef }) => (
+            <div
+              ref={measureRef}
+              id="result-grid"
+              className="h-100 w-100 aspect-ratio--object "
+            >
+              <MultiGrid
+                width={width}
+                height={height}
+                rowHeight={30}
+                ref={ref => (this.ref = ref)}
+                columnWidth={this.getColumnWidth}
+                columnCount={columnCount}
+                rowCount={rowCount}
+                cellRenderer={this.cellRenderer}
+                fixedRowCount={1}
+                onScroll={this.handleScrollBug}
+              />
+            </div>
+          )}
+        </Measure>
       )
     }
 
