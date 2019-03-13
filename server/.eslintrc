@@ -1,0 +1,40 @@
+{
+  "extends": ["airbnb-base", "plugin:prettier/recommended"],
+  "env": {
+    "mocha": true
+  },
+  "rules": {
+    "camelcase": "off",
+    "consistent-return": "off",
+    "dot-notation": "off",
+    "func-names": "off",
+    "global-require": "off",
+    "import/newline-after-import": "off",
+    "import/no-dynamic-require": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-unresolved": "off",
+    "import/order": "off",
+    "no-console": "off",
+    "no-else-return": "off",
+    "no-multi-assign": "off",
+    "no-param-reassign": "off",
+    "no-plusplus": "off",
+    "no-prototype-builtins": "off",
+    "no-restricted-globals": "off",
+    "no-restricted-syntax": "off",
+    "no-shadow": "off",
+    "no-underscore-dangle": "off",
+    "no-unused-vars": "off",
+    "no-use-before-define": "off",
+    "no-var": "off",
+    "object-shorthand": "off",
+    "one-var": "off",
+    "prefer-const": "off",
+    "prefer-destructuring": "off",
+    "prefer-promise-reject-errors": "off",
+    "prefer-template": "off",
+    "radix": "off",
+    "spaced-comment": "off",
+    "vars-on-top": "off"
+  }
+}

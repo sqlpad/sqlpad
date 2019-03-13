@@ -1,6 +1,0 @@
-{
-  "extends": ["plugin:prettier/recommended", "react-app"],
-  "env": {
-    "mocha": true
-  }
-}
