@@ -24,6 +24,6 @@
   },
   "scripts": {
     "fixlint": "npm run fixlint --prefix client && prettier --write '**/*.js'",
-    "lint": "npm run lint --prefix client"
+    "lint": "npm run lint --prefix client && prettier --check '**/*.js'"
   }
 }
