@@ -25,7 +25,8 @@ function validateQueryResult(queryResult) {
 }
 
 describe('api/query-result', function() {
-  let query, connection;
+  let query;
+  let connection;
 
   before(function() {
     return utils
