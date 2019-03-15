@@ -1,11 +1,11 @@
-const hdb = require('hdb')
-const { formatSchemaQueryResults } = require('../utils')
+const hdb = require('hdb');
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'hdb'
-const name = 'SAP HANA'
+const id = 'hdb';
+const name = 'SAP HANA';
 
 function getSchemaSql(schema) {
-  const whereSql = schema ? `WHERE tables.SCHEMA_NAME = '${schema}'` : ''
+  const whereSql = schema ? `WHERE tables.SCHEMA_NAME = '${schema}'` : '';
   return `
     SELECT 
       columns.SCHEMA_NAME as table_schema, 
@@ -18,7 +18,7 @@ function getSchemaSql(schema) {
     ${whereSql}
     ORDER BY 
      columns.POSITION
-  `
+  `;
 }
 
 /**
@@ -28,7 +28,7 @@ function getSchemaSql(schema) {
  * @param {object} connection
  */
 function runQuery(query, connection) {
-  const incomplete = false
+  const incomplete = false;
 
   return new Promise((resolve, reject) => {
     const client = hdb.createClient({
@@ -38,59 +38,59 @@ function runQuery(query, connection) {
       user: connection.username,
       password: connection.password,
       schema: connection.hanaSchema
-    })
+    });
 
     client.on('error', err => {
-      console.error('Network connection error', err)
-      return reject(err)
-    })
+      console.error('Network connection error', err);
+      return reject(err);
+    });
 
     client.connect(err => {
       if (err) {
-        console.error('Connect error', err)
-        return reject(err)
+        console.error('Connect error', err);
+        return reject(err);
       }
       return client.execute(query, function(err, rs) {
-        let rows = []
+        let rows = [];
 
         if (err) {
-          client.disconnect()
-          return reject(err)
+          client.disconnect();
+          return reject(err);
         }
 
         if (!rs) {
-          client.disconnect()
-          return resolve({ rows, incomplete })
+          client.disconnect();
+          return resolve({ rows, incomplete });
         }
 
         if (!rs.createObjectStream) {
           // Could be row count or something
-          client.disconnect()
-          return resolve({ rows: [{ result: rs }], incomplete })
+          client.disconnect();
+          return resolve({ rows: [{ result: rs }], incomplete });
         }
 
-        const stream = rs.createObjectStream()
+        const stream = rs.createObjectStream();
 
         stream.on('data', data => {
           if (rows.length < connection.maxRows) {
-            return rows.push(data)
+            return rows.push(data);
           }
-          client.disconnect()
-          return resolve({ rows, incomplete: true })
-        })
+          client.disconnect();
+          return resolve({ rows, incomplete: true });
+        });
 
         stream.on('error', error => {
-          client.disconnect()
-          return reject(error)
-        })
+          client.disconnect();
+          return reject(error);
+        });
 
         stream.on('finish', () => {
-          client.disconnect()
-          return resolve({ rows, incomplete })
-        })
-      })
-    })
-  })
+          client.disconnect();
+          return resolve({ rows, incomplete });
+        });
+      });
+    });
+  });
 }
 
 /**
@@ -98,8 +98,8 @@ function runQuery(query, connection) {
  * @param {*} connection
  */
 function testConnection(connection) {
-  const query = 'select * from DUMMY'
-  return runQuery(query, connection)
+  const query = 'select * from DUMMY';
+  return runQuery(query, connection);
 }
 
 /**
@@ -107,10 +107,10 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  const schemaSql = getSchemaSql(connection.hanaSchema)
+  const schemaSql = getSchemaSql(connection.hanaSchema);
   return runQuery(schemaSql, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
-  )
+  );
 }
 
 const fields = [
@@ -144,7 +144,7 @@ const fields = [
     formType: 'TEXT',
     label: 'Schema (optional)'
   }
-]
+];
 
 module.exports = {
   id,
@@ -153,4 +153,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

@@ -1,34 +1,34 @@
-import React from 'react'
-import { Redirect } from 'react-router-dom'
-import fetchJson from './utilities/fetch-json.js'
-import message from 'antd/lib/message'
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+import fetchJson from './utilities/fetch-json.js';
+import message from 'antd/lib/message';
 
 class ForgotPassword extends React.Component {
   state = {
     email: '',
     redirect: false
-  }
+  };
 
   componentDidMount() {
-    document.title = 'SQLPad - Forgot Password'
+    document.title = 'SQLPad - Forgot Password';
   }
 
   onEmailChange = e => {
-    this.setState({ email: e.target.value })
-  }
+    this.setState({ email: e.target.value });
+  };
 
   resetPassword = e => {
-    e.preventDefault()
+    e.preventDefault();
     fetchJson('POST', '/api/forgot-password', this.state).then(json => {
-      if (json.error) return message.error(json.error)
-      this.setState({ redirect: true })
-    })
-  }
+      if (json.error) return message.error(json.error);
+      this.setState({ redirect: true });
+    });
+  };
 
   render() {
-    const { redirect } = this.state
+    const { redirect } = this.state;
     if (redirect) {
-      return <Redirect to="/password-reset" />
+      return <Redirect to="/password-reset" />;
     }
     return (
       <div className="pt5 measure center" style={{ width: '300px' }}>
@@ -47,8 +47,8 @@ class ForgotPassword extends React.Component {
           </button>
         </form>
       </div>
-    )
+    );
   }
 }
 
-export default ForgotPassword
+export default ForgotPassword;

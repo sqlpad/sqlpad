@@ -1,15 +1,17 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import IncompleteDataNotification from '../common/IncompleteDataNotification'
-import SecondsTimer from '../common/SecondsTimer.js'
+import React from 'react';
+import PropTypes from 'prop-types';
+import IncompleteDataNotification from '../common/IncompleteDataNotification';
+import SecondsTimer from '../common/SecondsTimer.js';
 
 class QueryResultHeader extends React.Component {
   renderDownloadLinks() {
-    const { cacheKey, config } = this.props
-    const csvDownloadLink = `${config.baseUrl}/download-results/${cacheKey}.csv`
+    const { cacheKey, config } = this.props;
+    const csvDownloadLink = `${
+      config.baseUrl
+    }/download-results/${cacheKey}.csv`;
     const xlsxDownloadLink = `${
       config.baseUrl
-    }/download-results/${cacheKey}.xlsx`
+    }/download-results/${cacheKey}.xlsx`;
     if (config.allowCsvDownload) {
       return (
         <span>
@@ -31,12 +33,12 @@ class QueryResultHeader extends React.Component {
             .xlsx
           </a>
         </span>
-      )
+      );
     }
   }
 
   render() {
-    const { isRunning, queryResult, runQueryStartTime } = this.props
+    const { isRunning, queryResult, runQueryStartTime } = this.props;
     if (isRunning || !queryResult) {
       return (
         <div
@@ -52,16 +54,16 @@ class QueryResultHeader extends React.Component {
             </span>
           ) : null}
         </div>
-      )
+      );
     }
 
     const serverSec = queryResult
       ? queryResult.queryRunTime / 1000 + ' sec.'
-      : ''
+      : '';
     const rowCount =
-      queryResult && queryResult.rows ? queryResult.rows.length : ''
+      queryResult && queryResult.rows ? queryResult.rows.length : '';
 
-    const incomplete = queryResult ? queryResult.incomplete : false
+    const incomplete = queryResult ? queryResult.incomplete : false;
 
     return (
       <div
@@ -81,7 +83,7 @@ class QueryResultHeader extends React.Component {
           <IncompleteDataNotification incomplete={incomplete} />
         </span>
       </div>
-    )
+    );
   }
 }
 
@@ -91,12 +93,12 @@ QueryResultHeader.propTypes = {
   isRunning: PropTypes.bool,
   queryResult: PropTypes.object,
   runQueryStartTime: PropTypes.instanceOf(Date)
-}
+};
 
 QueryResultHeader.defaultProps = {
   cacheKey: '',
   config: {},
   isRunning: false
-}
+};
 
-export default QueryResultHeader
+export default QueryResultHeader;

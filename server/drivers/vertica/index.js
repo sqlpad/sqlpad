@@ -1,8 +1,8 @@
-const vertica = require('vertica')
-const { formatSchemaQueryResults } = require('../utils')
+const vertica = require('vertica');
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'vertica'
-const name = 'Vertica'
+const id = 'vertica';
+const name = 'Vertica';
 
 const SCHEMA_SQL = `
   SELECT 
@@ -20,7 +20,7 @@ const SCHEMA_SQL = `
     vt.table_schema, 
     vt.table_name, 
     vc.ordinal_position
-`
+`;
 
 /**
  * Run query for connection
@@ -35,59 +35,59 @@ function runQuery(query, connection) {
     user: connection.username,
     password: connection.password,
     database: connection.database
-  }
+  };
 
   return new Promise((resolve, reject) => {
     const client = vertica.connect(params, function(err) {
       if (err) {
-        client.disconnect()
-        return reject(err)
+        client.disconnect();
+        return reject(err);
       }
 
-      let incomplete = false
-      const rows = []
-      let finished = false
-      let columnNames = []
+      let incomplete = false;
+      const rows = [];
+      let finished = false;
+      let columnNames = [];
 
-      const verticaQuery = client.query(query)
+      const verticaQuery = client.query(query);
 
       verticaQuery.on('fields', fields => {
-        columnNames = fields.map(field => field.name)
-      })
+        columnNames = fields.map(field => field.name);
+      });
 
       verticaQuery.on('row', function(row) {
         if (rows.length < connection.maxRows) {
-          const resultRow = {}
+          const resultRow = {};
           row.forEach((value, index) => {
-            resultRow[columnNames[index]] = value
-          })
-          return rows.push(resultRow)
+            resultRow[columnNames[index]] = value;
+          });
+          return rows.push(resultRow);
         }
         if (!finished) {
-          finished = true
-          client.disconnect()
-          incomplete = true
-          return resolve({ rows, incomplete })
+          finished = true;
+          client.disconnect();
+          incomplete = true;
+          return resolve({ rows, incomplete });
         }
-      })
+      });
 
       verticaQuery.on('end', function() {
         if (!finished) {
-          finished = true
-          client.disconnect()
-          return resolve({ rows, incomplete })
+          finished = true;
+          client.disconnect();
+          return resolve({ rows, incomplete });
         }
-      })
+      });
 
       verticaQuery.on('error', function(err) {
         if (!finished) {
-          finished = true
-          client.disconnect()
-          return reject(err)
+          finished = true;
+          client.disconnect();
+          return reject(err);
         }
-      })
-    })
-  })
+      });
+    });
+  });
 }
 
 /**
@@ -95,8 +95,8 @@ function runQuery(query, connection) {
  * @param {*} connection
  */
 function testConnection(connection) {
-  const query = "SELECT 'success' AS TestQuery;"
-  return runQuery(query, connection)
+  const query = "SELECT 'success' AS TestQuery;";
+  return runQuery(query, connection);
 }
 
 /**
@@ -106,7 +106,7 @@ function testConnection(connection) {
 function getSchema(connection) {
   return runQuery(SCHEMA_SQL, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
-  )
+  );
 }
 
 const fields = [
@@ -135,7 +135,7 @@ const fields = [
     formType: 'PASSWORD',
     label: 'Database Password'
   }
-]
+];
 
 module.exports = {
   id,
@@ -144,4 +144,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

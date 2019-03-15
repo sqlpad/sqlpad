@@ -1,12 +1,12 @@
-import Icon from 'antd/lib/icon'
-import Tooltip from 'antd/lib/tooltip'
-import React from 'react'
-import CopyToClipboard from 'react-copy-to-clipboard'
-import Sidebar from '../common/Sidebar'
-import SidebarBody from '../common/SidebarBody'
-import { ConnectionsContext } from '../connections/ConnectionsStore'
-import fetchJson from '../utilities/fetch-json.js'
-import updateCompletions from '../utilities/updateCompletions.js'
+import Icon from 'antd/lib/icon';
+import Tooltip from 'antd/lib/tooltip';
+import React from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import Sidebar from '../common/Sidebar';
+import SidebarBody from '../common/SidebarBody';
+import { ConnectionsContext } from '../connections/ConnectionsStore';
+import fetchJson from '../utilities/fetch-json.js';
+import updateCompletions from '../utilities/updateCompletions.js';
 
 const SchemaSidebarContainer = props => {
   return (
@@ -15,25 +15,25 @@ const SchemaSidebarContainer = props => {
         <SchemaSidebar {...props} connectionId={context.selectedConnectionId} />
       )}
     </ConnectionsContext.Consumer>
-  )
-}
+  );
+};
 
 class SchemaSidebar extends React.PureComponent {
   state = {
     schemaInfo: {},
     loading: false
-  }
+  };
 
   componentDidMount() {
-    const { connectionId } = this.props
+    const { connectionId } = this.props;
     if (connectionId) {
-      this.getSchemaInfo(connectionId)
+      this.getSchemaInfo(connectionId);
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.connectionId !== nextProps.connectionId) {
-      this.getSchemaInfo(nextProps.connectionId)
+      this.getSchemaInfo(nextProps.connectionId);
     }
   }
 
@@ -42,40 +42,40 @@ class SchemaSidebar extends React.PureComponent {
       this.setState({
         schemaInfo: {},
         loading: true
-      })
-      const qs = reload ? '?reload=true' : ''
+      });
+      const qs = reload ? '?reload=true' : '';
       fetchJson('GET', `/api/schema-info/${connectionId}${qs}`).then(json => {
-        const { error, schemaInfo } = json
+        const { error, schemaInfo } = json;
         if (error) {
-          console.error(error)
+          console.error(error);
         }
-        updateCompletions(schemaInfo)
+        updateCompletions(schemaInfo);
         this.setState({
           schemaInfo: schemaInfo
-        })
+        });
         // sometimes refreshes happen so fast and people don't get to enjoy the animation
         setTimeout(() => {
-          this.setState({ loading: false })
-        }, 1000)
-      })
+          this.setState({ loading: false });
+        }, 1000);
+      });
     } else {
       this.setState({
         schemaInfo: {}
-      })
+      });
     }
-  }
+  };
 
   handleRefreshClick = e => {
-    e.preventDefault()
-    this.getSchemaInfo(this.props.connectionId, true)
-  }
+    e.preventDefault();
+    this.getSchemaInfo(this.props.connectionId, true);
+  };
 
   render() {
-    const { loading, schemaInfo } = this.state
-    const refreshClass = loading ? 'spinning' : ''
+    const { loading, schemaInfo } = this.state;
+    const refreshClass = loading ? 'spinning' : '';
 
-    const schemaCount = schemaInfo ? Object.keys(schemaInfo).length : 0
-    const initShowTables = schemaCount <= 2
+    const schemaCount = schemaInfo ? Object.keys(schemaInfo).length : 0;
+    const initShowTables = schemaCount <= 2;
     const schemaItemNodes = schemaInfo
       ? Object.keys(schemaInfo).map(schema => {
           return (
@@ -86,9 +86,9 @@ class SchemaSidebar extends React.PureComponent {
               schema={schema}
               tables={schemaInfo[schema]}
             />
-          )
+          );
         })
-      : null
+      : null;
 
     return (
       <Sidebar>
@@ -109,27 +109,27 @@ class SchemaSidebar extends React.PureComponent {
           </div>
         </SidebarBody>
       </Sidebar>
-    )
+    );
   }
 }
 
 class SchemaInfoSchemaItem extends React.Component {
   state = {
     showTables: this.props.initShowTables
-  }
+  };
 
   handleClick = e => {
-    e.stopPropagation()
-    e.preventDefault()
+    e.stopPropagation();
+    e.preventDefault();
     this.setState({
       showTables: !this.state.showTables
-    })
-  }
+    });
+  };
 
   render() {
-    const { showTables } = this.state
-    const { schema, tables } = this.props
-    let tableJsx
+    const { showTables } = this.state;
+    const { schema, tables } = this.props;
+    let tableJsx;
     if (showTables) {
       tableJsx = Object.keys(tables).map(table => {
         return (
@@ -140,8 +140,8 @@ class SchemaInfoSchemaItem extends React.Component {
             table={table}
             columns={tables[table]}
           />
-        )
-      })
+        );
+      });
     }
     return (
       <li className="list" key={schema}>
@@ -155,7 +155,7 @@ class SchemaInfoSchemaItem extends React.Component {
         </a>
         <ul className="pl3">{tableJsx}</ul>
       </li>
-    )
+    );
   }
 }
 
@@ -164,44 +164,44 @@ class SchemaInfoTableItem extends React.Component {
     showColumns: false,
     showCopyButton: false,
     copyButtonText: 'copy'
-  }
+  };
 
   handleClick = e => {
-    e.stopPropagation()
-    e.preventDefault()
+    e.stopPropagation();
+    e.preventDefault();
     this.setState({
       showColumns: !this.state.showColumns
-    })
-  }
+    });
+  };
 
   handleMouseOver = e => {
     this.setState({
       showCopyButton: true
-    })
-  }
+    });
+  };
 
   handleMouseOut = e => {
     this.setState({
       showCopyButton: false
-    })
-  }
+    });
+  };
 
   handleCopyClick = e => {
-    e.stopPropagation()
-    e.preventDefault()
-  }
+    e.stopPropagation();
+    e.preventDefault();
+  };
 
   handleCopy = e => {
-    this.setState({ copyButtonText: 'copied' })
+    this.setState({ copyButtonText: 'copied' });
     setTimeout(() => {
-      this.setState({ copyButtonText: 'copy' })
-    }, 2000)
-  }
+      this.setState({ copyButtonText: 'copy' });
+    }, 2000);
+  };
 
   render() {
-    const { columns, config, schema, table } = this.props
-    const { showColumns, showCopyButton, copyButtonText } = this.state
-    let columnJsx
+    const { columns, config, schema, table } = this.props;
+    const { showColumns, showCopyButton, copyButtonText } = this.state;
+    let columnJsx;
     if (showColumns) {
       columnJsx = columns.map(column => {
         if (column.column_name) {
@@ -215,7 +215,7 @@ class SchemaInfoTableItem extends React.Component {
               schema={schema}
               table={table}
             />
-          )
+          );
         } else {
           return (
             <SchemaInfoColumnItem
@@ -226,14 +226,14 @@ class SchemaInfoTableItem extends React.Component {
               schema={schema}
               table={table}
             />
-          )
+          );
         }
-      })
+      });
     }
 
     const copyButtonClassName = showCopyButton
       ? 'right-2 pointer absolute bg-black hover-bg-hot-pink label'
-      : 'right-2 pointer absolute bg-black hover-bg-hot-pink label dn'
+      : 'right-2 pointer absolute bg-black hover-bg-hot-pink label dn';
     const getCopyToClipboard = () => {
       if (config && config.showSchemaCopyButton) {
         return (
@@ -246,9 +246,9 @@ class SchemaInfoTableItem extends React.Component {
               {copyButtonText}
             </span>
           </CopyToClipboard>
-        )
+        );
       }
-    }
+    };
     return (
       <li className="list" key={table}>
         <a
@@ -264,7 +264,7 @@ class SchemaInfoTableItem extends React.Component {
         </a>
         <ul className="pl3">{columnJsx}</ul>
       </li>
-    )
+    );
   }
 }
 
@@ -272,34 +272,34 @@ class SchemaInfoColumnItem extends React.Component {
   state = {
     showCopyButton: false,
     copyButtonText: 'copy'
-  }
+  };
 
   handleMouseOver = e => {
     this.setState({
       showCopyButton: true
-    })
-  }
+    });
+  };
 
   handleMouseOut = e => {
     this.setState({
       showCopyButton: false
-    })
-  }
+    });
+  };
 
   handleCopyClick = e => {
-    e.stopPropagation()
-    e.preventDefault()
-  }
+    e.stopPropagation();
+    e.preventDefault();
+  };
 
   handleCopy = () => {
-    this.setState({ copyButtonText: 'copied' })
+    this.setState({ copyButtonText: 'copied' });
     setTimeout(() => {
-      this.setState({ copyButtonText: 'copy' })
-    }, 2000)
-  }
+      this.setState({ copyButtonText: 'copy' });
+    }, 2000);
+  };
 
   render() {
-    const { copyButtonText, showCopyButton } = this.state
+    const { copyButtonText, showCopyButton } = this.state;
     const {
       config,
       column_name,
@@ -307,10 +307,10 @@ class SchemaInfoColumnItem extends React.Component {
       column_description,
       schema,
       table
-    } = this.props
+    } = this.props;
     const copyButtonClassName = showCopyButton
       ? 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info'
-      : 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info dn'
+      : 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info dn';
     const getCopyToClipboard = () => {
       if (config && config.showSchemaCopyButton) {
         return (
@@ -326,11 +326,11 @@ class SchemaInfoColumnItem extends React.Component {
               {copyButtonText}
             </span>
           </CopyToClipboard>
-        )
+        );
       }
-    }
+    };
 
-    const description = column_description && ` - ${column_description}`
+    const description = column_description && ` - ${column_description}`;
     return (
       <li className="list">
         <span
@@ -345,8 +345,8 @@ class SchemaInfoColumnItem extends React.Component {
           {getCopyToClipboard()}
         </span>
       </li>
-    )
+    );
   }
 }
 
-export default SchemaSidebarContainer
+export default SchemaSidebarContainer;

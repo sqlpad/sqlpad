@@ -1,8 +1,8 @@
-import 'whatwg-fetch'
-import message from 'antd/lib/message'
+import 'whatwg-fetch';
+import message from 'antd/lib/message';
 
 export default function fetchJson(method, url, body) {
-  const BASE_URL = window.BASE_URL || ''
+  const BASE_URL = window.BASE_URL || '';
   const opts = {
     method: method.toUpperCase(),
     credentials: 'same-origin',
@@ -13,14 +13,14 @@ export default function fetchJson(method, url, body) {
       Expires: '-1',
       Pragma: 'no-cache'
     }
-  }
+  };
   if (body) {
-    opts.body = JSON.stringify(body)
+    opts.body = JSON.stringify(body);
   }
 
-  let fetchUrl = BASE_URL + url
+  let fetchUrl = BASE_URL + url;
   if (BASE_URL && url.substring(0, 1) !== '/') {
-    fetchUrl = BASE_URL + '/' + url
+    fetchUrl = BASE_URL + '/' + url;
   }
 
   return fetch(fetchUrl, opts)
@@ -28,18 +28,18 @@ export default function fetchJson(method, url, body) {
       // API server will send 200 even if error occurs
       // Eventually this should change to proper status code usage
       if (response.redirected) {
-        return (window.location = response.url)
+        return (window.location = response.url);
       } else if (response.status === 200) {
-        return response.json()
+        return response.json();
       } else {
-        console.error(response)
-        throw new Error('Server responded not ok')
+        console.error(response);
+        throw new Error('Server responded not ok');
       }
     })
     .catch(error => {
-      message.error(error.toString())
+      message.error(error.toString());
       return {
         error: 'Server responded not ok'
-      }
-    })
+      };
+    });
 }

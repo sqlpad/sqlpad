@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types'
-import React from 'react'
+import PropTypes from 'prop-types';
+import React from 'react';
 
 class AboutContent extends React.Component {
   render() {
-    const { version } = this.props
+    const { version } = this.props;
     return (
       <div>
         <p>
@@ -67,16 +67,16 @@ class AboutContent extends React.Component {
           </li>
         </ul>
       </div>
-    )
+    );
   }
 }
 
 AboutContent.propTypes = {
   version: PropTypes.string
-}
+};
 
 AboutContent.defaultProps = {
   version: ''
-}
+};
 
-export default AboutContent
+export default AboutContent;

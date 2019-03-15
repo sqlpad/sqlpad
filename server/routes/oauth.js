@@ -1,11 +1,11 @@
-const passport = require('passport')
-const router = require('express').Router()
-const { baseUrl } = require('../lib/config').getPreDbConfig()
+const passport = require('passport');
+const router = require('express').Router();
+const { baseUrl } = require('../lib/config').getPreDbConfig();
 
 router.get(
   '/auth/google',
   passport.authenticate('google', { scope: ['profile email'] })
-)
+);
 
 router.get(
   '/auth/google/callback',
@@ -13,6 +13,6 @@ router.get(
     successRedirect: baseUrl + '/',
     failureRedirect: baseUrl + '/signin'
   })
-)
+);
 
-module.exports = router
+module.exports = router;

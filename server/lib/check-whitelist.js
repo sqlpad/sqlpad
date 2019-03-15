@@ -17,12 +17,12 @@
  */
 module.exports = function checkWhitelist(whitelistedDomains, email) {
   if (whitelistedDomains) {
-    const domain = email.split('@')[1]
+    const domain = email.split('@')[1];
     const whitelistDomains = whitelistedDomains
       .split(' ')
-      .map(domain => domain.trim())
+      .map(domain => domain.trim());
 
-    return whitelistDomains.includes(domain)
+    return whitelistDomains.includes(domain);
   }
-  return false
-}
+  return false;
+};

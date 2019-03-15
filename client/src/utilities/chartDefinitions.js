@@ -276,6 +276,6 @@ const chartDefinitions = [
       }
     ]
   }
-]
+];
 
-export default chartDefinitions
+export default chartDefinitions;

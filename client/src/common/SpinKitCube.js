@@ -1,5 +1,5 @@
-import React from 'react'
-import './SpinKitCube.css'
+import React from 'react';
+import './SpinKitCube.css';
 
 // http://tobiasahlin.com/spinkit/
 export default () => (
@@ -14,4 +14,4 @@ export default () => (
     <div className="sk-cube sk-cube8" />
     <div className="sk-cube sk-cube9" />
   </div>
-)
+);

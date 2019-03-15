@@ -8,7 +8,6 @@
     "prettier": "^1.16.4"
   },
   "prettier": {
-    "semi": false,
     "singleQuote": true
   },
   "husky": {

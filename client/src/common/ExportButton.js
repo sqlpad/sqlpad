@@ -1,35 +1,35 @@
-import Button from 'antd/lib/button'
-import Dropdown from 'antd/lib/dropdown'
-import Icon from 'antd/lib/icon'
-import Menu from 'antd/lib/menu'
-import PropTypes from 'prop-types'
-import React from 'react'
-import AppContext from '../containers/AppContext'
+import Button from 'antd/lib/button';
+import Dropdown from 'antd/lib/dropdown';
+import Icon from 'antd/lib/icon';
+import Menu from 'antd/lib/menu';
+import PropTypes from 'prop-types';
+import React from 'react';
+import AppContext from '../containers/AppContext';
 
 class ExportButton extends React.Component {
   render() {
-    const { cacheKey, onSaveImageClick } = this.props
+    const { cacheKey, onSaveImageClick } = this.props;
 
     if (!cacheKey) {
-      return null
+      return null;
     }
 
     return (
       <AppContext.Consumer>
         {appContext => {
-          const { config } = appContext
+          const { config } = appContext;
           if (!config) {
-            return
+            return;
           }
 
-          const { baseUrl, allowCsvDownload } = config
+          const { baseUrl, allowCsvDownload } = config;
 
           if (!cacheKey || !allowCsvDownload) {
-            return
+            return;
           }
 
-          const csvDownloadLink = `${baseUrl}/download-results/${cacheKey}.csv`
-          const xlsxDownloadLink = `${baseUrl}/download-results/${cacheKey}.xlsx`
+          const csvDownloadLink = `${baseUrl}/download-results/${cacheKey}.csv`;
+          const xlsxDownloadLink = `${baseUrl}/download-results/${cacheKey}.xlsx`;
 
           return (
             <Dropdown
@@ -55,16 +55,16 @@ class ExportButton extends React.Component {
                 Export <Icon type="down" />
               </Button>
             </Dropdown>
-          )
+          );
         }}
       </AppContext.Consumer>
-    )
+    );
   }
 }
 
 ExportButton.propTypes = {
   cacheKey: PropTypes.string,
   onSaveImageClick: PropTypes.func
-}
+};
 
-export default ExportButton
+export default ExportButton;

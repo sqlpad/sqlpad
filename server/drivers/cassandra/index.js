@@ -1,8 +1,8 @@
-const cassandra = require('cassandra-driver')
-const { formatSchemaQueryResults } = require('../utils')
+const cassandra = require('cassandra-driver');
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'cassandra'
-const name = 'Cassandra'
+const id = 'cassandra';
+const name = 'Cassandra';
 
 const fields = [
   {
@@ -15,7 +15,7 @@ const fields = [
     formType: 'TEXT',
     label: 'Keyspace'
   }
-]
+];
 
 const SCHEMA_SQL = `
   SELECT 
@@ -25,7 +25,7 @@ const SCHEMA_SQL = `
     type AS data_type
   FROM 
     system_schema.columns;
-`
+`;
 
 /**
  * Cassandra client needs to be shut down for either success or failure
@@ -36,7 +36,7 @@ function shutdownClient(client) {
     .shutdown()
     .catch(error =>
       console.error('Error shutting down cassandra connection', error)
-    )
+    );
 }
 
 /**
@@ -46,24 +46,24 @@ function shutdownClient(client) {
  * @param {object} connection
  */
 function runQuery(query, connection) {
-  const { contactPoints, keyspace, maxRows } = connection
+  const { contactPoints, keyspace, maxRows } = connection;
 
   const client = new cassandra.Client({
     contactPoints: contactPoints.split(',').map(cp => cp.trim()),
     keyspace
-  })
+  });
 
   return client
     .execute(query, [], { fetchSize: maxRows })
     .then(result => {
-      shutdownClient(client)
-      const incomplete = result.rows && result.rows.length === maxRows
-      return { rows: result.rows, incomplete }
+      shutdownClient(client);
+      const incomplete = result.rows && result.rows.length === maxRows;
+      return { rows: result.rows, incomplete };
     })
     .catch(error => {
-      shutdownClient(client)
-      throw error
-    })
+      shutdownClient(client);
+      throw error;
+    });
 }
 
 /**
@@ -71,8 +71,8 @@ function runQuery(query, connection) {
  * @param {*} connection
  */
 function testConnection(connection) {
-  const query = 'select * from system.local;'
-  return runQuery(query, connection)
+  const query = 'select * from system.local;';
+  return runQuery(query, connection);
 }
 
 /**
@@ -81,10 +81,10 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  connection.maxRows = 1000000
+  connection.maxRows = 1000000;
   return runQuery(SCHEMA_SQL, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
-  )
+  );
 }
 
 module.exports = {
@@ -94,4 +94,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

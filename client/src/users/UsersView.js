@@ -1,122 +1,122 @@
-import Button from 'antd/lib/button'
-import Layout from 'antd/lib/layout'
-import message from 'antd/lib/message'
-import Modal from 'antd/lib/modal'
-import Popconfirm from 'antd/lib/popconfirm'
-import Select from 'antd/lib/select'
-import Table from 'antd/lib/table'
-import moment from 'moment'
-import React from 'react'
-import { Link } from 'react-router-dom'
-import uuid from 'uuid'
-import AppNav from '../AppNav'
-import Header from '../common/Header'
-import AppContext from '../containers/AppContext'
-import fetchJson from '../utilities/fetch-json.js'
-import InviteUserForm from './InviteUserForm'
+import Button from 'antd/lib/button';
+import Layout from 'antd/lib/layout';
+import message from 'antd/lib/message';
+import Modal from 'antd/lib/modal';
+import Popconfirm from 'antd/lib/popconfirm';
+import Select from 'antd/lib/select';
+import Table from 'antd/lib/table';
+import moment from 'moment';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import uuid from 'uuid';
+import AppNav from '../AppNav';
+import Header from '../common/Header';
+import AppContext from '../containers/AppContext';
+import fetchJson from '../utilities/fetch-json.js';
+import InviteUserForm from './InviteUserForm';
 
-const { Content } = Layout
-const { Column } = Table
-const { Option } = Select
+const { Content } = Layout;
+const { Column } = Table;
+const { Option } = Select;
 
 class UsersView extends React.Component {
   state = {
     users: [],
     isSaving: false,
     showAddUser: false
-  }
+  };
 
   componentDidMount() {
-    document.title = 'SQLPad - Users'
-    this.loadUsersFromServer()
+    document.title = 'SQLPad - Users';
+    this.loadUsersFromServer();
   }
 
   handleDelete = user => {
     fetchJson('DELETE', '/api/users/' + user._id).then(json => {
       if (json.error) {
-        return message.error('Delete Failed: ' + json.error.toString())
+        return message.error('Delete Failed: ' + json.error.toString());
       }
-      message.success('User Deleted')
-      this.loadUsersFromServer()
-    })
-  }
+      message.success('User Deleted');
+      this.loadUsersFromServer();
+    });
+  };
 
   loadUsersFromServer = () => {
     fetchJson('GET', '/api/users').then(json => {
       if (json.error) {
-        message.error(json.error)
+        message.error(json.error);
       }
       if (json.users) {
         const users = json.users.map(user => {
-          user.key = user._id
-          return user
-        })
-        this.setState({ users })
+          user.key = user._id;
+          return user;
+        });
+        this.setState({ users });
       }
-    })
-  }
+    });
+  };
 
   updateUserRole = user => {
-    this.setState({ isSaving: true })
+    this.setState({ isSaving: true });
     fetchJson('PUT', '/api/users/' + user._id, {
       role: user.role
     }).then(json => {
-      this.loadUsersFromServer()
-      this.setState({ isSaving: false })
+      this.loadUsersFromServer();
+      this.setState({ isSaving: false });
       if (json.error) {
-        return message.error('Update failed: ' + json.error.toString())
+        return message.error('Update failed: ' + json.error.toString());
       }
-      message.success('User Updated')
-    })
-  }
+      message.success('User Updated');
+    });
+  };
 
   generatePasswordResetLink = user => {
-    this.setState({ isSaving: true })
-    const passwordResetId = uuid.v4()
+    this.setState({ isSaving: true });
+    const passwordResetId = uuid.v4();
     fetchJson('PUT', '/api/users/' + user._id, {
       passwordResetId
     }).then(json => {
-      this.loadUsersFromServer()
-      this.setState({ isSaving: false })
+      this.loadUsersFromServer();
+      this.setState({ isSaving: false });
       if (json.error) {
-        return message.error('Update failed: ' + json.error.toString())
+        return message.error('Update failed: ' + json.error.toString());
       }
-      message.success('Password link generated')
-    })
-  }
+      message.success('Password link generated');
+    });
+  };
 
   removePasswordResetLink = user => {
-    this.setState({ isSaving: true })
+    this.setState({ isSaving: true });
     fetchJson('PUT', '/api/users/' + user._id, {
       passwordResetId: ''
     }).then(json => {
-      this.loadUsersFromServer()
-      this.setState({ isSaving: false })
+      this.loadUsersFromServer();
+      this.setState({ isSaving: false });
       if (json.error) {
-        return message.error('Update failed: ' + json.error.toString())
+        return message.error('Update failed: ' + json.error.toString());
       }
-      message.success('Password reset link removed')
-    })
-  }
+      message.success('Password reset link removed');
+    });
+  };
 
   handleOnInvited = () => {
-    this.loadUsersFromServer()
-    this.setState({ showAddUser: false })
-  }
+    this.loadUsersFromServer();
+    this.setState({ showAddUser: false });
+  };
 
   createdRender = (text, record) => {
     return !record.signupDate ? (
       <em>not signed up yet</em>
     ) : (
       moment(record.signupDate).calendar()
-    )
-  }
+    );
+  };
 
   roleRender = (text, record) => {
     return (
       <AppContext.Consumer>
         {appContext => {
-          const { currentUser } = appContext
+          const { currentUser } = appContext;
 
           return (
             <Select
@@ -125,18 +125,18 @@ class UsersView extends React.Component {
               disabled={currentUser && currentUser._id === record._id}
               value={record.role || ''}
               onChange={value => {
-                record.role = value
-                return this.updateUserRole(record)
+                record.role = value;
+                return this.updateUserRole(record);
               }}
             >
               <Option value="editor">Editor</Option>
               <Option value="admin">Admin</Option>
             </Select>
-          )
+          );
         }}
       </AppContext.Consumer>
-    )
-  }
+    );
+  };
 
   resetButtonRender = (text, record) => {
     if (record.passwordResetId) {
@@ -152,7 +152,7 @@ class UsersView extends React.Component {
             Reset Link
           </Link>
         </span>
-      )
+      );
     }
     return (
       <Button
@@ -161,11 +161,11 @@ class UsersView extends React.Component {
       >
         Generate Link
       </Button>
-    )
-  }
+    );
+  };
 
   renderTable() {
-    const { users } = this.state
+    const { users } = this.state;
     return (
       <Table
         locale={{ emptyText: 'No users found' }}
@@ -195,15 +195,15 @@ class UsersView extends React.Component {
               >
                 <Button icon="delete" type="danger" />
               </Popconfirm>
-            )
+            );
           }}
         />
       </Table>
-    )
+    );
   }
 
   renderModal() {
-    const { showAddUser } = this.state
+    const { showAddUser } = this.state;
     return (
       <Modal
         title="New user"
@@ -215,7 +215,7 @@ class UsersView extends React.Component {
       >
         <InviteUserForm onInvited={this.handleOnInvited} />
       </Modal>
-    )
+    );
   }
 
   render() {
@@ -239,8 +239,8 @@ class UsersView extends React.Component {
           </Content>
         </Layout>
       </AppNav>
-    )
+    );
   }
 }
 
-export default UsersView
+export default UsersView;

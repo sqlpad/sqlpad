@@ -1,4 +1,4 @@
-const _ = require('lodash')
+const _ = require('lodash');
 
 /**
  * Formats schema query results into
@@ -7,29 +7,29 @@ const _ = require('lodash')
  */
 function formatSchemaQueryResults(queryResult) {
   if (!queryResult || !queryResult.rows || !queryResult.rows.length) {
-    return {}
+    return {};
   }
 
   // queryResult row casing may not always be consistent with what is specified in query
   // HANA is always uppercase despire aliasing as lower case for example
   // To account for this loop through rows and normalize the case
   const rows = queryResult.rows.map(row => {
-    const cleanRow = {}
+    const cleanRow = {};
     Object.keys(row).forEach(key => {
-      cleanRow[key.toLowerCase()] = row[key]
-    })
-    return cleanRow
-  })
+      cleanRow[key.toLowerCase()] = row[key];
+    });
+    return cleanRow;
+  });
 
-  const tree = {}
-  const bySchema = _.groupBy(rows, 'table_schema')
+  const tree = {};
+  const bySchema = _.groupBy(rows, 'table_schema');
   for (const schema in bySchema) {
     if (bySchema.hasOwnProperty(schema)) {
-      tree[schema] = {}
-      const byTableName = _.groupBy(bySchema[schema], 'table_name')
+      tree[schema] = {};
+      const byTableName = _.groupBy(bySchema[schema], 'table_name');
       for (const tableName in byTableName) {
         if (byTableName.hasOwnProperty(tableName)) {
-          tree[schema][tableName] = byTableName[tableName]
+          tree[schema][tableName] = byTableName[tableName];
         }
       }
     }
@@ -47,7 +47,7 @@ function formatSchemaQueryResults(queryResult) {
       }
     }
   */
-  return tree
+  return tree;
 }
 
 /**
@@ -58,21 +58,21 @@ function formatSchemaQueryResults(queryResult) {
  */
 function ensureBoolean(value) {
   if (typeof value === 'boolean') {
-    return value
+    return value;
   }
   if (typeof value === 'string' && value.toLowerCase() === 'true') {
-    return true
+    return true;
   } else if (typeof value === 'string' && value.toLowerCase() === 'false') {
-    return false
+    return false;
   } else if (value === 1) {
-    return true
+    return true;
   } else if (value === 0) {
-    return false
+    return false;
   }
-  throw new Error(`Unexpected value for boolean: ${value}`)
+  throw new Error(`Unexpected value for boolean: ${value}`);
 }
 
 module.exports = {
   ensureBoolean,
   formatSchemaQueryResults
-}
+};

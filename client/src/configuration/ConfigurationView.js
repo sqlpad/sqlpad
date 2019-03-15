@@ -1,47 +1,47 @@
-import Col from 'antd/lib/col'
-import Layout from 'antd/lib/layout'
-import message from 'antd/lib/message'
-import Row from 'antd/lib/row'
-import debounce from 'lodash.debounce'
-import React from 'react'
-import AppNav from '../AppNav'
-import Header from '../common/Header'
-import fetchJson from '../utilities/fetch-json.js'
-import CheckListItem from './CheckListItem'
-import ConfigEnvDocumentation from './ConfigEnvDocumentation'
-import ConfigItemInput from './ConfigItemInput'
+import Col from 'antd/lib/col';
+import Layout from 'antd/lib/layout';
+import message from 'antd/lib/message';
+import Row from 'antd/lib/row';
+import debounce from 'lodash.debounce';
+import React from 'react';
+import AppNav from '../AppNav';
+import Header from '../common/Header';
+import fetchJson from '../utilities/fetch-json.js';
+import CheckListItem from './CheckListItem';
+import ConfigEnvDocumentation from './ConfigEnvDocumentation';
+import ConfigItemInput from './ConfigItemInput';
 
-const { Content } = Layout
+const { Content } = Layout;
 
 class ConfigurationView extends React.Component {
   state = {
     configItems: []
-  }
+  };
 
   loadConfigValuesFromServer = () => {
     fetchJson('GET', '/api/config-items').then(json => {
-      if (json.error) message.error(json.error)
-      this.setState({ configItems: json.configItems })
-    })
-  }
+      if (json.error) message.error(json.error);
+      this.setState({ configItems: json.configItems });
+    });
+  };
 
   saveConfigValue = (key, value) => {
     fetchJson('POST', '/api/config-values/' + key, {
       value: value
     }).then(json => {
       if (json.error) {
-        message.error('Save failed')
+        message.error('Save failed');
       } else {
-        message.success('Value saved')
-        this.loadConfigValuesFromServer()
+        message.success('Value saved');
+        this.loadConfigValuesFromServer();
       }
-    })
-  }
+    });
+  };
 
   componentDidMount() {
-    document.title = 'SQLPad - Configuration'
-    this.loadConfigValuesFromServer()
-    this.saveConfigValue = debounce(this.saveConfigValue, 500)
+    document.title = 'SQLPad - Configuration';
+    this.loadConfigValuesFromServer();
+    this.saveConfigValue = debounce(this.saveConfigValue, 500);
   }
 
   renderValueInput = (text, record) => {
@@ -54,33 +54,34 @@ class ConfigurationView extends React.Component {
           saveConfigValue={this.saveConfigValue}
         />
       </div>
-    )
-  }
+    );
+  };
 
   renderInfo = config => {
     const disabled =
       config.effectiveValueSource === 'cli' ||
       config.effectiveValueSource === 'saved cli' ||
-      config.effectiveValueSource === 'env'
+      config.effectiveValueSource === 'env';
 
     const effectiveValueSourceLabels = {
       cli: 'Command Line',
       'saved cli': 'Saved Command Line',
       env: 'Environment Varialbe'
-    }
-    const overriddenBy = effectiveValueSourceLabels[config.effectiveValueSource]
+    };
+    const overriddenBy =
+      effectiveValueSourceLabels[config.effectiveValueSource];
 
     const defaultValue =
       config.default === '' ? (
         <em>empty</em>
       ) : (
         <span>{config.default.toString()}</span>
-      )
+      );
 
     const cliFlag =
       config.cliFlag && config.cliFlag.pop
         ? config.cliFlag.pop()
-        : config.cliFlag
+        : config.cliFlag;
 
     return (
       <div className="mt4">
@@ -110,14 +111,14 @@ class ConfigurationView extends React.Component {
           </div>
         )}
       </div>
-    )
-  }
+    );
+  };
 
   renderConfigInputs() {
-    const { configItems } = this.state
+    const { configItems } = this.state;
     const uiConfigItems = configItems.filter(
       config => config.interface === 'ui'
-    )
+    );
     return (
       <div className="bg-white w-100 pa4">
         {uiConfigItems.map(config => {
@@ -136,10 +137,10 @@ class ConfigurationView extends React.Component {
                 <div>{this.renderInfo(config)}</div>
               </Col>
             </Row>
-          )
+          );
         })}
       </div>
-    )
+    );
   }
 
   render() {
@@ -223,8 +224,8 @@ class ConfigurationView extends React.Component {
           </Content>
         </Layout>
       </AppNav>
-    )
+    );
   }
 }
 
-export default ConfigurationView
+export default ConfigurationView;

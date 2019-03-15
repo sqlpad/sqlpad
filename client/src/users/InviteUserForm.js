@@ -1,57 +1,57 @@
-import Button from 'antd/lib/button'
-import Form from 'antd/lib/form'
-import Input from 'antd/lib/input'
-import message from 'antd/lib/message'
-import Select from 'antd/lib/select'
-import React from 'react'
-import AppContext from '../containers/AppContext'
-import fetchJson from '../utilities/fetch-json.js'
+import Button from 'antd/lib/button';
+import Form from 'antd/lib/form';
+import Input from 'antd/lib/input';
+import message from 'antd/lib/message';
+import Select from 'antd/lib/select';
+import React from 'react';
+import AppContext from '../containers/AppContext';
+import fetchJson from '../utilities/fetch-json.js';
 
-const FormItem = Form.Item
-const { Option } = Select
+const FormItem = Form.Item;
+const { Option } = Select;
 
 class InviteUserForm extends React.Component {
   state = {
     email: null,
     role: null,
     isInviting: null
-  }
+  };
 
   onEmailChange = e => {
-    this.setState({ email: e.target.value })
-  }
+    this.setState({ email: e.target.value });
+  };
 
   onRoleChange = role => {
-    this.setState({ role })
-  }
+    this.setState({ role });
+  };
 
   onInviteClick = e => {
-    const { onInvited } = this.props
+    const { onInvited } = this.props;
     const user = {
       email: this.state.email,
       role: this.state.role
-    }
+    };
     this.setState({
       isInviting: true
-    })
+    });
     fetchJson('POST', '/api/users', user).then(json => {
       this.setState({
         isInviting: false
-      })
+      });
       if (json.error) {
-        return message.error('Whitelist failed: ' + json.error.toString())
+        return message.error('Whitelist failed: ' + json.error.toString());
       }
-      message.success('User Whitelisted')
+      message.success('User Whitelisted');
       this.setState({
         email: null,
         role: null
-      })
-      onInvited()
-    })
-  }
+      });
+      onInvited();
+    });
+  };
 
   render() {
-    const { email, role, isInviting } = this.state
+    const { email, role, isInviting } = this.state;
 
     return (
       <AppContext.Consumer>
@@ -107,8 +107,8 @@ class InviteUserForm extends React.Component {
           </div>
         )}
       </AppContext.Consumer>
-    )
+    );
   }
 }
 
-export default InviteUserForm
+export default InviteUserForm;

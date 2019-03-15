@@ -1,10 +1,10 @@
-const assert = require('assert')
-const utils = require('../utils')
+const assert = require('assert');
+const utils = require('../utils');
 
 describe('api/test-connection', function() {
   before(function() {
-    return utils.resetWithUser()
-  })
+    return utils.resetWithUser();
+  });
 
   it('tests connection', function() {
     return utils
@@ -16,6 +16,6 @@ describe('api/test-connection', function() {
         username: 'sqlpad',
         password: 'sqlpad'
       })
-      .then(body => assert(!body.error, 'Expect no error'))
-  })
-})
+      .then(body => assert(!body.error, 'Expect no error'));
+  });
+});

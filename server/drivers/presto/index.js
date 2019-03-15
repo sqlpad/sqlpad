@@ -1,11 +1,11 @@
-const presto = require('./_presto')
-const { formatSchemaQueryResults } = require('../utils')
+const presto = require('./_presto');
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'presto'
-const name = 'Presto'
+const id = 'presto';
+const name = 'Presto';
 
 function getPrestoSchemaSql(catalog, schema) {
-  const schemaSql = schema ? `AND table_schema = '${schema}'` : ''
+  const schemaSql = schema ? `AND table_schema = '${schema}'` : '';
   return `
     SELECT 
       c.table_schema, 
@@ -21,7 +21,7 @@ function getPrestoSchemaSql(catalog, schema) {
       c.table_schema, 
       c.table_name, 
       c.ordinal_position
-  `
+  `;
 }
 
 /**
@@ -31,33 +31,33 @@ function getPrestoSchemaSql(catalog, schema) {
  * @param {object} connection
  */
 function runQuery(query, connection) {
-  let incomplete = false
-  const rows = []
-  const port = connection.port || 8080
+  let incomplete = false;
+  const rows = [];
+  const port = connection.port || 8080;
   const prestoConfig = {
     url: `http://${connection.host}:${port}`,
     user: connection.username,
     catalog: connection.prestoCatalog,
     schema: connection.prestoSchema
-  }
+  };
   return presto.send(prestoConfig, query).then(result => {
     if (!result) {
-      throw new Error('No result returned')
+      throw new Error('No result returned');
     }
-    let { data, columns } = result
+    let { data, columns } = result;
     if (data.length > connection.maxRows) {
-      incomplete = true
-      data = data.slice(0, connection.maxRows)
+      incomplete = true;
+      data = data.slice(0, connection.maxRows);
     }
     for (let r = 0; r < data.length; r++) {
-      const row = {}
+      const row = {};
       for (let c = 0; c < columns.length; c++) {
-        row[columns[c].name] = data[r][c]
+        row[columns[c].name] = data[r][c];
       }
-      rows.push(row)
+      rows.push(row);
     }
-    return { rows, incomplete }
-  })
+    return { rows, incomplete };
+  });
 }
 
 /**
@@ -66,8 +66,8 @@ function runQuery(query, connection) {
  */
 function testConnection(connection) {
   // Presto cannot have ; at end of query
-  const query = "SELECT 'success' AS TestQuery"
-  return runQuery(query, connection)
+  const query = "SELECT 'success' AS TestQuery";
+  return runQuery(query, connection);
 }
 
 /**
@@ -78,10 +78,10 @@ function getSchema(connection) {
   const schemaSql = getPrestoSchemaSql(
     connection.prestoCatalog,
     connection.prestoSchema
-  )
+  );
   return runQuery(schemaSql, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
-  )
+  );
 }
 
 const fields = [
@@ -110,7 +110,7 @@ const fields = [
     formType: 'TEXT',
     label: 'Schema'
   }
-]
+];
 
 module.exports = {
   id,
@@ -119,4 +119,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

@@ -1,11 +1,11 @@
-const drill = require('./drill.js')
-const { formatSchemaQueryResults } = require('../utils')
+const drill = require('./drill.js');
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'drill'
-const name = 'Apache Drill'
+const id = 'drill';
+const name = 'Apache Drill';
 
 function getDrillSchemaSql(catalog, schema) {
-  const schemaSql = schema ? `AND table_schema = '${schema}'` : ''
+  const schemaSql = schema ? `AND table_schema = '${schema}'` : '';
   return `
     SELECT 
       c.table_schema, 
@@ -21,7 +21,7 @@ function getDrillSchemaSql(catalog, schema) {
       c.table_schema, 
       c.table_name, 
       c.ordinal_position
-  `
+  `;
 }
 
 /**
@@ -32,8 +32,8 @@ function getDrillSchemaSql(catalog, schema) {
  */
 
 function runQuery(query, connection) {
-  let incomplete = false
-  const rows = []
+  let incomplete = false;
+  const rows = [];
 
   const drillConfig = {
     host: connection.host,
@@ -42,30 +42,30 @@ function runQuery(query, connection) {
     password: connection.password,
     defaultSchema: connection.drillDefaultSchema,
     ssl: connection.ssl || false
-  }
-  const client = new drill.Client(drillConfig)
+  };
+  const client = new drill.Client(drillConfig);
 
   return client.query(drillConfig, query).then(result => {
     if (!result) {
-      throw new Error('No result returned')
+      throw new Error('No result returned');
     } else if (result.errorMessage && result.errorMessage.length > 0) {
-      console.log('Error with query: ' + query)
-      console.log(result.errorMessage)
-      throw new Error(result.errorMessage.split('\n')[0])
+      console.log('Error with query: ' + query);
+      console.log(result.errorMessage);
+      throw new Error(result.errorMessage.split('\n')[0]);
     }
     if (result.length > connection.maxRows) {
-      incomplete = true
-      result['rows'] = result['rows'].slice(0, connection.maxRows)
+      incomplete = true;
+      result['rows'] = result['rows'].slice(0, connection.maxRows);
     }
     for (let r = 0; r < result['rows'].length; r++) {
-      const row = {}
+      const row = {};
       for (let c = 0; c < result['columns'].length; c++) {
-        row[result['columns'][c]] = result['rows'][r][result['columns'][c]]
+        row[result['columns'][c]] = result['rows'][r][result['columns'][c]];
       }
-      rows.push(row)
+      rows.push(row);
     }
-    return { rows, incomplete }
-  })
+    return { rows, incomplete };
+  });
 }
 
 /**
@@ -73,8 +73,8 @@ function runQuery(query, connection) {
  * @param {*} connection
  */
 function testConnection(connection) {
-  const query = "SELECT 'success'  FROM (VALUES(1))"
-  return runQuery(query, connection)
+  const query = "SELECT 'success'  FROM (VALUES(1))";
+  return runQuery(query, connection);
 }
 
 /**
@@ -85,10 +85,10 @@ function getSchema(connection) {
   const schemaSql = getDrillSchemaSql(
     connection.drillCatalog
     //connection.drillSchema
-  )
+  );
   return runQuery(schemaSql, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
-  )
+  );
 }
 
 const fields = [
@@ -122,7 +122,7 @@ const fields = [
     formType: 'CHECKBOX',
     label: 'Use SSL to connect to Drill'
   }
-]
+];
 
 module.exports = {
   id,
@@ -131,4 +131,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

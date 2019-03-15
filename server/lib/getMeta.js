@@ -1,4 +1,4 @@
-const _ = require('lodash')
+const _ = require('lodash');
 
 /**
  * Derive whether value is a number number or number as a string
@@ -8,22 +8,22 @@ const _ = require('lodash')
  */
 function isNumeric(value) {
   if (_.isNumber(value)) {
-    return true
+    return true;
   }
   if (_.isString(value)) {
     if (!isFinite(value)) {
-      return false
+      return false;
     }
     // str is a finite number, but not all number strings should be numbers
     // If the string starts with 0, is more than 1 character, and does not have a period, it should stay a string
     // It could be an account number for example
     if (value[0] === '0' && value.length > 1 && value.indexOf('.') === -1) {
-      return false
+      return false;
     }
 
-    return true
+    return true;
   }
-  return false
+  return false;
 }
 
 /**
@@ -31,7 +31,7 @@ function isNumeric(value) {
  * @param {array<object>} rows
  */
 module.exports = function getMeta(rows) {
-  const meta = {}
+  const meta = {};
 
   rows.forEach(row => {
     _.forOwn(row, (value, key) => {
@@ -41,22 +41,22 @@ module.exports = function getMeta(rows) {
           max: null,
           min: null,
           maxValueLength: 0
-        }
+        };
       }
 
       // if there is no value none of what follows will be helpful
       if (value == null) {
-        return
+        return;
       }
 
       // if we don't have a data type and we have a value yet lets try and figure it out
       if (!meta[key].datatype) {
         if (_.isDate(value)) {
-          meta[key].datatype = 'date'
+          meta[key].datatype = 'date';
         } else if (isNumeric(value)) {
-          meta[key].datatype = 'number'
+          meta[key].datatype = 'number';
         } else if (_.isString(value)) {
-          meta[key].datatype = 'string'
+          meta[key].datatype = 'string';
         }
       }
 
@@ -71,51 +71,51 @@ module.exports = function getMeta(rows) {
         _.isString(value) &&
         !isNumeric(value)
       ) {
-        meta[key].datatype = 'string'
+        meta[key].datatype = 'string';
       }
 
       // For strings, get max length of the string for display purposes
       if (meta[key].datatype === 'string' && _.isString(value)) {
         if (meta[key].maxValueLength < value.length) {
-          meta[key].maxValueLength = value.length
+          meta[key].maxValueLength = value.length;
         }
       }
 
       // if we have a value and are dealing with a number or date, we should get min and max
       if (meta[key].datatype === 'number' && isNumeric(value)) {
-        value = Number(value)
+        value = Number(value);
         // if we haven't yet defined a max and this row contains a number
         if (!meta[key].max) {
-          meta[key].max = value
+          meta[key].max = value;
         } else if (value > meta[key].max) {
           // otherwise this field in this row contains a number, and we should see if its bigger
-          meta[key].max = value
+          meta[key].max = value;
         }
         // then do the same thing for min
         if (!meta[key].min) {
-          meta[key].min = value
+          meta[key].min = value;
         } else if (value < meta[key].min) {
-          meta[key].min = value
+          meta[key].min = value;
         }
       }
 
       if (meta[key].datatype === 'date' && _.isDate(value)) {
         // if we haven't yet defined a max and this row contains a number
         if (!meta[key].max) {
-          meta[key].max = value
+          meta[key].max = value;
         } else if (value > meta[key].max) {
           // otherwise this field in this row contains a number, and we should see if its bigger
-          meta[key].max = value
+          meta[key].max = value;
         }
         // then do the same thing for min
         if (!meta[key].min) {
-          meta[key].min = value
+          meta[key].min = value;
         } else if (value < meta[key].min) {
-          meta[key].min = value
+          meta[key].min = value;
         }
       }
-    })
-  })
+    });
+  });
 
-  return meta
-}
+  return meta;
+};

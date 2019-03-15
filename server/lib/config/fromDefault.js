@@ -1,5 +1,5 @@
-const path = require('path')
-const definitions = require('./configItems')
+const path = require('path');
+const definitions = require('./configItems');
 
 /**
  * Gets default config values
@@ -7,20 +7,20 @@ const definitions = require('./configItems')
  * @returns {object} configMap
  */
 module.exports = function getDefaultConfig() {
-  const defaultMap = {}
+  const defaultMap = {};
 
   definitions.forEach(definition => {
     if (definition.key === 'dbPath') {
       const userHome =
         process.platform === 'win32'
           ? process.env.USERPROFILE
-          : process.env.HOME
-      const defaultDbPath = path.join(userHome, 'sqlpad/db')
-      defaultMap.dbPath = defaultDbPath
+          : process.env.HOME;
+      const defaultDbPath = path.join(userHome, 'sqlpad/db');
+      defaultMap.dbPath = defaultDbPath;
     } else if (definition.hasOwnProperty('default')) {
-      defaultMap[definition.key] = definition.default
+      defaultMap[definition.key] = definition.default;
     }
-  })
+  });
 
-  return defaultMap
-}
+  return defaultMap;
+};

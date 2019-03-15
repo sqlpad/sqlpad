@@ -1,18 +1,18 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
 class DocumentTitle extends React.Component {
   componentDidMount() {
-    document.title = this.props.children
+    document.title = this.props.children;
   }
 
   render() {
-    return null
+    return null;
   }
 }
 
 DocumentTitle.propTypes = {
   children: PropTypes.string.isRequired
-}
+};
 
-export default DocumentTitle
+export default DocumentTitle;

@@ -1,55 +1,55 @@
-import Button from 'antd/lib/button'
-import Icon from 'antd/lib/icon'
-import Input from 'antd/lib/input'
-import message from 'antd/lib/message'
-import React from 'react'
-import { Link, Redirect } from 'react-router-dom'
-import AppContext from './containers/AppContext'
-import fetchJson from './utilities/fetch-json.js'
+import Button from 'antd/lib/button';
+import Icon from 'antd/lib/icon';
+import Input from 'antd/lib/input';
+import message from 'antd/lib/message';
+import React from 'react';
+import { Link, Redirect } from 'react-router-dom';
+import AppContext from './containers/AppContext';
+import fetchJson from './utilities/fetch-json.js';
 
 class SignIn extends React.Component {
-  static contextType = AppContext
+  static contextType = AppContext;
 
   state = {
     email: '',
     password: '',
     redirect: false
-  }
+  };
 
   componentDidMount() {
-    document.title = 'SQLPad - Sign In'
+    document.title = 'SQLPad - Sign In';
   }
 
   onEmailChange = e => {
-    this.setState({ email: e.target.value })
-  }
+    this.setState({ email: e.target.value });
+  };
 
   onPasswordChange = e => {
-    this.setState({ password: e.target.value })
-  }
+    this.setState({ password: e.target.value });
+  };
 
   signIn = async e => {
-    const appContext = this.context
-    e.preventDefault()
+    const appContext = this.context;
+    e.preventDefault();
 
-    const json = await fetchJson('POST', '/api/signin', this.state)
+    const json = await fetchJson('POST', '/api/signin', this.state);
     if (json.error) {
-      return message.error('Username or password incorrect')
+      return message.error('Username or password incorrect');
     }
-    await appContext.refreshAppContext()
-    this.setState({ redirect: true })
-  }
+    await appContext.refreshAppContext();
+    this.setState({ redirect: true });
+  };
 
   render() {
-    const appContext = this.context
-    const { redirect } = this.state
+    const appContext = this.context;
+    const { redirect } = this.state;
     if (redirect) {
-      return <Redirect push to="/" />
+      return <Redirect push to="/" />;
     }
 
-    const { config, smtpConfigured, passport } = appContext
+    const { config, smtpConfigured, passport } = appContext;
     if (!config) {
-      return
+      return;
     }
 
     const localForm = (
@@ -89,7 +89,7 @@ class SignIn extends React.Component {
           ) : null}
         </div>
       </div>
-    )
+    );
 
     const googleForm = (
       <div>
@@ -100,7 +100,7 @@ class SignIn extends React.Component {
           </Button>
         </a>
       </div>
-    )
+    );
 
     return (
       <div className="pt5 measure center" style={{ width: '300px' }}>
@@ -108,8 +108,8 @@ class SignIn extends React.Component {
         {'local' in passport.strategies && localForm}
         {'google' in passport.strategies && googleForm}
       </div>
-    )
+    );
   }
 }
 
-export default SignIn
+export default SignIn;

@@ -1,6 +1,6 @@
-import Drawer from 'antd/lib/drawer'
-import React from 'react'
-import ConnectionForm from './ConnectionForm'
+import Drawer from 'antd/lib/drawer';
+import React from 'react';
+import ConnectionForm from './ConnectionForm';
 
 function ConnectionEditDrawer({
   connectionId,
@@ -9,7 +9,7 @@ function ConnectionEditDrawer({
   onConnectionSaved,
   placement
 }) {
-  const title = connectionId ? 'Edit connection' : 'New connection'
+  const title = connectionId ? 'Edit connection' : 'New connection';
   return (
     <Drawer
       title={title}
@@ -28,7 +28,7 @@ function ConnectionEditDrawer({
         onConnectionSaved={onConnectionSaved}
       />
     </Drawer>
-  )
+  );
 }
 
-export default ConnectionEditDrawer
+export default ConnectionEditDrawer;

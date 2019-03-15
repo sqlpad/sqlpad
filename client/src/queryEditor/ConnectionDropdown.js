@@ -1,8 +1,8 @@
-import Select from 'antd/lib/select'
-import React from 'react'
-import { ConnectionsContext } from '../connections/ConnectionsStore'
+import Select from 'antd/lib/select';
+import React from 'react';
+import { ConnectionsContext } from '../connections/ConnectionsStore';
 
-const { Option } = Select
+const { Option } = Select;
 
 function ConnectionDropdown() {
   return (
@@ -29,12 +29,12 @@ function ConnectionDropdown() {
               <Option key={conn._id} value={conn._id}>
                 {conn.name}
               </Option>
-            )
+            );
           })}
         </Select>
       )}
     </ConnectionsContext.Consumer>
-  )
+  );
 }
 
-export default ConnectionDropdown
+export default ConnectionDropdown;

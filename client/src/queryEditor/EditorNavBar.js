@@ -1,18 +1,18 @@
-import Button from 'antd/lib/button'
-import Form from 'antd/lib/form'
-import Icon from 'antd/lib/icon'
-import Input from 'antd/lib/input'
-import Radio from 'antd/lib/radio'
-import PropTypes from 'prop-types'
-import React from 'react'
-import ConnectionDropDown from './ConnectionDropdown'
+import Button from 'antd/lib/button';
+import Form from 'antd/lib/form';
+import Icon from 'antd/lib/icon';
+import Input from 'antd/lib/input';
+import Radio from 'antd/lib/radio';
+import PropTypes from 'prop-types';
+import React from 'react';
+import ConnectionDropDown from './ConnectionDropdown';
 
-const FormItem = Form.Item
+const FormItem = Form.Item;
 
 class EditorNavBar extends React.Component {
   onQueryNameChange = e => {
-    this.props.onQueryNameChange(e.target.value)
-  }
+    this.props.onQueryNameChange(e.target.value);
+  };
 
   render() {
     const {
@@ -28,12 +28,12 @@ class EditorNavBar extends React.Component {
       query,
       showValidation,
       unsavedChanges
-    } = this.props
+    } = this.props;
 
     const validationState =
-      showValidation && !query.name.length ? 'error' : null
-    const saveText = unsavedChanges ? 'Save*' : 'Save'
-    const cloneDisabled = !query._id
+      showValidation && !query.name.length ? 'error' : null;
+    const saveText = unsavedChanges ? 'Save*' : 'Save';
+    const cloneDisabled = !query._id;
 
     return (
       <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
@@ -82,7 +82,7 @@ class EditorNavBar extends React.Component {
           </FormItem>
         </Form>
       </div>
-    )
+    );
   }
 }
 
@@ -99,6 +99,6 @@ EditorNavBar.propTypes = {
   query: PropTypes.object.isRequired,
   showValidation: PropTypes.bool.isRequired,
   unsavedChanges: PropTypes.bool.isRequired
-}
+};
 
-export default EditorNavBar
+export default EditorNavBar;
