@@ -1,30 +1,30 @@
-import { Col, Row } from 'antd'
-import Button from 'antd/lib/button'
-import Divider from 'antd/lib/divider'
-import Icon from 'antd/lib/icon'
-import Input from 'antd/lib/input'
-import Layout from 'antd/lib/layout'
-import message from 'antd/lib/message'
-import Popconfirm from 'antd/lib/popconfirm'
-import Popover from 'antd/lib/popover'
-import Select from 'antd/lib/select'
-import Table from 'antd/lib/table'
-import Tag from 'antd/lib/tag'
-import uniq from 'lodash.uniq'
-import moment from 'moment'
-import React from 'react'
-import { Link } from 'react-router-dom'
-import AppNav from '../AppNav'
-import Header from '../common/Header'
-import SqlEditor from '../common/SqlEditor'
-import AppContext from '../containers/AppContext'
-import fetchJson from '../utilities/fetch-json.js'
+import { Col, Row } from 'antd';
+import Button from 'antd/lib/button';
+import Divider from 'antd/lib/divider';
+import Icon from 'antd/lib/icon';
+import Input from 'antd/lib/input';
+import Layout from 'antd/lib/layout';
+import message from 'antd/lib/message';
+import Popconfirm from 'antd/lib/popconfirm';
+import Popover from 'antd/lib/popover';
+import Select from 'antd/lib/select';
+import Table from 'antd/lib/table';
+import Tag from 'antd/lib/tag';
+import uniq from 'lodash.uniq';
+import moment from 'moment';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import AppNav from '../AppNav';
+import Header from '../common/Header';
+import SqlEditor from '../common/SqlEditor';
+import AppContext from '../containers/AppContext';
+import fetchJson from '../utilities/fetch-json.js';
 
-const { Content } = Layout
+const { Content } = Layout;
 
-const { Option } = Select
-const { Column } = Table
-const { Search } = Input
+const { Option } = Select;
+const { Column } = Table;
+const { Search } = Input;
 
 class QueriesView extends React.Component {
   state = {
@@ -39,62 +39,62 @@ class QueriesView extends React.Component {
     selectedCreatedBy: this.props.currentUser
       ? this.props.currentUser.email
       : ''
-  }
+  };
 
   handleQueryDelete = queryId => {
-    let { queries } = this.state
+    let { queries } = this.state;
     queries = queries.filter(q => {
-      return q._id !== queryId
-    })
+      return q._id !== queryId;
+    });
     this.setState({
       queries
-    })
+    });
     fetchJson('DELETE', '/api/queries/' + queryId).then(json => {
-      if (json.error) message.error(json.error)
-    })
-  }
+      if (json.error) message.error(json.error);
+    });
+  };
 
   loadConfigValuesFromServer = () => {
     fetchJson('GET', '/api/queries').then(json => {
-      const queries = json.queries || []
-      const createdBys = uniq(queries.map(q => q.createdBy))
+      const queries = json.queries || [];
+      const createdBys = uniq(queries.map(q => q.createdBy));
       const tags = uniq(
         queries
           .map(q => q.tags)
           .reduce((a, b) => a.concat(b), [])
           .filter(tag => tag)
-      )
-      let selectedCreatedBy = this.state.selectedCreatedBy
-      const email = this.props.currentUser && this.props.currentUser.email
+      );
+      let selectedCreatedBy = this.state.selectedCreatedBy;
+      const email = this.props.currentUser && this.props.currentUser.email;
       if (createdBys.indexOf(email) === -1) {
-        selectedCreatedBy = ''
+        selectedCreatedBy = '';
       }
       this.setState({
         queries: json.queries,
         createdBys: createdBys,
         selectedCreatedBy: selectedCreatedBy,
         tags: tags
-      })
-    })
+      });
+    });
     fetchJson('GET', '/api/connections').then(json => {
-      this.setState({ connections: json.connections })
-    })
-  }
+      this.setState({ connections: json.connections });
+    });
+  };
 
   onSearchChange = e => {
     this.setState({
       searchInput: e.target.value
-    })
-  }
+    });
+  };
 
   componentDidMount() {
-    document.title = 'SQLPad - Queries'
-    this.loadConfigValuesFromServer()
+    document.title = 'SQLPad - Queries';
+    this.loadConfigValuesFromServer();
   }
 
   nameRender = (text, record) => {
-    return <Link to={'/queries/' + record._id}>{record.name}</Link>
-  }
+    return <Link to={'/queries/' + record._id}>{record.name}</Link>;
+  };
 
   previewRender = (text, record) => {
     return (
@@ -110,30 +110,30 @@ class QueriesView extends React.Component {
       >
         <Icon type="code-o" />
       </Popover>
-    )
-  }
+    );
+  };
 
-  nameSorter = (a, b) => a.name.localeCompare(b.name)
+  nameSorter = (a, b) => a.name.localeCompare(b.name);
 
   modifiedSorter = (a, b) => {
-    return moment(a.modifiedDate).toDate() - moment(b.modifiedDate).toDate()
-  }
+    return moment(a.modifiedDate).toDate() - moment(b.modifiedDate).toDate();
+  };
 
-  modifiedRender = (text, record) => moment(record.modifiedDate).calendar()
+  modifiedRender = (text, record) => moment(record.modifiedDate).calendar();
 
   tagsRender = (text, record) => {
     if (record.tags && record.tags.length) {
-      return record.tags.map(tag => <Tag key={tag}>{tag}</Tag>)
+      return record.tags.map(tag => <Tag key={tag}>{tag}</Tag>);
     }
-  }
+  };
 
   actionsRender = (text, record) => {
     return (
       <AppContext.Consumer>
         {appContext => {
-          const { config } = appContext
-          const tableUrl = `${config.baseUrl}/query-table/${record._id}`
-          const chartUrl = `${config.baseUrl}/query-chart/${record._id}`
+          const { config } = appContext;
+          const tableUrl = `${config.baseUrl}/query-table/${record._id}`;
+          const chartUrl = `${config.baseUrl}/query-chart/${record._id}`;
           return (
             <span>
               <a href={tableUrl} target="_blank" rel="noopener noreferrer">
@@ -154,30 +154,30 @@ class QueriesView extends React.Component {
                 <Button icon="delete" type="danger" />
               </Popconfirm>
             </span>
-          )
+          );
         }}
       </AppContext.Consumer>
-    )
-  }
+    );
+  };
 
   getDecoratedQueries() {
-    const { queries, connections } = this.state
+    const { queries, connections } = this.state;
 
     // Create index of lookups
     // TODO this should come from API
     const connectionsById = connections.reduce((connMap, connection) => {
-      connMap[connection._id] = connection
-      return connMap
-    }, {})
+      connMap[connection._id] = connection;
+      return connMap;
+    }, {});
 
     return queries.map(query => {
-      query.key = query._id
+      query.key = query._id;
 
-      const connection = connectionsById[query.connectionId]
-      query.connectionName = connection ? connection.name : ''
+      const connection = connectionsById[query.connectionId];
+      query.connectionName = connection ? connection.name : '';
 
-      return query
-    })
+      return query;
+    });
   }
 
   renderTable() {
@@ -186,50 +186,50 @@ class QueriesView extends React.Component {
       selectedConnection,
       selectedCreatedBy,
       selectedTags
-    } = this.state
+    } = this.state;
 
-    let filteredQueries = this.getDecoratedQueries()
+    let filteredQueries = this.getDecoratedQueries();
 
     if (selectedTags.length) {
       filteredQueries = filteredQueries.filter(q => {
         if (!q.tags || !q.tags.length) {
-          return false
+          return false;
         }
         const matchedTags = selectedTags.filter(
           selectedTag => q.tags.indexOf(selectedTag) > -1
-        )
-        return selectedTags.length === matchedTags.length
-      })
+        );
+        return selectedTags.length === matchedTags.length;
+      });
     }
 
     if (searchInput) {
-      const terms = searchInput.split(' ')
-      const termCount = terms.length
+      const terms = searchInput.split(' ');
+      const termCount = terms.length;
       filteredQueries = filteredQueries.filter(q => {
-        let matchedCount = 0
+        let matchedCount = 0;
         terms.forEach(term => {
-          term = term.toLowerCase()
+          term = term.toLowerCase();
           if (
             (q.name && q.name.toLowerCase().search(term) !== -1) ||
             (q.queryText && q.queryText.toLowerCase().search(term) !== -1)
           ) {
-            matchedCount++
+            matchedCount++;
           }
-        })
-        return matchedCount === termCount
-      })
+        });
+        return matchedCount === termCount;
+      });
     }
 
     if (selectedConnection) {
       filteredQueries = filteredQueries.filter(
         q => q.connectionId === selectedConnection
-      )
+      );
     }
 
     if (selectedCreatedBy) {
       filteredQueries = filteredQueries.filter(
         q => q.createdBy === selectedCreatedBy
-      )
+      );
     }
 
     return (
@@ -262,7 +262,7 @@ class QueriesView extends React.Component {
         />
         <Column key="action" render={this.actionsRender} />
       </Table>
-    )
+    );
   }
 
   renderFilters() {
@@ -274,7 +274,7 @@ class QueriesView extends React.Component {
       selectedCreatedBy,
       selectedTags,
       tags
-    } = this.state
+    } = this.state;
     return (
       <Row gutter={16}>
         <Col className="pb3" span={6}>
@@ -331,7 +331,7 @@ class QueriesView extends React.Component {
           </Select>
         </Col>
       </Row>
-    )
+    );
   }
 
   render() {
@@ -352,8 +352,8 @@ class QueriesView extends React.Component {
           </Content>
         </Layout>
       </AppNav>
-    )
+    );
   }
 }
 
-export default QueriesView
+export default QueriesView;

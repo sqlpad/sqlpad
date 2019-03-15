@@ -1,11 +1,11 @@
-import Icon from 'antd/lib/icon'
-import Tooltip from 'antd/lib/tooltip'
-import PropTypes from 'prop-types'
-import React from 'react'
+import Icon from 'antd/lib/icon';
+import Tooltip from 'antd/lib/tooltip';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 class IncompleteDataNotification extends React.Component {
   render() {
-    const { incomplete } = this.props
+    const { incomplete } = this.props;
     if (incomplete === true) {
       return (
         <Tooltip
@@ -17,14 +17,14 @@ class IncompleteDataNotification extends React.Component {
             Incomplete
           </span>
         </Tooltip>
-      )
+      );
     }
-    return null
+    return null;
   }
 }
 
 IncompleteDataNotification.propTypes = {
   incomplete: PropTypes.bool
-}
+};
 
-export default IncompleteDataNotification
+export default IncompleteDataNotification;

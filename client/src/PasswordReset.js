@@ -1,9 +1,9 @@
-import Button from 'antd/lib/button'
-import Input from 'antd/lib/input'
-import message from 'antd/lib/message'
-import React from 'react'
-import { Redirect } from 'react-router-dom'
-import fetchJson from './utilities/fetch-json.js'
+import Button from 'antd/lib/button';
+import Input from 'antd/lib/input';
+import message from 'antd/lib/message';
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+import fetchJson from './utilities/fetch-json.js';
 
 class PasswordReset extends React.Component {
   state = {
@@ -11,42 +11,42 @@ class PasswordReset extends React.Component {
     password: '',
     passwordConfirmation: '',
     redirect: false
-  }
+  };
 
   onEmailChange = e => {
-    this.setState({ email: e.target.value })
-  }
+    this.setState({ email: e.target.value });
+  };
 
   onPasswordChange = e => {
-    this.setState({ password: e.target.value })
-  }
+    this.setState({ password: e.target.value });
+  };
 
   onPasswordConfirmationChange = e => {
-    this.setState({ passwordConfirmation: e.target.value })
-  }
+    this.setState({ passwordConfirmation: e.target.value });
+  };
 
   resetPassword = e => {
-    e.preventDefault()
+    e.preventDefault();
     fetchJson(
       'POST',
       '/api/password-reset/' + this.props.passwordResetId,
       this.state
     ).then(json => {
       if (json.error) {
-        return message.error(json.error)
+        return message.error(json.error);
       }
-      this.setState({ redirect: true })
-    })
-  }
+      this.setState({ redirect: true });
+    });
+  };
 
   componentDidMount() {
-    document.title = 'SQLPad - Password Reset'
+    document.title = 'SQLPad - Password Reset';
   }
 
   render() {
-    const { redirect } = this.state
+    const { redirect } = this.state;
     if (redirect) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
     return (
       <div className="pt5 measure center" style={{ width: '300px' }}>
@@ -81,8 +81,8 @@ class PasswordReset extends React.Component {
           </Button>
         </form>
       </div>
-    )
+    );
   }
 }
 
-export default PasswordReset
+export default PasswordReset;

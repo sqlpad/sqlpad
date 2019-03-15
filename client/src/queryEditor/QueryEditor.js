@@ -1,21 +1,21 @@
-import message from 'antd/lib/message'
-import keymaster from 'keymaster'
-import PropTypes from 'prop-types'
-import React from 'react'
-import { Prompt } from 'react-router-dom'
-import SplitPane from 'react-split-pane'
-import sqlFormatter from 'sql-formatter'
-import uuid from 'uuid'
-import QueryResultDataTable from '../common/QueryResultDataTable.js'
-import SqlEditor from '../common/SqlEditor'
-import SqlpadTauChart from '../common/SqlpadTauChart.js'
-import fetchJson from '../utilities/fetch-json.js'
-import EditorNavBar from './EditorNavBar'
-import FlexTabPane from './FlexTabPane'
-import QueryDetailsModal from './QueryDetailsModal'
-import QueryResultHeader from './QueryResultHeader.js'
-import SchemaSidebar from './SchemaSidebar.js'
-import VisSidebar from './VisSidebar'
+import message from 'antd/lib/message';
+import keymaster from 'keymaster';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Prompt } from 'react-router-dom';
+import SplitPane from 'react-split-pane';
+import sqlFormatter from 'sql-formatter';
+import uuid from 'uuid';
+import QueryResultDataTable from '../common/QueryResultDataTable.js';
+import SqlEditor from '../common/SqlEditor';
+import SqlpadTauChart from '../common/SqlpadTauChart.js';
+import fetchJson from '../utilities/fetch-json.js';
+import EditorNavBar from './EditorNavBar';
+import FlexTabPane from './FlexTabPane';
+import QueryDetailsModal from './QueryDetailsModal';
+import QueryResultHeader from './QueryResultHeader.js';
+import SchemaSidebar from './SchemaSidebar.js';
+import VisSidebar from './VisSidebar';
 
 const NEW_QUERY = {
   _id: '',
@@ -27,7 +27,7 @@ const NEW_QUERY = {
     chartType: '',
     fields: {} // key value for chart
   }
-}
+};
 
 class QueryEditor extends React.Component {
   state = {
@@ -43,25 +43,25 @@ class QueryEditor extends React.Component {
     showModal: false,
     showValidation: false,
     selectedText: ''
-  }
+  };
 
-  sqlpadTauChart = undefined
+  sqlpadTauChart = undefined;
 
   getTagOptions() {
-    const { availableTags, query } = this.state
-    const tagOptions = availableTags.slice()
+    const { availableTags, query } = this.state;
+    const tagOptions = availableTags.slice();
     if (query && query.tags) {
       query.tags.forEach(t => {
         if (tagOptions.indexOf(t) === -1) {
-          tagOptions.push(t)
+          tagOptions.push(t);
         }
-      })
+      });
     }
-    return tagOptions
+    return tagOptions;
   }
 
   componentDidUpdate(prevProps) {
-    const { queryId } = this.props
+    const { queryId } = this.props;
 
     if (queryId !== prevProps.queryId) {
       if (queryId === 'new') {
@@ -70,186 +70,190 @@ class QueryEditor extends React.Component {
           queryResult: undefined,
           query: Object.assign({}, NEW_QUERY),
           unsavedChanges: false
-        })
+        });
       }
-      return this.loadQueryFromServer(queryId)
+      return this.loadQueryFromServer(queryId);
     }
   }
 
   loadQueryFromServer = queryId => {
-    const { selectConnection } = this.props
+    const { selectConnection } = this.props;
     fetchJson('GET', `/api/queries/${queryId}`).then(json => {
-      const { error, query } = json
+      const { error, query } = json;
       if (error) {
-        message.error(error)
+        message.error(error);
       }
-      this.setState({ query })
-      selectConnection(query.connectionId)
-    })
-  }
+      this.setState({ query });
+      selectConnection(query.connectionId);
+    });
+  };
 
   loadTagsFromServer = () => {
     fetchJson('GET', '/api/tags').then(json => {
-      const { error, tags } = json
+      const { error, tags } = json;
       if (error) {
-        message.error(error)
+        message.error(error);
       }
-      this.setState({ availableTags: tags })
-    })
-  }
+      this.setState({ availableTags: tags });
+    });
+  };
 
   runQuery = () => {
-    const { cacheKey, query, selectedText } = this.state
-    const { selectedConnectionId } = this.props
+    const { cacheKey, query, selectedText } = this.state;
+    const { selectedConnectionId } = this.props;
 
     this.setState({
       isRunning: true,
       runQueryStartTime: new Date()
-    })
+    });
     const postData = {
       connectionId: selectedConnectionId,
       cacheKey,
       queryName: query.name,
       queryText: selectedText || query.queryText
-    }
+    };
     fetchJson('POST', '/api/query-result', postData).then(json => {
-      if (json.error) message.error(json.error)
+      if (json.error) message.error(json.error);
       this.setState({
         isRunning: false,
         queryError: json.error,
         queryResult: json.queryResult
-      })
-    })
-  }
+      });
+    });
+  };
 
   handleCloneClick = () => {
-    const { config } = this.props
-    const { query } = this.state
-    delete query._id
-    query.name = 'Copy of ' + query.name
-    window.history.replaceState({}, query.name, `${config.baseUrl}/queries/new`)
-    this.setState({ query, unsavedChanges: true })
-  }
+    const { config } = this.props;
+    const { query } = this.state;
+    delete query._id;
+    query.name = 'Copy of ' + query.name;
+    window.history.replaceState(
+      {},
+      query.name,
+      `${config.baseUrl}/queries/new`
+    );
+    this.setState({ query, unsavedChanges: true });
+  };
 
   formatQuery = () => {
-    const { query } = this.state
-    query.queryText = sqlFormatter.format(query.queryText)
+    const { query } = this.state;
+    query.queryText = sqlFormatter.format(query.queryText);
     this.setState({
       query,
       unsavedChanges: true
-    })
-  }
+    });
+  };
 
   saveQuery = () => {
-    const { query } = this.state
-    const { config, selectedConnectionId } = this.props
+    const { query } = this.state;
+    const { config, selectedConnectionId } = this.props;
     if (!query.name) {
-      message.error('Query name required')
-      this.setState({ showValidation: true })
-      return
+      message.error('Query name required');
+      this.setState({ showValidation: true });
+      return;
     }
-    this.setState({ isSaving: true })
+    this.setState({ isSaving: true });
     const queryData = Object.assign({}, query, {
       connectionId: selectedConnectionId
-    })
+    });
     if (query._id) {
       fetchJson('PUT', `/api/queries/${query._id}`, queryData).then(json => {
-        const { error, query } = json
+        const { error, query } = json;
         if (error) {
-          message.error(error)
-          this.setState({ isSaving: false })
-          return
+          message.error(error);
+          this.setState({ isSaving: false });
+          return;
         }
-        message.success('Query Saved')
-        this.setState({ isSaving: false, unsavedChanges: false, query })
-      })
+        message.success('Query Saved');
+        this.setState({ isSaving: false, unsavedChanges: false, query });
+      });
     } else {
       fetchJson('POST', `/api/queries`, queryData).then(json => {
-        const { error, query } = json
+        const { error, query } = json;
         if (error) {
-          message.error(error)
-          this.setState({ isSaving: false })
-          return
+          message.error(error);
+          this.setState({ isSaving: false });
+          return;
         }
         window.history.replaceState(
           {},
           query.name,
           `${config.baseUrl}/queries/${query._id}`
-        )
-        message.success('Query Saved')
-        this.setState({ isSaving: false, unsavedChanges: false, query })
-      })
+        );
+        message.success('Query Saved');
+        this.setState({ isSaving: false, unsavedChanges: false, query });
+      });
     }
-  }
+  };
 
   setQueryState = (field, value) => {
-    const { query } = this.state
-    query[field] = value
-    this.setState({ query, unsavedChanges: true })
-  }
+    const { query } = this.state;
+    query[field] = value;
+    this.setState({ query, unsavedChanges: true });
+  };
 
   handleChartConfigurationFieldsChange = (chartFieldId, queryResultField) => {
-    const { query } = this.state
-    query.chartConfiguration.fields[chartFieldId] = queryResultField
-    this.setState({ query, unsavedChanges: true })
-  }
+    const { query } = this.state;
+    query.chartConfiguration.fields[chartFieldId] = queryResultField;
+    this.setState({ query, unsavedChanges: true });
+  };
 
   handleChartTypeChange = value => {
-    const { query } = this.state
-    query.chartConfiguration.chartType = value
-    this.setState({ query, unsavedChanges: true })
-  }
+    const { query } = this.state;
+    query.chartConfiguration.chartType = value;
+    this.setState({ query, unsavedChanges: true });
+  };
 
   handleConnectionChange = connectionId =>
-    this.props.selectConnection(connectionId)
+    this.props.selectConnection(connectionId);
 
   handleModalHide = () => {
-    this.setState({ showModal: false })
-  }
+    this.setState({ showModal: false });
+  };
 
-  handleQueryNameChange = name => this.setQueryState('name', name)
+  handleQueryNameChange = name => this.setQueryState('name', name);
 
-  handleMoreClick = () => this.setState({ showModal: true })
+  handleMoreClick = () => this.setState({ showModal: true });
 
-  handleQueryTagsChange = values => this.setQueryState('tags', values)
+  handleQueryTagsChange = values => this.setQueryState('tags', values);
 
   handleQueryTextChange = queryText =>
-    this.setQueryState('queryText', queryText)
+    this.setQueryState('queryText', queryText);
 
   handleQuerySelectionChange = selectedText => {
-    this.setState({ selectedText })
-  }
+    this.setState({ selectedText });
+  };
 
   handleSaveImageClick = e => {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
-      this.sqlpadTauChart.chart.fire('exportTo', 'png')
+      this.sqlpadTauChart.chart.fire('exportTo', 'png');
     }
-  }
+  };
 
   handleTabSelect = e => {
-    this.setState({ activeTabKey: e.target.value })
-  }
+    this.setState({ activeTabKey: e.target.value });
+  };
 
-  handleVisualizeClick = () => this.sqlpadTauChart.renderChart(true)
+  handleVisualizeClick = () => this.sqlpadTauChart.renderChart(true);
 
   hasRows = () => {
-    const queryResult = this.state.queryResult
-    return !!(queryResult && queryResult.rows && queryResult.rows.length)
-  }
+    const queryResult = this.state.queryResult;
+    return !!(queryResult && queryResult.rows && queryResult.rows.length);
+  };
 
   isChartable = () => {
-    const { isRunning, queryError, activeTabKey } = this.state
-    const pending = isRunning || queryError
-    return !pending && activeTabKey === 'vis' && this.hasRows()
-  }
+    const { isRunning, queryError, activeTabKey } = this.state;
+    const pending = isRunning || queryError;
+    return !pending && activeTabKey === 'vis' && this.hasRows();
+  };
 
   async componentDidMount() {
-    const { queryId, loadConnections } = this.props
+    const { queryId, loadConnections } = this.props;
 
-    await loadConnections()
-    this.loadTagsFromServer()
+    await loadConnections();
+    this.loadTagsFromServer();
     if (queryId !== 'new') {
-      this.loadQueryFromServer(queryId)
+      this.loadQueryFromServer(queryId);
     }
 
     /*  Shortcuts
@@ -257,62 +261,62 @@ class QueryEditor extends React.Component {
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts,
     // we want the event to fire all the time for any element
-    keymaster.filter = () => true
-    keymaster.unbind('ctrl+s, command+s')
+    keymaster.filter = () => true;
+    keymaster.unbind('ctrl+s, command+s');
     keymaster('ctrl+s, command+s', e => {
-      this.saveQuery()
-      e.preventDefault()
-      return false
-    })
+      this.saveQuery();
+      e.preventDefault();
+      return false;
+    });
     // there should only ever be 1 QueryEditor on the page,
     // but just in case there isn't unbind anything previously bound
     // rather something previously not run than something run more than once
-    keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
+    keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e');
     keymaster('ctrl+r, command+r, ctrl+e, command+e', e => {
-      message.info('Shortcut changed to ctrl+return / command+return')
-      e.preventDefault()
-      return false
-    })
-    keymaster.unbind('ctrl+return, command+return')
+      message.info('Shortcut changed to ctrl+return / command+return');
+      e.preventDefault();
+      return false;
+    });
+    keymaster.unbind('ctrl+return, command+return');
     keymaster('ctrl+return, command+return', e => {
-      this.runQuery()
-      e.preventDefault()
-      return false
-    })
-    keymaster.unbind('alt+r')
+      this.runQuery();
+      e.preventDefault();
+      return false;
+    });
+    keymaster.unbind('alt+r');
     keymaster('alt+r', e => {
-      message.info('Shortcut changed to shift+return')
-      e.preventDefault()
-      return false
-    })
-    keymaster.unbind('shift+return')
+      message.info('Shortcut changed to shift+return');
+      e.preventDefault();
+      return false;
+    });
+    keymaster.unbind('shift+return');
     keymaster('shift+return', e => {
-      this.formatQuery()
-      e.preventDefault()
-      return false
-    })
+      this.formatQuery();
+      e.preventDefault();
+      return false;
+    });
   }
 
   componentWillUnmount() {
-    keymaster.unbind('ctrl+return, command+return')
-    keymaster.unbind('ctrl+s, command+s')
-    keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e')
-    keymaster.unbind('alt+r')
-    keymaster.unbind('shift+return')
+    keymaster.unbind('ctrl+return, command+return');
+    keymaster.unbind('ctrl+s, command+s');
+    keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e');
+    keymaster.unbind('alt+r');
+    keymaster.unbind('shift+return');
   }
 
   handleFormatClick = () => {
-    this.formatQuery()
-  }
+    this.formatQuery();
+  };
 
   handleVisPaneResize = () => {
     if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
-      this.sqlpadTauChart.chart.resize()
+      this.sqlpadTauChart.chart.resize();
     }
-  }
+  };
 
   render() {
-    const { config } = this.props
+    const { config } = this.props;
     const {
       activeTabKey,
       cacheKey,
@@ -326,9 +330,9 @@ class QueryEditor extends React.Component {
       showModal,
       showValidation,
       unsavedChanges
-    } = this.state
+    } = this.state;
 
-    document.title = query.name || 'New Query'
+    document.title = query.name || 'New Query';
 
     return (
       <div className="flex w-100" style={{ flexDirection: 'column' }}>
@@ -425,7 +429,7 @@ class QueryEditor extends React.Component {
                   queryResult={queryResult}
                   renderChart={this.isChartable()}
                   ref={ref => {
-                    this.sqlpadTauChart = ref
+                    this.sqlpadTauChart = ref;
                   }}
                 />
               </div>
@@ -445,7 +449,7 @@ class QueryEditor extends React.Component {
           message={location => `Leave without saving?`}
         />
       </div>
-    )
+    );
   }
 }
 
@@ -454,6 +458,6 @@ QueryEditor.propTypes = {
   selectedConnectionId: PropTypes.string,
   selectConnection: PropTypes.func,
   loadConnections: PropTypes.func
-}
+};
 
-export default QueryEditor
+export default QueryEditor;

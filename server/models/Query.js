@@ -1,7 +1,7 @@
-const db = require('../lib/db.js')
-const configUtil = require('../lib/config')
-const Joi = require('joi')
-const request = require('request')
+const db = require('../lib/db.js');
+const configUtil = require('../lib/config');
+const Joi = require('joi');
+const request = require('request');
 
 /*
 "chartConfiguration": {
@@ -44,57 +44,57 @@ const schema = {
   createdBy: Joi.string().required(),
   modifiedBy: Joi.string().required(),
   lastAccessDate: Joi.date().default(new Date(), 'time of last access')
-}
+};
 
 function Query(data) {
-  this._id = data._id
-  this.name = data.name
-  this.tags = data.tags
-  this.connectionId = data.connectionId
-  this.queryText = data.queryText
-  this.chartConfiguration = data.chartConfiguration
-  this.createdDate = data.createdDate
-  this.createdBy = data.createdBy
-  this.modifiedDate = data.modifiedDate
-  this.modifiedBy = data.modifiedBy
-  this.lastAccessDate = data.lastAccessedDate
+  this._id = data._id;
+  this.name = data.name;
+  this.tags = data.tags;
+  this.connectionId = data.connectionId;
+  this.queryText = data.queryText;
+  this.chartConfiguration = data.chartConfiguration;
+  this.createdDate = data.createdDate;
+  this.createdBy = data.createdBy;
+  this.modifiedDate = data.modifiedDate;
+  this.modifiedBy = data.modifiedBy;
+  this.lastAccessDate = data.lastAccessedDate;
 }
 
 Query.prototype.save = function save() {
-  const self = this
-  this.modifiedDate = new Date()
-  this.lastAccessDate = new Date()
+  const self = this;
+  this.modifiedDate = new Date();
+  this.lastAccessDate = new Date();
   // clean tags if present
   // sqlpad v1 saved a lot of bad inputs
   if (Array.isArray(self.tags)) {
     self.tags = self.tags
       .filter(tag => {
-        return typeof tag === 'string' && tag.trim() !== ''
+        return typeof tag === 'string' && tag.trim() !== '';
       })
       .map(tag => {
-        return tag.trim()
-      })
+        return tag.trim();
+      });
   }
-  const joiResult = Joi.validate(self, schema)
+  const joiResult = Joi.validate(self, schema);
   if (joiResult.error) {
-    return Promise.reject(joiResult.error)
+    return Promise.reject(joiResult.error);
   }
   if (self._id) {
     return db.queries
       .update({ _id: self._id }, joiResult.value, { upsert: true })
-      .then(() => Query.findOneById(self._id))
+      .then(() => Query.findOneById(self._id));
   }
-  return db.queries.insert(joiResult.value).then(doc => new Query(doc))
-}
+  return db.queries.insert(joiResult.value).then(doc => new Query(doc));
+};
 
 Query.prototype.pushQueryToSlackIfSetup = function() {
   return configUtil
     .getHelper(db)
     .then(config => {
-      const SLACK_WEBHOOK = config.get('slackWebhook')
+      const SLACK_WEBHOOK = config.get('slackWebhook');
       if (SLACK_WEBHOOK) {
-        const PUBLIC_URL = config.get('publicUrl')
-        const BASE_URL = config.get('baseUrl')
+        const PUBLIC_URL = config.get('publicUrl');
+        const BASE_URL = config.get('baseUrl');
         const options = {
           method: 'post',
           body: {
@@ -108,41 +108,41 @@ Query.prototype.pushQueryToSlackIfSetup = function() {
           },
           json: true,
           url: SLACK_WEBHOOK
-        }
+        };
         request(options, function(err, httpResponse, body) {
           if (err) {
-            console.error('Something went wrong while sending to Slack.')
-            console.error(err)
+            console.error('Something went wrong while sending to Slack.');
+            console.error(err);
           }
-        })
+        });
       }
     })
     .catch(error => {
-      console.log('error getting config helper')
-      console.error(error)
-    })
-}
+      console.log('error getting config helper');
+      console.error(error);
+    });
+};
 
 /*  Query methods
 ============================================================================== */
 Query.findOneById = id =>
-  db.queries.findOne({ _id: id }).then(doc => new Query(doc))
+  db.queries.findOne({ _id: id }).then(doc => new Query(doc));
 
 Query.findAll = () =>
-  db.queries.find({}).then(docs => docs.map(doc => new Query(doc)))
+  db.queries.find({}).then(docs => docs.map(doc => new Query(doc)));
 
 Query.findByFilter = filter =>
-  db.queries.find(filter).then(docs => docs.map(doc => new Query(doc)))
+  db.queries.find(filter).then(docs => docs.map(doc => new Query(doc)));
 
 Query.prototype.logAccess = function logAccess() {
-  const self = this
+  const self = this;
   return db.queries.update(
     { _id: self._id },
     { $set: { lastAccessedDate: new Date() } },
     {}
-  )
-}
+  );
+};
 
-Query.removeOneById = id => db.queries.remove({ _id: id })
+Query.removeOneById = id => db.queries.remove({ _id: id });
 
-module.exports = Query
+module.exports = Query;

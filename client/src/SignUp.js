@@ -1,10 +1,10 @@
-import Button from 'antd/lib/button'
-import Input from 'antd/lib/input'
-import message from 'antd/lib/message'
-import React from 'react'
-import { Redirect } from 'react-router-dom'
-import AppContext from './containers/AppContext'
-import fetchJson from './utilities/fetch-json.js'
+import Button from 'antd/lib/button';
+import Input from 'antd/lib/input';
+import message from 'antd/lib/message';
+import React from 'react';
+import { Redirect } from 'react-router-dom';
+import AppContext from './containers/AppContext';
+import fetchJson from './utilities/fetch-json.js';
 
 class SignUp extends React.Component {
   state = {
@@ -12,43 +12,43 @@ class SignUp extends React.Component {
     password: '',
     passwordConfirmation: '',
     redirect: false
-  }
+  };
 
   componentDidMount() {
-    document.title = 'SQLPad - Sign Up'
+    document.title = 'SQLPad - Sign Up';
   }
 
   onEmailChange = e => {
-    this.setState({ email: e.target.value })
-  }
+    this.setState({ email: e.target.value });
+  };
 
   onPasswordChange = e => {
-    this.setState({ password: e.target.value })
-  }
+    this.setState({ password: e.target.value });
+  };
 
   onPasswordConfirmationChange = e => {
-    this.setState({ passwordConfirmation: e.target.value })
-  }
+    this.setState({ passwordConfirmation: e.target.value });
+  };
 
   signUp = e => {
-    e.preventDefault()
+    e.preventDefault();
     fetchJson('POST', '/api/signup', this.state).then(json => {
-      if (json.error) return message.error(json.error)
-      this.setState({ redirect: true })
-    })
-  }
+      if (json.error) return message.error(json.error);
+      this.setState({ redirect: true });
+    });
+  };
 
   render() {
-    const { redirect } = this.state
+    const { redirect } = this.state;
 
     if (redirect) {
-      return <Redirect to="/" />
+      return <Redirect to="/" />;
     }
 
     return (
       <AppContext.Consumer>
         {appContext => {
-          const { adminRegistrationOpen } = appContext
+          const { adminRegistrationOpen } = appContext;
 
           return (
             <div className="pt5 measure center" style={{ width: '300px' }}>
@@ -94,11 +94,11 @@ class SignUp extends React.Component {
                 </Button>
               </form>
             </div>
-          )
+          );
         }}
       </AppContext.Consumer>
-    )
+    );
   }
 }
 
-export default SignUp
+export default SignUp;

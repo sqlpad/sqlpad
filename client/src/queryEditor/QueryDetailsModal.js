@@ -1,18 +1,18 @@
-import Icon from 'antd/lib/icon'
-import Modal from 'antd/lib/modal'
-import Tooltip from 'antd/lib/tooltip'
-import PropTypes from 'prop-types'
-import React from 'react'
-import EditableTagGroup from '../common/EditableTagGroup'
+import Icon from 'antd/lib/icon';
+import Modal from 'antd/lib/modal';
+import Tooltip from 'antd/lib/tooltip';
+import PropTypes from 'prop-types';
+import React from 'react';
+import EditableTagGroup from '../common/EditableTagGroup';
 
 class QueryDetailsModal extends React.Component {
   onQueryNameChange = e => {
-    this.props.onQueryNameChange(e.target.value)
-  }
+    this.props.onQueryNameChange(e.target.value);
+  };
 
   renderNavLink = (href, text) => {
-    const { query } = this.props
-    const saved = !!query._id
+    const { query } = this.props;
+    const saved = !!query._id;
     if (saved) {
       return (
         <li role="presentation">
@@ -20,7 +20,7 @@ class QueryDetailsModal extends React.Component {
             {text} <Icon type="export" />
           </a>
         </li>
-      )
+      );
     } else {
       return (
         <Tooltip title="Save query to enable table/chart view links">
@@ -35,9 +35,9 @@ class QueryDetailsModal extends React.Component {
             </a>
           </li>
         </Tooltip>
-      )
+      );
     }
-  }
+  };
 
   render() {
     const {
@@ -47,10 +47,10 @@ class QueryDetailsModal extends React.Component {
       query,
       showModal,
       tagOptions
-    } = this.props
+    } = this.props;
 
-    const tableUrl = `${config.baseUrl}/query-table/${query._id}`
-    const chartUrl = `${config.baseUrl}/query-chart/${query._id}`
+    const tableUrl = `${config.baseUrl}/query-table/${query._id}`;
+    const chartUrl = `${config.baseUrl}/query-chart/${query._id}`;
 
     return (
       <Modal
@@ -92,7 +92,7 @@ class QueryDetailsModal extends React.Component {
           {this.renderNavLink(chartUrl, 'Link to Chart')}
         </ul>
       </Modal>
-    )
+    );
   }
 }
 
@@ -103,10 +103,10 @@ QueryDetailsModal.propTypes = {
   query: PropTypes.object.isRequired,
   showModal: PropTypes.bool.isRequired,
   tagOptions: PropTypes.array
-}
+};
 
 QueryDetailsModal.defaultProps = {
   tagOptions: []
-}
+};
 
-export default QueryDetailsModal
+export default QueryDetailsModal;

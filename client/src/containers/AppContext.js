@@ -1,5 +1,5 @@
-import React from 'react'
+import React from 'react';
 
-const AppContext = React.createContext({ refreshAppContext: () => {} })
+const AppContext = React.createContext({ refreshAppContext: () => {} });
 
-export default AppContext
+export default AppContext;

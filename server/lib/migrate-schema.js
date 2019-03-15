@@ -1,8 +1,8 @@
-const fs = require('fs')
-const path = require('path')
-const rimraf = require('rimraf')
-const { dbPath, debug } = require('../lib/config').getPreDbConfig()
-const schemaVersionFilePath = path.join(dbPath + '/schemaVersion.json')
+const fs = require('fs');
+const path = require('path');
+const rimraf = require('rimraf');
+const { dbPath, debug } = require('../lib/config').getPreDbConfig();
+const schemaVersionFilePath = path.join(dbPath + '/schemaVersion.json');
 
 // migrations must increment by 1
 const migrations = {
@@ -15,12 +15,12 @@ const migrations = {
     db.users.find({}).then(docs => {
       return Promise.all(
         docs.map(doc => {
-          doc.signupDate = doc.createdDate
-          doc.createdDate = doc.createdDate || new Date()
-          doc.modifiedDate = doc.modifiedDate || new Date()
-          return db.users.update({ _id: doc._id }, doc, {})
+          doc.signupDate = doc.createdDate;
+          doc.createdDate = doc.createdDate || new Date();
+          doc.modifiedDate = doc.modifiedDate || new Date();
+          return db.users.update({ _id: doc._id }, doc, {});
         })
-      )
+      );
     }),
   2: db =>
     new Promise((resolve, reject) => {
@@ -29,17 +29,17 @@ const migrations = {
       // then remove the cache db records
       rimraf(path.join(dbPath, '/cache/*'), err => {
         if (err) {
-          console.error(err)
-          return reject(err)
+          console.error(err);
+          return reject(err);
         }
         db.cache
           .remove({}, { multi: true })
           .then(() => resolve())
           .catch(error => {
-            console.error(error)
-            return reject(error)
-          })
-      })
+            console.error(error);
+            return reject(error);
+          });
+      });
     }),
   3: db =>
     // change admin flag to role to allow for future viewer role
@@ -49,15 +49,15 @@ const migrations = {
       return Promise.all(
         docs.map(doc => {
           if (doc.admin) {
-            doc.role = 'admin'
+            doc.role = 'admin';
           } else {
-            doc.role = 'editor'
+            doc.role = 'editor';
           }
-          return db.users.update({ _id: doc._id }, doc, {})
+          return db.users.update({ _id: doc._id }, doc, {});
         })
-      )
+      );
     })
-}
+};
 
 /**
  * Run migrations until latest version
@@ -67,28 +67,28 @@ const migrations = {
  */
 function runMigrations(db, currentVersion) {
   return new Promise((resolve, reject) => {
-    const nextVersion = currentVersion + 1
+    const nextVersion = currentVersion + 1;
 
     if (!migrations[nextVersion]) {
-      return resolve()
+      return resolve();
     }
 
     if (debug) {
-      console.log('Migrating schema to v%d', nextVersion)
+      console.log('Migrating schema to v%d', nextVersion);
     }
     migrations[nextVersion](db)
       .then(() => {
         // write new schemaVersion file
-        const json = JSON.stringify({ schemaVersion: nextVersion })
+        const json = JSON.stringify({ schemaVersion: nextVersion });
         fs.writeFile(schemaVersionFilePath, json, err => {
           if (err) {
-            return reject(err)
+            return reject(err);
           }
-          resolve(runMigrations(db, nextVersion))
-        })
+          resolve(runMigrations(db, nextVersion));
+        });
       })
-      .catch(reject)
-  })
+      .catch(reject);
+  });
 }
 
 /**
@@ -100,23 +100,23 @@ module.exports = function migrateSchema(db) {
   return new Promise((resolve, reject) => {
     fs.readFile(schemaVersionFilePath, 'utf8', (err, json) => {
       if (err && err.code !== 'ENOENT') {
-        return reject(err)
+        return reject(err);
       }
 
-      const currentVersion = json ? JSON.parse(json).schemaVersion : 0
+      const currentVersion = json ? JSON.parse(json).schemaVersion : 0;
 
       const latestVersion = Object.keys(migrations).reduce((prev, next) =>
         Math.max(prev, next)
-      )
+      );
 
       if (currentVersion === latestVersion) {
         if (debug) {
-          console.log('Schema is up to date (v%d).', latestVersion)
+          console.log('Schema is up to date (v%d).', latestVersion);
         }
-        return resolve()
+        return resolve();
       }
 
-      resolve(runMigrations(db, currentVersion))
-    })
-  })
-}
+      resolve(runMigrations(db, currentVersion));
+    });
+  });
+};

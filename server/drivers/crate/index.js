@@ -1,12 +1,12 @@
-const crate = require('node-crate')
-const { formatSchemaQueryResults } = require('../utils')
+const crate = require('node-crate');
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'crate'
-const name = 'Crate'
+const id = 'crate';
+const name = 'Crate';
 
 // NOTE per crate docs: If a client using the HTTP or Transport protocol is used a default limit of 10000 is implicitly added.
 // node-crate uses the REST API, so it is assumed this is a limit
-const CRATE_LIMIT = 10000
+const CRATE_LIMIT = 10000;
 
 // old crate called table_schema schema_name
 const SCHEMA_SQL_V0 = `
@@ -21,7 +21,7 @@ const SCHEMA_SQL_V0 = `
     tables.schema_name not in ('information_schema') 
     and columns.schema_name = tables.schema_name 
     and columns.table_name = tables.table_name
-`
+`;
 
 const SCHEMA_SQL_V1 = `
   select 
@@ -35,7 +35,7 @@ const SCHEMA_SQL_V1 = `
     tables.table_schema not in ('information_schema') 
     and columns.table_schema = tables.table_schema 
     and columns.table_name = tables.table_name
-`
+`;
 
 /**
  * Run query for connection
@@ -44,13 +44,13 @@ const SCHEMA_SQL_V1 = `
  * @param {object} connection
  */
 function runQuery(query, connection) {
-  const { maxRows } = connection
-  const limit = maxRows < CRATE_LIMIT ? maxRows : CRATE_LIMIT
+  const { maxRows } = connection;
+  const limit = maxRows < CRATE_LIMIT ? maxRows : CRATE_LIMIT;
 
   if (connection.port) {
-    crate.connect(connection.host, connection.port)
+    crate.connect(connection.host, connection.port);
   } else {
-    crate.connect(connection.host)
+    crate.connect(connection.host);
   }
 
   return crate
@@ -59,18 +59,18 @@ function runQuery(query, connection) {
       const results = {
         rows: res.json,
         incomplete: false
-      }
+      };
 
       if (results.rows.length >= limit) {
-        results.incomplete = true
-        results.rows = results.rows.slice(0, limit)
+        results.incomplete = true;
+        results.rows = results.rows.slice(0, limit);
       }
 
-      return results
+      return results;
     })
     .catch(err => {
-      throw new Error(err.message)
-    })
+      throw new Error(err.message);
+    });
 }
 
 /**
@@ -78,8 +78,8 @@ function runQuery(query, connection) {
  * @param {*} connection
  */
 function testConnection(connection) {
-  const query = 'SELECT name from sys.cluster'
-  return runQuery(query, connection)
+  const query = 'SELECT name from sys.cluster';
+  return runQuery(query, connection);
 }
 
 /**
@@ -96,7 +96,7 @@ function getSchema(connection) {
       runQuery(SCHEMA_SQL_V0, connection).then(queryResult =>
         formatSchemaQueryResults(queryResult)
       )
-    )
+    );
 }
 
 const fields = [
@@ -110,7 +110,7 @@ const fields = [
     formType: 'TEXT',
     label: 'Port (optional)'
   }
-]
+];
 
 module.exports = {
   id,
@@ -119,4 +119,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

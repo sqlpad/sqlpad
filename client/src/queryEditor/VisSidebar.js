@@ -1,14 +1,14 @@
-import Button from 'antd/lib/button'
-import Icon from 'antd/lib/icon'
-import Select from 'antd/lib/select'
-import PropTypes from 'prop-types'
-import React from 'react'
-import Sidebar from '../common/Sidebar'
-import SidebarBody from '../common/SidebarBody'
-import chartDefinitions from '../utilities/chartDefinitions.js'
-import ChartInputs from './ChartInputs.js'
+import Button from 'antd/lib/button';
+import Icon from 'antd/lib/icon';
+import Select from 'antd/lib/select';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Sidebar from '../common/Sidebar';
+import SidebarBody from '../common/SidebarBody';
+import chartDefinitions from '../utilities/chartDefinitions.js';
+import ChartInputs from './ChartInputs.js';
 
-const { Option } = Select
+const { Option } = Select;
 
 class VisSidebar extends React.Component {
   render() {
@@ -20,15 +20,15 @@ class VisSidebar extends React.Component {
       onVisualizeClick,
       query,
       queryResult
-    } = this.props
+    } = this.props;
 
     const chartOptions = chartDefinitions.map(d => {
       return (
         <Option key={d.chartType} value={d.chartType}>
           {d.chartLabel}
         </Option>
-      )
-    })
+      );
+    });
 
     return (
       <Sidebar>
@@ -70,7 +70,7 @@ class VisSidebar extends React.Component {
           </Button>
         </div>
       </Sidebar>
-    )
+    );
   }
 }
 
@@ -82,6 +82,6 @@ VisSidebar.propTypes = {
   onVisualizeClick: PropTypes.func,
   query: PropTypes.object,
   queryResult: PropTypes.object
-}
+};
 
-export default VisSidebar
+export default VisSidebar;

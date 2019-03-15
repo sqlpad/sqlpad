@@ -1,9 +1,9 @@
-const _ = require('lodash')
-const moment = require('moment')
-const { formatSchemaQueryResults } = require('../utils')
+const _ = require('lodash');
+const moment = require('moment');
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'mock'
-const name = 'Mock driver'
+const id = 'mock';
+const name = 'Mock driver';
 
 const fieldValues = {
   color: [
@@ -58,24 +58,24 @@ const fieldValues = {
         .add(index, 'hour')
         .toDate()
     )
-}
+};
 
 function cartesianify(rows, field) {
-  const newRows = []
+  const newRows = [];
   if (!rows.length) {
     field.values.forEach(value => {
-      newRows.push({ [field.name]: value })
-    })
+      newRows.push({ [field.name]: value });
+    });
   } else {
     rows.forEach(row => {
       field.values.forEach(value => {
-        const newRow = Object.assign({}, row, { [field.name]: value })
-        newRows.push(newRow)
-      })
-    })
+        const newRow = Object.assign({}, row, { [field.name]: value });
+        newRows.push(newRow);
+      });
+    });
   }
 
-  return newRows
+  return newRows;
 }
 
 /**
@@ -88,7 +88,7 @@ async function runQuery(query, connection) {
   // Connection here doesn't actually matter.
   // Someday this mock could get fancy and change output based on some connection value
   // For now validate that it is getting passed
-  const { maxRows } = connection
+  const { maxRows } = connection;
 
   // To determine the content of this mock query, inspect values from comments
   // Example format
@@ -96,11 +96,11 @@ async function runQuery(query, connection) {
   // -- measures = cost, revenue, profit, <anythingyouwant>
   // -- orderby = department asc, product desc
   // -- limit = 100
-  const dimensions = []
-  const measures = []
-  const orderByFields = []
-  const orderByDirections = []
-  let limit
+  const dimensions = [];
+  const measures = [];
+  const orderByFields = [];
+  const orderByDirections = [];
+  let limit;
 
   query
     .split('\n')
@@ -110,10 +110,10 @@ async function runQuery(query, connection) {
     .forEach(line => {
       const [fieldType, fieldData] = line
         .split('=')
-        .map(p => p.trim().toLowerCase())
+        .map(p => p.trim().toLowerCase());
 
       if (!fieldData) {
-        return
+        return;
       }
 
       // fieldData is something like <fieldname> <direction>, <field2> <direction>
@@ -123,70 +123,70 @@ async function runQuery(query, connection) {
         .map(p => p.trim())
         .forEach(part => {
           if (fieldType === 'limit') {
-            limit = parseInt(part)
+            limit = parseInt(part);
           } else if (fieldType === 'dimensions') {
-            const [fieldName, numString] = part.split(' ').map(p => p.trim())
+            const [fieldName, numString] = part.split(' ').map(p => p.trim());
             if (!fieldValues[fieldName]) {
               throw new Error(
                 `Unknown ${fieldName}. must be one of: ${Object.keys(
                   fieldValues
                 ).join(', ')}`
-              )
+              );
             }
             dimensions.push({
               name: fieldName,
               values: fieldValues[fieldName].slice(0, parseInt(numString))
-            })
+            });
           } else if (fieldType === 'measures') {
-            measures.push(part)
+            measures.push(part);
           } else if (fieldType === 'orderby') {
-            const [fieldName, direction] = part.split(' ').map(p => p.trim())
+            const [fieldName, direction] = part.split(' ').map(p => p.trim());
             if (!direction) {
-              throw new Error('direction required. Must be asc or desc')
+              throw new Error('direction required. Must be asc or desc');
             }
-            orderByFields.push(fieldName)
-            orderByDirections.push(direction)
+            orderByFields.push(fieldName);
+            orderByDirections.push(direction);
           } else {
             throw new Error(
               `Unknown ${fieldType}. Must be dimensions, measures, orderby, or limit`
-            )
+            );
           }
-        })
-    })
+        });
+    });
 
   if (!dimensions.length) {
-    throw new Error('dimensions required')
+    throw new Error('dimensions required');
   }
 
   // Assemble dimensions and things
-  let rows = []
+  let rows = [];
   dimensions.forEach(dimension => {
-    rows = cartesianify(rows, dimension)
-  })
+    rows = cartesianify(rows, dimension);
+  });
 
   if (measures.length) {
     rows.forEach((row, rowIndex) => {
       measures.forEach((measure, measureIndex) => {
-        const date = row.orderdate || row.orderdatetime
+        const date = row.orderdate || row.orderdatetime;
         if (date) {
-          const doy = moment.utc(date).dayOfYear()
-          row[measure] = 10 + Math.round(doy * Math.random())
+          const doy = moment.utc(date).dayOfYear();
+          row[measure] = 10 + Math.round(doy * Math.random());
         } else {
-          row[measure] = Math.round(Math.random() * 1000)
+          row[measure] = Math.round(Math.random() * 1000);
         }
-      })
-    })
+      });
+    });
   }
 
   if (orderByFields.length) {
-    rows = _.orderBy(rows, orderByFields, orderByDirections)
+    rows = _.orderBy(rows, orderByFields, orderByDirections);
   }
 
   if (limit) {
-    rows = rows.slice(0, limit)
+    rows = rows.slice(0, limit);
   }
 
-  return { rows: rows.slice(0, maxRows), incomplete: rows.length > maxRows }
+  return { rows: rows.slice(0, maxRows), incomplete: rows.length > maxRows };
 }
 
 /**
@@ -197,11 +197,11 @@ function testConnection(connection) {
   const query = `
     -- dimensions = department 1
     -- measures = price
-  `
-  return runQuery(query, connection)
+  `;
+  return runQuery(query, connection);
 }
 
-const schemaRows = []
+const schemaRows = [];
 const columns = [
   { name: 'product', type: 'TEXT', description: 'item sold' },
   { name: 'color', type: 'TEXT', description: 'color of item' },
@@ -212,7 +212,7 @@ const columns = [
     type: 'TIMESTAMP',
     description: 'date and time of order'
   }
-]
+];
 Array(500)
   .fill(true)
   .forEach((value, tableIndex) => {
@@ -223,9 +223,9 @@ Array(500)
         column_name: column.name,
         data_type: column.type,
         column_description: column.description
-      })
-    })
-  })
+      });
+    });
+  });
 
 /**
  * Get schema for connection
@@ -235,10 +235,10 @@ function getSchema(connection) {
   const fakeSchemaQueryResult = {
     rows: schemaRows,
     incomplete: false
-  }
+  };
   return Promise.resolve().then(() =>
     formatSchemaQueryResults(fakeSchemaQueryResult)
-  )
+  );
 }
 
 const fields = [
@@ -312,7 +312,7 @@ const fields = [
     formType: 'TEXT',
     label: 'Password for socks proxy'
   }
-]
+];
 
 module.exports = {
   id,
@@ -321,4 +321,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

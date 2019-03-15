@@ -1,16 +1,16 @@
-import Icon from 'antd/lib/icon'
-import Menu from 'antd/lib/menu'
-import React from 'react'
-import AppNav from '../AppNav'
-import ConnectionListDrawer from '../connections/ConnectionListDrawer'
-import { ConnectionsContext } from '../connections/ConnectionsStore'
-import AppContext from '../containers/AppContext'
-import QueryEditor from './QueryEditor'
+import Icon from 'antd/lib/icon';
+import Menu from 'antd/lib/menu';
+import React from 'react';
+import AppNav from '../AppNav';
+import ConnectionListDrawer from '../connections/ConnectionListDrawer';
+import { ConnectionsContext } from '../connections/ConnectionsStore';
+import AppContext from '../containers/AppContext';
+import QueryEditor from './QueryEditor';
 
 class QueryEditorContainer extends React.Component {
   state = {
     visible: false
-  }
+  };
   render() {
     return (
       <AppNav
@@ -45,8 +45,8 @@ class QueryEditorContainer extends React.Component {
           onClose={() => this.setState({ visible: false })}
         />
       </AppNav>
-    )
+    );
   }
 }
 
-export default QueryEditorContainer
+export default QueryEditorContainer;

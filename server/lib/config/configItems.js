@@ -277,6 +277,6 @@ const configItems = [
       'If disabled, SQLPad will no longer poll npmjs.com to see if an update is available.',
     default: false
   }
-]
+];
 
-module.exports = configItems
+module.exports = configItems;

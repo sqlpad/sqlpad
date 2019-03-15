@@ -1,34 +1,34 @@
-import Input from 'antd/lib/input'
-import Select from 'antd/lib/select'
-import React from 'react'
+import Input from 'antd/lib/input';
+import Select from 'antd/lib/select';
+import React from 'react';
 
-const { Option } = Select
+const { Option } = Select;
 
 class ConfigItemInput extends React.Component {
   state = {
     value: this.props.config.effectiveValue
-  }
+  };
 
   handleChange = e => {
     this.setState({
       value: e.target.value
-    })
-    this.props.saveConfigValue(this.props.config.key, e.target.value)
-  }
+    });
+    this.props.saveConfigValue(this.props.config.key, e.target.value);
+  };
 
   handleSelectChange = value => {
     this.setState({
       value
-    })
-    this.props.saveConfigValue(this.props.config.key, value)
-  }
+    });
+    this.props.saveConfigValue(this.props.config.key, value);
+  };
 
   render() {
-    const { config } = this.props
+    const { config } = this.props;
     const disabled =
       config.effectiveValueSource === 'cli' ||
       config.effectiveValueSource === 'saved cli' ||
-      config.effectiveValueSource === 'env'
+      config.effectiveValueSource === 'env';
 
     if (config.options) {
       const optionNodes = config.options.map(option => {
@@ -36,8 +36,8 @@ class ConfigItemInput extends React.Component {
           <Option key={option} value={option}>
             {option.toString()}
           </Option>
-        )
-      })
+        );
+      });
       return (
         <Select
           className="w-100"
@@ -47,7 +47,7 @@ class ConfigItemInput extends React.Component {
         >
           {optionNodes}
         </Select>
-      )
+      );
     } else {
       return (
         <Input
@@ -57,9 +57,9 @@ class ConfigItemInput extends React.Component {
           placeholder={config.label}
           value={this.state.value}
         />
-      )
+      );
     }
   }
 }
 
-export default ConfigItemInput
+export default ConfigItemInput;

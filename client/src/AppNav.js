@@ -1,44 +1,44 @@
-import Icon from 'antd/lib/icon'
-import Layout from 'antd/lib/layout'
-import Menu from 'antd/lib/menu'
-import Modal from 'antd/lib/modal'
-import PropTypes from 'prop-types'
-import React from 'react'
-import { Redirect, Route } from 'react-router-dom'
-import AboutContent from './AboutContent'
-import AppContext from './containers/AppContext'
-import fetchJson from './utilities/fetch-json.js'
+import Icon from 'antd/lib/icon';
+import Layout from 'antd/lib/layout';
+import Menu from 'antd/lib/menu';
+import Modal from 'antd/lib/modal';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Redirect, Route } from 'react-router-dom';
+import AboutContent from './AboutContent';
+import AppContext from './containers/AppContext';
+import fetchJson from './utilities/fetch-json.js';
 
-const { Content, Sider } = Layout
+const { Content, Sider } = Layout;
 
 class AppNav extends React.Component {
   state = {
     collapsed: true,
     redirect: false
-  }
+  };
 
   onCollapse = collapsed => {
-    this.setState({ collapsed })
-  }
+    this.setState({ collapsed });
+  };
 
   signout = () => {
     fetchJson('GET', '/api/signout').then(json => {
-      this.setState({ redirect: true })
-    })
-  }
+      this.setState({ redirect: true });
+    });
+  };
 
   render() {
-    const { redirect } = this.state
-    const { pageMenuItems } = this.props
+    const { redirect } = this.state;
+    const { pageMenuItems } = this.props;
 
     if (redirect) {
-      return <Redirect push to="/signin" />
+      return <Redirect push to="/signin" />;
     }
 
     return (
       <AppContext.Consumer>
         {appContext => {
-          const { currentUser, version } = appContext
+          const { currentUser, version } = appContext;
 
           return (
             <Layout style={{ minHeight: '100vh' }}>
@@ -62,7 +62,7 @@ class AppNav extends React.Component {
                         <Menu.Item
                           key="queries"
                           onClick={() => {
-                            history.push('/queries')
+                            history.push('/queries');
                           }}
                         >
                           <Icon type="file-text" />
@@ -71,7 +71,7 @@ class AppNav extends React.Component {
                         <Menu.Item
                           key="new-query"
                           onClick={() => {
-                            history.push('/queries/new')
+                            history.push('/queries/new');
                           }}
                         >
                           <Icon type="plus" />
@@ -88,7 +88,7 @@ class AppNav extends React.Component {
                           <Menu.Item
                             key="users"
                             onClick={() => {
-                              history.push('/users')
+                              history.push('/users');
                             }}
                           >
                             <Icon type="team" />
@@ -99,7 +99,7 @@ class AppNav extends React.Component {
                           <Menu.Item
                             key="configuration"
                             onClick={() => {
-                              history.push('/config-values')
+                              history.push('/config-values');
                             }}
                           >
                             <Icon type="setting" />
@@ -124,7 +124,7 @@ class AppNav extends React.Component {
                                   </div>
                                 ),
                                 onOk() {}
-                              })
+                              });
                             }}
                           >
                             <Icon type="exclamation-circle-o" />
@@ -144,7 +144,7 @@ class AppNav extends React.Component {
                                 />
                               ),
                               onOk() {}
-                            })
+                            });
                           }}
                         >
                           <Icon type="question-circle-o" />
@@ -163,15 +163,15 @@ class AppNav extends React.Component {
                 <Content className="flex w-100">{this.props.children}</Content>
               </Layout>
             </Layout>
-          )
+          );
         }}
       </AppContext.Consumer>
-    )
+    );
   }
 }
 
 AppNav.propTypes = {
   pageMenuItems: PropTypes.arrayOf(PropTypes.node)
-}
+};
 
-export default AppNav
+export default AppNav;

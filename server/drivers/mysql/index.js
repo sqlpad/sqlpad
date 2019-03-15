@@ -1,8 +1,8 @@
-const mysql = require('mysql')
-const { formatSchemaQueryResults } = require('../utils')
+const mysql = require('mysql');
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'mysql'
-const name = 'MySQL'
+const id = 'mysql';
+const name = 'MySQL';
 
 function getSchemaSql(database) {
   const whereSql = database
@@ -11,7 +11,7 @@ function getSchemaSql(database) {
         'mysql', 
         'performance_schema', 
         'information_schema'
-      )`
+      )`;
   return `
     SELECT 
       t.table_schema, 
@@ -26,7 +26,7 @@ function getSchemaSql(database) {
       t.table_schema, 
       t.table_name, 
       c.ordinal_position
-  `
+  `;
 }
 
 /**
@@ -46,53 +46,53 @@ function runQuery(query, connection) {
     insecureAuth: connection.mysqlInsecureAuth,
     timezone: 'Z',
     supportBigNumbers: true
-  })
+  });
 
   return new Promise((resolve, reject) => {
-    let incomplete = false
-    const rows = []
+    let incomplete = false;
+    const rows = [];
 
     myConnection.connect(err => {
       if (err) {
-        return reject(err)
+        return reject(err);
       }
-      let queryError
-      let resultsSent = false
+      let queryError;
+      let resultsSent = false;
 
       function continueOn() {
         if (!resultsSent) {
-          resultsSent = true
+          resultsSent = true;
           if (queryError) {
-            return reject(queryError)
+            return reject(queryError);
           }
-          return resolve({ rows, incomplete })
+          return resolve({ rows, incomplete });
         }
       }
 
-      const myQuery = myConnection.query(query)
+      const myQuery = myConnection.query(query);
       myQuery
         .on('error', function(err) {
           // Handle error,
           // an 'end' event will be emitted after this as well
           // so we'll call the callback there.
-          queryError = err
+          queryError = err;
         })
         .on('result', function(row) {
           // If we haven't hit the max yet add row to results
           if (rows.length < connection.maxRows) {
-            return rows.push(row)
+            return rows.push(row);
           }
 
           // Too many rows
-          incomplete = true
+          incomplete = true;
 
           // Stop the query stream
-          myConnection.pause()
+          myConnection.pause();
 
           // Destroy the underlying connection
           // Calling end() will wait and eventually time out
-          myConnection.destroy()
-          continueOn()
+          myConnection.destroy();
+          continueOn();
         })
         .on('end', function() {
           // all rows have been received
@@ -101,13 +101,13 @@ function runQuery(query, connection) {
           // myConnection.destroy()
           myConnection.end(error => {
             if (error) {
-              console.error('Error ending MySQL connection', error)
+              console.error('Error ending MySQL connection', error);
             }
-            continueOn()
-          })
-        })
-    })
-  })
+            continueOn();
+          });
+        });
+    });
+  });
 }
 
 /**
@@ -115,8 +115,8 @@ function runQuery(query, connection) {
  * @param {*} connection
  */
 function testConnection(connection) {
-  const query = "SELECT 'success' AS TestQuery;"
-  return runQuery(query, connection)
+  const query = "SELECT 'success' AS TestQuery;";
+  return runQuery(query, connection);
 }
 
 /**
@@ -124,10 +124,10 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  const schemaSql = getSchemaSql(connection.database)
+  const schemaSql = getSchemaSql(connection.database);
   return runQuery(schemaSql, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
-  )
+  );
 }
 
 const fields = [
@@ -161,7 +161,7 @@ const fields = [
     formType: 'CHECKBOX',
     label: 'Use old/insecure pre 4.1 Auth System'
   }
-]
+];
 
 module.exports = {
   id,
@@ -170,4 +170,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

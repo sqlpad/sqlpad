@@ -1,8 +1,8 @@
-const mssql = require('mssql')
-const { formatSchemaQueryResults } = require('../utils')
+const mssql = require('mssql');
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'sqlserver'
-const name = 'SQL Server'
+const id = 'sqlserver';
+const name = 'SQL Server';
 
 const SCHEMA_SQL = `
   SELECT 
@@ -19,7 +19,7 @@ const SCHEMA_SQL = `
     t.table_schema, 
     t.table_name, 
     c.ordinal_position
-`
+`;
 
 /**
  * Run query for connection
@@ -46,62 +46,62 @@ function runQuery(query, connection) {
       min: 0,
       idleTimeoutMillis: 1000
     }
-  }
+  };
 
-  let incomplete
-  const rows = []
+  let incomplete;
+  const rows = [];
 
   return new Promise((resolve, reject) => {
     const pool = new mssql.ConnectionPool(config, err => {
       if (err) {
-        return reject(err)
+        return reject(err);
       }
 
-      const request = new mssql.Request(pool)
+      const request = new mssql.Request(pool);
       // Stream set a config level doesn't seem to work
-      request.stream = true
-      request.query(query)
+      request.stream = true;
+      request.query(query);
 
       request.on('row', row => {
         // Special handling if columns were not given names
         if (row[''] && row[''].length) {
           for (let i = 0; i < row[''].length; i++) {
-            row['UNNAMED COLUMN ' + (i + 1)] = row[''][i]
+            row['UNNAMED COLUMN ' + (i + 1)] = row[''][i];
           }
-          delete row['']
+          delete row[''];
         }
         if (rows.length < connection.maxRows) {
-          return rows.push(row)
+          return rows.push(row);
         }
         // If reached it means we received a row event for more than maxRows
         // If we haven't flagged incomplete yet, flag it,
         // Resolve what we have and cancel request
         // Note that this will yield a cancel error
         if (!incomplete) {
-          incomplete = true
-          resolve({ rows, incomplete })
-          request.cancel()
+          incomplete = true;
+          resolve({ rows, incomplete });
+          request.cancel();
         }
-      })
+      });
 
       // Error events may fire multiple times
       // If we get an ECANCEL error and too many rows were handled it was intentional
       request.on('error', err => {
         if (err.code === 'ECANCEL' && incomplete) {
-          return
+          return;
         }
-        return reject(err)
-      })
+        return reject(err);
+      });
 
       // Always emitted as the last one
       request.on('done', () => {
-        resolve({ rows, incomplete })
-        pool.close()
-      })
-    })
+        resolve({ rows, incomplete });
+        pool.close();
+      });
+    });
 
-    pool.on('error', err => reject(err))
-  })
+    pool.on('error', err => reject(err));
+  });
 }
 
 /**
@@ -109,8 +109,8 @@ function runQuery(query, connection) {
  * @param {*} connection
  */
 function testConnection(connection) {
-  const query = "SELECT 'success' AS TestQuery;"
-  return runQuery(query, connection)
+  const query = "SELECT 'success' AS TestQuery;";
+  return runQuery(query, connection);
 }
 
 /**
@@ -120,7 +120,7 @@ function testConnection(connection) {
 function getSchema(connection) {
   return runQuery(SCHEMA_SQL, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
-  )
+  );
 }
 
 const fields = [
@@ -159,7 +159,7 @@ const fields = [
     formType: 'CHECKBOX',
     label: 'Encrypt (necessary for Azure)'
   }
-]
+];
 
 module.exports = {
   id,
@@ -168,4 +168,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

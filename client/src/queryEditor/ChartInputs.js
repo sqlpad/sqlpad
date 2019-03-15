@@ -1,44 +1,44 @@
-import Checkbox from 'antd/lib/checkbox'
-import Input from 'antd/lib/input'
-import Select from 'antd/lib/select'
-import PropTypes from 'prop-types'
-import React from 'react'
-import chartDefinitions from '../utilities/chartDefinitions.js'
+import Checkbox from 'antd/lib/checkbox';
+import Input from 'antd/lib/input';
+import Select from 'antd/lib/select';
+import PropTypes from 'prop-types';
+import React from 'react';
+import chartDefinitions from '../utilities/chartDefinitions.js';
 
-const { Option } = Select
+const { Option } = Select;
 
 function cleanBoolean(value) {
   if (typeof value === 'string') {
     if (value.toLowerCase() === 'true') {
-      value = true
+      value = true;
     } else if (value.toLowerCase() === 'false') {
-      value = false
+      value = false;
     }
   }
-  return value
+  return value;
 }
 
-const inputClassName = 'mt3 mb3'
+const inputClassName = 'mt3 mb3';
 
 class ChartInputs extends React.Component {
   state = {
     showAdvanced: false
-  }
+  };
 
   handleAdvancedClick = e => {
-    e.preventDefault()
+    e.preventDefault();
     this.setState({
       showAdvanced: !this.state.showAdvanced
-    })
-  }
+    });
+  };
 
   changeChartConfigurationField = (chartFieldId, queryResultField) => {
-    this.props.onChartConfigurationFieldsChange(chartFieldId, queryResultField)
-  }
+    this.props.onChartConfigurationFieldsChange(chartFieldId, queryResultField);
+  };
 
   renderFormGroup(inputDefinitionFields) {
-    const { queryChartConfigurationFields, queryResult } = this.props
-    const queryResultFields = queryResult.fields || []
+    const { queryChartConfigurationFields, queryResult } = this.props;
+    const queryResultFields = queryResult.fields || [];
 
     return inputDefinitionFields.map(field => {
       if (field.inputType === 'field-dropdown') {
@@ -47,10 +47,10 @@ class ChartInputs extends React.Component {
             <Option key={qrfield} value={qrfield}>
               {qrfield}
             </Option>
-          )
-        })
+          );
+        });
         const selectedQueryResultField =
-          queryChartConfigurationFields[field.fieldId]
+          queryChartConfigurationFields[field.fieldId];
         if (
           selectedQueryResultField &&
           queryResultFields.indexOf(selectedQueryResultField) === -1
@@ -62,7 +62,7 @@ class ChartInputs extends React.Component {
             >
               {selectedQueryResultField}
             </Option>
-          )
+          );
         }
         return (
           <div className={inputClassName} key={field.fieldId}>
@@ -75,7 +75,7 @@ class ChartInputs extends React.Component {
               value={selectedQueryResultField}
               notFoundContent="No fields available"
               onChange={value => {
-                this.changeChartConfigurationField(field.fieldId, value)
+                this.changeChartConfigurationField(field.fieldId, value);
               }}
               filterOption={(input, option) =>
                 option.props.value &&
@@ -87,10 +87,10 @@ class ChartInputs extends React.Component {
               {optionNodes}
             </Select>
           </div>
-        )
+        );
       } else if (field.inputType === 'checkbox') {
         const checked =
-          cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false
+          cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
         return (
           <div className={inputClassName} key={field.fieldId}>
             <Checkbox
@@ -100,15 +100,15 @@ class ChartInputs extends React.Component {
                 this.changeChartConfigurationField(
                   field.fieldId,
                   e.target.checked
-                )
+                );
               }}
             >
               {field.label}
             </Checkbox>
           </div>
-        )
+        );
       } else if (field.inputType === 'textbox') {
-        const value = queryChartConfigurationFields[field.fieldId] || ''
+        const value = queryChartConfigurationFields[field.fieldId] || '';
         return (
           <div className={inputClassName} key={field.fieldId}>
             <label>{field.label}</label>
@@ -118,43 +118,43 @@ class ChartInputs extends React.Component {
                 this.changeChartConfigurationField(
                   field.fieldId,
                   e.target.value
-                )
+                );
               }}
               className="w-100"
             />
           </div>
-        )
+        );
       } else {
-        throw Error(`field.inputType ${field.inputType} not supported`)
+        throw Error(`field.inputType ${field.inputType} not supported`);
       }
-    })
+    });
   }
 
   render() {
-    const { chartType } = this.props
-    const { showAdvanced } = this.state
+    const { chartType } = this.props;
+    const { showAdvanced } = this.state;
 
     const chartDefinition = chartDefinitions.find(
       def => def.chartType === chartType
-    )
+    );
 
     if (!chartDefinition || !chartDefinition.fields) {
-      return null
+      return null;
     }
 
     const regularFields = chartDefinition.fields.filter(
       field => field.advanced == null || field.advanced === false
-    )
+    );
 
     const advancedFields = chartDefinition.fields.filter(
       field => field.advanced === true
-    )
+    );
 
     const advancedLink = advancedFields.length ? (
       <a href="#settings" onClick={this.handleAdvancedClick}>
         {showAdvanced ? 'hide advanced settings' : 'show advanced settings'}
       </a>
-    ) : null
+    ) : null;
 
     return (
       <div>
@@ -162,7 +162,7 @@ class ChartInputs extends React.Component {
         {advancedLink}
         {showAdvanced && this.renderFormGroup(advancedFields)}
       </div>
-    )
+    );
   }
 }
 
@@ -171,11 +171,11 @@ ChartInputs.propTypes = {
   onChartConfigurationFieldsChange: PropTypes.func.isRequired,
   queryChartConfigurationFields: PropTypes.object,
   queryResult: PropTypes.object
-}
+};
 
 ChartInputs.defaultProps = {
   queryChartConfigurationFields: {},
   queryResult: {}
-}
+};
 
-export default ChartInputs
+export default ChartInputs;

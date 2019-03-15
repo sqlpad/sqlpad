@@ -1,20 +1,20 @@
-const assert = require('assert')
-const utils = require('../utils')
+const assert = require('assert');
+const utils = require('../utils');
 
 describe('api/users', function() {
-  let user
+  let user;
 
   before(function() {
-    return utils.resetWithUser()
-  })
+    return utils.resetWithUser();
+  });
 
   it('Returns initial array', function() {
     return utils.get('admin', '/api/users').then(body => {
-      assert(!body.error, 'Expect no error')
-      assert(Array.isArray(body.users), 'users is an array')
-      assert.equal(body.users.length, 2, '2 length')
-    })
-  })
+      assert(!body.error, 'Expect no error');
+      assert(Array.isArray(body.users), 'users is an array');
+      assert.equal(body.users.length, 2, '2 length');
+    });
+  });
 
   it('Creates user', function() {
     return utils
@@ -23,18 +23,18 @@ describe('api/users', function() {
         role: 'editor'
       })
       .then(body => {
-        assert(!body.error, 'no error')
-        assert(body.user._id, 'has _id')
-        assert.equal(body.user.email, 'user1@test.com')
-        user = body.user
-      })
-  })
+        assert(!body.error, 'no error');
+        assert(body.user._id, 'has _id');
+        assert.equal(body.user.email, 'user1@test.com');
+        user = body.user;
+      });
+  });
 
   it('Gets list of users', function() {
     return utils
       .get('admin', '/api/users')
-      .then(body => assert.equal(body.users.length, 3, '3 length'))
-  })
+      .then(body => assert.equal(body.users.length, 3, '3 length'));
+  });
 
   it('Updates user', function() {
     return utils
@@ -42,14 +42,14 @@ describe('api/users', function() {
         role: 'admin'
       })
       .then(body => {
-        assert(!body.error, 'no error')
-        assert.equal(body.user.role, 'admin')
-      })
-  })
+        assert(!body.error, 'no error');
+        assert.equal(body.user.role, 'admin');
+      });
+  });
 
   it('Requires authentication', function() {
-    return utils.get(null, `/api/users`, 302)
-  })
+    return utils.get(null, `/api/users`, 302);
+  });
 
   it('Create requires admin', function() {
     return utils.post(
@@ -60,20 +60,20 @@ describe('api/users', function() {
         role: 'editor'
       },
       403
-    )
-  })
+    );
+  });
 
   it('Deletes user', function() {
     return utils
       .del('admin', `/api/users/${user._id}`)
-      .then(body => assert(!body.error, 'no error'))
-  })
+      .then(body => assert(!body.error, 'no error'));
+  });
 
   it('Returns expected list', function() {
     return utils.get('admin', '/api/users').then(body => {
-      assert(!body.error, 'Expect no error')
-      assert(Array.isArray(body.users), 'users is an array')
-      assert.equal(body.users.length, 2, '2 length')
-    })
-  })
-})
+      assert(!body.error, 'Expect no error');
+      assert(Array.isArray(body.users), 'users is an array');
+      assert.equal(body.users.length, 2, '2 length');
+    });
+  });
+});

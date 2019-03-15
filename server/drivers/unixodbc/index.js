@@ -1,8 +1,8 @@
-const odbc = require('odbc')()
-const { formatSchemaQueryResults } = require('../utils')
+const odbc = require('odbc')();
+const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'unixodbc'
-const name = 'unixODBC'
+const id = 'unixodbc';
+const name = 'unixODBC';
 
 // Default to using INFORMATION_SCHEMA with old-style join for maximum compatibility
 // INFORMATION_SCHEMA is not supported by every DBMS but it is supported by
@@ -23,7 +23,7 @@ const SCHEMA_SQL_INFORMATION_SCHEMA = `
     c.table_schema,
     c.table_name,
     c.ordinal_position
-`
+`;
 
 /**
  * Run query for connection
@@ -37,53 +37,53 @@ function runQuery(query, connection) {
     user: connection.username,
     password: connection.password,
     connection_string: connection.connection_string
-  }
+  };
   // TODO use connection pool
   // TODO handle connection.maxRows
 
-  let cn = config.connection_string
+  let cn = config.connection_string;
 
   // Not all drivers require auth
   if (config.user) {
-    cn = cn + ';Uid=' + config.user
+    cn = cn + ';Uid=' + config.user;
   }
   if (config.password) {
-    cn = cn + ';Pwd=' + config.password
+    cn = cn + ';Pwd=' + config.password;
   }
 
   return openConnection(cn)
     .then(connectionStatus => {
-      return executeQuery(query)
+      return executeQuery(query);
     })
     .then(queryResult => {
-      odbc.close() // TODO consider putting into finally()?
-      return Promise.resolve({ rows: queryResult, incomplete: false })
+      odbc.close(); // TODO consider putting into finally()?
+      return Promise.resolve({ rows: queryResult, incomplete: false });
     })
     .catch(function(e) {
-      console.error(e, e.stack)
-    })
+      console.error(e, e.stack);
+    });
 }
 
 function executeQuery(sqlString) {
   return new Promise((resolve, reject) => {
     odbc.query(sqlString, function(err, data) {
       if (err) {
-        reject(err)
+        reject(err);
       }
-      resolve(data)
-    })
-  })
+      resolve(data);
+    });
+  });
 }
 
 function openConnection(connectionString) {
   return new Promise((resolve, reject) => {
     odbc.open(connectionString, function(err) {
       if (err) {
-        reject(err)
+        reject(err);
       }
-      resolve('Connection Open')
-    })
-  })
+      resolve('Connection Open');
+    });
+  });
 }
 
 /**
@@ -91,8 +91,8 @@ function openConnection(connectionString) {
  * @param {*} connection
  */
 function testConnection(connection) {
-  const query = "SELECT 'success' AS TestQuery;"
-  return runQuery(query, connection)
+  const query = "SELECT 'success' AS TestQuery;";
+  return runQuery(query, connection);
 }
 
 // TODO - reviewed no change needed? datatypes need reviewing
@@ -103,10 +103,10 @@ function testConnection(connection) {
 function getSchema(connection) {
   const schema_sql = connection.schema_sql
     ? connection.schema_sql
-    : SCHEMA_SQL_INFORMATION_SCHEMA
+    : SCHEMA_SQL_INFORMATION_SCHEMA;
   return runQuery(schema_sql, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)
-  )
+  );
 }
 
 const fields = [
@@ -132,7 +132,7 @@ const fields = [
     formType: 'PASSWORD',
     label: 'Database Password (optional)'
   }
-]
+];
 
 module.exports = {
   id,
@@ -141,4 +141,4 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection
-}
+};

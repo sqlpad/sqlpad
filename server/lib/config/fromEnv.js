@@ -1,4 +1,4 @@
-const definitions = require('./configItems')
+const definitions = require('./configItems');
 
 /**
  * Gets config values from environment
@@ -9,10 +9,10 @@ module.exports = function getEnvConfig(env = process.env) {
   return definitions
     .filter(definition => definition.hasOwnProperty('envVar'))
     .reduce((envMap, definition) => {
-      const { key, envVar } = definition
+      const { key, envVar } = definition;
       if (env[envVar]) {
-        envMap[key] = env[envVar]
+        envMap[key] = env[envVar];
       }
-      return envMap
-    }, {})
-}
+      return envMap;
+    }, {});
+};

@@ -1,5 +1,5 @@
-import React from 'react'
-import AppContext from './AppContext'
+import React from 'react';
+import AppContext from './AppContext';
 
 export function withAppContext(Component) {
   return function ConnectedComponent(props) {
@@ -7,8 +7,8 @@ export function withAppContext(Component) {
       <AppContext.Consumer>
         {appContext => <Component {...props} appContext={appContext} />}
       </AppContext.Consumer>
-    )
-  }
+    );
+  };
 }
 
-export default withAppContext
+export default withAppContext;
