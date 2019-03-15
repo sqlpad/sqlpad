@@ -32,7 +32,6 @@
     "prefer-promise-reject-errors": "off",
     "prefer-template": "off",
     "radix": "off",
-    "spaced-comment": "off",
     "vars-on-top": "off"
   }
 }

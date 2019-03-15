@@ -84,7 +84,7 @@ function testConnection(connection) {
 function getSchema(connection) {
   const schemaSql = getDrillSchemaSql(
     connection.drillCatalog
-    //connection.drillSchema
+    // connection.drillSchema
   );
   return runQuery(schemaSql, connection).then(queryResult =>
     formatSchemaQueryResults(queryResult)

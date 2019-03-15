@@ -38,7 +38,7 @@ Client.prototype.execute = function(queryString, callback) {
   request(queryOptions, function(error, response, body) {
     if (!error && response.statusCode === 200) {
       callback(null, body);
-    } //TODO Add error handling
+    } // TODO Add error handling
   });
 };
 
@@ -70,7 +70,7 @@ Client.prototype.query = function(config, query) {
       return jsonData;
     })
     .catch(function(e) {
-      //TODO Send error message to JSON
+      // TODO Send error message to JSON
       console.log('There was a problem with the request' + e);
       return e;
     });
