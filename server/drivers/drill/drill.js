@@ -1,10 +1,10 @@
 const fetch = require('node-fetch');
-var request = require('request');
-var url = require('url');
+let request = require('request');
+let url = require('url');
 
 exports.version = '1.0';
 
-var Client = (exports.Client = function(args) {
+let Client = (exports.Client = function(args) {
   if (!args) args = {};
 
   this.host = args.host || 'localhost';

@@ -10,7 +10,7 @@ router.get('/download-results/:cacheKey.csv', function(req, res, next) {
         if (!cache) {
           return next(new Error('Cache not found'));
         }
-        var filename = cache.queryName + '.csv';
+        let filename = cache.queryName + '.csv';
         res.setHeader(
           'Content-disposition',
           'attachment; filename="' + encodeURIComponent(filename) + '"'
@@ -34,7 +34,7 @@ router.get('/download-results/:cacheKey.xlsx', function(req, res, next) {
         if (!cache) {
           return next(new Error('Cache not found'));
         }
-        var filename = cache.queryName + '.xlsx';
+        let filename = cache.queryName + '.xlsx';
         res.setHeader(
           'Content-disposition',
           'attachment; filename="' + encodeURIComponent(filename) + '"'
