@@ -4,7 +4,7 @@ const sendError = require('../lib/sendError');
 
 // TODO FIXME - This was meant to redirect user to appropriate page depending on state of setup
 // I do not think it works anymore and should be revisited (this can be done client-side too)
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   const { config } = req;
   const BASE_URL = config.get('baseUrl');
 

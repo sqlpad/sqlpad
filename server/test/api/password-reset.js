@@ -29,7 +29,7 @@ describe('api/password-reset', function() {
   });
 
   it('Errors for wrong passwordResetId', function() {
-    return setReset().then(passwordResetId => {
+    return setReset().then(() => {
       return utils
         .post('admin', `/api/password-reset/123`, {
           email: 'admin@test.com',

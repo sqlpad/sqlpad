@@ -92,7 +92,7 @@ function testConnection(connection) {
 function getSchema(connection) {
   return runQuery(SCHEMA_SQL_V1, connection)
     .then(queryResult => formatSchemaQueryResults(queryResult))
-    .catch(error =>
+    .catch(() =>
       runQuery(SCHEMA_SQL_V0, connection).then(queryResult =>
         formatSchemaQueryResults(queryResult)
       )

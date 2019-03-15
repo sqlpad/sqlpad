@@ -51,7 +51,7 @@ router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, function(
       }
       return res.json({ query });
     })
-    .catch(error => sendError('Problem getting query'));
+    .catch(error => sendError(res, error, 'Problem getting query'));
 });
 
 // create new

@@ -165,8 +165,8 @@ async function runQuery(query, connection) {
   });
 
   if (measures.length) {
-    rows.forEach((row, rowIndex) => {
-      measures.forEach((measure, measureIndex) => {
+    rows.forEach(row => {
+      measures.forEach(measure => {
         const date = row.orderdate || row.orderdatetime;
         if (date) {
           const doy = moment.utc(date).dayOfYear();
@@ -229,9 +229,8 @@ Array(500)
 
 /**
  * Get schema for connection
- * @param {*} connection
  */
-function getSchema(connection) {
+function getSchema() {
   const fakeSchemaQueryResult = {
     rows: schemaRows,
     incomplete: false

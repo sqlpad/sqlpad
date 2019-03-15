@@ -9,7 +9,7 @@ const sendError = require('../lib/sendError');
 router.post('/api/test-connection', mustBeAdmin, function(req, res) {
   const { body } = req;
   return testConnection(body)
-    .then(queryResult => res.send({ success: true }))
+    .then(() => res.send({ success: true }))
     .catch(error => sendError(res, error));
 });
 

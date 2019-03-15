@@ -52,9 +52,7 @@ function runQuery(query, connection) {
   }
 
   return openConnection(cn)
-    .then(connectionStatus => {
-      return executeQuery(query);
-    })
+    .then(() => executeQuery(query))
     .then(queryResult => {
       odbc.close(); // TODO consider putting into finally()?
       return Promise.resolve({ rows: queryResult, incomplete: false });

@@ -22,7 +22,7 @@ const {
 // so this should be okay unless SQLPad is frequently restarting
 const cookieSecrets = debug
   ? 'devmode'
-  : [1, 2, 3, 4].map(n => crypto.randomBytes(64).toString('hex'));
+  : [1, 2, 3, 4].map(() => crypto.randomBytes(64).toString('hex'));
 
 const ONE_HOUR_MS = 1000 * 60 * 60;
 

@@ -23,7 +23,7 @@ const initSqls = [
 describe('drivers/hdb', function() {
   before(function() {
     this.timeout(10000);
-    let seq = hdb.runQuery('DROP TABLE test;', connection).catch(error => {
+    let seq = hdb.runQuery('DROP TABLE test;', connection).catch(() => {
       // ignore error - table might not exist
     });
     initSqls.forEach(sql => {

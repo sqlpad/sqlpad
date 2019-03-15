@@ -24,7 +24,6 @@
     "no-restricted-syntax": "off",
     "no-shadow": "off",
     "no-underscore-dangle": "off",
-    "no-unused-vars": "off",
     "no-use-before-define": "off",
     "object-shorthand": "off",
     "one-var": "off",

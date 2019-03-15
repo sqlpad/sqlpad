@@ -47,7 +47,7 @@ if (!disableUserpassAuth) {
             return sendError(res, null, 'Email address not whitelisted');
           }
         }
-        return user.save().then(newUser => res.json({}));
+        return user.save().then(() => res.json({}));
       })
       .catch(error => sendError(res, error, 'Error saving user'));
   });

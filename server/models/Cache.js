@@ -68,7 +68,7 @@ Cache.prototype.writeXlsx = function writeXlsx(queryResult) {
     resultArray.push(row);
   }
   const xlsxBuffer = xlsx.build([{ name: 'query-results', data: resultArray }]);
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     fs.writeFile(self.xlsxFilePath(), xlsxBuffer, function(err) {
       // if there's an error log it but otherwise continue on
       // we can still send results even if download file failed to create
@@ -82,7 +82,7 @@ Cache.prototype.writeXlsx = function writeXlsx(queryResult) {
 
 Cache.prototype.writeCsv = function writeCsv(queryResult) {
   const self = this;
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     json2csv({ data: queryResult.rows, fields: queryResult.fields }, function(
       err,
       csv

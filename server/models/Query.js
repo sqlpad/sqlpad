@@ -109,7 +109,7 @@ Query.prototype.pushQueryToSlackIfSetup = function() {
           json: true,
           url: SLACK_WEBHOOK
         };
-        request(options, function(err, httpResponse, body) {
+        request(options, function(err) {
           if (err) {
             console.error('Something went wrong while sending to Slack.');
             console.error(err);
