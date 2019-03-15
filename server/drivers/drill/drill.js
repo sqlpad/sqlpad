@@ -32,7 +32,7 @@ Client.prototype.execute = function(queryString, callback) {
   let queryOptions = {
     uri: href,
     method: 'POST',
-    headers: headers,
+    headers,
     json: { queryType: 'SQL', query: queryString }
   };
   request(queryOptions, function(error, response, body) {
@@ -55,13 +55,13 @@ Client.prototype.query = function(config, query) {
     this.protocol + '://' + this.host + ':' + this.port + '/query.json';
   const queryInfo = {
     queryType: 'SQL',
-    query: query
+    query
   };
   const body = JSON.stringify(queryInfo);
   return fetch(restURL, {
     method: 'POST',
-    headers: headers,
-    body: body
+    headers,
+    body
   })
     .then(function(data) {
       return data.json();

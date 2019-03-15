@@ -48,10 +48,10 @@ function checkForUpdate() {
 }
 
 module.exports = {
-  get: function() {
+  get() {
     return Object.assign({}, version);
   },
-  scheduleUpdateChecks: function() {
+  scheduleUpdateChecks() {
     setInterval(checkForUpdate, ONE_DAY);
     setTimeout(checkForUpdate, 5000);
   }

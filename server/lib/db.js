@@ -20,7 +20,7 @@ const db = {
   cache: datastore({ filename: path.join(dbPath, 'cache.db') }),
   config: datastore({ filename: path.join(dbPath, 'config.db') }),
   instances: ['users', 'connections', 'queries', 'cache', 'config'],
-  onLoad: function(fn) {
+  onLoad(fn) {
     if (loaded) {
       return fn(loadError);
     }

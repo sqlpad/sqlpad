@@ -25,7 +25,6 @@
     "no-shadow": "off",
     "no-underscore-dangle": "off",
     "no-use-before-define": "off",
-    "object-shorthand": "off",
     "one-var": "off",
     "prefer-const": "off",
     "prefer-destructuring": "off",

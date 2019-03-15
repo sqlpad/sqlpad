@@ -12,7 +12,7 @@ router.get('/api/tags', mustBeAuthenticated, function(req, res) {
         .filter(t => t);
 
       return res.json({
-        tags: tags
+        tags
       });
     })
     .catch(error => sendError(res, error, 'Problem getting tags'));
