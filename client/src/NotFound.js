@@ -3,7 +3,7 @@ import AppNav from './AppNav.js';
 import FullscreenMessage from './common/FullscreenMessage.js';
 import AppContext from './containers/AppContext';
 
-export default () => {
+export default function NotFound() {
   const appContext = useContext(AppContext);
   const { currentUser } = appContext;
 
@@ -19,4 +19,4 @@ export default () => {
     );
   }
   return <FullscreenMessage>Not Found</FullscreenMessage>;
-};
+}
