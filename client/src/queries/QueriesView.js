@@ -17,7 +17,6 @@ import { Link } from 'react-router-dom';
 import AppNav from '../AppNav';
 import Header from '../common/Header';
 import SqlEditor from '../common/SqlEditor';
-import AppContext from '../containers/AppContext';
 import fetchJson from '../utilities/fetch-json.js';
 
 const { Content } = Layout;
@@ -128,35 +127,28 @@ class QueriesView extends React.Component {
   };
 
   actionsRender = (text, record) => {
+    const tableUrl = `/query-table/${record._id}`;
+    const chartUrl = `/query-chart/${record._id}`;
     return (
-      <AppContext.Consumer>
-        {appContext => {
-          const { config } = appContext;
-          const tableUrl = `${config.baseUrl}/query-table/${record._id}`;
-          const chartUrl = `${config.baseUrl}/query-chart/${record._id}`;
-          return (
-            <span>
-              <a href={tableUrl} target="_blank" rel="noopener noreferrer">
-                table
-              </a>
-              <Divider type="vertical" />
-              <a href={chartUrl} target="_blank" rel="noopener noreferrer">
-                chart
-              </a>
-              <Divider type="vertical" />
-              <Popconfirm
-                title="Are you sure?"
-                onConfirm={e => this.handleQueryDelete(record._id)}
-                onCancel={() => {}}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button icon="delete" type="danger" />
-              </Popconfirm>
-            </span>
-          );
-        }}
-      </AppContext.Consumer>
+      <span>
+        <Link to={tableUrl} target="_blank" rel="noopener noreferrer">
+          table
+        </Link>
+        <Divider type="vertical" />
+        <Link to={chartUrl} target="_blank" rel="noopener noreferrer">
+          chart
+        </Link>
+        <Divider type="vertical" />
+        <Popconfirm
+          title="Are you sure?"
+          onConfirm={e => this.handleQueryDelete(record._id)}
+          onCancel={() => {}}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button icon="delete" type="danger" />
+        </Popconfirm>
+      </span>
     );
   };
 
