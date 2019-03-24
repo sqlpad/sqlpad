@@ -1,34 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-class SecondsTimer extends React.Component {
-  state = {
-    runSeconds: 0
-  };
+function SecondsTimer({ startTime }) {
+  const [runSeconds, setRunSeconds] = useState(0);
 
-  _mounted = false;
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const now = new Date();
+      setRunSeconds(((now - startTime) / 1000).toFixed(0));
+    }, 33);
+    return () => clearInterval(intervalId);
+  }, []);
 
-  timer = () => {
-    if (this._mounted) {
-      var now = new Date();
-      this.setState({
-        runSeconds: ((now - this.props.startTime) / 1000).toFixed(0)
-      });
-      setTimeout(this.timer, 33);
-    }
-  };
-
-  componentDidMount() {
-    this._mounted = true;
-    this.timer();
-  }
-
-  componentWillUnmount() {
-    this._mounted = false;
-  }
-
-  render() {
-    return <span>{this.state.runSeconds}</span>;
-  }
+  return <span>{runSeconds}</span>;
 }
 
 export default SecondsTimer;
