@@ -39,12 +39,20 @@ class ExportButton extends React.Component {
                     <Menu.Item onClick={this.onSaveImageClick}>png</Menu.Item>
                   )}
                   <Menu.Item>
-                    <a target="_blank" href={csvDownloadLink}>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={csvDownloadLink}
+                    >
                       csv
                     </a>
                   </Menu.Item>
                   <Menu.Item>
-                    <a target="_blank" href={xlsxDownloadLink}>
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={xlsxDownloadLink}
+                    >
                       xlsx
                     </a>
                   </Menu.Item>
