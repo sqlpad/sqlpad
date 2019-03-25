@@ -436,7 +436,6 @@ class QueryEditor extends React.Component {
           </FlexTabPane>
         </div>
         <QueryDetailsModal
-          config={config}
           onHide={this.handleModalHide}
           onQueryTagsChange={this.handleQueryTagsChange}
           query={query}

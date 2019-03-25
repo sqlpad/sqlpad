@@ -3,7 +3,7 @@ import Layout from 'antd/lib/layout';
 import message from 'antd/lib/message';
 import Row from 'antd/lib/row';
 import debounce from 'lodash.debounce';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppNav from '../AppNav';
 import Header from '../common/Header';
 import fetchJson from '../utilities/fetch-json.js';
@@ -13,51 +13,35 @@ import ConfigItemInput from './ConfigItemInput';
 
 const { Content } = Layout;
 
-class ConfigurationView extends React.Component {
-  state = {
-    configItems: []
+function ConfigurationView() {
+  const [configItems, setConfigItems] = useState([]);
+
+  const loadConfigValuesFromServer = async () => {
+    const json = await fetchJson('GET', '/api/config-items');
+    if (json.error) {
+      message.error(json.error);
+    }
+    setConfigItems(json.configItems);
   };
 
-  loadConfigValuesFromServer = () => {
-    fetchJson('GET', '/api/config-items').then(json => {
-      if (json.error) message.error(json.error);
-      this.setState({ configItems: json.configItems });
-    });
-  };
-
-  saveConfigValue = (key, value) => {
-    fetchJson('POST', '/api/config-values/' + key, {
+  const saveConfigValue = debounce(async (key, value) => {
+    const json = await fetchJson('POST', '/api/config-values/' + key, {
       value: value
-    }).then(json => {
-      if (json.error) {
-        message.error('Save failed');
-      } else {
-        message.success('Value saved');
-        this.loadConfigValuesFromServer();
-      }
     });
-  };
+    if (json.error) {
+      message.error('Save failed');
+    } else {
+      message.success('Value saved');
+      loadConfigValuesFromServer();
+    }
+  }, 500);
 
-  componentDidMount() {
+  useEffect(() => {
     document.title = 'SQLPad - Configuration';
-    this.loadConfigValuesFromServer();
-    this.saveConfigValue = debounce(this.saveConfigValue, 500);
-  }
+    loadConfigValuesFromServer();
+  }, []);
 
-  renderValueInput = (text, record) => {
-    return (
-      <div>
-        <label>{record.label}</label>
-        <ConfigItemInput
-          key={record.key}
-          config={record}
-          saveConfigValue={this.saveConfigValue}
-        />
-      </div>
-    );
-  };
-
-  renderInfo = config => {
+  const renderInfo = config => {
     const disabled =
       config.effectiveValueSource === 'cli' ||
       config.effectiveValueSource === 'saved cli' ||
@@ -114,8 +98,7 @@ class ConfigurationView extends React.Component {
     );
   };
 
-  renderConfigInputs() {
-    const { configItems } = this.state;
+  const renderConfigInputs = () => {
     const uiConfigItems = configItems.filter(
       config => config.interface === 'ui'
     );
@@ -129,103 +112,99 @@ class ConfigurationView extends React.Component {
                   <label>{config.label}</label>
                   <ConfigItemInput
                     config={config}
-                    saveConfigValue={this.saveConfigValue}
+                    saveConfigValue={saveConfigValue}
                   />
                 </div>
               </Col>
               <Col span={14}>
-                <div>{this.renderInfo(config)}</div>
+                <div>{renderInfo(config)}</div>
               </Col>
             </Row>
           );
         })}
       </div>
     );
-  }
+  };
 
-  render() {
-    return (
-      <AppNav>
-        <Layout
-          style={{ minHeight: '100vh' }}
-          className="flex w-100 flex-column h-100"
-        >
-          <Header title="Configuration" />
-          <Content className="ma4">
-            <Row gutter={16}>
-              <Col span={16}>{this.renderConfigInputs()}</Col>
-              <Col span={8}>
-                <div className="bg-white ba br2 b--light-gray pa4">
-                  <p>
-                    <strong>Feature Checklist</strong>
-                  </p>
-                  <p>
-                    Unlock features by providing the required configuration.
-                  </p>
-                  <hr />
-                  <strong>Email</strong>
-                  <ul style={{ paddingLeft: 20 }}>
-                    <CheckListItem
-                      configKey={'smtpUser'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'smtpHost'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'smtpPort'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'smtpFrom'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'publicUrl'}
-                      configItems={this.state.configItems}
-                    />
-                  </ul>
-                  <strong>Google OAuth</strong>
-                  <ul style={{ paddingLeft: 20 }}>
-                    <CheckListItem
-                      configKey={'googleClientId'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'googleClientSecret'}
-                      configItems={this.state.configItems}
-                    />
-                    <CheckListItem
-                      configKey={'publicUrl'}
-                      configItems={this.state.configItems}
-                    />
-                  </ul>
-                </div>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                <hr />
+  return (
+    <AppNav>
+      <Layout
+        style={{ minHeight: '100vh' }}
+        className="flex w-100 flex-column h-100"
+      >
+        <Header title="Configuration" />
+        <Content className="ma4">
+          <Row gutter={16}>
+            <Col span={16}>{renderConfigInputs()}</Col>
+            <Col span={8}>
+              <div className="bg-white ba br2 b--light-gray pa4">
                 <p>
-                  Some configuration is only accessible via environment
-                  variables or command-line-interface (CLI) flags. Below are the
-                  current values for these variables. Sensitive values are
-                  masked. Hover over input for additional information.
+                  <strong>Feature Checklist</strong>
                 </p>
+                <p>Unlock features by providing the required configuration.</p>
                 <hr />
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={24}>
-                <ConfigEnvDocumentation configItems={this.state.configItems} />
-              </Col>
-            </Row>
-          </Content>
-        </Layout>
-      </AppNav>
-    );
-  }
+                <strong>Email</strong>
+                <ul style={{ paddingLeft: 20 }}>
+                  <CheckListItem
+                    configKey={'smtpUser'}
+                    configItems={configItems}
+                  />
+                  <CheckListItem
+                    configKey={'smtpHost'}
+                    configItems={configItems}
+                  />
+                  <CheckListItem
+                    configKey={'smtpPort'}
+                    configItems={configItems}
+                  />
+                  <CheckListItem
+                    configKey={'smtpFrom'}
+                    configItems={configItems}
+                  />
+                  <CheckListItem
+                    configKey={'publicUrl'}
+                    configItems={configItems}
+                  />
+                </ul>
+                <strong>Google OAuth</strong>
+                <ul style={{ paddingLeft: 20 }}>
+                  <CheckListItem
+                    configKey={'googleClientId'}
+                    configItems={configItems}
+                  />
+                  <CheckListItem
+                    configKey={'googleClientSecret'}
+                    configItems={configItems}
+                  />
+                  <CheckListItem
+                    configKey={'publicUrl'}
+                    configItems={configItems}
+                  />
+                </ul>
+              </div>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <hr />
+              <p>
+                Some configuration is only accessible via environment variables
+                or command-line-interface (CLI) flags. Below are the current
+                values for these variables. Sensitive values are masked. Hover
+                over input for additional information.
+              </p>
+              <hr />
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <ConfigEnvDocumentation configItems={configItems} />
+            </Col>
+          </Row>
+        </Content>
+      </Layout>
+    </AppNav>
+  );
 }
 
 export default ConfigurationView;
