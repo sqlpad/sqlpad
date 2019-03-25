@@ -423,7 +423,7 @@ class QueryEditor extends React.Component {
                   queryError={queryError}
                   queryResult={queryResult}
                   ref={this.sqlpadTauChart}
-                  activeTabKey={activeTabKey}
+                  isVisible={activeTabKey === 'vis'}
                 />
               </div>
             </SplitPane>

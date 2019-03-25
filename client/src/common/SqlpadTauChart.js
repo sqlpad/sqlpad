@@ -16,7 +16,7 @@ function SqlpadTauChart({
   queryResult,
   query,
   forwardedRef,
-  activeTabKey
+  isVisible
 }) {
   const chartConfiguration = query && query.chartConfiguration;
   const queryName = query ? query.name : '';
@@ -29,7 +29,7 @@ function SqlpadTauChart({
     let chart;
 
     if (
-      activeTabKey === 'vis' &&
+      isVisible &&
       !isRunning &&
       !queryError &&
       chartConfiguration &&
@@ -61,7 +61,7 @@ function SqlpadTauChart({
     queryResult,
     chartConfiguration,
     queryName,
-    activeTabKey
+    isVisible
   ]);
 
   useImperativeHandle(forwardedRef, () => ({
@@ -105,7 +105,7 @@ SqlpadTauChart.propTypes = {
   queryError: PropTypes.string,
   queryResult: PropTypes.object,
   forwardedRef: PropTypes.any,
-  activeTabKey: PropTypes.string
+  isVisible: PropTypes.bool
 };
 
 export default forwardRef((props, ref) => {
