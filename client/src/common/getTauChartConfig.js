@@ -29,13 +29,15 @@ const getUnmetFields = (chartType, selectedFieldMap) => {
  * @param {string} [query.name]
  * @param {object} queryResult
  */
-export default function getTauChartConfig(query, queryResult) {
+export default function getTauChartConfig(
+  chartConfiguration,
+  queryResult,
+  queryName
+) {
   const meta = queryResult ? queryResult.meta : {};
   let dataRows = queryResult ? queryResult.rows : [];
-  const chartType =
-    query && query.chartConfiguration && query.chartConfiguration.chartType;
-  const selectedFields =
-    query && query.chartConfiguration && query.chartConfiguration.fields;
+  const chartType = chartConfiguration && chartConfiguration.chartType;
+  const selectedFields = chartConfiguration && chartConfiguration.fields;
 
   const chartDefinition = chartDefinitions.find(
     def => def.chartType === chartType
@@ -56,7 +58,7 @@ export default function getTauChartConfig(query, queryResult) {
           // (we don't know what the webpack bundle css path will be)
           window.BASE_URL + '/javascripts/vendor/tauCharts/tauCharts.min.css'
         ],
-        fileName: query.name || 'Unnamed query'
+        fileName: queryName || 'Unnamed query'
       })
     ],
     settings: {
@@ -104,12 +106,12 @@ export default function getTauChartConfig(query, queryResult) {
   // Remove them from a copy of chartConfigurationFields
   // Unless they aren't column mapping fields (like trendline, quickfilter)
   const cleanedChartConfigurationFields = Object.keys(
-    query.chartConfiguration.fields
+    chartConfiguration.fields
   ).reduce((fieldsMap, field) => {
     const fieldDefinition = chartDefinition.fields.find(
       f => f.fieldId === field
     );
-    const value = query.chartConfiguration.fields[field];
+    const value = chartConfiguration.fields[field];
 
     if (fieldDefinition && fieldDefinition.inputType !== 'field-dropdown') {
       fieldsMap[field] = value;

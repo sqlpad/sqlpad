@@ -1,21 +1,53 @@
 import 'd3';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, {
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  forwardRef
+} from 'react';
 import { Chart } from 'taucharts';
 import SpinKitCube from './SpinKitCube.js';
 import getTauChartConfig from './getTauChartConfig';
 
-function SqlpadTauChart({ isRunning, queryError, queryResult, query }) {
+function SqlpadTauChart({
+  isRunning,
+  queryError,
+  queryResult,
+  query,
+  forwardedRef,
+  activeTabKey
+}) {
+  const chartConfiguration = query && query.chartConfiguration;
+  const queryName = query ? query.name : '';
+
+  const chartRef = useRef(null);
+
+  // TODO rendering on every change like this might get too expensive
+  // Revisit with latest version of taucharts and d3 once UI is updated
   useEffect(() => {
     let chart;
 
-    if (!isRunning && !queryError && query && queryResult) {
-      const chartConfig = getTauChartConfig(query, queryResult);
+    if (
+      activeTabKey === 'vis' &&
+      !isRunning &&
+      !queryError &&
+      chartConfiguration &&
+      queryResult
+    ) {
+      const chartConfig = getTauChartConfig(
+        chartConfiguration,
+        queryResult,
+        queryName
+      );
       if (chartConfig) {
         chart = new Chart(chartConfig);
         chart.renderTo('#chart');
       }
     }
+
+    // set instance of chart to ref
+    chartRef.current = chart;
 
     // cleanup chart
     return () => {
@@ -23,7 +55,27 @@ function SqlpadTauChart({ isRunning, queryError, queryResult, query }) {
         chart.destroy();
       }
     };
-  }, [isRunning, queryError, queryResult, query]);
+  }, [
+    isRunning,
+    queryError,
+    queryResult,
+    chartConfiguration,
+    queryName,
+    activeTabKey
+  ]);
+
+  useImperativeHandle(forwardedRef, () => ({
+    exportPng: () => {
+      if (chartRef.current && chartRef.current.fire) {
+        chartRef.current.fire('exportTo', 'png');
+      }
+    },
+    resize: () => {
+      if (chartRef.current && chartRef.current.resize) {
+        chartRef.current.resize();
+      }
+    }
+  }));
 
   if (isRunning) {
     return (
@@ -51,7 +103,11 @@ SqlpadTauChart.propTypes = {
   isRunning: PropTypes.bool,
   query: PropTypes.object,
   queryError: PropTypes.string,
-  queryResult: PropTypes.object
+  queryResult: PropTypes.object,
+  forwardedRef: PropTypes.any,
+  activeTabKey: PropTypes.string
 };
 
-export default SqlpadTauChart;
+export default forwardRef((props, ref) => {
+  return <SqlpadTauChart {...props} forwardedRef={ref} />;
+});
