@@ -103,7 +103,7 @@ if (debug || process.env.SQLPAD_TEST === 'true') {
  * Run query using driver implementation of connection
  * @param {*} query
  * @param {*} connection
- * @param {object} user
+ * @param {object} [user] user may not be provided if chart links turned on
  * @returns {Promise}
  */
 function runQuery(query, connection, user) {
@@ -141,8 +141,8 @@ function runQuery(query, connection, user) {
 
       console.log(
         JSON.stringify({
-          userId: user._id,
-          userEmail: user.email,
+          userId: user && user._id,
+          userEmail: user && user.email,
           connectionName,
           startTime,
           stopTime,
