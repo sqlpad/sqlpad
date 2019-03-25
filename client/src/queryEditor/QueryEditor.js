@@ -234,7 +234,7 @@ class QueryEditor extends React.Component {
     this.setState({ activeTabKey: e.target.value });
   };
 
-  handleVisualizeClick = () => this.sqlpadTauChart.renderChart(true);
+  // handleVisualizeClick = () => this.sqlpadTauChart.renderChart(true);
 
   hasRows = () => {
     const queryResult = this.state.queryResult;
@@ -416,21 +416,20 @@ class QueryEditor extends React.Component {
                 }
                 onChartTypeChange={this.handleChartTypeChange}
                 onSaveImageClick={this.handleSaveImageClick}
-                onVisualizeClick={this.handleVisualizeClick}
+                // onVisualizeClick={this.handleVisualizeClick}
                 query={query}
                 queryResult={queryResult}
               />
               <div className="flex-auto h-100">
                 <SqlpadTauChart
-                  config={this.props.config}
                   isRunning={isRunning}
                   query={query}
                   queryError={queryError}
                   queryResult={queryResult}
-                  renderChart={this.isChartable()}
-                  ref={ref => {
-                    this.sqlpadTauChart = ref;
-                  }}
+                  // renderChart={this.isChartable()}
+                  // ref={ref => {
+                  //   this.sqlpadTauChart = ref;
+                  // }}
                 />
               </div>
             </SplitPane>
