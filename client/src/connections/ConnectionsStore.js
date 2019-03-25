@@ -110,16 +110,4 @@ export class ConnectionsStore extends React.Component {
   }
 }
 
-export function withConnectionsContext(Component) {
-  return function ConnectedComponent(props) {
-    return (
-      <ConnectionsContext.Consumer>
-        {connectionsContext => (
-          <Component {...props} connectionsContext={connectionsContext} />
-        )}
-      </ConnectionsContext.Consumer>
-    );
-  };
-}
-
 export default ConnectionsStore;

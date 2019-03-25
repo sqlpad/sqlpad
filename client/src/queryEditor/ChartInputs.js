@@ -2,7 +2,7 @@ import Checkbox from 'antd/lib/checkbox';
 import Input from 'antd/lib/input';
 import Select from 'antd/lib/select';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 
 const { Option } = Select;
@@ -20,24 +20,24 @@ function cleanBoolean(value) {
 
 const inputClassName = 'mt3 mb3';
 
-class ChartInputs extends React.Component {
-  state = {
-    showAdvanced: false
-  };
+function ChartInputs({
+  onChartConfigurationFieldsChange,
+  queryChartConfigurationFields,
+  queryResult,
+  chartType
+}) {
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
-  handleAdvancedClick = e => {
+  const handleAdvancedClick = e => {
     e.preventDefault();
-    this.setState({
-      showAdvanced: !this.state.showAdvanced
-    });
+    setShowAdvanced(!showAdvanced);
   };
 
-  changeChartConfigurationField = (chartFieldId, queryResultField) => {
-    this.props.onChartConfigurationFieldsChange(chartFieldId, queryResultField);
+  const changeChartConfigurationField = (chartFieldId, queryResultField) => {
+    onChartConfigurationFieldsChange(chartFieldId, queryResultField);
   };
 
-  renderFormGroup(inputDefinitionFields) {
-    const { queryChartConfigurationFields, queryResult } = this.props;
+  const renderFormGroup = inputDefinitionFields => {
     const queryResultFields = queryResult.fields || [];
 
     return inputDefinitionFields.map(field => {
@@ -74,9 +74,9 @@ class ChartInputs extends React.Component {
               optionFilterProp="children"
               value={selectedQueryResultField}
               notFoundContent="No fields available"
-              onChange={value => {
-                this.changeChartConfigurationField(field.fieldId, value);
-              }}
+              onChange={value =>
+                changeChartConfigurationField(field.fieldId, value)
+              }
               filterOption={(input, option) =>
                 option.props.value &&
                 option.props.children
@@ -96,12 +96,9 @@ class ChartInputs extends React.Component {
             <Checkbox
               checked={checked}
               name={field.key}
-              onChange={e => {
-                this.changeChartConfigurationField(
-                  field.fieldId,
-                  e.target.checked
-                );
-              }}
+              onChange={e =>
+                changeChartConfigurationField(field.fieldId, e.target.checked)
+              }
             >
               {field.label}
             </Checkbox>
@@ -114,12 +111,9 @@ class ChartInputs extends React.Component {
             <label>{field.label}</label>
             <Input
               value={value}
-              onChange={e => {
-                this.changeChartConfigurationField(
-                  field.fieldId,
-                  e.target.value
-                );
-              }}
+              onChange={e =>
+                changeChartConfigurationField(field.fieldId, e.target.value)
+              }
               className="w-100"
             />
           </div>
@@ -128,42 +122,37 @@ class ChartInputs extends React.Component {
         throw Error(`field.inputType ${field.inputType} not supported`);
       }
     });
+  };
+
+  const chartDefinition = chartDefinitions.find(
+    def => def.chartType === chartType
+  );
+
+  if (!chartDefinition || !chartDefinition.fields) {
+    return null;
   }
 
-  render() {
-    const { chartType } = this.props;
-    const { showAdvanced } = this.state;
+  const regularFields = chartDefinition.fields.filter(
+    field => field.advanced == null || field.advanced === false
+  );
 
-    const chartDefinition = chartDefinitions.find(
-      def => def.chartType === chartType
-    );
+  const advancedFields = chartDefinition.fields.filter(
+    field => field.advanced === true
+  );
 
-    if (!chartDefinition || !chartDefinition.fields) {
-      return null;
-    }
+  const advancedLink = advancedFields.length ? (
+    <a href="#settings" onClick={handleAdvancedClick}>
+      {showAdvanced ? 'hide advanced settings' : 'show advanced settings'}
+    </a>
+  ) : null;
 
-    const regularFields = chartDefinition.fields.filter(
-      field => field.advanced == null || field.advanced === false
-    );
-
-    const advancedFields = chartDefinition.fields.filter(
-      field => field.advanced === true
-    );
-
-    const advancedLink = advancedFields.length ? (
-      <a href="#settings" onClick={this.handleAdvancedClick}>
-        {showAdvanced ? 'hide advanced settings' : 'show advanced settings'}
-      </a>
-    ) : null;
-
-    return (
-      <div>
-        {this.renderFormGroup(regularFields)}
-        {advancedLink}
-        {showAdvanced && this.renderFormGroup(advancedFields)}
-      </div>
-    );
-  }
+  return (
+    <div>
+      {renderFormGroup(regularFields)}
+      {advancedLink}
+      {showAdvanced && renderFormGroup(advancedFields)}
+    </div>
+  );
 }
 
 ChartInputs.propTypes = {

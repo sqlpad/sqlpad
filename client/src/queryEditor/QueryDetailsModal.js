@@ -4,100 +4,90 @@ import Tooltip from 'antd/lib/tooltip';
 import PropTypes from 'prop-types';
 import React from 'react';
 import EditableTagGroup from '../common/EditableTagGroup';
+import { Link } from 'react-router-dom';
 
-class QueryDetailsModal extends React.Component {
-  onQueryNameChange = e => {
-    this.props.onQueryNameChange(e.target.value);
-  };
-
-  renderNavLink = (href, text) => {
-    const { query } = this.props;
+function QueryDetailsModal({
+  query,
+  onHide,
+  onQueryTagsChange,
+  showModal,
+  tagOptions
+}) {
+  const renderNavLink = (href, text) => {
     const saved = !!query._id;
     if (saved) {
       return (
         <li role="presentation">
-          <a href={href} target="_blank" rel="noopener noreferrer">
+          <Link to={href} target="_blank" rel="noopener noreferrer">
             {text} <Icon type="export" />
-          </a>
+          </Link>
         </li>
       );
     } else {
       return (
         <Tooltip title="Save query to enable table/chart view links">
           <li role="presentation" className="disabled">
-            <a
-              href={href}
+            <Link
+              to={href}
               target="_blank"
               rel="noopener noreferrer"
               onClick={e => e.preventDefault()}
             >
               {text} <Icon type="export" />
-            </a>
+            </Link>
           </li>
         </Tooltip>
       );
     }
   };
 
-  render() {
-    const {
-      config,
-      onHide,
-      onQueryTagsChange,
-      query,
-      showModal,
-      tagOptions
-    } = this.props;
+  const tableUrl = `/query-table/${query._id}`;
+  const chartUrl = `/query-chart/${query._id}`;
 
-    const tableUrl = `${config.baseUrl}/query-table/${query._id}`;
-    const chartUrl = `${config.baseUrl}/query-chart/${query._id}`;
-
-    return (
-      <Modal
-        width={'600px'}
-        visible={showModal}
-        cancelText={null}
-        onCancel={onHide}
-        footer={null}
-      >
-        <label>Query Tags</label>
-        <EditableTagGroup
-          tags={query.tags}
-          onChange={onQueryTagsChange}
-          tagOptions={tagOptions}
-        />
-        <hr />
-        <p>
-          <label>Shortcuts</label>
-        </p>
-        <ul style={{ paddingLeft: 0 }}>
-          <li style={{ listStyleType: 'none', marginBottom: 8 }}>
-            <code>ctrl+s</code> / <code>command+s</code> : Save
-          </li>
-          <li style={{ listStyleType: 'none', marginBottom: 8 }}>
-            <code>ctrl+return</code> / <code>command+return</code> : Run
-          </li>
-          <li style={{ listStyleType: 'none', marginBottom: 8 }}>
-            <code>shift+return</code> : Format
-          </li>
-        </ul>
-        <hr />
-        <p>
-          <strong>Tip</strong>
-        </p>
-        <p>Run only a portion of a query by highlighting it first.</p>
-        <hr />
-        <ul className="nav nav-pills nav-justified">
-          {this.renderNavLink(tableUrl, 'Link to Table')}
-          {this.renderNavLink(chartUrl, 'Link to Chart')}
-        </ul>
-      </Modal>
-    );
-  }
+  return (
+    <Modal
+      width={'600px'}
+      visible={showModal}
+      cancelText={null}
+      onCancel={onHide}
+      footer={null}
+    >
+      <label>Query Tags</label>
+      <EditableTagGroup
+        tags={query.tags}
+        onChange={onQueryTagsChange}
+        tagOptions={tagOptions}
+      />
+      <hr />
+      <p>
+        <label>Shortcuts</label>
+      </p>
+      <ul style={{ paddingLeft: 0 }}>
+        <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+          <code>ctrl+s</code> / <code>command+s</code> : Save
+        </li>
+        <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+          <code>ctrl+return</code> / <code>command+return</code> : Run
+        </li>
+        <li style={{ listStyleType: 'none', marginBottom: 8 }}>
+          <code>shift+return</code> : Format
+        </li>
+      </ul>
+      <hr />
+      <p>
+        <strong>Tip</strong>
+      </p>
+      <p>Run only a portion of a query by highlighting it first.</p>
+      <hr />
+      <ul className="nav nav-pills nav-justified">
+        {renderNavLink(tableUrl, 'Link to Table')}
+        {renderNavLink(chartUrl, 'Link to Chart')}
+      </ul>
+    </Modal>
+  );
 }
 
 QueryDetailsModal.propTypes = {
-  config: PropTypes.object.isRequired,
   onHide: PropTypes.func.isRequired,
   onQueryTagsChange: PropTypes.func.isRequired,
   query: PropTypes.object.isRequired,

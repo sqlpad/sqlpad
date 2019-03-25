@@ -1,24 +1,22 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import AppNav from './AppNav.js';
 import FullscreenMessage from './common/FullscreenMessage.js';
 import AppContext from './containers/AppContext';
 
-export default () => {
-  return (
-    <AppContext.Consumer>
-      {appContext => {
-        document.title = 'SQLPad - Not Found';
-        const { currentUser } = appContext;
+export default function NotFound() {
+  const appContext = useContext(AppContext);
+  const { currentUser } = appContext;
 
-        if (currentUser) {
-          return (
-            <AppNav>
-              <FullscreenMessage>Not Found</FullscreenMessage>
-            </AppNav>
-          );
-        }
-        return <FullscreenMessage>Not Found</FullscreenMessage>;
-      }}
-    </AppContext.Consumer>
-  );
-};
+  useEffect(() => {
+    document.title = 'SQLPad - Not Found';
+  }, []);
+
+  if (currentUser) {
+    return (
+      <AppNav>
+        <FullscreenMessage>Not Found</FullscreenMessage>
+      </AppNav>
+    );
+  }
+  return <FullscreenMessage>Not Found</FullscreenMessage>;
+}

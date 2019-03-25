@@ -1,5 +1,5 @@
 import message from 'antd/lib/message';
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   BrowserRouter as Router,
   Redirect,
@@ -29,9 +29,16 @@ message.config({
   maxCount: 3
 });
 
-class App extends React.Component {
-  renderRoutes(config) {
-    return (
+function App() {
+  const appContext = useContext(AppContext);
+  const { config } = appContext;
+
+  if (!config) {
+    return null;
+  }
+
+  return (
+    <ConnectionsStore>
       <Router basename={config.baseUrl}>
         <div className="flex w-100">
           <Switch>
@@ -109,25 +116,8 @@ class App extends React.Component {
           </Switch>
         </div>
       </Router>
-    );
-  }
-
-  render() {
-    return (
-      <AppContext.Consumer>
-        {appContext => {
-          if (appContext.config) {
-            return (
-              <ConnectionsStore>
-                {this.renderRoutes(appContext.config)}
-              </ConnectionsStore>
-            );
-          }
-          return null;
-        }}
-      </AppContext.Consumer>
-    );
-  }
+    </ConnectionsStore>
+  );
 }
 
 export default App;

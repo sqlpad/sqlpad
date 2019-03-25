@@ -12,12 +12,11 @@ import Table from 'antd/lib/table';
 import Tag from 'antd/lib/tag';
 import uniq from 'lodash.uniq';
 import moment from 'moment';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import AppNav from '../AppNav';
 import Header from '../common/Header';
 import SqlEditor from '../common/SqlEditor';
-import AppContext from '../containers/AppContext';
 import fetchJson from '../utilities/fetch-json.js';
 
 const { Content } = Layout;
@@ -26,77 +25,64 @@ const { Option } = Select;
 const { Column } = Table;
 const { Search } = Input;
 
-class QueriesView extends React.Component {
-  state = {
-    queries: [],
-    connections: [],
-    createdBys: [],
-    tags: [],
-    tagFilterDropdownVisible: false,
-    searchInput: null,
-    selectedTags: [],
-    selectedConnection: '',
-    selectedCreatedBy: this.props.currentUser
-      ? this.props.currentUser.email
-      : ''
-  };
+function QueriesView({ currentUser }) {
+  const [queries, setQueries] = useState([]);
+  const [connections, setConnections] = useState([]);
+  const [createdBys, setCreatedBys] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedConnection, setSelectedConnection] = useState('');
+  const [selectedCreatedBy, setSelectedCreatedBy] = useState(
+    currentUser ? currentUser.email : ''
+  );
 
-  handleQueryDelete = queryId => {
-    let { queries } = this.state;
-    queries = queries.filter(q => {
+  const handleQueryDelete = async queryId => {
+    const filteredQueries = queries.filter(q => {
       return q._id !== queryId;
     });
-    this.setState({
+    setQueries(filteredQueries);
+    const json = await fetchJson('DELETE', '/api/queries/' + queryId);
+    if (json.error) {
+      message.error(json.error);
+    }
+  };
+
+  const loadConfigValuesFromServer = async () => {
+    const queriesJson = await fetchJson('GET', '/api/queries');
+    const queries = queriesJson.queries || [];
+    const createdBys = uniq(queries.map(q => q.createdBy));
+    const tags = uniq(
       queries
-    });
-    fetchJson('DELETE', '/api/queries/' + queryId).then(json => {
-      if (json.error) message.error(json.error);
-    });
+        .map(q => q.tags)
+        .reduce((a, b) => a.concat(b), [])
+        .filter(tag => tag)
+    );
+
+    const email = currentUser && currentUser.email;
+    if (createdBys.indexOf(email) === -1) {
+      setSelectedCreatedBy('');
+    }
+    setQueries(queriesJson.queries);
+    setCreatedBys(createdBys);
+    setTags(tags);
+
+    const connectionsJson = await fetchJson('GET', '/api/connections');
+    setConnections(connectionsJson.connections);
   };
 
-  loadConfigValuesFromServer = () => {
-    fetchJson('GET', '/api/queries').then(json => {
-      const queries = json.queries || [];
-      const createdBys = uniq(queries.map(q => q.createdBy));
-      const tags = uniq(
-        queries
-          .map(q => q.tags)
-          .reduce((a, b) => a.concat(b), [])
-          .filter(tag => tag)
-      );
-      let selectedCreatedBy = this.state.selectedCreatedBy;
-      const email = this.props.currentUser && this.props.currentUser.email;
-      if (createdBys.indexOf(email) === -1) {
-        selectedCreatedBy = '';
-      }
-      this.setState({
-        queries: json.queries,
-        createdBys: createdBys,
-        selectedCreatedBy: selectedCreatedBy,
-        tags: tags
-      });
-    });
-    fetchJson('GET', '/api/connections').then(json => {
-      this.setState({ connections: json.connections });
-    });
-  };
+  const onSearchChange = e => setSearchInput(e.target.value);
 
-  onSearchChange = e => {
-    this.setState({
-      searchInput: e.target.value
-    });
-  };
-
-  componentDidMount() {
+  useEffect(() => {
     document.title = 'SQLPad - Queries';
-    this.loadConfigValuesFromServer();
-  }
+    loadConfigValuesFromServer();
+  }, []);
 
-  nameRender = (text, record) => {
+  const nameRender = (text, record) => {
     return <Link to={'/queries/' + record._id}>{record.name}</Link>;
   };
 
-  previewRender = (text, record) => {
+  const previewRender = (text, record) => {
     return (
       <Popover
         content={
@@ -113,56 +99,48 @@ class QueriesView extends React.Component {
     );
   };
 
-  nameSorter = (a, b) => a.name.localeCompare(b.name);
+  const nameSorter = (a, b) => a.name.localeCompare(b.name);
 
-  modifiedSorter = (a, b) => {
+  const modifiedSorter = (a, b) => {
     return moment(a.modifiedDate).toDate() - moment(b.modifiedDate).toDate();
   };
 
-  modifiedRender = (text, record) => moment(record.modifiedDate).calendar();
+  const modifiedRender = (text, record) =>
+    moment(record.modifiedDate).calendar();
 
-  tagsRender = (text, record) => {
+  const tagsRender = (text, record) => {
     if (record.tags && record.tags.length) {
       return record.tags.map(tag => <Tag key={tag}>{tag}</Tag>);
     }
   };
 
-  actionsRender = (text, record) => {
+  const actionsRender = (text, record) => {
+    const tableUrl = `/query-table/${record._id}`;
+    const chartUrl = `/query-chart/${record._id}`;
     return (
-      <AppContext.Consumer>
-        {appContext => {
-          const { config } = appContext;
-          const tableUrl = `${config.baseUrl}/query-table/${record._id}`;
-          const chartUrl = `${config.baseUrl}/query-chart/${record._id}`;
-          return (
-            <span>
-              <a href={tableUrl} target="_blank" rel="noopener noreferrer">
-                table
-              </a>
-              <Divider type="vertical" />
-              <a href={chartUrl} target="_blank" rel="noopener noreferrer">
-                chart
-              </a>
-              <Divider type="vertical" />
-              <Popconfirm
-                title="Are you sure?"
-                onConfirm={e => this.handleQueryDelete(record._id)}
-                onCancel={() => {}}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button icon="delete" type="danger" />
-              </Popconfirm>
-            </span>
-          );
-        }}
-      </AppContext.Consumer>
+      <span>
+        <Link to={tableUrl} target="_blank" rel="noopener noreferrer">
+          table
+        </Link>
+        <Divider type="vertical" />
+        <Link to={chartUrl} target="_blank" rel="noopener noreferrer">
+          chart
+        </Link>
+        <Divider type="vertical" />
+        <Popconfirm
+          title="Are you sure?"
+          onConfirm={e => handleQueryDelete(record._id)}
+          onCancel={() => {}}
+          okText="Yes"
+          cancelText="No"
+        >
+          <Button icon="delete" type="danger" />
+        </Popconfirm>
+      </span>
     );
   };
 
-  getDecoratedQueries() {
-    const { queries, connections } = this.state;
-
+  const getDecoratedQueries = () => {
     // Create index of lookups
     // TODO this should come from API
     const connectionsById = connections.reduce((connMap, connection) => {
@@ -178,17 +156,10 @@ class QueriesView extends React.Component {
 
       return query;
     });
-  }
+  };
 
-  renderTable() {
-    const {
-      searchInput,
-      selectedConnection,
-      selectedCreatedBy,
-      selectedTags
-    } = this.state;
-
-    let filteredQueries = this.getDecoratedQueries();
+  const renderTable = () => {
+    let filteredQueries = getDecoratedQueries();
 
     if (selectedTags.length) {
       filteredQueries = filteredQueries.filter(q => {
@@ -242,118 +213,99 @@ class QueriesView extends React.Component {
         <Column
           title="Name"
           key="name"
-          render={this.nameRender}
-          sorter={this.nameSorter}
+          render={nameRender}
+          sorter={nameSorter}
         />
-        <Column title="" key="preview" render={this.previewRender} />
+        <Column title="" key="preview" render={previewRender} />
         <Column
           title="Connection"
           key="connection"
           dataIndex="connectionName"
         />
-        <Column title="Tags" key="tags" render={this.tagsRender} />
+        <Column title="Tags" key="tags" render={tagsRender} />
         <Column title="Created by" dataIndex="createdBy" key="createdBy" />
         <Column
           title="Modified"
           key="modifiedCalendar"
           defaultSortOrder="descend"
-          sorter={this.modifiedSorter}
-          render={this.modifiedRender}
+          sorter={modifiedSorter}
+          render={modifiedRender}
         />
-        <Column key="action" render={this.actionsRender} />
+        <Column key="action" render={actionsRender} />
       </Table>
     );
-  }
+  };
 
-  renderFilters() {
-    const {
-      connections,
-      createdBys,
-      searchInput,
-      selectedConnection,
-      selectedCreatedBy,
-      selectedTags,
-      tags
-    } = this.state;
-    return (
-      <Row gutter={16}>
-        <Col className="pb3" span={6}>
-          <Search
-            className="w-100"
-            placeholder="Search"
-            value={searchInput}
-            onChange={this.onSearchChange}
-          />
-        </Col>
-        <Col className="gutter-row" span={6}>
-          <Select
-            className="w-100"
-            placeholder="Filter by connection"
-            value={selectedConnection}
-            onChange={selectedConnection =>
-              this.setState({ selectedConnection })
-            }
-          >
-            <Option key="all" value="">
-              All connections
-            </Option>
-            {connections.map(c => (
-              <Option key={c._id}>{c.name}</Option>
-            ))}
-          </Select>
-        </Col>
-        <Col className="gutter-row" span={6}>
-          <Select
-            className="w-100"
-            mode="multiple"
-            placeholder="Filter by tag"
-            value={selectedTags}
-            onChange={selectedTags => this.setState({ selectedTags })}
-          >
-            {tags.map(tag => (
-              <Option key={tag}>{tag}</Option>
-            ))}
-          </Select>
-        </Col>
-        <Col className="gutter-row" span={6}>
-          <Select
-            className="w-100"
-            placeholder="Filter by created by"
-            value={selectedCreatedBy}
-            onChange={selectedCreatedBy => this.setState({ selectedCreatedBy })}
-          >
-            <Option key="all" value="">
-              All authors
-            </Option>
-            {createdBys.map(c => (
-              <Option key={c}>{c}</Option>
-            ))}
-          </Select>
-        </Col>
-      </Row>
-    );
-  }
-
-  render() {
-    return (
-      <AppNav>
-        <Layout
-          style={{ minHeight: '100vh' }}
-          className="flex w-100 flex-column h-100"
-        >
-          <Header title="Queries">
-            <Link to={'/queries/new'}>
-              <Button type="primary">New Query</Button>
-            </Link>
-          </Header>
-          <Content className="ma4">
-            {this.renderFilters()}
-            <div className="bg-white">{this.renderTable()}</div>
-          </Content>
-        </Layout>
-      </AppNav>
-    );
-  }
+  return (
+    <AppNav>
+      <Layout
+        style={{ minHeight: '100vh' }}
+        className="flex w-100 flex-column h-100"
+      >
+        <Header title="Queries">
+          <Link to={'/queries/new'}>
+            <Button type="primary">New Query</Button>
+          </Link>
+        </Header>
+        <Content className="ma4">
+          <Row gutter={16}>
+            <Col className="pb3" span={6}>
+              <Search
+                className="w-100"
+                placeholder="Search"
+                value={searchInput}
+                onChange={onSearchChange}
+              />
+            </Col>
+            <Col className="gutter-row" span={6}>
+              <Select
+                className="w-100"
+                placeholder="Filter by connection"
+                value={selectedConnection}
+                onChange={value => setSelectedConnection(value)}
+              >
+                <Option key="all" value="">
+                  All connections
+                </Option>
+                {connections.map(c => (
+                  <Option key={c._id}>{c.name}</Option>
+                ))}
+              </Select>
+            </Col>
+            <Col className="gutter-row" span={6}>
+              <Select
+                className="w-100"
+                mode="multiple"
+                placeholder="Filter by tag"
+                value={selectedTags}
+                onChange={value => setSelectedTags(value)}
+              >
+                {tags.map(tag => (
+                  <Option key={tag}>{tag}</Option>
+                ))}
+              </Select>
+            </Col>
+            <Col className="gutter-row" span={6}>
+              <Select
+                className="w-100"
+                placeholder="Filter by created by"
+                value={selectedCreatedBy}
+                onChange={value => setSelectedCreatedBy(value)}
+              >
+                <Option key="all" value="">
+                  All authors
+                </Option>
+                {createdBys.map(c => (
+                  <Option key={c}>{c}</Option>
+                ))}
+              </Select>
+            </Col>
+          </Row>
+          <div className="bg-white">{renderTable()}</div>
+        </Content>
+      </Layout>
+    </AppNav>
+  );
 }
 
 export default QueriesView;
