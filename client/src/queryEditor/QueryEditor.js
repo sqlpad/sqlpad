@@ -1,7 +1,7 @@
 import message from 'antd/lib/message';
 import keymaster from 'keymaster';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { createRef } from 'react';
 import { Prompt } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import sqlFormatter from 'sql-formatter';
@@ -45,7 +45,7 @@ class QueryEditor extends React.Component {
     selectedText: ''
   };
 
-  sqlpadTauChart = undefined;
+  sqlpadTauChart = createRef(undefined);
 
   getTagOptions() {
     const { availableTags, query } = this.state;
@@ -194,13 +194,24 @@ class QueryEditor extends React.Component {
 
   handleChartConfigurationFieldsChange = (chartFieldId, queryResultField) => {
     const { query } = this.state;
-    query.chartConfiguration.fields[chartFieldId] = queryResultField;
+    const { fields } = query.chartConfiguration;
+    fields[chartFieldId] = queryResultField;
+    query.chartConfiguration = Object.assign({}, query.chartConfiguration, {
+      fields
+    });
     this.setState({ query, unsavedChanges: true });
   };
 
   handleChartTypeChange = value => {
     const { query } = this.state;
-    query.chartConfiguration.chartType = value;
+    const { fields } = query.chartConfiguration;
+    query.chartConfiguration = Object.assign(
+      {},
+      { fields },
+      {
+        chartType: value
+      }
+    );
     this.setState({ query, unsavedChanges: true });
   };
 
@@ -225,26 +236,13 @@ class QueryEditor extends React.Component {
   };
 
   handleSaveImageClick = e => {
-    if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
-      this.sqlpadTauChart.chart.fire('exportTo', 'png');
+    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.exportPng) {
+      this.sqlpadTauChart.current.exportPng();
     }
   };
 
   handleTabSelect = e => {
     this.setState({ activeTabKey: e.target.value });
-  };
-
-  handleVisualizeClick = () => this.sqlpadTauChart.renderChart(true);
-
-  hasRows = () => {
-    const queryResult = this.state.queryResult;
-    return !!(queryResult && queryResult.rows && queryResult.rows.length);
-  };
-
-  isChartable = () => {
-    const { isRunning, queryError, activeTabKey } = this.state;
-    const pending = isRunning || queryError;
-    return !pending && activeTabKey === 'vis' && this.hasRows();
   };
 
   async componentDidMount() {
@@ -310,8 +308,8 @@ class QueryEditor extends React.Component {
   };
 
   handleVisPaneResize = () => {
-    if (this.sqlpadTauChart && this.sqlpadTauChart.chart) {
-      this.sqlpadTauChart.chart.resize();
+    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.resize) {
+      this.sqlpadTauChart.current.resize();
     }
   };
 
@@ -410,27 +408,22 @@ class QueryEditor extends React.Component {
               onChange={this.handleVisPaneResize}
             >
               <VisSidebar
-                isChartable={this.isChartable()}
                 onChartConfigurationFieldsChange={
                   this.handleChartConfigurationFieldsChange
                 }
                 onChartTypeChange={this.handleChartTypeChange}
                 onSaveImageClick={this.handleSaveImageClick}
-                onVisualizeClick={this.handleVisualizeClick}
                 query={query}
                 queryResult={queryResult}
               />
               <div className="flex-auto h-100">
                 <SqlpadTauChart
-                  config={this.props.config}
                   isRunning={isRunning}
                   query={query}
                   queryError={queryError}
                   queryResult={queryResult}
-                  renderChart={this.isChartable()}
-                  ref={ref => {
-                    this.sqlpadTauChart = ref;
-                  }}
+                  ref={this.sqlpadTauChart}
+                  isVisible={activeTabKey === 'vis'}
                 />
               </div>
             </SplitPane>

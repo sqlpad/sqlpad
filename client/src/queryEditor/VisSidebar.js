@@ -11,11 +11,9 @@ import ChartInputs from './ChartInputs.js';
 const { Option } = Select;
 
 function VisSidebar({
-  isChartable,
   onChartConfigurationFieldsChange,
   onChartTypeChange,
   onSaveImageClick,
-  onVisualizeClick,
   query,
   queryResult
 }) {
@@ -54,13 +52,6 @@ function VisSidebar({
         />
       </SidebarBody>
       <div className="pa2 bt b--near-white">
-        <Button
-          className="w-100 mb1"
-          onClick={onVisualizeClick}
-          disabled={!isChartable}
-        >
-          Visualize
-        </Button>
         <Button className="w-100 mb1" onClick={onSaveImageClick}>
           <Icon type="download" /> Save Chart Image
         </Button>
@@ -70,11 +61,9 @@ function VisSidebar({
 }
 
 VisSidebar.propTypes = {
-  isChartable: PropTypes.bool,
   onChartConfigurationFieldsChange: PropTypes.func,
   onChartTypeChange: PropTypes.func,
   onSaveImageClick: PropTypes.func,
-  onVisualizeClick: PropTypes.func,
   query: PropTypes.object,
   queryResult: PropTypes.object
 };
