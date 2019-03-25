@@ -28,7 +28,7 @@ function ExportButton({ cacheKey, onSaveImageClick }) {
       overlay={
         <Menu>
           {onSaveImageClick && (
-            <Menu.Item onClick={this.onSaveImageClick}>png</Menu.Item>
+            <Menu.Item onClick={onSaveImageClick}>png</Menu.Item>
           )}
           <Menu.Item>
             <a target="_blank" rel="noopener noreferrer" href={csvDownloadLink}>
