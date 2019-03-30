@@ -83,10 +83,6 @@ function ConfigurationDrawer({ onClose, visible }) {
       destroyOnClose={false}
       onClose={onClose}
       placement={'left'}
-      style={{
-        height: 'calc(100% - 55px)',
-        overflow: 'auto'
-      }}
     >
       <Form {...formItemLayout}>
         <Form.Item {...tailFormItemLayout}>
