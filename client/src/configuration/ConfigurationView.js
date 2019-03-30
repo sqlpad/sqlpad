@@ -3,18 +3,20 @@ import Layout from 'antd/lib/layout';
 import message from 'antd/lib/message';
 import Row from 'antd/lib/row';
 import debounce from 'lodash.debounce';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AppNav from '../AppNav';
 import Header from '../common/Header';
 import fetchJson from '../utilities/fetch-json.js';
 import CheckListItem from './CheckListItem';
 import ConfigEnvDocumentation from './ConfigEnvDocumentation';
 import ConfigItemInput from './ConfigItemInput';
+import AppContext from '../containers/AppContext';
 
 const { Content } = Layout;
 
 function ConfigurationView() {
   const [configItems, setConfigItems] = useState([]);
+  const appContext = useContext(AppContext);
 
   const loadConfigValuesFromServer = async () => {
     const json = await fetchJson('GET', '/api/config-items');
@@ -33,6 +35,7 @@ function ConfigurationView() {
     } else {
       message.success('Value saved');
       loadConfigValuesFromServer();
+      appContext.refreshAppContext();
     }
   }, 500);
 

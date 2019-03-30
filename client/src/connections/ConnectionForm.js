@@ -4,7 +4,8 @@ import Form from 'antd/lib/form';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
 import Select from 'antd/lib/select';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import message from 'antd/lib/message';
 import fetchJson from '../utilities/fetch-json.js';
 
 const FormItem = Form.Item;
@@ -38,71 +39,64 @@ const tailFormItemLayout = {
   }
 };
 
-class ConnectionForm extends React.Component {
-  state = {
-    connectionEdits: {},
-    drivers: [],
-    saving: false,
-    savingError: null,
-    testFailed: false,
-    testing: false,
-    testSuccess: false,
-    title: '',
-    visible: false
-  };
+function ConnectionForm({ connectionId, onConnectionSaved }) {
+  const [connectionEdits, setConnectionEdits] = useState({});
+  const [drivers, setDrivers] = useState([]);
+  const [saving, setSaving] = useState(false);
+  const [testFailed, setTestFailed] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [testSuccess, setTestSuccess] = useState(false);
 
-  componentDidMount() {
-    this.loadDriversFromServer();
-    this.loadConnectionFromServer();
+  async function getDrivers() {
+    const json = await fetchJson('GET', '/api/drivers');
+    if (json.error) {
+      message.error(json.error);
+    } else {
+      setDrivers(json.drivers);
+    }
   }
 
-  // TODO move this to app load - no reason this will change
-  loadDriversFromServer = () => {
-    fetchJson('GET', '/api/drivers').then(json => {
-      this.setState({ drivers: json.drivers });
-    });
-  };
+  useEffect(() => {
+    getDrivers();
+  }, []);
 
-  loadConnectionFromServer = async () => {
-    const { connectionId } = this.props;
+  async function getConnection(connectionId) {
     if (connectionId) {
       const json = await fetchJson('GET', `/api/connections/${connectionId}`);
       if (json.error) {
-        return console.error(json.error);
+        message.error(json.error);
+      } else {
+        setConnectionEdits(json.connection);
       }
-      return this.setState({ connectionEdits: json.connection });
     }
+  }
+
+  useEffect(() => {
+    getConnection(connectionId);
+  }, [connectionId]);
+
+  const setConnectionValue = (key, value) => {
+    setConnectionEdits(prev => ({ ...prev, [key]: value }));
   };
 
-  setConnectionValue = (key, value) => {
-    const { connectionEdits } = this.state;
-    connectionEdits[key] = value;
-    return this.setState({ connectionEdits });
-  };
-
-  testConnection = async () => {
-    const { connectionEdits } = this.state;
-    this.setState({ testing: true });
+  const testConnection = async () => {
+    setTesting(true);
     const json = await fetchJson(
       'POST',
       '/api/test-connection',
       connectionEdits
     );
-    return this.setState({
-      testing: false,
-      testFailed: json.error ? true : false,
-      testSuccess: json.error ? false : true
-    });
+    setTesting(false);
+    setTestFailed(json.error ? true : false);
+    setTestSuccess(json.error ? false : true);
   };
 
-  saveConnection = async () => {
-    const { saving, connectionEdits } = this.state;
-    const { onConnectionSaved } = this.props;
+  const saveConnection = async () => {
     if (saving) {
       return;
     }
 
-    this.setState({ saving: true });
+    setSaving(true);
 
     let json;
     if (connectionEdits._id) {
@@ -116,14 +110,13 @@ class ConnectionForm extends React.Component {
     }
 
     if (json.error) {
-      return this.setState({ saving: false, savingError: json.error });
+      setSaving(false);
+      return message.error(json.error);
     }
     return onConnectionSaved(json.connection);
   };
 
-  renderDriverFields() {
-    const { drivers, connectionEdits } = this.state;
-
+  const renderDriverFields = () => {
     if (connectionEdits.driver && drivers.length) {
       // NOTE connection.driver is driverId
       const driver = drivers.find(
@@ -141,12 +134,11 @@ class ConnectionForm extends React.Component {
           const value = connectionEdits[field.key] || '';
           return (
             <FormItem {...formItemLayout} key={field.key} label={field.label}>
-              {/* <label className="near-black">{field.label}</label> */}
               <Input
                 name={field.key}
                 value={value}
                 onChange={e =>
-                  this.setConnectionValue(e.target.name, e.target.value)
+                  setConnectionValue(e.target.name, e.target.value)
                 }
               />
             </FormItem>
@@ -157,14 +149,13 @@ class ConnectionForm extends React.Component {
           // Because we dont return a password, Chrome goes ahead and autofills
           return (
             <FormItem {...formItemLayout} key={field.key} label={field.label}>
-              {/* <label className="near-black">{field.label}</label> */}
               <Input
                 type="password"
                 autoComplete="new-password"
                 name={field.key}
                 value={value}
                 onChange={e =>
-                  this.setConnectionValue(e.target.name, e.target.value)
+                  setConnectionValue(e.target.name, e.target.value)
                 }
               />
             </FormItem>
@@ -177,7 +168,7 @@ class ConnectionForm extends React.Component {
                 checked={checked}
                 name={field.key}
                 onChange={e =>
-                  this.setConnectionValue(e.target.name, e.target.checked)
+                  setConnectionValue(e.target.name, e.target.checked)
                 }
               >
                 {field.label}
@@ -188,122 +179,109 @@ class ConnectionForm extends React.Component {
         return null;
       });
     }
+  };
+
+  const { name = '', driver = '' } = connectionEdits;
+
+  const driverSelectOptions = [<Option key="none" value="" />];
+
+  if (!drivers.length) {
+    driverSelectOptions.push(
+      <Option key="loading" value="">
+        Loading...
+      </Option>
+    );
+  } else {
+    drivers
+      .sort((a, b) => a.name > b.name)
+      .forEach(driver =>
+        driverSelectOptions.push(
+          <Option key={driver.id} value={driver.id} name="driver">
+            {driver.name}
+          </Option>
+        )
+      );
   }
 
-  render() {
-    const {
-      drivers,
-      connectionEdits,
-      saving,
-      testing,
-      testSuccess,
-      testFailed
-    } = this.state;
+  return (
+    <div style={{ height: '100%' }}>
+      <Form
+        layout="vertical"
+        autoComplete="off"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%'
+        }}
+      >
+        <div style={{ overflowY: 'auto', flexGrow: 1, height: '100%' }}>
+          <FormItem
+            {...formItemLayout}
+            validateStatus={name ? null : 'error'}
+            label={'Connection name'}
+          >
+            <Input
+              name="name"
+              value={name}
+              onChange={e => setConnectionValue(e.target.name, e.target.value)}
+            />
+          </FormItem>
+          <FormItem
+            {...formItemLayout}
+            label="Driver"
+            validateStatus={driver ? null : 'error'}
+          >
+            <Select
+              name="driver"
+              value={driver}
+              onChange={value => setConnectionValue('driver', value)}
+            >
+              {driverSelectOptions}
+            </Select>
+          </FormItem>
 
-    const { name = '', driver = '' } = connectionEdits;
-
-    const driverSelectOptions = [<Option key="none" value="" />];
-
-    if (!drivers.length) {
-      driverSelectOptions.push(
-        <Option key="loading" value="">
-          Loading...
-        </Option>
-      );
-    } else {
-      drivers
-        .sort((a, b) => a.name > b.name)
-        .forEach(driver =>
-          driverSelectOptions.push(
-            <Option key={driver.id} value={driver.id} name="driver">
-              {driver.name}
-            </Option>
-          )
-        );
-    }
-
-    return (
-      <div style={{ height: '100%' }}>
-        <Form
-          layout="vertical"
-          autoComplete="off"
+          {renderDriverFields()}
+        </div>
+        <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%'
+            borderTop: '1px solid #e8e8e8',
+            paddingTop: '22px',
+            textAlign: 'right'
           }}
         >
-          <div style={{ overflowY: 'auto', flexGrow: 1, height: '100%' }}>
-            <FormItem
-              {...formItemLayout}
-              validateStatus={name ? null : 'error'}
-              label={'Connection name'}
-            >
-              <Input
-                name="name"
-                value={name}
-                onChange={e =>
-                  this.setConnectionValue(e.target.name, e.target.value)
-                }
-              />
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="Driver"
-              validateStatus={driver ? null : 'error'}
-            >
-              <Select
-                name="driver"
-                value={driver}
-                onChange={value => this.setConnectionValue('driver', value)}
-              >
-                {driverSelectOptions}
-              </Select>
-            </FormItem>
-
-            {this.renderDriverFields()}
-          </div>
-          <div
-            style={{
-              borderTop: '1px solid #e8e8e8',
-              paddingTop: '22px',
-              textAlign: 'right'
-            }}
+          <Button
+            style={{ width: 120 }}
+            type="primary"
+            onClick={saveConnection}
+            disabled={saving}
           >
-            <Button
-              style={{ width: 120 }}
-              type="primary"
-              onClick={this.saveConnection}
-              disabled={saving}
-            >
-              {saving ? 'Saving...' : 'Save'}
-            </Button>{' '}
-            <Button
-              style={{ width: 120 }}
-              onClick={this.testConnection}
-              disabled={testing}
-            >
-              {testing ? 'Testing...' : 'Test'}
-              {!testing && testSuccess && (
-                <Icon
-                  type="check-circle"
-                  theme="twoTone"
-                  twoToneColor="#52c41a"
-                />
-              )}
-              {!testing && testFailed && (
-                <Icon
-                  type="close-circle"
-                  theme="twoTone"
-                  twoToneColor="#eb2f96"
-                />
-              )}
-            </Button>
-          </div>
-        </Form>
-      </div>
-    );
-  }
+            {saving ? 'Saving...' : 'Save'}
+          </Button>{' '}
+          <Button
+            style={{ width: 120 }}
+            onClick={testConnection}
+            disabled={testing}
+          >
+            {testing ? 'Testing...' : 'Test'}
+            {!testing && testSuccess && (
+              <Icon
+                type="check-circle"
+                theme="twoTone"
+                twoToneColor="#52c41a"
+              />
+            )}
+            {!testing && testFailed && (
+              <Icon
+                type="close-circle"
+                theme="twoTone"
+                twoToneColor="#eb2f96"
+              />
+            )}
+          </Button>
+        </div>
+      </Form>
+    </div>
+  );
 }
 
 export default ConnectionForm;
