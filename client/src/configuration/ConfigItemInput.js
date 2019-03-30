@@ -1,5 +1,7 @@
 import Input from 'antd/lib/input';
 import Select from 'antd/lib/select';
+import Form from 'antd/lib/form';
+import Popover from 'antd/lib/popover';
 import React, { useState } from 'react';
 
 const { Option } = Select;
@@ -22,6 +24,42 @@ function ConfigItemInput({ config, saveConfigValue }) {
     config.effectiveValueSource === 'saved cli' ||
     config.effectiveValueSource === 'env';
 
+  const effectiveValueSourceLabels = {
+    cli: 'Command Line',
+    'saved cli': 'Saved Command Line',
+    env: 'Environment Varialbe'
+  };
+  const overriddenBy = effectiveValueSourceLabels[config.effectiveValueSource];
+
+  const defaultValue =
+    config.default === '' ? (
+      <em>empty</em>
+    ) : (
+      <span>{config.default.toString()}</span>
+    );
+
+  const popoverContent = (
+    <div style={{ maxWidth: 300 }}>
+      <p>{config.description}</p>
+      <p>
+        <span>Default:</span> {defaultValue}
+      </p>
+      {disabled && (
+        <div>
+          <p>
+            <span>Set By:</span> {overriddenBy}
+          </p>
+          <p>
+            When set by command line or environment, item is not configurable
+            via UI.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+
+  let input;
+
   if (config.options) {
     const optionNodes = config.options.map(option => {
       return (
@@ -30,7 +68,7 @@ function ConfigItemInput({ config, saveConfigValue }) {
         </Option>
       );
     });
-    return (
+    input = (
       <Select
         className="w-100"
         disabled={disabled}
@@ -41,7 +79,7 @@ function ConfigItemInput({ config, saveConfigValue }) {
       </Select>
     );
   } else {
-    return (
+    input = (
       <Input
         className="w-100"
         disabled={disabled}
@@ -51,6 +89,14 @@ function ConfigItemInput({ config, saveConfigValue }) {
       />
     );
   }
+
+  return (
+    <Form.Item label={config.label}>
+      <Popover placement="right" content={popoverContent} trigger="hover">
+        {input}
+      </Popover>
+    </Form.Item>
+  );
 }
 
 export default ConfigItemInput;
