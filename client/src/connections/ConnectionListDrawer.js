@@ -15,12 +15,7 @@ function ConnectionListDrawer({ visible, onClose }) {
   const connectionsContext = useContext(ConnectionsContext);
 
   const { currentUser } = appContext;
-  const {
-    selectConnection,
-    selectedConnectionId,
-    connections,
-    deleteConnection
-  } = connectionsContext;
+  const { connections, deleteConnection } = connectionsContext;
 
   useEffect(() => {
     connectionsContext.loadConnections();
@@ -127,26 +122,6 @@ function ConnectionListDrawer({ visible, onClose }) {
             .join(' / ');
 
           const actions = [];
-
-          if (selectedConnectionId === item._id) {
-            actions.push(
-              <Button className="w4" disabled>
-                selected
-              </Button>
-            );
-          } else {
-            actions.push(
-              <Button
-                className="w4"
-                onClick={() => {
-                  selectConnection(item._id);
-                  onClose();
-                }}
-              >
-                select
-              </Button>
-            );
-          }
 
           if (currentUser.role === 'admin') {
             actions.push(
