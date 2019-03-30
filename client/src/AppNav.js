@@ -9,13 +9,15 @@ import AboutContent from './AboutContent';
 import AppContext from './containers/AppContext';
 import fetchJson from './utilities/fetch-json.js';
 import ConnectionListDrawer from './connections/ConnectionListDrawer';
+import ConfigurationDrawer from './configuration/ConfigurationDrawer';
 
 const { Content, Sider } = Layout;
 
 function AppNav({ children, pageMenuItems }) {
   const [collapsed, setCollapsed] = useState(true);
   const [redirect, setRedirect] = useState(false);
-  const [connectionsVisible, setConnectionsVisible] = useState(false);
+  const [showConnections, setShowConnections] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
   const appContext = useContext(AppContext);
   const { currentUser, version } = appContext;
 
@@ -67,16 +69,14 @@ function AppNav({ children, pageMenuItems }) {
           <Route
             render={({ history }) => (
               <Menu theme="dark" selectable={false} mode="inline">
-                {currentUser.role === 'admin' && (
+                {currentUser.role === 'admin' && [
                   <Menu.Item
                     key="connections-drawer"
-                    onClick={() => setConnectionsVisible(true)}
+                    onClick={() => setShowConnections(true)}
                   >
                     <Icon type="database" />
                     <span>DB connections</span>
-                  </Menu.Item>
-                )}
-                {currentUser.role === 'admin' && (
+                  </Menu.Item>,
                   <Menu.Item
                     key="users"
                     onClick={() => {
@@ -85,19 +85,15 @@ function AppNav({ children, pageMenuItems }) {
                   >
                     <Icon type="team" />
                     <span>Users</span>
-                  </Menu.Item>
-                )}
-                {currentUser.role === 'admin' && (
+                  </Menu.Item>,
                   <Menu.Item
                     key="configuration"
-                    onClick={() => {
-                      history.push('/config-values');
-                    }}
+                    onClick={() => setShowConfig(true)}
                   >
                     <Icon type="setting" />
                     <span>Configuration</span>
                   </Menu.Item>
-                )}
+                ]}
                 {version && version.updateAvailable && (
                   <Menu.Item
                     key="update"
@@ -156,8 +152,12 @@ function AppNav({ children, pageMenuItems }) {
         <Content className="flex w-100">{children}</Content>
       </Layout>
       <ConnectionListDrawer
-        visible={connectionsVisible}
-        onClose={() => setConnectionsVisible(false)}
+        visible={showConnections}
+        onClose={() => setShowConnections(false)}
+      />
+      <ConfigurationDrawer
+        visible={showConfig}
+        onClose={() => setShowConfig(false)}
       />
     </Layout>
   );

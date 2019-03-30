@@ -2,21 +2,29 @@ import Input from 'antd/lib/input';
 import Select from 'antd/lib/select';
 import Form from 'antd/lib/form';
 import Popover from 'antd/lib/popover';
-import React, { useState } from 'react';
+import Switch from 'antd/lib/switch';
+import React from 'react';
 
 const { Option } = Select;
 
-function ConfigItemInput({ config, saveConfigValue }) {
-  const [value, setValue] = useState(config.effectiveValue);
+function configIsBoolean(config) {
+  const { options } = config;
+  return (
+    typeof config.effectiveValue === 'boolean' &&
+    options &&
+    options.length === 2 &&
+    options.includes(true) &&
+    options.includes(false)
+  );
+}
 
+function ConfigItemInput({ config, onChange }) {
   const handleChange = e => {
-    setValue(e.target.value);
-    saveConfigValue(config.key, e.target.value);
+    onChange(config.key, e.target.value);
   };
 
   const handleSelectChange = value => {
-    setValue(value);
-    saveConfigValue(config.key, value);
+    onChange(config.key, value);
   };
 
   const disabled =
@@ -45,7 +53,7 @@ function ConfigItemInput({ config, saveConfigValue }) {
         <span>Default:</span> {defaultValue}
       </p>
       {disabled && (
-        <div>
+        <>
           <p>
             <span>Set By:</span> {overriddenBy}
           </p>
@@ -53,14 +61,20 @@ function ConfigItemInput({ config, saveConfigValue }) {
             When set by command line or environment, item is not configurable
             via UI.
           </p>
-        </div>
+        </>
       )}
     </div>
   );
 
   let input;
-
-  if (config.options) {
+  if (configIsBoolean(config)) {
+    input = (
+      <Switch
+        checked={config.effectiveValue}
+        onChange={value => onChange(config.key, value)}
+      />
+    );
+  } else if (config.options) {
     const optionNodes = config.options.map(option => {
       return (
         <Option key={option} value={option}>
@@ -73,7 +87,7 @@ function ConfigItemInput({ config, saveConfigValue }) {
         className="w-100"
         disabled={disabled}
         onChange={handleSelectChange}
-        value={value}
+        value={config.effectiveValue}
       >
         {optionNodes}
       </Select>
@@ -85,7 +99,7 @@ function ConfigItemInput({ config, saveConfigValue }) {
         disabled={disabled}
         onChange={handleChange}
         placeholder={config.label}
-        value={value}
+        value={config.effectiveValue}
       />
     );
   }

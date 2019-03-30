@@ -7,7 +7,6 @@ import {
   Switch
 } from 'react-router-dom';
 import Authenticated from './Authenticated';
-import ConfigurationView from './configuration/ConfigurationView';
 import ConnectionsStore from './connections/ConnectionsStore';
 import AppContext from './containers/AppContext';
 import ForgotPassword from './ForgotPassword.js';
@@ -67,15 +66,6 @@ function App() {
               render={() => (
                 <Authenticated admin>
                   <UsersView />
-                </Authenticated>
-              )}
-            />
-            <Route
-              exact
-              path="/config-values"
-              render={() => (
-                <Authenticated admin>
-                  <ConfigurationView />
                 </Authenticated>
               )}
             />
