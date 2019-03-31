@@ -6,7 +6,7 @@
   "dependencies": {
     "antd": "^3.15.2",
     "brace": "^0.11.1",
-    "d3": "^3.5.17",
+    "d3": "^5.9.2",
     "keymaster": "^1.6.2",
     "lodash.debounce": "^4.0.8",
     "lodash.sortby": "^4.7.0",
@@ -24,7 +24,7 @@
     "react-virtualized": "^9.21.0",
     "sql-formatter": "^2.3.2",
     "tachyons": "^4.11.1",
-    "taucharts": "^1.2.1",
+    "taucharts": "^2.7.1",
     "whatwg-fetch": "^3.0.0"
   },
   "scripts": {

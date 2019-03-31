@@ -1,9 +1,9 @@
 import chartDefinitions from '../utilities/chartDefinitions.js';
-import exportTo from 'taucharts/build/development/plugins/tauCharts.export';
-import legend from 'taucharts/build/development/plugins/tauCharts.legend';
-import quickFilter from 'taucharts/build/development/plugins/tauCharts.quick-filter';
-import tooltip from 'taucharts/build/development/plugins/tauCharts.tooltip';
-import tcTrendline from 'taucharts/build/development/plugins/tauCharts.trendline';
+import exportTo from 'taucharts/dist/plugins/export-to';
+import legend from 'taucharts/dist/plugins/legend';
+import quickFilter from 'taucharts/dist/plugins/quick-filter';
+import tooltip from 'taucharts/dist/plugins/tooltip';
+import tcTrendline from 'taucharts/dist/plugins/trendline';
 
 const getUnmetFields = (chartType, selectedFieldMap) => {
   const chartDefinition = chartDefinitions.find(

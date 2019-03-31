@@ -1,5 +1,5 @@
 /* hide tauchart's ui for export options */
-.graphical-report__layout__header {
+.tau-chart__export {
   display: none;
 }
 
