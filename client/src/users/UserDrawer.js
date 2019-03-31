@@ -116,6 +116,7 @@ function UsersDrawer({ visible, onClose }) {
         dataSource={users}
         renderItem={renderItem}
       />
+
       <Modal
         title="Add user"
         visible={showAddUser}
@@ -126,6 +127,7 @@ function UsersDrawer({ visible, onClose }) {
       >
         <InviteUserForm onInvited={handleOnInvited} />
       </Modal>
+
       <Modal
         title={editUser && editUser.email}
         visible={Boolean(editUser)}
