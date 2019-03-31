@@ -18,7 +18,7 @@ import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
 
-function App() {
+function Routes() {
   const appContext = useContext(AppContext);
   const { config } = appContext;
 
@@ -89,4 +89,4 @@ function App() {
   );
 }
 
-export default App;
+export default Routes;

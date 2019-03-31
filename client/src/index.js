@@ -6,7 +6,7 @@ import './css/vendorOverrides.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import message from 'antd/lib/message';
-import App from './App.js';
+import Routes from './Routes';
 import AppContextProvider from './containers/AppContextProvider';
 import ConnectionsStore from './connections/ConnectionsStore';
 
@@ -20,7 +20,7 @@ message.config({
 ReactDOM.render(
   <AppContextProvider>
     <ConnectionsStore>
-      <App />
+      <Routes />
     </ConnectionsStore>
   </AppContextProvider>,
   document.getElementById('root')
