@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import AppNav from '../AppNav';
-import { ConnectionsContext } from '../connections/ConnectionsStore';
+import { ConnectionsContext } from '../stores/ConnectionsStore';
 import { AppContext } from '../stores/AppContextStore';
 import QueryEditor from './QueryEditor';
 

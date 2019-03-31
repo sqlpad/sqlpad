@@ -1,7 +1,7 @@
 import Select from 'antd/lib/select';
 import Icon from 'antd/lib/icon';
 import React, { useContext, useState } from 'react';
-import { ConnectionsContext } from '../connections/ConnectionsStore';
+import { ConnectionsContext } from '../stores/ConnectionsStore';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 
 const { Option } = Select;

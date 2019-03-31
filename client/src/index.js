@@ -8,7 +8,7 @@ import ReactDOM from 'react-dom';
 import message from 'antd/lib/message';
 import Routes from './Routes';
 import AppContextStore from './stores/AppContextStore';
-import ConnectionsStore from './connections/ConnectionsStore';
+import ConnectionsStore from './stores/ConnectionsStore';
 
 // Configure message notification globally
 message.config({

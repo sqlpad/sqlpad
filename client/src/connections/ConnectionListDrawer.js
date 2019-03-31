@@ -5,7 +5,7 @@ import List from 'antd/lib/list';
 import Popconfirm from 'antd/lib/popconfirm';
 import React, { useState, useContext, useEffect } from 'react';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
-import { ConnectionsContext } from './ConnectionsStore';
+import { ConnectionsContext } from '../stores/ConnectionsStore';
 import { AppContext } from '../stores/AppContextStore';
 
 function ConnectionListDrawer({ visible, onClose }) {
