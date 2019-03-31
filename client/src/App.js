@@ -19,7 +19,6 @@ import QueryEditorContainer from './queryEditor/QueryEditorContainer.js';
 import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
-import UsersView from './users/UsersView';
 
 // Configure message notification globally
 message.config({
@@ -57,15 +56,6 @@ function App() {
               render={({ match }) => (
                 <Authenticated>
                   <QueryEditorContainer queryId={match.params.queryId} />
-                </Authenticated>
-              )}
-            />
-            <Route
-              exact
-              path="/users"
-              render={() => (
-                <Authenticated admin>
-                  <UsersView />
                 </Authenticated>
               )}
             />
