@@ -6,7 +6,7 @@ import {
   Switch
 } from 'react-router-dom';
 import Authenticated from './Authenticated';
-import AppContext from './containers/AppContext';
+import { AppContext } from './stores/AppContextStore';
 import ForgotPassword from './ForgotPassword.js';
 import NotFound from './NotFound.js';
 import PasswordReset from './PasswordReset.js';

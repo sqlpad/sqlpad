@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import AppNav from './AppNav.js';
 import FullscreenMessage from './common/FullscreenMessage.js';
-import AppContext from './containers/AppContext';
+import { AppContext } from './stores/AppContextStore';
 
 export default function NotFound() {
   const appContext = useContext(AppContext);

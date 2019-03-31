@@ -6,7 +6,7 @@ import Popconfirm from 'antd/lib/popconfirm';
 import React, { useState, useContext, useEffect } from 'react';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 import { ConnectionsContext } from './ConnectionsStore';
-import AppContext from '../containers/AppContext';
+import { AppContext } from '../stores/AppContextStore';
 
 function ConnectionListDrawer({ visible, onClose }) {
   const [connectionId, setConnectionId] = useState(null);

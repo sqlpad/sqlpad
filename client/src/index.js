@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import message from 'antd/lib/message';
 import Routes from './Routes';
-import AppContextProvider from './containers/AppContextProvider';
+import AppContextStore from './stores/AppContextStore';
 import ConnectionsStore from './connections/ConnectionsStore';
 
 // Configure message notification globally
@@ -18,10 +18,10 @@ message.config({
 });
 
 ReactDOM.render(
-  <AppContextProvider>
+  <AppContextStore>
     <ConnectionsStore>
       <Routes />
     </ConnectionsStore>
-  </AppContextProvider>,
+  </AppContextStore>,
   document.getElementById('root')
 );

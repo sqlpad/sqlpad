@@ -4,7 +4,7 @@ import Icon from 'antd/lib/icon';
 import Menu from 'antd/lib/menu';
 import PropTypes from 'prop-types';
 import React, { useContext } from 'react';
-import AppContext from '../containers/AppContext';
+import { AppContext } from '../stores/AppContextStore';
 
 function ExportButton({ cacheKey, onSaveImageClick }) {
   const appContext = useContext(AppContext);

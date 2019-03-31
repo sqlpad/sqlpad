@@ -3,7 +3,7 @@ import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
 import React, { useContext, useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import AppContext from './containers/AppContext';
+import { AppContext } from './stores/AppContextStore';
 import fetchJson from './utilities/fetch-json.js';
 
 function SignUp() {

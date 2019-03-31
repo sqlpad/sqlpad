@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useContext, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import AppContext from './containers/AppContext';
+import { AppContext } from './stores/AppContextStore';
 
 function Authenticated({ admin, children }) {
   const appContext = useContext(AppContext);
