@@ -9,15 +9,6 @@ const sortFunctions = [connection => connection.name.toLowerCase()];
 
 export const ConnectionsContext = React.createContext({});
 
-export function ContextStateStore({ children }) {
-  const state = useState({});
-  return (
-    <ConnectionsContext.Provider value={state}>
-      {children}
-    </ConnectionsContext.Provider>
-  );
-}
-
 export function ConnectionsStore({ children }) {
   const [selectedConnectionId, setSelectedConnectionId] = useState(null);
   const [connections, setConnections] = useState([]);
