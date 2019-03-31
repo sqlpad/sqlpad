@@ -7,7 +7,7 @@ import Popconfirm from 'antd/lib/popconfirm';
 import Drawer from 'antd/lib/drawer';
 import List from 'antd/lib/list';
 import React, { useEffect, useContext, useState } from 'react';
-import AppContext from '../containers/AppContext';
+import { AppContext } from '../stores/AppContextStore';
 import fetchJson from '../utilities/fetch-json.js';
 import InviteUserForm from './InviteUserForm';
 import EditUserForm from './EditUserForm';

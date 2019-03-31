@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import fetchJson from '../utilities/fetch-json.js';
-import AppContext from './AppContext';
 
-function AppContextProvider({ children }) {
+export const AppContext = React.createContext({});
+
+export function AppContextStore({ children }) {
   const [state, setState] = useState({});
 
   const refreshAppContext = async () => {
@@ -40,4 +41,4 @@ function AppContextProvider({ children }) {
   );
 }
 
-export default AppContextProvider;
+export default AppContextStore;

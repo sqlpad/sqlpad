@@ -6,7 +6,7 @@ import Modal from 'antd/lib/modal';
 import React, { useContext, useState, useCallback } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import AboutContent from './AboutContent';
-import AppContext from './containers/AppContext';
+import { AppContext } from './stores/AppContextStore';
 import fetchJson from './utilities/fetch-json.js';
 import ConnectionListDrawer from './connections/ConnectionListDrawer';
 import ConfigurationDrawer from './configuration/ConfigurationDrawer';

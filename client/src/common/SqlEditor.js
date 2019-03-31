@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import React, { useContext, useState, useEffect } from 'react';
 import Measure from 'react-measure';
 import AceEditor from 'react-ace';
-import AppContext from '../containers/AppContext';
+import { AppContext } from '../stores/AppContextStore';
 
 const noop = () => {};
 

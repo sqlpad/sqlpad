@@ -5,7 +5,7 @@ import Drawer from 'antd/lib/drawer';
 import React, { useState, useEffect, useContext } from 'react';
 import fetchJson from '../utilities/fetch-json.js';
 import ConfigItemInput from './ConfigItemInput';
-import AppContext from '../containers/AppContext';
+import { AppContext } from '../stores/AppContextStore';
 
 const formItemLayout = {
   labelCol: {

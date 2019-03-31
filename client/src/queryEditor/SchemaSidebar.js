@@ -4,7 +4,7 @@ import React from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Sidebar from '../common/Sidebar';
 import SidebarBody from '../common/SidebarBody';
-import { ConnectionsContext } from '../connections/ConnectionsStore';
+import { ConnectionsContext } from '../stores/ConnectionsStore';
 import fetchJson from '../utilities/fetch-json.js';
 import updateCompletions from '../utilities/updateCompletions.js';
 
