@@ -1,4 +1,3 @@
-import message from 'antd/lib/message';
 import React, { useContext } from 'react';
 import {
   BrowserRouter as Router,
@@ -18,13 +17,6 @@ import QueryEditorContainer from './queryEditor/QueryEditorContainer.js';
 import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
-
-// Configure message notification globally
-message.config({
-  top: 60,
-  duration: 2,
-  maxCount: 3
-});
 
 function App() {
   const appContext = useContext(AppContext);

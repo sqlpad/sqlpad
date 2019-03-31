@@ -5,9 +5,17 @@ import './css/react-split-pane.css';
 import './css/vendorOverrides.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import message from 'antd/lib/message';
 import App from './App.js';
 import AppContextProvider from './containers/AppContextProvider';
 import ConnectionsStore from './connections/ConnectionsStore';
+
+// Configure message notification globally
+message.config({
+  top: 60,
+  duration: 2,
+  maxCount: 3
+});
 
 ReactDOM.render(
   <AppContextProvider>
