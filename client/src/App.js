@@ -7,7 +7,6 @@ import {
   Switch
 } from 'react-router-dom';
 import Authenticated from './Authenticated';
-import ConnectionsStore from './connections/ConnectionsStore';
 import AppContext from './containers/AppContext';
 import ForgotPassword from './ForgotPassword.js';
 import NotFound from './NotFound.js';
@@ -36,67 +35,65 @@ function App() {
   }
 
   return (
-    <ConnectionsStore>
-      <Router basename={config.baseUrl}>
-        <div className="flex w-100">
-          <Switch>
-            <Route exact path="/" render={() => <Redirect to={'/queries'} />} />
-            <Route
-              exact
-              path="/queries"
-              render={props => (
-                <Authenticated>
-                  <QueriesView />
-                </Authenticated>
-              )}
-            />
-            <Route
-              exact
-              path="/queries/:queryId"
-              render={({ match }) => (
-                <Authenticated>
-                  <QueryEditorContainer queryId={match.params.queryId} />
-                </Authenticated>
-              )}
-            />
-            <Route
-              exact
-              path="/query-table/:queryId"
-              render={({ match }) => (
-                <QueryTableOnly queryId={match.params.queryId} />
-              )}
-            />
-            <Route
-              exact
-              path="/query-chart/:queryId"
-              render={({ match }) => (
-                <QueryChartOnly queryId={match.params.queryId} />
-              )}
-            />
-            <Route exact path="/signin" render={() => <SignIn />} />
-            <Route exact path="/signup" render={() => <SignUp />} />
-            <Route
-              exact
-              path="/forgot-password"
-              render={() => <ForgotPassword />}
-            />
-            <Route
-              exact
-              path="/password-reset/:passwordResetId"
-              render={({ match }) => (
-                <PasswordReset passwordResetId={match.params.passwordResetId} />
-              )}
-            />
-            <Route
-              exact
-              path="/password-reset"
-              render={() => <PasswordResetRequested />}
-            />
-            <Route render={() => <NotFound />} />
-          </Switch>
-        </div>
-      </Router>
-    </ConnectionsStore>
+    <Router basename={config.baseUrl}>
+      <div className="flex w-100">
+        <Switch>
+          <Route exact path="/" render={() => <Redirect to={'/queries'} />} />
+          <Route
+            exact
+            path="/queries"
+            render={props => (
+              <Authenticated>
+                <QueriesView />
+              </Authenticated>
+            )}
+          />
+          <Route
+            exact
+            path="/queries/:queryId"
+            render={({ match }) => (
+              <Authenticated>
+                <QueryEditorContainer queryId={match.params.queryId} />
+              </Authenticated>
+            )}
+          />
+          <Route
+            exact
+            path="/query-table/:queryId"
+            render={({ match }) => (
+              <QueryTableOnly queryId={match.params.queryId} />
+            )}
+          />
+          <Route
+            exact
+            path="/query-chart/:queryId"
+            render={({ match }) => (
+              <QueryChartOnly queryId={match.params.queryId} />
+            )}
+          />
+          <Route exact path="/signin" render={() => <SignIn />} />
+          <Route exact path="/signup" render={() => <SignUp />} />
+          <Route
+            exact
+            path="/forgot-password"
+            render={() => <ForgotPassword />}
+          />
+          <Route
+            exact
+            path="/password-reset/:passwordResetId"
+            render={({ match }) => (
+              <PasswordReset passwordResetId={match.params.passwordResetId} />
+            )}
+          />
+          <Route
+            exact
+            path="/password-reset"
+            render={() => <PasswordResetRequested />}
+          />
+          <Route render={() => <NotFound />} />
+        </Switch>
+      </div>
+    </Router>
   );
 }
 
