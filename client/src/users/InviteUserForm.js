@@ -35,18 +35,12 @@ function InviteUserForm({ onInvited }) {
   return (
     <div>
       <p>
-        Users may only sign up if they have first been whitelisted. Once
-        whitelisted, invite them to continue the sign-up process on the{' '}
+        Users may only sign up if they have first been added. Once added, invite
+        them to continue the sign-up process on the{' '}
         <Link to={'/signup'}>signup page</Link>.
       </p>
-      <p>
-        <strong>Admins</strong> can add and edit database connections, as well
-        as whitelist/invite users to join.
-      </p>
-      <hr />
       <Form layout="vertical">
-        <FormItem validateStatus={email ? null : 'error'}>
-          <label className="near-black">Email</label>
+        <FormItem label="Email" validateStatus={email ? null : 'error'}>
           <Input
             name="email"
             type="email"
@@ -54,8 +48,11 @@ function InviteUserForm({ onInvited }) {
             onChange={e => setEmail(e.target.value)}
           />
         </FormItem>
-        <FormItem validateStatus={role ? null : 'error'}>
-          <label className="near-black">Role</label>
+        <FormItem
+          label="Role"
+          extra="Admins can manage database connections and users"
+          validateStatus={role ? null : 'error'}
+        >
           <Select
             name="role"
             value={role || ''}
@@ -71,7 +68,7 @@ function InviteUserForm({ onInvited }) {
           onClick={onInviteClick}
           disabled={isInviting}
         >
-          Whitelist User
+          Add user
         </Button>
       </Form>
     </div>

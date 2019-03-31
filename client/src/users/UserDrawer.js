@@ -1,10 +1,11 @@
 import Button from 'antd/lib/button';
 import message from 'antd/lib/message';
 import Modal from 'antd/lib/modal';
+import Row from 'antd/lib/row';
+import Col from 'antd/lib/col';
 import Popconfirm from 'antd/lib/popconfirm';
 import Drawer from 'antd/lib/drawer';
 import List from 'antd/lib/list';
-import moment from 'moment';
 import React, { useEffect, useContext, useState } from 'react';
 import AppContext from '../containers/AppContext';
 import fetchJson from '../utilities/fetch-json.js';
@@ -98,16 +99,25 @@ function UsersDrawer({ visible, onClose }) {
       onClose={onClose}
       placement={'left'}
     >
-      <Button type="primary" onClick={() => setShowAddUser(true)}>
-        New user
-      </Button>
+      <Row>
+        <Col offset={19} span={5}>
+          <Button
+            className="w-100"
+            type="primary"
+            onClick={() => setShowAddUser(true)}
+          >
+            Add user
+          </Button>
+        </Col>
+      </Row>
+
       <List
         itemLayout="horizontal"
         dataSource={users}
         renderItem={renderItem}
       />
       <Modal
-        title="New user"
+        title="Add user"
         visible={showAddUser}
         footer={null}
         width={'500px'}
@@ -117,7 +127,7 @@ function UsersDrawer({ visible, onClose }) {
         <InviteUserForm onInvited={handleOnInvited} />
       </Modal>
       <Modal
-        title={`Edit ${editUser && editUser.email}`}
+        title={editUser && editUser.email}
         visible={Boolean(editUser)}
         footer={null}
         width={'500px'}

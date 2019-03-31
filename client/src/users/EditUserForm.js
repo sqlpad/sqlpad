@@ -1,8 +1,9 @@
 import Button from 'antd/lib/button';
 import Form from 'antd/lib/form';
-import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
 import Select from 'antd/lib/select';
+import Row from 'antd/lib/row';
+import Col from 'antd/lib/col';
 import React, { useState } from 'react';
 import fetchJson from '../utilities/fetch-json.js';
 import { Link } from 'react-router-dom';
@@ -23,60 +24,63 @@ function EditUserForm({ user }) {
     if (json.error) {
       return message.error('Update failed: ' + json.error.toString());
     }
-    message.success('User Updated');
   };
 
   const generatePasswordResetLink = async () => {
     const passwordResetId = uuid.v4();
-    setPasswordResetId(passwordResetId);
     const json = await fetchJson('PUT', '/api/users/' + user._id, {
       passwordResetId
     });
     if (json.error) {
       return message.error('Update failed: ' + json.error.toString());
     }
-    message.success('Password link generated');
+    setPasswordResetId(passwordResetId);
   };
 
   const removePasswordResetLink = async () => {
-    setPasswordResetId(null);
     const json = await fetchJson('PUT', '/api/users/' + user._id, {
       passwordResetId: ''
     });
     if (json.error) {
-      return message.error('Update failed: ' + json.error.toString());
+      return message.error('Remove reset failed: ' + json.error.toString());
     }
-    message.success('Password reset link removed');
+    setPasswordResetId(null);
   };
 
   const renderReset = () => {
     if (passwordResetId) {
       return (
-        <span>
-          <Button className="w4 mr3" onClick={removePasswordResetLink}>
-            Remove
-          </Button>
-          <Link className="w4" to={`/password-reset/${passwordResetId}`}>
-            Reset Link
-          </Link>
-        </span>
+        <Row type="flex" gutter={24} align="middle">
+          <Col span={12}>
+            <Button className="w-100" onClick={removePasswordResetLink}>
+              Remove
+            </Button>
+          </Col>
+          <Col className="tc" span={12}>
+            <Link to={`/password-reset/${passwordResetId}`}>
+              Password reset link
+            </Link>
+          </Col>
+        </Row>
       );
     }
     return (
-      <Button className="w4" onClick={generatePasswordResetLink}>
-        Generate Link
-      </Button>
+      <Row gutter={24}>
+        <Col span={12}>
+          <Button className="w-100" onClick={generatePasswordResetLink}>
+            Generate password reset link
+          </Button>
+        </Col>
+      </Row>
     );
   };
 
   return (
     <Form layout="vertical">
-      <FormItem>
-        <label className="near-black">Email</label>
-        <Input name="email" disabled value={user.email} />
-      </FormItem>
-      <FormItem>
-        <label className="near-black">Role</label>
+      <FormItem
+        label="Role"
+        extra="Admins can manage database connections and users"
+      >
         <Select name="role" value={role} onChange={handleRoleChange}>
           <Option value="editor">Editor</Option>
           <Option value="admin">Admin</Option>
