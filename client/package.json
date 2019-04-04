@@ -23,6 +23,7 @@
     "sql-formatter": "^2.3.2",
     "tachyons": "^4.11.1",
     "taucharts": "^2.7.1",
+    "unistore": "^3.4.1",
     "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
