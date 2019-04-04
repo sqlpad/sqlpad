@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 import React, { createRef } from 'react';
 import { Prompt } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
-import sqlFormatter from 'sql-formatter';
-import uuid from 'uuid';
+import { connect } from 'unistore/react';
+
+import { actions } from '../stores/unistoreStore';
 import QueryResultDataTable from '../common/QueryResultDataTable.js';
 import SqlEditor from '../common/SqlEditor';
 import SqlpadTauChart from '../common/SqlpadTauChart.js';
-import fetchJson from '../utilities/fetch-json.js';
 import EditorNavBar from './EditorNavBar';
 import FlexTabPane from './FlexTabPane';
 import QueryDetailsModal from './QueryDetailsModal';
@@ -17,38 +17,11 @@ import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
 
-const NEW_QUERY = {
-  _id: '',
-  name: '',
-  tags: [],
-  connectionId: '',
-  queryText: '',
-  chartConfiguration: {
-    chartType: '',
-    fields: {} // key value for chart
-  }
-};
-
 class QueryEditor extends React.Component {
-  state = {
-    activeTabKey: 'sql',
-    availableTags: [],
-    cacheKey: uuid.v1(),
-    isRunning: false,
-    isSaving: false,
-    unsavedChanges: false,
-    query: Object.assign({}, NEW_QUERY),
-    queryResult: undefined,
-    runQueryStartTime: undefined,
-    showModal: false,
-    showValidation: false,
-    selectedText: ''
-  };
-
   sqlpadTauChart = createRef(undefined);
 
   getTagOptions() {
-    const { availableTags, query } = this.state;
+    const { availableTags, query } = this.props;
     const tagOptions = availableTags.slice();
     if (query && query.tags) {
       query.tags.forEach(t => {
@@ -61,178 +34,28 @@ class QueryEditor extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { queryId } = this.props;
-
+    const { queryId, selectConnection, resetNewQuery, loadQuery } = this.props;
     if (queryId !== prevProps.queryId) {
       if (queryId === 'new') {
-        return this.setState({
-          activeTabKey: 'sql',
-          queryResult: undefined,
-          query: Object.assign({}, NEW_QUERY),
-          unsavedChanges: false
-        });
+        return resetNewQuery();
       }
-      return this.loadQueryFromServer(queryId);
+      return loadQuery(queryId, selectConnection);
     }
   }
-
-  loadQueryFromServer = queryId => {
-    const { selectConnection } = this.props;
-    fetchJson('GET', `/api/queries/${queryId}`).then(json => {
-      const { error, query } = json;
-      if (error) {
-        message.error(error);
-      }
-      this.setState({ query });
-      selectConnection(query.connectionId);
-    });
-  };
-
-  loadTagsFromServer = () => {
-    fetchJson('GET', '/api/tags').then(json => {
-      const { error, tags } = json;
-      if (error) {
-        message.error(error);
-      }
-      this.setState({ availableTags: tags });
-    });
-  };
-
-  runQuery = () => {
-    const { cacheKey, query, selectedText } = this.state;
-    const { selectedConnectionId } = this.props;
-
-    this.setState({
-      isRunning: true,
-      runQueryStartTime: new Date()
-    });
-    const postData = {
-      connectionId: selectedConnectionId,
-      cacheKey,
-      queryName: query.name,
-      queryText: selectedText || query.queryText
-    };
-    fetchJson('POST', '/api/query-result', postData).then(json => {
-      if (json.error) message.error(json.error);
-      this.setState({
-        isRunning: false,
-        queryError: json.error,
-        queryResult: json.queryResult
-      });
-    });
-  };
-
-  handleCloneClick = () => {
-    const { config } = this.props;
-    const { query } = this.state;
-    delete query._id;
-    query.name = 'Copy of ' + query.name;
-    window.history.replaceState(
-      {},
-      query.name,
-      `${config.baseUrl}/queries/new`
-    );
-    this.setState({ query, unsavedChanges: true });
-  };
-
-  formatQuery = () => {
-    const { query } = this.state;
-    query.queryText = sqlFormatter.format(query.queryText);
-    this.setState({
-      query,
-      unsavedChanges: true
-    });
-  };
-
-  saveQuery = () => {
-    const { query } = this.state;
-    const { config, selectedConnectionId } = this.props;
-    if (!query.name) {
-      message.error('Query name required');
-      this.setState({ showValidation: true });
-      return;
-    }
-    this.setState({ isSaving: true });
-    const queryData = Object.assign({}, query, {
-      connectionId: selectedConnectionId
-    });
-    if (query._id) {
-      fetchJson('PUT', `/api/queries/${query._id}`, queryData).then(json => {
-        const { error, query } = json;
-        if (error) {
-          message.error(error);
-          this.setState({ isSaving: false });
-          return;
-        }
-        message.success('Query Saved');
-        this.setState({ isSaving: false, unsavedChanges: false, query });
-      });
-    } else {
-      fetchJson('POST', `/api/queries`, queryData).then(json => {
-        const { error, query } = json;
-        if (error) {
-          message.error(error);
-          this.setState({ isSaving: false });
-          return;
-        }
-        window.history.replaceState(
-          {},
-          query.name,
-          `${config.baseUrl}/queries/${query._id}`
-        );
-        message.success('Query Saved');
-        this.setState({ isSaving: false, unsavedChanges: false, query });
-      });
-    }
-  };
-
-  setQueryState = (field, value) => {
-    const { query } = this.state;
-    query[field] = value;
-    this.setState({ query, unsavedChanges: true });
-  };
-
-  handleChartConfigurationFieldsChange = (chartFieldId, queryResultField) => {
-    const { query } = this.state;
-    const { fields } = query.chartConfiguration;
-    fields[chartFieldId] = queryResultField;
-    query.chartConfiguration = Object.assign({}, query.chartConfiguration, {
-      fields
-    });
-    this.setState({ query, unsavedChanges: true });
-  };
-
-  handleChartTypeChange = value => {
-    const { query } = this.state;
-    const { fields } = query.chartConfiguration;
-    query.chartConfiguration = Object.assign(
-      {},
-      { fields },
-      {
-        chartType: value
-      }
-    );
-    this.setState({ query, unsavedChanges: true });
-  };
 
   handleConnectionChange = connectionId =>
     this.props.selectConnection(connectionId);
 
-  handleModalHide = () => {
-    this.setState({ showModal: false });
+  handleQueryNameChange = name => {
+    this.props.setQueryState('name', name);
   };
 
-  handleQueryNameChange = name => this.setQueryState('name', name);
+  handleQueryTagsChange = values => {
+    this.props.setQueryState('tags', values);
+  };
 
-  handleMoreClick = () => this.setState({ showModal: true });
-
-  handleQueryTagsChange = values => this.setQueryState('tags', values);
-
-  handleQueryTextChange = queryText =>
-    this.setQueryState('queryText', queryText);
-
-  handleQuerySelectionChange = selectedText => {
-    this.setState({ selectedText });
+  handleQueryTextChange = queryText => {
+    this.props.setQueryState('queryText', queryText);
   };
 
   handleSaveImageClick = e => {
@@ -241,17 +64,22 @@ class QueryEditor extends React.Component {
     }
   };
 
-  handleTabSelect = e => {
-    this.setState({ activeTabKey: e.target.value });
-  };
-
   async componentDidMount() {
-    const { queryId, loadConnections } = this.props;
+    const {
+      queryId,
+      loadConnections,
+      selectConnection,
+      loadTags,
+      loadQuery,
+      saveQuery,
+      runQuery,
+      formatQuery
+    } = this.props;
 
     await loadConnections();
-    this.loadTagsFromServer();
+    await loadTags();
     if (queryId !== 'new') {
-      this.loadQueryFromServer(queryId);
+      await loadQuery(queryId, selectConnection);
     }
 
     /*  Shortcuts
@@ -262,8 +90,8 @@ class QueryEditor extends React.Component {
     keymaster.filter = () => true;
     keymaster.unbind('ctrl+s, command+s');
     keymaster('ctrl+s, command+s', e => {
-      this.saveQuery();
       e.preventDefault();
+      saveQuery(this.props.config, this.props.selectedConnectionId);
       return false;
     });
     // there should only ever be 1 QueryEditor on the page,
@@ -277,7 +105,7 @@ class QueryEditor extends React.Component {
     });
     keymaster.unbind('ctrl+return, command+return');
     keymaster('ctrl+return, command+return', e => {
-      this.runQuery();
+      runQuery(this.props.selectedConnectionId);
       e.preventDefault();
       return false;
     });
@@ -289,7 +117,7 @@ class QueryEditor extends React.Component {
     });
     keymaster.unbind('shift+return');
     keymaster('shift+return', e => {
-      this.formatQuery();
+      formatQuery();
       e.preventDefault();
       return false;
     });
@@ -304,7 +132,11 @@ class QueryEditor extends React.Component {
   }
 
   handleFormatClick = () => {
-    this.formatQuery();
+    this.props.formatQuery();
+  };
+
+  handleCloneClick = () => {
+    this.props.handleCloneClick(this.props.config);
   };
 
   handleVisPaneResize = () => {
@@ -313,9 +145,18 @@ class QueryEditor extends React.Component {
     }
   };
 
+  runQuery = () => {
+    this.props.runQuery(this.props.selectedConnectionId);
+  };
+
+  saveQuery = () => {
+    const { saveQuery, config, selectedConnectionId } = this.props;
+    saveQuery(config, selectedConnectionId);
+  };
+
   render() {
-    const { config } = this.props;
     const {
+      config,
       activeTabKey,
       cacheKey,
       isRunning,
@@ -328,7 +169,7 @@ class QueryEditor extends React.Component {
       showModal,
       showValidation,
       unsavedChanges
-    } = this.state;
+    } = this.props;
 
     document.title = query.name || 'New Query';
 
@@ -339,11 +180,11 @@ class QueryEditor extends React.Component {
           isRunning={isRunning}
           isSaving={isSaving}
           onCloneClick={this.handleCloneClick}
-          onMoreClick={this.handleMoreClick}
+          onMoreClick={this.props.handleMoreClick}
           onRunClick={this.runQuery}
           onSaveClick={this.saveQuery}
           onFormatClick={this.handleFormatClick}
-          onTabSelect={this.handleTabSelect}
+          onTabSelect={this.props.handleTabSelect}
           query={query}
           onQueryNameChange={this.handleQueryNameChange}
           showValidation={showValidation}
@@ -368,7 +209,7 @@ class QueryEditor extends React.Component {
                   config={config}
                   value={query.queryText}
                   onChange={this.handleQueryTextChange}
-                  onSelectionChange={this.handleQuerySelectionChange}
+                  onSelectionChange={this.props.handleQuerySelectionChange}
                 />
                 <div>
                   <QueryResultHeader
@@ -409,7 +250,7 @@ class QueryEditor extends React.Component {
             >
               <VisSidebar
                 onChartConfigurationFieldsChange={
-                  this.handleChartConfigurationFieldsChange
+                  this.props.handleChartConfigurationFieldsChange
                 }
                 onChartTypeChange={this.handleChartTypeChange}
                 onSaveImageClick={this.handleSaveImageClick}
@@ -430,7 +271,7 @@ class QueryEditor extends React.Component {
           </FlexTabPane>
         </div>
         <QueryDetailsModal
-          onHide={this.handleModalHide}
+          onHide={this.props.handleModalHide}
           onQueryTagsChange={this.handleQueryTagsChange}
           query={query}
           showModal={showModal}
@@ -452,4 +293,24 @@ QueryEditor.propTypes = {
   loadConnections: PropTypes.func
 };
 
-export default QueryEditor;
+const ConnectedQueryEditor = connect(
+  [
+    'activeTabKey',
+    'availableTags',
+    'cacheKey',
+    'isRunning',
+    'isSaving',
+    'query',
+    'queryError',
+    'queryResult',
+    'runQueryStartTime',
+    'runSeconds',
+    'selectedText',
+    'showModal',
+    'showValidation',
+    'unsavedChanges'
+  ],
+  actions
+)(QueryEditor);
+
+export default ConnectedQueryEditor;

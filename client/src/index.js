@@ -9,6 +9,8 @@ import message from 'antd/lib/message';
 import Routes from './Routes';
 import AppContextStore from './stores/AppContextStore';
 import ConnectionsStore from './stores/ConnectionsStore';
+import { unistoreStore } from './stores/unistoreStore';
+import { Provider } from 'unistore/react';
 
 // Configure message notification globally
 message.config({
@@ -20,7 +22,9 @@ message.config({
 ReactDOM.render(
   <AppContextStore>
     <ConnectionsStore>
-      <Routes />
+      <Provider store={unistoreStore}>
+        <Routes />
+      </Provider>
     </ConnectionsStore>
   </AppContextStore>,
   document.getElementById('root')
