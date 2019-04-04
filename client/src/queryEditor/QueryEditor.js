@@ -76,8 +76,7 @@ class QueryEditor extends React.Component {
       formatQuery
     } = this.props;
 
-    await loadConnections();
-    await loadTags();
+    await Promise.all([loadConnections(), loadTags()]);
     if (queryId !== 'new') {
       await loadQuery(queryId, selectConnection);
     }
