@@ -1,4 +1,3 @@
-import message from 'antd/lib/message';
 import keymaster from 'keymaster';
 import PropTypes from 'prop-types';
 import React, { createRef } from 'react';
