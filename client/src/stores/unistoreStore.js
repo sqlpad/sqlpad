@@ -150,7 +150,7 @@ export const actions = store => ({
     delete query._id;
     const name = 'Copy of ' + query.name;
     window.history.replaceState({}, name, `${config.baseUrl}/queries/new`);
-    store.setState({ query: { ...query, name }, unsavedChanges: true });
+    return { query: { ...query, name }, unsavedChanges: true };
   },
 
   resetNewQuery(state) {
