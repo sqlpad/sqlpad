@@ -10,7 +10,7 @@ import Popover from 'antd/lib/popover';
 import Select from 'antd/lib/select';
 import Table from 'antd/lib/table';
 import Tag from 'antd/lib/tag';
-import uniq from 'lodash.uniq';
+import uniq from 'lodash/uniq';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';

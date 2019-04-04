@@ -1,5 +1,5 @@
 import message from 'antd/lib/message';
-import sortBy from 'lodash.sortby';
+import sortBy from 'lodash/sortBy';
 import React, { useState } from 'react';
 import fetchJson from '../utilities/fetch-json.js';
 
