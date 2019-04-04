@@ -252,7 +252,7 @@ class QueryEditor extends React.Component {
                 onChartConfigurationFieldsChange={
                   this.props.handleChartConfigurationFieldsChange
                 }
-                onChartTypeChange={this.handleChartTypeChange}
+                onChartTypeChange={this.props.handleChartTypeChange}
                 onSaveImageClick={this.handleSaveImageClick}
                 query={query}
                 queryResult={queryResult}

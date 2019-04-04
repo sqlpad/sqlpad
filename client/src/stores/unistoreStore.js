@@ -35,13 +35,12 @@ export const unistoreStore = createStore({
 // Actions receive current state as first parameter and any other params next
 // Actions can just return a state update:
 export const actions = store => ({
-  formatQuery() {
-    const { query } = this.state;
-    query.queryText = sqlFormatter.format(query.queryText);
-    this.setState({
-      query,
+  formatQuery(state) {
+    const { query } = state;
+    return {
+      query: { ...query, queryText: sqlFormatter.format(query.queryText) },
       unsavedChanges: true
-    });
+    };
   },
 
   async loadQuery(state, queryId, selectConnection) {
@@ -149,13 +148,9 @@ export const actions = store => ({
     }
     const { query } = state;
     delete query._id;
-    query.name = 'Copy of ' + query.name;
-    window.history.replaceState(
-      {},
-      query.name,
-      `${config.baseUrl}/queries/new`
-    );
-    store.setState({ query, unsavedChanges: true });
+    const name = 'Copy of ' + query.name;
+    window.history.replaceState({}, name, `${config.baseUrl}/queries/new`);
+    store.setState({ query: { ...query, name }, unsavedChanges: true });
   },
 
   resetNewQuery(state) {
@@ -176,18 +171,27 @@ export const actions = store => ({
   handleChartConfigurationFieldsChange(state, chartFieldId, queryResultField) {
     const { query } = state;
     const { fields } = query.chartConfiguration;
-    fields[chartFieldId] = queryResultField;
-    query.chartConfiguration = Object.assign({}, query.chartConfiguration, {
-      fields
-    });
-    return { query, unsavedChanges: true };
+    return {
+      query: {
+        ...query,
+        chartConfiguration: {
+          ...query.chartConfiguration,
+          fields: { ...fields, [chartFieldId]: queryResultField }
+        }
+      },
+      unsavedChanges: true
+    };
   },
 
   handleChartTypeChange(state, chartType) {
     const { query } = state;
-    const { fields } = query.chartConfiguration;
-    query.chartConfiguration = Object.assign({}, { fields }, { chartType });
-    this.setState({ query, unsavedChanges: true });
+    return {
+      query: {
+        ...query,
+        chartConfiguration: { ...query.chartConfiguration, chartType }
+      },
+      unsavedChanges: true
+    };
   },
 
   handleModalHide() {
