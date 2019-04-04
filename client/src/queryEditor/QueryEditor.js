@@ -87,37 +87,16 @@ class QueryEditor extends React.Component {
     // since we are only using command/ctrl shortcuts,
     // we want the event to fire all the time for any element
     keymaster.filter = () => true;
-    keymaster.unbind('ctrl+s, command+s');
     keymaster('ctrl+s, command+s', e => {
-      e.preventDefault();
       saveQuery(this.props.config, this.props.selectedConnectionId);
       return false;
     });
-    // there should only ever be 1 QueryEditor on the page,
-    // but just in case there isn't unbind anything previously bound
-    // rather something previously not run than something run more than once
-    keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e');
-    keymaster('ctrl+r, command+r, ctrl+e, command+e', e => {
-      message.info('Shortcut changed to ctrl+return / command+return');
-      e.preventDefault();
-      return false;
-    });
-    keymaster.unbind('ctrl+return, command+return');
     keymaster('ctrl+return, command+return', e => {
       runQuery(this.props.selectedConnectionId);
-      e.preventDefault();
       return false;
     });
-    keymaster.unbind('alt+r');
-    keymaster('alt+r', e => {
-      message.info('Shortcut changed to shift+return');
-      e.preventDefault();
-      return false;
-    });
-    keymaster.unbind('shift+return');
     keymaster('shift+return', e => {
       formatQuery();
-      e.preventDefault();
       return false;
     });
   }
@@ -125,8 +104,6 @@ class QueryEditor extends React.Component {
   componentWillUnmount() {
     keymaster.unbind('ctrl+return, command+return');
     keymaster.unbind('ctrl+s, command+s');
-    keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e');
-    keymaster.unbind('alt+r');
     keymaster.unbind('shift+return');
   }
 
