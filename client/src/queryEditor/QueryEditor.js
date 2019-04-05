@@ -1,7 +1,6 @@
 import keymaster from 'keymaster';
 import PropTypes from 'prop-types';
 import React, { createRef } from 'react';
-import { Prompt } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
 
@@ -15,6 +14,9 @@ import QueryDetailsModal from './QueryDetailsModal';
 import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
+
+// TODO FIXME XXX capture unsaved state to local storage
+// Prompt is removed. It doesn't always work anyways
 
 class QueryEditor extends React.Component {
   sqlpadTauChart = createRef(undefined);
@@ -236,10 +238,6 @@ class QueryEditor extends React.Component {
           query={query}
           showModal={showModal}
           tagOptions={this.getTagOptions()}
-        />
-        <Prompt
-          when={unsavedChanges}
-          message={location => `Leave without saving?`}
         />
       </div>
     );
