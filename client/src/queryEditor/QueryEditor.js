@@ -99,8 +99,7 @@ class QueryEditor extends React.Component {
       query,
       queryError,
       queryResult,
-      runQueryStartTime,
-      runSeconds
+      runQueryStartTime
     } = this.props;
 
     document.title = query.name || 'New Query';
@@ -126,12 +125,10 @@ class QueryEditor extends React.Component {
                 <QueryEditorSqlEditor />
                 <div>
                   <QueryResultHeader
-                    {...this.props}
                     cacheKey={cacheKey}
                     isRunning={isRunning}
                     queryResult={queryResult}
                     runQueryStartTime={runQueryStartTime}
-                    runSeconds={runSeconds}
                   />
                   <div
                     style={{
@@ -191,8 +188,7 @@ const ConnectedQueryEditor = connect(
     'query',
     'queryError',
     'queryResult',
-    'runQueryStartTime',
-    'runSeconds'
+    'runQueryStartTime'
   ],
   actions
 )(QueryEditor);

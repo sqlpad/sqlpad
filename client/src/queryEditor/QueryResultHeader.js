@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { AppContext } from '../stores/AppContextStore';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 
 function QueryResultHeader({
   cacheKey,
-  config,
   isRunning,
   queryResult,
   runQueryStartTime
 }) {
+  const { config } = useContext(AppContext);
+
   if (isRunning || !queryResult) {
     return (
       <div
