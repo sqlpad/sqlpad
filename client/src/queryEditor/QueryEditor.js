@@ -21,19 +21,6 @@ import VisSidebar from './VisSidebar';
 class QueryEditor extends React.Component {
   sqlpadTauChart = createRef(undefined);
 
-  getTagOptions() {
-    const { availableTags, query } = this.props;
-    const tagOptions = availableTags.slice();
-    if (query && query.tags) {
-      query.tags.forEach(t => {
-        if (tagOptions.indexOf(t) === -1) {
-          tagOptions.push(t);
-        }
-      });
-    }
-    return tagOptions;
-  }
-
   componentDidUpdate(prevProps) {
     const { queryId, selectConnection, resetNewQuery, loadQuery } = this.props;
     if (queryId !== prevProps.queryId) {
@@ -112,8 +99,7 @@ class QueryEditor extends React.Component {
       queryError,
       queryResult,
       runQueryStartTime,
-      runSeconds,
-      showModal
+      runSeconds
     } = this.props;
 
     document.title = query.name || 'New Query';
@@ -191,13 +177,7 @@ class QueryEditor extends React.Component {
             </SplitPane>
           </FlexTabPane>
         </div>
-        <QueryDetailsModal
-          onHide={this.props.handleModalHide}
-          onQueryTagsChange={this.handleQueryTagsChange}
-          query={query}
-          showModal={showModal}
-          tagOptions={this.getTagOptions()}
-        />
+        <QueryDetailsModal />
       </div>
     );
   }
@@ -213,15 +193,13 @@ QueryEditor.propTypes = {
 const ConnectedQueryEditor = connect(
   [
     'activeTabKey',
-    'availableTags',
     'cacheKey',
     'isRunning',
     'query',
     'queryError',
     'queryResult',
     'runQueryStartTime',
-    'runSeconds',
-    'showModal'
+    'runSeconds'
   ],
   actions
 )(QueryEditor);

@@ -1,20 +1,45 @@
 import Icon from 'antd/lib/icon';
 import Modal from 'antd/lib/modal';
 import Tooltip from 'antd/lib/tooltip';
-import PropTypes from 'prop-types';
 import React from 'react';
 import EditableTagGroup from '../common/EditableTagGroup';
 import { Link } from 'react-router-dom';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
+
+function mapStateToProps(state) {
+  return {
+    availableTags: state.availableTags,
+    queryId: state.query && state.query._id,
+    queryTags: state.query && state.query.tags,
+    showModal: state.showModal
+  };
+}
+
+const ConnectedQueryDetailsModal = connect(
+  mapStateToProps,
+  actions
+)(React.memo(QueryDetailsModal));
 
 function QueryDetailsModal({
-  query,
-  onHide,
-  onQueryTagsChange,
+  queryId,
+  queryTags,
   showModal,
-  tagOptions
+  setQueryState,
+  availableTags,
+  handleModalHide
 }) {
+  const tagOptions = availableTags.slice();
+  if (queryTags) {
+    queryTags.forEach(t => {
+      if (tagOptions.indexOf(t) === -1) {
+        tagOptions.push(t);
+      }
+    });
+  }
+
   const renderNavLink = (href, text) => {
-    const saved = !!query._id;
+    const saved = !!queryId;
     if (saved) {
       return (
         <li role="presentation">
@@ -41,21 +66,21 @@ function QueryDetailsModal({
     }
   };
 
-  const tableUrl = `/query-table/${query._id}`;
-  const chartUrl = `/query-chart/${query._id}`;
+  const tableUrl = `/query-table/${queryId}`;
+  const chartUrl = `/query-chart/${queryId}`;
 
   return (
     <Modal
       width={'600px'}
       visible={showModal}
       cancelText={null}
-      onCancel={onHide}
+      onCancel={handleModalHide}
       footer={null}
     >
       <label>Query Tags</label>
       <EditableTagGroup
-        tags={query.tags}
-        onChange={onQueryTagsChange}
+        tags={queryTags}
+        onChange={values => setQueryState('tags', values)}
         tagOptions={tagOptions}
       />
       <hr />
@@ -87,16 +112,4 @@ function QueryDetailsModal({
   );
 }
 
-QueryDetailsModal.propTypes = {
-  onHide: PropTypes.func.isRequired,
-  onQueryTagsChange: PropTypes.func.isRequired,
-  query: PropTypes.object.isRequired,
-  showModal: PropTypes.bool.isRequired,
-  tagOptions: PropTypes.array
-};
-
-QueryDetailsModal.defaultProps = {
-  tagOptions: []
-};
-
-export default QueryDetailsModal;
+export default ConnectedQueryDetailsModal;
