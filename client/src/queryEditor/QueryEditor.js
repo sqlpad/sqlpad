@@ -6,7 +6,7 @@ import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
 
 import { actions } from '../stores/unistoreStore';
-import QueryResultDataTable from '../common/QueryResultDataTable.js';
+import QueryEditorResult from './QueryEditorResult';
 import SqlEditor from '../common/SqlEditor';
 import SqlpadTauChart from '../common/SqlpadTauChart.js';
 import EditorNavBar from './EditorNavBar';
@@ -204,12 +204,7 @@ class QueryEditor extends React.Component {
                       right: 0
                     }}
                   >
-                    <QueryResultDataTable
-                      {...this.props}
-                      isRunning={isRunning}
-                      queryError={queryError}
-                      queryResult={queryResult}
-                    />
+                    <QueryEditorResult />
                   </div>
                 </div>
               </SplitPane>
