@@ -7,7 +7,7 @@ import { connect } from 'unistore/react';
 
 import { actions } from '../stores/unistoreStore';
 import QueryEditorResult from './QueryEditorResult';
-import SqlEditor from '../common/SqlEditor';
+import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import SqlpadTauChart from '../common/SqlpadTauChart.js';
 import EditorNavBar from './EditorNavBar';
 import FlexTabPane from './FlexTabPane';
@@ -51,10 +51,6 @@ class QueryEditor extends React.Component {
 
   handleQueryTagsChange = values => {
     this.props.setQueryState('tags', values);
-  };
-
-  handleQueryTextChange = queryText => {
-    this.props.setQueryState('queryText', queryText);
   };
 
   handleSaveImageClick = e => {
@@ -131,7 +127,6 @@ class QueryEditor extends React.Component {
 
   render() {
     const {
-      config,
       activeTabKey,
       cacheKey,
       isRunning,
@@ -180,12 +175,7 @@ class QueryEditor extends React.Component {
                 defaultSize={'60%'}
                 maxSize={-100}
               >
-                <SqlEditor
-                  config={config}
-                  value={query.queryText}
-                  onChange={this.handleQueryTextChange}
-                  onSelectionChange={this.props.handleQuerySelectionChange}
-                />
+                <QueryEditorSqlEditor />
                 <div>
                   <QueryResultHeader
                     {...this.props}
@@ -275,7 +265,6 @@ const ConnectedQueryEditor = connect(
     'queryResult',
     'runQueryStartTime',
     'runSeconds',
-    'selectedText',
     'showModal',
     'showValidation',
     'unsavedChanges'
