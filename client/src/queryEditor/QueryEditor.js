@@ -44,13 +44,6 @@ class QueryEditor extends React.Component {
     }
   }
 
-  handleConnectionChange = connectionId =>
-    this.props.selectConnection(connectionId);
-
-  handleQueryNameChange = name => {
-    this.props.setQueryState('name', name);
-  };
-
   handleQueryTagsChange = values => {
     this.props.setQueryState('tags', values);
   };
@@ -85,7 +78,7 @@ class QueryEditor extends React.Component {
     // we want the event to fire all the time for any element
     keymaster.filter = () => true;
     keymaster('ctrl+s, command+s', e => {
-      saveQuery(this.props.config, this.props.selectedConnectionId);
+      saveQuery(this.props.selectedConnectionId);
       return false;
     });
     keymaster('ctrl+return, command+return', e => {
@@ -104,27 +97,10 @@ class QueryEditor extends React.Component {
     keymaster.unbind('shift+return');
   }
 
-  handleFormatClick = () => {
-    this.props.formatQuery();
-  };
-
-  handleCloneClick = () => {
-    this.props.handleCloneClick(this.props.config);
-  };
-
   handleVisPaneResize = () => {
     if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.resize) {
       this.sqlpadTauChart.current.resize();
     }
-  };
-
-  runQuery = () => {
-    this.props.runQuery(this.props.selectedConnectionId);
-  };
-
-  saveQuery = () => {
-    const { saveQuery, config, selectedConnectionId } = this.props;
-    saveQuery(config, selectedConnectionId);
   };
 
   render() {
@@ -132,36 +108,19 @@ class QueryEditor extends React.Component {
       activeTabKey,
       cacheKey,
       isRunning,
-      isSaving,
       query,
       queryError,
       queryResult,
       runQueryStartTime,
       runSeconds,
-      showModal,
-      showValidation,
-      unsavedChanges
+      showModal
     } = this.props;
 
     document.title = query.name || 'New Query';
 
     return (
       <div className="flex w-100" style={{ flexDirection: 'column' }}>
-        <EditorNavBar
-          activeTabKey={activeTabKey}
-          isRunning={isRunning}
-          isSaving={isSaving}
-          onCloneClick={this.handleCloneClick}
-          onMoreClick={this.props.handleMoreClick}
-          onRunClick={this.runQuery}
-          onSaveClick={this.saveQuery}
-          onFormatClick={this.handleFormatClick}
-          onTabSelect={this.props.handleTabSelect}
-          query={query}
-          onQueryNameChange={this.handleQueryNameChange}
-          showValidation={showValidation}
-          unsavedChanges={unsavedChanges}
-        />
+        <EditorNavBar />
         <div style={{ position: 'relative', flexGrow: 1 }}>
           <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
             <SplitPane
@@ -257,15 +216,12 @@ const ConnectedQueryEditor = connect(
     'availableTags',
     'cacheKey',
     'isRunning',
-    'isSaving',
     'query',
     'queryError',
     'queryResult',
     'runQueryStartTime',
     'runSeconds',
-    'showModal',
-    'showValidation',
-    'unsavedChanges'
+    'showModal'
   ],
   actions
 )(QueryEditor);

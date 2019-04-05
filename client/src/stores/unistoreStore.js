@@ -95,10 +95,7 @@ export const actions = store => ({
     });
   },
 
-  saveQuery(state, config, selectedConnectionId) {
-    if (!config) {
-      throw new Error('missing config');
-    }
+  saveQuery(state, selectedConnectionId) {
     if (!selectedConnectionId) {
       throw new Error('missing selectedConnectionId');
     }
@@ -134,7 +131,7 @@ export const actions = store => ({
         window.history.replaceState(
           {},
           query.name,
-          `${config.baseUrl}/queries/${query._id}`
+          `${window.BASE_URL}/queries/${query._id}`
         );
         message.success('Query Saved');
         store.setState({ isSaving: false, unsavedChanges: false, query });
@@ -142,14 +139,11 @@ export const actions = store => ({
     }
   },
 
-  handleCloneClick(state, config) {
-    if (!config) {
-      throw new Error('config');
-    }
+  handleCloneClick(state) {
     const { query } = state;
     delete query._id;
     const name = 'Copy of ' + query.name;
-    window.history.replaceState({}, name, `${config.baseUrl}/queries/new`);
+    window.history.replaceState({}, name, `${window.BASE_URL}/queries/new`);
     return { query: { ...query, name }, unsavedChanges: true };
   },
 
@@ -164,8 +158,7 @@ export const actions = store => ({
 
   setQueryState(state, field, value) {
     const { query } = state;
-    query[field] = value;
-    return { query, unsavedChanges: true };
+    return { query: { ...query, [field]: value }, unsavedChanges: true };
   },
 
   handleChartConfigurationFieldsChange(state, chartFieldId, queryResultField) {
