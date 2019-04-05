@@ -1,21 +1,19 @@
 import Icon from 'antd/lib/icon';
 import Tooltip from 'antd/lib/tooltip';
-import React from 'react';
+import React, { useContext } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Sidebar from '../common/Sidebar';
 import SidebarBody from '../common/SidebarBody';
 import { ConnectionsContext } from '../stores/ConnectionsStore';
+import { AppContext } from '../stores/AppContextStore';
 import fetchJson from '../utilities/fetch-json.js';
 import updateCompletions from '../utilities/updateCompletions.js';
 
-const SchemaSidebarContainer = props => {
-  return (
-    <ConnectionsContext.Consumer>
-      {context => (
-        <SchemaSidebar {...props} connectionId={context.selectedConnectionId} />
-      )}
-    </ConnectionsContext.Consumer>
-  );
+const SchemaSidebarContainer = () => {
+  const { config } = useContext(AppContext);
+  const { selectedConnectionId } = useContext(ConnectionsContext);
+
+  return <SchemaSidebar config={config} connectionId={selectedConnectionId} />;
 };
 
 class SchemaSidebar extends React.PureComponent {
@@ -349,4 +347,4 @@ class SchemaInfoColumnItem extends React.Component {
   }
 }
 
-export default SchemaSidebarContainer;
+export default React.memo(SchemaSidebarContainer);

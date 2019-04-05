@@ -116,7 +116,7 @@ class QueryEditor extends React.Component {
               defaultSize={280}
               maxSize={-100}
             >
-              <SchemaSidebar {...this.props} />
+              <SchemaSidebar />
               <SplitPane
                 split="horizontal"
                 minSize={100}
