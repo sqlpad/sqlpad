@@ -91,6 +91,7 @@ class QueryEditor extends React.Component {
   };
 
   render() {
+    console.log('rendering');
     const {
       activeTabKey,
       cacheKey,
@@ -155,15 +156,7 @@ class QueryEditor extends React.Component {
               maxSize={-100}
               onChange={this.handleVisPaneResize}
             >
-              <VisSidebar
-                onChartConfigurationFieldsChange={
-                  this.props.handleChartConfigurationFieldsChange
-                }
-                onChartTypeChange={this.props.handleChartTypeChange}
-                onSaveImageClick={this.handleSaveImageClick}
-                query={query}
-                queryResult={queryResult}
-              />
+              <VisSidebar onSaveImageClick={this.handleSaveImageClick} />
               <div className="flex-auto h-100">
                 <SqlpadTauChart
                   isRunning={isRunning}
