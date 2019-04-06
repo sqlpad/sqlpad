@@ -18,8 +18,6 @@ import VisSidebar from './VisSidebar';
 // Prompt is removed. It doesn't always work anyways
 
 class QueryEditor extends React.Component {
-  sqlpadTauChart = createRef(undefined);
-
   componentDidUpdate(prevProps) {
     const { queryId, selectConnection, resetNewQuery, loadQuery } = this.props;
     if (queryId !== prevProps.queryId) {
@@ -29,16 +27,6 @@ class QueryEditor extends React.Component {
       return loadQuery(queryId, selectConnection);
     }
   }
-
-  handleQueryTagsChange = values => {
-    this.props.setQueryState('tags', values);
-  };
-
-  handleSaveImageClick = e => {
-    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.exportPng) {
-      this.sqlpadTauChart.current.exportPng();
-    }
-  };
 
   async componentDidMount() {
     const {
@@ -84,6 +72,14 @@ class QueryEditor extends React.Component {
     keymaster.unbind('shift+return');
   }
 
+  sqlpadTauChart = createRef(undefined);
+
+  handleSaveImageClick = e => {
+    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.exportPng) {
+      this.sqlpadTauChart.current.exportPng();
+    }
+  };
+
   handleVisPaneResize = () => {
     if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.resize) {
       this.sqlpadTauChart.current.resize();
@@ -94,7 +90,7 @@ class QueryEditor extends React.Component {
     console.log('rendering');
     const { activeTabKey, queryName } = this.props;
 
-    document.title = queryName || 'New Query';
+    document.title = queryName;
 
     return (
       <div className="flex w-100" style={{ flexDirection: 'column' }}>
@@ -154,10 +150,23 @@ class QueryEditor extends React.Component {
 }
 
 QueryEditor.propTypes = {
+  activeTabKey: PropTypes.string.isRequired,
   connections: PropTypes.array.isRequired,
-  selectedConnectionId: PropTypes.string,
+  formatQuery: PropTypes.func.isRequired,
+  loadConnections: PropTypes.func.isRequired,
+  loadQuery: PropTypes.func.isRequired,
+  loadTags: PropTypes.func.isRequired,
+  queryId: PropTypes.string.isRequired,
+  queryName: PropTypes.string,
+  resetNewQuery: PropTypes.func.isRequired,
+  runQuery: PropTypes.func.isRequired,
+  saveQuery: PropTypes.func.isRequired,
   selectConnection: PropTypes.func,
-  loadConnections: PropTypes.func
+  selectedConnectionId: PropTypes.string
+};
+
+QueryEditor.defaultProps = {
+  queryName: 'New query'
 };
 
 function mapStateToProps(state, props) {

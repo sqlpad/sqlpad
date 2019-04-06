@@ -1,11 +1,9 @@
 import React, { useContext } from 'react';
 import AppNav from '../AppNav';
 import { ConnectionsContext } from '../stores/ConnectionsStore';
-import { AppContext } from '../stores/AppContextStore';
 import QueryEditor from './QueryEditor';
 
 function QueryEditorContainer(props) {
-  const appContext = useContext(AppContext);
   const connectionsContext = useContext(ConnectionsContext);
 
   return (
@@ -15,7 +13,6 @@ function QueryEditorContainer(props) {
         loadConnections={connectionsContext.loadConnections}
         selectedConnectionId={connectionsContext.selectedConnectionId}
         selectConnection={connectionsContext.selectConnection}
-        {...appContext}
         {...props}
       />
     </AppNav>
