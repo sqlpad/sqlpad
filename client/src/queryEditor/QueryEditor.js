@@ -45,6 +45,7 @@ class QueryEditor extends React.Component {
       queryId,
       loadConnections,
       selectConnection,
+      selectedConnectionId,
       loadTags,
       loadQuery,
       saveQuery,
@@ -64,11 +65,11 @@ class QueryEditor extends React.Component {
     // we want the event to fire all the time for any element
     keymaster.filter = () => true;
     keymaster('ctrl+s, command+s', e => {
-      saveQuery(this.props.selectedConnectionId);
+      saveQuery(selectedConnectionId);
       return false;
     });
     keymaster('ctrl+return, command+return', e => {
-      runQuery(this.props.selectedConnectionId);
+      runQuery(selectedConnectionId);
       return false;
     });
     keymaster('shift+return', e => {
