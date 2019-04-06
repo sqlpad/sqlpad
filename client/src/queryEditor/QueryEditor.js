@@ -150,7 +150,8 @@ class QueryEditor extends React.Component {
               <div className="flex-auto h-100">
                 <SqlpadTauChart
                   isRunning={isRunning}
-                  query={query}
+                  queryName={query && query.name}
+                  chartConfiguration={query && query.chartConfiguration}
                   queryError={queryError}
                   queryResult={queryResult}
                   ref={this.sqlpadTauChart}
