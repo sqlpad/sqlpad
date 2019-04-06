@@ -108,5 +108,8 @@ SqlpadTauChart.propTypes = {
 };
 
 export default forwardRef((props, ref) => {
-  return <SqlpadTauChart {...props} forwardedRef={ref} />;
+  if (ref && !props.forwardedRef) {
+    return <SqlpadTauChart {...props} forwardedRef={ref} />;
+  }
+  return <SqlpadTauChart {...props} />;
 });

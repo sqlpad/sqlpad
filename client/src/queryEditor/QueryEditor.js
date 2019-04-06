@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import React, { createRef } from 'react';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
-
 import { actions } from '../stores/unistoreStore';
 import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
-import SqlpadTauChart from '../common/SqlpadTauChart.js';
+import QueryEditorChart from './QueryEditorChart';
 import EditorNavBar from './EditorNavBar';
 import FlexTabPane from './FlexTabPane';
 import QueryDetailsModal from './QueryDetailsModal';
@@ -92,15 +91,9 @@ class QueryEditor extends React.Component {
 
   render() {
     console.log('rendering');
-    const {
-      activeTabKey,
-      isRunning,
-      query,
-      queryError,
-      queryResult
-    } = this.props;
+    const { activeTabKey, queryName } = this.props;
 
-    document.title = query.name || 'New Query';
+    document.title = queryName || 'New Query';
 
     return (
       <div className="flex w-100" style={{ flexDirection: 'column' }}>
@@ -148,15 +141,7 @@ class QueryEditor extends React.Component {
             >
               <VisSidebar onSaveImageClick={this.handleSaveImageClick} />
               <div className="flex-auto h-100">
-                <SqlpadTauChart
-                  isRunning={isRunning}
-                  queryName={query && query.name}
-                  chartConfiguration={query && query.chartConfiguration}
-                  queryError={queryError}
-                  queryResult={queryResult}
-                  ref={this.sqlpadTauChart}
-                  isVisible={activeTabKey === 'vis'}
-                />
+                <QueryEditorChart ref={this.sqlpadTauChart} />
               </div>
             </SplitPane>
           </FlexTabPane>
@@ -174,9 +159,14 @@ QueryEditor.propTypes = {
   loadConnections: PropTypes.func
 };
 
-const ConnectedQueryEditor = connect(
-  ['activeTabKey', 'isRunning', 'query', 'queryError', 'queryResult'],
+function mapStateToProps(state, props) {
+  return {
+    activeTabKey: state.activeTabKey,
+    queryName: state.query && state.query.name
+  };
+}
+
+export default connect(
+  mapStateToProps,
   actions
 )(QueryEditor);
-
-export default ConnectedQueryEditor;
