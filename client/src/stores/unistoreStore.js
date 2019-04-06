@@ -24,6 +24,7 @@ export const unistoreStore = createStore({
   isSaving: false,
   query: Object.assign({}, NEW_QUERY),
   queryResult: undefined,
+  queryError: null,
   runQueryStartTime: undefined,
   selectedText: '',
   showModal: false,
