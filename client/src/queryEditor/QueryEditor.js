@@ -94,12 +94,10 @@ class QueryEditor extends React.Component {
     console.log('rendering');
     const {
       activeTabKey,
-      cacheKey,
       isRunning,
       query,
       queryError,
-      queryResult,
-      runQueryStartTime
+      queryResult
     } = this.props;
 
     document.title = query.name || 'New Query';
@@ -124,12 +122,7 @@ class QueryEditor extends React.Component {
               >
                 <QueryEditorSqlEditor />
                 <div>
-                  <QueryResultHeader
-                    cacheKey={cacheKey}
-                    isRunning={isRunning}
-                    queryResult={queryResult}
-                    runQueryStartTime={runQueryStartTime}
-                  />
+                  <QueryResultHeader />
                   <div
                     style={{
                       position: 'absolute',
@@ -181,15 +174,7 @@ QueryEditor.propTypes = {
 };
 
 const ConnectedQueryEditor = connect(
-  [
-    'activeTabKey',
-    'cacheKey',
-    'isRunning',
-    'query',
-    'queryError',
-    'queryResult',
-    'runQueryStartTime'
-  ],
+  ['activeTabKey', 'isRunning', 'query', 'queryError', 'queryResult'],
   actions
 )(QueryEditor);
 

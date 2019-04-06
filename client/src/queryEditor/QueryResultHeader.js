@@ -4,6 +4,13 @@ import { Link } from 'react-router-dom';
 import { AppContext } from '../stores/AppContextStore';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
+
+const ConnectedQueryResultHeader = connect(
+  ['cacheKey', 'isRunning', 'queryResult', 'runQueryStartTime'],
+  actions
+)(React.memo(QueryResultHeader));
 
 function QueryResultHeader({
   cacheKey,
@@ -99,4 +106,4 @@ QueryResultHeader.defaultProps = {
   isRunning: false
 };
 
-export default QueryResultHeader;
+export default ConnectedQueryResultHeader;
