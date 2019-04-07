@@ -3,13 +3,13 @@ import Drawer from 'antd/lib/drawer';
 import Icon from 'antd/lib/icon';
 import List from 'antd/lib/list';
 import Popconfirm from 'antd/lib/popconfirm';
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
-import { AppContext } from '../stores/AppContextStore';
 
 function ConnectionListDrawer({
+  currentUser,
   visible,
   onClose,
   loadConnections,
@@ -20,9 +20,6 @@ function ConnectionListDrawer({
 }) {
   const [connectionId, setConnectionId] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
-  const appContext = useContext(AppContext);
-
-  const { currentUser } = appContext;
 
   useEffect(() => {
     loadConnections();
@@ -174,6 +171,6 @@ function ConnectionListDrawer({
 }
 
 export default connect(
-  ['connections'],
+  ['connections', 'currentUser'],
   actions
 )(ConnectionListDrawer);

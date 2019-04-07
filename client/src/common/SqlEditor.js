@@ -4,18 +4,17 @@ import 'brace/ext/searchbox';
 import 'brace/mode/sql';
 import 'brace/theme/sqlserver';
 import PropTypes from 'prop-types';
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 import Measure from 'react-measure';
 import AceEditor from 'react-ace';
-import { AppContext } from '../stores/AppContextStore';
 
 const noop = () => {};
 
-function SqlEditor({ onChange, readOnly, value, onSelectionChange }) {
+function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
   const [dimensions, setDimensions] = useState({ width: -1, height: -1 });
   const [editor, setEditor] = useState(null);
-  const appContext = useContext(AppContext);
-  const { config } = appContext;
 
   useEffect(() => {
     if (editor && onChange) {
@@ -88,4 +87,7 @@ SqlEditor.defaultProps = {
   value: ''
 };
 
-export default React.memo(SqlEditor);
+export default connect(
+  ['config'],
+  actions
+)(React.memo(SqlEditor));

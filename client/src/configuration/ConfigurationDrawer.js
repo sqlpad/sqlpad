@@ -2,10 +2,11 @@ import message from 'antd/lib/message';
 import Form from 'antd/lib/form';
 import Button from 'antd/lib/button';
 import Drawer from 'antd/lib/drawer';
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 import fetchJson from '../utilities/fetch-json.js';
 import ConfigItemInput from './ConfigItemInput';
-import { AppContext } from '../stores/AppContextStore';
 
 const formItemLayout = {
   labelCol: {
@@ -25,9 +26,8 @@ const tailFormItemLayout = {
   }
 };
 
-function ConfigurationDrawer({ onClose, visible }) {
+function ConfigurationDrawer({ refreshAppContext, onClose, visible }) {
   const [configItems, setConfigItems] = useState([]);
-  const appContext = useContext(AppContext);
 
   const loadConfigValuesFromServer = async () => {
     const json = await fetchJson('GET', '/api/config-items');
@@ -57,7 +57,7 @@ function ConfigurationDrawer({ onClose, visible }) {
     if (errorResponse) {
       message.error('Save failed');
     } else {
-      await appContext.refreshAppContext();
+      await refreshAppContext();
       onClose();
     }
   }
@@ -107,4 +107,7 @@ function ConfigurationDrawer({ onClose, visible }) {
   );
 }
 
-export default React.memo(ConfigurationDrawer);
+export default connect(
+  [],
+  actions
+)(React.memo(ConfigurationDrawer));

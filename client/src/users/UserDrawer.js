@@ -6,18 +6,17 @@ import Col from 'antd/lib/col';
 import Popconfirm from 'antd/lib/popconfirm';
 import Drawer from 'antd/lib/drawer';
 import List from 'antd/lib/list';
-import React, { useEffect, useContext, useState } from 'react';
-import { AppContext } from '../stores/AppContextStore';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 import fetchJson from '../utilities/fetch-json.js';
 import InviteUserForm from './InviteUserForm';
 import EditUserForm from './EditUserForm';
 
-function UsersDrawer({ visible, onClose }) {
+function UsersDrawer({ currentUser, visible, onClose }) {
   const [users, setUsers] = useState([]);
   const [showAddUser, setShowAddUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
-  const appContext = useContext(AppContext);
-  const { currentUser } = appContext;
 
   const loadUsersFromServer = async () => {
     const json = await fetchJson('GET', '/api/users');
@@ -145,4 +144,7 @@ function UsersDrawer({ visible, onClose }) {
   );
 }
 
-export default React.memo(UsersDrawer);
+export default connect(
+  ['currentUser'],
+  actions
+)(React.memo(UsersDrawer));

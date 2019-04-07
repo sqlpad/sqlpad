@@ -3,13 +3,11 @@ import Dropdown from 'antd/lib/dropdown';
 import Icon from 'antd/lib/icon';
 import Menu from 'antd/lib/menu';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
-import { AppContext } from '../stores/AppContextStore';
+import React from 'react';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 
-function ExportButton({ cacheKey, onSaveImageClick }) {
-  const appContext = useContext(AppContext);
-  const { config } = appContext;
-
+function ExportButton({ config, cacheKey, onSaveImageClick }) {
   if (!config) {
     return null;
   }
@@ -59,4 +57,7 @@ ExportButton.propTypes = {
   onSaveImageClick: PropTypes.func
 };
 
-export default ExportButton;
+export default connect(
+  ['config'],
+  actions
+)(ExportButton);

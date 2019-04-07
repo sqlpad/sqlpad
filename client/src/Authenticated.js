@@ -1,14 +1,12 @@
 import PropTypes from 'prop-types';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from './stores/unistoreStore';
 import { Redirect } from 'react-router-dom';
-import { AppContext } from './stores/AppContextStore';
 
-function Authenticated({ admin, children }) {
-  const appContext = useContext(AppContext);
-  const { currentUser } = appContext;
-
+function Authenticated({ admin, children, currentUser, refreshAppContext }) {
   useEffect(() => {
-    appContext.refreshAppContext();
+    refreshAppContext();
   }, []);
 
   if (!currentUser) {
@@ -26,4 +24,7 @@ Authenticated.propTypes = {
   admin: PropTypes.bool
 };
 
-export default Authenticated;
+export default connect(
+  ['currentUser'],
+  actions
+)(Authenticated);

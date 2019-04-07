@@ -3,10 +3,11 @@ import Icon from 'antd/lib/icon';
 import Layout from 'antd/lib/layout';
 import Menu from 'antd/lib/menu';
 import Modal from 'antd/lib/modal';
-import React, { useContext, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from './stores/unistoreStore';
 import { Redirect, Route } from 'react-router-dom';
 import AboutContent from './AboutContent';
-import { AppContext } from './stores/AppContextStore';
 import fetchJson from './utilities/fetch-json.js';
 import ConnectionListDrawer from './connections/ConnectionListDrawer';
 import ConfigurationDrawer from './configuration/ConfigurationDrawer';
@@ -14,14 +15,12 @@ import UsersDrawer from './users/UserDrawer';
 
 const { Content, Sider } = Layout;
 
-function AppNav({ children, pageMenuItems }) {
+function AppNav({ children, pageMenuItems, currentUser, version }) {
   const [collapsed, setCollapsed] = useState(true);
   const [redirect, setRedirect] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
-  const appContext = useContext(AppContext);
-  const { currentUser, version } = appContext;
 
   const handleConfigClose = useCallback(() => setShowConfig(false), []);
   const handleUsersClose = useCallback(() => setShowUsers(false), []);
@@ -165,4 +164,7 @@ AppNav.propTypes = {
   pageMenuItems: PropTypes.arrayOf(PropTypes.node)
 };
 
-export default AppNav;
+export default connect(
+  ['currentUser', 'version'],
+  actions
+)(AppNav);

@@ -47,6 +47,28 @@ export const unistoreStore = createStore({
 // Actions receive current state as first parameter and any other params next
 // Actions can just return a state update:
 export const actions = store => ({
+  // CONFIG
+  async refreshAppContext() {
+    const json = await fetchJson('GET', 'api/app');
+    if (!json.config) {
+      return;
+    }
+    // Assign config.baseUrl to global
+    // It doesn't change and is needed for fetch requests
+    // This allows us to simplify the fetch() call
+    window.BASE_URL = json.config.baseUrl;
+
+    return {
+      config: json.config,
+      smtpConfigured: json.smtpConfigured,
+      googleAuthConfigured: json.googleAuthConfigured,
+      currentUser: json.currentUser,
+      passport: json.passport,
+      adminRegistrationOpen: json.adminRegistrationOpen,
+      version: json.version
+    };
+  },
+
   // CONNECTIONS
   selectConnectionId(state, selectedConnectionId) {
     return { selectedConnectionId };

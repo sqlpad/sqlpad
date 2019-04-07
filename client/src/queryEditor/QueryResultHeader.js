@@ -1,25 +1,18 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { AppContext } from '../stores/AppContextStore';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 
-const ConnectedQueryResultHeader = connect(
-  ['cacheKey', 'isRunning', 'queryResult', 'runQueryStartTime'],
-  actions
-)(React.memo(QueryResultHeader));
-
 function QueryResultHeader({
   cacheKey,
+  config,
   isRunning,
   queryResult,
   runQueryStartTime
 }) {
-  const { config } = useContext(AppContext);
-
   if (isRunning || !queryResult) {
     return (
       <div
@@ -106,4 +99,7 @@ QueryResultHeader.defaultProps = {
   isRunning: false
 };
 
-export default ConnectedQueryResultHeader;
+export default connect(
+  ['cacheKey', 'config', 'isRunning', 'queryResult', 'runQueryStartTime'],
+  actions
+)(React.memo(QueryResultHeader));
