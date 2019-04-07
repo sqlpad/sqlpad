@@ -1,8 +1,15 @@
 import createStore from 'unistore';
 import uuid from 'uuid';
+import sortBy from 'lodash/sortBy';
 import message from 'antd/lib/message';
 import sqlFormatter from 'sql-formatter';
 import fetchJson from '../utilities/fetch-json.js';
+
+const ONE_HOUR_MS = 1000 * 60 * 60;
+
+function sortConnections(connections) {
+  return sortBy(connections, [connection => connection.name.toLowerCase()]);
+}
 
 const NEW_QUERY = {
   _id: '',
@@ -17,6 +24,10 @@ const NEW_QUERY = {
 };
 
 export const unistoreStore = createStore({
+  selectedConnectionId: '',
+  connections: [],
+  connectionsLastUpdated: null,
+  connectionsLoading: false,
   activeTabKey: 'sql',
   availableTags: [],
   cacheKey: uuid.v1(),
@@ -36,6 +47,72 @@ export const unistoreStore = createStore({
 // Actions receive current state as first parameter and any other params next
 // Actions can just return a state update:
 export const actions = store => ({
+  // CONNECTIONS
+  selectConnectionId(state, selectedConnectionId) {
+    return { selectedConnectionId };
+  },
+
+  async deleteConnection(state, connectionId) {
+    const { connections } = state;
+    const json = await fetchJson('DELETE', '/api/connections/' + connectionId);
+    if (json.error) {
+      return message.error('Delete failed');
+    }
+    const filtered = connections.filter(c => c._id !== connectionId);
+    return { connections: sortConnections(filtered) };
+  },
+
+  // Updates store (is not resonponsible for API call)
+  async addUpdateConnection(state, connection) {
+    const { connections } = state;
+    const found = connections.find(c => c._id === connection._id);
+    if (found) {
+      const mappedConnections = connections.map(c => {
+        if (c._id === connection._id) {
+          return connection;
+        }
+        return c;
+      });
+      return { connections: sortConnections(mappedConnections) };
+    }
+    return { connections: sortConnections([connection].concat(connections)) };
+  },
+
+  async loadConnections(state, force) {
+    const { connections, connectionsLoading, connectionsLastUpdated } = state;
+    if (connectionsLoading) {
+      return;
+    }
+
+    if (
+      force ||
+      !connections.length ||
+      (connectionsLastUpdated &&
+        new Date() - connectionsLastUpdated > ONE_HOUR_MS)
+    ) {
+      store.setState({ connectionsLoading: true });
+      const { error, connections } = await fetchJson(
+        'GET',
+        '/api/connections/'
+      );
+      if (error) {
+        message.error(error);
+      }
+      const update = {
+        connectionsLoading: false,
+        connectionsLastUpdated: new Date(),
+        connections: sortConnections(connections)
+      };
+
+      if (connections && connections.length === 1) {
+        update.selectedConnectionId = connections[0]._id;
+      }
+
+      store.setState(update);
+    }
+  },
+
+  // QUERY
   formatQuery(state) {
     const { query } = state;
     return {
@@ -44,17 +121,12 @@ export const actions = store => ({
     };
   },
 
-  async loadQuery(state, queryId, selectConnection) {
-    if (typeof selectConnection !== 'function') {
-      throw new Error('expected selectConnection function');
-    }
-
+  async loadQuery(state, queryId) {
     const { error, query } = await fetchJson('GET', `/api/queries/${queryId}`);
     if (error) {
       message.error(error);
     }
-    selectConnection(query.connectionId);
-    return { query };
+    return { query, selectedConnectionId: query.connectionId };
   },
 
   async loadTags(state) {
@@ -65,11 +137,8 @@ export const actions = store => ({
     return { availableTags: tags };
   },
 
-  async runQuery(state, selectedConnectionId) {
-    if (!selectedConnectionId) {
-      throw new Error('expected selectedConnectionId');
-    }
-    const { cacheKey, query, selectedText } = state;
+  async runQuery(state) {
+    const { cacheKey, query, selectedText, selectedConnectionId } = state;
 
     store.setState({
       isRunning: true,
@@ -96,11 +165,8 @@ export const actions = store => ({
     });
   },
 
-  saveQuery(state, selectedConnectionId) {
-    if (!selectedConnectionId) {
-      throw new Error('missing selectedConnectionId');
-    }
-    const { query } = state;
+  saveQuery(state) {
+    const { query, selectedConnectionId } = state;
     if (!query.name) {
       message.error('Query name required');
       store.setState({ showValidation: true });

@@ -6,9 +6,8 @@ import Radio from 'antd/lib/radio';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import PropTypes from 'prop-types';
-import React, { useContext } from 'react';
+import React from 'react';
 import ConnectionDropDown from './ConnectionDropdown';
-import { ConnectionsContext } from '../stores/ConnectionsStore';
 
 const FormItem = Form.Item;
 
@@ -45,7 +44,6 @@ function EditorNavBar({
   runQuery,
   handleMoreClick
 }) {
-  const { selectedConnectionId } = useContext(ConnectionsContext);
   const validationState = showValidation && !queryName.length ? 'error' : null;
   const saveText = unsavedChanges ? 'Save*' : 'Save';
   const cloneDisabled = !queryId;
@@ -74,14 +72,14 @@ function EditorNavBar({
             <Button onClick={formatQuery}>Format</Button>
             <Button
               style={{ minWidth: 75 }}
-              onClick={() => saveQuery(selectedConnectionId)}
+              onClick={() => saveQuery()}
               disabled={isSaving}
             >
               {saveText}
             </Button>
             <Button
               type="primary"
-              onClick={() => runQuery(selectedConnectionId)}
+              onClick={() => runQuery()}
               disabled={isRunning}
             >
               Run

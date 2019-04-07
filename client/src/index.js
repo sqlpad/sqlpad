@@ -8,7 +8,6 @@ import ReactDOM from 'react-dom';
 import message from 'antd/lib/message';
 import Routes from './Routes';
 import AppContextStore from './stores/AppContextStore';
-import ConnectionsStore from './stores/ConnectionsStore';
 import { unistoreStore } from './stores/unistoreStore';
 import { Provider } from 'unistore/react';
 
@@ -21,11 +20,9 @@ message.config({
 
 ReactDOM.render(
   <AppContextStore>
-    <ConnectionsStore>
-      <Provider store={unistoreStore}>
-        <Routes />
-      </Provider>
-    </ConnectionsStore>
+    <Provider store={unistoreStore}>
+      <Routes />
+    </Provider>
   </AppContextStore>,
   document.getElementById('root')
 );

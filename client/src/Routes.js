@@ -13,7 +13,7 @@ import PasswordReset from './PasswordReset.js';
 import PasswordResetRequested from './PasswordResetRequested.js';
 import QueriesView from './queries/QueriesView';
 import QueryChartOnly from './QueryChartOnly.js';
-import QueryEditorContainer from './queryEditor/QueryEditorContainer.js';
+import QueryEditor from './queryEditor/QueryEditor.js';
 import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
@@ -45,7 +45,7 @@ function Routes() {
             path="/queries/:queryId"
             render={({ match }) => (
               <Authenticated>
-                <QueryEditorContainer queryId={match.params.queryId} />
+                <QueryEditor queryId={match.params.queryId} />
               </Authenticated>
             )}
           />
