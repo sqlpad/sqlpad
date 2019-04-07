@@ -3,19 +3,40 @@ import Icon from 'antd/lib/icon';
 import Select from 'antd/lib/select';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 import Sidebar from '../common/Sidebar';
 import SidebarBody from '../common/SidebarBody';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 import ChartInputs from './ChartInputs.js';
-
 const { Option } = Select;
 
+function mapStateToProps(state) {
+  return {
+    queryResult: state.queryResult,
+    chartType:
+      state.query &&
+      state.query.chartConfiguration &&
+      state.query.chartConfiguration.chartType,
+    fields:
+      state.query &&
+      state.query.chartConfiguration &&
+      state.query.chartConfiguration.fields
+  };
+}
+
+const ConnectedVisSidebar = connect(
+  mapStateToProps,
+  actions
+)(React.memo(VisSidebar));
+
 function VisSidebar({
-  onChartConfigurationFieldsChange,
-  onChartTypeChange,
-  onSaveImageClick,
-  query,
-  queryResult
+  chartType,
+  fields,
+  queryResult,
+  handleChartTypeChange,
+  handleChartConfigurationFieldsChange,
+  onSaveImageClick
 }) {
   const chartOptions = chartDefinitions.map(d => {
     return (
@@ -33,9 +54,9 @@ function VisSidebar({
           showSearch
           className="w-100"
           optionFilterProp="children"
-          value={query.chartConfiguration.chartType}
+          value={chartType}
           notFoundContent="No charts available"
-          onChange={onChartTypeChange}
+          onChange={handleChartTypeChange}
           filterOption={(input, option) =>
             option.props.value &&
             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
@@ -45,9 +66,11 @@ function VisSidebar({
           {chartOptions}
         </Select>
         <ChartInputs
-          chartType={query.chartConfiguration.chartType}
-          queryChartConfigurationFields={query.chartConfiguration.fields}
-          onChartConfigurationFieldsChange={onChartConfigurationFieldsChange}
+          chartType={chartType}
+          queryChartConfigurationFields={fields}
+          onChartConfigurationFieldsChange={
+            handleChartConfigurationFieldsChange
+          }
           queryResult={queryResult}
         />
       </SidebarBody>
@@ -68,4 +91,4 @@ VisSidebar.propTypes = {
   queryResult: PropTypes.object
 };
 
-export default VisSidebar;
+export default ConnectedVisSidebar;

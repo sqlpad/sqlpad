@@ -1,20 +1,17 @@
 import Button from 'antd/lib/button';
 import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from './stores/unistoreStore';
 import { Redirect } from 'react-router-dom';
-import { AppContext } from './stores/AppContextStore';
 import fetchJson from './utilities/fetch-json.js';
 
-function SignUp() {
+function SignUp({ adminRegistrationOpen }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [redirect, setRedirect] = useState(false);
-
-  const appContext = useContext(AppContext);
-
-  const { adminRegistrationOpen } = appContext;
 
   useEffect(() => {
     document.title = 'SQLPad - Sign Up';
@@ -84,4 +81,7 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+export default connect(
+  ['adminRegistrationOpen'],
+  actions
+)(SignUp);

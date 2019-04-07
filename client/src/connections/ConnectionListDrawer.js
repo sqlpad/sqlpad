@@ -3,22 +3,26 @@ import Drawer from 'antd/lib/drawer';
 import Icon from 'antd/lib/icon';
 import List from 'antd/lib/list';
 import Popconfirm from 'antd/lib/popconfirm';
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
-import { ConnectionsContext } from '../stores/ConnectionsStore';
-import { AppContext } from '../stores/AppContextStore';
 
-function ConnectionListDrawer({ visible, onClose }) {
+function ConnectionListDrawer({
+  currentUser,
+  visible,
+  onClose,
+  loadConnections,
+  deleteConnection,
+  connections,
+  addUpdateConnection,
+  selectConnectionId
+}) {
   const [connectionId, setConnectionId] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
-  const appContext = useContext(AppContext);
-  const connectionsContext = useContext(ConnectionsContext);
-
-  const { currentUser } = appContext;
-  const { connections, deleteConnection } = connectionsContext;
 
   useEffect(() => {
-    connectionsContext.loadConnections();
+    loadConnections();
   }, []);
 
   useEffect(() => {
@@ -43,7 +47,6 @@ function ConnectionListDrawer({ visible, onClose }) {
   };
 
   const handleConnectionSaved = connection => {
-    const { addUpdateConnection, selectConnection } = connectionsContext;
     addUpdateConnection(connection);
     setConnectionId(null);
     setShowEdit(false);
@@ -51,7 +54,7 @@ function ConnectionListDrawer({ visible, onClose }) {
     // this is a new connection
     // New connections can be selected and then all the drawer closed
     if (!connectionId) {
-      selectConnection(connection._id);
+      selectConnectionId(connection._id);
     }
   };
 
@@ -167,4 +170,7 @@ function ConnectionListDrawer({ visible, onClose }) {
   );
 }
 
-export default ConnectionListDrawer;
+export default connect(
+  ['connections', 'currentUser'],
+  actions
+)(ConnectionListDrawer);

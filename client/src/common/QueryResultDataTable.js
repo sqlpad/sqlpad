@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { MultiGrid } from 'react-virtualized';
 import Draggable from 'react-draggable';
 import Measure from 'react-measure';
@@ -287,5 +288,11 @@ class QueryResultDataTable extends React.PureComponent {
     return <div id="result-grid" className="aspect-ratio--object" />;
   }
 }
+
+QueryResultDataTable.propTypes = {
+  isRunning: PropTypes.bool,
+  queryError: PropTypes.string,
+  queryResult: PropTypes.object
+};
 
 export default QueryResultDataTable;

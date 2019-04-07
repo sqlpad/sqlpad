@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Redirect,
@@ -6,21 +6,23 @@ import {
   Switch
 } from 'react-router-dom';
 import Authenticated from './Authenticated';
-import { AppContext } from './stores/AppContextStore';
+import { connect } from 'unistore/react';
+import { actions } from './stores/unistoreStore';
 import ForgotPassword from './ForgotPassword.js';
 import NotFound from './NotFound.js';
 import PasswordReset from './PasswordReset.js';
 import PasswordResetRequested from './PasswordResetRequested.js';
 import QueriesView from './queries/QueriesView';
 import QueryChartOnly from './QueryChartOnly.js';
-import QueryEditorContainer from './queryEditor/QueryEditorContainer.js';
+import QueryEditor from './queryEditor/QueryEditor.js';
 import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
 
-function Routes() {
-  const appContext = useContext(AppContext);
-  const { config } = appContext;
+function Routes({ config, refreshAppContext }) {
+  useEffect(() => {
+    refreshAppContext();
+  }, []);
 
   if (!config) {
     return null;
@@ -45,7 +47,7 @@ function Routes() {
             path="/queries/:queryId"
             render={({ match }) => (
               <Authenticated>
-                <QueryEditorContainer queryId={match.params.queryId} />
+                <QueryEditor queryId={match.params.queryId} />
               </Authenticated>
             )}
           />
@@ -89,4 +91,7 @@ function Routes() {
   );
 }
 
-export default Routes;
+export default connect(
+  ['config'],
+  actions
+)(Routes);

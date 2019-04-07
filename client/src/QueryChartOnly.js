@@ -61,7 +61,8 @@ function QueryChartOnly({ queryId }) {
       </div>
       <div style={{ height: '100%', display: 'flex' }}>
         <SqlpadTauChart
-          query={query}
+          queryName={query && query.name}
+          chartConfiguration={query && query.chartConfiguration}
           queryResult={queryResult}
           queryError={queryError}
           isRunning={isRunning}

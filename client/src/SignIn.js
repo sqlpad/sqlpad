@@ -2,15 +2,13 @@ import Button from 'antd/lib/button';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from './stores/unistoreStore';
 import { Link, Redirect } from 'react-router-dom';
-import { AppContext } from './stores/AppContextStore';
 import fetchJson from './utilities/fetch-json.js';
 
-function SignIn(props) {
-  const appContext = useContext(AppContext);
-  const { config, smtpConfigured, passport } = appContext;
-
+function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
@@ -26,7 +24,7 @@ function SignIn(props) {
     if (json.error) {
       return message.error('Username or password incorrect');
     }
-    await appContext.refreshAppContext();
+    await refreshAppContext();
     setRedirect(true);
   };
 
@@ -97,4 +95,7 @@ function SignIn(props) {
   );
 }
 
-export default SignIn;
+export default connect(
+  ['config', 'smtpConfigured', 'passport'],
+  actions
+)(SignIn);

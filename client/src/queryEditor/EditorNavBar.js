@@ -3,30 +3,50 @@ import Form from 'antd/lib/form';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
 import Radio from 'antd/lib/radio';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 import PropTypes from 'prop-types';
 import React from 'react';
 import ConnectionDropDown from './ConnectionDropdown';
 
 const FormItem = Form.Item;
 
+function mapStateToProps(state) {
+  return {
+    activeTabKey: state.activeTabKey,
+    isRunning: state.isRunning,
+    isSaving: state.isSaving,
+    showValidation: state.showValidation,
+    unsavedChanges: state.unsavedChanges,
+    queryName: state.query && state.query.name,
+    queryId: state.query && state.query._id
+  };
+}
+
+const ConnectedEditorNavBar = connect(
+  mapStateToProps,
+  actions
+)(React.memo(EditorNavBar));
+
 function EditorNavBar({
   activeTabKey,
-  onTabSelect,
   isSaving,
   isRunning,
-  onCloneClick,
-  onMoreClick,
-  onSaveClick,
-  onRunClick,
-  onFormatClick,
-  query,
+  handleCloneClick,
+  formatQuery,
+  queryName,
+  queryId,
   showValidation,
   unsavedChanges,
-  onQueryNameChange
+  setQueryState,
+  handleTabSelect,
+  saveQuery,
+  runQuery,
+  handleMoreClick
 }) {
-  const validationState = showValidation && !query.name.length ? 'error' : null;
+  const validationState = showValidation && !queryName.length ? 'error' : null;
   const saveText = unsavedChanges ? 'Save*' : 'Save';
-  const cloneDisabled = !query._id;
+  const cloneDisabled = !queryId;
 
   return (
     <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
@@ -35,7 +55,7 @@ function EditorNavBar({
           <ConnectionDropDown />
         </FormItem>
         <FormItem>
-          <Radio.Group value={activeTabKey} onChange={onTabSelect}>
+          <Radio.Group value={activeTabKey} onChange={handleTabSelect}>
             <Radio.Button value="sql">
               <Icon type="code-o" /> SQL
             </Radio.Button>
@@ -46,18 +66,22 @@ function EditorNavBar({
         </FormItem>
         <FormItem>
           <Button.Group>
-            <Button onClick={onCloneClick} disabled={cloneDisabled}>
+            <Button onClick={handleCloneClick} disabled={cloneDisabled}>
               Clone
             </Button>
-            <Button onClick={onFormatClick}>Format</Button>
+            <Button onClick={formatQuery}>Format</Button>
             <Button
               style={{ minWidth: 75 }}
-              onClick={onSaveClick}
+              onClick={() => saveQuery()}
               disabled={isSaving}
             >
               {saveText}
             </Button>
-            <Button type="primary" onClick={onRunClick} disabled={isRunning}>
+            <Button
+              type="primary"
+              onClick={() => runQuery()}
+              disabled={isRunning}
+            >
               Run
             </Button>
           </Button.Group>
@@ -66,12 +90,12 @@ function EditorNavBar({
           <Input
             className="w5"
             placeholder="Query name"
-            value={query.name}
-            onChange={e => onQueryNameChange(e.target.value)}
+            value={queryName}
+            onChange={e => setQueryState('name', e.target.value)}
           />
         </FormItem>
         <FormItem>
-          <Button onClick={onMoreClick}>&hellip;</Button>
+          <Button onClick={handleMoreClick}>&hellip;</Button>
         </FormItem>
       </Form>
     </div>
@@ -80,17 +104,18 @@ function EditorNavBar({
 
 EditorNavBar.propTypes = {
   activeTabKey: PropTypes.string.isRequired,
-  onTabSelect: PropTypes.func.isRequired,
+  handleTabSelect: PropTypes.func.isRequired,
   isSaving: PropTypes.bool.isRequired,
   isRunning: PropTypes.bool.isRequired,
-  onCloneClick: PropTypes.func.isRequired,
-  onMoreClick: PropTypes.func.isRequired,
-  onSaveClick: PropTypes.func.isRequired,
-  onRunClick: PropTypes.func.isRequired,
-  onFormatClick: PropTypes.func.isRequired,
-  query: PropTypes.object.isRequired,
+  handleCloneClick: PropTypes.func.isRequired,
+  handleMoreClick: PropTypes.func.isRequired,
+  saveQuery: PropTypes.func.isRequired,
+  runQuery: PropTypes.func.isRequired,
+  formatQuery: PropTypes.func.isRequired,
+  queryName: PropTypes.string.isRequired,
+  queryId: PropTypes.string,
   showValidation: PropTypes.bool.isRequired,
   unsavedChanges: PropTypes.bool.isRequired
 };
 
-export default EditorNavBar;
+export default ConnectedEditorNavBar;

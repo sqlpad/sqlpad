@@ -1,15 +1,13 @@
-import message from 'antd/lib/message';
 import keymaster from 'keymaster';
 import PropTypes from 'prop-types';
 import React, { createRef } from 'react';
-import { Prompt } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
-import sqlFormatter from 'sql-formatter';
-import uuid from 'uuid';
-import QueryResultDataTable from '../common/QueryResultDataTable.js';
-import SqlEditor from '../common/SqlEditor';
-import SqlpadTauChart from '../common/SqlpadTauChart.js';
-import fetchJson from '../utilities/fetch-json.js';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
+import AppNav from '../AppNav';
+import QueryEditorResult from './QueryEditorResult';
+import QueryEditorSqlEditor from './QueryEditorSqlEditor';
+import QueryEditorChart from './QueryEditorChart';
 import EditorNavBar from './EditorNavBar';
 import FlexTabPane from './FlexTabPane';
 import QueryDetailsModal from './QueryDetailsModal';
@@ -17,241 +15,34 @@ import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
 
-const NEW_QUERY = {
-  _id: '',
-  name: '',
-  tags: [],
-  connectionId: '',
-  queryText: '',
-  chartConfiguration: {
-    chartType: '',
-    fields: {} // key value for chart
-  }
-};
+// TODO FIXME XXX capture unsaved state to local storage
+// Prompt is removed. It doesn't always work anyways
 
 class QueryEditor extends React.Component {
-  state = {
-    activeTabKey: 'sql',
-    availableTags: [],
-    cacheKey: uuid.v1(),
-    isRunning: false,
-    isSaving: false,
-    unsavedChanges: false,
-    query: Object.assign({}, NEW_QUERY),
-    queryResult: undefined,
-    runQueryStartTime: undefined,
-    showModal: false,
-    showValidation: false,
-    selectedText: ''
-  };
-
-  sqlpadTauChart = createRef(undefined);
-
-  getTagOptions() {
-    const { availableTags, query } = this.state;
-    const tagOptions = availableTags.slice();
-    if (query && query.tags) {
-      query.tags.forEach(t => {
-        if (tagOptions.indexOf(t) === -1) {
-          tagOptions.push(t);
-        }
-      });
-    }
-    return tagOptions;
-  }
-
   componentDidUpdate(prevProps) {
-    const { queryId } = this.props;
-
+    const { queryId, resetNewQuery, loadQuery } = this.props;
     if (queryId !== prevProps.queryId) {
       if (queryId === 'new') {
-        return this.setState({
-          activeTabKey: 'sql',
-          queryResult: undefined,
-          query: Object.assign({}, NEW_QUERY),
-          unsavedChanges: false
-        });
+        return resetNewQuery();
       }
-      return this.loadQueryFromServer(queryId);
+      return loadQuery(queryId);
     }
   }
 
-  loadQueryFromServer = queryId => {
-    const { selectConnection } = this.props;
-    fetchJson('GET', `/api/queries/${queryId}`).then(json => {
-      const { error, query } = json;
-      if (error) {
-        message.error(error);
-      }
-      this.setState({ query });
-      selectConnection(query.connectionId);
-    });
-  };
-
-  loadTagsFromServer = () => {
-    fetchJson('GET', '/api/tags').then(json => {
-      const { error, tags } = json;
-      if (error) {
-        message.error(error);
-      }
-      this.setState({ availableTags: tags });
-    });
-  };
-
-  runQuery = () => {
-    const { cacheKey, query, selectedText } = this.state;
-    const { selectedConnectionId } = this.props;
-
-    this.setState({
-      isRunning: true,
-      runQueryStartTime: new Date()
-    });
-    const postData = {
-      connectionId: selectedConnectionId,
-      cacheKey,
-      queryName: query.name,
-      queryText: selectedText || query.queryText
-    };
-    fetchJson('POST', '/api/query-result', postData).then(json => {
-      if (json.error) message.error(json.error);
-      this.setState({
-        isRunning: false,
-        queryError: json.error,
-        queryResult: json.queryResult
-      });
-    });
-  };
-
-  handleCloneClick = () => {
-    const { config } = this.props;
-    const { query } = this.state;
-    delete query._id;
-    query.name = 'Copy of ' + query.name;
-    window.history.replaceState(
-      {},
-      query.name,
-      `${config.baseUrl}/queries/new`
-    );
-    this.setState({ query, unsavedChanges: true });
-  };
-
-  formatQuery = () => {
-    const { query } = this.state;
-    query.queryText = sqlFormatter.format(query.queryText);
-    this.setState({
-      query,
-      unsavedChanges: true
-    });
-  };
-
-  saveQuery = () => {
-    const { query } = this.state;
-    const { config, selectedConnectionId } = this.props;
-    if (!query.name) {
-      message.error('Query name required');
-      this.setState({ showValidation: true });
-      return;
-    }
-    this.setState({ isSaving: true });
-    const queryData = Object.assign({}, query, {
-      connectionId: selectedConnectionId
-    });
-    if (query._id) {
-      fetchJson('PUT', `/api/queries/${query._id}`, queryData).then(json => {
-        const { error, query } = json;
-        if (error) {
-          message.error(error);
-          this.setState({ isSaving: false });
-          return;
-        }
-        message.success('Query Saved');
-        this.setState({ isSaving: false, unsavedChanges: false, query });
-      });
-    } else {
-      fetchJson('POST', `/api/queries`, queryData).then(json => {
-        const { error, query } = json;
-        if (error) {
-          message.error(error);
-          this.setState({ isSaving: false });
-          return;
-        }
-        window.history.replaceState(
-          {},
-          query.name,
-          `${config.baseUrl}/queries/${query._id}`
-        );
-        message.success('Query Saved');
-        this.setState({ isSaving: false, unsavedChanges: false, query });
-      });
-    }
-  };
-
-  setQueryState = (field, value) => {
-    const { query } = this.state;
-    query[field] = value;
-    this.setState({ query, unsavedChanges: true });
-  };
-
-  handleChartConfigurationFieldsChange = (chartFieldId, queryResultField) => {
-    const { query } = this.state;
-    const { fields } = query.chartConfiguration;
-    fields[chartFieldId] = queryResultField;
-    query.chartConfiguration = Object.assign({}, query.chartConfiguration, {
-      fields
-    });
-    this.setState({ query, unsavedChanges: true });
-  };
-
-  handleChartTypeChange = value => {
-    const { query } = this.state;
-    const { fields } = query.chartConfiguration;
-    query.chartConfiguration = Object.assign(
-      {},
-      { fields },
-      {
-        chartType: value
-      }
-    );
-    this.setState({ query, unsavedChanges: true });
-  };
-
-  handleConnectionChange = connectionId =>
-    this.props.selectConnection(connectionId);
-
-  handleModalHide = () => {
-    this.setState({ showModal: false });
-  };
-
-  handleQueryNameChange = name => this.setQueryState('name', name);
-
-  handleMoreClick = () => this.setState({ showModal: true });
-
-  handleQueryTagsChange = values => this.setQueryState('tags', values);
-
-  handleQueryTextChange = queryText =>
-    this.setQueryState('queryText', queryText);
-
-  handleQuerySelectionChange = selectedText => {
-    this.setState({ selectedText });
-  };
-
-  handleSaveImageClick = e => {
-    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.exportPng) {
-      this.sqlpadTauChart.current.exportPng();
-    }
-  };
-
-  handleTabSelect = e => {
-    this.setState({ activeTabKey: e.target.value });
-  };
-
   async componentDidMount() {
-    const { queryId, loadConnections } = this.props;
+    const {
+      queryId,
+      loadConnections,
+      loadTags,
+      loadQuery,
+      saveQuery,
+      runQuery,
+      formatQuery
+    } = this.props;
 
-    await loadConnections();
-    this.loadTagsFromServer();
+    await Promise.all([loadConnections(), loadTags()]);
     if (queryId !== 'new') {
-      this.loadQueryFromServer(queryId);
+      await loadQuery(queryId);
     }
 
     /*  Shortcuts
@@ -260,37 +51,16 @@ class QueryEditor extends React.Component {
     // since we are only using command/ctrl shortcuts,
     // we want the event to fire all the time for any element
     keymaster.filter = () => true;
-    keymaster.unbind('ctrl+s, command+s');
     keymaster('ctrl+s, command+s', e => {
-      this.saveQuery();
-      e.preventDefault();
+      saveQuery();
       return false;
     });
-    // there should only ever be 1 QueryEditor on the page,
-    // but just in case there isn't unbind anything previously bound
-    // rather something previously not run than something run more than once
-    keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e');
-    keymaster('ctrl+r, command+r, ctrl+e, command+e', e => {
-      message.info('Shortcut changed to ctrl+return / command+return');
-      e.preventDefault();
-      return false;
-    });
-    keymaster.unbind('ctrl+return, command+return');
     keymaster('ctrl+return, command+return', e => {
-      this.runQuery();
-      e.preventDefault();
+      runQuery();
       return false;
     });
-    keymaster.unbind('alt+r');
-    keymaster('alt+r', e => {
-      message.info('Shortcut changed to shift+return');
-      e.preventDefault();
-      return false;
-    });
-    keymaster.unbind('shift+return');
     keymaster('shift+return', e => {
-      this.formatQuery();
-      e.preventDefault();
+      formatQuery();
       return false;
     });
   }
@@ -298,13 +68,15 @@ class QueryEditor extends React.Component {
   componentWillUnmount() {
     keymaster.unbind('ctrl+return, command+return');
     keymaster.unbind('ctrl+s, command+s');
-    keymaster.unbind('ctrl+r, command+r, ctrl+e, command+e');
-    keymaster.unbind('alt+r');
     keymaster.unbind('shift+return');
   }
 
-  handleFormatClick = () => {
-    this.formatQuery();
+  sqlpadTauChart = createRef(undefined);
+
+  handleSaveImageClick = e => {
+    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.exportPng) {
+      this.sqlpadTauChart.current.exportPng();
+    }
   };
 
   handleVisPaneResize = () => {
@@ -314,142 +86,96 @@ class QueryEditor extends React.Component {
   };
 
   render() {
-    const { config } = this.props;
-    const {
-      activeTabKey,
-      cacheKey,
-      isRunning,
-      isSaving,
-      query,
-      queryError,
-      queryResult,
-      runQueryStartTime,
-      runSeconds,
-      showModal,
-      showValidation,
-      unsavedChanges
-    } = this.state;
+    const { activeTabKey, queryName } = this.props;
 
-    document.title = query.name || 'New Query';
+    document.title = queryName;
 
     return (
-      <div className="flex w-100" style={{ flexDirection: 'column' }}>
-        <EditorNavBar
-          activeTabKey={activeTabKey}
-          isRunning={isRunning}
-          isSaving={isSaving}
-          onCloneClick={this.handleCloneClick}
-          onMoreClick={this.handleMoreClick}
-          onRunClick={this.runQuery}
-          onSaveClick={this.saveQuery}
-          onFormatClick={this.handleFormatClick}
-          onTabSelect={this.handleTabSelect}
-          query={query}
-          onQueryNameChange={this.handleQueryNameChange}
-          showValidation={showValidation}
-          unsavedChanges={unsavedChanges}
-        />
-        <div style={{ position: 'relative', flexGrow: 1 }}>
-          <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
-            <SplitPane
-              split="vertical"
-              minSize={150}
-              defaultSize={280}
-              maxSize={-100}
-            >
-              <SchemaSidebar {...this.props} />
+      <AppNav>
+        <div className="flex w-100" style={{ flexDirection: 'column' }}>
+          <EditorNavBar />
+          <div style={{ position: 'relative', flexGrow: 1 }}>
+            <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
               <SplitPane
-                split="horizontal"
-                minSize={100}
-                defaultSize={'60%'}
+                split="vertical"
+                minSize={150}
+                defaultSize={280}
                 maxSize={-100}
               >
-                <SqlEditor
-                  config={config}
-                  value={query.queryText}
-                  onChange={this.handleQueryTextChange}
-                  onSelectionChange={this.handleQuerySelectionChange}
-                />
-                <div>
-                  <QueryResultHeader
-                    {...this.props}
-                    cacheKey={cacheKey}
-                    isRunning={isRunning}
-                    queryResult={queryResult}
-                    runQueryStartTime={runQueryStartTime}
-                    runSeconds={runSeconds}
-                  />
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 30,
-                      bottom: 0,
-                      left: 0,
-                      right: 0
-                    }}
-                  >
-                    <QueryResultDataTable
-                      {...this.props}
-                      isRunning={isRunning}
-                      queryError={queryError}
-                      queryResult={queryResult}
-                    />
+                <SchemaSidebar />
+                <SplitPane
+                  split="horizontal"
+                  minSize={100}
+                  defaultSize={'60%'}
+                  maxSize={-100}
+                >
+                  <QueryEditorSqlEditor />
+                  <div>
+                    <QueryResultHeader />
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 30,
+                        bottom: 0,
+                        left: 0,
+                        right: 0
+                      }}
+                    >
+                      <QueryEditorResult />
+                    </div>
                   </div>
+                </SplitPane>
+              </SplitPane>
+            </FlexTabPane>
+            <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
+              <SplitPane
+                split="vertical"
+                minSize={150}
+                defaultSize={280}
+                maxSize={-100}
+                onChange={this.handleVisPaneResize}
+              >
+                <VisSidebar onSaveImageClick={this.handleSaveImageClick} />
+                <div className="flex-auto h-100">
+                  <QueryEditorChart ref={this.sqlpadTauChart} />
                 </div>
               </SplitPane>
-            </SplitPane>
-          </FlexTabPane>
-          <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
-            <SplitPane
-              split="vertical"
-              minSize={150}
-              defaultSize={280}
-              maxSize={-100}
-              onChange={this.handleVisPaneResize}
-            >
-              <VisSidebar
-                onChartConfigurationFieldsChange={
-                  this.handleChartConfigurationFieldsChange
-                }
-                onChartTypeChange={this.handleChartTypeChange}
-                onSaveImageClick={this.handleSaveImageClick}
-                query={query}
-                queryResult={queryResult}
-              />
-              <div className="flex-auto h-100">
-                <SqlpadTauChart
-                  isRunning={isRunning}
-                  query={query}
-                  queryError={queryError}
-                  queryResult={queryResult}
-                  ref={this.sqlpadTauChart}
-                  isVisible={activeTabKey === 'vis'}
-                />
-              </div>
-            </SplitPane>
-          </FlexTabPane>
+            </FlexTabPane>
+          </div>
+          <QueryDetailsModal />
         </div>
-        <QueryDetailsModal
-          onHide={this.handleModalHide}
-          onQueryTagsChange={this.handleQueryTagsChange}
-          query={query}
-          showModal={showModal}
-          tagOptions={this.getTagOptions()}
-        />
-        <Prompt
-          when={unsavedChanges}
-          message={location => `Leave without saving?`}
-        />
-      </div>
+      </AppNav>
     );
   }
 }
 
 QueryEditor.propTypes = {
+  activeTabKey: PropTypes.string.isRequired,
   connections: PropTypes.array.isRequired,
-  selectedConnectionId: PropTypes.string,
-  selectConnection: PropTypes.func,
-  loadConnections: PropTypes.func
+  formatQuery: PropTypes.func.isRequired,
+  loadConnections: PropTypes.func.isRequired,
+  loadQuery: PropTypes.func.isRequired,
+  loadTags: PropTypes.func.isRequired,
+  queryId: PropTypes.string.isRequired,
+  queryName: PropTypes.string,
+  resetNewQuery: PropTypes.func.isRequired,
+  runQuery: PropTypes.func.isRequired,
+  saveQuery: PropTypes.func.isRequired
 };
 
-export default QueryEditor;
+QueryEditor.defaultProps = {
+  queryName: 'New query'
+};
+
+function mapStateToProps(state, props) {
+  return {
+    activeTabKey: state.activeTabKey,
+    connections: state.connections,
+    queryName: state.query && state.query.name
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  actions
+)(QueryEditor);

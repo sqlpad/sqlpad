@@ -14,13 +14,11 @@ function SqlpadTauChart({
   isRunning,
   queryError,
   queryResult,
-  query,
+  chartConfiguration,
+  queryName,
   forwardedRef,
   isVisible
 }) {
-  const chartConfiguration = query && query.chartConfiguration;
-  const queryName = query ? query.name : '';
-
   const chartRef = useRef(null);
 
   // TODO rendering on every change like this might get too expensive
@@ -101,7 +99,8 @@ function SqlpadTauChart({
 
 SqlpadTauChart.propTypes = {
   isRunning: PropTypes.bool,
-  query: PropTypes.object,
+  chartConfiguration: PropTypes.object,
+  queryName: PropTypes.string,
   queryError: PropTypes.string,
   queryResult: PropTypes.object,
   forwardedRef: PropTypes.any,
@@ -109,5 +108,8 @@ SqlpadTauChart.propTypes = {
 };
 
 export default forwardRef((props, ref) => {
-  return <SqlpadTauChart {...props} forwardedRef={ref} />;
+  if (ref && !props.forwardedRef) {
+    return <SqlpadTauChart {...props} forwardedRef={ref} />;
+  }
+  return <SqlpadTauChart {...props} />;
 });

@@ -1,25 +1,30 @@
 import Select from 'antd/lib/select';
 import Icon from 'antd/lib/icon';
-import React, { useContext, useState } from 'react';
-import { ConnectionsContext } from '../stores/ConnectionsStore';
+import React, { useState } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 
 const { Option } = Select;
 
-function ConnectionDropdown() {
-  const connectionsContext = useContext(ConnectionsContext);
+function ConnectionDropdown({
+  connections,
+  selectConnectionId,
+  selectedConnectionId,
+  addUpdateConnection
+}) {
   const [showEdit, setShowEdit] = useState(false);
 
   const handleChange = id => {
     if (id === 'new') {
       return setShowEdit(true);
     }
-    connectionsContext.selectConnection(id);
+    selectConnectionId(id);
   };
 
   const handleConnectionSaved = connection => {
-    connectionsContext.addUpdateConnection(connection);
-    connectionsContext.selectConnection(connection._id);
+    addUpdateConnection(connection);
+    selectConnectionId(connection._id);
     setShowEdit(false);
   };
 
@@ -32,7 +37,7 @@ function ConnectionDropdown() {
         // className="w5"
         style={{ width: 260 }}
         optionFilterProp="children"
-        value={connectionsContext.selectedConnectionId}
+        value={selectedConnectionId}
         onChange={handleChange}
         filterOption={(input, option) =>
           option.props.value &&
@@ -42,7 +47,7 @@ function ConnectionDropdown() {
         <Option value="">
           <em>Choose a connection...</em>
         </Option>
-        {connectionsContext.connections.map(conn => {
+        {connections.map(conn => {
           return (
             <Option key={conn._id} value={conn._id}>
               {conn.name}
@@ -63,4 +68,7 @@ function ConnectionDropdown() {
   );
 }
 
-export default ConnectionDropdown;
+export default connect(
+  ['connections', 'selectedConnectionId'],
+  actions
+)(ConnectionDropdown);

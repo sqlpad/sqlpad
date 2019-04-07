@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 
 function QueryResultHeader({
   cacheKey,
@@ -97,4 +99,7 @@ QueryResultHeader.defaultProps = {
   isRunning: false
 };
 
-export default QueryResultHeader;
+export default connect(
+  ['cacheKey', 'config', 'isRunning', 'queryResult', 'runQueryStartTime'],
+  actions
+)(React.memo(QueryResultHeader));
