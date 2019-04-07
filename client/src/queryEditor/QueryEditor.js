@@ -161,7 +161,6 @@ class QueryEditor extends React.Component {
 
 QueryEditor.propTypes = {
   activeTabKey: PropTypes.string.isRequired,
-  connections: PropTypes.array.isRequired,
   formatQuery: PropTypes.func.isRequired,
   loadConnections: PropTypes.func.isRequired,
   loadQuery: PropTypes.func.isRequired,
@@ -180,7 +179,6 @@ QueryEditor.defaultProps = {
 function mapStateToProps(state, props) {
   return {
     activeTabKey: state.activeTabKey,
-    connections: state.connections,
     queryName: state.query && state.query.name,
     showSchema: state.showSchema
   };
