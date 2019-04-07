@@ -1,6 +1,5 @@
 import Select from 'antd/lib/select';
 import Icon from 'antd/lib/icon';
-import Divider from 'antd/lib/divider';
 import React, { useState } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
