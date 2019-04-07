@@ -86,7 +86,6 @@ class QueryEditor extends React.Component {
   };
 
   render() {
-    console.log('rendering');
     const { activeTabKey, queryName } = this.props;
 
     document.title = queryName;
