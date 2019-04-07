@@ -1,5 +1,7 @@
 import keymaster from 'keymaster';
 import PropTypes from 'prop-types';
+import Icon from 'antd/lib/icon';
+import Menu from 'antd/lib/menu';
 import React, { createRef } from 'react';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
@@ -86,7 +88,7 @@ class QueryEditor extends React.Component {
   };
 
   render() {
-    const { activeTabKey, queryName, showSchema } = this.props;
+    const { activeTabKey, queryName, showSchema, toggleSchema } = this.props;
 
     document.title = queryName;
 
@@ -130,7 +132,14 @@ class QueryEditor extends React.Component {
     );
 
     return (
-      <AppNav>
+      <AppNav
+        pageMenuItems={
+          <Menu.Item key="schema" onClick={toggleSchema}>
+            <Icon type="database" />
+            <span>Schema</span>
+          </Menu.Item>
+        }
+      >
         <div className="flex w-100" style={{ flexDirection: 'column' }}>
           <EditorNavBar />
           <div style={{ position: 'relative', flexGrow: 1 }}>

@@ -72,10 +72,6 @@ function AppNav({
                   <Icon type="plus" />
                   <span>New Query</span>
                 </Menu.Item>
-                <Menu.Item key="schema" onClick={toggleSchema}>
-                  <Icon type="database" />
-                  <span>Schema</span>
-                </Menu.Item>
                 {pageMenuItems}
               </Menu>
             )}
