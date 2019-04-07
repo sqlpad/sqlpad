@@ -15,7 +15,13 @@ import UsersDrawer from './users/UserDrawer';
 
 const { Content, Sider } = Layout;
 
-function AppNav({ children, pageMenuItems, currentUser, version }) {
+function AppNav({
+  children,
+  pageMenuItems,
+  currentUser,
+  version,
+  toggleSchema
+}) {
   const [collapsed, setCollapsed] = useState(true);
   const [redirect, setRedirect] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
@@ -66,6 +72,10 @@ function AppNav({ children, pageMenuItems, currentUser, version }) {
                   <Icon type="plus" />
                   <span>New Query</span>
                 </Menu.Item>
+                <Menu.Item key="schema" onClick={toggleSchema}>
+                  <Icon type="database" />
+                  <span>Schema</span>
+                </Menu.Item>
                 {pageMenuItems}
               </Menu>
             )}
@@ -78,7 +88,7 @@ function AppNav({ children, pageMenuItems, currentUser, version }) {
                     key="connections-drawer"
                     onClick={() => setShowConnections(true)}
                   >
-                    <Icon type="database" />
+                    <Icon type="api" />
                     <span>DB connections</span>
                   </Menu.Item>,
                   <Menu.Item key="users" onClick={() => setShowUsers(true)}>

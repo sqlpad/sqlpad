@@ -4,6 +4,7 @@ import sortBy from 'lodash/sortBy';
 import message from 'antd/lib/message';
 import sqlFormatter from 'sql-formatter';
 import fetchJson from '../utilities/fetch-json.js';
+import updateCompletions from '../utilities/updateCompletions.js';
 
 const ONE_HOUR_MS = 1000 * 60 * 60;
 
@@ -40,13 +41,20 @@ export const unistoreStore = createStore({
   selectedText: '',
   showModal: false,
   showValidation: false,
-  unsavedChanges: false
+  showSchema: true,
+  unsavedChanges: false,
+  schema: {} // schema.<connectionId>.loading / schemaInfo / lastUpdated
 });
 
 // If actions is a function, it gets passed the store:
 // Actions receive current state as first parameter and any other params next
 // Actions can just return a state update:
 export const actions = store => ({
+  // APP NAV
+  toggleSchema(state) {
+    return { showSchema: !state.showSchema };
+  },
+
   // CONFIG
   async refreshAppContext() {
     const json = await fetchJson('GET', 'api/app');
@@ -67,6 +75,42 @@ export const actions = store => ({
       adminRegistrationOpen: json.adminRegistrationOpen,
       version: json.version
     };
+  },
+
+  // SCHEMA
+  async loadSchemaInfo(state, connectionId, reload) {
+    const { schema } = state;
+    if (!schema[connectionId] || reload) {
+      console.log('LOADING');
+      store.setState({
+        schema: {
+          ...schema,
+          [connectionId]: {
+            loading: true
+          }
+        }
+      });
+
+      const qs = reload ? '?reload=true' : '';
+      const json = await fetchJson(
+        'GET',
+        `/api/schema-info/${connectionId}${qs}`
+      );
+      const { error, schemaInfo } = json;
+      if (error) {
+        return message.error(error);
+      }
+      updateCompletions(schemaInfo);
+      return {
+        schema: {
+          ...schema,
+          [connectionId]: {
+            loading: false,
+            schemaInfo
+          }
+        }
+      };
+    }
   },
 
   // CONNECTIONS

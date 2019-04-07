@@ -86,9 +86,48 @@ class QueryEditor extends React.Component {
   };
 
   render() {
-    const { activeTabKey, queryName } = this.props;
+    const { activeTabKey, queryName, showSchema } = this.props;
 
     document.title = queryName;
+
+    const editorResultPane = (
+      <SplitPane
+        split="horizontal"
+        minSize={100}
+        defaultSize={'60%'}
+        maxSize={-100}
+      >
+        <QueryEditorSqlEditor />
+        <div>
+          <QueryResultHeader />
+          <div
+            style={{
+              position: 'absolute',
+              top: 30,
+              bottom: 0,
+              left: 0,
+              right: 0
+            }}
+          >
+            <QueryEditorResult />
+          </div>
+        </div>
+      </SplitPane>
+    );
+
+    const sqlTabPane = showSchema ? (
+      <SplitPane
+        split="vertical"
+        minSize={150}
+        defaultSize={280}
+        maxSize={-100}
+      >
+        <SchemaSidebar />
+        {editorResultPane}
+      </SplitPane>
+    ) : (
+      editorResultPane
+    );
 
     return (
       <AppNav>
@@ -96,36 +135,7 @@ class QueryEditor extends React.Component {
           <EditorNavBar />
           <div style={{ position: 'relative', flexGrow: 1 }}>
             <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
-              <SplitPane
-                split="vertical"
-                minSize={150}
-                defaultSize={280}
-                maxSize={-100}
-              >
-                <SchemaSidebar />
-                <SplitPane
-                  split="horizontal"
-                  minSize={100}
-                  defaultSize={'60%'}
-                  maxSize={-100}
-                >
-                  <QueryEditorSqlEditor />
-                  <div>
-                    <QueryResultHeader />
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 30,
-                        bottom: 0,
-                        left: 0,
-                        right: 0
-                      }}
-                    >
-                      <QueryEditorResult />
-                    </div>
-                  </div>
-                </SplitPane>
-              </SplitPane>
+              {sqlTabPane}
             </FlexTabPane>
             <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
               <SplitPane
@@ -171,7 +181,8 @@ function mapStateToProps(state, props) {
   return {
     activeTabKey: state.activeTabKey,
     connections: state.connections,
-    queryName: state.query && state.query.name
+    queryName: state.query && state.query.name,
+    showSchema: state.showSchema
   };
 }
 

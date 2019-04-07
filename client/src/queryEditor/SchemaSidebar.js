@@ -1,111 +1,85 @@
 import Icon from 'antd/lib/icon';
 import Tooltip from 'antd/lib/tooltip';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Sidebar from '../common/Sidebar';
 import SidebarBody from '../common/SidebarBody';
-import fetchJson from '../utilities/fetch-json.js';
-import updateCompletions from '../utilities/updateCompletions.js';
 
-const SchemaSidebarContainer = ({ config, selectedConnectionId }) => {
-  return <SchemaSidebar config={config} connectionId={selectedConnectionId} />;
-};
-
-class SchemaSidebar extends React.PureComponent {
-  state = {
-    schemaInfo: {},
-    loading: false
+function mapStateToProps(state, props) {
+  return {
+    config: state.config,
+    connectionId: state.selectedConnectionId,
+    schemaInfo:
+      state.schema &&
+      state.schema[state.selectedConnectionId] &&
+      state.schema[state.selectedConnectionId].schemaInfo,
+    loading:
+      state.schema &&
+      state.schema[state.selectedConnectionId] &&
+      state.schema[state.selectedConnectionId].loading
   };
+}
 
-  componentDidMount() {
-    const { connectionId } = this.props;
+function SchemaSidebar({
+  config,
+  connectionId,
+  loadSchemaInfo,
+  schemaInfo,
+  loading
+}) {
+  useEffect(() => {
     if (connectionId) {
-      this.getSchemaInfo(connectionId);
+      loadSchemaInfo(connectionId);
     }
-  }
+  }, [connectionId]);
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.connectionId !== nextProps.connectionId) {
-      this.getSchemaInfo(nextProps.connectionId);
-    }
-  }
-
-  getSchemaInfo = (connectionId, reload) => {
-    if (connectionId) {
-      this.setState({
-        schemaInfo: {},
-        loading: true
-      });
-      const qs = reload ? '?reload=true' : '';
-      fetchJson('GET', `/api/schema-info/${connectionId}${qs}`).then(json => {
-        const { error, schemaInfo } = json;
-        if (error) {
-          console.error(error);
-        }
-        updateCompletions(schemaInfo);
-        this.setState({
-          schemaInfo: schemaInfo
-        });
-        // sometimes refreshes happen so fast and people don't get to enjoy the animation
-        setTimeout(() => {
-          this.setState({ loading: false });
-        }, 1000);
-      });
-    } else {
-      this.setState({
-        schemaInfo: {}
-      });
-    }
-  };
-
-  handleRefreshClick = e => {
+  const handleRefreshClick = e => {
     e.preventDefault();
-    this.getSchemaInfo(this.props.connectionId, true);
+    if (connectionId) {
+      loadSchemaInfo(connectionId, true);
+    }
   };
 
-  render() {
-    const { loading, schemaInfo } = this.state;
-    const refreshClass = loading ? 'spinning' : '';
+  const refreshClass = loading ? 'spinning' : '';
 
-    const schemaCount = schemaInfo ? Object.keys(schemaInfo).length : 0;
-    const initShowTables = schemaCount <= 2;
-    const schemaItemNodes = schemaInfo
-      ? Object.keys(schemaInfo).map(schema => {
-          return (
-            <SchemaInfoSchemaItem
-              {...this.props}
-              initShowTables={initShowTables}
-              key={schema}
-              schema={schema}
-              tables={schemaInfo[schema]}
-            />
-          );
-        })
-      : null;
+  const schemaCount = schemaInfo ? Object.keys(schemaInfo).length : 0;
+  const initShowTables = schemaCount <= 2;
+  const schemaItemNodes = schemaInfo
+    ? Object.keys(schemaInfo).map(schema => {
+        return (
+          <SchemaInfoSchemaItem
+            config={config}
+            initShowTables={initShowTables}
+            key={schema}
+            schema={schema}
+            tables={schemaInfo[schema]}
+          />
+        );
+      })
+    : null;
 
-    return (
-      <Sidebar>
-        <SidebarBody>
-          <div style={{ position: 'relative' }}>
-            <a style={{ position: 'absolute', right: '20px' }} href="#refresh">
-              <Tooltip title="Refresh schema">
-                <Icon
-                  type="reload"
-                  className={' ' + refreshClass}
-                  onClick={this.handleRefreshClick}
-                />
-              </Tooltip>
-            </a>
-            <ul className="pl0 dib" style={{ minWidth: '230px' }}>
-              {schemaItemNodes}
-            </ul>
-          </div>
-        </SidebarBody>
-      </Sidebar>
-    );
-  }
+  return (
+    <Sidebar>
+      <SidebarBody>
+        <div style={{ position: 'relative' }}>
+          <a style={{ position: 'absolute', right: '20px' }} href="#refresh">
+            <Tooltip title="Refresh schema">
+              <Icon
+                type="reload"
+                className={' ' + refreshClass}
+                onClick={handleRefreshClick}
+              />
+            </Tooltip>
+          </a>
+          <ul className="pl0 dib" style={{ minWidth: '230px' }}>
+            {schemaItemNodes}
+          </ul>
+        </div>
+      </SidebarBody>
+    </Sidebar>
+  );
 }
 
 class SchemaInfoSchemaItem extends React.Component {
@@ -345,6 +319,6 @@ class SchemaInfoColumnItem extends React.Component {
 }
 
 export default connect(
-  ['selectedConnectionId', 'config'],
+  mapStateToProps,
   actions
-)(React.memo(SchemaSidebarContainer));
+)(React.memo(SchemaSidebar));
