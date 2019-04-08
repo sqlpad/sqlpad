@@ -11,7 +11,6 @@ import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryEditorChart from './QueryEditorChart';
 import EditorNavBar from './EditorNavBar';
-import FlexTabPane from './FlexTabPane';
 import QueryDetailsModal from './QueryDetailsModal';
 import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
@@ -85,14 +84,33 @@ class QueryEditor extends React.Component {
 
   render() {
     const {
-      activeTabKey,
+      chartType,
       queryName,
       showSchema,
+      showVisSidebar,
       toggleSchema,
+      toggleVisSidebar,
       queryId
     } = this.props;
 
     document.title = queryName;
+
+    const editorAndVis = chartType ? (
+      <SplitPane
+        key="editorAndVis"
+        split="vertical"
+        defaultSize={'50%'}
+        maxSize={-200}
+        onChange={this.handleVisPaneResize}
+      >
+        <QueryEditorSqlEditor />
+        <div className="flex-auto h-100">
+          <QueryEditorChart />
+        </div>
+      </SplitPane>
+    ) : (
+      <QueryEditorSqlEditor />
+    );
 
     const editorResultPane = (
       <SplitPane
@@ -100,8 +118,9 @@ class QueryEditor extends React.Component {
         minSize={100}
         defaultSize={'60%'}
         maxSize={-100}
+        onChange={this.handleVisPaneResize}
       >
-        <QueryEditorSqlEditor />
+        {editorAndVis}
         <div>
           <QueryResultHeader />
           <div
@@ -119,14 +138,21 @@ class QueryEditor extends React.Component {
       </SplitPane>
     );
 
-    const sqlTabPane = showSchema ? (
+    let sidebar = null;
+    if (showSchema) {
+      sidebar = <SchemaSidebar />;
+    } else if (showVisSidebar) {
+      sidebar = <VisSidebar queryId={queryId} />;
+    }
+
+    const sqlTabPane = sidebar ? (
       <SplitPane
         split="vertical"
         minSize={150}
         defaultSize={280}
         maxSize={-100}
       >
-        <SchemaSidebar />
+        {sidebar}
         {editorResultPane}
       </SplitPane>
     ) : (
@@ -139,30 +165,16 @@ class QueryEditor extends React.Component {
           <Menu.Item key="schema" onClick={toggleSchema}>
             <Icon type="database" />
             <span>Schema</span>
+          </Menu.Item>,
+          <Menu.Item key="chart" onClick={toggleVisSidebar}>
+            <Icon type="bar-chart" />
+            <span>Schema</span>
           </Menu.Item>
         ]}
       >
         <div className="flex w-100" style={{ flexDirection: 'column' }}>
           <EditorNavBar />
-          <div style={{ position: 'relative', flexGrow: 1 }}>
-            <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
-              {sqlTabPane}
-            </FlexTabPane>
-            <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
-              <SplitPane
-                split="vertical"
-                minSize={150}
-                defaultSize={280}
-                maxSize={-100}
-                onChange={this.handleVisPaneResize}
-              >
-                <VisSidebar queryId={queryId} />
-                <div className="flex-auto h-100">
-                  <QueryEditorChart />
-                </div>
-              </SplitPane>
-            </FlexTabPane>
-          </div>
+          <div style={{ position: 'relative', flexGrow: 1 }}>{sqlTabPane}</div>
           <QueryDetailsModal />
         </div>
       </AppNav>
@@ -171,7 +183,6 @@ class QueryEditor extends React.Component {
 }
 
 QueryEditor.propTypes = {
-  activeTabKey: PropTypes.string.isRequired,
   formatQuery: PropTypes.func.isRequired,
   loadConnections: PropTypes.func.isRequired,
   loadQuery: PropTypes.func.isRequired,
@@ -189,9 +200,13 @@ QueryEditor.defaultProps = {
 
 function mapStateToProps(state, props) {
   return {
-    activeTabKey: state.activeTabKey,
+    chartType:
+      state.query &&
+      state.query.chartConfiguration &&
+      state.query.chartConfiguration.chartType,
     queryName: state.query && state.query.name,
-    showSchema: state.showSchema
+    showSchema: state.showSchema,
+    showVisSidebar: state.showVisSidebar
   };
 }
 

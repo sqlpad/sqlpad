@@ -7,7 +7,6 @@ function mapStateToProps(state) {
     queryId: (state.query && state.query._id) || 'new',
     isRunning: state.isRunning,
     queryError: state.queryError,
-    isVisible: state.activeTabKey === 'vis',
     queryResult: state.queryResult,
     chartConfiguration: state.query && state.query.chartConfiguration,
     queryName: state.query && state.query.name

@@ -13,7 +13,6 @@ const FormItem = Form.Item;
 
 function mapStateToProps(state) {
   return {
-    activeTabKey: state.activeTabKey,
     isRunning: state.isRunning,
     isSaving: state.isSaving,
     showValidation: state.showValidation,
@@ -29,7 +28,6 @@ const ConnectedEditorNavBar = connect(
 )(React.memo(EditorNavBar));
 
 function EditorNavBar({
-  activeTabKey,
   isSaving,
   isRunning,
   handleCloneClick,
@@ -39,7 +37,6 @@ function EditorNavBar({
   showValidation,
   unsavedChanges,
   setQueryState,
-  handleTabSelect,
   saveQuery,
   runQuery,
   handleMoreClick
@@ -50,20 +47,24 @@ function EditorNavBar({
 
   return (
     <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
-      <Form layout="inline">
+      <Form className="flex" layout="inline">
         <FormItem>
           <ConnectionDropDown />
         </FormItem>
-        <FormItem>
-          <Radio.Group value={activeTabKey} onChange={handleTabSelect}>
-            <Radio.Button value="sql">
-              <Icon type="code-o" /> SQL
-            </Radio.Button>
-            <Radio.Button value="vis">
-              <Icon type="bar-chart" /> Vis
-            </Radio.Button>
-          </Radio.Group>
+
+        <FormItem validateStatus={validationState}>
+          <Input
+            className="w5"
+            placeholder="Query name"
+            value={queryName}
+            onChange={e => setQueryState('name', e.target.value)}
+          />
         </FormItem>
+
+        <FormItem>
+          <Button onClick={handleMoreClick} icon="more" />
+        </FormItem>
+        <div className="flex-grow-1" />
         <FormItem>
           <Button.Group>
             <Button onClick={handleCloneClick} disabled={cloneDisabled}>
@@ -86,25 +87,12 @@ function EditorNavBar({
             </Button>
           </Button.Group>
         </FormItem>
-        <FormItem validateStatus={validationState}>
-          <Input
-            className="w5"
-            placeholder="Query name"
-            value={queryName}
-            onChange={e => setQueryState('name', e.target.value)}
-          />
-        </FormItem>
-        <FormItem>
-          <Button onClick={handleMoreClick}>&hellip;</Button>
-        </FormItem>
       </Form>
     </div>
   );
 }
 
 EditorNavBar.propTypes = {
-  activeTabKey: PropTypes.string.isRequired,
-  handleTabSelect: PropTypes.func.isRequired,
   isSaving: PropTypes.bool.isRequired,
   isRunning: PropTypes.bool.isRequired,
   handleCloneClick: PropTypes.func.isRequired,

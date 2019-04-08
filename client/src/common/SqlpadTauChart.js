@@ -12,21 +12,14 @@ function SqlpadTauChart({
   queryResult,
   chartConfiguration,
   queryName,
-  queryId,
-  isVisible
+  queryId
 }) {
   // TODO rendering on every change like this might get too expensive
   // Revisit with latest version of taucharts and d3 once UI is updated
   useEffect(() => {
     let chart;
 
-    if (
-      isVisible &&
-      !isRunning &&
-      !queryError &&
-      chartConfiguration &&
-      queryResult
-    ) {
+    if (!isRunning && !queryError && chartConfiguration && queryResult) {
       const chartConfig = getTauChartConfig(
         chartConfiguration,
         queryResult,
@@ -47,14 +40,7 @@ function SqlpadTauChart({
       }
       delFakeChartRef(queryId);
     };
-  }, [
-    isRunning,
-    queryError,
-    queryResult,
-    chartConfiguration,
-    queryName,
-    isVisible
-  ]);
+  }, [isRunning, queryError, queryResult, chartConfiguration, queryName]);
 
   if (isRunning) {
     return (
@@ -83,8 +69,7 @@ SqlpadTauChart.propTypes = {
   chartConfiguration: PropTypes.object,
   queryName: PropTypes.string,
   queryError: PropTypes.string,
-  queryResult: PropTypes.object,
-  isVisible: PropTypes.bool
+  queryResult: PropTypes.object
 };
 
 export default SqlpadTauChart;

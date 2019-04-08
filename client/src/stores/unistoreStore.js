@@ -29,7 +29,6 @@ export const unistoreStore = createStore({
   connections: [],
   connectionsLastUpdated: null,
   connectionsLoading: false,
-  activeTabKey: 'sql',
   availableTags: [],
   cacheKey: uuid.v1(),
   isRunning: false,
@@ -42,6 +41,7 @@ export const unistoreStore = createStore({
   showModal: false,
   showValidation: false,
   showSchema: true,
+  showVisSidebar: false,
   unsavedChanges: false,
   schema: {} // schema.<connectionId>.loading / schemaInfo / lastUpdated
 });
@@ -52,7 +52,11 @@ export const unistoreStore = createStore({
 export const actions = store => ({
   // APP NAV
   toggleSchema(state) {
-    return { showSchema: !state.showSchema };
+    return { showSchema: !state.showSchema, showVisSidebar: false };
+  },
+
+  toggleVisSidebar(state) {
+    return { showVisSidebar: !state.showVisSidebar, showSchema: false };
   },
 
   // CONFIG
@@ -281,7 +285,6 @@ export const actions = store => ({
 
   resetNewQuery(state) {
     return {
-      activeTabKey: 'sql',
       queryResult: undefined,
       query: Object.assign({}, NEW_QUERY),
       unsavedChanges: false
@@ -329,9 +332,5 @@ export const actions = store => ({
 
   handleQuerySelectionChange(store, selectedText) {
     return { selectedText };
-  },
-
-  handleTabSelect(store, event) {
-    return { activeTabKey: event.target.value };
   }
 });

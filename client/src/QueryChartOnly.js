@@ -64,7 +64,6 @@ function QueryChartOnly({ queryId }) {
           queryResult={queryResult}
           queryError={queryError}
           isRunning={isRunning}
-          isVisible={true}
         />
       </div>
     </div>
