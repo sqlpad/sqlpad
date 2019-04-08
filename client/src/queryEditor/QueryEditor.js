@@ -40,12 +40,16 @@ class QueryEditor extends React.Component {
       loadQuery,
       saveQuery,
       runQuery,
-      formatQuery
+      formatQuery,
+      resetNewQuery
     } = this.props;
 
     await Promise.all([loadConnections(), loadTags()]);
     if (queryId !== 'new') {
       await loadQuery(queryId);
+    } else {
+      // TODO FIXME XXX this won't reset query state from new to new
+      resetNewQuery();
     }
 
     /*  Shortcuts
@@ -131,12 +135,12 @@ class QueryEditor extends React.Component {
 
     return (
       <AppNav
-        pageMenuItems={
+        pageMenuItems={[
           <Menu.Item key="schema" onClick={toggleSchema}>
             <Icon type="database" />
             <span>Schema</span>
           </Menu.Item>
-        }
+        ]}
       >
         <div className="flex w-100" style={{ flexDirection: 'column' }}>
           <EditorNavBar />
