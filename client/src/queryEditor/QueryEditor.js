@@ -2,7 +2,7 @@ import keymaster from 'keymaster';
 import PropTypes from 'prop-types';
 import Icon from 'antd/lib/icon';
 import Menu from 'antd/lib/menu';
-import React, { createRef } from 'react';
+import React from 'react';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
@@ -16,6 +16,7 @@ import QueryDetailsModal from './QueryDetailsModal';
 import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
+import { resizeChart } from '../common/tauChartRef';
 
 // TODO FIXME XXX capture unsaved state to local storage
 // Prompt is removed. It doesn't always work anyways
@@ -73,22 +74,19 @@ class QueryEditor extends React.Component {
     keymaster.unbind('shift+return');
   }
 
-  sqlpadTauChart = createRef(undefined);
-
-  handleSaveImageClick = e => {
-    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.exportPng) {
-      this.sqlpadTauChart.current.exportPng();
-    }
-  };
-
   handleVisPaneResize = () => {
-    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.resize) {
-      this.sqlpadTauChart.current.resize();
-    }
+    const { queryId } = this.props;
+    resizeChart(queryId);
   };
 
   render() {
-    const { activeTabKey, queryName, showSchema, toggleSchema } = this.props;
+    const {
+      activeTabKey,
+      queryName,
+      showSchema,
+      toggleSchema,
+      queryId
+    } = this.props;
 
     document.title = queryName;
 
@@ -154,9 +152,9 @@ class QueryEditor extends React.Component {
                 maxSize={-100}
                 onChange={this.handleVisPaneResize}
               >
-                <VisSidebar onSaveImageClick={this.handleSaveImageClick} />
+                <VisSidebar queryId={queryId} />
                 <div className="flex-auto h-100">
-                  <QueryEditorChart ref={this.sqlpadTauChart} />
+                  <QueryEditorChart />
                 </div>
               </SplitPane>
             </FlexTabPane>

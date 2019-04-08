@@ -1,14 +1,10 @@
 import 'd3';
 import PropTypes from 'prop-types';
-import React, {
-  useEffect,
-  useImperativeHandle,
-  useRef,
-  forwardRef
-} from 'react';
+import React, { useEffect } from 'react';
 import { Chart } from 'taucharts';
 import SpinKitCube from './SpinKitCube.js';
 import getTauChartConfig from './getTauChartConfig';
+import { setFakeChartRef, delFakeChartRef } from './tauChartRef';
 
 function SqlpadTauChart({
   isRunning,
@@ -16,11 +12,9 @@ function SqlpadTauChart({
   queryResult,
   chartConfiguration,
   queryName,
-  forwardedRef,
+  queryId,
   isVisible
 }) {
-  const chartRef = useRef(null);
-
   // TODO rendering on every change like this might get too expensive
   // Revisit with latest version of taucharts and d3 once UI is updated
   useEffect(() => {
@@ -44,14 +38,14 @@ function SqlpadTauChart({
       }
     }
 
-    // set instance of chart to ref
-    chartRef.current = chart;
+    setFakeChartRef(queryId, chart);
 
     // cleanup chart
     return () => {
       if (chart) {
         chart.destroy();
       }
+      delFakeChartRef(queryId);
     };
   }, [
     isRunning,
@@ -61,19 +55,6 @@ function SqlpadTauChart({
     queryName,
     isVisible
   ]);
-
-  useImperativeHandle(forwardedRef, () => ({
-    exportPng: () => {
-      if (chartRef.current && chartRef.current.fire) {
-        chartRef.current.fire('exportTo', 'png');
-      }
-    },
-    resize: () => {
-      if (chartRef.current && chartRef.current.resize) {
-        chartRef.current.resize();
-      }
-    }
-  }));
 
   if (isRunning) {
     return (
@@ -103,13 +84,7 @@ SqlpadTauChart.propTypes = {
   queryName: PropTypes.string,
   queryError: PropTypes.string,
   queryResult: PropTypes.object,
-  forwardedRef: PropTypes.any,
   isVisible: PropTypes.bool
 };
 
-export default forwardRef((props, ref) => {
-  if (ref && !props.forwardedRef) {
-    return <SqlpadTauChart {...props} forwardedRef={ref} />;
-  }
-  return <SqlpadTauChart {...props} />;
-});
+export default SqlpadTauChart;
