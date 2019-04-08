@@ -20,7 +20,7 @@ function AppNav({
   pageMenuItems,
   currentUser,
   version,
-  toggleSchema
+  resetNewQuery
 }) {
   const [collapsed, setCollapsed] = useState(true);
   const [redirect, setRedirect] = useState(false);
@@ -67,6 +67,7 @@ function AppNav({
                   key="new-query"
                   onClick={() => {
                     history.push('/queries/new');
+                    resetNewQuery();
                   }}
                 >
                   <Icon type="plus" />

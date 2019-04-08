@@ -3,6 +3,7 @@ import Form from 'antd/lib/form';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
 import Radio from 'antd/lib/radio';
+import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import PropTypes from 'prop-types';
@@ -39,7 +40,8 @@ function EditorNavBar({
   setQueryState,
   saveQuery,
   runQuery,
-  handleMoreClick
+  handleMoreClick,
+  resetNewQuery
 }) {
   const validationState = showValidation && !queryName.length ? 'error' : null;
   const saveText = unsavedChanges ? 'Save*' : 'Save';
@@ -71,6 +73,15 @@ function EditorNavBar({
               Clone
             </Button>
             <Button onClick={formatQuery}>Format</Button>
+            <Button
+              onClick={() => {
+                // TODO FIXME XXX
+                // history.push('/queries/new');
+                resetNewQuery();
+              }}
+            >
+              New
+            </Button>
             <Button
               style={{ minWidth: 75 }}
               onClick={() => saveQuery()}
