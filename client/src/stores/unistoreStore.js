@@ -81,7 +81,6 @@ export const actions = store => ({
   async loadSchemaInfo(state, connectionId, reload) {
     const { schema } = state;
     if (!schema[connectionId] || reload) {
-      console.log('LOADING');
       store.setState({
         schema: {
           ...schema,
