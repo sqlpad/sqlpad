@@ -151,6 +151,7 @@ class QueryEditor extends React.Component {
         minSize={150}
         defaultSize={280}
         maxSize={-100}
+        onChange={this.handleVisPaneResize}
       >
         {sidebar}
         {editorResultPane}
