@@ -4,7 +4,6 @@ import Divider from 'antd/lib/divider';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
 import Layout from 'antd/lib/layout';
-import message from 'antd/lib/message';
 import Popconfirm from 'antd/lib/popconfirm';
 import Popover from 'antd/lib/popover';
 import Select from 'antd/lib/select';
@@ -19,7 +18,6 @@ import { Link } from 'react-router-dom';
 import AppNav from '../AppNav';
 import Header from '../common/Header';
 import SqlEditor from '../common/SqlEditor';
-import fetchJson from '../utilities/fetch-json.js';
 
 const { Content } = Layout;
 
