@@ -1,9 +1,6 @@
 import Button from 'antd/lib/button';
 import Form from 'antd/lib/form';
-import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
-import Radio from 'antd/lib/radio';
-import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import PropTypes from 'prop-types';

@@ -330,7 +330,7 @@ export const actions = store => ({
     return { showModal: true };
   },
 
-  handleQuerySelectionChange(store, selectedText) {
+  handleQuerySelectionChange(state, selectedText) {
     return { selectedText };
   }
 });
