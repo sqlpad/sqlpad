@@ -13,6 +13,8 @@ import Tag from 'antd/lib/tag';
 import uniq from 'lodash/uniq';
 import moment from 'moment';
 import React, { useState, useEffect } from 'react';
+import { connect } from 'unistore/react';
+import { actions } from '../stores/unistoreStore';
 import { Link } from 'react-router-dom';
 import AppNav from '../AppNav';
 import Header from '../common/Header';
@@ -25,11 +27,14 @@ const { Option } = Select;
 const { Column } = Table;
 const { Search } = Input;
 
-function QueriesView({ currentUser }) {
-  const [queries, setQueries] = useState([]);
-  const [connections, setConnections] = useState([]);
-  const [createdBys, setCreatedBys] = useState([]);
-  const [tags, setTags] = useState([]);
+function QueriesView({
+  currentUser,
+  queries,
+  loadQueries,
+  loadConnections,
+  connections,
+  deleteQuery
+}) {
   const [searchInput, setSearchInput] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedConnection, setSelectedConnection] = useState('');
@@ -37,45 +42,20 @@ function QueriesView({ currentUser }) {
     currentUser ? currentUser.email : ''
   );
 
-  const handleQueryDelete = async queryId => {
-    const filteredQueries = queries.filter(q => {
-      return q._id !== queryId;
-    });
-    setQueries(filteredQueries);
-    const json = await fetchJson('DELETE', '/api/queries/' + queryId);
-    if (json.error) {
-      message.error(json.error);
-    }
-  };
-
-  const loadConfigValuesFromServer = async () => {
-    const queriesJson = await fetchJson('GET', '/api/queries');
-    const queries = queriesJson.queries || [];
-    const createdBys = uniq(queries.map(q => q.createdBy));
-    const tags = uniq(
-      queries
-        .map(q => q.tags)
-        .reduce((a, b) => a.concat(b), [])
-        .filter(tag => tag)
-    );
-
-    const email = currentUser && currentUser.email;
-    if (createdBys.indexOf(email) === -1) {
-      setSelectedCreatedBy('');
-    }
-    setQueries(queriesJson.queries);
-    setCreatedBys(createdBys);
-    setTags(tags);
-
-    const connectionsJson = await fetchJson('GET', '/api/connections');
-    setConnections(connectionsJson.connections);
-  };
+  const createdBys = uniq(queries.map(q => q.createdBy));
+  const tags = uniq(
+    queries
+      .map(q => q.tags)
+      .reduce((a, b) => a.concat(b), [])
+      .filter(tag => tag)
+  );
 
   const onSearchChange = e => setSearchInput(e.target.value);
 
   useEffect(() => {
     document.title = 'SQLPad - Queries';
-    loadConfigValuesFromServer();
+    loadConnections();
+    loadQueries();
   }, []);
 
   const nameRender = (text, record) => {
@@ -129,7 +109,7 @@ function QueriesView({ currentUser }) {
         <Divider type="vertical" />
         <Popconfirm
           title="Are you sure?"
-          onConfirm={e => handleQueryDelete(record._id)}
+          onConfirm={e => deleteQuery(record._id)}
           onCancel={() => {}}
           okText="Yes"
           cancelText="No"
@@ -308,4 +288,7 @@ function QueriesView({ currentUser }) {
   );
 }
 
-export default QueriesView;
+export default connect(
+  ['queries', 'connections'],
+  actions
+)(QueriesView);
