@@ -9,13 +9,12 @@ import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import ConnectionDropDown from '../ConnectionDropdown';
 import QueriesTable from '../../queries/QueriesTable';
-import ConfigurationDrawer from '../../configuration/ConfigurationDrawer';
-import UsersDrawer from '../../users/UserDrawer';
 import AboutButton from './AboutButton';
 import SignoutButton from './SignoutButton';
+import ConfigButton from './ConfigButton';
 
 const FormItem = Form.Item;
 
@@ -59,12 +58,7 @@ function Toolbar({
 }) {
   const validationState = showValidation && !queryName.length ? 'error' : null;
   const cloneDisabled = !queryId;
-  const [showConfig, setShowConfig] = useState(false);
-  const [showUsers, setShowUsers] = useState(false);
   const [showQueries, setShowQueries] = useState(false);
-
-  const handleConfigClose = useCallback(() => setShowConfig(false), []);
-  const handleUsersClose = useCallback(() => setShowUsers(false), []);
 
   const isAdmin = currentUser.role === 'admin';
 
@@ -112,7 +106,9 @@ function Toolbar({
         </FormItem>
 
         <FormItem>
-          <Button onClick={handleMoreClick} icon="more" />
+          <Tooltip placement="bottom" title="more">
+            <Button onClick={handleMoreClick} icon="more" />
+          </Tooltip>
         </FormItem>
 
         <div className="flex-grow-1" />
@@ -157,30 +153,7 @@ function Toolbar({
 
         {isAdmin && (
           <FormItem>
-            <Tooltip placement="bottom" title="Configuration">
-              <Button
-                type="ghost"
-                icon="setting"
-                onClick={() => setShowConfig(true)}
-              />
-            </Tooltip>
-            <ConfigurationDrawer
-              visible={showConfig}
-              onClose={handleConfigClose}
-            />
-          </FormItem>
-        )}
-
-        {isAdmin && (
-          <FormItem>
-            <Tooltip placement="bottom" title="Users">
-              <Button
-                type="ghost"
-                icon="team"
-                onClick={() => setShowUsers(true)}
-              />
-            </Tooltip>
-            <UsersDrawer visible={showUsers} onClose={handleUsersClose} />
+            <ConfigButton />
           </FormItem>
         )}
 
