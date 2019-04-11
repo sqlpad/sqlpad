@@ -41,8 +41,9 @@ export const unistoreStore = createStore({
   selectedText: '',
   showModal: false,
   showValidation: false,
-  showSchema: true,
+  showSchema: false,
   showVisSidebar: false,
+  showQueriesSidebar: true,
   unsavedChanges: false,
   schema: {} // schema.<connectionId>.loading / schemaInfo / lastUpdated
 });
@@ -53,11 +54,27 @@ export const unistoreStore = createStore({
 export const actions = store => ({
   // APP NAV
   toggleSchema(state) {
-    return { showSchema: !state.showSchema, showVisSidebar: false };
+    return {
+      showSchema: !state.showSchema,
+      showVisSidebar: false,
+      showQueriesSidebar: false
+    };
   },
 
   toggleVisSidebar(state) {
-    return { showVisSidebar: !state.showVisSidebar, showSchema: false };
+    return {
+      showVisSidebar: !state.showVisSidebar,
+      showSchema: false,
+      showQueriesSidebar: false
+    };
+  },
+
+  toggleQueriesSidebar(state) {
+    return {
+      showVisSidebar: false,
+      showSchema: false,
+      showQueriesSidebar: !state.showQueriesSidebar
+    };
   },
 
   // CONFIG

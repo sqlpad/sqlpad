@@ -1,12 +1,10 @@
 import keymaster from 'keymaster';
 import PropTypes from 'prop-types';
-import Icon from 'antd/lib/icon';
-import Menu from 'antd/lib/menu';
+import Layout from 'antd/lib/layout';
 import React from 'react';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
-import AppNav from '../AppNav';
 import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryEditorChart from './QueryEditorChart';
@@ -15,7 +13,10 @@ import QueryDetailsModal from './QueryDetailsModal';
 import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
+import QueriesSidebar from './QueriesSidebar';
 import { resizeChart } from '../common/tauChartRef';
+
+const { Content } = Layout;
 
 // TODO FIXME XXX capture unsaved state to local storage
 // Prompt is removed. It doesn't always work anyways
@@ -88,8 +89,7 @@ class QueryEditor extends React.Component {
       queryName,
       showSchema,
       showVisSidebar,
-      toggleSchema,
-      toggleVisSidebar,
+      showQueriesSidebar,
       queryId
     } = this.props;
 
@@ -143,6 +143,8 @@ class QueryEditor extends React.Component {
       sidebar = <SchemaSidebar />;
     } else if (showVisSidebar) {
       sidebar = <VisSidebar queryId={queryId} />;
+    } else if (showQueriesSidebar) {
+      sidebar = <QueriesSidebar />;
     }
 
     const sqlTabPane = sidebar ? (
@@ -161,24 +163,17 @@ class QueryEditor extends React.Component {
     );
 
     return (
-      <AppNav
-        pageMenuItems={[
-          <Menu.Item key="schema" onClick={toggleSchema}>
-            <Icon type="database" />
-            <span>Schema</span>
-          </Menu.Item>,
-          <Menu.Item key="chart" onClick={toggleVisSidebar}>
-            <Icon type="bar-chart" />
-            <span>Schema</span>
-          </Menu.Item>
-        ]}
-      >
-        <div className="flex w-100" style={{ flexDirection: 'column' }}>
-          <EditorNavBar />
-          <div style={{ position: 'relative', flexGrow: 1 }}>{sqlTabPane}</div>
-          <QueryDetailsModal />
-        </div>
-      </AppNav>
+      <Layout style={{ minHeight: '100vh' }} className="flex w-100 bg-white">
+        <Content className="flex w-100">
+          <div className="flex w-100" style={{ flexDirection: 'column' }}>
+            <EditorNavBar />
+            <div style={{ position: 'relative', flexGrow: 1 }}>
+              {sqlTabPane}
+            </div>
+            <QueryDetailsModal />
+          </div>
+        </Content>
+      </Layout>
     );
   }
 }
@@ -207,7 +202,8 @@ function mapStateToProps(state, props) {
       state.query.chartConfiguration.chartType,
     queryName: state.query && state.query.name,
     showSchema: state.showSchema,
-    showVisSidebar: state.showVisSidebar
+    showVisSidebar: state.showVisSidebar,
+    showQueriesSidebar: state.showQueriesSidebar
   };
 }
 

@@ -15,8 +15,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import { Link } from 'react-router-dom';
-import AppNav from '../AppNav';
-import Header from '../common/Header';
 import SqlEditor from '../common/SqlEditor';
 
 const { Content } = Layout;
@@ -214,75 +212,76 @@ function QueriesView({
     );
   };
 
+  // style={{ minHeight: '100vh' }}
+  // className="flex w-100 flex-column h-100"
+  // <Content className="ma4 h-100"></Content>
   return (
-    <AppNav>
-      <Layout
-        style={{ minHeight: '100vh' }}
-        className="flex w-100 flex-column h-100"
-      >
-        <Header title="Queries">
+    <div
+    // style={{ minHeight: '100vh' }}
+    // className="flex w-100 flex-column h-100"
+    >
+      <Row gutter={16}>
+        <Col className="pb3" span={24}>
           <Link to={'/queries/new'}>
             <Button type="primary">New Query</Button>
           </Link>
-        </Header>
-        <Content className="ma4">
-          <Row gutter={16}>
-            <Col className="pb3" span={6}>
-              <Search
-                className="w-100"
-                placeholder="Search"
-                value={searchInput}
-                onChange={onSearchChange}
-              />
-            </Col>
-            <Col className="gutter-row" span={6}>
-              <Select
-                className="w-100"
-                placeholder="Filter by connection"
-                value={selectedConnection}
-                onChange={value => setSelectedConnection(value)}
-              >
-                <Option key="all" value="">
-                  All connections
-                </Option>
-                {connections.map(c => (
-                  <Option key={c._id}>{c.name}</Option>
-                ))}
-              </Select>
-            </Col>
-            <Col className="gutter-row" span={6}>
-              <Select
-                className="w-100"
-                mode="multiple"
-                placeholder="Filter by tag"
-                value={selectedTags}
-                onChange={value => setSelectedTags(value)}
-              >
-                {tags.map(tag => (
-                  <Option key={tag}>{tag}</Option>
-                ))}
-              </Select>
-            </Col>
-            <Col className="gutter-row" span={6}>
-              <Select
-                className="w-100"
-                placeholder="Filter by created by"
-                value={selectedCreatedBy}
-                onChange={value => setSelectedCreatedBy(value)}
-              >
-                <Option key="all" value="">
-                  All authors
-                </Option>
-                {createdBys.map(c => (
-                  <Option key={c}>{c}</Option>
-                ))}
-              </Select>
-            </Col>
-          </Row>
-          <div className="bg-white">{renderTable()}</div>
-        </Content>
-      </Layout>
-    </AppNav>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col className="pb3" span={6}>
+          <Search
+            className="w-100"
+            placeholder="Search"
+            value={searchInput}
+            onChange={onSearchChange}
+          />
+        </Col>
+        <Col className="gutter-row" span={6}>
+          <Select
+            className="w-100"
+            placeholder="Filter by connection"
+            value={selectedConnection}
+            onChange={value => setSelectedConnection(value)}
+          >
+            <Option key="all" value="">
+              All connections
+            </Option>
+            {connections.map(c => (
+              <Option key={c._id}>{c.name}</Option>
+            ))}
+          </Select>
+        </Col>
+        <Col className="gutter-row" span={6}>
+          <Select
+            className="w-100"
+            mode="multiple"
+            placeholder="Filter by tag"
+            value={selectedTags}
+            onChange={value => setSelectedTags(value)}
+          >
+            {tags.map(tag => (
+              <Option key={tag}>{tag}</Option>
+            ))}
+          </Select>
+        </Col>
+        <Col className="gutter-row" span={6}>
+          <Select
+            className="w-100"
+            placeholder="Filter by created by"
+            value={selectedCreatedBy}
+            onChange={value => setSelectedCreatedBy(value)}
+          >
+            <Option key="all" value="">
+              All authors
+            </Option>
+            {createdBys.map(c => (
+              <Option key={c}>{c}</Option>
+            ))}
+          </Select>
+        </Col>
+      </Row>
+      <div className="bg-white">{renderTable()}</div>
+    </div>
   );
 }
 
