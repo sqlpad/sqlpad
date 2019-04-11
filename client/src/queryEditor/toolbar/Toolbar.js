@@ -1,7 +1,7 @@
 import Button from 'antd/lib/button';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
-import Drawer from 'antd/lib/drawer';
+import Switch from 'antd/lib/switch';
 import Tooltip from 'antd/lib/tooltip';
 import Badge from 'antd/lib/badge';
 import Icon from 'antd/lib/icon';
@@ -9,12 +9,12 @@ import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import ConnectionDropDown from '../ConnectionDropdown';
-import QueriesTable from '../../queries/QueriesTable';
 import AboutButton from './AboutButton';
 import SignoutButton from './SignoutButton';
 import ConfigButton from './ConfigButton';
+import QueriesTableButton from './QueriesTableButton';
 
 const FormItem = Form.Item;
 
@@ -58,13 +58,16 @@ function Toolbar({
 }) {
   const validationState = showValidation && !queryName.length ? 'error' : null;
   const cloneDisabled = !queryId;
-  const [showQueries, setShowQueries] = useState(false);
 
   const isAdmin = currentUser.role === 'admin';
 
   return (
     <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
       <Form className="flex" layout="inline">
+        <FormItem>
+          <QueriesTableButton />
+        </FormItem>
+
         <FormItem>
           <Button.Group>
             <Button icon="file-text" onClick={toggleQueriesSidebar} />
@@ -77,38 +80,18 @@ function Toolbar({
           <ConnectionDropDown />
         </FormItem>
 
-        <FormItem>
-          <Button icon="file-text" onClick={() => setShowQueries(true)} />
-          <Drawer
-            title={'Queries'}
-            visible={showQueries}
-            height="90%"
-            destroyOnClose={true}
-            onClose={() => setShowQueries(false)}
-            placement="bottom"
-            bodyStyle={{
-              backgroundColor: '#f0f2f5',
-              height: 'calc(90vh - 55px)',
-              overflow: 'auto'
-            }}
-          >
-            <QueriesTable />
-          </Drawer>
-        </FormItem>
-
         <FormItem validateStatus={validationState}>
           <Input
             className="w5"
             placeholder="Query name"
             value={queryName}
             onChange={e => setQueryState('name', e.target.value)}
+            addonAfter={
+              <Tooltip placement="bottom" title="Tags">
+                <Icon onClick={handleMoreClick} type="tags" />
+              </Tooltip>
+            }
           />
-        </FormItem>
-
-        <FormItem>
-          <Tooltip placement="bottom" title="more">
-            <Button onClick={handleMoreClick} icon="more" />
-          </Tooltip>
         </FormItem>
 
         <div className="flex-grow-1" />
