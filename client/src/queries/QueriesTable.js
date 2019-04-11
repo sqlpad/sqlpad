@@ -3,7 +3,6 @@ import Button from 'antd/lib/button';
 import Divider from 'antd/lib/divider';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
-import Layout from 'antd/lib/layout';
 import Popconfirm from 'antd/lib/popconfirm';
 import Popover from 'antd/lib/popover';
 import Select from 'antd/lib/select';
@@ -16,8 +15,6 @@ import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import { Link } from 'react-router-dom';
 import SqlEditor from '../common/SqlEditor';
-
-const { Content } = Layout;
 
 const { Option } = Select;
 const { Column } = Table;
