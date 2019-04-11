@@ -1,7 +1,6 @@
 import Button from 'antd/lib/button';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
-import Switch from 'antd/lib/switch';
 import Tooltip from 'antd/lib/tooltip';
 import Badge from 'antd/lib/badge';
 import Icon from 'antd/lib/icon';

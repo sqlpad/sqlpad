@@ -3,7 +3,7 @@ import Drawer from 'antd/lib/drawer';
 import React, { useState } from 'react';
 import QueriesTable from '../../queries/QueriesTable';
 
-function QueriesTableButton({}) {
+function QueriesTableButton() {
   const [showQueries, setShowQueries] = useState(false);
 
   return (
