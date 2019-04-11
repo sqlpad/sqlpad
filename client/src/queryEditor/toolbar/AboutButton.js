@@ -22,6 +22,7 @@ function AboutButton({ version }) {
   return (
     <Tooltip placement="bottom" title="About">
       <Button
+        type="ghost"
         onClick={() => {
           Modal.info({
             width: 650,

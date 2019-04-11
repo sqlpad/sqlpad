@@ -158,7 +158,11 @@ function Toolbar({
         {isAdmin && (
           <FormItem>
             <Tooltip placement="bottom" title="Configuration">
-              <Button icon="setting" onClick={() => setShowConfig(true)} />
+              <Button
+                type="ghost"
+                icon="setting"
+                onClick={() => setShowConfig(true)}
+              />
             </Tooltip>
             <ConfigurationDrawer
               visible={showConfig}
@@ -170,7 +174,11 @@ function Toolbar({
         {isAdmin && (
           <FormItem>
             <Tooltip placement="bottom" title="Users">
-              <Button icon="team" onClick={() => setShowUsers(true)} />
+              <Button
+                type="ghost"
+                icon="team"
+                onClick={() => setShowUsers(true)}
+              />
             </Tooltip>
             <UsersDrawer visible={showUsers} onClose={handleUsersClose} />
           </FormItem>

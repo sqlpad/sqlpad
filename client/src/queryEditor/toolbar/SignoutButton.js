@@ -14,6 +14,7 @@ function SignoutButton() {
   return (
     <Tooltip placement="bottom" title="Sign out">
       <Button
+        type="ghost"
         onClick={async () => {
           await fetchJson('GET', '/api/signout');
           setRedirect(true);
