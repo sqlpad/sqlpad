@@ -3,21 +3,19 @@ import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import Drawer from 'antd/lib/drawer';
 import Tooltip from 'antd/lib/tooltip';
-import Modal from 'antd/lib/modal';
 import Badge from 'antd/lib/badge';
 import Icon from 'antd/lib/icon';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
+import { actions } from '../../stores/unistoreStore';
 import { Redirect, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
-import AboutContent from '../AboutContent';
-import ConnectionDropDown from './ConnectionDropdown';
-import ConnectionListDrawer from '../connections/ConnectionListDrawer';
-import QueriesTable from '../queries/QueriesTable';
-import ConfigurationDrawer from '../configuration/ConfigurationDrawer';
-import UsersDrawer from '../users/UserDrawer';
-import fetchJson from '../utilities/fetch-json.js';
+import ConnectionDropDown from '../ConnectionDropdown';
+import QueriesTable from '../../queries/QueriesTable';
+import ConfigurationDrawer from '../../configuration/ConfigurationDrawer';
+import UsersDrawer from '../../users/UserDrawer';
+import fetchJson from '../../utilities/fetch-json.js';
+import AboutButton from './AboutButton';
 
 const FormItem = Form.Item;
 
@@ -37,9 +35,9 @@ function mapStateToProps(state) {
 const ConnectedEditorNavBar = connect(
   mapStateToProps,
   actions
-)(React.memo(EditorNavBar));
+)(React.memo(Toolbar));
 
-function EditorNavBar({
+function Toolbar({
   currentUser,
   formatQuery,
   handleCloneClick,
@@ -60,10 +58,8 @@ function EditorNavBar({
   version
 }) {
   const validationState = showValidation && !queryName.length ? 'error' : null;
-  const saveText = unsavedChanges ? 'Save*' : 'Save';
   const cloneDisabled = !queryId;
   const [redirect, setRedirect] = useState(false);
-  const [showConnections, setShowConnections] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showQueries, setShowQueries] = useState(false);
@@ -91,19 +87,6 @@ function EditorNavBar({
         <FormItem>
           <ConnectionDropDown />
         </FormItem>
-
-        {isAdmin && (
-          <FormItem>
-            <Tooltip placement="bottom" title="DB connections">
-              <Button icon="api" onClick={() => setShowConnections(true)} />
-            </Tooltip>
-
-            <ConnectionListDrawer
-              visible={showConnections}
-              onClose={() => setShowConnections(false)}
-            />
-          </FormItem>
-        )}
 
         <FormItem>
           <Button icon="file-text" onClick={() => setShowQueries(true)} />
@@ -174,47 +157,8 @@ function EditorNavBar({
         </FormItem>
 
         <FormItem>
-          <Tooltip placement="bottom" title="About">
-            <Button
-              onClick={() => {
-                Modal.info({
-                  width: 650,
-                  title: 'About SQLPad',
-                  maskClosable: true,
-                  content: (
-                    <AboutContent version={version && version.current} />
-                  ),
-                  onOk() {}
-                });
-              }}
-              icon="question-circle-o"
-            />
-          </Tooltip>
+          <AboutButton />
         </FormItem>
-
-        {version && version.updateAvailable && (
-          <FormItem>
-            <Tooltip placement="bottom" title="Update available">
-              <Button
-                onClick={() => {
-                  Modal.info({
-                    title: 'Update Available (' + version.updateType + ')',
-                    maskClosable: true,
-                    content: (
-                      <div>
-                        Installed Version: {version.current}
-                        <br />
-                        Latest: {version.latest}
-                      </div>
-                    ),
-                    onOk() {}
-                  });
-                }}
-                icon="exclamation-circle-o"
-              />
-            </Tooltip>
-          </FormItem>
-        )}
 
         {isAdmin && (
           <FormItem>
@@ -253,7 +197,7 @@ function EditorNavBar({
   );
 }
 
-EditorNavBar.propTypes = {
+Toolbar.propTypes = {
   isSaving: PropTypes.bool.isRequired,
   isRunning: PropTypes.bool.isRequired,
   handleCloneClick: PropTypes.func.isRequired,

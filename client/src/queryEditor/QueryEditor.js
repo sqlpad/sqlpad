@@ -8,7 +8,7 @@ import { actions } from '../stores/unistoreStore';
 import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryEditorChart from './QueryEditorChart';
-import EditorNavBar from './EditorNavBar';
+import Toolbar from './toolbar/Toolbar';
 import QueryDetailsModal from './QueryDetailsModal';
 import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
@@ -166,7 +166,7 @@ class QueryEditor extends React.Component {
       <Layout style={{ minHeight: '100vh' }} className="flex w-100 bg-white">
         <Content className="flex w-100">
           <div className="flex w-100" style={{ flexDirection: 'column' }}>
-            <EditorNavBar />
+            <Toolbar />
             <div style={{ position: 'relative', flexGrow: 1 }}>
               {sqlTabPane}
             </div>

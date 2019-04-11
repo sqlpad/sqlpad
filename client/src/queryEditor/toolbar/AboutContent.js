@@ -5,8 +5,13 @@ function AboutContent({ version }) {
   return (
     <div>
       <p>
-        <strong>Version</strong>: {version}
+        <strong>Version</strong>: {version && version.current}
       </p>
+      {version && version.updateAvailable && (
+        <p>
+          <strong>Update available</strong>: {version && version.latest}
+        </p>
+      )}
       <p>
         <strong>Project Page</strong>:{' '}
         <a
@@ -69,11 +74,15 @@ function AboutContent({ version }) {
 }
 
 AboutContent.propTypes = {
-  version: PropTypes.string
+  version: PropTypes.shape({
+    current: PropTypes.string,
+    latest: PropTypes.string,
+    updateAvailable: PropTypes.bool
+  })
 };
 
 AboutContent.defaultProps = {
-  version: ''
+  version: {}
 };
 
 export default AboutContent;
