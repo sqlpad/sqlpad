@@ -7,15 +7,15 @@ import Badge from 'antd/lib/badge';
 import Icon from 'antd/lib/icon';
 import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
 import ConnectionDropDown from '../ConnectionDropdown';
 import QueriesTable from '../../queries/QueriesTable';
 import ConfigurationDrawer from '../../configuration/ConfigurationDrawer';
 import UsersDrawer from '../../users/UserDrawer';
-import fetchJson from '../../utilities/fetch-json.js';
 import AboutButton from './AboutButton';
+import SignoutButton from './SignoutButton';
 
 const FormItem = Form.Item;
 
@@ -59,7 +59,6 @@ function Toolbar({
 }) {
   const validationState = showValidation && !queryName.length ? 'error' : null;
   const cloneDisabled = !queryId;
-  const [redirect, setRedirect] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showQueries, setShowQueries] = useState(false);
@@ -68,10 +67,6 @@ function Toolbar({
   const handleUsersClose = useCallback(() => setShowUsers(false), []);
 
   const isAdmin = currentUser.role === 'admin';
-
-  if (redirect) {
-    return <Redirect push to="/signin" />;
-  }
 
   return (
     <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
@@ -182,15 +177,7 @@ function Toolbar({
         )}
 
         <FormItem>
-          <Tooltip placement="bottom" title="Sign out">
-            <Button
-              onClick={async () => {
-                await fetchJson('GET', '/api/signout');
-                setRedirect(true);
-              }}
-              icon="logout"
-            />
-          </Tooltip>
+          <SignoutButton />
         </FormItem>
       </Form>
     </div>
