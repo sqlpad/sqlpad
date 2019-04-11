@@ -115,28 +115,37 @@ function Toolbar({
 
         <FormItem>
           <Button.Group>
-            <Button onClick={handleCloneClick} disabled={cloneDisabled}>
-              Clone
-            </Button>
-            <Button onClick={formatQuery}>Format</Button>
-
+            <Tooltip placement="bottom" title="Clone">
+              <Button onClick={handleCloneClick} disabled={cloneDisabled}>
+                <Icon type="copy" />
+              </Button>
+            </Tooltip>
+            <Tooltip placement="bottom" title="Format">
+              <Button onClick={formatQuery}>
+                <Icon type="align-left" />
+              </Button>
+            </Tooltip>
             <Route
               render={({ history }) => (
-                <Button
-                  icon="plus"
-                  onClick={() => {
-                    history.push('/queries/new');
-                    resetNewQuery();
-                  }}
-                />
+                <Tooltip placement="bottom" title="New">
+                  <Button
+                    onClick={() => {
+                      history.push('/queries/new');
+                      resetNewQuery();
+                    }}
+                  >
+                    <Icon type="plus" />
+                  </Button>
+                </Tooltip>
               )}
             />
-
-            <Button onClick={() => saveQuery()} disabled={isSaving}>
-              <Badge dot={unsavedChanges}>
-                <Icon type="save" />
-              </Badge>
-            </Button>
+            <Tooltip placement="bottom" title="Save">
+              <Button onClick={() => saveQuery()} disabled={isSaving}>
+                <Badge dot={unsavedChanges}>
+                  <Icon type="save" />
+                </Badge>
+              </Button>
+            </Tooltip>
             <Button
               type="primary"
               onClick={() => runQuery()}
