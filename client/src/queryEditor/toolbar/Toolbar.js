@@ -13,7 +13,7 @@ import ConnectionDropDown from '../ConnectionDropdown';
 import AboutButton from './AboutButton';
 import SignoutButton from './SignoutButton';
 import ConfigButton from './ConfigButton';
-import QueriesTableButton from './QueriesTableButton';
+import QueryListButton from './QueryListButton';
 
 const FormItem = Form.Item;
 
@@ -25,8 +25,7 @@ function mapStateToProps(state) {
     queryId: state.query && state.query._id,
     queryName: state.query && state.query.name,
     showValidation: state.showValidation,
-    unsavedChanges: state.unsavedChanges,
-    version: state.version
+    unsavedChanges: state.unsavedChanges
   };
 }
 
@@ -49,11 +48,9 @@ function Toolbar({
   saveQuery,
   setQueryState,
   showValidation,
-  toggleQueriesSidebar,
   toggleSchema,
   toggleVisSidebar,
-  unsavedChanges,
-  version
+  unsavedChanges
 }) {
   const validationState = showValidation && !queryName.length ? 'error' : null;
   const cloneDisabled = !queryId;
@@ -64,12 +61,11 @@ function Toolbar({
     <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
       <Form className="flex" layout="inline">
         <FormItem>
-          <QueriesTableButton />
+          <QueryListButton />
         </FormItem>
 
         <FormItem>
           <Button.Group>
-            <Button icon="file-text" onClick={toggleQueriesSidebar} />
             <Button icon="database" onClick={toggleSchema} />
             <Button icon="bar-chart" onClick={toggleVisSidebar} />
           </Button.Group>

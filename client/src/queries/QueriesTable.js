@@ -15,6 +15,7 @@ import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import { Link } from 'react-router-dom';
 import SqlEditor from '../common/SqlEditor';
+import getDecoratedQueries from './getDecoratedQueries';
 
 const { Option } = Select;
 const { Column } = Table;
@@ -113,26 +114,8 @@ function QueriesView({
     );
   };
 
-  const getDecoratedQueries = () => {
-    // Create index of lookups
-    // TODO this should come from API
-    const connectionsById = connections.reduce((connMap, connection) => {
-      connMap[connection._id] = connection;
-      return connMap;
-    }, {});
-
-    return queries.map(query => {
-      query.key = query._id;
-
-      const connection = connectionsById[query.connectionId];
-      query.connectionName = connection ? connection.name : '';
-
-      return query;
-    });
-  };
-
   const renderTable = () => {
-    let filteredQueries = getDecoratedQueries();
+    let filteredQueries = getDecoratedQueries(queries, connections);
 
     if (selectedTags.length) {
       filteredQueries = filteredQueries.filter(q => {
