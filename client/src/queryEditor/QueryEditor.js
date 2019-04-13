@@ -13,7 +13,6 @@ import QueryDetailsModal from './QueryDetailsModal';
 import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
-import QueriesSidebar from './QueriesSidebar';
 import { resizeChart } from '../common/tauChartRef';
 
 const { Content } = Layout;
@@ -89,7 +88,6 @@ class QueryEditor extends React.Component {
       queryName,
       showSchema,
       showVisSidebar,
-      showQueriesSidebar,
       queryId
     } = this.props;
 
@@ -143,8 +141,6 @@ class QueryEditor extends React.Component {
       sidebar = <SchemaSidebar />;
     } else if (showVisSidebar) {
       sidebar = <VisSidebar queryId={queryId} />;
-    } else if (showQueriesSidebar) {
-      sidebar = <QueriesSidebar />;
     }
 
     const sqlTabPane = sidebar ? (
@@ -202,8 +198,7 @@ function mapStateToProps(state, props) {
       state.query.chartConfiguration.chartType,
     queryName: state.query && state.query.name,
     showSchema: state.showSchema,
-    showVisSidebar: state.showVisSidebar,
-    showQueriesSidebar: state.showQueriesSidebar
+    showVisSidebar: state.showVisSidebar
   };
 }
 

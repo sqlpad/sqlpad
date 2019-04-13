@@ -41,9 +41,8 @@ export const unistoreStore = createStore({
   selectedText: '',
   showModal: false,
   showValidation: false,
-  showSchema: false,
+  showSchema: true,
   showVisSidebar: false,
-  showQueriesSidebar: true,
   unsavedChanges: false,
   schema: {} // schema.<connectionId>.loading / schemaInfo / lastUpdated
 });
@@ -56,24 +55,14 @@ export const actions = store => ({
   toggleSchema(state) {
     return {
       showSchema: !state.showSchema,
-      showVisSidebar: false,
-      showQueriesSidebar: false
+      showVisSidebar: false
     };
   },
 
   toggleVisSidebar(state) {
     return {
       showVisSidebar: !state.showVisSidebar,
-      showSchema: false,
-      showQueriesSidebar: false
-    };
-  },
-
-  toggleQueriesSidebar(state) {
-    return {
-      showVisSidebar: false,
-      showSchema: false,
-      showQueriesSidebar: !state.showQueriesSidebar
+      showSchema: false
     };
   },
 
