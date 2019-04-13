@@ -93,8 +93,6 @@ function Toolbar({
           />
         </FormItem>
 
-        <div className="flex-grow-1" />
-
         <FormItem>
           <Button.Group>
             <Tooltip placement="bottom" title="Clone">
@@ -137,6 +135,8 @@ function Toolbar({
             </Button>
           </Button.Group>
         </FormItem>
+
+        <div className="flex-grow-1" />
 
         <FormItem>
           <AboutButton />
