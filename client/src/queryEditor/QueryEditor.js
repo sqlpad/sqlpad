@@ -9,7 +9,7 @@ import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryEditorChart from './QueryEditorChart';
 import Toolbar from './toolbar/Toolbar';
-import QueryDetailsModal from './QueryDetailsModal';
+
 import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
@@ -166,7 +166,6 @@ class QueryEditor extends React.Component {
             <div style={{ position: 'relative', flexGrow: 1 }}>
               {sqlTabPane}
             </div>
-            <QueryDetailsModal />
           </div>
         </Content>
       </Layout>

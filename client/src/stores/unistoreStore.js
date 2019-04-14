@@ -39,7 +39,6 @@ export const unistoreStore = createStore({
   queryError: null,
   runQueryStartTime: undefined,
   selectedText: '',
-  showModal: false,
   showValidation: false,
   showSchema: true,
   showVisSidebar: false,
@@ -374,14 +373,6 @@ export const actions = store => ({
       },
       unsavedChanges: true
     };
-  },
-
-  handleModalHide() {
-    return { showModal: false };
-  },
-
-  handleMoreClick() {
-    return { showModal: true };
   },
 
   handleQuerySelectionChange(state, selectedText) {

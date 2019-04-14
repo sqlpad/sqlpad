@@ -8,12 +8,13 @@ import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import ConnectionDropDown from '../ConnectionDropdown';
 import AboutButton from './AboutButton';
 import SignoutButton from './SignoutButton';
 import ConfigButton from './ConfigButton';
 import QueryListButton from './QueryListButton';
+import QueryDetailsModal from './QueryDetailsModal';
 
 const FormItem = Form.Item;
 
@@ -38,7 +39,6 @@ function Toolbar({
   currentUser,
   formatQuery,
   handleCloneClick,
-  handleMoreClick,
   isRunning,
   isSaving,
   queryId,
@@ -52,6 +52,8 @@ function Toolbar({
   toggleVisSidebar,
   unsavedChanges
 }) {
+  const [showDetails, setShowDetails] = useState(false);
+
   const validationState = showValidation && !queryName.length ? 'error' : null;
   const cloneDisabled = !queryId;
 
@@ -83,7 +85,11 @@ function Toolbar({
             onChange={e => setQueryState('name', e.target.value)}
             addonAfter={
               <Tooltip placement="bottom" title="Tags">
-                <Icon onClick={handleMoreClick} type="tags" />
+                <Icon onClick={() => setShowDetails(true)} type="tags" />
+                <QueryDetailsModal
+                  visible={showDetails}
+                  onClose={() => setShowDetails(false)}
+                />
               </Tooltip>
             }
           />
@@ -156,7 +162,6 @@ Toolbar.propTypes = {
   isSaving: PropTypes.bool.isRequired,
   isRunning: PropTypes.bool.isRequired,
   handleCloneClick: PropTypes.func.isRequired,
-  handleMoreClick: PropTypes.func.isRequired,
   saveQuery: PropTypes.func.isRequired,
   runQuery: PropTypes.func.isRequired,
   formatQuery: PropTypes.func.isRequired,
