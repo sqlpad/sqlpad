@@ -1,5 +1,4 @@
 import Button from 'antd/lib/button';
-import Icon from 'antd/lib/icon';
 import List from 'antd/lib/list';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
