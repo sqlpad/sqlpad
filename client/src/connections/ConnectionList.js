@@ -1,6 +1,8 @@
 import Button from 'antd/lib/button';
 import Icon from 'antd/lib/icon';
 import List from 'antd/lib/list';
+import Row from 'antd/lib/row';
+import Col from 'antd/lib/col';
 import Popconfirm from 'antd/lib/popconfirm';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
@@ -70,28 +72,19 @@ function ConnectionList({
     return connection;
   });
 
-  // The last "connection" list item will be an input to add a connection
-  // This is just something simple to branch off of in List.renderItem prop
-  if (currentUser.role === 'admin') {
-    decoratedConnections.push('ADD_BUTTON');
-  }
-
   return (
     <>
+      <Row>
+        <Col offset={17} span={7}>
+          <Button className="w-100" type="primary" onClick={newConnection}>
+            Add connection
+          </Button>
+        </Col>
+      </Row>
       <List
         itemLayout="horizontal"
         dataSource={decoratedConnections}
         renderItem={item => {
-          if (item === 'ADD_BUTTON') {
-            return (
-              <List.Item>
-                <Button size="large" className="w-100" onClick={newConnection}>
-                  <Icon type="plus" /> Add connection
-                </Button>
-              </List.Item>
-            );
-          }
-
           let description = '';
           if (item.user) {
             description = item.user + '@';
