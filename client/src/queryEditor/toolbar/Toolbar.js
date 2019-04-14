@@ -6,7 +6,6 @@ import Badge from 'antd/lib/badge';
 import Icon from 'antd/lib/icon';
 import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
-import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import ConnectionDropDown from '../ConnectionDropdown';
@@ -15,6 +14,7 @@ import SignoutButton from './SignoutButton';
 import ConfigButton from './ConfigButton';
 import QueryListButton from './QueryListButton';
 import QueryDetailsModal from './QueryDetailsModal';
+import IconButtonLink from '../../common/IconButtonLink';
 
 const FormItem = Form.Item;
 
@@ -67,6 +67,14 @@ function Toolbar({
         </FormItem>
 
         <FormItem>
+          <Tooltip placement="bottom" title="New query">
+            <IconButtonLink to="/queries/new" onClick={() => resetNewQuery()}>
+              <Icon type="plus" />
+            </IconButtonLink>
+          </Tooltip>
+        </FormItem>
+
+        <FormItem>
           <Button.Group>
             <Button icon="database" onClick={toggleSchema} />
             <Button icon="bar-chart" onClick={toggleVisSidebar} />
@@ -107,20 +115,7 @@ function Toolbar({
                 <Icon type="align-left" />
               </Button>
             </Tooltip>
-            <Route
-              render={({ history }) => (
-                <Tooltip placement="bottom" title="New">
-                  <Button
-                    onClick={() => {
-                      history.push('/queries/new');
-                      resetNewQuery();
-                    }}
-                  >
-                    <Icon type="plus" />
-                  </Button>
-                </Tooltip>
-              )}
-            />
+
             <Tooltip placement="bottom" title="Save">
               <Button onClick={() => saveQuery()} disabled={isSaving}>
                 <Badge dot={unsavedChanges}>

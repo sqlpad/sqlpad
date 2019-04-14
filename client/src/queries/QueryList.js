@@ -9,10 +9,10 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
-import { Link } from 'react-router-dom';
 import Popconfirm from 'antd/lib/popconfirm';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
+import IconButtonLink from '../common/IconButtonLink';
 
 const { Option } = Select;
 
@@ -78,35 +78,32 @@ function QueryList({
         onMouseLeave={() => setPreview('')}
         actions={[
           <Tooltip key="edit" title="Edit query">
-            <Link
-              className="ant-btn ant-btn-icon-only"
+            <IconButtonLink
               to={queryUrl}
               onClick={() => {
                 onSelect(query);
               }}
             >
               <Icon type="edit" />
-            </Link>
+            </IconButtonLink>
           </Tooltip>,
           <Tooltip key="table" title="Open results in new window">
-            <Link
-              className="ant-btn ant-btn-icon-only"
+            <IconButtonLink
               to={tableUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
               <Icon type="table" />
-            </Link>
+            </IconButtonLink>
           </Tooltip>,
           <Tooltip key="chart" title="Open chart in new window">
-            <Link
-              className="ant-btn ant-btn-icon-only"
+            <IconButtonLink
               to={chartUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
               <Icon type="bar-chart" />
-            </Link>
+            </IconButtonLink>
           </Tooltip>,
           <Popconfirm
             key="del"
