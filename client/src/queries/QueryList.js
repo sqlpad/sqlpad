@@ -130,6 +130,7 @@ function QueryList({
       <Row>
         <Col className="pb3" span={24}>
           <Select
+            autoFocus
             className="w-100"
             mode="tags"
             placeholder="Search"
