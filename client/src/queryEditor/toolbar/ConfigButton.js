@@ -1,8 +1,8 @@
 import Button from 'antd/lib/button';
 import Tabs from 'antd/lib/tabs';
-import Drawer from 'antd/lib/drawer';
 import Tooltip from 'antd/lib/tooltip';
 import React, { useState, useCallback } from 'react';
+import Drawer from '../../common/Drawer';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
 import UserList from '../../users/UserList';
 import ConnectionList from '../../connections/ConnectionList';
@@ -25,7 +25,6 @@ function ConfigButton() {
         title={'Configuration'}
         visible={showConfig}
         width={600}
-        destroyOnClose={true}
         onClose={onClose}
         placement={'right'}
       >

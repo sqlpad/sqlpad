@@ -1,9 +1,9 @@
 import Button from 'antd/lib/button';
-import Drawer from 'antd/lib/drawer';
+import Drawer from '../../common/Drawer';
 import React, { useState } from 'react';
 import QueryList from '../../queries/QueryList';
 
-function QueriesTableButton() {
+function QueryListButton() {
   const [showQueries, setShowQueries] = useState(false);
 
   return (
@@ -15,13 +15,8 @@ function QueriesTableButton() {
         title={'Queries'}
         visible={showQueries}
         width="600"
-        destroyOnClose={true}
         onClose={() => setShowQueries(false)}
         placement="left"
-        bodyStyle={{
-          height: 'calc(90vh - 55px)',
-          overflow: 'auto'
-        }}
       >
         <QueryList onSelect={() => setShowQueries(false)} />
       </Drawer>
@@ -29,4 +24,4 @@ function QueriesTableButton() {
   );
 }
 
-export default React.memo(QueriesTableButton);
+export default React.memo(QueryListButton);

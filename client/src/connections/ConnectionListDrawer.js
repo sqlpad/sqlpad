@@ -1,5 +1,5 @@
-import Drawer from 'antd/lib/drawer';
 import React from 'react';
+import Drawer from '../common/Drawer';
 import ConnectionList from './ConnectionList';
 
 function ConnectionListDrawer({ visible, onClose }) {
@@ -8,13 +8,8 @@ function ConnectionListDrawer({ visible, onClose }) {
       title="Connections"
       visible={visible}
       width={600}
-      destroyOnClose={true}
       onClose={onClose}
       placement="right"
-      style={{
-        height: 'calc(100% - 55px)',
-        overflow: 'auto'
-      }}
     >
       <ConnectionList onClose={onClose} />
     </Drawer>
