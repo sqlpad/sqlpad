@@ -21,28 +21,6 @@ const renderValue = (input, fieldMeta) => {
   }
 };
 
-const renderNumberBar = (value, fieldMeta) => {
-  if (fieldMeta.datatype === 'number') {
-    const valueNumber = Number(value);
-    const range = fieldMeta.max - (fieldMeta.min < 0 ? fieldMeta.min : 0);
-    let left = 0;
-    if (fieldMeta.min < 0 && valueNumber < 0) {
-      left = (Math.abs(fieldMeta.min - valueNumber) / range) * 100 + '%';
-    } else if (fieldMeta.min < 0 && valueNumber >= 0) {
-      left = (Math.abs(fieldMeta.min) / range) * 100 + '%';
-    }
-    const barStyle = {
-      position: 'absolute',
-      left: left,
-      bottom: 0,
-      height: '2px',
-      width: (Math.abs(valueNumber) / range) * 100 + '%',
-      backgroundColor: '#555'
-    };
-    return <div style={barStyle} />;
-  }
-};
-
 // NOTE: PureComponent's shallow compare works for this component
 // because the isRunning prop will toggle with each query execution
 // It would otherwise not rerender on change of prop.queryResult alone
@@ -144,7 +122,6 @@ class QueryResultDataTable extends React.PureComponent {
           key={key}
           style={Object.assign({}, style, { lineHeight: '30px' })}
         >
-          {renderNumberBar(value, fieldMeta)}
           <div className="truncate">{renderValue(value, fieldMeta)}</div>
         </div>
       );
