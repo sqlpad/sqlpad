@@ -1,5 +1,5 @@
-import Drawer from 'antd/lib/drawer';
 import React from 'react';
+import Drawer from '../common/Drawer';
 import ConnectionForm from './ConnectionForm';
 
 function ConnectionEditDrawer({
@@ -15,13 +15,8 @@ function ConnectionEditDrawer({
       title={title}
       visible={visible}
       width={600}
-      destroyOnClose={true}
       onClose={onClose}
       placement={placement || 'right'}
-      style={{
-        height: 'calc(100% - 55px)',
-        overflow: 'auto'
-      }}
     >
       <ConnectionForm
         connectionId={connectionId}

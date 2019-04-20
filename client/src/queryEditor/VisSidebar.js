@@ -9,6 +9,7 @@ import Sidebar from '../common/Sidebar';
 import SidebarBody from '../common/SidebarBody';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 import ChartInputs from './ChartInputs.js';
+import { exportPng } from '../common/tauChartRef';
 const { Option } = Select;
 
 function mapStateToProps(state) {
@@ -36,7 +37,7 @@ function VisSidebar({
   queryResult,
   handleChartTypeChange,
   handleChartConfigurationFieldsChange,
-  onSaveImageClick
+  queryId
 }) {
   const chartOptions = chartDefinitions.map(d => {
     return (
@@ -75,7 +76,7 @@ function VisSidebar({
         />
       </SidebarBody>
       <div className="pa2 bt b--near-white">
-        <Button className="w-100 mb1" onClick={onSaveImageClick}>
+        <Button className="w-100 mb1" onClick={() => exportPng(queryId)}>
           <Icon type="download" /> Save Chart Image
         </Button>
       </div>
@@ -88,6 +89,7 @@ VisSidebar.propTypes = {
   onChartTypeChange: PropTypes.func,
   onSaveImageClick: PropTypes.func,
   query: PropTypes.object,
+  queryId: PropTypes.string,
   queryResult: PropTypes.object
 };
 

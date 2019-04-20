@@ -12,7 +12,6 @@ import ForgotPassword from './ForgotPassword.js';
 import NotFound from './NotFound.js';
 import PasswordReset from './PasswordReset.js';
 import PasswordResetRequested from './PasswordResetRequested.js';
-import QueriesView from './queries/QueriesView';
 import QueryChartOnly from './QueryChartOnly.js';
 import QueryEditor from './queryEditor/QueryEditor.js';
 import QueryTableOnly from './QueryTableOnly.js';
@@ -32,15 +31,15 @@ function Routes({ config, refreshAppContext }) {
     <Router basename={config.baseUrl}>
       <div className="flex w-100">
         <Switch>
-          <Route exact path="/" render={() => <Redirect to={'/queries'} />} />
+          <Route
+            exact
+            path="/"
+            render={() => <Redirect to={'/queries/new'} />}
+          />
           <Route
             exact
             path="/queries"
-            render={props => (
-              <Authenticated>
-                <QueriesView />
-              </Authenticated>
-            )}
+            render={() => <Redirect to={'/queries/new'} />}
           />
           <Route
             exact

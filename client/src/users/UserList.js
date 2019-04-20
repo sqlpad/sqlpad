@@ -4,7 +4,6 @@ import Modal from 'antd/lib/modal';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import Popconfirm from 'antd/lib/popconfirm';
-import Drawer from 'antd/lib/drawer';
 import List from 'antd/lib/list';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
@@ -13,7 +12,7 @@ import fetchJson from '../utilities/fetch-json.js';
 import InviteUserForm from './InviteUserForm';
 import EditUserForm from './EditUserForm';
 
-function UsersDrawer({ currentUser, visible, onClose }) {
+function UserList({ currentUser }) {
   const [users, setUsers] = useState([]);
   const [showAddUser, setShowAddUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
@@ -90,14 +89,7 @@ function UsersDrawer({ currentUser, visible, onClose }) {
   };
 
   return (
-    <Drawer
-      title={'Users'}
-      visible={visible}
-      width={'600'}
-      destroyOnClose={false}
-      onClose={onClose}
-      placement={'left'}
-    >
+    <>
       <Row>
         <Col offset={19} span={5}>
           <Button
@@ -140,11 +132,11 @@ function UsersDrawer({ currentUser, visible, onClose }) {
       >
         <EditUserForm user={editUser} />
       </Modal>
-    </Drawer>
+    </>
   );
 }
 
 export default connect(
   ['currentUser'],
   actions
-)(React.memo(UsersDrawer));
+)(React.memo(UserList));

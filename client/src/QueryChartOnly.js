@@ -1,17 +1,16 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ExportButton from './common/ExportButton.js';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import SqlpadTauChart from './common/SqlpadTauChart.js';
 import fetchJson from './utilities/fetch-json.js';
+import { exportPng } from './common/tauChartRef';
 
 function QueryChartOnly({ queryId }) {
   const [isRunning, setIsRunning] = useState(false);
   const [queryResult, setQueryResult] = useState(null);
   const [query, setQuery] = useState(null);
   const [queryError, setQueryError] = useState(null);
-
-  const sqlpadTauChart = useRef(null);
 
   const runQuery = async queryId => {
     setIsRunning(true);
@@ -35,10 +34,8 @@ function QueryChartOnly({ queryId }) {
     runQuery(queryId);
   }, [queryId]);
 
-  const onSaveImageClick = e => {
-    if (sqlpadTauChart.current && sqlpadTauChart.current.exportPng) {
-      sqlpadTauChart.current.exportPng();
-    }
+  const onSaveImageClick = () => {
+    exportPng(queryId);
   };
 
   const incomplete = queryResult ? queryResult.incomplete : false;
@@ -61,13 +58,12 @@ function QueryChartOnly({ queryId }) {
       </div>
       <div style={{ height: '100%', display: 'flex' }}>
         <SqlpadTauChart
+          queryId={queryId}
           queryName={query && query.name}
           chartConfiguration={query && query.chartConfiguration}
           queryResult={queryResult}
           queryError={queryError}
           isRunning={isRunning}
-          ref={sqlpadTauChart}
-          isVisible={true}
         />
       </div>
     </div>

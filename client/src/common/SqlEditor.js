@@ -43,8 +43,6 @@ function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
 
   const { width, height } = dimensions;
 
-  // TODO FIXME XXX - Using Measure broke query popover
-  // Split the auto-sized functionality into a separate component that wraps SqlEditor (AutoSizedSqlEditor)
   return (
     <Measure bounds onResize={contentRect => setDimensions(contentRect.bounds)}>
       {({ measureRef }) => (

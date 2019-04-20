@@ -4,20 +4,26 @@ import React, { useState } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
+import ConnectionListDrawer from '../connections/ConnectionListDrawer';
 
 const { Option } = Select;
 
 function ConnectionDropdown({
+  addUpdateConnection,
   connections,
+  currentUser,
   selectConnectionId,
-  selectedConnectionId,
-  addUpdateConnection
+  selectedConnectionId
 }) {
   const [showEdit, setShowEdit] = useState(false);
+  const [showConnections, setShowConnections] = useState(false);
 
   const handleChange = id => {
     if (id === 'new') {
       return setShowEdit(true);
+    }
+    if (id === 'manage') {
+      return setShowConnections(true);
     }
     selectConnectionId(id);
   };
@@ -59,18 +65,27 @@ function ConnectionDropdown({
         >
           <Icon type="plus-circle" /> <em>New connection</em>
         </Option>
+        {currentUser.role === 'admin' && (
+          <Option value="manage" name="Manage connections">
+            <Icon type="api" /> <em>Manage connections</em>
+          </Option>
+        )}
       </Select>
       <ConnectionEditDrawer
         visible={showEdit}
-        placement="left"
+        placement="right"
         onClose={() => setShowEdit(false)}
         onConnectionSaved={handleConnectionSaved}
+      />
+      <ConnectionListDrawer
+        visible={showConnections}
+        onClose={() => setShowConnections(false)}
       />
     </>
   );
 }
 
 export default connect(
-  ['connections', 'selectedConnectionId'],
+  ['connections', 'currentUser', 'selectedConnectionId'],
   actions
 )(ConnectionDropdown);

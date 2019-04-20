@@ -1,19 +1,21 @@
 import keymaster from 'keymaster';
 import PropTypes from 'prop-types';
-import React, { createRef } from 'react';
+import Layout from 'antd/lib/layout';
+import React from 'react';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
-import AppNav from '../AppNav';
 import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryEditorChart from './QueryEditorChart';
-import EditorNavBar from './EditorNavBar';
-import FlexTabPane from './FlexTabPane';
-import QueryDetailsModal from './QueryDetailsModal';
+import Toolbar from './toolbar/Toolbar';
+
 import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from './SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
+import { resizeChart } from '../common/tauChartRef';
+
+const { Content } = Layout;
 
 // TODO FIXME XXX capture unsaved state to local storage
 // Prompt is removed. It doesn't always work anyways
@@ -37,12 +39,16 @@ class QueryEditor extends React.Component {
       loadQuery,
       saveQuery,
       runQuery,
-      formatQuery
+      formatQuery,
+      resetNewQuery
     } = this.props;
 
     await Promise.all([loadConnections(), loadTags()]);
     if (queryId !== 'new') {
       await loadQuery(queryId);
+    } else {
+      // TODO FIXME XXX this won't reset query state from new to new
+      resetNewQuery();
     }
 
     /*  Shortcuts
@@ -71,87 +77,103 @@ class QueryEditor extends React.Component {
     keymaster.unbind('shift+return');
   }
 
-  sqlpadTauChart = createRef(undefined);
-
-  handleSaveImageClick = e => {
-    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.exportPng) {
-      this.sqlpadTauChart.current.exportPng();
-    }
-  };
-
   handleVisPaneResize = () => {
-    if (this.sqlpadTauChart.current && this.sqlpadTauChart.current.resize) {
-      this.sqlpadTauChart.current.resize();
-    }
+    const { queryId } = this.props;
+    resizeChart(queryId);
   };
 
   render() {
-    const { activeTabKey, queryName } = this.props;
+    const {
+      chartType,
+      queryName,
+      showSchema,
+      showVisSidebar,
+      queryId
+    } = this.props;
 
     document.title = queryName;
 
-    return (
-      <AppNav>
-        <div className="flex w-100" style={{ flexDirection: 'column' }}>
-          <EditorNavBar />
-          <div style={{ position: 'relative', flexGrow: 1 }}>
-            <FlexTabPane tabKey="sql" activeTabKey={activeTabKey}>
-              <SplitPane
-                split="vertical"
-                minSize={150}
-                defaultSize={280}
-                maxSize={-100}
-              >
-                <SchemaSidebar />
-                <SplitPane
-                  split="horizontal"
-                  minSize={100}
-                  defaultSize={'60%'}
-                  maxSize={-100}
-                >
-                  <QueryEditorSqlEditor />
-                  <div>
-                    <QueryResultHeader />
-                    <div
-                      style={{
-                        position: 'absolute',
-                        top: 30,
-                        bottom: 0,
-                        left: 0,
-                        right: 0
-                      }}
-                    >
-                      <QueryEditorResult />
-                    </div>
-                  </div>
-                </SplitPane>
-              </SplitPane>
-            </FlexTabPane>
-            <FlexTabPane tabKey="vis" activeTabKey={activeTabKey}>
-              <SplitPane
-                split="vertical"
-                minSize={150}
-                defaultSize={280}
-                maxSize={-100}
-                onChange={this.handleVisPaneResize}
-              >
-                <VisSidebar onSaveImageClick={this.handleSaveImageClick} />
-                <div className="flex-auto h-100">
-                  <QueryEditorChart ref={this.sqlpadTauChart} />
-                </div>
-              </SplitPane>
-            </FlexTabPane>
-          </div>
-          <QueryDetailsModal />
+    const editorAndVis = chartType ? (
+      <SplitPane
+        key="editorAndVis"
+        split="vertical"
+        defaultSize={'50%'}
+        maxSize={-200}
+        onChange={this.handleVisPaneResize}
+      >
+        <QueryEditorSqlEditor />
+        <div className="flex-auto h-100">
+          <QueryEditorChart />
         </div>
-      </AppNav>
+      </SplitPane>
+    ) : (
+      <QueryEditorSqlEditor />
+    );
+
+    const editorResultPane = (
+      <SplitPane
+        split="horizontal"
+        minSize={100}
+        defaultSize={'60%'}
+        maxSize={-100}
+        onChange={this.handleVisPaneResize}
+      >
+        {editorAndVis}
+        <div>
+          <QueryResultHeader />
+          <div
+            style={{
+              position: 'absolute',
+              top: 30,
+              bottom: 0,
+              left: 0,
+              right: 0
+            }}
+          >
+            <QueryEditorResult />
+          </div>
+        </div>
+      </SplitPane>
+    );
+
+    let sidebar = null;
+    if (showSchema) {
+      sidebar = <SchemaSidebar />;
+    } else if (showVisSidebar) {
+      sidebar = <VisSidebar queryId={queryId} />;
+    }
+
+    const sqlTabPane = sidebar ? (
+      <SplitPane
+        split="vertical"
+        minSize={150}
+        defaultSize={280}
+        maxSize={-100}
+        onChange={this.handleVisPaneResize}
+      >
+        {sidebar}
+        {editorResultPane}
+      </SplitPane>
+    ) : (
+      editorResultPane
+    );
+
+    return (
+      <Layout style={{ minHeight: '100vh' }} className="flex w-100 bg-white">
+        <Content className="flex w-100">
+          <div className="flex w-100" style={{ flexDirection: 'column' }}>
+            <Toolbar />
+            <div style={{ position: 'relative', flexGrow: 1 }}>
+              {sqlTabPane}
+            </div>
+          </div>
+        </Content>
+      </Layout>
     );
   }
 }
 
 QueryEditor.propTypes = {
-  activeTabKey: PropTypes.string.isRequired,
-  connections: PropTypes.array.isRequired,
   formatQuery: PropTypes.func.isRequired,
   loadConnections: PropTypes.func.isRequired,
   loadQuery: PropTypes.func.isRequired,
@@ -169,9 +191,13 @@ QueryEditor.defaultProps = {
 
 function mapStateToProps(state, props) {
   return {
-    activeTabKey: state.activeTabKey,
-    connections: state.connections,
-    queryName: state.query && state.query.name
+    chartType:
+      state.query &&
+      state.query.chartConfiguration &&
+      state.query.chartConfiguration.chartType,
+    queryName: state.query && state.query.name,
+    showSchema: state.showSchema,
+    showVisSidebar: state.showVisSidebar
   };
 }
 

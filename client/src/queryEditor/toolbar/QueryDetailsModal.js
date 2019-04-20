@@ -2,17 +2,16 @@ import Icon from 'antd/lib/icon';
 import Modal from 'antd/lib/modal';
 import Tooltip from 'antd/lib/tooltip';
 import React from 'react';
-import EditableTagGroup from '../common/EditableTagGroup';
+import EditableTagGroup from '../../common/EditableTagGroup';
 import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
+import { actions } from '../../stores/unistoreStore';
 
 function mapStateToProps(state) {
   return {
     availableTags: state.availableTags,
     queryId: state.query && state.query._id,
-    queryTags: state.query && state.query.tags,
-    showModal: state.showModal
+    queryTags: state.query && state.query.tags
   };
 }
 
@@ -24,10 +23,10 @@ const ConnectedQueryDetailsModal = connect(
 function QueryDetailsModal({
   queryId,
   queryTags,
-  showModal,
+  visible,
   setQueryState,
   availableTags,
-  handleModalHide
+  onClose
 }) {
   const tagOptions = availableTags.slice();
   if (queryTags) {
@@ -72,9 +71,9 @@ function QueryDetailsModal({
   return (
     <Modal
       width={'600px'}
-      visible={showModal}
+      visible={visible}
       cancelText={null}
-      onCancel={handleModalHide}
+      onCancel={onClose}
       footer={null}
     >
       <label>Query Tags</label>

@@ -1,7 +1,6 @@
 import message from 'antd/lib/message';
 import Form from 'antd/lib/form';
 import Button from 'antd/lib/button';
-import Drawer from 'antd/lib/drawer';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
@@ -26,7 +25,7 @@ const tailFormItemLayout = {
   }
 };
 
-function ConfigurationDrawer({ refreshAppContext, onClose, visible }) {
+function ConfigurationForm({ refreshAppContext, onClose }) {
   const [configItems, setConfigItems] = useState([]);
 
   const loadConfigValuesFromServer = async () => {
@@ -38,10 +37,8 @@ function ConfigurationDrawer({ refreshAppContext, onClose, visible }) {
   };
 
   useEffect(() => {
-    if (visible === true) {
-      loadConfigValuesFromServer();
-    }
-  }, [visible]);
+    loadConfigValuesFromServer();
+  }, []);
 
   async function saveConfigValues() {
     const changedSaves = configItems
@@ -76,38 +73,29 @@ function ConfigurationDrawer({ refreshAppContext, onClose, visible }) {
   const saveDisabled = hasChanges.length === 0;
 
   return (
-    <Drawer
-      title={'Configuration'}
-      visible={visible}
-      width={600}
-      destroyOnClose={false}
-      onClose={onClose}
-      placement={'left'}
-    >
-      <Form {...formItemLayout}>
-        <Form.Item {...tailFormItemLayout}>
-          <Button
-            disabled={saveDisabled}
-            className="w-100"
-            type="primary"
-            onClick={saveConfigValues}
-          >
-            Save
-          </Button>
-        </Form.Item>
-        {configItems.map(config => (
-          <ConfigItemInput
-            key={config.key}
-            config={config}
-            onChange={handleChange}
-          />
-        ))}
-      </Form>
-    </Drawer>
+    <Form {...formItemLayout}>
+      <Form.Item {...tailFormItemLayout}>
+        <Button
+          disabled={saveDisabled}
+          className="w-100"
+          type="primary"
+          onClick={saveConfigValues}
+        >
+          Save
+        </Button>
+      </Form.Item>
+      {configItems.map(config => (
+        <ConfigItemInput
+          key={config.key}
+          config={config}
+          onChange={handleChange}
+        />
+      ))}
+    </Form>
   );
 }
 
 export default connect(
   [],
   actions
-)(React.memo(ConfigurationDrawer));
+)(React.memo(ConfigurationForm));
