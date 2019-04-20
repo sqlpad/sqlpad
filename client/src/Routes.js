@@ -12,7 +12,6 @@ import ForgotPassword from './ForgotPassword.js';
 import NotFound from './NotFound.js';
 import PasswordReset from './PasswordReset.js';
 import PasswordResetRequested from './PasswordResetRequested.js';
-// import QueriesView from './queries/QueriesView';
 import QueryChartOnly from './QueryChartOnly.js';
 import QueryEditor from './queryEditor/QueryEditor.js';
 import QueryTableOnly from './QueryTableOnly.js';
@@ -41,11 +40,6 @@ function Routes({ config, refreshAppContext }) {
             exact
             path="/queries"
             render={() => <Redirect to={'/queries/new'} />}
-            // render={props => (
-            //   <Authenticated>
-            //     <QueriesView />
-            //   </Authenticated>
-            // )}
           />
           <Route
             exact
