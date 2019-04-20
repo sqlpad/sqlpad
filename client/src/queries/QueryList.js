@@ -5,6 +5,9 @@ import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import Select from 'antd/lib/select';
 import Tooltip from 'antd/lib/tooltip';
+import Typography from 'antd/lib/typography';
+import Tag from 'antd/lib/tag';
+import Divider from 'antd/lib/divider';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
@@ -13,10 +16,10 @@ import Popconfirm from 'antd/lib/popconfirm';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import IconButtonLink from '../common/IconButtonLink';
+import SqlEditor from '../common/SqlEditor';
 
 const { Option } = Select;
-
-// TODO FIXME XXX show formatted query as preview
+const { Title } = Typography;
 
 function QueryList({
   queries,
@@ -148,17 +151,44 @@ function QueryList({
       />
       {preview && (
         <div
-          className="shadow-2 pa2"
+          className="shadow-2 pa3"
           style={{
             position: 'fixed',
             left: 640,
             top: 40,
             right: 40,
             bottom: 40,
-            backgroundColor: 'white'
+            backgroundColor: 'white',
+            display: 'flex',
+            flexDirection: 'column'
           }}
         >
-          <pre>{JSON.stringify(preview, null, 2)}</pre>
+          <Title level={4}>
+            <Typography.Text>{preview.name}</Typography.Text>
+          </Title>
+          <Typography.Text>Connection {preview.connectionName}</Typography.Text>
+          <Typography.Text>By {preview.createdBy}</Typography.Text>
+          <div>
+            {preview.tags &&
+              preview.tags.map(tag => <Tag key={tag}>{tag}</Tag>)}
+          </div>
+          {/* needs to be wrapped in div because of flex height weirdness */}
+          <div>
+            <Divider />
+          </div>
+          {/* 
+            This style necessary to get proper sizing on SqlEditor.
+            It has height 100%, which looks to height of nearest containing BLOCK,
+            which apparently looks past this flex container. This causes weirdness
+          */}
+          <div
+            style={{
+              flexGrow: 1,
+              display: 'flex'
+            }}
+          >
+            <SqlEditor readOnly value={preview.queryText} />
+          </div>
         </div>
       )}
     </>
