@@ -31,7 +31,7 @@ function DrawerWrapper({
       onClose={onClose}
       placement={placement}
       bodyStyle={{
-        height: 'calc(90vh - 55px)',
+        height: 'calc(100vh - 55px)',
         overflow: 'auto'
       }}
     >
