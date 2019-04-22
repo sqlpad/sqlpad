@@ -1,0 +1,38 @@
+.schema {
+  cursor: default;
+  font-size: 12px;
+  line-height: 22px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
+    monospace;
+}
+
+.table {
+  padding-left: 20px;
+  cursor: default;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  line-height: 22px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
+    monospace;
+}
+
+.column {
+  padding-left: 54px;
+  cursor: default;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  line-height: 22px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
+    monospace;
+}
+
+.schemaSpinner {
+  text-align: center;
+  padding-top: 100px;
+  width: 100%;
+  height: 100%;
+}

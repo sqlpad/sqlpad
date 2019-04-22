@@ -1,34 +1,48 @@
 import Icon from 'antd/lib/icon';
 import Tooltip from 'antd/lib/tooltip';
-import React, { useEffect } from 'react';
+import Typography from 'antd/lib/typography';
+import Input from 'antd/lib/input';
+import Button from 'antd/lib/button';
+import Divider from 'antd/lib/divider';
+import Spin from 'antd/lib/spin';
+import React, { useEffect, useState } from 'react';
+import Measure from 'react-measure';
+import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import Sidebar from '../common/Sidebar';
-import SidebarBody from '../common/SidebarBody';
+import { actions } from '../stores/unistoreStore';
+import styles from './SchemaSidebar.module.css';
+import searchSchemaInfo from '../schema/searchSchemaInfo';
+import getSchemaList from '../schema/getSchemaList';
+
+const { Text } = Typography;
 
 function mapStateToProps(state, props) {
+  const { loading, schemaInfo, expanded } =
+    (state.schema && state.schema[state.selectedConnectionId]) || {};
   return {
-    config: state.config,
+    expanded,
     connectionId: state.selectedConnectionId,
-    schemaInfo:
-      state.schema &&
-      state.schema[state.selectedConnectionId] &&
-      state.schema[state.selectedConnectionId].schemaInfo,
-    loading:
-      state.schema &&
-      state.schema[state.selectedConnectionId] &&
-      state.schema[state.selectedConnectionId].loading
+    schemaInfo: schemaInfo || {},
+    loading
   };
 }
 
 function SchemaSidebar({
-  config,
+  expanded,
   connectionId,
   loadSchemaInfo,
   schemaInfo,
-  loading
+  loading,
+  toggleSchemaItem
 }) {
+  const [search, setSearch] = useState('');
+  const [dimensions, setDimensions] = useState({
+    width: -1,
+    height: -1
+  });
+
+  // Load schema on connection changes
   useEffect(() => {
     if (connectionId) {
       loadSchemaInfo(connectionId);
@@ -42,280 +56,129 @@ function SchemaSidebar({
     }
   };
 
-  const refreshClass = loading ? 'spinning' : '';
+  const filteredSchemaInfo = searchSchemaInfo(schemaInfo, search);
+  const schemaList = getSchemaList(filteredSchemaInfo);
 
-  const schemaCount = schemaInfo ? Object.keys(schemaInfo).length : 0;
-  const initShowTables = schemaCount <= 2;
-  const schemaItemNodes = schemaInfo
-    ? Object.keys(schemaInfo).map(schema => {
-        return (
-          <SchemaInfoSchemaItem
-            config={config}
-            initShowTables={initShowTables}
-            key={schema}
-            schema={schema}
-            tables={schemaInfo[schema]}
-          />
-        );
-      })
-    : null;
+  // For windowed list rendering, we need to determine what is visible due to expanded parent
+  // Show item if every parent is expanded (or doesn't have a parent)
+  const visibleItems = schemaList.filter(row =>
+    row.parentIds.every(id => expanded[id])
+  );
+
+  const Row = ({ index, style }) => {
+    const row = visibleItems[index];
+    const iconType = expanded[row.id] ? 'caret-down' : 'caret-right';
+    if (!row) {
+      return null;
+    }
+    if (row.type === 'schema') {
+      return (
+        <li
+          key={row.name}
+          className={styles.schema + ' bg-animate hover-bg-near-white'}
+          style={style}
+          onClick={() => toggleSchemaItem(connectionId, row)}
+        >
+          <Icon type={iconType} /> {row.name}
+        </li>
+      );
+    }
+    if (row.type === 'table') {
+      return (
+        <li
+          key={`${row.schemaName}.${row.name}`}
+          className={styles.table + ' bg-animate hover-bg-near-white'}
+          style={style}
+          onClick={() => toggleSchemaItem(connectionId, row)}
+        >
+          <Icon type={iconType} /> {row.name}
+        </li>
+      );
+    }
+    if (row.type === 'column') {
+      let secondary = ` ${row.dataType}`;
+      if (row.description) {
+        secondary += ` - ${row.description}`;
+      }
+      return (
+        <li
+          key={`${row.schemaName}.${row.tableName}.${row.name}`}
+          className={styles.column}
+          style={style}
+        >
+          {row.name}
+          <Text type="secondary">{secondary}</Text>
+        </li>
+      );
+    }
+  };
 
   return (
-    <Sidebar>
-      <SidebarBody>
-        <div style={{ position: 'relative' }}>
-          <a style={{ position: 'absolute', right: '20px' }} href="#refresh">
+    <Measure
+      bounds
+      onResize={contentRect => {
+        setDimensions(contentRect.bounds);
+      }}
+    >
+      {({ measureRef }) => (
+        <Sidebar>
+          <div style={{ display: 'flex' }}>
+            <Input
+              value={search}
+              placeholder="Search schema"
+              onChange={event => setSearch(event.target.value)}
+            />
             <Tooltip title="Refresh schema">
-              <Icon
-                type="reload"
-                className={' ' + refreshClass}
+              <Button
+                icon="reload"
+                style={{ marginLeft: 8 }}
+                disabled={loading}
                 onClick={handleRefreshClick}
               />
             </Tooltip>
-          </a>
-          <ul className="pl0 dib" style={{ minWidth: '230px' }}>
-            {schemaItemNodes}
-          </ul>
-        </div>
-      </SidebarBody>
-    </Sidebar>
-  );
-}
-
-class SchemaInfoSchemaItem extends React.Component {
-  state = {
-    showTables: this.props.initShowTables
-  };
-
-  handleClick = e => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.setState({
-      showTables: !this.state.showTables
-    });
-  };
-
-  render() {
-    const { showTables } = this.state;
-    const { schema, tables } = this.props;
-    let tableJsx;
-    if (showTables) {
-      tableJsx = Object.keys(tables).map(table => {
-        return (
-          <SchemaInfoTableItem
-            {...this.props}
-            key={table}
-            schema={schema}
-            table={table}
-            columns={tables[table]}
-          />
-        );
-      });
-    }
-    return (
-      <li className="list" key={schema}>
-        <a
-          href="#schema"
-          onClick={this.handleClick}
-          className="dib"
-          style={{ minWidth: '230px' }}
-        >
-          {schema}
-        </a>
-        <ul className="pl3">{tableJsx}</ul>
-      </li>
-    );
-  }
-}
-
-class SchemaInfoTableItem extends React.Component {
-  state = {
-    showColumns: false,
-    showCopyButton: false,
-    copyButtonText: 'copy'
-  };
-
-  handleClick = e => {
-    e.stopPropagation();
-    e.preventDefault();
-    this.setState({
-      showColumns: !this.state.showColumns
-    });
-  };
-
-  handleMouseOver = e => {
-    this.setState({
-      showCopyButton: true
-    });
-  };
-
-  handleMouseOut = e => {
-    this.setState({
-      showCopyButton: false
-    });
-  };
-
-  handleCopyClick = e => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  handleCopy = e => {
-    this.setState({ copyButtonText: 'copied' });
-    setTimeout(() => {
-      this.setState({ copyButtonText: 'copy' });
-    }, 2000);
-  };
-
-  render() {
-    const { columns, config, schema, table } = this.props;
-    const { showColumns, showCopyButton, copyButtonText } = this.state;
-    let columnJsx;
-    if (showColumns) {
-      columnJsx = columns.map(column => {
-        if (column.column_name) {
-          return (
-            <SchemaInfoColumnItem
-              {...this.props}
-              column_name={column.column_name}
-              data_type={column.data_type}
-              column_description={column.column_description}
-              key={column.column_name}
-              schema={schema}
-              table={table}
-            />
-          );
-        } else {
-          return (
-            <SchemaInfoColumnItem
-              {...this.props}
-              column_name={column.COLUMN_NAME}
-              data_type={column.DATA_TYPE}
-              key={column.COLUMN_NAME}
-              schema={schema}
-              table={table}
-            />
-          );
-        }
-      });
-    }
-
-    const copyButtonClassName = showCopyButton
-      ? 'right-2 pointer absolute bg-black hover-bg-hot-pink label'
-      : 'right-2 pointer absolute bg-black hover-bg-hot-pink label dn';
-    const getCopyToClipboard = () => {
-      if (config && config.showSchemaCopyButton) {
-        return (
-          <CopyToClipboard text={schema + '.' + table} onCopy={this.handleCopy}>
-            <span
-              id="path-tooltip"
-              onClick={this.handleCopyClick}
-              className={copyButtonClassName}
-            >
-              {copyButtonText}
-            </span>
-          </CopyToClipboard>
-        );
-      }
-    };
-    return (
-      <li className="list" key={table}>
-        <a
-          href="#schema"
-          onMouseOver={this.handleMouseOver}
-          onMouseOut={this.handleMouseOut}
-          onClick={this.handleClick}
-          className="dib"
-          style={{ minWidth: '230px' }}
-        >
-          {table}
-          {getCopyToClipboard()}
-        </a>
-        <ul className="pl3">{columnJsx}</ul>
-      </li>
-    );
-  }
-}
-
-class SchemaInfoColumnItem extends React.Component {
-  state = {
-    showCopyButton: false,
-    copyButtonText: 'copy'
-  };
-
-  handleMouseOver = e => {
-    this.setState({
-      showCopyButton: true
-    });
-  };
-
-  handleMouseOut = e => {
-    this.setState({
-      showCopyButton: false
-    });
-  };
-
-  handleCopyClick = e => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  handleCopy = () => {
-    this.setState({ copyButtonText: 'copied' });
-    setTimeout(() => {
-      this.setState({ copyButtonText: 'copy' });
-    }, 2000);
-  };
-
-  render() {
-    const { copyButtonText, showCopyButton } = this.state;
-    const {
-      config,
-      column_name,
-      data_type,
-      column_description,
-      schema,
-      table
-    } = this.props;
-    const copyButtonClassName = showCopyButton
-      ? 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info'
-      : 'right-2 pointer absolute bg-black hover-bg-hot-pink label label-info dn';
-    const getCopyToClipboard = () => {
-      if (config && config.showSchemaCopyButton) {
-        return (
-          <CopyToClipboard
-            text={`${schema}.${table}.${column_name}`}
-            onCopy={this.handleCopy}
+          </div>
+          <div>
+            <Divider style={{ margin: '8px 0' }} />
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexGrow: 1
+            }}
           >
-            <span
-              id="path-tooltip"
-              onClick={this.handleCopyClick}
-              className={copyButtonClassName}
+            <div
+              ref={measureRef}
+              style={{
+                display: 'flex',
+                width: '100%',
+                height: '100%'
+              }}
             >
-              {copyButtonText}
-            </span>
-          </CopyToClipboard>
-        );
-      }
-    };
-
-    const description = column_description && ` - ${column_description}`;
-    return (
-      <li className="list">
-        <span
-          onMouseOver={this.handleMouseOver}
-          onMouseOut={this.handleMouseOut}
-          className="dib"
-          style={{ minWidth: '230px' }}
-        >
-          {column_name}
-          <span className="silver"> ({data_type})</span>
-          {description}
-          {getCopyToClipboard()}
-        </span>
-      </li>
-    );
-  }
+              {loading ? (
+                <Spin
+                  spinning={loading}
+                  className={styles.schemaSpinner}
+                  delay={150}
+                />
+              ) : (
+                <ul style={{ paddingLeft: 0 }}>
+                  <List
+                    height={dimensions.height}
+                    itemCount={visibleItems.length}
+                    itemSize={22}
+                    width={dimensions.width}
+                    overscanCount={10}
+                  >
+                    {Row}
+                  </List>
+                </ul>
+              )}
+            </div>
+          </div>
+        </Sidebar>
+      )}
+    </Measure>
+  );
 }
 
 export default connect(
