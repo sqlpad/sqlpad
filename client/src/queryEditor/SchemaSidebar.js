@@ -75,7 +75,7 @@ function SchemaSidebar({
       return (
         <li
           key={row.name}
-          className={styles.schema + ' bg-animate hover-bg-near-white'}
+          className={styles.schema}
           style={style}
           onClick={() => toggleSchemaItem(connectionId, row)}
         >
@@ -87,7 +87,7 @@ function SchemaSidebar({
       return (
         <li
           key={`${row.schemaName}.${row.name}`}
-          className={styles.table + ' bg-animate hover-bg-near-white'}
+          className={styles.table}
           style={style}
           onClick={() => toggleSchemaItem(connectionId, row)}
         >

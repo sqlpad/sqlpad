@@ -4,6 +4,7 @@
   line-height: 22px;
   font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
     monospace;
+  user-select: none;
 }
 
 .table {
@@ -16,6 +17,12 @@
   line-height: 22px;
   font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
     monospace;
+  user-select: none;
+}
+
+.schema:hover,
+.table:hover {
+  background-color: #f4f4f4;
 }
 
 .column {
