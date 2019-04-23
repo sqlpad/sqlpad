@@ -3,7 +3,7 @@
   display: none;
 }
 
-/* QueryResultDataTable react-virtualized/react-draggable implementaion */
+/* QueryResultDataTable react-window/react-draggable implementaion */
 .DragHandle {
   flex: 0 0 16px;
   z-index: 2;
