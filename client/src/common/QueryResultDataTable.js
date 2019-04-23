@@ -91,17 +91,20 @@ class QueryResultDataTable extends React.PureComponent {
   headerGrid = React.createRef();
   bodyGrid = React.createRef();
 
-  resizeColumn = ({ dataKey, deltaX }, cb) => {
-    this.setState(prevState => {
-      const prevWidths = prevState.columnWidths;
-      const newWidth = prevWidths[dataKey] + deltaX;
-      return {
-        columnWidths: {
-          ...prevWidths,
-          [dataKey]: newWidth > 100 ? newWidth : 100
-        }
-      };
-    }, cb);
+  resizeColumn = ({ dataKey, deltaX, columnIndex }) => {
+    this.setState(
+      prevState => {
+        const prevWidths = prevState.columnWidths;
+        const newWidth = prevWidths[dataKey] + deltaX;
+        return {
+          columnWidths: {
+            ...prevWidths,
+            [dataKey]: newWidth > 100 ? newWidth : 100
+          }
+        };
+      },
+      () => this.recalc(columnIndex)
+    );
   };
 
   recalc = throttle(columnIndex => {
@@ -130,15 +133,7 @@ class QueryResultDataTable extends React.PureComponent {
             defaultClassName="DragHandle"
             defaultClassNameDragging="DragHandleActive"
             onDrag={(event, { deltaX }) => {
-              this.resizeColumn(
-                {
-                  dataKey,
-                  deltaX
-                },
-                () => {
-                  this.recalc(columnIndex);
-                }
-              );
+              this.resizeColumn({ dataKey, deltaX, columnIndex });
             }}
             position={{ x: 0 }}
             zIndex={999}
