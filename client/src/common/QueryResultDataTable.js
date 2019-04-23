@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { MultiGrid } from 'react-virtualized';
+import { VariableSizeGrid } from 'react-window';
+import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
 import Measure from 'react-measure';
 import SpinKitCube from './SpinKitCube.js';
 import moment from 'moment';
-import 'react-virtualized/styles.css';
 
 const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {
@@ -19,6 +19,12 @@ const renderValue = (input, fieldMeta) => {
   } else {
     return input;
   }
+};
+
+// Hide the overflow so the scroll bar never shows in the header grid
+const headerStyle = {
+  overflowX: 'hidden',
+  overflowY: 'hidden'
 };
 
 // NOTE: PureComponent's shallow compare works for this component
@@ -60,114 +66,11 @@ class QueryResultDataTable extends React.PureComponent {
     return { columnWidths };
   }
 
-  headerCellRenderer = ({ columnIndex, key, style }) => {
-    const { queryResult } = this.props;
-    const dataKey = queryResult.fields[columnIndex];
-
-    // If dataKey is present this is an actual header to render
-    if (dataKey) {
-      return (
-        <div
-          className={
-            'flex bb b--moon-gray justify-between ph2 fw7 bg-near-white'
-          }
-          key={key}
-          style={Object.assign({}, style, { lineHeight: '30px' })}
-        >
-          <div>{dataKey}</div>
-          <Draggable
-            axis="x"
-            defaultClassName="DragHandle"
-            defaultClassNameDragging="DragHandleActive"
-            onDrag={(event, { deltaX }) =>
-              this.resizeColumn({
-                dataKey,
-                deltaX
-              })
-            }
-            position={{ x: 0 }}
-            zIndex={999}
-          >
-            <span className="DragHandleIcon">⋮</span>
-          </Draggable>
-        </div>
-      );
-    }
-
-    // If this is a dummy header cell render an empty header cell
-    return (
-      <div
-        className={'flex bb b--moon-gray justify-between ph2 fw7 bg-near-white'}
-        key={key}
-        style={Object.assign({}, style, { lineHeight: '30px' })}
-      />
-    );
-  };
-
-  dataCellRenderer = ({ columnIndex, key, rowIndex, style }) => {
-    const { queryResult } = this.props;
-    const dataKey = queryResult.fields[columnIndex];
-    const backgroundColor = rowIndex % 2 === 0 ? 'bg-near-white' : '';
-
-    // If dataKey is present this is a real data cell to render
-    if (dataKey) {
-      const fieldMeta = queryResult.meta[dataKey];
-
-      // Account for extra row that was used for header row
-      const value = queryResult.rows[rowIndex - 1][dataKey];
-
-      return (
-        <div
-          className={'relative bb b--light-gray ph2 ' + backgroundColor}
-          key={key}
-          style={Object.assign({}, style, { lineHeight: '30px' })}
-        >
-          <div className="truncate">{renderValue(value, fieldMeta)}</div>
-        </div>
-      );
-    }
-
-    // If no dataKey this is a dummy cell.
-    // It should render nothing, but match the row's style
-    return (
-      <div
-        className={'relative bb b--light-gray ph2 ' + backgroundColor}
-        key={key}
-        style={Object.assign({}, style, { lineHeight: '30px' })}
-      >
-        <div className="truncate" />
-      </div>
-    );
-  };
-
-  cellRenderer = params => {
-    if (params.rowIndex === 0) {
-      return this.headerCellRenderer(params);
-    }
-    return this.dataCellRenderer(params);
-  };
-
-  resizeColumn = ({ dataKey, deltaX }) => {
-    this.setState(prevState => {
-      const prevWidths = prevState.columnWidths;
-      const newWidth = prevWidths[dataKey] + deltaX;
-      return {
-        columnWidths: {
-          ...prevWidths,
-          [dataKey]: newWidth > 100 ? newWidth : 100
-        }
-      };
-    });
-    if (this.ref) {
-      this.ref.recomputeGridSize();
-    }
-  };
-
   // NOTE
   // An empty dummy column is added to the grid for visual purposes
   // If dataKey was found this is a real column of data from the query result
   // If not, it's the dummy column at the end, and it should fill the rest of the grid width
-  getColumnWidth = ({ index }) => {
+  getColumnWidth = index => {
     const { columnWidths } = this.state;
     const { queryResult } = this.props;
     const dataKey = queryResult.fields[index];
@@ -185,18 +88,117 @@ class QueryResultDataTable extends React.PureComponent {
     return fakeColumnWidth < 10 ? 10 : fakeColumnWidth;
   };
 
-  handleScrollBug = () => {
-    // There's a strange bug when using Chrome.
-    // When the Ace editor is focused, and the user scrolls horizontally on result grid
-    // the cursor appears to stay focused on the Ace editor, but no input is accepted other than deletes.
-    // The frozen input behavior goes away if another element is given focus,
-    // and then the user clicks on the Ace editor again.
-    // Fortunately clearing focus on the focused element and refocusing it fixes this bug.
-    const element = document.activeElement;
-    if (element) {
-      element.blur();
-      element.focus();
+  headerGrid = React.createRef();
+  bodyGrid = React.createRef();
+
+  resizeColumn = ({ dataKey, deltaX, columnIndex }) => {
+    this.setState(
+      prevState => {
+        const prevWidths = prevState.columnWidths;
+        const newWidth = prevWidths[dataKey] + deltaX;
+        return {
+          columnWidths: {
+            ...prevWidths,
+            [dataKey]: newWidth > 100 ? newWidth : 100
+          }
+        };
+      },
+      () => this.recalc(columnIndex)
+    );
+  };
+
+  recalc = throttle(columnIndex => {
+    if (this.headerGrid.current.resetAfterColumnIndex) {
+      this.headerGrid.current.resetAfterColumnIndex(columnIndex);
+      this.bodyGrid.current.resetAfterColumnIndex(columnIndex);
     }
+  }, 100);
+
+  HeaderCell = ({ columnIndex, rowIndex, style }) => {
+    const { queryResult } = this.props;
+    const dataKey = queryResult.fields[columnIndex];
+
+    // If dataKey is present this is an actual header to render
+    if (dataKey) {
+      return (
+        <div
+          className={
+            'flex bb b--moon-gray justify-between ph2 fw7 bg-near-white'
+          }
+          style={Object.assign({}, style, { lineHeight: '30px' })}
+        >
+          <div>{dataKey}</div>
+          <Draggable
+            axis="x"
+            defaultClassName="DragHandle"
+            defaultClassNameDragging="DragHandleActive"
+            onDrag={(event, { deltaX }) => {
+              this.resizeColumn({ dataKey, deltaX, columnIndex });
+            }}
+            position={{ x: 0 }}
+            zIndex={999}
+          >
+            <span className="DragHandleIcon">⋮</span>
+          </Draggable>
+        </div>
+      );
+    }
+
+    // If this is a dummy header cell render an empty header cell
+    return (
+      <div
+        className={'flex bb b--moon-gray justify-between ph2 fw7 bg-near-white'}
+        style={Object.assign({}, style, { lineHeight: '30px' })}
+      />
+    );
+  };
+
+  Cell = ({ columnIndex, rowIndex, style }) => {
+    const { queryResult } = this.props;
+    const dataKey = queryResult.fields[columnIndex];
+    const backgroundColor = rowIndex % 2 === 0 ? 'bg-near-white' : '';
+
+    // If dataKey is present this is a real data cell to render
+    if (dataKey) {
+      const fieldMeta = queryResult.meta[dataKey];
+
+      // Account for extra row that was used for header row
+      const value = queryResult.rows[rowIndex][dataKey];
+
+      return (
+        <div
+          className={'relative bb b--light-gray ph2 ' + backgroundColor}
+          style={Object.assign({}, style, { lineHeight: '30px' })}
+        >
+          <div className="truncate">{renderValue(value, fieldMeta)}</div>
+        </div>
+      );
+    }
+
+    // If no dataKey this is a dummy cell.
+    // It should render nothing, but match the row's style
+    return (
+      <div
+        className={'relative bb b--light-gray ph2 ' + backgroundColor}
+        style={Object.assign({}, style, { lineHeight: '30px' })}
+      >
+        <div className="truncate" />
+      </div>
+    );
+  };
+
+  getRowHeight() {
+    return 30;
+  }
+
+  // When a scroll occurs in the body grid,
+  // synchronize the scroll position of the header grid
+  handleGridScroll = ({ scrollLeft }) => {
+    this.headerGrid.current.scrollTo({ scrollLeft });
+  };
+
+  handleContainerResize = contentRect => {
+    this.setState({ dimensions: contentRect.bounds });
   };
 
   render() {
@@ -205,10 +207,7 @@ class QueryResultDataTable extends React.PureComponent {
 
     if (isRunning) {
       return (
-        <div
-          id="result-grid"
-          className="aspect-ratio--object flex items-center justify-center"
-        >
+        <div className="aspect-ratio--object flex items-center justify-center">
           <SpinKitCube />
         </div>
       );
@@ -217,7 +216,6 @@ class QueryResultDataTable extends React.PureComponent {
     if (queryError) {
       return (
         <div
-          id="result-grid"
           className={`aspect-ratio--object flex items-center justify-center f2 pa4 tc bg-light-red`}
         >
           {queryError}
@@ -226,43 +224,45 @@ class QueryResultDataTable extends React.PureComponent {
     }
 
     if (queryResult && queryResult.rows) {
-      // Add extra row to account for header row
-      const rowCount = queryResult.rows.length + 1;
+      const rowCount = queryResult.rows.length;
       // Add extra column to fill remaining grid width if necessary
       const columnCount = queryResult.fields.length + 1;
 
       return (
-        <Measure
-          bounds
-          onResize={contentRect => {
-            this.setState({ dimensions: contentRect.bounds });
-          }}
-        >
+        <Measure bounds onResize={this.handleContainerResize}>
           {({ measureRef }) => (
-            <div
-              ref={measureRef}
-              id="result-grid"
-              className="h-100 w-100 aspect-ratio--object "
-            >
-              <MultiGrid
-                width={width}
-                height={height}
-                rowHeight={30}
-                ref={ref => (this.ref = ref)}
+            <div ref={measureRef} className="h-100 w-100 aspect-ratio--object ">
+              <VariableSizeGrid
+                columnCount={columnCount}
+                rowCount={1}
                 columnWidth={this.getColumnWidth}
+                rowHeight={this.getRowHeight}
+                height={30}
+                width={width}
+                ref={this.headerGrid}
+                style={headerStyle}
+              >
+                {this.HeaderCell}
+              </VariableSizeGrid>
+              <VariableSizeGrid
                 columnCount={columnCount}
                 rowCount={rowCount}
-                cellRenderer={this.cellRenderer}
-                fixedRowCount={1}
-                onScroll={this.handleScrollBug}
-              />
+                columnWidth={this.getColumnWidth}
+                rowHeight={this.getRowHeight}
+                width={width}
+                height={height - 30}
+                ref={this.bodyGrid}
+                onScroll={this.handleGridScroll}
+              >
+                {this.Cell}
+              </VariableSizeGrid>
             </div>
           )}
         </Measure>
       );
     }
 
-    return <div id="result-grid" className="aspect-ratio--object" />;
+    return <div className="aspect-ratio--object" />;
   }
 }
 

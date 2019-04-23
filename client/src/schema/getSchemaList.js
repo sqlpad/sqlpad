@@ -1,5 +1,5 @@
 /**
- * To render this schema tree with react-virtualized we'll convert this to a normalized list of sorts
+ * To render this schema tree with react-window we'll convert this to a normalized list of sorts
  * Because a tree is basically an indented list...?
  *
  * schemaInfo looks like

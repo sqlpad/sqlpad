@@ -19,7 +19,6 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "3.0.0",
     "react-split-pane": "^0.1.87",
-    "react-virtualized": "^9.21.0",
     "react-window": "^1.8.1",
     "sql-formatter": "^2.3.2",
     "tachyons": "^4.11.1",
