@@ -95,7 +95,8 @@ export const actions = store => ({
         schema: {
           ...schema,
           [connectionId]: {
-            loading: true
+            loading: true,
+            expanded: {}
           }
         }
       });
@@ -110,16 +111,41 @@ export const actions = store => ({
         return message.error(error);
       }
       updateCompletions(schemaInfo);
+
+      // Pre-expand schemas
+      const expanded = {};
+      if (schemaInfo) {
+        Object.keys(schemaInfo).forEach(schemaName => {
+          expanded[schemaName] = true;
+        });
+      }
+
       return {
         schema: {
           ...schema,
           [connectionId]: {
             loading: false,
-            schemaInfo
+            schemaInfo,
+            expanded
           }
         }
       };
     }
+  },
+
+  toggleSchemaItem(state, connectionId, item) {
+    const { schema } = state;
+    const connectionSchema = schema[connectionId];
+    const open = !connectionSchema.expanded[item.id];
+    return {
+      schema: {
+        ...schema,
+        [connectionId]: {
+          ...connectionSchema,
+          expanded: { ...connectionSchema.expanded, [item.id]: open }
+        }
+      }
+    };
   },
 
   // CONNECTIONS

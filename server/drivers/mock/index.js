@@ -2,6 +2,10 @@ const _ = require('lodash');
 const moment = require('moment');
 const { formatSchemaQueryResults } = require('../utils');
 
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const id = 'mock';
 const name = 'Mock driver';
 
@@ -230,14 +234,13 @@ Array(500)
 /**
  * Get schema for connection
  */
-function getSchema() {
+async function getSchema() {
   const fakeSchemaQueryResult = {
     rows: schemaRows,
     incomplete: false
   };
-  return Promise.resolve().then(() =>
-    formatSchemaQueryResults(fakeSchemaQueryResult)
-  );
+  await wait(Math.random() * 5000);
+  return formatSchemaQueryResults(fakeSchemaQueryResult);
 }
 
 const fields = [
