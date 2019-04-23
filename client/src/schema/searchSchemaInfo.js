@@ -12,8 +12,7 @@ function searchTables(tableMap, searchRegEx) {
 }
 
 /**
- * To render this schema tree with react-virtualized we'll convert this to a normalized list of sorts
- * Because a tree is basically an indented list...?
+ * Search schemaInfo (the hierarchy object storage of schema data) for the search string passed in
  * @param {object} schemaInfo
  * @param {string} search
  */
