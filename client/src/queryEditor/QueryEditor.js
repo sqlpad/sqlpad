@@ -11,7 +11,7 @@ import QueryEditorChart from './QueryEditorChart';
 import Toolbar from './toolbar/Toolbar';
 
 import QueryResultHeader from './QueryResultHeader.js';
-import SchemaSidebar from './SchemaSidebar.js';
+import SchemaSidebar from '../schema/SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
 import { resizeChart } from '../common/tauChartRef';
 

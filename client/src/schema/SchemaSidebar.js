@@ -12,8 +12,8 @@ import { connect } from 'unistore/react';
 import Sidebar from '../common/Sidebar';
 import { actions } from '../stores/unistoreStore';
 import styles from './SchemaSidebar.module.css';
-import searchSchemaInfo from '../schema/searchSchemaInfo';
-import getSchemaList from '../schema/getSchemaList';
+import searchSchemaInfo from './searchSchemaInfo';
+import getSchemaList from './getSchemaList';
 
 const { Text } = Typography;
 
