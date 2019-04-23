@@ -209,10 +209,7 @@ class QueryResultDataTable extends React.PureComponent {
 
     if (isRunning) {
       return (
-        <div
-          id="result-grid"
-          className="aspect-ratio--object flex items-center justify-center"
-        >
+        <div className="aspect-ratio--object flex items-center justify-center">
           <SpinKitCube />
         </div>
       );
@@ -221,7 +218,6 @@ class QueryResultDataTable extends React.PureComponent {
     if (queryError) {
       return (
         <div
-          id="result-grid"
           className={`aspect-ratio--object flex items-center justify-center f2 pa4 tc bg-light-red`}
         >
           {queryError}
@@ -242,11 +238,7 @@ class QueryResultDataTable extends React.PureComponent {
           }}
         >
           {({ measureRef }) => (
-            <div
-              ref={measureRef}
-              id="result-grid"
-              className="h-100 w-100 aspect-ratio--object "
-            >
+            <div ref={measureRef} className="h-100 w-100 aspect-ratio--object ">
               <VariableSizeGrid
                 columnCount={columnCount}
                 rowCount={1}
@@ -277,7 +269,7 @@ class QueryResultDataTable extends React.PureComponent {
       );
     }
 
-    return <div id="result-grid" className="aspect-ratio--object" />;
+    return <div className="aspect-ratio--object" />;
   }
 }
 
