@@ -6,7 +6,6 @@ import Draggable from 'react-draggable';
 import Measure from 'react-measure';
 import SpinKitCube from './SpinKitCube.js';
 import moment from 'moment';
-import 'react-virtualized/styles.css';
 
 const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {
@@ -203,6 +202,10 @@ class QueryResultDataTable extends React.PureComponent {
     this.headerGrid.current.scrollTo({ scrollLeft });
   };
 
+  handleContainerResize = contentRect => {
+    this.setState({ dimensions: contentRect.bounds });
+  };
+
   render() {
     const { isRunning, queryError, queryResult } = this.props;
     const { height, width } = this.state.dimensions;
@@ -231,12 +234,7 @@ class QueryResultDataTable extends React.PureComponent {
       const columnCount = queryResult.fields.length + 1;
 
       return (
-        <Measure
-          bounds
-          onResize={contentRect => {
-            this.setState({ dimensions: contentRect.bounds });
-          }}
-        >
+        <Measure bounds onResize={this.handleContainerResize}>
           {({ measureRef }) => (
             <div ref={measureRef} className="h-100 w-100 aspect-ratio--object ">
               <VariableSizeGrid
