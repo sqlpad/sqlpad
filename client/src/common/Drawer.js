@@ -20,7 +20,7 @@ function DrawerWrapper({
       window.addEventListener('keydown', handler);
       return () => window.removeEventListener('keydown', handler);
     }
-  }, [visible]);
+  }, [visible, onClose]);
 
   return (
     <Drawer

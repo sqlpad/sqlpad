@@ -32,7 +32,7 @@ function QueryList({
   const [searches, setSearches] = useState([]);
   useEffect(() => {
     loadQueries();
-  }, []);
+  }, [loadQueries]);
 
   const availableSearches = getAvailableSearchTags(queries, connections);
   const decoratedQueries = getDecoratedQueries(queries, connections);

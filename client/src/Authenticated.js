@@ -7,7 +7,7 @@ import { Redirect } from 'react-router-dom';
 function Authenticated({ children, currentUser, refreshAppContext }) {
   useEffect(() => {
     refreshAppContext();
-  }, []);
+  }, [refreshAppContext]);
 
   if (!currentUser) {
     return <Redirect to={{ pathname: '/signin' }} />;

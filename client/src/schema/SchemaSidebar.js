@@ -47,7 +47,7 @@ function SchemaSidebar({
     if (connectionId) {
       loadSchemaInfo(connectionId);
     }
-  }, [connectionId]);
+  }, [connectionId, loadSchemaInfo]);
 
   const handleRefreshClick = e => {
     e.preventDefault();

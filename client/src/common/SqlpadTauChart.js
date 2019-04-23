@@ -40,7 +40,14 @@ function SqlpadTauChart({
       }
       delFakeChartRef(queryId);
     };
-  }, [isRunning, queryError, queryResult, chartConfiguration, queryName]);
+  }, [
+    isRunning,
+    queryError,
+    queryResult,
+    chartConfiguration,
+    queryName,
+    queryId
+  ]);
 
   if (isRunning) {
     return (

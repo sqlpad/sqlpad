@@ -14,7 +14,9 @@ function QueryEditorSqlEditor({
   setQueryState,
   handleQuerySelectionChange
 }) {
-  const onChange = useCallback(value => setQueryState('queryText', value), []);
+  const onChange = useCallback(value => setQueryState('queryText', value), [
+    setQueryState
+  ]);
 
   return (
     <SqlEditor

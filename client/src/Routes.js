@@ -21,7 +21,7 @@ import SignUp from './SignUp.js';
 function Routes({ config, refreshAppContext }) {
   useEffect(() => {
     refreshAppContext();
-  }, []);
+  }, [refreshAppContext]);
 
   if (!config) {
     return null;

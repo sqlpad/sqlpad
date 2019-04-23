@@ -9,7 +9,7 @@ function SecondsTimer({ startTime }) {
       setRunSeconds(((now - startTime) / 1000).toFixed(0));
     }, 33);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [startTime]);
 
   return <span>{runSeconds}</span>;
 }

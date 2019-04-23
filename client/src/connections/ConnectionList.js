@@ -21,7 +21,7 @@ function ConnectionList({
 
   useEffect(() => {
     loadConnections();
-  }, []);
+  }, [loadConnections]);
 
   const editConnection = connection => {
     setConnectionId(connection._id);
