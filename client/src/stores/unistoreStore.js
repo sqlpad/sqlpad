@@ -5,7 +5,6 @@ import message from 'antd/lib/message';
 import sqlFormatter from 'sql-formatter';
 import fetchJson from '../utilities/fetch-json.js';
 import updateCompletions from '../utilities/updateCompletions.js';
-import getSchemaList from '../schema/getSchemaList.js';
 
 const ONE_HOUR_MS = 1000 * 60 * 60;
 
