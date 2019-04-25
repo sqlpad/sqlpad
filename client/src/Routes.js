@@ -29,63 +29,57 @@ function Routes({ config, refreshAppContext }) {
 
   return (
     <Router basename={config.baseUrl}>
-      <div className="flex w-100">
-        <Switch>
-          <Route
-            exact
-            path="/"
-            render={() => <Redirect to={'/queries/new'} />}
-          />
-          <Route
-            exact
-            path="/queries"
-            render={() => <Redirect to={'/queries/new'} />}
-          />
-          <Route
-            exact
-            path="/queries/:queryId"
-            render={({ match }) => (
-              <Authenticated>
-                <QueryEditor queryId={match.params.queryId} />
-              </Authenticated>
-            )}
-          />
-          <Route
-            exact
-            path="/query-table/:queryId"
-            render={({ match }) => (
-              <QueryTableOnly queryId={match.params.queryId} />
-            )}
-          />
-          <Route
-            exact
-            path="/query-chart/:queryId"
-            render={({ match }) => (
-              <QueryChartOnly queryId={match.params.queryId} />
-            )}
-          />
-          <Route exact path="/signin" render={() => <SignIn />} />
-          <Route exact path="/signup" render={() => <SignUp />} />
-          <Route
-            exact
-            path="/forgot-password"
-            render={() => <ForgotPassword />}
-          />
-          <Route
-            exact
-            path="/password-reset/:passwordResetId"
-            render={({ match }) => (
-              <PasswordReset passwordResetId={match.params.passwordResetId} />
-            )}
-          />
-          <Route
-            exact
-            path="/password-reset"
-            render={() => <PasswordResetRequested />}
-          />
-          <Route render={() => <NotFound />} />
-        </Switch>
-      </div>
+      <Switch>
+        <Route exact path="/" render={() => <Redirect to={'/queries/new'} />} />
+        <Route
+          exact
+          path="/queries"
+          render={() => <Redirect to={'/queries/new'} />}
+        />
+        <Route
+          exact
+          path="/queries/:queryId"
+          render={({ match }) => (
+            <Authenticated>
+              <QueryEditor queryId={match.params.queryId} />
+            </Authenticated>
+          )}
+        />
+        <Route
+          exact
+          path="/query-table/:queryId"
+          render={({ match }) => (
+            <QueryTableOnly queryId={match.params.queryId} />
+          )}
+        />
+        <Route
+          exact
+          path="/query-chart/:queryId"
+          render={({ match }) => (
+            <QueryChartOnly queryId={match.params.queryId} />
+          )}
+        />
+        <Route exact path="/signin" render={() => <SignIn />} />
+        <Route exact path="/signup" render={() => <SignUp />} />
+        <Route
+          exact
+          path="/forgot-password"
+          render={() => <ForgotPassword />}
+        />
+        <Route
+          exact
+          path="/password-reset/:passwordResetId"
+          render={({ match }) => (
+            <PasswordReset passwordResetId={match.params.passwordResetId} />
+          )}
+        />
+        <Route
+          exact
+          path="/password-reset"
+          render={() => <PasswordResetRequested />}
+        />
+        <Route render={() => <NotFound />} />
+      </Switch>
     </Router>
   );
 }
