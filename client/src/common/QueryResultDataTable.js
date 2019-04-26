@@ -27,6 +27,24 @@ const headerStyle = {
   overflowY: 'hidden'
 };
 
+const headerCellStyle = {
+  lineHeight: '30px',
+  backgroundColor: '#f4f4f4',
+  justifyContent: 'space-between',
+  borderBottom: '1px solid #CCC',
+  display: 'flex',
+  paddingLeft: '.5rem',
+  paddingRight: '.5rem'
+};
+
+const cellStyle = {
+  lineHeight: '30px',
+  paddingLeft: '.5rem',
+  paddingRight: '.5rem',
+  borderBottom: '1px solid #CCC',
+  display: 'relative'
+};
+
 // NOTE: PureComponent's shallow compare works for this component
 // because the isRunning prop will toggle with each query execution
 // It would otherwise not rerender on change of prop.queryResult alone
@@ -121,12 +139,7 @@ class QueryResultDataTable extends React.PureComponent {
     // If dataKey is present this is an actual header to render
     if (dataKey) {
       return (
-        <div
-          className={
-            'flex bb b--moon-gray justify-between ph2 fw7 bg-near-white'
-          }
-          style={Object.assign({}, style, { lineHeight: '30px' })}
-        >
+        <div style={Object.assign({}, style, headerCellStyle)}>
           <div>{dataKey}</div>
           <Draggable
             axis="x"
@@ -145,18 +158,16 @@ class QueryResultDataTable extends React.PureComponent {
     }
 
     // If this is a dummy header cell render an empty header cell
-    return (
-      <div
-        className={'flex bb b--moon-gray justify-between ph2 fw7 bg-near-white'}
-        style={Object.assign({}, style, { lineHeight: '30px' })}
-      />
-    );
+    return <div style={Object.assign({}, style, headerCellStyle)} />;
   };
 
   Cell = ({ columnIndex, rowIndex, style }) => {
     const { queryResult } = this.props;
     const dataKey = queryResult.fields[columnIndex];
-    const backgroundColor = rowIndex % 2 === 0 ? 'bg-near-white' : '';
+    const finalStyle = Object.assign({}, style, cellStyle);
+    if (rowIndex % 2 === 0) {
+      finalStyle.backgroundColor = '#fafafa';
+    }
 
     // If dataKey is present this is a real data cell to render
     if (dataKey) {
@@ -166,10 +177,7 @@ class QueryResultDataTable extends React.PureComponent {
       const value = queryResult.rows[rowIndex][dataKey];
 
       return (
-        <div
-          className={'relative bb b--light-gray ph2 ' + backgroundColor}
-          style={Object.assign({}, style, { lineHeight: '30px' })}
-        >
+        <div style={finalStyle}>
           <div className="truncate">{renderValue(value, fieldMeta)}</div>
         </div>
       );
@@ -178,10 +186,7 @@ class QueryResultDataTable extends React.PureComponent {
     // If no dataKey this is a dummy cell.
     // It should render nothing, but match the row's style
     return (
-      <div
-        className={'relative bb b--light-gray ph2 ' + backgroundColor}
-        style={Object.assign({}, style, { lineHeight: '30px' })}
-      >
+      <div style={finalStyle}>
         <div className="truncate" />
       </div>
     );
@@ -207,7 +212,7 @@ class QueryResultDataTable extends React.PureComponent {
 
     if (isRunning) {
       return (
-        <div className="aspect-ratio--object flex items-center justify-center">
+        <div className="h-100 flex-center">
           <SpinKitCube />
         </div>
       );
@@ -216,7 +221,8 @@ class QueryResultDataTable extends React.PureComponent {
     if (queryError) {
       return (
         <div
-          className={`aspect-ratio--object flex items-center justify-center f2 pa4 tc bg-light-red`}
+          style={{ fontSize: '2rem', padding: 24, textAlign: 'center' }}
+          className={`h-100 bg-error flex-center`}
         >
           {queryError}
         </div>
@@ -231,7 +237,7 @@ class QueryResultDataTable extends React.PureComponent {
       return (
         <Measure bounds onResize={this.handleContainerResize}>
           {({ measureRef }) => (
-            <div ref={measureRef} className="h-100 w-100 aspect-ratio--object ">
+            <div ref={measureRef} className="h-100 w-100">
               <VariableSizeGrid
                 columnCount={columnCount}
                 rowCount={1}
@@ -262,7 +268,7 @@ class QueryResultDataTable extends React.PureComponent {
       );
     }
 
-    return <div className="aspect-ratio--object" />;
+    return null;
   }
 }
 

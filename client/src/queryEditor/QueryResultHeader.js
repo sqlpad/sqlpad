@@ -79,7 +79,7 @@ function QueryResultHeader({
         )}
       </span>
       <span className="pr5">
-        <IncompleteDataNotification incomplete={incomplete} />
+        {incomplete && <IncompleteDataNotification />}
       </span>
     </div>
   );

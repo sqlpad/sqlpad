@@ -25,20 +25,17 @@ function ForgotPassword() {
   }
 
   return (
-    <div className="pt5 measure center" style={{ width: '300px' }}>
+    <div style={{ width: '300px' }}>
       <form onSubmit={resetPassword}>
-        <h1 className="f2 tc">SQLPad</h1>
+        <h1>SQLPad</h1>
         <input
           name="email"
           type="email"
-          className="form-control mt3"
           placeholder="Email address"
           onChange={e => setEmail(e.target.value)}
           required
         />
-        <button className="btn btn-primary btn-block mt3" type="submit">
-          Reset Password
-        </button>
+        <button type="submit">Reset Password</button>
       </form>
     </div>
   );

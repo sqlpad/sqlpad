@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function SidebarBody({ children }) {
   return (
-    <div className="flex-auto pa2 overflow-x-hidden overflow-y-auto">
+    <div style={{ display: 'flex', flexDirection: 'column', padding: '8px' }}>
       {children}
     </div>
   );

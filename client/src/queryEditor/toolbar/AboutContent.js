@@ -19,27 +19,18 @@ function AboutContent({ version }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          http://rickbergfalk.github.io/sqlpad{' '}
-          <span
-            style={{ marginLeft: 4 }}
-            className="glyphicon glyphicon-new-window"
-            aria-hidden="true"
-          />
+          http://rickbergfalk.github.io/sqlpad
         </a>
       </p>
       <hr />
-      <ul className="nav nav-pills nav-justified">
+      <ul>
         <li role="presentation">
           <a
             href="https://github.com/rickbergfalk/sqlpad/issues"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Submit an Issue{' '}
-            <span
-              className="glyphicon glyphicon-new-window"
-              aria-hidden="true"
-            />
+            Submit an Issue
           </a>
         </li>
         <li role="presentation">
@@ -48,11 +39,7 @@ function AboutContent({ version }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Changelog{' '}
-            <span
-              className="glyphicon glyphicon-new-window"
-              aria-hidden="true"
-            />
+            Changelog
           </a>
         </li>
         <li role="presentation">
@@ -61,11 +48,7 @@ function AboutContent({ version }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            GitHub Repository{' '}
-            <span
-              className="glyphicon glyphicon-new-window"
-              aria-hidden="true"
-            />
+            GitHub Repository
           </a>
         </li>
       </ul>
