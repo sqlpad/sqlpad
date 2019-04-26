@@ -11,6 +11,30 @@ a:focus {
 
 /*  Utilities
 ============================================================================ */
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.bg-error {
+  background-color: #ff725c;
+}
+
 .spinning {
   -webkit-animation: spin 2s linear infinite;
   -moz-animation: spin 2s linear infinite;
