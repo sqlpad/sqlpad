@@ -37,13 +37,12 @@ function PasswordReset({ passwordResetId }) {
     return <Redirect to="/" />;
   }
   return (
-    <div className="pt5 measure center" style={{ width: '300px' }}>
+    <div style={{ width: '300px' }}>
       <form onSubmit={resetPassword}>
-        <h1 className="f2 tc">SQLPad</h1>
+        <h1>SQLPad</h1>
         <Input
           name="email"
           type="email"
-          className="mt3"
           placeholder="Email address"
           onChange={e => setEmail(e.target.value)}
           required
@@ -51,7 +50,6 @@ function PasswordReset({ passwordResetId }) {
         <Input
           name="password"
           type="password"
-          className="mt3"
           placeholder="Password"
           onChange={e => setPassword(e.target.value)}
           required
@@ -59,12 +57,11 @@ function PasswordReset({ passwordResetId }) {
         <Input
           name="passwordConfirmation"
           type="password"
-          className="mt3"
           placeholder="Confirm Password"
           onChange={e => setPasswordConfirmation(e.target.value)}
           required
         />
-        <Button className="w-100 mt3" htmlType="submit" type="primary">
+        <Button htmlType="submit" type="primary">
           Reset Password
         </Button>
       </form>

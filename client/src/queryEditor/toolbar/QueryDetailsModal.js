@@ -47,21 +47,6 @@ function QueryDetailsModal({
           </Link>
         </li>
       );
-    } else {
-      return (
-        <Tooltip title="Save query to enable table/chart view links">
-          <li role="presentation" className="disabled">
-            <Link
-              to={href}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={e => e.preventDefault()}
-            >
-              {text} <Icon type="export" />
-            </Link>
-          </li>
-        </Tooltip>
-      );
     }
   };
 
@@ -103,7 +88,7 @@ function QueryDetailsModal({
       </p>
       <p>Run only a portion of a query by highlighting it first.</p>
       <hr />
-      <ul className="nav nav-pills nav-justified">
+      <ul>
         {renderNavLink(tableUrl, 'Link to Table')}
         {renderNavLink(chartUrl, 'Link to Chart')}
       </ul>

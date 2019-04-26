@@ -75,8 +75,8 @@ function VisSidebar({
           queryResult={queryResult}
         />
       </SidebarBody>
-      <div className="pa2 bt b--near-white">
-        <Button className="w-100 mb1" onClick={() => exportPng(queryId)}>
+      <div>
+        <Button className="w-100" onClick={() => exportPng(queryId)}>
           <Icon type="download" /> Save Chart Image
         </Button>
       </div>

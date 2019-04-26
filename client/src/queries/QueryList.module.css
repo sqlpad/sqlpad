@@ -1,0 +1,4 @@
+.ListItem:hover {
+  background-color: #f4f4f4;
+  transition: background-color 0.15s ease-in-out;
+}

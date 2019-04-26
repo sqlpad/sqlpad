@@ -62,12 +62,7 @@ function InviteUserForm({ onInvited }) {
             <Option value="admin">Admin</Option>
           </Select>
         </FormItem>
-        <Button
-          className="align-right"
-          type="primary"
-          onClick={onInviteClick}
-          disabled={isInviting}
-        >
+        <Button type="primary" onClick={onInviteClick} disabled={isInviting}>
           Add user
         </Button>
       </Form>

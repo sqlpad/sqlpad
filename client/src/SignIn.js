@@ -42,7 +42,6 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
         <Input
           name="email"
           type="email"
-          className="mt2"
           placeholder="Email address"
           onChange={e => setEmail(e.target.value)}
           required
@@ -50,26 +49,18 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
         <Input
           name="password"
           type="password"
-          className="mt2"
           placeholder="Password"
           onChange={e => setPassword(e.target.value)}
           required
         />
-        <Button
-          onClick={signIn}
-          className="w-100 mt4"
-          htmlType="submit"
-          type="primary"
-        >
+        <Button onClick={signIn} htmlType="submit" type="primary">
           Sign in
         </Button>
       </form>
-      <div className="tc mt3">
+      <div>
         <Link to="/signup">Sign Up</Link>
         {smtpConfigured ? (
-          <Link className="ml5" to="/forgot-password">
-            Forgot Password
-          </Link>
+          <Link to="/forgot-password">Forgot Password</Link>
         ) : null}
       </div>
     </div>
@@ -78,7 +69,7 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   const googleForm = (
     <div>
       <a href={config.baseUrl + '/auth/google'}>
-        <Button className="w-100 mt3" type="primary">
+        <Button type="primary">
           <Icon type="google" />
           Sign in with Google
         </Button>
@@ -87,8 +78,8 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   );
 
   return (
-    <div className="pt5 measure center" style={{ width: '300px' }}>
-      <h1 className="f2 tc">SQLPad</h1>
+    <div style={{ width: '300px' }}>
+      <h1>SQLPad</h1>
       {'local' in passport.strategies && localForm}
       {'google' in passport.strategies && googleForm}
     </div>
