@@ -1,6 +1,5 @@
 import Icon from 'antd/lib/icon';
 import Modal from 'antd/lib/modal';
-import Tooltip from 'antd/lib/tooltip';
 import React from 'react';
 import EditableTagGroup from '../../common/EditableTagGroup';
 import { Link } from 'react-router-dom';
