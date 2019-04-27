@@ -69,7 +69,7 @@ function SqlpadTauChart({
     );
   }
 
-  return <div id="chart" />;
+  return <div id="chart" className="flex-center h-100 w-100" />;
 }
 
 SqlpadTauChart.propTypes = {

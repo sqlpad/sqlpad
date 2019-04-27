@@ -19,11 +19,13 @@ function QueryEditorSqlEditor({
   ]);
 
   return (
-    <SqlEditor
-      value={value}
-      onChange={onChange}
-      onSelectionChange={handleQuerySelectionChange}
-    />
+    <div style={{ padding: 4, height: '100%', width: '100%' }}>
+      <SqlEditor
+        value={value}
+        onChange={onChange}
+        onSelectionChange={handleQuerySelectionChange}
+      />
+    </div>
   );
 }
 

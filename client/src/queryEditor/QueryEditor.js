@@ -99,7 +99,9 @@ class QueryEditor extends React.Component {
         onChange={this.handleVisPaneResize}
       >
         <QueryEditorSqlEditor />
-        <QueryEditorChart />
+        <div style={{ padding: 16 }} className="flex-center h-100 w-100">
+          <QueryEditorChart />
+        </div>
       </SplitPane>
     ) : (
       <QueryEditorSqlEditor />
