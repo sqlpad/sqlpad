@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import fetchJson from './utilities/fetch-json.js';
 import message from 'antd/lib/message';
+import Input from 'antd/lib/input';
+import Spacer from './common/Spacer';
+import Button from 'antd/lib/button';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -25,17 +28,20 @@ function ForgotPassword() {
   }
 
   return (
-    <div style={{ width: '300px' }}>
+    <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <form onSubmit={resetPassword}>
         <h1>SQLPad</h1>
-        <input
+        <Input
           name="email"
           type="email"
           placeholder="Email address"
           onChange={e => setEmail(e.target.value)}
           required
         />
-        <button type="submit">Reset Password</button>
+        <Spacer size={2} />
+        <Button style={{ width: '100%' }} htmlType="submit" type="primary">
+          Reset Password
+        </Button>
       </form>
     </div>
   );

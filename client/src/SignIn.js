@@ -7,6 +7,7 @@ import { connect } from 'unistore/react';
 import { actions } from './stores/unistoreStore';
 import { Link, Redirect } from 'react-router-dom';
 import fetchJson from './utilities/fetch-json.js';
+import Spacer from './common/Spacer';
 
 function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   const [email, setEmail] = useState('');
@@ -37,35 +38,50 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   }
 
   const localForm = (
-    <div>
-      <form onSubmit={signIn}>
-        <Input
-          name="email"
-          type="email"
-          placeholder="Email address"
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
-        <Input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={e => setPassword(e.target.value)}
-          required
-        />
-        <Button onClick={signIn} htmlType="submit" type="primary">
-          Sign in
-        </Button>
-      </form>
-      <div>
-        <Link to="/signup">Sign Up</Link>
-        {smtpConfigured ? (
-          <Link to="/forgot-password">Forgot Password</Link>
-        ) : null}
-      </div>
-    </div>
+    <form onSubmit={signIn}>
+      <Input
+        name="email"
+        type="email"
+        placeholder="Email address"
+        onChange={e => setEmail(e.target.value)}
+        required
+      />
+      <Spacer />
+      <Input
+        name="password"
+        type="password"
+        placeholder="Password"
+        onChange={e => setPassword(e.target.value)}
+        required
+      />
+      <Spacer size={2} />
+      <Button
+        style={{ width: '100%' }}
+        onClick={signIn}
+        htmlType="submit"
+        type="primary"
+      >
+        Sign in
+      </Button>
+      <Spacer />
+      <Link
+        style={{
+          display: 'inline-block',
+          width: '100%',
+          textAlign: 'center'
+        }}
+        to="/signup"
+      >
+        Sign Up
+      </Link>
+
+      {smtpConfigured ? (
+        <Link to="/forgot-password">Forgot Password</Link>
+      ) : null}
+    </form>
   );
 
+  // TODO FIXME XXX Button inside anchor is bad
   const googleForm = (
     <div>
       <a href={config.baseUrl + '/auth/google'}>
@@ -78,7 +94,7 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   );
 
   return (
-    <div style={{ width: '300px' }}>
+    <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
       {'local' in passport.strategies && localForm}
       {'google' in passport.strategies && googleForm}

@@ -6,6 +6,7 @@ import { connect } from 'unistore/react';
 import { actions } from './stores/unistoreStore';
 import { Redirect } from 'react-router-dom';
 import fetchJson from './utilities/fetch-json.js';
+import Spacer from './common/Spacer';
 
 function SignUp({ adminRegistrationOpen }) {
   const [email, setEmail] = useState('');
@@ -35,7 +36,7 @@ function SignUp({ adminRegistrationOpen }) {
   }
 
   return (
-    <div style={{ width: '300px' }}>
+    <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <form onSubmit={signUp}>
         <h1>SQLPad</h1>
         {adminRegistrationOpen && (
@@ -56,6 +57,7 @@ function SignUp({ adminRegistrationOpen }) {
           onChange={e => setEmail(e.target.value)}
           required
         />
+        <Spacer />
         <Input
           name="password"
           type="password"
@@ -63,6 +65,7 @@ function SignUp({ adminRegistrationOpen }) {
           onChange={e => setPassword(e.target.value)}
           required
         />
+        <Spacer />
         <Input
           name="passwordConfirmation"
           type="password"
@@ -70,7 +73,8 @@ function SignUp({ adminRegistrationOpen }) {
           onChange={e => setPasswordConfirmation(e.target.value)}
           required
         />
-        <Button htmlType="submit" type="primary">
+        <Spacer size={2} />
+        <Button style={{ width: '100%' }} htmlType="submit" type="primary">
           Sign up
         </Button>
       </form>
