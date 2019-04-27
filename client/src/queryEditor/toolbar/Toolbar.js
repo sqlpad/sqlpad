@@ -60,8 +60,15 @@ function Toolbar({
   const isAdmin = currentUser.role === 'admin';
 
   return (
-    <div className="w-100 bg-near-white ph2 pv1 bb b--light-gray">
-      <Form className="flex" layout="inline">
+    <div
+      style={{
+        width: '100%',
+        backgroundColor: '#fafafa',
+        padding: '.25rem .5rem',
+        borderBottom: '1px solid #eee'
+      }}
+    >
+      <Form style={{ display: 'flex' }} layout="inline">
         <FormItem>
           <QueryListButton />
         </FormItem>
@@ -87,7 +94,7 @@ function Toolbar({
 
         <FormItem validateStatus={validationState}>
           <Input
-            className="w5"
+            style={{ width: 260 }}
             placeholder="Query name"
             value={queryName}
             onChange={e => setQueryState('name', e.target.value)}
@@ -133,7 +140,7 @@ function Toolbar({
           </Button.Group>
         </FormItem>
 
-        <div className="flex-grow-1" />
+        <div style={{ flexGrow: 1 }} />
 
         <FormItem>
           <AboutButton />

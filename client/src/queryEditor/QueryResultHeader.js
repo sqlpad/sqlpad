@@ -1,10 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Typography from 'antd/lib/typography';
 import { Link } from 'react-router-dom';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
+
+const { Text } = Typography;
+
+const barStyle = {
+  height: '30px',
+  borderBottom: '1px solid #ccc',
+  backgroundColor: '#f4f4f4',
+  lineHeight: '30px',
+  paddingLeft: 4
+};
+
+const headerItemStyle = {
+  paddingLeft: 4,
+  paddingRight: 48
+};
 
 function QueryResultHeader({
   cacheKey,
@@ -15,16 +31,11 @@ function QueryResultHeader({
 }) {
   if (isRunning || !queryResult) {
     return (
-      <div
-        className="bb b--moon-gray bg-near-white pa2 nowrap fw6 near-black"
-        style={{ height: '30px' }}
-      >
+      <div style={barStyle}>
         {isRunning ? (
-          <span className="pl1 pr5">
-            <span className="gray">Query Run Time: </span>
-            <span>
-              <SecondsTimer startTime={runQueryStartTime} /> sec.
-            </span>
+          <span style={headerItemStyle}>
+            <Text type="secondary">Query time: </Text>
+            <SecondsTimer startTime={runQueryStartTime} /> sec.
           </span>
         ) : null}
       </div>
@@ -43,24 +54,21 @@ function QueryResultHeader({
   const xlsxDownloadLink = `/download-results/${cacheKey}.xlsx`;
 
   return (
-    <div
-      className="bb b--moon-gray bg-near-white pa2 nowrap fw6 near-black"
-      style={{ height: '30px' }}
-    >
-      <span className="pl1 pr5">
-        <span className="gray">Query Run Time: </span>
+    <div style={barStyle}>
+      <span style={headerItemStyle}>
+        <Text type="secondary">Query time: </Text>
         {serverSec}
       </span>
-      <span className="pr5">
-        <span className="gray">Rows: </span>
+      <span style={headerItemStyle}>
+        <Text type="secondary">Rows: </Text>
         {rowCount}
       </span>
-      <span className="pr5">
+      <span style={headerItemStyle}>
         {config.allowCsvDownload && (
           <span>
-            <span className="gray">Download: </span>
+            <Text type="secondary">Download: </Text>
             <Link
-              className="ml3"
+              style={{ marginLeft: 16 }}
               target="_blank"
               rel="noopener noreferrer"
               to={csvDownloadLink}
@@ -68,7 +76,7 @@ function QueryResultHeader({
               .csv
             </Link>
             <Link
-              className="ml3"
+              style={{ marginLeft: 16 }}
               target="_blank"
               rel="noopener noreferrer"
               to={xlsxDownloadLink}
@@ -78,9 +86,8 @@ function QueryResultHeader({
           </span>
         )}
       </span>
-      <span className="pr5">
-        <IncompleteDataNotification incomplete={incomplete} />
-      </span>
+
+      {incomplete && <IncompleteDataNotification />}
     </div>
   );
 }

@@ -56,7 +56,7 @@ function EditUserForm({ user }) {
               Remove
             </Button>
           </Col>
-          <Col className="tc" span={12}>
+          <Col style={{ textAlign: 'center' }} span={12}>
             <Link to={`/password-reset/${passwordResetId}`}>
               Password reset link
             </Link>

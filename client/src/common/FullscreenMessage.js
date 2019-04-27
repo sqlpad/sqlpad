@@ -2,7 +2,17 @@ import React from 'react';
 
 export default function FullscreenMessage({ children }) {
   return (
-    <div className=" w-100 flex f1 flex-column items-center justify-center">
+    <div
+      style={{
+        fontSize: '3rem',
+        width: '100%',
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
+      }}
+    >
       {children}
     </div>
   );

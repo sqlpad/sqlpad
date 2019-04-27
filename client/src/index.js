@@ -1,5 +1,4 @@
 import 'antd/dist/antd.css';
-import 'tachyons/css/tachyons.min.css';
 import './css/index.css';
 import './css/react-split-pane.css';
 import './css/vendorOverrides.css';

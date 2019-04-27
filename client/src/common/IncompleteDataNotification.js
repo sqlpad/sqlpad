@@ -1,27 +1,22 @@
 import Icon from 'antd/lib/icon';
 import Tooltip from 'antd/lib/tooltip';
-import PropTypes from 'prop-types';
+import Typography from 'antd/lib/typography';
 import React from 'react';
 
-function IncompleteDataNotification({ incomplete }) {
-  if (incomplete === true) {
-    return (
-      <Tooltip
-        title="Return fewer rows or increase query result max rows in
-        configuration."
-      >
-        <span className="red pointer mr2">
-          <Icon className="mr2" type="warning" />
-          Incomplete
-        </span>
-      </Tooltip>
-    );
-  }
-  return null;
-}
+const { Text } = Typography;
 
-IncompleteDataNotification.propTypes = {
-  incomplete: PropTypes.bool
-};
+function IncompleteDataNotification() {
+  return (
+    <Tooltip
+      title="Return fewer rows or increase query result max rows in
+        configuration."
+    >
+      <Text style={{ marginRight: '.5rem' }} type="danger">
+        <Icon style={{ marginRight: '.5rem' }} type="warning" />
+        Incomplete
+      </Text>
+    </Tooltip>
+  );
+}
 
 export default IncompleteDataNotification;

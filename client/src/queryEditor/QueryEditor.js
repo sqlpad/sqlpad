@@ -1,6 +1,5 @@
 import keymaster from 'keymaster';
 import PropTypes from 'prop-types';
-import Layout from 'antd/lib/layout';
 import React from 'react';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
@@ -14,8 +13,6 @@ import QueryResultHeader from './QueryResultHeader.js';
 import SchemaSidebar from '../schema/SchemaSidebar.js';
 import VisSidebar from './VisSidebar';
 import { resizeChart } from '../common/tauChartRef';
-
-const { Content } = Layout;
 
 // TODO FIXME XXX capture unsaved state to local storage
 // Prompt is removed. It doesn't always work anyways
@@ -102,7 +99,7 @@ class QueryEditor extends React.Component {
         onChange={this.handleVisPaneResize}
       >
         <QueryEditorSqlEditor />
-        <div className="flex-auto h-100">
+        <div style={{ padding: 16 }} className="flex-center h-100 w-100">
           <QueryEditorChart />
         </div>
       </SplitPane>
@@ -159,16 +156,17 @@ class QueryEditor extends React.Component {
     );
 
     return (
-      <Layout style={{ minHeight: '100vh' }} className="flex w-100 bg-white">
-        <Content className="flex w-100">
-          <div className="flex w-100" style={{ flexDirection: 'column' }}>
-            <Toolbar />
-            <div style={{ position: 'relative', flexGrow: 1 }}>
-              {sqlTabPane}
-            </div>
-          </div>
-        </Content>
-      </Layout>
+      <div
+        style={{
+          height: '100vh',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
+        <Toolbar />
+        <div style={{ position: 'relative', flexGrow: 1 }}>{sqlTabPane}</div>
+      </div>
     );
   }
 }

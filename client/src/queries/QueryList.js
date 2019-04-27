@@ -17,6 +17,7 @@ import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import IconButtonLink from '../common/IconButtonLink';
 import SqlEditor from '../common/SqlEditor';
+import styles from './QueryList.module.css';
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -76,7 +77,7 @@ function QueryList({
 
     return (
       <List.Item
-        className="bg-animate hover-bg-near-white"
+        className={styles.ListItem}
         onMouseEnter={() => setPreview(query)}
         onMouseLeave={() => setPreview('')}
         actions={[
@@ -128,7 +129,7 @@ function QueryList({
   return (
     <>
       <Row>
-        <Col className="pb3" span={24}>
+        <Col style={{ paddingBottom: 8 }} span={24}>
           <Select
             autoFocus
             className="w-100"
@@ -151,7 +152,6 @@ function QueryList({
       />
       {preview && (
         <div
-          className="shadow-2 pa3"
           style={{
             position: 'fixed',
             left: 640,
@@ -160,7 +160,9 @@ function QueryList({
             bottom: 40,
             backgroundColor: 'white',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            boxShadow: '0 0 8px 2px rgba( 0, 0, 0, .2 )',
+            padding: 16
           }}
         >
           <Title level={4}>

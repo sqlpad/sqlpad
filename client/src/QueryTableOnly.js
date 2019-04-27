@@ -43,18 +43,30 @@ function QueryTableOnly({ queryId }) {
 
   return (
     <div
-      className="flex w-100"
-      style={{ flexDirection: 'column', padding: '16px' }}
+      style={{
+        display: 'flex',
+        height: '100vh',
+        width: '100%',
+        flexDirection: 'column',
+        padding: '16px'
+      }}
     >
       <div style={{ height: '50px' }}>
-        <span className="f2">{query ? query.name : ''}</span>
+        <span style={{ fontSize: '2rem' }}>{query ? query.name : ''}</span>
         <div style={{ float: 'right' }}>
-          <IncompleteDataNotification incomplete={incomplete} />
+          {incomplete && <IncompleteDataNotification />}
           <ExportButton cacheKey={cacheKey} />
         </div>
       </div>
-      <div className="flex h-100 ba b--moon-gray">
-        <div className="relative w-100">
+      <div style={{ display: 'flex', flexGrow: 1, height: '100%' }}>
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            border: '1px solid #CCC'
+          }}
+        >
           <QueryResultDataTable
             isRunning={isRunning}
             runQueryStartTime={runQueryStartTime}

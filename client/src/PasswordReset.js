@@ -4,6 +4,7 @@ import message from 'antd/lib/message';
 import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import fetchJson from './utilities/fetch-json.js';
+import Spacer from './common/Spacer';
 
 function PasswordReset({ passwordResetId }) {
   const [email, setEmail] = useState('');
@@ -37,34 +38,34 @@ function PasswordReset({ passwordResetId }) {
     return <Redirect to="/" />;
   }
   return (
-    <div className="pt5 measure center" style={{ width: '300px' }}>
+    <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <form onSubmit={resetPassword}>
-        <h1 className="f2 tc">SQLPad</h1>
+        <h1>SQLPad</h1>
         <Input
           name="email"
           type="email"
-          className="mt3"
           placeholder="Email address"
           onChange={e => setEmail(e.target.value)}
           required
         />
+        <Spacer />
         <Input
           name="password"
           type="password"
-          className="mt3"
           placeholder="Password"
           onChange={e => setPassword(e.target.value)}
           required
         />
+        <Spacer />
         <Input
           name="passwordConfirmation"
           type="password"
-          className="mt3"
           placeholder="Confirm Password"
           onChange={e => setPasswordConfirmation(e.target.value)}
           required
         />
-        <Button className="w-100 mt3" htmlType="submit" type="primary">
+        <Spacer size={2} />
+        <Button style={{ width: '100%' }} htmlType="submit" type="primary">
           Reset Password
         </Button>
       </form>

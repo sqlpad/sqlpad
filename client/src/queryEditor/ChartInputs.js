@@ -18,7 +18,10 @@ function cleanBoolean(value) {
   return value;
 }
 
-const inputClassName = 'mt3 mb3';
+const inputStyle = {
+  marginTop: 16,
+  marginBottom: 16
+};
 
 function ChartInputs({
   onChartConfigurationFieldsChange,
@@ -65,7 +68,7 @@ function ChartInputs({
           );
         }
         return (
-          <div className={inputClassName} key={field.fieldId}>
+          <div style={inputStyle} key={field.fieldId}>
             <label>{field.label}</label>
             <Select
               allowClear
@@ -92,7 +95,7 @@ function ChartInputs({
         const checked =
           cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
         return (
-          <div className={inputClassName} key={field.fieldId}>
+          <div style={inputStyle} key={field.fieldId}>
             <Checkbox
               checked={checked}
               name={field.key}
@@ -107,7 +110,7 @@ function ChartInputs({
       } else if (field.inputType === 'textbox') {
         const value = queryChartConfigurationFields[field.fieldId] || '';
         return (
-          <div className={inputClassName} key={field.fieldId}>
+          <div style={inputStyle} key={field.fieldId}>
             <label>{field.label}</label>
             <Input
               value={value}

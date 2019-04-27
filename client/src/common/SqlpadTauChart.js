@@ -51,7 +51,7 @@ function SqlpadTauChart({
 
   if (isRunning) {
     return (
-      <div id="chart" className="flex h-100 w-100 items-center justify-center">
+      <div id="chart" className="flex-center h-100 w-100">
         <SpinKitCube />
       </div>
     );
@@ -61,14 +61,15 @@ function SqlpadTauChart({
     return (
       <div
         id="chart"
-        className="flex h-100 w-100 items-center justify-center f2 pa4 tc bg-light-red"
+        style={{ fontSize: '2rem', padding: 24, textAlign: 'center' }}
+        className="flex-center h-100 w-100 bg-error"
       >
         {queryError}
       </div>
     );
   }
 
-  return <div id="chart" className="flex h-100 w-100 pa3" />;
+  return <div id="chart" className="flex-center h-100 w-100" />;
 }
 
 SqlpadTauChart.propTypes = {

@@ -43,13 +43,18 @@ function QueryChartOnly({ queryId }) {
 
   return (
     <div
-      className="flex w-100"
-      style={{ flexDirection: 'column', padding: '16px' }}
+      style={{
+        display: 'flex',
+        height: '100vh',
+        width: '100%',
+        flexDirection: 'column',
+        padding: '16px'
+      }}
     >
       <div style={{ height: '50px' }}>
-        <span className="f2">{query ? query.name : ''}</span>
+        <span style={{ fontSize: '2rem' }}>{query ? query.name : ''}</span>
         <div style={{ float: 'right' }}>
-          <IncompleteDataNotification incomplete={incomplete} />
+          {incomplete && <IncompleteDataNotification />}
           <ExportButton
             cacheKey={cacheKey}
             onSaveImageClick={onSaveImageClick}
