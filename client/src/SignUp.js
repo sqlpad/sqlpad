@@ -1,4 +1,3 @@
-import Button from 'antd/lib/button';
 import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
 import React, { useState, useEffect } from 'react';
@@ -7,6 +6,7 @@ import { actions } from './stores/unistoreStore';
 import { Redirect } from 'react-router-dom';
 import fetchJson from './utilities/fetch-json.js';
 import Spacer from './common/Spacer';
+import Button from './common/Button';
 
 function SignUp({ adminRegistrationOpen }) {
   const [email, setEmail] = useState('');

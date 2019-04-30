@@ -1,4 +1,3 @@
-import Button from 'antd/lib/button';
 import Icon from 'antd/lib/icon';
 import Select from 'antd/lib/select';
 import PropTypes from 'prop-types';
@@ -10,6 +9,7 @@ import SidebarBody from '../common/SidebarBody';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 import ChartInputs from './ChartInputs.js';
 import { exportPng } from '../common/tauChartRef';
+import Button from '../common/Button';
 const { Option } = Select;
 
 function mapStateToProps(state) {

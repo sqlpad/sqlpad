@@ -1,4 +1,3 @@
-import Button from 'antd/lib/button';
 import Tooltip from 'antd/lib/tooltip';
 import Modal from 'antd/lib/modal';
 import { connect } from 'unistore/react';
@@ -6,6 +5,7 @@ import { actions } from '../../stores/unistoreStore';
 import PropTypes from 'prop-types';
 import React from 'react';
 import AboutContent from './AboutContent';
+import Button from '../../common/Button';
 
 function mapStateToProps(state) {
   return {
@@ -22,7 +22,6 @@ function AboutButton({ version }) {
   return (
     <Tooltip placement="bottom" title="About">
       <Button
-        type="ghost"
         onClick={() => {
           Modal.info({
             width: 650,
@@ -32,8 +31,9 @@ function AboutButton({ version }) {
             onOk() {}
           });
         }}
-        icon="question-circle-o"
-      />
+      >
+        ?
+      </Button>
     </Tooltip>
   );
 }

@@ -1,4 +1,3 @@
-import Button from 'antd/lib/button';
 import message from 'antd/lib/message';
 import Modal from 'antd/lib/modal';
 import Row from 'antd/lib/row';
@@ -11,6 +10,7 @@ import { actions } from '../stores/unistoreStore';
 import fetchJson from '../utilities/fetch-json.js';
 import InviteUserForm from './InviteUserForm';
 import EditUserForm from './EditUserForm';
+import Button from '../common/Button';
 
 function UserList({ currentUser }) {
   const [users, setUsers] = useState([]);
@@ -63,7 +63,7 @@ function UserList({ currentUser }) {
           okText="Delete"
           cancelText="cancel"
         >
-          <Button icon="delete" type="danger" />
+          <Button type="danger">Delete</Button>
         </Popconfirm>
       );
     }

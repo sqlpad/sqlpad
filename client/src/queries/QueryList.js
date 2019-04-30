@@ -1,4 +1,3 @@
-import Button from 'antd/lib/button';
 import Icon from 'antd/lib/icon';
 import List from 'antd/lib/list';
 import Row from 'antd/lib/row';
@@ -17,6 +16,7 @@ import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import IconButtonLink from '../common/IconButtonLink';
 import SqlEditor from '../common/SqlEditor';
+import Button from '../common/Button';
 import styles from './QueryList.module.css';
 
 const { Option } = Select;
@@ -117,7 +117,7 @@ function QueryList({
             okText="Yes"
             cancelText="No"
           >
-            <Button icon="delete" type="danger" />
+            <Button type="danger">Delete</Button>
           </Popconfirm>
         ]}
       >

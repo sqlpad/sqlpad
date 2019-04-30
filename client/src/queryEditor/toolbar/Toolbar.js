@@ -1,4 +1,3 @@
-import Button from 'antd/lib/button';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import Tooltip from 'antd/lib/tooltip';
@@ -15,6 +14,7 @@ import ConfigButton from './ConfigButton';
 import QueryListButton from './QueryListButton';
 import QueryDetailsModal from './QueryDetailsModal';
 import IconButtonLink from '../../common/IconButtonLink';
+import Button from '../../common/Button';
 
 const FormItem = Form.Item;
 
@@ -69,28 +69,18 @@ function Toolbar({
       }}
     >
       <Form style={{ display: 'flex' }} layout="inline">
-        <FormItem>
-          <QueryListButton />
-        </FormItem>
+        <QueryListButton />
 
-        <FormItem>
-          <Tooltip placement="bottom" title="New query">
-            <IconButtonLink to="/queries/new" onClick={() => resetNewQuery()}>
-              <Icon type="plus" />
-            </IconButtonLink>
-          </Tooltip>
-        </FormItem>
+        <Tooltip placement="bottom" title="New query">
+          <IconButtonLink to="/queries/new" onClick={() => resetNewQuery()}>
+            <Icon type="plus" />
+          </IconButtonLink>
+        </Tooltip>
 
-        <FormItem>
-          <Button.Group>
-            <Button icon="database" onClick={toggleSchema} />
-            <Button icon="bar-chart" onClick={toggleVisSidebar} />
-          </Button.Group>
-        </FormItem>
+        <Button onClick={toggleSchema}>schema</Button>
+        <Button onClick={toggleVisSidebar}>Vis</Button>
 
-        <FormItem>
-          <ConnectionDropDown />
-        </FormItem>
+        <ConnectionDropDown />
 
         <FormItem validateStatus={validationState}>
           <Input
@@ -110,51 +100,35 @@ function Toolbar({
           />
         </FormItem>
 
-        <FormItem>
-          <Button.Group>
-            <Tooltip placement="bottom" title="Clone">
-              <Button onClick={handleCloneClick} disabled={cloneDisabled}>
-                <Icon type="copy" />
-              </Button>
-            </Tooltip>
-            <Tooltip placement="bottom" title="Format">
-              <Button onClick={formatQuery}>
-                <Icon type="align-left" />
-              </Button>
-            </Tooltip>
+        <Tooltip placement="bottom" title="Clone">
+          <Button onClick={handleCloneClick} disabled={cloneDisabled}>
+            <Icon type="copy" />
+          </Button>
+        </Tooltip>
+        <Tooltip placement="bottom" title="Format">
+          <Button onClick={formatQuery}>
+            <Icon type="align-left" />
+          </Button>
+        </Tooltip>
 
-            <Tooltip placement="bottom" title="Save">
-              <Button onClick={() => saveQuery()} disabled={isSaving}>
-                <Badge dot={unsavedChanges}>
-                  <Icon type="save" />
-                </Badge>
-              </Button>
-            </Tooltip>
-            <Button
-              type="primary"
-              onClick={() => runQuery()}
-              disabled={isRunning}
-            >
-              Run
-            </Button>
-          </Button.Group>
-        </FormItem>
+        <Tooltip placement="bottom" title="Save">
+          <Button onClick={() => saveQuery()} disabled={isSaving}>
+            <Badge dot={unsavedChanges}>
+              <Icon type="save" />
+            </Badge>
+          </Button>
+        </Tooltip>
+        <Button type="primary" onClick={() => runQuery()} disabled={isRunning}>
+          Run
+        </Button>
 
         <div style={{ flexGrow: 1 }} />
 
-        <FormItem>
-          <AboutButton />
-        </FormItem>
+        <AboutButton />
 
-        {isAdmin && (
-          <FormItem>
-            <ConfigButton />
-          </FormItem>
-        )}
+        {isAdmin && <ConfigButton />}
 
-        <FormItem>
-          <SignoutButton />
-        </FormItem>
+        <SignoutButton />
       </Form>
     </div>
   );

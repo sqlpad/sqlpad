@@ -1,4 +1,3 @@
-import Button from 'antd/lib/button';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
@@ -8,6 +7,7 @@ import { actions } from './stores/unistoreStore';
 import { Link, Redirect } from 'react-router-dom';
 import fetchJson from './utilities/fetch-json.js';
 import Spacer from './common/Spacer';
+import Button from './common/Button';
 
 function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   const [email, setEmail] = useState('');

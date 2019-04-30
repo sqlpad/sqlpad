@@ -4,7 +4,7 @@ import fetchJson from './utilities/fetch-json.js';
 import message from 'antd/lib/message';
 import Input from 'antd/lib/input';
 import Spacer from './common/Spacer';
-import Button from 'antd/lib/button';
+import Button from './common/Button';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');

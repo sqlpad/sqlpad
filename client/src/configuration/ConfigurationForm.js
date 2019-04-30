@@ -1,11 +1,11 @@
 import message from 'antd/lib/message';
 import Form from 'antd/lib/form';
-import Button from 'antd/lib/button';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import fetchJson from '../utilities/fetch-json.js';
 import ConfigItemInput from './ConfigItemInput';
+import Button from '../common/Button';
 
 const formItemLayout = {
   labelCol: {

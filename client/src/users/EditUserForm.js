@@ -1,10 +1,10 @@
-import Button from 'antd/lib/button';
 import Form from 'antd/lib/form';
 import message from 'antd/lib/message';
 import Select from 'antd/lib/select';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import React, { useState } from 'react';
+import Button from '../common/Button';
 import fetchJson from '../utilities/fetch-json.js';
 import { Link } from 'react-router-dom';
 import uuid from 'uuid';
@@ -53,7 +53,7 @@ function EditUserForm({ user }) {
         <Row type="flex" gutter={24} align="middle">
           <Col span={12}>
             <Button className="w-100" onClick={removePasswordResetLink}>
-              Remove
+              Remove reset link
             </Button>
           </Col>
           <Col style={{ textAlign: 'center' }} span={12}>

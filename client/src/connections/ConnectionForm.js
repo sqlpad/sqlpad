@@ -1,4 +1,3 @@
-import Button from 'antd/lib/button';
 import Checkbox from 'antd/lib/checkbox';
 import Form from 'antd/lib/form';
 import Icon from 'antd/lib/icon';
@@ -7,6 +6,7 @@ import Select from 'antd/lib/select';
 import React, { useState, useEffect } from 'react';
 import message from 'antd/lib/message';
 import fetchJson from '../utilities/fetch-json.js';
+import Button from '../common/Button';
 
 const FormItem = Form.Item;
 const { Option } = Select;

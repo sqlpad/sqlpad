@@ -9,6 +9,16 @@ a:focus {
   text-decoration: none;
 }
 
+button,
+select {
+  text-transform: none;
+}
+
+button,
+input {
+  overflow: visible;
+}
+
 /*  Utilities
 ============================================================================ */
 .truncate {

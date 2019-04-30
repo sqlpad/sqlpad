@@ -1,5 +1,5 @@
-import Button from 'antd/lib/button';
 import Drawer from '../../common/Drawer';
+import Button from '../../common/Button';
 import React, { useState } from 'react';
 import QueryList from '../../queries/QueryList';
 
@@ -8,7 +8,7 @@ function QueryListButton() {
 
   return (
     <>
-      <Button icon="file-text" onClick={() => setShowQueries(true)}>
+      <Button type="primary" onClick={() => setShowQueries(true)}>
         Queries
       </Button>
       <Drawer

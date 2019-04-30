@@ -1,8 +1,8 @@
-import Button from 'antd/lib/button';
 import Tabs from 'antd/lib/tabs';
 import Tooltip from 'antd/lib/tooltip';
 import React, { useState, useCallback } from 'react';
 import Drawer from '../../common/Drawer';
+import Button from '../../common/Button';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
 import UserList from '../../users/UserList';
 import ConnectionList from '../../connections/ConnectionList';
@@ -18,7 +18,7 @@ function ConfigButton() {
   return (
     <>
       <Tooltip placement="bottom" title="Configuration">
-        <Button type="ghost" icon="setting" onClick={onClick} />
+        <Button onClick={onClick}>Config</Button>
       </Tooltip>
 
       <Drawer

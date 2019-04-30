@@ -2,7 +2,6 @@ import Icon from 'antd/lib/icon';
 import Tooltip from 'antd/lib/tooltip';
 import Typography from 'antd/lib/typography';
 import Input from 'antd/lib/input';
-import Button from 'antd/lib/button';
 import Divider from 'antd/lib/divider';
 import Spin from 'antd/lib/spin';
 import React, { useEffect, useState } from 'react';
@@ -10,6 +9,7 @@ import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
 import Sidebar from '../common/Sidebar';
+import Button from '../common/Button';
 import { actions } from '../stores/unistoreStore';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
@@ -130,11 +130,12 @@ function SchemaSidebar({
             />
             <Tooltip title="Refresh schema">
               <Button
-                icon="reload"
                 style={{ marginLeft: 8 }}
                 disabled={loading}
                 onClick={handleRefreshClick}
-              />
+              >
+                Reload
+              </Button>
             </Tooltip>
           </div>
           <div>
