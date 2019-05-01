@@ -2,18 +2,20 @@ import React from 'react';
 import styles from './Button.module.css';
 
 export default function Button({ children, type, className, ...rest }) {
-  let cs = styles.btn;
+  const classNames = [styles.btn];
+
   if (type === 'primary') {
-    cs += ' ' + styles.primary;
+    classNames.push(styles.primary);
   } else if (type === 'danger') {
-    cs += ' ' + styles.danger;
+    classNames.push(styles.danger);
   }
+
   if (className) {
-    cs += ' ' + className;
+    classNames.push(className);
   }
 
   return (
-    <button className={cs} {...rest}>
+    <button className={classNames.join(' ')} {...rest}>
       {children}
     </button>
   );
