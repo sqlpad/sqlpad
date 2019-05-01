@@ -1,25 +1,24 @@
 import Form from 'antd/lib/form';
 import message from 'antd/lib/message';
-import Select from 'antd/lib/select';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import React, { useState } from 'react';
 import Button from '../common/Button';
+import Select from '../common/Select';
 import fetchJson from '../utilities/fetch-json.js';
 import { Link } from 'react-router-dom';
 import uuid from 'uuid';
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 function EditUserForm({ user }) {
   const [role, setRole] = useState(user.role);
   const [passwordResetId, setPasswordResetId] = useState(user.passwordResetId);
 
-  const handleRoleChange = async role => {
-    setRole(role);
+  const handleRoleChange = async event => {
+    setRole(event.target.value);
     const json = await fetchJson('PUT', '/api/users/' + user._id, {
-      role
+      role: event.target.value
     });
     if (json.error) {
       return message.error('Update failed: ' + json.error.toString());
@@ -82,8 +81,8 @@ function EditUserForm({ user }) {
         extra="Admins can manage database connections and users"
       >
         <Select name="role" value={role} onChange={handleRoleChange}>
-          <Option value="editor">Editor</Option>
-          <Option value="admin">Admin</Option>
+          <option value="editor">Editor</option>
+          <option value="admin">Admin</option>
         </Select>
       </FormItem>
       {renderReset()}

@@ -2,14 +2,13 @@ import Checkbox from 'antd/lib/checkbox';
 import Form from 'antd/lib/form';
 import Icon from 'antd/lib/icon';
 import Input from 'antd/lib/input';
-import Select from 'antd/lib/select';
 import React, { useState, useEffect } from 'react';
 import message from 'antd/lib/message';
 import fetchJson from '../utilities/fetch-json.js';
 import Button from '../common/Button';
+import Select from '../common/Select';
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';
@@ -183,22 +182,22 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
   const { name = '', driver = '' } = connectionEdits;
 
-  const driverSelectOptions = [<Option key="none" value="" />];
+  const driverSelectOptions = [<option key="none" value="" />];
 
   if (!drivers.length) {
     driverSelectOptions.push(
-      <Option key="loading" value="">
+      <option key="loading" value="">
         Loading...
-      </Option>
+      </option>
     );
   } else {
     drivers
       .sort((a, b) => a.name > b.name)
       .forEach(driver =>
         driverSelectOptions.push(
-          <Option key={driver.id} value={driver.id} name="driver">
+          <option key={driver.id} value={driver.id}>
             {driver.name}
-          </Option>
+          </option>
         )
       );
   }
@@ -234,7 +233,9 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
             <Select
               name="driver"
               value={driver}
-              onChange={value => setConnectionValue('driver', value)}
+              onChange={event =>
+                setConnectionValue('driver', event.target.value)
+              }
             >
               {driverSelectOptions}
             </Select>

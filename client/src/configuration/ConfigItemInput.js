@@ -1,11 +1,9 @@
 import Input from 'antd/lib/input';
-import Select from 'antd/lib/select';
 import Form from 'antd/lib/form';
 import Popover from 'antd/lib/popover';
 import Switch from 'antd/lib/switch';
 import React from 'react';
-
-const { Option } = Select;
+import Select from '../common/Select';
 
 function configIsBoolean(config) {
   const { options } = config;
@@ -77,9 +75,9 @@ function ConfigItemInput({ config, onChange }) {
   } else if (config.options) {
     const optionNodes = config.options.map(option => {
       return (
-        <Option key={option} value={option}>
+        <option key={option} value={option}>
           {option.toString()}
-        </Option>
+        </option>
       );
     });
     input = (

@@ -1,5 +1,4 @@
 import Icon from 'antd/lib/icon';
-import Select from 'antd/lib/select';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
@@ -10,7 +9,7 @@ import chartDefinitions from '../utilities/chartDefinitions.js';
 import ChartInputs from './ChartInputs.js';
 import { exportPng } from '../common/tauChartRef';
 import Button from '../common/Button';
-const { Option } = Select;
+import Select from '../common/Select';
 
 function mapStateToProps(state) {
   return {
@@ -41,9 +40,9 @@ function VisSidebar({
 }) {
   const chartOptions = chartDefinitions.map(d => {
     return (
-      <Option key={d.chartType} value={d.chartType}>
+      <option key={d.chartType} value={d.chartType}>
         {d.chartLabel}
-      </Option>
+      </option>
     );
   });
 
@@ -51,19 +50,11 @@ function VisSidebar({
     <Sidebar>
       <SidebarBody>
         <Select
-          allowClear
-          showSearch
           className="w-100"
-          optionFilterProp="children"
           value={chartType}
-          notFoundContent="No charts available"
-          onChange={handleChartTypeChange}
-          filterOption={(input, option) =>
-            option.props.value &&
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-              0
-          }
+          onChange={event => handleChartTypeChange(event.target.value)}
         >
+          <option value="" />
           {chartOptions}
         </Select>
         <ChartInputs

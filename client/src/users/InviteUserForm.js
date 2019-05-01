@@ -1,14 +1,13 @@
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
-import Select from 'antd/lib/select';
 import React, { useState } from 'react';
 import fetchJson from '../utilities/fetch-json.js';
 import Button from '../common/Button';
+import Select from '../common/Select';
 import { Link } from 'react-router-dom';
 
 const FormItem = Form.Item;
-const { Option } = Select;
 
 function InviteUserForm({ onInvited }) {
   const [email, setEmail] = useState(null);
@@ -56,10 +55,11 @@ function InviteUserForm({ onInvited }) {
           <Select
             name="role"
             value={role || ''}
-            onChange={role => setRole(role)}
+            onChange={event => setRole(event.target.value)}
           >
-            <Option value="editor">Editor</Option>
-            <Option value="admin">Admin</Option>
+            <option value="" />
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
           </Select>
         </FormItem>
         <Button type="primary" onClick={onInviteClick} disabled={isInviting}>

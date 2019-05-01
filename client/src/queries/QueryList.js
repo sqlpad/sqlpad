@@ -2,7 +2,6 @@ import Icon from 'antd/lib/icon';
 import List from 'antd/lib/list';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
-import Select from 'antd/lib/select';
 import Tooltip from 'antd/lib/tooltip';
 import Typography from 'antd/lib/typography';
 import Tag from 'antd/lib/tag';
@@ -17,9 +16,9 @@ import getDecoratedQueries from './getDecoratedQueries';
 import IconButtonLink from '../common/IconButtonLink';
 import SqlEditor from '../common/SqlEditor';
 import Button from '../common/Button';
+import Select from '../common/Select';
 import styles from './QueryList.module.css';
 
-const { Option } = Select;
 const { Title } = Typography;
 
 function QueryList({
@@ -126,6 +125,8 @@ function QueryList({
     );
   };
 
+  // TODO FIXME XXX searches select is meant to be multi value + open text string!
+  // Figure out what to do about this later after antd removal
   return (
     <>
       <Row>
@@ -133,13 +134,11 @@ function QueryList({
           <Select
             autoFocus
             className="w-100"
-            mode="tags"
-            placeholder="Search"
-            value={searches}
-            onChange={value => setSearches(value)}
+            value={searches && searches[0]}
+            onChange={event => setSearches([event.target.value])}
           >
             {availableSearches.map(search => (
-              <Option key={search}>{search}</Option>
+              <option key={search}>{search}</option>
             ))}
           </Select>
         </Col>
