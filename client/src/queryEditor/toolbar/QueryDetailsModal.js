@@ -1,4 +1,4 @@
-import Icon from 'antd/lib/icon';
+import ExportIcon from 'mdi-react/ExportVariantIcon';
 import Modal from 'antd/lib/modal';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -23,7 +23,7 @@ function QueryDetailsModal({ queryId, visible, onClose }) {
       return (
         <li role="presentation">
           <Link to={href} target="_blank" rel="noopener noreferrer">
-            {text} <Icon type="export" />
+            {text} <ExportIcon />
           </Link>
         </li>
       );

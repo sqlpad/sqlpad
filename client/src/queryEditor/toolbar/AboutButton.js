@@ -1,5 +1,6 @@
 import Tooltip from 'antd/lib/tooltip';
 import Modal from 'antd/lib/modal';
+import HelpIcon from 'mdi-react/HelpCircleOutlineIcon';
 import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
 import PropTypes from 'prop-types';
@@ -32,7 +33,7 @@ function AboutButton({ version }) {
           });
         }}
       >
-        ?
+        <HelpIcon size={18} style={{ marginTop: 5 }} />
       </Button>
     </Tooltip>
   );

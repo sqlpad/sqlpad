@@ -1,4 +1,4 @@
-import Icon from 'antd/lib/icon';
+import AlertIcon from 'mdi-react/AlertCircleIcon';
 import Tooltip from 'antd/lib/tooltip';
 import Typography from 'antd/lib/typography';
 import React from 'react';
@@ -12,7 +12,7 @@ function IncompleteDataNotification() {
         configuration."
     >
       <Text style={{ marginRight: '.5rem' }} type="danger">
-        <Icon style={{ marginRight: '.5rem' }} type="warning" />
+        <AlertIcon style={{ marginRight: '.5rem' }} />
         Incomplete
       </Text>
     </Tooltip>

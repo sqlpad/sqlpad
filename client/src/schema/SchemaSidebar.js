@@ -1,4 +1,5 @@
-import Icon from 'antd/lib/icon';
+import ClosedIcon from 'mdi-react/MenuRightIcon';
+import OpenIcon from 'mdi-react/MenuDownIcon';
 import Tooltip from 'antd/lib/tooltip';
 import Typography from 'antd/lib/typography';
 import Divider from 'antd/lib/divider';
@@ -16,6 +17,9 @@ import searchSchemaInfo from './searchSchemaInfo';
 import getSchemaList from './getSchemaList';
 
 const { Text } = Typography;
+
+const ICON_SIZE = 22;
+const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
 
 function mapStateToProps(state, props) {
   const { loading, schemaInfo, expanded } =
@@ -67,7 +71,7 @@ function SchemaSidebar({
 
   const Row = ({ index, style }) => {
     const row = visibleItems[index];
-    const iconType = expanded[row.id] ? 'caret-down' : 'caret-right';
+    const Icon = expanded[row.id] ? OpenIcon : ClosedIcon;
     if (!row) {
       return null;
     }
@@ -79,7 +83,7 @@ function SchemaSidebar({
           style={style}
           onClick={() => toggleSchemaItem(connectionId, row)}
         >
-          <Icon type={iconType} /> {row.name}
+          <Icon size={ICON_SIZE} style={ICON_STYLE} /> {row.name}
         </li>
       );
     }
@@ -91,7 +95,7 @@ function SchemaSidebar({
           style={style}
           onClick={() => toggleSchemaItem(connectionId, row)}
         >
-          <Icon type={iconType} /> {row.name}
+          <Icon size={ICON_SIZE} style={ICON_STYLE} /> {row.name}
         </li>
       );
     }

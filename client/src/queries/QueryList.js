@@ -1,4 +1,6 @@
-import Icon from 'antd/lib/icon';
+import EditIcon from 'mdi-react/PencilIcon';
+import TableIcon from 'mdi-react/TableIcon';
+import ChartIcon from 'mdi-react/FinanceIcon';
 import List from 'antd/lib/list';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
@@ -87,7 +89,7 @@ function QueryList({
                 onSelect(query);
               }}
             >
-              <Icon type="edit" />
+              <EditIcon />
             </IconButtonLink>
           </Tooltip>,
           <Tooltip key="table" title="Open results in new window">
@@ -96,7 +98,7 @@ function QueryList({
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Icon type="table" />
+              <TableIcon />
             </IconButtonLink>
           </Tooltip>,
           <Tooltip key="chart" title="Open chart in new window">
@@ -105,7 +107,7 @@ function QueryList({
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Icon type="bar-chart" />
+              <ChartIcon />
             </IconButtonLink>
           </Tooltip>,
           <Popconfirm

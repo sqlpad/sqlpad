@@ -1,4 +1,4 @@
-import Icon from 'antd/lib/icon';
+import DownloadIcon from 'mdi-react/DownloadIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
@@ -68,7 +68,7 @@ function VisSidebar({
       </SidebarBody>
       <div>
         <Button className="w-100" onClick={() => exportPng(queryId)}>
-          <Icon type="download" /> Save Chart Image
+          <DownloadIcon /> Save Chart Image
         </Button>
       </div>
     </Sidebar>

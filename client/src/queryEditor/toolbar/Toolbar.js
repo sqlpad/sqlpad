@@ -1,6 +1,10 @@
 import Tooltip from 'antd/lib/tooltip';
-import Badge from 'antd/lib/badge';
-import Icon from 'antd/lib/icon';
+import SaveIcon from 'mdi-react/ContentSaveIcon';
+import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
+import TagsIcon from 'mdi-react/TagMultipleIcon';
+import NewIcon from 'mdi-react/PlusBoxOutlineIcon';
+import CopyIcon from 'mdi-react/ContentCopyIcon';
+import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
 import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
 import PropTypes from 'prop-types';
@@ -14,6 +18,9 @@ import QueryDetailsModal from './QueryDetailsModal';
 import IconButtonLink from '../../common/IconButtonLink';
 import Button from '../../common/Button';
 import Input from '../../common/Input';
+
+const ICON_SIZE = 18;
+const ICON_STYLE = { marginTop: 5 };
 
 function mapStateToProps(state) {
   return {
@@ -70,7 +77,7 @@ function Toolbar({
 
         <Tooltip placement="bottom" title="New query">
           <IconButtonLink to="/queries/new" onClick={() => resetNewQuery()}>
-            <Icon type="plus" />
+            <NewIcon size={ICON_SIZE} style={ICON_STYLE} />
           </IconButtonLink>
         </Tooltip>
 
@@ -89,7 +96,7 @@ function Toolbar({
 
         <Tooltip placement="bottom" title="Tags">
           <Button onClick={() => setShowDetails(true)} disabled={cloneDisabled}>
-            <Icon type="tags" />
+            <TagsIcon size={ICON_SIZE} style={ICON_STYLE} />
           </Button>
           <QueryDetailsModal
             visible={showDetails}
@@ -99,20 +106,22 @@ function Toolbar({
 
         <Tooltip placement="bottom" title="Clone">
           <Button onClick={handleCloneClick} disabled={cloneDisabled}>
-            <Icon type="copy" />
+            <CopyIcon size={ICON_SIZE} style={ICON_STYLE} />
           </Button>
         </Tooltip>
         <Tooltip placement="bottom" title="Format">
           <Button onClick={formatQuery}>
-            <Icon type="align-left" />
+            <FormatIcon size={ICON_SIZE} style={ICON_STYLE} />
           </Button>
         </Tooltip>
 
         <Tooltip placement="bottom" title="Save">
           <Button onClick={() => saveQuery()} disabled={isSaving}>
-            <Badge dot={unsavedChanges}>
-              <Icon type="save" />
-            </Badge>
+            {unsavedChanges ? (
+              <UnsavedIcon size={ICON_SIZE} style={ICON_STYLE} />
+            ) : (
+              <SaveIcon size={ICON_SIZE} style={ICON_STYLE} />
+            )}
           </Button>
         </Tooltip>
         <Button type="primary" onClick={() => runQuery()} disabled={isRunning}>

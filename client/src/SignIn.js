@@ -1,4 +1,4 @@
-import Icon from 'antd/lib/icon';
+import GoogleIcon from 'mdi-react/GoogleIcon';
 import message from 'antd/lib/message';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
@@ -86,7 +86,7 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
     <div>
       <a href={config.baseUrl + '/auth/google'}>
         <Button type="primary">
-          <Icon type="google" />
+          <GoogleIcon />
           Sign in with Google
         </Button>
       </a>

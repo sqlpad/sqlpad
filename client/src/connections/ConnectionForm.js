@@ -1,5 +1,7 @@
 import Checkbox from 'antd/lib/checkbox';
-import Icon from 'antd/lib/icon';
+import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
+import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
+
 import React, { useState, useEffect } from 'react';
 import message from 'antd/lib/message';
 import fetchJson from '../utilities/fetch-json.js';
@@ -232,17 +234,25 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
           >
             {testing ? 'Testing...' : 'Test'}
             {!testing && testSuccess && (
-              <Icon
-                type="check-circle"
-                theme="twoTone"
-                twoToneColor="#52c41a"
+              <SuccessIcon
+                style={{
+                  marginLeft: 8,
+                  height: 18,
+                  width: 18,
+                  marginBottom: -4
+                }}
+                color="#52c41a"
               />
             )}
             {!testing && testFailed && (
-              <Icon
-                type="close-circle"
-                theme="twoTone"
-                twoToneColor="#eb2f96"
+              <CloseCircleOutlineIcon
+                style={{
+                  marginLeft: 8,
+                  height: 18,
+                  width: 18,
+                  marginBottom: -4
+                }}
+                color="#eb2f96"
               />
             )}
           </Button>
