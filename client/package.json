@@ -9,6 +9,7 @@
     "d3": "^5.9.2",
     "keymaster": "^1.6.2",
     "lodash": "^4.17.11",
+    "mdi-react": "^5.3.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-ace": "^6.5.0",
