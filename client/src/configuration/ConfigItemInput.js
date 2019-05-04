@@ -1,9 +1,9 @@
-import Form from 'antd/lib/form';
 import Popover from 'antd/lib/popover';
 import Switch from 'antd/lib/switch';
 import React from 'react';
 import Select from '../common/Select';
 import Input from '../common/Input';
+import HorizontalFormItem from '../common/HorizontalFormItem';
 
 function configIsBoolean(config) {
   const { options } = config;
@@ -68,6 +68,7 @@ function ConfigItemInput({ config, onChange }) {
   if (configIsBoolean(config)) {
     input = (
       <Switch
+        id={config.key}
         checked={config.effectiveValue}
         onChange={value => onChange(config.key, value)}
       />
@@ -82,6 +83,7 @@ function ConfigItemInput({ config, onChange }) {
     });
     input = (
       <Select
+        id={config.key}
         className="w-100"
         disabled={disabled}
         onChange={handleSelectChange}
@@ -93,6 +95,7 @@ function ConfigItemInput({ config, onChange }) {
   } else {
     input = (
       <Input
+        id={config.key}
         className="w-100"
         disabled={disabled}
         onChange={handleChange}
@@ -103,11 +106,11 @@ function ConfigItemInput({ config, onChange }) {
   }
 
   return (
-    <Form.Item label={config.label}>
+    <HorizontalFormItem label={config.label}>
       <Popover placement="right" content={popoverContent} trigger="hover">
         {input}
       </Popover>
-    </Form.Item>
+    </HorizontalFormItem>
   );
 }
 

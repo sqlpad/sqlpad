@@ -1,4 +1,3 @@
-import Form from 'antd/lib/form';
 import Tooltip from 'antd/lib/tooltip';
 import Badge from 'antd/lib/badge';
 import Icon from 'antd/lib/icon';
@@ -15,8 +14,6 @@ import QueryDetailsModal from './QueryDetailsModal';
 import IconButtonLink from '../../common/IconButtonLink';
 import Button from '../../common/Button';
 import Input from '../../common/Input';
-
-const FormItem = Form.Item;
 
 function mapStateToProps(state) {
   return {
@@ -68,7 +65,7 @@ function Toolbar({
         borderBottom: '1px solid #eee'
       }}
     >
-      <Form style={{ display: 'flex' }} layout="inline">
+      <div style={{ display: 'flex' }}>
         <QueryListButton />
 
         <Tooltip placement="bottom" title="New query">
@@ -129,7 +126,7 @@ function Toolbar({
         {isAdmin && <ConfigButton />}
 
         <SignoutButton />
-      </Form>
+      </div>
     </div>
   );
 }

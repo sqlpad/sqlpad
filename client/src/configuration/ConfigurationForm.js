@@ -1,29 +1,11 @@
 import message from 'antd/lib/message';
-import Form from 'antd/lib/form';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import fetchJson from '../utilities/fetch-json.js';
 import ConfigItemInput from './ConfigItemInput';
 import Button from '../common/Button';
-
-const formItemLayout = {
-  labelCol: {
-    sm: { span: 12 }
-  },
-  wrapperCol: {
-    sm: { span: 10 }
-  }
-};
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    sm: {
-      span: 10,
-      offset: 12
-    }
-  }
-};
+import HorizontalFormItem from '../common/HorizontalFormItem';
 
 function ConfigurationForm({ refreshAppContext, onClose }) {
   const [configItems, setConfigItems] = useState([]);
@@ -73,8 +55,8 @@ function ConfigurationForm({ refreshAppContext, onClose }) {
   const saveDisabled = hasChanges.length === 0;
 
   return (
-    <Form {...formItemLayout}>
-      <Form.Item {...tailFormItemLayout}>
+    <form>
+      <HorizontalFormItem>
         <Button
           disabled={saveDisabled}
           className="w-100"
@@ -83,7 +65,7 @@ function ConfigurationForm({ refreshAppContext, onClose }) {
         >
           Save
         </Button>
-      </Form.Item>
+      </HorizontalFormItem>
       {configItems.map(config => (
         <ConfigItemInput
           key={config.key}
@@ -91,7 +73,7 @@ function ConfigurationForm({ refreshAppContext, onClose }) {
           onChange={handleChange}
         />
       ))}
-    </Form>
+    </form>
   );
 }
 

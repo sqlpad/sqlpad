@@ -1,4 +1,3 @@
-import Form from 'antd/lib/form';
 import message from 'antd/lib/message';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
@@ -8,8 +7,8 @@ import Select from '../common/Select';
 import fetchJson from '../utilities/fetch-json.js';
 import { Link } from 'react-router-dom';
 import uuid from 'uuid';
-
-const FormItem = Form.Item;
+import Spacer from '../common/Spacer';
+import FormExplain from '../common/FormExplain';
 
 function EditUserForm({ user }) {
   const [role, setRole] = useState(user.role);
@@ -75,18 +74,20 @@ function EditUserForm({ user }) {
   };
 
   return (
-    <Form layout="vertical">
-      <FormItem
-        label="Role"
-        extra="Admins can manage database connections and users"
-      >
+    <form>
+      <label>
+        Role
         <Select name="role" value={role} onChange={handleRoleChange}>
           <option value="editor">Editor</option>
           <option value="admin">Admin</option>
         </Select>
-      </FormItem>
+      </label>
+      <FormExplain>
+        Admins can manage database connections and users
+      </FormExplain>
+      <Spacer size={3} />
       {renderReset()}
-    </Form>
+    </form>
   );
 }
 

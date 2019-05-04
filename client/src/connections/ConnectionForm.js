@@ -1,5 +1,4 @@
 import Checkbox from 'antd/lib/checkbox';
-import Form from 'antd/lib/form';
 import Icon from 'antd/lib/icon';
 import React, { useState, useEffect } from 'react';
 import message from 'antd/lib/message';
@@ -7,36 +6,11 @@ import fetchJson from '../utilities/fetch-json.js';
 import Button from '../common/Button';
 import Select from '../common/Select';
 import Input from '../common/Input';
-
-const FormItem = Form.Item;
+import HorizontalFormItem from '../common/HorizontalFormItem.js';
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';
 const CHECKBOX = 'CHECKBOX';
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
-};
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0
-    },
-    sm: {
-      span: 16,
-      offset: 8
-    }
-  }
-};
 
 function ConnectionForm({ connectionId, onConnectionSaved }) {
   const [connectionEdits, setConnectionEdits] = useState({});
@@ -132,7 +106,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
         if (field.formType === TEXT) {
           const value = connectionEdits[field.key] || '';
           return (
-            <FormItem {...formItemLayout} key={field.key} label={field.label}>
+            <HorizontalFormItem key={field.key} label={field.label}>
               <Input
                 name={field.key}
                 value={value}
@@ -140,14 +114,14 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                   setConnectionValue(e.target.name, e.target.value)
                 }
               />
-            </FormItem>
+            </HorizontalFormItem>
           );
         } else if (field.formType === PASSWORD) {
           const value = connectionEdits[field.key] || '';
           // autoComplete='new-password' used to prevent browsers from autofilling username and password
           // Because we dont return a password, Chrome goes ahead and autofills
           return (
-            <FormItem {...formItemLayout} key={field.key} label={field.label}>
+            <HorizontalFormItem key={field.key} label={field.label}>
               <Input
                 type="password"
                 autoComplete="new-password"
@@ -157,12 +131,12 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                   setConnectionValue(e.target.name, e.target.value)
                 }
               />
-            </FormItem>
+            </HorizontalFormItem>
           );
         } else if (field.formType === CHECKBOX) {
           const checked = connectionEdits[field.key] || false;
           return (
-            <FormItem {...tailFormItemLayout} key={field.key}>
+            <HorizontalFormItem key={field.key}>
               <Checkbox
                 checked={checked}
                 name={field.key}
@@ -172,7 +146,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
               >
                 {field.label}
               </Checkbox>
-            </FormItem>
+            </HorizontalFormItem>
           );
         }
         return null;
@@ -204,8 +178,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
   return (
     <div style={{ height: '100%' }}>
-      <Form
-        layout="vertical"
+      <form
         autoComplete="off"
         style={{
           display: 'flex',
@@ -214,32 +187,26 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
         }}
       >
         <div style={{ overflowY: 'auto', flexGrow: 1, height: '100%' }}>
-          <FormItem
-            {...formItemLayout}
-            validateStatus={name ? null : 'error'}
-            label={'Connection name'}
-          >
+          <HorizontalFormItem label="Connection name">
             <Input
               name="name"
               value={name}
+              error={!name}
               onChange={e => setConnectionValue(e.target.name, e.target.value)}
             />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Driver"
-            validateStatus={driver ? null : 'error'}
-          >
+          </HorizontalFormItem>
+          <HorizontalFormItem label="Driver">
             <Select
               name="driver"
               value={driver}
+              error={!driver}
               onChange={event =>
                 setConnectionValue('driver', event.target.value)
               }
             >
               {driverSelectOptions}
             </Select>
-          </FormItem>
+          </HorizontalFormItem>
 
           {renderDriverFields()}
         </div>
@@ -280,7 +247,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
             )}
           </Button>
         </div>
-      </Form>
+      </form>
     </div>
   );
 }
