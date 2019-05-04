@@ -27,3 +27,22 @@
   outline: 0;
   box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
+
+.danger {
+  border-color: #f5222d;
+}
+
+.danger:focus {
+  border-color: #ff4d4f;
+  border-right-width: 1px !important;
+  outline: 0;
+  box-shadow: 0 0 0 2px rgba(245, 34, 45, 0.2);
+}
+
+.danger:hover {
+  border-color: #ff4d4f;
+}
+
+.danger::placeholder {
+  color: #f5222d;
+}
