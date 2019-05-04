@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import fetchJson from './utilities/fetch-json.js';
 import message from 'antd/lib/message';
-import Input from 'antd/lib/input';
 import Spacer from './common/Spacer';
 import Button from './common/Button';
+import Input from './common/Input';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');

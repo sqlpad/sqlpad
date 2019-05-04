@@ -1,10 +1,10 @@
 import Form from 'antd/lib/form';
-import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
 import React, { useState } from 'react';
 import fetchJson from '../utilities/fetch-json.js';
 import Button from '../common/Button';
 import Select from '../common/Select';
+import Input from '../common/Input';
 import { Link } from 'react-router-dom';
 
 const FormItem = Form.Item;

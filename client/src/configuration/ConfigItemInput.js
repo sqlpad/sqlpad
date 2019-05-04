@@ -1,9 +1,9 @@
-import Input from 'antd/lib/input';
 import Form from 'antd/lib/form';
 import Popover from 'antd/lib/popover';
 import Switch from 'antd/lib/switch';
 import React from 'react';
 import Select from '../common/Select';
+import Input from '../common/Input';
 
 function configIsBoolean(config) {
   const { options } = config;

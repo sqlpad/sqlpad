@@ -1,12 +1,12 @@
 import Checkbox from 'antd/lib/checkbox';
 import Form from 'antd/lib/form';
 import Icon from 'antd/lib/icon';
-import Input from 'antd/lib/input';
 import React, { useState, useEffect } from 'react';
 import message from 'antd/lib/message';
 import fetchJson from '../utilities/fetch-json.js';
 import Button from '../common/Button';
 import Select from '../common/Select';
+import Input from '../common/Input';
 
 const FormItem = Form.Item;
 

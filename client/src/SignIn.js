@@ -1,5 +1,4 @@
 import Icon from 'antd/lib/icon';
-import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
@@ -8,6 +7,7 @@ import { Link, Redirect } from 'react-router-dom';
 import fetchJson from './utilities/fetch-json.js';
 import Spacer from './common/Spacer';
 import Button from './common/Button';
+import Input from './common/Input';
 
 function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   const [email, setEmail] = useState('');

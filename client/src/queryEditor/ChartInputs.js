@@ -1,9 +1,9 @@
 import Checkbox from 'antd/lib/checkbox';
-import Input from 'antd/lib/input';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 import Select from '../common/Select';
+import Input from '../common/Input';
 
 function cleanBoolean(value) {
   if (typeof value === 'string') {

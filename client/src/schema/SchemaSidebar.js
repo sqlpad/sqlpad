@@ -1,7 +1,6 @@
 import Icon from 'antd/lib/icon';
 import Tooltip from 'antd/lib/tooltip';
 import Typography from 'antd/lib/typography';
-import Input from 'antd/lib/input';
 import Divider from 'antd/lib/divider';
 import Spin from 'antd/lib/spin';
 import React, { useEffect, useState } from 'react';
@@ -10,6 +9,7 @@ import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
 import Sidebar from '../common/Sidebar';
 import Button from '../common/Button';
+import Input from '../common/Input';
 import { actions } from '../stores/unistoreStore';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';

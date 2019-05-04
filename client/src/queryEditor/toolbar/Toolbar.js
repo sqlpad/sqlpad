@@ -1,5 +1,4 @@
 import Form from 'antd/lib/form';
-import Input from 'antd/lib/input';
 import Tooltip from 'antd/lib/tooltip';
 import Badge from 'antd/lib/badge';
 import Icon from 'antd/lib/icon';
@@ -15,6 +14,7 @@ import QueryListButton from './QueryListButton';
 import QueryDetailsModal from './QueryDetailsModal';
 import IconButtonLink from '../../common/IconButtonLink';
 import Button from '../../common/Button';
+import Input from '../../common/Input';
 
 const FormItem = Form.Item;
 
@@ -54,7 +54,7 @@ function Toolbar({
 }) {
   const [showDetails, setShowDetails] = useState(false);
 
-  const validationState = showValidation && !queryName.length ? 'error' : null;
+  const error = showValidation && !queryName.length;
   const cloneDisabled = !queryId;
 
   const isAdmin = currentUser.role === 'admin';
@@ -82,14 +82,13 @@ function Toolbar({
 
         <ConnectionDropDown />
 
-        <FormItem validateStatus={validationState}>
-          <Input
-            style={{ width: 260 }}
-            placeholder="Query name"
-            value={queryName}
-            onChange={e => setQueryState('name', e.target.value)}
-          />
-        </FormItem>
+        <Input
+          error={error}
+          style={{ width: 260 }}
+          placeholder="Query name"
+          value={queryName}
+          onChange={e => setQueryState('name', e.target.value)}
+        />
 
         <Tooltip placement="bottom" title="Tags">
           <Button onClick={() => setShowDetails(true)} disabled={cloneDisabled}>
