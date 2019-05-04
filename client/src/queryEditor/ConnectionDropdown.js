@@ -31,7 +31,9 @@ function ConnectionDropdown({
     setShowEdit(false);
   };
 
-  const style = !selectedConnectionId ? { color: '#777' } : {};
+  const style = !selectedConnectionId
+    ? { color: '#777', width: 260 }
+    : { width: 260 };
 
   return (
     <>

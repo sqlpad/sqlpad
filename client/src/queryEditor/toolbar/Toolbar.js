@@ -88,17 +88,18 @@ function Toolbar({
             placeholder="Query name"
             value={queryName}
             onChange={e => setQueryState('name', e.target.value)}
-            addonAfter={
-              <Tooltip placement="bottom" title="Tags">
-                <Icon onClick={() => setShowDetails(true)} type="tags" />
-                <QueryDetailsModal
-                  visible={showDetails}
-                  onClose={() => setShowDetails(false)}
-                />
-              </Tooltip>
-            }
           />
         </FormItem>
+
+        <Tooltip placement="bottom" title="Tags">
+          <Button onClick={() => setShowDetails(true)} disabled={cloneDisabled}>
+            <Icon type="tags" />
+          </Button>
+          <QueryDetailsModal
+            visible={showDetails}
+            onClose={() => setShowDetails(false)}
+          />
+        </Tooltip>
 
         <Tooltip placement="bottom" title="Clone">
           <Button onClick={handleCloneClick} disabled={cloneDisabled}>
