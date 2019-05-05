@@ -94,7 +94,7 @@ function Toolbar({
           onChange={e => setQueryState('name', e.target.value)}
         />
 
-        {/* TODO FIXME XXX - disabled button isn't styled and tooltip behaves weird with it */}
+        {/* TODO FIXME XXX - tooltip behaves weird with disabled button. Button should probably own tooltip */}
         <Tooltip label="Tags">
           <Button onClick={() => setShowDetails(true)} disabled={cloneDisabled}>
             <TagsIcon size={ICON_SIZE} style={ICON_STYLE} />
