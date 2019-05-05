@@ -1,9 +1,13 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 
-function IconButtonLink({ className, ...rest }) {
+const IconButtonLink = React.forwardRef(({ className, ...rest }, ref) => {
   const cn = 'ant-btn ant-btn-icon-only ' + (className || '');
-  return <Link className={cn} {...rest} />;
-}
+  return (
+    <span ref={ref}>
+      <Link className={cn} {...rest} />
+    </span>
+  );
+});
 
 export default IconButtonLink;
