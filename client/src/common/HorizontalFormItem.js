@@ -7,8 +7,15 @@ export default function HorizontalFormItem({
   children
 }) {
   return (
-    <div style={{ marginTop: 24, display: 'flex', alignItems: 'center' }}>
-      <div style={{ flexBasis: leftWidth, marginRight: 16, textAlign: 'left' }}>
+    <div style={{ marginTop: 24, display: 'flex', alignItems: 'flex-start' }}>
+      <div
+        style={{
+          flexBasis: leftWidth,
+          marginRight: 16,
+          marginTop: 4,
+          textAlign: 'left'
+        }}
+      >
         <label htmlFor={label}>{label}</label>
       </div>
       <div style={{ flexBasis: rightWidth }}>{children}</div>

@@ -1,9 +1,9 @@
-import Popover from 'antd/lib/popover';
 import Switch from 'antd/lib/switch';
 import React from 'react';
 import Select from '../common/Select';
 import Input from '../common/Input';
 import HorizontalFormItem from '../common/HorizontalFormItem';
+import FormExplain from '../common/FormExplain';
 
 function configIsBoolean(config) {
   const { options } = config;
@@ -107,9 +107,8 @@ function ConfigItemInput({ config, onChange }) {
 
   return (
     <HorizontalFormItem label={config.label}>
-      <Popover placement="right" content={popoverContent} trigger="hover">
-        {input}
-      </Popover>
+      <div>{input}</div>
+      <FormExplain>{popoverContent}</FormExplain>
     </HorizontalFormItem>
   );
 }
