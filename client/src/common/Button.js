@@ -1,7 +1,13 @@
 import React from 'react';
 import styles from './Button.module.css';
 
-export default function Button({ children, type, className, ...rest }) {
+export default function Button({
+  children,
+  type,
+  htmlType,
+  className,
+  ...rest
+}) {
   const classNames = [styles.btn];
 
   if (type === 'primary') {
@@ -15,7 +21,7 @@ export default function Button({ children, type, className, ...rest }) {
   }
 
   return (
-    <button className={classNames.join(' ')} {...rest}>
+    <button className={classNames.join(' ')} type={htmlType} {...rest}>
       {children}
     </button>
   );
