@@ -2,7 +2,6 @@ import ClosedIcon from 'mdi-react/MenuRightIcon';
 import OpenIcon from 'mdi-react/MenuDownIcon';
 import Typography from 'antd/lib/typography';
 import Divider from 'antd/lib/divider';
-import Spin from 'antd/lib/spin';
 import React, { useEffect, useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
@@ -160,11 +159,7 @@ function SchemaSidebar({
               }}
             >
               {loading ? (
-                <Spin
-                  spinning={loading}
-                  className={styles.schemaSpinner}
-                  delay={150}
-                />
+                <div className={styles.schemaSpinner}>loading...</div>
               ) : (
                 <ul style={{ paddingLeft: 0 }}>
                   <List
