@@ -1,4 +1,3 @@
-import message from 'antd/lib/message';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
 import React, { useState } from 'react';
@@ -9,6 +8,7 @@ import { Link } from 'react-router-dom';
 import uuid from 'uuid';
 import Spacer from '../common/Spacer';
 import FormExplain from '../common/FormExplain';
+import message from '../common/message';
 
 function EditUserForm({ user }) {
   const [role, setRole] = useState(user.role);

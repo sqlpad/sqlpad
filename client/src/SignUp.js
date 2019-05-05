@@ -1,4 +1,3 @@
-import message from 'antd/lib/message';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from './stores/unistoreStore';
@@ -7,6 +6,7 @@ import fetchJson from './utilities/fetch-json.js';
 import Spacer from './common/Spacer';
 import Button from './common/Button';
 import Input from './common/Input';
+import message from './common/message';
 
 function SignUp({ adminRegistrationOpen }) {
   const [email, setEmail] = useState('');

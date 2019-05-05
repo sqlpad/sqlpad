@@ -1,14 +1,13 @@
 import Checkbox from 'antd/lib/checkbox';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
 import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
-
 import React, { useState, useEffect } from 'react';
-import message from 'antd/lib/message';
 import fetchJson from '../utilities/fetch-json.js';
 import Button from '../common/Button';
 import Select from '../common/Select';
 import Input from '../common/Input';
 import HorizontalFormItem from '../common/HorizontalFormItem.js';
+import message from '../common/message';
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';

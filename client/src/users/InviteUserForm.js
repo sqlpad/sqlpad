@@ -1,4 +1,3 @@
-import message from 'antd/lib/message';
 import React, { useState } from 'react';
 import fetchJson from '../utilities/fetch-json.js';
 import Button from '../common/Button';
@@ -7,6 +6,7 @@ import Input from '../common/Input';
 import { Link } from 'react-router-dom';
 import FormExplain from '../common/FormExplain.js';
 import Spacer from '../common/Spacer.js';
+import message from '../common/message';
 
 function InviteUserForm({ onInvited }) {
   const [email, setEmail] = useState(null);

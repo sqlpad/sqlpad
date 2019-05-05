@@ -1,10 +1,10 @@
 import createStore from 'unistore';
 import uuid from 'uuid';
 import sortBy from 'lodash/sortBy';
-import message from 'antd/lib/message';
 import sqlFormatter from 'sql-formatter';
 import fetchJson from '../utilities/fetch-json.js';
 import updateCompletions from '../utilities/updateCompletions.js';
+import message from '../common/message';
 
 const ONE_HOUR_MS = 1000 * 60 * 60;
 

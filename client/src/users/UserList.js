@@ -1,4 +1,3 @@
-import message from 'antd/lib/message';
 import Modal from 'antd/lib/modal';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
@@ -11,6 +10,7 @@ import fetchJson from '../utilities/fetch-json.js';
 import InviteUserForm from './InviteUserForm';
 import EditUserForm from './EditUserForm';
 import Button from '../common/Button';
+import message from '../common/message';
 
 function UserList({ currentUser }) {
   const [users, setUsers] = useState([]);
@@ -41,7 +41,6 @@ function UserList({ currentUser }) {
     if (json.error) {
       return message.error('Delete Failed: ' + json.error.toString());
     }
-    message.success('User Deleted');
     loadUsersFromServer();
   };
 
