@@ -1,7 +1,5 @@
-import Modal from 'antd/lib/modal';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
-import Popconfirm from 'antd/lib/popconfirm';
 import List from 'antd/lib/list';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
@@ -11,6 +9,8 @@ import InviteUserForm from './InviteUserForm';
 import EditUserForm from './EditUserForm';
 import Button from '../common/Button';
 import message from '../common/message';
+import Modal from '../common/Modal';
+import DeleteConfirmButton from '../common/DeleteConfirmButton';
 
 function UserList({ currentUser }) {
   const [users, setUsers] = useState([]);
@@ -53,17 +53,19 @@ function UserList({ currentUser }) {
     const actions = [];
 
     if (currentUser && currentUser._id !== user._id) {
-      actions.push(<Button onClick={() => setEditUser(user)}>edit</Button>);
       actions.push(
-        <Popconfirm
-          title={`Delete ${user.email}?`}
+        <Button key="edit" onClick={() => setEditUser(user)}>
+          edit
+        </Button>
+      );
+      actions.push(
+        <DeleteConfirmButton
+          key="delete"
+          confirmMessage={`Delete ${user.email}?`}
           onConfirm={e => handleDelete(user)}
-          onCancel={() => {}}
-          okText="Delete"
-          cancelText="cancel"
         >
-          <Button type="danger">Delete</Button>
-        </Popconfirm>
+          Delete
+        </DeleteConfirmButton>
       );
     }
 
@@ -110,10 +112,8 @@ function UserList({ currentUser }) {
       <Modal
         title="Add user"
         visible={showAddUser}
-        footer={null}
         width={'500px'}
-        destroyOnClose={true}
-        onCancel={() => setShowAddUser(false)}
+        onClose={() => setShowAddUser(false)}
       >
         <InviteUserForm onInvited={handleOnInvited} />
       </Modal>
@@ -121,15 +121,14 @@ function UserList({ currentUser }) {
       <Modal
         title={editUser && editUser.email}
         visible={Boolean(editUser)}
-        footer={null}
         width={'500px'}
-        destroyOnClose={true}
-        onCancel={() => {
+        onClose={() => {
           loadUsersFromServer();
           setEditUser(null);
         }}
       >
         <EditUserForm user={editUser} />
+        <Button onClick={() => setShowAddUser(false)}>Close</Button>
       </Modal>
     </>
   );

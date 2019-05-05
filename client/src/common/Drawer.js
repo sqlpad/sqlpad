@@ -1,5 +1,6 @@
-import Drawer from 'antd/lib/drawer';
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Dialog } from '@reach/dialog';
+import '@reach/dialog/styles.css';
 
 function DrawerWrapper({
   title,
@@ -9,35 +10,35 @@ function DrawerWrapper({
   placement,
   children
 }) {
-  useEffect(() => {
-    if (visible) {
-      function handler(event) {
-        if (event.code === 'Escape') {
-          onClose();
-          return false;
-        }
-      }
-      window.addEventListener('keydown', handler);
-      return () => window.removeEventListener('keydown', handler);
-    }
-  }, [visible, onClose]);
+  const style = {
+    height: '100vh',
+    margin: '0',
+    overflow: 'auto',
+    width,
+    position: 'absolute'
+  };
 
-  return (
-    <Drawer
-      title={title}
-      visible={visible}
-      width={width}
-      destroyOnClose={true}
-      onClose={onClose}
-      placement={placement}
-      bodyStyle={{
-        height: 'calc(100vh - 55px)',
-        overflow: 'auto'
-      }}
-    >
-      {children}
-    </Drawer>
-  );
+  if (placement === 'right') {
+    style.right = 0;
+  }
+
+  if (visible) {
+    return (
+      <Dialog onDismiss={onClose} style={style}>
+        <div
+          style={{
+            fontSize: '1.5rem',
+            borderBottom: '1px solid #d9d9d9',
+            marginBottom: 16
+          }}
+        >
+          {title}
+        </div>
+        {children}
+      </Dialog>
+    );
+  }
+  return null;
 }
 
 export default DrawerWrapper;

@@ -14,7 +14,7 @@ function ConnectionEditDrawer({
     <Drawer
       title={title}
       visible={visible}
-      width={600}
+      width={560}
       onClose={onClose}
       placement={placement || 'right'}
     >

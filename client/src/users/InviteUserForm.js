@@ -26,7 +26,6 @@ function InviteUserForm({ onInvited }) {
     }
     setEmail(null);
     setRole(null);
-    message.success('User Whitelisted');
     onInvited();
   };
 

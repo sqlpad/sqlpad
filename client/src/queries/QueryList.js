@@ -11,15 +11,14 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
-import Popconfirm from 'antd/lib/popconfirm';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import IconButtonLink from '../common/IconButtonLink';
 import SqlEditor from '../common/SqlEditor';
-import Button from '../common/Button';
 import Select from '../common/Select';
 import Tooltip from '../common/Tooltip';
 import styles from './QueryList.module.css';
+import DeleteConfirmButton from '../common/DeleteConfirmButton';
 
 const { Title } = Typography;
 
@@ -110,16 +109,13 @@ function QueryList({
               <ChartIcon />
             </IconButtonLink>
           </Tooltip>,
-          <Popconfirm
+          <DeleteConfirmButton
             key="del"
-            title="Are you sure?"
+            confirmMessage="Delete query?"
             onConfirm={e => deleteQuery(query._id)}
-            onCancel={() => {}}
-            okText="Yes"
-            cancelText="No"
           >
-            <Button type="danger">Delete</Button>
-          </Popconfirm>
+            Delete
+          </DeleteConfirmButton>
         ]}
       >
         <List.Item.Meta title={query.name} description={query.connectionName} />

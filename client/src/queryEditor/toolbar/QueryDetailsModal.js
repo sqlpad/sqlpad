@@ -1,9 +1,10 @@
 import ExportIcon from 'mdi-react/ExportVariantIcon';
-import Modal from 'antd/lib/modal';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
+import Modal from '../../common/Modal';
+import Button from '../../common/Button';
 
 function mapStateToProps(state) {
   return {
@@ -34,13 +35,7 @@ function QueryDetailsModal({ queryId, visible, onClose }) {
   const chartUrl = `/query-chart/${queryId}`;
 
   return (
-    <Modal
-      width={'600px'}
-      visible={visible}
-      cancelText={null}
-      onCancel={onClose}
-      footer={null}
-    >
+    <Modal width={'600px'} visible={visible} onClose={onClose}>
       <label>Query Tags</label>
       <hr />
       <p>
@@ -67,6 +62,9 @@ function QueryDetailsModal({ queryId, visible, onClose }) {
         {renderNavLink(tableUrl, 'Link to Table')}
         {renderNavLink(chartUrl, 'Link to Chart')}
       </ul>
+      <Button type="primary" onClick={onClose}>
+        OK
+      </Button>
     </Modal>
   );
 }

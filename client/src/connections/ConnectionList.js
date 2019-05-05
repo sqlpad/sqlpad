@@ -1,12 +1,12 @@
 import List from 'antd/lib/list';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
-import Popconfirm from 'antd/lib/popconfirm';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 import Button from '../common/Button';
+import DeleteConfirmButton from '../common/DeleteConfirmButton';
 
 function ConnectionList({
   currentUser,
@@ -103,15 +103,12 @@ function ConnectionList({
               <Button onClick={() => editConnection(item)}>edit</Button>
             );
             actions.push(
-              <Popconfirm
-                title="Delete connection?"
+              <DeleteConfirmButton
+                confirmMessage="Delete connection?"
                 onConfirm={e => deleteConnection(item._id)}
-                onCancel={() => {}}
-                okText="Yes"
-                cancelText="No"
               >
-                <Button icon="delete" type="danger" />
-              </Popconfirm>
+                Delete
+              </DeleteConfirmButton>
             );
           }
 

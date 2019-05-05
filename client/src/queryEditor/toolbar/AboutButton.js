@@ -1,12 +1,12 @@
-import Modal from 'antd/lib/modal';
 import HelpIcon from 'mdi-react/HelpCircleOutlineIcon';
 import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 import AboutContent from './AboutContent';
 import Button from '../../common/Button';
 import Tooltip from '../../common/Tooltip';
+import Modal from '../../common/Modal';
 
 function mapStateToProps(state) {
   return {
@@ -20,21 +20,22 @@ const ConnectedEditorNavBar = connect(
 )(React.memo(AboutButton));
 
 function AboutButton({ version }) {
+  const [visible, setVisible] = useState(false);
   return (
     <Tooltip label="About">
-      <Button
-        onClick={() => {
-          Modal.info({
-            width: 650,
-            title: 'About SQLPad',
-            maskClosable: true,
-            content: <AboutContent version={version} />,
-            onOk() {}
-          });
-        }}
-      >
-        <HelpIcon size={18} style={{ marginTop: 5 }} />
-      </Button>
+      <>
+        <Button onClick={() => setVisible(true)}>
+          <HelpIcon size={18} style={{ marginTop: 5 }} />
+        </Button>
+        <Modal
+          width={650}
+          title="About SQLPad"
+          visible={visible}
+          onClose={() => setVisible(false)}
+        >
+          <AboutContent version={version} />
+        </Modal>
+      </>
     </Tooltip>
   );
 }
