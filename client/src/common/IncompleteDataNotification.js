@@ -1,14 +1,14 @@
 import AlertIcon from 'mdi-react/AlertCircleIcon';
-import Tooltip from 'antd/lib/tooltip';
 import Typography from 'antd/lib/typography';
 import React from 'react';
+import Tooltip from './Tooltip';
 
 const { Text } = Typography;
 
 function IncompleteDataNotification() {
   return (
     <Tooltip
-      title="Return fewer rows or increase query result max rows in
+      label="Return fewer rows or increase query result max rows in
         configuration."
     >
       <Text style={{ marginRight: '.5rem' }} type="danger">

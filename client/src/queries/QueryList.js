@@ -4,7 +4,6 @@ import ChartIcon from 'mdi-react/FinanceIcon';
 import List from 'antd/lib/list';
 import Row from 'antd/lib/row';
 import Col from 'antd/lib/col';
-import Tooltip from 'antd/lib/tooltip';
 import Typography from 'antd/lib/typography';
 import Tag from 'antd/lib/tag';
 import Divider from 'antd/lib/divider';
@@ -19,6 +18,7 @@ import IconButtonLink from '../common/IconButtonLink';
 import SqlEditor from '../common/SqlEditor';
 import Button from '../common/Button';
 import Select from '../common/Select';
+import Tooltip from '../common/Tooltip';
 import styles from './QueryList.module.css';
 
 const { Title } = Typography;
@@ -82,7 +82,7 @@ function QueryList({
         onMouseEnter={() => setPreview(query)}
         onMouseLeave={() => setPreview('')}
         actions={[
-          <Tooltip key="edit" title="Edit query">
+          <Tooltip key="edit" label="Edit query">
             <IconButtonLink
               to={queryUrl}
               onClick={() => {
@@ -92,7 +92,7 @@ function QueryList({
               <EditIcon />
             </IconButtonLink>
           </Tooltip>,
-          <Tooltip key="table" title="Open results in new window">
+          <Tooltip key="table" label="Open results in new window">
             <IconButtonLink
               to={tableUrl}
               target="_blank"
@@ -101,7 +101,7 @@ function QueryList({
               <TableIcon />
             </IconButtonLink>
           </Tooltip>,
-          <Tooltip key="chart" title="Open chart in new window">
+          <Tooltip key="chart" label="Open chart in new window">
             <IconButtonLink
               to={chartUrl}
               target="_blank"

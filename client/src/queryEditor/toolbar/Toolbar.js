@@ -1,4 +1,3 @@
-import Tooltip from 'antd/lib/tooltip';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import TagsIcon from 'mdi-react/TagMultipleIcon';
@@ -18,6 +17,7 @@ import QueryDetailsModal from './QueryDetailsModal';
 import IconButtonLink from '../../common/IconButtonLink';
 import Button from '../../common/Button';
 import Input from '../../common/Input';
+import Tooltip from '../../common/Tooltip';
 
 const ICON_SIZE = 18;
 const ICON_STYLE = { marginTop: 5 };
@@ -75,7 +75,7 @@ function Toolbar({
       <div style={{ display: 'flex' }}>
         <QueryListButton />
 
-        <Tooltip placement="bottom" title="New query">
+        <Tooltip label="New query">
           <IconButtonLink to="/queries/new" onClick={() => resetNewQuery()}>
             <NewIcon size={ICON_SIZE} style={ICON_STYLE} />
           </IconButtonLink>
@@ -94,28 +94,28 @@ function Toolbar({
           onChange={e => setQueryState('name', e.target.value)}
         />
 
-        <Tooltip placement="bottom" title="Tags">
+        <Tooltip label="Tags">
           <Button onClick={() => setShowDetails(true)} disabled={cloneDisabled}>
             <TagsIcon size={ICON_SIZE} style={ICON_STYLE} />
           </Button>
-          <QueryDetailsModal
-            visible={showDetails}
-            onClose={() => setShowDetails(false)}
-          />
         </Tooltip>
+        <QueryDetailsModal
+          visible={showDetails}
+          onClose={() => setShowDetails(false)}
+        />
 
-        <Tooltip placement="bottom" title="Clone">
+        <Tooltip label="Clone">
           <Button onClick={handleCloneClick} disabled={cloneDisabled}>
             <CopyIcon size={ICON_SIZE} style={ICON_STYLE} />
           </Button>
         </Tooltip>
-        <Tooltip placement="bottom" title="Format">
+        <Tooltip label="Format">
           <Button onClick={formatQuery}>
             <FormatIcon size={ICON_SIZE} style={ICON_STYLE} />
           </Button>
         </Tooltip>
 
-        <Tooltip placement="bottom" title="Save">
+        <Tooltip label="Save">
           <Button onClick={() => saveQuery()} disabled={isSaving}>
             {unsavedChanges ? (
               <UnsavedIcon size={ICON_SIZE} style={ICON_STYLE} />

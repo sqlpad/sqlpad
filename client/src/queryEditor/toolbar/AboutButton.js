@@ -1,4 +1,3 @@
-import Tooltip from 'antd/lib/tooltip';
 import Modal from 'antd/lib/modal';
 import HelpIcon from 'mdi-react/HelpCircleOutlineIcon';
 import { connect } from 'unistore/react';
@@ -7,6 +6,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import AboutContent from './AboutContent';
 import Button from '../../common/Button';
+import Tooltip from '../../common/Tooltip';
 
 function mapStateToProps(state) {
   return {
@@ -21,7 +21,7 @@ const ConnectedEditorNavBar = connect(
 
 function AboutButton({ version }) {
   return (
-    <Tooltip placement="bottom" title="About">
+    <Tooltip label="About">
       <Button
         onClick={() => {
           Modal.info({

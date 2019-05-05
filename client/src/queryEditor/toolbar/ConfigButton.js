@@ -1,11 +1,11 @@
 import Tabs from 'antd/lib/tabs';
-import Tooltip from 'antd/lib/tooltip';
 import React, { useState, useCallback } from 'react';
 import Drawer from '../../common/Drawer';
 import Button from '../../common/Button';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
 import UserList from '../../users/UserList';
 import ConnectionList from '../../connections/ConnectionList';
+import Tooltip from '../../common/Tooltip';
 
 const TabPane = Tabs.TabPane;
 
@@ -17,7 +17,7 @@ function ConfigButton() {
 
   return (
     <>
-      <Tooltip placement="bottom" title="Configuration">
+      <Tooltip label="Configuration">
         <Button onClick={onClick}>Config</Button>
       </Tooltip>
 

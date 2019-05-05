@@ -1,8 +1,8 @@
-import Tooltip from 'antd/lib/tooltip';
 import { Redirect } from 'react-router-dom';
 import React, { useState } from 'react';
 import fetchJson from '../../utilities/fetch-json.js';
 import Button from '../../common/Button';
+import Tooltip from '../../common/Tooltip';
 
 function SignoutButton() {
   const [redirect, setRedirect] = useState(false);
@@ -12,7 +12,7 @@ function SignoutButton() {
   }
 
   return (
-    <Tooltip placement="bottom" title="Sign out">
+    <Tooltip label="Sign out">
       <Button
         onClick={async () => {
           await fetchJson('GET', '/api/signout');
