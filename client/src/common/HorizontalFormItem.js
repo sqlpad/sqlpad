@@ -9,7 +9,7 @@ export default function HorizontalFormItem({
   return (
     <div style={{ marginTop: 24, display: 'flex', alignItems: 'center' }}>
       <div style={{ flexBasis: leftWidth, marginRight: 16, textAlign: 'left' }}>
-        <label for={label}>{label}</label>
+        <label htmlFor={label}>{label}</label>
       </div>
       <div style={{ flexBasis: rightWidth }}>{children}</div>
     </div>
