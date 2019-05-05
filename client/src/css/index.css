@@ -22,7 +22,15 @@ input {
 /* reach ui 
 ============================================================================ */
 [data-reach-tooltip] {
-  z-index: 99999999 !important;
+  z-index: 9001 !important;
+}
+
+[data-reach-dialog-overlay] {
+  z-index: 9002 !important;
+}
+
+[data-reach-dialog-content] {
+  z-index: 9002 !important;
 }
 
 /*  Utilities
