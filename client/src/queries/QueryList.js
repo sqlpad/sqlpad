@@ -2,7 +2,6 @@ import EditIcon from 'mdi-react/PencilIcon';
 import TableIcon from 'mdi-react/TableIcon';
 import ChartIcon from 'mdi-react/FinanceIcon';
 import List from 'antd/lib/list';
-import Typography from 'antd/lib/typography';
 import Tag from 'antd/lib/tag';
 import Divider from 'antd/lib/divider';
 import PropTypes from 'prop-types';
@@ -17,8 +16,6 @@ import Select from '../common/Select';
 import Tooltip from '../common/Tooltip';
 import styles from './QueryList.module.css';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
-
-const { Title } = Typography;
 
 function QueryList({
   queries,
@@ -158,11 +155,9 @@ function QueryList({
             padding: 16
           }}
         >
-          <Title level={4}>
-            <Typography.Text>{preview.name}</Typography.Text>
-          </Title>
-          <Typography.Text>Connection {preview.connectionName}</Typography.Text>
-          <Typography.Text>By {preview.createdBy}</Typography.Text>
+          <div style={{ fontSize: '1.25rem' }}>{preview.name}</div>
+          <div>Connection {preview.connectionName}</div>
+          <div>By {preview.createdBy}</div>
           <div>
             {preview.tags &&
               preview.tags.map(tag => <Tag key={tag}>{tag}</Tag>)}

@@ -1,6 +1,5 @@
 import ClosedIcon from 'mdi-react/MenuRightIcon';
 import OpenIcon from 'mdi-react/MenuDownIcon';
-import Typography from 'antd/lib/typography';
 import Divider from 'antd/lib/divider';
 import React, { useEffect, useState } from 'react';
 import Measure from 'react-measure';
@@ -10,12 +9,11 @@ import Sidebar from '../common/Sidebar';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import Tooltip from '../common/Tooltip';
+import Text from '../common/Text';
 import { actions } from '../stores/unistoreStore';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
 import getSchemaList from './getSchemaList';
-
-const { Text } = Typography;
 
 const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };

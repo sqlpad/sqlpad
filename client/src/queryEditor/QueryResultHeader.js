@@ -1,13 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Typography from 'antd/lib/typography';
 import { Link } from 'react-router-dom';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
+import Text from '../common/Text';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
-
-const { Text } = Typography;
 
 const barStyle = {
   height: '30px',

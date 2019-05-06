@@ -1,9 +1,7 @@
 import AlertIcon from 'mdi-react/AlertCircleIcon';
-import Typography from 'antd/lib/typography';
 import React from 'react';
 import Tooltip from './Tooltip';
-
-const { Text } = Typography;
+import Text from './Text';
 
 function IncompleteDataNotification() {
   return (
