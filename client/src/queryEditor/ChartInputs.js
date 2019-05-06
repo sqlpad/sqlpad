@@ -1,4 +1,3 @@
-import Checkbox from 'antd/lib/checkbox';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import chartDefinitions from '../utilities/chartDefinitions.js';
@@ -83,17 +82,21 @@ function ChartInputs({
       } else if (field.inputType === 'checkbox') {
         const checked =
           cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
+        console.log(field);
         return (
           <div style={inputStyle} key={field.fieldId}>
-            <Checkbox
+            <input
+              type="checkbox"
               checked={checked}
-              name={field.key}
+              id={field.fieldId}
+              name={field.fieldId}
               onChange={e =>
                 changeChartConfigurationField(field.fieldId, e.target.checked)
               }
-            >
+            />
+            <label for={field.fieldId} style={{ marginLeft: 8 }}>
               {field.label}
-            </Checkbox>
+            </label>
           </div>
         );
       } else if (field.inputType === 'textbox') {

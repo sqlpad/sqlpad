@@ -1,4 +1,3 @@
-import Checkbox from 'antd/lib/checkbox';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
 import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 import React, { useState, useEffect } from 'react';
@@ -138,15 +137,18 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
           const checked = connectionEdits[field.key] || false;
           return (
             <HorizontalFormItem key={field.key}>
-              <Checkbox
+              <input
+                type="checkbox"
                 checked={checked}
+                id={field.key}
                 name={field.key}
                 onChange={e =>
                   setConnectionValue(e.target.name, e.target.checked)
                 }
-              >
+              />
+              <label for={field.key} style={{ marginLeft: 8 }}>
                 {field.label}
-              </Checkbox>
+              </label>
             </HorizontalFormItem>
           );
         }
