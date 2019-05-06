@@ -1,5 +1,3 @@
-import Row from 'antd/lib/row';
-import Col from 'antd/lib/col';
 import List from 'antd/lib/list';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
@@ -91,17 +89,15 @@ function UserList({ currentUser }) {
 
   return (
     <>
-      <Row>
-        <Col offset={19} span={5}>
-          <Button
-            className="w-100"
-            type="primary"
-            onClick={() => setShowAddUser(true)}
-          >
-            Add user
-          </Button>
-        </Col>
-      </Row>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          style={{ width: 135 }}
+          type="primary"
+          onClick={() => setShowAddUser(true)}
+        >
+          Add user
+        </Button>
+      </div>
 
       <List
         itemLayout="horizontal"
@@ -128,7 +124,7 @@ function UserList({ currentUser }) {
         }}
       >
         <EditUserForm user={editUser} />
-        <Button onClick={() => setShowAddUser(false)}>Close</Button>
+        <Button onClick={() => setEditUser(null)}>Close</Button>
       </Modal>
     </>
   );

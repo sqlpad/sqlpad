@@ -1,6 +1,4 @@
 import List from 'antd/lib/list';
-import Row from 'antd/lib/row';
-import Col from 'antd/lib/col';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
@@ -73,13 +71,11 @@ function ConnectionList({
 
   return (
     <>
-      <Row>
-        <Col offset={17} span={7}>
-          <Button className="w-100" type="primary" onClick={newConnection}>
-            Add connection
-          </Button>
-        </Col>
-      </Row>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button style={{ width: 135 }} type="primary" onClick={newConnection}>
+          Add connection
+        </Button>
+      </div>
       <List
         itemLayout="horizontal"
         dataSource={decoratedConnections}

@@ -2,8 +2,6 @@ import EditIcon from 'mdi-react/PencilIcon';
 import TableIcon from 'mdi-react/TableIcon';
 import ChartIcon from 'mdi-react/FinanceIcon';
 import List from 'antd/lib/list';
-import Row from 'antd/lib/row';
-import Col from 'antd/lib/col';
 import Typography from 'antd/lib/typography';
 import Tag from 'antd/lib/tag';
 import Divider from 'antd/lib/divider';
@@ -127,20 +125,18 @@ function QueryList({
   // Figure out what to do about this later after antd removal
   return (
     <>
-      <Row>
-        <Col style={{ paddingBottom: 8 }} span={24}>
-          <Select
-            autoFocus
-            className="w-100"
-            value={searches && searches[0]}
-            onChange={event => setSearches([event.target.value])}
-          >
-            {availableSearches.map(search => (
-              <option key={search}>{search}</option>
-            ))}
-          </Select>
-        </Col>
-      </Row>
+      <div>
+        <Select
+          autoFocus
+          className="w-100"
+          value={searches && searches[0]}
+          onChange={event => setSearches([event.target.value])}
+        >
+          {availableSearches.map(search => (
+            <option key={search}>{search}</option>
+          ))}
+        </Select>
+      </div>
       <List
         size="small"
         itemLayout="horizontal"

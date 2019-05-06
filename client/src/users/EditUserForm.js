@@ -1,5 +1,3 @@
-import Row from 'antd/lib/row';
-import Col from 'antd/lib/col';
 import React, { useState } from 'react';
 import Button from '../common/Button';
 import Select from '../common/Select';
@@ -48,33 +46,31 @@ function EditUserForm({ user }) {
   const renderReset = () => {
     if (passwordResetId) {
       return (
-        <Row type="flex" gutter={24} align="middle">
-          <Col span={12}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ flexBasis: '50%' }}>
             <Button className="w-100" onClick={removePasswordResetLink}>
               Remove reset link
             </Button>
-          </Col>
-          <Col style={{ textAlign: 'center' }} span={12}>
+          </div>
+          <div style={{ flexBasis: '50%', textAlign: 'center' }}>
             <Link to={`/password-reset/${passwordResetId}`}>
               Password reset link
             </Link>
-          </Col>
-        </Row>
+          </div>
+        </div>
       );
     }
     return (
-      <Row gutter={24}>
-        <Col span={12}>
-          <Button className="w-100" onClick={generatePasswordResetLink}>
-            Generate password reset link
-          </Button>
-        </Col>
-      </Row>
+      <div>
+        <Button className="w-100" onClick={generatePasswordResetLink}>
+          Generate password reset link
+        </Button>
+      </div>
     );
   };
 
   return (
-    <form>
+    <div>
       <label>
         Role
         <Select name="role" value={role} onChange={handleRoleChange}>
@@ -87,7 +83,7 @@ function EditUserForm({ user }) {
       </FormExplain>
       <Spacer size={3} />
       {renderReset()}
-    </form>
+    </div>
   );
 }
 
