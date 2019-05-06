@@ -1,6 +1,5 @@
 import ClosedIcon from 'mdi-react/MenuRightIcon';
 import OpenIcon from 'mdi-react/MenuDownIcon';
-import Divider from 'antd/lib/divider';
 import React, { useEffect, useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
@@ -10,6 +9,7 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import Tooltip from '../common/Tooltip';
 import Text from '../common/Text';
+import Divider from '../common/Divider';
 import { actions } from '../stores/unistoreStore';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
@@ -139,9 +139,9 @@ function SchemaSidebar({
               </Button>
             </Tooltip>
           </div>
-          <div>
-            <Divider style={{ margin: '8px 0' }} />
-          </div>
+
+          <Divider style={{ margin: '8px 0' }} />
+
           <div
             style={{
               display: 'flex',

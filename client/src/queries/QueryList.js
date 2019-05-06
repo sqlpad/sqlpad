@@ -3,7 +3,6 @@ import TableIcon from 'mdi-react/TableIcon';
 import ChartIcon from 'mdi-react/FinanceIcon';
 import List from 'antd/lib/list';
 import Tag from 'antd/lib/tag';
-import Divider from 'antd/lib/divider';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
@@ -13,6 +12,7 @@ import getDecoratedQueries from './getDecoratedQueries';
 import IconButtonLink from '../common/IconButtonLink';
 import SqlEditor from '../common/SqlEditor';
 import Select from '../common/Select';
+import Divider from '../common/Divider';
 import Tooltip from '../common/Tooltip';
 import styles from './QueryList.module.css';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
@@ -162,10 +162,9 @@ function QueryList({
             {preview.tags &&
               preview.tags.map(tag => <Tag key={tag}>{tag}</Tag>)}
           </div>
-          {/* needs to be wrapped in div because of flex height weirdness */}
-          <div>
-            <Divider />
-          </div>
+
+          <Divider />
+
           {/* 
             This style necessary to get proper sizing on SqlEditor.
             It has height 100%, which looks to height of nearest containing BLOCK,
