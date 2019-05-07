@@ -23,7 +23,7 @@ function ConfigButton() {
         onClose={onClose}
         placement={'right'}
       >
-        <ConfigurationForm onClose={() => {}} />
+        <ConfigurationForm onClose={onClose} />
       </Drawer>
     </>
   );
