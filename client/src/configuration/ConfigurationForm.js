@@ -52,17 +52,16 @@ function ConfigurationForm({ refreshAppContext, onClose }) {
   };
 
   const hasChanges = configItems.filter(config => config.changed);
-  const saveDisabled = hasChanges.length === 0;
+
+  // This used to set disabled, but that was weird with the modal
+  // reach modal sets focus on the first focusable element it would seem, which is a disabled button
+  // Not only does that prevent `esc` key from closing modal, it doesn't show what is focused either
+  const type = hasChanges.length > 0 ? 'primary' : null;
 
   return (
     <div>
       <HorizontalFormItem>
-        <Button
-          disabled={saveDisabled}
-          className="w-100"
-          type="primary"
-          onClick={saveConfigValues}
-        >
+        <Button className="w-100" type={type} onClick={saveConfigValues}>
           Save
         </Button>
       </HorizontalFormItem>
