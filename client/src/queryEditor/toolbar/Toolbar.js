@@ -18,6 +18,7 @@ import IconButtonLink from '../../common/IconButtonLink';
 import Button from '../../common/Button';
 import Input from '../../common/Input';
 import Tooltip from '../../common/Tooltip';
+import UsersButton from './UsersButton';
 
 const ICON_SIZE = 18;
 const ICON_STYLE = { marginTop: 5 };
@@ -134,6 +135,7 @@ function Toolbar({
         <AboutButton />
 
         {isAdmin && <ConfigButton />}
+        {isAdmin && <UsersButton />}
 
         <SignoutButton />
       </div>

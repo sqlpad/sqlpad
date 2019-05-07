@@ -1,13 +1,8 @@
-import Tabs from 'antd/lib/tabs';
 import React, { useState, useCallback } from 'react';
 import Drawer from '../../common/Drawer';
 import Button from '../../common/Button';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
-import UserList from '../../users/UserList';
-import ConnectionList from '../../connections/ConnectionList';
 import Tooltip from '../../common/Tooltip';
-
-const TabPane = Tabs.TabPane;
 
 function ConfigButton() {
   const [showConfig, setShowConfig] = useState(false);
@@ -28,17 +23,7 @@ function ConfigButton() {
         onClose={onClose}
         placement={'right'}
       >
-        <Tabs defaultActiveKey="1" onChange={e => console.log(e)}>
-          <TabPane tab="Configuration" key="1">
-            <ConfigurationForm onClose={() => {}} />
-          </TabPane>
-          <TabPane tab="Users" key="2">
-            <UserList />
-          </TabPane>
-          <TabPane tab="Connections" key="3">
-            <ConnectionList />
-          </TabPane>
-        </Tabs>
+        <ConfigurationForm onClose={() => {}} />
       </Drawer>
     </>
   );
