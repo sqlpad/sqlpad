@@ -2,7 +2,6 @@ import EditIcon from 'mdi-react/PencilIcon';
 import TableIcon from 'mdi-react/TableIcon';
 import ChartIcon from 'mdi-react/FinanceIcon';
 import List from 'antd/lib/list';
-import Tag from 'antd/lib/tag';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
@@ -160,7 +159,21 @@ function QueryList({
           <div>By {preview.createdBy}</div>
           <div>
             {preview.tags &&
-              preview.tags.map(tag => <Tag key={tag}>{tag}</Tag>)}
+              preview.tags.map(tag => (
+                // TODO FIXME XXX make better tags
+                <span
+                  style={{
+                    padding: '0 8px',
+                    marginRight: 4,
+                    marginTop: 4,
+                    backgroundColor: '#EEE',
+                    border: '1px solid #CCC'
+                  }}
+                  key={tag}
+                >
+                  {tag}
+                </span>
+              ))}
           </div>
 
           <Divider />
