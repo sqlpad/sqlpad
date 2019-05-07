@@ -1,5 +1,5 @@
-import Switch from 'antd/lib/switch';
 import React from 'react';
+import Switch from 'react-switch';
 import Select from '../common/Select';
 import Input from '../common/Input';
 import HorizontalFormItem from '../common/HorizontalFormItem';
@@ -69,6 +69,9 @@ function ConfigItemInput({ config, onChange }) {
     input = (
       <Switch
         id={config.key}
+        height={24}
+        width={48}
+        onColor={'#1890ff'}
         checked={config.effectiveValue}
         onChange={value => onChange(config.key, value)}
       />

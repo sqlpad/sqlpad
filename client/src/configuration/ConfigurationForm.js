@@ -55,7 +55,7 @@ function ConfigurationForm({ refreshAppContext, onClose }) {
   const saveDisabled = hasChanges.length === 0;
 
   return (
-    <form>
+    <div>
       <HorizontalFormItem>
         <Button
           disabled={saveDisabled}
@@ -73,7 +73,7 @@ function ConfigurationForm({ refreshAppContext, onClose }) {
           onChange={handleChange}
         />
       ))}
-    </form>
+    </div>
   );
 }
 
