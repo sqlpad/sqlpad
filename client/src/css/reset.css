@@ -151,7 +151,6 @@ a {
   color: #1890ff;
   text-decoration: none;
   background-color: transparent;
-  outline: none;
   cursor: pointer;
   -webkit-transition: color 0.3s;
   transition: color 0.3s;
@@ -164,9 +163,11 @@ a:active {
   color: #096dd9;
 }
 a:active,
-a:hover {
+a:hover,
+a:focus {
   text-decoration: none;
-  outline: 0;
+  outline-color: #40a9ff;
+  outline-width: 3px;
 }
 a[disabled] {
   color: rgba(0, 0, 0, 0.25);
