@@ -12,24 +12,26 @@ export function MessageDisplayer() {
   }
 
   useEffect(() => {
-    emitter.on('error', onMessage);
-    return () => emitter.off('error', onMessage);
+    emitter.on('message', onMessage);
+    return () => emitter.off('message', onMessage);
   }, []);
 
   if (messages && messages.length > 0) {
+    const msg = messages[messages.length - 1];
     return (
       <div
         style={{
           position: 'fixed',
+          // TODO better styles
           color: '#FFF',
-          backgroundColor: '#000',
+          backgroundColor: msg.type === 'error' ? 'red' : 'green',
           padding: 8,
           top: 16,
           right: 16,
           width: 200
         }}
       >
-        {messages[messages.length - 1]}
+        {msg.message}
       </div>
     );
   }
@@ -39,6 +41,9 @@ export function MessageDisplayer() {
 
 export default {
   error: function(message) {
-    emitter.emit('error', message);
+    emitter.emit('message', { type: 'error', message });
+  },
+  success: function(message) {
+    emitter.emit('message', { type: 'success', message });
   }
 };
