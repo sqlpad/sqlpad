@@ -166,8 +166,7 @@ a:active,
 a:hover,
 a:focus {
   text-decoration: none;
-  outline-color: #40a9ff;
-  outline-width: 3px;
+  outline: 3px solid #40a9ff;
 }
 a[disabled] {
   color: rgba(0, 0, 0, 0.25);

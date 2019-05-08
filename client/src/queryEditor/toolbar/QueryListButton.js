@@ -1,7 +1,6 @@
-import Drawer from '../../common/Drawer';
 import Button from '../../common/Button';
 import React, { useState } from 'react';
-import QueryList from '../../queries/QueryList';
+import QueryListDrawer from '../../queries/QueryListDrawer';
 
 function QueryListButton() {
   const [showQueries, setShowQueries] = useState(false);
@@ -11,15 +10,10 @@ function QueryListButton() {
       <Button type="primary" onClick={() => setShowQueries(true)}>
         Queries
       </Button>
-      <Drawer
-        title={'Queries'}
+      <QueryListDrawer
         visible={showQueries}
-        width="600"
         onClose={() => setShowQueries(false)}
-        placement="left"
-      >
-        <QueryList onSelect={() => setShowQueries(false)} />
-      </Drawer>
+      />
     </>
   );
 }

@@ -1,28 +1,30 @@
-import EditIcon from 'mdi-react/PencilIcon';
-import TableIcon from 'mdi-react/TableIcon';
 import ChartIcon from 'mdi-react/FinanceIcon';
+import TableIcon from 'mdi-react/TableIcon';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
+import DeleteConfirmButton from '../common/DeleteConfirmButton';
+import Divider from '../common/Divider';
+import Drawer from '../common/Drawer';
+import IconButtonLink from '../common/IconButtonLink';
+import ListItem from '../common/ListItem';
+import Select from '../common/Select';
+import SqlEditor from '../common/SqlEditor';
+import Text from '../common/Text';
+import Tooltip from '../common/Tooltip';
 import { actions } from '../stores/unistoreStore';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
-import IconButtonLink from '../common/IconButtonLink';
-import SqlEditor from '../common/SqlEditor';
-import Select from '../common/Select';
-import Divider from '../common/Divider';
-import Tooltip from '../common/Tooltip';
 import styles from './QueryList.module.css';
-import DeleteConfirmButton from '../common/DeleteConfirmButton';
-import Text from '../common/Text';
-import ListItem from '../common/ListItem';
 
-function QueryList({
+function QueryListDrawer({
   queries,
   loadQueries,
   connections,
   deleteQuery,
-  onSelect
+  visible,
+  onClose
 }) {
   const [preview, setPreview] = useState('');
   const [searches, setSearches] = useState([]);
@@ -68,7 +70,13 @@ function QueryList({
   // TODO FIXME XXX searches select is meant to be multi value + open text string!
   // Figure out what to do about this later after antd removal
   return (
-    <>
+    <Drawer
+      title={'Queries'}
+      visible={visible}
+      width="600px"
+      onClose={onClose}
+      placement="left"
+    >
       <div>
         <Select
           autoFocus
@@ -76,6 +84,7 @@ function QueryList({
           value={searches && searches[0]}
           onChange={event => setSearches([event.target.value])}
         >
+          <option value="" />
           {availableSearches.map(search => (
             <option key={search}>{search}</option>
           ))}
@@ -87,16 +96,6 @@ function QueryList({
         const queryUrl = `/queries/${query._id}`;
 
         const actions = [
-          <Tooltip key="edit" label="Edit query">
-            <IconButtonLink
-              to={queryUrl}
-              onClick={() => {
-                onSelect(query);
-              }}
-            >
-              <EditIcon />
-            </IconButtonLink>
-          </Tooltip>,
           <Tooltip key="table" label="Open results in new window">
             <IconButtonLink
               to={tableUrl}
@@ -127,16 +126,31 @@ function QueryList({
         return (
           <ListItem
             key={query._id}
-            className={styles.ListItem}
+            className={styles.ListItem + ' ' + styles.outlined}
             onMouseEnter={() => setPreview(query)}
             onMouseLeave={() => setPreview('')}
+            style={{ position: 'relative' }}
           >
-            <div style={{ flexGrow: 1, padding: 8 }}>
+            <Link
+              style={{ flexGrow: 1, padding: 8 }}
+              className={styles.outlined}
+              to={queryUrl}
+              onClick={onClose}
+            >
               {query.name}
               <br />
               <Text type="secondary">{query.connectionName}</Text>
+            </Link>
+            <div
+              style={{
+                position: 'absolute',
+                right: 8,
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              {actions}
             </div>
-            {actions}
           </ListItem>
         );
       })}
@@ -195,16 +209,17 @@ function QueryList({
           </div>
         </div>
       )}
-    </>
+    </Drawer>
   );
 }
 
-QueryList.propTypes = {
-  queries: PropTypes.array,
-  onSelect: PropTypes.func
+QueryListDrawer.propTypes = {
+  visible: PropTypes.bool,
+  onClose: PropTypes.func,
+  queries: PropTypes.array
 };
 
 export default connect(
   ['queries', 'connections'],
   actions
-)(React.memo(QueryList));
+)(React.memo(QueryListDrawer));
