@@ -27,8 +27,3 @@
   justify-content: center;
   align-items: center;
 }
-
-/* antd */
-.ant-select-dropdown-menu {
-  max-height: 500px;
-}

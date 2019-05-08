@@ -1,4 +1,4 @@
-import 'antd/dist/antd.css';
+import './css/reset.css';
 import './css/index.css';
 import './css/react-split-pane.css';
 import './css/vendorOverrides.css';
