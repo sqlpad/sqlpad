@@ -1,4 +1,3 @@
-import List from 'antd/lib/list';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
@@ -8,6 +7,8 @@ import EditUserForm from './EditUserForm';
 import Button from '../common/Button';
 import message from '../common/message';
 import Modal from '../common/Modal';
+import Text from '../common/Text';
+import ListItem from '../common/ListItem';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 
 function UserList({ currentUser }) {
@@ -47,46 +48,6 @@ function UserList({ currentUser }) {
     setShowAddUser(false);
   };
 
-  const renderItem = user => {
-    const actions = [];
-
-    if (currentUser && currentUser._id !== user._id) {
-      actions.push(
-        <Button key="edit" onClick={() => setEditUser(user)}>
-          edit
-        </Button>
-      );
-      actions.push(
-        <DeleteConfirmButton
-          key="delete"
-          confirmMessage={`Delete ${user.email}?`}
-          onConfirm={e => handleDelete(user)}
-        >
-          Delete
-        </DeleteConfirmButton>
-      );
-    }
-
-    const userSignupInfo = !user.signupDate ? (
-      <em> - not signed up yet</em>
-    ) : (
-      ''
-    );
-
-    return (
-      <List.Item actions={actions}>
-        <List.Item.Meta
-          title={user.email}
-          description={
-            <div>
-              {user.role} {userSignupInfo}
-            </div>
-          }
-        />
-      </List.Item>
-    );
-  };
-
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -99,11 +60,50 @@ function UserList({ currentUser }) {
         </Button>
       </div>
 
-      <List
-        itemLayout="horizontal"
-        dataSource={users}
-        renderItem={renderItem}
-      />
+      {users.map(user => {
+        const actions = [];
+
+        if (currentUser && currentUser._id !== user._id) {
+          actions.push(
+            <Button
+              key="edit"
+              style={{ marginLeft: 8 }}
+              onClick={() => setEditUser(user)}
+            >
+              edit
+            </Button>
+          );
+          actions.push(
+            <DeleteConfirmButton
+              key="delete"
+              confirmMessage={`Delete ${user.email}?`}
+              onConfirm={e => handleDelete(user)}
+              style={{ marginLeft: 8 }}
+            >
+              Delete
+            </DeleteConfirmButton>
+          );
+        }
+
+        const userSignupInfo = !user.signupDate ? (
+          <em> - not signed up yet</em>
+        ) : (
+          ''
+        );
+
+        return (
+          <ListItem key={user._id}>
+            <div style={{ flexGrow: 1, padding: 8 }}>
+              {user.email}
+              <br />
+              <Text type="secondary">
+                {user.role} {userSignupInfo}
+              </Text>
+            </div>
+            {actions}
+          </ListItem>
+        );
+      })}
 
       <Modal
         title="Add user"

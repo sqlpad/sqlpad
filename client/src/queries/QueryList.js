@@ -1,7 +1,6 @@
 import EditIcon from 'mdi-react/PencilIcon';
 import TableIcon from 'mdi-react/TableIcon';
 import ChartIcon from 'mdi-react/FinanceIcon';
-import List from 'antd/lib/list';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
@@ -15,6 +14,8 @@ import Divider from '../common/Divider';
 import Tooltip from '../common/Tooltip';
 import styles from './QueryList.module.css';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
+import Text from '../common/Text';
+import ListItem from '../common/ListItem';
 
 function QueryList({
   queries,
@@ -64,17 +65,28 @@ function QueryList({
     });
   }
 
-  const renderItem = query => {
-    const tableUrl = `/query-table/${query._id}`;
-    const chartUrl = `/query-chart/${query._id}`;
-    const queryUrl = `/queries/${query._id}`;
+  // TODO FIXME XXX searches select is meant to be multi value + open text string!
+  // Figure out what to do about this later after antd removal
+  return (
+    <>
+      <div>
+        <Select
+          autoFocus
+          className="w-100"
+          value={searches && searches[0]}
+          onChange={event => setSearches([event.target.value])}
+        >
+          {availableSearches.map(search => (
+            <option key={search}>{search}</option>
+          ))}
+        </Select>
+      </div>
+      {filteredQueries.map(query => {
+        const tableUrl = `/query-table/${query._id}`;
+        const chartUrl = `/query-chart/${query._id}`;
+        const queryUrl = `/queries/${query._id}`;
 
-    return (
-      <List.Item
-        className={styles.ListItem}
-        onMouseEnter={() => setPreview(query)}
-        onMouseLeave={() => setPreview('')}
-        actions={[
+        const actions = [
           <Tooltip key="edit" label="Edit query">
             <IconButtonLink
               to={queryUrl}
@@ -110,35 +122,25 @@ function QueryList({
           >
             Delete
           </DeleteConfirmButton>
-        ]}
-      >
-        <List.Item.Meta title={query.name} description={query.connectionName} />
-      </List.Item>
-    );
-  };
+        ];
 
-  // TODO FIXME XXX searches select is meant to be multi value + open text string!
-  // Figure out what to do about this later after antd removal
-  return (
-    <>
-      <div>
-        <Select
-          autoFocus
-          className="w-100"
-          value={searches && searches[0]}
-          onChange={event => setSearches([event.target.value])}
-        >
-          {availableSearches.map(search => (
-            <option key={search}>{search}</option>
-          ))}
-        </Select>
-      </div>
-      <List
-        size="small"
-        itemLayout="horizontal"
-        dataSource={filteredQueries}
-        renderItem={renderItem}
-      />
+        return (
+          <ListItem
+            key={query._id}
+            className={styles.ListItem}
+            onMouseEnter={() => setPreview(query)}
+            onMouseLeave={() => setPreview('')}
+          >
+            <div style={{ flexGrow: 1, padding: 8 }}>
+              {query.name}
+              <br />
+              <Text type="secondary">{query.connectionName}</Text>
+            </div>
+            {actions}
+          </ListItem>
+        );
+      })}
+
       {preview && (
         <div
           style={{
