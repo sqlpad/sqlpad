@@ -9,10 +9,13 @@ function IncompleteDataNotification() {
       label="Return fewer rows or increase query result max rows in
         configuration."
     >
-      <Text style={{ marginRight: '.5rem' }} type="danger">
-        <AlertIcon style={{ marginRight: '.5rem' }} />
-        Incomplete
-      </Text>
+      {/* span use in place of wrapping Text with forwardRef needed by Tooltip */}
+      <span>
+        <Text style={{ marginRight: '.5rem' }} type="danger">
+          <AlertIcon style={{ marginRight: '.5rem' }} />
+          Incomplete
+        </Text>
+      </span>
     </Tooltip>
   );
 }
