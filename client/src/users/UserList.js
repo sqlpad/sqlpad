@@ -124,7 +124,6 @@ function UserList({ currentUser }) {
         }}
       >
         <EditUserForm user={editUser} />
-        <Button onClick={() => setEditUser(null)}>Close</Button>
       </Modal>
     </>
   );
