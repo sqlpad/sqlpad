@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import Button from '../common/Button';
+import ButtonLink from './ButtonLink';
 
 function ExportButton({ config, cacheKey, onSaveImageClick }) {
   if (!config) {
@@ -21,16 +22,20 @@ function ExportButton({ config, cacheKey, onSaveImageClick }) {
   return (
     <>
       {onSaveImageClick && <Button onClick={onSaveImageClick}>png</Button>}
-      <Button>
-        <a target="_blank" rel="noopener noreferrer" href={csvDownloadLink}>
-          csv
-        </a>
-      </Button>
-      <Button>
-        <a target="_blank" rel="noopener noreferrer" href={xlsxDownloadLink}>
-          xlsx
-        </a>
-      </Button>
+      <ButtonLink
+        to={csvDownloadLink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        csv
+      </ButtonLink>
+      <ButtonLink
+        to={xlsxDownloadLink}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        xlsx
+      </ButtonLink>
     </>
   );
 }

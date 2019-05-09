@@ -14,7 +14,7 @@ import SignoutButton from './SignoutButton';
 import ConfigButton from './ConfigButton';
 import QueryListButton from './QueryListButton';
 import QueryDetailsModal from './QueryDetailsModal';
-import IconButtonLink from '../../common/IconButtonLink';
+import ButtonLink from '../../common/ButtonLink';
 import Button from '../../common/Button';
 import Input from '../../common/Input';
 import Tooltip from '../../common/Tooltip';
@@ -76,11 +76,12 @@ function Toolbar({
       <div style={{ display: 'flex' }}>
         <QueryListButton />
 
-        <Tooltip label="New query">
-          <IconButtonLink to="/queries/new" onClick={() => resetNewQuery()}>
-            <NewIcon size={ICON_SIZE} style={ICON_STYLE} />
-          </IconButtonLink>
-        </Tooltip>
+        <ButtonLink
+          to="/queries/new"
+          tooltip="New query"
+          icon={<NewIcon />}
+          onClick={() => resetNewQuery()}
+        />
 
         <Button onClick={toggleSchema}>schema</Button>
         <Button onClick={toggleVisSidebar}>Vis</Button>
