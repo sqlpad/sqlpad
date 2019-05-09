@@ -17,7 +17,6 @@ import QueryDetailsModal from './QueryDetailsModal';
 import ButtonLink from '../../common/ButtonLink';
 import Button from '../../common/Button';
 import Input from '../../common/Input';
-import Tooltip from '../../common/Tooltip';
 import UsersButton from './UsersButton';
 
 const ICON_SIZE = 18;
@@ -96,37 +95,39 @@ function Toolbar({
           onChange={e => setQueryState('name', e.target.value)}
         />
 
-        {/* TODO FIXME XXX - tooltip behaves weird with disabled button. Button should probably own tooltip */}
-        <Tooltip label="Tags">
-          <Button onClick={() => setShowDetails(true)} disabled={cloneDisabled}>
-            <TagsIcon size={ICON_SIZE} style={ICON_STYLE} />
-          </Button>
-        </Tooltip>
+        <Button
+          tooltip="Tags"
+          onClick={() => setShowDetails(true)}
+          disabled={cloneDisabled}
+        >
+          <TagsIcon size={ICON_SIZE} style={ICON_STYLE} />
+        </Button>
+
         <QueryDetailsModal
           visible={showDetails}
           onClose={() => setShowDetails(false)}
         />
 
-        <Tooltip label="Clone">
-          <Button onClick={handleCloneClick} disabled={cloneDisabled}>
-            <CopyIcon size={ICON_SIZE} style={ICON_STYLE} />
-          </Button>
-        </Tooltip>
-        <Tooltip label="Format">
-          <Button onClick={formatQuery}>
-            <FormatIcon size={ICON_SIZE} style={ICON_STYLE} />
-          </Button>
-        </Tooltip>
+        <Button
+          tooltip="Clone"
+          onClick={handleCloneClick}
+          disabled={cloneDisabled}
+        >
+          <CopyIcon size={ICON_SIZE} style={ICON_STYLE} />
+        </Button>
 
-        <Tooltip label="Save">
-          <Button onClick={() => saveQuery()} disabled={isSaving}>
-            {unsavedChanges ? (
-              <UnsavedIcon size={ICON_SIZE} style={ICON_STYLE} />
-            ) : (
-              <SaveIcon size={ICON_SIZE} style={ICON_STYLE} />
-            )}
-          </Button>
-        </Tooltip>
+        <Button tooltip="Format" onClick={formatQuery}>
+          <FormatIcon size={ICON_SIZE} style={ICON_STYLE} />
+        </Button>
+
+        <Button tooltip="Save" onClick={() => saveQuery()} disabled={isSaving}>
+          {unsavedChanges ? (
+            <UnsavedIcon size={ICON_SIZE} style={ICON_STYLE} />
+          ) : (
+            <SaveIcon size={ICON_SIZE} style={ICON_STYLE} />
+          )}
+        </Button>
+
         <Button type="primary" onClick={() => runQuery()} disabled={isRunning}>
           Run
         </Button>

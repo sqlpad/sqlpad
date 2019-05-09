@@ -7,7 +7,6 @@ import { connect } from 'unistore/react';
 import Sidebar from '../common/Sidebar';
 import Button from '../common/Button';
 import Input from '../common/Input';
-import Tooltip from '../common/Tooltip';
 import Text from '../common/Text';
 import Divider from '../common/Divider';
 import { actions } from '../stores/unistoreStore';
@@ -129,15 +128,14 @@ function SchemaSidebar({
               placeholder="Search schema"
               onChange={event => setSearch(event.target.value)}
             />
-            <Tooltip label="Refresh schema">
-              <Button
-                style={{ marginLeft: 8 }}
-                disabled={loading}
-                onClick={handleRefreshClick}
-              >
-                Reload
-              </Button>
-            </Tooltip>
+            <Button
+              tooltip="Refresh schema"
+              style={{ marginLeft: 8 }}
+              disabled={loading}
+              onClick={handleRefreshClick}
+            >
+              Reload
+            </Button>
           </div>
 
           <Divider style={{ margin: '8px 0' }} />

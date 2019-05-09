@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import Drawer from '../../common/Drawer';
 import Button from '../../common/Button';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
-import Tooltip from '../../common/Tooltip';
 
 function ConfigButton() {
   const [showConfig, setShowConfig] = useState(false);
@@ -12,9 +11,9 @@ function ConfigButton() {
 
   return (
     <>
-      <Tooltip label="Configuration">
-        <Button onClick={onClick}>Config</Button>
-      </Tooltip>
+      <Button tooltip="Configuration" onClick={onClick}>
+        Config
+      </Button>
 
       <Drawer
         title={'Configuration'}

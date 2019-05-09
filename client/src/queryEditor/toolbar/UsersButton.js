@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import Drawer from '../../common/Drawer';
 import Button from '../../common/Button';
 import UserList from '../../users/UserList';
-import Tooltip from '../../common/Tooltip';
 
 function ConfigButton() {
   const [visible, setVisible] = useState(false);
@@ -12,9 +11,9 @@ function ConfigButton() {
 
   return (
     <>
-      <Tooltip label="Users">
-        <Button onClick={onClick}>Users</Button>
-      </Tooltip>
+      <Button tooltip="Users" onClick={onClick}>
+        Users
+      </Button>
 
       <Drawer
         title={'Users'}

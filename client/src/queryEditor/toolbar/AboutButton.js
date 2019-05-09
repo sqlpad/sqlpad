@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import AboutContent from './AboutContent';
 import Button from '../../common/Button';
-import Tooltip from '../../common/Tooltip';
 import Modal from '../../common/Modal';
 
 function mapStateToProps(state) {
@@ -22,21 +21,19 @@ const ConnectedEditorNavBar = connect(
 function AboutButton({ version }) {
   const [visible, setVisible] = useState(false);
   return (
-    <Tooltip label="About">
-      <>
-        <Button onClick={() => setVisible(true)}>
-          <HelpIcon size={18} style={{ marginTop: 5 }} />
-        </Button>
-        <Modal
-          width={650}
-          title="About SQLPad"
-          visible={visible}
-          onClose={() => setVisible(false)}
-        >
-          <AboutContent version={version} />
-        </Modal>
-      </>
-    </Tooltip>
+    <>
+      <Button tooltip="About" onClick={() => setVisible(true)}>
+        <HelpIcon size={18} style={{ marginTop: 5 }} />
+      </Button>
+      <Modal
+        width={650}
+        title="About SQLPad"
+        visible={visible}
+        onClose={() => setVisible(false)}
+      >
+        <AboutContent version={version} />
+      </Modal>
+    </>
   );
 }
 
