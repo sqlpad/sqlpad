@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import { Dialog } from '@reach/dialog';
+import '@reach/dialog/styles.css';
+import React, { useState, useRef } from 'react';
 import Button from './Button';
-import Modal from './Modal';
 
 const DeleteConfirmButton = React.forwardRef(
   ({ children, confirmMessage, onConfirm, className, ...rest }, ref) => {
     const [visible, setVisible] = useState(false);
+    const cancelEl = useRef(null);
 
     return (
       <>
@@ -17,10 +19,25 @@ const DeleteConfirmButton = React.forwardRef(
           {children}
         </Button>
         {visible && (
-          <Modal visible={setVisible} onClose={() => setVisible(false)}>
-            {confirmMessage}
-            <div>
+          <Dialog
+            onDismiss={() => setVisible(false)}
+            style={{ width: '500px' }}
+            initialFocusRef={cancelEl}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '1.5rem',
+                marginBottom: 16
+              }}
+            >
+              <span>{confirmMessage}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
               <Button
+                type="danger"
+                style={{ width: 200 }}
                 onClick={() => {
                   setVisible(false);
                   onConfirm();
@@ -28,9 +45,15 @@ const DeleteConfirmButton = React.forwardRef(
               >
                 Delete
               </Button>
-              <Button onClick={() => setVisible(false)}>Cancel</Button>
+              <Button
+                ref={cancelEl}
+                style={{ width: 200 }}
+                onClick={() => setVisible(false)}
+              >
+                Cancel
+              </Button>
             </div>
-          </Modal>
+          </Dialog>
         )}
       </>
     );
