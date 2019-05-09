@@ -1,7 +1,8 @@
 .btn {
   line-height: 1.499;
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-weight: 400;
   white-space: nowrap;
   text-align: center;

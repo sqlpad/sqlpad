@@ -22,9 +22,11 @@ function AboutButton({ version }) {
   const [visible, setVisible] = useState(false);
   return (
     <>
-      <Button tooltip="About" onClick={() => setVisible(true)}>
-        <HelpIcon size={18} style={{ marginTop: 5 }} />
-      </Button>
+      <Button
+        tooltip="About"
+        icon={<HelpIcon />}
+        onClick={() => setVisible(true)}
+      />
       <Modal
         width={650}
         title="About SQLPad"

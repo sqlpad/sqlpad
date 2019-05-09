@@ -19,9 +19,6 @@ import Button from '../../common/Button';
 import Input from '../../common/Input';
 import UsersButton from './UsersButton';
 
-const ICON_SIZE = 18;
-const ICON_STYLE = { marginTop: 5 };
-
 function mapStateToProps(state) {
   return {
     currentUser: state.currentUser,
@@ -99,9 +96,8 @@ function Toolbar({
           tooltip="Tags"
           onClick={() => setShowDetails(true)}
           disabled={cloneDisabled}
-        >
-          <TagsIcon size={ICON_SIZE} style={ICON_STYLE} />
-        </Button>
+          icon={<TagsIcon />}
+        />
 
         <QueryDetailsModal
           visible={showDetails}
@@ -112,21 +108,17 @@ function Toolbar({
           tooltip="Clone"
           onClick={handleCloneClick}
           disabled={cloneDisabled}
-        >
-          <CopyIcon size={ICON_SIZE} style={ICON_STYLE} />
-        </Button>
+          icon={<CopyIcon />}
+        />
 
-        <Button tooltip="Format" onClick={formatQuery}>
-          <FormatIcon size={ICON_SIZE} style={ICON_STYLE} />
-        </Button>
+        <Button tooltip="Format" onClick={formatQuery} icon={<FormatIcon />} />
 
-        <Button tooltip="Save" onClick={() => saveQuery()} disabled={isSaving}>
-          {unsavedChanges ? (
-            <UnsavedIcon size={ICON_SIZE} style={ICON_STYLE} />
-          ) : (
-            <SaveIcon size={ICON_SIZE} style={ICON_STYLE} />
-          )}
-        </Button>
+        <Button
+          tooltip="Save"
+          onClick={() => saveQuery()}
+          disabled={isSaving}
+          icon={unsavedChanges ? <UnsavedIcon /> : <SaveIcon />}
+        />
 
         <Button type="primary" onClick={() => runQuery()} disabled={isRunning}>
           Run
