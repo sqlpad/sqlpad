@@ -52,7 +52,7 @@ function QueryTableOnly({ queryId }) {
       }}
     >
       <div style={{ height: '50px' }}>
-        <span style={{ fontSize: '2rem' }}>{query ? query.name : ''}</span>
+        <span style={{ fontSize: '1.5rem' }}>{query ? query.name : ''}</span>
         <div style={{ float: 'right' }}>
           {incomplete && <IncompleteDataNotification />}
           <ExportButton cacheKey={cacheKey} />
