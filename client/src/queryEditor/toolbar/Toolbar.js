@@ -23,6 +23,7 @@ import ConnectionDropDown from '../ConnectionDropdown';
 import AboutModal from './AboutModal';
 import QueryDetailsModal from './QueryDetailsModal';
 import QueryListButton from './QueryListButton';
+import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
 
 function mapStateToProps(state) {
   return {
@@ -63,6 +64,7 @@ function Toolbar({
   const [showUsers, setShowUsers] = useState(false);
   const [redirectToSignIn, setRedirectToSignIn] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [showConnections, setShowConnections] = useState(false);
 
   const error = showValidation && !queryName.length;
   const cloneDisabled = !queryId;
@@ -158,6 +160,11 @@ function Toolbar({
               </MenuItem>
             )}
             {isAdmin && (
+              <MenuItem onSelect={() => setShowConnections(true)}>
+                Connections
+              </MenuItem>
+            )}
+            {isAdmin && (
               <MenuItem onSelect={() => setShowUsers(true)}>Users</MenuItem>
             )}
             <div style={{ borderBottom: '1px solid #ddd' }} />
@@ -195,6 +202,11 @@ function Toolbar({
         </Drawer>
 
         <AboutModal visible={showAbout} onClose={() => setShowAbout(false)} />
+
+        <ConnectionListDrawer
+          visible={showConnections}
+          onClose={() => setShowConnections(false)}
+        />
       </div>
     </div>
   );
