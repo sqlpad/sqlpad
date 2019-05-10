@@ -4,7 +4,7 @@ import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
 import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
-import NewIcon from 'mdi-react/PlusBoxOutlineIcon';
+import NewIcon from 'mdi-react/PlusIcon';
 import TagsIcon from 'mdi-react/TagMultipleIcon';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -92,10 +92,16 @@ function Toolbar({
           onClick={() => resetNewQuery()}
         />
 
+        <div style={{ flexGrow: 1 }} />
+
         <Button onClick={toggleSchema}>schema</Button>
         <Button onClick={toggleVisSidebar}>Vis</Button>
 
+        <div style={{ width: 8 }} />
+
         <ConnectionDropDown />
+
+        <div style={{ width: 8 }} />
 
         <Input
           error={error}
@@ -104,6 +110,8 @@ function Toolbar({
           value={queryName}
           onChange={e => setQueryState('name', e.target.value)}
         />
+
+        <div style={{ width: 8 }} />
 
         <Button
           tooltip="Tags"
