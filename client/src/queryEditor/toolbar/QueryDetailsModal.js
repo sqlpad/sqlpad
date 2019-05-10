@@ -1,4 +1,4 @@
-import ExportIcon from 'mdi-react/ExportVariantIcon';
+import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
@@ -22,11 +22,14 @@ function QueryDetailsModal({ queryId, visible, onClose }) {
     const saved = !!queryId;
     if (saved) {
       return (
-        <li role="presentation">
-          <Link to={href} target="_blank" rel="noopener noreferrer">
-            {text} <ExportIcon />
-          </Link>
-        </li>
+        <Link
+          style={{ display: 'inline-flex', alignItems: 'center' }}
+          to={href}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {text} <OpenInNewIcon size={18} />
+        </Link>
       );
     }
   };
@@ -58,10 +61,17 @@ function QueryDetailsModal({ queryId, visible, onClose }) {
       </p>
       <p>Run only a portion of a query by highlighting it first.</p>
       <hr />
-      <ul>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+          marginBottom: 16
+        }}
+      >
         {renderNavLink(tableUrl, 'Link to Table')}
         {renderNavLink(chartUrl, 'Link to Chart')}
-      </ul>
+      </div>
       <Button type="primary" onClick={onClose}>
         OK
       </Button>
