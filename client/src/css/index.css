@@ -33,6 +33,15 @@ input {
   z-index: 9000 !important;
 }
 
+[data-reach-dialog-overlay] {
+  background: rgba(251, 169, 63, 0.623);
+  background: radial-gradient(
+    at 50% 300px,
+    rgba(216, 147, 57, 0.45) 6%,
+    rgba(248, 70, 252, 0.45) 100%
+  );
+}
+
 /*  Utilities
 ============================================================================ */
 .truncate {

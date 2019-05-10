@@ -1,6 +1,5 @@
 import React from 'react';
 import { Dialog } from '@reach/dialog';
-import '@reach/dialog/styles.css';
 
 function DrawerWrapper({
   title,
@@ -15,7 +14,8 @@ function DrawerWrapper({
     margin: '0',
     overflow: 'auto',
     width,
-    position: 'absolute'
+    position: 'absolute',
+    boxShadow: `rgba(56, 165, 255, 0.44) 0px 0px 8px 4px, rgba(209, 63, 255, 0.28) 4px 0px 18px 14px`
   };
 
   if (placement === 'right') {
