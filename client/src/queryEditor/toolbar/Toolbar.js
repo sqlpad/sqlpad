@@ -21,7 +21,7 @@ import UserList from '../../users/UserList';
 import fetchJson from '../../utilities/fetch-json.js';
 import ConnectionDropDown from '../ConnectionDropdown';
 import AboutModal from './AboutModal';
-import QueryDetailsModal from './QueryDetailsModal';
+import QueryTagsModal from './QueryTagsModal';
 import QueryListButton from './QueryListButton';
 import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
 
@@ -59,7 +59,7 @@ function Toolbar({
   toggleVisSidebar,
   unsavedChanges
 }) {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showTags, setShowTags] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [redirectToSignIn, setRedirectToSignIn] = useState(false);
@@ -117,15 +117,12 @@ function Toolbar({
 
         <Button
           tooltip="Tags"
-          onClick={() => setShowDetails(true)}
+          onClick={() => setShowTags(true)}
           disabled={cloneDisabled}
           icon={<TagsIcon />}
         />
 
-        <QueryDetailsModal
-          visible={showDetails}
-          onClose={() => setShowDetails(false)}
-        />
+        <QueryTagsModal visible={showTags} onClose={() => setShowTags(false)} />
 
         <Button
           tooltip="Clone"
