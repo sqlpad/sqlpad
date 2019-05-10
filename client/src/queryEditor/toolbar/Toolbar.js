@@ -77,8 +77,8 @@ function Toolbar({
     <div
       style={{
         width: '100%',
-        backgroundColor: '#fafafa',
-        padding: '.25rem .5rem',
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+        padding: 6,
         borderBottom: '1px solid #eee'
       }}
     >
