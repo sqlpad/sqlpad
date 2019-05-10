@@ -1,10 +1,8 @@
-import HelpIcon from 'mdi-react/HelpCircleOutlineIcon';
 import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import AboutContent from './AboutContent';
-import Button from '../../common/Button';
 import Modal from '../../common/Modal';
 
 function mapStateToProps(state) {
@@ -13,25 +11,19 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedEditorNavBar = connect(
+const ConnectedAboutModal = connect(
   mapStateToProps,
   actions
-)(React.memo(AboutButton));
+)(React.memo(AboutModal));
 
-function AboutButton({ version }) {
-  const [visible, setVisible] = useState(false);
+function AboutModal({ version, visible, onClose }) {
   return (
     <>
-      <Button
-        tooltip="About"
-        icon={<HelpIcon />}
-        onClick={() => setVisible(true)}
-      />
       <Modal
         width={650}
         title="About SQLPad"
         visible={visible}
-        onClose={() => setVisible(false)}
+        onClose={onClose}
       >
         <AboutContent version={version} />
       </Modal>
@@ -39,8 +31,8 @@ function AboutButton({ version }) {
   );
 }
 
-AboutButton.propTypes = {
+AboutModal.propTypes = {
   version: PropTypes.object.isRequired
 };
 
-export default ConnectedEditorNavBar;
+export default ConnectedAboutModal;

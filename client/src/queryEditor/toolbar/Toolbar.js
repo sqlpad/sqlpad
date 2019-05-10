@@ -1,23 +1,28 @@
-import SaveIcon from 'mdi-react/ContentSaveIcon';
-import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
-import TagsIcon from 'mdi-react/TagMultipleIcon';
-import NewIcon from 'mdi-react/PlusBoxOutlineIcon';
+import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
 import CopyIcon from 'mdi-react/ContentCopyIcon';
+import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
+import SaveIcon from 'mdi-react/ContentSaveIcon';
+import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
-import { connect } from 'unistore/react';
-import { actions } from '../../stores/unistoreStore';
+import NewIcon from 'mdi-react/PlusBoxOutlineIcon';
+import TagsIcon from 'mdi-react/TagMultipleIcon';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import ConnectionDropDown from '../ConnectionDropdown';
-import AboutButton from './AboutButton';
-import SignoutButton from './SignoutButton';
-import ConfigButton from './ConfigButton';
-import QueryListButton from './QueryListButton';
-import QueryDetailsModal from './QueryDetailsModal';
-import ButtonLink from '../../common/ButtonLink';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'unistore/react';
 import Button from '../../common/Button';
+import buttonStyles from '../../common/Button.module.css';
+import ButtonLink from '../../common/ButtonLink';
+import Drawer from '../../common/Drawer';
 import Input from '../../common/Input';
-import UsersButton from './UsersButton';
+import ConfigurationForm from '../../configuration/ConfigurationForm';
+import { actions } from '../../stores/unistoreStore';
+import UserList from '../../users/UserList';
+import fetchJson from '../../utilities/fetch-json.js';
+import ConnectionDropDown from '../ConnectionDropdown';
+import AboutModal from './AboutModal';
+import QueryDetailsModal from './QueryDetailsModal';
+import QueryListButton from './QueryListButton';
 
 function mapStateToProps(state) {
   return {
@@ -54,11 +59,19 @@ function Toolbar({
   unsavedChanges
 }) {
   const [showDetails, setShowDetails] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
+  const [showUsers, setShowUsers] = useState(false);
+  const [redirectToSignIn, setRedirectToSignIn] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
 
   const error = showValidation && !queryName.length;
   const cloneDisabled = !queryId;
 
   const isAdmin = currentUser.role === 'admin';
+
+  if (redirectToSignIn) {
+    return <Redirect push to="/signin" />;
+  }
 
   return (
     <div
@@ -126,12 +139,54 @@ function Toolbar({
 
         <div style={{ flexGrow: 1 }} />
 
-        <AboutButton />
+        <Menu>
+          <MenuButton className={buttonStyles.btn}>
+            <DotsVerticalIcon aria-hidden aria-label="menu" size={18} />
+          </MenuButton>
+          <MenuList>
+            {isAdmin && (
+              <MenuItem onSelect={() => setShowConfig(true)}>
+                Configuration
+              </MenuItem>
+            )}
+            {isAdmin && (
+              <MenuItem onSelect={() => setShowUsers(true)}>Users</MenuItem>
+            )}
+            <div style={{ borderBottom: '1px solid #ddd' }} />
+            <MenuItem onSelect={() => setShowAbout(true)}>About</MenuItem>
+            <div style={{ borderBottom: '1px solid #ddd' }} />
+            <MenuItem
+              onSelect={async () => {
+                await fetchJson('GET', '/api/signout');
+                setRedirectToSignIn(true);
+              }}
+            >
+              Sign out
+            </MenuItem>
+          </MenuList>
+        </Menu>
 
-        {isAdmin && <ConfigButton />}
-        {isAdmin && <UsersButton />}
+        <Drawer
+          title={'Configuration'}
+          visible={showConfig}
+          width={600}
+          onClose={() => setShowConfig(false)}
+          placement={'right'}
+        >
+          <ConfigurationForm onClose={() => setShowConfig(false)} />
+        </Drawer>
 
-        <SignoutButton />
+        <Drawer
+          title={'Users'}
+          visible={showUsers}
+          width={600}
+          onClose={() => setShowUsers(false)}
+          placement={'right'}
+        >
+          <UserList />
+        </Drawer>
+
+        <AboutModal visible={showAbout} onClose={() => setShowAbout(false)} />
       </div>
     </div>
   );

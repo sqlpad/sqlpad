@@ -42,6 +42,12 @@ input {
   );
 }
 
+[data-reach-menu-item][data-selected] {
+  background: #1890ff;
+  color: white;
+  outline: none;
+}
+
 /*  Utilities
 ============================================================================ */
 .truncate {
