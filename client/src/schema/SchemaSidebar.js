@@ -1,5 +1,6 @@
 import ClosedIcon from 'mdi-react/MenuRightIcon';
 import OpenIcon from 'mdi-react/MenuDownIcon';
+import RefreshIcon from 'mdi-react/RefreshIcon';
 import React, { useEffect, useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
@@ -133,9 +134,8 @@ function SchemaSidebar({
               style={{ marginLeft: 8 }}
               disabled={loading}
               onClick={handleRefreshClick}
-            >
-              Reload
-            </Button>
+              icon={<RefreshIcon />}
+            />
           </div>
 
           <Divider style={{ margin: '8px 0' }} />
