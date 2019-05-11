@@ -1,4 +1,6 @@
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
+import DatabaseIcon from 'mdi-react/DatabaseIcon';
+import VisIcon from 'mdi-react/ChartBarIcon';
 import CopyIcon from 'mdi-react/ContentCopyIcon';
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
@@ -96,8 +98,16 @@ function Toolbar({
 
         <div style={{ flexGrow: 1 }} />
 
-        <Button onClick={toggleSchema}>schema</Button>
-        <Button onClick={toggleVisSidebar}>Vis</Button>
+        <Button
+          tooltip="Toggle schema"
+          onClick={toggleSchema}
+          icon={<DatabaseIcon />}
+        />
+        <Button
+          tooltip="Toggle vis"
+          onClick={toggleVisSidebar}
+          icon={<VisIcon />}
+        />
 
         <div style={{ width: 8 }} />
 
