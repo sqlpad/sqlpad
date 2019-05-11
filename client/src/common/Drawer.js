@@ -15,7 +15,9 @@ function DrawerWrapper({
     overflow: 'auto',
     width,
     position: 'absolute',
-    boxShadow: `rgba(56, 165, 255, 0.44) 0px 0px 8px 4px, rgba(209, 63, 255, 0.28) 4px 0px 18px 14px`
+    boxShadow: `rgba(56, 165, 255, 0.44) 0px 0px 8px 4px, rgba(209, 63, 255, 0.28) 4px 0px 18px 14px`,
+    display: 'flex',
+    flexDirection: 'column'
   };
 
   if (placement === 'right') {
@@ -34,7 +36,11 @@ function DrawerWrapper({
         >
           {title}
         </div>
-        {children}
+        <div
+          style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
+        >
+          {children}
+        </div>
       </Dialog>
     );
   }
