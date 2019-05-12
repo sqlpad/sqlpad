@@ -4,10 +4,12 @@ import { Menu, Item, getItems } from './MultiSelectHelpers';
 import styles from './MultiSelect.module.css';
 import CloseIcon from 'mdi-react/CloseIcon';
 
-class MultiDownshift extends React.Component {
-  state = { selectedItems: [] };
+function MultiSelect({ selectedItems = [], options, onChange }) {
+  const input = useRef();
 
-  stateReducer = (state, changes) => {
+  const itemToString = item => (item ? item.name : '');
+
+  const stateReducer = (state, changes) => {
     switch (changes.type) {
       case Downshift.stateChangeTypes.keyDownArrowUp:
         return {
@@ -27,95 +29,39 @@ class MultiDownshift extends React.Component {
     }
   };
 
-  handleSelection = (selectedItem, downshift) => {
+  const removeItem = item => {
+    onChange(selectedItems.filter(i => i !== item));
+  };
+
+  const handleSelection = selectedItem => {
     const callOnChange = () => {
-      const { onSelect, onChange } = this.props;
-      const { selectedItems } = this.state;
-      if (onSelect) {
-        onSelect(selectedItems, this.getStateAndHelpers(downshift));
-      }
-      if (onChange) {
-        onChange(selectedItems, this.getStateAndHelpers(downshift));
-      }
+      onChange(selectedItems);
     };
-    if (this.state.selectedItems.includes(selectedItem)) {
-      this.removeItem(selectedItem, callOnChange);
+    if (selectedItems.includes(selectedItem)) {
+      removeItem(selectedItem, callOnChange);
     } else {
-      this.addSelectedItem(selectedItem, callOnChange);
+      addSelectedItem(selectedItem, callOnChange);
     }
   };
 
-  removeItem = (item, cb) => {
-    this.setState(({ selectedItems }) => {
-      return {
-        selectedItems: selectedItems.filter(i => i !== item)
-      };
-    }, cb);
+  const addSelectedItem = (item, cb) => {
+    onChange([...selectedItems, item]);
   };
-
-  addSelectedItem(item, cb) {
-    this.setState(
-      ({ selectedItems }) => ({
-        selectedItems: [...selectedItems, item]
-      }),
-      cb
-    );
-  }
-
-  getRemoveButtonProps = ({ onClick, item, ...props } = {}) => {
-    return {
-      onClick: e => {
-        onClick && onClick(e);
-        e.stopPropagation();
-        this.removeItem(item);
-      },
-      ...props
-    };
-  };
-
-  getStateAndHelpers(downshift) {
-    const { selectedItems } = this.state;
-    const { getRemoveButtonProps, removeItem } = this;
-    return {
-      getRemoveButtonProps,
-      removeItem,
-      selectedItems,
-      ...downshift
-    };
-  }
-
-  render() {
-    const { render, children = render, ...props } = this.props;
-    return (
-      <Downshift
-        {...props}
-        stateReducer={this.stateReducer}
-        onChange={this.handleSelection}
-        selectedItem={null}
-      >
-        {downshift => children(this.getStateAndHelpers(downshift))}
-      </Downshift>
-    );
-  }
-}
-
-function MultiSelect({ selectedItems, options, onChange }) {
-  const input = useRef();
-
-  const itemToString = item => (item ? item.name : '');
 
   return (
-    <MultiDownshift onChange={onChange} itemToString={itemToString}>
+    <Downshift
+      itemToString={itemToString}
+      stateReducer={stateReducer}
+      onChange={handleSelection}
+      selectedItem={null}
+    >
       {({
         getInputProps,
         getMenuProps,
-        getRemoveButtonProps,
-        removeItem,
         setState,
         selectItem,
         isOpen,
         inputValue,
-        selectedItems,
         getItemProps,
         highlightedIndex,
         toggleMenu
@@ -142,7 +88,10 @@ function MultiSelect({ selectedItems, options, onChange }) {
                     <span>{item.name}</span>
                     <span style={{ width: 6 }} />
                     <button
-                      {...getRemoveButtonProps({ item })}
+                      onClick={e => {
+                        e.stopPropagation();
+                        removeItem(item);
+                      }}
                       className={styles.tagCloseButton}
                     >
                       <CloseIcon size={14} style={{ marginTop: 2 }} />
@@ -198,6 +147,9 @@ function MultiSelect({ selectedItems, options, onChange }) {
                   if (event.key === 'Backspace' && !inputValue) {
                     removeItem(selectedItems[selectedItems.length - 1]);
                   }
+                  if (event.key === 'Escape') {
+                    event.nativeEvent.preventDownshiftDefault = true;
+                  }
                 }
               })}
             />
@@ -223,7 +175,7 @@ function MultiSelect({ selectedItems, options, onChange }) {
           </Menu>
         </div>
       )}
-    </MultiDownshift>
+    </Downshift>
   );
 }
 

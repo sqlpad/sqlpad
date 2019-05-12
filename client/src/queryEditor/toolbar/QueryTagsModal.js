@@ -3,10 +3,13 @@ import { connect } from 'unistore/react';
 import { actions } from '../../stores/unistoreStore';
 import Modal from '../../common/Modal';
 import Button from '../../common/Button';
+import MultiSelect from '../../common/MultiSelect';
+import Spacer from '../../common/Spacer';
 
 function mapStateToProps(state) {
   return {
-    queryId: state.query && state.query._id
+    availableTags: state.availableTags || [],
+    tags: (state.query && state.query.tags) || []
   };
 }
 
@@ -15,7 +18,19 @@ const ConnectedQueryTagsModal = connect(
   actions
 )(React.memo(QueryTagsModal));
 
-function QueryTagsModal({ queryId, visible, onClose }) {
+function QueryTagsModal({
+  availableTags,
+  tags,
+  visible,
+  onClose,
+  setQueryState
+}) {
+  const selectedItems = tags.map(tag => ({ name: tag, id: tag }));
+
+  const handleChange = selectedItems => {
+    setQueryState('tags', selectedItems.map(item => item.name));
+  };
+
   return (
     <Modal
       title="Query tags"
@@ -23,10 +38,15 @@ function QueryTagsModal({ queryId, visible, onClose }) {
       visible={visible}
       onClose={onClose}
     >
-      <div>TODO add tag input for queryId {queryId}</div>
+      <MultiSelect
+        selectedItems={selectedItems}
+        options={availableTags.map(tag => ({ name: tag, id: tag }))}
+        onChange={handleChange}
+      />
+      {/* <Spacer />
       <Button type="primary" onClick={onClose}>
         OK
-      </Button>
+      </Button> */}
     </Modal>
   );
 }
