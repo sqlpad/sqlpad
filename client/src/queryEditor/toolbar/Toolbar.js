@@ -128,7 +128,6 @@ function Toolbar({
         <Button
           tooltip="Tags"
           onClick={() => setShowTags(true)}
-          disabled={cloneDisabled}
           icon={<TagsIcon />}
         />
 
