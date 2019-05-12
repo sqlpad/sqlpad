@@ -51,7 +51,7 @@ const Menu = React.forwardRef(({ isOpen, ...rest }, ref) => {
     overflowX: 'hidden',
     outline: '0',
     transition: 'opacity .1s ease',
-    borderRadius: '0 0 .28571429rem .28571429rem',
+    borderRadius: '0 0 2px 2px',
     boxShadow: '0 2px 3px 0 rgba(34,36,38,.15)',
     borderColor: '#96c8da',
     borderTopWidth: '0',

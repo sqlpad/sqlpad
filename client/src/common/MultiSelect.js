@@ -103,7 +103,6 @@ class MultiDownshift extends React.Component {
 
   render() {
     const { render, children = render, ...props } = this.props;
-    // TODO: compose together props (rather than overwriting them) like downshift does
     return (
       <Downshift
         {...props}
@@ -151,10 +150,14 @@ class App extends React.Component {
           <div style={{ width: 500, margin: 'auto', position: 'relative' }}>
             <div
               className={styles.container}
-              style={{
-                borderBottomRightRadius: isOpen ? 0 : 6,
-                borderBottomLeftRadius: isOpen ? 0 : 6
-              }}
+              style={
+                isOpen
+                  ? {
+                      borderBottomRightRadius: 0,
+                      borderBottomLeftRadius: 0
+                    }
+                  : null
+              }
               onClick={() => {
                 toggleMenu();
                 !isOpen && this.input.current.focus();
