@@ -1,8 +1,6 @@
 import React from 'react';
 import matchSorter from 'match-sorter';
 
-const allItems = [{ name: 'foo', id: '1' }, { name: 'bar', id: '2' }];
-
 const Item = function Item({ isActive, isSelected, ...rest }) {
   let style = {
     position: 'relative',
@@ -67,12 +65,17 @@ const Menu = React.forwardRef(({ isOpen, ...rest }, ref) => {
   return <ul ref={ref} style={style} {...rest} />;
 });
 
-function getItems(filter) {
-  return filter
-    ? matchSorter(allItems, filter, {
+function getItems(allItems, selectedItems, inputValue) {
+  const selectedById = {};
+  selectedItems.forEach(item => (selectedById[item.id] = item));
+
+  const unselectedItems = allItems.filter(item => !selectedById[item.id]);
+
+  return inputValue
+    ? matchSorter(unselectedItems, inputValue, {
         keys: ['name']
       })
-    : allItems;
+    : unselectedItems;
 }
 
 export { Menu, Item, getItems };
