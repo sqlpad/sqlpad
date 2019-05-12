@@ -4,7 +4,7 @@
 
 import React from 'react';
 import Downshift from 'downshift';
-import { Menu, Item, getItems, XIcon } from './MultiSelectHelpers';
+import { Menu, Item, getItems } from './MultiSelectHelpers';
 import styles from './MultiSelect.module.css';
 import CloseIcon from 'mdi-react/CloseIcon';
 
