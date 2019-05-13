@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import Downshift from 'downshift';
 import { Menu, Item, getItems } from './MultiSelectHelpers';
 import styles from './MultiSelect.module.css';
-import CloseIcon from 'mdi-react/CloseIcon';
+import Tag from './Tag';
 
 function MultiSelect({ selectedItems = [], options, onChange }) {
   const input = useRef();
@@ -84,19 +84,9 @@ function MultiSelect({ selectedItems = [], options, onChange }) {
           >
             {selectedItems.length > 0
               ? selectedItems.map(item => (
-                  <div key={item.id} className={styles.tagContainer}>
-                    <span>{item.name}</span>
-                    <span style={{ width: 6 }} />
-                    <button
-                      onClick={e => {
-                        e.stopPropagation();
-                        removeItem(item);
-                      }}
-                      className={styles.tagCloseButton}
-                    >
-                      <CloseIcon size={14} style={{ marginTop: 2 }} />
-                    </button>
-                  </div>
+                  <Tag key={item.id} onClose={() => removeItem(item)}>
+                    {item.name}
+                  </Tag>
                 ))
               : null}
             <input
@@ -147,7 +137,7 @@ function MultiSelect({ selectedItems = [], options, onChange }) {
                   if (event.key === 'Backspace' && !inputValue) {
                     removeItem(selectedItems[selectedItems.length - 1]);
                   }
-                  if (event.key === 'Escape') {
+                  if (event.key === 'Escape' && !isOpen) {
                     event.nativeEvent.preventDownshiftDefault = true;
                   }
                 }

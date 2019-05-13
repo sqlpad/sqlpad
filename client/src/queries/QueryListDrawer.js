@@ -9,13 +9,14 @@ import Divider from '../common/Divider';
 import Drawer from '../common/Drawer';
 import ButtonLink from '../common/ButtonLink';
 import ListItem from '../common/ListItem';
-import Select from '../common/Select';
 import SqlEditor from '../common/SqlEditor';
 import Text from '../common/Text';
 import { actions } from '../stores/unistoreStore';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
+import MultiSelect from '../common/MultiSelect';
+import Tag from '../common/Tag';
 
 function QueryListDrawer({
   queries,
@@ -37,24 +38,21 @@ function QueryListDrawer({
   let filteredQueries = decoratedQueries;
   if (searches && searches.length) {
     searches.forEach(search => {
-      if (search.startsWith('createdBy=')) {
-        const createdBy = search.substring(10);
+      if (search.createdBy) {
         filteredQueries = filteredQueries.filter(
-          query => query.createdBy === createdBy
+          query => query.createdBy === search.createdBy
         );
-      } else if (search.startsWith('tag=')) {
-        const sTag = search.substring(4);
+      } else if (search.tag) {
         filteredQueries = filteredQueries.filter(
-          query => query.tags && query.tags.includes(sTag)
+          query => query.tags && query.tags.includes(search.tag)
         );
-      } else if (search.startsWith('connection=')) {
-        const connectionName = search.substring(11);
+      } else if (search.connectionId) {
         filteredQueries = filteredQueries.filter(
-          query => query.connectionName === connectionName
+          query => query.connectionId === search.connectionId
         );
       } else {
         // search is just open text search
-        const lowerSearch = search.toLowerCase();
+        const lowerSearch = search.name.toLowerCase();
         filteredQueries = filteredQueries.filter(q => {
           return (
             (q.name && q.name.toLowerCase().search(lowerSearch) !== -1) ||
@@ -77,17 +75,11 @@ function QueryListDrawer({
       placement="left"
     >
       <div>
-        <Select
-          autoFocus
-          className="w-100"
-          value={searches && searches[0]}
-          onChange={event => setSearches([event.target.value])}
-        >
-          <option value="" />
-          {availableSearches.map(search => (
-            <option key={search}>{search}</option>
-          ))}
-        </Select>
+        <MultiSelect
+          selectedItems={searches}
+          options={availableSearches}
+          onChange={items => setSearches(items)}
+        />
       </div>
       {filteredQueries.map(query => {
         const tableUrl = `/query-table/${query._id}`;
@@ -172,21 +164,7 @@ function QueryListDrawer({
           <div>By {preview.createdBy}</div>
           <div>
             {preview.tags &&
-              preview.tags.map(tag => (
-                // TODO FIXME XXX make better tags
-                <span
-                  style={{
-                    padding: '0 8px',
-                    marginRight: 4,
-                    marginTop: 4,
-                    backgroundColor: '#EEE',
-                    border: '1px solid #CCC'
-                  }}
-                  key={tag}
-                >
-                  {tag}
-                </span>
-              ))}
+              preview.tags.map(tag => <Tag key={tag}>{tag}</Tag>)}
           </div>
 
           <Divider />

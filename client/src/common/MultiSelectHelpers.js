@@ -44,7 +44,7 @@ const Menu = React.forwardRef(({ isOpen, ...rest }, ref) => {
     position: 'absolute',
     backgroundColor: 'white',
     width: '100%',
-    maxHeight: '20rem',
+    maxHeight: '10rem',
     overflowY: 'auto',
     overflowX: 'hidden',
     outline: '0',
