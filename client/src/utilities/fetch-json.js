@@ -1,5 +1,5 @@
 import 'whatwg-fetch';
-import message from 'antd/lib/message';
+import message from '../common/message';
 
 export default function fetchJson(method, url, body) {
   const BASE_URL = window.BASE_URL || '';

@@ -1,25 +1,21 @@
-import Button from 'antd/lib/button';
-import Form from 'antd/lib/form';
-import message from 'antd/lib/message';
-import Select from 'antd/lib/select';
-import Row from 'antd/lib/row';
-import Col from 'antd/lib/col';
 import React, { useState } from 'react';
-import fetchJson from '../utilities/fetch-json.js';
 import { Link } from 'react-router-dom';
 import uuid from 'uuid';
-
-const FormItem = Form.Item;
-const { Option } = Select;
+import Button from '../common/Button';
+import FormExplain from '../common/FormExplain';
+import message from '../common/message';
+import Select from '../common/Select';
+import Spacer from '../common/Spacer';
+import fetchJson from '../utilities/fetch-json.js';
 
 function EditUserForm({ user }) {
   const [role, setRole] = useState(user.role);
   const [passwordResetId, setPasswordResetId] = useState(user.passwordResetId);
 
-  const handleRoleChange = async role => {
-    setRole(role);
+  const handleRoleChange = async event => {
+    setRole(event.target.value);
     const json = await fetchJson('PUT', '/api/users/' + user._id, {
-      role
+      role: event.target.value
     });
     if (json.error) {
       return message.error('Update failed: ' + json.error.toString());
@@ -50,44 +46,44 @@ function EditUserForm({ user }) {
   const renderReset = () => {
     if (passwordResetId) {
       return (
-        <Row type="flex" gutter={24} align="middle">
-          <Col span={12}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ flexBasis: '50%' }}>
             <Button className="w-100" onClick={removePasswordResetLink}>
-              Remove
+              Remove reset link
             </Button>
-          </Col>
-          <Col style={{ textAlign: 'center' }} span={12}>
+          </div>
+          <div style={{ flexBasis: '50%', textAlign: 'center' }}>
             <Link to={`/password-reset/${passwordResetId}`}>
               Password reset link
             </Link>
-          </Col>
-        </Row>
+          </div>
+        </div>
       );
     }
     return (
-      <Row gutter={24}>
-        <Col span={12}>
-          <Button className="w-100" onClick={generatePasswordResetLink}>
-            Generate password reset link
-          </Button>
-        </Col>
-      </Row>
+      <div>
+        <Button className="w-100" onClick={generatePasswordResetLink}>
+          Generate password reset link
+        </Button>
+      </div>
     );
   };
 
   return (
-    <Form layout="vertical">
-      <FormItem
-        label="Role"
-        extra="Admins can manage database connections and users"
-      >
+    <div>
+      <label>
+        Role
         <Select name="role" value={role} onChange={handleRoleChange}>
-          <Option value="editor">Editor</Option>
-          <Option value="admin">Admin</Option>
+          <option value="editor">Editor</option>
+          <option value="admin">Admin</option>
         </Select>
-      </FormItem>
+      </label>
+      <FormExplain>
+        Admins can manage database connections and users
+      </FormExplain>
+      <Spacer size={3} />
       {renderReset()}
-    </Form>
+    </div>
   );
 }
 

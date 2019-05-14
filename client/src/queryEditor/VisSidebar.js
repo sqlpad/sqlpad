@@ -1,16 +1,15 @@
-import Button from 'antd/lib/button';
-import Icon from 'antd/lib/icon';
-import Select from 'antd/lib/select';
+import DownloadIcon from 'mdi-react/DownloadIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
+import Button from '../common/Button';
+import Select from '../common/Select';
 import Sidebar from '../common/Sidebar';
 import SidebarBody from '../common/SidebarBody';
+import { exportPng } from '../common/tauChartRef';
+import { actions } from '../stores/unistoreStore';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 import ChartInputs from './ChartInputs.js';
-import { exportPng } from '../common/tauChartRef';
-const { Option } = Select;
 
 function mapStateToProps(state) {
   return {
@@ -41,9 +40,9 @@ function VisSidebar({
 }) {
   const chartOptions = chartDefinitions.map(d => {
     return (
-      <Option key={d.chartType} value={d.chartType}>
+      <option key={d.chartType} value={d.chartType}>
         {d.chartLabel}
-      </Option>
+      </option>
     );
   });
 
@@ -51,19 +50,11 @@ function VisSidebar({
     <Sidebar>
       <SidebarBody>
         <Select
-          allowClear
-          showSearch
           className="w-100"
-          optionFilterProp="children"
           value={chartType}
-          notFoundContent="No charts available"
-          onChange={handleChartTypeChange}
-          filterOption={(input, option) =>
-            option.props.value &&
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-              0
-          }
+          onChange={event => handleChartTypeChange(event.target.value)}
         >
+          <option value="" />
           {chartOptions}
         </Select>
         <ChartInputs
@@ -77,7 +68,7 @@ function VisSidebar({
       </SidebarBody>
       <div>
         <Button className="w-100" onClick={() => exportPng(queryId)}>
-          <Icon type="download" /> Save Chart Image
+          <DownloadIcon /> Save Chart Image
         </Button>
       </div>
     </Sidebar>

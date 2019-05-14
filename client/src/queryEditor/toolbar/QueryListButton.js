@@ -1,25 +1,17 @@
-import Button from 'antd/lib/button';
-import Drawer from '../../common/Drawer';
+import Button from '../../common/Button';
 import React, { useState } from 'react';
-import QueryList from '../../queries/QueryList';
+import QueryListDrawer from '../../queries/QueryListDrawer';
 
 function QueryListButton() {
   const [showQueries, setShowQueries] = useState(false);
 
   return (
     <>
-      <Button icon="file-text" onClick={() => setShowQueries(true)}>
-        Queries
-      </Button>
-      <Drawer
-        title={'Queries'}
+      <Button onClick={() => setShowQueries(true)}>Queries</Button>
+      <QueryListDrawer
         visible={showQueries}
-        width="600"
         onClose={() => setShowQueries(false)}
-        placement="left"
-      >
-        <QueryList onSelect={() => setShowQueries(false)} />
-      </Drawer>
+      />
     </>
   );
 }

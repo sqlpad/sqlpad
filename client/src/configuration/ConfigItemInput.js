@@ -1,11 +1,9 @@
-import Input from 'antd/lib/input';
-import Select from 'antd/lib/select';
-import Form from 'antd/lib/form';
-import Popover from 'antd/lib/popover';
-import Switch from 'antd/lib/switch';
 import React from 'react';
-
-const { Option } = Select;
+import Switch from 'react-switch';
+import FormExplain from '../common/FormExplain';
+import HorizontalFormItem from '../common/HorizontalFormItem';
+import Input from '../common/Input';
+import Select from '../common/Select';
 
 function configIsBoolean(config) {
   const { options } = config;
@@ -70,6 +68,10 @@ function ConfigItemInput({ config, onChange }) {
   if (configIsBoolean(config)) {
     input = (
       <Switch
+        id={config.key}
+        height={24}
+        width={48}
+        onColor={'#1890ff'}
         checked={config.effectiveValue}
         onChange={value => onChange(config.key, value)}
       />
@@ -77,13 +79,14 @@ function ConfigItemInput({ config, onChange }) {
   } else if (config.options) {
     const optionNodes = config.options.map(option => {
       return (
-        <Option key={option} value={option}>
+        <option key={option} value={option}>
           {option.toString()}
-        </Option>
+        </option>
       );
     });
     input = (
       <Select
+        id={config.key}
         className="w-100"
         disabled={disabled}
         onChange={handleSelectChange}
@@ -95,6 +98,7 @@ function ConfigItemInput({ config, onChange }) {
   } else {
     input = (
       <Input
+        id={config.key}
         className="w-100"
         disabled={disabled}
         onChange={handleChange}
@@ -105,11 +109,10 @@ function ConfigItemInput({ config, onChange }) {
   }
 
   return (
-    <Form.Item label={config.label}>
-      <Popover placement="right" content={popoverContent} trigger="hover">
-        {input}
-      </Popover>
-    </Form.Item>
+    <HorizontalFormItem label={config.label}>
+      <div>{input}</div>
+      <FormExplain>{popoverContent}</FormExplain>
+    </HorizontalFormItem>
   );
 }
 

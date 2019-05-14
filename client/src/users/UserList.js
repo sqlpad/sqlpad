@@ -1,16 +1,15 @@
-import Button from 'antd/lib/button';
-import message from 'antd/lib/message';
-import Modal from 'antd/lib/modal';
-import Row from 'antd/lib/row';
-import Col from 'antd/lib/col';
-import Popconfirm from 'antd/lib/popconfirm';
-import List from 'antd/lib/list';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
+import Button from '../common/Button';
+import DeleteConfirmButton from '../common/DeleteConfirmButton';
+import ListItem from '../common/ListItem';
+import message from '../common/message';
+import Modal from '../common/Modal';
+import Text from '../common/Text';
 import { actions } from '../stores/unistoreStore';
 import fetchJson from '../utilities/fetch-json.js';
-import InviteUserForm from './InviteUserForm';
 import EditUserForm from './EditUserForm';
+import InviteUserForm from './InviteUserForm';
 
 function UserList({ currentUser }) {
   const [users, setUsers] = useState([]);
@@ -41,7 +40,6 @@ function UserList({ currentUser }) {
     if (json.error) {
       return message.error('Delete Failed: ' + json.error.toString());
     }
-    message.success('User Deleted');
     loadUsersFromServer();
   };
 
@@ -50,71 +48,68 @@ function UserList({ currentUser }) {
     setShowAddUser(false);
   };
 
-  const renderItem = user => {
-    const actions = [];
-
-    if (currentUser && currentUser._id !== user._id) {
-      actions.push(<Button onClick={() => setEditUser(user)}>edit</Button>);
-      actions.push(
-        <Popconfirm
-          title={`Delete ${user.email}?`}
-          onConfirm={e => handleDelete(user)}
-          onCancel={() => {}}
-          okText="Delete"
-          cancelText="cancel"
-        >
-          <Button icon="delete" type="danger" />
-        </Popconfirm>
-      );
-    }
-
-    const userSignupInfo = !user.signupDate ? (
-      <em> - not signed up yet</em>
-    ) : (
-      ''
-    );
-
-    return (
-      <List.Item actions={actions}>
-        <List.Item.Meta
-          title={user.email}
-          description={
-            <div>
-              {user.role} {userSignupInfo}
-            </div>
-          }
-        />
-      </List.Item>
-    );
-  };
-
   return (
     <>
-      <Row>
-        <Col offset={19} span={5}>
-          <Button
-            className="w-100"
-            type="primary"
-            onClick={() => setShowAddUser(true)}
-          >
-            Add user
-          </Button>
-        </Col>
-      </Row>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button
+          style={{ width: 135 }}
+          type="primary"
+          onClick={() => setShowAddUser(true)}
+        >
+          Add user
+        </Button>
+      </div>
 
-      <List
-        itemLayout="horizontal"
-        dataSource={users}
-        renderItem={renderItem}
-      />
+      {users.map(user => {
+        const actions = [];
+
+        if (currentUser && currentUser._id !== user._id) {
+          actions.push(
+            <Button
+              key="edit"
+              style={{ marginLeft: 8 }}
+              onClick={() => setEditUser(user)}
+            >
+              edit
+            </Button>
+          );
+          actions.push(
+            <DeleteConfirmButton
+              key="delete"
+              confirmMessage={`Delete ${user.email}?`}
+              onConfirm={e => handleDelete(user)}
+              style={{ marginLeft: 8 }}
+            >
+              Delete
+            </DeleteConfirmButton>
+          );
+        }
+
+        const userSignupInfo = !user.signupDate ? (
+          <em> - not signed up yet</em>
+        ) : (
+          ''
+        );
+
+        return (
+          <ListItem key={user._id}>
+            <div style={{ flexGrow: 1, padding: 8 }}>
+              {user.email}
+              <br />
+              <Text type="secondary">
+                {user.role} {userSignupInfo}
+              </Text>
+            </div>
+            {actions}
+          </ListItem>
+        );
+      })}
 
       <Modal
         title="Add user"
         visible={showAddUser}
-        footer={null}
         width={'500px'}
-        destroyOnClose={true}
-        onCancel={() => setShowAddUser(false)}
+        onClose={() => setShowAddUser(false)}
       >
         <InviteUserForm onInvited={handleOnInvited} />
       </Modal>
@@ -122,10 +117,8 @@ function UserList({ currentUser }) {
       <Modal
         title={editUser && editUser.email}
         visible={Boolean(editUser)}
-        footer={null}
         width={'500px'}
-        destroyOnClose={true}
-        onCancel={() => {
+        onClose={() => {
           loadUsersFromServer();
           setEditUser(null);
         }}

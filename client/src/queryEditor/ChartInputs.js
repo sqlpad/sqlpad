@@ -1,11 +1,8 @@
-import Checkbox from 'antd/lib/checkbox';
-import Input from 'antd/lib/input';
-import Select from 'antd/lib/select';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import Input from '../common/Input';
+import Select from '../common/Select';
 import chartDefinitions from '../utilities/chartDefinitions.js';
-
-const { Option } = Select;
 
 function cleanBoolean(value) {
   if (typeof value === 'string') {
@@ -47,9 +44,9 @@ function ChartInputs({
       if (field.inputType === 'field-dropdown') {
         const optionNodes = queryResultFields.map(qrfield => {
           return (
-            <Option key={qrfield} value={qrfield}>
+            <option key={qrfield} value={qrfield}>
               {qrfield}
-            </Option>
+            </option>
           );
         });
         const selectedQueryResultField =
@@ -59,34 +56,25 @@ function ChartInputs({
           queryResultFields.indexOf(selectedQueryResultField) === -1
         ) {
           optionNodes.push(
-            <Option
+            <option
               key={'selectedQueryResultField'}
               value={selectedQueryResultField}
             >
               {selectedQueryResultField}
-            </Option>
+            </option>
           );
         }
         return (
           <div style={inputStyle} key={field.fieldId}>
             <label>{field.label}</label>
             <Select
-              allowClear
-              showSearch
               className="w-100"
-              optionFilterProp="children"
               value={selectedQueryResultField}
-              notFoundContent="No fields available"
-              onChange={value =>
-                changeChartConfigurationField(field.fieldId, value)
-              }
-              filterOption={(input, option) =>
-                option.props.value &&
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+              onChange={event =>
+                changeChartConfigurationField(field.fieldId, event.target.value)
               }
             >
+              <option value="" />
               {optionNodes}
             </Select>
           </div>
@@ -94,17 +82,21 @@ function ChartInputs({
       } else if (field.inputType === 'checkbox') {
         const checked =
           cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
+        console.log(field);
         return (
           <div style={inputStyle} key={field.fieldId}>
-            <Checkbox
+            <input
+              type="checkbox"
               checked={checked}
-              name={field.key}
+              id={field.fieldId}
+              name={field.fieldId}
               onChange={e =>
                 changeChartConfigurationField(field.fieldId, e.target.checked)
               }
-            >
+            />
+            <label for={field.fieldId} style={{ marginLeft: 8 }}>
               {field.label}
-            </Checkbox>
+            </label>
           </div>
         );
       } else if (field.inputType === 'textbox') {

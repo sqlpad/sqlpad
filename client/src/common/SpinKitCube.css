@@ -8,7 +8,8 @@
 .sk-cube-grid .sk-cube {
   width: 33%;
   height: 33%;
-  background-color: #333;
+  /* background-color: #333; */
+  background-color: magenta;
   float: left;
   -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
   animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
@@ -57,10 +58,12 @@
   100% {
     -webkit-transform: scale3D(1, 1, 1);
     transform: scale3D(1, 1, 1);
+    background-color: magenta;
   }
   35% {
     -webkit-transform: scale3D(0, 0, 1);
     transform: scale3D(0, 0, 1);
+    background-color: rgb(0, 183, 255);
   }
 }
 
@@ -70,9 +73,13 @@
   100% {
     -webkit-transform: scale3D(1, 1, 1);
     transform: scale3D(1, 1, 1);
+    background-color: rgb(0, 183, 255);
+    box-shadow: rgba(247, 7, 247, 0.5) 2px 2px 20px 2px;
   }
   35% {
     -webkit-transform: scale3D(0, 0, 1);
     transform: scale3D(0, 0, 1);
+    background-color: magenta;
+    box-shadow: rgba(64, 169, 255, 0.5) 2px 2px 20px 2px;
   }
 }

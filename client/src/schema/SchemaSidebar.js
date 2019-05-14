@@ -1,21 +1,22 @@
-import Icon from 'antd/lib/icon';
-import Tooltip from 'antd/lib/tooltip';
-import Typography from 'antd/lib/typography';
-import Input from 'antd/lib/input';
-import Button from 'antd/lib/button';
-import Divider from 'antd/lib/divider';
-import Spin from 'antd/lib/spin';
+import ClosedIcon from 'mdi-react/MenuRightIcon';
+import OpenIcon from 'mdi-react/MenuDownIcon';
+import RefreshIcon from 'mdi-react/RefreshIcon';
 import React, { useEffect, useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
 import Sidebar from '../common/Sidebar';
+import Button from '../common/Button';
+import Input from '../common/Input';
+import Text from '../common/Text';
+import Divider from '../common/Divider';
 import { actions } from '../stores/unistoreStore';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
 import getSchemaList from './getSchemaList';
 
-const { Text } = Typography;
+const ICON_SIZE = 22;
+const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
 
 function mapStateToProps(state, props) {
   const { loading, schemaInfo, expanded } =
@@ -67,7 +68,7 @@ function SchemaSidebar({
 
   const Row = ({ index, style }) => {
     const row = visibleItems[index];
-    const iconType = expanded[row.id] ? 'caret-down' : 'caret-right';
+    const Icon = expanded[row.id] ? OpenIcon : ClosedIcon;
     if (!row) {
       return null;
     }
@@ -79,7 +80,7 @@ function SchemaSidebar({
           style={style}
           onClick={() => toggleSchemaItem(connectionId, row)}
         >
-          <Icon type={iconType} /> {row.name}
+          <Icon size={ICON_SIZE} style={ICON_STYLE} /> {row.name}
         </li>
       );
     }
@@ -91,7 +92,7 @@ function SchemaSidebar({
           style={style}
           onClick={() => toggleSchemaItem(connectionId, row)}
         >
-          <Icon type={iconType} /> {row.name}
+          <Icon size={ICON_SIZE} style={ICON_STYLE} /> {row.name}
         </li>
       );
     }
@@ -128,18 +129,17 @@ function SchemaSidebar({
               placeholder="Search schema"
               onChange={event => setSearch(event.target.value)}
             />
-            <Tooltip title="Refresh schema">
-              <Button
-                icon="reload"
-                style={{ marginLeft: 8 }}
-                disabled={loading}
-                onClick={handleRefreshClick}
-              />
-            </Tooltip>
+            <Button
+              tooltip="Refresh schema"
+              style={{ marginLeft: 8 }}
+              disabled={loading}
+              onClick={handleRefreshClick}
+              icon={<RefreshIcon />}
+            />
           </div>
-          <div>
-            <Divider style={{ margin: '8px 0' }} />
-          </div>
+
+          <Divider style={{ margin: '8px 0' }} />
+
           <div
             style={{
               display: 'flex',
@@ -155,11 +155,7 @@ function SchemaSidebar({
               }}
             >
               {loading ? (
-                <Spin
-                  spinning={loading}
-                  className={styles.schemaSpinner}
-                  delay={150}
-                />
+                <div className={styles.schemaSpinner}>loading...</div>
               ) : (
                 <ul style={{ paddingLeft: 0 }}>
                   <List

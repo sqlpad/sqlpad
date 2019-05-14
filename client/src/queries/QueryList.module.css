@@ -2,3 +2,9 @@
   background-color: #f4f4f4;
   transition: background-color 0.15s ease-in-out;
 }
+
+.outlined:hover,
+.outlined:active,
+.outlined:focus {
+  outline: 1px solid #40a9ff;
+}

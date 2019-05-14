@@ -1,29 +1,11 @@
-import message from 'antd/lib/message';
-import Form from 'antd/lib/form';
-import Button from 'antd/lib/button';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
+import Button from '../common/Button';
+import HorizontalFormItem from '../common/HorizontalFormItem';
+import message from '../common/message';
 import { actions } from '../stores/unistoreStore';
 import fetchJson from '../utilities/fetch-json.js';
 import ConfigItemInput from './ConfigItemInput';
-
-const formItemLayout = {
-  labelCol: {
-    sm: { span: 12 }
-  },
-  wrapperCol: {
-    sm: { span: 10 }
-  }
-};
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    sm: {
-      span: 10,
-      offset: 12
-    }
-  }
-};
 
 function ConfigurationForm({ refreshAppContext, onClose }) {
   const [configItems, setConfigItems] = useState([]);
@@ -70,20 +52,19 @@ function ConfigurationForm({ refreshAppContext, onClose }) {
   };
 
   const hasChanges = configItems.filter(config => config.changed);
-  const saveDisabled = hasChanges.length === 0;
+
+  // This used to set disabled, but that was weird with the modal
+  // reach modal sets focus on the first focusable element it would seem, which is a disabled button
+  // Not only does that prevent `esc` key from closing modal, it doesn't show what is focused either
+  const type = hasChanges.length > 0 ? 'primary' : null;
 
   return (
-    <Form {...formItemLayout}>
-      <Form.Item {...tailFormItemLayout}>
-        <Button
-          disabled={saveDisabled}
-          className="w-100"
-          type="primary"
-          onClick={saveConfigValues}
-        >
+    <div>
+      <HorizontalFormItem>
+        <Button className="w-100" type={type} onClick={saveConfigValues}>
           Save
         </Button>
-      </Form.Item>
+      </HorizontalFormItem>
       {configItems.map(config => (
         <ConfigItemInput
           key={config.key}
@@ -91,7 +72,7 @@ function ConfigurationForm({ refreshAppContext, onClose }) {
           onChange={handleChange}
         />
       ))}
-    </Form>
+    </div>
   );
 }
 

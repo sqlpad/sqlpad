@@ -1,0 +1,92 @@
+.container {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-variant: tabular-nums;
+  list-style: none;
+  font-feature-settings: 'tnum';
+  position: relative;
+  /* display: inline-block; */
+  width: 100%;
+  min-height: 32px;
+  /* padding: 4px 11px; */
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.29);
+
+  /* this was in an inner container maybe needs to be moved out */
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.input {
+  border: none;
+  flex-grow: 1;
+
+  box-sizing: border-box;
+  margin: 2px;
+  padding: 0;
+  font-variant: tabular-nums;
+  list-style: none;
+  font-feature-settings: 'tnum';
+  position: relative;
+  border-radius: 2px;
+
+  /* width: 100%; */
+  height: 28px;
+  padding: 4px 11px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.item {
+  position: relative;
+  cursor: pointer;
+  display: block;
+  border: none;
+  height: auto;
+  text-align: left;
+  line-height: 1em;
+  /* color: rgba(0, 0, 0, 0.95); */
+  /* font-size: 1rem; */
+  text-transform: none;
+  /* font-weight: 400; */
+  box-shadow: none;
+  /* padding: 0.8rem 1.1rem; */
+  padding: 8px;
+  white-space: normal;
+  overflow-wrap: normal;
+}
+
+.itemActive {
+  background: #1890ff;
+  color: white;
+}
+
+.itemSelected {
+  color: rgba(0, 0, 0, 0.95);
+  font-weight: 700;
+}
+
+.menu {
+  padding: 0px;
+  margin-top: 0px;
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  max-height: 10rem;
+  overflow: hidden auto;
+  outline: 0px;
+  transition: opacity 0.1s ease 0s;
+  border-radius: 0px 0px 2px 2px;
+  box-shadow: rgba(34, 36, 38, 0.15) 0px 2px 3px 0px;
+  z-index: 99999;
+  border: none;
+}

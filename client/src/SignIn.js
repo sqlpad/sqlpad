@@ -1,13 +1,13 @@
-import Button from 'antd/lib/button';
-import Icon from 'antd/lib/icon';
-import Input from 'antd/lib/input';
-import message from 'antd/lib/message';
-import React, { useState, useEffect } from 'react';
-import { connect } from 'unistore/react';
-import { actions } from './stores/unistoreStore';
+import GoogleIcon from 'mdi-react/GoogleIcon';
+import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import fetchJson from './utilities/fetch-json.js';
+import { connect } from 'unistore/react';
+import Button from './common/Button';
+import Input from './common/Input';
+import message from './common/message';
 import Spacer from './common/Spacer';
+import { actions } from './stores/unistoreStore';
+import fetchJson from './utilities/fetch-json.js';
 
 function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   const [email, setEmail] = useState('');
@@ -86,7 +86,7 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
     <div>
       <a href={config.baseUrl + '/auth/google'}>
         <Button type="primary">
-          <Icon type="google" />
+          <GoogleIcon />
           Sign in with Google
         </Button>
       </a>

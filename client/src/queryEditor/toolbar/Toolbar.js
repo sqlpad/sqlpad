@@ -1,22 +1,31 @@
-import Button from 'antd/lib/button';
-import Form from 'antd/lib/form';
-import Input from 'antd/lib/input';
-import Tooltip from 'antd/lib/tooltip';
-import Badge from 'antd/lib/badge';
-import Icon from 'antd/lib/icon';
-import { connect } from 'unistore/react';
-import { actions } from '../../stores/unistoreStore';
+import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
+import VisIcon from 'mdi-react/ChartBarIcon';
+import CopyIcon from 'mdi-react/ContentCopyIcon';
+import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
+import SaveIcon from 'mdi-react/ContentSaveIcon';
+import DatabaseIcon from 'mdi-react/DatabaseIcon';
+import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
+import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
+import NewIcon from 'mdi-react/PlusIcon';
+import TagsIcon from 'mdi-react/TagMultipleIcon';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'unistore/react';
+import Button from '../../common/Button';
+import buttonStyles from '../../common/Button.module.css';
+import ButtonLink from '../../common/ButtonLink';
+import Drawer from '../../common/Drawer';
+import Input from '../../common/Input';
+import ConfigurationForm from '../../configuration/ConfigurationForm';
+import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
+import { actions } from '../../stores/unistoreStore';
+import UserList from '../../users/UserList';
+import fetchJson from '../../utilities/fetch-json.js';
 import ConnectionDropDown from '../ConnectionDropdown';
-import AboutButton from './AboutButton';
-import SignoutButton from './SignoutButton';
-import ConfigButton from './ConfigButton';
+import AboutModal from './AboutModal';
 import QueryListButton from './QueryListButton';
-import QueryDetailsModal from './QueryDetailsModal';
-import IconButtonLink from '../../common/IconButtonLink';
-
-const FormItem = Form.Item;
+import QueryTagsModal from './QueryTagsModal';
 
 function mapStateToProps(state) {
   return {
@@ -52,110 +61,159 @@ function Toolbar({
   toggleVisSidebar,
   unsavedChanges
 }) {
-  const [showDetails, setShowDetails] = useState(false);
+  const [showTags, setShowTags] = useState(false);
+  const [showConfig, setShowConfig] = useState(false);
+  const [showUsers, setShowUsers] = useState(false);
+  const [redirectToSignIn, setRedirectToSignIn] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
+  const [showConnections, setShowConnections] = useState(false);
 
-  const validationState = showValidation && !queryName.length ? 'error' : null;
+  const error = showValidation && !queryName.length;
   const cloneDisabled = !queryId;
 
   const isAdmin = currentUser.role === 'admin';
+
+  if (redirectToSignIn) {
+    return <Redirect push to="/signin" />;
+  }
 
   return (
     <div
       style={{
         width: '100%',
-        backgroundColor: '#fafafa',
-        padding: '.25rem .5rem',
+        backgroundColor: 'rgba(0, 0, 0, 0.04)',
+        padding: 6,
         borderBottom: '1px solid #eee'
       }}
     >
-      <Form style={{ display: 'flex' }} layout="inline">
-        <FormItem>
-          <QueryListButton />
-        </FormItem>
+      <div style={{ display: 'flex' }}>
+        <QueryListButton />
 
-        <FormItem>
-          <Tooltip placement="bottom" title="New query">
-            <IconButtonLink to="/queries/new" onClick={() => resetNewQuery()}>
-              <Icon type="plus" />
-            </IconButtonLink>
-          </Tooltip>
-        </FormItem>
-
-        <FormItem>
-          <Button.Group>
-            <Button icon="database" onClick={toggleSchema} />
-            <Button icon="bar-chart" onClick={toggleVisSidebar} />
-          </Button.Group>
-        </FormItem>
-
-        <FormItem>
-          <ConnectionDropDown />
-        </FormItem>
-
-        <FormItem validateStatus={validationState}>
-          <Input
-            style={{ width: 260 }}
-            placeholder="Query name"
-            value={queryName}
-            onChange={e => setQueryState('name', e.target.value)}
-            addonAfter={
-              <Tooltip placement="bottom" title="Tags">
-                <Icon onClick={() => setShowDetails(true)} type="tags" />
-                <QueryDetailsModal
-                  visible={showDetails}
-                  onClose={() => setShowDetails(false)}
-                />
-              </Tooltip>
-            }
-          />
-        </FormItem>
-
-        <FormItem>
-          <Button.Group>
-            <Tooltip placement="bottom" title="Clone">
-              <Button onClick={handleCloneClick} disabled={cloneDisabled}>
-                <Icon type="copy" />
-              </Button>
-            </Tooltip>
-            <Tooltip placement="bottom" title="Format">
-              <Button onClick={formatQuery}>
-                <Icon type="align-left" />
-              </Button>
-            </Tooltip>
-
-            <Tooltip placement="bottom" title="Save">
-              <Button onClick={() => saveQuery()} disabled={isSaving}>
-                <Badge dot={unsavedChanges}>
-                  <Icon type="save" />
-                </Badge>
-              </Button>
-            </Tooltip>
-            <Button
-              type="primary"
-              onClick={() => runQuery()}
-              disabled={isRunning}
-            >
-              Run
-            </Button>
-          </Button.Group>
-        </FormItem>
+        <ButtonLink
+          to="/queries/new"
+          tooltip="New query"
+          icon={<NewIcon />}
+          onClick={() => resetNewQuery()}
+        />
 
         <div style={{ flexGrow: 1 }} />
 
-        <FormItem>
-          <AboutButton />
-        </FormItem>
+        <Button
+          tooltip="Toggle schema"
+          onClick={toggleSchema}
+          icon={<DatabaseIcon />}
+        />
+        <Button
+          tooltip="Toggle vis"
+          onClick={toggleVisSidebar}
+          icon={<VisIcon />}
+        />
 
-        {isAdmin && (
-          <FormItem>
-            <ConfigButton />
-          </FormItem>
-        )}
+        <div style={{ width: 8 }} />
 
-        <FormItem>
-          <SignoutButton />
-        </FormItem>
-      </Form>
+        <ConnectionDropDown />
+
+        <div style={{ width: 8 }} />
+
+        <Input
+          error={error}
+          style={{ width: 260 }}
+          placeholder="Query name"
+          value={queryName}
+          onChange={e => setQueryState('name', e.target.value)}
+        />
+
+        <div style={{ width: 8 }} />
+
+        <Button
+          tooltip="Tags"
+          onClick={() => setShowTags(true)}
+          icon={<TagsIcon />}
+        />
+
+        <QueryTagsModal visible={showTags} onClose={() => setShowTags(false)} />
+
+        <Button
+          tooltip="Clone"
+          onClick={handleCloneClick}
+          disabled={cloneDisabled}
+          icon={<CopyIcon />}
+        />
+
+        <Button tooltip="Format" onClick={formatQuery} icon={<FormatIcon />} />
+
+        <Button
+          tooltip="Save"
+          onClick={() => saveQuery()}
+          disabled={isSaving}
+          icon={unsavedChanges ? <UnsavedIcon /> : <SaveIcon />}
+        />
+
+        <Button type="primary" onClick={() => runQuery()} disabled={isRunning}>
+          Run
+        </Button>
+
+        <div style={{ flexGrow: 1 }} />
+
+        <Menu>
+          <MenuButton className={buttonStyles.btn}>
+            <DotsVerticalIcon aria-hidden aria-label="menu" size={18} />
+          </MenuButton>
+          <MenuList>
+            {isAdmin && (
+              <MenuItem onSelect={() => setShowConfig(true)}>
+                Configuration
+              </MenuItem>
+            )}
+            {isAdmin && (
+              <MenuItem onSelect={() => setShowConnections(true)}>
+                Connections
+              </MenuItem>
+            )}
+            {isAdmin && (
+              <MenuItem onSelect={() => setShowUsers(true)}>Users</MenuItem>
+            )}
+            <div style={{ borderBottom: '1px solid #ddd' }} />
+            <MenuItem onSelect={() => setShowAbout(true)}>About</MenuItem>
+            <div style={{ borderBottom: '1px solid #ddd' }} />
+            <MenuItem
+              onSelect={async () => {
+                await fetchJson('GET', '/api/signout');
+                setRedirectToSignIn(true);
+              }}
+            >
+              Sign out
+            </MenuItem>
+          </MenuList>
+        </Menu>
+
+        <Drawer
+          title={'Configuration'}
+          visible={showConfig}
+          width={600}
+          onClose={() => setShowConfig(false)}
+          placement={'right'}
+        >
+          <ConfigurationForm onClose={() => setShowConfig(false)} />
+        </Drawer>
+
+        <Drawer
+          title={'Users'}
+          visible={showUsers}
+          width={600}
+          onClose={() => setShowUsers(false)}
+          placement={'right'}
+        >
+          <UserList />
+        </Drawer>
+
+        <AboutModal visible={showAbout} onClose={() => setShowAbout(false)} />
+
+        <ConnectionListDrawer
+          visible={showConnections}
+          onClose={() => setShowConnections(false)}
+        />
+      </div>
     </div>
   );
 }

@@ -1,0 +1,29 @@
+/*
+  Instead of using css module compose, this is going to take the approach of tachyons-like utility classes
+  Eventually something like styled-system and emotion can be brought in to make proper theming? 
+*/
+.bgSecondary {
+  background-color: #fb30ac;
+}
+
+.shadow1 {
+  box-shadow: rgba(64, 169, 255, 0.7) 1px 1px 1px 1px,
+    rgb(255, 154, 251, 0.3) 2px 2px 4px 2px;
+}
+
+.shadow2 {
+  box-shadow: rgba(56, 165, 255, 0.44) 0px 0px 8px 4px;
+}
+
+.bgRadial {
+  background: rgba(248, 70, 252, 0.5);
+  background: radial-gradient(
+    at 50% 300px,
+    rgba(248, 70, 252, 0.5) 6%,
+    rgba(0, 169, 253, 0.5) 100%
+  );
+}
+
+.borderBottom {
+  border-bottom: 1px solid rgba(167, 14, 105, 0.2);
+}

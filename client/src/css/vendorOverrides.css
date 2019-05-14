@@ -3,6 +3,23 @@
   display: none;
 }
 
+/* react splitpane resizer */
+.Resizer.vertical:hover {
+  border-left: 5px solid rgba(243, 1, 255, 0.9);
+  border-right: 5px solid rgba(4, 159, 255, 0.9);
+}
+
+/* react splitpane resizer */
+.Resizer.horizontal:hover {
+  border-top: 5px solid rgba(243, 1, 255, 0.9);
+  border-bottom: 5px solid rgba(4, 159, 255, 0.9);
+}
+
+.Resizer:hover {
+  -webkit-transition: all 1s ease;
+  transition: all 1s ease;
+}
+
 /* QueryResultDataTable react-window/react-draggable implementaion */
 .DragHandle {
   flex: 0 0 16px;
@@ -26,9 +43,4 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-/* antd */
-.ant-select-dropdown-menu {
-  max-height: 500px;
 }

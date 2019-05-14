@@ -1,0 +1,19 @@
+.tagContainer {
+  margin: 2px;
+  padding: 3px 8px;
+  display: inline-block;
+  color: #fff;
+  border-radius: 2px;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.tagCloseButton {
+  cursor: pointer;
+  line-height: 0.8;
+  border: none;
+  background-color: transparent;
+  padding: 0px;
+  font-size: 16px;
+}

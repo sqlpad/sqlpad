@@ -1,43 +1,16 @@
-import Button from 'antd/lib/button';
-import Checkbox from 'antd/lib/checkbox';
-import Form from 'antd/lib/form';
-import Icon from 'antd/lib/icon';
-import Input from 'antd/lib/input';
-import Select from 'antd/lib/select';
-import React, { useState, useEffect } from 'react';
-import message from 'antd/lib/message';
+import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
+import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
+import React, { useEffect, useState } from 'react';
+import Button from '../common/Button';
+import HorizontalFormItem from '../common/HorizontalFormItem.js';
+import Input from '../common/Input';
+import message from '../common/message';
+import Select from '../common/Select';
 import fetchJson from '../utilities/fetch-json.js';
-
-const FormItem = Form.Item;
-const { Option } = Select;
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';
 const CHECKBOX = 'CHECKBOX';
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 8 }
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 16 }
-  }
-};
-
-const tailFormItemLayout = {
-  wrapperCol: {
-    xs: {
-      span: 24,
-      offset: 0
-    },
-    sm: {
-      span: 16,
-      offset: 8
-    }
-  }
-};
 
 function ConnectionForm({ connectionId, onConnectionSaved }) {
   const [connectionEdits, setConnectionEdits] = useState({});
@@ -133,7 +106,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
         if (field.formType === TEXT) {
           const value = connectionEdits[field.key] || '';
           return (
-            <FormItem {...formItemLayout} key={field.key} label={field.label}>
+            <HorizontalFormItem key={field.key} label={field.label}>
               <Input
                 name={field.key}
                 value={value}
@@ -141,14 +114,14 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                   setConnectionValue(e.target.name, e.target.value)
                 }
               />
-            </FormItem>
+            </HorizontalFormItem>
           );
         } else if (field.formType === PASSWORD) {
           const value = connectionEdits[field.key] || '';
           // autoComplete='new-password' used to prevent browsers from autofilling username and password
           // Because we dont return a password, Chrome goes ahead and autofills
           return (
-            <FormItem {...formItemLayout} key={field.key} label={field.label}>
+            <HorizontalFormItem key={field.key} label={field.label}>
               <Input
                 type="password"
                 autoComplete="new-password"
@@ -158,22 +131,25 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                   setConnectionValue(e.target.name, e.target.value)
                 }
               />
-            </FormItem>
+            </HorizontalFormItem>
           );
         } else if (field.formType === CHECKBOX) {
           const checked = connectionEdits[field.key] || false;
           return (
-            <FormItem {...tailFormItemLayout} key={field.key}>
-              <Checkbox
+            <HorizontalFormItem key={field.key}>
+              <input
+                type="checkbox"
                 checked={checked}
+                id={field.key}
                 name={field.key}
                 onChange={e =>
                   setConnectionValue(e.target.name, e.target.checked)
                 }
-              >
+              />
+              <label for={field.key} style={{ marginLeft: 8 }}>
                 {field.label}
-              </Checkbox>
-            </FormItem>
+              </label>
+            </HorizontalFormItem>
           );
         }
         return null;
@@ -183,30 +159,29 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
   const { name = '', driver = '' } = connectionEdits;
 
-  const driverSelectOptions = [<Option key="none" value="" />];
+  const driverSelectOptions = [<option key="none" value="" />];
 
   if (!drivers.length) {
     driverSelectOptions.push(
-      <Option key="loading" value="">
+      <option key="loading" value="">
         Loading...
-      </Option>
+      </option>
     );
   } else {
     drivers
       .sort((a, b) => a.name > b.name)
       .forEach(driver =>
         driverSelectOptions.push(
-          <Option key={driver.id} value={driver.id} name="driver">
+          <option key={driver.id} value={driver.id}>
             {driver.name}
-          </Option>
+          </option>
         )
       );
   }
 
   return (
     <div style={{ height: '100%' }}>
-      <Form
-        layout="vertical"
+      <form
         autoComplete="off"
         style={{
           display: 'flex',
@@ -215,30 +190,26 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
         }}
       >
         <div style={{ overflowY: 'auto', flexGrow: 1, height: '100%' }}>
-          <FormItem
-            {...formItemLayout}
-            validateStatus={name ? null : 'error'}
-            label={'Connection name'}
-          >
+          <HorizontalFormItem label="Connection name">
             <Input
               name="name"
               value={name}
+              error={!name}
               onChange={e => setConnectionValue(e.target.name, e.target.value)}
             />
-          </FormItem>
-          <FormItem
-            {...formItemLayout}
-            label="Driver"
-            validateStatus={driver ? null : 'error'}
-          >
+          </HorizontalFormItem>
+          <HorizontalFormItem label="Driver">
             <Select
               name="driver"
               value={driver}
-              onChange={value => setConnectionValue('driver', value)}
+              error={!driver}
+              onChange={event =>
+                setConnectionValue('driver', event.target.value)
+              }
             >
               {driverSelectOptions}
             </Select>
-          </FormItem>
+          </HorizontalFormItem>
 
           {renderDriverFields()}
         </div>
@@ -264,22 +235,30 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
           >
             {testing ? 'Testing...' : 'Test'}
             {!testing && testSuccess && (
-              <Icon
-                type="check-circle"
-                theme="twoTone"
-                twoToneColor="#52c41a"
+              <SuccessIcon
+                style={{
+                  marginLeft: 8,
+                  height: 18,
+                  width: 18,
+                  marginBottom: -4
+                }}
+                color="#52c41a"
               />
             )}
             {!testing && testFailed && (
-              <Icon
-                type="close-circle"
-                theme="twoTone"
-                twoToneColor="#eb2f96"
+              <CloseCircleOutlineIcon
+                style={{
+                  marginLeft: 8,
+                  height: 18,
+                  width: 18,
+                  marginBottom: -4
+                }}
+                color="#eb2f96"
               />
             )}
           </Button>
         </div>
-      </Form>
+      </form>
     </div>
   );
 }

@@ -1,14 +1,12 @@
-import Button from 'antd/lib/button';
-import Form from 'antd/lib/form';
-import Input from 'antd/lib/input';
-import message from 'antd/lib/message';
-import Select from 'antd/lib/select';
 import React, { useState } from 'react';
-import fetchJson from '../utilities/fetch-json.js';
 import { Link } from 'react-router-dom';
-
-const FormItem = Form.Item;
-const { Option } = Select;
+import Button from '../common/Button';
+import FormExplain from '../common/FormExplain.js';
+import Input from '../common/Input';
+import message from '../common/message';
+import Select from '../common/Select';
+import Spacer from '../common/Spacer.js';
+import fetchJson from '../utilities/fetch-json.js';
 
 function InviteUserForm({ onInvited }) {
   const [email, setEmail] = useState(null);
@@ -28,7 +26,6 @@ function InviteUserForm({ onInvited }) {
     }
     setEmail(null);
     setRole(null);
-    message.success('User Whitelisted');
     onInvited();
   };
 
@@ -39,33 +36,48 @@ function InviteUserForm({ onInvited }) {
         them to continue the sign-up process on the{' '}
         <Link to={'/signup'}>signup page</Link>.
       </p>
-      <Form layout="vertical">
-        <FormItem label="Email" validateStatus={email ? null : 'error'}>
+      <form>
+        <label>
+          Email
           <Input
             name="email"
             type="email"
             value={email || ''}
+            error={!email}
             onChange={e => setEmail(e.target.value)}
           />
-        </FormItem>
-        <FormItem
-          label="Role"
-          extra="Admins can manage database connections and users"
-          validateStatus={role ? null : 'error'}
-        >
+        </label>
+        <Spacer size={2} />
+
+        <label>
+          role
           <Select
             name="role"
             value={role || ''}
-            onChange={role => setRole(role)}
+            onChange={event => setRole(event.target.value)}
+            error={!role}
           >
-            <Option value="editor">Editor</Option>
-            <Option value="admin">Admin</Option>
+            <option value="" />
+            <option value="editor">Editor</option>
+            <option value="admin">Admin</option>
           </Select>
-        </FormItem>
-        <Button type="primary" onClick={onInviteClick} disabled={isInviting}>
-          Add user
-        </Button>
-      </Form>
+          <FormExplain>
+            Admins can manage database connections and users
+          </FormExplain>
+        </label>
+
+        <Spacer size={3} />
+        <div>
+          <Button
+            className="w-100"
+            type="primary"
+            onClick={onInviteClick}
+            disabled={isInviting}
+          >
+            Add user
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }

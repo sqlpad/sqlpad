@@ -1,10 +1,9 @@
-import Button from 'antd/lib/button';
-import List from 'antd/lib/list';
-import Row from 'antd/lib/row';
-import Col from 'antd/lib/col';
-import Popconfirm from 'antd/lib/popconfirm';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
+import Button from '../common/Button';
+import DeleteConfirmButton from '../common/DeleteConfirmButton';
+import ListItem from '../common/ListItem';
+import Text from '../common/Text';
 import { actions } from '../stores/unistoreStore';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 
@@ -73,64 +72,64 @@ function ConnectionList({
 
   return (
     <>
-      <Row>
-        <Col offset={17} span={7}>
-          <Button className="w-100" type="primary" onClick={newConnection}>
-            Add connection
-          </Button>
-        </Col>
-      </Row>
-      <List
-        itemLayout="horizontal"
-        dataSource={decoratedConnections}
-        renderItem={item => {
-          let description = '';
-          if (item.user) {
-            description = item.user + '@';
-          }
-          description += [
-            item.displayHost,
-            item.displayDatabase,
-            item.displaySchema
-          ]
-            .filter(part => part && part.trim())
-            .join(' / ');
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Button style={{ width: 135 }} type="primary" onClick={newConnection}>
+          Add connection
+        </Button>
+      </div>
+      {decoratedConnections.map(item => {
+        let description = '';
+        if (item.user) {
+          description = item.user + '@';
+        }
+        description += [
+          item.displayHost,
+          item.displayDatabase,
+          item.displaySchema
+        ]
+          .filter(part => part && part.trim())
+          .join(' / ');
 
-          const actions = [];
+        const actions = [];
 
-          if (currentUser.role === 'admin') {
-            actions.push(
-              <Button onClick={() => editConnection(item)}>edit</Button>
-            );
-            actions.push(
-              <Popconfirm
-                title="Delete connection?"
-                onConfirm={e => deleteConnection(item._id)}
-                onCancel={() => {}}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button icon="delete" type="danger" />
-              </Popconfirm>
-            );
-          }
-
-          return (
-            <List.Item actions={actions}>
-              <List.Item.Meta
-                title={item.name}
-                description={
-                  <div>
-                    {item.driver}
-                    <br />
-                    {description}
-                  </div>
-                }
-              />
-            </List.Item>
+        if (currentUser.role === 'admin') {
+          actions.push(
+            <Button
+              key="edit"
+              style={{ marginLeft: 8 }}
+              onClick={() => editConnection(item)}
+            >
+              edit
+            </Button>
           );
-        }}
-      />
+          actions.push(
+            <DeleteConfirmButton
+              key="delete"
+              confirmMessage="Delete connection?"
+              onConfirm={e => deleteConnection(item._id)}
+              style={{ marginLeft: 8 }}
+            >
+              Delete
+            </DeleteConfirmButton>
+          );
+        }
+
+        return (
+          <ListItem key={item._id} actions={actions}>
+            <div style={{ flexGrow: 1, padding: 8 }}>
+              {item.name}
+              <br />
+              <Text type="secondary">
+                {item.driver}
+                <br />
+                {description}
+              </Text>
+            </div>
+            {actions}
+          </ListItem>
+        );
+      })}
+
       <ConnectionEditDrawer
         connectionId={connectionId}
         visible={showEdit}

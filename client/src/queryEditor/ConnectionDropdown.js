@@ -1,12 +1,9 @@
-import Select from 'antd/lib/select';
-import Icon from 'antd/lib/icon';
 import React, { useState } from 'react';
 import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
-
-const { Option } = Select;
+import Select from '../common/Select';
 
 function ConnectionDropdown({
   addUpdateConnection,
@@ -18,14 +15,14 @@ function ConnectionDropdown({
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
 
-  const handleChange = id => {
-    if (id === 'new') {
+  const handleChange = event => {
+    if (event.target.value === 'new') {
       return setShowEdit(true);
     }
-    if (id === 'manage') {
+    if (event.target.value === 'manage') {
       return setShowConnections(true);
     }
-    selectConnectionId(id);
+    selectConnectionId(event.target.value);
   };
 
   const handleConnectionSaved = connection => {
@@ -34,41 +31,29 @@ function ConnectionDropdown({
     setShowEdit(false);
   };
 
-  // NOTE in order by placeholder to appear value must be set to undefined
+  const style = !selectedConnectionId
+    ? { color: '#777', width: 260 }
+    : { width: 260 };
+
   return (
     <>
       <Select
-        showSearch
-        placeholder="Choose a connection"
-        style={{ width: 260 }}
-        optionFilterProp="children"
+        style={style}
         value={selectedConnectionId || undefined}
         onChange={handleChange}
-        filterOption={(input, option) =>
-          option.props.value &&
-          option.props.name &&
-          option.props.name.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
       >
+        <option value="">... choose connection</option>
         {connections.map(conn => {
           return (
-            <Option key={conn._id} value={conn._id} name={conn.name}>
+            <option key={conn._id} value={conn._id} name={conn.name}>
               {conn.name}
-            </Option>
+            </option>
           );
         })}
 
-        <Option
-          style={{ borderTop: '1px solid #ccc' }}
-          value="new"
-          name="New connection"
-        >
-          <Icon type="plus-circle" /> <em>New connection</em>
-        </Option>
+        <option value="new">... New connection</option>
         {currentUser.role === 'admin' && (
-          <Option value="manage" name="Manage connections">
-            <Icon type="api" /> <em>Manage connections</em>
-          </Option>
+          <option value="manage">... Manage connections</option>
         )}
       </Select>
       <ConnectionEditDrawer
