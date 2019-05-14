@@ -1,10 +1,15 @@
 import React from 'react';
 import styles from './Tag.module.css';
+import base from './base.module.css';
 import CloseIcon from 'mdi-react/CloseIcon';
 
 function Tag({ children, onClose }) {
   return (
-    <div className={styles.tagContainer}>
+    <div
+      className={[styles.tagContainer, base.bgSecondary, base.shadow1].join(
+        ' '
+      )}
+    >
       <span>{children}</span>
       {onClose && (
         <>

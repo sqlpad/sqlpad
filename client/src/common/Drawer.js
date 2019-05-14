@@ -1,5 +1,6 @@
 import React from 'react';
 import { Dialog } from '@reach/dialog';
+import base from './base.module.css';
 
 function DrawerWrapper({
   title,
@@ -15,7 +16,6 @@ function DrawerWrapper({
     overflow: 'auto',
     width,
     position: 'absolute',
-    boxShadow: `rgba(56, 165, 255, 0.44) 0px 0px 8px 4px, rgba(209, 63, 255, 0.28) 4px 0px 18px 14px`,
     display: 'flex',
     flexDirection: 'column'
   };
@@ -26,11 +26,11 @@ function DrawerWrapper({
 
   if (visible) {
     return (
-      <Dialog onDismiss={onClose} style={style}>
+      <Dialog onDismiss={onClose} className={base.shadow2} style={style}>
         <div
+          className={base.borderBottom}
           style={{
             fontSize: '1.5rem',
-            borderBottom: '1px solid #d9d9d9',
             marginBottom: 16
           }}
         >

@@ -17,6 +17,7 @@ import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
 import MultiSelect from '../common/MultiSelect';
 import Tag from '../common/Tag';
+import base from '../common/base.module.css';
 
 function QueryListDrawer({
   queries,
@@ -146,6 +147,7 @@ function QueryListDrawer({
 
       {preview && (
         <div
+          className={base.shadow2}
           style={{
             position: 'fixed',
             left: 640,
@@ -155,7 +157,6 @@ function QueryListDrawer({
             backgroundColor: 'white',
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: '0 0 8px 2px rgba( 0, 0, 0, .2 )',
             padding: 16
           }}
         >

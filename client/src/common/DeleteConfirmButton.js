@@ -1,10 +1,10 @@
 import { Dialog } from '@reach/dialog';
 import React, { useState, useRef } from 'react';
 import Button from './Button';
+import base from './base.module.css';
 
 const dialogStyle = {
   width: '500px',
-  boxShadow: `rgba(223, 5, 63, 0.94) 4px 4px 10px 2px`,
   borderRadius: '2px'
 };
 
@@ -26,6 +26,7 @@ const DeleteConfirmButton = React.forwardRef(
         {visible && (
           <Dialog
             onDismiss={() => setVisible(false)}
+            className={base.shadow2}
             style={dialogStyle}
             initialFocusRef={cancelEl}
           >

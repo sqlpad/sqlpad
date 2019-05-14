@@ -2,22 +2,24 @@ import { Dialog } from '@reach/dialog';
 import CloseIcon from 'mdi-react/CloseIcon';
 import React from 'react';
 import Button from './Button';
+import base from './base.module.css';
 
 function Modal({ title, visible, onClose, width, children }) {
-  const style = {
-    width,
-    boxShadow: `rgba(64, 169, 255, 0.5) 20px 19px 10px 2px, rgb(255, 154, 251, 0.7) 4px 6px 20px 11px`
-  };
-
   if (visible) {
     return (
-      <Dialog onDismiss={onClose} style={style}>
+      <Dialog
+        onDismiss={onClose}
+        className={base.shadow2}
+        style={{
+          width
+        }}
+      >
         <div
+          className={base.borderBottom}
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             fontSize: '1.5rem',
-            borderBottom: '1px solid #d9d9d9',
             marginBottom: 16
           }}
         >
