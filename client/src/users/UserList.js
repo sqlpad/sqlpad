@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
-import fetchJson from '../utilities/fetch-json.js';
-import InviteUserForm from './InviteUserForm';
-import EditUserForm from './EditUserForm';
 import Button from '../common/Button';
+import DeleteConfirmButton from '../common/DeleteConfirmButton';
+import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Modal from '../common/Modal';
 import Text from '../common/Text';
-import ListItem from '../common/ListItem';
-import DeleteConfirmButton from '../common/DeleteConfirmButton';
+import { actions } from '../stores/unistoreStore';
+import fetchJson from '../utilities/fetch-json.js';
+import EditUserForm from './EditUserForm';
+import InviteUserForm from './InviteUserForm';
 
 function UserList({ currentUser }) {
   const [users, setUsers] = useState([]);

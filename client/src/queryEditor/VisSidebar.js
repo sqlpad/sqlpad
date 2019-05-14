@@ -2,14 +2,14 @@ import DownloadIcon from 'mdi-react/DownloadIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
-import Sidebar from '../common/Sidebar';
-import SidebarBody from '../common/SidebarBody';
-import chartDefinitions from '../utilities/chartDefinitions.js';
-import ChartInputs from './ChartInputs.js';
-import { exportPng } from '../common/tauChartRef';
 import Button from '../common/Button';
 import Select from '../common/Select';
+import Sidebar from '../common/Sidebar';
+import SidebarBody from '../common/SidebarBody';
+import { exportPng } from '../common/tauChartRef';
+import { actions } from '../stores/unistoreStore';
+import chartDefinitions from '../utilities/chartDefinitions.js';
+import ChartInputs from './ChartInputs.js';
 
 function mapStateToProps(state) {
   return {

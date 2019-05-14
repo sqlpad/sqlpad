@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import Button from '../common/Button';
-import Select from '../common/Select';
-import fetchJson from '../utilities/fetch-json.js';
 import { Link } from 'react-router-dom';
 import uuid from 'uuid';
-import Spacer from '../common/Spacer';
+import Button from '../common/Button';
 import FormExplain from '../common/FormExplain';
 import message from '../common/message';
+import Select from '../common/Select';
+import Spacer from '../common/Spacer';
+import fetchJson from '../utilities/fetch-json.js';
 
 function EditUserForm({ user }) {
   const [role, setRole] = useState(user.role);

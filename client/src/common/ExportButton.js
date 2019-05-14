@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
 import Button from '../common/Button';
+import { actions } from '../stores/unistoreStore';
 import ButtonLink from './ButtonLink';
 
 function ExportButton({ config, cacheKey, onSaveImageClick }) {

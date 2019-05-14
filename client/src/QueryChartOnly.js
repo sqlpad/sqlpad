@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ExportButton from './common/ExportButton.js';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import SqlpadTauChart from './common/SqlpadTauChart.js';
-import fetchJson from './utilities/fetch-json.js';
 import { exportPng } from './common/tauChartRef';
+import fetchJson from './utilities/fetch-json.js';
 
 function QueryChartOnly({ queryId }) {
   const [isRunning, setIsRunning] = useState(false);

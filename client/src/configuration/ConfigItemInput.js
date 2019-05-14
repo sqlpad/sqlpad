@@ -1,9 +1,9 @@
 import React from 'react';
 import Switch from 'react-switch';
-import Select from '../common/Select';
-import Input from '../common/Input';
-import HorizontalFormItem from '../common/HorizontalFormItem';
 import FormExplain from '../common/FormExplain';
+import HorizontalFormItem from '../common/HorizontalFormItem';
+import Input from '../common/Input';
+import Select from '../common/Select';
 
 function configIsBoolean(config) {
   const { options } = config;

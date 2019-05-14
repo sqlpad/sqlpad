@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
 import React from 'react';
-import Tooltip from './Tooltip';
+import { Link } from 'react-router-dom';
 import styles from './ButtonLink.module.css';
+import Tooltip from './Tooltip';
 
 const ICON_SIZE = 20;
 

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import fetchJson from '../utilities/fetch-json.js';
-import Button from '../common/Button';
-import Select from '../common/Select';
-import Input from '../common/Input';
 import { Link } from 'react-router-dom';
+import Button from '../common/Button';
 import FormExplain from '../common/FormExplain.js';
-import Spacer from '../common/Spacer.js';
+import Input from '../common/Input';
 import message from '../common/message';
+import Select from '../common/Select';
+import Spacer from '../common/Spacer.js';
+import fetchJson from '../utilities/fetch-json.js';
 
 function InviteUserForm({ onInvited }) {
   const [email, setEmail] = useState(null);

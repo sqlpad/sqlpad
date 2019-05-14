@@ -1,7 +1,7 @@
 import { Dialog } from '@reach/dialog';
-import React, { useState, useRef } from 'react';
-import Button from './Button';
+import React, { useRef, useState } from 'react';
 import base from './base.module.css';
+import Button from './Button';
 
 const dialogStyle = {
   width: '500px',

@@ -1,9 +1,9 @@
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
-import DatabaseIcon from 'mdi-react/DatabaseIcon';
 import VisIcon from 'mdi-react/ChartBarIcon';
 import CopyIcon from 'mdi-react/ContentCopyIcon';
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
+import DatabaseIcon from 'mdi-react/DatabaseIcon';
 import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
 import NewIcon from 'mdi-react/PlusIcon';
@@ -18,14 +18,14 @@ import ButtonLink from '../../common/ButtonLink';
 import Drawer from '../../common/Drawer';
 import Input from '../../common/Input';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
+import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
 import { actions } from '../../stores/unistoreStore';
 import UserList from '../../users/UserList';
 import fetchJson from '../../utilities/fetch-json.js';
 import ConnectionDropDown from '../ConnectionDropdown';
 import AboutModal from './AboutModal';
-import QueryTagsModal from './QueryTagsModal';
 import QueryListButton from './QueryListButton';
-import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
+import QueryTagsModal from './QueryTagsModal';
 
 function mapStateToProps(state) {
   return {

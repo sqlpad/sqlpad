@@ -1,9 +1,9 @@
-import { connect } from 'unistore/react';
-import { actions } from '../../stores/unistoreStore';
 import PropTypes from 'prop-types';
 import React from 'react';
-import AboutContent from './AboutContent';
+import { connect } from 'unistore/react';
 import Modal from '../../common/Modal';
+import { actions } from '../../stores/unistoreStore';
+import AboutContent from './AboutContent';
 
 function mapStateToProps(state) {
   return {

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import chartDefinitions from '../utilities/chartDefinitions.js';
-import Select from '../common/Select';
 import Input from '../common/Input';
+import Select from '../common/Select';
+import chartDefinitions from '../utilities/chartDefinitions.js';
 
 function cleanBoolean(value) {
   if (typeof value === 'string') {

@@ -4,20 +4,20 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
+import base from '../common/base.module.css';
+import ButtonLink from '../common/ButtonLink';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Divider from '../common/Divider';
 import Drawer from '../common/Drawer';
-import ButtonLink from '../common/ButtonLink';
 import ListItem from '../common/ListItem';
+import MultiSelect from '../common/MultiSelect';
 import SqlEditor from '../common/SqlEditor';
+import Tag from '../common/Tag';
 import Text from '../common/Text';
 import { actions } from '../stores/unistoreStore';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
-import MultiSelect from '../common/MultiSelect';
-import Tag from '../common/Tag';
-import base from '../common/base.module.css';
 
 function QueryListDrawer({
   queries,

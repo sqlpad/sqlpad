@@ -1,10 +1,10 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'unistore/react';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 import Text from '../common/Text';
-import { connect } from 'unistore/react';
 import { actions } from '../stores/unistoreStore';
 
 const barStyle = {

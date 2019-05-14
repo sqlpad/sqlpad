@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
-import ConnectionEditDrawer from './ConnectionEditDrawer';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import Text from '../common/Text';
+import { actions } from '../stores/unistoreStore';
+import ConnectionEditDrawer from './ConnectionEditDrawer';
 
 function ConnectionList({
   currentUser,

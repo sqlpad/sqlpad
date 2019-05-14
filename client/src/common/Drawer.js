@@ -1,5 +1,5 @@
-import React from 'react';
 import { Dialog } from '@reach/dialog';
+import React from 'react';
 import base from './base.module.css';
 
 function DrawerWrapper({

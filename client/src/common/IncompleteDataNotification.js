@@ -1,7 +1,7 @@
 import AlertIcon from 'mdi-react/AlertCircleIcon';
 import React from 'react';
-import Tooltip from './Tooltip';
 import Text from './Text';
+import Tooltip from './Tooltip';
 
 function IncompleteDataNotification() {
   return (

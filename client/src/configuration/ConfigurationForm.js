@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
-import fetchJson from '../utilities/fetch-json.js';
-import ConfigItemInput from './ConfigItemInput';
 import Button from '../common/Button';
 import HorizontalFormItem from '../common/HorizontalFormItem';
 import message from '../common/message';
+import { actions } from '../stores/unistoreStore';
+import fetchJson from '../utilities/fetch-json.js';
+import ConfigItemInput from './ConfigItemInput';
 
 function ConfigurationForm({ refreshAppContext, onClose }) {
   const [configItems, setConfigItems] = useState([]);

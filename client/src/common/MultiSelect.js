@@ -1,9 +1,14 @@
-import React, { useRef } from 'react';
 import Downshift from 'downshift';
-import { Menu, Item, getItems } from './MultiSelectHelpers';
+import React, { useRef } from 'react';
 import styles from './MultiSelect.module.css';
+import { getItems, Item, Menu } from './MultiSelectHelpers';
 import Tag from './Tag';
 
+/**
+ * This component was quickly hacked together using the Downshift multiselect example
+ * A lot of that example was changed and reduced down to what this is here.
+ * If anyone out there more familiar with downshift wants to clean this up by all means feel free
+ */
 function MultiSelect({ selectedItems = [], options, onChange }) {
   const input = useRef();
 

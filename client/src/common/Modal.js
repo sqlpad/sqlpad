@@ -1,8 +1,8 @@
 import { Dialog } from '@reach/dialog';
 import CloseIcon from 'mdi-react/CloseIcon';
 import React from 'react';
-import Button from './Button';
 import base from './base.module.css';
+import Button from './Button';
 
 function Modal({ title, visible, onClose, width, children }) {
   if (visible) {

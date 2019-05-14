@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ExportButton from './common/ExportButton.js';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import QueryResultDataTable from './common/QueryResultDataTable.js';
