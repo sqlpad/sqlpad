@@ -75,7 +75,7 @@ export default function getTauChartConfig(
     const newRow = {};
     Object.keys(row).forEach(col => {
       const datatype = queryResult.meta[col].datatype;
-      if (datatype === 'date') {
+      if (datatype === 'date' || datatype === 'datetime') {
         newRow[col] = new Date(row[col]);
       } else if (datatype === 'number') {
         newRow[col] = Number(row[col]);
