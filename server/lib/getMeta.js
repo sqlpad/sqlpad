@@ -49,14 +49,34 @@ module.exports = function getMeta(rows) {
         return;
       }
 
-      // if we don't have a data type and we have a value yet lets try and figure it out
+      // If we don't have a data type and we have a value yet lets try and figure it out
+      // For js date object, if there are all zeros for time we'll make assumptions that this is intended as date, not datetime
+      // Ideally this should come from database result schema, but not all drivers have that and it'd be a lot of work to take on at this point
       if (!meta[key].datatype) {
         if (_.isDate(value)) {
-          meta[key].datatype = 'date';
+          const dt = new Date(value);
+          const isoString = dt.toISOString();
+          if (isoString.includes('T00:00:00.000Z')) {
+            meta[key].datatype = 'date';
+          } else {
+            meta[key].datatype = 'datetime';
+          }
         } else if (isNumeric(value)) {
           meta[key].datatype = 'number';
         } else if (_.isString(value)) {
           meta[key].datatype = 'string';
+        }
+      }
+
+      // If the datatype is date, we should check to see if it changes to datetime
+      // The distinction between these are:
+      //   * dates will have ISO strings with times of all zeros
+      //   * datetimes will have ISO strings with times
+      // If all values have 0s for times, we'll assume a date type
+      if (meta[key].datatype === 'date' && _.isDate(value)) {
+        const dt = new Date(value);
+        if (!dt.toISOString().includes('T00:00:00.000Z')) {
+          meta[key].datatype = 'datetime';
         }
       }
 
@@ -99,7 +119,10 @@ module.exports = function getMeta(rows) {
         }
       }
 
-      if (meta[key].datatype === 'date' && _.isDate(value)) {
+      if (
+        (meta[key].datatype === 'date' || meta[key].datatype === 'datetime') &&
+        _.isDate(value)
+      ) {
         // if we haven't yet defined a max and this row contains a number
         if (!meta[key].max) {
           meta[key].max = value;
