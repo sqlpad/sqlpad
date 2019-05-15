@@ -5,15 +5,18 @@ import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
 import Measure from 'react-measure';
 import SpinKitCube from './SpinKitCube.js';
-import moment from 'moment';
 
 const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {
     return <em>null</em>;
   } else if (input === true || input === false) {
     return input.toString();
+  } else if (fieldMeta.datatype === 'datetime') {
+    // Remove the letters from ISO string and present as is
+    return input.replace('T', ' ').replace('Z', '');
   } else if (fieldMeta.datatype === 'date') {
-    return moment.utc(input).format('MM/DD/YYYY HH:mm:ss');
+    // Formats ISO string to YYYY-MM-DD
+    return input.substring(0, 10);
   } else if (typeof input === 'object') {
     return JSON.stringify(input, null, 2);
   } else {
