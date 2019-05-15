@@ -27,7 +27,7 @@ describe('lib/getMeta.js', function() {
         string: 'abcdefg',
         datetime: d2,
         numberString: 100,
-        date: noTime
+        date: null
       },
       {
         alwaysNull: null,

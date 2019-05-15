@@ -73,7 +73,7 @@ module.exports = function getMeta(rows) {
       //   * dates will have ISO strings with times of all zeros
       //   * datetimes will have ISO strings with times
       // If all values have 0s for times, we'll assume a date type
-      if (meta[key].datatype === 'date') {
+      if (meta[key].datatype === 'date' && _.isDate(value)) {
         const dt = new Date(value);
         if (!dt.toISOString().includes('T00:00:00.000Z')) {
           meta[key].datatype = 'datetime';
