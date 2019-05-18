@@ -72,6 +72,7 @@
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.2.0",
     "socksjs": "^0.5.0",
+    "sql-formatter": "^2.3.2",
     "uuid": "^3.3.2",
     "vertica": "^0.5.5"
   },
