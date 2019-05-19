@@ -7,7 +7,7 @@ import './css/vendorOverrides.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Routes from './Routes';
-import { unistoreStore } from './stores/unistoreStore';
+import unistoreStore from './stores/unistoreStore';
 import { Provider } from 'unistore/react';
 import { MessageDisplayer } from './common/message';
 

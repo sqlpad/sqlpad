@@ -5,10 +5,12 @@ import queries from './queries';
 import schema from './schema';
 import tags from './tags';
 
-export const unistoreStore = createStore({
+const unistoreStore = createStore({
   ...queries.initialState,
   ...appNav.initialState,
   ...schema.initialState,
   ...connections.initialState,
   ...tags.initialState
 });
+
+export default unistoreStore;
