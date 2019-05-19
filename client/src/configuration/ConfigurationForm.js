@@ -3,7 +3,7 @@ import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import HorizontalFormItem from '../common/HorizontalFormItem';
 import message from '../common/message';
-import { actions } from '../stores/unistoreStore';
+import { refreshAppContext } from '../stores/config';
 import fetchJson from '../utilities/fetch-json.js';
 import ConfigItemInput from './ConfigItemInput';
 
@@ -78,5 +78,5 @@ function ConfigurationForm({ refreshAppContext, onClose }) {
 
 export default connect(
   [],
-  actions
+  { refreshAppContext }
 )(React.memo(ConfigurationForm));

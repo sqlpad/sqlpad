@@ -1,5 +1,4 @@
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
 import SqlpadTauChart from '../common/SqlpadTauChart';
 
 function mapStateToProps(state) {
@@ -13,9 +12,6 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedChart = connect(
-  mapStateToProps,
-  actions
-)(SqlpadTauChart);
+const ConnectedChart = connect(mapStateToProps)(SqlpadTauChart);
 
 export default ConnectedChart;

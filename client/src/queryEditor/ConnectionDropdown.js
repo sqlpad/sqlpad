@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
+import { selectConnectionId, addUpdateConnection } from '../stores/connections';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
 import Select from '../common/Select';
@@ -72,5 +72,5 @@ function ConnectionDropdown({
 
 export default connect(
   ['connections', 'currentUser', 'selectedConnectionId'],
-  actions
+  { selectConnectionId, addUpdateConnection }
 )(ConnectionDropdown);

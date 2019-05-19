@@ -5,7 +5,6 @@ import Button from './common/Button';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
-import { actions } from './stores/unistoreStore';
 import fetchJson from './utilities/fetch-json.js';
 
 function SignUp({ adminRegistrationOpen }) {
@@ -82,7 +81,4 @@ function SignUp({ adminRegistrationOpen }) {
   );
 }
 
-export default connect(
-  ['adminRegistrationOpen'],
-  actions
-)(SignUp);
+export default connect(['adminRegistrationOpen'])(SignUp);

@@ -6,7 +6,6 @@ import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Modal from '../common/Modal';
 import Text from '../common/Text';
-import { actions } from '../stores/unistoreStore';
 import fetchJson from '../utilities/fetch-json.js';
 import EditUserForm from './EditUserForm';
 import InviteUserForm from './InviteUserForm';
@@ -129,7 +128,4 @@ function UserList({ currentUser }) {
   );
 }
 
-export default connect(
-  ['currentUser'],
-  actions
-)(React.memo(UserList));
+export default connect(['currentUser'])(React.memo(UserList));

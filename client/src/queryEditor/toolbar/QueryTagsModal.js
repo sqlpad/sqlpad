@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../../stores/unistoreStore';
+import { setQueryState } from '../../stores/queries';
 import Modal from '../../common/Modal';
 import MultiSelect from '../../common/MultiSelect';
 
@@ -13,7 +13,7 @@ function mapStateToProps(state) {
 
 const ConnectedQueryTagsModal = connect(
   mapStateToProps,
-  actions
+  { setQueryState }
 )(React.memo(QueryTagsModal));
 
 function QueryTagsModal({

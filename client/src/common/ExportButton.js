@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
 import Button from '../common/Button';
-import { actions } from '../stores/unistoreStore';
 import ButtonLink from './ButtonLink';
 
 function ExportButton({ config, cacheKey, onSaveImageClick }) {
@@ -45,7 +44,4 @@ ExportButton.propTypes = {
   onSaveImageClick: PropTypes.func
 };
 
-export default connect(
-  ['config'],
-  actions
-)(ExportButton);
+export default connect(['config'])(ExportButton);

@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import Authenticated from './Authenticated';
 import { connect } from 'unistore/react';
-import { actions } from './stores/unistoreStore';
+import { refreshAppContext } from './stores/config';
 import ForgotPassword from './ForgotPassword.js';
 import NotFound from './NotFound.js';
 import PasswordReset from './PasswordReset.js';
@@ -86,5 +86,5 @@ function Routes({ config, refreshAppContext }) {
 
 export default connect(
   ['config'],
-  actions
+  { refreshAppContext }
 )(Routes);

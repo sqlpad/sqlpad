@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { connect } from 'unistore/react';
-import { actions } from './stores/unistoreStore';
+import { refreshAppContext } from './stores/config';
 import { Redirect } from 'react-router-dom';
 
 function Authenticated({ children, currentUser, refreshAppContext }) {
@@ -22,5 +22,7 @@ Authenticated.propTypes = {
 
 export default connect(
   ['currentUser'],
-  actions
+  {
+    refreshAppContext
+  }
 )(Authenticated);

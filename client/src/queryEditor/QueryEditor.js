@@ -6,7 +6,15 @@ import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
 import { resizeChart } from '../common/tauChartRef';
 import SchemaSidebar from '../schema/SchemaSidebar.js';
-import { actions } from '../stores/unistoreStore';
+import { loadConnections } from '../stores/connections';
+import { loadTags } from '../stores/tags';
+import {
+  formatQuery,
+  loadQuery,
+  runQuery,
+  saveQuery,
+  resetNewQuery
+} from '../stores/queries';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
@@ -206,5 +214,13 @@ function mapStateToProps(state, props) {
 
 export default connect(
   mapStateToProps,
-  actions
+  store => ({
+    loadConnections: loadConnections(store),
+    loadTags,
+    formatQuery,
+    loadQuery,
+    runQuery: runQuery(store),
+    saveQuery: saveQuery(store),
+    resetNewQuery
+  })
 )(QueryEditor);

@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
 import Modal from '../../common/Modal';
-import { actions } from '../../stores/unistoreStore';
 import AboutContent from './AboutContent';
 
 function mapStateToProps(state) {
@@ -11,10 +10,7 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedAboutModal = connect(
-  mapStateToProps,
-  actions
-)(React.memo(AboutModal));
+const ConnectedAboutModal = connect(mapStateToProps)(React.memo(AboutModal));
 
 function AboutModal({ version, visible, onClose }) {
   return (

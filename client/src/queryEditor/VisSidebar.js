@@ -7,7 +7,10 @@ import Select from '../common/Select';
 import Sidebar from '../common/Sidebar';
 import SidebarBody from '../common/SidebarBody';
 import { exportPng } from '../common/tauChartRef';
-import { actions } from '../stores/unistoreStore';
+import {
+  handleChartConfigurationFieldsChange,
+  handleChartTypeChange
+} from '../stores/queries';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 import ChartInputs from './ChartInputs.js';
 
@@ -27,7 +30,7 @@ function mapStateToProps(state) {
 
 const ConnectedVisSidebar = connect(
   mapStateToProps,
-  actions
+  { handleChartConfigurationFieldsChange, handleChartTypeChange }
 )(React.memo(VisSidebar));
 
 function VisSidebar({
