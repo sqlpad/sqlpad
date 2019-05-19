@@ -19,7 +19,15 @@ import Drawer from '../../common/Drawer';
 import Input from '../../common/Input';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
 import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
-import { actions } from '../../stores/unistoreStore';
+import { toggleSchema, toggleVisSidebar } from '../../stores/appNav';
+import {
+  formatQuery,
+  runQuery,
+  saveQuery,
+  handleCloneClick,
+  resetNewQuery,
+  setQueryState
+} from '../../stores/queries';
 import UserList from '../../users/UserList';
 import fetchJson from '../../utilities/fetch-json.js';
 import ConnectionDropDown from '../ConnectionDropdown';
@@ -41,7 +49,16 @@ function mapStateToProps(state) {
 
 const ConnectedEditorNavBar = connect(
   mapStateToProps,
-  actions
+  store => ({
+    toggleSchema,
+    toggleVisSidebar,
+    formatQuery,
+    runQuery: runQuery(store),
+    saveQuery: saveQuery(store),
+    handleCloneClick,
+    resetNewQuery,
+    setQueryState
+  })
 )(React.memo(Toolbar));
 
 function Toolbar({

@@ -6,7 +6,6 @@ import 'brace/theme/sqlserver';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
 import Measure from 'react-measure';
 import AceEditor from 'react-ace';
 
@@ -85,7 +84,4 @@ SqlEditor.defaultProps = {
   value: ''
 };
 
-export default connect(
-  ['config'],
-  actions
-)(React.memo(SqlEditor));
+export default connect(['config'])(React.memo(SqlEditor));

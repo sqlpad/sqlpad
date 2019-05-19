@@ -4,7 +4,12 @@ import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import Text from '../common/Text';
-import { actions } from '../stores/unistoreStore';
+import {
+  selectConnectionId,
+  deleteConnection,
+  addUpdateConnection,
+  loadConnections
+} from '../stores/connections';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 
 function ConnectionList({
@@ -143,5 +148,10 @@ function ConnectionList({
 
 export default connect(
   ['connections', 'currentUser'],
-  actions
+  store => ({
+    selectConnectionId,
+    deleteConnection,
+    addUpdateConnection,
+    loadConnections: loadConnections(store)
+  })
 )(ConnectionList);

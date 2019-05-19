@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { connect } from 'unistore/react';
-import { actions } from './stores/unistoreStore';
 import FullscreenMessage from './common/FullscreenMessage.js';
 
 function NotFound({ currentUser }) {
@@ -18,7 +17,4 @@ function NotFound({ currentUser }) {
   return <FullscreenMessage>Not Found</FullscreenMessage>;
 }
 
-export default connect(
-  ['currentUser'],
-  actions
-)(NotFound);
+export default connect(['currentUser'])(NotFound);

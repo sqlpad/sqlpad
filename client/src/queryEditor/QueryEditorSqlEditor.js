@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { connect } from 'unistore/react';
-import { actions } from '../stores/unistoreStore';
+import { setQueryState, handleQuerySelectionChange } from '../stores/queries';
 import SqlEditor from '../common/SqlEditor';
 
 function mapStateToProps(state, props) {
@@ -31,7 +31,7 @@ function QueryEditorSqlEditor({
 
 const ConnectedQueryEditorSqlEditor = connect(
   mapStateToProps,
-  actions
+  { setQueryState, handleQuerySelectionChange }
 )(QueryEditorSqlEditor);
 
 export default ConnectedQueryEditorSqlEditor;

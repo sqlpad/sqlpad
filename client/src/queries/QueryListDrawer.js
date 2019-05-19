@@ -14,7 +14,7 @@ import MultiSelect from '../common/MultiSelect';
 import SqlEditor from '../common/SqlEditor';
 import Tag from '../common/Tag';
 import Text from '../common/Text';
-import { actions } from '../stores/unistoreStore';
+import { loadQueries, deleteQuery } from '../stores/queries';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
@@ -197,5 +197,8 @@ QueryListDrawer.propTypes = {
 
 export default connect(
   ['queries', 'connections'],
-  actions
+  store => ({
+    loadQueries: loadQueries(store),
+    deleteQuery: deleteQuery(store)
+  })
 )(React.memo(QueryListDrawer));

@@ -6,7 +6,7 @@ import Button from './common/Button';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
-import { actions } from './stores/unistoreStore';
+import { refreshAppContext } from './stores/config';
 import fetchJson from './utilities/fetch-json.js';
 
 function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
@@ -104,5 +104,5 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
 
 export default connect(
   ['config', 'smtpConfigured', 'passport'],
-  actions
+  { refreshAppContext }
 )(SignIn);

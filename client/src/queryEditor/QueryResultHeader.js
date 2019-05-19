@@ -5,7 +5,6 @@ import { connect } from 'unistore/react';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 import Text from '../common/Text';
-import { actions } from '../stores/unistoreStore';
 
 const barStyle = {
   height: '30px',
@@ -104,7 +103,10 @@ QueryResultHeader.defaultProps = {
   isRunning: false
 };
 
-export default connect(
-  ['cacheKey', 'config', 'isRunning', 'queryResult', 'runQueryStartTime'],
-  actions
-)(React.memo(QueryResultHeader));
+export default connect([
+  'cacheKey',
+  'config',
+  'isRunning',
+  'queryResult',
+  'runQueryStartTime'
+])(React.memo(QueryResultHeader));

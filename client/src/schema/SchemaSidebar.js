@@ -10,7 +10,7 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import Text from '../common/Text';
 import Divider from '../common/Divider';
-import { actions } from '../stores/unistoreStore';
+import { loadSchemaInfo, toggleSchemaItem } from '../stores/schema';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
 import getSchemaList from './getSchemaList';
@@ -26,6 +26,13 @@ function mapStateToProps(state, props) {
     connectionId: state.selectedConnectionId,
     schemaInfo: schemaInfo || {},
     loading
+  };
+}
+
+function mapActions(store) {
+  return {
+    loadSchemaInfo: loadSchemaInfo(store),
+    toggleSchemaItem
   };
 }
 
@@ -179,5 +186,5 @@ function SchemaSidebar({
 
 export default connect(
   mapStateToProps,
-  actions
+  mapActions
 )(React.memo(SchemaSidebar));

@@ -51,7 +51,7 @@ export const loadSchemaInfo = store => async (state, connectionId, reload) => {
   }
 };
 
-export const toggleSchemaItem = store => (state, connectionId, item) => {
+export const toggleSchemaItem = (state, connectionId, item) => {
   const { schema } = state;
   const connectionSchema = schema[connectionId];
   const open = !connectionSchema.expanded[item.id];
