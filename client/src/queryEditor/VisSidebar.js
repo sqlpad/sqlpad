@@ -35,8 +35,7 @@ function VisSidebar({
   fields,
   queryResult,
   handleChartTypeChange,
-  handleChartConfigurationFieldsChange,
-  queryId
+  handleChartConfigurationFieldsChange
 }) {
   const chartOptions = chartDefinitions.map(d => {
     return (
@@ -75,7 +74,6 @@ VisSidebar.propTypes = {
   onChartTypeChange: PropTypes.func,
   onSaveImageClick: PropTypes.func,
   query: PropTypes.object,
-  queryId: PropTypes.string,
   queryResult: PropTypes.object
 };
 

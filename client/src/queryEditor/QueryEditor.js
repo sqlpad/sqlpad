@@ -157,7 +157,7 @@ class QueryEditor extends React.Component {
     if (showSchema) {
       sidebar = <SchemaSidebar />;
     } else if (showVisSidebar) {
-      sidebar = <VisSidebar queryId={queryId} />;
+      sidebar = <VisSidebar />;
     }
 
     const sqlTabPane = sidebar ? (
