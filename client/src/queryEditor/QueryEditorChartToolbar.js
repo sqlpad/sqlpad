@@ -1,33 +1,21 @@
-import { connect } from 'unistore/react';
-import DownloadIcon from 'mdi-react/DownloadIcon';
-import SettingsIcon from 'mdi-react/SettingsIcon';
-import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import 'd3';
+import DownloadIcon from 'mdi-react/DownloadIcon';
+import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
-import { exportPng } from '../common/tauChartRef';
+import { connect } from 'unistore/react';
 import IconButton from '../common/IconButton';
+import { exportPng } from '../common/tauChartRef';
 
 function mapStateToProps(state) {
   return {
     queryId: (state.query && state.query._id) || 'new',
-    isRunning: state.isRunning,
-    queryError: state.queryError,
-    queryResult: state.queryResult,
-    chartConfiguration: state.query && state.query.chartConfiguration,
-    queryName: state.query && state.query.name
+    queryResult: state.queryResult
   };
 }
 
 const Connected = connect(mapStateToProps)(QueryEditorChartToolbar);
 
-function QueryEditorChartToolbar({
-  isRunning,
-  queryError,
-  queryResult,
-  chartConfiguration,
-  queryName,
-  queryId
-}) {
+function QueryEditorChartToolbar({ queryResult, queryId }) {
   const downloadEnabled =
     queryResult && queryResult.rows && queryResult.rows.length;
 
@@ -54,9 +42,6 @@ function QueryEditorChartToolbar({
         tooltip="Save chart image"
       >
         <DownloadIcon />
-      </IconButton>
-      <IconButton onClick={() => console.log('TODO')} tooltip="Configure chart">
-        <SettingsIcon />
       </IconButton>
     </div>
   );
