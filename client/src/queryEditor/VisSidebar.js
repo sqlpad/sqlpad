@@ -1,12 +1,9 @@
-import DownloadIcon from 'mdi-react/DownloadIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
-import Button from '../common/Button';
 import Select from '../common/Select';
 import Sidebar from '../common/Sidebar';
 import SidebarBody from '../common/SidebarBody';
-import { exportPng } from '../common/tauChartRef';
 import {
   handleChartConfigurationFieldsChange,
   handleChartTypeChange
@@ -69,11 +66,6 @@ function VisSidebar({
           queryResult={queryResult}
         />
       </SidebarBody>
-      <div>
-        <Button className="w-100" onClick={() => exportPng(queryId)}>
-          <DownloadIcon /> Save Chart Image
-        </Button>
-      </div>
     </Sidebar>
   );
 }

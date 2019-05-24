@@ -21,6 +21,7 @@ import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryResultHeader from './QueryResultHeader.js';
 import Toolbar from './toolbar/Toolbar';
 import VisSidebar from './VisSidebar';
+import QueryEditorChartToolbar from './QueryEditorChartToolbar';
 
 // TODO FIXME XXX capture unsaved state to local storage
 // Prompt is removed. It doesn't always work anyways
@@ -107,12 +108,18 @@ class QueryEditor extends React.Component {
         onChange={this.handleVisPaneResize}
       >
         <QueryEditorSqlEditor />
-        <div
-          style={{ position: 'absolute', padding: 16 }}
-          className="h-100 w-100"
-        >
-          <div className="flex-center h-100 w-100">
-            <QueryEditorChart />
+        <div style={{ position: 'absolute' }} className="h-100 w-100">
+          <div
+            style={{ display: 'flex', flexDirection: 'column' }}
+            className="h-100 w-100"
+          >
+            <QueryEditorChartToolbar />
+            <div
+              style={{ display: 'flex', padding: 8 }}
+              className="h-100 w-100"
+            >
+              <QueryEditorChart />
+            </div>
           </div>
         </div>
       </SplitPane>
