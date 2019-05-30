@@ -22,10 +22,10 @@ import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
 import { toggleSchema, toggleVisSidebar } from '../../stores/appNav';
 import {
   formatQuery,
-  runQuery,
-  saveQuery,
   handleCloneClick,
   resetNewQuery,
+  runQuery,
+  saveQuery,
   setQueryState
 } from '../../stores/queries';
 import UserList from '../../users/UserList';
@@ -42,7 +42,9 @@ function mapStateToProps(state) {
     isSaving: state.isSaving,
     queryId: state.query && state.query._id,
     queryName: state.query && state.query.name,
+    showSchema: state.showSchema,
     showValidation: state.showValidation,
+    showVisSidebar: state.showVisSidebar,
     unsavedChanges: state.unsavedChanges
   };
 }
@@ -73,7 +75,9 @@ function Toolbar({
   runQuery,
   saveQuery,
   setQueryState,
+  showSchema,
   showValidation,
+  showVisSidebar,
   toggleSchema,
   toggleVisSidebar,
   unsavedChanges
@@ -119,11 +123,13 @@ function Toolbar({
           tooltip="Toggle schema"
           onClick={toggleSchema}
           icon={<DatabaseIcon />}
+          active={showSchema}
         />
         <Button
           tooltip="Toggle vis"
           onClick={toggleVisSidebar}
           icon={<VisIcon />}
+          active={showVisSidebar}
         />
 
         <div style={{ width: 8 }} />
