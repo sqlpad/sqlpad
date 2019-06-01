@@ -20,7 +20,6 @@ import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryResultHeader from './QueryResultHeader.js';
 import Toolbar from './toolbar/Toolbar';
-import VisSidebar from './VisSidebar';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
 
 // TODO FIXME XXX capture unsaved state to local storage
@@ -89,13 +88,7 @@ class QueryEditor extends React.Component {
   }, 700);
 
   render() {
-    const {
-      chartType,
-      queryName,
-      showSchema,
-      showVisSidebar,
-      queryId
-    } = this.props;
+    const { chartType, queryName, showSchema } = this.props;
 
     document.title = queryName;
 
@@ -109,18 +102,9 @@ class QueryEditor extends React.Component {
       >
         <QueryEditorSqlEditor />
         <div style={{ position: 'absolute' }} className="h-100 w-100">
-          <div
-            style={{ display: 'flex', flexDirection: 'column' }}
-            className="h-100 w-100"
-          >
-            <QueryEditorChartToolbar />
-            <div
-              style={{ display: 'flex', padding: 8 }}
-              className="h-100 w-100"
-            >
-              <QueryEditorChart />
-            </div>
-          </div>
+          <QueryEditorChartToolbar>
+            <QueryEditorChart />
+          </QueryEditorChartToolbar>
         </div>
       </SplitPane>
     ) : (
@@ -156,8 +140,6 @@ class QueryEditor extends React.Component {
     let sidebar = null;
     if (showSchema) {
       sidebar = <SchemaSidebar />;
-    } else if (showVisSidebar) {
-      sidebar = <VisSidebar />;
     }
 
     const sqlTabPane = sidebar ? (
@@ -214,8 +196,7 @@ function mapStateToProps(state, props) {
       state.query.chartConfiguration &&
       state.query.chartConfiguration.chartType,
     queryName: state.query && state.query.name,
-    showSchema: state.showSchema,
-    showVisSidebar: state.showVisSidebar
+    showSchema: state.showSchema
   };
 }
 

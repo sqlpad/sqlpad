@@ -1,13 +1,20 @@
 import 'd3';
 import DownloadIcon from 'mdi-react/DownloadIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
-import React from 'react';
+import SettingsIcon from 'mdi-react/SettingsIcon';
+import CloseIcon from 'mdi-react/CloseIcon';
+import React, { useState } from 'react';
 import { connect } from 'unistore/react';
 import IconButton from '../common/IconButton';
 import { exportPng } from '../common/tauChartRef';
+import ChartInputsContainer from './ChartInputsContainer';
 
 function mapStateToProps(state) {
   return {
+    chartType:
+      state.query &&
+      state.query.chartConfiguration &&
+      state.query.chartConfiguration.chartType,
     queryId: (state.query && state.query._id) || 'new',
     queryResult: state.queryResult
   };
@@ -15,34 +22,79 @@ function mapStateToProps(state) {
 
 const Connected = connect(mapStateToProps)(QueryEditorChartToolbar);
 
-function QueryEditorChartToolbar({ queryResult, queryId }) {
+function QueryEditorChartToolbar({
+  chartType,
+  queryResult,
+  queryId,
+  children
+}) {
+  const [showConfig, setShowConfig] = useState(false);
+
   const downloadEnabled =
     queryResult && queryResult.rows && queryResult.rows.length;
 
+  const settingsDisabled = !Boolean(chartType);
+
+  const backgroundColor = showConfig ? '#f5f5f5' : 'transparent';
+
   return (
     <div
-      style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignItems: 'flex-start',
-        padding: 4
-      }}
+      style={{ display: 'flex', flexDirection: 'column' }}
+      className="h-100 w-100"
     >
-      <IconButton
-        to={`/query-chart/${queryId}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        tooltip="Open chart in new window"
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          padding: 4,
+          backgroundColor
+        }}
       >
-        <OpenInNewIcon />
-      </IconButton>
-      <IconButton
-        disabled={!downloadEnabled}
-        onClick={() => exportPng(queryId)}
-        tooltip="Save chart image"
+        <IconButton
+          disabled={showConfig}
+          to={`/query-chart/${queryId}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          tooltip="Open chart in new window"
+        >
+          <OpenInNewIcon />
+        </IconButton>
+        <IconButton
+          disabled={!downloadEnabled}
+          onClick={() => exportPng(queryId)}
+          tooltip="Save chart image"
+        >
+          <DownloadIcon />
+        </IconButton>
+        <IconButton
+          disabled={settingsDisabled}
+          onClick={() => setShowConfig(!showConfig)}
+          tooltip="Configure"
+        >
+          {showConfig ? <CloseIcon /> : <SettingsIcon />}
+        </IconButton>
+      </div>
+      <div
+        style={{ display: 'flex', padding: 8, position: 'relative' }}
+        className="h-100 w-100"
       >
-        <DownloadIcon />
-      </IconButton>
+        {children}
+        {showConfig && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              backgroundColor
+            }}
+          >
+            <ChartInputsContainer />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

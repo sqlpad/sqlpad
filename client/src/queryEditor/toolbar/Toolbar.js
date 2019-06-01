@@ -1,5 +1,4 @@
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
-import VisIcon from 'mdi-react/ChartBarIcon';
 import CopyIcon from 'mdi-react/ContentCopyIcon';
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
@@ -19,7 +18,7 @@ import Drawer from '../../common/Drawer';
 import Input from '../../common/Input';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
 import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
-import { toggleSchema, toggleVisSidebar } from '../../stores/appNav';
+import { toggleSchema } from '../../stores/appNav';
 import {
   formatQuery,
   handleCloneClick,
@@ -34,6 +33,7 @@ import ConnectionDropDown from '../ConnectionDropdown';
 import AboutModal from './AboutModal';
 import QueryListButton from './QueryListButton';
 import QueryTagsModal from './QueryTagsModal';
+import ChartTypeSelect from '../ChartTypeSelect';
 
 function mapStateToProps(state) {
   return {
@@ -44,7 +44,6 @@ function mapStateToProps(state) {
     queryName: state.query && state.query.name,
     showSchema: state.showSchema,
     showValidation: state.showValidation,
-    showVisSidebar: state.showVisSidebar,
     unsavedChanges: state.unsavedChanges
   };
 }
@@ -53,7 +52,6 @@ const ConnectedEditorNavBar = connect(
   mapStateToProps,
   store => ({
     toggleSchema,
-    toggleVisSidebar,
     formatQuery,
     runQuery: runQuery(store),
     saveQuery: saveQuery(store),
@@ -77,9 +75,7 @@ function Toolbar({
   setQueryState,
   showSchema,
   showValidation,
-  showVisSidebar,
   toggleSchema,
-  toggleVisSidebar,
   unsavedChanges
 }) {
   const [showTags, setShowTags] = useState(false);
@@ -104,7 +100,8 @@ function Toolbar({
         width: '100%',
         backgroundColor: 'rgba(0, 0, 0, 0.04)',
         padding: 6,
-        borderBottom: '1px solid #eee'
+        // borderBottom: '1px solid #eee',
+        borderBottom: '1px solid rgb(204, 204, 204)'
       }}
     >
       <div style={{ display: 'flex' }}>
@@ -124,12 +121,6 @@ function Toolbar({
           onClick={toggleSchema}
           icon={<DatabaseIcon />}
           active={showSchema}
-        />
-        <Button
-          tooltip="Toggle vis"
-          onClick={toggleVisSidebar}
-          icon={<VisIcon />}
-          active={showVisSidebar}
         />
 
         <div style={{ width: 8 }} />
@@ -175,6 +166,10 @@ function Toolbar({
         <Button type="primary" onClick={() => runQuery()} disabled={isRunning}>
           Run
         </Button>
+
+        <div style={{ width: 8 }} />
+
+        <ChartTypeSelect style={{ width: 180 }} />
 
         <div style={{ flexGrow: 1 }} />
 

@@ -1,20 +1,11 @@
 export const initialState = {
-  showSchema: true,
-  showVisSidebar: false
+  showSchema: false
 };
 
 export function toggleSchema(state) {
   return {
-    showSchema: !state.showSchema,
-    showVisSidebar: false
+    showSchema: !state.showSchema
   };
 }
 
-export function toggleVisSidebar(state) {
-  return {
-    showVisSidebar: !state.showVisSidebar,
-    showSchema: false
-  };
-}
-
-export default { initialState, toggleSchema, toggleVisSidebar };
+export default { initialState, toggleSchema };
