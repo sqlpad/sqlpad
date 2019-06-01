@@ -28,23 +28,17 @@
 .btn:hover,
 .btn:focus {
   color: #40a9ff;
-  /* background-color: #fff; */
+  background-color: #fff;
   border-color: #40a9ff;
   box-shadow: 0 2px 0 rgba(64, 169, 255, 0.5);
 }
 
-.btn:active,
-.active {
+.btn:active {
   margin-top: 2px;
   margin-bottom: -2px;
   box-shadow: none;
   background-color: #1890ff;
   color: #fff;
-}
-
-.active:hover,
-.active:focus {
-  box-shadow: none;
 }
 
 .btn:focus {

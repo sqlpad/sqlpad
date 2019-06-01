@@ -42,7 +42,6 @@ function mapStateToProps(state) {
     isSaving: state.isSaving,
     queryId: state.query && state.query._id,
     queryName: state.query && state.query.name,
-    showSchema: state.showSchema,
     showValidation: state.showValidation,
     unsavedChanges: state.unsavedChanges
   };
@@ -73,7 +72,6 @@ function Toolbar({
   runQuery,
   saveQuery,
   setQueryState,
-  showSchema,
   showValidation,
   toggleSchema,
   unsavedChanges
@@ -100,7 +98,6 @@ function Toolbar({
         width: '100%',
         backgroundColor: 'rgba(0, 0, 0, 0.04)',
         padding: 6,
-        // borderBottom: '1px solid #eee',
         borderBottom: '1px solid rgb(204, 204, 204)'
       }}
     >
@@ -120,7 +117,6 @@ function Toolbar({
           tooltip="Toggle schema"
           onClick={toggleSchema}
           icon={<DatabaseIcon />}
-          active={showSchema}
         />
 
         <div style={{ width: 8 }} />

@@ -6,17 +6,7 @@ const ICON_SIZE = 18;
 
 const Button = React.forwardRef(
   (
-    {
-      children,
-      active,
-      icon,
-      type,
-      htmlType,
-      tooltip,
-      disabled,
-      className,
-      ...rest
-    },
+    { children, icon, type, htmlType, tooltip, disabled, className, ...rest },
     ref
   ) => {
     const classNames = [styles.btn];
@@ -25,10 +15,6 @@ const Button = React.forwardRef(
       classNames.push(styles.primary);
     } else if (type === 'danger') {
       classNames.push(styles.danger);
-    }
-
-    if (active) {
-      classNames.push(styles.active);
     }
 
     if (className) {
