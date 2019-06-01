@@ -31,7 +31,7 @@ function QueryEditorChartToolbar({
   const [showConfig, setShowConfig] = useState(false);
 
   const downloadEnabled =
-    queryResult && queryResult.rows && queryResult.rows.length;
+    !showConfig && queryResult && queryResult.rows && queryResult.rows.length;
 
   const settingsDisabled = !Boolean(chartType);
 
@@ -75,26 +75,19 @@ function QueryEditorChartToolbar({
           {showConfig ? <CloseIcon /> : <SettingsIcon />}
         </IconButton>
       </div>
-      <div
-        style={{ display: 'flex', padding: 8, position: 'relative' }}
-        className="h-100 w-100"
-      >
-        {children}
-        {showConfig && (
-          <div
-            style={{
-              position: 'absolute',
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0,
-              backgroundColor
-            }}
-          >
-            <ChartInputsContainer />
-          </div>
-        )}
-      </div>
+
+      {showConfig ? (
+        <div style={{ backgroundColor }} className="h-100 w-100">
+          <ChartInputsContainer />
+        </div>
+      ) : (
+        <div
+          style={{ display: 'flex', padding: 8, position: 'relative' }}
+          className="h-100 w-100"
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 }
