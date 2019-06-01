@@ -39,7 +39,7 @@ function ChartTypeSelect({
       style={style}
       value={chartType}
     >
-      <option value="" />
+      <option value="">No visualization</option>
       {chartOptions}
     </Select>
   );
