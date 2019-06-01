@@ -47,29 +47,25 @@ const chartDefinitions = [
         fieldId: 'filter',
         required: false,
         label: 'Quick Filter',
-        inputType: 'checkbox',
-        advanced: true
+        inputType: 'checkbox'
       },
       {
         fieldId: 'trendline',
         required: false,
         label: 'Show Trendline',
-        inputType: 'checkbox',
-        advanced: true
+        inputType: 'checkbox'
       },
       {
         fieldId: 'yMin',
         required: false,
         label: 'y Axis Min',
-        inputType: 'textbox',
-        advanced: true
+        inputType: 'textbox'
       },
       {
         fieldId: 'yMax',
         required: false,
         label: 'y Axis Max',
-        inputType: 'textbox',
-        advanced: true
+        inputType: 'textbox'
       }
     ]
   },
@@ -186,15 +182,13 @@ const chartDefinitions = [
         fieldId: 'filter',
         required: false,
         label: 'Quick Filter',
-        inputType: 'checkbox',
-        advanced: true
+        inputType: 'checkbox'
       },
       {
         fieldId: 'trendline',
         required: false,
         label: 'Show Trendline',
-        inputType: 'checkbox',
-        advanced: true
+        inputType: 'checkbox'
       }
     ]
   },

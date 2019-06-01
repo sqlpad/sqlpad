@@ -119,14 +119,6 @@ function ChartInputs({
     return null;
   }
 
-  const regularFields = chartDefinition.fields.filter(
-    field => field.advanced == null || field.advanced === false
-  );
-
-  const advancedFields = chartDefinition.fields.filter(
-    field => field.advanced === true
-  );
-
   return (
     <div
       style={{
@@ -140,8 +132,7 @@ function ChartInputs({
         alignItems: 'center'
       }}
     >
-      {renderFormGroup(regularFields)}
-      {renderFormGroup(advancedFields)}
+      {renderFormGroup(chartDefinition.fields)}
     </div>
   );
 }
