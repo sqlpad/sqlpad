@@ -5,16 +5,16 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import base from '../common/base.module.css';
-import ButtonLink from '../common/ButtonLink';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Divider from '../common/Divider';
 import Drawer from '../common/Drawer';
+import IconButton from '../common/IconButton';
 import ListItem from '../common/ListItem';
 import MultiSelect from '../common/MultiSelect';
 import SqlEditor from '../common/SqlEditor';
 import Tag from '../common/Tag';
 import Text from '../common/Text';
-import { loadQueries, deleteQuery } from '../stores/queries';
+import { deleteQuery, loadQueries } from '../stores/queries';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
@@ -88,22 +88,24 @@ function QueryListDrawer({
         const queryUrl = `/queries/${query._id}`;
 
         const actions = [
-          <ButtonLink
+          <IconButton
             key="table"
             to={tableUrl}
             target="_blank"
             rel="noopener noreferrer"
             tooltip="Open results in new window"
-            icon={<TableIcon />}
-          />,
-          <ButtonLink
+          >
+            <TableIcon />
+          </IconButton>,
+          <IconButton
             key="chart"
             to={chartUrl}
             target="_blank"
             rel="noopener noreferrer"
             tooltip="Open chart in new window"
-            icon={<ChartIcon />}
-          />,
+          >
+            <ChartIcon />
+          </IconButton>,
           <DeleteConfirmButton
             key="del"
             confirmMessage={`Delete ${query.name}`}
