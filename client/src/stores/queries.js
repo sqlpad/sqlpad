@@ -85,7 +85,12 @@ export const loadQuery = async (state, queryId) => {
   if (error) {
     message.error(error);
   }
-  return { query, selectedConnectionId: query.connectionId };
+  return {
+    query,
+    queryResult: undefined,
+    selectedConnectionId: query.connectionId,
+    unsavedChanges: false
+  };
 };
 
 export const runQuery = store => async state => {
