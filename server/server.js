@@ -58,6 +58,7 @@ function detectPortOrSystemd(port) {
 
 /*  Start the Server
 ============================================================================= */
+let server;
 db.onLoad(function(err) {
   if (err) throw err;
 
@@ -83,11 +84,13 @@ db.onLoad(function(err) {
         passphrase: certPassphrase
       };
 
-      https.createServer(httpsOptions, app).listen(_port, ip, function() {
-        const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
-        const url = `https://${hostIp}:${_port}${baseUrl}`;
-        console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
-      });
+      server = https
+        .createServer(httpsOptions, app)
+        .listen(_port, ip, function() {
+          const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
+          const url = `https://${hostIp}:${_port}${baseUrl}`;
+          console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
+        });
     });
   } else {
     // http only
@@ -101,7 +104,7 @@ db.onLoad(function(err) {
         // TODO FIXME XXX  Persist the new port to the in-memory store.
         // config.set('port', _port)
       }
-      http.createServer(app).listen(_port, ip, function() {
+      server = http.createServer(app).listen(_port, ip, function() {
         const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
         const url = `http://${hostIp}:${_port}${baseUrl}`;
         console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
@@ -109,3 +112,18 @@ db.onLoad(function(err) {
     });
   }
 });
+
+function handleShutdownSignal(signal) {
+  if (!server) {
+    console.log(`Received ${signal}, but no server to shutdown`);
+    process.exit(0);
+  } else {
+    console.log(`Received ${signal}, shutting down server...`);
+    server.close(function() {
+      process.exit(0);
+    });
+  }
+}
+
+process.on('SIGTERM', handleShutdownSignal);
+process.on('SIGINT', handleShutdownSignal);

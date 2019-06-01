@@ -1,0 +1,13 @@
+.DS_Store
+.env
+.idea/
+/client/build
+/client/node_modules
+/db
+/docker-validation
+/docs
+/docs-source
+/node_modules
+/server/node_modules
+/server/public
+/server/test
