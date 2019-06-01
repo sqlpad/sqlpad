@@ -1,7 +1,0 @@
-.DS_Store
-.env
-.idea/
-public/static/css/*.map
-public/static/js/*.map
-node_modules/
-test/

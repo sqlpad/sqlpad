@@ -1,3 +1,0 @@
-#!/bin/sh
-
-exec node /usr/app/server.js  --dir /var/lib/sqlpad --port 3000 $@
