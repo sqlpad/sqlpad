@@ -16,16 +16,17 @@ const IconButton = React.forwardRef(
     let button;
 
     // If to is supplied this is a link
-    // IMPORTANT: Link is wrapped in <span> to handle tooltip ref passing
-    if (to) {
+    // IMPORTANT: Link is wrapped in <div> to handle tooltip ref passing
+    // lineHeight set to initial to fix div/Link being slightly higher than buttons
+    if (to && !disabled) {
       button = (
-        <span>
+        <div style={{ display: 'inline', lineHeight: 'initial' }}>
           <Link to={to} className={classNames.join(' ')} {...rest}>
             {React.Children.map(children, child => {
               return React.cloneElement(child, { size: ICON_SIZE }, null);
             })}
           </Link>
-        </span>
+        </div>
       );
     } else {
       button = (
