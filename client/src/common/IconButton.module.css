@@ -20,19 +20,18 @@
   border-color: rgb(217, 217, 217);
 }
 
+.btn:active,
 .btn:hover,
-.btn:active {
-  color: #40a9ff;
-  border-color: #40a9ff;
-  box-shadow: 0 0 8px rgba(64, 169, 255, 0.3);
-}
-
 .btn:focus {
+  text-decoration: none;
   outline: 2px solid #40a9ff;
 }
 
+.btn:hover {
+  color: #40a9ff;
+}
+
 .btn:active {
-  box-shadow: none;
   color: #096dd9;
   transform: scale(0.95);
 }
