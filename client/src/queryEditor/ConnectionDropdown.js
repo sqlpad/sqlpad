@@ -32,8 +32,8 @@ function ConnectionDropdown({
   };
 
   const style = !selectedConnectionId
-    ? { color: '#777', width: 260 }
-    : { width: 260 };
+    ? { color: '#777', width: 220 }
+    : { width: 220 };
 
   return (
     <>

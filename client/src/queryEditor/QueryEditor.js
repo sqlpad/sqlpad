@@ -20,7 +20,7 @@ import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryResultHeader from './QueryResultHeader.js';
 import Toolbar from './toolbar/Toolbar';
-import VisSidebar from './VisSidebar';
+import QueryEditorChartToolbar from './QueryEditorChartToolbar';
 
 // TODO FIXME XXX capture unsaved state to local storage
 // Prompt is removed. It doesn't always work anyways
@@ -88,13 +88,7 @@ class QueryEditor extends React.Component {
   }, 700);
 
   render() {
-    const {
-      chartType,
-      queryName,
-      showSchema,
-      showVisSidebar,
-      queryId
-    } = this.props;
+    const { chartType, queryName, showSchema } = this.props;
 
     document.title = queryName;
 
@@ -107,13 +101,10 @@ class QueryEditor extends React.Component {
         onChange={this.handleVisPaneResize}
       >
         <QueryEditorSqlEditor />
-        <div
-          style={{ position: 'absolute', padding: 16 }}
-          className="h-100 w-100"
-        >
-          <div className="flex-center h-100 w-100">
+        <div style={{ position: 'absolute' }} className="h-100 w-100">
+          <QueryEditorChartToolbar>
             <QueryEditorChart />
-          </div>
+          </QueryEditorChartToolbar>
         </div>
       </SplitPane>
     ) : (
@@ -149,8 +140,6 @@ class QueryEditor extends React.Component {
     let sidebar = null;
     if (showSchema) {
       sidebar = <SchemaSidebar />;
-    } else if (showVisSidebar) {
-      sidebar = <VisSidebar queryId={queryId} />;
     }
 
     const sqlTabPane = sidebar ? (
@@ -207,8 +196,7 @@ function mapStateToProps(state, props) {
       state.query.chartConfiguration &&
       state.query.chartConfiguration.chartType,
     queryName: state.query && state.query.name,
-    showSchema: state.showSchema,
-    showVisSidebar: state.showVisSidebar
+    showSchema: state.showSchema
   };
 }
 

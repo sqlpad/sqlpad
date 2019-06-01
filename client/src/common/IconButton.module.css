@@ -1,0 +1,43 @@
+.btn {
+  line-height: 1.499;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  padding: 4px;
+  font-size: 14px;
+  border-radius: 2px;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: transparent;
+  border: none;
+  border-color: rgb(217, 217, 217);
+}
+
+.btn:active,
+.btn:hover,
+.btn:focus {
+  text-decoration: none;
+  outline: 2px solid #40a9ff;
+}
+
+.btn:hover {
+  color: #40a9ff;
+}
+
+.btn:active {
+  color: #096dd9;
+  transform: scale(0.95);
+}
+
+.btn:disabled,
+.btn[disabled] {
+  color: rgba(0, 0, 0, 0.25);
+  background-color: #eee;
+}

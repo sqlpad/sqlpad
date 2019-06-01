@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import Input from '../common/Input';
 import Select from '../common/Select';
 import chartDefinitions from '../utilities/chartDefinitions.js';
@@ -16,8 +16,8 @@ function cleanBoolean(value) {
 }
 
 const inputStyle = {
-  marginTop: 16,
-  marginBottom: 16
+  margin: 8,
+  width: 200
 };
 
 function ChartInputs({
@@ -26,13 +26,6 @@ function ChartInputs({
   queryResult,
   chartType
 }) {
-  const [showAdvanced, setShowAdvanced] = useState(false);
-
-  const handleAdvancedClick = e => {
-    e.preventDefault();
-    setShowAdvanced(!showAdvanced);
-  };
-
   const changeChartConfigurationField = (chartFieldId, queryResultField) => {
     onChartConfigurationFieldsChange(chartFieldId, queryResultField);
   };
@@ -82,7 +75,6 @@ function ChartInputs({
       } else if (field.inputType === 'checkbox') {
         const checked =
           cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
-        console.log(field);
         return (
           <div style={inputStyle} key={field.fieldId}>
             <input
@@ -127,25 +119,20 @@ function ChartInputs({
     return null;
   }
 
-  const regularFields = chartDefinition.fields.filter(
-    field => field.advanced == null || field.advanced === false
-  );
-
-  const advancedFields = chartDefinition.fields.filter(
-    field => field.advanced === true
-  );
-
-  const advancedLink = advancedFields.length ? (
-    <a href="#settings" onClick={handleAdvancedClick}>
-      {showAdvanced ? 'hide advanced settings' : 'show advanced settings'}
-    </a>
-  ) : null;
-
   return (
-    <div>
-      {renderFormGroup(regularFields)}
-      {advancedLink}
-      {showAdvanced && renderFormGroup(advancedFields)}
+    <div
+      style={{
+        height: '100%',
+        padding: '8px',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignContent: 'flex-start',
+        alignItems: 'center'
+      }}
+    >
+      {renderFormGroup(chartDefinition.fields)}
     </div>
   );
 }
