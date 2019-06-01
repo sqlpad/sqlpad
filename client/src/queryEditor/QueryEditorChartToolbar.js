@@ -52,7 +52,7 @@ function QueryEditorChartToolbar({
         }}
       >
         <IconButton
-          disabled={showConfig}
+          disabled={showConfig || queryId === 'new'}
           to={`/query-chart/${queryId}`}
           target="_blank"
           rel="noopener noreferrer"
