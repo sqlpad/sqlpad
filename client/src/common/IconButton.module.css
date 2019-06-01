@@ -18,13 +18,18 @@
   background-color: transparent;
   border: none;
   border-color: rgb(217, 217, 217);
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
 }
 
 .btn:active,
 .btn:hover,
 .btn:focus {
   text-decoration: none;
-  outline: 2px solid #40a9ff;
+  outline: none;
+  border: 2px solid #40a9ff;
+  background-color: #f3f3f3;
 }
 
 .btn:hover {
