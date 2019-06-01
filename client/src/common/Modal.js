@@ -2,7 +2,7 @@ import { Dialog } from '@reach/dialog';
 import CloseIcon from 'mdi-react/CloseIcon';
 import React from 'react';
 import base from './base.module.css';
-import Button from './Button';
+import IconButton from './IconButton';
 
 function Modal({ title, visible, onClose, width, children }) {
   if (visible) {
@@ -24,7 +24,9 @@ function Modal({ title, visible, onClose, width, children }) {
           }}
         >
           <span>{title}</span>
-          <Button icon={<CloseIcon />} onClick={onClose} />
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
         </div>
 
         {children}
