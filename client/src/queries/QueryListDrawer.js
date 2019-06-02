@@ -72,6 +72,15 @@ function QueryListDrawer({
     });
   }
 
+  // For now sort by last modified
+  filteredQueries = filteredQueries.sort((a, b) => {
+    const aDate = a.modifiedDate || a.createdDate;
+    const bDate = b.modifiedDate || b.createdDate;
+    if (aDate < bDate) return 1;
+    if (bDate < aDate) return -1;
+    return 0;
+  });
+
   const Row = ({ index, style }) => {
     const query = filteredQueries[index];
     const tableUrl = `/query-table/${query._id}`;
