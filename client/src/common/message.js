@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import baseStyles from './base.module.css';
 import mitt from 'mitt';
 
 const emitter = mitt();
@@ -20,11 +21,13 @@ export function MessageDisplayer() {
     const msg = messages[messages.length - 1];
     return (
       <div
+        className={baseStyles.shadow1}
         style={{
           position: 'fixed',
           // TODO better styles
           color: '#FFF',
-          backgroundColor: msg.type === 'error' ? 'red' : 'green',
+          backgroundColor: msg.type === 'error' ? '#fb30ac' : 'green',
+          textShadow: '1px 1px 1px rgba(0, 0, 0, 0.5)',
           padding: 8,
           top: 16,
           right: 16,

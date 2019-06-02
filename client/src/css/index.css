@@ -71,7 +71,9 @@ input {
 }
 
 .bg-error {
-  background-color: #ff725c;
+  background-color: rgba(251, 48, 173, 0.8);
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 .spinning {
