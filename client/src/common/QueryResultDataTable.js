@@ -224,7 +224,7 @@ class QueryResultDataTable extends React.PureComponent {
     if (queryError) {
       return (
         <div
-          style={{ fontSize: '2rem', padding: 24, textAlign: 'center' }}
+          style={{ fontSize: '1.5rem', padding: 24, textAlign: 'center' }}
           className={`h-100 bg-error flex-center`}
         >
           {queryError}

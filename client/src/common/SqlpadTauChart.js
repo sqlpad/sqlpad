@@ -61,7 +61,7 @@ function SqlpadTauChart({
     return (
       <div
         id="chart"
-        style={{ fontSize: '2rem', padding: 24, textAlign: 'center' }}
+        style={{ fontSize: '1.5rem', padding: 24, textAlign: 'center' }}
         className="flex-center h-100 w-100 bg-error"
       >
         {queryError}
