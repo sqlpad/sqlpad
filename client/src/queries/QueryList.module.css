@@ -1,10 +1,54 @@
+/* Padding of 2 added to show link outline when focused */
+.ListItem {
+  padding: 2px;
+}
+
 .ListItem:hover {
   background-color: #f4f4f4;
   transition: background-color 0.15s ease-in-out;
 }
 
-.outlined:hover,
-.outlined:active,
-.outlined:focus {
-  outline: 1px solid #40a9ff;
+.listItemActions {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.queryLink {
+  flex-grow: 1;
+  padding: 8px;
+}
+
+.queryName {
+  display: inline-block;
+  width: 240px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.connectionName {
+  margin-left: 16px;
+  display: inline-block;
+  width: 132px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview {
+  position: fixed;
+  left: 640px;
+  top: 40px;
+  right: 40px;
+  bottom: 40px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+.previewQueryName {
+  font-size: 1.25rem;
 }

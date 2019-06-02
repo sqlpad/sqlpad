@@ -18,6 +18,8 @@ import { deleteQuery, loadQueries } from '../stores/queries';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
+import { FixedSizeList as List } from 'react-window';
+import Measure from 'react-measure';
 
 function QueryListDrawer({
   queries,
@@ -29,6 +31,11 @@ function QueryListDrawer({
 }) {
   const [preview, setPreview] = useState('');
   const [searches, setSearches] = useState([]);
+  const [dimensions, setDimensions] = useState({
+    width: -1,
+    height: -1
+  });
+
   useEffect(() => {
     loadQueries();
   }, [loadQueries]);
@@ -65,8 +72,61 @@ function QueryListDrawer({
     });
   }
 
-  // TODO FIXME XXX searches select is meant to be multi value + open text string!
-  // Figure out what to do about this later after antd removal
+  const Row = ({ index, style }) => {
+    const query = filteredQueries[index];
+    const tableUrl = `/query-table/${query._id}`;
+    const chartUrl = `/query-chart/${query._id}`;
+    const queryUrl = `/queries/${query._id}`;
+
+    const actions = [
+      <IconButton
+        key="table"
+        to={tableUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        tooltip="Open results in new window"
+      >
+        <TableIcon />
+      </IconButton>,
+      <IconButton
+        key="chart"
+        to={chartUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        tooltip="Open chart in new window"
+      >
+        <ChartIcon />
+      </IconButton>,
+      <DeleteConfirmButton
+        key="del"
+        confirmMessage={`Delete ${query.name}`}
+        onConfirm={e => deleteQuery(query._id)}
+      >
+        Delete
+      </DeleteConfirmButton>
+    ];
+
+    return (
+      <ListItem
+        key={query._id}
+        className={styles.ListItem}
+        onMouseEnter={() => setPreview(query)}
+        onMouseLeave={() => setPreview('')}
+        style={style}
+      >
+        <Link className={styles.queryLink} to={queryUrl} onClick={onClose}>
+          <Text className={styles.queryName}>{query.name}</Text>
+          <Text className={styles.connectionName} type="secondary">
+            {query.connectionName}
+          </Text>
+        </Link>
+        <div className={styles.listItemActions}>{actions}</div>
+      </ListItem>
+    );
+  };
+
+  // TODO: Move Measure and this vertical flex stuff into separate component
+  // This was copied from schema sidebar
   return (
     <Drawer
       title={'Queries'}
@@ -75,94 +135,63 @@ function QueryListDrawer({
       onClose={onClose}
       placement="left"
     >
-      <div>
-        <MultiSelect
-          selectedItems={searches}
-          options={availableSearches}
-          onChange={items => setSearches(items)}
-        />
-      </div>
-      {filteredQueries.map(query => {
-        const tableUrl = `/query-table/${query._id}`;
-        const chartUrl = `/query-chart/${query._id}`;
-        const queryUrl = `/queries/${query._id}`;
+      <Measure
+        bounds
+        onResize={contentRect => {
+          setDimensions(contentRect.bounds);
+        }}
+      >
+        {({ measureRef }) => (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%'
+            }}
+          >
+            <div>
+              <MultiSelect
+                selectedItems={searches}
+                options={availableSearches}
+                onChange={items => setSearches(items)}
+                placeholder="search queries"
+              />
+            </div>
 
-        const actions = [
-          <IconButton
-            key="table"
-            to={tableUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            tooltip="Open results in new window"
-          >
-            <TableIcon />
-          </IconButton>,
-          <IconButton
-            key="chart"
-            to={chartUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            tooltip="Open chart in new window"
-          >
-            <ChartIcon />
-          </IconButton>,
-          <DeleteConfirmButton
-            key="del"
-            confirmMessage={`Delete ${query.name}`}
-            onConfirm={e => deleteQuery(query._id)}
-          >
-            Delete
-          </DeleteConfirmButton>
-        ];
+            <Divider />
 
-        return (
-          <ListItem
-            key={query._id}
-            className={styles.ListItem + ' ' + styles.outlined}
-            onMouseEnter={() => setPreview(query)}
-            onMouseLeave={() => setPreview('')}
-            style={{ position: 'relative' }}
-          >
-            <Link
-              style={{ flexGrow: 1, padding: 8 }}
-              className={styles.outlined}
-              to={queryUrl}
-              onClick={onClose}
-            >
-              {query.name}
-              <br />
-              <Text type="secondary">{query.connectionName}</Text>
-            </Link>
             <div
               style={{
-                position: 'absolute',
-                right: 8,
                 display: 'flex',
-                alignItems: 'center'
+                flexGrow: 1
               }}
             >
-              {actions}
+              <div
+                ref={measureRef}
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  height: '100%'
+                }}
+              >
+                <List
+                  height={dimensions.height}
+                  itemCount={filteredQueries.length}
+                  itemSize={48}
+                  width={dimensions.width}
+                  overscanCount={2}
+                >
+                  {Row}
+                </List>
+              </div>
             </div>
-          </ListItem>
-        );
-      })}
+          </div>
+        )}
+      </Measure>
 
       {preview && (
-        <div
-          className={base.shadow2}
-          style={{
-            position: 'fixed',
-            left: 640,
-            top: 40,
-            right: 40,
-            bottom: 40,
-            backgroundColor: 'white',
-            display: 'flex',
-            flexDirection: 'column',
-            padding: 16
-          }}
-        >
-          <div style={{ fontSize: '1.25rem' }}>{preview.name}</div>
+        <div className={`${base.shadow2} ${styles.preview}`}>
+          <div className={styles.previewQueryName}>{preview.name}</div>
           <div>Connection {preview.connectionName}</div>
           <div>By {preview.createdBy}</div>
           <div>
