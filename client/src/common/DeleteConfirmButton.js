@@ -1,7 +1,9 @@
 import { Dialog } from '@reach/dialog';
+import DeleteIcon from 'mdi-react/DeleteIcon';
 import React, { useRef, useState } from 'react';
 import base from './base.module.css';
 import Button from './Button';
+import IconButton from './IconButton';
 
 const dialogStyle = {
   width: '500px',
@@ -9,20 +11,31 @@ const dialogStyle = {
 };
 
 const DeleteConfirmButton = React.forwardRef(
-  ({ children, confirmMessage, onConfirm, className, ...rest }, ref) => {
+  ({ children, confirmMessage, onConfirm, className, icon, ...rest }, ref) => {
     const [visible, setVisible] = useState(false);
     const cancelEl = useRef(null);
 
     return (
       <>
-        <Button
-          onClick={() => setVisible(true)}
-          ref={ref}
-          type="danger"
-          {...rest}
-        >
-          {children}
-        </Button>
+        {icon ? (
+          <IconButton
+            onClick={() => setVisible(true)}
+            ref={ref}
+            type="danger"
+            {...rest}
+          >
+            <DeleteIcon />
+          </IconButton>
+        ) : (
+          <Button
+            onClick={() => setVisible(true)}
+            ref={ref}
+            type="danger"
+            {...rest}
+          >
+            {children}
+          </Button>
+        )}
         {visible && (
           <Dialog
             onDismiss={() => setVisible(false)}

@@ -107,6 +107,7 @@ function QueryListDrawer({
         <ChartIcon />
       </IconButton>,
       <DeleteConfirmButton
+        icon
         key="del"
         confirmMessage={`Delete ${query.name}`}
         onConfirm={e => deleteQuery(query._id)}
