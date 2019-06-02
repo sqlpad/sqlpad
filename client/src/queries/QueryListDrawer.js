@@ -135,37 +135,37 @@ function QueryListDrawer({
       onClose={onClose}
       placement="left"
     >
-      <Measure
-        bounds
-        onResize={contentRect => {
-          setDimensions(contentRect.bounds);
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%'
         }}
       >
-        {({ measureRef }) => (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%'
+        <div>
+          <MultiSelect
+            selectedItems={searches}
+            options={availableSearches}
+            onChange={items => setSearches(items)}
+            placeholder="search queries"
+          />
+        </div>
+
+        <Divider />
+
+        <div
+          style={{
+            display: 'flex',
+            flexGrow: 1
+          }}
+        >
+          <Measure
+            bounds
+            onResize={contentRect => {
+              setDimensions(contentRect.bounds);
             }}
           >
-            <div>
-              <MultiSelect
-                selectedItems={searches}
-                options={availableSearches}
-                onChange={items => setSearches(items)}
-                placeholder="search queries"
-              />
-            </div>
-
-            <Divider />
-
-            <div
-              style={{
-                display: 'flex',
-                flexGrow: 1
-              }}
-            >
+            {({ measureRef }) => (
               <div
                 ref={measureRef}
                 style={{
@@ -184,10 +184,10 @@ function QueryListDrawer({
                   {Row}
                 </List>
               </div>
-            </div>
-          </div>
-        )}
-      </Measure>
+            )}
+          </Measure>
+        </div>
+      </div>
 
       {preview && (
         <div className={`${base.shadow2} ${styles.preview}`}>
