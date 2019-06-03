@@ -1,14 +1,14 @@
-import ChartIcon from 'mdi-react/FinanceIcon';
-import TableIcon from 'mdi-react/TableIcon';
+import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import Measure from 'react-measure';
 import { Link } from 'react-router-dom';
+import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
 import base from '../common/base.module.css';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Divider from '../common/Divider';
 import Drawer from '../common/Drawer';
-import IconButton from '../common/IconButton';
 import ListItem from '../common/ListItem';
 import MultiSelect from '../common/MultiSelect';
 import SqlEditor from '../common/SqlEditor';
@@ -18,8 +18,6 @@ import { deleteQuery, loadQueries } from '../stores/queries';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
-import { FixedSizeList as List } from 'react-window';
-import Measure from 'react-measure';
 
 function QueryListDrawer({
   queries,
@@ -87,34 +85,8 @@ function QueryListDrawer({
     const chartUrl = `/query-chart/${query._id}`;
     const queryUrl = `/queries/${query._id}`;
 
-    const actions = [
-      <IconButton
-        key="table"
-        to={tableUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        tooltip="Open results in new window"
-      >
-        <TableIcon />
-      </IconButton>,
-      <IconButton
-        key="chart"
-        to={chartUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        tooltip="Open chart in new window"
-      >
-        <ChartIcon />
-      </IconButton>,
-      <DeleteConfirmButton
-        icon
-        key="del"
-        confirmMessage={`Delete ${query.name}`}
-        onConfirm={e => deleteQuery(query._id)}
-      >
-        Delete
-      </DeleteConfirmButton>
-    ];
+    const hasChart =
+      query && query.chartConfiguration && query.chartConfiguration.chartType;
 
     return (
       <ListItem
@@ -125,12 +97,38 @@ function QueryListDrawer({
         style={style}
       >
         <Link className={styles.queryLink} to={queryUrl} onClick={onClose}>
-          <Text className={styles.queryName}>{query.name}</Text>
-          <Text className={styles.connectionName} type="secondary">
-            {query.connectionName}
-          </Text>
+          {query.name}
+          <br />
+          <Text type="secondary">{query.connectionName}</Text>
         </Link>
-        <div className={styles.listItemActions}>{actions}</div>
+        <div className={styles.listItemActions}>
+          <Link
+            className={styles.newWindowLink}
+            to={tableUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            table <OpenInNewIcon size={16} />
+          </Link>
+          <div style={{ width: 8 }} />
+          <Link
+            className={styles.newWindowLink}
+            to={chartUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            disabled={!Boolean(hasChart)}
+          >
+            chart <OpenInNewIcon size={16} />
+          </Link>
+          <DeleteConfirmButton
+            icon
+            key="del"
+            confirmMessage={`Delete ${query.name}`}
+            onConfirm={e => deleteQuery(query._id)}
+          >
+            Delete
+          </DeleteConfirmButton>
+        </div>
       </ListItem>
     );
   };
@@ -160,43 +158,40 @@ function QueryListDrawer({
             placeholder="search queries"
           />
         </div>
+        <div>
+          <Divider />
+        </div>
 
-        <Divider />
-
-        <div
-          style={{
-            display: 'flex',
-            flexGrow: 1
+        <Measure
+          bounds
+          onResize={contentRect => {
+            setDimensions(contentRect.bounds);
           }}
         >
-          <Measure
-            bounds
-            onResize={contentRect => {
-              setDimensions(contentRect.bounds);
-            }}
-          >
-            {({ measureRef }) => (
-              <div
-                ref={measureRef}
-                style={{
-                  display: 'flex',
-                  width: '100%',
-                  height: '100%'
-                }}
+          {({ measureRef }) => (
+            <div
+              ref={measureRef}
+              style={{
+                display: 'flex',
+                width: '100%',
+                height: '100%'
+              }}
+            >
+              <List
+                // position absolute takes list out of flow,
+                // preventing some weird react-measure behavior in FireFox
+                style={{ position: 'absolute' }}
+                height={dimensions.height}
+                itemCount={filteredQueries.length}
+                itemSize={60}
+                width={dimensions.width}
+                overscanCount={2}
               >
-                <List
-                  height={dimensions.height}
-                  itemCount={filteredQueries.length}
-                  itemSize={48}
-                  width={dimensions.width}
-                  overscanCount={2}
-                >
-                  {Row}
-                </List>
-              </div>
-            )}
-          </Measure>
-        </div>
+                {Row}
+              </List>
+            </div>
+          )}
+        </Measure>
       </div>
 
       {preview && (

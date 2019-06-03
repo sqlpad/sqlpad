@@ -16,25 +16,8 @@
 }
 
 .queryLink {
-  flex-grow: 1;
+  width: 100%;
   padding: 8px;
-}
-
-.queryName {
-  display: inline-block;
-  width: 240px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.connectionName {
-  margin-left: 16px;
-  display: inline-block;
-  width: 132px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .preview {
@@ -51,4 +34,9 @@
 
 .previewQueryName {
   font-size: 1.25rem;
+}
+
+.newWindowLink {
+  display: inline-flex;
+  align-items: center;
 }
