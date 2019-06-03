@@ -47,7 +47,7 @@ function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
       {({ measureRef }) => (
         <div ref={measureRef} className="h-100 w-100">
           <AceEditor
-            focus={true}
+            focus={!readOnly}
             editorProps={{ $blockScrolling: Infinity }}
             enableBasicAutocompletion
             enableLiveAutocompletion

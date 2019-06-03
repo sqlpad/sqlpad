@@ -46,3 +46,12 @@
   color: rgba(0, 0, 0, 0.25);
   background-color: #eee;
 }
+
+.danger:hover,
+.danger:focus {
+  color: #fb30ac;
+}
+
+.danger:active {
+  color: #ff009d;
+}

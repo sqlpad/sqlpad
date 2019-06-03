@@ -6,11 +6,18 @@ import Tooltip from './Tooltip';
 const ICON_SIZE = 18;
 
 const IconButton = React.forwardRef(
-  ({ children, to, icon, tooltip, disabled, className, ...rest }, ref) => {
+  (
+    { children, type, to, icon, tooltip, disabled, className, ...rest },
+    ref
+  ) => {
     const classNames = [styles.btn];
 
     if (className) {
       classNames.push(className);
+    }
+
+    if (type === 'danger') {
+      classNames.push(styles.danger);
     }
 
     let button;

@@ -9,7 +9,7 @@ import Tag from './Tag';
  * A lot of that example was changed and reduced down to what this is here.
  * If anyone out there more familiar with downshift wants to clean this up by all means feel free
  */
-function MultiSelect({ selectedItems = [], options, onChange }) {
+function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
   const input = useRef();
 
   const itemToString = item => (item ? item.name : '');
@@ -96,6 +96,7 @@ function MultiSelect({ selectedItems = [], options, onChange }) {
               : null}
             <input
               className={styles.input}
+              placeholder={placeholder}
               {...getInputProps({
                 ref: input,
                 onKeyDown(event) {

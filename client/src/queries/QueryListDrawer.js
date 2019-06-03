@@ -1,14 +1,14 @@
-import ChartIcon from 'mdi-react/FinanceIcon';
-import TableIcon from 'mdi-react/TableIcon';
+import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
+import Measure from 'react-measure';
 import { Link } from 'react-router-dom';
+import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
 import base from '../common/base.module.css';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Divider from '../common/Divider';
 import Drawer from '../common/Drawer';
-import IconButton from '../common/IconButton';
 import ListItem from '../common/ListItem';
 import MultiSelect from '../common/MultiSelect';
 import SqlEditor from '../common/SqlEditor';
@@ -29,6 +29,11 @@ function QueryListDrawer({
 }) {
   const [preview, setPreview] = useState('');
   const [searches, setSearches] = useState([]);
+  const [dimensions, setDimensions] = useState({
+    width: -1,
+    height: -1
+  });
+
   useEffect(() => {
     loadQueries();
   }, [loadQueries]);
@@ -65,8 +70,71 @@ function QueryListDrawer({
     });
   }
 
-  // TODO FIXME XXX searches select is meant to be multi value + open text string!
-  // Figure out what to do about this later after antd removal
+  // For now sort by last modified
+  filteredQueries = filteredQueries.sort((a, b) => {
+    const aDate = a.modifiedDate || a.createdDate;
+    const bDate = b.modifiedDate || b.createdDate;
+    if (aDate < bDate) return 1;
+    if (bDate < aDate) return -1;
+    return 0;
+  });
+
+  const Row = ({ index, style }) => {
+    const query = filteredQueries[index];
+    const tableUrl = `/query-table/${query._id}`;
+    const chartUrl = `/query-chart/${query._id}`;
+    const queryUrl = `/queries/${query._id}`;
+
+    const hasChart =
+      query && query.chartConfiguration && query.chartConfiguration.chartType;
+
+    return (
+      <ListItem
+        key={query._id}
+        className={styles.ListItem}
+        onMouseEnter={() => setPreview(query)}
+        onMouseLeave={() => setPreview('')}
+        style={style}
+      >
+        <Link className={styles.queryLink} to={queryUrl} onClick={onClose}>
+          {query.name}
+          <br />
+          <Text type="secondary">{query.connectionName}</Text>
+        </Link>
+        <div className={styles.listItemActions}>
+          <Link
+            className={styles.newWindowLink}
+            to={tableUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            table <OpenInNewIcon size={16} />
+          </Link>
+          <div style={{ width: 8 }} />
+          <Link
+            className={styles.newWindowLink}
+            to={chartUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            disabled={!Boolean(hasChart)}
+          >
+            chart <OpenInNewIcon size={16} />
+          </Link>
+          <DeleteConfirmButton
+            icon
+            key="del"
+            confirmMessage={`Delete ${query.name}`}
+            onConfirm={e => deleteQuery(query._id)}
+          >
+            Delete
+          </DeleteConfirmButton>
+        </div>
+      </ListItem>
+    );
+  };
+
+  // TODO: Move Measure and this vertical flex stuff into separate component
+  // This was copied from schema sidebar
   return (
     <Drawer
       title={'Queries'}
@@ -75,94 +143,60 @@ function QueryListDrawer({
       onClose={onClose}
       placement="left"
     >
-      <div>
-        <MultiSelect
-          selectedItems={searches}
-          options={availableSearches}
-          onChange={items => setSearches(items)}
-        />
-      </div>
-      {filteredQueries.map(query => {
-        const tableUrl = `/query-table/${query._id}`;
-        const chartUrl = `/query-chart/${query._id}`;
-        const queryUrl = `/queries/${query._id}`;
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%'
+        }}
+      >
+        <div>
+          <MultiSelect
+            selectedItems={searches}
+            options={availableSearches}
+            onChange={items => setSearches(items)}
+            placeholder="search queries"
+          />
+        </div>
+        <div>
+          <Divider />
+        </div>
 
-        const actions = [
-          <IconButton
-            key="table"
-            to={tableUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            tooltip="Open results in new window"
-          >
-            <TableIcon />
-          </IconButton>,
-          <IconButton
-            key="chart"
-            to={chartUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            tooltip="Open chart in new window"
-          >
-            <ChartIcon />
-          </IconButton>,
-          <DeleteConfirmButton
-            key="del"
-            confirmMessage={`Delete ${query.name}`}
-            onConfirm={e => deleteQuery(query._id)}
-          >
-            Delete
-          </DeleteConfirmButton>
-        ];
-
-        return (
-          <ListItem
-            key={query._id}
-            className={styles.ListItem + ' ' + styles.outlined}
-            onMouseEnter={() => setPreview(query)}
-            onMouseLeave={() => setPreview('')}
-            style={{ position: 'relative' }}
-          >
-            <Link
-              style={{ flexGrow: 1, padding: 8 }}
-              className={styles.outlined}
-              to={queryUrl}
-              onClick={onClose}
-            >
-              {query.name}
-              <br />
-              <Text type="secondary">{query.connectionName}</Text>
-            </Link>
-            <div
-              style={{
-                position: 'absolute',
-                right: 8,
-                display: 'flex',
-                alignItems: 'center'
-              }}
-            >
-              {actions}
-            </div>
-          </ListItem>
-        );
-      })}
-
-      {preview && (
-        <div
-          className={base.shadow2}
-          style={{
-            position: 'fixed',
-            left: 640,
-            top: 40,
-            right: 40,
-            bottom: 40,
-            backgroundColor: 'white',
-            display: 'flex',
-            flexDirection: 'column',
-            padding: 16
+        <Measure
+          bounds
+          onResize={contentRect => {
+            setDimensions(contentRect.bounds);
           }}
         >
-          <div style={{ fontSize: '1.25rem' }}>{preview.name}</div>
+          {({ measureRef }) => (
+            <div
+              ref={measureRef}
+              style={{
+                display: 'flex',
+                width: '100%',
+                height: '100%'
+              }}
+            >
+              <List
+                // position absolute takes list out of flow,
+                // preventing some weird react-measure behavior in FireFox
+                style={{ position: 'absolute' }}
+                height={dimensions.height}
+                itemCount={filteredQueries.length}
+                itemSize={60}
+                width={dimensions.width}
+                overscanCount={2}
+              >
+                {Row}
+              </List>
+            </div>
+          )}
+        </Measure>
+      </div>
+
+      {preview && (
+        <div className={`${base.shadow2} ${styles.preview}`}>
+          <div className={styles.previewQueryName}>{preview.name}</div>
           <div>Connection {preview.connectionName}</div>
           <div>By {preview.createdBy}</div>
           <div>
