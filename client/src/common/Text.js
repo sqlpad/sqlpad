@@ -4,7 +4,7 @@ const Text = ({ children, type, style, ...rest }) => {
   const s = Object.assign({}, style);
 
   if (type === 'secondary') {
-    s.color = 'rgba(0,0,0,0.45)';
+    s.color = 'rgba(0,0,0,0.4)';
   } else if (type === 'danger') {
     s.color = '#cf1322';
   }
