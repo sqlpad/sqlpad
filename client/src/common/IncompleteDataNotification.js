@@ -1,7 +1,8 @@
-import AlertIcon from 'mdi-react/AlertCircleIcon';
+import AlertIcon from 'mdi-react/AlertIcon';
 import React from 'react';
 import Text from './Text';
 import Tooltip from './Tooltip';
+import styles from './IncompleteDataNotification.module.css';
 
 function IncompleteDataNotification() {
   return (
@@ -11,8 +12,8 @@ function IncompleteDataNotification() {
     >
       {/* span use in place of wrapping Text with forwardRef needed by Tooltip */}
       <span>
-        <Text style={{ marginRight: '.5rem' }} type="danger">
-          <AlertIcon style={{ marginRight: '.5rem' }} />
+        <Text className={styles.text} type="danger">
+          <AlertIcon size={18} className={styles.AlertIcon} />
           Incomplete
         </Text>
       </span>

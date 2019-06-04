@@ -9,7 +9,7 @@
   text-align: center;
   background-image: none;
   border: 1px solid transparent;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.065);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.065);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   user-select: none;
@@ -30,12 +30,12 @@
   color: #40a9ff;
   background-color: #fff;
   border-color: #40a9ff;
-  box-shadow: 0 2px 0 rgba(64, 169, 255, 0.5);
+  box-shadow: 0 1px 0 rgba(64, 169, 255, 0.5);
 }
 
 .btn:active {
-  margin-top: 2px;
-  margin-bottom: -2px;
+  margin-top: 1px;
+  margin-bottom: -1px;
   box-shadow: none;
   background-color: #1890ff;
   color: #fff;
@@ -47,54 +47,54 @@
 
 .primary {
   color: #fff;
-  background-color: #1890ff;
-  border-color: #1890ff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
-  box-shadow: 0 2px 0 rgb(9, 100, 185, 0.5);
+  box-shadow: 0 1px 0 rgb(9, 100, 185, 0.5);
 }
 
 .primary:hover,
 .primary:focus {
   color: #fff;
-  background-color: #40a9ff;
-  border-color: #40a9ff;
+  background-color: var(--primary-light-color);
+  border-color: var(--primary-light-color);
 }
 
 .primary:active {
   color: #fff;
-  background-color: #096dd9;
-  border-color: #096dd9;
+  background-color: var(--primary-dark-color);
+  border-color: var(--primary-dark-color);
 }
 
 .danger {
-  color: #fb30ac;
+  color: var(--secondary-color);
   background-color: #f5f5f5;
   border-color: #d9d9d9;
 }
 
 .danger:hover {
   color: #fff;
-  background-color: #fb30ac;
-  border-color: #fb30ac;
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
 }
 
 .danger:focus {
-  color: #fb30ac;
+  color: var(--secondary-color);
   background-color: #fff;
-  border-color: #fb30ac;
+  border-color: var(--secondary-color);
 }
 
 .danger:active {
   color: #fff;
-  background-color: #fb30ac;
-  border-color: #fb30ac;
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
 }
 
 .btn:disabled,
 .btn[disabled] {
   color: rgba(0, 0, 0, 0.25);
   background-color: #eee;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.065);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.065);
   border: 1px solid transparent;
   border-color: #d9d9d9;
 }

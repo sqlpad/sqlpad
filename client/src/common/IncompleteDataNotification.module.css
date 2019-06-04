@@ -1,0 +1,9 @@
+.text {
+  margin-right: 0.5rem;
+}
+
+.AlertIcon {
+  margin-right: 0.5rem;
+  position: relative;
+  top: 3px;
+}

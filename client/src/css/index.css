@@ -1,7 +1,31 @@
+/* variables
+============================================================================ */
+:root {
+  /* 
+    These REFERENCE are various colors that were sprinkled throughout
+    They are kept around for reference until colors settle
+  */
+  --REFERENCE-link-color: #00b7ff;
+  --REFERENCE-button-border-color: #40a9ff;
+  --REFERENCE-button-active-color: #096dd9;
+  --REFERENCE-primary-color: #1890ff;
+
+  --primary-color: #1890ff;
+  --primary-dark-color: #0070d8;
+  --primary-light-color: #2f9bff;
+  --primary-color-90: rgba(24, 144, 255, 0.9);
+  --primary-color-30: rgba(24, 144, 255, 0.3);
+  --secondary-color: rgb(250, 50, 173);
+  --secondary-dark-color: hsl(323, 100%, 50%);
+  --secondary-color-90: rgba(250, 50, 173, 0.9);
+  --secondary-color-75: rgba(250, 50, 173, 0.75);
+  --secondary-color-30: rgba(250, 50, 173, 0.3);
+}
+
 /* core styles
 ============================================================================ */
 a {
-  color: #00b7ff;
+  color: var(--primary-color);
 }
 a:hover,
 a:active,
@@ -43,7 +67,7 @@ input {
 }
 
 [data-reach-menu-item][data-selected] {
-  background: #1890ff;
+  background: var(--primary-color);
   color: white;
   outline: none;
 }
@@ -71,7 +95,7 @@ input {
 }
 
 .bg-error {
-  background-color: rgba(251, 48, 173, 0.8);
+  background-color: var(--secondary-color-75);
   color: #fff;
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
