@@ -49,8 +49,10 @@
 .danger:hover,
 .danger:focus {
   color: var(--secondary-color);
+  border: 2px solid var(--secondary-color);
 }
 
 .danger:active {
   color: var(--secondary-dark-color);
+  border: 2px solid var(--secondary-dark-color);
 }
