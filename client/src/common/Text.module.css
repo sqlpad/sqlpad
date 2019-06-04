@@ -1,0 +1,7 @@
+.secondary {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.danger {
+  color: var(--secondary-color);
+}

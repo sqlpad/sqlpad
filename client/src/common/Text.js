@@ -1,16 +1,21 @@
 import React from 'react';
+import styles from './Text.module.css';
 
-const Text = ({ children, type, style, ...rest }) => {
-  const s = Object.assign({}, style);
+const Text = ({ children, className, type, ...rest }) => {
+  const cs = [];
+
+  if (className) {
+    cs.push(className);
+  }
 
   if (type === 'secondary') {
-    s.color = 'rgba(0,0,0,0.4)';
+    cs.push(styles.secondary);
   } else if (type === 'danger') {
-    s.color = '#cf1322';
+    cs.push(styles.danger);
   }
 
   return (
-    <span style={s} {...rest}>
+    <span className={cs.join(' ')} {...rest}>
       {children}
     </span>
   );
