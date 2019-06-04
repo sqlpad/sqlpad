@@ -28,17 +28,16 @@
 .btn:focus {
   text-decoration: none;
   outline: none;
-  border: 2px solid #40a9ff;
+  border: 2px solid var(--primary-color);
   background-color: #f3f3f3;
 }
 
 .btn:hover {
-  color: #40a9ff;
+  color: var(--primary-light-color);
 }
 
 .btn:active {
-  color: #096dd9;
-  transform: scale(0.95);
+  color: var(--primary-dark-color);
 }
 
 .btn:disabled,
@@ -49,9 +48,9 @@
 
 .danger:hover,
 .danger:focus {
-  color: #fb30ac;
+  color: var(--secondary-color);
 }
 
 .danger:active {
-  color: #ff009d;
+  color: var(--secondary-dark-color);
 }

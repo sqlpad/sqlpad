@@ -2,11 +2,12 @@
   margin: 2px;
   padding: 3px 8px;
   display: inline-block;
-  color: #fff;
   border-radius: 2px;
   display: inline-flex;
   flex-wrap: nowrap;
   align-items: center;
+  border: 1px solid rgb(218, 218, 218);
+  background-color: rgb(243, 243, 243);
 }
 
 .tagCloseButton {
@@ -16,4 +17,14 @@
   background-color: transparent;
   padding: 0px;
   font-size: 16px;
+  margin-left: 6px;
+}
+
+.tagCloseButton:hover,
+.tagCloseButton:focus {
+  outline: 2px solid var(--primary-color);
+}
+
+.CloseIcon {
+  margin-top: 2px;
 }
