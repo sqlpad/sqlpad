@@ -21,33 +21,32 @@
 }
 
 .input:focus {
-  border-color: #40a9ff;
-  border-right-width: 1px !important;
+  border: 2px solid var(--primary-color);
+  /* padding adjustment prevents added border from shifting text */
+  padding-left: 10px;
   outline: 0;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
 }
 
 .input:hover {
-  border-color: #40a9ff;
-  border-right-width: 1px !important;
+  border: 2px solid var(--primary-color);
+  /* padding adjustment prevents added border from shifting text */
+  padding-left: 10px;
 }
 
 .danger {
-  border-color: #f5222d;
-  box-shadow: inset 0 1px 1px rgba(245, 34, 45, 0.5);
+  border-color: var(--secondary-color);
+  box-shadow: inset 0 1px 1px var(--secondary-color-30);
 }
 
 .danger:focus {
-  border-color: #ff4d4f;
-  border-right-width: 1px !important;
+  border: 2px solid var(--secondary-color);
   outline: 0;
-  box-shadow: 0 0 0 2px rgba(245, 34, 45, 0.2);
 }
 
 .danger:hover {
-  border-color: #ff4d4f;
+  border-color: var(--secondary-color);
 }
 
 .danger::placeholder {
-  color: #f5222d;
+  color: var(--secondary-color);
 }
