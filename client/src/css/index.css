@@ -20,6 +20,12 @@
   --secondary-color-90: rgba(250, 50, 173, 0.9);
   --secondary-color-75: rgba(250, 50, 173, 0.75);
   --secondary-color-30: rgba(250, 50, 173, 0.3);
+
+  --border: 1px solid rgba(0, 0, 0, 0.15);
+
+  --box-shadow-1: rgba(64, 169, 255, 0.7) 1px 1px 1px 1px,
+    rgb(255, 154, 251, 0.3) 2px 2px 4px 2px;
+  --box-shadow-2: rgba(56, 165, 255, 0.44) 0px 0px 8px 4px;
 }
 
 /* core styles
