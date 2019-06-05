@@ -1,22 +1,14 @@
 import React from 'react';
-import base from './base.module.css';
+import styles from './ListItem.module.css';
 
-const ListItem = ({ children, className, style, ...rest }) => {
-  const classNames = [base.borderBottom];
+const ListItem = ({ children, className, ...rest }) => {
+  const classNames = [styles.ListItem];
   if (className) {
     classNames.push(className);
   }
-  const s = Object.assign(
-    {
-      display: 'flex',
-      alignItems: 'center',
-      width: '100%',
-      minHeight: 48
-    },
-    style
-  );
+
   return (
-    <div className={classNames.join(' ')} style={s} {...rest}>
+    <div className={classNames.join(' ')} {...rest}>
       {children}
     </div>
   );

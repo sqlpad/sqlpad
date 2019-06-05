@@ -1,0 +1,11 @@
+.Dialog {
+  box-shadow: var(--box-shadow-2);
+}
+
+.titleWrapper {
+  border-bottom: var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}

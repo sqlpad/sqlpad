@@ -1,0 +1,15 @@
+.message {
+  box-shadow: var(--box-shadow-1);
+  position: fixed;
+  color: #fff;
+  background-color: var(--primary-color);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+  padding: 8px;
+  top: 16px;
+  right: 16px;
+  width: 200px;
+}
+
+.error {
+  background-color: var(--secondary-color);
+}

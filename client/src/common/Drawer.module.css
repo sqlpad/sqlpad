@@ -1,0 +1,21 @@
+.Dialog {
+  height: 100vh;
+  margin: 0;
+  overflow: auto;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--box-shadow-2);
+}
+
+.titleWrapper {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  border-bottom: var(--border);
+}
+
+.dialogBody {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}

@@ -5,7 +5,6 @@ import Measure from 'react-measure';
 import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
-import base from '../common/base.module.css';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Divider from '../common/Divider';
 import Drawer from '../common/Drawer';
@@ -195,7 +194,7 @@ function QueryListDrawer({
       </div>
 
       {preview && (
-        <div className={`${base.shadow2} ${styles.preview}`}>
+        <div className={styles.preview}>
           <div className={styles.previewQueryName}>{preview.name}</div>
           <div>Connection {preview.connectionName}</div>
           <div>By {preview.createdBy}</div>
