@@ -1,32 +1,66 @@
+/* Using techniques from https://www.filamentgroup.com/lab/select-css.html */
 .select {
+  display: inline-block;
+  font-family: sans-serif;
+  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   margin: 0;
-  padding: 0;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='black'><polygon points='0,0 100,0 50,50'/></svg>"),
+    linear-gradient(to bottom, #ffffff 0%, #ffffff 100%);
+  background-repeat: no-repeat, repeat;
+  background-position: right 10px top 14px, 0 0;
+  background-size: 0.65em auto, 100%;
   font-variant: tabular-nums;
-  list-style: none;
   -webkit-font-feature-settings: 'tnum';
   font-feature-settings: 'tnum', 'tnum';
   position: relative;
-  display: inline-block;
-  width: 100%;
   height: 32px;
-  padding: 4px 11px;
+  padding: 4px 30px 4px 11px;
   color: rgba(0, 0, 0, 0.65);
   font-size: 14px;
   line-height: 1.5;
-  background-color: #fff;
-  background-image: none;
   border: 1px solid #d9d9d9;
-  /* This isn't even respected because html, css, and select is dumb */
   border-radius: 2px;
 }
 
+/* from https://www.filamentgroup.com/lab/select-css.html */
+.select::-ms-expand {
+  display: none;
+}
+
+/* Support for rtl text, explicit support for Arabic and Hebrew */
+*[dir='rtl'] .select,
+:root:lang(ar) .select,
+:root:lang(iw) .select {
+  background-position: left 0.7em top 14px, 0 0;
+  padding: 0.6em 0.8em 0.5em 1.4em;
+}
+
+/* Disabled styles */
+.select:disabled,
+.select[aria-disabled='true'] {
+  color: graytext;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='black'><polygon points='0,0 100,0 50,50'/></svg>"),
+    linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+}
+.select:disabled:hover,
+.select[aria-disabled='true'] {
+  border-color: #aaa;
+}
+
+/* Other SQLPad styles */
 .select:focus,
 .select:hover {
   border: 2px solid var(--primary-color);
   outline: 0;
   /* padding adjustment prevents added border from shifting text */
-  padding-left: 10px;
+  padding: 3px 29px 3px 10px;
+  background-position: right 9px top 13px, 0 0;
 }
 
 .danger {
