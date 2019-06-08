@@ -24,6 +24,7 @@
   border: 2px solid var(--primary-color);
   /* padding adjustment prevents added border from shifting text */
   padding-left: 10px;
+  padding-right: 10px;
   outline: 0;
 }
 
@@ -31,6 +32,7 @@
   border: 2px solid var(--primary-color);
   /* padding adjustment prevents added border from shifting text */
   padding-left: 10px;
+  padding-right: 10px;
 }
 
 .danger {
