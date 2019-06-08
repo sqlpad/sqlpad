@@ -89,6 +89,8 @@ function cartesianify(rows, field) {
  * @param {object} connection
  */
 async function runQuery(query, connection) {
+  await wait(2000);
+
   // Connection here doesn't actually matter.
   // Someday this mock could get fancy and change output based on some connection value
   // For now validate that it is getting passed
