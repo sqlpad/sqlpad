@@ -11,7 +11,6 @@
   border: 1px solid transparent;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.065);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
   user-select: none;
   touch-action: manipulation;
   height: 32px;
@@ -27,18 +26,18 @@
 
 .btn:hover,
 .btn:focus {
-  color: #40a9ff;
+  color: var(--primary-color);
   background-color: #fff;
-  border-color: #40a9ff;
-  box-shadow: 0 1px 0 rgba(64, 169, 255, 0.5);
+  box-shadow: 0 1px 0 var(--primary-color-30);
+  border: 2px solid var(--primary-color);
+  /* padding adjustment prevents added border from shifting text */
+  padding: 0 9px;
 }
 
 .btn:active {
-  margin-top: 1px;
-  margin-bottom: -1px;
   box-shadow: none;
-  background-color: #1890ff;
-  color: #fff;
+  background-color: #ebebeb;
+  color: var(--primary-dark-color);
 }
 
 .btn:focus {
@@ -57,13 +56,13 @@
 .primary:focus {
   color: #fff;
   background-color: var(--primary-light-color);
-  border-color: var(--primary-light-color);
+  border-color: var(--secondary-color);
 }
 
 .primary:active {
   color: #fff;
   background-color: var(--primary-dark-color);
-  border-color: var(--primary-dark-color);
+  border-color: var(--secondary-dark-color);
 }
 
 .danger {
@@ -96,5 +95,6 @@
   background-color: #eee;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.065);
   border: 1px solid transparent;
+  padding: 0 10px;
   border-color: #d9d9d9;
 }
