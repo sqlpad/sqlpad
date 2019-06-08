@@ -22,8 +22,8 @@ export const initialState = {
   isSaving: false,
   queries: [],
   query: Object.assign({}, NEW_QUERY),
+  queryError: undefined,
   queryResult: undefined,
-  queryError: null,
   runQueryStartTime: undefined,
   selectedText: '',
   showValidation: false,
@@ -87,6 +87,7 @@ export const loadQuery = async (state, queryId) => {
   }
   return {
     query,
+    queryError: undefined,
     queryResult: undefined,
     selectedConnectionId: query.connectionId,
     unsavedChanges: false
@@ -187,8 +188,9 @@ export const handleCloneClick = state => {
 
 export const resetNewQuery = state => {
   return {
-    queryResult: undefined,
     query: Object.assign({}, NEW_QUERY),
+    queryError: undefined,
+    queryResult: undefined,
     unsavedChanges: false
   };
 };
