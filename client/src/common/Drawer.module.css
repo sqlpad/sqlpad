@@ -1,6 +1,7 @@
 .Dialog {
   height: 100vh;
   margin: 0;
+  padding: 0;
   overflow: auto;
   position: absolute;
   display: flex;
@@ -9,13 +10,21 @@
 }
 
 .titleWrapper {
-  font-size: 1.5rem;
-  margin-bottom: 16px;
+  box-sizing: border-box;
+  flex: 0 0 45px;
+  font-size: 1.3rem;
   border-bottom: var(--border);
+  display: flex;
+  padding: 5px 16px;
+  line-height: 1.5;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .dialogBody {
   display: flex;
   flex-direction: column;
   height: 100%;
+  padding: 16px;
 }

@@ -1,11 +1,21 @@
 .Dialog {
   box-shadow: var(--box-shadow-2);
+  padding: 0;
 }
 
 .titleWrapper {
   border-bottom: var(--border);
   display: flex;
   justify-content: space-between;
-  font-size: 1.5rem;
-  margin-bottom: 16px;
+  box-sizing: border-box;
+  flex: 0 0 45px;
+  font-size: 1.3rem;
+  padding: 8px 16px;
+  line-height: 1.5;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dialogBody {
+  padding: 16px;
 }

@@ -20,8 +20,7 @@ function Modal({ title, visible, onClose, width, children }) {
             <CloseIcon />
           </IconButton>
         </div>
-
-        {children}
+        <div className={styles.dialogBody}>{children}</div>
       </Dialog>
     );
   }
