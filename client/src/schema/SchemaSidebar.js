@@ -166,6 +166,9 @@ function SchemaSidebar({
               ) : (
                 <ul style={{ paddingLeft: 0 }}>
                   <List
+                    // position absolute takes list out of flow,
+                    // preventing some weird react-measure behavior in Firefox
+                    style={{ position: 'absolute' }}
                     height={dimensions.height}
                     itemCount={visibleItems.length}
                     itemSize={22}

@@ -178,7 +178,7 @@ function QueryListDrawer({
             >
               <List
                 // position absolute takes list out of flow,
-                // preventing some weird react-measure behavior in FireFox
+                // preventing some weird react-measure behavior in Firefox
                 style={{ position: 'absolute' }}
                 height={dimensions.height}
                 itemCount={filteredQueries.length}
