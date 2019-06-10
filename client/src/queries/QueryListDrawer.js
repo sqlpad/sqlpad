@@ -6,38 +6,18 @@ import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
-import Divider from '../common/Divider';
 import Drawer from '../common/Drawer';
 import ListItem from '../common/ListItem';
 import MultiSelect from '../common/MultiSelect';
-import SqlEditor from '../common/SqlEditor';
-import Tag from '../common/Tag';
+import Select from '../common/Select';
 import Text from '../common/Text';
 import { deleteQuery, loadQueries } from '../stores/queries';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
+import QueryPreview from './QueryPreview';
 
-function QueryListDrawer({
-  queries,
-  loadQueries,
-  connections,
-  deleteQuery,
-  visible,
-  onClose
-}) {
-  const [preview, setPreview] = useState('');
-  const [searches, setSearches] = useState([]);
-  const [dimensions, setDimensions] = useState({
-    width: -1,
-    height: -1
-  });
-
-  useEffect(() => {
-    loadQueries();
-  }, [loadQueries]);
-
-  const availableSearches = getAvailableSearchTags(queries, connections);
+function getSortedFilteredQueries(queries, connections, searches) {
   const decoratedQueries = getDecoratedQueries(queries, connections);
 
   let filteredQueries = decoratedQueries;
@@ -77,6 +57,36 @@ function QueryListDrawer({
     if (bDate < aDate) return -1;
     return 0;
   });
+
+  return filteredQueries;
+}
+
+function QueryListDrawer({
+  queries,
+  loadQueries,
+  connections,
+  deleteQuery,
+  visible,
+  onClose
+}) {
+  const [preview, setPreview] = useState('');
+  const [searches, setSearches] = useState([]);
+  const [dimensions, setDimensions] = useState({
+    width: -1,
+    height: -1
+  });
+
+  useEffect(() => {
+    loadQueries();
+  }, [loadQueries]);
+
+  const availableSearches = getAvailableSearchTags(queries, connections);
+
+  const filteredQueries = getSortedFilteredQueries(
+    queries,
+    connections,
+    searches
+  );
 
   const Row = ({ index, style }) => {
     const query = filteredQueries[index];
@@ -142,84 +152,76 @@ function QueryListDrawer({
       onClose={onClose}
       placement="left"
     >
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%'
-        }}
-      >
-        <div>
-          <MultiSelect
-            selectedItems={searches}
-            options={availableSearches}
-            onChange={items => setSearches(items)}
-            placeholder="search queries"
-          />
-        </div>
-        <div>
-          <Divider />
+      <div className={styles.filterContainer}>
+        <div className={styles.filterRow}>
+          <Select
+            style={{ width: 160, marginRight: 8 }}
+            value=""
+            onChange={e => console.log(e.target.value)}
+          >
+            <option>My queries</option>
+            <option>Team's</option>
+            <option>All</option>
+          </Select>
+          <Select
+            style={{ marginRight: 8 }}
+            value=""
+            onChange={e => console.log(e.target.value)}
+          >
+            <option>something</option>
+            <option>something2</option>
+          </Select>
+
+          <Select
+            style={{ width: 180 }}
+            value=""
+            onChange={e => console.log(e.target.value)}
+          >
+            <option>Order by last saved</option>
+            <option>Order by name</option>
+          </Select>
         </div>
 
-        <Measure
-          bounds
-          onResize={contentRect => {
-            setDimensions(contentRect.bounds);
-          }}
-        >
-          {({ measureRef }) => (
-            <div
-              ref={measureRef}
-              style={{
-                display: 'flex',
-                width: '100%',
-                height: '100%'
-              }}
-            >
-              <List
-                // position absolute takes list out of flow,
-                // preventing some weird react-measure behavior in Firefox
-                style={{ position: 'absolute' }}
-                height={dimensions.height}
-                itemCount={filteredQueries.length}
-                itemSize={60}
-                width={dimensions.width}
-                overscanCount={2}
-              >
-                {Row}
-              </List>
-            </div>
-          )}
-        </Measure>
+        <MultiSelect
+          selectedItems={searches}
+          options={availableSearches}
+          onChange={items => setSearches(items)}
+          placeholder="search queries"
+        />
       </div>
 
-      {preview && (
-        <div className={styles.preview}>
-          <div className={styles.previewQueryName}>{preview.name}</div>
-          <div>Connection {preview.connectionName}</div>
-          <div>By {preview.createdBy}</div>
-          <div>
-            {preview.tags &&
-              preview.tags.map(tag => <Tag key={tag}>{tag}</Tag>)}
-          </div>
-
-          <Divider />
-
-          {/* 
-            This style necessary to get proper sizing on SqlEditor.
-            It has height 100%, which looks to height of nearest containing BLOCK,
-            which apparently looks past this flex container. This causes weirdness
-          */}
+      <Measure
+        bounds
+        onResize={contentRect => {
+          setDimensions(contentRect.bounds);
+        }}
+      >
+        {({ measureRef }) => (
           <div
+            ref={measureRef}
             style={{
-              flexGrow: 1,
-              display: 'flex'
+              display: 'flex',
+              width: '100%',
+              height: '100%'
             }}
           >
-            <SqlEditor readOnly value={preview.queryText} />
+            <List
+              // position absolute takes list out of flow,
+              // preventing some weird react-measure behavior in Firefox
+              style={{ position: 'absolute' }}
+              height={dimensions.height}
+              itemCount={filteredQueries.length}
+              itemSize={60}
+              width={dimensions.width}
+              overscanCount={2}
+            >
+              {Row}
+            </List>
           </div>
-        </div>
-      )}
+        )}
+      </Measure>
+
+      <QueryPreview query={preview} />
     </Drawer>
   );
 }
