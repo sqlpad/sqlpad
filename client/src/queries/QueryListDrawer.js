@@ -17,23 +17,40 @@ import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
 import QueryPreview from './QueryPreview';
 
-function getSortedFilteredQueries(queries, connections, searches) {
-  const decoratedQueries = getDecoratedQueries(queries, connections);
+function getSortedFilteredQueries(
+  currentUser,
+  queries,
+  connections,
+  creatorSearch,
+  sort,
+  connectionId,
+  searches
+) {
+  let filteredQueries = getDecoratedQueries(queries, connections);
 
-  let filteredQueries = decoratedQueries;
+  if (creatorSearch !== 'ALL') {
+    filteredQueries = filteredQueries.filter(query => {
+      if (creatorSearch === 'MY_QUERIES') {
+        return query.createdBy === currentUser.email;
+      }
+      if (creatorSearch === 'TEAMS') {
+        return query.createdBy !== currentUser.email;
+      }
+      throw new Error(`Unknown creator search value ${creatorSearch}`);
+    });
+  }
+
+  if (connectionId) {
+    filteredQueries = filteredQueries.filter(query => {
+      return query.connectionId === connectionId;
+    });
+  }
+
   if (searches && searches.length) {
     searches.forEach(search => {
-      if (search.createdBy) {
-        filteredQueries = filteredQueries.filter(
-          query => query.createdBy === search.createdBy
-        );
-      } else if (search.tag) {
+      if (search.tag) {
         filteredQueries = filteredQueries.filter(
           query => query.tags && query.tags.includes(search.tag)
-        );
-      } else if (search.connectionId) {
-        filteredQueries = filteredQueries.filter(
-          query => query.connectionId === search.connectionId
         );
       } else {
         // search is just open text search
@@ -49,28 +66,41 @@ function getSortedFilteredQueries(queries, connections, searches) {
     });
   }
 
-  // For now sort by last modified
   filteredQueries = filteredQueries.sort((a, b) => {
-    const aDate = a.modifiedDate || a.createdDate;
-    const bDate = b.modifiedDate || b.createdDate;
-    if (aDate < bDate) return 1;
-    if (bDate < aDate) return -1;
-    return 0;
+    if (sort === 'SAVE_DATE') {
+      const aDate = a.modifiedDate || a.createdDate;
+      const bDate = b.modifiedDate || b.createdDate;
+      if (aDate < bDate) return 1;
+      if (bDate < aDate) return -1;
+      return 0;
+    }
+    if (sort === 'NAME') {
+      const aName = (a.name || '').toLowerCase();
+      const bName = (b.name || '').toLowerCase();
+      if (aName < bName) return -1;
+      if (bName < aName) return 1;
+      return 0;
+    }
+    throw new Error(`Unknown sort value ${sort}`);
   });
 
   return filteredQueries;
 }
 
 function QueryListDrawer({
-  queries,
-  loadQueries,
   connections,
+  currentUser,
   deleteQuery,
-  visible,
-  onClose
+  loadQueries,
+  onClose,
+  queries,
+  visible
 }) {
-  const [preview, setPreview] = useState('');
+  const [preview, setPreview] = useState(null);
   const [searches, setSearches] = useState([]);
+  const [creatorSearch, setCreatorSearch] = useState('MY_QUERIES');
+  const [sort, setSort] = useState('SAVE_DATE');
+  const [connectionId, setConnectionId] = useState('');
   const [dimensions, setDimensions] = useState({
     width: -1,
     height: -1
@@ -80,11 +110,15 @@ function QueryListDrawer({
     loadQueries();
   }, [loadQueries]);
 
-  const availableSearches = getAvailableSearchTags(queries, connections);
+  const availableSearches = getAvailableSearchTags(queries);
 
   const filteredQueries = getSortedFilteredQueries(
+    currentUser,
     queries,
     connections,
+    creatorSearch,
+    sort,
+    connectionId,
     searches
   );
 
@@ -102,7 +136,7 @@ function QueryListDrawer({
         key={query._id}
         className={styles.ListItem}
         onMouseEnter={() => setPreview(query)}
-        onMouseLeave={() => setPreview('')}
+        onMouseLeave={() => setPreview(null)}
         style={style}
       >
         <Link className={styles.queryLink} to={queryUrl} onClick={onClose}>
@@ -155,30 +189,36 @@ function QueryListDrawer({
       <div className={styles.filterContainer}>
         <div className={styles.filterRow}>
           <Select
-            style={{ width: 160, marginRight: 8 }}
-            value=""
-            onChange={e => console.log(e.target.value)}
+            style={{ width: 140, marginRight: 8, flex: '0 0 auto' }}
+            value={creatorSearch}
+            onChange={e => setCreatorSearch(e.target.value)}
           >
-            <option>My queries</option>
-            <option>Team's</option>
-            <option>All</option>
+            <option value="MY_QUERIES">My queries</option>
+            <option value="TEAMS">Team's</option>
+            <option value="ALL">All</option>
           </Select>
           <Select
             style={{ marginRight: 8 }}
-            value=""
-            onChange={e => console.log(e.target.value)}
+            value={connectionId}
+            onChange={e => setConnectionId(e.target.value)}
           >
-            <option>something</option>
-            <option>something2</option>
+            <option value="">All connections</option>
+            {connections.map(connection => {
+              return (
+                <option key={connection._id} value={connection._id}>
+                  {connection.name}
+                </option>
+              );
+            })}
           </Select>
 
           <Select
-            style={{ width: 180 }}
-            value=""
-            onChange={e => console.log(e.target.value)}
+            style={{ width: 170, flex: '0 0 auto' }}
+            value={sort}
+            onChange={e => setSort(e.target.value)}
           >
-            <option>Order by last saved</option>
-            <option>Order by name</option>
+            <option value="SAVE_DATE">Order by last saved</option>
+            <option value="NAME">Order by name</option>
           </Select>
         </div>
 
@@ -186,7 +226,7 @@ function QueryListDrawer({
           selectedItems={searches}
           options={availableSearches}
           onChange={items => setSearches(items)}
-          placeholder="search queries"
+          placeholder="search"
         />
       </div>
 
@@ -233,7 +273,7 @@ QueryListDrawer.propTypes = {
 };
 
 export default connect(
-  ['queries', 'connections'],
+  ['queries', 'connections', 'currentUser'],
   store => ({
     loadQueries: loadQueries(store),
     deleteQuery: deleteQuery(store)
