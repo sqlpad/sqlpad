@@ -1,14 +1,8 @@
 import uniq from 'lodash/uniq';
+import TagIcon from 'mdi-react/TagIcon';
+import React from 'react';
 
-export default function getAvailableSearchTags(queries, connections) {
-  const createdBys = uniq(queries.map(q => q.createdBy)).map(createdBy => {
-    return {
-      id: `createdBy=${createdBy}`,
-      name: `createdBy=${createdBy}`,
-      createdBy
-    };
-  });
-
+export default function getAvailableSearchTags(queries) {
   const tags = uniq(
     queries
       .map(q => q.tags)
@@ -16,22 +10,16 @@ export default function getAvailableSearchTags(queries, connections) {
       .filter(tag => Boolean(tag))
   ).map(tag => {
     return {
-      id: `tag=${tag}`,
-      name: `tag=${tag}`,
+      id: `# ${tag}`,
+      name: (
+        <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <TagIcon size={14} style={{ marginRight: 4 }} />
+          <span>{tag}</span>
+        </span>
+      ),
       tag
     };
   });
 
-  const connectionOptions = connections.map(connection => {
-    return {
-      id: `connection=${connection._id}`,
-      name: `connections=${connection.name}`,
-      connectionId: connection._id
-    };
-  });
-
-  return createdBys
-    .concat(tags)
-    .concat(connectionOptions)
-    .sort();
+  return tags.sort();
 }

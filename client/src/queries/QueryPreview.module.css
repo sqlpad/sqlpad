@@ -1,0 +1,16 @@
+.preview {
+  position: fixed;
+  left: 640px;
+  top: 40px;
+  right: 40px;
+  bottom: 40px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  box-shadow: var(--box-shadow-2);
+}
+
+.previewQueryName {
+  font-size: 1.25rem;
+}

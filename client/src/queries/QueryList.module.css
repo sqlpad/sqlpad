@@ -1,5 +1,6 @@
 /* Padding of 2 added to show link outline when focused */
 .ListItem {
+  margin-top: 2px;
   padding: 2px;
 }
 
@@ -15,26 +16,25 @@
   align-items: center;
 }
 
+.filterContainer {
+  border-bottom: var(--border);
+  background-color: rgba(0, 0, 0, 0.03);
+  padding: 16px;
+  /* 
+    Negative margins in place to compensate for padding in Drawer 
+    Should probably update Drawer implementation to have a subheader/actions section
+  */
+  margin: -16px -16px 16px -16px;
+}
+
+.filterRow {
+  display: flex;
+  margin-bottom: 8px;
+}
+
 .queryLink {
   width: 100%;
   padding: 8px;
-}
-
-.preview {
-  position: fixed;
-  left: 640px;
-  top: 40px;
-  right: 40px;
-  bottom: 40px;
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  padding: 16px;
-  box-shadow: var(--box-shadow-2);
-}
-
-.previewQueryName {
-  font-size: 1.25rem;
 }
 
 .newWindowLink {

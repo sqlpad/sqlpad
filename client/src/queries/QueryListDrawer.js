@@ -6,54 +6,51 @@ import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
-import Divider from '../common/Divider';
 import Drawer from '../common/Drawer';
 import ListItem from '../common/ListItem';
 import MultiSelect from '../common/MultiSelect';
-import SqlEditor from '../common/SqlEditor';
-import Tag from '../common/Tag';
+import Select from '../common/Select';
 import Text from '../common/Text';
 import { deleteQuery, loadQueries } from '../stores/queries';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
+import QueryPreview from './QueryPreview';
 
-function QueryListDrawer({
+function getSortedFilteredQueries(
+  currentUser,
   queries,
-  loadQueries,
   connections,
-  deleteQuery,
-  visible,
-  onClose
-}) {
-  const [preview, setPreview] = useState('');
-  const [searches, setSearches] = useState([]);
-  const [dimensions, setDimensions] = useState({
-    width: -1,
-    height: -1
-  });
+  creatorSearch,
+  sort,
+  connectionId,
+  searches
+) {
+  let filteredQueries = getDecoratedQueries(queries, connections);
 
-  useEffect(() => {
-    loadQueries();
-  }, [loadQueries]);
+  if (creatorSearch !== 'ALL') {
+    filteredQueries = filteredQueries.filter(query => {
+      if (creatorSearch === 'MY_QUERIES') {
+        return query.createdBy === currentUser.email;
+      }
+      if (creatorSearch === 'TEAMS') {
+        return query.createdBy !== currentUser.email;
+      }
+      throw new Error(`Unknown creator search value ${creatorSearch}`);
+    });
+  }
 
-  const availableSearches = getAvailableSearchTags(queries, connections);
-  const decoratedQueries = getDecoratedQueries(queries, connections);
+  if (connectionId) {
+    filteredQueries = filteredQueries.filter(query => {
+      return query.connectionId === connectionId;
+    });
+  }
 
-  let filteredQueries = decoratedQueries;
   if (searches && searches.length) {
     searches.forEach(search => {
-      if (search.createdBy) {
-        filteredQueries = filteredQueries.filter(
-          query => query.createdBy === search.createdBy
-        );
-      } else if (search.tag) {
+      if (search.tag) {
         filteredQueries = filteredQueries.filter(
           query => query.tags && query.tags.includes(search.tag)
-        );
-      } else if (search.connectionId) {
-        filteredQueries = filteredQueries.filter(
-          query => query.connectionId === search.connectionId
         );
       } else {
         // search is just open text search
@@ -69,14 +66,61 @@ function QueryListDrawer({
     });
   }
 
-  // For now sort by last modified
   filteredQueries = filteredQueries.sort((a, b) => {
-    const aDate = a.modifiedDate || a.createdDate;
-    const bDate = b.modifiedDate || b.createdDate;
-    if (aDate < bDate) return 1;
-    if (bDate < aDate) return -1;
-    return 0;
+    if (sort === 'SAVE_DATE') {
+      const aDate = a.modifiedDate || a.createdDate;
+      const bDate = b.modifiedDate || b.createdDate;
+      if (aDate < bDate) return 1;
+      if (bDate < aDate) return -1;
+      return 0;
+    }
+    if (sort === 'NAME') {
+      const aName = (a.name || '').toLowerCase();
+      const bName = (b.name || '').toLowerCase();
+      if (aName < bName) return -1;
+      if (bName < aName) return 1;
+      return 0;
+    }
+    throw new Error(`Unknown sort value ${sort}`);
   });
+
+  return filteredQueries;
+}
+
+function QueryListDrawer({
+  connections,
+  currentUser,
+  deleteQuery,
+  loadQueries,
+  onClose,
+  queries,
+  visible
+}) {
+  const [preview, setPreview] = useState(null);
+  const [searches, setSearches] = useState([]);
+  const [creatorSearch, setCreatorSearch] = useState('MY_QUERIES');
+  const [sort, setSort] = useState('SAVE_DATE');
+  const [connectionId, setConnectionId] = useState('');
+  const [dimensions, setDimensions] = useState({
+    width: -1,
+    height: -1
+  });
+
+  useEffect(() => {
+    loadQueries();
+  }, [loadQueries]);
+
+  const availableSearches = getAvailableSearchTags(queries);
+
+  const filteredQueries = getSortedFilteredQueries(
+    currentUser,
+    queries,
+    connections,
+    creatorSearch,
+    sort,
+    connectionId,
+    searches
+  );
 
   const Row = ({ index, style }) => {
     const query = filteredQueries[index];
@@ -92,7 +136,7 @@ function QueryListDrawer({
         key={query._id}
         className={styles.ListItem}
         onMouseEnter={() => setPreview(query)}
-        onMouseLeave={() => setPreview('')}
+        onMouseLeave={() => setPreview(null)}
         style={style}
       >
         <Link className={styles.queryLink} to={queryUrl} onClick={onClose}>
@@ -142,84 +186,82 @@ function QueryListDrawer({
       onClose={onClose}
       placement="left"
     >
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%'
-        }}
-      >
-        <div>
-          <MultiSelect
-            selectedItems={searches}
-            options={availableSearches}
-            onChange={items => setSearches(items)}
-            placeholder="search queries"
-          />
-        </div>
-        <div>
-          <Divider />
+      <div className={styles.filterContainer}>
+        <div className={styles.filterRow}>
+          <Select
+            style={{ width: 140, marginRight: 8, flex: '0 0 auto' }}
+            value={creatorSearch}
+            onChange={e => setCreatorSearch(e.target.value)}
+          >
+            <option value="MY_QUERIES">My queries</option>
+            <option value="TEAMS">Team's</option>
+            <option value="ALL">All</option>
+          </Select>
+          <Select
+            style={{ marginRight: 8 }}
+            value={connectionId}
+            onChange={e => setConnectionId(e.target.value)}
+          >
+            <option value="">All connections</option>
+            {connections.map(connection => {
+              return (
+                <option key={connection._id} value={connection._id}>
+                  {connection.name}
+                </option>
+              );
+            })}
+          </Select>
+
+          <Select
+            style={{ width: 170, flex: '0 0 auto' }}
+            value={sort}
+            onChange={e => setSort(e.target.value)}
+          >
+            <option value="SAVE_DATE">Order by last saved</option>
+            <option value="NAME">Order by name</option>
+          </Select>
         </div>
 
-        <Measure
-          bounds
-          onResize={contentRect => {
-            setDimensions(contentRect.bounds);
-          }}
-        >
-          {({ measureRef }) => (
-            <div
-              ref={measureRef}
-              style={{
-                display: 'flex',
-                width: '100%',
-                height: '100%'
-              }}
-            >
-              <List
-                // position absolute takes list out of flow,
-                // preventing some weird react-measure behavior in Firefox
-                style={{ position: 'absolute' }}
-                height={dimensions.height}
-                itemCount={filteredQueries.length}
-                itemSize={60}
-                width={dimensions.width}
-                overscanCount={2}
-              >
-                {Row}
-              </List>
-            </div>
-          )}
-        </Measure>
+        <MultiSelect
+          selectedItems={searches}
+          options={availableSearches}
+          onChange={items => setSearches(items)}
+          placeholder="search"
+        />
       </div>
 
-      {preview && (
-        <div className={styles.preview}>
-          <div className={styles.previewQueryName}>{preview.name}</div>
-          <div>Connection {preview.connectionName}</div>
-          <div>By {preview.createdBy}</div>
-          <div>
-            {preview.tags &&
-              preview.tags.map(tag => <Tag key={tag}>{tag}</Tag>)}
-          </div>
-
-          <Divider />
-
-          {/* 
-            This style necessary to get proper sizing on SqlEditor.
-            It has height 100%, which looks to height of nearest containing BLOCK,
-            which apparently looks past this flex container. This causes weirdness
-          */}
+      <Measure
+        bounds
+        onResize={contentRect => {
+          setDimensions(contentRect.bounds);
+        }}
+      >
+        {({ measureRef }) => (
           <div
+            ref={measureRef}
             style={{
-              flexGrow: 1,
-              display: 'flex'
+              display: 'flex',
+              width: '100%',
+              height: '100%'
             }}
           >
-            <SqlEditor readOnly value={preview.queryText} />
+            <List
+              // position absolute takes list out of flow,
+              // preventing some weird react-measure behavior in Firefox
+              style={{ position: 'absolute' }}
+              height={dimensions.height}
+              itemCount={filteredQueries.length}
+              itemSize={60}
+              width={dimensions.width}
+              overscanCount={2}
+            >
+              {Row}
+            </List>
           </div>
-        </div>
-      )}
+        )}
+      </Measure>
+
+      <QueryPreview query={preview} />
     </Drawer>
   );
 }
@@ -231,7 +273,7 @@ QueryListDrawer.propTypes = {
 };
 
 export default connect(
-  ['queries', 'connections'],
+  ['queries', 'connections', 'currentUser'],
   store => ({
     loadQueries: loadQueries(store),
     deleteQuery: deleteQuery(store)
