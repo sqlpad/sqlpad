@@ -18,7 +18,7 @@ import iconButtonStyles from '../../common/IconButton.module.css';
 import Input from '../../common/Input';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
 import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
-import { toggleSchema } from '../../stores/appNav';
+import { toggleSchema } from '../../stores/schema';
 import {
   formatQuery,
   handleCloneClick,

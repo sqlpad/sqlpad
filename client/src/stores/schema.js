@@ -3,8 +3,15 @@ import fetchJson from '../utilities/fetch-json.js';
 import updateCompletions from '../utilities/updateCompletions.js';
 
 export const initialState = {
+  showSchema: false,
   schema: {} // schema.<connectionId>.loading / schemaInfo / lastUpdated
 };
+
+export function toggleSchema(state) {
+  return {
+    showSchema: !state.showSchema
+  };
+}
 
 export const loadSchemaInfo = store => async (state, connectionId, reload) => {
   const { schema } = state;
@@ -69,5 +76,6 @@ export const toggleSchemaItem = (state, connectionId, item) => {
 export default {
   initialState,
   loadSchemaInfo,
+  toggleSchema,
   toggleSchemaItem
 };
