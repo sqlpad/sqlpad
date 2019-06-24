@@ -16,9 +16,11 @@ function Modal({ title, visible, onClose, width, children }) {
       >
         <div className={styles.titleWrapper}>
           <span>{title}</span>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
+          {onClose && (
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          )}
         </div>
         <div className={styles.dialogBody}>{children}</div>
       </Dialog>
