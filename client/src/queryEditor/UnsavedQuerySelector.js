@@ -24,7 +24,7 @@ function UnsavedQuerySelector({ queryId, queryText, setQueryState }) {
 
   const value = [queryText, unsavedQueryText];
   return (
-    <Modal title="Found an unsaved changes" visible={showModal} width="90vw">
+    <Modal title="Found unsaved query" visible={showModal} width="90vw">
       <div
         style={{ display: 'flex', margin: 8, justifyContent: 'space-around' }}
       >
