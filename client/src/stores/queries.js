@@ -1,6 +1,10 @@
 import uuid from 'uuid';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
+import {
+  setLocalQueryText,
+  removeLocalQueryText
+} from '../utilities/localQueryText';
 
 const ONE_HOUR_MS = 1000 * 60 * 60;
 
@@ -41,6 +45,8 @@ export const formatQuery = async state => {
     message.error(json.error);
     return;
   }
+
+  setLocalQueryText(query._id, json.query);
 
   return {
     query: { ...query, queryText: json.query },
@@ -143,6 +149,7 @@ export const saveQuery = store => async state => {
         return;
       }
       message.success('Query Saved');
+      removeLocalQueryText(query._id);
       const updatedQueries = queries.map(q => {
         return q._id === query._id ? query : q;
       });
@@ -168,6 +175,7 @@ export const saveQuery = store => async state => {
         `${window.BASE_URL}/queries/${query._id}`
       );
       message.success('Query Saved');
+      removeLocalQueryText(query._id);
       store.setState({
         isSaving: false,
         unsavedChanges: false,
@@ -197,6 +205,9 @@ export const resetNewQuery = state => {
 
 export const setQueryState = (state, field, value) => {
   const { query } = state;
+  if (field === 'queryText') {
+    setLocalQueryText(query._id, value);
+  }
   return { query: { ...query, [field]: value }, unsavedChanges: true };
 };
 

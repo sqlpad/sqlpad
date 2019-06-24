@@ -7,23 +7,21 @@ import { connect } from 'unistore/react';
 import { resizeChart } from '../common/tauChartRef';
 import SchemaSidebar from '../schema/SchemaSidebar.js';
 import { loadConnections } from '../stores/connections';
-import { loadTags } from '../stores/tags';
 import {
   formatQuery,
   loadQuery,
+  resetNewQuery,
   runQuery,
-  saveQuery,
-  resetNewQuery
+  saveQuery
 } from '../stores/queries';
+import { loadTags } from '../stores/tags';
 import QueryEditorChart from './QueryEditorChart';
+import QueryEditorChartToolbar from './QueryEditorChartToolbar';
 import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryResultHeader from './QueryResultHeader.js';
 import Toolbar from './toolbar/Toolbar';
-import QueryEditorChartToolbar from './QueryEditorChartToolbar';
-
-// TODO FIXME XXX capture unsaved state to local storage
-// Prompt is removed. It doesn't always work anyways
+import UnsavedQuerySelector from './UnsavedQuerySelector';
 
 class QueryEditor extends React.Component {
   componentDidUpdate(prevProps) {
@@ -88,7 +86,7 @@ class QueryEditor extends React.Component {
   }, 700);
 
   render() {
-    const { chartType, queryName, showSchema } = this.props;
+    const { queryId, chartType, queryName, showSchema } = this.props;
 
     document.title = queryName;
 
@@ -168,6 +166,7 @@ class QueryEditor extends React.Component {
       >
         <Toolbar />
         <div style={{ position: 'relative', flexGrow: 1 }}>{sqlTabPane}</div>
+        <UnsavedQuerySelector queryId={queryId} />
       </div>
     );
   }
