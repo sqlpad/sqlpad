@@ -11,6 +11,7 @@
     "d3": "^5.9.2",
     "downshift": "^3.2.10",
     "keymaster": "^1.6.2",
+    "localforage": "^1.7.3",
     "lodash": "^4.17.11",
     "match-sorter": "^3.1.1",
     "mdi-react": "^5.4.0",
