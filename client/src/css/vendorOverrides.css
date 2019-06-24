@@ -43,3 +43,10 @@
   justify-content: center;
   align-items: center;
 }
+
+/* Missing Ace diff editor style for highlighting code changes */
+.codeMarker {
+  background: #fff677;
+  position: absolute;
+  z-index: 20;
+}
