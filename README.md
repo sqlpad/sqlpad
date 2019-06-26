@@ -29,7 +29,7 @@ See [docker-validation](https://github.com/rickbergfalk/sqlpad/tree/master/docke
 ## Building
 
 - Clone/download this repo
-- Install node 8 or later ([nvm recommended](https://github.com/creationix/nvm))
+- Install node 10 or later ([nvm recommended](https://github.com/creationix/nvm))
 - Ensure you have the latest npm
 
   ```sh
