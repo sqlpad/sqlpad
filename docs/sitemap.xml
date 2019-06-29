@@ -3,7 +3,12 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://rickbergfalk.github.io/sqlpad/installation-and-administration/</loc>
+    <loc>https://rickbergfalk.github.io/sqlpad/posts/version-3-beta/</loc>
+    <lastmod>2019-06-25T21:14:48-04:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://rickbergfalk.github.io/sqlpad/posts/installation-and-administration/</loc>
     <lastmod>2018-01-28T11:51:31-05:00</lastmod>
   </url>
   

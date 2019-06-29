@@ -1,5 +1,5 @@
 ---
-title: "My First Post"
+title: "SQLPad"
 date: 2018-01-27T10:36:46-05:00
 draft: false
 ---
@@ -10,15 +10,11 @@ draft: false
     <h1>SQLPad</h1>
   </div>
   <div class="row">
-    <h3>Run SQL in your browser...</h3>
-    <p><img class="u-max-full-width" src="images/screenshots/query-editor.png" alt="SQLPad Query Editor" /></p>
-  </div>
-  <div class="row">
-    <h3>... and chart the results.</h3>
-    <p><img class="u-max-full-width" src="images/screenshots/chart-line.png" alt="SQLPad Line Chart" /></p>
+    <h3>Run SQL in your browser and chart the results</h3>
+    <p><img class="u-max-full-width" src="images/screenshots/v3-beta.png" alt="SQLPad Query Editor" /></p>
   </div>
   <h3>
-      Supports Postgres, MySQL, SQL Server, <br /> Vertica, Crate, and Presto.
+      Supports <br /> Postgres, MySQL, SQL Server, <br /> Vertica, Crate, Presto, SAP Hana, <br /> Apache Drill, and Cassandra (kinda).
   </h3>
   <div class="value-props row">
     <div class="three columns value-prop">
@@ -64,61 +60,7 @@ draft: false
     </div>
   </div>
 </div>
-  
-  
-<div class="docs-section">
-  <h6 class="docs-header">More Screenshots</h6>
-  <div class="row">
-    <div class="six columns">
-      <a href="images/screenshots/chart-line.png">
-        <img class="u-max-full-width" src="images/screenshots/chart-line.png" alt="SQLPad Line Chart" />
-      </a>
-    </div>
-    <div class="six columns">
-      <a href="images/screenshots/chart-plot.png">
-        <img class="u-max-full-width" src="images/screenshots/chart-plot.png" alt="SQLPad Scatterplot Chart" />
-      </a>
-    </div>
-  </div>
-  <div class="row">
-    <div class="six columns">
-      <a href="images/screenshots/chart-horizontal-bar.png">
-        <img class="u-max-full-width" src="images/screenshots/chart-horizontal-bar.png" alt="SQLPad Horizontal Bar Chart" />
-      </a>
-    </div>
-    <div class="six columns">
-      <a href="images/screenshots/chart-stacked-bar.png">
-        <img class="u-max-full-width" src="images/screenshots/chart-stacked-bar.png" alt="SQLPad Stacked Bar Chart" />
-      </a>
-    </div>
-  </div>
-  <div class="row">
-    <div class="six columns">
-      <a href="images/screenshots/queries.png">
-        <img class="u-max-full-width" src="images/screenshots/queries.png" alt="SQLPad Query List" />
-      </a>
-    </div>
-    <div class="six columns">
-      <a href="images/screenshots/connections.png">
-        <img class="u-max-full-width" src="images/screenshots/connections.png" alt="SQLPad Connections" />
-      </a>
-    </div>
-  </div>
-  <div class="row">
-    <div class="six columns">
-      <a href="images/screenshots/users.png">
-        <img class="u-max-full-width" src="images/screenshots/users.png" alt="SQLPad User Admin" />
-      </a>
-    </div>
-    <div class="six columns">
-      <a href="images/screenshots/configuration.png">
-        <img class="u-max-full-width" src="images/screenshots/configuration.png" alt="SQLPad Configuration" />
-      </a>
-    </div>
-  </div>
-</div>
-    
-    
+      
 <div class="docs-section" id="installation">
     <div class="row">
         <div class="two columns">
@@ -127,12 +69,12 @@ draft: false
         <div class="columns eight">
             <h6 class="docs-header">Installation</h6>
             <p>
-            Installing SQLPad is as simple as installing <a href="https://nodejs.org/">Node.js</a> 
-            and running <code>npm install sqlpad -g</code> at a command prompt.
+              Installing SQLPad is as simple as installing <a href="https://nodejs.org/">Node.js</a> 
+              and running <code>npm install sqlpad -g</code> at a command prompt.
             </p>
             <p>
-            For more details on installing and running a SQLPad instance, 
-            see the <a href="installation-and-administration">Installation and Administration page</a>.
+              For more details on installing and running a SQLPad instance, 
+              see <a href="posts/installation-and-administration">Installation and Administration page</a>.
             </p>
         </div>
     </div>
@@ -169,11 +111,14 @@ draft: false
             <h6 class="docs-header">Is SQLPad For Me?</h6>
             <p>
                 SQLPad aims to be a SQL query environment with a focus on exploring and analyzing data via SQL,
-                and it will likely not adopt a dashboard use case. 
+                and it will not adopt a dashboard use case. 
                 If you're looking for open-source dashboard software or something more advanced, 
-                check out <a href="http://redash.io/">Re:dash</a>, 
-                <a href="http://www.metabase.com/">Metabase</a>, 
-                or <a href="https://github.com/airbnb/caravel">Caravel</a>.
+                check out <a href="https://redash.io/">Redash</a>, 
+                <a href="https://www.metabase.com/">Metabase</a>, 
+                or <a href="https://github.com/apache/incubator-superset">Superset</a>.
+            </p>
+            <p>
+              SQLPad likely does as much as it'll ever do and could even be considered finished. Development these days is mostly maintenance and cleanup.
             </p>
         </div>
         <div class="four columns"></div>
