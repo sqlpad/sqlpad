@@ -110,6 +110,11 @@ function QueryListDrawer({
     loadQueries();
   }, [loadQueries]);
 
+  function handleClose() {
+    setPreview(null);
+    onClose();
+  }
+
   const availableSearches = getAvailableSearchTags(queries);
 
   const filteredQueries = getSortedFilteredQueries(
@@ -139,7 +144,7 @@ function QueryListDrawer({
         onMouseLeave={() => setPreview(null)}
         style={style}
       >
-        <Link className={styles.queryLink} to={queryUrl} onClick={onClose}>
+        <Link className={styles.queryLink} to={queryUrl} onClick={handleClose}>
           {query.name}
           <br />
           <Text type="secondary">{query.connectionName}</Text>
@@ -183,7 +188,7 @@ function QueryListDrawer({
       title={'Queries'}
       visible={visible}
       width="600px"
-      onClose={onClose}
+      onClose={handleClose}
       placement="left"
     >
       <div className={styles.filterContainer}>
