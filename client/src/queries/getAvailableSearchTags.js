@@ -10,8 +10,9 @@ export default function getAvailableSearchTags(queries) {
       .filter(tag => Boolean(tag))
   ).map(tag => {
     return {
-      id: `# ${tag}`,
-      name: (
+      id: tag,
+      name: tag,
+      component: (
         <span style={{ display: 'inline-flex', alignItems: 'center' }}>
           <TagIcon size={14} style={{ marginRight: 4 }} />
           <span>{tag}</span>

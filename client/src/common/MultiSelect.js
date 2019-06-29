@@ -8,6 +8,8 @@ import Tag from './Tag';
  * This component was quickly hacked together using the Downshift multiselect example
  * A lot of that example was changed and reduced down to what this is here.
  * If anyone out there more familiar with downshift wants to clean this up by all means feel free
+ * options should consist of `{ id, name, component }`.
+ * name is used for matching, component optional for what to render
  */
 function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
   const input = useRef();
@@ -90,7 +92,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
             {selectedItems.length > 0
               ? selectedItems.map(item => (
                   <Tag key={item.id} onClose={() => removeItem(item)}>
-                    {item.name}
+                    {item.component || item.name}
                   </Tag>
                 ))
               : null}
@@ -163,7 +165,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                         isSelected: selectedItems.includes(item)
                       })}
                     >
-                      {item.name}
+                      {item.component || item.name}
                     </Item>
                   )
                 )
