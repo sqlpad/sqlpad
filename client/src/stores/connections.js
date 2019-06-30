@@ -1,3 +1,4 @@
+import localforage from 'localforage';
 import sortBy from 'lodash/sortBy';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
@@ -15,7 +16,21 @@ export const initialState = {
   connectionsLoading: false
 };
 
+export async function initSelectedConnection(state) {
+  const selectedConnectionId = await localforage.getItem(
+    'selectedConnectionId'
+  );
+  if (typeof selectedConnectionId === 'string') {
+    return {
+      selectedConnectionId
+    };
+  }
+}
+
 export const selectConnectionId = (state, selectedConnectionId) => {
+  localforage
+    .setItem('selectedConnectionId', selectedConnectionId)
+    .catch(error => message.error(error));
   return { selectedConnectionId };
 };
 
