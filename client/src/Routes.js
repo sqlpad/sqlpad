@@ -5,10 +5,8 @@ import {
   Route,
   Switch
 } from 'react-router-dom';
-import Authenticated from './Authenticated';
 import { connect } from 'unistore/react';
-import { refreshAppContext } from './stores/config';
-import { initSchema } from './stores/schema';
+import Authenticated from './Authenticated';
 import ForgotPassword from './ForgotPassword.js';
 import NotFound from './NotFound.js';
 import PasswordReset from './PasswordReset.js';
@@ -18,12 +16,21 @@ import QueryEditor from './queryEditor/QueryEditor.js';
 import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
+import { refreshAppContext } from './stores/config';
+import { initSelectedConnection } from './stores/connections';
+import { initSchema } from './stores/schema';
 
-function Routes({ config, refreshAppContext, initSchema }) {
+function Routes({
+  config,
+  refreshAppContext,
+  initSchema,
+  initSelectedConnection
+}) {
   useEffect(() => {
     refreshAppContext();
     initSchema();
-  }, [refreshAppContext, initSchema]);
+    initSelectedConnection();
+  }, [refreshAppContext, initSchema, initSelectedConnection]);
 
   if (!config) {
     return null;
@@ -88,5 +95,5 @@ function Routes({ config, refreshAppContext, initSchema }) {
 
 export default connect(
   ['config'],
-  { refreshAppContext, initSchema }
+  { refreshAppContext, initSchema, initSelectedConnection }
 )(Routes);
