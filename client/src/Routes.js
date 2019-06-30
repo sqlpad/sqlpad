@@ -8,6 +8,7 @@ import {
 import Authenticated from './Authenticated';
 import { connect } from 'unistore/react';
 import { refreshAppContext } from './stores/config';
+import { initSchema } from './stores/schema';
 import ForgotPassword from './ForgotPassword.js';
 import NotFound from './NotFound.js';
 import PasswordReset from './PasswordReset.js';
@@ -18,10 +19,11 @@ import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
 
-function Routes({ config, refreshAppContext }) {
+function Routes({ config, refreshAppContext, initSchema }) {
   useEffect(() => {
     refreshAppContext();
-  }, [refreshAppContext]);
+    initSchema();
+  }, [refreshAppContext, initSchema]);
 
   if (!config) {
     return null;
@@ -86,5 +88,5 @@ function Routes({ config, refreshAppContext }) {
 
 export default connect(
   ['config'],
-  { refreshAppContext }
+  { refreshAppContext, initSchema }
 )(Routes);
