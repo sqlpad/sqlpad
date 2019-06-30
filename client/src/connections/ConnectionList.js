@@ -120,15 +120,11 @@ function ConnectionList({
         }
 
         return (
-          <ListItem key={item._id} actions={actions}>
+          <ListItem key={item._id}>
             <div style={{ flexGrow: 1, padding: 8 }}>
               {item.name}
               <br />
-              <Text type="secondary">
-                {item.driver}
-                <br />
-                {description}
-              </Text>
+              <Text type="secondary">{description}</Text>
             </div>
             {actions}
           </ListItem>
