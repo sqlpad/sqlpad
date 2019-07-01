@@ -1,19 +1,20 @@
-import ClosedIcon from 'mdi-react/MenuRightIcon';
 import OpenIcon from 'mdi-react/MenuDownIcon';
+import ClosedIcon from 'mdi-react/MenuRightIcon';
 import RefreshIcon from 'mdi-react/RefreshIcon';
 import React, { useEffect, useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
-import Sidebar from '../common/Sidebar';
 import Button from '../common/Button';
-import Input from '../common/Input';
-import Text from '../common/Text';
 import Divider from '../common/Divider';
+import Input from '../common/Input';
+import Sidebar from '../common/Sidebar';
+import SpinKitCube from '../common/SpinKitCube';
+import Text from '../common/Text';
 import { loadSchemaInfo, toggleSchemaItem } from '../stores/schema';
+import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
-import getSchemaList from './getSchemaList';
 
 const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
@@ -162,7 +163,9 @@ function SchemaSidebar({
               }}
             >
               {loading ? (
-                <div className={styles.schemaSpinner}>loading...</div>
+                <div className={styles.schemaSpinner}>
+                  <SpinKitCube />
+                </div>
               ) : (
                 <ul style={{ paddingLeft: 0 }}>
                   <List
