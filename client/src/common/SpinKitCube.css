@@ -1,8 +1,8 @@
 /*  spinkit cube http://tobiasahlin.com/spinkit/ */
 
 .sk-cube-grid {
-  width: 90px;
-  height: 90px;
+  width: 60px;
+  height: 60px;
   margin: 10px auto;
 }
 .sk-cube-grid .sk-cube {
