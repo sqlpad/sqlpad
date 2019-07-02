@@ -8,10 +8,10 @@ export function delFakeChartRef(queryId) {
   delete chartRefs[queryId];
 }
 
-export function exportPng(queryId) {
+export function exportPng(queryId, fileName) {
   const chart = chartRefs[queryId];
   if (chart && chart.fire) {
-    chart.fire('exportTo', 'png');
+    chart.fire('export-to', { type: 'png', fileName });
   }
 }
 

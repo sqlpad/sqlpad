@@ -11,7 +11,6 @@ function SqlpadTauChart({
   queryError,
   queryResult,
   chartConfiguration,
-  queryName,
   queryId
 }) {
   // TODO rendering on every change like this might get too expensive
@@ -20,11 +19,7 @@ function SqlpadTauChart({
     let chart;
 
     if (!isRunning && !queryError && chartConfiguration && queryResult) {
-      const chartConfig = getTauChartConfig(
-        chartConfiguration,
-        queryResult,
-        queryName
-      );
+      const chartConfig = getTauChartConfig(chartConfiguration, queryResult);
       if (chartConfig) {
         chart = new Chart(chartConfig);
         chart.renderTo('#chart');
@@ -40,14 +35,7 @@ function SqlpadTauChart({
       }
       delFakeChartRef(queryId);
     };
-  }, [
-    isRunning,
-    queryError,
-    queryResult,
-    chartConfiguration,
-    queryName,
-    queryId
-  ]);
+  }, [isRunning, queryError, queryResult, chartConfiguration, queryId]);
 
   if (isRunning) {
     return (
@@ -75,7 +63,6 @@ function SqlpadTauChart({
 SqlpadTauChart.propTypes = {
   isRunning: PropTypes.bool,
   chartConfiguration: PropTypes.object,
-  queryName: PropTypes.string,
   queryError: PropTypes.string,
   queryResult: PropTypes.object
 };

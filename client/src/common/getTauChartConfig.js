@@ -23,17 +23,7 @@ const getUnmetFields = (chartType, selectedFieldMap) => {
   return unmetRequiredFields;
 };
 
-/**
- *
- * @param {object} query
- * @param {string} [query.name]
- * @param {object} queryResult
- */
-export default function getTauChartConfig(
-  chartConfiguration,
-  queryResult,
-  queryName
-) {
+export default function getTauChartConfig(chartConfiguration, queryResult) {
   const meta = queryResult ? queryResult.meta : {};
   let dataRows = queryResult ? queryResult.rows : [];
   const chartType = chartConfiguration && chartConfiguration.chartType;
@@ -57,8 +47,7 @@ export default function getTauChartConfig(
           // NOTE: We must ref the file in vendor dir for export images to work
           // (we don't know what the webpack bundle css path will be)
           window.BASE_URL + '/javascripts/vendor/tauCharts/tauCharts.min.css'
-        ],
-        fileName: queryName || 'Unnamed query'
+        ]
       })
     ],
     settings: {

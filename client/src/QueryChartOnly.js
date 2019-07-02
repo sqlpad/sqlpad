@@ -35,7 +35,7 @@ function QueryChartOnly({ queryId }) {
   }, [queryId]);
 
   const onSaveImageClick = () => {
-    exportPng(queryId);
+    exportPng(queryId, query && query.name);
   };
 
   const incomplete = queryResult ? queryResult.incomplete : false;

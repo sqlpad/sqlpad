@@ -9,13 +9,19 @@ import { exportPng } from '../common/tauChartRef';
 function mapStateToProps(state) {
   return {
     queryId: (state.query && state.query._id) || 'new',
+    queryName: (state.query && state.query.name) || 'New query',
     queryResult: state.queryResult
   };
 }
 
 const Connected = connect(mapStateToProps)(QueryEditorChartToolbar);
 
-function QueryEditorChartToolbar({ queryResult, queryId, children }) {
+function QueryEditorChartToolbar({
+  queryResult,
+  queryId,
+  queryName,
+  children
+}) {
   const downloadEnabled =
     queryResult && queryResult.rows && queryResult.rows.length;
 
@@ -43,7 +49,7 @@ function QueryEditorChartToolbar({ queryResult, queryId, children }) {
         </IconButton>
         <IconButton
           disabled={!downloadEnabled}
-          onClick={() => exportPng(queryId)}
+          onClick={() => exportPng(queryId, queryName)}
           tooltip="Save chart image"
         >
           <DownloadIcon />

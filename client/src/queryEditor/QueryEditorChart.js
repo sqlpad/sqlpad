@@ -7,8 +7,7 @@ function mapStateToProps(state) {
     isRunning: state.isRunning,
     queryError: state.queryError,
     queryResult: state.queryResult,
-    chartConfiguration: state.query && state.query.chartConfiguration,
-    queryName: state.query && state.query.name
+    chartConfiguration: state.query && state.query.chartConfiguration
   };
 }
 
