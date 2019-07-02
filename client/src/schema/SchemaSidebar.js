@@ -5,8 +5,8 @@ import React, { useEffect, useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
-import Button from '../common/Button';
 import Divider from '../common/Divider';
+import IconButton from '../common/IconButton';
 import Input from '../common/Input';
 import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
@@ -137,16 +137,17 @@ function SchemaSidebar({
               placeholder="Search schema"
               onChange={event => setSearch(event.target.value)}
             />
-            <Button
+            <IconButton
               tooltip="Refresh schema"
               style={{ marginLeft: 8 }}
               disabled={loading}
               onClick={handleRefreshClick}
-              icon={<RefreshIcon />}
-            />
+            >
+              <RefreshIcon />
+            </IconButton>
           </div>
 
-          <Divider style={{ margin: '8px 0' }} />
+          <Divider style={{ margin: '4px 0' }} />
 
           <div
             style={{
