@@ -18,7 +18,6 @@ import iconButtonStyles from '../../common/IconButton.module.css';
 import Input from '../../common/Input';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
 import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
-import { toggleSchema } from '../../stores/schema';
 import {
   formatQuery,
   handleCloneClick,
@@ -27,11 +26,12 @@ import {
   saveQuery,
   setQueryState
 } from '../../stores/queries';
+import { toggleSchema } from '../../stores/schema';
 import UserList from '../../users/UserList';
 import fetchJson from '../../utilities/fetch-json.js';
-import ChartTypeSelect from '../ChartTypeSelect';
 import ConnectionDropDown from '../ConnectionDropdown';
 import AboutModal from './AboutModal';
+import ChartButton from './ChartButton';
 import QueryListButton from './QueryListButton';
 import QueryTagsModal from './QueryTagsModal';
 
@@ -176,7 +176,7 @@ function Toolbar({
 
         <Spacer />
 
-        <ChartTypeSelect style={{ width: 180 }} />
+        <ChartButton />
 
         <Spacer grow />
 

@@ -16,8 +16,9 @@ function cleanBoolean(value) {
 }
 
 const inputStyle = {
-  margin: 8,
-  width: 200
+  marginBottom: 16,
+  boxSizing: 'border-box',
+  width: `calc(1/2*100% - 8px)`
 };
 
 function ChartInputs({
@@ -86,7 +87,7 @@ function ChartInputs({
                 changeChartConfigurationField(field.fieldId, e.target.checked)
               }
             />
-            <label for={field.fieldId} style={{ marginLeft: 8 }}>
+            <label htmlFor={field.fieldId} style={{ marginLeft: 8 }}>
               {field.label}
             </label>
           </div>
@@ -122,14 +123,13 @@ function ChartInputs({
   return (
     <div
       style={{
-        height: '100%',
-        padding: '8px',
         overflowY: 'auto',
         overflowX: 'hidden',
         display: 'flex',
         flexWrap: 'wrap',
         alignContent: 'flex-start',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'space-between'
       }}
     >
       {renderFormGroup(chartDefinition.fields)}

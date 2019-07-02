@@ -1,20 +1,13 @@
 import 'd3';
 import DownloadIcon from 'mdi-react/DownloadIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
-import SettingsIcon from 'mdi-react/SettingsIcon';
-import CloseIcon from 'mdi-react/CloseIcon';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'unistore/react';
 import IconButton from '../common/IconButton';
 import { exportPng } from '../common/tauChartRef';
-import ChartInputsContainer from './ChartInputsContainer';
 
 function mapStateToProps(state) {
   return {
-    chartType:
-      state.query &&
-      state.query.chartConfiguration &&
-      state.query.chartConfiguration.chartType,
     queryId: (state.query && state.query._id) || 'new',
     queryResult: state.queryResult
   };
@@ -22,20 +15,9 @@ function mapStateToProps(state) {
 
 const Connected = connect(mapStateToProps)(QueryEditorChartToolbar);
 
-function QueryEditorChartToolbar({
-  chartType,
-  queryResult,
-  queryId,
-  children
-}) {
-  const [showConfig, setShowConfig] = useState(false);
-
+function QueryEditorChartToolbar({ queryResult, queryId, children }) {
   const downloadEnabled =
-    !showConfig && queryResult && queryResult.rows && queryResult.rows.length;
-
-  const settingsDisabled = !Boolean(chartType);
-
-  const backgroundColor = showConfig ? '#f5f5f5' : 'transparent';
+    queryResult && queryResult.rows && queryResult.rows.length;
 
   return (
     <div
@@ -47,12 +29,11 @@ function QueryEditorChartToolbar({
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'center',
-          padding: 4,
-          backgroundColor
+          padding: 4
         }}
       >
         <IconButton
-          disabled={showConfig || queryId === 'new'}
+          disabled={queryId === 'new'}
           to={`/query-chart/${queryId}`}
           target="_blank"
           rel="noopener noreferrer"
@@ -67,27 +48,14 @@ function QueryEditorChartToolbar({
         >
           <DownloadIcon />
         </IconButton>
-        <IconButton
-          disabled={settingsDisabled}
-          onClick={() => setShowConfig(!showConfig)}
-          tooltip="Configure"
-        >
-          {showConfig ? <CloseIcon /> : <SettingsIcon />}
-        </IconButton>
       </div>
 
-      {showConfig ? (
-        <div style={{ backgroundColor }} className="h-100 w-100">
-          <ChartInputsContainer />
-        </div>
-      ) : (
-        <div
-          style={{ display: 'flex', padding: 8, position: 'relative' }}
-          className="h-100 w-100"
-        >
-          {children}
-        </div>
-      )}
+      <div
+        style={{ display: 'flex', padding: 8, position: 'relative' }}
+        className="h-100 w-100"
+      >
+        {children}
+      </div>
     </div>
   );
 }
