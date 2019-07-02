@@ -4,19 +4,9 @@
 
 A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, Presto, and SAP HANA. Other databases potentially supported via [unix odbc support](https://github.com/rickbergfalk/sqlpad/wiki/ODBC).
 
-## Version 3 Work in progress
-
-Version 3 work has been promoted to master branch and is functional but not ready for release.
-
-This work involves a directory restructuring and a front-end react component framework migration from react-bootstrap to antd.
-
-Version 3 will not contain any breaking back-end changes. It should be possible to try v3 out with a given SQLPad database, and revert back to v2 if desired.
-
 ## Installation, Usage, Screenshots
 
-Visit project page at [http://rickbergfalk.github.io/sqlpad/](http://rickbergfalk.github.io/sqlpad/).
-
-![SQLPad Query Editor](http://rickbergfalk.github.io/sqlpad/images/screenshots/query-editor.png)
+![SQLPad Query Editor](https://rickbergfalk.github.io/sqlpad/images/screenshots/v3-beta.png)
 
 ## Using Docker Image
 

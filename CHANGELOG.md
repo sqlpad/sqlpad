@@ -1,6 +1,15 @@
 # Changelog
 
-## 3.0.0-beta.0
+## 3.0.0-beta.2
+
+### WIP
+
+- Fix preview sticking around after query selection
+- Fix tag/search input in query list
+- Remember selected connection id / schema toggle
+- Loading indicator for schema sidebar
+
+## 3.0.0-beta.1
 
 ### June 25, 2019
 
