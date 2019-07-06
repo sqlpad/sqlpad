@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { connect } from 'unistore/react';
-import { selectConnectionId, addUpdateConnection } from '../stores/connections';
+import Select from '../common/Select';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
-import Select from '../common/Select';
+import { addUpdateConnection, selectConnectionId } from '../stores/connections';
+import styles from './ConnectionDropdown.module.css';
 
 function ConnectionDropdown({
   addUpdateConnection,
@@ -35,10 +36,13 @@ function ConnectionDropdown({
     ? { color: '#777', width: 220 }
     : { width: 220 };
 
+  const className = !selectedConnectionId ? styles.attention : null;
+
   return (
     <>
       <Select
         style={style}
+        className={className}
         value={selectedConnectionId || undefined}
         onChange={handleChange}
       >
