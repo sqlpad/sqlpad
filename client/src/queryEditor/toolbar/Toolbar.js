@@ -1,4 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button';
+import { MenuItem } from '@reach/menu-button';
 import CopyIcon from 'mdi-react/ContentCopyIcon';
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
@@ -14,7 +14,7 @@ import { connect } from 'unistore/react';
 import Button from '../../common/Button';
 import Drawer from '../../common/Drawer';
 import IconButton from '../../common/IconButton';
-import iconButtonStyles from '../../common/IconButton.module.css';
+import IconMenu from '../../common/IconMenu';
 import Input from '../../common/Input';
 import ConfigurationForm from '../../configuration/ConfigurationForm';
 import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
@@ -180,37 +180,32 @@ function Toolbar({
 
         <Spacer grow />
 
-        <Menu>
-          <MenuButton className={iconButtonStyles.btn}>
-            <DotsVerticalIcon aria-hidden aria-label="menu" size={18} />
-          </MenuButton>
-          <MenuList>
-            {isAdmin && (
-              <MenuItem onSelect={() => setShowConfig(true)}>
-                Configuration
-              </MenuItem>
-            )}
-            {isAdmin && (
-              <MenuItem onSelect={() => setShowConnections(true)}>
-                Connections
-              </MenuItem>
-            )}
-            {isAdmin && (
-              <MenuItem onSelect={() => setShowUsers(true)}>Users</MenuItem>
-            )}
-            <div style={{ borderBottom: '1px solid #ddd' }} />
-            <MenuItem onSelect={() => setShowAbout(true)}>About</MenuItem>
-            <div style={{ borderBottom: '1px solid #ddd' }} />
-            <MenuItem
-              onSelect={async () => {
-                await fetchJson('GET', '/api/signout');
-                setRedirectToSignIn(true);
-              }}
-            >
-              Sign out
+        <IconMenu icon={<DotsVerticalIcon aria-label="menu" />}>
+          {isAdmin && (
+            <MenuItem onSelect={() => setShowConfig(true)}>
+              Configuration
             </MenuItem>
-          </MenuList>
-        </Menu>
+          )}
+          {isAdmin && (
+            <MenuItem onSelect={() => setShowConnections(true)}>
+              Connections
+            </MenuItem>
+          )}
+          {isAdmin && (
+            <MenuItem onSelect={() => setShowUsers(true)}>Users</MenuItem>
+          )}
+          <div style={{ borderBottom: '1px solid #ddd' }} />
+          <MenuItem onSelect={() => setShowAbout(true)}>About</MenuItem>
+          <div style={{ borderBottom: '1px solid #ddd' }} />
+          <MenuItem
+            onSelect={async () => {
+              await fetchJson('GET', '/api/signout');
+              setRedirectToSignIn(true);
+            }}
+          >
+            Sign out
+          </MenuItem>
+        </IconMenu>
 
         <Drawer
           title={'Configuration'}
