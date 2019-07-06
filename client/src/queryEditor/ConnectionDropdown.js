@@ -55,7 +55,9 @@ function ConnectionDropdown({
           );
         })}
 
-        <option value="new">... New connection</option>
+        {currentUser.role === 'admin' && (
+          <option value="new">... New connection</option>
+        )}
         {currentUser.role === 'admin' && (
           <option value="manage">... Manage connections</option>
         )}
