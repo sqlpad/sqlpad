@@ -102,6 +102,27 @@ function Toolbar({
     return <Redirect push to="/signin" />;
   }
 
+  // Reach UI menu / IconMenu does not like the {someBoolean && <element/>} patterm
+  // As a workaround optional MenuItems are managed in an array
+  let menuItems = [];
+  if (isAdmin) {
+    menuItems = [
+      <MenuItem key="config" onSelect={() => setShowConfig(true)}>
+        Configuration
+      </MenuItem>,
+      <MenuItem key="connections" onSelect={() => setShowConnections(true)}>
+        Connections
+      </MenuItem>,
+      <MenuItem
+        key="users"
+        style={{ borderBottom: '1px solid #ddd' }}
+        onSelect={() => setShowUsers(true)}
+      >
+        Users
+      </MenuItem>
+    ];
+  }
+
   return (
     <div
       style={{
@@ -181,22 +202,13 @@ function Toolbar({
         <Spacer grow />
 
         <IconMenu icon={<DotsVerticalIcon aria-label="menu" />}>
-          {isAdmin && (
-            <MenuItem onSelect={() => setShowConfig(true)}>
-              Configuration
-            </MenuItem>
-          )}
-          {isAdmin && (
-            <MenuItem onSelect={() => setShowConnections(true)}>
-              Connections
-            </MenuItem>
-          )}
-          {isAdmin && (
-            <MenuItem onSelect={() => setShowUsers(true)}>Users</MenuItem>
-          )}
-          <div style={{ borderBottom: '1px solid #ddd' }} />
-          <MenuItem onSelect={() => setShowAbout(true)}>About</MenuItem>
-          <div style={{ borderBottom: '1px solid #ddd' }} />
+          {menuItems}
+          <MenuItem
+            style={{ borderBottom: '1px solid #ddd' }}
+            onSelect={() => setShowAbout(true)}
+          >
+            About
+          </MenuItem>
           <MenuItem
             onSelect={async () => {
               await fetchJson('GET', '/api/signout');
