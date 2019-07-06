@@ -1,41 +1,61 @@
+import { MenuItem, MenuLink } from '@reach/menu-button';
+import DownloadIcon from 'mdi-react/DownloadIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
-import Button from '../common/Button';
-import ButtonLink from './ButtonLink';
+import IconMenu from './IconMenu';
+
+const NavigationLink = React.forwardRef((props, ref) => {
+  return <Link {...props} innerRef={ref} />;
+});
 
 function ExportButton({ config, cacheKey, onSaveImageClick }) {
-  if (!config) {
+  if (!config || !cacheKey) {
     return null;
   }
 
   const { baseUrl, allowCsvDownload } = config;
 
-  if (!cacheKey || !allowCsvDownload) {
-    return null;
+  const items = [];
+  if (onSaveImageClick) {
+    items.push(
+      <MenuItem key="png" onSelect={onSaveImageClick}>
+        png
+      </MenuItem>
+    );
   }
-
-  const csvDownloadLink = `${baseUrl}/download-results/${cacheKey}.csv`;
-  const xlsxDownloadLink = `${baseUrl}/download-results/${cacheKey}.xlsx`;
-
-  return (
-    <>
-      {onSaveImageClick && <Button onClick={onSaveImageClick}>png</Button>}
-      <ButtonLink
-        to={csvDownloadLink}
+  if (allowCsvDownload) {
+    items.push(
+      <MenuLink
+        key="csv"
+        as={NavigationLink}
+        to={`${baseUrl}/download-results/${cacheKey}.csv`}
         target="_blank"
         rel="noopener noreferrer"
       >
         csv
-      </ButtonLink>
-      <ButtonLink
-        to={xlsxDownloadLink}
+      </MenuLink>
+    );
+    items.push(
+      <MenuLink
+        key="xlsx"
+        as={NavigationLink}
+        to={`${baseUrl}/download-results/${cacheKey}.xlsx`}
         target="_blank"
         rel="noopener noreferrer"
       >
         xlsx
-      </ButtonLink>
-    </>
+      </MenuLink>
+    );
+  }
+
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <IconMenu icon={<DownloadIcon aria-label="Download" />}>{items}</IconMenu>
   );
 }
 
