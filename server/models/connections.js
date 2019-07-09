@@ -20,46 +20,45 @@ function decipherConnection(connection) {
   return connection;
 }
 
-const findAll = () =>
-  db.connections
-    .find({})
-    .then(connections => _.sortBy(connections, c => c.name.toLowerCase()))
-    .then(connections => connections.map(decipherConnection));
+async function findAll() {
+  const connections = await db.connections.find({});
+  return _.sortBy(connections, c => c.name.toLowerCase()).map(
+    decipherConnection
+  );
+}
 
-const findOneById = id =>
-  db.connections
-    .findOne({ _id: id })
-    .then(connection => decipherConnection(connection));
+async function findOneById(id) {
+  const connection = await db.connections.findOne({ _id: id });
+  return decipherConnection(connection);
+}
 
-const removeOneById = id => db.connections.remove({ _id: id });
+async function removeOneById(id) {
+  return db.connections.remove({ _id: id });
+}
 
-const save = connection => {
+async function save(connection) {
   if (!connection) {
-    return Promise.reject('connections.save() requires a connection');
+    throw new Error('connections.save() requires a connection');
   }
 
   connection.username = cipher(connection.username || '');
   connection.password = cipher(connection.password || '');
 
-  return Promise.resolve().then(() => {
-    if (!connection.createdDate) {
-      connection.createdDate = new Date();
-    }
-    connection.modifiedDate = new Date();
+  if (!connection.createdDate) {
+    connection.createdDate = new Date();
+  }
+  connection.modifiedDate = new Date();
 
-    connection = drivers.validateConnection(connection);
-    const { _id } = connection;
+  connection = drivers.validateConnection(connection);
+  const { _id } = connection;
 
-    if (_id) {
-      return db.connections
-        .update({ _id }, connection, {})
-        .then(() => findOneById(_id));
-    }
-    return db.connections
-      .insert(connection)
-      .then(newDoc => findOneById(newDoc._id));
-  });
-};
+  if (_id) {
+    await db.connections.update({ _id }, connection, {});
+    return findOneById(_id);
+  }
+  const newDoc = await db.connections.insert(connection);
+  return findOneById(newDoc._id);
+}
 
 module.exports = {
   findAll,

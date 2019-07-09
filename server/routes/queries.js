@@ -26,36 +26,46 @@ router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
 /*  API routes
 ============================================================================= */
 
-router.delete('/api/queries/:_id', mustBeAuthenticated, function(req, res) {
-  return Query.removeOneById(req.params._id)
-    .then(() => res.json({}))
-    .catch(error => sendError(res, error, 'Problem deleting query'));
-});
-
-router.get('/api/queries', mustBeAuthenticated, function(req, res) {
-  return Query.findAll()
-    .then(queries => res.json({ queries }))
-    .catch(error => sendError(res, error, 'Problem querying query database'));
-});
-
-router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, function(
+router.delete('/api/queries/:_id', mustBeAuthenticated, async function(
   req,
   res
 ) {
-  return Query.findOneById(req.params._id)
-    .then(query => {
-      if (!query) {
-        return res.json({
-          query: {}
-        });
-      }
-      return res.json({ query });
-    })
-    .catch(error => sendError(res, error, 'Problem getting query'));
+  try {
+    await Query.removeOneById(req.params._id);
+    return res.json({});
+  } catch (error) {
+    sendError(res, error, 'Problem deleting query');
+  }
+});
+
+router.get('/api/queries', mustBeAuthenticated, async function(req, res) {
+  try {
+    const queries = await Query.findAll();
+    return res.json({ queries });
+  } catch (error) {
+    sendError(res, error, 'Problem querying query database');
+  }
+});
+
+router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, async function(
+  req,
+  res
+) {
+  try {
+    const query = await Query.findOneById(req.params._id);
+    if (!query) {
+      return res.json({
+        query: {}
+      });
+    }
+    return res.json({ query });
+  } catch (error) {
+    sendError(res, error, 'Problem getting query');
+  }
 });
 
 // create new
-router.post('/api/queries', mustBeAuthenticated, function(req, res) {
+router.post('/api/queries', mustBeAuthenticated, async function(req, res) {
   const query = new Query({
     name: req.body.name || 'No Name Query',
     tags: req.body.tags,
@@ -65,35 +75,37 @@ router.post('/api/queries', mustBeAuthenticated, function(req, res) {
     createdBy: req.user.email,
     modifiedBy: req.user.email
   });
-  return query
-    .save()
-    .then(newQuery => {
-      // This is async, but save operation doesn't care about when/if finished
-      newQuery.pushQueryToSlackIfSetup();
-      return res.json({
-        query: newQuery
-      });
-    })
-    .catch(error => sendError(res, error, 'Problem saving query'));
+  try {
+    const newQuery = await query.save();
+    // This is async, but save operation doesn't care about when/if finished
+    newQuery.pushQueryToSlackIfSetup();
+    return res.json({
+      query: newQuery
+    });
+  } catch (error) {
+    sendError(res, error, 'Problem saving query');
+  }
 });
 
-router.put('/api/queries/:_id', mustBeAuthenticated, function(req, res) {
-  return Query.findOneById(req.params._id)
-    .then(query => {
-      if (!query) {
-        return sendError(res, null, 'Query not found');
-      }
+router.put('/api/queries/:_id', mustBeAuthenticated, async function(req, res) {
+  try {
+    const query = await Query.findOneById(req.params._id);
+    if (!query) {
+      return sendError(res, null, 'Query not found');
+    }
 
-      query.name = req.body.name || '';
-      query.tags = req.body.tags;
-      query.connectionId = req.body.connectionId;
-      query.queryText = req.body.queryText;
-      query.chartConfiguration = req.body.chartConfiguration;
-      query.modifiedBy = req.user.email;
+    query.name = req.body.name || '';
+    query.tags = req.body.tags;
+    query.connectionId = req.body.connectionId;
+    query.queryText = req.body.queryText;
+    query.chartConfiguration = req.body.chartConfiguration;
+    query.modifiedBy = req.user.email;
 
-      return query.save().then(newQuery => res.json({ query: newQuery }));
-    })
-    .catch(error => sendError(res, error, 'Problem saving query'));
+    const newQuery = await query.save();
+    return res.json({ query: newQuery });
+  } catch (error) {
+    sendError(res, error, 'Problem saving query');
+  }
 });
 
 module.exports = router;
