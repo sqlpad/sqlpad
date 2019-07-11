@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const assert = require('assert');
 const cassandra = require('./index.js');
 

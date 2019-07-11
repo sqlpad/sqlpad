@@ -65,7 +65,7 @@ async function runQuery(query, connection) {
     }
     return results;
   } catch (error) {
-    throw new Error(err.message);
+    throw new Error(error.message);
   }
 }
 
