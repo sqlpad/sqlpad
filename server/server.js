@@ -59,63 +59,62 @@ function detectPortOrSystemd(port) {
 /*  Start the Server
 ============================================================================= */
 let server;
-db.loadPromise
-  .then(() => {
-    // determine if key pair exists for certs
-    if (keyPath && certPath) {
-      // https only
-      detectPortOrSystemd(httpsPort).then(function(_port) {
-        if (!isFdObject(_port) && httpsPort !== _port) {
-          console.log(
-            '\nPort %d already occupied. Using port %d instead.',
-            httpsPort,
-            _port
-          );
-          // TODO FIXME XXX  Persist the new port to the in-memory store.
-          // config.set('httpsPort', _port)
-        }
 
-        const privateKey = fs.readFileSync(keyPath, 'utf8');
-        const certificate = fs.readFileSync(certPath, 'utf8');
-        const httpsOptions = {
-          key: privateKey,
-          cert: certificate,
-          passphrase: certPassphrase
-        };
-
-        server = https
-          .createServer(httpsOptions, app)
-          .listen(_port, ip, function() {
-            const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
-            const url = `https://${hostIp}:${_port}${baseUrl}`;
-            console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
-          });
-      });
-    } else {
-      // http only
-      detectPortOrSystemd(port).then(function(_port) {
-        if (!isFdObject(_port) && port !== _port) {
-          console.log(
-            '\nPort %d already occupied. Using port %d instead.',
-            port,
-            _port
-          );
-          // TODO FIXME XXX  Persist the new port to the in-memory store.
-          // config.set('port', _port)
-        }
-        server = http.createServer(app).listen(_port, ip, function() {
-          const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
-          const url = `http://${hostIp}:${_port}${baseUrl}`;
-          console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
-        });
-      });
+async function startServer() {
+  // determine if key pair exists for certs
+  if (keyPath && certPath) {
+    // https only
+    const _port = await detectPortOrSystemd(httpsPort);
+    if (!isFdObject(_port) && httpsPort !== _port) {
+      console.log(
+        '\nPort %d already occupied. Using port %d instead.',
+        httpsPort,
+        _port
+      );
+      // TODO FIXME XXX  Persist the new port to the in-memory store.
+      // config.set('httpsPort', _port)
     }
-  })
-  .catch(error => {
-    console.log('Error starting SQLPad');
-    console.error(error);
-    process.exit(1);
-  });
+
+    const privateKey = fs.readFileSync(keyPath, 'utf8');
+    const certificate = fs.readFileSync(certPath, 'utf8');
+    const httpsOptions = {
+      key: privateKey,
+      cert: certificate,
+      passphrase: certPassphrase
+    };
+
+    server = https
+      .createServer(httpsOptions, app)
+      .listen(_port, ip, function() {
+        const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
+        const url = `https://${hostIp}:${_port}${baseUrl}`;
+        console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
+      });
+  } else {
+    // http only
+    const _port = await detectPortOrSystemd(port);
+    if (!isFdObject(_port) && port !== _port) {
+      console.log(
+        '\nPort %d already occupied. Using port %d instead.',
+        port,
+        _port
+      );
+      // TODO FIXME XXX  Persist the new port to the in-memory store.
+      // config.set('port', _port)
+    }
+    server = http.createServer(app).listen(_port, ip, function() {
+      const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
+      const url = `http://${hostIp}:${_port}${baseUrl}`;
+      console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
+    });
+  }
+}
+
+db.loadPromise.then(startServer).catch(error => {
+  console.log('Error starting SQLPad');
+  console.error(error);
+  process.exit(1);
+});
 
 function handleShutdownSignal(signal) {
   if (!server) {

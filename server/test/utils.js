@@ -32,14 +32,13 @@ function reset() {
   ]);
 }
 
-function resetWithUser() {
-  return reset().then(() => {
-    const saves = Object.keys(users).map(key => {
-      const user = new User(users[key]);
-      return user.save();
-    });
-    return Promise.all(saves);
+async function resetWithUser() {
+  await reset();
+  const saves = Object.keys(users).map(key => {
+    const user = new User(users[key]);
+    return user.save();
   });
+  return Promise.all(saves);
 }
 
 function addAuth(req, role) {
@@ -80,6 +79,13 @@ function put(role, url, body, statusCode = 200) {
     .expect(statusCode)
     .then(response => response.body);
 }
+
+// Sometimes config test is flaky because API returns a forbidden.
+// Is it because db is not ready? This will ensure that for tests.
+before(async function() {
+  await db.loadPromise;
+  return resetWithUser();
+});
 
 module.exports = {
   del,

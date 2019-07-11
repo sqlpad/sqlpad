@@ -46,14 +46,12 @@ describe('lib/config', function() {
   // TODO current config helper test will pick up saved sqlpad config on system if it exists
   // This makes testing difficult when a sqlpad configuration is saved.
   // Loading a config should likely be explicit
-  it('.get() should get a value provided by default', function() {
-    return configUtil.getHelper(db).then(config => {
-      assert.equal(config.get('httpsPort'), 443, 'httpsPort=443');
-    });
+  it('.get() should get a value provided by default', async function() {
+    const config = await configUtil.getHelper(db);
+    assert.equal(config.get('httpsPort'), 443, 'httpsPort=443');
   });
-  it('.get() should only accept key in config items', function() {
-    return configUtil.getHelper(db).then(config => {
-      assert.throws(() => config.get('non-existent-key'), Error);
-    });
+  it('.get() should only accept key in config items', async function() {
+    const config = await configUtil.getHelper(db);
+    assert.throws(() => config.get('non-existent-key'), Error);
   });
 });

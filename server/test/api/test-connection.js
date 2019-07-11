@@ -6,16 +6,15 @@ describe('api/test-connection', function() {
     return utils.resetWithUser();
   });
 
-  it('tests connection', function() {
-    return utils
-      .post('admin', '/api/test-connection', {
-        name: 'test mock',
-        driver: 'mock',
-        host: 'localhost',
-        database: 'sqlpad',
-        username: 'sqlpad',
-        password: 'sqlpad'
-      })
-      .then(body => assert(!body.error, 'Expect no error'));
+  it('tests connection', async function() {
+    const body = await utils.post('admin', '/api/test-connection', {
+      name: 'test mock',
+      driver: 'mock',
+      host: 'localhost',
+      database: 'sqlpad',
+      username: 'sqlpad',
+      password: 'sqlpad'
+    });
+    assert(!body.error, 'Expect no error');
   });
 });
