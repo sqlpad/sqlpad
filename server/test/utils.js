@@ -50,34 +50,32 @@ function addAuth(req, role) {
   return req;
 }
 
-function del(role, url, statusCode = 200) {
+async function del(role, url, statusCode = 200) {
   let req = request(app).delete(url);
   req = addAuth(req, role);
-  return req.expect(statusCode).then(response => response.body);
+  const response = await req.expect(statusCode);
+  return response.body;
 }
 
-function get(role, url, statusCode = 200) {
+async function get(role, url, statusCode = 200) {
   let req = request(app).get(url);
   req = addAuth(req, role);
-  return req.expect(statusCode).then(response => response.body);
+  const response = await req.expect(statusCode);
+  return response.body;
 }
 
-function post(role, url, body, statusCode = 200) {
+async function post(role, url, body, statusCode = 200) {
   let req = request(app).post(url);
   req = addAuth(req, role);
-  return req
-    .send(body)
-    .expect(statusCode)
-    .then(response => response.body);
+  const response = await req.send(body).expect(statusCode);
+  return response.body;
 }
 
-function put(role, url, body, statusCode = 200) {
+async function put(role, url, body, statusCode = 200) {
   let req = request(app).put(url);
   req = addAuth(req, role);
-  return req
-    .send(body)
-    .expect(statusCode)
-    .then(response => response.body);
+  const response = await req.send(body).expect(statusCode);
+  return response.body;
 }
 
 // Sometimes config test is flaky because API returns a forbidden.

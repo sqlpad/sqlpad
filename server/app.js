@@ -20,6 +20,7 @@ const {
 // Cookie secrets are generated randomly at server start
 // SQLPad (currently) is designed for running as a single instance
 // so this should be okay unless SQLPad is frequently restarting
+// TODO FIXME XXX - for v3 make all this configurable
 const cookieSecrets = debug
   ? 'devmode'
   : [1, 2, 3, 4].map(() => crypto.randomBytes(64).toString('hex'));
@@ -84,17 +85,14 @@ if (debug) {
 }
 
 // Add config helper to req
-app.use(function(req, res, next) {
-  configUtil
-    .getHelper(db)
-    .then(config => {
-      req.config = config;
-      next();
-    })
-    .catch(error => {
-      console.error('Error getting config helper', error);
-      next(error);
-    });
+app.use(async function(req, res, next) {
+  try {
+    req.config = await configUtil.getHelper(db);
+    next();
+  } catch (error) {
+    console.error('Error getting config helper', error);
+    next(error);
+  }
 });
 
 /*  Passport setup
