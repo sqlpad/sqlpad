@@ -24,29 +24,28 @@ const savedCliConfig = fromCli(savedArgv);
 const envConfig = fromEnv();
 
 function makeSave(db) {
-  return function save(key, value) {
+  return async function save(key, value) {
     const definition = definitions.find(definition => definition.key === key);
 
     if (definition.interface !== 'ui') {
-      return Promise.reject(
-        new Error(`Config Item ${key} must use ui interface to be saved to db`)
+      throw new Error(
+        `Config Item ${key} must use ui interface to be saved to db`
       );
     }
 
-    return db.config.findOne({ key }).then(doc => {
-      if (doc) {
-        doc.value = value;
-        doc.modifiedDate = new Date();
-        return db.config.update({ _id: doc._id }, doc, {});
-      }
-      const newConfigValue = {
-        key,
-        value,
-        createdDate: new Date(),
-        modifiedDate: new Date()
-      };
-      return db.config.insert(newConfigValue);
-    });
+    const doc = await db.config.findOne({ key });
+    if (doc) {
+      doc.value = value;
+      doc.modifiedDate = new Date();
+      return db.config.update({ _id: doc._id }, doc, {});
+    }
+    const newConfigValue = {
+      key,
+      value,
+      createdDate: new Date(),
+      modifiedDate: new Date()
+    };
+    return db.config.insert(newConfigValue);
   };
 }
 
@@ -77,73 +76,73 @@ exports.getPreDbConfig = function getPreDbConfig() {
  * @param {db} db
  * @returns {Promise} configHelper
  */
-exports.getHelper = function getHelper(db) {
-  return fromDb(db).then(dbConfig => {
-    const all = Object.assign(
-      {},
-      defaultConfig,
-      dbConfig,
-      envConfig,
-      savedCliConfig,
-      cliConfig
-    );
+exports.getHelper = async function getHelper(db) {
+  const dbConfig = await fromDb(db);
 
-    const configHelper = {
-      get: key => {
-        if (!all.hasOwnProperty(key)) {
-          throw new Error(`config item ${key} not defined in configItems.js`);
-        }
-        return all[key];
-      },
-      getConfigItems: () => {
-        return definitions
-          .map(definition => {
-            return Object.assign({}, definition, {
-              effectiveValue: all[definition.key],
-              effectiveValueSource: setBy(
-                cliConfig,
-                savedCliConfig,
-                envConfig,
-                dbConfig,
-                definition.key
-              ),
-              envValue: envConfig[definition.key],
-              cliValue: cliConfig[definition.key],
-              savedCliValue: savedCliConfig[definition.key],
-              dbValue: dbConfig[definition.key]
-            });
-          })
-          .map(item => {
-            if (item.sensitive && item.interface === 'env') {
-              item.effectiveValue = item.effectiveValue ? '**********' : '';
-              item.dbValue = item.dbValue ? '**********' : '';
-              item.default = item.default ? '**********' : '';
-              item.envValue = item.envValue ? '**********' : '';
-              item.cliValue = item.cliValue ? '**********' : '';
-              item.savedCliValue = item.savedCliValue ? '**********' : '';
-            }
-            return item;
+  const all = Object.assign(
+    {},
+    defaultConfig,
+    dbConfig,
+    envConfig,
+    savedCliConfig,
+    cliConfig
+  );
+
+  const configHelper = {
+    get: key => {
+      if (!all.hasOwnProperty(key)) {
+        throw new Error(`config item ${key} not defined in configItems.js`);
+      }
+      return all[key];
+    },
+    getConfigItems: () => {
+      return definitions
+        .map(definition => {
+          return Object.assign({}, definition, {
+            effectiveValue: all[definition.key],
+            effectiveValueSource: setBy(
+              cliConfig,
+              savedCliConfig,
+              envConfig,
+              dbConfig,
+              definition.key
+            ),
+            envValue: envConfig[definition.key],
+            cliValue: cliConfig[definition.key],
+            savedCliValue: savedCliConfig[definition.key],
+            dbValue: dbConfig[definition.key]
           });
-      },
-      getUiConfig: () => {
-        return definitions
-          .filter(item => item.uiDependency)
-          .reduce((configMap, item) => {
-            configMap[item.key] = all[item.key];
-            return configMap;
-          }, {});
-      },
-      save: makeSave(db),
-      smtpConfigured: () =>
-        all.smtpHost &&
-        all.smtpUser &&
-        all.smtpFrom &&
-        all.smtpPort &&
-        all.publicUrl,
-      googleAuthConfigured: () =>
-        all.publicUrl && all.googleClientId && all.googleClientSecret
-    };
+        })
+        .map(item => {
+          if (item.sensitive && item.interface === 'env') {
+            item.effectiveValue = item.effectiveValue ? '**********' : '';
+            item.dbValue = item.dbValue ? '**********' : '';
+            item.default = item.default ? '**********' : '';
+            item.envValue = item.envValue ? '**********' : '';
+            item.cliValue = item.cliValue ? '**********' : '';
+            item.savedCliValue = item.savedCliValue ? '**********' : '';
+          }
+          return item;
+        });
+    },
+    getUiConfig: () => {
+      return definitions
+        .filter(item => item.uiDependency)
+        .reduce((configMap, item) => {
+          configMap[item.key] = all[item.key];
+          return configMap;
+        }, {});
+    },
+    save: makeSave(db),
+    smtpConfigured: () =>
+      all.smtpHost &&
+      all.smtpUser &&
+      all.smtpFrom &&
+      all.smtpPort &&
+      all.publicUrl,
+    googleAuthConfigured: () =>
+      all.publicUrl && all.googleClientId && all.googleClientSecret
+  };
 
-    return configHelper;
-  });
+  return configHelper;
 };

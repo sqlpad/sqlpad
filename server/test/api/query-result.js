@@ -28,55 +28,43 @@ describe('api/query-result', function() {
   let query;
   let connection;
 
-  before(function() {
-    return utils
-      .resetWithUser()
-      .then(() => {
-        return utils
-          .post('admin', '/api/connections', {
-            name: 'test postgres',
-            driver: 'mock',
-            host: 'localhost',
-            database: 'sqlpad',
-            username: 'sqlpad',
-            password: 'sqlpad'
-          })
-          .then(body => {
-            connection = body.connection;
-          });
-      })
-      .then(() => {
-        return utils
-          .post('admin', '/api/queries', {
-            name: 'test query',
-            tags: ['test', 'postgres'],
-            connectionId: connection._id,
-            queryText
-          })
-          .then(body => {
-            query = body.query;
-          });
-      });
-  });
+  before(async function() {
+    await utils.resetWithUser();
 
-  it('GET /api/query-result/:queryId', function() {
-    return utils.get('admin', `/api/query-result/${query._id}`).then(body => {
-      assert(!body.error, 'Expect no error');
-      validateQueryResult(body.queryResult);
+    const connBody = await utils.post('admin', '/api/connections', {
+      name: 'test postgres',
+      driver: 'mock',
+      host: 'localhost',
+      database: 'sqlpad',
+      username: 'sqlpad',
+      password: 'sqlpad'
     });
+    connection = connBody.connection;
+
+    const queryBody = await utils.post('admin', '/api/queries', {
+      name: 'test query',
+      tags: ['test', 'postgres'],
+      connectionId: connection._id,
+      queryText
+    });
+    query = queryBody.query;
   });
 
-  it('POST /api/query-result', function() {
-    return utils
-      .post('admin', `/api/query-result`, {
-        connectionId: connection._id,
-        cacheKey: 'cachekey',
-        queryName: 'test query',
-        queryText
-      })
-      .then(body => {
-        assert(!body.error, 'Expect no error');
-        validateQueryResult(body.queryResult);
-      });
+  it('GET /api/query-result/:queryId', async function() {
+    const body = await utils.get('admin', `/api/query-result/${query._id}`);
+    assert(!body.error, 'Expect no error');
+    validateQueryResult(body.queryResult);
+  });
+
+  it('POST /api/query-result', async function() {
+    const body = await utils.post('admin', `/api/query-result`, {
+      connectionId: connection._id,
+      cacheKey: 'cachekey',
+      queryName: 'test query',
+      queryText
+    });
+
+    assert(!body.error, 'Expect no error');
+    validateQueryResult(body.queryResult);
   });
 });

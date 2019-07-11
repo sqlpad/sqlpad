@@ -45,7 +45,7 @@ function shutdownClient(client) {
  * @param {string} query
  * @param {object} connection
  */
-function runQuery(query, connection) {
+async function runQuery(query, connection) {
   const { contactPoints, keyspace, maxRows } = connection;
 
   const client = new cassandra.Client({
@@ -53,17 +53,15 @@ function runQuery(query, connection) {
     keyspace
   });
 
-  return client
-    .execute(query, [], { fetchSize: maxRows })
-    .then(result => {
-      shutdownClient(client);
-      const incomplete = result.rows && result.rows.length === maxRows;
-      return { rows: result.rows, incomplete };
-    })
-    .catch(error => {
-      shutdownClient(client);
-      throw error;
-    });
+  try {
+    const result = await client.execute(query, [], { fetchSize: maxRows });
+    shutdownClient(client);
+    const incomplete = result.rows && result.rows.length === maxRows;
+    return { rows: result.rows, incomplete };
+  } catch (error) {
+    shutdownClient(client);
+    throw error;
+  }
 }
 
 /**
@@ -80,11 +78,10 @@ function testConnection(connection) {
  * Cassandra driver doesn't accept MAX_SAFE_INTEGER as a fetch limit so we default to one million
  * @param {*} connection
  */
-function getSchema(connection) {
+async function getSchema(connection) {
   connection.maxRows = 1000000;
-  return runQuery(SCHEMA_SQL, connection).then(queryResult =>
-    formatSchemaQueryResults(queryResult)
-  );
+  const queryResult = await runQuery(SCHEMA_SQL, connection);
+  return formatSchemaQueryResults(queryResult);
 }
 
 module.exports = {

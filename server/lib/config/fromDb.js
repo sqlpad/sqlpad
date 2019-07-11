@@ -9,20 +9,19 @@ const uiKeys = definitions
  * @param {object} db
  * @returns {Promise} configMap as a Promise
  */
-module.exports = function getUiConfig(db) {
+module.exports = async function getUiConfig(db) {
   if (!db) {
-    return Promise.reject(new Error('db not provided'));
+    throw new Error('db not provided');
   }
-  return db.config.find({}).then(docs => {
-    if (!docs || !docs.length) {
-      return {};
-    }
-    const configMap = {};
-    docs
-      .filter(doc => uiKeys.includes(doc.key))
-      .forEach(doc => {
-        configMap[doc.key] = doc.value;
-      });
-    return configMap;
-  });
+  const docs = await db.config.find({});
+  if (!docs || !docs.length) {
+    return {};
+  }
+  const configMap = {};
+  docs
+    .filter(doc => uiKeys.includes(doc.key))
+    .forEach(doc => {
+      configMap[doc.key] = doc.value;
+    });
+  return configMap;
 };

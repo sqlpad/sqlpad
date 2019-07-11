@@ -18,20 +18,21 @@ passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
 
-passport.deserializeUser(function(id, done) {
-  return User.findOneById(id)
-    .then(user => {
-      if (user) {
-        return done(null, {
-          id: user._id,
-          _id: user._id,
-          role: user.role,
-          email: user.email
-        });
-      }
-      done(null, false);
-    })
-    .catch(error => done(error));
+passport.deserializeUser(async function(id, done) {
+  try {
+    const user = await User.findOneById(id);
+    if (user) {
+      return done(null, {
+        id: user._id,
+        _id: user._id,
+        role: user.role,
+        email: user.email
+      });
+    }
+    done(null, false);
+  } catch (error) {
+    done(error);
+  }
 });
 
 if (!disableUserpassAuth) {
@@ -40,44 +41,44 @@ if (!disableUserpassAuth) {
       {
         usernameField: 'email'
       },
-      function passportLocalStrategyHandler(email, password, done) {
-        return User.findOneByEmail(email)
-          .then(user => {
-            if (!user) {
-              return done(null, false, { message: 'wrong email or password' });
-            }
-            return user.comparePasswordToHash(password).then(isMatch => {
-              if (isMatch) {
-                return done(null, {
-                  id: user._id,
-                  _id: user._id,
-                  role: user.role,
-                  email: user.email
-                });
-              }
-              return done(null, false, { message: 'wrong email or password' });
+      async function passportLocalStrategyHandler(email, password, done) {
+        try {
+          const user = await User.findOneByEmail(email);
+          if (!user) {
+            return done(null, false, { message: 'wrong email or password' });
+          }
+          const isMatch = await user.comparePasswordToHash(password);
+          if (isMatch) {
+            return done(null, {
+              id: user._id,
+              _id: user._id,
+              role: user.role,
+              email: user.email
             });
-          })
-          .catch(error => done(error));
+          }
+          return done(null, false, { message: 'wrong email or password' });
+        } catch (error) {
+          done(error);
+        }
       }
     )
   );
 
   passport.use(
-    new BasicStrategy(function(username, password, callback) {
-      return User.findOneByEmail(username)
-        .then(user => {
-          if (!user) {
-            return callback(null, false);
-          }
-          return user.comparePasswordToHash(password).then(isMatch => {
-            if (!isMatch) {
-              return callback(null, false);
-            }
-            return callback(null, user);
-          });
-        })
-        .catch(error => callback(error));
+    new BasicStrategy(async function(username, password, callback) {
+      try {
+        const user = await User.findOneByEmail(username);
+        if (!user) {
+          return callback(null, false);
+        }
+        const isMatch = await user.comparePasswordToHash(password);
+        if (!isMatch) {
+          return callback(null, false);
+        }
+        return callback(null, user);
+      } catch (error) {
+        callback(error);
+      }
     })
   );
 }
@@ -97,7 +98,7 @@ if (googleClientId && googleClientSecret && publicUrl) {
   );
 }
 
-function passportGoogleStrategyHandler(
+async function passportGoogleStrategyHandler(
   accessToken,
   refreshToken,
   profile,
@@ -111,38 +112,37 @@ function passportGoogleStrategyHandler(
     });
   }
 
-  return Promise.all([
-    User.adminRegistrationOpen(),
-    User.findOneByEmail(email),
-    configUtil.getHelper(db)
-  ])
-    .then(data => {
-      let [openAdminRegistration, user, config] = data;
-      if (user) {
-        user.signupDate = new Date();
-        return user.save().then(newUser => {
-          newUser.id = newUser._id;
-          return done(null, newUser);
-        });
-      }
-      const whitelistedDomains = config.get('whitelistedDomains');
-      if (openAdminRegistration || checkWhitelist(whitelistedDomains, email)) {
-        user = new User({
-          email,
-          role: openAdminRegistration ? 'admin' : 'editor',
-          signupDate: new Date()
-        });
-        return user.save().then(newUser => {
-          newUser.id = newUser._id;
-          return done(null, newUser);
-        });
-      }
-      // at this point we don't have an error, but authentication is invalid
-      // per passport docs, we call done() here without an error
-      // instead passing false for user and a message why
-      return done(null, false, {
-        message: "You haven't been invited by an admin yet."
+  try {
+    let [openAdminRegistration, user, config] = await Promise.all([
+      User.adminRegistrationOpen(),
+      User.findOneByEmail(email),
+      configUtil.getHelper(db)
+    ]);
+
+    if (user) {
+      user.signupDate = new Date();
+      const newUser = await user.save();
+      newUser.id = newUser._id;
+      return done(null, newUser);
+    }
+    const whitelistedDomains = config.get('whitelistedDomains');
+    if (openAdminRegistration || checkWhitelist(whitelistedDomains, email)) {
+      user = new User({
+        email,
+        role: openAdminRegistration ? 'admin' : 'editor',
+        signupDate: new Date()
       });
-    })
-    .catch(error => done(error, null));
+      const newUser = await user.save();
+      newUser.id = newUser._id;
+      return done(null, newUser);
+    }
+    // at this point we don't have an error, but authentication is invalid
+    // per passport docs, we call done() here without an error
+    // instead passing false for user and a message why
+    return done(null, false, {
+      message: "You haven't been invited by an admin yet."
+    });
+  } catch (error) {
+    done(error, null);
+  }
 }

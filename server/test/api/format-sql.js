@@ -6,18 +6,14 @@ describe('api/format-sql', function() {
     return utils.resetWithUser();
   });
 
-  it('format sql query', function() {
-    return utils
-      .post('admin', '/api/format-sql', {
-        query: 'SELECT column_one, column_two FROM sometable'
-      })
-      .then(body => {
-        console.log(body);
-        assert.equal(
-          body.query,
-          'SELECT\n  column_one,\n  column_two\nFROM\n  sometable'
-        );
-        assert(!body.error, 'Expect no error');
-      });
+  it('format sql query', async function() {
+    const body = await utils.post('admin', '/api/format-sql', {
+      query: 'SELECT column_one, column_two FROM sometable'
+    });
+    assert.equal(
+      body.query,
+      'SELECT\n  column_one,\n  column_two\nFROM\n  sometable'
+    );
+    assert(!body.error, 'Expect no error');
   });
 });

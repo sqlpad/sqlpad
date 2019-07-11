@@ -25,26 +25,23 @@ function logUpdateAvailable(version) {
   `);
 }
 
-function checkForUpdate() {
-  return configUtil
-    .getHelper(db)
-    .then(config => {
-      if (config.get('disableUpdateCheck')) {
-        return;
-      }
-      return latestVersion(packageJson.name).then(npmVersion => {
-        version.latest = npmVersion;
-        const difference = semverDiff(version.current, npmVersion);
-        if (difference) {
-          version.updateAvailable = true;
-          version.updateType = difference;
-          logUpdateAvailable(version);
-        }
-      });
-    })
-    .catch(error => {
-      console.log(error);
-    });
+async function checkForUpdate() {
+  try {
+    const config = await configUtil.getHelper(db);
+    if (config.get('disableUpdateCheck')) {
+      return;
+    }
+    const npmVersion = await latestVersion(packageJson.name);
+    version.latest = npmVersion;
+    const difference = semverDiff(version.current, npmVersion);
+    if (difference) {
+      version.updateAvailable = true;
+      version.updateType = difference;
+      logUpdateAvailable(version);
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 module.exports = {

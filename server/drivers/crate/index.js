@@ -43,7 +43,7 @@ const SCHEMA_SQL_V1 = `
  * @param {string} query
  * @param {object} connection
  */
-function runQuery(query, connection) {
+async function runQuery(query, connection) {
   const { maxRows } = connection;
   const limit = maxRows < CRATE_LIMIT ? maxRows : CRATE_LIMIT;
 
@@ -53,24 +53,20 @@ function runQuery(query, connection) {
     crate.connect(connection.host);
   }
 
-  return crate
-    .execute(query)
-    .then(res => {
-      const results = {
-        rows: res.json,
-        incomplete: false
-      };
-
-      if (results.rows.length >= limit) {
-        results.incomplete = true;
-        results.rows = results.rows.slice(0, limit);
-      }
-
-      return results;
-    })
-    .catch(err => {
-      throw new Error(err.message);
-    });
+  try {
+    const res = await crate.execute(query);
+    const results = {
+      rows: res.json,
+      incomplete: false
+    };
+    if (results.rows.length >= limit) {
+      results.incomplete = true;
+      results.rows = results.rows.slice(0, limit);
+    }
+    return results;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 }
 
 /**
@@ -89,14 +85,14 @@ function testConnection(connection) {
  * If that errors out as well, then let that error bubble up
  * @param {*} connection
  */
-function getSchema(connection) {
-  return runQuery(SCHEMA_SQL_V1, connection)
-    .then(queryResult => formatSchemaQueryResults(queryResult))
-    .catch(() =>
-      runQuery(SCHEMA_SQL_V0, connection).then(queryResult =>
-        formatSchemaQueryResults(queryResult)
-      )
-    );
+async function getSchema(connection) {
+  try {
+    const queryResult = await runQuery(SCHEMA_SQL_V1, connection);
+    return formatSchemaQueryResults(queryResult);
+  } catch (error) {
+    const queryResult = await runQuery(SCHEMA_SQL_V0, connection);
+    return formatSchemaQueryResults(queryResult);
+  }
 }
 
 const fields = [

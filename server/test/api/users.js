@@ -8,43 +8,36 @@ describe('api/users', function() {
     return utils.resetWithUser();
   });
 
-  it('Returns initial array', function() {
-    return utils.get('admin', '/api/users').then(body => {
-      assert(!body.error, 'Expect no error');
-      assert(Array.isArray(body.users), 'users is an array');
-      assert.equal(body.users.length, 2, '2 length');
+  it('Returns initial array', async function() {
+    const body = await utils.get('admin', '/api/users');
+    assert(!body.error, 'Expect no error');
+    assert(Array.isArray(body.users), 'users is an array');
+    assert.equal(body.users.length, 2, '2 length');
+  });
+
+  it('Creates user', async function() {
+    const body = await utils.post('admin', '/api/users', {
+      email: 'user1@test.com',
+      role: 'editor'
     });
+
+    assert(!body.error, 'no error');
+    assert(body.user._id, 'has _id');
+    assert.equal(body.user.email, 'user1@test.com');
+    user = body.user;
   });
 
-  it('Creates user', function() {
-    return utils
-      .post('admin', '/api/users', {
-        email: 'user1@test.com',
-        role: 'editor'
-      })
-      .then(body => {
-        assert(!body.error, 'no error');
-        assert(body.user._id, 'has _id');
-        assert.equal(body.user.email, 'user1@test.com');
-        user = body.user;
-      });
+  it('Gets list of users', async function() {
+    const body = await utils.get('admin', '/api/users');
+    assert.equal(body.users.length, 3, '3 length');
   });
 
-  it('Gets list of users', function() {
-    return utils
-      .get('admin', '/api/users')
-      .then(body => assert.equal(body.users.length, 3, '3 length'));
-  });
-
-  it('Updates user', function() {
-    return utils
-      .put('admin', `/api/users/${user._id}`, {
-        role: 'admin'
-      })
-      .then(body => {
-        assert(!body.error, 'no error');
-        assert.equal(body.user.role, 'admin');
-      });
+  it('Updates user', async function() {
+    const body = await utils.put('admin', `/api/users/${user._id}`, {
+      role: 'admin'
+    });
+    assert(!body.error, 'no error');
+    assert.equal(body.user.role, 'admin');
   });
 
   it('Requires authentication', function() {
@@ -63,17 +56,15 @@ describe('api/users', function() {
     );
   });
 
-  it('Deletes user', function() {
-    return utils
-      .del('admin', `/api/users/${user._id}`)
-      .then(body => assert(!body.error, 'no error'));
+  it('Deletes user', async function() {
+    const body = await utils.del('admin', `/api/users/${user._id}`);
+    assert(!body.error, 'no error');
   });
 
-  it('Returns expected list', function() {
-    return utils.get('admin', '/api/users').then(body => {
-      assert(!body.error, 'Expect no error');
-      assert(Array.isArray(body.users), 'users is an array');
-      assert.equal(body.users.length, 2, '2 length');
-    });
+  it('Returns expected list', async function() {
+    const body = await utils.get('admin', '/api/users');
+    assert(!body.error, 'Expect no error');
+    assert(Array.isArray(body.users), 'users is an array');
+    assert.equal(body.users.length, 2, '2 length');
   });
 });
