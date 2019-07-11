@@ -6,11 +6,10 @@ describe('api/drivers', function() {
     return utils.resetWithUser();
   });
 
-  it('gets drivers', function() {
-    return utils.get('editor', '/api/drivers').then(body => {
-      const { drivers, error } = body;
-      assert(!error, 'Expect no error');
-      assert(drivers.find(i => i.id === 'postgres'), 'has postgres');
-    });
+  it('gets drivers', async function() {
+    const body = await utils.get('editor', '/api/drivers');
+    const { drivers, error } = body;
+    assert(!error, 'Expect no error');
+    assert(drivers.find(i => i.id === 'postgres'), 'has postgres');
   });
 });

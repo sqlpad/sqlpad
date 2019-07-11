@@ -6,51 +6,46 @@ describe('api/signup', function() {
     return utils.reset();
   });
 
-  it('allows new user signup', function() {
-    return utils
-      .post(null, '/api/signup', {
-        password: 'admin',
-        passwordConfirmation: 'admin',
-        email: 'admin@test.com'
-      })
-      .then(body => assert(!body.error, 'Expect no error'));
+  it('allows new user signup', async function() {
+    const body = await utils.post(null, '/api/signup', {
+      password: 'admin',
+      passwordConfirmation: 'admin',
+      email: 'admin@test.com'
+    });
+    assert(!body.error, 'Expect no error');
   });
 
-  it('prevents duplicate signups', function() {
-    return utils
-      .post(null, '/api/signup', {
-        password: 'admin',
-        passwordConfirmation: 'admin',
-        email: 'admin@test.com'
-      })
-      .then(body => assert(body.error, 'Expect error user already signed up'));
+  it('prevents duplicate signups', async function() {
+    const body = await utils.post(null, '/api/signup', {
+      password: 'admin',
+      passwordConfirmation: 'admin',
+      email: 'admin@test.com'
+    });
+    assert(body.error, 'Expect error user already signed up');
   });
 
-  it('prevents open signups', function() {
-    return utils
-      .post(null, '/api/signup', {
-        password: 'notwhitelisted',
-        passwordConfirmation: 'notwhitelisted',
-        email: 'notwhitelisted@test.com'
-      })
-      .then(body => assert(body.error, 'Expect error needing whitelist'));
+  it('prevents open signups', async function() {
+    const body = await utils.post(null, '/api/signup', {
+      password: 'notwhitelisted',
+      passwordConfirmation: 'notwhitelisted',
+      email: 'notwhitelisted@test.com'
+    });
+    assert(body.error, 'Expect error needing whitelist');
   });
 
-  it('supports case insensitive login', function() {
-    return utils
-      .post('admin', '/api/users', {
-        email: 'userCase@test.com',
-        role: 'editor'
-      })
-      .then(body => {
-        assert(!body.error, 'no error');
-        return utils.post(null, '/api/signup', {
-          password: 'password',
-          passwordConfirmation: 'password',
-          email: 'Usercase@test.com'
-        });
-      })
-      .then(body => assert(!body.error, 'Expect no error'));
+  it('supports case insensitive login', async function() {
+    const body = await utils.post('admin', '/api/users', {
+      email: 'userCase@test.com',
+      role: 'editor'
+    });
+    assert(!body.error, 'no error');
+
+    const body2 = await utils.post(null, '/api/signup', {
+      password: 'password',
+      passwordConfirmation: 'password',
+      email: 'Usercase@test.com'
+    });
+    assert(!body2.error, 'Expect no error');
   });
 });
 
@@ -58,12 +53,11 @@ describe('api/signin', function() {
   before(function() {
     return utils.resetWithUser();
   });
-  it('signs in user', function() {
-    return utils
-      .post(null, '/api/signin', {
-        password: 'admin',
-        email: 'admin@test.com'
-      })
-      .then(body => assert(!body.error, 'Expect no error'));
+  it('signs in user', async function() {
+    const body = await utils.post(null, '/api/signin', {
+      password: 'admin',
+      email: 'admin@test.com'
+    });
+    assert(!body.error, 'Expect no error');
   });
 });

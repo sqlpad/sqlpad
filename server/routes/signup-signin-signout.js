@@ -8,45 +8,48 @@ const sendError = require('../lib/sendError');
 // since these configs are set via env or cli
 const { disableUserpassAuth } = require('../lib/config').getPreDbConfig();
 
-function handleSignup(req, res, next) {
-  const whitelistedDomains = req.config.get('whitelistedDomains');
+async function handleSignup(req, res, next) {
+  try {
+    const whitelistedDomains = req.config.get('whitelistedDomains');
 
-  if (req.body.password !== req.body.passwordConfirmation) {
-    return sendError(res, null, 'Passwords do not match');
+    if (req.body.password !== req.body.passwordConfirmation) {
+      return sendError(res, null, 'Passwords do not match');
+    }
+
+    let [user, adminRegistrationOpen] = await Promise.all([
+      User.findOneByEmail(req.body.email),
+      User.adminRegistrationOpen()
+    ]);
+
+    if (user && user.passhash) {
+      return sendError(res, null, 'User already signed up');
+    }
+    if (user) {
+      user.password = req.body.password;
+      user.signupDate = new Date();
+    }
+    if (!user) {
+      // if open admin registration or whitelisted email create user
+      // otherwise exit
+      if (
+        adminRegistrationOpen ||
+        checkWhitelist(whitelistedDomains, req.body.email)
+      ) {
+        user = new User({
+          email: req.body.email,
+          password: req.body.password,
+          role: adminRegistrationOpen ? 'admin' : 'editor',
+          signupDate: new Date()
+        });
+      } else {
+        return sendError(res, null, 'Email address not whitelisted');
+      }
+    }
+    await user.save();
+    next();
+  } catch (error) {
+    sendError(res, error, 'Error saving user');
   }
-  return Promise.all([
-    User.findOneByEmail(req.body.email),
-    User.adminRegistrationOpen()
-  ])
-    .then(data => {
-      let [user, adminRegistrationOpen] = data;
-      if (user && user.passhash) {
-        return sendError(res, null, 'User already signed up');
-      }
-      if (user) {
-        user.password = req.body.password;
-        user.signupDate = new Date();
-      }
-      if (!user) {
-        // if open admin registration or whitelisted email create user
-        // otherwise exit
-        if (
-          adminRegistrationOpen ||
-          checkWhitelist(whitelistedDomains, req.body.email)
-        ) {
-          user = new User({
-            email: req.body.email,
-            password: req.body.password,
-            role: adminRegistrationOpen ? 'admin' : 'editor',
-            signupDate: new Date()
-          });
-        } else {
-          return sendError(res, null, 'Email address not whitelisted');
-        }
-      }
-      return user.save().then(() => next());
-    })
-    .catch(error => sendError(res, error, 'Error saving user'));
 }
 
 function sendSuccess(req, res) {

@@ -36,46 +36,45 @@ function sendInvite(to) {
   return send(to, "You've been invited to SQLPad", text, html);
 }
 
-function send(to, subject, text, html) {
-  return configUtil.getHelper(db).then(config => {
-    if (!config.smtpConfigured()) {
-      console.error('email.send() called without being configured');
-      return;
+async function send(to, subject, text, html) {
+  const config = await configUtil.getHelper(db);
+
+  if (!config.smtpConfigured()) {
+    console.error('email.send() called without being configured');
+    return;
+  }
+
+  const smtpConfig = {
+    host: config.get('smtpHost'),
+    port: config.get('smtpPort'),
+    secure: config.get('smtpSecure'),
+    auth: {
+      user: config.get('smtpUser'),
+      pass: config.get('smtpPassword')
+    },
+    tls: {
+      ciphers: 'SSLv3'
     }
-    if (config.get('debug')) {
-      console.log('sending email');
-    }
-    const smtpConfig = {
-      host: config.get('smtpHost'),
-      port: config.get('smtpPort'),
-      secure: config.get('smtpSecure'),
-      auth: {
-        user: config.get('smtpUser'),
-        pass: config.get('smtpPassword')
-      },
-      tls: {
-        ciphers: 'SSLv3'
-      }
+  };
+
+  return new Promise((resolve, reject) => {
+    const transporter = nodemailer.createTransport(smtpConfig);
+    const mailOptions = {
+      from: config.get('smtpFrom'),
+      to,
+      subject,
+      text,
+      html
     };
-    return new Promise((resolve, reject) => {
-      const transporter = nodemailer.createTransport(smtpConfig);
-      const mailOptions = {
-        from: config.get('smtpFrom'),
-        to,
-        subject,
-        text,
-        html
-      };
-      transporter.sendMail(mailOptions, function(err, info) {
-        if (config.get('debug')) {
-          console.log('sent email: ' + info);
-        }
-        if (err) {
-          console.error(err);
-          return reject(err);
-        }
-        resolve(info);
-      });
+    transporter.sendMail(mailOptions, function(err, info) {
+      if (config.get('debug')) {
+        console.log('sent email: ' + info);
+      }
+      if (err) {
+        console.error(err);
+        return reject(err);
+      }
+      resolve(info);
     });
   });
 }
