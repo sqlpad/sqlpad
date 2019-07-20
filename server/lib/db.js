@@ -2,7 +2,6 @@ const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
 const { admin, dbPath, debug, port } = require('./config').getPreDbConfig();
-const migrateSchema = require('./migrate-schema.js');
 
 mkdirp.sync(path.join(dbPath, '/cache'));
 
@@ -27,7 +26,6 @@ async function init() {
       return db[dbname].loadDatabase();
     })
   );
-  await migrateSchema(db);
   await db.users.ensureIndex({ fieldName: 'email', unique: true });
   await db.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
   await db.config.ensureIndex({ fieldName: 'key', unique: true });
