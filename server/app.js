@@ -112,8 +112,6 @@ const routers = [
   require('./routes/query-result.js'),
   require('./routes/download-results.js'), // streams result download to browser
   require('./routes/schema-info.js'),
-  require('./routes/config-items.js'),
-  require('./routes/config-values.js'),
   require('./routes/tags.js'),
   require('./routes/format-sql.js'),
   require('./routes/signup-signin-signout.js')
