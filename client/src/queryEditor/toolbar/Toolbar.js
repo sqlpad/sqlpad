@@ -16,7 +16,6 @@ import Drawer from '../../common/Drawer';
 import IconButton from '../../common/IconButton';
 import IconMenu from '../../common/IconMenu';
 import Input from '../../common/Input';
-import ConfigurationForm from '../../configuration/ConfigurationForm';
 import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
 import {
   formatQuery,
@@ -87,7 +86,6 @@ function Toolbar({
   unsavedChanges
 }) {
   const [showTags, setShowTags] = useState(false);
-  const [showConfig, setShowConfig] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [redirectToSignIn, setRedirectToSignIn] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
@@ -107,9 +105,6 @@ function Toolbar({
   let menuItems = [];
   if (isAdmin) {
     menuItems = [
-      <MenuItem key="config" onSelect={() => setShowConfig(true)}>
-        Configuration
-      </MenuItem>,
       <MenuItem key="connections" onSelect={() => setShowConnections(true)}>
         Connections
       </MenuItem>,
@@ -218,16 +213,6 @@ function Toolbar({
             Sign out
           </MenuItem>
         </IconMenu>
-
-        <Drawer
-          title={'Configuration'}
-          visible={showConfig}
-          width={600}
-          onClose={() => setShowConfig(false)}
-          placement={'right'}
-        >
-          <ConfigurationForm onClose={() => setShowConfig(false)} />
-        </Drawer>
 
         <Drawer
           title={'Users'}
