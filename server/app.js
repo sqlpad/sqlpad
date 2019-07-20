@@ -102,7 +102,6 @@ require('./middleware/passport.js');
 /*  Routes
 ============================================================================= */
 const routers = [
-  require('./routes/homepage.js'),
   require('./routes/drivers.js'),
   require('./routes/users.js'),
   require('./routes/forgot-password.js'),
