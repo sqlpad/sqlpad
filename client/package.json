@@ -26,7 +26,6 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "^3.0.1",
     "react-split-pane": "^0.1.87",
-    "react-switch": "^5.0.0",
     "react-window": "^1.8.3",
     "taucharts": "^2.7.3",
     "unistore": "^3.4.1",
