@@ -4,7 +4,6 @@ const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const BasicStrategy = require('passport-http').BasicStrategy;
 const User = require('../models/User.js');
 const configUtil = require('../lib/config');
-const db = require('../lib/db');
 const checkWhitelist = require('../lib/check-whitelist.js');
 const {
   baseUrl,
@@ -113,10 +112,10 @@ async function passportGoogleStrategyHandler(
   }
 
   try {
-    let [openAdminRegistration, user, config] = await Promise.all([
+    const config = configUtil.getHelper();
+    let [openAdminRegistration, user] = await Promise.all([
       User.adminRegistrationOpen(),
-      User.findOneByEmail(email),
-      configUtil.getHelper(db)
+      User.findOneByEmail(email)
     ]);
 
     if (user) {
