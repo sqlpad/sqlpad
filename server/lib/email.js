@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const configUtil = require('./config');
-const db = require('./db');
 const { baseUrl, port, publicUrl } = require('./config').getPreDbConfig();
 
 /**
@@ -37,7 +36,7 @@ function sendInvite(to) {
 }
 
 async function send(to, subject, text, html) {
-  const config = await configUtil.getHelper(db);
+  const config = configUtil.getHelper();
 
   if (!config.smtpConfigured()) {
     console.error('email.send() called without being configured');

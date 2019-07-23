@@ -1,6 +1,5 @@
 const assert = require('assert');
 const configUtil = require('../../lib/config');
-const db = require('../../lib/db');
 
 const configItems = require('../../lib/config/configItems');
 const fromDefault = require('../../lib/config/fromDefault');
@@ -47,11 +46,11 @@ describe('lib/config', function() {
   // This makes testing difficult when a sqlpad configuration is saved.
   // Loading a config should likely be explicit
   it('.get() should get a value provided by default', async function() {
-    const config = await configUtil.getHelper(db);
+    const config = configUtil.getHelper();
     assert.equal(config.get('httpsPort'), 443, 'httpsPort=443');
   });
   it('.get() should only accept key in config items', async function() {
-    const config = await configUtil.getHelper(db);
+    const config = configUtil.getHelper();
     assert.throws(() => config.get('non-existent-key'), Error);
   });
 });

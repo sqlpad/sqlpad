@@ -2,11 +2,8 @@
 // Nothing else sent unless using configuration page/api
 // This is to reduce leaking unnecessary information
 
-// NOTE: sensitve=true items will be masked with *** in configuration page
-
 const configItems = [
   {
-    interface: 'env',
     key: 'ip',
     cliFlag: 'ip',
     envVar: 'SQLPAD_IP',
@@ -15,7 +12,6 @@ const configItems = [
       'IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0).'
   },
   {
-    interface: 'env',
     key: 'port',
     cliFlag: 'port',
     envVar: 'SQLPAD_PORT',
@@ -23,7 +19,6 @@ const configItems = [
     description: 'Port for SQLPad to listen on.'
   },
   {
-    interface: 'env',
     key: 'systemdSocket',
     cliFlag: 'systemd-socket',
     envVar: 'SQLPAD_SYSTEMD_SOCKET',
@@ -31,7 +26,6 @@ const configItems = [
     description: 'Acquire socket from systemd if available'
   },
   {
-    interface: 'env',
     key: 'httpsPort',
     cliFlag: 'https-port',
     envVar: 'SQLPAD_HTTPS_PORT',
@@ -39,7 +33,6 @@ const configItems = [
     description: 'Port for SQLPad to listen on.'
   },
   {
-    interface: 'env',
     key: 'dbPath',
     cliFlag: ['db', 'dbPath', 'dir'],
     envVar: 'SQLPAD_DB_PATH',
@@ -48,7 +41,6 @@ const configItems = [
       'Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.'
   },
   {
-    interface: 'env',
     key: 'baseUrl',
     cliFlag: 'base-url',
     envVar: 'SQLPAD_BASE_URL',
@@ -58,26 +50,21 @@ const configItems = [
       "Path to mount sqlpad app following domain. \nFor example, if '/sqlpad' is provided, queries page \nwould be located at mydomain.com/sqlpad/queries instead of mydomain.com/queries. \nUseful when subdomain is not an option."
   },
   {
-    interface: 'env',
     key: 'passphrase',
     cliFlag: 'passphrase',
     envVar: 'SQLPAD_PASSPHRASE',
-    sensitive: true,
     default: "At least the sensitive bits won't be plain text?",
     description:
       'A string of text used to encrypt sensitive values when stored on disk.'
   },
   {
-    interface: 'env',
     key: 'certPassphrase',
     cliFlag: 'cert-passphrase',
     envVar: 'CERT_PASSPHRASE',
-    sensitive: true,
     default: 'No cert',
     description: 'Passphrase for your SSL certification file'
   },
   {
-    interface: 'env',
     key: 'keyPath',
     cliFlag: ['key', 'key-path', 'key-dir'],
     envVar: 'KEY_PATH',
@@ -85,7 +72,6 @@ const configItems = [
     description: 'Absolute path to where SSL certificate key is stored'
   },
   {
-    interface: 'env',
     key: 'certPath',
     cliFlag: ['cert', 'cert-path', 'cert-dir'],
     envVar: 'CERT_PATH',
@@ -93,7 +79,6 @@ const configItems = [
     description: 'Absolute path to where SSL certificate is stored'
   },
   {
-    interface: 'env',
     key: 'admin',
     cliFlag: 'admin',
     envVar: 'SQLPAD_ADMIN',
@@ -102,7 +87,6 @@ const configItems = [
       'Email address to whitelist/give admin permissions to via command line or environment variable. Useful to preset Admin account or to reinstate admin access without access to the UI.'
   },
   {
-    interface: 'env',
     key: 'debug',
     cliFlag: 'debug',
     envVar: 'SQLPAD_DEBUG',
@@ -110,25 +94,20 @@ const configItems = [
     description: 'Add a variety of logging to console while running SQLPad'
   },
   {
-    interface: 'env',
     key: 'googleClientId',
     envVar: 'GOOGLE_CLIENT_ID',
-    sensitive: true,
     description:
       "Google Client ID used for OAuth setup. Note: authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
     default: ''
   },
   {
-    interface: 'env',
     key: 'googleClientSecret',
     envVar: 'GOOGLE_CLIENT_SECRET',
-    sensitive: true,
     description:
       "Google Client Secret used for OAuth setup. Note: authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
     default: ''
   },
   {
-    interface: 'env',
     key: 'publicUrl',
     envVar: 'PUBLIC_URL',
     cliFlag: 'public-url',
@@ -138,7 +117,6 @@ const configItems = [
     uiDependency: true
   },
   {
-    interface: 'env',
     key: 'disableUserpassAuth',
     envVar: 'DISABLE_USERPASS_AUTH',
     description:
@@ -146,7 +124,6 @@ const configItems = [
     default: false
   },
   {
-    interface: 'ui',
     key: 'allowCsvDownload',
     label: 'Allow CSV/XLSX Download',
     description: 'Set to false to disable csv or xlsx downloads.',
@@ -155,7 +132,6 @@ const configItems = [
     default: true
   },
   {
-    interface: 'ui',
     key: 'editorWordWrap',
     label: 'Editor Word Wrap',
     description: 'Set to true to enable word wrapping in SQL editor.',
@@ -164,7 +140,6 @@ const configItems = [
     default: false
   },
   {
-    interface: 'ui',
     key: 'queryResultMaxRows',
     label: 'Query Result Max Rows',
     description: 'By default query results are limited to 50,000 records.',
@@ -172,14 +147,12 @@ const configItems = [
     uiDependency: true
   },
   {
-    interface: 'ui',
     key: 'slackWebhook',
     label: 'Slack Webhook URL',
     description: 'Supply incoming Slack webhook URL to post query when saved.',
     default: ''
   },
   {
-    interface: 'ui',
     key: 'showSchemaCopyButton',
     label: 'Show Schema Copy Button',
     description:
@@ -189,7 +162,6 @@ const configItems = [
     uiDependency: true
   },
   {
-    interface: 'ui',
     key: 'tableChartLinksRequireAuth',
     label: 'Require Login for Table/Chart Links',
     description:
@@ -198,7 +170,6 @@ const configItems = [
     default: true
   },
   {
-    interface: 'ui',
     key: 'smtpFrom',
     envVar: 'SQLPAD_SMTP_FROM',
     cliFlag: 'smtp-from',
@@ -208,7 +179,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'ui',
     key: 'smtpHost',
     envVar: 'SQLPAD_SMTP_HOST',
     cliFlag: 'smtp-host',
@@ -218,7 +188,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'ui',
     key: 'smtpPort',
     envVar: 'SQLPAD_SMTP_PORT',
     cliFlag: 'smtp-port',
@@ -227,7 +196,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'ui',
     key: 'smtpSecure',
     envVar: 'SQLPAD_SMTP_SECURE',
     cliFlag: 'smtp-secure',
@@ -237,7 +205,6 @@ const configItems = [
     default: true
   },
   {
-    interface: 'ui',
     key: 'smtpUser',
     envVar: 'SQLPAD_SMTP_USER',
     cliFlag: 'smtp-user',
@@ -247,17 +214,14 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'ui',
     key: 'smtpPassword',
     envVar: 'SQLPAD_SMTP_PASSWORD',
     cliFlag: 'smtp-password',
     label: 'SMTP Password',
     description: 'Password for SMTP.',
-    default: '',
-    sensitive: true
+    default: ''
   },
   {
-    interface: 'ui',
     key: 'whitelistedDomains',
     label: 'Whitelisted Domains',
     envVar: 'WHITELISTED_DOMAINS',
@@ -267,7 +231,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'ui',
     key: 'disableUpdateCheck',
     envVar: 'SQLPAD_DISABLE_UPDATE_CHECK',
     cliFlag: 'disable-update-check',

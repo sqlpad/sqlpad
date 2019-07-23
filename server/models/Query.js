@@ -88,39 +88,32 @@ Query.prototype.save = function save() {
 };
 
 Query.prototype.pushQueryToSlackIfSetup = function() {
-  return configUtil
-    .getHelper(db)
-    .then(config => {
-      const SLACK_WEBHOOK = config.get('slackWebhook');
-      if (SLACK_WEBHOOK) {
-        const PUBLIC_URL = config.get('publicUrl');
-        const BASE_URL = config.get('baseUrl');
-        const options = {
-          method: 'post',
-          body: {
-            text: `New Query <${PUBLIC_URL}${BASE_URL}/queries/${this._id}|${
-              this.name
-            }> 
+  const config = configUtil.getHelper();
+  const SLACK_WEBHOOK = config.get('slackWebhook');
+  if (SLACK_WEBHOOK) {
+    const PUBLIC_URL = config.get('publicUrl');
+    const BASE_URL = config.get('baseUrl');
+    const options = {
+      method: 'post',
+      body: {
+        text: `New Query <${PUBLIC_URL}${BASE_URL}/queries/${this._id}|${
+          this.name
+        }> 
             saved by ${this.modifiedBy} on SQLPad 
             ${'```'}
             ${this.queryText}
             ${'```'}`
-          },
-          json: true,
-          url: SLACK_WEBHOOK
-        };
-        request(options, function(err) {
-          if (err) {
-            console.error('Something went wrong while sending to Slack.');
-            console.error(err);
-          }
-        });
+      },
+      json: true,
+      url: SLACK_WEBHOOK
+    };
+    request(options, function(err) {
+      if (err) {
+        console.error('Something went wrong while sending to Slack.');
+        console.error(err);
       }
-    })
-    .catch(error => {
-      console.log('error getting config helper');
-      console.error(error);
     });
+  }
 };
 
 /*  Query methods

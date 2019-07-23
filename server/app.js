@@ -7,7 +7,6 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const configUtil = require('./lib/config');
 const version = require('./lib/version');
-const db = require('./lib/db');
 const {
   baseUrl,
   googleClientId,
@@ -87,7 +86,7 @@ if (debug) {
 // Add config helper to req
 app.use(async function(req, res, next) {
   try {
-    req.config = await configUtil.getHelper(db);
+    req.config = configUtil.getHelper();
     next();
   } catch (error) {
     console.error('Error getting config helper', error);
@@ -112,8 +111,6 @@ const routers = [
   require('./routes/query-result.js'),
   require('./routes/download-results.js'), // streams result download to browser
   require('./routes/schema-info.js'),
-  require('./routes/config-items.js'),
-  require('./routes/config-values.js'),
   require('./routes/tags.js'),
   require('./routes/format-sql.js'),
   require('./routes/signup-signin-signout.js')

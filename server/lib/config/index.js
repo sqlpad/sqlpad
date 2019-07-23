@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const minimist = require('minimist');
 const definitions = require('./configItems');
-const fromDb = require('./fromDb');
 const fromDefault = require('./fromDefault');
 const fromEnv = require('./fromEnv');
 const fromCli = require('./fromCli');
@@ -23,48 +22,21 @@ const cliConfig = fromCli(argv);
 const savedCliConfig = fromCli(savedArgv);
 const envConfig = fromEnv();
 
-function makeSave(db) {
-  return async function save(key, value) {
-    const definition = definitions.find(definition => definition.key === key);
-
-    if (definition.interface !== 'ui') {
-      throw new Error(
-        `Config Item ${key} must use ui interface to be saved to db`
-      );
-    }
-
-    const doc = await db.config.findOne({ key });
-    if (doc) {
-      doc.value = value;
-      doc.modifiedDate = new Date();
-      return db.config.update({ _id: doc._id }, doc, {});
-    }
-    const newConfigValue = {
-      key,
-      value,
-      createdDate: new Date(),
-      modifiedDate: new Date()
-    };
-    return db.config.insert(newConfigValue);
-  };
-}
-
-function setBy(cliConfig, savedCliConfig, envConfig, dbConfig, key) {
+function setBy(cliConfig, savedCliConfig, envConfig, key) {
   if (cliConfig[key]) {
     return 'cli';
   } else if (savedCliConfig[key]) {
     return 'saved cli';
   } else if (envConfig[key]) {
     return 'env';
-  } else if (dbConfig[key]) {
-    return 'db';
   } else {
     return 'default';
   }
 }
 
 /**
- * Get all config item values sans values from UI/db
+ * TODO FIXME XXX - this is no longer necessary as config helper is all the config.
+ * there is no more db to consider
  * @returns {object} configMap
  */
 exports.getPreDbConfig = function getPreDbConfig() {
@@ -73,16 +45,12 @@ exports.getPreDbConfig = function getPreDbConfig() {
 
 /**
  * Gets config helper using all config sources
- * @param {db} db
  * @returns {Promise} configHelper
  */
-exports.getHelper = async function getHelper(db) {
-  const dbConfig = await fromDb(db);
-
+exports.getHelper = function getHelper() {
   const all = Object.assign(
     {},
     defaultConfig,
-    dbConfig,
     envConfig,
     savedCliConfig,
     cliConfig
@@ -96,34 +64,20 @@ exports.getHelper = async function getHelper(db) {
       return all[key];
     },
     getConfigItems: () => {
-      return definitions
-        .map(definition => {
-          return Object.assign({}, definition, {
-            effectiveValue: all[definition.key],
-            effectiveValueSource: setBy(
-              cliConfig,
-              savedCliConfig,
-              envConfig,
-              dbConfig,
-              definition.key
-            ),
-            envValue: envConfig[definition.key],
-            cliValue: cliConfig[definition.key],
-            savedCliValue: savedCliConfig[definition.key],
-            dbValue: dbConfig[definition.key]
-          });
-        })
-        .map(item => {
-          if (item.sensitive && item.interface === 'env') {
-            item.effectiveValue = item.effectiveValue ? '**********' : '';
-            item.dbValue = item.dbValue ? '**********' : '';
-            item.default = item.default ? '**********' : '';
-            item.envValue = item.envValue ? '**********' : '';
-            item.cliValue = item.cliValue ? '**********' : '';
-            item.savedCliValue = item.savedCliValue ? '**********' : '';
-          }
-          return item;
+      return definitions.map(definition => {
+        return Object.assign({}, definition, {
+          effectiveValue: all[definition.key],
+          effectiveValueSource: setBy(
+            cliConfig,
+            savedCliConfig,
+            envConfig,
+            definition.key
+          ),
+          envValue: envConfig[definition.key],
+          cliValue: cliConfig[definition.key],
+          savedCliValue: savedCliConfig[definition.key]
         });
+      });
     },
     getUiConfig: () => {
       return definitions
@@ -133,7 +87,6 @@ exports.getHelper = async function getHelper(db) {
           return configMap;
         }, {});
     },
-    save: makeSave(db),
     smtpConfigured: () =>
       all.smtpHost &&
       all.smtpUser &&
