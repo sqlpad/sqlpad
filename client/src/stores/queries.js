@@ -21,7 +21,7 @@ export const NEW_QUERY = {
 };
 
 export const initialState = {
-  cacheKey: uuid.v1(),
+  cacheKey: uuid.v4(),
   isRunning: false,
   isSaving: false,
   queries: [],
