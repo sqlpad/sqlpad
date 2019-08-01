@@ -1,7 +1,12 @@
 const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
-const { admin, dbPath, debug, port } = require('./config').getPreDbConfig();
+const config = require('./config');
+
+const admin = config.get('admin');
+const dbPath = config.get('dbPath');
+const debug = config.get('debug');
+const port = config.get('port');
 
 mkdirp.sync(path.join(dbPath, '/cache'));
 

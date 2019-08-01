@@ -1,7 +1,7 @@
 const packageJson = require('../package.json');
 const latestVersion = require('latest-version');
 const semverDiff = require('semver-diff');
-const configUtil = require('./config');
+const config = require('./config');
 
 const ONE_DAY = 1000 * 60 * 60 * 24;
 
@@ -26,7 +26,6 @@ function logUpdateAvailable(version) {
 
 async function checkForUpdate() {
   try {
-    const config = configUtil.getHelper();
     if (config.get('disableUpdateCheck')) {
       return;
     }

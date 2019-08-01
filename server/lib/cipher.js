@@ -1,6 +1,8 @@
 const crypto = require('crypto');
 const algorithm = 'aes256';
-const { passphrase } = require('../lib/config').getPreDbConfig();
+const config = require('../lib/config');
+
+const passphrase = config.get('passphrase');
 
 module.exports = function(text) {
   const myCipher = crypto.createCipher(algorithm, passphrase);

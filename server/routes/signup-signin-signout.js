@@ -3,14 +3,11 @@ const router = require('express').Router();
 const checkWhitelist = require('../lib/check-whitelist');
 const User = require('../models/User.js');
 const sendError = require('../lib/sendError');
-
-// NOTE: getting config here during module init is okay
-// since these configs are set via env or cli
-const { disableUserpassAuth } = require('../lib/config').getPreDbConfig();
+const config = require('../lib/config');
 
 async function handleSignup(req, res, next) {
   try {
-    const whitelistedDomains = req.config.get('whitelistedDomains');
+    const whitelistedDomains = config.get('whitelistedDomains');
 
     if (req.body.password !== req.body.passwordConfirmation) {
       return sendError(res, null, 'Passwords do not match');
@@ -58,7 +55,7 @@ function sendSuccess(req, res) {
 
 /*  Some routes should only exist if userpath auth is enabled
 ============================================================================= */
-if (!disableUserpassAuth) {
+if (!config.get('disableUserpassAuth')) {
   router.post(
     '/api/signup',
     handleSignup,

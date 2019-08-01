@@ -1,11 +1,9 @@
 const assert = require('assert');
-const configUtil = require('../../lib/config');
+const config = require('../../lib/config');
 
-const configItems = require('../../lib/config/configItems');
 const fromDefault = require('../../lib/config/fromDefault');
 const fromEnv = require('../../lib/config/fromEnv');
 const fromCli = require('../../lib/config/fromCli');
-const nonUiConfig = require('../../lib/config').getPreDbConfig();
 
 describe('config', function() {
   it('default', function() {
@@ -29,10 +27,6 @@ describe('config', function() {
     assert.equal(conf.certPath, 'cert/path', 'certPath');
     assert.equal(conf.admin, 'admin@email.com', 'admin');
   });
-
-  it('nonUI', function() {
-    assert.equal(Object.keys(nonUiConfig).length, configItems.length);
-  });
 });
 
 describe('lib/config', function() {
@@ -46,11 +40,9 @@ describe('lib/config', function() {
   // This makes testing difficult when a sqlpad configuration is saved.
   // Loading a config should likely be explicit
   it('.get() should get a value provided by default', async function() {
-    const config = configUtil.getHelper();
     assert.equal(config.get('httpsPort'), 443, 'httpsPort=443');
   });
   it('.get() should only accept key in config items', async function() {
-    const config = configUtil.getHelper();
     assert.throws(() => config.get('non-existent-key'), Error);
   });
 });

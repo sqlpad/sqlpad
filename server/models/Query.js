@@ -1,5 +1,5 @@
 const db = require('../lib/db.js');
-const configUtil = require('../lib/config');
+const config = require('../lib/config');
 const Joi = require('joi');
 const request = require('request');
 
@@ -88,7 +88,6 @@ Query.prototype.save = function save() {
 };
 
 Query.prototype.pushQueryToSlackIfSetup = function() {
-  const config = configUtil.getHelper();
   const SLACK_WEBHOOK = config.get('slackWebhook');
   if (SLACK_WEBHOOK) {
     const PUBLIC_URL = config.get('publicUrl');
