@@ -3,15 +3,14 @@ const PassportLocalStrategy = require('passport-local').Strategy;
 const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const BasicStrategy = require('passport-http').BasicStrategy;
 const User = require('../models/User.js');
-const configUtil = require('../lib/config');
+const config = require('../lib/config');
 const checkWhitelist = require('../lib/check-whitelist.js');
-const {
-  baseUrl,
-  googleClientId,
-  googleClientSecret,
-  publicUrl,
-  disableUserpassAuth
-} = require('../lib/config').getPreDbConfig();
+
+const baseUrl = config.get('baseUrl');
+const googleClientId = config.get('googleClientId');
+const googleClientSecret = config.get('googleClientSecret');
+const publicUrl = config.get('publicUrl');
+const disableUserpassAuth = config.get('disableUserpassAuth');
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -112,7 +111,6 @@ async function passportGoogleStrategyHandler(
   }
 
   try {
-    const config = configUtil.getHelper();
     let [openAdminRegistration, user] = await Promise.all([
       User.adminRegistrationOpen(),
       User.findOneByEmail(email)

@@ -8,6 +8,7 @@ const Query = require('../models/Query.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
 const sendError = require('../lib/sendError');
+const config = require('../lib/config');
 
 // This allows executing a query relying on the saved query text
 // Instead of relying on an open endpoint that executes arbitrary sql
@@ -45,7 +46,6 @@ router.get(
 router.post('/api/query-result', mustBeAuthenticated, async function(req, res) {
   const data = {
     cacheKey: req.body.cacheKey,
-    config: req.config,
     connectionId: req.body.connectionId,
     queryName: req.body.queryName,
     queryText: req.body.queryText,
@@ -61,7 +61,7 @@ router.post('/api/query-result', mustBeAuthenticated, async function(req, res) {
 });
 
 async function getQueryResult(data) {
-  const { connectionId, config, cacheKey, queryName, queryText, user } = data;
+  const { connectionId, cacheKey, queryName, queryText, user } = data;
   const connection = await connections.findOneById(connectionId);
 
   if (!connection) {

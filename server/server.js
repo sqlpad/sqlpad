@@ -8,17 +8,19 @@ const detectPort = require('detect-port');
 // Parse command line flags to see if anything special needs to happen
 require('./lib/cli-flow.js');
 
+const config = require('./lib/config');
+
 const app = require('./app');
-const {
-  baseUrl,
-  ip,
-  port,
-  httpsPort,
-  certPassphrase,
-  keyPath,
-  certPath,
-  systemdSocket
-} = require('./lib/config').getPreDbConfig();
+
+const baseUrl = config.get('baseUrl');
+const ip = config.get('ip');
+const port = config.get('port');
+const httpsPort = config.get('port');
+const certPassphrase = config.get('certPassphrase');
+const keyPath = config.get('keyPath');
+const certPath = config.get('certPath');
+const systemdSocket = config.get('systemdSocket');
+
 const db = require('./lib/db');
 
 function isFdObject(ob) {

@@ -4,6 +4,7 @@ const email = require('../lib/email');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
+const config = require('../lib/config');
 
 router.get('/api/users', mustBeAuthenticated, async function(req, res) {
   try {
@@ -16,7 +17,6 @@ router.get('/api/users', mustBeAuthenticated, async function(req, res) {
 
 // create/whitelist/invite user
 router.post('/api/users', mustBeAdmin, async function(req, res) {
-  const { config } = req;
   try {
     let user = await User.findOneByEmail(req.body.email);
     if (user) {

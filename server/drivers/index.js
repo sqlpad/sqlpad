@@ -1,7 +1,9 @@
 const uuid = require('uuid');
-const { debug } = require('../lib/config').getPreDbConfig();
+const config = require('../lib/config');
 const utils = require('./utils');
 const getMeta = require('../lib/getMeta');
+
+const debug = config.get('debug');
 
 const drivers = {};
 

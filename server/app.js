@@ -5,16 +5,15 @@ const express = require('express');
 const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
-const configUtil = require('./lib/config');
+const config = require('./lib/config');
 const version = require('./lib/version');
-const {
-  baseUrl,
-  googleClientId,
-  googleClientSecret,
-  publicUrl,
-  dbPath,
-  debug
-} = configUtil.getPreDbConfig();
+
+const baseUrl = config.get('baseUrl');
+const googleClientId = config.get('googleClientId');
+const googleClientSecret = config.get('googleClientSecret');
+const publicUrl = config.get('publicUrl');
+const dbPath = config.get('dbPath');
+const debug = config.get('debug');
 
 // Cookie secrets are generated randomly at server start
 // SQLPad (currently) is designed for running as a single instance
@@ -82,17 +81,6 @@ app.use(baseUrl, express.static(path.join(__dirname, 'public')));
 if (debug) {
   app.use(morgan('dev'));
 }
-
-// Add config helper to req
-app.use(async function(req, res, next) {
-  try {
-    req.config = configUtil.getHelper();
-    next();
-  } catch (error) {
-    console.error('Error getting config helper', error);
-    next(error);
-  }
-});
 
 /*  Passport setup
 ============================================================================= */

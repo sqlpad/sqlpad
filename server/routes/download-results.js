@@ -1,10 +1,10 @@
 const fs = require('fs');
 const router = require('express').Router();
 const Cache = require('../models/Cache.js');
+const config = require('../lib/config');
 
 router.get('/download-results/:cacheKey.csv', async function(req, res, next) {
   try {
-    const { config } = req;
     if (config.get('allowCsvDownload')) {
       const cache = await Cache.findOneByCacheKey(req.params.cacheKey);
       if (!cache) {
@@ -27,7 +27,6 @@ router.get('/download-results/:cacheKey.csv', async function(req, res, next) {
 
 router.get('/download-results/:cacheKey.xlsx', async function(req, res, next) {
   try {
-    const { config } = req;
     if (config.get('allowCsvDownload')) {
       const cache = await Cache.findOneByCacheKey(req.params.cacheKey);
       if (!cache) {

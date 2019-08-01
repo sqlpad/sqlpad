@@ -1,15 +1,15 @@
 const nodemailer = require('nodemailer');
-const configUtil = require('./config');
-const { baseUrl, port, publicUrl } = require('./config').getPreDbConfig();
+const config = require('./config');
 
 /**
  * Get full sqlpad url
  * @param {string} path - path (leading slash)
  */
 function fullUrl(path) {
+  const port = config.get('port');
   const urlPort = port === 80 ? '' : ':' + port;
-  const urlPublicUrl = publicUrl;
-  const urlBaseUrl = baseUrl;
+  const urlPublicUrl = config.get('publicUrl');
+  const urlBaseUrl = config.get('baseUrl');
   return `${urlPublicUrl}${urlPort}${urlBaseUrl}${path}`;
 }
 
@@ -36,8 +36,6 @@ function sendInvite(to) {
 }
 
 async function send(to, subject, text, html) {
-  const config = configUtil.getHelper();
-
   if (!config.smtpConfigured()) {
     console.error('email.send() called without being configured');
     return;

@@ -3,10 +3,9 @@ const uuid = require('uuid');
 const User = require('../models/User.js');
 const email = require('../lib/email');
 const sendError = require('../lib/sendError');
+const config = require('../lib/config');
 
 router.post('/api/forgot-password', async function(req, res) {
-  const { config } = req;
-
   if (!req.body.email) {
     return sendError(res, null, 'Email address must be provided');
   }

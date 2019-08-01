@@ -4,7 +4,8 @@ const Joi = require('joi');
 const db = require('../lib/db.js');
 const xlsx = require('node-xlsx');
 const json2csv = require('json2csv');
-const { dbPath } = require('../lib/config').getPreDbConfig();
+const config = require('../lib/config');
+const dbPath = config.get('dbPath');
 
 const schema = {
   _id: Joi.string().optional(), // will be auto-gen by nedb

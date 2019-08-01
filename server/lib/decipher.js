@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const algorithm = 'aes256';
-const { passphrase } = require('../lib/config').getPreDbConfig();
+const config = require('../lib/config');
+const passphrase = config.get('passphrase');
 
 /**
  * @param {string} gibberish ciphered value that needs deciphering
