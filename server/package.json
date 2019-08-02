@@ -28,7 +28,7 @@
   },
   "scripts": {
     "prepublishOnly": "cd .. && ./scripts/build.sh",
-    "start": "node-dev server.js --dir ../db --port 3010 --debug --base-url '/sqlpad'",
+    "start": "node-dev server.js --dir ../db --port 3010 --debug --base-url /sqlpad",
     "test": "rimraf ../dbtest && SQLPAD_DB_PATH='../dbtest' SQLPAD_TEST='true' mocha test --timeout 10000 --recursive --exit",
     "fixlint": "eslint --fix '**/*.js'",
     "lint": "eslint '**/*.js'"
@@ -63,6 +63,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
+    "passport-saml": "^0.35.0",
     "pg": "^7.11.0",
     "pg-cursor": "^2.0.0",
     "request": "^2.88.0",

@@ -9,7 +9,7 @@ module.exports = function mustBeAuthenticated(req, res, next) {
     return next();
   }
   if (req.headers.authorization) {
-    return passport.authenticate('basic', { session: false })(req, res, next);
+    return passport.authenticate('basic', { failureRedirect: '/', failureFlash: true })(req, res, next);
   }
   res.redirect(config.get('baseUrl') + '/signin');
 };
