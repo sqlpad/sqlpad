@@ -102,7 +102,6 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   return (
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
-      {JSON.stringify(passport.strategies)}
       {'local' in passport.strategies && localForm}
       {'google' in passport.strategies && googleForm}
       {'saml' in passport.strategies && samlForm}

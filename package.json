@@ -24,8 +24,5 @@
   "scripts": {
     "fixlint": "npm run fixlint --prefix client && npm run fixlint --prefix server && prettier --write '**/*.js'",
     "lint": "npm run lint --prefix client && npm run lint --prefix server && prettier --check '**/*.js'"
-  },
-  "dependencies": {
-    "cipm": "^2.0.0"
   }
 }
