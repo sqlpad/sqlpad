@@ -93,11 +93,18 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
     </div>
   );
 
+  const samlForm = (
+    <div>
+      <a href={config.baseUrl + '/auth/saml'}>Sign in with ADFS</a>
+    </div>
+  );
+
   return (
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
       {'local' in passport.strategies && localForm}
       {'google' in passport.strategies && googleForm}
+      {'saml' in passport.strategies && samlForm}
     </div>
   );
 }

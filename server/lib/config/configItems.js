@@ -239,6 +239,46 @@ const configItems = [
     description:
       'If disabled, SQLPad will no longer poll npmjs.com to see if an update is available.',
     default: false
+  },
+  {
+    interface: 'env',
+    key: 'samlEntryPoint',
+    envVar: 'SAML_ENTRY_POINT',
+    cliFlag: 'saml-entry-point',
+    description: 'SAML Entry point URL',
+    default: ''
+  },
+  {
+    interface: 'env',
+    key: 'samlIssuer',
+    envVar: 'SAML_ISSUER',
+    cliFlag: 'saml-issuer',
+    description: 'SAML Issuer',
+    default: ''
+  },
+  {
+    interface: 'env',
+    key: 'samlCallbackUrl',
+    envVar: 'SAML_CALLBACK_URL',
+    cliFlag: 'saml-callback-url',
+    description: 'SAML callback URL',
+    default: ''
+  },
+  {
+    interface: 'env',
+    key: 'samlCert',
+    envVar: 'SAML_CERT',
+    cliFlag: 'saml-cert',
+    description: 'SAML certificate in Base64',
+    default: ''
+  },
+  {
+    interface: 'env',
+    key: 'samlAuthContext',
+    envVar: 'SAML_AUTH_CONTEXT',
+    cliFlag: 'saml-auth-context',
+    description: 'SAML authentication context URL',
+    default: ''
   }
 ];
 

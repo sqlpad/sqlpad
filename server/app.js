@@ -15,6 +15,12 @@ const publicUrl = config.get('publicUrl');
 const dbPath = config.get('dbPath');
 const debug = config.get('debug');
 
+const samlEntryPoint = config.get('samlEntryPoint');
+const samlIssuer = config.get('samlIssuer');
+const samlCallbackUrl = config.get('samlCallbackUrl');
+const samlCert = config.get('samlCert');
+const samlAuthContext = config.get('samlAuthContext');
+
 // Cookie secrets are generated randomly at server start
 // SQLPad (currently) is designed for running as a single instance
 // so this should be okay unless SQLPad is frequently restarting
@@ -109,6 +115,19 @@ if (googleClientId && googleClientSecret && publicUrl) {
     console.log('Enabling Google authentication Strategy.');
   }
   routers.push(require('./routes/oauth.js'));
+}
+
+if (
+  samlEntryPoint &&
+  samlIssuer &&
+  samlCallbackUrl &&
+  samlCert &&
+  samlAuthContext
+) {
+  if (debug) {
+    console.log('Enabling SAML authentication Strategy.');
+  }
+  routers.push(require('./routes/saml.js'));
 }
 
 // Add all core routes to the baseUrl except for the */api/app route

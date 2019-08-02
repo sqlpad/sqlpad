@@ -2,6 +2,7 @@ const passport = require('passport');
 const PassportLocalStrategy = require('passport-local').Strategy;
 const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const BasicStrategy = require('passport-http').BasicStrategy;
+const SamlStrategy = require('passport-saml').Strategy;
 const User = require('../models/User.js');
 const config = require('../lib/config');
 const checkWhitelist = require('../lib/check-whitelist.js');
@@ -11,6 +12,12 @@ const googleClientId = config.get('googleClientId');
 const googleClientSecret = config.get('googleClientSecret');
 const publicUrl = config.get('publicUrl');
 const disableUserpassAuth = config.get('disableUserpassAuth');
+
+const samlEntryPoint = config.get('samlEntryPoint');
+const samlIssuer = config.get('samlIssuer');
+const samlCallbackUrl = config.get('samlCallbackUrl');
+const samlCert = config.get('samlCert');
+const samlAuthContext = config.get('samlAuthContext');
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
@@ -92,6 +99,39 @@ if (googleClientId && googleClientSecret && publicUrl) {
         userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo?alt=json'
       },
       passportGoogleStrategyHandler
+    )
+  );
+}
+
+if (samlEntryPoint) {
+  passport.use(
+    new SamlStrategy(
+      {
+        path: '/login/callback',
+        entryPoint: samlEntryPoint,
+        issuer: samlIssuer,
+        callbackUrl: samlCallbackUrl,
+        cert: samlCert,
+        authnContext: samlAuthContext,
+        identifierFormat: null
+      },
+      async function(p, done) {
+        const email =
+          p[
+            'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
+          ];
+        const user = await User.findOneByEmail(email);
+        console.log(`User logged in with SAML as ${email}`);
+        if (!user) {
+          return done(null, false);
+        }
+        return done(null, {
+          id: user._id,
+          _id: user._id,
+          role: user.role,
+          email: user.email
+        });
+      }
     )
   );
 }
