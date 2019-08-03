@@ -3,11 +3,10 @@ const fromDefault = require('./fromDefault');
 const fromEnv = require('./fromEnv');
 const fromCli = require('./fromCli');
 const fromFile = require('./fromFile');
-const getConfigFilePath = require('./getConfigFilePath');
-const getOldDefaultDbPath = require('./getOldDefaultDbPath');
+const getOldConfigWarning = require('./getOldConfigWarning');
 
 const argv = minimist(process.argv.slice(2));
-const configFilePath = getConfigFilePath(argv);
+const configFilePath = argv.config || process.env.SQLPAD_CONFIG;
 
 const defaultConfig = fromDefault();
 const envConfig = fromEnv();
@@ -31,9 +30,7 @@ exports.get = function get(key) {
   }
 
   if (key === 'dbPath' && !all.dbPath) {
-    console.error(
-      `dbPath not provided in config. This was previously defaulted to ${getOldDefaultDbPath()} but must now be explicitly set.`
-    );
+    console.error(getOldConfigWarning());
     throw new Error(`dbPath not defined`);
   }
 
