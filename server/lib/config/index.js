@@ -1,33 +1,24 @@
-const fs = require('fs');
-const path = require('path');
 const minimist = require('minimist');
 const fromDefault = require('./fromDefault');
 const fromEnv = require('./fromEnv');
 const fromCli = require('./fromCli');
+const fromFile = require('./fromFile');
+const getConfigFilePath = require('./getConfigFilePath');
 
-// argv
 const argv = minimist(process.argv.slice(2));
-
-// Saved argv
-const userHome =
-  process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME;
-const filePath = path.join(userHome, '.sqlpadrc');
-const savedArgv = fs.existsSync(filePath)
-  ? JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }))
-  : {};
+const configFilePath = getConfigFilePath(argv);
 
 const defaultConfig = fromDefault();
-const cliConfig = fromCli(argv);
-const savedCliConfig = fromCli(savedArgv);
 const envConfig = fromEnv();
+const [fileConfig, warnings] = fromFile(configFilePath);
+const cliConfig = fromCli(argv);
 
-const all = Object.assign(
-  {},
-  defaultConfig,
-  envConfig,
-  savedCliConfig,
-  cliConfig
-);
+// Old files might have some values no longer recognized
+if (warnings.length) {
+  warnings.forEach(warning => console.warn(warning));
+}
+
+const all = Object.assign({}, defaultConfig, envConfig, fileConfig, cliConfig);
 
 exports.get = function get(key) {
   if (!key) {
