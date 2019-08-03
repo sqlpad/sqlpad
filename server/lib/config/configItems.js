@@ -39,7 +39,7 @@ const configItems = [
     key: 'dbPath',
     cliFlag: ['db', 'dbPath', 'dir'],
     envVar: 'SQLPAD_DB_PATH',
-    default: '$HOME/sqlpad/db',
+    default: '',
     description:
       'Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.'
   },
