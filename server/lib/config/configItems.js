@@ -1,5 +1,12 @@
 const configItems = [
   {
+    key: 'config',
+    cliFlag: 'config',
+    envVar: 'SQLPAD_CONFIG',
+    default: '',
+    description: 'JSON/INI file to read for config. Default $HOME/.sqlpadrc'
+  },
+  {
     key: 'ip',
     cliFlag: 'ip',
     envVar: 'SQLPAD_IP',
@@ -42,7 +49,7 @@ const configItems = [
     envVar: 'SQLPAD_BASE_URL',
     default: '',
     description:
-      "Path to mount sqlpad app following domain. \nFor example, if '/sqlpad' is provided, queries page \nwould be located at mydomain.com/sqlpad/queries instead of mydomain.com/queries. \nUseful when subdomain is not an option."
+      "Path to mount sqlpad app following domain. Example, if '/sqlpad' is provided queries page would be mydomain.com/sqlpad/queries"
   },
   {
     key: 'passphrase',
@@ -78,8 +85,7 @@ const configItems = [
     cliFlag: 'admin',
     envVar: 'SQLPAD_ADMIN',
     default: '',
-    description:
-      'Email address to whitelist/give admin permissions to via command line or environment variable. Useful to preset Admin account or to reinstate admin access without access to the UI.'
+    description: 'Email address to whitelist/give admin permissions to'
   },
   {
     key: 'debug',
@@ -92,14 +98,14 @@ const configItems = [
     key: 'googleClientId',
     envVar: 'GOOGLE_CLIENT_ID',
     description:
-      "Google Client ID used for OAuth setup. Note: authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
+      "Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
     default: ''
   },
   {
     key: 'googleClientSecret',
     envVar: 'GOOGLE_CLIENT_SECRET',
     description:
-      "Google Client Secret used for OAuth setup. Note: authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
+      "Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
     default: ''
   },
   {
@@ -107,27 +113,27 @@ const configItems = [
     envVar: 'PUBLIC_URL',
     cliFlag: 'public-url',
     description:
-      'Public URL used for OAuth setup and links in email communications. Protocol is expected to be provided. Example: https://mysqlpad.com',
+      'Public URL used for OAuth setup and email links. Protocol expected. Example: https://mysqlpad.com',
     default: ''
   },
   {
     key: 'disableUserpassAuth',
     envVar: 'DISABLE_USERPASS_AUTH',
     description:
-      'Set to TRUE to disable built-in user authentication. Useful to restrict authentication to OAuth only.',
+      'Set to TRUE to disable built-in user authentication. Use to restrict auth to OAuth only.',
     default: false
   },
   {
     key: 'allowCsvDownload',
     label: 'Allow CSV/XLSX Download',
-    description: 'Set to false to disable csv or xlsx downloads.',
+    description: 'Enable csv and xlsx downloads.',
     options: [true, false],
     default: true
   },
   {
     key: 'editorWordWrap',
     label: 'Editor Word Wrap',
-    description: 'Set to true to enable word wrapping in SQL editor.',
+    description: 'Enable word wrapping in SQL editor.',
     options: [true, false],
     default: false
   },
@@ -144,18 +150,10 @@ const configItems = [
     default: ''
   },
   {
-    key: 'showSchemaCopyButton',
-    label: 'Show Schema Copy Button',
-    description:
-      "Enable a button to copy an object's full schema path in schema explorer. Useful for databases that require fully qualified names.",
-    options: [true, false],
-    default: false
-  },
-  {
     key: 'tableChartLinksRequireAuth',
     label: 'Require Login for Table/Chart Links',
     description:
-      'If set to false, table and chart result links will be operational without having to log in. (These links only execute saved SQL queries, and do not open an endpoint to execute raw SQL.)',
+      'When false, table and chart result links will be operational without login.',
     options: [true, false],
     default: true
   },
@@ -217,7 +215,7 @@ const configItems = [
     envVar: 'WHITELISTED_DOMAINS',
     cliFlag: 'whitelisted-domains',
     description:
-      "Allows whitelisting of email domains so individual email addresses do not need to be whitelisted. Domains must be delimited by whitespace. For example, 'baz.com foo.bar.com' will whitelist sara@baz.com and john@foo.bar.com",
+      'Allows pre-approval of email domains. Delimit multiple domains by empty space.',
     default: ''
   },
   {
