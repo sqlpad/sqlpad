@@ -11,7 +11,7 @@
 
 #### Features
 
-- Added SAML authentication support
+- SAML authentication support
 - Remember selected connection id / schema toggle
 - Support for JSON and INI config file added. File should config using `key` fields found in [configItems.js](https://github.com/rickbergfalk/sqlpad/blob/master/server/lib/config/configItems.js). Config file path default is `$HOME/.sqlpadrc` and may otherwise be specified using `--config` via command line or `SQLPAD_CONFIG` environment variable.
 
