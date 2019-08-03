@@ -9,6 +9,7 @@
 - Configuration UI has been removed. See https://github.com/rickbergfalk/sqlpad/issues/447.
 - cli-flags in saved .sqlpadrc JSON are no longer used for config values. These configuration keys should instead be switched the the `key` found in `configItems.js`. For example, instead of `dir` or `db`, use `dbPath`. Instead of `cert-passphrase` use `certPassphrase`.
 - `--save` and `--forget` cli flags no longer supported
+- Default db path is no longer used if db path is not provided in config. Previous default was `$HOME/sqlpad/db`.
 
 #### Features
 
