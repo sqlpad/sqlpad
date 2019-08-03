@@ -88,7 +88,7 @@ if (!disableUserpassAuth) {
   );
 }
 
-if (googleClientId && googleClientSecret && publicUrl) {
+if (config.googleAuthConfigured()) {
   passport.use(
     new PassportGoogleStrategy(
       {

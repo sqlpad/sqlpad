@@ -9,7 +9,7 @@ import Spacer from './common/Spacer';
 import { refreshAppContext } from './stores/config';
 import fetchJson from './utilities/fetch-json.js';
 
-function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
+function SignIn({ config, refreshAppContext }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
@@ -75,7 +75,7 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
         Sign Up
       </Link>
 
-      {smtpConfigured ? (
+      {config.smtpConfigured ? (
         <Link to="/forgot-password">Forgot Password</Link>
       ) : null}
     </form>
@@ -102,14 +102,14 @@ function SignIn({ config, smtpConfigured, passport, refreshAppContext }) {
   return (
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
-      {'local' in passport.strategies && localForm}
-      {'google' in passport.strategies && googleForm}
-      {'saml' in passport.strategies && samlForm}
+      {config.localAuthConfigured && localForm}
+      {config.googleAuthConfigured && googleForm}
+      {config.samlConfigured && samlForm}
     </div>
   );
 }
 
 export default connect(
-  ['config', 'smtpConfigured', 'passport'],
+  ['config'],
   { refreshAppContext }
 )(SignIn);

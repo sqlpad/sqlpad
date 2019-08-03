@@ -3,20 +3,21 @@ const utils = require('../utils');
 
 const expectedKeys = [
   'adminRegistrationOpen',
+  'currentUser',
   'config',
-  'smtpConfigured',
-  'googleAuthConfigured',
-  'version',
-  'passport'
+  'version'
 ];
 
 const expectedConfigKeys = [
   'baseUrl',
   'allowCsvDownload',
   'editorWordWrap',
-  'queryResultMaxRows',
   'showSchemaCopyButton',
-  'publicUrl'
+  'publicUrl',
+  'smtpConfigured',
+  'googleAuthConfigured',
+  'localAuthConfigured',
+  'samlConfigured'
 ];
 
 describe('api/app', function() {

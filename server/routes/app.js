@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const passport = require('passport');
 const version = require('../lib/version.js');
 const User = require('../models/User.js');
 const sendError = require('../lib/sendError');
@@ -20,24 +19,21 @@ router.get('*/api/app', async (req, res) => {
           }
         : undefined;
 
-    const strategies = Object.keys(passport._strategies).reduce(
-      (prev, curr) => {
-        prev[curr] = true;
-        return prev;
-      },
-      {}
-    );
-
     return res.json({
       adminRegistrationOpen,
       currentUser,
-      config: config.getUiConfig(),
-      smtpConfigured: config.smtpConfigured(),
-      googleAuthConfigured: config.googleAuthConfigured(),
-      version: version.get(),
-      passport: {
-        strategies
-      }
+      config: {
+        publicUrl: config.get('publicUrl'),
+        allowCsvDownload: config.get('allowCsvDownload'),
+        editorWordWrap: config.get('editorWordWrap'),
+        showSchemaCopyButton: config.get('showSchemaCopyButton'),
+        baseUrl: config.get('baseUrl'),
+        smtpConfigured: config.smtpConfigured(),
+        googleAuthConfigured: config.googleAuthConfigured(),
+        localAuthConfigured: !config.get('disableUserpassAuth'),
+        samlConfigured: Boolean(config.get('samlEntryPoint'))
+      },
+      version: version.get()
     });
   } catch (error) {
     sendError(res, error, 'Problem querying users');

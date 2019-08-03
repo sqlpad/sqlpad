@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const minimist = require('minimist');
-const definitions = require('./configItems');
 const fromDefault = require('./fromDefault');
 const fromEnv = require('./fromEnv');
 const fromCli = require('./fromCli');
@@ -39,15 +38,6 @@ exports.get = function get(key) {
     throw new Error(`config item ${key} not defined in configItems.js`);
   }
   return all[key];
-};
-
-exports.getUiConfig = () => {
-  return definitions
-    .filter(item => item.uiDependency)
-    .reduce((configMap, item) => {
-      configMap[item.key] = all[item.key];
-      return configMap;
-    }, {});
 };
 
 exports.smtpConfigured = () =>
