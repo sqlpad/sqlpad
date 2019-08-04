@@ -125,33 +125,33 @@ const configItems = [
   },
   {
     key: 'allowCsvDownload',
-    label: 'Allow CSV/XLSX Download',
+    envVar: 'SQLPAD_ALLOW_CSV_DOWNLOAD',
     description: 'Enable csv and xlsx downloads.',
     options: [true, false],
     default: true
   },
   {
     key: 'editorWordWrap',
-    label: 'Editor Word Wrap',
+    envVar: 'SQLPAD_EDITOR_WORD_WRAP',
     description: 'Enable word wrapping in SQL editor.',
     options: [true, false],
     default: false
   },
   {
     key: 'queryResultMaxRows',
-    label: 'Query Result Max Rows',
+    envVar: 'SQLPAD_QUERY_RESULT_MAX_ROWS',
     description: 'By default query results are limited to 50,000 records.',
     default: 50000
   },
   {
     key: 'slackWebhook',
-    label: 'Slack Webhook URL',
+    envVar: 'SQLPAD_SLACK_WEBHOOK',
     description: 'Supply incoming Slack webhook URL to post query when saved.',
     default: ''
   },
   {
     key: 'tableChartLinksRequireAuth',
-    label: 'Require Login for Table/Chart Links',
+    envVar: 'SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH',
     description:
       'When false, table and chart result links will be operational without login.',
     options: [true, false],
@@ -161,7 +161,6 @@ const configItems = [
     key: 'smtpFrom',
     envVar: 'SQLPAD_SMTP_FROM',
     cliFlag: 'smtp-from',
-    label: 'SMTP From',
     description:
       'From email address for SMTP. Required in order to send invitation emails.',
     default: ''
@@ -170,7 +169,6 @@ const configItems = [
     key: 'smtpHost',
     envVar: 'SQLPAD_SMTP_HOST',
     cliFlag: 'smtp-host',
-    label: 'SMTP Host',
     description:
       'Host address for SMTP. Required in order to send invitation emails.',
     default: ''
@@ -179,7 +177,6 @@ const configItems = [
     key: 'smtpPort',
     envVar: 'SQLPAD_SMTP_PORT',
     cliFlag: 'smtp-port',
-    label: 'SMTP Port',
     description: 'Port for SMTP. Required in order to send invitation emails.',
     default: ''
   },
@@ -187,7 +184,6 @@ const configItems = [
     key: 'smtpSecure',
     envVar: 'SQLPAD_SMTP_SECURE',
     cliFlag: 'smtp-secure',
-    label: 'SMTP Use SSL',
     options: [true, false],
     description: 'Toggle to use secure connection when using SMTP.',
     default: true
@@ -196,7 +192,6 @@ const configItems = [
     key: 'smtpUser',
     envVar: 'SQLPAD_SMTP_USER',
     cliFlag: 'smtp-user',
-    label: 'SMTP User',
     description:
       'Username for SMTP. Required in order to send invitation emails.',
     default: ''
@@ -205,13 +200,11 @@ const configItems = [
     key: 'smtpPassword',
     envVar: 'SQLPAD_SMTP_PASSWORD',
     cliFlag: 'smtp-password',
-    label: 'SMTP Password',
     description: 'Password for SMTP.',
     default: ''
   },
   {
     key: 'whitelistedDomains',
-    label: 'Whitelisted Domains',
     envVar: 'WHITELISTED_DOMAINS',
     cliFlag: 'whitelisted-domains',
     description:
@@ -222,14 +215,12 @@ const configItems = [
     key: 'disableUpdateCheck',
     envVar: 'SQLPAD_DISABLE_UPDATE_CHECK',
     cliFlag: 'disable-update-check',
-    label: 'Disable update check',
     options: [true, false],
     description:
       'If disabled, SQLPad will no longer poll npmjs.com to see if an update is available.',
     default: false
   },
   {
-    interface: 'env',
     key: 'samlEntryPoint',
     envVar: 'SAML_ENTRY_POINT',
     cliFlag: 'saml-entry-point',
@@ -237,7 +228,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'env',
     key: 'samlIssuer',
     envVar: 'SAML_ISSUER',
     cliFlag: 'saml-issuer',
@@ -245,7 +235,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'env',
     key: 'samlCallbackUrl',
     envVar: 'SAML_CALLBACK_URL',
     cliFlag: 'saml-callback-url',
@@ -253,7 +242,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'env',
     key: 'samlCert',
     envVar: 'SAML_CERT',
     cliFlag: 'saml-cert',
