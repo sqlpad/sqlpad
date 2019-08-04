@@ -34,8 +34,11 @@ const renderValue = (input, fieldMeta) => {
  * This was removed with the change from react-virtualized to react-window, but the problem persists.
  * This is likely an ace editor issue and should probably stay until the editor is fixed
  * or changed to something else like monaco
+ *
+ * UPDATE: this also happens if you run a query with results then follow it with a query that errors out.
+ * To counter this the blur/focus has been added after component will unmount.
  */
-function handleScrollBug() {
+function handleFrozenAceBug() {
   const element = document.activeElement;
   if (element) {
     element.blur();
@@ -78,6 +81,12 @@ class QueryResultDataTable extends React.PureComponent {
     },
     columnWidths: {}
   };
+
+  componentWillUnmount() {
+    setTimeout(() => {
+      handleFrozenAceBug();
+    }, 300);
+  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { queryResult } = nextProps;
@@ -145,7 +154,7 @@ class QueryResultDataTable extends React.PureComponent {
       },
       () => {
         this.recalc(columnIndex);
-        handleScrollBug();
+        handleFrozenAceBug();
       }
     );
   };
@@ -225,7 +234,7 @@ class QueryResultDataTable extends React.PureComponent {
   // synchronize the scroll position of the header grid
   handleGridScroll = ({ scrollLeft }) => {
     this.headerGrid.current.scrollTo({ scrollLeft });
-    handleScrollBug();
+    handleFrozenAceBug();
   };
 
   handleContainerResize = contentRect => {
