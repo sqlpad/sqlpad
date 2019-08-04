@@ -14,7 +14,11 @@ sqlpad --config ~/.sqlpadrc
 
 Using a config file or environment variables recommended. For list of command line flags run `sqlpad -h`.
 
+## Version 3 changes
 
+Previously SQLPad supported a default dbPath of `$HOME/sqlpad/db` and a default config file path of `$HOME/.sqlpadrc`. 
+
+These defaults have been removed in version 3.
 
 ## Environment Variables
 ```sh
@@ -56,7 +60,7 @@ SAML_AUTH_CONTEXT=
 
 ```
 
-## INI config file
+## INI config
 ```ini
 ; IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0).
 SQLPAD_IP="0.0.0.0"
@@ -163,7 +167,7 @@ SAML_AUTH_CONTEXT=""
 
 ```
 
-## JSON config file
+## JSON config
 ```json
 {
   "ip": "0.0.0.0",

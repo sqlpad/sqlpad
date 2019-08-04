@@ -36,7 +36,11 @@ sqlpad --config ~/.sqlpadrc
 
 Using a config file or environment variables recommended. For list of command line flags run \`sqlpad -h\`.
 
+## Version 3 changes
 
+Previously SQLPad supported a default dbPath of \`$HOME/sqlpad/db\` and a default config file path of \`$HOME/.sqlpadrc\`. 
+
+These defaults have been removed in version 3.
 
 ## Environment Variables
 \`\`\`sh
