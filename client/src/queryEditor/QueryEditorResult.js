@@ -1,5 +1,5 @@
 import { connect } from 'unistore/react';
-import QueryResultDataTable from '../common/QueryResultDataTable.js';
+import QueryResultDataTable from '../common/QueryResultContainer.js';
 
 const ConnectedQueryEditorResult = connect([
   'isRunning',

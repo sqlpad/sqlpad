@@ -4,7 +4,6 @@ import { VariableSizeGrid } from 'react-window';
 import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
 import Measure from 'react-measure';
-import SpinKitCube from './SpinKitCube.js';
 
 const renderValue = (input, fieldMeta) => {
   if (input === null || input === undefined) {
@@ -234,27 +233,8 @@ class QueryResultDataTable extends React.PureComponent {
   };
 
   render() {
-    const { isRunning, queryError, queryResult } = this.props;
+    const { queryResult } = this.props;
     const { height, width } = this.state.dimensions;
-
-    if (isRunning) {
-      return (
-        <div className="h-100 flex-center">
-          <SpinKitCube />
-        </div>
-      );
-    }
-
-    if (queryError) {
-      return (
-        <div
-          style={{ fontSize: '1.5rem', padding: 24, textAlign: 'center' }}
-          className={`h-100 bg-error flex-center`}
-        >
-          {queryError}
-        </div>
-      );
-    }
 
     if (queryResult && queryResult.rows) {
       const rowCount = queryResult.rows.length;
@@ -300,8 +280,6 @@ class QueryResultDataTable extends React.PureComponent {
 }
 
 QueryResultDataTable.propTypes = {
-  isRunning: PropTypes.bool,
-  queryError: PropTypes.string,
   queryResult: PropTypes.object
 };
 

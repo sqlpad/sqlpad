@@ -2,19 +2,17 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ExportButton from './common/ExportButton.js';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
-import QueryResultDataTable from './common/QueryResultDataTable.js';
+import QueryResultContainer from './common/QueryResultContainer.js';
 import fetchJson from './utilities/fetch-json.js';
 
 function QueryTableOnly({ queryId }) {
   const [isRunning, setIsRunning] = useState(false);
-  const [runQueryStartTime, setRunQueryStartTime] = useState(null);
   const [queryResult, setQueryResult] = useState(null);
   const [query, setQuery] = useState(null);
   const [queryError, setQueryError] = useState(null);
 
   const runQuery = async queryId => {
     setIsRunning(true);
-    setRunQueryStartTime(new Date());
 
     const queryJson = await fetchJson('GET', '/api/queries/' + queryId);
 
@@ -67,9 +65,8 @@ function QueryTableOnly({ queryId }) {
             border: '1px solid #CCC'
           }}
         >
-          <QueryResultDataTable
+          <QueryResultContainer
             isRunning={isRunning}
-            runQueryStartTime={runQueryStartTime}
             queryResult={queryResult}
             queryError={queryError}
           />
