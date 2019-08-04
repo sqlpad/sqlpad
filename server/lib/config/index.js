@@ -20,6 +20,18 @@ if (warnings.length) {
 
 const all = Object.assign({}, defaultConfig, envConfig, fileConfig, cliConfig);
 
+// Clean string boolean values
+Object.keys(all).forEach(key => {
+  const value = all[key];
+  if (typeof value === 'string') {
+    if (value.trim().toLowerCase() === 'true') {
+      all[key] = true;
+    } else if (value.trim().toLowerCase() === 'false') {
+      all[key] = false;
+    }
+  }
+});
+
 exports.get = function get(key) {
   if (!key) {
     throw new Error('key must be provided');
