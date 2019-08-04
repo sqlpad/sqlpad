@@ -12,7 +12,6 @@ const expectedConfigKeys = [
   'baseUrl',
   'allowCsvDownload',
   'editorWordWrap',
-  'showSchemaCopyButton',
   'publicUrl',
   'smtpConfigured',
   'googleAuthConfigured',

@@ -30,15 +30,6 @@ describe('config', function() {
 });
 
 describe('lib/config', function() {
-  // TODO test when control is inverted/dependencies injected
-  // set any process.env variables or args here
-  // process.argv.push('--debug')
-  // process.env.SQLPAD_DEBUG = 'FALSE'
-  // process.env.GOOGLE_CLIENT_ID = 'google-client-id'
-
-  // TODO current config helper test will pick up saved sqlpad config on system if it exists
-  // This makes testing difficult when a sqlpad configuration is saved.
-  // Loading a config should likely be explicit
   it('.get() should get a value provided by default', async function() {
     assert.equal(config.get('httpsPort'), 443, 'httpsPort=443');
   });

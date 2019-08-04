@@ -4,10 +4,27 @@
 
 ### WIP
 
+#### Breaking changes
+
+- Default db path is no longer used if db path is not provided in config. Previous default was `$HOME/sqlpad/db`.
+- Default config file path no longer used. Previous default was `$HOME/.sqlpadrc`.
+- Configuration UI has been removed. See https://github.com/rickbergfalk/sqlpad/issues/447.
+- cli-flags in saved .sqlpadrc JSON are no longer used for config values. These configuration keys should instead be switched the the `key` found in `configItems.js`. For example, instead of `dir` or `db`, use `dbPath`. Instead of `cert-passphrase` use `certPassphrase`, etc.
+- `--save` and `--forget` cli flags no longer supported
+
+#### Features
+
+- SAML authentication support
+- Remember selected connection id / schema toggle
+- Support for JSON and INI config file added. File should config using `key` fields found in [configItems.js](https://github.com/rickbergfalk/sqlpad/blob/master/server/lib/config/configItems.js). Config file path default is `$HOME/.sqlpadrc` and may otherwise be specified using `--config` via command line or `SQLPAD_CONFIG` environment variable.
+
+#### Fixes
+
 - Fix preview sticking around after query selection
 - Fix tag/search input in query list
-- Remember selected connection id / schema toggle
-- Loading indicator for schema sidebar
+- Add loading indicator for schema sidebar
+- Fix user needing to sign in again after sign up
+- Fix app menu for non-admin users
 
 ## 3.0.0-beta.1
 

@@ -1,33 +1,36 @@
-const fs = require('fs');
-const path = require('path');
 const minimist = require('minimist');
 const fromDefault = require('./fromDefault');
 const fromEnv = require('./fromEnv');
 const fromCli = require('./fromCli');
+const fromFile = require('./fromFile');
+const getOldConfigWarning = require('./getOldConfigWarning');
 
-// argv
 const argv = minimist(process.argv.slice(2));
-
-// Saved argv
-const userHome =
-  process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME;
-const filePath = path.join(userHome, '.sqlpadrc');
-const savedArgv = fs.existsSync(filePath)
-  ? JSON.parse(fs.readFileSync(filePath, { encoding: 'utf8' }))
-  : {};
+const configFilePath = argv.config || process.env.SQLPAD_CONFIG;
 
 const defaultConfig = fromDefault();
-const cliConfig = fromCli(argv);
-const savedCliConfig = fromCli(savedArgv);
 const envConfig = fromEnv();
+const [fileConfig, warnings] = fromFile(configFilePath);
+const cliConfig = fromCli(argv);
 
-const all = Object.assign(
-  {},
-  defaultConfig,
-  envConfig,
-  savedCliConfig,
-  cliConfig
-);
+// Old files might have some values no longer recognized
+if (warnings.length) {
+  warnings.forEach(warning => console.warn(warning));
+}
+
+const all = Object.assign({}, defaultConfig, envConfig, fileConfig, cliConfig);
+
+// Clean string boolean values
+Object.keys(all).forEach(key => {
+  const value = all[key];
+  if (typeof value === 'string') {
+    if (value.trim().toLowerCase() === 'true') {
+      all[key] = true;
+    } else if (value.trim().toLowerCase() === 'false') {
+      all[key] = false;
+    }
+  }
+});
 
 exports.get = function get(key) {
   if (!key) {
@@ -37,6 +40,12 @@ exports.get = function get(key) {
   if (!all.hasOwnProperty(key)) {
     throw new Error(`config item ${key} not defined in configItems.js`);
   }
+
+  if (key === 'dbPath' && !all.dbPath) {
+    console.error(getOldConfigWarning());
+    throw new Error(`dbPath not defined`);
+  }
+
   return all[key];
 };
 

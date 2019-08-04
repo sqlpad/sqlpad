@@ -26,7 +26,6 @@ router.get('*/api/app', async (req, res) => {
         publicUrl: config.get('publicUrl'),
         allowCsvDownload: config.get('allowCsvDownload'),
         editorWordWrap: config.get('editorWordWrap'),
-        showSchemaCopyButton: config.get('showSchemaCopyButton'),
         baseUrl: config.get('baseUrl'),
         smtpConfigured: config.smtpConfigured(),
         googleAuthConfigured: config.googleAuthConfigured(),

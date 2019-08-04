@@ -1,5 +1,12 @@
 const configItems = [
   {
+    key: 'config',
+    cliFlag: 'config',
+    envVar: 'SQLPAD_CONFIG',
+    default: '',
+    description: 'JSON/INI file to read for config'
+  },
+  {
     key: 'ip',
     cliFlag: 'ip',
     envVar: 'SQLPAD_IP',
@@ -32,7 +39,7 @@ const configItems = [
     key: 'dbPath',
     cliFlag: ['db', 'dbPath', 'dir'],
     envVar: 'SQLPAD_DB_PATH',
-    default: '$HOME/sqlpad/db',
+    default: '',
     description:
       'Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.'
   },
@@ -42,7 +49,7 @@ const configItems = [
     envVar: 'SQLPAD_BASE_URL',
     default: '',
     description:
-      "Path to mount sqlpad app following domain. \nFor example, if '/sqlpad' is provided, queries page \nwould be located at mydomain.com/sqlpad/queries instead of mydomain.com/queries. \nUseful when subdomain is not an option."
+      "Path to mount sqlpad app following domain. Example, if '/sqlpad' is provided queries page would be mydomain.com/sqlpad/queries"
   },
   {
     key: 'passphrase',
@@ -56,7 +63,7 @@ const configItems = [
     key: 'certPassphrase',
     cliFlag: 'cert-passphrase',
     envVar: 'CERT_PASSPHRASE',
-    default: 'No cert',
+    default: '',
     description: 'Passphrase for your SSL certification file'
   },
   {
@@ -78,8 +85,7 @@ const configItems = [
     cliFlag: 'admin',
     envVar: 'SQLPAD_ADMIN',
     default: '',
-    description:
-      'Email address to whitelist/give admin permissions to via command line or environment variable. Useful to preset Admin account or to reinstate admin access without access to the UI.'
+    description: 'Email address to whitelist/give admin permissions to'
   },
   {
     key: 'debug',
@@ -92,14 +98,14 @@ const configItems = [
     key: 'googleClientId',
     envVar: 'GOOGLE_CLIENT_ID',
     description:
-      "Google Client ID used for OAuth setup. Note: authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
+      "Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
     default: ''
   },
   {
     key: 'googleClientSecret',
     envVar: 'GOOGLE_CLIENT_SECRET',
     description:
-      "Google Client Secret used for OAuth setup. Note: authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
+      "Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'",
     default: ''
   },
   {
@@ -107,55 +113,47 @@ const configItems = [
     envVar: 'PUBLIC_URL',
     cliFlag: 'public-url',
     description:
-      'Public URL used for OAuth setup and links in email communications. Protocol is expected to be provided. Example: https://mysqlpad.com',
+      'Public URL used for OAuth setup and email links. Protocol expected. Example: https://mysqlpad.com',
     default: ''
   },
   {
     key: 'disableUserpassAuth',
     envVar: 'DISABLE_USERPASS_AUTH',
     description:
-      'Set to TRUE to disable built-in user authentication. Useful to restrict authentication to OAuth only.',
+      'Set to TRUE to disable built-in user authentication. Use to restrict auth to OAuth only.',
     default: false
   },
   {
     key: 'allowCsvDownload',
-    label: 'Allow CSV/XLSX Download',
-    description: 'Set to false to disable csv or xlsx downloads.',
+    envVar: 'SQLPAD_ALLOW_CSV_DOWNLOAD',
+    description: 'Enable csv and xlsx downloads.',
     options: [true, false],
     default: true
   },
   {
     key: 'editorWordWrap',
-    label: 'Editor Word Wrap',
-    description: 'Set to true to enable word wrapping in SQL editor.',
+    envVar: 'SQLPAD_EDITOR_WORD_WRAP',
+    description: 'Enable word wrapping in SQL editor.',
     options: [true, false],
     default: false
   },
   {
     key: 'queryResultMaxRows',
-    label: 'Query Result Max Rows',
+    envVar: 'SQLPAD_QUERY_RESULT_MAX_ROWS',
     description: 'By default query results are limited to 50,000 records.',
     default: 50000
   },
   {
     key: 'slackWebhook',
-    label: 'Slack Webhook URL',
+    envVar: 'SQLPAD_SLACK_WEBHOOK',
     description: 'Supply incoming Slack webhook URL to post query when saved.',
     default: ''
   },
   {
-    key: 'showSchemaCopyButton',
-    label: 'Show Schema Copy Button',
-    description:
-      "Enable a button to copy an object's full schema path in schema explorer. Useful for databases that require fully qualified names.",
-    options: [true, false],
-    default: false
-  },
-  {
     key: 'tableChartLinksRequireAuth',
-    label: 'Require Login for Table/Chart Links',
+    envVar: 'SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH',
     description:
-      'If set to false, table and chart result links will be operational without having to log in. (These links only execute saved SQL queries, and do not open an endpoint to execute raw SQL.)',
+      'When false, table and chart result links will be operational without login.',
     options: [true, false],
     default: true
   },
@@ -163,7 +161,6 @@ const configItems = [
     key: 'smtpFrom',
     envVar: 'SQLPAD_SMTP_FROM',
     cliFlag: 'smtp-from',
-    label: 'SMTP From',
     description:
       'From email address for SMTP. Required in order to send invitation emails.',
     default: ''
@@ -172,7 +169,6 @@ const configItems = [
     key: 'smtpHost',
     envVar: 'SQLPAD_SMTP_HOST',
     cliFlag: 'smtp-host',
-    label: 'SMTP Host',
     description:
       'Host address for SMTP. Required in order to send invitation emails.',
     default: ''
@@ -181,7 +177,6 @@ const configItems = [
     key: 'smtpPort',
     envVar: 'SQLPAD_SMTP_PORT',
     cliFlag: 'smtp-port',
-    label: 'SMTP Port',
     description: 'Port for SMTP. Required in order to send invitation emails.',
     default: ''
   },
@@ -189,7 +184,6 @@ const configItems = [
     key: 'smtpSecure',
     envVar: 'SQLPAD_SMTP_SECURE',
     cliFlag: 'smtp-secure',
-    label: 'SMTP Use SSL',
     options: [true, false],
     description: 'Toggle to use secure connection when using SMTP.',
     default: true
@@ -198,7 +192,6 @@ const configItems = [
     key: 'smtpUser',
     envVar: 'SQLPAD_SMTP_USER',
     cliFlag: 'smtp-user',
-    label: 'SMTP User',
     description:
       'Username for SMTP. Required in order to send invitation emails.',
     default: ''
@@ -207,31 +200,27 @@ const configItems = [
     key: 'smtpPassword',
     envVar: 'SQLPAD_SMTP_PASSWORD',
     cliFlag: 'smtp-password',
-    label: 'SMTP Password',
     description: 'Password for SMTP.',
     default: ''
   },
   {
     key: 'whitelistedDomains',
-    label: 'Whitelisted Domains',
     envVar: 'WHITELISTED_DOMAINS',
     cliFlag: 'whitelisted-domains',
     description:
-      "Allows whitelisting of email domains so individual email addresses do not need to be whitelisted. Domains must be delimited by whitespace. For example, 'baz.com foo.bar.com' will whitelist sara@baz.com and john@foo.bar.com",
+      'Allows pre-approval of email domains. Delimit multiple domains by empty space.',
     default: ''
   },
   {
     key: 'disableUpdateCheck',
     envVar: 'SQLPAD_DISABLE_UPDATE_CHECK',
     cliFlag: 'disable-update-check',
-    label: 'Disable update check',
     options: [true, false],
     description:
       'If disabled, SQLPad will no longer poll npmjs.com to see if an update is available.',
     default: false
   },
   {
-    interface: 'env',
     key: 'samlEntryPoint',
     envVar: 'SAML_ENTRY_POINT',
     cliFlag: 'saml-entry-point',
@@ -239,7 +228,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'env',
     key: 'samlIssuer',
     envVar: 'SAML_ISSUER',
     cliFlag: 'saml-issuer',
@@ -247,7 +235,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'env',
     key: 'samlCallbackUrl',
     envVar: 'SAML_CALLBACK_URL',
     cliFlag: 'saml-callback-url',
@@ -255,7 +242,6 @@ const configItems = [
     default: ''
   },
   {
-    interface: 'env',
     key: 'samlCert',
     envVar: 'SAML_CERT',
     cliFlag: 'saml-cert',
