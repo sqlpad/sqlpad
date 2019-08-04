@@ -4,7 +4,7 @@ const configItems = [
     cliFlag: 'config',
     envVar: 'SQLPAD_CONFIG',
     default: '',
-    description: 'JSON/INI file to read for config. Default $HOME/.sqlpadrc'
+    description: 'JSON/INI file to read for config'
   },
   {
     key: 'ip',
