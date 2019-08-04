@@ -63,7 +63,7 @@ const configItems = [
     key: 'certPassphrase',
     cliFlag: 'cert-passphrase',
     envVar: 'CERT_PASSPHRASE',
-    default: 'No cert',
+    default: '',
     description: 'Passphrase for your SSL certification file'
   },
   {
