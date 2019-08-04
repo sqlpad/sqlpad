@@ -7,6 +7,21 @@ const configItems = [
     description: 'JSON/INI file to read for config'
   },
   {
+    key: 'cookieSecret',
+    cliFlag: 'cookie-secret',
+    envVar: 'SQLPAD_COOKIE_SECRET',
+    default: 'secret-used-to-sign-cookies-please-set-and-make-strong',
+    description: 'Secret used to sign cookies'
+  },
+  {
+    key: 'sessionMinutes',
+    cliFlag: 'session-minutes',
+    envVar: 'SQLPAD_SESSION_MINUTES',
+    default: 60,
+    description:
+      'Minutes to keep a session active. Will extended by this amount each request.'
+  },
+  {
     key: 'ip',
     cliFlag: 'ip',
     envVar: 'SQLPAD_IP',
