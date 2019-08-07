@@ -23,6 +23,8 @@ These defaults have been removed in version 3.
 ## Environment Variables
 ```sh
 SQLPAD_CONFIG=
+SQLPAD_COOKIE_SECRET=secret-used-to-sign-cookies-please-set-and-make-strong
+SQLPAD_SESSION_MINUTES=60
 SQLPAD_IP=0.0.0.0
 SQLPAD_PORT=80
 SQLPAD_SYSTEMD_SOCKET=false
@@ -62,107 +64,113 @@ SAML_AUTH_CONTEXT=
 
 ## INI config
 ```ini
+; Secret used to sign cookies
+cookieSecret="secret-used-to-sign-cookies-please-set-and-make-strong"
+
+; Minutes to keep a session active. Will extended by this amount each request.
+sessionMinutes="60"
+
 ; IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0).
-SQLPAD_IP="0.0.0.0"
+ip="0.0.0.0"
 
 ; Port for SQLPad to listen on.
-SQLPAD_PORT="80"
+port="80"
 
 ; Acquire socket from systemd if available
-SQLPAD_SYSTEMD_SOCKET="false"
+systemdSocket="false"
 
 ; Port for SQLPad to listen on.
-SQLPAD_HTTPS_PORT="443"
+httpsPort="443"
 
 ; Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.
-SQLPAD_DB_PATH=""
+dbPath=""
 
 ; Path to mount sqlpad app following domain. Example, if '/sqlpad' is provided queries page would be mydomain.com/sqlpad/queries
-SQLPAD_BASE_URL=""
+baseUrl=""
 
 ; A string of text used to encrypt sensitive values when stored on disk.
-SQLPAD_PASSPHRASE="At least the sensitive bits won't be plain text?"
+passphrase="At least the sensitive bits won't be plain text?"
 
 ; Passphrase for your SSL certification file
-CERT_PASSPHRASE=""
+certPassphrase=""
 
 ; Absolute path to where SSL certificate key is stored
-KEY_PATH=""
+keyPath=""
 
 ; Absolute path to where SSL certificate is stored
-CERT_PATH=""
+certPath=""
 
 ; Email address to whitelist/give admin permissions to
-SQLPAD_ADMIN=""
+admin=""
 
 ; Add a variety of logging to console while running SQLPad
-SQLPAD_DEBUG="false"
+debug="false"
 
 ; Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-GOOGLE_CLIENT_ID=""
+googleClientId=""
 
 ; Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-GOOGLE_CLIENT_SECRET=""
+googleClientSecret=""
 
 ; Public URL used for OAuth setup and email links. Protocol expected. Example: https://mysqlpad.com
-PUBLIC_URL=""
+publicUrl=""
 
 ; Set to TRUE to disable built-in user authentication. Use to restrict auth to OAuth only.
-DISABLE_USERPASS_AUTH="false"
+disableUserpassAuth="false"
 
 ; Enable csv and xlsx downloads.
-SQLPAD_ALLOW_CSV_DOWNLOAD="true"
+allowCsvDownload="true"
 
 ; Enable word wrapping in SQL editor.
-SQLPAD_EDITOR_WORD_WRAP="false"
+editorWordWrap="false"
 
 ; By default query results are limited to 50,000 records.
-SQLPAD_QUERY_RESULT_MAX_ROWS="50000"
+queryResultMaxRows="50000"
 
 ; Supply incoming Slack webhook URL to post query when saved.
-SQLPAD_SLACK_WEBHOOK=""
+slackWebhook=""
 
 ; When false, table and chart result links will be operational without login.
-SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH="true"
+tableChartLinksRequireAuth="true"
 
 ; From email address for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_FROM=""
+smtpFrom=""
 
 ; Host address for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_HOST=""
+smtpHost=""
 
 ; Port for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_PORT=""
+smtpPort=""
 
 ; Toggle to use secure connection when using SMTP.
-SQLPAD_SMTP_SECURE="true"
+smtpSecure="true"
 
 ; Username for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_USER=""
+smtpUser=""
 
 ; Password for SMTP.
-SQLPAD_SMTP_PASSWORD=""
+smtpPassword=""
 
 ; Allows pre-approval of email domains. Delimit multiple domains by empty space.
-WHITELISTED_DOMAINS=""
+whitelistedDomains=""
 
 ; If disabled, SQLPad will no longer poll npmjs.com to see if an update is available.
-SQLPAD_DISABLE_UPDATE_CHECK="false"
+disableUpdateCheck="false"
 
 ; SAML Entry point URL
-SAML_ENTRY_POINT=""
+samlEntryPoint=""
 
 ; SAML Issuer
-SAML_ISSUER=""
+samlIssuer=""
 
 ; SAML callback URL
-SAML_CALLBACK_URL=""
+samlCallbackUrl=""
 
 ; SAML certificate in Base64
-SAML_CERT=""
+samlCert=""
 
 ; SAML authentication context URL
-SAML_AUTH_CONTEXT=""
+samlAuthContext=""
 
 
 ```
@@ -170,6 +178,8 @@ SAML_AUTH_CONTEXT=""
 ## JSON config
 ```json
 {
+  "cookieSecret": "secret-used-to-sign-cookies-please-set-and-make-strong",
+  "sessionMinutes": 60,
   "ip": "0.0.0.0",
   "port": 80,
   "systemdSocket": false,

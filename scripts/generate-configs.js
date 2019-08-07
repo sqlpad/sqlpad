@@ -13,9 +13,9 @@ configItems.forEach(item => {
     json[item.key] = item.default;
 
     if (item.description) {
-      ini += `; ${item.description}\n${item.envVar}="${item.default}"\n\n`
+      ini += `; ${item.description}\n${item.key}="${item.default}"\n\n`
     } else {
-      ini += `${item.envVar}="${item.default}"\n`
+      ini += `${item.key}="${item.default}"\n`
     }
   }
 })
