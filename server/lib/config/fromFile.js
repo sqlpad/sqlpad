@@ -32,19 +32,6 @@ function fromFile(configFilePath) {
       const configItem = configItems.find(item => item.key === key);
       if (!configItem) {
         let warningMessage = `Config key ${key} in file ${configFilePath} not recognized.`;
-
-        // Find the item it might be and give the user a hint
-        const maybeItem = configItems.find(item => {
-          if (Array.isArray(item.cliFlag)) {
-            return item.cliFlag.includes(key);
-          }
-          return item.cliFlag === key;
-        });
-        if (maybeItem) {
-          warningMessage += ` Did you mean ${maybeItem.key}?`;
-        } else {
-          warningMessage += ' It can likely be removed.';
-        }
         warnings.push(warningMessage);
       }
     });
