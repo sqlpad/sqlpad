@@ -18,6 +18,12 @@ const renderValue = (input, fieldMeta) => {
     return input.substring(0, 10);
   } else if (typeof input === 'object') {
     return JSON.stringify(input, null, 2);
+  } else if (typeof input === 'string' && input.match('^https?://')) {
+    return (
+      <a target="_blank" rel="noopener noreferrer" href={input}>
+        {input}
+      </a>
+    );
   } else {
     return input;
   }
