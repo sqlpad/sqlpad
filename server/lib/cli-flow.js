@@ -3,35 +3,26 @@ const argv = minimist(process.argv.slice(2));
 const packageJson = require('../package.json');
 const configItems = require('./config/configItems');
 
-const helpOptions = configItems.map(item => {
-  let lastFlag = '';
-  if (Array.isArray(item.cliFlag)) {
-    lastFlag = item.cliFlag[item.cliFlag.length - 1];
-  } else if (item.cliFlag) {
-    lastFlag = item.cliFlag;
-  }
-
-  return {
-    key: item.key,
-    flag: lastFlag,
-    description: item.description,
-    envVar: item.envVar
-  };
-});
+const keyLengths = configItems.map(item => item.key.length);
+const keyPadding = Math.max(...keyLengths) + 2;
 
 const helpText = `
 SQLPad version:  ${packageJson.version}
 
-Usage:  sqlpad [options]
+CLI examples: 
+
+  sqlpad --dbPath ../db --port 3010 --debug --baseUrl /sqlpad
+  node server.js --dbPath ../db --port 3010 --debug --baseUrl /sqlpad
+  node server.js --config path/to/file.json
+  node server.js --config path/to/file.ini
 
 Options:
 
-${helpOptions
-  .filter(option => Boolean(option.flag))
+${configItems
   .map(option => {
-    return `  --${option.flag}    ${option.description}\n`;
+    return `  --${option.key.padEnd(keyPadding)}${option.description}\n`;
   })
-  .join('\n')}`;
+  .join('')}`;
 
 // If version is requested show version then exit
 if (argv.v || argv.version) {

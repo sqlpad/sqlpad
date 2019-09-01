@@ -1,21 +1,18 @@
 const configItems = [
   {
     key: 'config',
-    cliFlag: 'config',
     envVar: 'SQLPAD_CONFIG',
     default: '',
     description: 'JSON/INI file to read for config'
   },
   {
     key: 'cookieSecret',
-    cliFlag: 'cookie-secret',
     envVar: 'SQLPAD_COOKIE_SECRET',
     default: 'secret-used-to-sign-cookies-please-set-and-make-strong',
     description: 'Secret used to sign cookies'
   },
   {
     key: 'sessionMinutes',
-    cliFlag: 'session-minutes',
     envVar: 'SQLPAD_SESSION_MINUTES',
     default: 60,
     description:
@@ -23,7 +20,6 @@ const configItems = [
   },
   {
     key: 'ip',
-    cliFlag: 'ip',
     envVar: 'SQLPAD_IP',
     default: '0.0.0.0',
     description:
@@ -31,28 +27,24 @@ const configItems = [
   },
   {
     key: 'port',
-    cliFlag: 'port',
     envVar: 'SQLPAD_PORT',
     default: 80,
     description: 'Port for SQLPad to listen on.'
   },
   {
     key: 'systemdSocket',
-    cliFlag: 'systemd-socket',
     envVar: 'SQLPAD_SYSTEMD_SOCKET',
     default: false,
     description: 'Acquire socket from systemd if available'
   },
   {
     key: 'httpsPort',
-    cliFlag: 'https-port',
     envVar: 'SQLPAD_HTTPS_PORT',
     default: 443,
     description: 'Port for SQLPad to listen on.'
   },
   {
     key: 'dbPath',
-    cliFlag: ['db', 'dbPath', 'dir'],
     envVar: 'SQLPAD_DB_PATH',
     default: '',
     description:
@@ -60,7 +52,6 @@ const configItems = [
   },
   {
     key: 'baseUrl',
-    cliFlag: 'base-url',
     envVar: 'SQLPAD_BASE_URL',
     default: '',
     description:
@@ -68,7 +59,6 @@ const configItems = [
   },
   {
     key: 'passphrase',
-    cliFlag: 'passphrase',
     envVar: 'SQLPAD_PASSPHRASE',
     default: "At least the sensitive bits won't be plain text?",
     description:
@@ -76,35 +66,30 @@ const configItems = [
   },
   {
     key: 'certPassphrase',
-    cliFlag: 'cert-passphrase',
     envVar: 'CERT_PASSPHRASE',
     default: '',
     description: 'Passphrase for your SSL certification file'
   },
   {
     key: 'keyPath',
-    cliFlag: ['key', 'key-path', 'key-dir'],
     envVar: 'KEY_PATH',
     default: '',
     description: 'Absolute path to where SSL certificate key is stored'
   },
   {
     key: 'certPath',
-    cliFlag: ['cert', 'cert-path', 'cert-dir'],
     envVar: 'CERT_PATH',
     default: '',
     description: 'Absolute path to where SSL certificate is stored'
   },
   {
     key: 'admin',
-    cliFlag: 'admin',
     envVar: 'SQLPAD_ADMIN',
     default: '',
     description: 'Email address to whitelist/give admin permissions to'
   },
   {
     key: 'debug',
-    cliFlag: 'debug',
     envVar: 'SQLPAD_DEBUG',
     default: false,
     description: 'Add a variety of logging to console while running SQLPad'
@@ -126,7 +111,6 @@ const configItems = [
   {
     key: 'publicUrl',
     envVar: 'PUBLIC_URL',
-    cliFlag: 'public-url',
     description:
       'Public URL used for OAuth setup and email links. Protocol expected. Example: https://mysqlpad.com',
     default: ''
@@ -175,7 +159,6 @@ const configItems = [
   {
     key: 'smtpFrom',
     envVar: 'SQLPAD_SMTP_FROM',
-    cliFlag: 'smtp-from',
     description:
       'From email address for SMTP. Required in order to send invitation emails.',
     default: ''
@@ -183,7 +166,6 @@ const configItems = [
   {
     key: 'smtpHost',
     envVar: 'SQLPAD_SMTP_HOST',
-    cliFlag: 'smtp-host',
     description:
       'Host address for SMTP. Required in order to send invitation emails.',
     default: ''
@@ -191,14 +173,12 @@ const configItems = [
   {
     key: 'smtpPort',
     envVar: 'SQLPAD_SMTP_PORT',
-    cliFlag: 'smtp-port',
     description: 'Port for SMTP. Required in order to send invitation emails.',
     default: ''
   },
   {
     key: 'smtpSecure',
     envVar: 'SQLPAD_SMTP_SECURE',
-    cliFlag: 'smtp-secure',
     options: [true, false],
     description: 'Toggle to use secure connection when using SMTP.',
     default: true
@@ -206,7 +186,6 @@ const configItems = [
   {
     key: 'smtpUser',
     envVar: 'SQLPAD_SMTP_USER',
-    cliFlag: 'smtp-user',
     description:
       'Username for SMTP. Required in order to send invitation emails.',
     default: ''
@@ -214,14 +193,12 @@ const configItems = [
   {
     key: 'smtpPassword',
     envVar: 'SQLPAD_SMTP_PASSWORD',
-    cliFlag: 'smtp-password',
     description: 'Password for SMTP.',
     default: ''
   },
   {
     key: 'whitelistedDomains',
     envVar: 'WHITELISTED_DOMAINS',
-    cliFlag: 'whitelisted-domains',
     description:
       'Allows pre-approval of email domains. Delimit multiple domains by empty space.',
     default: ''
@@ -229,7 +206,6 @@ const configItems = [
   {
     key: 'disableUpdateCheck',
     envVar: 'SQLPAD_DISABLE_UPDATE_CHECK',
-    cliFlag: 'disable-update-check',
     options: [true, false],
     description:
       'If disabled, SQLPad will no longer poll npmjs.com to see if an update is available.',
@@ -238,36 +214,30 @@ const configItems = [
   {
     key: 'samlEntryPoint',
     envVar: 'SAML_ENTRY_POINT',
-    cliFlag: 'saml-entry-point',
     description: 'SAML Entry point URL',
     default: ''
   },
   {
     key: 'samlIssuer',
     envVar: 'SAML_ISSUER',
-    cliFlag: 'saml-issuer',
     description: 'SAML Issuer',
     default: ''
   },
   {
     key: 'samlCallbackUrl',
     envVar: 'SAML_CALLBACK_URL',
-    cliFlag: 'saml-callback-url',
     description: 'SAML callback URL',
     default: ''
   },
   {
     key: 'samlCert',
     envVar: 'SAML_CERT',
-    cliFlag: 'saml-cert',
     description: 'SAML certificate in Base64',
     default: ''
   },
   {
-    interface: 'env',
     key: 'samlAuthContext',
     envVar: 'SAML_AUTH_CONTEXT',
-    cliFlag: 'saml-auth-context',
     description: 'SAML authentication context URL',
     default: ''
   }

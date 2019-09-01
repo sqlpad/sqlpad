@@ -19,8 +19,8 @@ describe('config', function() {
 
   it('cli', function() {
     const conf = fromCli({
-      'key-path': 'key/path',
-      cert: 'cert/path',
+      keyPath: 'key/path',
+      certPath: 'cert/path',
       admin: 'admin@email.com'
     });
     assert.equal(conf.keyPath, 'key/path', 'keyPath');

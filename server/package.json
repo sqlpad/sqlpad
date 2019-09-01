@@ -28,7 +28,7 @@
   },
   "scripts": {
     "prepublishOnly": "cd .. && ./scripts/build.sh",
-    "start": "node-dev server.js --dir ../db --port 3010 --debug --base-url /sqlpad",
+    "start": "node-dev server.js --dbPath ../db --port 3010 --debug --baseUrl /sqlpad",
     "test": "rimraf ../dbtest && SQLPAD_DB_PATH='../dbtest' SQLPAD_TEST='true' mocha test --timeout 10000 --recursive --exit",
     "fixlint": "eslint --fix '**/*.js'",
     "lint": "eslint '**/*.js'"
