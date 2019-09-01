@@ -80,32 +80,6 @@ Installation &amp; Administration &ndash; SQLPad - A web app for running SQL que
 
 <p><code>sqlpad --help</code></p>
 
-<h3 id="a-realistic-example">A Realistic Example:</h3>
-
-<p><code>sqlpad --dir c:/sqlpad/ --port 3000 --passphrase secret-encryption-phrase</code></p>
-
-<p>The <strong>dir</strong> argument specifies where to keep the sqlpad query/user/connection files. If not provided, SQLPad will put its files in the user&rsquo;s home directory under /sqlpad/db.</p>
-
-<p>The <strong>port</strong> argument specifies the port on which SQLPad should run. The default is port 80, but that may not be available.</p>
-
-<p>The <strong>passphrase</strong> argument is used to encrypt database connection usernames and passwords, and cookie encryption. If not provided, SQLPad will use the default to at least prevent usernames and passwords from being stored in plaintext.</p>
-
-<p>If a passphrase is ever changed or forgotten, you&rsquo;ll need to re-add the connection usernames and passwords to each database connection.</p>
-
-<p>If you ever want to save the arguments you are passing in so you don&rsquo;t have to remember them, you can save them by passing in the <code>--save</code> argument.</p>
-
-<p><code>sqlpad --dir ./sqlpad/ --port 3000 --passphrase secret-encryption-phrase --save</code></p>
-
-<p>Then the next time you can simply run&hellip;</p>
-
-<p><code>sqlpad</code></p>
-
-<p>&hellip;and Sqlpad will use directory ./sqlpad, on port 3000, with the proper encryption passphrase.</p>
-
-<p>These settings can be forgotten by running</p>
-
-<p><code>sqlpad --forget</code></p>
-
 <h2 id="administration">Administration</h2>
 
 <p>Once SQLPad is running, create an initial admin account by navigating to <a href="http://localhost/signup">http://localhost/signup</a>.</p>
@@ -196,7 +170,7 @@ For OAuth to be useful this usually involves the following:</p>
 
 <h3 id="systemd-socket-activation">Systemd socket activation</h3>
 
-<p>To use systemd socket activation add <code>--systemd-socket</code> flag. For more information see <a href="https://github.com/rickbergfalk/sqlpad/pull/185">this pull request</a>.</p>
+<p>To use systemd socket activation add <code>--systemdSocket</code> flag. For more information see <a href="https://github.com/rickbergfalk/sqlpad/pull/185">this pull request</a>.</p>
 
       </div>
   </div>
