@@ -27,7 +27,6 @@
     "no-use-before-define": "off",
     "prefer-const": "off",
     "prefer-destructuring": "off",
-    "prefer-object-spread": "off",
     "prefer-promise-reject-errors": "off",
     "prefer-template": "off",
     "radix": "off",
