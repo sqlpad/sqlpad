@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.0.0
+
+### September 1, 2019
+
+SQLPad v3 is a UI redesign/refresh along with a large file structure change and configuration change. It has been in "beta" for quite some time, and if you are running the latest docker image or running a recent build of master, you've already been using it.
+
+#### Features
+
+- URLs in query results will be turned into links
+- All other 3.0.0-beta features
+
+#### Breaking changes
+
+- CLI flags have been changed to use config item key (#460)
+- All other 3.0.0-beta breaking changes
+
 ## 3.0.0-beta.2
 
 ### August 4, 2019
