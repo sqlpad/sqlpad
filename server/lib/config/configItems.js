@@ -204,14 +204,6 @@ const configItems = [
     default: ''
   },
   {
-    key: 'disableUpdateCheck',
-    envVar: 'SQLPAD_DISABLE_UPDATE_CHECK',
-    options: [true, false],
-    description:
-      'If disabled, SQLPad will no longer poll npmjs.com to see if an update is available.',
-    default: false
-  },
-  {
     key: 'samlEntryPoint',
     envVar: 'SAML_ENTRY_POINT',
     description: 'SAML Entry point URL',

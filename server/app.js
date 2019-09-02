@@ -5,7 +5,6 @@ const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const config = require('./lib/config');
-const version = require('./lib/version');
 
 const baseUrl = config.get('baseUrl');
 const googleClientId = config.get('googleClientId');
@@ -21,11 +20,6 @@ const samlIssuer = config.get('samlIssuer');
 const samlCallbackUrl = config.get('samlCallbackUrl');
 const samlCert = config.get('samlCert');
 const samlAuthContext = config.get('samlAuthContext');
-
-if (!debug) {
-  // Note actual checks will only happen if not disabled via config
-  version.scheduleUpdateChecks();
-}
 
 /*  Express setup
 ============================================================================= */
