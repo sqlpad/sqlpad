@@ -12,7 +12,7 @@ The docker image runs on port 3000 and uses `/var/lib/sqlpad` for the embedded d
 
 For configuration exposed via environment variables reference [CONFIGURATION.md](https://github.com/rickbergfalk/sqlpad/blob/master/CONFIGURATION.md).
 
-See [docker-validation](https://github.com/rickbergfalk/sqlpad/tree/master/docker-validation) directory for example docker-compose setup with SQL Server.
+See [docker-examples](https://github.com/rickbergfalk/sqlpad/tree/master/docker-examples) directory for example docker-compose setup with SQL Server.
 
 ## Building
 
