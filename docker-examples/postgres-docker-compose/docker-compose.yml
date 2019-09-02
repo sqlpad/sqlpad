@@ -1,0 +1,21 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: sqlpad
+      POSTGRES_PASSWORD: sqlpad
+
+  sqlpad:
+    image: 'sqlpad/sqlpad:latest'
+    hostname: 'sqlpad'
+    ports:
+      - '3000:3000'
+    environment:
+      - SQLPAD_DEBUG=TRUE
+    volumes:
+      # This maps /var/lib/sqlpad directory inside sqlpad container to a directory docker host (your laptop, desktop, etc)
+      # This allows your SQLPad data to exist across container shutdowns
+      # For this to work, the path here `~/docker-volumes` must be shared with docker
+      - ~/docker-volumes/sqlpad-postgres:/var/lib/sqlpad
