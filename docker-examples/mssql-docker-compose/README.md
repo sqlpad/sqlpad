@@ -1,10 +1,6 @@
-# Docker Validation and Debug
-
-Quick little guide to manually test sqlpad image from docker hub. Also useful for reproduction cases.
+# mssql (Microsoft SQL Server)
 
 This assumes you have docker installed with docker compose, and some light understanding of docker
-
-## mssql
 
 When trying out the mssql test, be sure your docker environment meets minimum reqs: https://hub.docker.com/r/microsoft/mssql-server-linux/
 
