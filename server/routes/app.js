@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const version = require('../lib/version.js');
+const packageJson = require('../package.json');
 const User = require('../models/User.js');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
@@ -32,7 +32,7 @@ router.get('*/api/app', async (req, res) => {
         localAuthConfigured: !config.get('disableUserpassAuth'),
         samlConfigured: Boolean(config.get('samlEntryPoint'))
       },
-      version: version.get()
+      version: packageJson.version
     });
   } catch (error) {
     sendError(res, error, 'Problem querying users');

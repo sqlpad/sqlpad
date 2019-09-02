@@ -6,7 +6,7 @@ import AboutContent from './AboutContent';
 
 function mapStateToProps(state) {
   return {
-    version: state.version || {}
+    version: state.version || ''
   };
 }
 
@@ -28,7 +28,7 @@ function AboutModal({ version, visible, onClose }) {
 }
 
 AboutModal.propTypes = {
-  version: PropTypes.object.isRequired
+  version: PropTypes.string.isRequired
 };
 
 export default ConnectedAboutModal;
