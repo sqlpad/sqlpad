@@ -1,7 +1,6 @@
 .DS_Store
 .env
 .idea/*
-.vscode/settings.json
 client/build/
 server/public
 coverage/
