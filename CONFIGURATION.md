@@ -53,7 +53,6 @@ SQLPAD_SMTP_SECURE=true
 SQLPAD_SMTP_USER=
 SQLPAD_SMTP_PASSWORD=
 WHITELISTED_DOMAINS=
-SQLPAD_DISABLE_UPDATE_CHECK=false
 SAML_ENTRY_POINT=
 SAML_ISSUER=
 SAML_CALLBACK_URL=
@@ -154,9 +153,6 @@ smtpPassword=""
 ; Allows pre-approval of email domains. Delimit multiple domains by empty space.
 whitelistedDomains=""
 
-; If disabled, SQLPad will no longer poll npmjs.com to see if an update is available.
-disableUpdateCheck="false"
-
 ; SAML Entry point URL
 samlEntryPoint=""
 
@@ -208,7 +204,6 @@ samlAuthContext=""
   "smtpUser": "",
   "smtpPassword": "",
   "whitelistedDomains": "",
-  "disableUpdateCheck": false,
   "samlEntryPoint": "",
   "samlIssuer": "",
   "samlCallbackUrl": "",
