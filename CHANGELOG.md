@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.0
+## 3.0.1
 
 ### September 1, 2019
 
@@ -43,6 +43,12 @@ SQLPad v3 is a UI redesign/refresh along with a large file structure change and 
 - Fix user needing to sign in again after sign up
 - Fix app menu for non-admin users
 - Fix frozen editor after query error
+
+## 3.0.0
+
+### September 1, 2019
+
+This build is broken. sorry :(
 
 ## 3.0.0-beta.1
 
