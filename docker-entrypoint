@@ -1,2 +1,2 @@
 #!/bin/sh
-exec node /usr/app/server.js --dir /var/lib/sqlpad --port 3000 $@
+exec node /usr/app/server.js --dbPath /var/lib/sqlpad --port 3000 $@
