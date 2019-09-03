@@ -40,6 +40,6 @@ As of version 3, automated Docker hub builds have been made a priority. Going fo
 
 A few versions of SQLPad v3 will be published to npm, but will be flagged as deprecated. 
 
-The Docker build of SQLPad appears to be more popular, is probably safer, and opens up for more possibilities down the road. Removing the need to publish to npm also simplifies things a bit.
+The Docker build of SQLPad appears to be more popular, is probably safer, and opens up more possibilities down the road (SQLPad could be more than Node.js). Removing the need to publish to npm also simplifies things a bit.
 
 While this is a minor inconvenience if you're using npm as a means to install and run SQLPad (I was), I believe this is a better path forward for the future of SQLPad.
