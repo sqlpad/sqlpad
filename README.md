@@ -47,7 +47,7 @@ At this point you can run the SQLPad server with the front-end built for product
 
 ```sh
 cd server
-node server.js --dir ../db --port 3010
+node server.js --dbPath ../db --port 3010
 ```
 
 If prefered, SQLPad can be installed as a global module using the local files in this repo. This allows running SQLPad via the cli in any directory, just as if you had installed it with `npm install sqlpad -g`. Note that you must build and copy the client prior to this step.
@@ -58,7 +58,7 @@ node install -g
 
 # Now from somewhere else you can run sqlpad like
 cd ~
-sqlpad --dir ../db --port 3010
+sqlpad --dbPath ../db --port 3010
 ```
 
 A docker image may be built using the Dockerfile located in `server` directory. See `docker-publish.sh` for example docker build command.
