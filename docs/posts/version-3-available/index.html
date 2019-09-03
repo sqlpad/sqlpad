@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <title>
     
-      SQLPad - A web app for running SQL queries and visualizing the results
-    
+Version 3 Released &ndash; SQLPad - A web app for running SQL queries and visualizing the results
+
   </title>
   <meta name="keywords" content="SQLPad, node.js, Postgres, postgresql, mysql, microsoft sql server, online sql editor">
   <meta name="description" content="SQLPad is a web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, and SQL Server. Built with Node.js">
@@ -46,61 +46,64 @@
     
 
 
-<article>
-  <header>
-    <section class="header">
-      <div class="row">
-        <h1>News and updates</h1>
-        
-      </div>
-    </section>
-  </header>
-  
-  <div class="docs-section">
-    <div class="row">
-        <div class="two columns">
-            <p> </p>
-        </div>
-        <div class="columns eight">
-            
-          <table class="u-full-width">
-              <thead>
-                <tr>
-                  <th>post_title</th>
-                  <th>posted_at</th>
-                </tr>
-              </thead>
-              <tbody>
-                
-                
-                <tr>
-                  <td><a href="https://rickbergfalk.github.io/sqlpad/posts/version-3-available/">Version 3 Released</a></td>
-                  <td>2019-09-02</td>
-                </tr>
-                
-                <tr>
-                  <td><a href="https://rickbergfalk.github.io/sqlpad/posts/version-3-beta/">Version 3 beta now available</a></td>
-                  <td>2019-06-25</td>
-                </tr>
-                
-                <tr>
-                  <td><a href="https://rickbergfalk.github.io/sqlpad/posts/installation-and-administration/">Installation &amp; Administration (v2)</a></td>
-                  <td>2018-01-28</td>
-                </tr>
-                
-                
-              </tbody>
-            </table>
-
-        </div>
-    </div>
-
-    
+<section class="header">
+  <div class="row">
+    <h1>Version 3 Released</h1>
+    <p>September 2, 2019</p>
   </div>
-</article>
+</section>
 
+<div class="docs-section">
+  <div class="row">
+      <div class="one columns">
+          <p> </p>
+      </div>
+      <div class="columns ten">
+          
 
+<p>SQLPad version 3 has finally been released and tagged as stable.</p>
 
+<p>It consists of a significant UI update, a change in configuration management, and a stronger focus on automated Docker builds. It has been in &ldquo;beta&rdquo; for quite some time, and if you are running the latest docker image or running a recent build of master you are already using it.</p>
+
+<h2 id="editor-first-ui-refresh">Editor-First UI Refresh</h2>
+
+<p>UI components previously based on React Bootstrap UI components are now replaced by custom React components. The front end code in general follows a much better React-based approach, and should hopefully be easier to maintain and reason about. The v2 rewrite was my first React project and did some not-very-Reacty things, and performance sometimes suffered as a result.</p>
+
+<p>Management and listing pages (queries, connections, users) have been moved into side drawers, allowing management and browsing of things without leaving the current query. The query editor is now the primary focus of the application.</p>
+
+<p>Query editor toolbars have been consolidated into a single bar to maximize use of space on the page.</p>
+
+<p>Unsaved changes to a previously-saved query are now saved to browser local storage, prompting the user to restore on next open. This is not enabled for unsaved changes to &ldquo;new&rdquo; queries since it could become an annoyance, but can be added if there is interest.</p>
+
+<p>Query result chart has been moved to a smaller resizable pane along side the SQL query instead of being placed in a tab. This impacts the size available for the chart, but brings it to the default view, allowing altering of the query without changing tabs.</p>
+
+<p>The schema sidebar may now be hidden and is now searchable. It has also been rewritten to render large trees efficiently.</p>
+
+<p>Query result grid no longer has data bars for numeric values since it didn&rsquo;t make sense for all number values. Date value display logic has been altered to only show timestamps if timestamps are detected. When timestamps are shown, the full timestamp from the JavaScript date object is displayed.</p>
+
+<h2 id="configuration">Configuration</h2>
+
+<p>The configuration UI has been removed completely, favoring configuration done at the server level. This allowed simplification of the configuration code quite a bit.</p>
+
+<p>Configuration may be specified via environment variables or a JSON or INI configuration file. The path to the config file can be set via environment variable <code>SQLPAD_CONFIG=path/to/config.ini</code> or via CLI flag <code>sqlpad --config path/to/config.json</code></p>
+
+<p>Configuration may also be specified via command line flags (e.g. <code>sqlpad --flagName someValue</code>) though the parameter names may have changed.</p>
+
+<p>A list of available settings may be found in the <a href="https://github.com/rickbergfalk/sqlpad#configuration">GitHub repository</a></p>
+
+<h2 id="npm-install-deprecated">npm Install Deprecated</h2>
+
+<p>As of version 3, automated Docker hub builds have been made a priority. Going forward, using the Docker build or building from the git repo is the recommended approach to running SQLPad.</p>
+
+<p>A few versions of SQLPad v3 will be published to npm, but will be flagged as deprecated.</p>
+
+<p>The Docker build of SQLPad appears to be more popular, is probably safer, and opens up more possibilities down the road (SQLPad could be more than Node.js). Removing the need to publish to npm also simplifies things a bit.</p>
+
+<p>While this is a minor inconvenience if you&rsquo;re using npm as a means to install and run SQLPad (I was), I believe this is a better path forward for the future of SQLPad.</p>
+
+      </div>
+  </div>
+</div>
 
 
     
