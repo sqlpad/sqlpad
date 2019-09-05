@@ -1,4 +1,3 @@
-import 'd3';
 import DownloadIcon from 'mdi-react/DownloadIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';

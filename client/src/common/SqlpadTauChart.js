@@ -1,4 +1,3 @@
-import 'd3';
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { Chart } from 'taucharts';
@@ -13,8 +12,6 @@ function SqlpadTauChart({
   chartConfiguration,
   queryId
 }) {
-  // TODO rendering on every change like this might get too expensive
-  // Revisit with latest version of taucharts and d3 once UI is updated
   useEffect(() => {
     let chart;
 
