@@ -5,11 +5,11 @@ const configItems = require('../server/lib/config/configItems')
 let rows = ``;
 
 configItems.sort((a, b) => a.key.localeCompare(b.key)).forEach(item => {
+  const defaulthtml = item.default ? `<br>default: <code>${item.default}</code>` : '';
   rows += `<tr>
       <td>${item.key}</td>
       <td>${item.envVar}</td>
-      <td>${item.default}</td>
-      <td>${item.description}</td>
+      <td>${item.description}${defaulthtml}</td>
     </tr>`;
 })
 
@@ -22,9 +22,6 @@ const html = `
       </th>
       <th>
         Env var
-      </th>
-      <th>
-        default
       </th>
       <th>
         description
