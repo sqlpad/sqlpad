@@ -76,13 +76,13 @@ node server.js --config ~/.sqlpadrc
 
 For INI and JSON config file examples, see `config-example.ini` and `config-example.json` in GitHub repository.
 
-## Version 3 changes
+### Version 3 changes
 
 Previously SQLPad supported a default dbPath of `$HOME/sqlpad/db` and a default config file path of `$HOME/.sqlpadrc`.
 
 These defaults have been removed in version 3.
 
-## Environment Variables
+### Config variables
 
 ```sh
 # Passphrase for your SSL certification file
