@@ -2,41 +2,21 @@ const fs = require('fs');
 const path = require('path');
 const configItems = require('../server/lib/config/configItems')
 
-let md = `
+let md = '';
 
-## Config
+configItems.filter(item => item.key !== 'config').sort((a, b) => a.key.localeCompare(b.key)).forEach(item => {
+  const key = `**${item.key}**  \n`;
+  const description = `${item.description}  \n`;
+  const envVar = `Env var: \`${item.envVar}\`  \n`;
+  const defaultString = item.default ? 'Default: `' + item.default + '`\n' : '';
 
-`;
-
-let rows = ``;
-
-configItems.sort((a, b) => a.key.localeCompare(b.key)).forEach(item => {
-  const defaulthtml = item.default ? `<br>default: <code>${item.default}</code>` : '';
-  rows += `<tr>
-      <td>${item.key}<br />${item.envVar}</td>
-      <td>${item.description}${defaulthtml}</td>
-    </tr>`;
-
-  let defaultString = item.default ? 'default: `' + item.default + '`\n' : ''
-  md += '**' + item.key + '**  \n' + item.description + '  \n' + 'Env var: `' + item.envVar + '`  \n' + defaultString + '\n'
+  md += key + description + envVar + defaultString + '\n'
 })
 
-const html = `
-<table>
-  <thead>
-    <tr>
-      <th>
-        key<br/>ENV_VAR
-      </th>
-      <th>
-        description
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    ${rows}
-  </tbody>
-</table>
-`
+const readme = fs.readFileSync(path.join(__dirname, '../README.md'), { encoding: 'utf8' });
 
-fs.writeFileSync(path.join(__dirname, '../CONFIGURATION.md'), md + html, { encoding: 'utf8'})
+const findRegEx = /### Config variables.*## Development/s;
+const replaceVal = `### Config variables  \n\n${md}## Development`;
+const writeVal = readme.replace(findRegEx, replaceVal);
+
+fs.writeFileSync(path.join(__dirname, '../README.md'), writeVal, { encoding: 'utf8'})

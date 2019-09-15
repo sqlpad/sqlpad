@@ -84,115 +84,155 @@ These defaults have been removed in version 3.
 
 ### Config variables
 
-```sh
-# Passphrase for your SSL certification file
-CERT_PASSPHRASE=""
+**admin**  
+Email address to whitelist/give admin permissions to  
+Env var: `SQLPAD_ADMIN`
 
-# Absolute path to where SSL certificate is stored
-CERT_PATH=""
+**allowCsvDownload**  
+Enable csv and xlsx downloads.  
+Env var: `SQLPAD_ALLOW_CSV_DOWNLOAD`  
+Default: `true`
 
-# Set to TRUE to disable built-in user authentication. Use to restrict auth to OAuth only.
-DISABLE_USERPASS_AUTH="false"
+**baseUrl**  
+Path to mount sqlpad app following domain. Example, if '/sqlpad' is provided queries page would be mydomain.com/sqlpad/queries  
+Env var: `SQLPAD_BASE_URL`
 
-# Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-GOOGLE_CLIENT_ID=""
+**certPassphrase**  
+Passphrase for your SSL certification file  
+Env var: `CERT_PASSPHRASE`
 
-# Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-GOOGLE_CLIENT_SECRET=""
+**certPath**  
+Absolute path to where SSL certificate is stored  
+Env var: `CERT_PATH`
 
-# Absolute path to where SSL certificate key is stored
-KEY_PATH=""
+**cookieSecret**  
+Secret used to sign cookies  
+Env var: `SQLPAD_COOKIE_SECRET`  
+Default: `secret-used-to-sign-cookies-please-set-and-make-strong`
 
-# Public URL used for OAuth setup and email links. Protocol expected. Example: https://mysqlpad.com
-PUBLIC_URL=""
+**dbPath**  
+Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.  
+Env var: `SQLPAD_DB_PATH`
 
-# SAML authentication context URL
-SAML_AUTH_CONTEXT=""
+**debug**  
+Add a variety of logging to console while running SQLPad  
+Env var: `SQLPAD_DEBUG`
 
-# SAML callback URL
-SAML_CALLBACK_URL=""
+**disableUserpassAuth**  
+Set to TRUE to disable built-in user authentication. Use to restrict auth to OAuth only.  
+Env var: `DISABLE_USERPASS_AUTH`
 
-# SAML certificate in Base64
-SAML_CERT=""
+**editorWordWrap**  
+Enable word wrapping in SQL editor.  
+Env var: `SQLPAD_EDITOR_WORD_WRAP`
 
-# SAML Entry point URL
-SAML_ENTRY_POINT=""
+**googleClientId**  
+Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'  
+Env var: `GOOGLE_CLIENT_ID`
 
-# SAML Issuer
-SAML_ISSUER=""
+**googleClientSecret**  
+Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'  
+Env var: `GOOGLE_CLIENT_SECRET`
 
-# Email address to whitelist/give admin permissions to
-SQLPAD_ADMIN=""
+**httpsPort**  
+Port for SQLPad to listen on.  
+Env var: `SQLPAD_HTTPS_PORT`  
+Default: `443`
 
-# Enable csv and xlsx downloads.
-SQLPAD_ALLOW_CSV_DOWNLOAD="true"
+**ip**  
+IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0).  
+Env var: `SQLPAD_IP`  
+Default: `0.0.0.0`
 
-# Path to mount sqlpad app following domain. Example, if '/sqlpad' is provided queries page would be mydomain.com/sqlpad/queries
-SQLPAD_BASE_URL=""
+**keyPath**  
+Absolute path to where SSL certificate key is stored  
+Env var: `KEY_PATH`
 
-# JSON/INI file to read for config
-SQLPAD_CONFIG=""
+**passphrase**  
+A string of text used to encrypt sensitive values when stored on disk.  
+Env var: `SQLPAD_PASSPHRASE`  
+Default: `At least the sensitive bits won't be plain text?`
 
-# Secret used to sign cookies
-SQLPAD_COOKIE_SECRET="secret-used-to-sign-cookies-please-set-and-make-strong"
+**port**  
+Port for SQLPad to listen on.  
+Env var: `SQLPAD_PORT`  
+Default: `80`
 
-# Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.
-SQLPAD_DB_PATH=""
+**publicUrl**  
+Public URL used for OAuth setup and email links. Protocol expected. Example: https://mysqlpad.com  
+Env var: `PUBLIC_URL`
 
-# Add a variety of logging to console while running SQLPad
-SQLPAD_DEBUG="false"
+**queryResultMaxRows**  
+By default query results are limited to 50,000 records.  
+Env var: `SQLPAD_QUERY_RESULT_MAX_ROWS`  
+Default: `50000`
 
-# Enable word wrapping in SQL editor.
-SQLPAD_EDITOR_WORD_WRAP="false"
+**samlAuthContext**  
+SAML authentication context URL  
+Env var: `SAML_AUTH_CONTEXT`
 
-# Port for SQLPad to listen on.
-SQLPAD_HTTPS_PORT="443"
+**samlCallbackUrl**  
+SAML callback URL  
+Env var: `SAML_CALLBACK_URL`
 
-# IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0).
-SQLPAD_IP="0.0.0.0"
+**samlCert**  
+SAML certificate in Base64  
+Env var: `SAML_CERT`
 
-# A string of text used to encrypt sensitive values when stored on disk.
-SQLPAD_PASSPHRASE="At least the sensitive bits won't be plain text?"
+**samlEntryPoint**  
+SAML Entry point URL  
+Env var: `SAML_ENTRY_POINT`
 
-# Port for SQLPad to listen on.
-SQLPAD_PORT="80"
+**samlIssuer**  
+SAML Issuer  
+Env var: `SAML_ISSUER`
 
-# By default query results are limited to 50,000 records.
-SQLPAD_QUERY_RESULT_MAX_ROWS="50000"
+**sessionMinutes**  
+Minutes to keep a session active. Will extended by this amount each request.  
+Env var: `SQLPAD_SESSION_MINUTES`  
+Default: `60`
 
-# Minutes to keep a session active. Will extended by this amount each request.
-SQLPAD_SESSION_MINUTES="60"
+**slackWebhook**  
+Supply incoming Slack webhook URL to post query when saved.  
+Env var: `SQLPAD_SLACK_WEBHOOK`
 
-# Supply incoming Slack webhook URL to post query when saved.
-SQLPAD_SLACK_WEBHOOK=""
+**smtpFrom**  
+From email address for SMTP. Required in order to send invitation emails.  
+Env var: `SQLPAD_SMTP_FROM`
 
-# From email address for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_FROM=""
+**smtpHost**  
+Host address for SMTP. Required in order to send invitation emails.  
+Env var: `SQLPAD_SMTP_HOST`
 
-# Host address for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_HOST=""
+**smtpPassword**  
+Password for SMTP.  
+Env var: `SQLPAD_SMTP_PASSWORD`
 
-# Password for SMTP.
-SQLPAD_SMTP_PASSWORD=""
+**smtpPort**  
+Port for SMTP. Required in order to send invitation emails.  
+Env var: `SQLPAD_SMTP_PORT`
 
-# Port for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_PORT=""
+**smtpSecure**  
+Toggle to use secure connection when using SMTP.  
+Env var: `SQLPAD_SMTP_SECURE`  
+Default: `true`
 
-# Toggle to use secure connection when using SMTP.
-SQLPAD_SMTP_SECURE="true"
+**smtpUser**  
+Username for SMTP. Required in order to send invitation emails.  
+Env var: `SQLPAD_SMTP_USER`
 
-# Username for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_USER=""
+**systemdSocket**  
+Acquire socket from systemd if available  
+Env var: `SQLPAD_SYSTEMD_SOCKET`
 
-# Acquire socket from systemd if available
-SQLPAD_SYSTEMD_SOCKET="false"
+**tableChartLinksRequireAuth**  
+When false, table and chart result links will be operational without login.  
+Env var: `SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH`  
+Default: `true`
 
-# When false, table and chart result links will be operational without login.
-SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH="true"
-
-# Allows pre-approval of email domains. Delimit multiple domains by empty space.
-WHITELISTED_DOMAINS=""
-```
+**whitelistedDomains**  
+Allows pre-approval of email domains. Delimit multiple domains by empty space.  
+Env var: `WHITELISTED_DOMAINS`
 
 ## Development
 
