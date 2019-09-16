@@ -2,8 +2,10 @@ const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
 const config = require('./config');
+const passhash = require('../lib/passhash');
 
 const admin = config.get('admin');
+const adminPassword = config.get('adminPassword');
 const dbPath = config.get('dbPath');
 const debug = config.get('debug');
 const port = config.get('port');
@@ -55,7 +57,11 @@ async function ensureAdmin() {
     // Then write to console that the person should visit the signup url to finish registration.
     const user = await db.users.findOne({ email: adminEmail });
     if (user) {
-      await db.users.update({ _id: user._id }, { $set: { role: 'admin' } }, {});
+      const changes = { role: 'admin' };
+      if (adminPassword) {
+        changes.passhash = passhash.getPasshash(adminPassword);
+      }
+      await db.users.update({ _id: user._id }, { $set: changes }, {});
       console.log(adminEmail + ' should now have admin access.');
       return;
     }
@@ -64,6 +70,9 @@ async function ensureAdmin() {
       email: adminEmail,
       role: 'admin'
     };
+    if (adminPassword) {
+      newAdmin.passhash = passhash.getPasshash(adminPassword);
+    }
     await db.users.insert(newAdmin);
     console.log(`\n${adminEmail} has been whitelisted with admin access.`);
     console.log(

@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const db = require('../lib/db.js');
-const bcrypt = require('bcrypt-nodejs');
+const passhash = require('../lib/passhash.js');
 
 const schema = {
   _id: Joi.string().optional(), // will be auto-gen by nedb
@@ -33,51 +33,24 @@ function User(data) {
   this.signupDate = data.signupDate;
 }
 
-User.prototype.save = function save() {
+User.prototype.save = async function save() {
   const self = this;
   this.modifiedDate = new Date();
-  return Promise.resolve()
-    .then(() => {
-      // if user has password set, we need to hash it before saving
-      if (this.password) {
-        return new Promise((resolve, reject) => {
-          bcrypt.hash(this.password, null, null, (err, hash) => {
-            if (err) {
-              return reject(err);
-            }
-            self.passhash = hash;
-            return resolve();
-          });
-        });
-      }
-    })
-    .then(() => {
-      // validate and save
-      const joiResult = Joi.validate(self, schema);
-      if (joiResult.error) {
-        return Promise.reject(joiResult.error);
-      }
-      return db.users
-        .update({ email: self.email }, joiResult.value, { upsert: true })
-        .then(() => User.findOneByEmail(self.email));
-    });
-};
 
-/**
- * Compare password to hash. Returns promise
- * @param {string} password
- */
-User.prototype.comparePasswordToHash = function comparePasswordToHash(
-  password
-) {
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(password, this.passhash, (err, isMatch) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(isMatch);
-    });
+  if (this.password) {
+    this.passhash = await passhash.getPasshash(this.password);
+  }
+
+  // validate and save
+  const joiResult = Joi.validate(self, schema);
+  if (joiResult.error) {
+    return Promise.reject(joiResult.error);
+  }
+
+  await db.users.update({ email: self.email }, joiResult.value, {
+    upsert: true
   });
+  return User.findOneByEmail(self.email);
 };
 
 /*  Query methods
