@@ -6,6 +6,7 @@ const SamlStrategy = require('passport-saml').Strategy;
 const User = require('../models/User.js');
 const config = require('../lib/config');
 const checkWhitelist = require('../lib/check-whitelist.js');
+const passhash = require('../lib/passhash.js');
 
 const baseUrl = config.get('baseUrl');
 const googleClientId = config.get('googleClientId');
@@ -52,7 +53,10 @@ if (!disableUserpassAuth) {
           if (!user) {
             return done(null, false, { message: 'wrong email or password' });
           }
-          const isMatch = await user.comparePasswordToHash(password);
+          const isMatch = await passhash.comparePassword(
+            password,
+            user.passhash
+          );
           if (isMatch) {
             return done(null, {
               id: user._id,
@@ -76,7 +80,7 @@ if (!disableUserpassAuth) {
         if (!user) {
           return callback(null, false);
         }
-        const isMatch = await user.comparePasswordToHash(password);
+        const isMatch = await passhash.comparePassword(password, user.passhash);
         if (!isMatch) {
           return callback(null, false);
         }

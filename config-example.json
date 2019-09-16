@@ -1,5 +1,6 @@
 {
   "admin": "",
+  "adminPassword": "",
   "allowCsvDownload": true,
   "baseUrl": "",
   "certPassphrase": "",

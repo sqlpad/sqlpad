@@ -70,6 +70,11 @@ const configItems = [
     default: ''
   },
   {
+    key: 'adminPassword',
+    envVar: 'SQLPAD_ADMIN_PASSWORD',
+    default: ''
+  },
+  {
     key: 'debug',
     envVar: 'SQLPAD_DEBUG',
     default: false

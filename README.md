@@ -88,6 +88,10 @@ These defaults have been removed in version 3.
 Email address to whitelist/give admin permissions to  
 Env var: `SQLPAD_ADMIN`
 
+**adminPassword**
+Password to set for admin email address on application start. Requires `admin` setting to also be provided.
+Env var: `SQLPAD_ADMIN_PASSWORD`
+
 **allowCsvDownload**  
 Enable csv and xlsx downloads.  
 Env var: `SQLPAD_ALLOW_CSV_DOWNLOAD`  
