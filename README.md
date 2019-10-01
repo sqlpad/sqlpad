@@ -109,6 +109,11 @@ Env var: `CERT_PASSPHRASE`
 Absolute path to where SSL certificate is stored  
 Env var: `CERT_PATH`
 
+**cookieName**
+Name used for cookie. If running multiple SQLPads on same domain, set to different values.
+Env var: `SQLPAD_COOKIE_NAME`
+Default: `sqlpad.sid`
+
 **cookieSecret**  
 Secret used to sign cookies  
 Env var: `SQLPAD_COOKIE_SECRET`  
