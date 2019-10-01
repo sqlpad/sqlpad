@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.0
+
+### September 30, 2019
+
+- Add cookie name config setting
+- Add admin password setting
+
 ## 3.0.2
 
 ### September 1, 2019
