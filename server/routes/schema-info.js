@@ -13,7 +13,7 @@ router.get(
     const reload = req.query.reload === 'true';
 
     try {
-      let conn = await connections.findOneById(connectionId);
+      const conn = await connections.findOneById(connectionId);
 
       if (!conn) {
         throw new Error('Connection not found');
