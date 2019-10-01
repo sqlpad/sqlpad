@@ -5,6 +5,7 @@
   "baseUrl": "",
   "certPassphrase": "",
   "certPath": "",
+  "cookieName": "sqlpad.sid",
   "cookieSecret": "secret-used-to-sign-cookies-please-set-and-make-strong",
   "dbPath": "",
   "debug": false,

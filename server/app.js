@@ -12,6 +12,7 @@ const googleClientSecret = config.get('googleClientSecret');
 const publicUrl = config.get('publicUrl');
 const dbPath = config.get('dbPath');
 const debug = config.get('debug');
+const cookieName = config.get('cookieName');
 const cookieSecret = config.get('cookieSecret');
 const sessionMinutes = config.get('sessionMinutes');
 
@@ -62,7 +63,8 @@ app.use(
     resave: true,
     rolling: true,
     cookie: { maxAge: 1000 * 60 * sessionMinutes },
-    secret: cookieSecret
+    secret: cookieSecret,
+    name: cookieName
   })
 );
 
