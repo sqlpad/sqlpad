@@ -5,6 +5,11 @@ const configItems = [
     default: ''
   },
   {
+    key: 'cookieName',
+    envVar: 'SQLPAD_COOKIE_NAME',
+    default: 'sqlpad.sid'
+  },
+  {
     key: 'cookieSecret',
     envVar: 'SQLPAD_COOKIE_SECRET',
     default: 'secret-used-to-sign-cookies-please-set-and-make-strong'
