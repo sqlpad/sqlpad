@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { runQuery } = require('../drivers/index');
 const connections = require('../models/connections.js');
 const resultCache = require('../models/resultCache.js');
-const Query = require('../models/Query.js');
+const queriesUtil = require('../models/queries.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
 const sendError = require('../lib/sendError');
@@ -15,7 +15,7 @@ router.get(
   mustBeAuthenticatedOrChartLink,
   async function(req, res) {
     try {
-      const query = await Query.findOneById(req.params._queryId);
+      const query = await queriesUtil.findOneById(req.params._queryId);
       if (!query) {
         return sendError(res, null, 'Query not found (save query first)');
       }

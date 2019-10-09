@@ -44,28 +44,35 @@ const schema = {
   lastAccessDate: Joi.date().default(new Date(), 'time of last access')
 };
 
-function Query(data) {
-  this._id = data._id;
-  this.name = data.name;
-  this.tags = data.tags;
-  this.connectionId = data.connectionId;
-  this.queryText = data.queryText;
-  this.chartConfiguration = data.chartConfiguration;
-  this.createdDate = data.createdDate;
-  this.createdBy = data.createdBy;
-  this.modifiedDate = data.modifiedDate;
-  this.modifiedBy = data.modifiedBy;
-  this.lastAccessDate = data.lastAccessedDate;
+function findOneById(id) {
+  return db.queries.findOne({ _id: id });
 }
 
-Query.prototype.save = function save() {
-  const self = this;
-  this.modifiedDate = new Date();
-  this.lastAccessDate = new Date();
+function findAll() {
+  return db.queries.find({});
+}
+
+function findByFilter(filter) {
+  return db.queries.find(filter);
+}
+
+function removeById(id) {
+  return db.queries.remove({ _id: id });
+}
+
+/**
+ * Save query object
+ * returns saved query object
+ * @param {object} query
+ */
+async function save(query) {
+  query.modifiedDate = new Date();
+  query.lastAccessDate = new Date();
+
   // clean tags if present
   // sqlpad v1 saved a lot of bad inputs
-  if (Array.isArray(self.tags)) {
-    self.tags = self.tags
+  if (Array.isArray(query.tags)) {
+    query.tags = query.tags
       .filter(tag => {
         return typeof tag === 'string' && tag.trim() !== '';
       })
@@ -73,29 +80,24 @@ Query.prototype.save = function save() {
         return tag.trim();
       });
   }
-  const joiResult = Joi.validate(self, schema);
+  const joiResult = Joi.validate(query, schema);
   if (joiResult.error) {
     return Promise.reject(joiResult.error);
   }
-  if (self._id) {
-    return db.queries
-      .update({ _id: self._id }, joiResult.value, { upsert: true })
-      .then(() => Query.findOneById(self._id));
+  if (query._id) {
+    await db.queries.update({ _id: query._id }, joiResult.value, {
+      upsert: true
+    });
+    return findOneById(query._id);
   }
-  return db.queries.insert(joiResult.value).then(doc => new Query(doc));
+  const newQuery = await db.queries.insert(joiResult.value);
+  return newQuery;
+}
+
+module.exports = {
+  findOneById,
+  findAll,
+  findByFilter,
+  removeById,
+  save
 };
-
-/*  Query methods
-============================================================================== */
-Query.findOneById = id =>
-  db.queries.findOne({ _id: id }).then(doc => new Query(doc));
-
-Query.findAll = () =>
-  db.queries.find({}).then(docs => docs.map(doc => new Query(doc)));
-
-Query.findByFilter = filter =>
-  db.queries.find(filter).then(docs => docs.map(doc => new Query(doc)));
-
-Query.removeOneById = id => db.queries.remove({ _id: id });
-
-module.exports = Query;
