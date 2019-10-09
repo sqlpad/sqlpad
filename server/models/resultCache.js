@@ -4,7 +4,7 @@ const moment = require('moment');
 const sanitize = require('sanitize-filename');
 const db = require('../lib/db.js');
 const xlsx = require('node-xlsx');
-const json2csv = require('json2csv');
+const { parse } = require('json2csv');
 const config = require('../lib/config');
 const dbPath = config.get('dbPath');
 
@@ -71,21 +71,18 @@ function writeXlsx(cacheKey, queryResult) {
 
 function writeCsv(cacheKey, queryResult) {
   return new Promise(resolve => {
-    json2csv({ data: queryResult.rows, fields: queryResult.fields }, function(
-      err,
-      csv
-    ) {
-      if (err) {
-        console.log(err);
-        return resolve();
-      }
+    try {
+      const csv = parse(queryResult.rows, { fields: queryResult.fields });
       fs.writeFile(csvFilePath(cacheKey), csv, function(err) {
         if (err) {
           console.log(err);
         }
         return resolve();
       });
-    });
+    } catch (error) {
+      console.log(error);
+      return resolve();
+    }
   });
 }
 
