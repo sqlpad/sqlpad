@@ -96,15 +96,6 @@ Query.findAll = () =>
 Query.findByFilter = filter =>
   db.queries.find(filter).then(docs => docs.map(doc => new Query(doc)));
 
-Query.prototype.logAccess = function logAccess() {
-  const self = this;
-  return db.queries.update(
-    { _id: self._id },
-    { $set: { lastAccessedDate: new Date() } },
-    {}
-  );
-};
-
 Query.removeOneById = id => db.queries.remove({ _id: id });
 
 module.exports = Query;
