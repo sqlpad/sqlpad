@@ -1,12 +1,10 @@
 const router = require('express').Router();
-const Query = require('../models/Query.js');
+const queriesUtil = require('../models/queries.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
-
-/*  render page routes
-============================================================================= */
+const pushQueryToSlack = require('../lib/pushQueryToSlack');
 
 // NOTE: this non-api route is special since it redirects legacy urls
 router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
@@ -24,15 +22,12 @@ router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
   next();
 });
 
-/*  API routes
-============================================================================= */
-
 router.delete('/api/queries/:_id', mustBeAuthenticated, async function(
   req,
   res
 ) {
   try {
-    await Query.removeOneById(req.params._id);
+    await queriesUtil.removeById(req.params._id);
     return res.json({});
   } catch (error) {
     sendError(res, error, 'Problem deleting query');
@@ -41,7 +36,7 @@ router.delete('/api/queries/:_id', mustBeAuthenticated, async function(
 
 router.get('/api/queries', mustBeAuthenticated, async function(req, res) {
   try {
-    const queries = await Query.findAll();
+    const queries = await queriesUtil.findAll();
     return res.json({ queries });
   } catch (error) {
     sendError(res, error, 'Problem querying query database');
@@ -53,7 +48,7 @@ router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, async function(
   res
 ) {
   try {
-    const query = await Query.findOneById(req.params._id);
+    const query = await queriesUtil.findOneById(req.params._id);
     if (!query) {
       return res.json({
         query: {}
@@ -65,21 +60,24 @@ router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, async function(
   }
 });
 
-// create new
 router.post('/api/queries', mustBeAuthenticated, async function(req, res) {
-  const query = new Query({
-    name: req.body.name || 'No Name Query',
-    tags: req.body.tags,
-    connectionId: req.body.connectionId,
-    queryText: req.body.queryText,
-    chartConfiguration: req.body.chartConfiguration,
-    createdBy: req.user.email,
-    modifiedBy: req.user.email
-  });
+  const { name, tags, connectionId, queryText, chartConfiguration } = req.body;
+  const { email } = req.user;
+
+  const query = {
+    name: name || 'No Name Query',
+    tags,
+    connectionId,
+    queryText,
+    chartConfiguration,
+    createdBy: email,
+    modifiedBy: email
+  };
+
   try {
-    const newQuery = await query.save();
+    const newQuery = await queriesUtil.save(query);
     // This is async, but save operation doesn't care about when/if finished
-    newQuery.pushQueryToSlackIfSetup();
+    pushQueryToSlack(newQuery);
     return res.json({
       query: newQuery
     });
@@ -90,19 +88,30 @@ router.post('/api/queries', mustBeAuthenticated, async function(req, res) {
 
 router.put('/api/queries/:_id', mustBeAuthenticated, async function(req, res) {
   try {
-    const query = await Query.findOneById(req.params._id);
+    const query = await queriesUtil.findOneById(req.params._id);
     if (!query) {
       return sendError(res, null, 'Query not found');
     }
 
-    query.name = req.body.name || '';
-    query.tags = req.body.tags;
-    query.connectionId = req.body.connectionId;
-    query.queryText = req.body.queryText;
-    query.chartConfiguration = req.body.chartConfiguration;
-    query.modifiedBy = req.user.email;
+    const {
+      name,
+      tags,
+      connectionId,
+      queryText,
+      chartConfiguration
+    } = req.body;
+    const { email } = req.user;
 
-    const newQuery = await query.save();
+    Object.assign(query, {
+      name,
+      tags,
+      connectionId,
+      queryText,
+      chartConfiguration,
+      modifiedBy: email
+    });
+
+    const newQuery = await queriesUtil.save(query);
     return res.json({ query: newQuery });
   } catch (error) {
     sendError(res, error, 'Problem saving query');

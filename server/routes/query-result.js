@@ -1,10 +1,8 @@
-const sanitize = require('sanitize-filename');
-const moment = require('moment');
 const router = require('express').Router();
 const { runQuery } = require('../drivers/index');
 const connections = require('../models/connections.js');
-const Cache = require('../models/Cache.js');
-const Query = require('../models/Query.js');
+const resultCache = require('../models/resultCache.js');
+const queriesUtil = require('../models/queries.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
 const sendError = require('../lib/sendError');
@@ -17,7 +15,7 @@ router.get(
   mustBeAuthenticatedOrChartLink,
   async function(req, res) {
     try {
-      const query = await Query.findOneById(req.params._queryId);
+      const query = await queriesUtil.findOneById(req.params._queryId);
       if (!query) {
         return sendError(res, null, 'Query not found (save query first)');
       }
@@ -68,27 +66,14 @@ async function getQueryResult(data) {
     throw new Error('Please choose a connection');
   }
   connection.maxRows = Number(config.get('queryResultMaxRows'));
-  let cache = await Cache.findOneByCacheKey(cacheKey);
-
-  if (!cache) {
-    cache = new Cache({ cacheKey });
-  }
-  cache.queryName = sanitize(
-    (queryName || 'SQLPad Query Results') + ' ' + moment().format('YYYY-MM-DD')
-  );
-
-  // Expire cache in 8 hours
-  const now = new Date();
-  cache.expiration = new Date(now.getTime() + 1000 * 60 * 60 * 8);
-  const newCache = await cache.save();
 
   const queryResult = await runQuery(queryText, connection, user);
-
   queryResult.cacheKey = cacheKey;
 
   if (config.get('allowCsvDownload')) {
-    await newCache.writeXlsx(queryResult);
-    await newCache.writeCsv(queryResult);
+    resultCache.saveResultCache(cacheKey, queryName);
+    await resultCache.writeXlsx(cacheKey, queryResult);
+    await resultCache.writeCsv(cacheKey, queryResult);
   }
 
   return queryResult;

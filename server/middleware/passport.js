@@ -3,7 +3,7 @@ const PassportLocalStrategy = require('passport-local').Strategy;
 const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const BasicStrategy = require('passport-http').BasicStrategy;
 const SamlStrategy = require('passport-saml').Strategy;
-const User = require('../models/User.js');
+const usersUtil = require('../models/users.js');
 const config = require('../lib/config');
 const checkWhitelist = require('../lib/check-whitelist.js');
 const passhash = require('../lib/passhash.js');
@@ -26,7 +26,7 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(async function(id, done) {
   try {
-    const user = await User.findOneById(id);
+    const user = await usersUtil.findOneById(id);
     if (user) {
       return done(null, {
         id: user._id,
@@ -49,7 +49,7 @@ if (!disableUserpassAuth) {
       },
       async function passportLocalStrategyHandler(email, password, done) {
         try {
-          const user = await User.findOneByEmail(email);
+          const user = await usersUtil.findOneByEmail(email);
           if (!user) {
             return done(null, false, { message: 'wrong email or password' });
           }
@@ -76,7 +76,7 @@ if (!disableUserpassAuth) {
   passport.use(
     new BasicStrategy(async function(username, password, callback) {
       try {
-        const user = await User.findOneByEmail(username);
+        const user = await usersUtil.findOneByEmail(username);
         if (!user) {
           return callback(null, false);
         }
@@ -124,7 +124,7 @@ if (samlEntryPoint) {
           p[
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
           ];
-        const user = await User.findOneByEmail(email);
+        const user = await usersUtil.findOneByEmail(email);
         console.log(`User logged in with SAML as ${email}`);
         if (!user) {
           return done(null, false);
@@ -156,24 +156,23 @@ async function passportGoogleStrategyHandler(
 
   try {
     let [openAdminRegistration, user] = await Promise.all([
-      User.adminRegistrationOpen(),
-      User.findOneByEmail(email)
+      usersUtil.adminRegistrationOpen(),
+      usersUtil.findOneByEmail(email)
     ]);
 
     if (user) {
       user.signupDate = new Date();
-      const newUser = await user.save();
+      const newUser = await usersUtil.save(user);
       newUser.id = newUser._id;
       return done(null, newUser);
     }
     const whitelistedDomains = config.get('whitelistedDomains');
     if (openAdminRegistration || checkWhitelist(whitelistedDomains, email)) {
-      user = new User({
+      const newUser = await usersUtil.save({
         email,
         role: openAdminRegistration ? 'admin' : 'editor',
         signupDate: new Date()
       });
-      const newUser = await user.save();
       newUser.id = newUser._id;
       return done(null, newUser);
     }
