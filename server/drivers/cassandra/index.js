@@ -11,6 +11,11 @@ const fields = [
     label: 'Contact points (comma delimited)'
   },
   {
+    key: 'localDataCenter',
+    formType: 'TEXT',
+    label: 'Local data center'
+  },
+  {
     key: 'keyspace',
     formType: 'TEXT',
     label: 'Keyspace'
@@ -46,10 +51,13 @@ function shutdownClient(client) {
  * @param {object} connection
  */
 async function runQuery(query, connection) {
-  const { contactPoints, keyspace, maxRows } = connection;
+  const { contactPoints, keyspace, localDataCenter, maxRows } = connection;
 
   const client = new cassandra.Client({
     contactPoints: contactPoints.split(',').map(cp => cp.trim()),
+    // Unfamiliar with cassandra - docs mention datacenter1 and this works as a default so leaving it in
+    // If someone familiar with cassandra can expand on this please do
+    localDataCenter: localDataCenter || 'datacenter1',
     keyspace
   });
 
