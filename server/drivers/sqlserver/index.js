@@ -39,7 +39,7 @@ function runQuery(query, connection) {
     requestTimeout: 1000 * 60 * 60,
     options: {
       appName: 'SQLPad',
-      encrypt: connection.sqlserverEncrypt
+      encrypt: Boolean(connection.sqlserverEncrypt)
     },
     pool: {
       max: 1,
