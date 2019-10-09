@@ -73,7 +73,7 @@ function cartesianify(rows, field) {
   } else {
     rows.forEach(row => {
       field.values.forEach(value => {
-        const newRow = Object.assign({}, row, { [field.name]: value });
+        const newRow = { ...row, [field.name]: value };
         newRows.push(newRow);
       });
     });

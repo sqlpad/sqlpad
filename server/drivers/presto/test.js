@@ -72,7 +72,7 @@ describe('drivers/presto', function() {
   });
 
   it('runQuery over limit', function() {
-    const limitedConnection = Object.assign({}, connection, { maxRows: 2 });
+    const limitedConnection = { ...connection, maxRows: 2 };
     return presto
       .runQuery('SELECT * FROM test LIMIT 10', limitedConnection)
       .then(results => {

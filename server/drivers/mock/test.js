@@ -25,7 +25,7 @@ describe('drivers/mock', function() {
   });
 
   it('runQuery under limit', function() {
-    const c = Object.assign({}, connection, { maxRows: 10000 });
+    const c = { ...connection, maxRows: 10000 };
     const query = `
       -- dimensions = product 5
     `;
@@ -36,7 +36,7 @@ describe('drivers/mock', function() {
   });
 
   it('runQuery over limit', function() {
-    const c = Object.assign({}, connection, { maxRows: 10 });
+    const c = { ...connection, maxRows: 10 };
     const query = `
       -- dimensions = product 10, color 10, orderdate 500
     `;

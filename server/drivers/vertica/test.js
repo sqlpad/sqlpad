@@ -55,7 +55,7 @@ describe('drivers/vertica', function() {
   });
 
   it('runQuery over limit', function() {
-    const limitedConnection = Object.assign({}, connection, { maxRows: 2 });
+    const limitedConnection = { ...connection, maxRows: 2 };
     return vertica
       .runQuery('SELECT * FROM test;', limitedConnection)
       .then(results => {

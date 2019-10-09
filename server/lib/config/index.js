@@ -18,7 +18,7 @@ if (warnings.length) {
   warnings.forEach(warning => console.warn(warning));
 }
 
-const all = Object.assign({}, defaultConfig, envConfig, fileConfig, cliConfig);
+const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
 
 // Clean string boolean values
 Object.keys(all).forEach(key => {

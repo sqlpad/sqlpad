@@ -52,7 +52,7 @@ describe('drivers/cassandra', function() {
   });
 
   it('runQuery over limit', async function() {
-    const limitedConnection = Object.assign({}, connection, { maxRows: 2 });
+    const limitedConnection = { ...connection, maxRows: 2 };
     const results = await cassandra.runQuery(
       'SELECT * FROM test.test;',
       limitedConnection
