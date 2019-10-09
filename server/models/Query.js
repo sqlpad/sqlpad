@@ -1,7 +1,5 @@
 const db = require('../lib/db.js');
-const config = require('../lib/config');
 const Joi = require('joi');
-const request = require('request');
 
 /*
 "chartConfiguration": {
@@ -85,34 +83,6 @@ Query.prototype.save = function save() {
       .then(() => Query.findOneById(self._id));
   }
   return db.queries.insert(joiResult.value).then(doc => new Query(doc));
-};
-
-Query.prototype.pushQueryToSlackIfSetup = function() {
-  const SLACK_WEBHOOK = config.get('slackWebhook');
-  if (SLACK_WEBHOOK) {
-    const PUBLIC_URL = config.get('publicUrl');
-    const BASE_URL = config.get('baseUrl');
-    const options = {
-      method: 'post',
-      body: {
-        text: `New Query <${PUBLIC_URL}${BASE_URL}/queries/${this._id}|${
-          this.name
-        }> 
-            saved by ${this.modifiedBy} on SQLPad 
-            ${'```'}
-            ${this.queryText}
-            ${'```'}`
-      },
-      json: true,
-      url: SLACK_WEBHOOK
-    };
-    request(options, function(err) {
-      if (err) {
-        console.error('Something went wrong while sending to Slack.');
-        console.error(err);
-      }
-    });
-  }
 };
 
 /*  Query methods

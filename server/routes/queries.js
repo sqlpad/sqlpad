@@ -4,6 +4,7 @@ const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
+const pushQueryToSlack = require('../lib/pushQueryToSlack');
 
 /*  render page routes
 ============================================================================= */
@@ -79,7 +80,7 @@ router.post('/api/queries', mustBeAuthenticated, async function(req, res) {
   try {
     const newQuery = await query.save();
     // This is async, but save operation doesn't care about when/if finished
-    newQuery.pushQueryToSlackIfSetup();
+    pushQueryToSlack(newQuery);
     return res.json({
       query: newQuery
     });
