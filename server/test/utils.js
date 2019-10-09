@@ -1,6 +1,6 @@
 const assert = require('assert');
 const request = require('supertest');
-const User = require('../models/User');
+const usersUtil = require('../models/users');
 const db = require('../lib/db');
 const app = require('../app');
 
@@ -34,8 +34,7 @@ function reset() {
 async function resetWithUser() {
   await reset();
   const saves = Object.keys(users).map(key => {
-    const user = new User(users[key]);
-    return user.save();
+    return usersUtil.save(users[key]);
   });
   return Promise.all(saves);
 }

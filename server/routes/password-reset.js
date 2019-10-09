@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const User = require('../models/User.js');
+const usersUtil = require('../models/users.js');
 const sendError = require('../lib/sendError');
 
 // This route used to set new password given a passwordResetId
 router.post('/api/password-reset/:passwordResetId', async function(req, res) {
   try {
-    const user = await User.findOneByPasswordResetId(
+    const user = await usersUtil.findOneByPasswordResetId(
       req.params.passwordResetId
     );
 
@@ -20,7 +20,7 @@ router.post('/api/password-reset/:passwordResetId', async function(req, res) {
     }
     user.password = req.body.password;
     user.passwordResetId = '';
-    await user.save();
+    await usersUtil.save(user);
     return res.json({});
   } catch (error) {
     sendError(res, error, 'Problem querying user database');

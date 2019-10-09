@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const packageJson = require('../package.json');
-const User = require('../models/User.js');
+const usersUtil = require('../models/users.js');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
 
@@ -9,7 +9,7 @@ const config = require('../lib/config');
 // the root of a domain or if there is a base-url provided in the config
 router.get('*/api/app', async (req, res) => {
   try {
-    const adminRegistrationOpen = await User.adminRegistrationOpen();
+    const adminRegistrationOpen = await usersUtil.adminRegistrationOpen();
     const currentUser =
       req.isAuthenticated() && req.user
         ? {

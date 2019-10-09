@@ -1,7 +1,7 @@
 const passport = require('passport');
 const router = require('express').Router();
 const checkWhitelist = require('../lib/check-whitelist');
-const User = require('../models/User.js');
+const usersUtil = require('../models/users.js');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
 
@@ -14,36 +14,37 @@ async function handleSignup(req, res, next) {
     }
 
     let [user, adminRegistrationOpen] = await Promise.all([
-      User.findOneByEmail(req.body.email),
-      User.adminRegistrationOpen()
+      usersUtil.findOneByEmail(req.body.email),
+      usersUtil.adminRegistrationOpen()
     ]);
 
     if (user && user.passhash) {
       return sendError(res, null, 'User already signed up');
     }
+
     if (user) {
       user.password = req.body.password;
       user.signupDate = new Date();
+      await usersUtil.save(user);
+      return next();
     }
-    if (!user) {
-      // if open admin registration or whitelisted email create user
-      // otherwise exit
-      if (
-        adminRegistrationOpen ||
-        checkWhitelist(whitelistedDomains, req.body.email)
-      ) {
-        user = new User({
-          email: req.body.email,
-          password: req.body.password,
-          role: adminRegistrationOpen ? 'admin' : 'editor',
-          signupDate: new Date()
-        });
-      } else {
-        return sendError(res, null, 'Email address not whitelisted');
-      }
+
+    // if open admin registration or whitelisted email create user
+    // otherwise exit
+    if (
+      adminRegistrationOpen ||
+      checkWhitelist(whitelistedDomains, req.body.email)
+    ) {
+      user = await usersUtil.save({
+        email: req.body.email,
+        password: req.body.password,
+        role: adminRegistrationOpen ? 'admin' : 'editor',
+        signupDate: new Date()
+      });
+      return next();
+    } else {
+      return sendError(res, null, 'Email address not whitelisted');
     }
-    await user.save();
-    next();
   } catch (error) {
     sendError(res, error, 'Error saving user');
   }

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const User = require('../models/User.js');
+const usersUtil = require('../models/users.js');
 const email = require('../lib/email');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
@@ -8,7 +8,7 @@ const config = require('../lib/config');
 
 router.get('/api/users', mustBeAuthenticated, async function(req, res) {
   try {
-    const users = await User.findAll();
+    const users = await usersUtil.findAll();
     return res.json({ users });
   } catch (error) {
     sendError(res, error, 'Problem getting uers');
@@ -18,15 +18,14 @@ router.get('/api/users', mustBeAuthenticated, async function(req, res) {
 // create/whitelist/invite user
 router.post('/api/users', mustBeAdmin, async function(req, res) {
   try {
-    let user = await User.findOneByEmail(req.body.email);
+    let user = await usersUtil.findOneByEmail(req.body.email);
     if (user) {
       return sendError(res, null, 'User already exists');
     }
-    user = new User({
+    user = await usersUtil.save({
       email: req.body.email.toLowerCase(),
       role: req.body.role
     });
-    user = await user.save();
 
     if (config.smtpConfigured()) {
       email.sendInvite(req.body.email).catch(error => console.error(error));
@@ -43,7 +42,7 @@ router.put('/api/users/:_id', mustBeAdmin, async function(req, res) {
     return sendError(res, null, "You can't unadmin yourself");
   }
   try {
-    const updateUser = await User.findOneById(params._id);
+    const updateUser = await usersUtil.findOneById(params._id);
     if (!updateUser) {
       return sendError(res, null, 'user not found');
     }
@@ -55,8 +54,8 @@ router.put('/api/users/:_id', mustBeAdmin, async function(req, res) {
     if (body.passwordResetId != null) {
       updateUser.passwordResetId = body.passwordResetId;
     }
-    await updateUser.save();
-    return res.json({ user: updateUser });
+    const updatedUser = await usersUtil.save(updateUser);
+    return res.json({ user: updatedUser });
   } catch (error) {
     sendError(res, error, 'Problem saving user');
   }
@@ -67,7 +66,7 @@ router.delete('/api/users/:_id', mustBeAdmin, async function(req, res) {
     return sendError(res, null, "You can't delete yourself");
   }
   try {
-    await User.removeOneById(req.params._id);
+    await usersUtil.removeById(req.params._id);
     return res.json({});
   } catch (error) {
     sendError(res, error, 'Problem deleting user');
