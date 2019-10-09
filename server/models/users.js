@@ -1,8 +1,8 @@
-const Joi = require('joi');
+const Joi = require('@hapi/joi');
 const db = require('../lib/db.js');
 const passhash = require('../lib/passhash.js');
 
-const schema = {
+const schema = Joi.object({
   _id: Joi.string().optional(), // will be auto-gen by nedb
   email: Joi.string().required(),
   role: Joi.string()
@@ -16,10 +16,10 @@ const schema = {
   password: Joi.string()
     .optional()
     .strip(),
-  createdDate: Joi.date().default(new Date(), 'time of creation'),
-  modifiedDate: Joi.date().default(new Date(), 'time of modification'),
+  createdDate: Joi.date().default(Date.now),
+  modifiedDate: Joi.date().default(Date.now),
   signupDate: Joi.date().optional()
-};
+});
 
 async function save(data) {
   if (!data.email) {
@@ -32,7 +32,7 @@ async function save(data) {
     data.passhash = await passhash.getPasshash(data.password);
   }
 
-  const joiResult = Joi.validate(data, schema);
+  const joiResult = schema.validate(data);
   if (joiResult.error) {
     return Promise.reject(joiResult.error);
   }
