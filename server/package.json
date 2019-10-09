@@ -42,7 +42,7 @@
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
-    "hdb": "^0.15.4",
+    "hdb": "^0.17.1",
     "helmet": "^3.21.1",
     "ini": "^1.3.5",
     "json2csv": "^4.5.3",
