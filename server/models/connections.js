@@ -88,14 +88,13 @@ function decipherConnection(connection) {
 
 async function findAll() {
   let connectionsFromDb = await db.connections.find({});
-  connectionsFromDb = _.sortBy(connectionsFromDb, c => c.name.toLowerCase())
-    .map(conn => decipherConnection(conn))
-    .map(conn => {
-      conn.editable = true;
-      return conn;
-    });
+  connectionsFromDb = connectionsFromDb.map(conn => {
+    conn.editable = true;
+    return decipherConnection(conn);
+  });
 
-  return connectionsFromDb.concat(getConnectionsFromConfig());
+  const allConnections = connectionsFromDb.concat(getConnectionsFromConfig());
+  return _.sortBy(allConnections, c => c.name.toLowerCase());
 }
 
 async function findOneById(id) {
