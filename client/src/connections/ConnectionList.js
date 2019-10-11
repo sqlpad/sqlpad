@@ -101,6 +101,7 @@ function ConnectionList({
           actions.push(
             <Button
               key="edit"
+              disabled={!item.editable}
               style={{ marginLeft: 8 }}
               onClick={() => editConnection(item)}
             >
@@ -110,6 +111,7 @@ function ConnectionList({
           actions.push(
             <DeleteConfirmButton
               key="delete"
+              disabled={!item.editable}
               confirmMessage="Delete connection?"
               onConfirm={e => deleteConnection(item._id)}
               style={{ marginLeft: 8 }}
