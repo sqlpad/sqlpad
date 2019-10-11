@@ -5,7 +5,7 @@ const cipher = require('../lib/cipher.js');
 const decipher = require('../lib/decipher');
 const getConfigFromFile = require('../lib/config/fromFile.js');
 
-const configFromFile = getConfigFromFile() || {};
+const [configFromFile] = getConfigFromFile() || {};
 
 /**
  * Get connections from config.
