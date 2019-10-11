@@ -1,14 +1,14 @@
 const assert = require('assert');
 const connections = require('../../models/connections.js');
 
-describe('getConnectionsFromEnv', function() {
+describe('getConnectionsFromConfig', function() {
   it('handles empty object', function() {
-    const cs = connections.getConnectionsFromEnv({});
+    const cs = connections.getConnectionsFromConfig({});
     assert(Array.isArray(cs));
   });
 
   it('skips partial connections', function() {
-    const cs = connections.getConnectionsFromEnv({
+    const cs = connections.getConnectionsFromConfig({
       SQLPAD_CONNECTION__abc__driver: 'postgres'
     });
     assert(Array.isArray(cs));
@@ -16,7 +16,7 @@ describe('getConnectionsFromEnv', function() {
   });
 
   it('parses connection properly', function() {
-    const cs = connections.getConnectionsFromEnv({
+    const cs = connections.getConnectionsFromConfig({
       SQLPAD_CONNECTION__abc__driver: 'postgres',
       SQLPAD_CONNECTION__abc__name: 'env-postgres',
       SQLPAD_CONNECTION__abc__host: 'localhost',

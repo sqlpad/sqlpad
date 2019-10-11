@@ -22,7 +22,7 @@ const decipher = require('../lib/decipher');
  * @param {object} env
  * @returns {array<object>} arrayOfConnections
  */
-function getConnectionsFromEnv(env = process.env) {
+function getConnectionsFromConfig(env = process.env) {
   const connectionMap = Object.keys(env)
     .filter(key => key.startsWith('SQLPAD_CONNECTION__'))
     .reduce((connectionsMap, envVar) => {
@@ -72,7 +72,7 @@ async function findAll() {
       return conn;
     });
 
-  return connectionsFromDb.concat(getConnectionsFromEnv());
+  return connectionsFromDb.concat(getConnectionsFromConfig());
 }
 
 async function findOneById(id) {
@@ -83,7 +83,7 @@ async function findOneById(id) {
   }
 
   // If connection was not found in db try env
-  const connectionFromEnv = getConnectionsFromEnv().find(
+  const connectionFromEnv = getConnectionsFromConfig().find(
     connection => connection._id === id
   );
 
@@ -123,5 +123,5 @@ module.exports = {
   findOneById,
   removeOneById,
   save,
-  getConnectionsFromEnv
+  getConnectionsFromConfig
 };
