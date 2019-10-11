@@ -10,6 +10,8 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
 
 The docker image runs on port 3000 and uses `/var/lib/sqlpad` for the embedded database directory.
 
+`latest` tag is continously built from latest commit in repo. Use specific version tags to ensure stability.
+
 For configuration exposed via environment variables reference [CONFIGURATION.md](https://github.com/rickbergfalk/sqlpad/blob/master/CONFIGURATION.md).
 
 See [docker-examples](https://github.com/rickbergfalk/sqlpad/tree/master/docker-examples) directory for example docker-compose setup with SQL Server.

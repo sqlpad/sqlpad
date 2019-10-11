@@ -1,5 +1,20 @@
 # Changelog
 
+## 3.1.1
+
+### October 10, 2019
+
+Update all dependencies to latest (client & server). Includes major updates to following modules:
+
+- SAP Hana
+- Cassandra
+- SQL Server
+- email support
+- XLSX and CSV query result downloads
+- SAML authentication
+
+Some integrations are not able to be tested by existing test setup. Please open an issue if any breakage is discovered.
+
 ## 3.1.0
 
 ### September 30, 2019
