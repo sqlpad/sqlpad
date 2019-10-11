@@ -63,7 +63,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-http": "^0.3.0",
     "passport-local": "^1.0.0",
-    "passport-saml": "^0.35.0",
+    "passport-saml": "^1.2.0",
     "pg": "^7.12.1",
     "pg-cursor": "^2.0.0",
     "request": "^2.88.0",
