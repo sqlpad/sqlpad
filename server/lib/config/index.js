@@ -6,11 +6,10 @@ const fromFile = require('./fromFile');
 const getOldConfigWarning = require('./getOldConfigWarning');
 
 const argv = minimist(process.argv.slice(2));
-const configFilePath = argv.config || process.env.SQLPAD_CONFIG;
 
 const defaultConfig = fromDefault();
 const envConfig = fromEnv();
-const [fileConfig, warnings] = fromFile(configFilePath);
+const [fileConfig, warnings] = fromFile();
 const cliConfig = fromCli(argv);
 
 // Old files might have some values no longer recognized

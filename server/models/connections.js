@@ -3,9 +3,14 @@ const _ = require('lodash');
 const drivers = require('../drivers');
 const cipher = require('../lib/cipher.js');
 const decipher = require('../lib/decipher');
+const getConfigFromFile = require('../lib/config/fromFile.js');
+
+const configFromFile = getConfigFromFile() || {};
 
 /**
- * Get connections from environment variables
+ * Get connections from config.
+ *
+ * For environment variables:
  * connection env vars must follow the format:
  * SQLPAD_CONNECTION__<connectionId>__<connectionFieldName>
  *
@@ -19,30 +24,48 @@ const decipher = require('../lib/decipher');
  * _id field is not required, as it is defined in second env var fragment.
  *
  * Example: SQLPAD_CONNECTION__ab123__sqlserverEncrypt=""
+ *
+ * From file, resulting parsed configuration from file is expected to follow format `connections.<id>.<fieldname>`
+ * {
+ *   connections: {
+ *     ab123: {
+ *       sqlserverEncrypt: true
+ *     }
+ *   }
+ * }
+ *
  * @param {object} env
  * @returns {array<object>} arrayOfConnections
  */
 function getConnectionsFromConfig(env = process.env) {
-  const connectionMap = Object.keys(env)
+  // Create a map of connections from parsing environment variable
+  const connectionsMapFromEnv = Object.keys(env)
     .filter(key => key.startsWith('SQLPAD_CONNECTION__'))
     .reduce((connectionsMap, envVar) => {
       // eslint-disable-next-line no-unused-vars
       const [prefix, id, field] = envVar.split('__');
       if (!connectionsMap[id]) {
-        connectionsMap[id] = {
-          _id: id
-        };
+        connectionsMap[id] = {};
       }
       connectionsMap[id][field] = env[envVar];
       return connectionsMap;
     }, {});
 
-  const connections = [];
-  Object.keys(connectionMap).forEach(id => {
+  // Get copy of connections from config file
+  const { connections } = _.cloneDeep(configFromFile);
+
+  // connections key from file matches format that is constructed from env
+  // merge the 2 together then create an array out of them
+  const connectionsMap = { ...connectionsMapFromEnv, ...connections };
+
+  const connectionsFromConfig = [];
+  Object.keys(connectionsMap).forEach(id => {
     try {
-      const connection = drivers.validateConnection(connectionMap[id]);
+      let connection = connectionsMap[id];
+      connection._id = id;
+      connection = drivers.validateConnection(connection);
       connection.editable = false;
-      connections.push(connection);
+      connectionsFromConfig.push(connection);
     } catch (error) {
       console.log(
         `Environment connection configuration failed for ${id} %s`,
@@ -50,7 +73,7 @@ function getConnectionsFromConfig(env = process.env) {
       );
     }
   });
-  return connections;
+  return connectionsFromConfig;
 }
 
 function decipherConnection(connection) {

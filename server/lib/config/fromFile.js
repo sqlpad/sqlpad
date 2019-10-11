@@ -1,13 +1,17 @@
+const minimist = require('minimist');
 const fs = require('fs');
 const ini = require('ini');
 const configItems = require('./configItems');
+
+const argv = minimist(process.argv.slice(2));
+const configFilePathFromConfig = argv.config || process.env.SQLPAD_CONFIG;
 
 /**
  * Reads and parses config file.
  * This file may be either JSON or INI file.
  * @param {string} configFilePath
  */
-function fromFile(configFilePath) {
+function fromFile(configFilePath = configFilePathFromConfig) {
   let parsedFile = {};
   const warnings = [];
 
@@ -28,13 +32,17 @@ function fromFile(configFilePath) {
     // Prior to SQLPad 3 the saved config file was a JSON result of what minimist parsed from argv
     // This means that there could be cliFlag's in the json ie `cert-passphrase` or `dir` for dbPath
     // These are no longer supported from a file
-    Object.keys(parsedFile).forEach(key => {
-      const configItem = configItems.find(item => item.key === key);
-      if (!configItem) {
-        let warningMessage = `Config key ${key} in file ${configFilePath} not recognized.`;
-        warnings.push(warningMessage);
-      }
-    });
+    Object.keys(parsedFile)
+      // connections is a special key that we will ignore for now
+      // It will define connections by id and is not to have a warning message
+      .filter(key => key !== 'connections')
+      .forEach(key => {
+        const configItem = configItems.find(item => item.key === key);
+        if (!configItem) {
+          let warningMessage = `Config key ${key} in file ${configFilePath} not recognized.`;
+          warnings.push(warningMessage);
+        }
+      });
   }
 
   return [parsedFile, warnings];
