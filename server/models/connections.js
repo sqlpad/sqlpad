@@ -4,11 +4,54 @@ const drivers = require('../drivers');
 const cipher = require('../lib/cipher.js');
 const decipher = require('../lib/decipher');
 
-// TODO this file being named connections makes it awkward to use
-// because you'll want to do the following:
-// connections.findAll().then(connections => )
-// Instead models should be db folder, and db.<itemname>.findAll() should do what it needs
-// db.js in lib can become to _db or something
+/**
+ * Get connections from environment variables
+ * connection env vars must follow the format:
+ * SQLPAD_CONNECTION__<connectionId>__<connectionFieldName>
+ *
+ * <connectionId> can be any value to associate a grouping a fields to a connection instance
+ * If supplying a connection that was previously defined in the nedb database,
+ * this would map internally to connection._id object.
+ *
+ * <connectionFieldName> should be a field name identified in drivers.
+ *
+ * To define connections via envvars, `driver` field should be supplied.
+ * _id field is not required, as it is defined in second env var fragment.
+ *
+ * Example: SQLPAD_CONNECTION__ab123__sqlserverEncrypt=""
+ * @param {object} env
+ * @returns {array<object>} arrayOfConnections
+ */
+function getConnectionsFromEnv(env = process.env) {
+  const connectionMap = Object.keys(env)
+    .filter(key => key.startsWith('SQLPAD_CONNECTION__'))
+    .reduce((connectionsMap, envVar) => {
+      // eslint-disable-next-line no-unused-vars
+      const [prefix, id, field] = envVar.split('__');
+      if (!connectionsMap[id]) {
+        connectionsMap[id] = {
+          _id: id
+        };
+      }
+      connectionsMap[id][field] = env[envVar];
+      return connectionsMap;
+    }, {});
+
+  const connections = [];
+  Object.keys(connectionMap).forEach(id => {
+    try {
+      const connection = drivers.validateConnection(connectionMap[id]);
+      connection.editable = false;
+      connections.push(connection);
+    } catch (error) {
+      console.log(
+        `Environment connection configuration failed for ${id} %s`,
+        error
+      );
+    }
+  });
+  return connections;
+}
 
 function decipherConnection(connection) {
   if (connection.username) {
@@ -21,15 +64,30 @@ function decipherConnection(connection) {
 }
 
 async function findAll() {
-  const connections = await db.connections.find({});
-  return _.sortBy(connections, c => c.name.toLowerCase()).map(
-    decipherConnection
-  );
+  let connectionsFromDb = await db.connections.find({});
+  connectionsFromDb = _.sortBy(connectionsFromDb, c => c.name.toLowerCase())
+    .map(conn => decipherConnection(conn))
+    .map(conn => {
+      conn.editable = true;
+      return conn;
+    });
+
+  return connectionsFromDb.concat(getConnectionsFromEnv());
 }
 
 async function findOneById(id) {
   const connection = await db.connections.findOne({ _id: id });
-  return decipherConnection(connection);
+  if (connection) {
+    connection.editable = true;
+    return decipherConnection(connection);
+  }
+
+  // If connection was not found in db try env
+  const connectionFromEnv = getConnectionsFromEnv().find(
+    connection => connection._id === id
+  );
+
+  return connectionFromEnv;
 }
 
 async function removeOneById(id) {
@@ -64,5 +122,6 @@ module.exports = {
   findAll,
   findOneById,
   removeOneById,
-  save
+  save,
+  getConnectionsFromEnv
 };
