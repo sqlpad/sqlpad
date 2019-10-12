@@ -12,7 +12,7 @@ const [configFromFile] = getConfigFromFile() || {};
  *
  * For environment variables:
  * connection env vars must follow the format:
- * SQLPAD_CONNECTION__<connectionId>__<connectionFieldName>
+ * SQLPAD_CONNECTIONS__<connectionId>__<connectionFieldName>
  *
  * <connectionId> can be any value to associate a grouping a fields to a connection instance
  * If supplying a connection that was previously defined in the nedb database,
@@ -23,7 +23,7 @@ const [configFromFile] = getConfigFromFile() || {};
  * To define connections via envvars, `driver` field should be supplied.
  * _id field is not required, as it is defined in second env var fragment.
  *
- * Example: SQLPAD_CONNECTION__ab123__sqlserverEncrypt=""
+ * Example: SQLPAD_CONNECTIONS__ab123__sqlserverEncrypt=""
  *
  * From file, resulting parsed configuration from file is expected to follow format `connections.<id>.<fieldname>`
  * {
@@ -40,7 +40,7 @@ const [configFromFile] = getConfigFromFile() || {};
 function getConnectionsFromConfig(env = process.env) {
   // Create a map of connections from parsing environment variable
   const connectionsMapFromEnv = Object.keys(env)
-    .filter(key => key.startsWith('SQLPAD_CONNECTION__'))
+    .filter(key => key.startsWith('SQLPAD_CONNECTIONS__'))
     .reduce((connectionsMap, envVar) => {
       // eslint-disable-next-line no-unused-vars
       const [prefix, id, field] = envVar.split('__');

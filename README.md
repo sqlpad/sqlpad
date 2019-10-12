@@ -263,15 +263,15 @@ How connections are defined in configuration depends on the source of the config
 
 #### Environment variable
 
-When using environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTION__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTION`, `<connectionId>`, and `<fieldName>`. Both connection ID and field name values are case sensitive. Boolean values should be the value `true` or `false`.
+When using environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTIONS__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTIONS`, `<connectionId>`, and `<fieldName>`. Both connection ID and field name values are case sensitive. Boolean values should be the value `true` or `false`.
 
 Example for a MySQL connection with id `prod123`.
 
 ```sh
-SQLPAD_CONNECTION__prod123__name="Production 123"
-SQLPAD_CONNECTION__prod123__driver=mysql
-SQLPAD_CONNECTION__prod123__host=localhost
-SQLPAD_CONNECTION__prod123__mysqlInsecureAuth=true
+SQLPAD_CONNECTIONS__prod123__name="Production 123"
+SQLPAD_CONNECTIONS__prod123__driver=mysql
+SQLPAD_CONNECTIONS__prod123__host=localhost
+SQLPAD_CONNECTIONS__prod123__mysqlInsecureAuth=true
 ```
 
 #### INI file
