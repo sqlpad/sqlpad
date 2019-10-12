@@ -251,7 +251,7 @@ Env var: `WHITELISTED_DOMAINS`
 
 ### Connection configuration
 
-As of 3.2.0 (Work-in-progress) connections may be defined via application configuration.
+As of 3.2.0 connections may be defined via application configuration.
 
 Every connection defined should provide a `name` and `driver` value, with driver equaling the value in header parentheses below. `name` will be the label used in the UI to label the connection.
 
