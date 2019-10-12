@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.0
+
+### October 12, 2019
+
+- Adds support for defining connections via configuration.
+
 ## 3.1.1
 
 ### October 10, 2019
