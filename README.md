@@ -255,13 +255,24 @@ As of 3.2.0 (Work-in-progress) connections may be defined via application config
 
 Every connection defined should provide a `name` and `driver` value, with driver equaling the value in header parentheses below. `name` will be the label used in the UI to label the connection.
 
+Field names and values are case sensitive.
+
+The connection ID value used can be any alphanumeric value, and is case-sensitive. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
+
 How connections are defined in configuration depends on the source of the configuration.
 
 #### Environment variable
 
-For all connections, the connection id value used can be any alphanumeric value, and is case-sensitive. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
+When using environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTION__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTION`, `<connectionId>`, and `<fieldName>`. Both connection ID and field name values are case sensitive. Boolean values should be the value `true` or `false`.
 
-When using environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTION__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTION`, `<connectionId>`, and `<fieldName>`. `<connectionId>` is case sensitive, and can be any alphanumeric value. `<fieldName>` is also case sensitive. Boolean values should be the string value `true` or `false`. For example, to set `mysqlInsecureAuth` for connection with an ID `prod123`, the environment variable would be `SQLPAD_CONNECTION__prod123__mysqlInsecureAuth=true`.
+Example for a MySQL connection with id `prod123`.
+
+```sh
+SQLPAD_CONNECTION__prod123__name="Production 123"
+SQLPAD_CONNECTION__prod123__driver=mysql
+SQLPAD_CONNECTION__prod123__host=localhost
+SQLPAD_CONNECTION__prod123__mysqlInsecureAuth=true
+```
 
 #### INI file
 
@@ -269,6 +280,8 @@ When defining a connection in an INI file, use section header with the value `co
 
 ```ini
 [connections.prod123]
+name = Production 123
+driver = mysql
 host = localhost
 mysqlInsecureAuth = true
 ```
@@ -281,6 +294,8 @@ When using JSON file, provide `<connectionId>` as a key under `connections`.
 {
   "connections": {
     "prod123": {
+      "name": "Production 123",
+      "driver": "mysql",
       "host": "localhost",
       "mysqlInsecureAuth": true
     }
