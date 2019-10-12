@@ -97,7 +97,7 @@ function ConnectionList({
 
         const actions = [];
 
-        if (currentUser.role === 'admin') {
+        if (currentUser.role === 'admin' && item.editable) {
           actions.push(
             <Button
               key="edit"

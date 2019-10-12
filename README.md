@@ -65,6 +65,10 @@ sqlpad --dbPath ../db --port 3010
 
 A docker image may be built using the Dockerfile located in `server` directory. See `docker-publish.sh` for example docker build command.
 
+## Development
+
+[Developer guide](DEVELOPER-GUIDE.md)
+
 ## Configuration
 
 SQLPad may be configured via environment variables, config file, or command line flags.
@@ -245,9 +249,257 @@ Default: `true`
 Allows pre-approval of email domains. Delimit multiple domains by empty space.  
 Env var: `WHITELISTED_DOMAINS`
 
-## Development
+### Connection configuration
 
-[Developer guide](DEVELOPER-GUIDE.md)
+As of 3.2.0 connections may be defined via application configuration.
+
+Every connection defined should provide a `name` and `driver` value, with driver equaling the value in header parentheses below. `name` will be the label used in the UI to label the connection.
+
+Field names and values are case sensitive.
+
+The connection ID value used can be any alphanumeric value, and is case-sensitive. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
+
+How connections are defined in configuration depends on the source of the configuration.
+
+#### Environment variable
+
+When using environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTIONS__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTIONS`, `<connectionId>`, and `<fieldName>`. Both connection ID and field name values are case sensitive. Boolean values should be the value `true` or `false`.
+
+Example for a MySQL connection with id `prod123`.
+
+```sh
+SQLPAD_CONNECTIONS__prod123__name="Production 123"
+SQLPAD_CONNECTIONS__prod123__driver=mysql
+SQLPAD_CONNECTIONS__prod123__host=localhost
+SQLPAD_CONNECTIONS__prod123__mysqlInsecureAuth=true
+```
+
+#### INI file
+
+When defining a connection in an INI file, use section header with the value `connections.<connectionId>`.
+
+```ini
+[connections.prod123]
+name = Production 123
+driver = mysql
+host = localhost
+mysqlInsecureAuth = true
+```
+
+#### JSON file
+
+When using JSON file, provide `<connectionId>` as a key under `connections`.
+
+```json
+{
+  "connections": {
+    "prod123": {
+      "name": "Production 123",
+      "driver": "mysql",
+      "host": "localhost",
+      "mysqlInsecureAuth": true
+    }
+  }
+}
+```
+
+#### CrateDB (crate)
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>crate</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+  </tbody>
+</table>
+
+#### Apache Drill (drill)
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>drill</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>drillDefaultSchema</td><td>Default Schema</td><td>text</td></tr>
+    <tr><td>ssl</td><td>Use SSL to connect to Drill</td><td>boolean</td></tr>
+  </tbody>
+</table>
+
+#### SAP Hana (hdb)
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>hdb</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>hanaport</td><td>Port (e.g. 39015)</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>hanadatabase</td><td>Tenant</td><td>text</td></tr>
+    <tr><td>hanaSchema</td><td>Schema (optional)</td><td>text</td></tr>
+  </tbody>
+</table>
+
+#### MySQL (mysql)
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>mysql</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>database</td><td>Database</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>mysqlInsecureAuth</td><td>Use old/insecure pre 4.1 Auth System</td><td>boolean</td></tr>
+  </tbody>
+</table>
+
+#### PostgreSQL (postgres)
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>postgres</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>database</td><td>Database</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>postgresSsl</td><td>Use SSL</td><td>boolean</td></tr>
+    <tr><td>postgresCert</td><td>Database Certificate Path</td><td>text</td></tr>
+    <tr><td>postgresKey</td><td>Database Key Path</td><td>text</td></tr>
+    <tr><td>postgresCA</td><td>Database CA Path</td><td>text</td></tr>
+    <tr><td>useSocks</td><td>Connect through SOCKS proxy</td><td>boolean</td></tr>
+    <tr><td>socksHost</td><td>Proxy hostname</td><td>text</td></tr>
+    <tr><td>socksPort</td><td>Proxy port</td><td>text</td></tr>
+    <tr><td>socksUsername</td><td>Username for socks proxy</td><td>text</td></tr>
+    <tr><td>socksPassword</td><td>Password for socks proxy</td><td>text</td></tr>
+  </tbody>
+</table>
+
+#### PrestoDB (presto)
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>presto</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>prestoCatalog</td><td>Catalog</td><td>text</td></tr>
+    <tr><td>prestoSchema</td><td>Schema</td><td>text</td></tr>
+  </tbody>
+</table>
+
+#### MS SQL Server (sqlserver)
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>sqlserver</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>database</td><td>Database</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>domain</td><td>Domain</td><td>text</td></tr>
+    <tr><td>sqlserverEncrypt</td><td>Encrypt (necessary for Azure)</td><td>boolean</td></tr>
+  </tbody>
+</table>
+
+#### Vertica (vertica)
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>vertica</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>database</td><td>Database</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+  </tbody>
+</table>
+
+#### Cassandra (cassandra)
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>cassandra</code></td><td>text</td></tr>
+    <tr><td>contactPoints</td><td>Contact points (comma delimited)</td><td>text</td></tr>
+    <tr><td>localDataCenter</td><td>Local data center</td><td>text</td></tr>
+    <tr><td>keyspace</td><td>Keyspace</td><td>text</td></tr>
+  </tbody>
+</table>
 
 ## License
 
