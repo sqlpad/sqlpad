@@ -136,7 +136,7 @@ function runQuery(query, connection, user) {
     queryResult.meta = getMeta(rows);
     queryResult.fields = Object.keys(queryResult.meta);
 
-    if (debug) {
+    if (debug || config.get('logQueries')) {
       const connectionName = connection.name;
       const rowCount = rows.length;
       const { startTime, stopTime, queryRunTime } = queryResult;

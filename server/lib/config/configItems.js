@@ -80,6 +80,11 @@ const configItems = [
     default: false
   },
   {
+    key: 'logQueries',
+    envVar: 'SQLPAD_LOG_QUERIES',
+    default: false
+  },
+  {
     key: 'googleClientId',
     envVar: 'GOOGLE_CLIENT_ID',
     default: ''
