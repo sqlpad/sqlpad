@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.1
+
+### October 17, 2019
+
+- Fix SQL Server "port must be type number" error
+
 ## 3.2.0
 
 ### October 12, 2019
