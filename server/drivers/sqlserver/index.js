@@ -32,7 +32,7 @@ function runQuery(query, connection) {
     user: connection.username,
     password: connection.password,
     server: connection.host,
-    port: connection.port ? connection.port : 1433,
+    port: connection.port ? parseInt(connection.port, 10) : 1433,
     database: connection.database,
     domain: connection.domain,
     // Set timeout to 1 hour for long running query support

@@ -37,6 +37,19 @@ describe('drivers/sqlserver', function() {
     return sqlserver.testConnection(connection);
   });
 
+  it('handles port as string', function() {
+    return sqlserver.testConnection({
+      name: 'test sqlserver',
+      driver: 'sqlserver',
+      host: 'localhost',
+      database: 'test',
+      username: 'sa',
+      password: 'SuperP4ssw0rd!',
+      port: '1433',
+      maxRows: 2
+    });
+  });
+
   it('getSchema()', function() {
     return sqlserver.getSchema(connection).then(schemaInfo => {
       assert(schemaInfo.dbo, 'dbo');
