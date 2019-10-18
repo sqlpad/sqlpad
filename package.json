@@ -3,7 +3,7 @@
   "version": "3.2.0",
   "private": true,
   "devDependencies": {
-    "husky": "^3.0.8",
+    "husky": "^3.0.9",
     "lint-staged": "^9.4.2",
     "prettier": "^1.18.2"
   },
