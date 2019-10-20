@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const config = require('./config');
+const logger = require('./logger');
 
 /**
  * Get full sqlpad url
@@ -28,8 +29,8 @@ function sendInvite(to) {
   const url = fullUrl('/signup');
   const text = `Hello! \n\nA colleague has invited you to SQLPad. \n\nTo sign up, visit ${url}.`;
   const html = `
-    <p>Hello!</p> 
-    <p>A colleague has invited you to SQLPad.</p> 
+    <p>Hello!</p>
+    <p>A colleague has invited you to SQLPad.</p>
     <p>To sign up, visit <a href="${url}">'${url}</a>.</p>
   `;
   return send(to, "You've been invited to SQLPad", text, html);
@@ -37,7 +38,7 @@ function sendInvite(to) {
 
 async function send(to, subject, text, html) {
   if (!config.smtpConfigured()) {
-    console.error('email.send() called without being configured');
+    logger.error('email.send() called without being configured');
     return;
   }
 
@@ -64,11 +65,9 @@ async function send(to, subject, text, html) {
       html
     };
     transporter.sendMail(mailOptions, function(err, info) {
-      if (config.get('debug')) {
-        console.log('sent email: ' + info);
-      }
+      logger.debug('sent email: ' + info);
       if (err) {
-        console.error(err);
+        logger.error({ err: err }, 'Error sending email');
         return reject(err);
       }
       resolve(info);

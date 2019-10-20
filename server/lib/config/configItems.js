@@ -75,14 +75,14 @@ const configItems = [
     default: ''
   },
   {
-    key: 'debug',
-    envVar: 'SQLPAD_DEBUG',
-    default: false
+    key: 'env',
+    envVar: 'SQLPAD_ENV',
+    default: 'production'
   },
   {
-    key: 'logQueries',
-    envVar: 'SQLPAD_LOG_QUERIES',
-    default: false
+    key: 'logLevel',
+    envVar: 'SQLPAD_LOG_LEVEL',
+    default: 'info'
   },
   {
     key: 'googleClientId',

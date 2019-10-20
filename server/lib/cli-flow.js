@@ -9,10 +9,10 @@ const keyPadding = Math.max(...keyLengths) + 2;
 const helpText = `
 SQLPad version:  ${packageJson.version}
 
-CLI examples: 
+CLI examples:
 
-  sqlpad --dbPath ../db --port 3010 --debug --baseUrl /sqlpad
-  node server.js --dbPath ../db --port 3010 --debug --baseUrl /sqlpad
+  sqlpad --dbPath ../db --port 3010 --env development --logLevel debug --baseUrl /sqlpad
+  node server.js --dbPath ../db --port 3010 --env development --logLevel debug --baseUrl /sqlpad
   node server.js --config path/to/file.json
   node server.js --config path/to/file.ini
 

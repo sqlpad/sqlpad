@@ -5,13 +5,14 @@ const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const config = require('./lib/config');
+const logger = require('./lib/logger');
 
 const baseUrl = config.get('baseUrl');
 const googleClientId = config.get('googleClientId');
 const googleClientSecret = config.get('googleClientSecret');
 const publicUrl = config.get('publicUrl');
 const dbPath = config.get('dbPath');
-const debug = config.get('debug');
+const env = config.get('env');
 const cookieSecret = config.get('cookieSecret');
 const sessionMinutes = config.get('sessionMinutes');
 
@@ -25,7 +26,6 @@ const samlAuthContext = config.get('samlAuthContext');
 ============================================================================= */
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
-const morgan = require('morgan');
 const passport = require('passport');
 const errorhandler = require('errorhandler');
 
@@ -40,9 +40,9 @@ app.use(helmet.noSniff());
 app.use(helmet.xssFilter());
 app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
-app.set('env', debug ? 'development' : 'production');
+app.set('env', env);
 
-if (debug) {
+if (app.settings.env == 'development') {
   app.use(errorhandler());
 }
 app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
@@ -62,16 +62,33 @@ app.use(
     resave: true,
     rolling: true,
     cookie: { maxAge: 1000 * 60 * sessionMinutes },
+    logFn: logger.info,
     secret: cookieSecret
   })
 );
 
+app.use(function(req, res, next) {
+  var log = logger.child({ id: req.id }, true);
+  log.info({ req: req });
+  next();
+});
+
+app.use(function(req, res, next) {
+  function afterResponse() {
+    res.removeListener('finish', afterResponse);
+    res.removeListener('close', afterResponse);
+
+    var log = logger.child({ id: req.id }, true);
+    log.info({ res: res }, 'response');
+  }
+  res.on('finish', afterResponse);
+  res.on('close', afterResponse);
+  next();
+});
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(baseUrl, express.static(path.join(__dirname, 'public')));
-if (debug) {
-  app.use(morgan('dev'));
-}
 
 /*  Passport setup
 ============================================================================= */
@@ -96,9 +113,7 @@ const routers = [
 ];
 
 if (googleClientId && googleClientSecret && publicUrl) {
-  if (debug) {
-    console.log('Enabling Google authentication Strategy.');
-  }
+  logger.debug('Enabling Google authentication Strategy.');
   routers.push(require('./routes/oauth.js'));
 }
 
@@ -109,9 +124,7 @@ if (
   samlCert &&
   samlAuthContext
 ) {
-  if (debug) {
-    console.log('Enabling SAML authentication Strategy.');
-  }
+  logger.debug('Enabling SAML authentication Strategy.');
   routers.push(require('./routes/saml.js'));
 }
 
@@ -126,7 +139,7 @@ app.use(require('./routes/app.js'));
 // For any missing api route, return a 404
 // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
 app.use(baseUrl + '/api/', function(req, res) {
-  console.log('reached catch all api route');
+  logger.warn('reached catch all api route');
   res.sendStatus(404);
 });
 
@@ -151,8 +164,8 @@ if (fs.existsSync(indexTemplatePath)) {
     .replace(/="\/static/g, `="${baseUrl}/static`);
   app.use((req, res) => res.send(baseUrlHtml));
 } else {
-  console.error('\nNO FRONT END TEMPLATE DETECTED');
-  console.error('If not running in dev mode please report this issue.\n');
+  logger.error('NO FRONT END TEMPLATE DETECTED');
+  logger.error('If not running in dev mode please report this issue.');
 }
 
 module.exports = app;

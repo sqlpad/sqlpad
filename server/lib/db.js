@@ -3,11 +3,11 @@ const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
 const config = require('./config');
 const passhash = require('../lib/passhash');
+const logger = require('./logger');
 
 const admin = config.get('admin');
 const adminPassword = config.get('adminPassword');
 const dbPath = config.get('dbPath');
-const debug = config.get('debug');
 const port = config.get('port');
 
 mkdirp.sync(path.join(dbPath, '/cache'));
@@ -26,9 +26,7 @@ const db = {
 async function init() {
   await Promise.all(
     db.instances.map(dbname => {
-      if (debug) {
-        console.log('Loading %s..', dbname);
-      }
+      logger.debug('Loading %s..', dbname);
       return db[dbname].loadDatabase();
     })
   );
@@ -62,7 +60,7 @@ async function ensureAdmin() {
         changes.passhash = passhash.getPasshash(adminPassword);
       }
       await db.users.update({ _id: user._id }, { $set: changes }, {});
-      console.log(adminEmail + ' should now have admin access.');
+      logger.info(adminEmail + ' should now have admin access.');
       return;
     }
 
@@ -74,12 +72,12 @@ async function ensureAdmin() {
       newAdmin.passhash = passhash.getPasshash(adminPassword);
     }
     await db.users.insert(newAdmin);
-    console.log(`\n${adminEmail} has been whitelisted with admin access.`);
-    console.log(
-      `\nPlease visit http://localhost:${port}/signup/ to complete registration.`
+    logger.debug(`${adminEmail} has been whitelisted with admin access.`);
+    logger.debug(
+      `Please visit http://localhost:${port}/signup/ to complete registration.`
     );
   } catch (error) {
-    console.log(`ERROR: could not make ${adminEmail} an admin.`);
+    logger.error({ err: error }, `could not make ${adminEmail} an admin.`);
     throw error;
   }
 }

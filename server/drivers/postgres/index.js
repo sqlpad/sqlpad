@@ -3,6 +3,7 @@ const pg = require('pg');
 const PgCursor = require('pg-cursor');
 const SocksConnection = require('socksjs');
 const { formatSchemaQueryResults } = require('../utils');
+const logger = require('../../lib/logger');
 
 const id = 'postgres';
 const name = 'Postgres';
@@ -25,23 +26,23 @@ function createSocksConnection(connection) {
 }
 
 const SCHEMA_SQL = `
-  select 
-    ns.nspname as table_schema, 
-    cls.relname as table_name, 
+  select
+    ns.nspname as table_schema,
+    cls.relname as table_name,
     attr.attname as column_name,
     trim(leading '_' from tp.typname) as data_type,
     pg_catalog.col_description(attr.attrelid, attr.attnum) as column_description
-  from 
+  from
     pg_catalog.pg_attribute as attr
     join pg_catalog.pg_class as cls on cls.oid = attr.attrelid
     join pg_catalog.pg_namespace as ns on ns.oid = cls.relnamespace
     join pg_catalog.pg_type as tp on tp.typelem = attr.atttypid
-  where 
+  where
     cls.relkind in ('r', 'v', 'm')
     and ns.nspname not in ('pg_catalog', 'pg_toast', 'information_schema')
-    and not attr.attisdropped 
+    and not attr.attisdropped
     and attr.attnum > 0
-  order by 
+  order by
     ns.nspname,
     cls.relname,
     attr.attnum
@@ -106,14 +107,13 @@ function runQuery(query, connection) {
         }
         cursor.close(err => {
           if (err) {
-            console.log('error closing pg-cursor:');
-            console.log(err);
+            logger.error({ err: err }, 'error closing pg-cursor');
           }
           // Calling end() without setImmediate causes error within node-pg
           setImmediate(() => {
             client.end(error => {
               if (error) {
-                console.error(error);
+                logger.error({ err: error }, 'Error closing connection');
               }
             });
           });

@@ -2,8 +2,7 @@ const uuid = require('uuid');
 const config = require('../lib/config');
 const utils = require('./utils');
 const getMeta = require('../lib/getMeta');
-
-const debug = config.get('debug');
+const logger = require('../lib/logger');
 
 const drivers = {};
 
@@ -15,7 +14,7 @@ const drivers = {};
  */
 function validateFunction(path, driver, functionName) {
   if (typeof driver[functionName] !== 'function') {
-    console.error(`${path} missing .${functionName}() implementation`);
+    logger.error(`${path} missing .${functionName}() implementation`);
     process.exit(1);
   }
 }
@@ -29,7 +28,7 @@ function validateFunction(path, driver, functionName) {
 function validateArray(path, driver, arrayName) {
   const arr = driver[arrayName];
   if (!Array.isArray(arr)) {
-    console.error(`${path} missing ${arrayName} array`);
+    logger.error(`${path} missing ${arrayName} array`);
     process.exit(1);
   }
 }
@@ -46,7 +45,7 @@ function requireValidate(path, optional = false) {
     driver = require(path);
   } catch (er) {
     if (optional) {
-      console.log('optional driver ' + path + ' not available');
+      logger.debug('optional driver ' + path + ' not available');
       return;
     } else {
       // rethrow
@@ -55,18 +54,18 @@ function requireValidate(path, optional = false) {
   }
 
   if (!driver.id) {
-    console.error(`${path} must export a unique id`);
+    logger.fatal(`${path} must export a unique id`);
     process.exit(1);
   }
 
   if (!driver.name) {
-    console.error(`${path} must export a name`);
+    logger.fatal(`${path} must export a name`);
     process.exit(1);
   }
 
   if (drivers[driver.id]) {
-    console.error(`Driver with id ${driver.id} already loaded`);
-    console.error(`Ensure ${path} has a unique id exported`);
+    logger.fatal(`Driver with id ${driver.id} already loaded`);
+    logger.fatal(`Ensure ${path} has a unique id exported`);
     process.exit(1);
   }
 
@@ -97,7 +96,7 @@ requireValidate('../drivers/unixodbc', true);
 requireValidate('../drivers/vertica');
 requireValidate('../drivers/cassandra');
 
-if (debug || process.env.SQLPAD_TEST === 'true') {
+if (process.env.SQLPAD_TEST === 'true') {
   requireValidate('../drivers/mock');
 }
 
@@ -135,25 +134,20 @@ function runQuery(query, connection, user) {
     queryResult.queryRunTime = queryResult.stopTime - queryResult.startTime;
     queryResult.meta = getMeta(rows);
     queryResult.fields = Object.keys(queryResult.meta);
+    const { startTime, stopTime, queryRunTime } = queryResult;
 
-    if (debug || config.get('logQueries')) {
-      const connectionName = connection.name;
-      const rowCount = rows.length;
-      const { startTime, stopTime, queryRunTime } = queryResult;
-
-      console.log(
-        JSON.stringify({
-          userId: user && user._id,
-          userEmail: user && user.email,
-          connectionName,
-          startTime,
-          stopTime,
-          queryRunTime,
-          rowCount,
-          query
-        })
-      );
-    }
+    logger.info(
+      {
+        user_id: user && user._id,
+        user_email: user && user.email,
+        connection_name: connection.name,
+        start_time: startTime,
+        stop_time: stopTime,
+        query_run_time: queryRunTime,
+        row_count: rows.length
+      },
+      query
+    );
 
     return queryResult;
   });

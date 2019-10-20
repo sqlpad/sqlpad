@@ -9,6 +9,7 @@ const detectPort = require('detect-port');
 require('./lib/cli-flow.js');
 
 const config = require('./lib/config');
+const logger = require('./lib/logger');
 
 const app = require('./app');
 
@@ -107,7 +108,7 @@ async function startServer() {
     server = http.createServer(app).listen(_port, ip, function() {
       const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
       const url = `http://${hostIp}:${_port}${baseUrl}`;
-      console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
+      logger.info(`Welcome to SQLPad!. Visit ${url} to get started`);
     });
   }
 }

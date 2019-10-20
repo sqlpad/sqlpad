@@ -1,5 +1,6 @@
 const hdb = require('hdb');
 const { formatSchemaQueryResults } = require('../utils');
+const logger = require('../../lib/logger');
 
 const id = 'hdb';
 const name = 'SAP HANA';
@@ -7,16 +8,16 @@ const name = 'SAP HANA';
 function getSchemaSql(schema) {
   const whereSql = schema ? `WHERE tables.SCHEMA_NAME = '${schema}'` : '';
   return `
-    SELECT 
-      columns.SCHEMA_NAME as table_schema, 
-      columns.TABLE_NAME as table_name, 
-      columns.COLUMN_NAME as column_name, 
+    SELECT
+      columns.SCHEMA_NAME as table_schema,
+      columns.TABLE_NAME as table_name,
+      columns.COLUMN_NAME as column_name,
       columns.DATA_TYPE_NAME as data_type
-    FROM 
+    FROM
       SYS.TABLES tables
       JOIN SYS.COLUMNS columns ON tables.SCHEMA_NAME = columns.SCHEMA_NAME AND tables.TABLE_NAME = columns.TABLE_NAME
     ${whereSql}
-    ORDER BY 
+    ORDER BY
      columns.POSITION
   `;
 }
@@ -41,13 +42,13 @@ function runQuery(query, connection) {
     });
 
     client.on('error', err => {
-      console.error('Network connection error', err);
+      logger.error({ err: err }, 'Network connection error');
       return reject(err);
     });
 
     client.connect(err => {
       if (err) {
-        console.error('Connect error', err);
+        logger.error({ err: err }, 'Connect error');
         return reject(err);
       }
       return client.execute(query, function(err, rs) {

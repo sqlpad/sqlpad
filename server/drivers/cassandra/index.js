@@ -1,5 +1,6 @@
 const cassandra = require('cassandra-driver');
 const { formatSchemaQueryResults } = require('../utils');
+const logger = require('../../lib/logger');
 
 const id = 'cassandra';
 const name = 'Cassandra';
@@ -18,12 +19,12 @@ const fields = [
 ];
 
 const SCHEMA_SQL = `
-  SELECT 
-    keyspace_name AS table_schema, 
-    table_name, 
-    column_name, 
+  SELECT
+    keyspace_name AS table_schema,
+    table_name,
+    column_name,
     type AS data_type
-  FROM 
+  FROM
     system_schema.columns;
 `;
 
@@ -35,7 +36,7 @@ function shutdownClient(client) {
   client
     .shutdown()
     .catch(error =>
-      console.error('Error shutting down cassandra connection', error)
+      logger.error({ err: error }, 'Error shutting down cassandra connection')
     );
 }
 

@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const logger = require('../../lib/logger');
 let request = require('request');
 let url = require('url');
 
@@ -70,8 +71,7 @@ Client.prototype.query = function(config, query) {
       return jsonData;
     })
     .catch(function(e) {
-      // TODO Send error message to JSON
-      console.log('There was a problem with the request' + e);
+      logger.error({ err: e }, 'There was a problem with the request');
       return e;
     });
 };

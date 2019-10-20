@@ -7,19 +7,19 @@ const name = 'Apache Drill';
 function getDrillSchemaSql(catalog, schema) {
   const schemaSql = schema ? `AND table_schema = '${schema}'` : '';
   return `
-    SELECT 
-      c.table_schema, 
-      c.table_name, 
-      c.column_name, 
+    SELECT
+      c.table_schema,
+      c.table_name,
+      c.column_name,
       c.data_type
-    FROM 
+    FROM
       INFORMATION_SCHEMA.COLUMNS c
     WHERE
       table_catalog = '${catalog}'
       ${schemaSql}
-    ORDER BY 
-      c.table_schema, 
-      c.table_name, 
+    ORDER BY
+      c.table_schema,
+      c.table_name,
       c.ordinal_position
   `;
 }
@@ -49,8 +49,7 @@ function runQuery(query, connection) {
     if (!result) {
       throw new Error('No result returned');
     } else if (result.errorMessage && result.errorMessage.length > 0) {
-      console.log('Error with query: ' + query);
-      console.log(result.errorMessage);
+      logger.error({ query: query }, result.errorMessage);
       throw new Error(result.errorMessage.split('\n')[0]);
     }
     if (result.length > connection.maxRows) {

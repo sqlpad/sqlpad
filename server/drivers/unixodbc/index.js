@@ -58,7 +58,7 @@ function runQuery(query, connection) {
       return Promise.resolve({ rows: queryResult, incomplete: false });
     })
     .catch(function(e) {
-      console.error(e, e.stack);
+      logger.error({ err: e }, e.stack);
     });
 }
 

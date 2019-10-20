@@ -1,5 +1,6 @@
 const db = require('../lib/db.js');
 const config = require('../lib/config');
+const logger = require('../lib/logger');
 const Joi = require('joi');
 const request = require('request');
 
@@ -97,8 +98,8 @@ Query.prototype.pushQueryToSlackIfSetup = function() {
       body: {
         text: `New Query <${PUBLIC_URL}${BASE_URL}/queries/${this._id}|${
           this.name
-        }> 
-            saved by ${this.modifiedBy} on SQLPad 
+        }>
+            saved by ${this.modifiedBy} on SQLPad
             ${'```'}
             ${this.queryText}
             ${'```'}`
@@ -108,8 +109,10 @@ Query.prototype.pushQueryToSlackIfSetup = function() {
     };
     request(options, function(err) {
       if (err) {
-        console.error('Something went wrong while sending to Slack.');
-        console.error(err);
+        logger.error(
+          { err: err },
+          'Something went wrong while sending to Slack.'
+        );
       }
     });
   }

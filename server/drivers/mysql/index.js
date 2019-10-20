@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const { formatSchemaQueryResults } = require('../utils');
+const logger = require('../../lib/logger');
 
 const id = 'mysql';
 const name = 'MySQL';
@@ -8,23 +9,23 @@ function getSchemaSql(database) {
   const whereSql = database
     ? `WHERE t.table_schema = '${database}'`
     : `WHERE t.table_schema NOT IN (
-        'mysql', 
-        'performance_schema', 
+        'mysql',
+        'performance_schema',
         'information_schema'
       )`;
   return `
-    SELECT 
-      t.table_schema, 
-      t.table_name, 
-      c.column_name, 
+    SELECT
+      t.table_schema,
+      t.table_name,
+      c.column_name,
       c.data_type
-    FROM 
-      INFORMATION_SCHEMA.TABLES t 
-      JOIN INFORMATION_SCHEMA.COLUMNS c ON t.table_schema = c.table_schema AND t.table_name = c.table_name 
+    FROM
+      INFORMATION_SCHEMA.TABLES t
+      JOIN INFORMATION_SCHEMA.COLUMNS c ON t.table_schema = c.table_schema AND t.table_name = c.table_name
     ${whereSql}
-    ORDER BY 
-      t.table_schema, 
-      t.table_name, 
+    ORDER BY
+      t.table_schema,
+      t.table_name,
       c.ordinal_position
   `;
 }
@@ -101,7 +102,7 @@ function runQuery(query, connection) {
           // myConnection.destroy()
           myConnection.end(error => {
             if (error) {
-              console.error('Error ending MySQL connection', error);
+              logger.error({ err: error }, 'Error ending MySQL connection');
             }
             continueOn();
           });

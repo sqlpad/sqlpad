@@ -5,6 +5,7 @@ const db = require('../lib/db.js');
 const xlsx = require('node-xlsx');
 const json2csv = require('json2csv');
 const config = require('../lib/config');
+const logger = require('../lib/logger');
 const dbPath = config.get('dbPath');
 
 const schema = {
@@ -74,7 +75,7 @@ Cache.prototype.writeXlsx = function writeXlsx(queryResult) {
       // if there's an error log it but otherwise continue on
       // we can still send results even if download file failed to create
       if (err) {
-        console.log(err);
+        logger.error({ err: err }, 'Error while writing xlsx file');
       }
       return resolve();
     });
@@ -89,12 +90,12 @@ Cache.prototype.writeCsv = function writeCsv(queryResult) {
       csv
     ) {
       if (err) {
-        console.log(err);
+        logger.error({ err: err }, 'Error while converting JSON to CSV');
         return resolve();
       }
       fs.writeFile(self.csvFilePath(), csv, function(err) {
         if (err) {
-          console.log(err);
+          logger.error({ err: err }, 'Error while writing CSV file');
         }
         return resolve();
       });
@@ -127,7 +128,7 @@ Cache.findExpired = () =>
 Cache.removeExpired = () =>
   Cache.findExpired()
     .then(caches => Promise.all(caches.map(cache => cache.expire())))
-    .catch(console.error);
+    .catch(logger.error);
 
 // Every five minutes check and expire cache
 const FIVE_MINUTES = 1000 * 60 * 5;

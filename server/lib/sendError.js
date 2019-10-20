@@ -1,3 +1,5 @@
+const logger = require('./logger');
+
 /**
  * Logs actual error to console and sends standard error response
  * @param {*} res
@@ -5,10 +7,11 @@
  * @param {string} [message]
  */
 module.exports = function sendError(res, error, message) {
+  msg = message || (error ? error.toString() : 'Something happened');
   if (error) {
-    console.error(error);
+    logger.error({ err: error }, msg);
   }
   return res.json({
-    error: message || (error ? error.toString() : 'Something happened')
+    error: msg
   });
 };
