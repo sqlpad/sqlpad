@@ -20,6 +20,11 @@ const configItems = [
     default: 60
   },
   {
+    key: 'timeoutSeconds',
+    envVar: 'SQLPAD_TIMEOUT_SECONDS',
+    default: 300
+  },
+  {
     key: 'ip',
     envVar: 'SQLPAD_IP',
     default: '0.0.0.0'

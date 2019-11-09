@@ -20,6 +20,7 @@ const certPassphrase = config.get('certPassphrase');
 const keyPath = config.get('keyPath');
 const certPath = config.get('certPath');
 const systemdSocket = config.get('systemdSocket');
+const timeoutSeconds = config.get('timeoutSeconds');
 
 const db = require('./lib/db');
 
@@ -110,6 +111,7 @@ async function startServer() {
       console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
     });
   }
+  server.setTimeout(timeoutSeconds * 1000);
 }
 
 db.loadPromise.then(startServer).catch(error => {
