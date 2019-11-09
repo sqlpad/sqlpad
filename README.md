@@ -245,6 +245,11 @@ When false, table and chart result links will be operational without login.
 Env var: `SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH`  
 Default: `true`
 
+**timeoutSeconds**  
+HTTP server timeout as number of seconds. Extend as necessary for long running queries.
+Env var: `SQLPAD_TIMEOUT_SECONDS`  
+Default: `300`
+
 **whitelistedDomains**  
 Allows pre-approval of email domains. Delimit multiple domains by empty space.  
 Env var: `WHITELISTED_DOMAINS`
