@@ -39,7 +39,8 @@ function runQuery(query, connection) {
     requestTimeout: 1000 * 60 * 60,
     options: {
       appName: 'SQLPad',
-      encrypt: Boolean(connection.sqlserverEncrypt)
+      encrypt: Boolean(connection.sqlserverEncrypt),
+      multiSubnetFailover: connection.sqlserverMultiSubnetFailover
     },
     pool: {
       max: 1,
@@ -158,6 +159,11 @@ const fields = [
     key: 'sqlserverEncrypt',
     formType: 'CHECKBOX',
     label: 'Encrypt (necessary for Azure)'
+  },
+  {
+    key: 'sqlserverMultiSubnetFailover',
+    formType: 'CHECKBOX',
+    label: 'MultiSubnetFailover'
   }
 ];
 

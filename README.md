@@ -463,6 +463,7 @@ When using JSON file, provide `<connectionId>` as a key under `connections`.
     <tr><td>password</td><td>Database Password</td><td>text</td></tr>
     <tr><td>domain</td><td>Domain</td><td>text</td></tr>
     <tr><td>sqlserverEncrypt</td><td>Encrypt (necessary for Azure)</td><td>boolean</td></tr>
+    <tr><td>sqlserverMultiSubnetFailover</td><td>MultiSubnetFailover</td><td>boolean</td></tr>
   </tbody>
 </table>
 
