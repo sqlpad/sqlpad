@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.4.0
+
+### November 10, 2019
+
+- Add `sqlserverMultiSubnetFailover` option for SQL Server
+
 ## 3.3.0
 
 ### November 8, 2019
