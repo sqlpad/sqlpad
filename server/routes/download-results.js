@@ -65,9 +65,6 @@ router.get('/download-results/:cacheKey.json', async function(req, res, next) {
         return next(new Error('Result cache not found'));
       }
       let filename = cache.queryName + '.json';
-      console.log('Erik Hennerfors');
-      console.log(filename);
-      console.log('/Erik Hennerfors');
       res.setHeader(
         'Content-disposition',
         'attachment; filename="' + encodeURIComponent(filename) + '"'
@@ -75,7 +72,7 @@ router.get('/download-results/:cacheKey.json', async function(req, res, next) {
       res.setHeader('Content-Type', 'application/json');
       fs.createReadStream(resultCache.jsonFilePath(cacheKey)).pipe(res);
     } else {
-      return next(new Error('XLSX download disabled'));
+      return next(new Error('JSON download disabled'));
     }
   } catch (error) {
     console.error(error);
