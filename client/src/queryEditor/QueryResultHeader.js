@@ -36,6 +36,7 @@ function QueryResultHeader({
 
   const csvDownloadLink = `/download-results/${cacheKey}.csv`;
   const xlsxDownloadLink = `/download-results/${cacheKey}.xlsx`;
+  const jsonDownloadLink = `/download-results/${cacheKey}.json`;
   const tableLink = `/query-table/${queryId}`;
 
   return (
@@ -64,6 +65,16 @@ function QueryResultHeader({
             >
               <DownloadIcon style={{ marginRight: 4 }} size={16} />
               .xlsx
+            </Link>
+
+            <Link
+              className={styles.iconLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              to={jsonDownloadLink}
+            >
+              <DownloadIcon style={{ marginRight: 4 }} size={16} />
+              .json
             </Link>
           </span>
         )}

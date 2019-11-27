@@ -48,6 +48,17 @@ function ExportButton({ config, cacheKey, onSaveImageClick }) {
         xlsx
       </MenuLink>
     );
+    items.push(
+      <MenuLink
+        key="json"
+        as={NavigationLink}
+        to={`${baseUrl}/download-results/${cacheKey}.json`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        json
+      </MenuLink>
+    );
   }
 
   if (items.length === 0) {
