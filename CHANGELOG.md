@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.5.0
+
+### November 29, 2019
+
+- Add json download format for query result
+- Fix use of SQLPAD_ADMIN_PASSWORD setting
+
 ## 3.4.0
 
 ### November 10, 2019
