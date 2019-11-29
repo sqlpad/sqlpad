@@ -1,6 +1,59 @@
 # Developer Guide
 
-Follow build guide in README to install dependencies and build an initial build. Once complete, Open 2 terminal sessions in the root of this repo.
+## Getting started
+
+- Install node 10 or later
+- Clone/download this repo
+- Install dependencies and build the UI
+
+  ```sh
+  scripts/build.sh
+  ```
+
+  The gist of this script is:
+
+  ```sh
+  # install root level dependencies using package-lock.json as reference
+  npm ci
+  # install front-end dependencies using package-lock.json
+  cd client
+  npm ci
+  # build front-end
+  npm run build
+  # install back-end dependencies
+  cd ../server
+  npm ci
+  cd ..
+  # copy client build to server directory
+  mkdir server/public
+  cp -r client/build/* server/public
+  ```
+
+At this point you can run the SQLPad server with the front-end built for production use:
+
+```sh
+cd server
+node server.js --dbPath ../db --port 3010
+```
+
+If prefered, SQLPad can be installed as a global module using the local files in this repo. This allows running SQLPad via the cli in any directory, just as if you had installed it with `npm install sqlpad -g`. Note that you must build and copy the client prior to this step.
+
+```sh
+cd server
+npm install -g
+
+# Now from somewhere else you can run sqlpad like
+cd ~
+sqlpad --dbPath ../db --port 3010
+```
+
+If sqlpad was installed globally via npm from npm, you may need to run `npm uninstall sqlpad -g`.
+
+A docker image may be built using the Dockerfile located in `server` directory. See `docker-publish.sh` for example docker build command.
+
+## Developing
+
+Open 2 terminal sessions in the root of this repo.
 
 In one session run the back end in development mode
 
@@ -33,7 +86,7 @@ npm run lint
 npm run fixlint
 ```
 
-### Mock driver
+## Mock driver
 
 When SQLPad server is run in debug mode, a mock driver implementation is available to generate data. The data returned by the query run is determined by information parsed from the comment block. The rest of the query may be anything.
 

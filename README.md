@@ -12,62 +12,12 @@ The docker image runs on port 3000 and uses `/var/lib/sqlpad` for the embedded d
 
 `latest` tag is continously built from latest commit in repo. Use specific version tags to ensure stability.
 
-For configuration exposed via environment variables reference [CONFIGURATION.md](https://github.com/rickbergfalk/sqlpad/blob/master/CONFIGURATION.md).
-
 See [docker-examples](https://github.com/rickbergfalk/sqlpad/tree/master/docker-examples) directory for example docker-compose setup with SQL Server.
-
-## Building
-
-- Install node 10 or later
-- Clone/download this repo
-- Install dependencies and build the UI
-
-  ```sh
-  scripts/build.sh
-  ```
-
-  The gist of this script is:
-
-  ```sh
-  # install root level dependencies using package-lock.json as reference
-  npm ci
-  # install front-end dependencies using package-lock.json
-  cd client
-  npm ci
-  # build front-end
-  npm run build
-  # install back-end dependencies
-  cd ../server
-  npm ci
-  cd ..
-  # copy client build to server directory
-  mkdir server/public
-  cp -r client/build/* server/public
-  ```
-
-At this point you can run the SQLPad server with the front-end built for production use:
-
-```sh
-cd server
-node server.js --dbPath ../db --port 3010
-```
-
-If prefered, SQLPad can be installed as a global module using the local files in this repo. This allows running SQLPad via the cli in any directory, just as if you had installed it with `npm install sqlpad -g`. Note that you must build and copy the client prior to this step.
-
-```sh
-cd server
-node install -g
-
-# Now from somewhere else you can run sqlpad like
-cd ~
-sqlpad --dbPath ../db --port 3010
-```
-
-A docker image may be built using the Dockerfile located in `server` directory. See `docker-publish.sh` for example docker build command.
 
 ## Development
 
-[Developer guide](DEVELOPER-GUIDE.md)
+For instructions on installing/running SQLPad from git repo
+see [developer guide](https://github.com/rickbergfalk/sqlpad/blob/master/DEVELOPER-GUIDE.md)
 
 ## Configuration
 
@@ -77,16 +27,10 @@ Config file path may be specified passing command line option `--config` or envi
 For example:
 
 ```sh
-node server.js --config ~/.sqlpadrc
+node server.js --config ~/sqlpad.ini
 ```
 
 For INI and JSON config file examples, see `config-example.ini` and `config-example.json` in GitHub repository.
-
-### Version 3 changes
-
-Previously SQLPad supported a default dbPath of `$HOME/sqlpad/db` and a default config file path of `$HOME/.sqlpadrc`.
-
-These defaults have been removed in version 3.
 
 ### Config variables
 
