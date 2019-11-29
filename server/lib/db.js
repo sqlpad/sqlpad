@@ -59,7 +59,7 @@ async function ensureAdmin() {
     if (user) {
       const changes = { role: 'admin' };
       if (adminPassword) {
-        changes.passhash = passhash.getPasshash(adminPassword);
+        changes.passhash = await passhash.getPasshash(adminPassword);
       }
       await db.users.update({ _id: user._id }, { $set: changes }, {});
       console.log(adminEmail + ' should now have admin access.');
