@@ -56,4 +56,29 @@ router.get('/download-results/:cacheKey.xlsx', async function(req, res, next) {
   }
 });
 
+router.get('/download-results/:cacheKey.json', async function(req, res, next) {
+  const { cacheKey } = req.params;
+  try {
+    if (config.get('allowCsvDownload')) {
+      const cache = await resultCache.findOneByCacheKey(cacheKey);
+      if (!cache) {
+        return next(new Error('Result cache not found'));
+      }
+      let filename = cache.queryName + '.json';
+      res.setHeader(
+        'Content-disposition',
+        'attachment; filename="' + encodeURIComponent(filename) + '"'
+      );
+      res.setHeader('Content-Type', 'application/json');
+      fs.createReadStream(resultCache.jsonFilePath(cacheKey)).pipe(res);
+    } else {
+      return next(new Error('JSON download disabled'));
+    }
+  } catch (error) {
+    console.error(error);
+    // TODO figure out what this sends and set manually
+    return next(error);
+  }
+});
+
 module.exports = router;

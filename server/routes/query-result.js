@@ -74,6 +74,7 @@ async function getQueryResult(data) {
     resultCache.saveResultCache(cacheKey, queryName);
     await resultCache.writeXlsx(cacheKey, queryResult);
     await resultCache.writeCsv(cacheKey, queryResult);
+    await resultCache.writeJson(cacheKey, queryResult);
   }
 
   return queryResult;

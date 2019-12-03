@@ -16,6 +16,10 @@ function csvFilePath(cacheKey) {
   return path.join(dbPath, '/cache/', cacheKey + '.csv');
 }
 
+function jsonFilePath(cacheKey) {
+  return path.join(dbPath, '/cache/', cacheKey + '.json');
+}
+
 async function findOneByCacheKey(cacheKey) {
   return db.cache.findOne({ cacheKey });
 }
@@ -86,6 +90,23 @@ function writeCsv(cacheKey, queryResult) {
   });
 }
 
+function writeJson(cacheKey, queryResult) {
+  return new Promise(resolve => {
+    try {
+      const json = JSON.stringify(queryResult.rows);
+      fs.writeFile(jsonFilePath(cacheKey), json, function(err) {
+        if (err) {
+          console.log(err);
+        }
+        return resolve();
+      });
+    } catch (error) {
+      console.log(error);
+      return resolve();
+    }
+  });
+}
+
 /*  Result cache maintenance
 ============================================================================== */
 
@@ -114,8 +135,10 @@ setInterval(removeExpired, FIVE_MINUTES);
 module.exports = {
   csvFilePath,
   findOneByCacheKey,
+  jsonFilePath,
   saveResultCache,
   writeCsv,
+  writeJson,
   writeXlsx,
   xlsxFilePath
 };
