@@ -1,3 +1,4 @@
+const fs = require('fs');
 const mysql = require('mysql');
 const { formatSchemaQueryResults } = require('../utils');
 
@@ -36,7 +37,7 @@ function getSchemaSql(database) {
  * @param {object} connection
  */
 function runQuery(query, connection) {
-  const myConnection = mysql.createConnection({
+  const myConfig = {
     multipleStatements: true,
     host: connection.host,
     port: connection.port ? connection.port : 3306,
@@ -45,14 +46,26 @@ function runQuery(query, connection) {
     database: connection.database,
     insecureAuth: connection.mysqlInsecureAuth,
     timezone: 'Z',
-    supportBigNumbers: true
-  });
+    supportBigNumbers: true,
+    ssl: connection.mysqlSsl
+  };
+  // TODO cache key/cert values
+  if (connection.mysqlKey && connection.mysqlCert) {
+    myConfig.ssl = {
+      key: fs.readFileSync(connection.mysqlKey),
+      cert: fs.readFileSync(connection.mysqlCert)
+    };
+    if (connection.mysqlCA) {
+      myConfig.ssl['ca'] = fs.readFileSync(connection.mysqlCA);
+    }
+  }
 
   return new Promise((resolve, reject) => {
+    const connection = mysql.createConnection(myConfig);
     let incomplete = false;
     const rows = [];
 
-    myConnection.connect(err => {
+    connection.connect(err => {
       if (err) {
         return reject(err);
       }
@@ -69,7 +82,7 @@ function runQuery(query, connection) {
         }
       }
 
-      const myQuery = myConnection.query(query);
+      const myQuery = connection.query(query);
       myQuery
         .on('error', function(err) {
           // Handle error,
@@ -87,11 +100,11 @@ function runQuery(query, connection) {
           incomplete = true;
 
           // Stop the query stream
-          myConnection.pause();
+          connection.pause();
 
           // Destroy the underlying connection
           // Calling end() will wait and eventually time out
-          myConnection.destroy();
+          connection.destroy();
           continueOn();
         })
         .on('end', function() {
@@ -99,7 +112,7 @@ function runQuery(query, connection) {
           // This will not fire if we end the connection early
           // myConnection.end()
           // myConnection.destroy()
-          myConnection.end(error => {
+          connection.end(error => {
             if (error) {
               console.error('Error ending MySQL connection', error);
             }
@@ -155,6 +168,26 @@ const fields = [
     key: 'password',
     formType: 'PASSWORD',
     label: 'Database Password'
+  },
+  {
+    key: 'mysqlSsl',
+    formType: 'CHECKBOX',
+    label: 'Use SSL'
+  },
+  {
+    key: 'mysqlCert',
+    formType: 'TEXT',
+    label: 'Database Certificate Path'
+  },
+  {
+    key: 'mysqlKey',
+    formType: 'TEXT',
+    label: 'Database Key Path'
+  },
+  {
+    key: 'mysqlCA',
+    formType: 'TEXT',
+    label: 'Database CA Path'
   },
   {
     key: 'mysqlInsecureAuth',
