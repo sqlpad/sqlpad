@@ -43,7 +43,7 @@ Password to set for admin email address on application start. Requires `admin` s
 Env var: `SQLPAD_ADMIN_PASSWORD`
 
 **allowCsvDownload**  
-Enable csv and xlsx downloads.  
+Enable csv, json and xlsx downloads.  
 Env var: `SQLPAD_ALLOW_CSV_DOWNLOAD`  
 Default: `true`
 
