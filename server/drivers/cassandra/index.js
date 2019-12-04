@@ -4,24 +4,6 @@ const { formatSchemaQueryResults } = require('../utils');
 const id = 'cassandra';
 const name = 'Cassandra';
 
-const fields = [
-  {
-    key: 'contactPoints',
-    formType: 'TEXT',
-    label: 'Contact points (comma delimited)'
-  },
-  {
-    key: 'localDataCenter',
-    formType: 'TEXT',
-    label: 'Local data center'
-  },
-  {
-    key: 'keyspace',
-    formType: 'TEXT',
-    label: 'Keyspace'
-  }
-];
-
 const SCHEMA_SQL = `
   SELECT 
     keyspace_name AS table_schema, 
@@ -51,15 +33,30 @@ function shutdownClient(client) {
  * @param {object} connection
  */
 async function runQuery(query, connection) {
-  const { contactPoints, keyspace, localDataCenter, maxRows } = connection;
-
-  const client = new cassandra.Client({
+  const {
+    contactPoints,
+    keyspace,
+    localDataCenter,
+    maxRows,
+    username,
+    password
+  } = connection;
+  const caConfig = {
     contactPoints: contactPoints.split(',').map(cp => cp.trim()),
     // Unfamiliar with cassandra - docs mention datacenter1 and this works as a default so leaving it in
     // If someone familiar with cassandra can expand on this please do
     localDataCenter: localDataCenter || 'datacenter1',
     keyspace
-  });
+  };
+
+  if (connection.username && connection.password) {
+    caConfig['authProvider'] = new cassandra.auth.PlainTextAuthProvider(
+      username,
+      password
+    );
+  }
+
+  const client = new cassandra.Client(caConfig);
 
   try {
     const result = await client.execute(query, [], { fetchSize: maxRows });
@@ -91,6 +88,34 @@ async function getSchema(connection) {
   const queryResult = await runQuery(SCHEMA_SQL, connection);
   return formatSchemaQueryResults(queryResult);
 }
+
+const fields = [
+  {
+    key: 'contactPoints',
+    formType: 'TEXT',
+    label: 'Contact points (comma delimited)'
+  },
+  {
+    key: 'localDataCenter',
+    formType: 'TEXT',
+    label: 'Local data center'
+  },
+  {
+    key: 'keyspace',
+    formType: 'TEXT',
+    label: 'Keyspace'
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username'
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password'
+  }
+];
 
 module.exports = {
   id,
