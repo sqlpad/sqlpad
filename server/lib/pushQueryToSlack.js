@@ -13,10 +13,10 @@ function pushQueryToSlack(query) {
         text: `New Query <${PUBLIC_URL}${BASE_URL}/queries/${query._id}|${
           query.name
         }> 
-            saved by ${query.modifiedBy} on SQLPad 
-            ${'```'}
-            ${query.queryText}
-            ${'```'}`
+saved by ${query.modifiedBy} on SQLPad 
+${'```sql'}
+${query.queryText}
+${'```'}`
       },
       json: true,
       url: SLACK_WEBHOOK
