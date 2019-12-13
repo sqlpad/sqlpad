@@ -2,7 +2,7 @@
 
 ## 3.5.1
 
-### December 19, 2019
+### December 13, 2019
 
 - Added support for authentication to Cassandra
 - Added SSL support for MySQL/MariaDB
