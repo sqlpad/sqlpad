@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.5.1
+
+### December 19, 2019
+
+- Added support for authentication to Cassandra
+- Added SSL support for MySQL/MariaDB
+- Added JSON query result downloads alongside XSLX and CSV
+
 ## 3.5.0
 
 ### November 29, 2019
