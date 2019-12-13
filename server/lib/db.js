@@ -71,7 +71,7 @@ async function ensureAdmin() {
       role: 'admin'
     };
     if (adminPassword) {
-      newAdmin.passhash = passhash.getPasshash(adminPassword);
+      newAdmin.passhash = await passhash.getPasshash(adminPassword);
     }
     await db.users.insert(newAdmin);
     console.log(`\n${adminEmail} has been whitelisted with admin access.`);
