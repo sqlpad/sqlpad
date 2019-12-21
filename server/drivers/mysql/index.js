@@ -61,11 +61,11 @@ function runQuery(query, connection) {
   }
 
   return new Promise((resolve, reject) => {
-    const connection = mysql.createConnection(myConfig);
+    const myConnection = mysql.createConnection(myConfig);
     let incomplete = false;
     const rows = [];
 
-    connection.connect(err => {
+    myConnection.connect(err => {
       if (err) {
         return reject(err);
       }
@@ -82,7 +82,7 @@ function runQuery(query, connection) {
         }
       }
 
-      const myQuery = connection.query(query);
+      const myQuery = myConnection.query(query);
       myQuery
         .on('error', function(err) {
           // Handle error,
@@ -100,11 +100,11 @@ function runQuery(query, connection) {
           incomplete = true;
 
           // Stop the query stream
-          connection.pause();
+          myConnection.pause();
 
           // Destroy the underlying connection
           // Calling end() will wait and eventually time out
-          connection.destroy();
+          myConnection.destroy();
           continueOn();
         })
         .on('end', function() {
@@ -112,7 +112,7 @@ function runQuery(query, connection) {
           // This will not fire if we end the connection early
           // myConnection.end()
           // myConnection.destroy()
-          connection.end(error => {
+          myConnection.end(error => {
             if (error) {
               console.error('Error ending MySQL connection', error);
             }
