@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [[ "$BRANCH" != "master" ]]; then
