@@ -3,8 +3,8 @@ const { runQuery } = require('../drivers/index');
 const connections = require('../models/connections.js');
 const resultCache = require('../models/resultCache.js');
 const queriesUtil = require('../models/queries.js');
-const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
+const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
+const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
 
@@ -12,7 +12,7 @@ const config = require('../lib/config');
 // Instead of relying on an open endpoint that executes arbitrary sql
 router.get(
   '/api/query-result/:_queryId',
-  mustBeAuthenticatedOrChartLink,
+  mustHaveConnectionAccessOrChartLink,
   async function(req, res) {
     try {
       const query = await queriesUtil.findOneById(req.params._queryId);
@@ -24,7 +24,7 @@ router.get(
         cacheKey: query._id,
         queryName: query.name,
         queryText: query.queryText,
-        config: req.config
+        user: req.user
       };
       // IMPORTANT: Send actual error here since it might have info on why the query is bad
       try {
@@ -41,7 +41,10 @@ router.get(
 
 // Accepts raw inputs from client
 // Used during query editing
-router.post('/api/query-result', mustBeAuthenticated, async function(req, res) {
+router.post('/api/query-result', mustHaveConnectionAccess, async function(
+  req,
+  res
+) {
   const data = {
     cacheKey: req.body.cacheKey,
     connectionId: req.body.connectionId,

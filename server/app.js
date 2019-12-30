@@ -87,6 +87,7 @@ const routers = [
   require('./routes/forgot-password.js'),
   require('./routes/password-reset.js'),
   require('./routes/connections.js'),
+  require('./routes/connection-accesses.js'),
   require('./routes/test-connection.js'),
   require('./routes/queries.js'),
   require('./routes/query-result.js'),

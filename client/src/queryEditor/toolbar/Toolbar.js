@@ -17,6 +17,7 @@ import IconButton from '../../common/IconButton';
 import IconMenu from '../../common/IconMenu';
 import Input from '../../common/Input';
 import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
+import ConnectionAccessListDrawer from '../../connectionAccesses/ConnectionAccessListDrawer';
 import {
   formatQuery,
   handleCloneClick,
@@ -90,6 +91,7 @@ function Toolbar({
   const [redirectToSignIn, setRedirectToSignIn] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
+  const [showConnectionAccesses, setShowConnectionAccesses] = useState(false);
 
   const error = showValidation && !queryName.length;
   const cloneDisabled = !queryId;
@@ -108,12 +110,15 @@ function Toolbar({
       <MenuItem key="connections" onSelect={() => setShowConnections(true)}>
         Connections
       </MenuItem>,
-      <MenuItem
-        key="users"
-        style={{ borderBottom: '1px solid #ddd' }}
-        onSelect={() => setShowUsers(true)}
-      >
+      <MenuItem key="users" onSelect={() => setShowUsers(true)}>
         Users
+      </MenuItem>,
+      <MenuItem
+        key="connectionAccessess"
+        style={{ borderBottom: '1px solid #ddd' }}
+        onSelect={() => setShowConnectionAccesses(true)}
+      >
+        Connection Accesses
       </MenuItem>
     ];
   }
@@ -229,6 +234,11 @@ function Toolbar({
         <ConnectionListDrawer
           visible={showConnections}
           onClose={() => setShowConnections(false)}
+        />
+
+        <ConnectionAccessListDrawer
+          visible={showConnectionAccesses}
+          onClose={() => setShowConnectionAccesses(false)}
         />
       </div>
     </div>

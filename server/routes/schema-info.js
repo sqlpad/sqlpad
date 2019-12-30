@@ -2,12 +2,12 @@ const router = require('express').Router();
 const connections = require('../models/connections');
 const schemaInfoUtil = require('../models/schemaInfo.js');
 const driver = require('../drivers');
-const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
+const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const sendError = require('../lib/sendError');
 
 router.get(
   '/api/schema-info/:connectionId',
-  mustBeAuthenticated,
+  mustHaveConnectionAccess,
   async function(req, res) {
     const { connectionId } = req.params;
     const reload = req.query.reload === 'true';

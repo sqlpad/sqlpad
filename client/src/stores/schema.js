@@ -47,6 +47,14 @@ export const loadSchemaInfo = store => async (state, connectionId, reload) => {
     );
     const { error, schemaInfo } = json;
     if (error) {
+      store.setState({
+        schema: {
+          ...schema,
+          [connectionId]: {
+            loading: false
+          }
+        }
+      });
       return message.error(error);
     }
     updateCompletions(schemaInfo);
