@@ -8,6 +8,7 @@
   top: 16px;
   right: 16px;
   width: 200px;
+  z-index: 9001 !important;
 }
 
 .error {
