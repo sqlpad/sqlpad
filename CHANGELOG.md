@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.5.3
+
+### December 30, 2019
+
+- Revert build script to use sh
+
 ## 3.5.2
 
 ### December 30, 2019
