@@ -21,6 +21,7 @@ const Button = React.forwardRef(
       classNames.push(className);
     }
 
+    // TODO change type prop to variant, htmlType to type
     const button = (
       <button
         ref={ref}
