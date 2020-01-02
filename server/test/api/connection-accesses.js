@@ -3,6 +3,7 @@ const utils = require('../utils');
 const consts = require('../../lib/consts');
 
 describe('api/connection-accesses', function() {
+  let admin2;
   let user1;
   let user2;
   let connection1;
@@ -34,6 +35,12 @@ describe('api/connection-accesses', function() {
     connection2 = connBody.connection;
 
     let userBody = await utils.post('admin', '/api/users', {
+      email: 'admin2@test.com',
+      role: 'admin'
+    });
+    admin2 = userBody.user;
+
+    userBody = await utils.post('admin', '/api/users', {
       email: 'user1@test.com',
       role: 'editor'
     });
@@ -98,6 +105,19 @@ describe('api/connection-accesses', function() {
       'connectionAccesses is an array'
     );
     assert.equal(body.connectionAccesses.length, 0, '0 length');
+  });
+
+  it('Do not create access for admin', async function() {
+    let body = await utils.post('admin', '/api/connection-accesses', {
+      connectionId: connection1._id,
+      userId: admin2._id,
+      duration: 3600
+    });
+
+    assert.equal(
+      body.error,
+      'User is admin and already has access to connection'
+    );
   });
 
   it('Creates connection accesses', async function() {

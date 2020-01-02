@@ -60,6 +60,13 @@ router.post('/api/connection-accesses', mustBeAdmin, async function(req, res) {
       if (!user) {
         return sendError(res, null, 'User not exists');
       }
+      if (user.role === 'admin') {
+        return sendError(
+          res,
+          null,
+          'User is admin and already has access to connection'
+        );
+      }
     }
     if (req.body.connectionId !== consts.EVERY_CONNECTION_ID) {
       connection = await connectionUtil.findOneById(req.body.connectionId);
