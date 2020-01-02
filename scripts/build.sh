@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 SQLPAD_CLIENT_DIR=$(pwd)/client
 SQLPAD_SERVER_DIR=$(pwd)/server
 SCRIPTS_DIR=$(pwd)/scripts

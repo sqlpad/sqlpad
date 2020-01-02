@@ -13,7 +13,9 @@ function InviteUserForm({ onInvited }) {
   const [role, setRole] = useState(null);
   const [isInviting, setIsInviting] = useState(null);
 
-  const onInviteClick = async e => {
+  const onInviteClick = async event => {
+    event.preventDefault();
+    event.stopPropagation();
     const user = {
       email,
       role
@@ -22,7 +24,8 @@ function InviteUserForm({ onInvited }) {
     const json = await fetchJson('POST', '/api/users', user);
     setIsInviting(false);
     if (json.error) {
-      return message.error('Whitelist failed: ' + json.error.toString());
+      message.error('Add user failed: ' + json.error.toString());
+      return false;
     }
     setEmail(null);
     setRole(null);
@@ -36,7 +39,7 @@ function InviteUserForm({ onInvited }) {
         them to continue the sign-up process on the{' '}
         <Link to={'/signup'}>signup page</Link>.
       </p>
-      <form>
+      <form onSubmit={onInviteClick}>
         <label>
           Email
           <Input
@@ -69,6 +72,7 @@ function InviteUserForm({ onInvited }) {
         <Spacer size={3} />
         <div>
           <Button
+            htmlType="submit"
             className="w-100"
             type="primary"
             onClick={onInviteClick}

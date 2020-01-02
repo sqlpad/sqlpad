@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.5.3
+
+### December 30, 2019
+
+- Revert build script to use sh
+
+## 3.5.2
+
+### December 30, 2019
+
+- Fix admin password from env var
+- Fix mysql zero-row result bug
+- Fix add user and connection form submit page refresh in Firefox
+- Fix schema sidebar height issues in Safari/Chrome
+- Set build script to use bash instead of sh
+- Let connection username/password decipher errors bubble up
+
 ## 3.5.1
 
 ### December 13, 2019

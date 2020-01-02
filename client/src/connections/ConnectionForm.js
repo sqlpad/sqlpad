@@ -64,7 +64,10 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
     setTestSuccess(json.error ? false : true);
   };
 
-  const saveConnection = async () => {
+  const saveConnection = async event => {
+    event.preventDefault();
+    event.stopPropagation();
+
     if (saving) {
       return;
     }
@@ -146,7 +149,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                   setConnectionValue(e.target.name, e.target.checked)
                 }
               />
-              <label for={field.key} style={{ marginLeft: 8 }}>
+              <label htmlFor={field.key} style={{ marginLeft: 8 }}>
                 {field.label}
               </label>
             </HorizontalFormItem>
@@ -182,6 +185,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
   return (
     <div style={{ height: '100%' }}>
       <form
+        onSubmit={saveConnection}
         autoComplete="off"
         style={{
           display: 'flex',
@@ -221,6 +225,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
           }}
         >
           <Button
+            htmlType="submit"
             style={{ width: 120 }}
             type="primary"
             onClick={saveConnection}

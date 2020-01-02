@@ -1,8 +1,19 @@
 # Developer Guide
 
-## Getting started
+## Prerequisites
 
-- Install node 10 or later
+- [Node](https://nodejs.org) installed at v10.0.0+
+- Some dependencies may require compilation. On macOS, the Xcode Command Line Tools should be installed. On Ubuntu, `apt-get install build-essential` will install the required packages. Similar commands should work on other Linux distros. Windows will require some additional steps, see the [`node-gyp` installation instructions](https://github.com/nodejs/node-gyp#installation) for details.
+
+## Style Guide
+
+SQLPad uses an automatic code formatter called [Prettier](https://prettier.io/) and a linting tool called ESLint.
+Run `npm run lint` after making any changes to code to check formatting and lint. Some formatting and lint may be fixed automatically by running `npm run fixlint`.
+
+If using Visual Studio Code, Prettier and ESLint extensions can be installed to assist in detecting and fixing issues during development.
+
+## Getting Started
+
 - Clone/download this repo
 - Install dependencies and build the UI
 
@@ -108,3 +119,13 @@ Measure fields will contain random data.
 
 SELECT * FROM the_actual_query_doesnt_matter
 ```
+
+## Releases
+
+SQLPad tries to follow [semantic versioning](https://semver.org/). As an application, this primarily means breaking HTTP API changes, breaking configuration changes, or major UI design changes will result in a major version bump. Minor and patch version bumps will consist of enhancements and fixes.
+
+For all enhancements, core SQLPad functionality should not be altered in any major way unless planned for an upcoming major release.
+
+The primary means of distributing SQLPad is via Docker Hub images. Images are automatically created off of git tags pushed to the repo matching the version format `v<major>.<minor>.<patch>`.
+
+To simplify the creation of package.json version bumps and tag creation, the `scripts/version.sh` may be used to cut a new release. Make updates to `CHANGELOG.md` followed by running `scripts/versions.sh 3.4.5` (or whatever the version number may be).
