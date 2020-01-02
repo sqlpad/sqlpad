@@ -150,7 +150,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
             {userSelectOptions}
           </Select>
         </HorizontalFormItem>
-        <HorizontalFormItem label="Duration (seconds)">
+        <HorizontalFormItem label="Duration in seconds (optional)">
           <Input
             name="duration"
             value={duration}
