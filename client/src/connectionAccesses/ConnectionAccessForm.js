@@ -22,7 +22,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
         _id: '__EVERY_CONNECTION__',
         name: 'Every Connection'
       });
-      setConnections(json.connections);
+      setConnections(connections);
     }
   }
 
