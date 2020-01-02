@@ -198,6 +198,10 @@ Default: `300`
 Allows pre-approval of email domains. Delimit multiple domains by empty space.  
 Env var: `WHITELISTED_DOMAINS`
 
+**allowConnectionAccessToEveryone**
+Allows access on every connection to every user.
+Env var: `SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE`
+
 ### Connection configuration
 
 As of 3.2.0 connections may be defined via application configuration.

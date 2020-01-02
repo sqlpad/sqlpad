@@ -193,6 +193,11 @@ const configItems = [
     key: 'samlAuthContext',
     envVar: 'SAML_AUTH_CONTEXT',
     default: ''
+  },
+  {
+    key: 'allowConnectionAccessToEveryone',
+    envVar: 'SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE',
+    default: true
   }
 ];
 

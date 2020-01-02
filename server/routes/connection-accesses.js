@@ -45,13 +45,29 @@ router.get('/api/connection-accesses/:_id', mustBeAuthenticated, async function(
 // crete active connection access
 router.post('/api/connection-accesses', mustBeAdmin, async function(req, res) {
   try {
-    let user = await usersUtil.findOneById(req.body.userId);
-    if (!user) {
-      return sendError(res, null, 'User not exists');
+    const everyUser = {
+      id: '__EVERY_USER__',
+      name: 'Every User',
+      email: 'Every User'
+    };
+    const everyConnection = {
+      id: '__EVERY_CONNECTION__',
+      name: 'Every Connection'
+    };
+    let user = everyUser;
+    let connection = everyConnection;
+
+    if (req.body.userId !== everyUser.id) {
+      user = await usersUtil.findOneById(req.body.userId);
+      if (!user) {
+        return sendError(res, null, 'User not exists');
+      }
     }
-    let connection = await connectionUtil.findOneById(req.body.connectionId);
-    if (!connection) {
-      return sendError(res, null, 'Connection not exists');
+    if (req.body.connectionId !== everyConnection.id) {
+      connection = await connectionUtil.findOneById(req.body.connectionId);
+      if (!connection) {
+        return sendError(res, null, 'Connection not exists');
+      }
     }
     let activeAccess = await connectionAccessesUtil.findOneActiveByConnectionIdAndUserId(
       req.body.connectionId,

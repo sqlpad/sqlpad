@@ -1,5 +1,6 @@
 const Joi = require('@hapi/joi');
 const db = require('../lib/db.js');
+const consts = require('../lib/consts');
 
 const schema = Joi.object({
   _id: Joi.string().optional(), // will be auto-gen by nedb
@@ -73,21 +74,39 @@ function findOneById(id) {
 
 function findOneActiveByConnectionIdAndUserId(connectionId, userId) {
   return db.connectionAccesses.findOne({
-    connectionId,
-    userId,
-    expiryDate: { $gt: new Date() }
+    $and: [
+      {
+        $or: [
+          {
+            connectionId: { $in: [connectionId, consts.EVERY_CONNECTION_ID] },
+            userId
+          },
+          {
+            connectionId,
+            userId: { $in: [connectionId, consts.EVERY_USER_ID] }
+          },
+          {
+            connectionId: consts.EVERY_CONNECTION_ID,
+            userId: consts.EVERY_USER_ID
+          }
+        ],
+        expiryDate: { $gt: new Date() }
+      }
+    ]
   });
 }
 
 function findAllActiveByConnectionId(connectionId) {
   return db.connectionAccesses.findOne({
-    connectionId,
+    connectionId: { $in: [connectionId, consts.EVERY_CONNECTION_ID] },
     expiryDate: { $gt: new Date() }
   });
 }
 
 function findAllByConnectionId(connectionId) {
-  return db.connectionAccesses.findAll({ connectionId });
+  return db.connectionAccesses.findAll({
+    connectionId: { $in: [connectionId, consts.EVERY_CONNECTION_ID] }
+  });
 }
 
 function findAllActive() {

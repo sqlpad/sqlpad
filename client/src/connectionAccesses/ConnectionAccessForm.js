@@ -17,6 +17,11 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
     if (json.error) {
       message.error(json.error);
     } else {
+      const connections = json.connections;
+      connections.unshift({
+        _id: '__EVERY_CONNECTION__',
+        name: 'Every Connection'
+      });
       setConnections(json.connections);
     }
   }
@@ -30,7 +35,12 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
     if (json.error) {
       message.error(json.error);
     } else {
-      setUsers(json.users);
+      const users = json.users;
+      users.unshift({
+        _id: '__EVERY_USER__',
+        email: 'Every User'
+      });
+      setUsers(users);
     }
   }
 

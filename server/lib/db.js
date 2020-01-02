@@ -2,6 +2,7 @@ const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
 const config = require('./config');
+const consts = require('./consts');
 const passhash = require('../lib/passhash');
 
 const admin = config.get('admin');
@@ -9,6 +10,9 @@ const adminPassword = config.get('adminPassword');
 const dbPath = config.get('dbPath');
 const debug = config.get('debug');
 const port = config.get('port');
+const allowConnectionAccessToEveryone = config.get(
+  'allowConnectionAccessToEveryone'
+);
 
 mkdirp.sync(path.join(dbPath, '/cache'));
 
@@ -35,6 +39,30 @@ async function init() {
       return db[dbname].loadDatabase();
     })
   );
+  // create default connection accesses
+  if (allowConnectionAccessToEveryone) {
+    if (debug) {
+      console.log('Creating access on every connection to every user...');
+    }
+    await db.connectionAccesses.update(
+      {
+        connectionId: consts.EVERY_CONNECTION_ID,
+        userId: consts.EVERY_USER_ID
+      },
+      {
+        connectionId: consts.EVERY_CONNECTION_ID,
+        connectionName: consts.EVERY_CONNECTION_NAME,
+        userId: consts.EVERY_USER_ID,
+        userEmail: consts.EVERY_USER_EMAIL,
+        duration: 0,
+        expiryDate: new Date(new Date().setFullYear(2099))
+      },
+      {
+        upsert: true
+      }
+    );
+  }
+  // Apply indexes
   await db.users.ensureIndex({ fieldName: 'email', unique: true });
   await db.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
   await db.connectionAccesses.ensureIndex({ fieldName: 'connectionId' });
