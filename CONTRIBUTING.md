@@ -42,9 +42,7 @@ If you actively use SQLPad, have the JavaScript expertise, and think you might h
 
 ## Contributing Money
 
-Need SQLPad work done and open to contracting it out? Reach out to a maintainer and inquire about setting something up.
-
-Interested in an option for paid support or sponsorship? Please reach out to rick.bergfalk@gmail.com.
+Interested in paid support, sponsorship, or contracting out SQLPad development work? Please reach out to rick.bergfalk@gmail.com.
 
 ## License
 
