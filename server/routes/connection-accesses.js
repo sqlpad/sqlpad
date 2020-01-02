@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const connectionAccessesUtil = require('../models/connectionAccesses.js');
+const consts = require('../lib/consts');
 const usersUtil = require('../models/users.js');
 const connectionUtil = require('../models/connections.js');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
@@ -45,25 +46,22 @@ router.get('/api/connection-accesses/:_id', mustBeAuthenticated, async function(
 // crete active connection access
 router.post('/api/connection-accesses', mustBeAdmin, async function(req, res) {
   try {
-    const everyUser = {
-      id: '__EVERY_USER__',
-      name: 'Every User',
-      email: 'Every User'
+    let user = {
+      id: consts.EVERY_USER_ID,
+      email: consts.EVERY_USER_EMAIL
     };
-    const everyConnection = {
-      id: '__EVERY_CONNECTION__',
-      name: 'Every Connection'
+    let connection = {
+      id: consts.EVERY_CONNECTION_ID,
+      name: consts.EVERY_CONNECTION_NAME
     };
-    let user = everyUser;
-    let connection = everyConnection;
 
-    if (req.body.userId !== everyUser.id) {
+    if (req.body.userId !== consts.EVERY_USER_ID) {
       user = await usersUtil.findOneById(req.body.userId);
       if (!user) {
         return sendError(res, null, 'User not exists');
       }
     }
-    if (req.body.connectionId !== everyConnection.id) {
+    if (req.body.connectionId !== consts.EVERY_CONNECTION_ID) {
       connection = await connectionUtil.findOneById(req.body.connectionId);
       if (!connection) {
         return sendError(res, null, 'Connection not exists');
