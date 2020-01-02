@@ -103,7 +103,9 @@ function ConnectionAccessList({ currentUser }) {
               <b>User:</b> {item.userEmail}
               <br />
               <Text type="secondary">
-                Duration: {item.duration} seconds - Expiry Date:{' '}
+                Duration: {item.duration || 'Indefinete'}{' '}
+                {!item.duration || 'seconds'}
+                &nbsp;&nbsp; - &nbsp;&nbsp; Expiry Date:{' '}
                 {new Date(item.expiryDate).toLocaleString()}
               </Text>
               <br />
