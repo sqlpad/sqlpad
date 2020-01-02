@@ -12,7 +12,7 @@ const schema = Joi.object({
     .integer()
     .min(900)
     .max(86400)
-    .default(-1),
+    .default(0),
   expiryDate: Joi.date().default(Date.now),
   createdDate: Joi.date().default(Date.now),
   modifiedDate: Joi.date().default(Date.now)
