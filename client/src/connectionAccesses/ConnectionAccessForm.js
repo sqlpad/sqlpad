@@ -119,6 +119,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
   return (
     <div style={{ height: '100%' }}>
       <form
+        onSubmit={createConnectionAccess}
         autoComplete="off"
         style={{
           display: 'flex',
@@ -168,6 +169,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
           }}
         >
           <Button
+            htmlType="submit"
             style={{ width: 120 }}
             type="primary"
             onClick={createConnectionAccess}
