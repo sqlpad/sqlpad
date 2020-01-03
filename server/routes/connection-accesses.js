@@ -90,7 +90,11 @@ router.post('/api/connection-accesses', mustBeAdmin, async function(req, res) {
     });
     return res.json({ connectionAccess });
   } catch (error) {
-    sendError(res, error, 'Problem saving connection access');
+    if (error.name === 'ValidationError') {
+      sendError(res, error, error.message);
+    } else {
+      sendError(res, error, 'Problem saving connection');
+    }
   }
 });
 
