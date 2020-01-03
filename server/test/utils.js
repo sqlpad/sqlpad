@@ -1,6 +1,7 @@
 const assert = require('assert');
 const request = require('supertest');
 const usersUtil = require('../models/users');
+const consts = require('../lib/consts');
 const db = require('../lib/db');
 const app = require('../app');
 
@@ -27,7 +28,18 @@ function reset() {
   return Promise.all([
     db.users.remove({}, { multi: true }),
     db.queries.remove({}, { multi: true }),
-    db.connections.remove({}, { multi: true })
+    db.connections.remove({}, { multi: true }),
+    db.connectionAccesses.remove(
+      {
+        $not: {
+          $and: [
+            { connectionId: consts.EVERY_CONNECTION_ID },
+            { userId: consts.EVERYONE_ID }
+          ]
+        }
+      },
+      { multi: true }
+    )
   ]);
 }
 
