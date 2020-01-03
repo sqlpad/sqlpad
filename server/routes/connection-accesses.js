@@ -47,15 +47,15 @@ router.get('/api/connection-accesses/:_id', mustBeAuthenticated, async function(
 router.post('/api/connection-accesses', mustBeAdmin, async function(req, res) {
   try {
     let user = {
-      id: consts.EVERY_USER_ID,
-      email: consts.EVERY_USER_EMAIL
+      id: consts.EVERYONE_ID,
+      email: consts.EVERYONE_EMAIL
     };
     let connection = {
       id: consts.EVERY_CONNECTION_ID,
       name: consts.EVERY_CONNECTION_NAME
     };
 
-    if (req.body.userId !== consts.EVERY_USER_ID) {
+    if (req.body.userId !== consts.EVERYONE_ID) {
       user = await usersUtil.findOneById(req.body.userId);
       if (!user) {
         return sendError(res, null, 'User not exists');

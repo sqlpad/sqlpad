@@ -70,8 +70,8 @@ describe('api/connection-accesses', function() {
       body.connectionAccesses[0].connectionName,
       consts.EVERY_CONNECTION_NAME
     );
-    assert.equal(body.connectionAccesses[0].userId, consts.EVERY_USER_ID);
-    assert.equal(body.connectionAccesses[0].userName, consts.EVERY_USER_NAME);
+    assert.equal(body.connectionAccesses[0].userId, consts.EVERYONE_ID);
+    assert.equal(body.connectionAccesses[0].userName, consts.EVERYONE_NAME);
     assert.equal(body.connectionAccesses[0].duration, 0);
     assert.equal(
       new Date(body.connectionAccesses[0].expiryDate).getFullYear(),

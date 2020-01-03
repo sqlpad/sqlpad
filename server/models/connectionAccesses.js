@@ -83,11 +83,11 @@ function findOneActiveByConnectionIdAndUserId(connectionId, userId) {
           },
           {
             connectionId,
-            userId: { $in: [connectionId, consts.EVERY_USER_ID] }
+            userId: { $in: [connectionId, consts.EVERYONE_ID] }
           },
           {
             connectionId: consts.EVERY_CONNECTION_ID,
-            userId: consts.EVERY_USER_ID
+            userId: consts.EVERYONE_ID
           }
         ],
         expiryDate: { $gt: new Date() }

@@ -34,7 +34,7 @@ function reset() {
         $not: {
           $and: [
             { connectionId: consts.EVERY_CONNECTION_ID },
-            { userId: consts.EVERY_USER_ID }
+            { userId: consts.EVERYONE_ID }
           ]
         }
       },

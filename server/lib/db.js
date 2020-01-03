@@ -47,13 +47,13 @@ async function init() {
     await db.connectionAccesses.update(
       {
         connectionId: consts.EVERY_CONNECTION_ID,
-        userId: consts.EVERY_USER_ID
+        userId: consts.EVERYONE_ID
       },
       {
         connectionId: consts.EVERY_CONNECTION_ID,
         connectionName: consts.EVERY_CONNECTION_NAME,
-        userId: consts.EVERY_USER_ID,
-        userEmail: consts.EVERY_USER_EMAIL,
+        userId: consts.EVERYONE_ID,
+        userEmail: consts.EVERYONE_EMAIL,
         duration: 0,
         expiryDate: new Date(new Date().setFullYear(2099))
       },

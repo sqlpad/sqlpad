@@ -37,8 +37,8 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
     } else {
       const users = json.users;
       users.unshift({
-        _id: '__EVERY_USER__',
-        email: 'Every User'
+        _id: '__EVERYONE__',
+        email: 'Everyone'
       });
       setUsers(users);
     }
