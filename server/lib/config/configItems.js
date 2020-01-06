@@ -200,6 +200,11 @@ const configItems = [
     default: true
   },
   {
+    key: 'queryHistoryRetentionTimeInDays',
+    envVar: 'SQLPAD_QUERY_HISTORY_RETENTION_TIME_IN_DAYS',
+    default: 30
+  },
+  {
     key: 'queryHistoryResultMaxRows',
     envVar: 'SQLPAD_QUERY_HISTORY_RESULT_MAX_ROWS',
     default: 1000
