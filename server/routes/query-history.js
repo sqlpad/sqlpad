@@ -2,12 +2,12 @@ const router = require('express').Router();
 const uuid = require('uuid');
 const getMeta = require('../lib/getMeta');
 const queryHistoryUtil = require('../models/queryHistory.js');
-const mustBeAdmin = require('../middleware/must-be-admin.js');
+const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const urlFilterToNeDbFilter = require('../lib/urlFilterToNeDbFilter');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
 
-router.get('/api/query-history', mustBeAdmin, async function(req, res) {
+router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
   try {
     const queryHistory = {
       id: uuid.v4(),
@@ -47,7 +47,10 @@ router.get('/api/query-history', mustBeAdmin, async function(req, res) {
   }
 });
 
-router.get('/api/query-history/:_id', mustBeAdmin, async function(req, res) {
+router.get('/api/query-history/:_id', mustBeAuthenticated, async function(
+  req,
+  res
+) {
   try {
     const queryHistoryItem = await queryHistoryUtil.findOneById(req.params._id);
     if (!queryHistoryItem) {
