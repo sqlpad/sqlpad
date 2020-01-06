@@ -202,6 +202,11 @@ Env var: `WHITELISTED_DOMAINS`
 Allows access on every connection to every user.
 Env var: `SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE`
 
+**queryHistoryRetentionTimeInDays**  
+Query history entries created before the retention period will be deleted automatically.  
+Env var: `SQLPAD_QUERY_HISTORY_RETENTION_PERIOD_IN_DAYS`  
+Default: `30`
+
 **queryHistoryResultMaxRows**  
 By default query history results are limited to 1,000 records.  
 Env var: `SQLPAD_QUERY_HISTORY_RESULT_MAX_ROWS`  
