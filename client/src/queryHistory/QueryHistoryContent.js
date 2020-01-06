@@ -9,7 +9,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
   const [isRunning, setIsRunning] = useState(true);
   const [filters, setFilters] = useState([]);
   const [queryError, setQueryError] = useState(null);
-  const [queryResult, setQueryResult] = useState({});
+  const [queryHistory, setQueryHistory] = useState({});
 
   useEffect(() => {
     function buildFilterUrlParameter() {
@@ -34,7 +34,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
 
       setIsRunning(false);
       setQueryError(json.error);
-      setQueryResult(json.queryResult);
+      setQueryHistory(json.queryHistory);
     }
 
     if (isRunning) {
@@ -151,7 +151,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
       <br />
       <QueryHistoryResultHeader
         isRunning={isRunning}
-        queryResult={queryResult}
+        queryResult={queryHistory}
         runQueryStartTime={null}
       />
       <div style={{ display: 'flex', flexGrow: 1, height: '100%' }}>
@@ -165,7 +165,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
         >
           <QueryResultContainer
             isRunning={isRunning}
-            queryResult={queryResult}
+            queryResult={queryHistory}
             queryError={queryError}
           />
         </div>

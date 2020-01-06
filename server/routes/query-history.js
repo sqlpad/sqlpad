@@ -82,7 +82,7 @@ function urlFilterToNeDbFilter(urlFilter) {
 
 router.get('/api/query-history', mustBeAdmin, async function(req, res) {
   try {
-    const queryResult = {
+    const queryHistory = {
       id: uuid.v4(),
       cacheKey: null,
       startTime: new Date(),
@@ -96,24 +96,25 @@ router.get('/api/query-history', mustBeAdmin, async function(req, res) {
 
     // Convert URL filter to NeDB compatible filter object
     const dbFilter = urlFilterToNeDbFilter(req.query.filter);
-    const queryHistory = await queryHistoryUtil.findByFilter(dbFilter);
+    const dbQueryHistory = await queryHistoryUtil.findByFilter(dbFilter);
 
-    queryHistory.map(q => {
+    dbQueryHistory.map(q => {
       delete q._id;
       delete q.userId;
       delete q.connectionId;
       return q;
     });
 
-    queryResult.incomplete =
-      queryHistory.length >= config.get('queryHistoryResultMaxRows');
-    queryResult.rows = queryHistory;
-    queryResult.stopTime = new Date();
-    queryResult.queryRunTime = queryResult.stopTime - queryResult.startTime;
-    queryResult.meta = getMeta(queryHistory);
-    queryResult.fields = Object.keys(queryResult.meta);
+    queryHistory.incomplete =
+      dbQueryHistory.length >= config.get('queryHistoryResultMaxRows');
+    queryHistory.rows = dbQueryHistory;
+    queryHistory.stopTime = new Date();
+    queryHistory.queryRunTime =
+      dbQueryHistory.stopTime - dbQueryHistory.startTime;
+    queryHistory.meta = getMeta(dbQueryHistory);
+    queryHistory.fields = Object.keys(queryHistory.meta);
 
-    return res.json({ queryResult });
+    return res.json({ queryHistory });
   } catch (error) {
     sendError(res, error, error.message);
   }
