@@ -30,7 +30,7 @@ async function findAll() {
 
 function findByFilter(filter) {
   return db.queryHistory
-    .cfind(filter, {})
+    .cfind(filter || {}, {})
     .sort({ startTime: -1 })
     .limit(config.get('queryHistoryResultMaxRows'))
     .exec();
