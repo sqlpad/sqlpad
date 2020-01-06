@@ -75,6 +75,7 @@ async function getQueryResult(data) {
   queryResult.cacheKey = cacheKey;
 
   if (config.get('queryHistoryRetentionTimeInDays') > 0) {
+    await queryHistory.removeOldEntries();
     await queryHistory.save({
       userId: user._id,
       userEmail: user.email,

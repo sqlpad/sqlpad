@@ -36,6 +36,16 @@ function findByFilter(filter) {
     .exec();
 }
 
+async function removeOldEntries() {
+  const days = config.get('queryHistoryRetentionTimeInDays') * 86400 * 1000;
+  const retentionPeriodStartTime = new Date(new Date().getTime() - days);
+
+  // Compaction function called separately in every ten minutes
+  return db.queryHistory.remove(
+    { createdDate: { $lt: retentionPeriodStartTime } },
+    { multi: true }
+  );
+}
 /**
  * Save queryHistory object
  * returns saved queryHistory object
@@ -53,5 +63,6 @@ module.exports = {
   findOneById,
   findAll,
   findByFilter,
+  removeOldEntries,
   save
 };
