@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Button from '../common/Button';
 import HorizontalFormItem from '../common/HorizontalFormItem.js';
 import Input from '../common/Input';
+import TextArea from '../common/TextArea';
 import message from '../common/message';
 import Select from '../common/Select';
 import fetchJson from '../utilities/fetch-json.js';
@@ -11,6 +12,7 @@ import fetchJson from '../utilities/fetch-json.js';
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';
 const CHECKBOX = 'CHECKBOX';
+const TEXTAREA = 'TEXTAREA';
 
 function ConnectionForm({ connectionId, onConnectionSaved }) {
   const [connectionEdits, setConnectionEdits] = useState({});
@@ -152,6 +154,21 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
               <label htmlFor={field.key} style={{ marginLeft: 8 }}>
                 {field.label}
               </label>
+            </HorizontalFormItem>
+          );
+        } else if (field.formType === TEXTAREA) {
+          const value = connectionEdits[field.key] || '';
+          return (
+            <HorizontalFormItem key={field.key} label={field.label}>
+              <TextArea
+                name={field.key}
+                value={value}
+                cols={45}
+                placeholder={field.placeholder}
+                onChange={e =>
+                  setConnectionValue(e.target.name, e.target.value)
+                }
+              />
             </HorizontalFormItem>
           );
         }

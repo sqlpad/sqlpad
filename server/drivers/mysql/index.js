@@ -38,7 +38,6 @@ function getSchemaSql(database) {
  */
 function runQuery(query, connection) {
   const myConfig = {
-    multipleStatements: true,
     host: connection.host,
     port: connection.port ? connection.port : 3306,
     user: connection.username,
@@ -47,7 +46,9 @@ function runQuery(query, connection) {
     insecureAuth: connection.mysqlInsecureAuth,
     timezone: 'Z',
     supportBigNumbers: true,
-    ssl: connection.mysqlSsl
+    ssl: connection.mysqlSsl,
+    multipleStatements: !connection.denyMultipleStatements,
+    preQueryStatements: connection.preQueryStatements
   };
   // TODO cache key/cert values
   if (connection.mysqlKey && connection.mysqlCert) {
@@ -82,43 +83,69 @@ function runQuery(query, connection) {
         }
       }
 
-      const myQuery = myConnection.query(query);
-      myQuery
-        .on('error', function(err) {
-          // Handle error,
-          // an 'end' event will be emitted after this as well
-          // so we'll call the callback there.
-          queryError = err;
-        })
-        .on('result', function(row) {
-          // If we haven't hit the max yet add row to results
-          if (rows.length < connection.maxRows) {
-            return rows.push(row);
-          }
+      function _runQuery(
+        query,
+        params = { addRowsToResults: true, closeConnection: true }
+      ) {
+        const myQuery = myConnection.query(query);
+        myQuery
+          .on('error', function(err) {
+            // Handle error,
+            // an 'end' event will be emitted after this as well
+            // so we'll call the callback there.
+            queryError = err;
+          })
+          .on('result', function(row) {
+            if (params.addRowsToResults) {
+              // If we haven't hit the max yet add row to results
+              if (rows.length < connection.maxRows) {
+                return rows.push(row);
+              }
 
-          // Too many rows
-          incomplete = true;
+              // Too many rows
+              incomplete = true;
 
-          // Stop the query stream
-          myConnection.pause();
+              // Stop the query stream
+              myConnection.pause();
 
-          // Destroy the underlying connection
-          // Calling end() will wait and eventually time out
-          myConnection.destroy();
-          continueOn();
-        })
-        .on('end', function() {
-          // all rows have been received
-          // This will not fire if we end the connection early
-          // myConnection.end()
-          // myConnection.destroy()
-          myConnection.end(error => {
-            if (error) {
-              console.error('Error ending MySQL connection', error);
+              // Destroy the underlying connection
+              // Calling end() will wait and eventually time out
+              if (params.closeConnection) {
+                myConnection.destroy();
+              }
+              continueOn();
             }
-            continueOn();
+          })
+          .on('end', function() {
+            // all rows have been received
+            // This will not fire if we end the connection early
+            // myConnection.end()
+            // myConnection.destroy()
+            if (params.closeConnection) {
+              myConnection.end(error => {
+                if (error) {
+                  console.error('Error ending MySQL connection', error);
+                }
+                continueOn();
+              });
+            }
           });
-        });
+      }
+
+      // Run pre query statements
+      // Statements split by JS because MySQL multipleStatements is turned off
+      if (myConfig.preQueryStatements) {
+        myConfig.preQueryStatements
+          .trim()
+          .split(';')
+          .forEach(q => {
+            if (q)
+              _runQuery(q, { addRowsToResults: false, closeConnection: false });
+          });
+      }
+
+      // Run actual query
+      _runQuery(query);
     });
   });
 }
@@ -193,6 +220,18 @@ const fields = [
     key: 'mysqlInsecureAuth',
     formType: 'CHECKBOX',
     label: 'Use old/insecure pre 4.1 Auth System'
+  },
+  {
+    key: 'denyMultipleStatements',
+    formType: 'CHECKBOX',
+    label: 'Deny multiple statements per query'
+  },
+  {
+    key: 'preQueryStatements',
+    formType: 'TEXTAREA',
+    label: 'Pre-query Statements (Optional)',
+    placeholder:
+      'Use to enforce session variables like:\n  SET max_statement_time = 15;\n  SET max_execution_time = 15;\n\nDeny multiple statements per query to avoid overwritten values.'
   }
 ];
 
