@@ -198,6 +198,11 @@ const configItems = [
     key: 'allowConnectionAccessToEveryone',
     envVar: 'SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE',
     default: true
+  },
+  {
+    key: 'queryHistoryResultMaxRows',
+    envVar: 'SQLPAD_QUERY_HISTORY_RESULT_MAX_ROWS',
+    default: 1000
   }
 ];
 

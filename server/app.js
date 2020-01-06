@@ -90,6 +90,7 @@ const routers = [
   require('./routes/connection-accesses.js'),
   require('./routes/test-connection.js'),
   require('./routes/queries.js'),
+  require('./routes/query-history.js'),
   require('./routes/query-result.js'),
   require('./routes/download-results.js'), // streams result download to browser
   require('./routes/schema-info.js'),

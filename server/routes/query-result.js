@@ -3,6 +3,7 @@ const { runQuery } = require('../drivers/index');
 const connections = require('../models/connections.js');
 const resultCache = require('../models/resultCache.js');
 const queriesUtil = require('../models/queries.js');
+const queryHistory = require('../models/queryHistory');
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
 const sendError = require('../lib/sendError');
@@ -72,6 +73,21 @@ async function getQueryResult(data) {
 
   const queryResult = await runQuery(queryText, connection, user);
   queryResult.cacheKey = cacheKey;
+
+  if (config.get('queryHistoryRetentionTimeInDays') > 0) {
+    await queryHistory.save({
+      userId: user._id,
+      userEmail: user.email,
+      connectionId: connection._id,
+      connectionName: connection.name,
+      startTime: queryResult.startTime,
+      stopTime: queryResult.stopTime,
+      queryRunTime: queryResult.queryRunTime,
+      queryText,
+      incomplete: queryResult.incomplete,
+      rowCount: queryResult.rows.length
+    });
+  }
 
   if (config.get('allowCsvDownload')) {
     resultCache.saveResultCache(cacheKey, queryName);
