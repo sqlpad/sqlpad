@@ -3,82 +3,9 @@ const uuid = require('uuid');
 const getMeta = require('../lib/getMeta');
 const queryHistoryUtil = require('../models/queryHistory.js');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
+const urlFilterToNeDbFilter = require('../lib/urlFilterToNeDbFilter');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
-
-function urlFilterToNeDbFilter(urlFilter) {
-  let neDbFilter = [];
-  if (typeof urlFilter !== 'string') {
-    neDbFilter = [];
-  } else {
-    neDbFilter = {
-      $and: urlFilter
-        .trim()
-        .split(',')
-        .map(f => {
-          let neDbFilterObj = {};
-          if (f) {
-            let [key, operator, value] = f.split('|');
-
-            // Do nothing if no value
-            if (!value) {
-              neDbFilterObj = {};
-
-              // Transform only if every required component available
-            } else if (key && operator && value) {
-              let neDbOperator = operator;
-              let neDbValue = value;
-              switch (operator) {
-                case 'regex':
-                  neDbOperator = `$${operator}`;
-                  neDbValue = new RegExp(value);
-                  break;
-                case 'lt':
-                case 'gt':
-                case 'eq':
-                case 'ne':
-                  neDbOperator = `$${operator}`;
-                  neDbValue = parseInt(value);
-                  break;
-                case 'before':
-                  neDbOperator = '$lt';
-                  neDbValue = new Date(
-                    Date.parse(new Date(value).toISOString())
-                  );
-                  break;
-                case 'after':
-                  neDbOperator = '$gt';
-                  neDbValue = new Date(
-                    Date.parse(new Date(value).toISOString())
-                  );
-                  break;
-                default:
-                  neDbOperator = `$${operator}`;
-                  neDbValue = value;
-              }
-
-              // NeDB filter object format
-              if (neDbOperator === '$eq') {
-                neDbFilterObj = { [key]: neDbValue };
-              } else {
-                neDbFilterObj = {
-                  [key]: { [neDbOperator]: neDbValue }
-                };
-              }
-
-              // Unknown format
-            } else {
-              throw new Error(`Invalid filter format: ${f}`);
-            }
-          }
-
-          return neDbFilterObj;
-        })
-    };
-  }
-
-  return neDbFilter;
-}
 
 router.get('/api/query-history', mustBeAdmin, async function(req, res) {
   try {
