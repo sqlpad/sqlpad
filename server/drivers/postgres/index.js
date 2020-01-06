@@ -1,5 +1,6 @@
 const fs = require('fs');
 const pg = require('pg');
+const _ = require('lodash');
 const PgCursor = require('pg-cursor');
 const SocksConnection = require('socksjs');
 const { formatSchemaQueryResults } = require('../utils');
@@ -91,7 +92,15 @@ function runQuery(query, connection) {
             if (err) {
               return reject(err);
             }
-            return resolve({ rows: result.rows });
+            // multi-statements returns array of result objects but runQuery should return rows array
+            // transform array of results objects to flat rows array
+            let resultRows = [];
+            if (Array.isArray(result)) {
+              resultRows = _.flatten(result.map(r => r.rows));
+            } else {
+              resultRows = result.rows;
+            }
+            return resolve({ rows: resultRows });
           });
         }
         let incomplete = false;
