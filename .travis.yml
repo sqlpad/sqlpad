@@ -3,7 +3,7 @@ language: node_js
 services:
   - docker
 node_js:
-  - '8'
+  - '12'
 before_install:
   - sudo service mysql stop
   - sudo service postgresql stop
