@@ -118,7 +118,7 @@ const fields = [
     key: 'schema_sql',
     formType: 'TEXT',
     label:
-      'Database sql to lookup schema (optional, if ommited default to checking INFORMATION_SCHEMA)'
+      'Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)'
   },
   {
     key: 'username',
