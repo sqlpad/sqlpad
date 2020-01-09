@@ -81,7 +81,7 @@
     "sqlpad": "./server.js"
   },
   "optionalDependencies": {
-    "odbc": "^1.4.1"
+    "odbc": "^2.2.2"
   },
   "devDependencies": {
     "eslint": "^6.5.1",
