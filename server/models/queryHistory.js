@@ -11,6 +11,8 @@ const schema = Joi.object({
   startTime: Joi.date(),
   stopTime: Joi.date(),
   queryRunTime: Joi.number().integer(),
+  queryId: Joi.string().allow(''),
+  queryName: Joi.string().allow(''),
   queryText: Joi.string().required(),
   rowCount: Joi.number().integer(),
   incomplete: Joi.boolean(),

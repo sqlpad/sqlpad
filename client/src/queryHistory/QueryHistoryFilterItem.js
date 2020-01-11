@@ -30,6 +30,8 @@ const QueryHistoryFilterItem = ({
       label: 'queryRunTime',
       operators: [operators.greaterThan, operators.lowerThan]
     },
+    queryId: { label: 'queryId', operators: [operators.regex] },
+    queryName: { label: 'queryName', operators: [operators.regex] },
     queryText: { label: 'queryText', operators: [operators.regex] },
     rowCount: {
       label: 'rowCount',

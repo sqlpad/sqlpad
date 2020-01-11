@@ -113,13 +113,11 @@ describe('api/query-history', function() {
     await utils.post('admin', `/api/query-result`, {
       connectionId: connection._id,
       cacheKey: 'cachekey',
-      queryName: 'test query 2',
       queryText: queryText2
     });
     await utils.post('admin', `/api/query-result`, {
       connectionId: connection._id,
       cacheKey: 'cachekey',
-      queryName: 'test query 2',
       queryText: queryText2
     });
 
@@ -129,10 +127,35 @@ describe('api/query-history', function() {
     assert(Array.isArray(body.queryHistory.rows), 'queryHistory is an array');
     assert.equal(body.queryHistory.incomplete, false, 'Complete');
     assert.equal(body.queryHistory.rows.length, 4, '4 length');
+
+    // Check if every history entry has every required key
+    const historyObjectKeys = [
+      'userEmail',
+      'connectionName',
+      'startTime',
+      'stopTime',
+      'queryRunTime',
+      'queryId',
+      'queryName',
+      'queryText',
+      'incomplete',
+      'rowCount',
+      'createdDate'
+    ];
+
+    // First and second two history items (reverse ordered) needs to free text query with queryId and queryName
+    assert.deepEqual(Object.keys(body.queryHistory.rows[3]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body.queryHistory.rows[2]), historyObjectKeys);
+
+    // Third and fourth history items (reverse ordered) needs to saved text query with no queryId and queryName
+    historyObjectKeys.splice(historyObjectKeys.indexOf('queryId'), 1);
+    historyObjectKeys.splice(historyObjectKeys.indexOf('queryName'), 1);
+    assert.deepEqual(Object.keys(body.queryHistory.rows[1]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body.queryHistory.rows[0]), historyObjectKeys);
   });
 
   it('Gets filtered array of 2 items', async function() {
-    // Check if every query stored in query history
+    // Check if filters applied correctly
     const body = await utils.get(
       'admin',
       '/api/query-history?filter=queryText|regex|QUERY2'
