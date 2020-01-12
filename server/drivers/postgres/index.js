@@ -128,11 +128,9 @@ function runQuery(query, connection) {
           }
           if (err) {
             reject(err);
-          } else {
-            if (params.addRowsToResults) {
-              resultRows = resultRows.concat(rows);
-              resolve({ rows: resultRows, incomplete });
-            }
+          } else if (params.addRowsToResults) {
+            resultRows = resultRows.concat(rows);
+            resolve({ rows: resultRows, incomplete });
           }
           if (params.closeConnection) {
             cursor.close(err => {
