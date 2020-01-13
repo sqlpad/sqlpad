@@ -61,7 +61,9 @@ function runQuery(query, connection) {
     database: connection.database,
     host: connection.host,
     ssl: connection.postgresSsl,
-    stream: createSocksConnection(connection)
+    stream: createSocksConnection(connection),
+    multipleStatements: !connection.denyMultipleStatements,
+    preQueryStatements: connection.preQueryStatements
   };
   // TODO cache key/cert values
   if (connection.postgresKey && connection.postgresCert) {
@@ -77,57 +79,92 @@ function runQuery(query, connection) {
 
   return new Promise((resolve, reject) => {
     const client = new pg.Client(pgConfig);
+    let resultRows = [];
+
     client.connect(err => {
       if (err) {
         client.end();
         return reject(err);
       }
-      const cursor = client.query(new PgCursor(query));
-      return cursor.read(connection.maxRows + 1, (err, rows) => {
-        if (err) {
-          // pg_cursor can't handle multi-statements at the moment
-          // as a work around we'll retry the query the old way, but we lose the maxRows protection
-          return client.query(query, (err, result) => {
-            client.end();
-            if (err) {
-              return reject(err);
-            }
-            // multi-statements returns array of result objects but runQuery should return rows array
-            // transform array of results objects to flat rows array
-            let resultRows = [];
-            if (Array.isArray(result)) {
-              resultRows = _.flatten(result.map(r => r.rows));
-            } else {
-              resultRows = result.rows;
-            }
-            return resolve({ rows: resultRows });
-          });
-        }
-        let incomplete = false;
-        if (rows.length === connection.maxRows + 1) {
-          incomplete = true;
-          rows.pop(); // get rid of that extra record. we only get 1 more than the max to see if there would have been more...
-        }
-        if (err) {
-          reject(err);
-        } else {
-          resolve({ rows, incomplete });
-        }
-        cursor.close(err => {
+
+      function _runQuery(
+        query,
+        params = { addRowsToResults: true, closeConnection: true }
+      ) {
+        const cursor = client.query(new PgCursor(query));
+        return cursor.read(connection.maxRows + 1, (err, rows) => {
           if (err) {
-            console.log('error closing pg-cursor:');
-            console.log(err);
+            // pg_cursor can't handle multi-statements at the moment
+            // as a work around we'll retry the query the old way, but we lose the maxRows protection
+            if (pgConfig.multipleStatements) {
+              return client.query(query, (err, result) => {
+                client.end();
+                if (err) {
+                  return reject(err);
+                }
+                if (params.addRowsToResults) {
+                  // multi-statements returns array of result objects but runQuery should return rows array
+                  // transform array of results objects to flat rows array
+                  if (Array.isArray(result)) {
+                    resultRows = resultRows.concat(
+                      _.flatten(result.map(r => r.rows))
+                    );
+                  } else {
+                    resultRows.push(result.rows);
+                  }
+                  return resolve({ rows: resultRows });
+                }
+              });
+            } else {
+              return reject(
+                new Error('Running multiple statements not allowed')
+              );
+            }
           }
-          // Calling end() without setImmediate causes error within node-pg
-          setImmediate(() => {
-            client.end(error => {
-              if (error) {
-                console.error(error);
+          let incomplete = false;
+          if (rows.length === connection.maxRows + 1) {
+            incomplete = true;
+            rows.pop(); // get rid of that extra record. we only get 1 more than the max to see if there would have been more...
+          }
+          if (err) {
+            reject(err);
+          } else if (params.addRowsToResults) {
+            resultRows = resultRows.concat(rows);
+            resolve({ rows: resultRows, incomplete });
+          }
+          if (params.closeConnection) {
+            cursor.close(err => {
+              if (err) {
+                console.log('error closing pg-cursor:');
+                console.log(err);
               }
+              // Calling end() without setImmediate causes error within node-pg
+              setImmediate(() => {
+                client.end(error => {
+                  if (error) {
+                    console.error(error);
+                  }
+                });
+              });
             });
-          });
+          }
         });
-      });
+      }
+
+      // Run pre query statements
+      // Statements split by JS because Postgres multipleStatements maybe turned off
+      if (pgConfig.preQueryStatements) {
+        pgConfig.preQueryStatements
+          .trim()
+          .split(';')
+          .forEach(q => {
+            if (q)
+              _runQuery(q, { addRowsToResults: false, closeConnection: false });
+          });
+      }
+
+      // Run actual query
+      _runQuery(query);
     });
   });
 }
@@ -221,6 +258,18 @@ const fields = [
     key: 'socksPassword',
     formType: 'TEXT',
     label: 'Password for socks proxy'
+  },
+  {
+    key: 'denyMultipleStatements',
+    formType: 'CHECKBOX',
+    label: 'Deny multiple statements per query'
+  },
+  {
+    key: 'preQueryStatements',
+    formType: 'TEXTAREA',
+    label: 'Pre-query Statements (Optional)',
+    placeholder:
+      'Use to enforce session variables like:\n  SET statement_timeout = 15000;\n\nDeny multiple statements per query to avoid overwritten values.'
   }
 ];
 
