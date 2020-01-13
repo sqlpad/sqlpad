@@ -110,6 +110,7 @@ export const runQuery = store => async state => {
   const postData = {
     connectionId: selectedConnectionId,
     cacheKey,
+    queryId: query._id,
     queryName: query.name,
     queryText: selectedText || query.queryText
   };

@@ -28,6 +28,7 @@ function reset() {
   return Promise.all([
     db.users.remove({}, { multi: true }),
     db.queries.remove({}, { multi: true }),
+    db.queryHistory.remove({}, { multi: true }),
     db.connections.remove({}, { multi: true }),
     db.connectionAccesses.remove(
       {

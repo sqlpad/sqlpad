@@ -3,6 +3,7 @@ const { runQuery } = require('../drivers/index');
 const connections = require('../models/connections.js');
 const resultCache = require('../models/resultCache.js');
 const queriesUtil = require('../models/queries.js');
+const queryHistory = require('../models/queryHistory');
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
 const sendError = require('../lib/sendError');
@@ -22,6 +23,7 @@ router.get(
       const data = {
         connectionId: query.connectionId,
         cacheKey: query._id,
+        queryId: query._id,
         queryName: query.name,
         queryText: query.queryText,
         user: req.user
@@ -48,6 +50,7 @@ router.post('/api/query-result', mustHaveConnectionAccess, async function(
   const data = {
     cacheKey: req.body.cacheKey,
     connectionId: req.body.connectionId,
+    queryId: req.body.queryId,
     queryName: req.body.queryName,
     queryText: req.body.queryText,
     user: req.user
@@ -62,7 +65,7 @@ router.post('/api/query-result', mustHaveConnectionAccess, async function(
 });
 
 async function getQueryResult(data) {
-  const { connectionId, cacheKey, queryName, queryText, user } = data;
+  const { connectionId, cacheKey, queryId, queryName, queryText, user } = data;
   const connection = await connections.findOneById(connectionId);
 
   if (!connection) {
@@ -72,6 +75,24 @@ async function getQueryResult(data) {
 
   const queryResult = await runQuery(queryText, connection, user);
   queryResult.cacheKey = cacheKey;
+
+  if (config.get('queryHistoryRetentionTimeInDays') > 0) {
+    await queryHistory.removeOldEntries();
+    await queryHistory.save({
+      userId: user._id,
+      userEmail: user.email,
+      connectionId: connection._id,
+      connectionName: connection.name,
+      startTime: queryResult.startTime,
+      stopTime: queryResult.stopTime,
+      queryRunTime: queryResult.queryRunTime,
+      queryId,
+      queryName,
+      queryText,
+      incomplete: queryResult.incomplete,
+      rowCount: queryResult.rows.length
+    });
+  }
 
   if (config.get('allowCsvDownload')) {
     resultCache.saveResultCache(cacheKey, queryName);

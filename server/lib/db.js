@@ -25,8 +25,16 @@ const db = {
     filename: path.join(dbPath, 'connectionaccesses.db')
   }),
   queries: datastore({ filename: path.join(dbPath, 'queries.db') }),
+  queryHistory: datastore({ filename: path.join(dbPath, 'queryhistory.db') }),
   cache: datastore({ filename: path.join(dbPath, 'cache.db') }),
-  instances: ['users', 'connections', 'connectionAccesses', 'queries', 'cache']
+  instances: [
+    'users',
+    'connections',
+    'connectionAccesses',
+    'queries',
+    'queryHistory',
+    'cache'
+  ]
 };
 
 // Load dbs, migrate data, and apply indexes
@@ -67,6 +75,9 @@ async function init() {
   await db.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
   await db.connectionAccesses.ensureIndex({ fieldName: 'connectionId' });
   await db.connectionAccesses.ensureIndex({ fieldName: 'userId' });
+  await db.queryHistory.ensureIndex({ fieldName: 'connectionName' });
+  await db.queryHistory.ensureIndex({ fieldName: 'userEmail' });
+  await db.queryHistory.ensureIndex({ fieldName: 'createdDate' });
   // set autocompaction
   const tenMinutes = 1000 * 60 * 10;
   db.instances.forEach(dbname => {

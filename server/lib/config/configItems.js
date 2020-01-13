@@ -198,6 +198,16 @@ const configItems = [
     key: 'allowConnectionAccessToEveryone',
     envVar: 'SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE',
     default: true
+  },
+  {
+    key: 'queryHistoryRetentionTimeInDays',
+    envVar: 'SQLPAD_QUERY_HISTORY_RETENTION_TIME_IN_DAYS',
+    default: 30
+  },
+  {
+    key: 'queryHistoryResultMaxRows',
+    envVar: 'SQLPAD_QUERY_HISTORY_RESULT_MAX_ROWS',
+    default: 1000
   }
 ];
 

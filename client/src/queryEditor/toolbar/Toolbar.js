@@ -30,6 +30,7 @@ import { toggleSchema } from '../../stores/schema';
 import UserList from '../../users/UserList';
 import fetchJson from '../../utilities/fetch-json.js';
 import ConnectionDropDown from '../ConnectionDropdown';
+import QueryHistoryModal from '../../queryHistory/QueryHistoryModal';
 import AboutModal from './AboutModal';
 import ChartButton from './ChartButton';
 import QueryListButton from './QueryListButton';
@@ -89,6 +90,7 @@ function Toolbar({
   const [showTags, setShowTags] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [redirectToSignIn, setRedirectToSignIn] = useState(false);
+  const [showQueryHistory, setShowQueryHistory] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
   const [showConnectionAccesses, setShowConnectionAccesses] = useState(false);
@@ -204,6 +206,13 @@ function Toolbar({
         <IconMenu icon={<DotsVerticalIcon aria-label="menu" />}>
           {menuItems}
           <MenuItem
+            key="queryHistory"
+            style={{ borderBottom: '1px solid #ddd' }}
+            onSelect={() => setShowQueryHistory(true)}
+          >
+            Query History
+          </MenuItem>
+          <MenuItem
             style={{ borderBottom: '1px solid #ddd' }}
             onSelect={() => setShowAbout(true)}
           >
@@ -228,6 +237,11 @@ function Toolbar({
         >
           <UserList />
         </Drawer>
+
+        <QueryHistoryModal
+          visible={showQueryHistory}
+          onClose={() => setShowQueryHistory(false)}
+        />
 
         <AboutModal visible={showAbout} onClose={() => setShowAbout(false)} />
 
