@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.0.0
+
+### January 18, 2020
+
+#### Breaking changes
+
+- Node 12 or later required
+
+#### Features
+
+- Add ability to restrict connections to specific users (#502)
+- Merge multiple statement result sets for postgres into 1 result set (#510)
+- Add Pre-query statements options to MySQL driver (#511)
+- Add Query execution history (#512)
+- Add Pre-query statements options to MySQL driver (#515)
+- Update odbc dependency to v2
+
 ## 3.5.3
 
 ### December 30, 2019
