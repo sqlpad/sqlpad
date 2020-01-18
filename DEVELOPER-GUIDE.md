@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- [Node](https://nodejs.org) installed at v10.0.0+
+- [Node](https://nodejs.org) installed at v12.0.0+
 - Some dependencies may require compilation. On macOS, the Xcode Command Line Tools should be installed. On Ubuntu, `apt-get install build-essential` will install the required packages. Similar commands should work on other Linux distros. Windows will require some additional steps, see the [`node-gyp` installation instructions](https://github.com/nodejs/node-gyp#installation) for details.
 
 ## Style Guide

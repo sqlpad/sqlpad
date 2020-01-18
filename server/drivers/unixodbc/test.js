@@ -67,8 +67,9 @@ describe('drivers/unixodbc', function() {
   });
 
   it('runQuery over limit', function() {
+    const connectionWithMaxRows = { ...connection, maxRows: 2 };
     return unixodbc
-      .runQuery('SELECT * FROM test;', connection)
+      .runQuery('SELECT * FROM test;', connectionWithMaxRows)
       .then(results => {
         assert(results.incomplete, 'incomplete');
         assert.equal(results.rows.length, 2, 'row length');

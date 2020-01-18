@@ -4,7 +4,7 @@
   "description": "Web app. Write SQL and visualize the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica and SAP HANA.",
   "license": "MIT",
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "keywords": [
     "sql",
@@ -81,7 +81,7 @@
     "sqlpad": "./server.js"
   },
   "optionalDependencies": {
-    "odbc": "^1.4.1"
+    "odbc": "^2.2.2"
   },
   "devDependencies": {
     "eslint": "^6.5.1",

@@ -1,4 +1,4 @@
-const odbc = require('odbc')();
+const odbc = require('odbc');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'unixodbc';
@@ -32,14 +32,12 @@ const SCHEMA_SQL_INFORMATION_SCHEMA = `
  * @param {object} connection
  */
 
-function runQuery(query, connection) {
+async function runQuery(query, connection) {
   const config = {
     user: connection.username,
     password: connection.password,
     connection_string: connection.connection_string
   };
-  // TODO use connection pool
-  // TODO handle connection.maxRows
 
   let cn = config.connection_string;
 
@@ -51,37 +49,50 @@ function runQuery(query, connection) {
     cn = cn + ';Pwd=' + config.password;
   }
 
-  return openConnection(cn)
-    .then(() => executeQuery(query))
-    .then(queryResult => {
-      odbc.close(); // TODO consider putting into finally()?
-      return Promise.resolve({ rows: queryResult, incomplete: false });
-    })
-    .catch(function(e) {
-      console.error(e, e.stack);
-    });
-}
+  let connectionInstance;
+  try {
+    let incomplete = false;
+    connectionInstance = await odbc.connect(cn);
+    const queryResult = await connectionInstance.query(query);
+    await connectionInstance.close();
 
-function executeQuery(sqlString) {
-  return new Promise((resolve, reject) => {
-    odbc.query(sqlString, function(err, data) {
-      if (err) {
-        reject(err);
-      }
-      resolve(data);
-    });
-  });
-}
+    // Format data correctly
+    // node-odbc gives a mix of results depending on query type
+    // If columns oject returned with results the query returned rows
+    const { columns } = queryResult;
+    const rows = [];
 
-function openConnection(connectionString) {
-  return new Promise((resolve, reject) => {
-    odbc.open(connectionString, function(err) {
-      if (err) {
-        reject(err);
+    if (columns && columns.length > 0) {
+      // iterate over queryResult, which is also an array of rows
+      for (const row of queryResult) {
+        if (connection.maxRows) {
+          if (rows.length < connection.maxRows) {
+            rows.push(row);
+          } else {
+            incomplete = true;
+          }
+        } else {
+          // Just in case maxRows is not defined push the row
+          rows.push(row);
+        }
       }
-      resolve('Connection Open');
-    });
-  });
+    }
+
+    return { rows, incomplete };
+  } catch (error) {
+    console.error(error);
+    try {
+      if (connectionInstance && connectionInstance.close) {
+        await connectionInstance.close();
+      }
+    } catch (error) {
+      // Do nothing here.
+      // An error already happened we're just trying to ensure it closed okay
+      console.log('error closing connection after error');
+      console.error(error);
+    }
+    throw error;
+  }
 }
 
 /**
@@ -118,7 +129,7 @@ const fields = [
     key: 'schema_sql',
     formType: 'TEXT',
     label:
-      'Database sql to lookup schema (optional, if ommited default to checking INFORMATION_SCHEMA)'
+      'Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)'
   },
   {
     key: 'username',
