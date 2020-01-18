@@ -4,7 +4,7 @@
   "description": "Web app. Write SQL and visualize the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica and SAP HANA.",
   "license": "MIT",
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   },
   "keywords": [
     "sql",
