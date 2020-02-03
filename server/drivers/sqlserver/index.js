@@ -40,7 +40,8 @@ function runQuery(query, connection) {
     options: {
       appName: 'SQLPad',
       encrypt: Boolean(connection.sqlserverEncrypt),
-      multiSubnetFailover: connection.sqlserverMultiSubnetFailover
+      multiSubnetFailover: connection.sqlserverMultiSubnetFailover,
+      readOnlyIntent: connection.readOnlyIntent
     },
     pool: {
       max: 1,
@@ -164,6 +165,11 @@ const fields = [
     key: 'sqlserverMultiSubnetFailover',
     formType: 'CHECKBOX',
     label: 'MultiSubnetFailover'
+  },
+  {
+    key: 'readOnlyIntent',
+    formType: 'CHECKBOX',
+    label: 'ReadOnly Application Intent'
   }
 ];
 
