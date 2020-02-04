@@ -8,6 +8,11 @@ const { parse } = require('json2csv');
 const config = require('../lib/config');
 const dbPath = config.get('dbPath');
 
+// BigInt serialization throws "TypeError: Do not know how to serialize a BigInt"
+BigInt.prototype.toJSON = function() { 
+  return this.toString(); 
+}
+
 function xlsxFilePath(cacheKey) {
   return path.join(dbPath, '/cache/', cacheKey + '.xlsx');
 }
