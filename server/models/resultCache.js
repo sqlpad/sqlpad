@@ -95,6 +95,13 @@ function writeCsv(cacheKey, queryResult) {
   });
 }
 
+// This is a workaround till BigInt's are fully supported by the standard
+// See https://tc39.es/ecma262/#sec-ecmascript-language-types-bigint-type
+// and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt
+BigInt.prototype.toJSON = function() {
+  return this.toString();
+};
+
 function writeJson(cacheKey, queryResult) {
   return new Promise(resolve => {
     try {
