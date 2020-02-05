@@ -8,11 +8,6 @@ const { parse } = require('json2csv');
 const config = require('../lib/config');
 const dbPath = config.get('dbPath');
 
-// BigInt serialization throws "TypeError: Do not know how to serialize a BigInt"
-BigInt.prototype.toJSON = function() { 
-  return this.toString(); 
-}
-
 function xlsxFilePath(cacheKey) {
   return path.join(dbPath, '/cache/', cacheKey + '.xlsx');
 }
@@ -95,9 +90,13 @@ function writeCsv(cacheKey, queryResult) {
   });
 }
 
-// This is a workaround till BigInt's are fully supported by the standard
+// This is a workaround till BigInt is fully supported by the standard
 // See https://tc39.es/ecma262/#sec-ecmascript-language-types-bigint-type
 // and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt
+// If this is not done, then a JSON.stringify(BigInt) throws
+// "TypeError: Do not know how to serialize a BigInt"
+/* global BigInt:writable */
+/* eslint no-extend-native: ["error", { "exceptions": ["BigInt"] }] */
 BigInt.prototype.toJSON = function() {
   return this.toString();
 };
