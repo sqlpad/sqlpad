@@ -41,7 +41,12 @@ function runQuery(query, connection) {
       appName: 'SQLPad',
       encrypt: Boolean(connection.sqlserverEncrypt),
       multiSubnetFailover: connection.sqlserverMultiSubnetFailover,
-      readOnlyIntent: connection.readOnlyIntent
+      readOnlyIntent: connection.readOnlyIntent,
+      // Set enableArithAbort to avoid following log message:
+      // tedious deprecated The default value for `config.options.enableArithAbort`
+      // will change from `false` to `true` in the next major version of `tedious`.
+      // Set the value to `true` or `false` explicitly to silence this message. ../../node_modules/mssql/lib/tedious/connection-pool.js:61:23
+      enableArithAbort: true
     },
     pool: {
       max: 1,
