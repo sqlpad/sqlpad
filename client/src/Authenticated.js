@@ -20,9 +20,6 @@ Authenticated.propTypes = {
   admin: PropTypes.bool
 };
 
-export default connect(
-  ['currentUser'],
-  {
-    refreshAppContext
-  }
-)(Authenticated);
+export default connect(['currentUser'], {
+  refreshAppContext
+})(Authenticated);

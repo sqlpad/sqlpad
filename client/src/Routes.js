@@ -93,7 +93,8 @@ function Routes({
   );
 }
 
-export default connect(
-  ['config'],
-  { refreshAppContext, initSchema, initSelectedConnection }
-)(Routes);
+export default connect(['config'], {
+  refreshAppContext,
+  initSchema,
+  initSelectedConnection
+})(Routes);

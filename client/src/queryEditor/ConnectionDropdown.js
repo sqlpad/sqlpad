@@ -76,7 +76,7 @@ function ConnectionDropdown({
   );
 }
 
-export default connect(
-  ['connections', 'currentUser', 'selectedConnectionId'],
-  { selectConnectionId, addUpdateConnection }
-)(ConnectionDropdown);
+export default connect(['connections', 'currentUser', 'selectedConnectionId'], {
+  selectConnectionId,
+  addUpdateConnection
+})(ConnectionDropdown);

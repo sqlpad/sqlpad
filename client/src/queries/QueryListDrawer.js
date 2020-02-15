@@ -277,10 +277,7 @@ QueryListDrawer.propTypes = {
   queries: PropTypes.array
 };
 
-export default connect(
-  ['queries', 'connections', 'currentUser'],
-  store => ({
-    loadQueries: loadQueries(store),
-    deleteQuery: deleteQuery(store)
-  })
-)(React.memo(QueryListDrawer));
+export default connect(['queries', 'connections', 'currentUser'], store => ({
+  loadQueries: loadQueries(store),
+  deleteQuery: deleteQuery(store)
+}))(React.memo(QueryListDrawer));

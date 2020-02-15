@@ -148,12 +148,9 @@ function mapStateToProps(state, props) {
   };
 }
 
-export default connect(
-  mapStateToProps,
-  store => ({
-    loadConnections: loadConnections(store),
-    loadTags,
-    loadQuery,
-    resetNewQuery
-  })
-)(QueryEditor);
+export default connect(mapStateToProps, store => ({
+  loadConnections: loadConnections(store),
+  loadTags,
+  loadQuery,
+  resetNewQuery
+}))(QueryEditor);

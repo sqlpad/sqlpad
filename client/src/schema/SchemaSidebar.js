@@ -190,7 +190,4 @@ function SchemaSidebar({
   );
 }
 
-export default connect(
-  mapStateToProps,
-  mapActions
-)(React.memo(SchemaSidebar));
+export default connect(mapStateToProps, mapActions)(React.memo(SchemaSidebar));

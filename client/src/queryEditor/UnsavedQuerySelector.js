@@ -58,9 +58,8 @@ function mapStateToProps(state, props) {
   };
 }
 
-const Connected = connect(
-  mapStateToProps,
-  { setQueryState }
-)(UnsavedQuerySelector);
+const Connected = connect(mapStateToProps, { setQueryState })(
+  UnsavedQuerySelector
+);
 
 export default Connected;
