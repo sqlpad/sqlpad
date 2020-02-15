@@ -142,12 +142,9 @@ function ConnectionList({
   );
 }
 
-export default connect(
-  ['connections', 'currentUser'],
-  store => ({
-    selectConnectionId,
-    deleteConnection,
-    addUpdateConnection,
-    loadConnections: loadConnections(store)
-  })
-)(ConnectionList);
+export default connect(['connections', 'currentUser'], store => ({
+  selectConnectionId,
+  deleteConnection,
+  addUpdateConnection,
+  loadConnections: loadConnections(store)
+}))(ConnectionList);

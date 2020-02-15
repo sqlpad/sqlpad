@@ -13,10 +13,9 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedVisSidebar = connect(
-  mapStateToProps,
-  { handleChartTypeChange }
-)(React.memo(ChartTypeSelect));
+const ConnectedVisSidebar = connect(mapStateToProps, { handleChartTypeChange })(
+  React.memo(ChartTypeSelect)
+);
 
 function ChartTypeSelect({
   chartType,

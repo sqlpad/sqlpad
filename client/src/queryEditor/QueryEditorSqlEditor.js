@@ -29,9 +29,9 @@ function QueryEditorSqlEditor({
   );
 }
 
-const ConnectedQueryEditorSqlEditor = connect(
-  mapStateToProps,
-  { setQueryState, handleQuerySelectionChange }
-)(QueryEditorSqlEditor);
+const ConnectedQueryEditorSqlEditor = connect(mapStateToProps, {
+  setQueryState,
+  handleQuerySelectionChange
+})(QueryEditorSqlEditor);
 
 export default ConnectedQueryEditorSqlEditor;

@@ -58,18 +58,15 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedEditorNavBar = connect(
-  mapStateToProps,
-  store => ({
-    toggleSchema,
-    formatQuery,
-    runQuery: runQuery(store),
-    saveQuery: saveQuery(store),
-    handleCloneClick,
-    resetNewQuery,
-    setQueryState
-  })
-)(React.memo(Toolbar));
+const ConnectedEditorNavBar = connect(mapStateToProps, store => ({
+  toggleSchema,
+  formatQuery,
+  runQuery: runQuery(store),
+  saveQuery: saveQuery(store),
+  handleCloneClick,
+  resetNewQuery,
+  setQueryState
+}))(React.memo(Toolbar));
 
 function Toolbar({
   currentUser,

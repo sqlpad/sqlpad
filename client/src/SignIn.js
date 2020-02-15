@@ -109,7 +109,4 @@ function SignIn({ config, refreshAppContext }) {
   );
 }
 
-export default connect(
-  ['config'],
-  { refreshAppContext }
-)(SignIn);
+export default connect(['config'], { refreshAppContext })(SignIn);

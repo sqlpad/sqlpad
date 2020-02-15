@@ -20,10 +20,10 @@ function mapStateToProps(state) {
   };
 }
 
-const Connected = connect(
-  mapStateToProps,
-  { handleChartConfigurationFieldsChange, handleChartTypeChange }
-)(React.memo(ChartInputsContainer));
+const Connected = connect(mapStateToProps, {
+  handleChartConfigurationFieldsChange,
+  handleChartTypeChange
+})(React.memo(ChartInputsContainer));
 
 function ChartInputsContainer({
   chartType,

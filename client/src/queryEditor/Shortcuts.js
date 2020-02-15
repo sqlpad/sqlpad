@@ -32,11 +32,8 @@ function Shortcuts({ saveQuery, runQuery, formatQuery }) {
   return null;
 }
 
-export default connect(
-  null,
-  store => ({
-    formatQuery,
-    runQuery: runQuery(store),
-    saveQuery: saveQuery(store)
-  })
-)(Shortcuts);
+export default connect(null, store => ({
+  formatQuery,
+  runQuery: runQuery(store),
+  saveQuery: saveQuery(store)
+}))(Shortcuts);
