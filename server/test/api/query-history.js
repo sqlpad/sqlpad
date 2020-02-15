@@ -66,21 +66,21 @@ describe('api/query-history', function() {
 
     // Datetime operators
     assert.deepEqual(urlFilterToNeDbFilter('field1|before|2020-03-01'), {
-      $and: [{ field1: { $lt: new Date('2020-03-01T00:00:00.000Z') } }]
+      $and: [{ field1: { $lt: new Date('2020-03-01') } }]
     });
     assert.deepEqual(
       urlFilterToNeDbFilter('field1|before|2020-03-01 00:00:00'),
       {
-        $and: [{ field1: { $lt: new Date('2020-03-01T00:00:00.000Z') } }]
+        $and: [{ field1: { $lt: new Date('2020-03-01 00:00:00') } }]
       }
     );
     assert.deepEqual(urlFilterToNeDbFilter('field1|after|2020-03-01'), {
-      $and: [{ field1: { $gt: new Date('2020-03-01T00:00:00.000Z') } }]
+      $and: [{ field1: { $gt: new Date('2020-03-01') } }]
     });
     assert.deepEqual(
       urlFilterToNeDbFilter('field1|after|2020-03-01 00:00:00'),
       {
-        $and: [{ field1: { $gt: new Date('2020-03-01T00:00:00.000Z') } }]
+        $and: [{ field1: { $gt: new Date('2020-03-01 00:00:00') } }]
       }
     );
 
@@ -91,7 +91,7 @@ describe('api/query-history', function() {
       $and: [
         { field1: 500 },
         { field2: { $regex: new RegExp('myPattern') } },
-        { field3: { $lt: new Date('2020-03-01T00:00:00.000Z') } }
+        { field3: { $lt: new Date('2020-03-01') } }
       ]
     });
   });
