@@ -142,9 +142,10 @@ function runQuery(query, connection, user) {
     const rowCount = rows.length;
     const { startTime, stopTime, queryRunTime } = queryResult;
 
-    logger.debug({
+    logger.info({
       userId: user && user._id,
       userEmail: user && user.email,
+      connectionId: connection._id,
       connectionName,
       startTime,
       stopTime,
