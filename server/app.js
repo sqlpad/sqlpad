@@ -13,18 +13,16 @@ const googleClientSecret = config.get('googleClientSecret');
 const publicUrl = config.get('publicUrl');
 const dbPath = config.get('dbPath');
 const debug = config.get('debug');
-const logLevel = config.get('logLevel');
-const logWeb = config.get('logWeb');
+const webLogLevel = config.get('webLogLevel');
 const cookieName = config.get('cookieName');
 const cookieSecret = config.get('cookieSecret');
 const sessionMinutes = config.get('sessionMinutes');
 
 const expressPino = require('express-pino-logger')({
-  enabled: logWeb,
-  level: debug ? 'debug' : logLevel,
+  level: webLogLevel,
   name: 'sqlpad-web',
   // express-pino-logger logs all the headers by default
-  // This might be too much
+  // Removing these for now but open to adding them back in based on feedback
   redact: {
     paths: [
       'req.headers',
