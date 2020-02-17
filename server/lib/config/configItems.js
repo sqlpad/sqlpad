@@ -213,6 +213,16 @@ const configItems = [
     key: 'logLevel',
     envVar: 'SQLPAD_LOG_LEVEL',
     default: 'info'
+  },
+  {
+    key: 'logApp',
+    envVar: 'SQLPAD_LOG_APP',
+    default: true
+  },
+  {
+    key: 'logWeb',
+    envVar: 'SQLPAD_LOG_WEB',
+    default: true
   }
 ];
 
