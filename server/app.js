@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const config = require('./lib/config');
+const logger = require('./lib/logger');
 
 const baseUrl = config.get('baseUrl');
 const googleClientId = config.get('googleClientId');
@@ -100,9 +101,7 @@ const routers = [
 ];
 
 if (googleClientId && googleClientSecret && publicUrl) {
-  if (debug) {
-    console.log('Enabling Google authentication Strategy.');
-  }
+  logger.info('Enabling Google authentication Strategy.');
   routers.push(require('./routes/oauth.js'));
 }
 
@@ -113,9 +112,7 @@ if (
   samlCert &&
   samlAuthContext
 ) {
-  if (debug) {
-    console.log('Enabling SAML authentication Strategy.');
-  }
+  logger.info('Enabling SAML authentication Strategy.');
   routers.push(require('./routes/saml.js'));
 }
 
@@ -130,7 +127,7 @@ app.use(require('./routes/app.js'));
 // For any missing api route, return a 404
 // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
 app.use(baseUrl + '/api/', function(req, res) {
-  console.log('reached catch all api route');
+  logger.debug('reached catch all api route');
   res.sendStatus(404);
 });
 
@@ -155,8 +152,8 @@ if (fs.existsSync(indexTemplatePath)) {
     .replace(/="\/static/g, `="${baseUrl}/static`);
   app.use((req, res) => res.send(baseUrlHtml));
 } else {
-  console.error('\nNO FRONT END TEMPLATE DETECTED');
-  console.error('If not running in dev mode please report this issue.\n');
+  logger.warn('NO FRONT END TEMPLATE DETECTED');
+  logger.warn('If not running in dev mode please report this issue.');
 }
 
 module.exports = app;

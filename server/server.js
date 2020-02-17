@@ -8,7 +8,15 @@ const detectPort = require('detect-port');
 // Parse command line flags to see if anything special needs to happen
 require('./lib/cli-flow.js');
 
+const logger = require('./lib/logger');
 const config = require('./lib/config');
+
+const configValidations = config.getValidations();
+configValidations.warnings.map(warning => logger.warn(warning));
+if (configValidations.errors.length > 0) {
+  configValidations.errors.forEach(error => logger.error(error));
+  process.exit(1);
+}
 
 const app = require('./app');
 
@@ -45,13 +53,12 @@ function detectPortOrSystemd(port) {
     // We just crab the first socket from fd 3 since sqlpad binds only one
     // port.
     if (passedSocketCount > 0) {
-      console.log('Using port from Systemd');
+      logger.info('Using port from Systemd');
       return Promise.resolve({ fd: 3 });
     } else {
-      console.error(
-        'Warning: Systemd socket asked but not found. Trying to bind port ' +
-          port +
-          ' manually'
+      logger.warn(
+        'Warning: Systemd socket asked but not found. Trying to bind port %d manually',
+        port
       );
     }
   }
@@ -69,8 +76,8 @@ async function startServer() {
     // https only
     const _port = await detectPortOrSystemd(httpsPort);
     if (!isFdObject(_port) && httpsPort !== _port) {
-      console.log(
-        '\nPort %d already occupied. Using port %d instead.',
+      logger.info(
+        'Port %d already occupied. Using port %d instead.',
         httpsPort,
         _port
       );
@@ -91,41 +98,41 @@ async function startServer() {
       .listen(_port, ip, function() {
         const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
         const url = `https://${hostIp}:${_port}${baseUrl}`;
-        console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
+        logger.info('Welcome to SQLPad!. Visit %s to get started', url);
       });
   } else {
     // http only
     const _port = await detectPortOrSystemd(port);
     if (!isFdObject(_port) && port !== _port) {
-      console.log(
-        '\nPort %d already occupied. Using port %d instead.',
+      logger.info(
+        'Port %d already occupied. Using port %d instead.',
         port,
         _port
       );
+
       // TODO FIXME XXX  Persist the new port to the in-memory store.
       // config.set('port', _port)
     }
     server = http.createServer(app).listen(_port, ip, function() {
       const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
       const url = `http://${hostIp}:${_port}${baseUrl}`;
-      console.log(`\nWelcome to SQLPad!. Visit ${url} to get started`);
+      logger.info('Welcome to SQLPad! Visit %s to get started', url);
     });
   }
   server.setTimeout(timeoutSeconds * 1000);
 }
 
 db.loadPromise.then(startServer).catch(error => {
-  console.log('Error starting SQLPad');
-  console.error(error);
+  logger.error(error, 'Error starting SQLPad');
   process.exit(1);
 });
 
 function handleShutdownSignal(signal) {
   if (!server) {
-    console.log(`Received ${signal}, but no server to shutdown`);
+    logger.info('Received %s, but no server to shutdown', signal);
     process.exit(0);
   } else {
-    console.log(`Received ${signal}, shutting down server...`);
+    logger.info('Received %s, shutting down server...', signal);
     server.close(function() {
       process.exit(0);
     });

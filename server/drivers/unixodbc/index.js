@@ -1,4 +1,5 @@
 const odbc = require('odbc');
+const logger = require('../../lib/logger');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'unixodbc';
@@ -80,7 +81,7 @@ async function runQuery(query, connection) {
 
     return { rows, incomplete };
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     try {
       if (connectionInstance && connectionInstance.close) {
         await connectionInstance.close();
@@ -88,8 +89,7 @@ async function runQuery(query, connection) {
     } catch (error) {
       // Do nothing here.
       // An error already happened we're just trying to ensure it closed okay
-      console.log('error closing connection after error');
-      console.error(error);
+      logger.error(error, 'error closing connection after error');
     }
     throw error;
   }

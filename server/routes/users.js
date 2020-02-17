@@ -5,6 +5,7 @@ const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
+const logger = require('../lib/logger');
 
 router.get('/api/users', mustBeAuthenticated, async function(req, res) {
   try {
@@ -28,7 +29,7 @@ router.post('/api/users', mustBeAdmin, async function(req, res) {
     });
 
     if (config.smtpConfigured()) {
-      email.sendInvite(req.body.email).catch(error => console.error(error));
+      email.sendInvite(req.body.email).catch(error => logger.error(error));
     }
     return res.json({ user });
   } catch (error) {

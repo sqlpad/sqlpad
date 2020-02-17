@@ -1,4 +1,5 @@
 const cassandra = require('cassandra-driver');
+const logger = require('../../lib/logger');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'cassandra';
@@ -19,11 +20,10 @@ const SCHEMA_SQL = `
  * @param {*} client
  */
 function shutdownClient(client) {
-  client
-    .shutdown()
-    .catch(error =>
-      console.error('Error shutting down cassandra connection', error)
-    );
+  client.shutdown().catch(error => {
+    logger.error('Error shutting down cassandra connection');
+    logger.error(error);
+  });
 }
 
 /**

@@ -2,6 +2,7 @@ const fs = require('fs');
 const router = require('express').Router();
 const resultCache = require('../models/resultCache.js');
 const config = require('../lib/config');
+const logger = require('../lib/logger');
 
 router.get('/download-results/:cacheKey.csv', async function(req, res, next) {
   const { cacheKey } = req.params;
@@ -22,7 +23,7 @@ router.get('/download-results/:cacheKey.csv', async function(req, res, next) {
       return next(new Error('CSV download disabled'));
     }
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     // TODO figure out what this sends and set manually
     return next(error);
   }
@@ -50,7 +51,7 @@ router.get('/download-results/:cacheKey.xlsx', async function(req, res, next) {
       return next(new Error('XLSX download disabled'));
     }
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     // TODO figure out what this sends and set manually
     return next(error);
   }
@@ -75,7 +76,7 @@ router.get('/download-results/:cacheKey.json', async function(req, res, next) {
       return next(new Error('JSON download disabled'));
     }
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     // TODO figure out what this sends and set manually
     return next(error);
   }

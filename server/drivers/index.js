@@ -2,6 +2,7 @@ const uuid = require('uuid');
 const config = require('../lib/config');
 const utils = require('./utils');
 const getMeta = require('../lib/getMeta');
+const logger = require('../lib/logger');
 
 const debug = config.get('debug');
 
@@ -15,7 +16,7 @@ const drivers = {};
  */
 function validateFunction(path, driver, functionName) {
   if (typeof driver[functionName] !== 'function') {
-    console.error(`${path} missing .${functionName}() implementation`);
+    logger.error('%s missing .%s() implementation', path, functionName);
     process.exit(1);
   }
 }
@@ -29,7 +30,7 @@ function validateFunction(path, driver, functionName) {
 function validateArray(path, driver, arrayName) {
   const arr = driver[arrayName];
   if (!Array.isArray(arr)) {
-    console.error(`${path} missing ${arrayName} array`);
+    logger.error('%s missing %s array', path, arrayName);
     process.exit(1);
   }
 }
@@ -46,7 +47,7 @@ function requireValidate(path, optional = false) {
     driver = require(path);
   } catch (er) {
     if (optional) {
-      console.log('optional driver ' + path + ' not available');
+      logger.info('optional driver %s not available', path);
       return;
     } else {
       // rethrow
@@ -55,18 +56,18 @@ function requireValidate(path, optional = false) {
   }
 
   if (!driver.id) {
-    console.error(`${path} must export a unique id`);
+    logger.error('%s must export a unique id', path);
     process.exit(1);
   }
 
   if (!driver.name) {
-    console.error(`${path} must export a name`);
+    logger.error('%s must export a name', path);
     process.exit(1);
   }
 
   if (drivers[driver.id]) {
-    console.error(`Driver with id ${driver.id} already loaded`);
-    console.error(`Ensure ${path} has a unique id exported`);
+    logger.error(`Driver with id ${driver.id} already loaded`);
+    logger.error(`Ensure ${path} has a unique id exported`);
     process.exit(1);
   }
 
@@ -137,24 +138,20 @@ function runQuery(query, connection, user) {
     queryResult.meta = getMeta(rows);
     queryResult.fields = Object.keys(queryResult.meta);
 
-    if (debug) {
-      const connectionName = connection.name;
-      const rowCount = rows.length;
-      const { startTime, stopTime, queryRunTime } = queryResult;
+    const connectionName = connection.name;
+    const rowCount = rows.length;
+    const { startTime, stopTime, queryRunTime } = queryResult;
 
-      console.log(
-        JSON.stringify({
-          userId: user && user._id,
-          userEmail: user && user.email,
-          connectionName,
-          startTime,
-          stopTime,
-          queryRunTime,
-          rowCount,
-          query
-        })
-      );
-    }
+    logger.debug({
+      userId: user && user._id,
+      userEmail: user && user.email,
+      connectionName,
+      startTime,
+      stopTime,
+      queryRunTime,
+      rowCount,
+      query
+    });
 
     return queryResult;
   });
