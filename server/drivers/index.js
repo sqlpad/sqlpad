@@ -99,7 +99,9 @@ requireValidate('../drivers/vertica');
 requireValidate('../drivers/cassandra');
 requireValidate('../drivers/snowflake');
 
-if (debug || process.env.SQLPAD_TEST === 'true') {
+// If debug is turned on also add in mock drivers
+// This is used for test cases, and is also useful for end-user debugging
+if (debug) {
   requireValidate('../drivers/mock');
 }
 
