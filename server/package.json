@@ -29,7 +29,7 @@
   "scripts": {
     "prepublishOnly": "cd .. && ./scripts/build.sh",
     "start": "node-dev server.js --dbPath ../db --port 3010 --debug --baseUrl /sqlpad --config './config.dev.ini' | pino-pretty",
-    "test": "rimraf ../dbtest && SQLPAD_DB_PATH='../dbtest' SQLPAD_TEST='true' mocha test --timeout 10000 --recursive --exit",
+    "test": "rimraf ../dbtest && SQLPAD_DB_PATH='../dbtest' SQLPAD_DEBUG='true' SQLPAD_LOG_WEB='false' SQLPAD_LOG_APP='false' mocha test --timeout 10000 --recursive --exit",
     "fixlint": "eslint --fix '**/*.js'",
     "lint": "eslint '**/*.js'"
   },
@@ -41,6 +41,7 @@
     "detect-port": "^1.3.0",
     "errorhandler": "^1.5.1",
     "express": "^4.17.1",
+    "express-pino-logger": "^4.0.0",
     "express-session": "^1.17.0",
     "hdb": "^0.17.1",
     "helmet": "^3.21.2",
@@ -50,7 +51,6 @@
     "minimist": "^1.2.0",
     "mkdirp": "^1.0.3",
     "moment": "^2.24.0",
-    "morgan": "^1.9.1",
     "mssql": "^6.0.1",
     "mysql": "^2.18.1",
     "nedb": "^1.8.0",
