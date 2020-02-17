@@ -13,9 +13,28 @@ const googleClientSecret = config.get('googleClientSecret');
 const publicUrl = config.get('publicUrl');
 const dbPath = config.get('dbPath');
 const debug = config.get('debug');
+const logLevel = config.get('logLevel');
+const logWeb = config.get('logWeb');
 const cookieName = config.get('cookieName');
 const cookieSecret = config.get('cookieSecret');
 const sessionMinutes = config.get('sessionMinutes');
+
+const expressPino = require('express-pino-logger')({
+  enabled: logWeb,
+  level: debug ? 'debug' : logLevel,
+  name: 'sqlpad-web',
+  // express-pino-logger logs all the headers by default
+  // This might be too much
+  redact: {
+    paths: [
+      'req.headers',
+      'res.headers',
+      'req.remoteAddress',
+      'req.remotePort'
+    ],
+    remove: true
+  }
+});
 
 const samlEntryPoint = config.get('samlEntryPoint');
 const samlIssuer = config.get('samlIssuer');
@@ -27,7 +46,6 @@ const samlAuthContext = config.get('samlAuthContext');
 ============================================================================= */
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
-const morgan = require('morgan');
 const passport = require('passport');
 const errorhandler = require('errorhandler');
 
@@ -44,9 +62,13 @@ app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
 app.set('env', debug ? 'development' : 'production');
 
+// TODO remove error handler - All it sends full stack trace and error to client,
+// and that should be available in logs and other dev tooling instead
 if (debug) {
   app.use(errorhandler());
 }
+
+app.use(expressPino);
 app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
 app.use(bodyParser.json());
 app.use(
@@ -72,9 +94,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(baseUrl, express.static(path.join(__dirname, 'public')));
-if (debug) {
-  app.use(morgan('dev'));
-}
 
 /*  Passport setup
 ============================================================================= */
@@ -127,7 +146,7 @@ app.use(require('./routes/app.js'));
 // For any missing api route, return a 404
 // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
 app.use(baseUrl + '/api/', function(req, res) {
-  logger.debug('reached catch all api route');
+  req.log.debug('reached catch all api route');
   res.sendStatus(404);
 });
 
