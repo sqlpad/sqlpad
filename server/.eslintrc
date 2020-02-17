@@ -14,7 +14,6 @@
     "import/no-extraneous-dependencies": "off",
     "import/no-unresolved": "off",
     "import/order": "off",
-    "no-console": "off",
     "no-else-return": "off",
     "no-multi-assign": "off",
     "no-param-reassign": "off",
