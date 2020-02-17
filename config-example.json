@@ -36,5 +36,7 @@
   "systemdSocket": false,
   "tableChartLinksRequireAuth": true,
   "timeoutSeconds": 300,
-  "whitelistedDomains": ""
+  "whitelistedDomains": "",
+  "appLogLevel": "info",
+  "webLogLevel": "info"
 }

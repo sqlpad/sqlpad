@@ -213,6 +213,16 @@ By default query history results are limited to 1,000 records.
 Env var: `SQLPAD_QUERY_HISTORY_RESULT_MAX_ROWS`  
 Default: `1000`
 
+**appLogLevel**  
+Minimum level for app logs. Should be one of 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'.  
+Env var: `SQLPAD_APP_LOG_LEVEL`  
+Default: `info`
+
+**webLogLevel**  
+Minimum level for web logs. Should be one of 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'.  
+Env var: `SQLPAD_WEB_LOG_LEVEL`  
+Default: `info`
+
 ### Connection configuration
 
 As of 3.2.0 connections may be defined via application configuration.
