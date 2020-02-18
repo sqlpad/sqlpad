@@ -45,7 +45,6 @@ const samlAuthContext = config.get('samlAuthContext');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const passport = require('passport');
-const errorhandler = require('errorhandler');
 
 const app = express();
 
@@ -59,12 +58,6 @@ app.use(helmet.xssFilter());
 app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
 app.set('env', debug ? 'development' : 'production');
-
-// TODO remove error handler - All it sends full stack trace and error to client,
-// and that should be available in logs and other dev tooling instead
-if (debug) {
-  app.use(errorhandler());
-}
 
 app.use(expressPino);
 app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
