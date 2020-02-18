@@ -12,11 +12,6 @@ const envConfig = fromEnv();
 const [fileConfig, warnings] = fromFile();
 const cliConfig = fromCli(argv);
 
-// Old files might have some values no longer recognized
-if (warnings.length) {
-  warnings.forEach(warning => console.warn(warning));
-}
-
 const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
 
 // Clean string boolean values
@@ -40,12 +35,21 @@ exports.get = function get(key) {
     throw new Error(`config item ${key} not defined in configItems.js`);
   }
 
-  if (key === 'dbPath' && !all.dbPath) {
-    console.error(getOldConfigWarning());
-    throw new Error(`dbPath not defined`);
+  return all[key];
+};
+
+exports.getValidations = () => {
+  const errors = [];
+
+  // By default dbPath will exist as empty string, which is not valid
+  if (all.dbPath === '') {
+    errors.push(getOldConfigWarning());
   }
 
-  return all[key];
+  return {
+    errors,
+    warnings: [...warnings]
+  };
 };
 
 exports.smtpConfigured = () =>

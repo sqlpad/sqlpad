@@ -3,6 +3,7 @@ const path = require('path');
 const moment = require('moment');
 const sanitize = require('sanitize-filename');
 const db = require('../lib/db.js');
+const logger = require('../lib/logger');
 const xlsx = require('node-xlsx');
 const { parse } = require('json2csv');
 const config = require('../lib/config');
@@ -66,7 +67,7 @@ function writeXlsx(cacheKey, queryResult) {
       // if there's an error log it but otherwise continue on
       // we can still send results even if download file failed to create
       if (err) {
-        console.log(err);
+        logger.error(err);
       }
       return resolve();
     });
@@ -79,12 +80,12 @@ function writeCsv(cacheKey, queryResult) {
       const csv = parse(queryResult.rows, { fields: queryResult.fields });
       fs.writeFile(csvFilePath(cacheKey), csv, function(err) {
         if (err) {
-          console.log(err);
+          logger.error(err);
         }
         return resolve();
       });
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return resolve();
     }
   });
@@ -107,12 +108,12 @@ function writeJson(cacheKey, queryResult) {
       const json = JSON.stringify(queryResult.rows);
       fs.writeFile(jsonFilePath(cacheKey), json, function(err) {
         if (err) {
-          console.log(err);
+          logger.error(err);
         }
         return resolve();
       });
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       return resolve();
     }
   });
@@ -135,7 +136,7 @@ async function removeExpired() {
       await db.cache.remove({ _id: doc._id }, {});
     }
   } catch (error) {
-    console.log(error);
+    logger.error(error);
   }
 }
 

@@ -1,6 +1,7 @@
 const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
+const logger = require('./logger');
 const config = require('./config');
 const consts = require('./consts');
 const passhash = require('../lib/passhash');
@@ -8,8 +9,6 @@ const passhash = require('../lib/passhash');
 const admin = config.get('admin');
 const adminPassword = config.get('adminPassword');
 const dbPath = config.get('dbPath');
-const debug = config.get('debug');
-const port = config.get('port');
 const allowConnectionAccessToEveryone = config.get(
   'allowConnectionAccessToEveryone'
 );
@@ -41,17 +40,13 @@ const db = {
 async function init() {
   await Promise.all(
     db.instances.map(dbname => {
-      if (debug) {
-        console.log('Loading %s..', dbname);
-      }
+      logger.info('Loading %s', dbname);
       return db[dbname].loadDatabase();
     })
   );
   // create default connection accesses
   if (allowConnectionAccessToEveryone) {
-    if (debug) {
-      console.log('Creating access on every connection to every user...');
-    }
+    logger.info('Creating access on every connection to every user...');
     await db.connectionAccesses.update(
       {
         connectionId: consts.EVERY_CONNECTION_ID,
@@ -98,7 +93,7 @@ async function ensureAdmin() {
     // if an admin was passed in the command line, check to see if a user exists with that email
     // if so, set the admin to true
     // if not, whitelist the email address.
-    // Then write to console that the person should visit the signup url to finish registration.
+    // Then log that the person should visit the signup url to finish registration.
     const user = await db.users.findOne({ email: adminEmail });
     if (user) {
       const changes = { role: 'admin' };
@@ -106,7 +101,7 @@ async function ensureAdmin() {
         changes.passhash = await passhash.getPasshash(adminPassword);
       }
       await db.users.update({ _id: user._id }, { $set: changes }, {});
-      console.log(adminEmail + ' should now have admin access.');
+      logger.info('Admin access granted to %s', adminEmail);
       return;
     }
 
@@ -118,12 +113,10 @@ async function ensureAdmin() {
       newAdmin.passhash = await passhash.getPasshash(adminPassword);
     }
     await db.users.insert(newAdmin);
-    console.log(`\n${adminEmail} has been whitelisted with admin access.`);
-    console.log(
-      `\nPlease visit http://localhost:${port}/signup/ to complete registration.`
-    );
+    logger.info('Admin access granted to %s', adminEmail);
+    logger.info('Please visit signup to complete registration.');
   } catch (error) {
-    console.log(`ERROR: could not make ${adminEmail} an admin.`);
+    logger.error('Admin access grant failed for %s', adminEmail);
     throw error;
   }
 }

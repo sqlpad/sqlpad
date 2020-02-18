@@ -1,4 +1,5 @@
 const db = require('../lib/db.js');
+const logger = require('../lib/logger');
 const _ = require('lodash');
 const drivers = require('../drivers');
 const cipher = require('../lib/cipher.js');
@@ -67,9 +68,10 @@ function getConnectionsFromConfig(env = process.env) {
       connection.editable = false;
       connectionsFromConfig.push(connection);
     } catch (error) {
-      console.log(
-        `Environment connection configuration failed for ${id} %s`,
-        error
+      logger.error(
+        error,
+        'Environment connection configuration failed for %s',
+        id
       );
     }
   });

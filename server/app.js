@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const config = require('./lib/config');
+const logger = require('./lib/logger');
 
 const baseUrl = config.get('baseUrl');
 const googleClientId = config.get('googleClientId');
@@ -12,9 +13,26 @@ const googleClientSecret = config.get('googleClientSecret');
 const publicUrl = config.get('publicUrl');
 const dbPath = config.get('dbPath');
 const debug = config.get('debug');
+const webLogLevel = config.get('webLogLevel');
 const cookieName = config.get('cookieName');
 const cookieSecret = config.get('cookieSecret');
 const sessionMinutes = config.get('sessionMinutes');
+
+const expressPino = require('express-pino-logger')({
+  level: webLogLevel,
+  name: 'sqlpad-web',
+  // express-pino-logger logs all the headers by default
+  // Removing these for now but open to adding them back in based on feedback
+  redact: {
+    paths: [
+      'req.headers',
+      'res.headers',
+      'req.remoteAddress',
+      'req.remotePort'
+    ],
+    remove: true
+  }
+});
 
 const samlEntryPoint = config.get('samlEntryPoint');
 const samlIssuer = config.get('samlIssuer');
@@ -26,7 +44,6 @@ const samlAuthContext = config.get('samlAuthContext');
 ============================================================================= */
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
-const morgan = require('morgan');
 const passport = require('passport');
 const errorhandler = require('errorhandler');
 
@@ -43,9 +60,13 @@ app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
 app.set('env', debug ? 'development' : 'production');
 
+// TODO remove error handler - All it sends full stack trace and error to client,
+// and that should be available in logs and other dev tooling instead
 if (debug) {
   app.use(errorhandler());
 }
+
+app.use(expressPino);
 app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
 app.use(bodyParser.json());
 app.use(
@@ -71,9 +92,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(baseUrl, express.static(path.join(__dirname, 'public')));
-if (debug) {
-  app.use(morgan('dev'));
-}
 
 /*  Passport setup
 ============================================================================= */
@@ -100,9 +118,7 @@ const routers = [
 ];
 
 if (googleClientId && googleClientSecret && publicUrl) {
-  if (debug) {
-    console.log('Enabling Google authentication Strategy.');
-  }
+  logger.info('Enabling Google authentication Strategy.');
   routers.push(require('./routes/oauth.js'));
 }
 
@@ -113,9 +129,7 @@ if (
   samlCert &&
   samlAuthContext
 ) {
-  if (debug) {
-    console.log('Enabling SAML authentication Strategy.');
-  }
+  logger.info('Enabling SAML authentication Strategy.');
   routers.push(require('./routes/saml.js'));
 }
 
@@ -130,7 +144,7 @@ app.use(require('./routes/app.js'));
 // For any missing api route, return a 404
 // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
 app.use(baseUrl + '/api/', function(req, res) {
-  console.log('reached catch all api route');
+  req.log.debug('reached catch all api route');
   res.sendStatus(404);
 });
 
@@ -155,8 +169,8 @@ if (fs.existsSync(indexTemplatePath)) {
     .replace(/="\/static/g, `="${baseUrl}/static`);
   app.use((req, res) => res.send(baseUrlHtml));
 } else {
-  console.error('\nNO FRONT END TEMPLATE DETECTED');
-  console.error('If not running in dev mode please report this issue.\n');
+  logger.warn('NO FRONT END TEMPLATE DETECTED');
+  logger.warn('If not running in dev mode please report this issue.');
 }
 
 module.exports = app;

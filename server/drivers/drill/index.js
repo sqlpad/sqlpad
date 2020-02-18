@@ -1,4 +1,5 @@
 const drill = require('./drill.js');
+const logger = require('../../lib/logger');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'drill';
@@ -49,8 +50,8 @@ function runQuery(query, connection) {
     if (!result) {
       throw new Error('No result returned');
     } else if (result.errorMessage && result.errorMessage.length > 0) {
-      console.log('Error with query: ' + query);
-      console.log(result.errorMessage);
+      logger.info('Error with query: %s', query);
+      logger.info(result.errorMessage);
       throw new Error(result.errorMessage.split('\n')[0]);
     }
     if (result.length > connection.maxRows) {

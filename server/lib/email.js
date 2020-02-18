@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const logger = require('./logger');
 const config = require('./config');
 
 /**
@@ -37,7 +38,7 @@ function sendInvite(to) {
 
 async function send(to, subject, text, html) {
   if (!config.smtpConfigured()) {
-    console.error('email.send() called without being configured');
+    logger.error('email.send() called without being configured');
     return;
   }
 
@@ -64,11 +65,9 @@ async function send(to, subject, text, html) {
       html
     };
     transporter.sendMail(mailOptions, function(err, info) {
-      if (config.get('debug')) {
-        console.log('sent email: ' + info);
-      }
+      logger.info('sent email: %s', info);
       if (err) {
-        console.error(err);
+        logger.error(err);
         return reject(err);
       }
       resolve(info);

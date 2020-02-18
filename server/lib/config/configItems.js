@@ -208,6 +208,16 @@ const configItems = [
     key: 'queryHistoryResultMaxRows',
     envVar: 'SQLPAD_QUERY_HISTORY_RESULT_MAX_ROWS',
     default: 1000
+  },
+  {
+    key: 'appLogLevel',
+    envVar: 'SQLPAD_APP_LOG_LEVEL',
+    default: 'info'
+  },
+  {
+    key: 'webLogLevel',
+    envVar: 'SQLPAD_WEB_LOG_LEVEL',
+    default: 'info'
   }
 ];
 

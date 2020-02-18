@@ -5,6 +5,7 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const SamlStrategy = require('passport-saml').Strategy;
 const usersUtil = require('../models/users.js');
 const config = require('../lib/config');
+const logger = require('../lib/logger');
 const checkWhitelist = require('../lib/check-whitelist.js');
 const passhash = require('../lib/passhash.js');
 
@@ -125,7 +126,7 @@ if (samlEntryPoint) {
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
           ];
         const user = await usersUtil.findOneByEmail(email);
-        console.log(`User logged in with SAML as ${email}`);
+        logger.info('User logged in via SAML %s', email);
         if (!user) {
           return done(null, false);
         }

@@ -4,6 +4,7 @@ const usersUtil = require('../models/users.js');
 const email = require('../lib/email');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
+const logger = require('../lib/logger');
 
 router.post('/api/forgot-password', async function(req, res) {
   if (!req.body.email) {
@@ -30,7 +31,7 @@ router.post('/api/forgot-password', async function(req, res) {
     const resetPath = `/password-reset/${user.passwordResetId}`;
     email
       .sendForgotPassword(req.body.email, resetPath)
-      .catch(error => console.error(error));
+      .catch(error => logger.error(error));
 
     return res.json({});
   } catch (error) {

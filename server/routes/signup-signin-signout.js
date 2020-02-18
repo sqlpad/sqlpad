@@ -4,6 +4,7 @@ const checkWhitelist = require('../lib/check-whitelist');
 const usersUtil = require('../models/users.js');
 const sendError = require('../lib/sendError');
 const config = require('../lib/config');
+const logger = require('../lib/logger');
 
 async function handleSignup(req, res, next) {
   try {
@@ -75,7 +76,7 @@ router.get('/api/signout', function(req, res) {
   }
   req.session.destroy(function(err) {
     if (err) {
-      console.error(err);
+      logger.error(err);
     }
     res.json({});
   });

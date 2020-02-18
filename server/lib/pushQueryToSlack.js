@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const config = require('./config');
 const request = require('request');
 
@@ -23,8 +24,8 @@ ${'```'}`
     };
     request(options, function(err) {
       if (err) {
-        console.error('Something went wrong while sending to Slack.');
-        console.error(err);
+        logger.error('Something went wrong while sending to Slack.');
+        logger.error(err);
       }
     });
   }

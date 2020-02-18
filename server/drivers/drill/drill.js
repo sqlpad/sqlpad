@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 let request = require('request');
 let url = require('url');
+const logger = require('../../lib/logger');
 
 exports.version = '1.0';
 
@@ -71,7 +72,7 @@ Client.prototype.query = function(config, query) {
     })
     .catch(function(e) {
       // TODO Send error message to JSON
-      console.log('There was a problem with the request' + e);
+      logger.error(e);
       return e;
     });
 };
