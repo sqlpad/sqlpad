@@ -42,12 +42,12 @@ function makeQueryHistory(nedb) {
     const days = config.get('queryHistoryRetentionTimeInDays') * 86400 * 1000;
     const retentionPeriodStartTime = new Date(new Date().getTime() - days);
 
-    // Compaction function called separately in every ten minutes
     return nedb.queryHistory.remove(
       { createdDate: { $lt: retentionPeriodStartTime } },
       { multi: true }
     );
   }
+
   /**
    * Save queryHistory object
    * returns saved queryHistory object

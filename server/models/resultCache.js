@@ -56,8 +56,6 @@ function makeResultCache(nedb) {
     });
   }
 
-  /*  Result cache maintenance
-  ============================================================================== */
   async function removeExpired() {
     try {
       const docs = await nedb.cache.find({ expiration: { $lt: new Date() } });
@@ -79,14 +77,11 @@ function makeResultCache(nedb) {
     }
   }
 
-  // Every five minutes check and expire cache
-  const FIVE_MINUTES = 1000 * 60 * 5;
-  setInterval(removeExpired, FIVE_MINUTES);
-
   return {
     csvFilePath,
     findOneByCacheKey,
     jsonFilePath,
+    removeExpired,
     saveResultCache,
     writeCsv,
     writeJson,

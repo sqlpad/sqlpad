@@ -6,8 +6,6 @@ const makeQueries = require('./queries');
 const makeConnections = require('./connections');
 const makeConnectionAccesses = require('./connectionAccesses');
 
-// TODO FIX ME - remove anything that depends on single instance from these utilities
-// (clean up jobs and whatever else)
 module.exports = function(nedb) {
   return {
     users: makeUsers(nedb),

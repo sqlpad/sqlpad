@@ -4,9 +4,21 @@ const mkdirp = require('mkdirp');
 const logger = require('./logger');
 const consts = require('./consts');
 const passhash = require('../lib/passhash');
+const getModels = require('../models');
 
+/**
+ * Whenever possible nedb should be read from the app req object.
+ * Sometimes this isn't possible or convenient at the moment however.
+ * For those cases, this module provides access by caching the nedb instance.
+ * Safety measures have been added to ensure only 1 instance of nedb can be initialized per alias
+ */
 let instances = {};
 
+/**
+ * Get nedb instance for an optional alias.
+ * Returns promise of nedb instance
+ * @param {string} [instanceAlias]
+ */
 function getNedb(instanceAlias = 'default') {
   const nedb = instances[instanceAlias];
   if (!nedb) {
@@ -16,6 +28,10 @@ function getNedb(instanceAlias = 'default') {
   return Promise.resolve(nedb);
 }
 
+/**
+ * Initialize nedb for a given config
+ * @param {object} config
+ */
 async function initNedb(config) {
   const admin = config.get('admin');
   const adminPassword = config.get('adminPassword');
@@ -132,9 +148,24 @@ async function initNedb(config) {
     }
   }
 
+  // Schedule cleanups every 5 minutes
+  const models = getModels(nedb);
+  const FIVE_MINUTES = 1000 * 60 * 5;
+  setInterval(async () => {
+    await models.resultCache.removeExpired();
+    await models.queryHistory.removeOldEntries();
+  }, FIVE_MINUTES);
+
   return nedb;
 }
 
+/**
+ * Initializes an nedb instance for a given config.
+ * Ensures that this only happens once for a given alias.
+ * If this were called multiple times weird things could happen
+ * @param {object} config
+ * @param {string} instanceAlias
+ */
 function makeNedb(config, instanceAlias = 'default') {
   // makeNedb should only be called once for a given alias
   if (instances[instanceAlias]) {
