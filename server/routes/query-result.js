@@ -7,7 +7,6 @@ const queryHistory = require('../models/queryHistory');
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
 const sendError = require('../lib/sendError');
-const config = require('../lib/config');
 
 // This allows executing a query relying on the saved query text
 // Instead of relying on an open endpoint that executes arbitrary sql
@@ -30,7 +29,7 @@ router.get(
       };
       // IMPORTANT: Send actual error here since it might have info on why the query is bad
       try {
-        const queryResult = await getQueryResult(data);
+        const queryResult = await getQueryResult(req, data);
         return res.send({ queryResult });
       } catch (error) {
         sendError(res, error);
@@ -57,26 +56,26 @@ router.post('/api/query-result', mustHaveConnectionAccess, async function(
   };
 
   try {
-    const queryResult = await getQueryResult(data);
+    const queryResult = await getQueryResult(req, data);
     return res.send({ queryResult });
   } catch (error) {
     sendError(res, error);
   }
 });
 
-async function getQueryResult(data) {
+async function getQueryResult(req, data) {
   const { connectionId, cacheKey, queryId, queryName, queryText, user } = data;
   const connection = await connections.findOneById(connectionId);
 
   if (!connection) {
     throw new Error('Please choose a connection');
   }
-  connection.maxRows = Number(config.get('queryResultMaxRows'));
+  connection.maxRows = Number(req.config.get('queryResultMaxRows'));
 
   const queryResult = await runQuery(queryText, connection, user);
   queryResult.cacheKey = cacheKey;
 
-  if (config.get('queryHistoryRetentionTimeInDays') > 0) {
+  if (req.config.get('queryHistoryRetentionTimeInDays') > 0) {
     await queryHistory.removeOldEntries();
     await queryHistory.save({
       userId: user._id,
@@ -94,7 +93,7 @@ async function getQueryResult(data) {
     });
   }
 
-  if (config.get('allowCsvDownload')) {
+  if (req.config.get('allowCsvDownload')) {
     resultCache.saveResultCache(cacheKey, queryName);
     await resultCache.writeXlsx(cacheKey, queryResult);
     await resultCache.writeCsv(cacheKey, queryResult);

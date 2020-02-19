@@ -1,18 +1,19 @@
 const router = require('express').Router();
 const uuid = require('uuid');
 const usersUtil = require('../models/users.js');
-const email = require('../lib/email');
+const makeEmail = require('../lib/email');
 const sendError = require('../lib/sendError');
-const config = require('../lib/config');
 const logger = require('../lib/logger');
 
 router.post('/api/forgot-password', async function(req, res) {
   if (!req.body.email) {
     return sendError(res, null, 'Email address must be provided');
   }
-  if (!config.smtpConfigured()) {
+  if (!req.config.smtpConfigured()) {
     return sendError(res, null, 'Email must be configured');
   }
+
+  const email = makeEmail(req.config);
 
   try {
     const user = await usersUtil.findOneByEmail(req.body.email);

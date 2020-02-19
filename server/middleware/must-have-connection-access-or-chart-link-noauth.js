@@ -1,4 +1,3 @@
-const config = require('../lib/config');
 const mustBeAuthenticated = require('./must-be-authenticated');
 const connectionAccessesUtil = require('../models/connectionAccesses.js');
 
@@ -9,7 +8,7 @@ module.exports = [
   async function mustHaveConnectionAccessOrChartLinkNoAuth(req, res, next) {
     if (
       req.user.role === 'admin' ||
-      !config.get('tableChartLinksRequireAuth')
+      !req.config.get('tableChartLinksRequireAuth')
     ) {
       return next();
     }

@@ -3,7 +3,6 @@ const queriesUtil = require('../models/queries.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
 const sendError = require('../lib/sendError');
-const config = require('../lib/config');
 const pushQueryToSlack = require('../lib/pushQueryToSlack');
 
 // NOTE: this non-api route is special since it redirects legacy urls
@@ -12,12 +11,13 @@ router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
   res,
   next
 ) {
-  const { query, params } = req;
+  const { query, params, config } = req;
   const { format } = query;
+  const baseUrl = config.get('baseUrl');
   if (format === 'table') {
-    return res.redirect(config.get('baseUrl') + '/query-table/' + params._id);
+    return res.redirect(`${baseUrl}/query-table/${params._id}`);
   } else if (format === 'chart') {
-    return res.redirect(config.get('baseUrl') + '/query-chart/' + params._id);
+    return res.redirect(`${baseUrl}/query-chart/${params._id}`);
   }
   next();
 });
@@ -77,7 +77,7 @@ router.post('/api/queries', mustBeAuthenticated, async function(req, res) {
   try {
     const newQuery = await queriesUtil.save(query);
     // This is async, but save operation doesn't care about when/if finished
-    pushQueryToSlack(newQuery);
+    pushQueryToSlack(req.config, newQuery);
     return res.json({
       query: newQuery
     });

@@ -1,10 +1,9 @@
 const router = require('express').Router();
 const usersUtil = require('../models/users.js');
-const email = require('../lib/email');
+const makeEmail = require('../lib/email');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
-const config = require('../lib/config');
 const logger = require('../lib/logger');
 
 router.get('/api/users', mustBeAuthenticated, async function(req, res) {
@@ -28,7 +27,9 @@ router.post('/api/users', mustBeAdmin, async function(req, res) {
       role: req.body.role
     });
 
-    if (config.smtpConfigured()) {
+    const email = makeEmail(req.config);
+
+    if (req.config.smtpConfigured()) {
       email.sendInvite(req.body.email).catch(error => logger.error(error));
     }
     return res.json({ user });

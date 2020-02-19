@@ -18,7 +18,7 @@ if (configValidations.errors.length > 0) {
   process.exit(1);
 }
 
-const app = require('./app');
+const app = require('./app')(config);
 
 const baseUrl = config.get('baseUrl');
 const ip = config.get('ip');

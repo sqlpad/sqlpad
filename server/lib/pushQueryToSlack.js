@@ -1,8 +1,7 @@
 const logger = require('./logger');
-const config = require('./config');
 const request = require('request');
 
-function pushQueryToSlack(query) {
+function pushQueryToSlack(config, query) {
   const SLACK_WEBHOOK = config.get('slackWebhook');
   if (SLACK_WEBHOOK) {
     const PUBLIC_URL = config.get('publicUrl');
@@ -24,8 +23,7 @@ ${'```'}`
     };
     request(options, function(err) {
       if (err) {
-        logger.error('Something went wrong while sending to Slack.');
-        logger.error(err);
+        logger.error(err, 'Problem sending query to slack');
       }
     });
   }
