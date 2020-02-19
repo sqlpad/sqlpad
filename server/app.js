@@ -36,6 +36,7 @@ const expressPino = require('express-pino-logger')({
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const passport = require('passport');
+const passportBasic = require('./middleware/passport-basic');
 
 const app = express();
 
@@ -80,6 +81,12 @@ app.use(baseUrl, express.static(path.join(__dirname, 'public')));
 /*  Passport setup
 ============================================================================= */
 require('./middleware/passport.js');
+
+// If local auth is not disabled, support basic auth using a user's email and password
+// This is currently used for running integration tests and serves as a convenient alternative to API keys
+if (!config.get('disableUserpassAuth')) {
+  app.use(passportBasic);
+}
 
 /*  Routes
 ============================================================================= */
