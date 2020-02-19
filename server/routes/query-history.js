@@ -5,7 +5,6 @@ const queryHistoryUtil = require('../models/queryHistory.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const urlFilterToNeDbFilter = require('../lib/urlFilterToNeDbFilter');
 const sendError = require('../lib/sendError');
-const config = require('../lib/config');
 
 router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
   try {
@@ -33,7 +32,7 @@ router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
     });
 
     queryHistory.incomplete =
-      dbQueryHistory.length >= config.get('queryHistoryResultMaxRows');
+      dbQueryHistory.length >= req.config.get('queryHistoryResultMaxRows');
     queryHistory.rows = dbQueryHistory;
     queryHistory.stopTime = new Date();
     queryHistory.queryRunTime =

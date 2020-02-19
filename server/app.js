@@ -119,9 +119,9 @@ function makeApp(config) {
     require('./routes/schema-info.js'),
     require('./routes/tags.js'),
     require('./routes/format-sql.js'),
-    require('./routes/signup-signin-signout.js'),
-    require('./routes/oauth.js'),
-    require('./routes/saml.js')
+    require('./routes/signup-signin-signout.js')(config),
+    require('./routes/oauth.js')(config),
+    require('./routes/saml.js')(config)
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route

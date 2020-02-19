@@ -2,12 +2,12 @@ const router = require('express').Router();
 const packageJson = require('../package.json');
 const usersUtil = require('../models/users.js');
 const sendError = require('../lib/sendError');
-const config = require('../lib/config');
 
 // NOTE: this route needs a wildcard because it is fetched as a relative url
 // from the front-end. The static SPA does not know if sqlpad is mounted at
 // the root of a domain or if there is a base-url provided in the config
 router.get('*/api/app', async (req, res) => {
+  const { config } = req;
   try {
     const adminRegistrationOpen = await usersUtil.adminRegistrationOpen();
     const currentUser =

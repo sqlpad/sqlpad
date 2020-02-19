@@ -1,13 +1,12 @@
 const fs = require('fs');
 const router = require('express').Router();
 const resultCache = require('../models/resultCache.js');
-const config = require('../lib/config');
 const logger = require('../lib/logger');
 
 router.get('/download-results/:cacheKey.csv', async function(req, res, next) {
   const { cacheKey } = req.params;
   try {
-    if (config.get('allowCsvDownload')) {
+    if (req.config.get('allowCsvDownload')) {
       const cache = await resultCache.findOneByCacheKey(cacheKey);
       if (!cache) {
         return next(new Error('Result cache not found'));
@@ -32,7 +31,7 @@ router.get('/download-results/:cacheKey.csv', async function(req, res, next) {
 router.get('/download-results/:cacheKey.xlsx', async function(req, res, next) {
   const { cacheKey } = req.params;
   try {
-    if (config.get('allowCsvDownload')) {
+    if (req.config.get('allowCsvDownload')) {
       const cache = await resultCache.findOneByCacheKey(cacheKey);
       if (!cache) {
         return next(new Error('Result cache not found'));
@@ -60,7 +59,7 @@ router.get('/download-results/:cacheKey.xlsx', async function(req, res, next) {
 router.get('/download-results/:cacheKey.json', async function(req, res, next) {
   const { cacheKey } = req.params;
   try {
-    if (config.get('allowCsvDownload')) {
+    if (req.config.get('allowCsvDownload')) {
       const cache = await resultCache.findOneByCacheKey(cacheKey);
       if (!cache) {
         return next(new Error('Result cache not found'));
