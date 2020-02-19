@@ -1,9 +1,6 @@
 const router = require('express').Router();
 const { runQuery } = require('../drivers/index');
-const connections = require('../models/connections.js');
-const resultCache = require('../models/resultCache.js');
-const queriesUtil = require('../models/queries.js');
-const queryHistory = require('../models/queryHistory');
+const getModels = require('../models');
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
 const sendError = require('../lib/sendError');
@@ -15,7 +12,8 @@ router.get(
   mustHaveConnectionAccessOrChartLink,
   async function(req, res) {
     try {
-      const query = await queriesUtil.findOneById(req.params._queryId);
+      const models = getModels(req.nedb);
+      const query = await models.queries.findOneById(req.params._queryId);
       if (!query) {
         return sendError(res, null, 'Query not found (save query first)');
       }
@@ -64,8 +62,9 @@ router.post('/api/query-result', mustHaveConnectionAccess, async function(
 });
 
 async function getQueryResult(req, data) {
+  const models = getModels(req.nedb);
   const { connectionId, cacheKey, queryId, queryName, queryText, user } = data;
-  const connection = await connections.findOneById(connectionId);
+  const connection = await models.connections.findOneById(connectionId);
 
   if (!connection) {
     throw new Error('Please choose a connection');
@@ -76,8 +75,8 @@ async function getQueryResult(req, data) {
   queryResult.cacheKey = cacheKey;
 
   if (req.config.get('queryHistoryRetentionTimeInDays') > 0) {
-    await queryHistory.removeOldEntries();
-    await queryHistory.save({
+    await models.queryHistory.removeOldEntries();
+    await models.queryHistory.save({
       userId: user._id,
       userEmail: user.email,
       connectionId: connection._id,
@@ -94,10 +93,10 @@ async function getQueryResult(req, data) {
   }
 
   if (req.config.get('allowCsvDownload')) {
-    resultCache.saveResultCache(cacheKey, queryName);
-    await resultCache.writeXlsx(cacheKey, queryResult);
-    await resultCache.writeCsv(cacheKey, queryResult);
-    await resultCache.writeJson(cacheKey, queryResult);
+    models.resultCache.saveResultCache(cacheKey, queryName);
+    await models.resultCache.writeXlsx(cacheKey, queryResult);
+    await models.resultCache.writeCsv(cacheKey, queryResult);
+    await models.resultCache.writeJson(cacheKey, queryResult);
   }
 
   return queryResult;

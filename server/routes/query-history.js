@@ -1,13 +1,15 @@
 const router = require('express').Router();
 const uuid = require('uuid');
 const getMeta = require('../lib/getMeta');
-const queryHistoryUtil = require('../models/queryHistory.js');
+const getModels = require('../models');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const urlFilterToNeDbFilter = require('../lib/urlFilterToNeDbFilter');
 const sendError = require('../lib/sendError');
 
 router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
   try {
+    const models = getModels(req.nedb);
+
     const queryHistory = {
       id: uuid.v4(),
       cacheKey: null,
@@ -22,7 +24,7 @@ router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
 
     // Convert URL filter to NeDB compatible filter object
     const dbFilter = urlFilterToNeDbFilter(req.query.filter);
-    const dbQueryHistory = await queryHistoryUtil.findByFilter(dbFilter);
+    const dbQueryHistory = await models.queryHistory.findByFilter(dbFilter);
 
     dbQueryHistory.map(q => {
       delete q._id;
@@ -51,7 +53,10 @@ router.get('/api/query-history/:_id', mustBeAuthenticated, async function(
   res
 ) {
   try {
-    const queryHistoryItem = await queryHistoryUtil.findOneById(req.params._id);
+    const models = getModels(req.nedb);
+    const queryHistoryItem = await models.queryHistory.findOneById(
+      req.params._id
+    );
     if (!queryHistoryItem) {
       return sendError(res, null, 'Query history item not found');
     }

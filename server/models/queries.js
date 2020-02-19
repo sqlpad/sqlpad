@@ -1,4 +1,3 @@
-const db = require('../lib/db.js');
 const Joi = require('@hapi/joi');
 
 /*
@@ -44,60 +43,64 @@ const schema = Joi.object({
   lastAccessDate: Joi.date().default(Date.now)
 });
 
-function findOneById(id) {
-  return db.queries.findOne({ _id: id });
-}
+function makeQueries(nedb) {
+  function findOneById(id) {
+    return nedb.queries.findOne({ _id: id });
+  }
 
-function findAll() {
-  return db.queries.find({});
-}
+  function findAll() {
+    return nedb.queries.find({});
+  }
 
-function findByFilter(filter) {
-  return db.queries.find(filter);
-}
+  function findByFilter(filter) {
+    return nedb.queries.find(filter);
+  }
 
-function removeById(id) {
-  return db.queries.remove({ _id: id });
-}
+  function removeById(id) {
+    return nedb.queries.remove({ _id: id });
+  }
 
-/**
- * Save query object
- * returns saved query object
- * @param {object} query
- */
-async function save(query) {
-  query.modifiedDate = new Date();
-  query.lastAccessDate = new Date();
+  /**
+   * Save query object
+   * returns saved query object
+   * @param {object} query
+   */
+  async function save(query) {
+    query.modifiedDate = new Date();
+    query.lastAccessDate = new Date();
 
-  // clean tags if present
-  // sqlpad v1 saved a lot of bad inputs
-  if (Array.isArray(query.tags)) {
-    query.tags = query.tags
-      .filter(tag => {
-        return typeof tag === 'string' && tag.trim() !== '';
-      })
-      .map(tag => {
-        return tag.trim();
+    // clean tags if present
+    // sqlpad v1 saved a lot of bad inputs
+    if (Array.isArray(query.tags)) {
+      query.tags = query.tags
+        .filter(tag => {
+          return typeof tag === 'string' && tag.trim() !== '';
+        })
+        .map(tag => {
+          return tag.trim();
+        });
+    }
+    const joiResult = schema.validate(query);
+    if (joiResult.error) {
+      return Promise.reject(joiResult.error);
+    }
+    if (query._id) {
+      await nedb.queries.update({ _id: query._id }, joiResult.value, {
+        upsert: true
       });
+      return findOneById(query._id);
+    }
+    const newQuery = await nedb.queries.insert(joiResult.value);
+    return newQuery;
   }
-  const joiResult = schema.validate(query);
-  if (joiResult.error) {
-    return Promise.reject(joiResult.error);
-  }
-  if (query._id) {
-    await db.queries.update({ _id: query._id }, joiResult.value, {
-      upsert: true
-    });
-    return findOneById(query._id);
-  }
-  const newQuery = await db.queries.insert(joiResult.value);
-  return newQuery;
+
+  return {
+    findOneById,
+    findAll,
+    findByFilter,
+    removeById,
+    save
+  };
 }
 
-module.exports = {
-  findOneById,
-  findAll,
-  findByFilter,
-  removeById,
-  save
-};
+module.exports = makeQueries;

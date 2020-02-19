@@ -3,13 +3,15 @@ const PassportLocalStrategy = require('passport-local').Strategy;
 const BasicStrategy = require('passport-http').BasicStrategy;
 const router = require('express').Router();
 const checkWhitelist = require('../lib/check-whitelist');
-const usersUtil = require('../models/users.js');
+const getModels = require('../models');
+const { getNedb } = require('../lib/db');
 const sendError = require('../lib/sendError');
 const logger = require('../lib/logger');
 const passhash = require('../lib/passhash.js');
 
 async function handleSignup(req, res, next) {
   try {
+    const models = getModels(req.nedb);
     const whitelistedDomains = req.config.get('whitelistedDomains');
 
     if (req.body.password !== req.body.passwordConfirmation) {
@@ -17,8 +19,8 @@ async function handleSignup(req, res, next) {
     }
 
     let [user, adminRegistrationOpen] = await Promise.all([
-      usersUtil.findOneByEmail(req.body.email),
-      usersUtil.adminRegistrationOpen()
+      models.users.findOneByEmail(req.body.email),
+      models.users.adminRegistrationOpen()
     ]);
 
     if (user && user.passhash) {
@@ -28,7 +30,7 @@ async function handleSignup(req, res, next) {
     if (user) {
       user.password = req.body.password;
       user.signupDate = new Date();
-      await usersUtil.save(user);
+      await models.users.save(user);
       return next();
     }
 
@@ -38,7 +40,7 @@ async function handleSignup(req, res, next) {
       adminRegistrationOpen ||
       checkWhitelist(whitelistedDomains, req.body.email)
     ) {
-      user = await usersUtil.save({
+      user = await models.users.save({
         email: req.body.email,
         password: req.body.password,
         role: adminRegistrationOpen ? 'admin' : 'editor',
@@ -74,7 +76,9 @@ function makeLocalAuth(config) {
         },
         async function passportLocalStrategyHandler(email, password, done) {
           try {
-            const user = await usersUtil.findOneByEmail(email);
+            const nedb = await getNedb();
+            const models = getModels(nedb);
+            const user = await models.users.findOneByEmail(email);
             if (!user) {
               return done(null, false, { message: 'wrong email or password' });
             }
@@ -103,7 +107,9 @@ function makeLocalAuth(config) {
     passport.use(
       new BasicStrategy(async function(username, password, callback) {
         try {
-          const user = await usersUtil.findOneByEmail(username);
+          const nedb = await getNedb();
+          const models = getModels(nedb);
+          const user = await models.users.findOneByEmail(username);
           if (!user) {
             return callback(null, false);
           }
