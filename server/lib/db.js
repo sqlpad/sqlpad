@@ -2,9 +2,12 @@ const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
 const logger = require('./logger');
+const ensureAdmin = require('./ensureAdmin');
 const consts = require('./consts');
-const passhash = require('../lib/passhash');
 const getModels = require('../models');
+
+const TEN_MINUTES = 1000 * 60 * 10;
+const FIVE_MINUTES = 1000 * 60 * 5;
 
 /**
  * Whenever possible nedb should be read from the app req object.
@@ -64,97 +67,58 @@ async function initNedb(config) {
   };
 
   // Load dbs, migrate data, and apply indexes
-  async function init() {
-    await Promise.all(
-      nedb.instances.map(dbname => {
-        logger.info('Loading %s', dbname);
-        return nedb[dbname].loadDatabase();
-      })
+  await Promise.all(
+    nedb.instances.map(dbname => {
+      logger.info('Loading %s', dbname);
+      return nedb[dbname].loadDatabase();
+    })
+  );
+
+  // create default connection accesses
+  if (allowConnectionAccessToEveryone) {
+    logger.info('Creating access on every connection to every user...');
+    await nedb.connectionAccesses.update(
+      {
+        connectionId: consts.EVERY_CONNECTION_ID,
+        userId: consts.EVERYONE_ID
+      },
+      {
+        connectionId: consts.EVERY_CONNECTION_ID,
+        connectionName: consts.EVERY_CONNECTION_NAME,
+        userId: consts.EVERYONE_ID,
+        userEmail: consts.EVERYONE_EMAIL,
+        duration: 0,
+        expiryDate: new Date(new Date().setFullYear(2099))
+      },
+      {
+        upsert: true
+      }
     );
-    // create default connection accesses
-    if (allowConnectionAccessToEveryone) {
-      logger.info('Creating access on every connection to every user...');
-      await nedb.connectionAccesses.update(
-        {
-          connectionId: consts.EVERY_CONNECTION_ID,
-          userId: consts.EVERYONE_ID
-        },
-        {
-          connectionId: consts.EVERY_CONNECTION_ID,
-          connectionName: consts.EVERY_CONNECTION_NAME,
-          userId: consts.EVERYONE_ID,
-          userEmail: consts.EVERYONE_EMAIL,
-          duration: 0,
-          expiryDate: new Date(new Date().setFullYear(2099))
-        },
-        {
-          upsert: true
-        }
-      );
-    }
-    // Apply indexes
-    await nedb.users.ensureIndex({ fieldName: 'email', unique: true });
-    await nedb.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
-    await nedb.connectionAccesses.ensureIndex({ fieldName: 'connectionId' });
-    await nedb.connectionAccesses.ensureIndex({ fieldName: 'userId' });
-    await nedb.queryHistory.ensureIndex({ fieldName: 'connectionName' });
-    await nedb.queryHistory.ensureIndex({ fieldName: 'userEmail' });
-    await nedb.queryHistory.ensureIndex({ fieldName: 'createdDate' });
-    // set autocompaction
-    const tenMinutes = 1000 * 60 * 10;
-    nedb.instances.forEach(dbname => {
-      nedb[dbname].nedb.persistence.setAutocompactionInterval(tenMinutes);
-    });
-    return ensureAdmin();
   }
 
-  await init();
+  // Apply indexes
+  await nedb.users.ensureIndex({ fieldName: 'email', unique: true });
+  await nedb.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
+  await nedb.connectionAccesses.ensureIndex({ fieldName: 'connectionId' });
+  await nedb.connectionAccesses.ensureIndex({ fieldName: 'userId' });
+  await nedb.queryHistory.ensureIndex({ fieldName: 'connectionName' });
+  await nedb.queryHistory.ensureIndex({ fieldName: 'userEmail' });
+  await nedb.queryHistory.ensureIndex({ fieldName: 'createdDate' });
 
-  async function ensureAdmin() {
-    const adminEmail = admin;
-    if (!adminEmail) {
-      return;
-    }
+  // Set autocompaction
+  nedb.instances.forEach(dbname => {
+    nedb[dbname].nedb.persistence.setAutocompactionInterval(TEN_MINUTES);
+  });
 
-    try {
-      // if an admin was passed in the command line, check to see if a user exists with that email
-      // if so, set the admin to true
-      // if not, whitelist the email address.
-      // Then log that the person should visit the signup url to finish registration.
-      const user = await nedb.users.findOne({ email: adminEmail });
-      if (user) {
-        const changes = { role: 'admin' };
-        if (adminPassword) {
-          changes.passhash = await passhash.getPasshash(adminPassword);
-        }
-        await nedb.users.update({ _id: user._id }, { $set: changes }, {});
-        logger.info('Admin access granted to %s', adminEmail);
-        return;
-      }
-
-      const newAdmin = {
-        email: adminEmail,
-        role: 'admin'
-      };
-      if (adminPassword) {
-        newAdmin.passhash = await passhash.getPasshash(adminPassword);
-      }
-      await nedb.users.insert(newAdmin);
-      logger.info('Admin access granted to %s', adminEmail);
-      logger.info('Please visit signup to complete registration.');
-    } catch (error) {
-      logger.error('Admin access grant failed for %s', adminEmail);
-      throw error;
-    }
-  }
-
-  // Schedule cleanups every 5 minutes
+  // Schedule cleanups
   const models = getModels(nedb);
-  const FIVE_MINUTES = 1000 * 60 * 5;
   setInterval(async () => {
     await models.resultCache.removeExpired();
     await models.queryHistory.removeOldEntries();
   }, FIVE_MINUTES);
+
+  // Ensure admin is set as specified if provided
+  await ensureAdmin(nedb, admin, adminPassword);
 
   return nedb;
 }
