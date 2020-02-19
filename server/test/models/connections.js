@@ -1,5 +1,6 @@
 const assert = require('assert');
 const { getNedb } = require('../../lib/db');
+const { getConnectionsFromConfig } = require('../../lib/connectionsFromConfig');
 const getModels = require('../../models');
 
 describe('getConnectionsFromConfig', function() {
@@ -12,12 +13,12 @@ describe('getConnectionsFromConfig', function() {
   });
 
   it('handles empty object', function() {
-    const cs = models.connections.getConnectionsFromConfig({});
+    const cs = getConnectionsFromConfig({});
     assert(Array.isArray(cs));
   });
 
   it('skips partial connections', function() {
-    const cs = models.connections.getConnectionsFromConfig({
+    const cs = getConnectionsFromConfig({
       SQLPAD_CONNECTIONS__abc__driver: 'postgres'
     });
     assert(Array.isArray(cs));
@@ -25,7 +26,7 @@ describe('getConnectionsFromConfig', function() {
   });
 
   it('parses connection properly', function() {
-    const cs = models.connections.getConnectionsFromConfig({
+    const cs = getConnectionsFromConfig({
       SQLPAD_CONNECTIONS__abc__driver: 'postgres',
       SQLPAD_CONNECTIONS__abc__name: 'env-postgres',
       SQLPAD_CONNECTIONS__abc__host: 'localhost',
