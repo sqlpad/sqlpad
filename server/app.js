@@ -8,9 +8,6 @@ const config = require('./lib/config');
 const logger = require('./lib/logger');
 
 const baseUrl = config.get('baseUrl');
-const googleClientId = config.get('googleClientId');
-const googleClientSecret = config.get('googleClientSecret');
-const publicUrl = config.get('publicUrl');
 const dbPath = config.get('dbPath');
 const debug = config.get('debug');
 const webLogLevel = config.get('webLogLevel');
@@ -33,12 +30,6 @@ const expressPino = require('express-pino-logger')({
     remove: true
   }
 });
-
-const samlEntryPoint = config.get('samlEntryPoint');
-const samlIssuer = config.get('samlIssuer');
-const samlCallbackUrl = config.get('samlCallbackUrl');
-const samlCert = config.get('samlCert');
-const samlAuthContext = config.get('samlAuthContext');
 
 /*  Express setup
 ============================================================================= */
@@ -107,24 +98,10 @@ const routers = [
   require('./routes/schema-info.js'),
   require('./routes/tags.js'),
   require('./routes/format-sql.js'),
-  require('./routes/signup-signin-signout.js')
+  require('./routes/signup-signin-signout.js'),
+  require('./routes/oauth.js'),
+  require('./routes/saml.js')
 ];
-
-if (googleClientId && googleClientSecret && publicUrl) {
-  logger.info('Enabling Google authentication Strategy.');
-  routers.push(require('./routes/oauth.js'));
-}
-
-if (
-  samlEntryPoint &&
-  samlIssuer &&
-  samlCallbackUrl &&
-  samlCert &&
-  samlAuthContext
-) {
-  logger.info('Enabling SAML authentication Strategy.');
-  routers.push(require('./routes/saml.js'));
-}
 
 // Add all core routes to the baseUrl except for the */api/app route
 routers.forEach(function(router) {
