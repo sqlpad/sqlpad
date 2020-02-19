@@ -2,11 +2,13 @@ const db = require('../lib/db.js');
 const logger = require('../lib/logger');
 const _ = require('lodash');
 const drivers = require('../drivers');
-const cipher = require('../lib/cipher.js');
-const decipher = require('../lib/decipher');
+const makeCipher = require('../lib/makeCipher');
+const config = require('../lib/config');
 const getConfigFromFile = require('../lib/config/fromFile.js');
 
 const [configFromFile] = getConfigFromFile() || {};
+
+const { cipher, decipher } = makeCipher(config.get('passphrase'));
 
 /**
  * Get connections from config.
