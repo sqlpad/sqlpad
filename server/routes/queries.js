@@ -77,7 +77,7 @@ router.post('/api/queries', mustBeAuthenticated, async function(req, res) {
   try {
     const newQuery = await queriesUtil.save(query);
     // This is async, but save operation doesn't care about when/if finished
-    pushQueryToSlack(newQuery);
+    pushQueryToSlack(req.config, newQuery);
     return res.json({
       query: newQuery
     });

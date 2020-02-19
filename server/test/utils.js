@@ -3,7 +3,8 @@ const request = require('supertest');
 const usersUtil = require('../models/users');
 const consts = require('../lib/consts');
 const db = require('../lib/db');
-const app = require('../app');
+const config = require('../lib/config');
+const app = require('../app')(config);
 
 const users = {
   admin: {
