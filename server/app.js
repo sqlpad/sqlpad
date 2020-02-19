@@ -10,9 +10,12 @@ const logger = require('./lib/logger');
  * Create an express app using config
  * @param {object} config
  */
-function makeApp(config) {
+function makeApp(config, nedb) {
   if (typeof config.get !== 'function') {
     throw new Error('config is required to create app');
+  }
+  if (!nedb) {
+    throw new Error('nedb is required to create app');
   }
 
   const baseUrl = config.get('baseUrl');
@@ -57,9 +60,10 @@ function makeApp(config) {
   app.use(helmet.xssFilter());
   app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
-  // Add config to req.config
+  // Decorate req with app things
   app.use(function(req, res, next) {
     req.config = config;
+    req.nedb = nedb;
     next();
   });
 

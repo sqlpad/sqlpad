@@ -1,5 +1,4 @@
 const Joi = require('@hapi/joi');
-const db = require('../lib/db.js');
 const passhash = require('../lib/passhash.js');
 
 const schema = Joi.object({
@@ -21,66 +20,70 @@ const schema = Joi.object({
   signupDate: Joi.date().optional()
 });
 
-async function save(data) {
-  if (!data.email) {
-    throw new Error('email required when saving user');
+function makeUsers(nedb) {
+  async function save(data) {
+    if (!data.email) {
+      throw new Error('email required when saving user');
+    }
+
+    data.modifiedDate = new Date();
+
+    if (data.password) {
+      data.passhash = await passhash.getPasshash(data.password);
+    }
+
+    const joiResult = schema.validate(data);
+    if (joiResult.error) {
+      return Promise.reject(joiResult.error);
+    }
+
+    await nedb.users.update({ email: data.email }, joiResult.value, {
+      upsert: true
+    });
+    return findOneByEmail(data.email);
   }
 
-  data.modifiedDate = new Date();
-
-  if (data.password) {
-    data.passhash = await passhash.getPasshash(data.password);
+  function findOneByEmail(email) {
+    return nedb.users.findOne({ email: { $regex: new RegExp(email, 'i') } });
   }
 
-  const joiResult = schema.validate(data);
-  if (joiResult.error) {
-    return Promise.reject(joiResult.error);
+  function findOneById(id) {
+    return nedb.users.findOne({ _id: id });
   }
 
-  await db.users.update({ email: data.email }, joiResult.value, {
-    upsert: true
-  });
-  return findOneByEmail(data.email);
+  function findOneByPasswordResetId(passwordResetId) {
+    return nedb.users.findOne({ passwordResetId });
+  }
+
+  function findAll() {
+    return nedb.users
+      .cfind({}, { password: 0, passhash: 0 })
+      .sort({ email: 1 })
+      .exec();
+  }
+
+  /**
+   * Returns boolean regarding whether admin registration should be open or not
+   * @returns {Promise<boolean>} administrationOpen
+   */
+  async function adminRegistrationOpen() {
+    const doc = await nedb.users.findOne({ role: 'admin' });
+    return !doc;
+  }
+
+  function removeById(id) {
+    return nedb.users.remove({ _id: id });
+  }
+
+  return {
+    findOneByEmail,
+    findOneById,
+    findOneByPasswordResetId,
+    findAll,
+    adminRegistrationOpen,
+    removeById,
+    save
+  };
 }
 
-function findOneByEmail(email) {
-  return db.users.findOne({ email: { $regex: new RegExp(email, 'i') } });
-}
-
-function findOneById(id) {
-  return db.users.findOne({ _id: id });
-}
-
-function findOneByPasswordResetId(passwordResetId) {
-  return db.users.findOne({ passwordResetId });
-}
-
-function findAll() {
-  return db.users
-    .cfind({}, { password: 0, passhash: 0 })
-    .sort({ email: 1 })
-    .exec();
-}
-
-/**
- * Returns boolean regarding whether admin registration should be open or not
- * @returns {Promise<boolean>} administrationOpen
- */
-async function adminRegistrationOpen() {
-  const doc = await db.users.findOne({ role: 'admin' });
-  return !doc;
-}
-
-function removeById(id) {
-  return db.users.remove({ _id: id });
-}
-
-module.exports = {
-  findOneByEmail,
-  findOneById,
-  findOneByPasswordResetId,
-  findAll,
-  adminRegistrationOpen,
-  removeById,
-  save
-};
+module.exports = makeUsers;

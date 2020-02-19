@@ -2,7 +2,8 @@ const passport = require('passport');
 const SamlStrategy = require('passport-saml').Strategy;
 const router = require('express').Router();
 const logger = require('../lib/logger');
-const usersUtil = require('../models/users.js');
+const { getNedb } = require('../lib/db');
+const getModels = require('../models');
 
 /**
  * Adds passport SAML strategy and SAML auth routes if SAML is configured
@@ -41,7 +42,9 @@ function makeSamlAuth(config) {
             p[
               'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
             ];
-          const user = await usersUtil.findOneByEmail(email);
+          const nedb = await getNedb();
+          const models = getModels(nedb);
+          const user = await models.users.findOneByEmail(email);
           logger.info('User logged in via SAML %s', email);
           if (!user) {
             return done(null, false);

@@ -1,11 +1,12 @@
 const router = require('express').Router();
 const uuid = require('uuid');
-const usersUtil = require('../models/users.js');
+const getModels = require('../models');
 const makeEmail = require('../lib/email');
 const sendError = require('../lib/sendError');
 const logger = require('../lib/logger');
 
 router.post('/api/forgot-password', async function(req, res) {
+  const models = getModels(req.nedb);
   if (!req.body.email) {
     return sendError(res, null, 'Email address must be provided');
   }
@@ -16,7 +17,7 @@ router.post('/api/forgot-password', async function(req, res) {
   const email = makeEmail(req.config);
 
   try {
-    const user = await usersUtil.findOneByEmail(req.body.email);
+    const user = await models.users.findOneByEmail(req.body.email);
 
     // If user not found send success regardless
     // This is not a user-validation service
@@ -26,7 +27,7 @@ router.post('/api/forgot-password', async function(req, res) {
 
     user.passwordResetId = uuid.v4();
 
-    await usersUtil.save(user);
+    await models.users.save(user);
 
     // Send email, but do not block response
     const resetPath = `/password-reset/${user.passwordResetId}`;

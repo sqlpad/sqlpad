@@ -3,7 +3,8 @@ const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const router = require('express').Router();
 const logger = require('../lib/logger');
 const checkWhitelist = require('../lib/check-whitelist.js');
-const usersUtil = require('../models/users.js');
+const { getNedb } = require('../lib/db');
+const getModels = require('../models');
 
 /**
  * Adds Google auth strategy and adds Google auth routes if Google auth is configured
@@ -29,21 +30,24 @@ function makeGoogleAuth(config) {
       });
     }
 
+    const nedb = await getNedb();
+    const models = getModels(nedb);
+
     try {
       let [openAdminRegistration, user] = await Promise.all([
-        usersUtil.adminRegistrationOpen(),
-        usersUtil.findOneByEmail(email)
+        models.users.adminRegistrationOpen(),
+        models.users.findOneByEmail(email)
       ]);
 
       if (user) {
         user.signupDate = new Date();
-        const newUser = await usersUtil.save(user);
+        const newUser = await models.users.save(user);
         newUser.id = newUser._id;
         return done(null, newUser);
       }
       const whitelistedDomains = config.get('whitelistedDomains');
       if (openAdminRegistration || checkWhitelist(whitelistedDomains, email)) {
-        const newUser = await usersUtil.save({
+        const newUser = await models.users.save({
           email,
           role: openAdminRegistration ? 'admin' : 'editor',
           signupDate: new Date()

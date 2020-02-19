@@ -1,4 +1,3 @@
-const db = require('../lib/db.js');
 const logger = require('../lib/logger');
 const _ = require('lodash');
 const drivers = require('../drivers');
@@ -90,64 +89,68 @@ function decipherConnection(connection) {
   return connection;
 }
 
-async function findAll() {
-  let connectionsFromDb = await db.connections.find({});
-  connectionsFromDb = connectionsFromDb.map(conn => {
-    conn.editable = true;
-    return decipherConnection(conn);
-  });
+function makeConnections(nedb) {
+  async function findAll() {
+    let connectionsFromDb = await nedb.connections.find({});
+    connectionsFromDb = connectionsFromDb.map(conn => {
+      conn.editable = true;
+      return decipherConnection(conn);
+    });
 
-  const allConnections = connectionsFromDb.concat(getConnectionsFromConfig());
-  return _.sortBy(allConnections, c => c.name.toLowerCase());
-}
-
-async function findOneById(id) {
-  const connection = await db.connections.findOne({ _id: id });
-  if (connection) {
-    connection.editable = true;
-    return decipherConnection(connection);
+    const allConnections = connectionsFromDb.concat(getConnectionsFromConfig());
+    return _.sortBy(allConnections, c => c.name.toLowerCase());
   }
 
-  // If connection was not found in db try env
-  const connectionFromEnv = getConnectionsFromConfig().find(
-    connection => connection._id === id
-  );
+  async function findOneById(id) {
+    const connection = await nedb.connections.findOne({ _id: id });
+    if (connection) {
+      connection.editable = true;
+      return decipherConnection(connection);
+    }
 
-  return connectionFromEnv;
-}
+    // If connection was not found in db try env
+    const connectionFromEnv = getConnectionsFromConfig().find(
+      connection => connection._id === id
+    );
 
-async function removeOneById(id) {
-  return db.connections.remove({ _id: id });
-}
-
-async function save(connection) {
-  if (!connection) {
-    throw new Error('connections.save() requires a connection');
+    return connectionFromEnv;
   }
 
-  connection.username = cipher(connection.username || '');
-  connection.password = cipher(connection.password || '');
-
-  if (!connection.createdDate) {
-    connection.createdDate = new Date();
+  async function removeOneById(id) {
+    return nedb.connections.remove({ _id: id });
   }
-  connection.modifiedDate = new Date();
 
-  connection = drivers.validateConnection(connection);
-  const { _id } = connection;
+  async function save(connection) {
+    if (!connection) {
+      throw new Error('connections.save() requires a connection');
+    }
 
-  if (_id) {
-    await db.connections.update({ _id }, connection, {});
-    return findOneById(_id);
+    connection.username = cipher(connection.username || '');
+    connection.password = cipher(connection.password || '');
+
+    if (!connection.createdDate) {
+      connection.createdDate = new Date();
+    }
+    connection.modifiedDate = new Date();
+
+    connection = drivers.validateConnection(connection);
+    const { _id } = connection;
+
+    if (_id) {
+      await nedb.connections.update({ _id }, connection, {});
+      return findOneById(_id);
+    }
+    const newDoc = await nedb.connections.insert(connection);
+    return findOneById(newDoc._id);
   }
-  const newDoc = await db.connections.insert(connection);
-  return findOneById(newDoc._id);
+
+  return {
+    findAll,
+    findOneById,
+    removeOneById,
+    save,
+    getConnectionsFromConfig
+  };
 }
 
-module.exports = {
-  findAll,
-  findOneById,
-  removeOneById,
-  save,
-  getConnectionsFromConfig
-};
+module.exports = makeConnections;

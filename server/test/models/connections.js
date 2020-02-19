@@ -1,14 +1,23 @@
 const assert = require('assert');
-const connections = require('../../models/connections.js');
+const { getNedb } = require('../../lib/db');
+const getModels = require('../../models');
 
 describe('getConnectionsFromConfig', function() {
+  let nedb;
+  let models;
+
+  before(async function() {
+    nedb = await getNedb();
+    models = getModels(nedb);
+  });
+
   it('handles empty object', function() {
-    const cs = connections.getConnectionsFromConfig({});
+    const cs = models.connections.getConnectionsFromConfig({});
     assert(Array.isArray(cs));
   });
 
   it('skips partial connections', function() {
-    const cs = connections.getConnectionsFromConfig({
+    const cs = models.connections.getConnectionsFromConfig({
       SQLPAD_CONNECTIONS__abc__driver: 'postgres'
     });
     assert(Array.isArray(cs));
@@ -16,7 +25,7 @@ describe('getConnectionsFromConfig', function() {
   });
 
   it('parses connection properly', function() {
-    const cs = connections.getConnectionsFromConfig({
+    const cs = models.connections.getConnectionsFromConfig({
       SQLPAD_CONNECTIONS__abc__driver: 'postgres',
       SQLPAD_CONNECTIONS__abc__name: 'env-postgres',
       SQLPAD_CONNECTIONS__abc__host: 'localhost',
@@ -42,7 +51,7 @@ describe('getConnectionsFromConfig', function() {
     process.env.SQLPAD_CONNECTIONS__abc__port = '5432';
     process.env.SQLPAD_CONNECTIONS__abc__postgresSsl = 'true';
 
-    const allConnections = await connections.findAll();
+    const allConnections = await models.connections.findAll();
     const connection = allConnections.find(c => c._id === 'abc');
     assert.strictEqual(connection.name, 'env-postgres', 'connection.name');
     assert.strictEqual(connection.editable, false, 'connection.editable');
@@ -61,7 +70,7 @@ describe('getConnectionsFromConfig', function() {
     process.env.SQLPAD_CONNECTIONS__abc__port = '5432';
     process.env.SQLPAD_CONNECTIONS__abc__postgresSsl = 'true';
 
-    const connection = await connections.findOneById('abc');
+    const connection = await models.connections.findOneById('abc');
     assert.strictEqual(connection.name, 'env-postgres', 'connection.name');
     assert.strictEqual(connection.editable, false, 'connection.editable');
 

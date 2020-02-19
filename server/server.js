@@ -4,12 +4,16 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 const detectPort = require('detect-port');
+const makeApp = require('./app');
 
 // Parse command line flags to see if anything special needs to happen
 require('./lib/cli-flow.js');
 
 const logger = require('./lib/logger');
 const config = require('./lib/config');
+const { makeNedb } = require('./lib/db');
+
+const dbPromise = makeNedb(config);
 
 const configValidations = config.getValidations();
 configValidations.warnings.map(warning => logger.warn(warning));
@@ -17,8 +21,6 @@ if (configValidations.errors.length > 0) {
   configValidations.errors.forEach(error => logger.error(error));
   process.exit(1);
 }
-
-const app = require('./app')(config);
 
 const baseUrl = config.get('baseUrl');
 const ip = config.get('ip');
@@ -29,8 +31,6 @@ const keyPath = config.get('keyPath');
 const certPath = config.get('certPath');
 const systemdSocket = config.get('systemdSocket');
 const timeoutSeconds = config.get('timeoutSeconds');
-
-const db = require('./lib/db');
 
 function isFdObject(ob) {
   return ob && typeof ob.fd === 'number';
@@ -70,7 +70,9 @@ function detectPortOrSystemd(port) {
 ============================================================================= */
 let server;
 
-async function startServer() {
+async function startServer(nedb) {
+  const app = makeApp(config, nedb);
+
   // determine if key pair exists for certs
   if (keyPath && certPath) {
     // https only
@@ -122,10 +124,12 @@ async function startServer() {
   server.setTimeout(timeoutSeconds * 1000);
 }
 
-db.loadPromise.then(startServer).catch(error => {
-  logger.error(error, 'Error starting SQLPad');
-  process.exit(1);
-});
+dbPromise
+  .then(nedb => startServer(nedb))
+  .catch(error => {
+    logger.error(error, 'Error starting SQLPad');
+    process.exit(1);
+  });
 
 function handleShutdownSignal(signal) {
   if (!server) {

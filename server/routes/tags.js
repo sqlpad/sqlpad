@@ -1,12 +1,13 @@
 const _ = require('lodash');
 const router = require('express').Router();
-const queriesUtil = require('../models/queries.js');
+const getModels = require('../models');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
 
 router.get('/api/tags', mustBeAuthenticated, async function(req, res) {
   try {
-    const queries = await queriesUtil.findAll();
+    const models = getModels(req.nedb);
+    const queries = await models.queries.findAll();
     const tags = _.uniq(_.flatten(_.map(queries, 'tags')))
       .sort()
       .filter(t => t);
