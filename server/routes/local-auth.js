@@ -4,7 +4,6 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const router = require('express').Router();
 const checkWhitelist = require('../lib/check-whitelist');
 const getModels = require('../models');
-const { getNedb } = require('../lib/db');
 const sendError = require('../lib/sendError');
 const logger = require('../lib/logger');
 const passhash = require('../lib/passhash.js');
@@ -72,12 +71,17 @@ function makeLocalAuth(config) {
     passport.use(
       new PassportLocalStrategy(
         {
+          passReqToCallback: true,
           usernameField: 'email'
         },
-        async function passportLocalStrategyHandler(email, password, done) {
+        async function passportLocalStrategyHandler(
+          req,
+          email,
+          password,
+          done
+        ) {
           try {
-            const nedb = await getNedb();
-            const models = getModels(nedb);
+            const models = getModels(req.nedb);
             const user = await models.users.findOneByEmail(email);
             if (!user) {
               return done(null, false, { message: 'wrong email or password' });
@@ -105,26 +109,30 @@ function makeLocalAuth(config) {
     // TODO - basic auth should perhaps be something opted into as a separate config
     logger.info('Enabling basic authentication strategy.');
     passport.use(
-      new BasicStrategy(async function(username, password, callback) {
-        try {
-          const nedb = await getNedb();
-          const models = getModels(nedb);
-          const user = await models.users.findOneByEmail(username);
-          if (!user) {
-            return callback(null, false);
+      new BasicStrategy(
+        {
+          passReqToCallback: true
+        },
+        async function(req, username, password, callback) {
+          try {
+            const models = getModels(req.nedb);
+            const user = await models.users.findOneByEmail(username);
+            if (!user) {
+              return callback(null, false);
+            }
+            const isMatch = await passhash.comparePassword(
+              password,
+              user.passhash
+            );
+            if (!isMatch) {
+              return callback(null, false);
+            }
+            return callback(null, user);
+          } catch (error) {
+            callback(error);
           }
-          const isMatch = await passhash.comparePassword(
-            password,
-            user.passhash
-          );
-          if (!isMatch) {
-            return callback(null, false);
-          }
-          return callback(null, user);
-        } catch (error) {
-          callback(error);
         }
-      })
+      )
     );
 
     // Add routes for local auth signup & signin
@@ -137,19 +145,6 @@ function makeLocalAuth(config) {
 
     router.post('/api/signin', passport.authenticate('local'), sendSuccess);
   }
-
-  // Sign out route should always exist
-  router.get('/api/signout', function(req, res) {
-    if (!req.session) {
-      return res.json({});
-    }
-    req.session.destroy(function(err) {
-      if (err) {
-        logger.error(err);
-      }
-      res.json({});
-    });
-  });
 
   return router;
 }

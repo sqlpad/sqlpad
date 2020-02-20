@@ -2,7 +2,6 @@ const passport = require('passport');
 const SamlStrategy = require('passport-saml').Strategy;
 const router = require('express').Router();
 const logger = require('../lib/logger');
-const { getNedb } = require('../lib/db');
 const getModels = require('../models');
 
 /**
@@ -29,6 +28,7 @@ function makeSamlAuth(config) {
     passport.use(
       new SamlStrategy(
         {
+          passReqToCallback: true,
           path: '/login/callback',
           entryPoint: samlEntryPoint,
           issuer: samlIssuer,
@@ -37,13 +37,12 @@ function makeSamlAuth(config) {
           authnContext: samlAuthContext,
           identifierFormat: null
         },
-        async function(p, done) {
+        async function(req, p, done) {
           const email =
             p[
               'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
             ];
-          const nedb = await getNedb();
-          const models = getModels(nedb);
+          const models = getModels(req.nedb);
           const user = await models.users.findOneByEmail(email);
           logger.info('User logged in via SAML %s', email);
           if (!user) {

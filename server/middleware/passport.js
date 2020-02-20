@@ -1,5 +1,4 @@
 const passport = require('passport');
-const { getNedb } = require('../lib/db');
 const getModels = require('../models');
 
 // For actual passport strategy implementations, refer to related route files:
@@ -9,22 +8,25 @@ const getModels = require('../models');
 //
 // The passport config below applies regardless of the strategy used.
 
+// Given a user object, extract the id to use for session
+// nedb objects use `._id`, but some auth implementations at one point used `.id`
 passport.serializeUser(function(user, done) {
-  done(null, user.id);
+  done(null, user.id || user._id);
 });
 
-passport.deserializeUser(async function(id, done) {
+// deserializeUser takes the id from the session and turns it into a user object.
+// This user object will decorate req.user
+// Note: while passport docs only reference this function taking 2 arguments,
+// it can take 3, one of which being the req object
+// https://github.com/jaredhanson/passport/issues/743
+// https://github.com/passport/www.passportjs.org/pull/83/files
+passport.deserializeUser(async function(req, id, done) {
   try {
-    const nedb = await getNedb();
-    const models = getModels(nedb);
+    const models = getModels(req.nedb);
     const user = await models.users.findOneById(id);
     if (user) {
-      return done(null, {
-        id: user._id,
-        _id: user._id,
-        role: user.role,
-        email: user.email
-      });
+      // decorate req.user with full user object, plus `id` aliased for _id
+      return done(null, { ...user, id: user._id });
     }
     done(null, false);
   } catch (error) {
