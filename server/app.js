@@ -5,18 +5,17 @@ const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const logger = require('./lib/logger');
-const getModels = require('./models');
 
 /**
  * Create an express app using config
  * @param {object} config
  */
-function makeApp(config, nedb) {
+function makeApp(config, models) {
   if (typeof config.get !== 'function') {
     throw new Error('config is required to create app');
   }
-  if (!nedb) {
-    throw new Error('nedb is required to create app');
+  if (!models) {
+    throw new Error('models is required to create app');
   }
 
   const baseUrl = config.get('baseUrl');
@@ -64,7 +63,7 @@ function makeApp(config, nedb) {
   // Decorate req with app things
   app.use(function(req, res, next) {
     req.config = config;
-    req.models = getModels(nedb);
+    req.models = models;
     next();
   });
 

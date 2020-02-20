@@ -2,11 +2,9 @@ const assert = require('assert');
 const utils = require('../utils');
 const uuid = require('uuid');
 const { getNedb } = require('../../lib/db');
-const getModels = require('../../models');
 
 async function setReset() {
-  const nedb = await getNedb();
-  const models = getModels(nedb);
+  const { models } = await getNedb();
   const user = await models.users.findOneByEmail('admin@test.com');
   const passwordResetId = uuid.v4();
   user.passwordResetId = passwordResetId;

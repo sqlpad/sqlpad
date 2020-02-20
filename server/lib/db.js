@@ -22,13 +22,14 @@ let instances = {};
  * Returns promise of nedb instance
  * @param {string} [instanceAlias]
  */
-function getNedb(instanceAlias = 'default') {
-  const nedb = instances[instanceAlias];
-  if (!nedb) {
+async function getNedb(instanceAlias = 'default') {
+  const instancePromise = instances[instanceAlias];
+  if (!instancePromise) {
     throw new Error('nedb instance must be created first');
   }
   // nedb will already be a promise -- this just makes it explicit
-  return Promise.resolve(nedb);
+  const { nedb, models } = await instancePromise;
+  return { nedb, models };
 }
 
 /**
@@ -111,7 +112,7 @@ async function initNedb(config) {
   });
 
   // Schedule cleanups
-  const models = getModels(nedb);
+  const models = getModels(nedb, config);
   setInterval(async () => {
     await models.resultCache.removeExpired();
     await models.queryHistory.removeOldEntries();
@@ -120,7 +121,7 @@ async function initNedb(config) {
   // Ensure admin is set as specified if provided
   await ensureAdmin(nedb, admin, adminPassword);
 
-  return nedb;
+  return { nedb, models };
 }
 
 /**
@@ -137,7 +138,7 @@ function makeNedb(config, instanceAlias = 'default') {
   }
   const dbPromise = initNedb(config);
   instances[instanceAlias] = dbPromise;
-  return dbPromise;
+  return true;
 }
 
 module.exports = {
