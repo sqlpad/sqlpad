@@ -3,7 +3,6 @@ const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const router = require('express').Router();
 const logger = require('../lib/logger');
 const checkWhitelist = require('../lib/check-whitelist.js');
-const { getNedb } = require('../lib/db');
 const getModels = require('../models');
 
 /**
@@ -17,6 +16,7 @@ function makeGoogleAuth(config) {
   const publicUrl = config.get('publicUrl');
 
   async function passportGoogleStrategyHandler(
+    req,
     accessToken,
     refreshToken,
     profile,
@@ -30,8 +30,7 @@ function makeGoogleAuth(config) {
       });
     }
 
-    const nedb = await getNedb();
-    const models = getModels(nedb);
+    const models = getModels(req.nedb);
 
     try {
       let [openAdminRegistration, user] = await Promise.all([
@@ -73,6 +72,7 @@ function makeGoogleAuth(config) {
     passport.use(
       new PassportGoogleStrategy(
         {
+          passReqToCallback: true,
           clientID: googleClientId,
           clientSecret: googleClientSecret,
           callbackURL: publicUrl + baseUrl + '/auth/google/callback',
