@@ -67,7 +67,6 @@ function addAuth(req, role) {
 }
 
 async function del(role, url, statusCode = 200) {
-  await getNedb();
   let req = request(app).delete(url);
   req = addAuth(req, role);
   const response = await req.expect(statusCode);
@@ -75,7 +74,6 @@ async function del(role, url, statusCode = 200) {
 }
 
 async function get(role, url, statusCode = 200) {
-  await getNedb();
   let req = request(app).get(url);
   req = addAuth(req, role);
   const response = await req.expect(statusCode);
@@ -83,7 +81,6 @@ async function get(role, url, statusCode = 200) {
 }
 
 async function post(role, url, body, statusCode = 200) {
-  await getNedb();
   let req = request(app).post(url);
   req = addAuth(req, role);
   const response = await req.send(body).expect(statusCode);
@@ -91,7 +88,6 @@ async function post(role, url, body, statusCode = 200) {
 }
 
 async function put(role, url, body, statusCode = 200) {
-  await getNedb();
   let req = request(app).put(url);
   req = addAuth(req, role);
   const response = await req.send(body).expect(statusCode);
