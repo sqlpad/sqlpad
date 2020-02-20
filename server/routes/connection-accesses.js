@@ -10,13 +10,14 @@ const sendError = require('../lib/sendError');
  * @param {*} res
  */
 async function listConnectionAccesses(req, res) {
+  const { models } = req;
   try {
     const { includeInactives } = req.query;
     let connectionAccesses;
     if (includeInactives) {
-      connectionAccesses = await req.models.connectionAccesses.findAll();
+      connectionAccesses = await models.connectionAccesses.findAll();
     } else {
-      connectionAccesses = await req.models.connectionAccesses.findAllActive();
+      connectionAccesses = await models.connectionAccesses.findAllActive();
     }
     return res.json({ connectionAccesses });
   } catch (error) {
@@ -35,8 +36,9 @@ router.get(
  * @param {*} res
  */
 async function getConnectionAccess(req, res) {
+  const { models } = req;
   try {
-    const connectionAccess = await req.models.connectionAccesses.findOneById(
+    const connectionAccess = await models.connectionAccesses.findOneById(
       req.params._id
     );
     if (!connectionAccess) {
@@ -59,6 +61,7 @@ router.get(
  * @param {*} res
  */
 async function createConnectionAccess(req, res) {
+  const { models } = req;
   try {
     let user = {
       id: consts.EVERYONE_ID,
@@ -70,7 +73,7 @@ async function createConnectionAccess(req, res) {
     };
 
     if (req.body.userId !== consts.EVERYONE_ID) {
-      user = await req.models.users.findOneById(req.body.userId);
+      user = await models.users.findOneById(req.body.userId);
       if (!user) {
         return sendError(res, null, 'User not exists');
       }
@@ -83,21 +86,19 @@ async function createConnectionAccess(req, res) {
       }
     }
     if (req.body.connectionId !== consts.EVERY_CONNECTION_ID) {
-      connection = await req.models.connections.findOneById(
-        req.body.connectionId
-      );
+      connection = await models.connections.findOneById(req.body.connectionId);
       if (!connection) {
         return sendError(res, null, 'Connection not exists');
       }
     }
-    let activeAccess = await req.models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
+    let activeAccess = await models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
       req.body.connectionId,
       req.body.userId
     );
     if (activeAccess) {
       return sendError(res, null, 'User has active access to connection');
     }
-    let connectionAccess = await req.models.connectionAccesses.save({
+    let connectionAccess = await models.connectionAccesses.save({
       connectionId: req.body.connectionId,
       connectionName: connection.name,
       userId: req.body.userId,
@@ -121,8 +122,9 @@ router.post('/api/connection-accesses', mustBeAdmin, createConnectionAccess);
  * @param {*} res
  */
 async function updateConnectionAccess(req, res) {
+  const { models } = req;
   try {
-    const connectionAccess = await req.models.connectionAccesses.expire(
+    const connectionAccess = await models.connectionAccesses.expire(
       req.params._id
     );
     return res.json({ connectionAccess });

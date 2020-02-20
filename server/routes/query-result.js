@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const { runQuery } = require('../drivers/index');
-const getModels = require('../models');
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
 const sendError = require('../lib/sendError');
@@ -11,8 +10,8 @@ router.get(
   '/api/query-result/:_queryId',
   mustHaveConnectionAccessOrChartLink,
   async function(req, res) {
+    const { models } = req;
     try {
-      const models = getModels(req.nedb);
       const query = await models.queries.findOneById(req.params._queryId);
       if (!query) {
         return sendError(res, null, 'Query not found (save query first)');
@@ -62,7 +61,7 @@ router.post('/api/query-result', mustHaveConnectionAccess, async function(
 });
 
 async function getQueryResult(req, data) {
-  const models = getModels(req.nedb);
+  const { models } = req;
   const { connectionId, cacheKey, queryId, queryName, queryText, user } = data;
   const connection = await models.connections.findOneById(connectionId);
 

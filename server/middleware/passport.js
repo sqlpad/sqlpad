@@ -1,5 +1,4 @@
 const passport = require('passport');
-const getModels = require('../models');
 
 // For actual passport strategy implementations, refer to related route files:
 //   Local & Basic:  routes/signup-signin-signout.js
@@ -21,8 +20,8 @@ passport.serializeUser(function(user, done) {
 // https://github.com/jaredhanson/passport/issues/743
 // https://github.com/passport/www.passportjs.org/pull/83/files
 passport.deserializeUser(async function(req, id, done) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const user = await models.users.findOneById(id);
     if (user) {
       // decorate req.user with full user object, plus `id` aliased for _id

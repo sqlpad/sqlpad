@@ -1,15 +1,13 @@
 const router = require('express').Router();
 const uuid = require('uuid');
 const getMeta = require('../lib/getMeta');
-const getModels = require('../models');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const urlFilterToNeDbFilter = require('../lib/urlFilterToNeDbFilter');
 const sendError = require('../lib/sendError');
 
 router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
-
     const queryHistory = {
       id: uuid.v4(),
       cacheKey: null,
@@ -52,8 +50,8 @@ router.get('/api/query-history/:_id', mustBeAuthenticated, async function(
   req,
   res
 ) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const queryHistoryItem = await models.queryHistory.findOneById(
       req.params._id
     );

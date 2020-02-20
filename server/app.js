@@ -64,7 +64,6 @@ function makeApp(config, nedb) {
   // Decorate req with app things
   app.use(function(req, res, next) {
     req.config = config;
-    req.nedb = nedb;
     req.models = getModels(nedb);
     next();
   });

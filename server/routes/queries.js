@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const getModels = require('../models');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
 const sendError = require('../lib/sendError');
@@ -26,8 +25,8 @@ router.delete('/api/queries/:_id', mustBeAuthenticated, async function(
   req,
   res
 ) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     await models.queries.removeById(req.params._id);
     return res.json({});
   } catch (error) {
@@ -36,8 +35,8 @@ router.delete('/api/queries/:_id', mustBeAuthenticated, async function(
 });
 
 router.get('/api/queries', mustBeAuthenticated, async function(req, res) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const queries = await models.queries.findAll();
     return res.json({ queries });
   } catch (error) {
@@ -49,8 +48,8 @@ router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, async function(
   req,
   res
 ) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const query = await models.queries.findOneById(req.params._id);
     if (!query) {
       return res.json({
@@ -64,6 +63,7 @@ router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, async function(
 });
 
 router.post('/api/queries', mustBeAuthenticated, async function(req, res) {
+  const { models } = req;
   const { name, tags, connectionId, queryText, chartConfiguration } = req.body;
   const { email } = req.user;
 
@@ -78,7 +78,6 @@ router.post('/api/queries', mustBeAuthenticated, async function(req, res) {
   };
 
   try {
-    const models = getModels(req.nedb);
     const newQuery = await models.queries.save(query);
     // This is async, but save operation doesn't care about when/if finished
     pushQueryToSlack(req.config, newQuery);
@@ -91,8 +90,8 @@ router.post('/api/queries', mustBeAuthenticated, async function(req, res) {
 });
 
 router.put('/api/queries/:_id', mustBeAuthenticated, async function(req, res) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const query = await models.queries.findOneById(req.params._id);
     if (!query) {
       return sendError(res, null, 'Query not found');
