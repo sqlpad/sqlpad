@@ -43,21 +43,25 @@ const schema = Joi.object({
   lastAccessDate: Joi.date().default(Date.now)
 });
 
-function makeQueries(nedb) {
-  function findOneById(id) {
-    return nedb.queries.findOne({ _id: id });
+class Queries {
+  constructor(nedb) {
+    this.nedb = nedb;
   }
 
-  function findAll() {
-    return nedb.queries.find({});
+  findOneById(id) {
+    return this.nedb.queries.findOne({ _id: id });
   }
 
-  function findByFilter(filter) {
-    return nedb.queries.find(filter);
+  findAll() {
+    return this.nedb.queries.find({});
   }
 
-  function removeById(id) {
-    return nedb.queries.remove({ _id: id });
+  findByFilter(filter) {
+    return this.nedb.queries.find(filter);
+  }
+
+  removeById(id) {
+    return this.nedb.queries.remove({ _id: id });
   }
 
   /**
@@ -65,7 +69,7 @@ function makeQueries(nedb) {
    * returns saved query object
    * @param {object} query
    */
-  async function save(query) {
+  async save(query) {
     query.modifiedDate = new Date();
     query.lastAccessDate = new Date();
 
@@ -85,22 +89,14 @@ function makeQueries(nedb) {
       return Promise.reject(joiResult.error);
     }
     if (query._id) {
-      await nedb.queries.update({ _id: query._id }, joiResult.value, {
+      await this.nedb.queries.update({ _id: query._id }, joiResult.value, {
         upsert: true
       });
-      return findOneById(query._id);
+      return this.findOneById(query._id);
     }
-    const newQuery = await nedb.queries.insert(joiResult.value);
+    const newQuery = await this.nedb.queries.insert(joiResult.value);
     return newQuery;
   }
-
-  return {
-    findOneById,
-    findAll,
-    findByFilter,
-    removeById,
-    save
-  };
 }
 
-module.exports = makeQueries;
+module.exports = Queries;

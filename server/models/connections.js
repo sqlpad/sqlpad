@@ -17,9 +17,13 @@ function decipherConnection(connection) {
   return connection;
 }
 
-function makeConnections(nedb) {
-  async function findAll() {
-    let connectionsFromDb = await nedb.connections.find({});
+class Connections {
+  constructor(nedb) {
+    this.nedb = nedb;
+  }
+
+  async findAll() {
+    let connectionsFromDb = await this.nedb.connections.find({});
     connectionsFromDb = connectionsFromDb.map(conn => {
       conn.editable = true;
       return decipherConnection(conn);
@@ -29,8 +33,8 @@ function makeConnections(nedb) {
     return _.sortBy(allConnections, c => c.name.toLowerCase());
   }
 
-  async function findOneById(id) {
-    const connection = await nedb.connections.findOne({ _id: id });
+  async findOneById(id) {
+    const connection = await this.nedb.connections.findOne({ _id: id });
     if (connection) {
       connection.editable = true;
       return decipherConnection(connection);
@@ -44,11 +48,11 @@ function makeConnections(nedb) {
     return connectionFromEnv;
   }
 
-  async function removeOneById(id) {
-    return nedb.connections.remove({ _id: id });
+  async removeOneById(id) {
+    return this.nedb.connections.remove({ _id: id });
   }
 
-  async function save(connection) {
+  async save(connection) {
     if (!connection) {
       throw new Error('connections.save() requires a connection');
     }
@@ -65,19 +69,12 @@ function makeConnections(nedb) {
     const { _id } = connection;
 
     if (_id) {
-      await nedb.connections.update({ _id }, connection, {});
-      return findOneById(_id);
+      await this.nedb.connections.update({ _id }, connection, {});
+      return this.findOneById(_id);
     }
-    const newDoc = await nedb.connections.insert(connection);
-    return findOneById(newDoc._id);
+    const newDoc = await this.nedb.connections.insert(connection);
+    return this.findOneById(newDoc._id);
   }
-
-  return {
-    findAll,
-    findOneById,
-    removeOneById,
-    save
-  };
 }
 
-module.exports = makeConnections;
+module.exports = Connections;
