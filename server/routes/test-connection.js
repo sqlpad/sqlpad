@@ -7,9 +7,8 @@ const sendError = require('../lib/sendError');
  * A non-error response is considered a success or valid connection config
  */
 router.post('/api/test-connection', mustBeAdmin, async function(req, res) {
-  const { body } = req;
   try {
-    await testConnection(body);
+    await testConnection(req.body, req.user);
     res.send({ success: true });
   } catch (error) {
     sendError(res, error);
