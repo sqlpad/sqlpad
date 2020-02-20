@@ -1,5 +1,5 @@
 const Users = require('./users');
-const makeSchemaInfo = require('./schemaInfo');
+const SchemaInfo = require('./schemaInfo');
 const makeResultCache = require('./resultCache');
 const makeQueryHistory = require('./queryHistory');
 const makeQueries = require('./queries');
@@ -9,7 +9,7 @@ const ConnectionAccesses = require('./connectionAccesses');
 module.exports = function(nedb) {
   return {
     users: new Users(nedb),
-    schemaInfo: makeSchemaInfo(nedb),
+    schemaInfo: new SchemaInfo(nedb),
     resultCache: makeResultCache(nedb),
     queryHistory: makeQueryHistory(nedb),
     queries: makeQueries(nedb),
