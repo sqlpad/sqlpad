@@ -3,14 +3,13 @@ const PassportLocalStrategy = require('passport-local').Strategy;
 const BasicStrategy = require('passport-http').BasicStrategy;
 const router = require('express').Router();
 const checkWhitelist = require('../lib/check-whitelist');
-const getModels = require('../models');
 const sendError = require('../lib/sendError');
 const logger = require('../lib/logger');
 const passhash = require('../lib/passhash.js');
 
 async function handleSignup(req, res, next) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const whitelistedDomains = req.config.get('whitelistedDomains');
 
     if (req.body.password !== req.body.passwordConfirmation) {
@@ -81,7 +80,7 @@ function makeLocalAuth(config) {
           done
         ) {
           try {
-            const models = getModels(req.nedb);
+            const { models } = req;
             const user = await models.users.findOneByEmail(email);
             if (!user) {
               return done(null, false, { message: 'wrong email or password' });
@@ -115,7 +114,7 @@ function makeLocalAuth(config) {
         },
         async function(req, username, password, callback) {
           try {
-            const models = getModels(req.nedb);
+            const { models } = req;
             const user = await models.users.findOneByEmail(username);
             if (!user) {
               return callback(null, false);

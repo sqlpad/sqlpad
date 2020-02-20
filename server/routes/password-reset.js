@@ -1,11 +1,10 @@
 const router = require('express').Router();
-const getModels = require('../models');
 const sendError = require('../lib/sendError');
 
 // This route used to set new password given a passwordResetId
 router.post('/api/password-reset/:passwordResetId', async function(req, res) {
   try {
-    const models = getModels(req.nedb);
+    const { models } = req;
     const user = await models.users.findOneByPasswordResetId(
       req.params.passwordResetId
     );

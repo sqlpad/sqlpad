@@ -20,8 +20,12 @@ const schema = Joi.object({
   signupDate: Joi.date().optional()
 });
 
-function makeUsers(nedb) {
-  async function save(data) {
+class Users {
+  constructor(nedb) {
+    this.nedb = nedb;
+  }
+
+  async save(data) {
     if (!data.email) {
       throw new Error('email required when saving user');
     }
@@ -37,26 +41,28 @@ function makeUsers(nedb) {
       return Promise.reject(joiResult.error);
     }
 
-    await nedb.users.update({ email: data.email }, joiResult.value, {
+    await this.nedb.users.update({ email: data.email }, joiResult.value, {
       upsert: true
     });
-    return findOneByEmail(data.email);
+    return this.findOneByEmail(data.email);
   }
 
-  function findOneByEmail(email) {
-    return nedb.users.findOne({ email: { $regex: new RegExp(email, 'i') } });
+  findOneByEmail(email) {
+    return this.nedb.users.findOne({
+      email: { $regex: new RegExp(email, 'i') }
+    });
   }
 
-  function findOneById(id) {
-    return nedb.users.findOne({ _id: id });
+  findOneById(id) {
+    return this.nedb.users.findOne({ _id: id });
   }
 
-  function findOneByPasswordResetId(passwordResetId) {
-    return nedb.users.findOne({ passwordResetId });
+  findOneByPasswordResetId(passwordResetId) {
+    return this.nedb.users.findOne({ passwordResetId });
   }
 
-  function findAll() {
-    return nedb.users
+  findAll() {
+    return this.nedb.users
       .cfind({}, { password: 0, passhash: 0 })
       .sort({ email: 1 })
       .exec();
@@ -66,24 +72,14 @@ function makeUsers(nedb) {
    * Returns boolean regarding whether admin registration should be open or not
    * @returns {Promise<boolean>} administrationOpen
    */
-  async function adminRegistrationOpen() {
-    const doc = await nedb.users.findOne({ role: 'admin' });
+  async adminRegistrationOpen() {
+    const doc = await this.nedb.users.findOne({ role: 'admin' });
     return !doc;
   }
 
-  function removeById(id) {
-    return nedb.users.remove({ _id: id });
+  removeById(id) {
+    return this.nedb.users.remove({ _id: id });
   }
-
-  return {
-    findOneByEmail,
-    findOneById,
-    findOneByPasswordResetId,
-    findAll,
-    adminRegistrationOpen,
-    removeById,
-    save
-  };
 }
 
-module.exports = makeUsers;
+module.exports = Users;

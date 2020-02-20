@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const getModels = require('../models');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
@@ -10,8 +9,8 @@ function removePassword(connection) {
 }
 
 router.get('/api/connections', mustBeAuthenticated, async function(req, res) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const docs = await models.connections.findAll();
     return res.json({
       connections: docs.map(removePassword)
@@ -25,8 +24,8 @@ router.get('/api/connections/:_id', mustBeAuthenticated, async function(
   req,
   res
 ) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const connection = await models.connections.findOneById(req.params._id);
     if (!connection) {
       return sendError(res, null, 'Connection not found');
@@ -40,8 +39,8 @@ router.get('/api/connections/:_id', mustBeAuthenticated, async function(
 });
 
 router.post('/api/connections', mustBeAdmin, async function(req, res) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const newConnection = await models.connections.save(req.body);
     return res.json({
       connection: removePassword(newConnection)
@@ -52,8 +51,8 @@ router.post('/api/connections', mustBeAdmin, async function(req, res) {
 });
 
 router.put('/api/connections/:_id', mustBeAdmin, async function(req, res) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     let connection = await models.connections.findOneById(req.params._id);
     if (!connection) {
       return sendError(res, null, 'Connection not found');
@@ -69,8 +68,8 @@ router.put('/api/connections/:_id', mustBeAdmin, async function(req, res) {
 });
 
 router.delete('/api/connections/:_id', mustBeAdmin, async function(req, res) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     await models.connections.removeOneById(req.params._id);
     return res.json({});
   } catch (error) {

@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const logger = require('./lib/logger');
+const getModels = require('./models');
 
 /**
  * Create an express app using config
@@ -43,7 +44,7 @@ function makeApp(config, nedb) {
   });
 
   /*  Express setup
-============================================================================= */
+  ============================================================================= */
   const bodyParser = require('body-parser');
   const favicon = require('serve-favicon');
   const passport = require('passport');
@@ -63,7 +64,7 @@ function makeApp(config, nedb) {
   // Decorate req with app things
   app.use(function(req, res, next) {
     req.config = config;
-    req.nedb = nedb;
+    req.models = getModels(nedb);
     next();
   });
 
@@ -97,7 +98,7 @@ function makeApp(config, nedb) {
   app.use(baseUrl, express.static(path.join(__dirname, 'public')));
 
   /*  Passport setup
-============================================================================= */
+  ============================================================================= */
   require('./middleware/passport.js');
 
   // If local auth is not disabled, support basic auth using a user's email and password
@@ -107,7 +108,7 @@ function makeApp(config, nedb) {
   }
 
   /*  Routes
-============================================================================= */
+  ============================================================================= */
   const routers = [
     require('./routes/drivers.js'),
     require('./routes/users.js'),

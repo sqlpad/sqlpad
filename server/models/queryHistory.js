@@ -18,31 +18,35 @@ const schema = Joi.object({
   createdDate: Joi.date().default(new Date())
 });
 
-function makeQueryHistory(nedb) {
-  function findOneById(id) {
-    return nedb.queryHistory.findOne({ _id: id });
+class QueryHistory {
+  constructor(nedb) {
+    this.nedb = nedb;
   }
 
-  async function findAll() {
-    return nedb.queryHistory
+  findOneById(id) {
+    return this.nedb.queryHistory.findOne({ _id: id });
+  }
+
+  async findAll() {
+    return this.nedb.queryHistory
       .cfind({}, {})
       .sort({ startTime: -1 })
       .exec();
   }
 
-  function findByFilter(filter) {
-    return nedb.queryHistory
+  findByFilter(filter) {
+    return this.nedb.queryHistory
       .cfind(filter || {}, {})
       .sort({ startTime: -1 })
       .limit(config.get('queryHistoryResultMaxRows'))
       .exec();
   }
 
-  async function removeOldEntries() {
+  async removeOldEntries() {
     const days = config.get('queryHistoryRetentionTimeInDays') * 86400 * 1000;
     const retentionPeriodStartTime = new Date(new Date().getTime() - days);
 
-    return nedb.queryHistory.remove(
+    return this.nedb.queryHistory.remove(
       { createdDate: { $lt: retentionPeriodStartTime } },
       { multi: true }
     );
@@ -53,21 +57,13 @@ function makeQueryHistory(nedb) {
    * returns saved queryHistory object
    * @param {object} queryHistory
    */
-  async function save(data) {
+  async save(data) {
     const joiResult = schema.validate(data);
     if (joiResult.error) {
       return Promise.reject(joiResult.error);
     }
-    return nedb.queryHistory.insert(joiResult.value);
+    return this.nedb.queryHistory.insert(joiResult.value);
   }
-
-  return {
-    findOneById,
-    findAll,
-    findByFilter,
-    removeOldEntries,
-    save
-  };
 }
 
-module.exports = makeQueryHistory;
+module.exports = QueryHistory;

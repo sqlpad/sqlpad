@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const getModels = require('../models');
 const makeEmail = require('../lib/email');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
@@ -7,8 +6,8 @@ const sendError = require('../lib/sendError');
 const logger = require('../lib/logger');
 
 router.get('/api/users', mustBeAuthenticated, async function(req, res) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     const users = await models.users.findAll();
     return res.json({ users });
   } catch (error) {
@@ -18,8 +17,8 @@ router.get('/api/users', mustBeAuthenticated, async function(req, res) {
 
 // create/whitelist/invite user
 router.post('/api/users', mustBeAdmin, async function(req, res) {
+  const { models } = req;
   try {
-    const models = getModels(req.nedb);
     let user = await models.users.findOneByEmail(req.body.email);
     if (user) {
       return sendError(res, null, 'User already exists');
@@ -41,12 +40,11 @@ router.post('/api/users', mustBeAdmin, async function(req, res) {
 });
 
 router.put('/api/users/:_id', mustBeAdmin, async function(req, res) {
-  const { params, body, user } = req;
+  const { params, body, user, models } = req;
   if (user._id === params._id && user.role === 'admin' && body.role != null) {
     return sendError(res, null, "You can't unadmin yourself");
   }
   try {
-    const models = getModels(req.nedb);
     const updateUser = await models.users.findOneById(params._id);
     if (!updateUser) {
       return sendError(res, null, 'user not found');
@@ -67,11 +65,11 @@ router.put('/api/users/:_id', mustBeAdmin, async function(req, res) {
 });
 
 router.delete('/api/users/:_id', mustBeAdmin, async function(req, res) {
+  const { models } = req;
   if (req.user._id === req.params._id) {
     return sendError(res, null, "You can't delete yourself");
   }
   try {
-    const models = getModels(req.nedb);
     await models.users.removeById(req.params._id);
     return res.json({});
   } catch (error) {

@@ -2,14 +2,18 @@ function getCacheKey(connectionId) {
   return 'schemaCache:' + connectionId;
 }
 
-function makeSchemaInfo(nedb) {
+class SchemaInfo {
+  constructor(nedb) {
+    this.nedb = nedb;
+  }
+
   /**
    * Get schemaInfo for connection id
    * @param {string} connectionId
    */
-  async function getSchemaInfo(connectionId) {
+  async getSchemaInfo(connectionId) {
     const cacheKey = getCacheKey(connectionId);
-    const doc = await nedb.cache.findOne({ cacheKey });
+    const doc = await this.nedb.cache.findOne({ cacheKey });
 
     if (!doc) {
       return;
@@ -33,7 +37,7 @@ function makeSchemaInfo(nedb) {
    * @param {string} connectionId
    * @param {object} schemaInfo
    */
-  async function saveSchemaInfo(connectionId, schemaInfo) {
+  async saveSchemaInfo(connectionId, schemaInfo) {
     const cacheKey = getCacheKey(connectionId);
     if (schemaInfo && Object.keys(schemaInfo).length) {
       const schema = JSON.stringify(schemaInfo);
@@ -42,15 +46,11 @@ function makeSchemaInfo(nedb) {
         schema,
         modifiedDate: new Date()
       };
-      return nedb.cache.update({ cacheKey }, doc, {
+      return this.nedb.cache.update({ cacheKey }, doc, {
         upsert: true
       });
     }
   }
-  return {
-    getSchemaInfo,
-    saveSchemaInfo
-  };
 }
 
-module.exports = makeSchemaInfo;
+module.exports = SchemaInfo;

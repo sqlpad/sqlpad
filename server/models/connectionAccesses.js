@@ -17,8 +17,12 @@ const schema = Joi.object({
   modifiedDate: Joi.date().default(Date.now)
 });
 
-function makeConnectionAccesses(nedb) {
-  async function save(data) {
+class ConnectionAccesses {
+  constructor(nedb) {
+    this.nedb = nedb;
+  }
+
+  async save(data) {
     if (!data.connectionId) {
       throw new Error('connectionId required when saving connection access');
     }
@@ -38,7 +42,7 @@ function makeConnectionAccesses(nedb) {
       return Promise.reject(joiResult.error);
     }
 
-    await nedb.connectionAccesses.update(
+    await this.nedb.connectionAccesses.update(
       {
         connectionId: data.connectionId,
         connectionName: data.connectionName,
@@ -52,11 +56,16 @@ function makeConnectionAccesses(nedb) {
         upsert: true
       }
     );
-    return findOneActiveByConnectionIdAndUserId(data.connectionId, data.userId);
+    return this.findOneActiveByConnectionIdAndUserId(
+      data.connectionId,
+      data.userId
+    );
   }
 
-  async function expire(id) {
-    const connectionAccess = await nedb.connectionAccesses.findOne({ _id: id });
+  async expire(id) {
+    const connectionAccess = await this.nedb.connectionAccesses.findOne({
+      _id: id
+    });
     if (!connectionAccess) {
       throw new Error('Connection access not found');
     }
@@ -64,16 +73,16 @@ function makeConnectionAccesses(nedb) {
     connectionAccess.expiryDate = new Date();
     connectionAccess.modifiedDate = new Date();
 
-    await nedb.connectionAccesses.update({ _id: id }, connectionAccess);
-    return findOneById(id);
+    await this.nedb.connectionAccesses.update({ _id: id }, connectionAccess);
+    return this.findOneById(id);
   }
 
-  function findOneById(id) {
-    return nedb.connectionAccesses.findOne({ _id: id });
+  findOneById(id) {
+    return this.nedb.connectionAccesses.findOne({ _id: id });
   }
 
-  function findOneActiveByConnectionIdAndUserId(connectionId, userId) {
-    return nedb.connectionAccesses.findOne({
+  findOneActiveByConnectionIdAndUserId(connectionId, userId) {
+    return this.nedb.connectionAccesses.findOne({
       $and: [
         {
           $or: [
@@ -96,48 +105,36 @@ function makeConnectionAccesses(nedb) {
     });
   }
 
-  function findAllActiveByConnectionId(connectionId) {
-    return nedb.connectionAccesses.findOne({
+  findAllActiveByConnectionId(connectionId) {
+    return this.nedb.connectionAccesses.findOne({
       connectionId: { $in: [connectionId, consts.EVERY_CONNECTION_ID] },
       expiryDate: { $gt: new Date() }
     });
   }
 
-  function findAllByConnectionId(connectionId) {
-    return nedb.connectionAccesses.findAll({
+  findAllByConnectionId(connectionId) {
+    return this.nedb.connectionAccesses.findAll({
       connectionId: { $in: [connectionId, consts.EVERY_CONNECTION_ID] }
     });
   }
 
-  function findAllActive() {
-    return nedb.connectionAccesses
+  findAllActive() {
+    return this.nedb.connectionAccesses
       .cfind({ expiryDate: { $gt: new Date() } })
       .sort({ expiryDate: -1 })
       .exec();
   }
 
-  function findAll() {
-    return nedb.connectionAccesses
+  findAll() {
+    return this.nedb.connectionAccesses
       .cfind({}, {})
       .sort({ expiryDate: -1 })
       .exec();
   }
 
-  function removeById(id) {
-    return nedb.connectionAccesses.remove({ _id: id });
+  removeById(id) {
+    return this.nedb.connectionAccesses.remove({ _id: id });
   }
-
-  return {
-    findOneById,
-    findOneActiveByConnectionIdAndUserId,
-    findAllActiveByConnectionId,
-    findAllByConnectionId,
-    findAllActive,
-    findAll,
-    removeById,
-    expire,
-    save
-  };
 }
 
-module.exports = makeConnectionAccesses;
+module.exports = ConnectionAccesses;
