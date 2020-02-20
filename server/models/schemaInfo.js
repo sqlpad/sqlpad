@@ -3,8 +3,9 @@ function getCacheKey(connectionId) {
 }
 
 class SchemaInfo {
-  constructor(nedb) {
+  constructor(nedb, config) {
     this.nedb = nedb;
+    this.config = config;
   }
 
   /**

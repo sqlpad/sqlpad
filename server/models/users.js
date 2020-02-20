@@ -21,8 +21,9 @@ const schema = Joi.object({
 });
 
 class Users {
-  constructor(nedb) {
+  constructor(nedb, config) {
     this.nedb = nedb;
+    this.config = config;
   }
 
   async save(data) {

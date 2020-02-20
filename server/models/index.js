@@ -6,14 +6,14 @@ const Queries = require('./queries');
 const Connections = require('./connections');
 const ConnectionAccesses = require('./connectionAccesses');
 
-module.exports = function(nedb) {
+module.exports = function(nedb, config) {
   return {
-    users: new Users(nedb),
-    schemaInfo: new SchemaInfo(nedb),
-    resultCache: new ResultCache(nedb),
-    queryHistory: new QueryHistory(nedb),
-    queries: new Queries(nedb),
-    connections: new Connections(nedb),
-    connectionAccesses: new ConnectionAccesses(nedb)
+    users: new Users(nedb, config),
+    schemaInfo: new SchemaInfo(nedb, config),
+    resultCache: new ResultCache(nedb, config),
+    queryHistory: new QueryHistory(nedb, config),
+    queries: new Queries(nedb, config),
+    connections: new Connections(nedb, config),
+    connectionAccesses: new ConnectionAccesses(nedb, config)
   };
 };
