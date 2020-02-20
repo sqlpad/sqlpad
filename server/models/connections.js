@@ -1,32 +1,33 @@
 const _ = require('lodash');
 const drivers = require('../drivers');
 const makeCipher = require('../lib/makeCipher');
-const config = require('../lib/config');
 // TODO: during app init upsert these into db?
 const { getConnectionsFromConfig } = require('../lib/connectionsFromConfig');
 
-const { cipher, decipher } = makeCipher(config.get('passphrase'));
-
-function decipherConnection(connection) {
-  if (connection.username) {
-    connection.username = decipher(connection.username);
-  }
-  if (connection.password) {
-    connection.password = decipher(connection.password);
-  }
-  return connection;
-}
-
 class Connections {
-  constructor(nedb) {
+  constructor(nedb, config) {
     this.nedb = nedb;
+    this.config = config;
+    const { cipher, decipher } = makeCipher(config.get('passphrase'));
+    this.cipher = cipher;
+    this.decipher = decipher;
+  }
+
+  decipherConnection(connection) {
+    if (connection.username) {
+      connection.username = this.decipher(connection.username);
+    }
+    if (connection.password) {
+      connection.password = this.decipher(connection.password);
+    }
+    return connection;
   }
 
   async findAll() {
     let connectionsFromDb = await this.nedb.connections.find({});
     connectionsFromDb = connectionsFromDb.map(conn => {
       conn.editable = true;
-      return decipherConnection(conn);
+      return this.decipherConnection(conn);
     });
 
     const allConnections = connectionsFromDb.concat(getConnectionsFromConfig());
@@ -37,7 +38,7 @@ class Connections {
     const connection = await this.nedb.connections.findOne({ _id: id });
     if (connection) {
       connection.editable = true;
-      return decipherConnection(connection);
+      return this.decipherConnection(connection);
     }
 
     // If connection was not found in db try env
@@ -57,8 +58,8 @@ class Connections {
       throw new Error('connections.save() requires a connection');
     }
 
-    connection.username = cipher(connection.username || '');
-    connection.password = cipher(connection.password || '');
+    connection.username = this.cipher(connection.username || '');
+    connection.password = this.cipher(connection.password || '');
 
     if (!connection.createdDate) {
       connection.createdDate = new Date();

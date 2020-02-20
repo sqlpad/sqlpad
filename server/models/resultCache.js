@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
@@ -6,8 +5,6 @@ const sanitize = require('sanitize-filename');
 const logger = require('../lib/logger');
 const xlsx = require('node-xlsx');
 const { parse } = require('json2csv');
-const config = require('../lib/config');
-const dbPath = config.get('dbPath');
 
 // This is a workaround till BigInt is fully supported by the standard
 // See https://tc39.es/ecma262/#sec-ecmascript-language-types-bigint-type
@@ -21,20 +18,22 @@ BigInt.prototype.toJSON = function() {
 };
 
 class ResultCache {
-  constructor(nedb) {
+  constructor(nedb, config) {
     this.nedb = nedb;
+    this.config = config;
+    this.dbPath = config.get('dbPath');
   }
 
   xlsxFilePath(cacheKey) {
-    return path.join(dbPath, '/cache/', cacheKey + '.xlsx');
+    return path.join(this.dbPath, '/cache/', cacheKey + '.xlsx');
   }
 
   csvFilePath(cacheKey) {
-    return path.join(dbPath, '/cache/', cacheKey + '.csv');
+    return path.join(this.dbPath, '/cache/', cacheKey + '.csv');
   }
 
   jsonFilePath(cacheKey) {
-    return path.join(dbPath, '/cache/', cacheKey + '.json');
+    return path.join(this.dbPath, '/cache/', cacheKey + '.json');
   }
 
   async findOneByCacheKey(cacheKey) {

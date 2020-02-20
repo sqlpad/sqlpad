@@ -1,15 +1,13 @@
 const assert = require('assert');
-const { getNedb } = require('../../lib/db');
+const { getDb } = require('../../lib/db');
 const { getConnectionsFromConfig } = require('../../lib/connectionsFromConfig');
-const getModels = require('../../models');
 
 describe('getConnectionsFromConfig', function() {
-  let nedb;
   let models;
 
   before(async function() {
-    nedb = await getNedb();
-    models = getModels(nedb);
+    const db = await getDb();
+    models = db.models;
   });
 
   it('handles empty object', function() {

@@ -4,7 +4,7 @@ const mkdirp = require('mkdirp');
 const logger = require('./logger');
 const ensureAdmin = require('./ensureAdmin');
 const consts = require('./consts');
-const getModels = require('../models');
+const Models = require('../models');
 
 const TEN_MINUTES = 1000 * 60 * 10;
 const FIVE_MINUTES = 1000 * 60 * 5;
@@ -22,13 +22,14 @@ let instances = {};
  * Returns promise of nedb instance
  * @param {string} [instanceAlias]
  */
-function getNedb(instanceAlias = 'default') {
-  const nedb = instances[instanceAlias];
-  if (!nedb) {
-    throw new Error('nedb instance must be created first');
+async function getDb(instanceAlias = 'default') {
+  const instancePromise = instances[instanceAlias];
+  if (!instancePromise) {
+    throw new Error('db instance must be created first');
   }
   // nedb will already be a promise -- this just makes it explicit
-  return Promise.resolve(nedb);
+  const { nedb, models } = await instancePromise;
+  return { nedb, models };
 }
 
 /**
@@ -111,7 +112,7 @@ async function initNedb(config) {
   });
 
   // Schedule cleanups
-  const models = getModels(nedb);
+  const models = new Models(nedb, config);
   setInterval(async () => {
     await models.resultCache.removeExpired();
     await models.queryHistory.removeOldEntries();
@@ -120,7 +121,7 @@ async function initNedb(config) {
   // Ensure admin is set as specified if provided
   await ensureAdmin(nedb, admin, adminPassword);
 
-  return nedb;
+  return { nedb, models };
 }
 
 /**
@@ -130,17 +131,17 @@ async function initNedb(config) {
  * @param {object} config
  * @param {string} instanceAlias
  */
-function makeNedb(config, instanceAlias = 'default') {
-  // makeNedb should only be called once for a given alias
+function makeDb(config, instanceAlias = 'default') {
+  // makeDb should only be called once for a given alias
   if (instances[instanceAlias]) {
     throw new Error(`db instance ${instanceAlias} already made`);
   }
   const dbPromise = initNedb(config);
   instances[instanceAlias] = dbPromise;
-  return dbPromise;
+  return true;
 }
 
 module.exports = {
-  makeNedb,
-  getNedb
+  makeDb,
+  getDb
 };

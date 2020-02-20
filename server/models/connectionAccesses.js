@@ -18,8 +18,9 @@ const schema = Joi.object({
 });
 
 class ConnectionAccesses {
-  constructor(nedb) {
+  constructor(nedb, config) {
     this.nedb = nedb;
+    this.config = config;
   }
 
   async save(data) {

@@ -44,8 +44,9 @@ const schema = Joi.object({
 });
 
 class Queries {
-  constructor(nedb) {
+  constructor(nedb, config) {
     this.nedb = nedb;
+    this.config = config;
   }
 
   findOneById(id) {

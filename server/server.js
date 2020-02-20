@@ -11,9 +11,9 @@ require('./lib/cli-flow.js');
 
 const logger = require('./lib/logger');
 const config = require('./lib/config');
-const { makeNedb } = require('./lib/db');
+const { makeDb, getDb } = require('./lib/db');
 
-const dbPromise = makeNedb(config);
+makeDb(config);
 
 const configValidations = config.getValidations();
 configValidations.warnings.map(warning => logger.warn(warning));
@@ -70,8 +70,8 @@ function detectPortOrSystemd(port) {
 ============================================================================= */
 let server;
 
-async function startServer(nedb) {
-  const app = makeApp(config, nedb);
+async function startServer(models) {
+  const app = makeApp(config, models);
 
   // determine if key pair exists for certs
   if (keyPath && certPath) {
@@ -124,8 +124,8 @@ async function startServer(nedb) {
   server.setTimeout(timeoutSeconds * 1000);
 }
 
-dbPromise
-  .then(nedb => startServer(nedb))
+getDb()
+  .then(db => startServer(db.models))
   .catch(error => {
     logger.error(error, 'Error starting SQLPad');
     process.exit(1);
