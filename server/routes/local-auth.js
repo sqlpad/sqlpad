@@ -146,19 +146,6 @@ function makeLocalAuth(config) {
     router.post('/api/signin', passport.authenticate('local'), sendSuccess);
   }
 
-  // Sign out route should always exist
-  router.get('/api/signout', function(req, res) {
-    if (!req.session) {
-      return res.json({});
-    }
-    req.session.destroy(function(err) {
-      if (err) {
-        logger.error(err);
-      }
-      res.json({});
-    });
-  });
-
   return router;
 }
 

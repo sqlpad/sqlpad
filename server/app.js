@@ -123,7 +123,8 @@ function makeApp(config, nedb) {
     require('./routes/schema-info.js'),
     require('./routes/tags.js'),
     require('./routes/format-sql.js'),
-    require('./routes/signup-signin-signout.js')(config),
+    require('./routes/signout.js'),
+    require('./routes/local-auth.js')(config),
     require('./routes/oauth.js')(config),
     require('./routes/saml.js')(config)
   ];
