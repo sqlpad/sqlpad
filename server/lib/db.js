@@ -4,7 +4,7 @@ const mkdirp = require('mkdirp');
 const logger = require('./logger');
 const ensureAdmin = require('./ensureAdmin');
 const consts = require('./consts');
-const getModels = require('../models');
+const Models = require('../models');
 
 const TEN_MINUTES = 1000 * 60 * 10;
 const FIVE_MINUTES = 1000 * 60 * 5;
@@ -112,7 +112,7 @@ async function initNedb(config) {
   });
 
   // Schedule cleanups
-  const models = getModels(nedb, config);
+  const models = new Models(nedb, config);
   setInterval(async () => {
     await models.resultCache.removeExpired();
     await models.queryHistory.removeOldEntries();

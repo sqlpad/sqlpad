@@ -6,14 +6,16 @@ const Queries = require('./queries');
 const Connections = require('./connections');
 const ConnectionAccesses = require('./connectionAccesses');
 
-module.exports = function(nedb, config) {
-  return {
-    users: new Users(nedb, config),
-    schemaInfo: new SchemaInfo(nedb, config),
-    resultCache: new ResultCache(nedb, config),
-    queryHistory: new QueryHistory(nedb, config),
-    queries: new Queries(nedb, config),
-    connections: new Connections(nedb, config),
-    connectionAccesses: new ConnectionAccesses(nedb, config)
-  };
-};
+class Models {
+  constructor(nedb, config) {
+    this.users = new Users(nedb, config);
+    this.schemaInfo = new SchemaInfo(nedb, config);
+    this.resultCache = new ResultCache(nedb, config);
+    this.queryHistory = new QueryHistory(nedb, config);
+    this.queries = new Queries(nedb, config);
+    this.connections = new Connections(nedb, config);
+    this.connectionAccesses = new ConnectionAccesses(nedb, config);
+  }
+}
+
+module.exports = Models;
