@@ -22,10 +22,10 @@ let instances = {};
  * Returns promise of nedb instance
  * @param {string} [instanceAlias]
  */
-async function getNedb(instanceAlias = 'default') {
+async function getDb(instanceAlias = 'default') {
   const instancePromise = instances[instanceAlias];
   if (!instancePromise) {
-    throw new Error('nedb instance must be created first');
+    throw new Error('db instance must be created first');
   }
   // nedb will already be a promise -- this just makes it explicit
   const { nedb, models } = await instancePromise;
@@ -131,8 +131,8 @@ async function initNedb(config) {
  * @param {object} config
  * @param {string} instanceAlias
  */
-function makeNedb(config, instanceAlias = 'default') {
-  // makeNedb should only be called once for a given alias
+function makeDb(config, instanceAlias = 'default') {
+  // makeDb should only be called once for a given alias
   if (instances[instanceAlias]) {
     throw new Error(`db instance ${instanceAlias} already made`);
   }
@@ -142,6 +142,6 @@ function makeNedb(config, instanceAlias = 'default') {
 }
 
 module.exports = {
-  makeNedb,
-  getNedb
+  makeDb,
+  getDb
 };

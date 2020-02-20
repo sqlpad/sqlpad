@@ -2,10 +2,10 @@ const assert = require('assert');
 const request = require('supertest');
 const consts = require('../lib/consts');
 const config = require('../lib/config');
-const { makeNedb, getNedb } = require('../lib/db');
+const { makeDb, getDb } = require('../lib/db');
 const makeApp = require('../app');
 
-makeNedb(config);
+makeDb(config);
 let app;
 
 const users = {
@@ -28,7 +28,7 @@ function expectKeys(data, expectedKeys) {
 }
 
 async function reset() {
-  const { nedb } = await getNedb();
+  const { nedb } = await getDb();
   return Promise.all([
     nedb.users.remove({}, { multi: true }),
     nedb.queries.remove({}, { multi: true }),
@@ -50,7 +50,7 @@ async function reset() {
 
 async function resetWithUser() {
   await reset();
-  const { models } = await getNedb();
+  const { models } = await getDb();
   const saves = Object.keys(users).map(key => {
     return models.users.save(users[key]);
   });
@@ -95,11 +95,11 @@ async function put(role, url, body, statusCode = 200) {
 }
 
 before(async function() {
-  const { models } = await getNedb();
+  const { models } = await getDb();
   app = makeApp(config, models);
 
   assert.throws(() => {
-    makeNedb(config);
+    makeDb(config);
   }, 'ensure nedb can be made once');
 
   return resetWithUser();

@@ -1,12 +1,12 @@
 const assert = require('assert');
-const { getNedb } = require('../../lib/db');
+const { getDb } = require('../../lib/db');
 const { getConnectionsFromConfig } = require('../../lib/connectionsFromConfig');
 
 describe('getConnectionsFromConfig', function() {
   let models;
 
   before(async function() {
-    const db = await getNedb();
+    const db = await getDb();
     models = db.models;
   });
 

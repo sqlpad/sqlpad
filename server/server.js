@@ -11,9 +11,9 @@ require('./lib/cli-flow.js');
 
 const logger = require('./lib/logger');
 const config = require('./lib/config');
-const { makeNedb, getNedb } = require('./lib/db');
+const { makeDb, getDb } = require('./lib/db');
 
-makeNedb(config);
+makeDb(config);
 
 const configValidations = config.getValidations();
 configValidations.warnings.map(warning => logger.warn(warning));
@@ -124,7 +124,7 @@ async function startServer(models) {
   server.setTimeout(timeoutSeconds * 1000);
 }
 
-getNedb()
+getDb()
   .then(db => startServer(db.models))
   .catch(error => {
     logger.error(error, 'Error starting SQLPad');
