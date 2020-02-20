@@ -1,37 +1,42 @@
+require('../typedefs');
 const router = require('express').Router();
 const consts = require('../lib/consts');
-const getModels = require('../models');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
 
-router.get('/api/connection-accesses', mustBeAuthenticated, async function(
-  req,
-  res
-) {
+/**
+ * @param {Req} req
+ * @param {*} res
+ */
+async function listConnectionAccesses(req, res) {
   try {
-    const { query, nedb } = req;
-    const models = getModels(nedb);
-    const { includeInactives } = query;
+    const { includeInactives } = req.query;
     let connectionAccesses;
     if (includeInactives) {
-      connectionAccesses = await models.connectionAccesses.findAll();
+      connectionAccesses = await req.models.connectionAccesses.findAll();
     } else {
-      connectionAccesses = await models.connectionAccesses.findAllActive();
+      connectionAccesses = await req.models.connectionAccesses.findAllActive();
     }
     return res.json({ connectionAccesses });
   } catch (error) {
     sendError(res, error, 'Problem getting connection accesses');
   }
-});
+}
 
-router.get('/api/connection-accesses/:_id', mustBeAuthenticated, async function(
-  req,
-  res
-) {
+router.get(
+  '/api/connection-accesses',
+  mustBeAuthenticated,
+  listConnectionAccesses
+);
+
+/**
+ * @param {Req} req
+ * @param {*} res
+ */
+async function getConnectionAccess(req, res) {
   try {
-    const models = getModels(req.nedb);
-    const connectionAccess = await models.connectionAccesses.findOneById(
+    const connectionAccess = await req.models.connectionAccesses.findOneById(
       req.params._id
     );
     if (!connectionAccess) {
@@ -41,11 +46,19 @@ router.get('/api/connection-accesses/:_id', mustBeAuthenticated, async function(
   } catch (error) {
     sendError(res, error, 'Problem querying connection access');
   }
-});
+}
 
-// crete active connection access
-router.post('/api/connection-accesses', mustBeAdmin, async function(req, res) {
-  const models = getModels(req.nedb);
+router.get(
+  '/api/connection-accesses/:_id',
+  mustBeAuthenticated,
+  getConnectionAccess
+);
+
+/**
+ * @param {Req} req
+ * @param {*} res
+ */
+async function createConnectionAccess(req, res) {
   try {
     let user = {
       id: consts.EVERYONE_ID,
@@ -57,7 +70,7 @@ router.post('/api/connection-accesses', mustBeAdmin, async function(req, res) {
     };
 
     if (req.body.userId !== consts.EVERYONE_ID) {
-      user = await models.users.findOneById(req.body.userId);
+      user = await req.models.users.findOneById(req.body.userId);
       if (!user) {
         return sendError(res, null, 'User not exists');
       }
@@ -70,19 +83,21 @@ router.post('/api/connection-accesses', mustBeAdmin, async function(req, res) {
       }
     }
     if (req.body.connectionId !== consts.EVERY_CONNECTION_ID) {
-      connection = await models.connections.findOneById(req.body.connectionId);
+      connection = await req.models.connections.findOneById(
+        req.body.connectionId
+      );
       if (!connection) {
         return sendError(res, null, 'Connection not exists');
       }
     }
-    let activeAccess = await models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
+    let activeAccess = await req.models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
       req.body.connectionId,
       req.body.userId
     );
     if (activeAccess) {
       return sendError(res, null, 'User has active access to connection');
     }
-    let connectionAccess = await models.connectionAccesses.save({
+    let connectionAccess = await req.models.connectionAccesses.save({
       connectionId: req.body.connectionId,
       connectionName: connection.name,
       userId: req.body.userId,
@@ -97,21 +112,29 @@ router.post('/api/connection-accesses', mustBeAdmin, async function(req, res) {
       sendError(res, error, 'Problem saving connection');
     }
   }
-});
+}
 
-router.put('/api/connection-accesses/:_id/expire', mustBeAdmin, async function(
-  req,
-  res
-) {
-  const models = getModels(req.nedb);
+router.post('/api/connection-accesses', mustBeAdmin, createConnectionAccess);
+
+/**
+ * @param {Req} req
+ * @param {*} res
+ */
+async function updateConnectionAccess(req, res) {
   try {
-    const connectionAccess = await models.connectionAccesses.expire(
+    const connectionAccess = await req.models.connectionAccesses.expire(
       req.params._id
     );
     return res.json({ connectionAccess });
   } catch (error) {
     sendError(res, error, 'Problem expiring connection accesses');
   }
-});
+}
+
+router.put(
+  '/api/connection-accesses/:_id/expire',
+  mustBeAdmin,
+  updateConnectionAccess
+);
 
 module.exports = router;
