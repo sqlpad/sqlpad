@@ -4,6 +4,7 @@ const passhash = require('../lib/passhash.js');
 const schema = Joi.object({
   _id: Joi.string().optional(), // will be auto-gen by nedb
   email: Joi.string().required(),
+  name: Joi.string().optional(),
   role: Joi.string()
     .lowercase()
     .allow('admin', 'editor', 'viewer'),
@@ -17,7 +18,12 @@ const schema = Joi.object({
     .strip(),
   createdDate: Joi.date().default(Date.now),
   modifiedDate: Joi.date().default(Date.now),
-  signupDate: Joi.date().optional()
+  signupDate: Joi.date().optional(),
+  // `data` field is intended to be something end users populate via various means
+  // That is data can be anything, managed by user, not by SQLPad
+  // The data object's primary purpose will be to store values for replacement in connection templates
+  // For any official SQLPad use, fields should be specified on user object
+  data: Joi.object().optional()
 });
 
 class Users {

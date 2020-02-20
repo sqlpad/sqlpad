@@ -7,7 +7,7 @@ router.get(
   '/api/schema-info/:connectionId',
   mustHaveConnectionAccess,
   async function(req, res) {
-    const { models } = req;
+    const { models, user } = req;
     const { connectionId } = req.params;
     const reload = req.query.reload === 'true';
 
@@ -24,7 +24,7 @@ router.get(
         return res.json({ schemaInfo });
       }
 
-      schemaInfo = await driver.getSchema(conn);
+      schemaInfo = await driver.getSchema(conn, user);
       if (Object.keys(schemaInfo).length) {
         await models.schemaInfo.saveSchemaInfo(connectionId, schemaInfo);
       }
