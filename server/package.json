@@ -51,6 +51,7 @@
     "mkdirp": "^1.0.3",
     "moment": "^2.24.0",
     "mssql": "^6.0.1",
+    "mustache": "^4.0.0",
     "mysql": "^2.18.1",
     "nedb": "^1.8.0",
     "nedb-promise": "^2.0.1",
