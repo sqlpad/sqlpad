@@ -6,7 +6,7 @@ const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
 
 /**
- * @param {Req} req
+ * @param {import('express').Request & Req} req
  * @param {*} res
  */
 async function listConnectionAccesses(req, res) {
@@ -32,7 +32,7 @@ router.get(
 );
 
 /**
- * @param {Req} req
+ * @param {import('express').Request & Req} req
  * @param {*} res
  */
 async function getConnectionAccess(req, res) {
@@ -57,7 +57,7 @@ router.get(
 );
 
 /**
- * @param {Req} req
+ * @param {import('express').Request & Req} req
  * @param {*} res
  */
 async function createConnectionAccess(req, res) {
@@ -118,7 +118,7 @@ async function createConnectionAccess(req, res) {
 router.post('/api/connection-accesses', mustBeAdmin, createConnectionAccess);
 
 /**
- * @param {Req} req
+ * @param {import('express').Request & Req} req
  * @param {*} res
  */
 async function updateConnectionAccess(req, res) {
