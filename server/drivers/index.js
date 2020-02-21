@@ -1,11 +1,8 @@
 const uuid = require('uuid');
 const _ = require('lodash');
-const config = require('../lib/config');
 const utils = require('./utils');
 const getMeta = require('../lib/getMeta');
 const logger = require('../lib/logger');
-
-const debug = config.get('debug');
 
 const drivers = {};
 
@@ -112,23 +109,18 @@ function requireValidate(path, optional = false) {
 
 // Loads and validates drivers
 // Will populate drivers {} map
-requireValidate('../drivers/crate');
-requireValidate('../drivers/drill');
-requireValidate('../drivers/hdb');
-requireValidate('../drivers/mysql');
-requireValidate('../drivers/postgres');
-requireValidate('../drivers/presto');
-requireValidate('../drivers/sqlserver');
-requireValidate('../drivers/unixodbc', true);
-requireValidate('../drivers/vertica');
-requireValidate('../drivers/cassandra');
-requireValidate('../drivers/snowflake');
-
-// If debug is turned on also add in mock drivers
-// This is used for test cases, and is also useful for end-user debugging
-if (debug) {
-  requireValidate('../drivers/mock');
-}
+requireValidate('./crate');
+requireValidate('./drill');
+requireValidate('./hdb');
+requireValidate('./mysql');
+requireValidate('./postgres');
+requireValidate('./presto');
+requireValidate('./sqlserver');
+requireValidate('./unixodbc', true);
+requireValidate('./vertica');
+requireValidate('./cassandra');
+requireValidate('./snowflake');
+requireValidate('./mock');
 
 /**
  * Run query using driver implementation of connection
