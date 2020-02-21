@@ -4,7 +4,7 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const router = require('express').Router();
 const checkWhitelist = require('../lib/check-whitelist');
 const sendError = require('../lib/sendError');
-const logger = require('../lib/logger');
+const appLog = require('../lib/appLog');
 const passhash = require('../lib/passhash.js');
 
 async function handleSignup(req, res, next) {
@@ -66,7 +66,7 @@ function makeLocalAuth(config) {
     // Register local auth strategy
     // TODO: Should all authentication strategies be disabled by default, requiring SQLPad implementer to pick one?
     // This might be more secure as it'd prevent SQLPad's from launching with local auth enabled and open admin registration by default
-    logger.info('Enabling local authentication strategy.');
+    appLog.info('Enabling local authentication strategy.');
     passport.use(
       new PassportLocalStrategy(
         {
@@ -106,7 +106,7 @@ function makeLocalAuth(config) {
     );
 
     // TODO - basic auth should perhaps be something opted into as a separate config
-    logger.info('Enabling basic authentication strategy.');
+    appLog.info('Enabling basic authentication strategy.');
     passport.use(
       new BasicStrategy(
         {

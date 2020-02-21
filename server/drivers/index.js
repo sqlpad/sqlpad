@@ -2,7 +2,7 @@ const uuid = require('uuid');
 const _ = require('lodash');
 const utils = require('./utils');
 const getMeta = require('../lib/getMeta');
-const logger = require('../lib/logger');
+const appLog = require('../lib/appLog');
 
 const drivers = {};
 
@@ -14,7 +14,7 @@ const drivers = {};
  */
 function validateFunction(path, driver, functionName) {
   if (typeof driver[functionName] !== 'function') {
-    logger.error('%s missing .%s() implementation', path, functionName);
+    appLog.error('%s missing .%s() implementation', path, functionName);
     process.exit(1);
   }
 }
@@ -28,7 +28,7 @@ function validateFunction(path, driver, functionName) {
 function validateArray(path, driver, arrayName) {
   const arr = driver[arrayName];
   if (!Array.isArray(arr)) {
-    logger.error('%s missing %s array', path, arrayName);
+    appLog.error('%s missing %s array', path, arrayName);
     process.exit(1);
   }
 }
@@ -69,7 +69,7 @@ function requireValidate(path, optional = false) {
     driver = require(path);
   } catch (er) {
     if (optional) {
-      logger.info('optional driver %s not available', path);
+      appLog.info('optional driver %s not available', path);
       return;
     } else {
       // rethrow
@@ -78,18 +78,18 @@ function requireValidate(path, optional = false) {
   }
 
   if (!driver.id) {
-    logger.error('%s must export a unique id', path);
+    appLog.error('%s must export a unique id', path);
     process.exit(1);
   }
 
   if (!driver.name) {
-    logger.error('%s must export a name', path);
+    appLog.error('%s must export a name', path);
     process.exit(1);
   }
 
   if (drivers[driver.id]) {
-    logger.error(`Driver with id ${driver.id} already loaded`);
-    logger.error(`Ensure ${path} has a unique id exported`);
+    appLog.error(`Driver with id ${driver.id} already loaded`);
+    appLog.error(`Ensure ${path} has a unique id exported`);
     process.exit(1);
   }
 
@@ -163,7 +163,7 @@ function runQuery(query, connection, user) {
     const rowCount = rows.length;
     const { startTime, stopTime, queryRunTime } = queryResult;
 
-    logger.info({
+    appLog.info({
       userId: user && user._id,
       userEmail: user && user.email,
       connectionId: connection._id,

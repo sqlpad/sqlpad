@@ -1,5 +1,5 @@
 const hdb = require('hdb');
-const logger = require('../../lib/logger');
+const appLog = require('../../lib/appLog');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'hdb';
@@ -42,13 +42,13 @@ function runQuery(query, connection) {
     });
 
     client.on('error', err => {
-      logger.error(err, 'Network connection error');
+      appLog.error(err, 'Network connection error');
       return reject(err);
     });
 
     client.connect(err => {
       if (err) {
-        logger.error(err, 'Connect error');
+        appLog.error(err, 'Connect error');
         return reject(err);
       }
       return client.execute(query, function(err, rs) {

@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 let request = require('request');
 let url = require('url');
-const logger = require('../../lib/logger');
+const appLog = require('../../lib/appLog');
 
 exports.version = '1.0';
 
@@ -72,7 +72,7 @@ Client.prototype.query = function(config, query) {
     })
     .catch(function(e) {
       // TODO Send error message to JSON
-      logger.error(e);
+      appLog.error(e);
       return e;
     });
 };

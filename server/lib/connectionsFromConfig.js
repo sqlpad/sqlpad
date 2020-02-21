@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const logger = require('./logger');
+const appLog = require('./appLog');
 const drivers = require('../drivers');
 const getConfigFromFile = require('./config/fromFile.js');
 const [configFromFile] = getConfigFromFile() || {};
@@ -64,7 +64,7 @@ function getConnectionsFromConfig(env = process.env) {
       connection.editable = false;
       connectionsFromConfig.push(connection);
     } catch (error) {
-      logger.error(
+      appLog.error(
         error,
         'Environment connection configuration failed for %s',
         id

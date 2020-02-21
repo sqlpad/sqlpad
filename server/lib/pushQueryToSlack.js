@@ -1,4 +1,4 @@
-const logger = require('./logger');
+const appLog = require('./appLog');
 const request = require('request');
 
 function pushQueryToSlack(config, query) {
@@ -23,7 +23,7 @@ ${'```'}`
     };
     request(options, function(err) {
       if (err) {
-        logger.error(err, 'Problem sending query to slack');
+        appLog.error(err, 'Problem sending query to slack');
       }
     });
   }

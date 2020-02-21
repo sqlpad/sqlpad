@@ -1,7 +1,7 @@
 const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
-const logger = require('./logger');
+const appLog = require('./appLog');
 const ensureAdmin = require('./ensureAdmin');
 const consts = require('./consts');
 const Models = require('../models');
@@ -70,14 +70,14 @@ async function initNedb(config) {
   // Load dbs, migrate data, and apply indexes
   await Promise.all(
     nedb.instances.map(dbname => {
-      logger.info('Loading %s', dbname);
+      appLog.info('Loading %s', dbname);
       return nedb[dbname].loadDatabase();
     })
   );
 
   // create default connection accesses
   if (allowConnectionAccessToEveryone) {
-    logger.info('Creating access on every connection to every user...');
+    appLog.info('Creating access on every connection to every user...');
     await nedb.connectionAccesses.update(
       {
         connectionId: consts.EVERY_CONNECTION_ID,
