@@ -44,6 +44,16 @@ describe('lib/getMeta.js', function() {
         accountNumber: null,
         decimalString: null,
         number: null,
+        string: '<!doctype><html><body><h1>I ❤ unicorns</h1></body></html>',
+        datetime: null,
+        numberString: null,
+        date: noTime
+      },
+      {
+        alwaysNull: null,
+        accountNumber: null,
+        decimalString: null,
+        number: null,
         string: 'abc',
         datetime: null,
         numberString: null,
@@ -72,6 +82,9 @@ describe('lib/getMeta.js', function() {
 
     assert.equal(meta.string.datatype, 'string', 'string.datatype');
     assert.equal(meta.string.maxValueLength, 7, 'string.maxValueLength');
+
+    assert.equal(meta.html.datatype, 'html', 'html.datatype');
+    assert.equal(meta.html.maxValueLength, 7, 'html.maxValueLength');
 
     assert.equal(meta.datetime.datatype, 'datetime', 'datetime.datatype');
     assert.equal(meta.datetime.max.getTime(), d2.getTime(), 'datetime.max');

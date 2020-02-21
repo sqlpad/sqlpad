@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const htmlParser = require('node-html-parser');
+const isHtml = require('./isHtml');
 
 /**
  * Derive whether value is a number number or number as a string
@@ -63,6 +65,8 @@ module.exports = function getMeta(rows) {
           }
         } else if (isNumeric(value)) {
           meta[key].datatype = 'number';
+        } else if (isHtml(value)) {
+          meta[key].datatype = 'html';
         } else if (_.isString(value)) {
           meta[key].datatype = 'string';
         }
@@ -116,6 +120,15 @@ module.exports = function getMeta(rows) {
           meta[key].min = value;
         } else if (value < meta[key].min) {
           meta[key].min = value;
+        }
+      }
+
+      // For html, get max length of the string for display purposes
+      if (meta[key].datatype === 'html' && isHtml(value)) {
+        value = htmlParser.parse(value);
+
+        if (meta[key].maxValueLength < value.length) {
+          meta[key].maxValueLength = value.length;
         }
       }
 
