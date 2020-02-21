@@ -110,6 +110,7 @@ function makeApp(config, models) {
   /*  Routes
   ============================================================================= */
   const routers = [
+    require('./routes/custom-app-header.js')(config),
     require('./routes/drivers.js'),
     require('./routes/users.js'),
     require('./routes/forgot-password.js'),

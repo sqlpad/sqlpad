@@ -218,6 +218,11 @@ const configItems = [
     key: 'webLogLevel',
     envVar: 'SQLPAD_WEB_LOG_LEVEL',
     default: 'info'
+  },
+  {
+    key: 'appHeaderTemplate',
+    envVar: 'SQLPAD_APP_HEADER_TEMPLATE',
+    default: ''
   }
 ];
 

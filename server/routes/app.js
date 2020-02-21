@@ -22,6 +22,7 @@ router.get('*/api/app', async (req, res) => {
       adminRegistrationOpen,
       currentUser,
       config: {
+        customAppTemplateConfigured: Boolean(config.get('appHeaderTemplate')),
         publicUrl: config.get('publicUrl'),
         allowCsvDownload: config.get('allowCsvDownload'),
         editorWordWrap: config.get('editorWordWrap'),
