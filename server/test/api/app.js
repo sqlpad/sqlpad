@@ -9,6 +9,7 @@ const expectedKeys = [
 ];
 
 const expectedConfigKeys = [
+  'customAppTemplateConfigured',
   'baseUrl',
   'allowCsvDownload',
   'editorWordWrap',
