@@ -8,6 +8,7 @@ import SchemaSidebar from '../schema/SchemaSidebar.js';
 import { loadConnections } from '../stores/connections';
 import { loadQuery, resetNewQuery } from '../stores/queries';
 import { loadTags } from '../stores/tags';
+import CustomAppHeader from './CustomAppHeader';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
@@ -117,6 +118,7 @@ function QueryEditor(props) {
         flexDirection: 'column'
       }}
     >
+      <CustomAppHeader />
       <Toolbar />
       <div style={{ position: 'relative', flexGrow: 1 }}>{sqlTabPane}</div>
       <UnsavedQuerySelector queryId={queryId} />
