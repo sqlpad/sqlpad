@@ -26,7 +26,9 @@ function getAppHeaderRouter(config) {
       const view = {
         user: {
           email: req.user.email,
-          name: req.user.name || req.user.email
+          name: req.user.name || req.user.email,
+          role: req.user.role,
+          data: req.user.data
         }
       };
 
