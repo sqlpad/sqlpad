@@ -1,8 +1,8 @@
 const pino = require('pino');
 
+// Log levels https://github.com/pinojs/pino/issues/123
 const levels = ['fatal', 'error', 'warn', 'info', 'debug', 'silent'];
 
-// Log levels https://github.com/pinojs/pino/issues/123
 class Logger {
   constructor(logLevel = 'warn') {
     if (!levels.includes(logLevel)) {
