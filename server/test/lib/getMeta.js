@@ -84,7 +84,7 @@ describe('lib/getMeta.js', function() {
     assert.equal(meta.string.maxValueLength, 7, 'string.maxValueLength');
 
     assert.equal(meta.html.datatype, 'html', 'html.datatype');
-    assert.equal(meta.html.maxValueLength, 7, 'html.maxValueLength');
+    assert.equal(meta.html.maxValueLength, 57, 'html.maxValueLength');
 
     assert.equal(meta.datetime.datatype, 'datetime', 'datetime.datatype');
     assert.equal(meta.datetime.max.getTime(), d2.getTime(), 'datetime.max');
