@@ -1,7 +1,7 @@
 const passport = require('passport');
 const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const router = require('express').Router();
-const logger = require('../lib/logger');
+const appLog = require('../lib/appLog');
 const checkWhitelist = require('../lib/check-whitelist.js');
 
 /**
@@ -64,7 +64,7 @@ function makeGoogleAuth(config) {
   }
 
   if (config.googleAuthConfigured()) {
-    logger.info('Enabling Google authentication strategy.');
+    appLog.info('Enabling Google authentication strategy.');
 
     // Register the passport strategy
     passport.use(

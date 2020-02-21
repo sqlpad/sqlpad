@@ -1,6 +1,6 @@
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
-const logger = require('./logger');
+const appLog = require('./appLog');
 const packageJson = require('../package.json');
 const configItems = require('./config/configItems');
 
@@ -27,12 +27,12 @@ ${configItems
 
 // If version is requested show version then exit
 if (argv.v || argv.version) {
-  logger.info('SQLPad version %s', packageJson.version);
+  appLog.info('SQLPad version %s', packageJson.version);
   process.exit();
 }
 
 // If help is requested show help
 if (argv.h || argv.help) {
-  logger.info(helpText);
+  appLog.info(helpText);
   process.exit();
 }

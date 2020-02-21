@@ -3,7 +3,6 @@ const makeEmail = require('../lib/email');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
-const logger = require('../lib/logger');
 
 router.get('/api/users', mustBeAuthenticated, async function(req, res) {
   const { models } = req;
@@ -17,7 +16,7 @@ router.get('/api/users', mustBeAuthenticated, async function(req, res) {
 
 // create/whitelist/invite user
 router.post('/api/users', mustBeAdmin, async function(req, res) {
-  const { models } = req;
+  const { models, appLog } = req;
   try {
     let user = await models.users.findOneByEmail(req.body.email);
     if (user) {
@@ -31,7 +30,7 @@ router.post('/api/users', mustBeAdmin, async function(req, res) {
     const email = makeEmail(req.config);
 
     if (req.config.smtpConfigured()) {
-      email.sendInvite(req.body.email).catch(error => logger.error(error));
+      email.sendInvite(req.body.email).catch(error => appLog.error(error));
     }
     return res.json({ user });
   } catch (error) {

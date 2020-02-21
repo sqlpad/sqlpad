@@ -1,6 +1,6 @@
 const fs = require('fs');
 const mysql = require('mysql');
-const logger = require('../../lib/logger');
+const appLog = require('../../lib/appLog');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'mysql';
@@ -125,7 +125,7 @@ function runQuery(query, connection) {
             if (params.closeConnection) {
               myConnection.end(error => {
                 if (error) {
-                  logger.error(error, 'Error ending MySQL connection');
+                  appLog.error(error, 'Error ending MySQL connection');
                 }
                 continueOn();
               });

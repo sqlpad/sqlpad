@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const sanitize = require('sanitize-filename');
-const logger = require('../lib/logger');
+const appLog = require('../lib/appLog');
 const xlsx = require('node-xlsx');
 const { parse } = require('json2csv');
 
@@ -90,7 +90,7 @@ class ResultCache {
         await this.nedb.cache.remove({ _id: doc._id }, {});
       }
     } catch (error) {
-      logger.error(error);
+      appLog.error(error);
     }
   }
 
@@ -114,7 +114,7 @@ class ResultCache {
         // if there's an error log it but otherwise continue on
         // we can still send results even if download file failed to create
         if (err) {
-          logger.error(err);
+          appLog.error(err);
         }
         return resolve();
       });
@@ -127,12 +127,12 @@ class ResultCache {
         const csv = parse(queryResult.rows, { fields: queryResult.fields });
         fs.writeFile(this.csvFilePath(cacheKey), csv, function(err) {
           if (err) {
-            logger.error(err);
+            appLog.error(err);
           }
           return resolve();
         });
       } catch (error) {
-        logger.error(error);
+        appLog.error(error);
         return resolve();
       }
     });
@@ -144,12 +144,12 @@ class ResultCache {
         const json = JSON.stringify(queryResult.rows);
         fs.writeFile(this.jsonFilePath(cacheKey), json, function(err) {
           if (err) {
-            logger.error(err);
+            appLog.error(err);
           }
           return resolve();
         });
       } catch (error) {
-        logger.error(error);
+        appLog.error(error);
         return resolve();
       }
     });

@@ -1,7 +1,7 @@
 const passport = require('passport');
 const SamlStrategy = require('passport-saml').Strategy;
 const router = require('express').Router();
-const logger = require('../lib/logger');
+const appLog = require('../lib/appLog');
 
 /**
  * Adds passport SAML strategy and SAML auth routes if SAML is configured
@@ -21,7 +21,7 @@ function makeSamlAuth(config) {
     samlCert &&
     samlAuthContext
   ) {
-    logger.info('Enabling SAML authentication strategy.');
+    appLog.info('Enabling SAML authentication strategy.');
 
     // Register SAML strategy
     passport.use(
@@ -43,7 +43,7 @@ function makeSamlAuth(config) {
             ];
           const { models } = req;
           const user = await models.users.findOneByEmail(email);
-          logger.info('User logged in via SAML %s', email);
+          appLog.info('User logged in via SAML %s', email);
           if (!user) {
             return done(null, false);
           }

@@ -4,7 +4,7 @@ const express = require('express');
 const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
-const logger = require('./lib/logger');
+const appLog = require('./lib/appLog');
 
 /**
  * Create an express app using config
@@ -64,6 +64,7 @@ function makeApp(config, models) {
   app.use(function(req, res, next) {
     req.config = config;
     req.models = models;
+    req.appLog = appLog;
     next();
   });
 
@@ -165,8 +166,8 @@ function makeApp(config, models) {
       .replace(/="\/static/g, `="${baseUrl}/static`);
     app.use((req, res) => res.send(baseUrlHtml));
   } else {
-    logger.warn('NO FRONT END TEMPLATE DETECTED');
-    logger.warn('If not running in dev mode please report this issue.');
+    appLog.warn('NO FRONT END TEMPLATE DETECTED');
+    appLog.warn('If not running in dev mode please report this issue.');
   }
 
   return app;

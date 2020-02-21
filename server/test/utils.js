@@ -2,6 +2,7 @@ const assert = require('assert');
 const request = require('supertest');
 const consts = require('../lib/consts');
 const config = require('../lib/config');
+const appLog = require('../lib/appLog');
 const { makeDb, getDb } = require('../lib/db');
 const makeApp = require('../app');
 
@@ -96,6 +97,7 @@ async function put(role, url, body, statusCode = 200) {
 
 before(async function() {
   const { models } = await getDb();
+  appLog.setLevel(config.get('appLogLevel'));
   app = makeApp(config, models);
 
   assert.throws(() => {

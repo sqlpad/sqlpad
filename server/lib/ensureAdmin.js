@@ -1,5 +1,5 @@
 const passhash = require('./passhash');
-const logger = require('./logger');
+const appLog = require('./appLog');
 
 /**
  * Ensure admin email is a user if provided
@@ -25,7 +25,7 @@ async function ensureAdmin(nedb, adminEmail, adminPassword) {
         changes.passhash = await passhash.getPasshash(adminPassword);
       }
       await nedb.users.update({ _id: user._id }, { $set: changes }, {});
-      logger.info('Admin access granted to %s', adminEmail);
+      appLog.info('Admin access granted to %s', adminEmail);
       return;
     }
 
@@ -37,10 +37,10 @@ async function ensureAdmin(nedb, adminEmail, adminPassword) {
       newAdmin.passhash = await passhash.getPasshash(adminPassword);
     }
     await nedb.users.insert(newAdmin);
-    logger.info('Admin access granted to %s', adminEmail);
-    logger.info('Please visit signup to complete registration.');
+    appLog.info('Admin access granted to %s', adminEmail);
+    appLog.info('Please visit signup to complete registration.');
   } catch (error) {
-    logger.error('Admin access grant failed for %s', adminEmail);
+    appLog.error('Admin access grant failed for %s', adminEmail);
     throw error;
   }
 }

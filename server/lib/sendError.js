@@ -1,4 +1,4 @@
-const logger = require('./logger');
+const appLog = require('./appLog');
 
 /**
  * Logs actual error and sends standard error response
@@ -8,7 +8,7 @@ const logger = require('./logger');
  */
 module.exports = function sendError(res, error, message) {
   if (error) {
-    logger.error(error);
+    appLog.error(error);
   }
   return res.json({
     error: message || (error ? error.toString() : 'Something happened')
