@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const htmlTags = require('html-tags');
 
 const basic = /\s?<!doctype html>|(<html\b[^>]*>|<body\b[^>]*>|<x-[^>]+>)+/i;
