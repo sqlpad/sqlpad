@@ -17,7 +17,7 @@ const argv = minimist(process.argv.slice(2));
 const config = new Config(argv);
 
 appLog.setLevel(config.get('appLogLevel'));
-config.logDebugInfo(appLog);
+config.logDebugInfo();
 
 makeDb(config);
 
