@@ -18,6 +18,10 @@ BigInt.prototype.toJSON = function() {
 };
 
 class ResultCache {
+  /**
+   * @param {*} nedb
+   * @param {import('../lib/config')} config
+   */
   constructor(nedb, config) {
     this.nedb = nedb;
     this.config = config;

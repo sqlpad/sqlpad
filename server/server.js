@@ -3,17 +3,22 @@
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
+const minimist = require('minimist');
 const detectPort = require('detect-port');
 const makeApp = require('./app');
+const appLog = require('./lib/appLog');
+const Config = require('./lib/config');
+const { makeDb, getDb } = require('./lib/db');
 
 // Parse command line flags to see if anything special needs to happen
 require('./lib/cli-flow.js');
 
-const appLog = require('./lib/appLog');
-const config = require('./lib/config');
-const { makeDb, getDb } = require('./lib/db');
+const argv = minimist(process.argv.slice(2));
+const config = new Config(argv);
 
 appLog.setLevel(config.get('appLogLevel'));
+appLog.debug(config.get(), 'Final config values');
+appLog.debug(config.getConnections(), 'Connections from config');
 
 makeDb(config);
 
@@ -79,7 +84,7 @@ async function startServer(models) {
   if (keyPath && certPath) {
     // https only
     const _port = await detectPortOrSystemd(httpsPort);
-    if (!isFdObject(_port) && httpsPort !== _port) {
+    if (!isFdObject(_port) && parseInt(httpsPort, 10) !== parseInt(_port, 10)) {
       appLog.info(
         'Port %d already occupied. Using port %d instead.',
         httpsPort,
@@ -107,7 +112,7 @@ async function startServer(models) {
   } else {
     // http only
     const _port = await detectPortOrSystemd(port);
-    if (!isFdObject(_port) && port !== _port) {
+    if (!isFdObject(_port) && parseInt(port, 10) !== parseInt(_port, 10)) {
       appLog.info(
         'Port %d already occupied. Using port %d instead.',
         port,

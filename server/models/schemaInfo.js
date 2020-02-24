@@ -3,6 +3,10 @@ function getCacheKey(connectionId) {
 }
 
 class SchemaInfo {
+  /**
+   * @param {*} nedb
+   * @param {import('../lib/config')} config
+   */
   constructor(nedb, config) {
     this.nedb = nedb;
     this.config = config;

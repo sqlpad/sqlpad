@@ -1,10 +1,12 @@
 const _ = require('lodash');
 const drivers = require('../drivers');
 const makeCipher = require('../lib/makeCipher');
-// TODO: during app init upsert these into db?
-const { getConnectionsFromConfig } = require('../lib/connectionsFromConfig');
 
 class Connections {
+  /**
+   * @param {*} nedb
+   * @param {import('../lib/config')} config
+   */
   constructor(nedb, config) {
     this.nedb = nedb;
     this.config = config;
@@ -30,7 +32,9 @@ class Connections {
       return this.decipherConnection(conn);
     });
 
-    const allConnections = connectionsFromDb.concat(getConnectionsFromConfig());
+    const allConnections = connectionsFromDb.concat(
+      this.config.getConnections()
+    );
     return _.sortBy(allConnections, c => c.name.toLowerCase());
   }
 
@@ -42,9 +46,9 @@ class Connections {
     }
 
     // If connection was not found in db try env
-    const connectionFromEnv = getConnectionsFromConfig().find(
-      connection => connection._id === id
-    );
+    const connectionFromEnv = this.config
+      .getConnections()
+      .find(connection => connection._id === id);
 
     return connectionFromEnv;
   }
