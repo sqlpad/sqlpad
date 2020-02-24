@@ -36,8 +36,9 @@ class Config {
   }
 
   get(key) {
+    const { connections, ...rest } = this.all;
     if (!key) {
-      throw new Error('key must be provided');
+      return rest;
     }
 
     if (!this.all.hasOwnProperty(key)) {
@@ -45,10 +46,6 @@ class Config {
     }
 
     return this.all[key];
-  }
-
-  logDebugInfo() {
-    appLog.debug(this.all, 'Final config values');
   }
 
   getValidations() {
