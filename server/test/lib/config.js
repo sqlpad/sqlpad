@@ -1,5 +1,5 @@
 const assert = require('assert');
-const config = require('../../lib/config');
+const { config } = require('../utils');
 
 const fromDefault = require('../../lib/config/fromDefault');
 const fromEnv = require('../../lib/config/fromEnv');

@@ -1,59 +1,83 @@
-const minimist = require('minimist');
 const fromDefault = require('./fromDefault');
 const fromEnv = require('./fromEnv');
 const fromCli = require('./fromCli');
 const fromFile = require('./fromFile');
 const getOldConfigWarning = require('./getOldConfigWarning');
 
-const argv = minimist(process.argv.slice(2));
+class Config {
+  constructor(argv) {
+    this.argv = argv;
 
-const defaultConfig = fromDefault();
-const envConfig = fromEnv();
-const [fileConfig, warnings] = fromFile();
-const cliConfig = fromCli(argv);
+    const defaultConfig = fromDefault();
+    const envConfig = fromEnv();
+    const [fileConfig, warnings] = fromFile();
+    const cliConfig = fromCli(argv);
 
-const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
+    const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
 
-// Clean string boolean values
-Object.keys(all).forEach(key => {
-  const value = all[key];
-  if (typeof value === 'string') {
-    if (value.trim().toLowerCase() === 'true') {
-      all[key] = true;
-    } else if (value.trim().toLowerCase() === 'false') {
-      all[key] = false;
+    // Clean string boolean values
+    Object.keys(all).forEach(key => {
+      const value = all[key];
+      if (typeof value === 'string') {
+        if (value.trim().toLowerCase() === 'true') {
+          all[key] = true;
+        } else if (value.trim().toLowerCase() === 'false') {
+          all[key] = false;
+        }
+      }
+    });
+
+    this.warnings = warnings;
+    this.all = all;
+  }
+
+  get(key) {
+    if (!key) {
+      throw new Error('key must be provided');
     }
-  }
-});
 
-exports.get = function get(key) {
-  if (!key) {
-    throw new Error('key must be provided');
-  }
+    if (!this.all.hasOwnProperty(key)) {
+      throw new Error(`config item ${key} not defined in configItems.js`);
+    }
 
-  if (!all.hasOwnProperty(key)) {
-    throw new Error(`config item ${key} not defined in configItems.js`);
+    return this.all[key];
   }
 
-  return all[key];
-};
-
-exports.getValidations = () => {
-  const errors = [];
-
-  // By default dbPath will exist as empty string, which is not valid
-  if (all.dbPath === '') {
-    errors.push(getOldConfigWarning());
+  logDebugInfo(appLog) {
+    appLog.debug(this.all, 'Final config values');
   }
 
-  return {
-    errors,
-    warnings: [...warnings]
-  };
-};
+  getValidations() {
+    const errors = [];
 
-exports.smtpConfigured = () =>
-  all.smtpHost && all.smtpUser && all.smtpFrom && all.smtpPort && all.publicUrl;
+    // By default dbPath will exist as empty string, which is not valid
+    if (this.all.dbPath === '') {
+      errors.push(getOldConfigWarning());
+    }
 
-exports.googleAuthConfigured = () =>
-  all.publicUrl && all.googleClientId && all.googleClientSecret;
+    return {
+      errors,
+      warnings: [...this.warnings]
+    };
+  }
+
+  smtpConfigured() {
+    return (
+      this.all.smtpHost &&
+      this.all.smtpUser &&
+      this.all.smtpFrom &&
+      this.all.smtpPort &&
+      this.all.publicUrl
+    );
+  }
+
+  googleAuthConfigured() {
+    return (
+      this.all.publicUrl &&
+      this.all.googleClientId &&
+      this.all.googleClientSecret
+    );
+  }
+}
+
+module.exports = Config;

@@ -1,5 +1,5 @@
 const makeEmail = require('../../lib/email.js');
-const config = require('../../lib/config');
+const { config } = require('../utils');
 
 describe('lib/email.js', async function() {
   if (config.smtpConfigured() && process.env.SQLPAD_TEST_EMAIL) {

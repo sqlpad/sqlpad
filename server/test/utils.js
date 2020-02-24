@@ -1,10 +1,17 @@
 const assert = require('assert');
+const minimist = require('minimist');
 const request = require('supertest');
 const consts = require('../lib/consts');
-const config = require('../lib/config');
+const Config = require('../lib/config');
 const appLog = require('../lib/appLog');
 const { makeDb, getDb } = require('../lib/db');
 const makeApp = require('../app');
+
+const argv = minimist(process.argv.slice(2));
+
+// TODO - restructure test utils to allow injecting different configurations
+// config values can be supplied directly, parsing different sources can be tested separately
+const config = new Config(argv);
 
 makeDb(config);
 let app;
@@ -108,6 +115,7 @@ before(async function() {
 });
 
 module.exports = {
+  config,
   del,
   expectKeys,
   get,
