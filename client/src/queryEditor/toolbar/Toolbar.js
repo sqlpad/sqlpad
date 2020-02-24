@@ -35,16 +35,7 @@ import AboutModal from './AboutModal';
 import ChartButton from './ChartButton';
 import QueryListButton from './QueryListButton';
 import QueryTagsModal from './QueryTagsModal';
-
-const growSpacerStyle = { flexShrink: 0, flexGrow: 1, width: 8 };
-const spacerStyle = { flexShrink: 0, width: 8 };
-
-function Spacer({ grow }) {
-  if (grow) {
-    return <div style={growSpacerStyle} />;
-  }
-  return <div style={spacerStyle} />;
-}
+import ToolbarSpacer from './ToolbarSpacer';
 
 function mapStateToProps(state) {
   return {
@@ -142,7 +133,7 @@ function Toolbar({
           <NewIcon />
         </IconButton>
 
-        <Spacer grow />
+        <ToolbarSpacer grow />
 
         <IconButton tooltip="Toggle schema" onClick={toggleSchema}>
           <DatabaseIcon />
@@ -150,7 +141,7 @@ function Toolbar({
 
         <ConnectionDropDown />
 
-        <Spacer />
+        <ToolbarSpacer />
 
         <Input
           error={error}
@@ -160,7 +151,7 @@ function Toolbar({
           onChange={e => setQueryState('name', e.target.value)}
         />
 
-        <Spacer />
+        <ToolbarSpacer />
 
         <IconButton tooltip="Tags" onClick={() => setShowTags(true)}>
           <TagsIcon />
@@ -188,17 +179,17 @@ function Toolbar({
           {unsavedChanges ? <UnsavedIcon /> : <SaveIcon />}
         </IconButton>
 
-        <Spacer />
+        <ToolbarSpacer />
 
         <Button type="primary" onClick={() => runQuery()} disabled={isRunning}>
           Run
         </Button>
 
-        <Spacer />
+        <ToolbarSpacer />
 
         <ChartButton />
 
-        <Spacer grow />
+        <ToolbarSpacer grow />
 
         <IconMenu icon={<DotsVerticalIcon aria-label="menu" />}>
           {menuItems}
