@@ -19,9 +19,6 @@ jobs:
           entrypoint: bash
           args: .github/workflows/build.sh
 
-      - name: Archive
-        run: tar -cavf sqlpad.tar.gz -C build server/public
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.0.0
