@@ -1,4 +1,3 @@
-import CopyIcon from 'mdi-react/ContentCopyIcon';
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
@@ -7,15 +6,11 @@ import React from 'react';
 import { connect } from 'unistore/react';
 import Button from '../../common/Button';
 import IconButton from '../../common/IconButton';
-import {
-  formatQuery,
-  handleCloneClick,
-  runQuery,
-  saveQuery
-} from '../../stores/queries';
+import { formatQuery, runQuery, saveQuery } from '../../stores/queries';
 import ConnectionDropDown from '../ConnectionDropdown';
 import ChartButton from './ChartButton';
 import QueryListButton from './QueryListButton';
+import ToolbarCloneButton from './ToolbarCloneButton';
 import ToolbarMenu from './ToolbarMenu';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarQueryNameInput from './ToolbarQueryNameInput';
@@ -27,7 +22,6 @@ function mapStateToProps(state) {
   return {
     isRunning: state.isRunning,
     isSaving: state.isSaving,
-    queryId: state.query && state.query._id,
     unsavedChanges: state.unsavedChanges
   };
 }
@@ -35,23 +29,17 @@ function mapStateToProps(state) {
 const ConnectedEditorNavBar = connect(mapStateToProps, store => ({
   formatQuery,
   runQuery: runQuery(store),
-  saveQuery: saveQuery(store),
-  handleCloneClick
+  saveQuery: saveQuery(store)
 }))(React.memo(Toolbar));
 
 function Toolbar({
   formatQuery,
-  handleCloneClick,
   isRunning,
   isSaving,
-  queryId,
   runQuery,
   saveQuery,
-
   unsavedChanges
 }) {
-  const cloneDisabled = !queryId;
-
   return (
     <div
       style={{
@@ -63,13 +51,11 @@ function Toolbar({
     >
       <div style={{ display: 'flex' }}>
         <QueryListButton />
-
         <ToolbarNewQueryButton />
 
         <ToolbarSpacer grow />
 
         <ToolbarToggleSchemaButton />
-
         <ConnectionDropDown />
 
         <ToolbarSpacer />
@@ -79,14 +65,7 @@ function Toolbar({
         <ToolbarSpacer />
 
         <ToolbarTagsButton />
-
-        <IconButton
-          tooltip="Clone"
-          onClick={handleCloneClick}
-          disabled={cloneDisabled}
-        >
-          <CopyIcon />
-        </IconButton>
+        <ToolbarCloneButton />
 
         <IconButton tooltip="Format" onClick={formatQuery}>
           <FormatIcon />
@@ -121,11 +100,9 @@ function Toolbar({
 Toolbar.propTypes = {
   isSaving: PropTypes.bool.isRequired,
   isRunning: PropTypes.bool.isRequired,
-  handleCloneClick: PropTypes.func.isRequired,
   saveQuery: PropTypes.func.isRequired,
   runQuery: PropTypes.func.isRequired,
   formatQuery: PropTypes.func.isRequired,
-  queryId: PropTypes.string,
   unsavedChanges: PropTypes.bool.isRequired
 };
 
