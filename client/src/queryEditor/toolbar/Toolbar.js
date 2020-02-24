@@ -8,13 +8,11 @@ import React, { useState } from 'react';
 import { connect } from 'unistore/react';
 import Button from '../../common/Button';
 import IconButton from '../../common/IconButton';
-import Input from '../../common/Input';
 import {
   formatQuery,
   handleCloneClick,
   runQuery,
-  saveQuery,
-  setQueryState
+  saveQuery
 } from '../../stores/queries';
 import ConnectionDropDown from '../ConnectionDropdown';
 import ChartButton from './ChartButton';
@@ -22,6 +20,7 @@ import QueryListButton from './QueryListButton';
 import QueryTagsModal from './QueryTagsModal';
 import ToolbarMenu from './ToolbarMenu';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
+import ToolbarQueryNameInput from './ToolbarQueryNameInput';
 import ToolbarSpacer from './ToolbarSpacer';
 import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
 
@@ -30,8 +29,6 @@ function mapStateToProps(state) {
     isRunning: state.isRunning,
     isSaving: state.isSaving,
     queryId: state.query && state.query._id,
-    queryName: state.query && state.query.name,
-    showValidation: state.showValidation,
     unsavedChanges: state.unsavedChanges
   };
 }
@@ -40,8 +37,7 @@ const ConnectedEditorNavBar = connect(mapStateToProps, store => ({
   formatQuery,
   runQuery: runQuery(store),
   saveQuery: saveQuery(store),
-  handleCloneClick,
-  setQueryState
+  handleCloneClick
 }))(React.memo(Toolbar));
 
 function Toolbar({
@@ -50,16 +46,13 @@ function Toolbar({
   isRunning,
   isSaving,
   queryId,
-  queryName,
   runQuery,
   saveQuery,
-  setQueryState,
-  showValidation,
+
   unsavedChanges
 }) {
   const [showTags, setShowTags] = useState(false);
 
-  const error = showValidation && !queryName.length;
   const cloneDisabled = !queryId;
 
   return (
@@ -84,13 +77,7 @@ function Toolbar({
 
         <ToolbarSpacer />
 
-        <Input
-          error={error}
-          style={{ width: 260 }}
-          placeholder="Query name"
-          value={queryName}
-          onChange={e => setQueryState('name', e.target.value)}
-        />
+        <ToolbarQueryNameInput />
 
         <ToolbarSpacer />
 
@@ -145,9 +132,7 @@ Toolbar.propTypes = {
   saveQuery: PropTypes.func.isRequired,
   runQuery: PropTypes.func.isRequired,
   formatQuery: PropTypes.func.isRequired,
-  queryName: PropTypes.string.isRequired,
   queryId: PropTypes.string,
-  showValidation: PropTypes.bool.isRequired,
   unsavedChanges: PropTypes.bool.isRequired
 };
 
