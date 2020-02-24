@@ -1,8 +1,4 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'unistore/react';
-import Button from '../../common/Button';
-import { runQuery } from '../../stores/queries';
 import ConnectionDropDown from '../ConnectionDropdown';
 import ChartButton from './ChartButton';
 import QueryListButton from './QueryListButton';
@@ -11,22 +7,13 @@ import ToolbarFormatQueryButton from './ToolbarFormatQueryButton';
 import ToolbarMenu from './ToolbarMenu';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarQueryNameInput from './ToolbarQueryNameInput';
+import ToolbarRunButton from './ToolbarRunButton';
 import ToolbarSaveButton from './ToolbarSaveButton';
 import ToolbarSpacer from './ToolbarSpacer';
 import ToolbarTagsButton from './ToolbarTagsButton';
 import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
 
-function mapStateToProps(state) {
-  return {
-    isRunning: state.isRunning
-  };
-}
-
-const ConnectedEditorNavBar = connect(mapStateToProps, store => ({
-  runQuery: runQuery(store)
-}))(React.memo(Toolbar));
-
-function Toolbar({ isRunning, runQuery }) {
+function Toolbar() {
   return (
     <div
       style={{
@@ -58,9 +45,7 @@ function Toolbar({ isRunning, runQuery }) {
 
         <ToolbarSpacer />
 
-        <Button type="primary" onClick={() => runQuery()} disabled={isRunning}>
-          Run
-        </Button>
+        <ToolbarRunButton />
 
         <ToolbarSpacer />
 
@@ -74,9 +59,4 @@ function Toolbar({ isRunning, runQuery }) {
   );
 }
 
-Toolbar.propTypes = {
-  isRunning: PropTypes.bool.isRequired,
-  runQuery: PropTypes.func.isRequired
-};
-
-export default ConnectedEditorNavBar;
+export default React.memo(Toolbar);
