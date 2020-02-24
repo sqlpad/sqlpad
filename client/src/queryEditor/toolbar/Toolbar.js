@@ -1,7 +1,6 @@
 import CopyIcon from 'mdi-react/ContentCopyIcon';
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
-import DatabaseIcon from 'mdi-react/DatabaseIcon';
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
 import TagsIcon from 'mdi-react/TagMultipleIcon';
 import PropTypes from 'prop-types';
@@ -17,7 +16,6 @@ import {
   saveQuery,
   setQueryState
 } from '../../stores/queries';
-import { toggleSchema } from '../../stores/schema';
 import ConnectionDropDown from '../ConnectionDropdown';
 import ChartButton from './ChartButton';
 import QueryListButton from './QueryListButton';
@@ -25,6 +23,7 @@ import QueryTagsModal from './QueryTagsModal';
 import ToolbarMenu from './ToolbarMenu';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
+import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
 
 function mapStateToProps(state) {
   return {
@@ -38,7 +37,6 @@ function mapStateToProps(state) {
 }
 
 const ConnectedEditorNavBar = connect(mapStateToProps, store => ({
-  toggleSchema,
   formatQuery,
   runQuery: runQuery(store),
   saveQuery: saveQuery(store),
@@ -57,7 +55,6 @@ function Toolbar({
   saveQuery,
   setQueryState,
   showValidation,
-  toggleSchema,
   unsavedChanges
 }) {
   const [showTags, setShowTags] = useState(false);
@@ -81,9 +78,7 @@ function Toolbar({
 
         <ToolbarSpacer grow />
 
-        <IconButton tooltip="Toggle schema" onClick={toggleSchema}>
-          <DatabaseIcon />
-        </IconButton>
+        <ToolbarToggleSchemaButton />
 
         <ConnectionDropDown />
 
