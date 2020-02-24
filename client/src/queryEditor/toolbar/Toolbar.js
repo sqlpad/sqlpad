@@ -3,7 +3,6 @@ import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
 import DatabaseIcon from 'mdi-react/DatabaseIcon';
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
-import NewIcon from 'mdi-react/PlusIcon';
 import TagsIcon from 'mdi-react/TagMultipleIcon';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
@@ -14,7 +13,6 @@ import Input from '../../common/Input';
 import {
   formatQuery,
   handleCloneClick,
-  resetNewQuery,
   runQuery,
   saveQuery,
   setQueryState
@@ -25,6 +23,7 @@ import ChartButton from './ChartButton';
 import QueryListButton from './QueryListButton';
 import QueryTagsModal from './QueryTagsModal';
 import ToolbarMenu from './ToolbarMenu';
+import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
 
 function mapStateToProps(state) {
@@ -44,7 +43,6 @@ const ConnectedEditorNavBar = connect(mapStateToProps, store => ({
   runQuery: runQuery(store),
   saveQuery: saveQuery(store),
   handleCloneClick,
-  resetNewQuery,
   setQueryState
 }))(React.memo(Toolbar));
 
@@ -55,7 +53,6 @@ function Toolbar({
   isSaving,
   queryId,
   queryName,
-  resetNewQuery,
   runQuery,
   saveQuery,
   setQueryState,
@@ -80,13 +77,7 @@ function Toolbar({
       <div style={{ display: 'flex' }}>
         <QueryListButton />
 
-        <IconButton
-          to="/queries/new"
-          tooltip="New query"
-          onClick={() => resetNewQuery()}
-        >
-          <NewIcon />
-        </IconButton>
+        <ToolbarNewQueryButton />
 
         <ToolbarSpacer grow />
 
