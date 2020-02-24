@@ -1,37 +1,32 @@
-import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
-import SaveIcon from 'mdi-react/ContentSaveIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
 import Button from '../../common/Button';
-import IconButton from '../../common/IconButton';
-import { runQuery, saveQuery } from '../../stores/queries';
+import { runQuery } from '../../stores/queries';
 import ConnectionDropDown from '../ConnectionDropdown';
 import ChartButton from './ChartButton';
 import QueryListButton from './QueryListButton';
 import ToolbarCloneButton from './ToolbarCloneButton';
+import ToolbarFormatQueryButton from './ToolbarFormatQueryButton';
 import ToolbarMenu from './ToolbarMenu';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarQueryNameInput from './ToolbarQueryNameInput';
+import ToolbarSaveButton from './ToolbarSaveButton';
 import ToolbarSpacer from './ToolbarSpacer';
 import ToolbarTagsButton from './ToolbarTagsButton';
 import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
-import ToolbarFormatQueryButton from './ToolbarFormatQueryButton';
 
 function mapStateToProps(state) {
   return {
-    isRunning: state.isRunning,
-    isSaving: state.isSaving,
-    unsavedChanges: state.unsavedChanges
+    isRunning: state.isRunning
   };
 }
 
 const ConnectedEditorNavBar = connect(mapStateToProps, store => ({
-  runQuery: runQuery(store),
-  saveQuery: saveQuery(store)
+  runQuery: runQuery(store)
 }))(React.memo(Toolbar));
 
-function Toolbar({ isRunning, isSaving, runQuery, saveQuery, unsavedChanges }) {
+function Toolbar({ isRunning, runQuery }) {
   return (
     <div
       style={{
@@ -59,14 +54,7 @@ function Toolbar({ isRunning, isSaving, runQuery, saveQuery, unsavedChanges }) {
         <ToolbarTagsButton />
         <ToolbarCloneButton />
         <ToolbarFormatQueryButton />
-
-        <IconButton
-          tooltip="Save"
-          onClick={() => saveQuery()}
-          disabled={isSaving}
-        >
-          {unsavedChanges ? <UnsavedIcon /> : <SaveIcon />}
-        </IconButton>
+        <ToolbarSaveButton />
 
         <ToolbarSpacer />
 
@@ -87,11 +75,8 @@ function Toolbar({ isRunning, isSaving, runQuery, saveQuery, unsavedChanges }) {
 }
 
 Toolbar.propTypes = {
-  isSaving: PropTypes.bool.isRequired,
   isRunning: PropTypes.bool.isRequired,
-  saveQuery: PropTypes.func.isRequired,
-  runQuery: PropTypes.func.isRequired,
-  unsavedChanges: PropTypes.bool.isRequired
+  runQuery: PropTypes.func.isRequired
 };
 
 export default ConnectedEditorNavBar;
