@@ -2,9 +2,8 @@ import CopyIcon from 'mdi-react/ContentCopyIcon';
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
-import TagsIcon from 'mdi-react/TagMultipleIcon';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'unistore/react';
 import Button from '../../common/Button';
 import IconButton from '../../common/IconButton';
@@ -17,11 +16,11 @@ import {
 import ConnectionDropDown from '../ConnectionDropdown';
 import ChartButton from './ChartButton';
 import QueryListButton from './QueryListButton';
-import QueryTagsModal from './QueryTagsModal';
 import ToolbarMenu from './ToolbarMenu';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarQueryNameInput from './ToolbarQueryNameInput';
 import ToolbarSpacer from './ToolbarSpacer';
+import ToolbarTagsButton from './ToolbarTagsButton';
 import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
 
 function mapStateToProps(state) {
@@ -51,8 +50,6 @@ function Toolbar({
 
   unsavedChanges
 }) {
-  const [showTags, setShowTags] = useState(false);
-
   const cloneDisabled = !queryId;
 
   return (
@@ -81,11 +78,7 @@ function Toolbar({
 
         <ToolbarSpacer />
 
-        <IconButton tooltip="Tags" onClick={() => setShowTags(true)}>
-          <TagsIcon />
-        </IconButton>
-
-        <QueryTagsModal visible={showTags} onClose={() => setShowTags(false)} />
+        <ToolbarTagsButton />
 
         <IconButton
           tooltip="Clone"
