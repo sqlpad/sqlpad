@@ -18,6 +18,10 @@ const schema = Joi.object({
 });
 
 class QueryHistory {
+  /**
+   * @param {*} nedb
+   * @param {import('../lib/config')} config
+   */
   constructor(nedb, config) {
     this.nedb = nedb;
     this.config = config;
