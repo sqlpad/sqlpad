@@ -1,9 +1,11 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtil = require('../utils');
 
 describe('api/signup', function() {
+  const utils = new TestUtil();
+
   before(function() {
-    return utils.reset();
+    return utils.init();
   });
 
   it('allows new user signup', async function() {
@@ -50,9 +52,12 @@ describe('api/signup', function() {
 });
 
 describe('api/signin', function() {
+  const utils = new TestUtil();
+
   before(function() {
-    return utils.resetWithUser();
+    return utils.init(true);
   });
+
   it('signs in user', async function() {
     const body = await utils.post(null, '/api/signin', {
       password: 'admin',

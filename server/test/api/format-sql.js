@@ -1,9 +1,11 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 
 describe('api/format-sql', function() {
+  const utils = new TestUtils();
+
   before(function() {
-    return utils.resetWithUser();
+    return utils.init(true);
   });
 
   it('format sql query', async function() {

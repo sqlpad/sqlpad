@@ -1,9 +1,11 @@
 const makeEmail = require('../../lib/email.js');
-const { config } = require('../utils');
+const TestUtils = require('../utils');
 
 describe('lib/email.js', async function() {
-  if (config.smtpConfigured() && process.env.SQLPAD_TEST_EMAIL) {
-    const email = makeEmail(config);
+  const utils = new TestUtils();
+
+  if (utils.config.smtpConfigured() && process.env.SQLPAD_TEST_EMAIL) {
+    const email = makeEmail(utils.config);
 
     it('should send invites', function() {
       return email.sendInvite(process.env.SQLPAD_TEST_EMAIL);

@@ -1,7 +1,13 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 
 describe('config.getConnections', function() {
+  const utils = new TestUtils();
+
+  before(function() {
+    return utils.init(true);
+  });
+
   it('handles empty object', function() {
     const cs = utils.config.getConnections({});
     assert(Array.isArray(cs));

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 
 function expectKeys(data, expectedKeys) {
   Object.keys(data).forEach(key =>
@@ -26,6 +26,12 @@ const expectedConfigKeys = [
 ];
 
 describe('api/app', function() {
+  const utils = new TestUtils();
+
+  before(function() {
+    return utils.init(true);
+  });
+
   it('returns expected values', async function() {
     const body = await utils.get(null, '/api/app');
     expectKeys(body, expectedKeys);

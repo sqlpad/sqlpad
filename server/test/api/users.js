@@ -1,11 +1,12 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 
 describe('api/users', function() {
+  const utils = new TestUtils();
   let user;
 
   before(function() {
-    return utils.resetWithUser();
+    return utils.init(true);
   });
 
   it('Returns initial array', async function() {

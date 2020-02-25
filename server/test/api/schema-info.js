@@ -1,11 +1,12 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 
 describe('api/schema-info', function() {
+  const utils = new TestUtils();
   let connection;
 
   before(async function() {
-    await utils.resetWithUser();
+    await utils.init(true);
     const body = await utils.post('admin', '/api/connections', {
       driver: 'mock',
       name: 'sqlpad',

@@ -1,18 +1,20 @@
 const assert = require('assert');
-const utils = require('../utils');
 const uuid = require('uuid');
-
-async function setReset() {
-  const user = await utils.models.users.findOneByEmail('admin@test.com');
-  const passwordResetId = uuid.v4();
-  user.passwordResetId = passwordResetId;
-  await utils.models.users.save(user);
-  return passwordResetId;
-}
+const TestUtils = require('../utils');
 
 describe('api/password-reset', function() {
+  const utils = new TestUtils();
+
+  async function setReset() {
+    const user = await utils.models.users.findOneByEmail('admin@test.com');
+    const passwordResetId = uuid.v4();
+    user.passwordResetId = passwordResetId;
+    await utils.models.users.save(user);
+    return passwordResetId;
+  }
+
   before(function() {
-    return utils.resetWithUser();
+    return utils.init(true);
   });
 
   it('Allows resetting password', async function() {

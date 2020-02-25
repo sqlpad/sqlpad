@@ -1,7 +1,6 @@
 const assert = require('assert');
 const uuid = require('uuid');
 const request = require('supertest');
-const consts = require('../lib/consts');
 const Config = require('../lib/config');
 const appLog = require('../lib/appLog');
 const { makeDb, getDb } = require('../lib/db');
@@ -20,7 +19,7 @@ const users = {
   }
 };
 
-class TestUtil {
+class TestUtils {
   constructor(args = {}, env = {}) {
     const config = new Config(
       {
@@ -48,7 +47,7 @@ class TestUtil {
     this.app = undefined;
   }
 
-  async init() {
+  async init(withUsers) {
     const { models } = await getDb(this.instanceAlias);
 
     this.models = models;
@@ -58,37 +57,12 @@ class TestUtil {
       makeDb(this.config, this.instanceAlias);
     }, 'ensure nedb can be made once');
 
-    return this.resetWithUser();
-  }
-
-  async reset() {
-    const { nedb } = await getDb(this.instanceAlias);
-    return Promise.all([
-      nedb.users.remove({}, { multi: true }),
-      nedb.queries.remove({}, { multi: true }),
-      nedb.queryHistory.remove({}, { multi: true }),
-      nedb.connections.remove({}, { multi: true }),
-      nedb.connectionAccesses.remove(
-        {
-          $not: {
-            $and: [
-              { connectionId: consts.EVERY_CONNECTION_ID },
-              { userId: consts.EVERYONE_ID }
-            ]
-          }
-        },
-        { multi: true }
-      )
-    ]);
-  }
-
-  async resetWithUser() {
-    await this.reset();
-    const { models } = await getDb(this.instanceAlias);
-    const saves = Object.keys(users).map(key => {
-      return models.users.save(users[key]);
-    });
-    return Promise.all(saves);
+    if (withUsers) {
+      const saves = Object.keys(users).map(key => {
+        return models.users.save(users[key]);
+      });
+      await Promise.all(saves);
+    }
   }
 
   async del(role, url, statusCode = 200) {
@@ -129,10 +103,4 @@ function addAuth(req, role) {
   return req;
 }
 
-const testUtil = new TestUtil();
-
-before(async function() {
-  await testUtil.init();
-});
-
-module.exports = testUtil;
+module.exports = TestUtils;

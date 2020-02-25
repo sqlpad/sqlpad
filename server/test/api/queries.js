@@ -1,11 +1,12 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 
 describe('api/queries', function() {
+  const utils = new TestUtils();
   let query;
 
   before(function() {
-    return utils.resetWithUser();
+    return utils.init(true);
   });
 
   it('Returns empty array', async function() {
