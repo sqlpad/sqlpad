@@ -40,23 +40,26 @@ async function initNedb(config) {
   const admin = config.get('admin');
   const adminPassword = config.get('adminPassword');
   const dbPath = config.get('dbPath');
+  const dbInMemory = config.get('dbInMemory');
   const allowConnectionAccessToEveryone = config.get(
     'allowConnectionAccessToEveryone'
   );
 
   mkdirp.sync(path.join(dbPath, '/cache'));
 
+  function getDatastore(dbName) {
+    return dbInMemory
+      ? datastore()
+      : datastore({ filename: path.join(dbPath, dbName) });
+  }
+
   const nedb = {
-    users: datastore({ filename: path.join(dbPath, 'users.db') }),
-    connections: datastore({
-      filename: path.join(dbPath, 'connections.db')
-    }),
-    connectionAccesses: datastore({
-      filename: path.join(dbPath, 'connectionaccesses.db')
-    }),
-    queries: datastore({ filename: path.join(dbPath, 'queries.db') }),
-    queryHistory: datastore({ filename: path.join(dbPath, 'queryhistory.db') }),
-    cache: datastore({ filename: path.join(dbPath, 'cache.db') }),
+    users: getDatastore('users.db'),
+    connections: getDatastore('connections.db'),
+    connectionAccesses: getDatastore('connectionaccesses.db'),
+    queries: getDatastore('queries.db'),
+    queryHistory: getDatastore('queryhistory.db'),
+    cache: getDatastore('cache.db'),
     instances: [
       'users',
       'connections',
