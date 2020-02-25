@@ -14,7 +14,7 @@ const { makeDb, getDb } = require('./lib/db');
 require('./lib/cli-flow.js');
 
 const argv = minimist(process.argv.slice(2));
-const config = new Config(argv);
+const config = new Config(argv, process.env);
 
 appLog.setLevel(config.get('appLogLevel'));
 appLog.debug(config.get(), 'Final config values');

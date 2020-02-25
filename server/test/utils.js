@@ -11,7 +11,7 @@ const argv = minimist(process.argv.slice(2));
 
 // TODO - restructure test utils to allow injecting different configurations
 // config values can be supplied directly, parsing different sources can be tested separately
-const config = new Config(argv);
+const config = new Config(argv, process.env);
 
 makeDb(config);
 let app;

@@ -8,12 +8,14 @@ const fromFile = require('./fromFile');
 const getOldConfigWarning = require('./getOldConfigWarning');
 
 class Config {
-  constructor(argv) {
+  constructor(argv, env) {
     this.argv = argv;
 
+    const configFilePathFromConfig = argv.config || env.SQLPAD_CONFIG;
+
     const defaultConfig = fromDefault();
-    const envConfig = fromEnv();
-    const [fileConfig, warnings] = fromFile();
+    const envConfig = fromEnv(env);
+    const [fileConfig, warnings] = fromFile(configFilePathFromConfig);
     const cliConfig = fromCli(argv);
 
     const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
