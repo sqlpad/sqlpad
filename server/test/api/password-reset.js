@@ -1,14 +1,12 @@
 const assert = require('assert');
 const utils = require('../utils');
 const uuid = require('uuid');
-const { getDb } = require('../../lib/db');
 
 async function setReset() {
-  const { models } = await getDb();
-  const user = await models.users.findOneByEmail('admin@test.com');
+  const user = await utils.models.users.findOneByEmail('admin@test.com');
   const passwordResetId = uuid.v4();
   user.passwordResetId = passwordResetId;
-  await models.users.save(user);
+  await utils.models.users.save(user);
   return passwordResetId;
 }
 
