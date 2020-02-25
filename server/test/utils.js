@@ -47,6 +47,7 @@ class TestUtils {
 
     ndb.makeDb(config, this.instanceAlias);
     this.app = undefined;
+    this.sequelizeDb = sequelizeDb.makeDb(this.config, this.instanceAlias);
   }
 
   async init(withUsers) {
@@ -54,8 +55,7 @@ class TestUtils {
 
     this.models = models;
 
-    const sdb = sequelizeDb.makeDb(this.config);
-    await migrate(this.config, appLog, nedb, sdb.sequelize);
+    await migrate(this.config, appLog, nedb, this.sequelizeDb.sequelize);
 
     this.app = makeApp(this.config, models);
 

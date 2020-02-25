@@ -1,9 +1,11 @@
 const assert = require('assert');
-const sequelizeDb = require('../../sequelize');
+const TestUtils = require('../utils');
 
 describe('QueryAcl', function() {
+  const utils = new TestUtils();
+
   it('write defaults to false', async function() {
-    const sdb = sequelizeDb.getDb();
+    const sdb = utils.sequelizeDb;
     const queryAcl = await sdb.QueryAcl.create({
       queryId: 'foo',
       userId: 'bar'
