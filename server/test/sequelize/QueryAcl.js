@@ -4,6 +4,10 @@ const TestUtils = require('../utils');
 describe('QueryAcl', function() {
   const utils = new TestUtils();
 
+  before(function() {
+    return utils.init();
+  });
+
   it('write defaults to false', async function() {
     const sdb = utils.sequelizeDb;
     const queryAcl = await sdb.QueryAcl.create({

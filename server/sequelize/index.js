@@ -7,7 +7,7 @@ const instances = {};
 class SequelizeDao {
   constructor(config) {
     this.config = config;
-    // TODO - testing can eventually be in memory with storage default ':memory:'
+
     const sequelize = new Sequelize({
       dialect: 'sqlite',
       // sequelize may pass more than message,
@@ -15,11 +15,14 @@ class SequelizeDao {
       logging: message => {
         appLog.debug(message);
       },
-      storage: path.join(config.get('dbPath'), 'sqlpad.sqlite')
+      storage: config.get('dbInMemory')
+        ? ':memory:'
+        : path.join(config.get('dbPath'), 'sqlpad.sqlite')
     });
 
     this.sequelize = sequelize;
     this.Sequelize = Sequelize;
+
     this.QueryAcl = require('./QueryAcl')(sequelize, DataTypes);
   }
 }
