@@ -31,7 +31,8 @@ describe('api/query-history', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     connection = connBody.connection;
 

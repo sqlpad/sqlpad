@@ -37,7 +37,8 @@ describe('api/query-result', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     connection = connBody.connection;
 

@@ -20,7 +20,8 @@ describe('api/connection-accesses', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     connection1 = connBody.connection;
 
@@ -30,7 +31,8 @@ describe('api/connection-accesses', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     connection2 = connBody.connection;
 

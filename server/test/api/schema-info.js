@@ -12,7 +12,8 @@ describe('api/schema-info', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     assert(!body.error, 'no error');
     connection = body.connection;

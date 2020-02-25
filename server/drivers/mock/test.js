@@ -8,7 +8,8 @@ const connection = {
   database: 'sqlpad',
   username: 'sqlpad',
   password: 'sqlpad',
-  maxRows: 100
+  maxRows: 100,
+  wait: 0
 };
 
 describe('drivers/mock', function() {
