@@ -29,8 +29,8 @@ async function getDb(instanceAlias = 'default') {
     throw new Error('db instance must be created first');
   }
   // nedb will already be a promise -- this just makes it explicit
-  const { nedb, models } = await instancePromise;
-  return { nedb, models };
+  const { nedb, models, sequelizeDb } = await instancePromise;
+  return { nedb, models, sequelizeDb };
 }
 
 /**

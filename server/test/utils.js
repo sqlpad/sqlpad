@@ -3,7 +3,7 @@ const uuid = require('uuid');
 const request = require('supertest');
 const Config = require('../lib/config');
 const appLog = require('../lib/appLog');
-const ndb = require('../lib/db');
+const db = require('../lib/db');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
 
@@ -50,8 +50,8 @@ class TestUtils {
   }
 
   async initDbs() {
-    ndb.makeDb(this.config, this.instanceAlias);
-    const { models, nedb, sequelizeDb } = await ndb.getDb(this.instanceAlias);
+    db.makeDb(this.config, this.instanceAlias);
+    const { models, nedb, sequelizeDb } = await db.getDb(this.instanceAlias);
     this.models = models;
     this.nedb = nedb;
     this.sequelizeDb = sequelizeDb;
@@ -73,7 +73,7 @@ class TestUtils {
     this.app = makeApp(this.config, this.models);
 
     assert.throws(() => {
-      ndb.makeDb(this.config, this.instanceAlias);
+      db.makeDb(this.config, this.instanceAlias);
     }, 'ensure nedb can be made once');
 
     if (withUsers) {
