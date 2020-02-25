@@ -1,6 +1,5 @@
 const assert = require('assert');
-const { config } = require('../utils');
-
+const TestUtils = require('../utils');
 const fromDefault = require('../../lib/config/fromDefault');
 const fromEnv = require('../../lib/config/fromEnv');
 const fromCli = require('../../lib/config/fromCli');
@@ -30,10 +29,16 @@ describe('config', function() {
 });
 
 describe('lib/config', function() {
+  const utils = new TestUtils();
+
+  before(function() {
+    return utils.init(true);
+  });
+
   it('.get() should get a value provided by default', async function() {
-    assert.equal(config.get('httpsPort'), 443, 'httpsPort=443');
+    assert.equal(utils.config.get('httpsPort'), 443, 'httpsPort=443');
   });
   it('.get() should only accept key in config items', async function() {
-    assert.throws(() => config.get('non-existent-key'), Error);
+    assert.throws(() => utils.config.get('non-existent-key'), Error);
   });
 });

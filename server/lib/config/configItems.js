@@ -218,6 +218,11 @@ const configItems = [
     key: 'webLogLevel',
     envVar: 'SQLPAD_WEB_LOG_LEVEL',
     default: 'info'
+  },
+  {
+    key: 'dbInMemory',
+    envVar: 'SQLPAD_DB_IN_MEMORY',
+    default: false
   }
 ];
 

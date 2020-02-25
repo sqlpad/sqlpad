@@ -1,22 +1,20 @@
 const assert = require('assert');
-const { config } = require('../utils');
-const { getDb } = require('../../lib/db');
+const TestUtils = require('../utils');
 
 describe('config.getConnections', function() {
-  let models;
+  const utils = new TestUtils();
 
-  before(async function() {
-    const db = await getDb();
-    models = db.models;
+  before(function() {
+    return utils.init(true);
   });
 
   it('handles empty object', function() {
-    const cs = config.getConnections({});
+    const cs = utils.config.getConnections({});
     assert(Array.isArray(cs));
   });
 
   it('skips partial connections', function() {
-    const cs = config.getConnections({
+    const cs = utils.config.getConnections({
       SQLPAD_CONNECTIONS__abc__driver: 'postgres'
     });
     assert(Array.isArray(cs));
@@ -24,7 +22,7 @@ describe('config.getConnections', function() {
   });
 
   it('parses connection properly', function() {
-    const cs = config.getConnections({
+    const cs = utils.config.getConnections({
       SQLPAD_CONNECTIONS__abc__driver: 'postgres',
       SQLPAD_CONNECTIONS__abc__name: 'env-postgres',
       SQLPAD_CONNECTIONS__abc__host: 'localhost',
@@ -50,7 +48,7 @@ describe('config.getConnections', function() {
     process.env.SQLPAD_CONNECTIONS__abc__port = '5432';
     process.env.SQLPAD_CONNECTIONS__abc__postgresSsl = 'true';
 
-    const allConnections = await models.connections.findAll();
+    const allConnections = await utils.models.connections.findAll();
     const connection = allConnections.find(c => c._id === 'abc');
     assert.strictEqual(connection.name, 'env-postgres', 'connection.name');
     assert.strictEqual(connection.editable, false, 'connection.editable');
@@ -69,7 +67,7 @@ describe('config.getConnections', function() {
     process.env.SQLPAD_CONNECTIONS__abc__port = '5432';
     process.env.SQLPAD_CONNECTIONS__abc__postgresSsl = 'true';
 
-    const connection = await models.connections.findOneById('abc');
+    const connection = await utils.models.connections.findOneById('abc');
     assert.strictEqual(connection.name, 'env-postgres', 'connection.name');
     assert.strictEqual(connection.editable, false, 'connection.editable');
 
