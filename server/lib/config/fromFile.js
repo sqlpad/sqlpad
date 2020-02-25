@@ -1,17 +1,13 @@
-const minimist = require('minimist');
 const fs = require('fs');
 const ini = require('ini');
 const configItems = require('./configItems');
-
-const argv = minimist(process.argv.slice(2));
-const configFilePathFromConfig = argv.config || process.env.SQLPAD_CONFIG;
 
 /**
  * Reads and parses config file.
  * This file may be either JSON or INI file.
  * @param {string} configFilePath
  */
-function fromFile(configFilePath = configFilePathFromConfig) {
+function fromFile(configFilePath) {
   let parsedFile = {};
   const warnings = [];
 

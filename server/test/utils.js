@@ -1,21 +1,12 @@
 const assert = require('assert');
-const minimist = require('minimist');
+const uuid = require('uuid');
 const request = require('supertest');
-const consts = require('../lib/consts');
 const Config = require('../lib/config');
 const appLog = require('../lib/appLog');
 const ndb = require('../lib/db');
 const sequelizeDb = require('../sequelize');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
-
-const argv = minimist(process.argv.slice(2));
-
-// TODO - restructure test utils to allow injecting different configurations
-// config values can be supplied directly, parsing different sources can be tested separately
-const config = new Config(argv);
-
-let app;
 
 const users = {
   admin: {
@@ -30,40 +21,83 @@ const users = {
   }
 };
 
-function expectKeys(data, expectedKeys) {
-  Object.keys(data).forEach(key =>
-    assert(expectedKeys.includes(key), `expected key ${key}`)
-  );
-}
-
-async function reset() {
-  const { nedb } = await ndb.getDb();
-  return Promise.all([
-    nedb.users.remove({}, { multi: true }),
-    nedb.queries.remove({}, { multi: true }),
-    nedb.queryHistory.remove({}, { multi: true }),
-    nedb.connections.remove({}, { multi: true }),
-    nedb.connectionAccesses.remove(
+class TestUtils {
+  constructor(args = {}, env = {}) {
+    const config = new Config(
       {
-        $not: {
-          $and: [
-            { connectionId: consts.EVERY_CONNECTION_ID },
-            { userId: consts.EVERYONE_ID }
-          ]
-        }
+        debug: true,
+        // Despite being in-memory, still need a file path for cache and session files
+        // Eventually these will be moved to sqlite and we can be fully-in-memory
+        dbPath: '../dbtest',
+        dbInMemory: true,
+        ...args
       },
-      { multi: true }
-    )
-  ]);
-}
+      {
+        SQLPAD_APP_LOG_LEVEL: 'silent',
+        SQLPAD_WEB_LOG_LEVEL: 'silent',
+        ...env
+      }
+    );
 
-async function resetWithUser() {
-  await reset();
-  const { models } = await ndb.getDb();
-  const saves = Object.keys(users).map(key => {
-    return models.users.save(users[key]);
-  });
-  return Promise.all(saves);
+    appLog.setLevel(config.get('appLogLevel'));
+
+    this.config = config;
+    this.appLog = appLog;
+    this.instanceAlias = uuid.v1();
+
+    ndb.makeDb(config, this.instanceAlias);
+    this.app = undefined;
+  }
+
+  async init(withUsers) {
+    const { models, nedb } = await ndb.getDb(this.instanceAlias);
+
+    this.models = models;
+
+    const sdb = sequelizeDb.makeDb(this.config);
+    await migrate(this.config, appLog, nedb, sdb.sequelize);
+
+    this.app = makeApp(this.config, models);
+
+    assert.throws(() => {
+      ndb.makeDb(this.config, this.instanceAlias);
+    }, 'ensure nedb can be made once');
+
+    if (withUsers) {
+      const saves = Object.keys(users).map(key => {
+        return models.users.save(users[key]);
+      });
+      await Promise.all(saves);
+    }
+  }
+
+  async del(role, url, statusCode = 200) {
+    let req = request(this.app).delete(url);
+    req = addAuth(req, role);
+    const response = await req.expect(statusCode);
+    return response.body;
+  }
+
+  async get(role, url, statusCode = 200) {
+    let req = request(this.app).get(url);
+    req = addAuth(req, role);
+    const response = await req.expect(statusCode);
+    return response.body;
+  }
+
+  async post(role, url, body, statusCode = 200) {
+    let req = request(this.app).post(url);
+    req = addAuth(req, role);
+    const response = await req.send(body).expect(statusCode);
+    return response.body;
+  }
+
+  async put(role, url, body, statusCode = 200) {
+    let req = request(this.app).put(url);
+    req = addAuth(req, role);
+    const response = await req.send(body).expect(statusCode);
+    return response.body;
+  }
 }
 
 function addAuth(req, role) {
@@ -75,58 +109,4 @@ function addAuth(req, role) {
   return req;
 }
 
-async function del(role, url, statusCode = 200) {
-  let req = request(app).delete(url);
-  req = addAuth(req, role);
-  const response = await req.expect(statusCode);
-  return response.body;
-}
-
-async function get(role, url, statusCode = 200) {
-  let req = request(app).get(url);
-  req = addAuth(req, role);
-  const response = await req.expect(statusCode);
-  return response.body;
-}
-
-async function post(role, url, body, statusCode = 200) {
-  let req = request(app).post(url);
-  req = addAuth(req, role);
-  const response = await req.send(body).expect(statusCode);
-  return response.body;
-}
-
-async function put(role, url, body, statusCode = 200) {
-  let req = request(app).put(url);
-  req = addAuth(req, role);
-  const response = await req.send(body).expect(statusCode);
-  return response.body;
-}
-
-before(async function() {
-  ndb.makeDb(config);
-  const { models, nedb } = await ndb.getDb();
-  appLog.setLevel(config.get('appLogLevel'));
-
-  const sdb = sequelizeDb.makeDb(config);
-  await migrate(config, appLog, nedb, sdb.sequelize);
-
-  app = makeApp(config, models);
-
-  assert.throws(() => {
-    ndb.makeDb(config);
-  }, 'ensure nedb can be made once');
-
-  return resetWithUser();
-});
-
-module.exports = {
-  config,
-  del,
-  expectKeys,
-  get,
-  post,
-  put,
-  reset,
-  resetWithUser
-};
+module.exports = TestUtils;

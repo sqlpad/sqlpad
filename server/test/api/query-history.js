@@ -1,5 +1,5 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 const urlFilterToNeDbFilter = require('../../lib/urlFilterToNeDbFilter');
 
 const queryText1 = `
@@ -19,11 +19,12 @@ const queryText2 = `
 `;
 
 describe('api/query-history', function() {
+  const utils = new TestUtils();
   let connection;
   let query1;
 
   before(async function() {
-    await utils.resetWithUser();
+    await utils.init(true);
 
     const connBody = await utils.post('admin', '/api/connections', {
       name: 'test postgres',
@@ -31,7 +32,8 @@ describe('api/query-history', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     connection = connBody.connection;
 

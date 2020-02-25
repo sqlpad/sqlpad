@@ -1,9 +1,11 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 
 describe('api/test-connection', function() {
+  const utils = new TestUtils();
+
   before(function() {
-    return utils.resetWithUser();
+    return utils.init(true);
   });
 
   it('tests connection', async function() {
@@ -13,7 +15,8 @@ describe('api/test-connection', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     assert(!body.error, 'Expect no error');
   });

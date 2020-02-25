@@ -1,5 +1,11 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
+
+function expectKeys(data, expectedKeys) {
+  Object.keys(data).forEach(key =>
+    assert(expectedKeys.includes(key), `expected key ${key}`)
+  );
+}
 
 const expectedKeys = [
   'adminRegistrationOpen',
@@ -20,10 +26,16 @@ const expectedConfigKeys = [
 ];
 
 describe('api/app', function() {
+  const utils = new TestUtils();
+
+  before(function() {
+    return utils.init(true);
+  });
+
   it('returns expected values', async function() {
     const body = await utils.get(null, '/api/app');
-    utils.expectKeys(body, expectedKeys);
-    utils.expectKeys(body.config, expectedConfigKeys);
+    expectKeys(body, expectedKeys);
+    expectKeys(body.config, expectedConfigKeys);
     assert.equal(
       Object.keys(body.config).length,
       expectedConfigKeys.length,
@@ -33,6 +45,6 @@ describe('api/app', function() {
 
   it('handles unknown baseUrl', async function() {
     const body = await utils.get(null, '/literally/any/path/api/app');
-    utils.expectKeys(body, expectedKeys);
+    expectKeys(body, expectedKeys);
   });
 });

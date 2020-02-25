@@ -89,7 +89,8 @@ function cartesianify(rows, field) {
  * @param {object} connection
  */
 async function runQuery(query, connection) {
-  await wait(2000);
+  const ms = connection.hasOwnProperty('wait') ? connection.wait : 2000;
+  await wait(ms);
 
   // Connection here doesn't actually matter.
   // Someday this mock could get fancy and change output based on some connection value
@@ -315,6 +316,11 @@ const fields = [
     key: 'socksPassword',
     formType: 'TEXT',
     label: 'Password for socks proxy'
+  },
+  {
+    key: 'wait',
+    formType: 'TEXT',
+    label: 'Milliseconds to wait running query'
   }
 ];
 

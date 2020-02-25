@@ -1,5 +1,36 @@
 # Changelog
 
+## 4.1.0
+
+### February 25, 2020
+
+#### Features
+
+- Add Snowflake driver/support (#519)
+- Add MS SQL Server readOnly intent option (#520)
+- Add logging using pino (#527, #547)
+
+  SQLPad now logs json messages to stdout using the [pino](http://getpino.io/#/) library. Amount of logging can be controlled by setting `appLogLevel` and `webLogLevel` for application and web logs respectively. Pino does not manage log transport, but has an ecosystem of tooling available that does http://getpino.io/#/docs/transports.
+
+- Allow dynamic user data in connection configuration (#544)
+
+  Connections can have user values dynamically substituted in connection configuration values containing text values. This is a work-in-progress and can be used for adventurous. See PR for details, otherwise more info and corresponding UI will come with future releases.
+
+- Add GitHub Release builds via build pipeline (#550)
+- Add `dbInMemory` setting (#553)
+
+  `dbInMemory` will run the embedded SQLPad db in memory without logging to disk. Enabling this does not remove the need for `dbPath` at this time, as filesystem access is still required for result caches and express session support. (`dbPath` to become optional in future release)
+
+#### Fixes
+
+- Fix TypeError: Do not know how to serialize a BigInt (#522)
+- Fix tests for non-utc timezones (#524)
+
+#### Maintenance
+
+- Update server dependencies (#525)
+- Maintenance & refactoring (#534, #535, #538, #539, #540, #541, #542, #543, #545, #551, #552, #553)
+
 ## 4.0.0
 
 ### January 18, 2020

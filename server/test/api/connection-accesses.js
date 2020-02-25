@@ -1,8 +1,9 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 const consts = require('../../lib/consts');
 
 describe('api/connection-accesses', function() {
+  const utils = new TestUtils();
   let admin2;
   let user1;
   let user2;
@@ -12,7 +13,7 @@ describe('api/connection-accesses', function() {
   let connectionAccess1;
 
   before(async function() {
-    await utils.resetWithUser();
+    await utils.init(true);
 
     let connBody = await utils.post('admin', '/api/connections', {
       name: 'test connection 1',
@@ -20,7 +21,8 @@ describe('api/connection-accesses', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     connection1 = connBody.connection;
 
@@ -30,7 +32,8 @@ describe('api/connection-accesses', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     connection2 = connBody.connection;
 

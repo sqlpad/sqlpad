@@ -1,5 +1,5 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 
 const queryText = `
   -- dimensions = department 10, orderdate 10
@@ -25,11 +25,12 @@ function validateQueryResult(queryResult) {
 }
 
 describe('api/query-result', function() {
+  const utils = new TestUtils();
   let query;
   let connection;
 
   before(async function() {
-    await utils.resetWithUser();
+    await utils.init(true);
 
     const connBody = await utils.post('admin', '/api/connections', {
       name: 'test postgres',
@@ -37,7 +38,8 @@ describe('api/query-result', function() {
       host: 'localhost',
       database: 'sqlpad',
       username: 'sqlpad',
-      password: 'sqlpad'
+      password: 'sqlpad',
+      wait: 0
     });
     connection = connBody.connection;
 

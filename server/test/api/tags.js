@@ -1,9 +1,11 @@
 const assert = require('assert');
-const utils = require('../utils');
+const TestUtils = require('../utils');
 
 describe('api/tags', function() {
+  const utils = new TestUtils();
+
   before(function() {
-    return utils.resetWithUser();
+    return utils.init(true);
   });
 
   it('Returns empty array', async function() {

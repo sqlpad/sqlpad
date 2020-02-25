@@ -7,3 +7,4 @@ coverage/
 db/
 dbtest/
 node_modules/
+sqlpad.tar.gz

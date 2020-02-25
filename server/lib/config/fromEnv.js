@@ -5,7 +5,7 @@ const definitions = require('./configItems');
  * @param {object} env optional
  * @returns {object} configMap
  */
-module.exports = function getEnvConfig(env = process.env) {
+module.exports = function getEnvConfig(env) {
   return definitions
     .filter(definition => definition.hasOwnProperty('envVar'))
     .reduce((envMap, definition) => {
