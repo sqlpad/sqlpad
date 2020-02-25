@@ -1,5 +1,4 @@
 const assert = require('assert');
-const minimist = require('minimist');
 const request = require('supertest');
 const consts = require('../lib/consts');
 const Config = require('../lib/config');
@@ -7,11 +6,19 @@ const appLog = require('../lib/appLog');
 const { makeDb, getDb } = require('../lib/db');
 const makeApp = require('../app');
 
-const argv = minimist(process.argv.slice(2));
-
 // TODO - restructure test utils to allow injecting different configurations
 // config values can be supplied directly, parsing different sources can be tested separately
-const config = new Config(argv, process.env);
+const config = new Config(
+  {
+    debug: true,
+    dbPath: '../dbtest',
+    dbInMemory: true
+  },
+  {
+    SQLPAD_APP_LOG_LEVEL: 'silent',
+    SQLPAD_WEB_LOG_LEVEL: 'silent'
+  }
+);
 
 makeDb(config);
 let app;
