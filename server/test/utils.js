@@ -44,20 +44,33 @@ class TestUtils {
     this.config = config;
     this.appLog = appLog;
     this.instanceAlias = uuid.v1();
-
-    ndb.makeDb(config, this.instanceAlias);
-    this.app = undefined;
     this.sequelizeDb = sequelizeDb.makeDb(this.config, this.instanceAlias);
+    this.app = undefined;
+    this.models = undefined;
+    this.nedb = undefined;
+  }
+
+  async initDbs() {
+    ndb.makeDb(this.config, this.instanceAlias);
+    const { models, nedb } = await ndb.getDb(this.instanceAlias);
+    this.models = models;
+    this.nedb = nedb;
+  }
+
+  async migrate() {
+    await migrate(
+      this.config,
+      this.appLog,
+      this.nedb,
+      this.sequelizeDb.sequelize
+    );
   }
 
   async init(withUsers) {
-    const { models, nedb } = await ndb.getDb(this.instanceAlias);
+    await this.initDbs();
+    await this.migrate();
 
-    this.models = models;
-
-    await migrate(this.config, appLog, nedb, this.sequelizeDb.sequelize);
-
-    this.app = makeApp(this.config, models);
+    this.app = makeApp(this.config, this.models);
 
     assert.throws(() => {
       ndb.makeDb(this.config, this.instanceAlias);
@@ -65,7 +78,7 @@ class TestUtils {
 
     if (withUsers) {
       const saves = Object.keys(users).map(key => {
-        return models.users.save(users[key]);
+        return this.models.users.save(users[key]);
       });
       await Promise.all(saves);
     }
