@@ -9,7 +9,6 @@ const makeApp = require('./app');
 const appLog = require('./lib/appLog');
 const Config = require('./lib/config');
 const { makeDb, getDb } = require('./lib/db');
-const sequelizeDb = require('./sequelize');
 const migrate = require('./lib/migrate');
 
 // Parse command line flags to see if anything special needs to happen
@@ -21,8 +20,6 @@ const config = new Config(argv, process.env);
 appLog.setLevel(config.get('appLogLevel'));
 appLog.debug(config.get(), 'Final config values');
 appLog.debug(config.getConnections(), 'Connections from config');
-
-const sdb = sequelizeDb.makeDb(config);
 
 makeDb(config);
 
@@ -81,8 +78,8 @@ function detectPortOrSystemd(port) {
 ============================================================================= */
 let server;
 
-async function startServer({ models, nedb }) {
-  await migrate(config, appLog, nedb, sdb.sequelize);
+async function startServer({ models, nedb, sequelizeDb }) {
+  await migrate(config, appLog, nedb, sequelizeDb.sequelize);
   const app = makeApp(config, models);
 
   // determine if key pair exists for certs

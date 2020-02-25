@@ -5,6 +5,7 @@ const appLog = require('./appLog');
 const ensureAdmin = require('./ensureAdmin');
 const consts = require('./consts');
 const Models = require('../models');
+const SequelizeDao = require('../sequelize');
 
 const TEN_MINUTES = 1000 * 60 * 10;
 const FIVE_MINUTES = 1000 * 60 * 5;
@@ -114,8 +115,10 @@ async function initNedb(config) {
     nedb[dbname].nedb.persistence.setAutocompactionInterval(TEN_MINUTES);
   });
 
+  const sequelizeDb = new SequelizeDao(config);
+
   // Schedule cleanups
-  const models = new Models(nedb, config);
+  const models = new Models(nedb, sequelizeDb, config);
   setInterval(async () => {
     await models.resultCache.removeExpired();
     await models.queryHistory.removeOldEntries();
@@ -124,7 +127,7 @@ async function initNedb(config) {
   // Ensure admin is set as specified if provided
   await ensureAdmin(nedb, admin, adminPassword);
 
-  return { nedb, models };
+  return { nedb, models, sequelizeDb };
 }
 
 /**

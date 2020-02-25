@@ -7,14 +7,14 @@ const Connections = require('./connections');
 const ConnectionAccesses = require('./connectionAccesses');
 
 class Models {
-  constructor(nedb, config) {
-    this.users = new Users(nedb, config);
-    this.schemaInfo = new SchemaInfo(nedb, config);
-    this.resultCache = new ResultCache(nedb, config);
-    this.queryHistory = new QueryHistory(nedb, config);
-    this.queries = new Queries(nedb, config);
-    this.connections = new Connections(nedb, config);
-    this.connectionAccesses = new ConnectionAccesses(nedb, config);
+  constructor(nedb, sequelizeDb, config) {
+    this.users = new Users(nedb, sequelizeDb, config);
+    this.schemaInfo = new SchemaInfo(nedb, sequelizeDb, config);
+    this.resultCache = new ResultCache(nedb, sequelizeDb, config);
+    this.queryHistory = new QueryHistory(nedb, sequelizeDb, config);
+    this.queries = new Queries(nedb, sequelizeDb, config);
+    this.connections = new Connections(nedb, sequelizeDb, config);
+    this.connectionAccesses = new ConnectionAccesses(nedb, sequelizeDb, config);
   }
 }
 

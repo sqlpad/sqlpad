@@ -2,8 +2,6 @@ const path = require('path');
 const { Sequelize, DataTypes } = require('sequelize');
 const appLog = require('../lib/appLog');
 
-const instances = {};
-
 class SequelizeDao {
   constructor(config) {
     this.config = config;
@@ -27,40 +25,4 @@ class SequelizeDao {
   }
 }
 
-/**
- * Initializes a sequelize instance for a given config.
- * Ensures that this only happens once for a given alias.
- * If this were called multiple times weird things could happen
- * @param {object} config
- * @param {string} instanceAlias
- */
-function makeDb(config, instanceAlias = 'default') {
-  // makeDb should only be called once for a given alias
-  if (instances[instanceAlias]) {
-    throw new Error(`db instance ${instanceAlias} already made`);
-  }
-
-  const instance = new SequelizeDao(config);
-
-  instances[instanceAlias] = instance;
-  return instance;
-}
-
-/**
- * Get sequelize instance for an optional alias.
- * Returns sequelize instance
- * @param {string} [instanceAlias]
- * @returns {SequelizeDao}
- */
-function getDb(instanceAlias = 'default') {
-  const instance = instances[instanceAlias];
-  if (!instance) {
-    throw new Error('db instance must be created first');
-  }
-  return instance;
-}
-
-module.exports = {
-  makeDb,
-  getDb
-};
+module.exports = SequelizeDao;

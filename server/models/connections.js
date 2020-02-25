@@ -5,10 +5,12 @@ const makeCipher = require('../lib/makeCipher');
 class Connections {
   /**
    * @param {*} nedb
+   * @param {*} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, config) {
+  constructor(nedb, sequelizeDb, config) {
     this.nedb = nedb;
+    this.sequelizeDb = sequelizeDb;
     this.config = config;
     const { cipher, decipher } = makeCipher(config.get('passphrase'));
     this.cipher = cipher;

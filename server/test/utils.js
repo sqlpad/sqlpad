@@ -4,7 +4,6 @@ const request = require('supertest');
 const Config = require('../lib/config');
 const appLog = require('../lib/appLog');
 const ndb = require('../lib/db');
-const sequelizeDb = require('../sequelize');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
 
@@ -44,7 +43,7 @@ class TestUtils {
     this.config = config;
     this.appLog = appLog;
     this.instanceAlias = uuid.v1();
-    this.sequelizeDb = sequelizeDb.makeDb(this.config, this.instanceAlias);
+    this.sequelizeDb = undefined;
     this.app = undefined;
     this.models = undefined;
     this.nedb = undefined;
@@ -52,9 +51,10 @@ class TestUtils {
 
   async initDbs() {
     ndb.makeDb(this.config, this.instanceAlias);
-    const { models, nedb } = await ndb.getDb(this.instanceAlias);
+    const { models, nedb, sequelizeDb } = await ndb.getDb(this.instanceAlias);
     this.models = models;
     this.nedb = nedb;
+    this.sequelizeDb = sequelizeDb;
   }
 
   async migrate() {

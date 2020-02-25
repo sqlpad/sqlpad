@@ -20,10 +20,12 @@ BigInt.prototype.toJSON = function() {
 class ResultCache {
   /**
    * @param {*} nedb
+   * @param {*} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, config) {
+  constructor(nedb, sequelizeDb, config) {
     this.nedb = nedb;
+    this.sequelizeDb = sequelizeDb;
     this.config = config;
     this.dbPath = config.get('dbPath');
   }
