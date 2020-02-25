@@ -63,10 +63,6 @@ class Queries {
     return this.nedb.queries.find({});
   }
 
-  findByFilter(filter) {
-    return this.nedb.queries.find(filter);
-  }
-
   removeById(id) {
     return this.nedb.queries.remove({ _id: id });
   }
