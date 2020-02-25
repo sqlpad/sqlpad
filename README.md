@@ -73,6 +73,10 @@ Default: `secret-used-to-sign-cookies-please-set-and-make-strong`
 Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.  
 Env var: `SQLPAD_DB_PATH`
 
+**dbInMemory**  
+If enabled, runs embedded database `nedb` in memory. `dbPath` is still required to be provided for cache and session support. (`dbPath` will be made optional in future release)  
+Env var: `SQLPAD_DB_IN_MEMORY`
+
 **debug**  
 Add a variety of logging to console while running SQLPad  
 Env var: `SQLPAD_DEBUG`
