@@ -25,6 +25,8 @@ class TestUtil {
     const config = new Config(
       {
         debug: true,
+        // Despite being in-memory, still need a file path for cache and session files
+        // Eventually these will be moved to sqlite and we can be fully-in-memory
         dbPath: '../dbtest',
         dbInMemory: true,
         ...args
@@ -118,12 +120,6 @@ class TestUtil {
   }
 }
 
-function expectKeys(data, expectedKeys) {
-  Object.keys(data).forEach(key =>
-    assert(expectedKeys.includes(key), `expected key ${key}`)
-  );
-}
-
 function addAuth(req, role) {
   if (users[role]) {
     const username = users[role].email;
@@ -134,8 +130,6 @@ function addAuth(req, role) {
 }
 
 const testUtil = new TestUtil();
-
-testUtil.expectKeys = expectKeys;
 
 before(async function() {
   await testUtil.init();
