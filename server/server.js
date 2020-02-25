@@ -82,7 +82,7 @@ function detectPortOrSystemd(port) {
 let server;
 
 async function startServer({ models, nedb }) {
-  await migrate(config, appLog, nedb, sdb);
+  await migrate(config, appLog, nedb, sdb.sequelize);
   const app = makeApp(config, models);
 
   // determine if key pair exists for certs

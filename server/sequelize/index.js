@@ -1,8 +1,28 @@
 const path = require('path');
-const Sequelize = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const appLog = require('../lib/appLog');
 
 const instances = {};
+
+class SequelizeDao {
+  constructor(config) {
+    this.config = config;
+    // TODO - testing can eventually be in memory with storage default ':memory:'
+    const sequelize = new Sequelize({
+      dialect: 'sqlite',
+      // sequelize may pass more than message,
+      // but it appears to be the sequelize object and it is quite excessive
+      logging: message => {
+        appLog.debug(message);
+      },
+      storage: path.join(config.get('dbPath'), 'sqlpad.sqlite')
+    });
+
+    this.sequelize = sequelize;
+    this.Sequelize = Sequelize;
+    this.QueryAcl = require('./QueryAcl')(sequelize, DataTypes);
+  }
+}
 
 /**
  * Initializes a sequelize instance for a given config.
@@ -17,25 +37,17 @@ function makeDb(config, instanceAlias = 'default') {
     throw new Error(`db instance ${instanceAlias} already made`);
   }
 
-  // TODO - testing can eventually be in memory with storage default ':memory:'
-  const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    // sequelize may pass more than message,
-    // but it appears to be the sequelize object and it is quite excessive
-    logging: message => {
-      appLog.debug(message);
-    },
-    storage: path.join(config.get('dbPath'), 'sqlpad.sqlite')
-  });
+  const instance = new SequelizeDao(config);
 
-  instances[instanceAlias] = sequelize;
-  return sequelize;
+  instances[instanceAlias] = instance;
+  return instance;
 }
 
 /**
  * Get sequelize instance for an optional alias.
  * Returns sequelize instance
  * @param {string} [instanceAlias]
+ * @returns {SequelizeDao}
  */
 function getDb(instanceAlias = 'default') {
   const instance = instances[instanceAlias];

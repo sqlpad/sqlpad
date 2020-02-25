@@ -4,8 +4,10 @@ const request = require('supertest');
 const consts = require('../lib/consts');
 const Config = require('../lib/config');
 const appLog = require('../lib/appLog');
-const { makeDb, getDb } = require('../lib/db');
+const ndb = require('../lib/db');
+const sequelizeDb = require('../sequelize');
 const makeApp = require('../app');
+const migrate = require('../lib/migrate');
 
 const argv = minimist(process.argv.slice(2));
 
@@ -13,7 +15,6 @@ const argv = minimist(process.argv.slice(2));
 // config values can be supplied directly, parsing different sources can be tested separately
 const config = new Config(argv);
 
-makeDb(config);
 let app;
 
 const users = {
@@ -36,7 +37,7 @@ function expectKeys(data, expectedKeys) {
 }
 
 async function reset() {
-  const { nedb } = await getDb();
+  const { nedb } = await ndb.getDb();
   return Promise.all([
     nedb.users.remove({}, { multi: true }),
     nedb.queries.remove({}, { multi: true }),
@@ -58,7 +59,7 @@ async function reset() {
 
 async function resetWithUser() {
   await reset();
-  const { models } = await getDb();
+  const { models } = await ndb.getDb();
   const saves = Object.keys(users).map(key => {
     return models.users.save(users[key]);
   });
@@ -103,12 +104,17 @@ async function put(role, url, body, statusCode = 200) {
 }
 
 before(async function() {
-  const { models } = await getDb();
+  ndb.makeDb(config);
+  const { models, nedb } = await ndb.getDb();
   appLog.setLevel(config.get('appLogLevel'));
+
+  const sdb = sequelizeDb.makeDb(config);
+  await migrate(config, appLog, nedb, sdb.sequelize);
+
   app = makeApp(config, models);
 
   assert.throws(() => {
-    makeDb(config);
+    ndb.makeDb(config);
   }, 'ensure nedb can be made once');
 
   return resetWithUser();
