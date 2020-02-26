@@ -17,6 +17,10 @@ import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
 import QueryPreview from './QueryPreview';
 
+const SHARED = 'SHARED';
+const MY_QUERIES = 'MY_QUERIES';
+const ALL = 'ALL';
+
 function getSortedFilteredQueries(
   currentUser,
   queries,
@@ -28,12 +32,12 @@ function getSortedFilteredQueries(
 ) {
   let filteredQueries = getDecoratedQueries(queries, connections);
 
-  if (creatorSearch !== 'ALL') {
+  if (creatorSearch !== ALL) {
     filteredQueries = filteredQueries.filter(query => {
-      if (creatorSearch === 'MY_QUERIES') {
+      if (creatorSearch === MY_QUERIES) {
         return query.createdBy === currentUser.email;
       }
-      if (creatorSearch === 'TEAMS') {
+      if (creatorSearch === SHARED) {
         return query.createdBy !== currentUser.email;
       }
       throw new Error(`Unknown creator search value ${creatorSearch}`);
@@ -98,7 +102,7 @@ function QueryListDrawer({
 }) {
   const [preview, setPreview] = useState(null);
   const [searches, setSearches] = useState([]);
-  const [creatorSearch, setCreatorSearch] = useState('MY_QUERIES');
+  const [creatorSearch, setCreatorSearch] = useState(MY_QUERIES);
   const [sort, setSort] = useState('SAVE_DATE');
   const [connectionId, setConnectionId] = useState('');
   const [dimensions, setDimensions] = useState({
@@ -198,9 +202,9 @@ function QueryListDrawer({
             value={creatorSearch}
             onChange={e => setCreatorSearch(e.target.value)}
           >
-            <option value="MY_QUERIES">My queries</option>
-            <option value="TEAMS">Team's</option>
-            <option value="ALL">All</option>
+            <option value={MY_QUERIES}>My queries</option>
+            <option value={SHARED}>Shared with me</option>
+            <option value={ALL}>All</option>
           </Select>
           <Select
             style={{ marginRight: 8 }}
