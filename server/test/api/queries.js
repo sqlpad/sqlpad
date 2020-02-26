@@ -2,6 +2,20 @@ const assert = require('assert');
 const consts = require('../../lib/consts');
 const TestUtils = require('../utils');
 
+const createQueryBody = {
+  name: 'test query',
+  tags: ['one', 'two'],
+  connectionId: 'someConnectionId',
+  queryText: 'SELECT * FROM some_table',
+  chartConfiguration: {
+    chartType: 'line',
+    fields: {
+      x: 'field1',
+      y: 'field2'
+    }
+  }
+};
+
 describe('api/queries', function() {
   const utils = new TestUtils();
   let query;
@@ -18,20 +32,7 @@ describe('api/queries', function() {
   });
 
   it('Creates query', async function() {
-    const body = await utils.post('editor', '/api/queries', {
-      name: 'test query',
-      tags: ['one', 'two'],
-      connectionId: 'TODO',
-      queryText: 'select * from allStuff',
-      chartConfiguration: {
-        chartType: 'line',
-        fields: {
-          x: 'field1',
-          y: 'field2'
-        }
-      }
-    });
-
+    const body = await utils.post('editor', '/api/queries', createQueryBody);
     assert(!body.error, 'no error');
     assert(body.query._id, 'has _id');
     assert.equal(body.query.name, 'test query');
@@ -45,9 +46,8 @@ describe('api/queries', function() {
 
   it('Updates query', async function() {
     const body = await utils.put('editor', `/api/queries/${query._id}`, {
-      name: 'test query2',
-      tags: ['one', 'two'],
-      connectionId: 'TODO'
+      ...createQueryBody,
+      name: 'test query2'
     });
 
     assert(!body.error, 'no error');
@@ -68,9 +68,8 @@ describe('api/queries', function() {
 
   it('Editor2 can get query with specific userId permission', async function() {
     const body1 = await utils.put('editor', `/api/queries/${query._id}`, {
+      ...createQueryBody,
       name: 'test query2',
-      tags: ['one', 'two'],
-      connectionId: 'TODO',
       acl: [{ userId: utils.users.editor2._id, write: false }]
     });
     assert(!body1.error);
@@ -81,9 +80,7 @@ describe('api/queries', function() {
 
   it('Editor2 can only view without write permission', async function() {
     const body1 = await utils.put('editor', `/api/queries/${query._id}`, {
-      name: 'test query2',
-      tags: ['one', 'two'],
-      connectionId: 'TODO',
+      ...createQueryBody,
       acl: [{ userId: utils.users.editor2._id, write: false }]
     });
     assert(!body1.error);
@@ -92,9 +89,7 @@ describe('api/queries', function() {
     assert(!body2.error);
 
     const body3 = await utils.put('editor2', `/api/queries/${query._id}`, {
-      name: 'test query2',
-      tags: ['one', 'two'],
-      connectionId: 'TODO',
+      ...createQueryBody,
       acl: [{ userId: utils.users.editor2._id, write: false }]
     });
     assert(body3.error);
@@ -102,9 +97,7 @@ describe('api/queries', function() {
 
   it('Editor2 can update with write permission', async function() {
     const body1 = await utils.put('editor', `/api/queries/${query._id}`, {
-      name: 'test query2',
-      tags: ['one', 'two'],
-      connectionId: 'TODO',
+      ...createQueryBody,
       acl: [{ userId: utils.users.editor2._id, write: true }]
     });
     assert(!body1.error);
@@ -113,9 +106,7 @@ describe('api/queries', function() {
     assert(body2.query);
 
     const body3 = await utils.put('editor2', `/api/queries/${query._id}`, {
-      name: 'test query2',
-      tags: ['one', 'two'],
-      connectionId: 'TODO',
+      ...createQueryBody,
       acl: [{ userId: utils.users.editor2._id, write: true }]
     });
     assert(!body3.error);
@@ -129,9 +120,7 @@ describe('api/queries', function() {
     assert.equal(body2.queries.length, 1);
 
     const body3 = await utils.put('admin', `/api/queries/${query._id}`, {
-      name: 'test query2',
-      tags: ['one', 'two'],
-      connectionId: 'TODO',
+      ...createQueryBody,
       acl: [{ userId: utils.users.editor2._id, write: true }]
     });
     assert(!body3.error);
@@ -139,9 +128,7 @@ describe('api/queries', function() {
 
   it('Special __EVERYONE__ gives access like expected', async function() {
     const body1 = await utils.put('editor', `/api/queries/${query._id}`, {
-      name: 'test query2',
-      tags: ['one', 'two'],
-      connectionId: 'TODO',
+      ...createQueryBody,
       acl: [{ userId: consts.EVERYONE_ID, write: true }]
     });
     assert(!body1.error);
@@ -150,9 +137,7 @@ describe('api/queries', function() {
     assert(body2.query);
 
     const body3 = await utils.put('editor2', `/api/queries/${query._id}`, {
-      name: 'test query2',
-      tags: ['one', 'two'],
-      connectionId: 'TODO',
+      ...createQueryBody,
       acl: [{ userId: consts.EVERYONE_ID, write: true }]
     });
     assert(!body3.error);
@@ -162,15 +147,46 @@ describe('api/queries', function() {
     return utils.get(null, `/api/queries/${query._id}`, 302);
   });
 
-  it('Deletes query', async function() {
-    const body = await utils.del('admin', `/api/queries/${query._id}`);
+  it('Owner can delete query', async function() {
+    const body = await utils.post('editor', '/api/queries', createQueryBody);
     assert(!body.error, 'no error');
+    const deleteResponse = await utils.del(
+      'editor',
+      `/api/queries/${body.query._id}`
+    );
+    assert(!deleteResponse.error);
   });
 
-  it('Returns empty array', async function() {
-    const body = await utils.get('admin', '/api/queries');
-    assert(!body.error, 'Expect no error');
-    assert(Array.isArray(body.queries), 'queries is an array');
-    assert.equal(body.queries.length, 0, '0 length');
+  it('Admin can delete query', async function() {
+    const body = await utils.post('editor', '/api/queries', createQueryBody);
+    assert(!body.error, 'no error');
+    const deleteResponse = await utils.del(
+      'admin',
+      `/api/queries/${body.query._id}`
+    );
+    assert(!deleteResponse.error);
+  });
+
+  it('Non-owner cannot delete query', async function() {
+    const body = await utils.post('editor', '/api/queries', createQueryBody);
+    assert(!body.error, 'no error');
+    const deleteResponse = await utils.del(
+      'editor2',
+      `/api/queries/${body.query._id}`
+    );
+    assert(deleteResponse.error);
+  });
+
+  it('ACL does not permit query deletion', async function() {
+    const body = await utils.post('editor', '/api/queries', {
+      ...createQueryBody,
+      acl: [{ userId: consts.EVERYONE_ID, write: true }]
+    });
+    assert(!body.error, 'no error');
+    const deleteResponse = await utils.del(
+      'editor2',
+      `/api/queries/${body.query._id}`
+    );
+    assert(deleteResponse.error);
   });
 });
