@@ -18,26 +18,23 @@ class QueryAcl {
 
   findAllByUserId(userId) {
     return this.sequelizeDb.QueryAcl.findAll({
-      where: { userId: [userId, consts.EVERYONE_ID] },
-      raw: true
+      where: { userId: [userId, consts.EVERYONE_ID] }
     });
   }
 
   findAllByQueryId(queryId) {
     return this.sequelizeDb.QueryAcl.findAll({
-      where: { queryId },
-      raw: true
+      where: { queryId }
     });
   }
 
   findOneById(id) {
-    return this.sequelizeDb.QueryAcl.findOne({ where: { id }, raw: true });
+    return this.sequelizeDb.QueryAcl.findOne({ where: { id } });
   }
 
   findOneByQueryIdUserId(queryId, userId) {
     return this.sequelizeDb.QueryAcl.findOne({
-      where: { queryId, userId },
-      raw: true
+      where: { queryId, userId: [userId, consts.EVERYONE_ID] }
     });
   }
 

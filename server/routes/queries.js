@@ -172,7 +172,7 @@ async function updateQuery(req, res) {
     }
 
     // Check to see if user has permission to do this
-    const queryUserAcl = models.queryAcl.findOneByQueryIdUserId(
+    const queryUserAcl = await models.queryAcl.findOneByQueryIdUserId(
       params._id,
       user._id
     );
