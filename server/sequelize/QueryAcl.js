@@ -10,12 +10,12 @@ module.exports = function(sequelize) {
         autoIncrement: true,
         primaryKey: true
       },
-      // For historical reasons, queryId can be anything
+      // For historical reasons, queryId can be any string
       queryId: {
         type: DataTypes.STRING,
         allowNull: false
       },
-      // For historical reasons, userId can be anything
+      // For historical reasons, userId can be any string
       userId: {
         type: DataTypes.STRING,
         allowNull: false
