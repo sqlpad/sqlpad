@@ -34,6 +34,13 @@ class QueryAcl {
     return this.sequelizeDb.QueryAcl.findOne({ where: { id }, raw: true });
   }
 
+  findOneByQueryIdUserId(queryId, userId) {
+    return this.sequelizeDb.QueryAcl.findOne({
+      where: { queryId, userId },
+      raw: true
+    });
+  }
+
   removeByQueryId(queryId) {
     return this.sequelizeDb.QueryAcl.destroy({ where: { queryId } });
   }

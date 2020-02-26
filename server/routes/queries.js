@@ -1,5 +1,4 @@
 require('../typedefs');
-const _ = require('lodash');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
@@ -48,53 +47,8 @@ router.delete('/api/queries/:_id', mustBeAuthenticated, deleteQuery);
 async function listQueries(req, res) {
   const { models, user } = req;
   try {
-    const queries = await models.queries.findAll();
-
-    // If admin, send all queries
-    // If not an admin, send queries user created or that are shared
-    // In any case, we need to merge both queries and acl
-    // Unfortunately SQLPad has 2 databases at the moment, so this is not ideal
-    // Eventually this can be a better SQL query once all data is moved to SQLite
-
-    let queryAcls = await models.queryAcl.findAllByUserId(user._id);
-
-    // queryAcl has userId, not email address
-    // We need to get all user object and index for efficient lookups
-    const users = await models.users.findAll();
-    const usersById = _.keyBy(users, '_id');
-    queryAcls = queryAcls.map(queryAcl => {
-      queryAcl.user = usersById[queryAcls.userId];
-      return queryAcl;
-    });
-
-    // At this point queryAclsByQueryId have user objects on them as well
-    const queryAclsByQueryId = _.groupBy(queryAcls, 'queryId');
-
-    const usersQueries = queries.map(query => {
-      const acl = queryAclsByQueryId[query._id] || [];
-
-      // If user is admin send all queries + acl
-      if (user.role === 'admin') {
-        return { ...query, acl };
-      }
-
-      // If user is the owner return it
-      if (query.createdBy === user.email) {
-        return { ...query, acl };
-      }
-
-      // If user has access via acl return it
-      if (acl.length > 0) {
-        return { ...query, acl };
-      }
-
-      // Otherwise user does not have access
-      return null;
-    });
-
-    const queriesThatExist = usersQueries.filter(query => Boolean(query));
-
-    return res.json({ queries: queriesThatExist });
+    const queries = await models.findQueriesForUser(user._id);
+    return res.json({ queries });
   } catch (error) {
     sendError(res, error, 'Problem querying query database');
   }
@@ -210,11 +164,25 @@ router.post('/api/queries', mustBeAuthenticated, createQuery);
  * @param {*} res
  */
 async function updateQuery(req, res) {
-  const { models, params } = req;
+  const { models, params, user } = req;
   try {
     const query = await models.queries.findOneById(params._id);
     if (!query) {
       return sendError(res, null, 'Query not found');
+    }
+
+    // Check to see if user has permission to do this
+    const queryUserAcl = models.queryAcl.findOneByQueryIdUserId(
+      params._id,
+      user._id
+    );
+    const hasAclWrite = queryUserAcl && queryUserAcl.write;
+    const isCreator = query.createdBy === user.email;
+    const isAdmin = user.role === 'admin';
+    const hasPermission = hasAclWrite || isCreator || isAdmin;
+    if (!hasPermission) {
+      // TODO send 403 forbidden
+      return sendError(res, null, 'Access to query not permitted');
     }
 
     const {
