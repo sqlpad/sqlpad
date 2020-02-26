@@ -13,12 +13,14 @@ module.exports = function(sequelize) {
       // For historical reasons, queryId can be any string
       queryId: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: 'query_acl_query_id_user_id_key'
       },
       // For historical reasons, userId can be any string
       userId: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: 'query_acl_query_id_user_id_key'
       },
       write: {
         type: DataTypes.BOOLEAN,

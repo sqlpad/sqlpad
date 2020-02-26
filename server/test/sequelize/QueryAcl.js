@@ -19,4 +19,17 @@ describe('QueryAcl', function() {
     assert.strictEqual(queryAcl.userId, 'bar');
     assert.strictEqual(queryAcl.write, false);
   });
+
+  it('honors unique constraint on queryId & userId', async function() {
+    await assert.rejects(async () => {
+      await utils.models.queryAcl.create({
+        queryId: 'q1',
+        userId: 'u1'
+      });
+      await utils.models.queryAcl.create({
+        queryId: 'q1',
+        userId: 'u1'
+      });
+    });
+  });
 });

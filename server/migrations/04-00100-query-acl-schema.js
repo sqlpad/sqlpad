@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const consts = require('../lib/consts');
 
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
@@ -37,21 +36,10 @@ async function up(queryInterface, config, appLog, nedb) {
     }
   });
 
-  const queries = await nedb.queries.find({});
-
-  if (queries.length) {
-    const records = queries.map(query => {
-      return {
-        query_id: query._id,
-        user_id: consts.EVERYONE_ID,
-        write: true,
-        created_at: new Date(),
-        updated_at: new Date()
-      };
-    });
-
-    await queryInterface.bulkInsert('query_acl', records);
-  }
+  await queryInterface.addConstraint('query_acl', ['query_id', 'user_id'], {
+    type: 'unique',
+    name: 'query_acl_query_id_user_id_key'
+  });
 }
 
 module.exports = {
