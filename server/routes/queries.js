@@ -28,11 +28,21 @@ router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
  * @param {*} res
  */
 async function deleteQuery(req, res) {
-  const { models, params } = req;
+  const { models, params, user } = req;
   try {
-    await models.queries.removeById(params._id);
-    await models.queryAcl.removeByQueryId(params._id);
-    return res.json({});
+    const query = await models.queries.findOneById(params._id);
+    if (!query) {
+      return sendError(res, null, 'Query not found');
+    }
+
+    if (user.role === 'admin' || user.email === query.createdBy) {
+      await models.queries.removeById(params._id);
+      await models.queryAcl.removeByQueryId(params._id);
+      return res.json({});
+    }
+
+    // TODO send 403 forbidden
+    sendError(res, null, 'Access to query not permitted');
   } catch (error) {
     sendError(res, error, 'Problem deleting query');
   }
