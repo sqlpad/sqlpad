@@ -46,6 +46,12 @@
   background-color: #eee;
 }
 
+.btn[disabled]:hover {
+  border: none;
+  color: rgba(0, 0, 0, 0.25);
+  background-color: #eee;
+}
+
 .danger:hover,
 .danger:focus {
   color: var(--secondary-color);
