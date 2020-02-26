@@ -1,5 +1,5 @@
 const path = require('path');
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize } = require('sequelize');
 const appLog = require('../lib/appLog');
 
 class SequelizeDao {
@@ -21,7 +21,7 @@ class SequelizeDao {
     this.sequelize = sequelize;
     this.Sequelize = Sequelize;
 
-    this.QueryAcl = require('./QueryAcl')(sequelize, DataTypes);
+    this.QueryAcl = require('./QueryAcl')(sequelize);
   }
 }
 

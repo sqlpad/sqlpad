@@ -1,4 +1,6 @@
-module.exports = function(sequelize, DataTypes) {
+const { DataTypes } = require('sequelize');
+
+module.exports = function(sequelize) {
   // An entry in this table gives access to a query for a user or user id constant
   const QueryAcl = sequelize.define(
     'QueryAcl',
@@ -22,6 +24,12 @@ module.exports = function(sequelize, DataTypes) {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false
+      },
+      createdAt: {
+        type: DataTypes.DATE
+      },
+      updatedAt: {
+        type: DataTypes.DATE
       }
     },
     {
