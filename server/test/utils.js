@@ -6,6 +6,7 @@ const appLog = require('../lib/appLog');
 const db = require('../lib/db');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
+const loadSeedData = require('../lib/loadSeedData');
 
 class TestUtils {
   constructor(args = {}, env = {}) {
@@ -74,9 +75,14 @@ class TestUtils {
     );
   }
 
+  async loadSeedData() {
+    await loadSeedData(this.appLog, this.config, this.models);
+  }
+
   async init(withUsers) {
     await this.initDbs();
     await this.migrate();
+    await this.loadSeedData();
 
     this.app = makeApp(this.config, this.models);
 
