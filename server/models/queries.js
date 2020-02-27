@@ -38,7 +38,11 @@ const schema = Joi.object({
   }).optional(),
   createdDate: Joi.date().default(Date.now),
   modifiedDate: Joi.date().default(Date.now),
+  // createdBy is EMAIL of user
+  // TODO change userId once data moved to sqlite
   createdBy: Joi.string().required(),
+  // modifiedBy is EMAIL of user
+  // TODO change userId once data moved to sqlite
   modifiedBy: Joi.string().required(),
   lastAccessDate: Joi.date().default(Date.now)
 });
@@ -46,10 +50,12 @@ const schema = Joi.object({
 class Queries {
   /**
    * @param {*} nedb
+   * @param {*} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, config) {
+  constructor(nedb, sequelizeDb, config) {
     this.nedb = nedb;
+    this.sequelizeDb = sequelizeDb;
     this.config = config;
   }
 
@@ -59,10 +65,6 @@ class Queries {
 
   findAll() {
     return this.nedb.queries.find({});
-  }
-
-  findByFilter(filter) {
-    return this.nedb.queries.find(filter);
   }
 
   removeById(id) {

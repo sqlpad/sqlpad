@@ -73,6 +73,10 @@ export const loadQueries = store => async state => {
   }
 };
 
+export const clearQueries = () => {
+  return { queries: [] };
+};
+
 export const deleteQuery = store => async (state, queryId) => {
   const { queries } = state;
   const filteredQueries = queries.filter(q => {
@@ -247,17 +251,18 @@ export const handleQuerySelectionChange = (state, selectedText) => {
 };
 
 export default {
-  initialState,
-  formatQuery,
-  loadQueries,
+  clearQueries,
   deleteQuery,
-  loadQuery,
-  runQuery,
-  saveQuery,
-  handleCloneClick,
-  resetNewQuery,
-  setQueryState,
+  formatQuery,
   handleChartConfigurationFieldsChange,
   handleChartTypeChange,
-  handleQuerySelectionChange
+  handleCloneClick,
+  handleQuerySelectionChange,
+  initialState,
+  loadQueries,
+  loadQuery,
+  resetNewQuery,
+  runQuery,
+  saveQuery,
+  setQueryState
 };

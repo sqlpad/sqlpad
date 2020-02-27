@@ -20,10 +20,12 @@ const schema = Joi.object({
 class QueryHistory {
   /**
    * @param {*} nedb
+   * @param {*} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, config) {
+  constructor(nedb, sequelizeDb, config) {
     this.nedb = nedb;
+    this.sequelizeDb = sequelizeDb;
     this.config = config;
   }
 

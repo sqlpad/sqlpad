@@ -9,6 +9,7 @@ import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarQueryNameInput from './ToolbarQueryNameInput';
 import ToolbarRunButton from './ToolbarRunButton';
 import ToolbarSaveButton from './ToolbarSaveButton';
+import ToolbarShareQueryButton from './ToolbarShareQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
 import ToolbarTagsButton from './ToolbarTagsButton';
 import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
@@ -41,6 +42,7 @@ function Toolbar() {
         <ToolbarTagsButton />
         <ToolbarCloneButton />
         <ToolbarFormatQueryButton />
+        <ToolbarShareQueryButton />
         <ToolbarSaveButton />
 
         <ToolbarSpacer />
