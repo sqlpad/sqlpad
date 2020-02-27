@@ -38,5 +38,6 @@
   "timeoutSeconds": 300,
   "whitelistedDomains": "",
   "appLogLevel": "info",
-  "webLogLevel": "info"
+  "webLogLevel": "info",
+  "seedDataPath": ""
 }
