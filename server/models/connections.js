@@ -59,6 +59,7 @@ class Connections {
     return this.nedb.connections.remove({ _id: id });
   }
 
+  // TODO - break save function out into create/update
   async save(connection) {
     if (!connection) {
       throw new Error('connections.save() requires a connection');
@@ -75,10 +76,12 @@ class Connections {
     connection = drivers.validateConnection(connection);
     const { _id } = connection;
 
-    if (_id) {
+    const existing = await this.findOneById(_id);
+    if (existing) {
       await this.nedb.connections.update({ _id }, connection, {});
       return this.findOneById(_id);
     }
+
     const newDoc = await this.nedb.connections.insert(connection);
     return this.findOneById(newDoc._id);
   }
