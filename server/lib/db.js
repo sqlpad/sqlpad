@@ -5,7 +5,7 @@ const appLog = require('./appLog');
 const ensureAdmin = require('./ensureAdmin');
 const consts = require('./consts');
 const Models = require('../models');
-const SequelizeDao = require('../sequelize');
+const SequelizeDb = require('../sequelizeDb');
 
 const TEN_MINUTES = 1000 * 60 * 10;
 const FIVE_MINUTES = 1000 * 60 * 5;
@@ -115,7 +115,7 @@ async function initNedb(config) {
     nedb[dbname].nedb.persistence.setAutocompactionInterval(TEN_MINUTES);
   });
 
-  const sequelizeDb = new SequelizeDao(config);
+  const sequelizeDb = new SequelizeDb(config);
 
   // Schedule cleanups
   const models = new Models(nedb, sequelizeDb, config);

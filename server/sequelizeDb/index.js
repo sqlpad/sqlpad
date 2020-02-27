@@ -2,7 +2,7 @@ const path = require('path');
 const { Sequelize } = require('sequelize');
 const appLog = require('../lib/appLog');
 
-class SequelizeDao {
+class SequelizeDb {
   constructor(config) {
     this.config = config;
 
@@ -25,4 +25,4 @@ class SequelizeDao {
   }
 }
 
-module.exports = SequelizeDao;
+module.exports = SequelizeDb;

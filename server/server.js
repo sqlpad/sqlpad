@@ -78,7 +78,9 @@ function detectPortOrSystemd(port) {
 ============================================================================= */
 let server;
 
-async function startServer({ models, nedb, sequelizeDb }) {
+async function startServer() {
+  const { models, nedb, sequelizeDb } = await getDb();
+
   await migrate(config, appLog, nedb, sequelizeDb.sequelize);
   const app = makeApp(config, models);
 
@@ -133,12 +135,10 @@ async function startServer({ models, nedb, sequelizeDb }) {
   server.setTimeout(timeoutSeconds * 1000);
 }
 
-getDb()
-  .then(db => startServer(db))
-  .catch(error => {
-    appLog.error(error, 'Error starting SQLPad');
-    process.exit(1);
-  });
+startServer().catch(error => {
+  appLog.error(error, 'Error starting SQLPad');
+  process.exit(1);
+});
 
 function handleShutdownSignal(signal) {
   if (!server) {
