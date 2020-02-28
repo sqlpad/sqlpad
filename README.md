@@ -544,7 +544,9 @@ Example seed query JSON file (comments only added for doc purposes):
   "queryText": "SELECT * FROM seed_table",
   "createdBy": "admin@sqlpad.com",
   "acl": [
-    // an ACL entry with write=false allows that user to read (and execute if they have connection permission)
+    // an ACL entry with write=false allows that user to read
+    // (and execute if they have connection permission)
+    // write=true allows user to save query
     {
       "userId": "some-userId-in-sqlpad",
       "write": false
