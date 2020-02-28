@@ -514,6 +514,8 @@ Example structure:
 
 Connections may be seeded to SQLPad as an alternative to defining connections via configuration. For fields supported refer to documentation on connection configuration via config file or environment variable. Seed connections differ in that the connection ID is provided by the `id` field.
 
+Example seed connection JSON file:
+
 ```json
 {
   "id": "seed-connection-1",
@@ -531,6 +533,8 @@ Connections may be seeded to SQLPad as an alternative to defining connections vi
 Queries are created or replaced matching on query id. At this time the query ACL implementation controls whether queries may be updated within SQLPad. It is entirely possible for these to be loaded, altered in the UI, then have those changes lost on next server start.
 
 At this point SQLPad does not enforce referential integrity, so queries may be created with a `createdBy` containing an email address for a user that does not exist.
+
+Example seed query JSON file:
 
 ```json
 {
