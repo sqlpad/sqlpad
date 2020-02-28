@@ -1,5 +1,3 @@
-const consts = require('../lib/consts');
-
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
  * @param {import('../lib/config')} config
@@ -14,7 +12,7 @@ async function up(queryInterface, config, appLog, nedb) {
     const records = queries.map(query => {
       return {
         query_id: query._id,
-        user_id: consts.EVERYONE_ID,
+        user_id: '__EVERYONE__', // value in consts.EVERYONE_ID at time of migration
         write: true,
         created_at: new Date(),
         updated_at: new Date()
