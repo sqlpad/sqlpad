@@ -17,6 +17,10 @@ class QueryAcl {
     this.config = config;
   }
 
+  findAll() {
+    return this.sequelizeDb.QueryAcl.findAll();
+  }
+
   findAllByUser(user) {
     return this.sequelizeDb.QueryAcl.findAll({
       where: {

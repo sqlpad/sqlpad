@@ -4,38 +4,7 @@ const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
 const sendError = require('../lib/sendError');
 const pushQueryToSlack = require('../lib/pushQueryToSlack');
-const consts = require('../lib/consts');
-
-/**
- * Returns a decorated query object with canRead, canWrite, and canDelete properties
- * @param {object} query
- * @param {object} user
- */
-function decorateUserAccess(query, user) {
-  const { ...clone } = query;
-  clone.canRead = false;
-  clone.canWrite = false;
-  clone.canDelete = false;
-
-  if (user.role === 'admin' || user.email === clone.createdBy) {
-    clone.canRead = true;
-    clone.canWrite = true;
-    clone.canDelete = true;
-  } else if (clone.acl.length) {
-    const writeAcl = clone.acl.find(a => a.write === true);
-    clone.canWrite = Boolean(writeAcl);
-
-    const canRead = query.acl.find(
-      acl =>
-        acl.groupId === consts.EVERYONE_ID ||
-        acl.userId === user._id ||
-        acl.userEmail === user.email
-    );
-    clone.canRead = Boolean(canRead);
-  }
-
-  return clone;
-}
+const decorateQueryUserAccess = require('../lib/decorateQueryUserAccess');
 
 // NOTE: this non-api route is special since it redirects legacy urls
 router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
@@ -66,7 +35,7 @@ async function deleteQuery(req, res) {
       return sendError(res, null, 'Query not found');
     }
 
-    const decorated = decorateUserAccess(query, user);
+    const decorated = decorateQueryUserAccess(query, user);
 
     if (decorated.canDelete) {
       await models.queries.removeById(params._id);
@@ -92,7 +61,7 @@ async function listQueries(req, res) {
   try {
     const queries = await models.findQueriesForUser(user);
     return res.json({
-      queries: queries.map(query => decorateUserAccess(query, user))
+      queries: queries.map(query => decorateQueryUserAccess(query, user))
     });
   } catch (error) {
     sendError(res, error, 'Problem querying query database');
@@ -118,7 +87,7 @@ async function getQuery(req, res) {
       });
     }
 
-    const decorated = decorateUserAccess(query, user);
+    const decorated = decorateQueryUserAccess(query, user);
     if (decorated.canRead) {
       return res.json({ query: decorated });
     }
@@ -159,7 +128,7 @@ async function createQuery(req, res) {
     pushQueryToSlack(req.config, newQuery);
 
     return res.json({
-      query: decorateUserAccess(newQuery, user)
+      query: decorateQueryUserAccess(newQuery, user)
     });
   } catch (error) {
     sendError(res, error, 'Problem saving query');
@@ -180,7 +149,7 @@ async function updateQuery(req, res) {
       return sendError(res, null, 'Query not found');
     }
 
-    const decorated = decorateUserAccess(query, user);
+    const decorated = decorateQueryUserAccess(query, user);
 
     if (!decorated.canWrite) {
       // TODO send 403 forbidden
@@ -208,7 +177,7 @@ async function updateQuery(req, res) {
 
     const updatedQuery = await models.upsertQuery(query);
 
-    return res.json({ query: decorateUserAccess(updatedQuery, user) });
+    return res.json({ query: decorateQueryUserAccess(updatedQuery, user) });
   } catch (error) {
     sendError(res, error, 'Problem saving query');
   }

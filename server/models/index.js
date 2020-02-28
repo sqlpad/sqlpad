@@ -7,6 +7,7 @@ const Queries = require('./queries');
 const Connections = require('./connections');
 const ConnectionAccesses = require('./connectionAccesses');
 const QueryAcl = require('./queryAcl');
+const decorateQueryUserAccess = require('../lib/decorateQueryUserAccess');
 
 class Models {
   constructor(nedb, sequelizeDb, config) {
@@ -26,43 +27,29 @@ class Models {
    * If user is an admin, get all queries
    * If user is NOT an admin, get queries created by user or that are shared
    *
-   * This needs to merge queries, acl, and user data
-   * Fetching all query/user/acl data is not ideal, but is probably okay for now
+   * This needs to merge queries and acl
+   * Fetching both query and acl data is not ideal, but is probably okay for now
    * This will become problematic for large SQLPad environments
    * Eventually this can be a better SQL query once all data is moved to SQLite
    * @param {object} user
    */
   async findQueriesForUser(user) {
     const queries = await this.queries.findAll();
-
-    // If user is an admin return all queries and avoid extra work
-    if (user.role === 'admin') {
-      return queries;
-    }
-
-    const queryAcls = await this.queryAcl.findAllByUser(user);
+    const queryAcls = await this.queryAcl.findAll();
     const queryAclsByQueryId = _.groupBy(queryAcls, 'queryId');
 
-    const usersQueries = queries.map(query => {
-      const acl = queryAclsByQueryId[query._id] || [];
-
-      // If user is the owner return it
-      if (query.createdBy === user.email) {
-        return query;
-      }
-
-      // If user has access via acl return it
-      if (acl.length > 0) {
-        return query;
-      }
-
-      // Otherwise user does not have access
-      return null;
-    });
-
-    // The map() may have returned nulls,
-    // which represent queries the user does not have access to
-    return usersQueries.filter(query => Boolean(query));
+    return (
+      queries
+        // Join in query ACL info needed for decorateQueryUserAccess
+        .map(query => {
+          query.acl = queryAclsByQueryId[query._id] || [];
+          return query;
+        })
+        // Decorate query with canRead/canWrite/canDelete
+        .map(query => decorateQueryUserAccess(query, user))
+        // Only include queries user can read
+        .filter(query => query.canRead)
+    );
   }
 
   /**
