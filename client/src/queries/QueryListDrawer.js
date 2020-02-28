@@ -137,9 +137,6 @@ function QueryListDrawer({
     const chartUrl = `/query-chart/${query._id}`;
     const queryUrl = `/queries/${query._id}`;
 
-    const canDelete =
-      currentUser.role === 'admin' || currentUser.email === query.createdBy;
-
     const hasChart =
       query && query.chartConfiguration && query.chartConfiguration.chartType;
 
@@ -181,7 +178,7 @@ function QueryListDrawer({
             key="del"
             confirmMessage={`Delete ${query.name}`}
             onConfirm={e => deleteQuery(query._id)}
-            disabled={!canDelete}
+            disabled={!query.canDelete}
           >
             Delete
           </DeleteConfirmButton>

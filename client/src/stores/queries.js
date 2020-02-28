@@ -17,7 +17,10 @@ export const NEW_QUERY = {
   chartConfiguration: {
     chartType: '',
     fields: {} // key value for chart
-  }
+  },
+  canRead: true,
+  canWrite: true,
+  canDelete: true
 };
 
 export const initialState = {
