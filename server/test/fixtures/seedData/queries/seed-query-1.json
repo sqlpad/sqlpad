@@ -6,7 +6,15 @@
   "createdBy": "admin@sqlpad.com",
   "acl": [
     {
-      "userId": "__EVERYONE__",
+      "userId": "some-userId-in-sqlpad",
+      "write": false
+    },
+    {
+      "userEmail": "someone@sqlpad.com",
+      "write": true
+    },
+    {
+      "groupId": "__EVERYONE__",
       "write": true
     }
   ]

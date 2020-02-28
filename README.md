@@ -534,9 +534,9 @@ Queries are created or replaced matching on query id. At this time the query ACL
 
 At this point SQLPad does not enforce referential integrity, so queries may be created with a `createdBy` containing an email address for a user that does not exist.
 
-Example seed query JSON file:
+Example seed query JSON file (comments only added for doc purposes):
 
-```json
+```js
 {
   "id": "seed-query-1",
   "name": "Seed query 1",
@@ -544,8 +544,20 @@ Example seed query JSON file:
   "queryText": "SELECT * FROM seed_table",
   "createdBy": "admin@sqlpad.com",
   "acl": [
+    // an ACL entry with write=false allows that user to read (and execute if they have connection permission)
     {
-      "userId": "__EVERYONE__",
+      "userId": "some-userId-in-sqlpad",
+      "write": false
+    },
+    // ACL entry can also be specified with a users email address.
+    // The user does not need to exist in SQLPad at this point
+    {
+      "userEmail": "someone@sqlpad.com",
+      "write": true
+    },
+    // Alternatively a special __EVERYONE__ group may be used to share the query with all SQLPad users
+    {
+      "groupId": "__EVERYONE__",
       "write": true
     }
   ]
