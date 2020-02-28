@@ -6,6 +6,37 @@ const sendError = require('../lib/sendError');
 const pushQueryToSlack = require('../lib/pushQueryToSlack');
 const consts = require('../lib/consts');
 
+/**
+ * Returns a decorated query object with canRead, canWrite, and canDelete properties
+ * @param {object} query
+ * @param {object} user
+ */
+function decorateUserAccess(query, user) {
+  const { ...clone } = query;
+  clone.canRead = false;
+  clone.canWrite = false;
+  clone.canDelete = false;
+
+  if (user.role === 'admin' || user.email === clone.createdBy) {
+    clone.canRead = true;
+    clone.canWrite = true;
+    clone.canDelete = true;
+  } else if (clone.acl.length) {
+    const writeAcl = clone.acl.find(a => a.write === true);
+    clone.canWrite = Boolean(writeAcl);
+
+    const canRead = query.acl.find(
+      acl =>
+        acl.groupId === consts.EVERYONE_ID ||
+        acl.userId === user._id ||
+        acl.userEmail === user.email
+    );
+    clone.canRead = Boolean(canRead);
+  }
+
+  return clone;
+}
+
 // NOTE: this non-api route is special since it redirects legacy urls
 router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
   req,
@@ -35,7 +66,9 @@ async function deleteQuery(req, res) {
       return sendError(res, null, 'Query not found');
     }
 
-    if (user.role === 'admin' || user.email === query.createdBy) {
+    const decorated = decorateUserAccess(query, user);
+
+    if (decorated.canDelete) {
       await models.queries.removeById(params._id);
       await models.queryAcl.removeByQueryId(params._id);
       return res.json({});
@@ -58,7 +91,9 @@ async function listQueries(req, res) {
   const { models, user } = req;
   try {
     const queries = await models.findQueriesForUser(user);
-    return res.json({ queries });
+    return res.json({
+      queries: queries.map(query => decorateUserAccess(query, user))
+    });
   } catch (error) {
     sendError(res, error, 'Problem querying query database');
   }
@@ -83,21 +118,9 @@ async function getQuery(req, res) {
       });
     }
 
-    // If user is admin or creator return it
-    if (user.role === 'admin' || query.createdBy === user.email) {
-      return res.json({ query });
-    }
-
-    // Otherwise user needs permission via ACL
-    const foundAccess = query.acl.find(
-      acl =>
-        acl.groupId === consts.EVERYONE_ID ||
-        acl.userId === user._id ||
-        acl.userEmail === user.email
-    );
-
-    if (foundAccess) {
-      return res.json({ query });
+    const decorated = decorateUserAccess(query, user);
+    if (decorated.canRead) {
+      return res.json({ query: decorated });
     }
 
     // TODO send 403 forbidden
@@ -136,7 +159,7 @@ async function createQuery(req, res) {
     pushQueryToSlack(req.config, newQuery);
 
     return res.json({
-      query: newQuery
+      query: decorateUserAccess(newQuery, user)
     });
   } catch (error) {
     sendError(res, error, 'Problem saving query');
@@ -157,21 +180,9 @@ async function updateQuery(req, res) {
       return sendError(res, null, 'Query not found');
     }
 
-    // Check to see if user has permission to do this
-    const isCreator = query.createdBy === user.email;
-    const isAdmin = user.role === 'admin';
-    const hasAclWrite = query.acl
-      .filter(acl => acl.write)
-      .find(
-        acl =>
-          acl.groupId === consts.EVERYONE_ID ||
-          acl.userId === user._id ||
-          acl.userEmail === user.email
-      );
+    const decorated = decorateUserAccess(query, user);
 
-    const hasPermission = hasAclWrite || isCreator || isAdmin;
-
-    if (!hasPermission) {
+    if (!decorated.canWrite) {
       // TODO send 403 forbidden
       return sendError(res, null, 'Access to query not permitted');
     }
@@ -197,7 +208,7 @@ async function updateQuery(req, res) {
 
     const updatedQuery = await models.upsertQuery(query);
 
-    return res.json({ query: updatedQuery });
+    return res.json({ query: decorateUserAccess(updatedQuery, user) });
   } catch (error) {
     sendError(res, error, 'Problem saving query');
   }
