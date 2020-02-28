@@ -20,7 +20,7 @@ function ToolbarShareQueryButton({ shared, setQueryState }) {
   function handleClick() {
     setQueryState(
       'acl',
-      shared ? [] : [{ userId: '__EVERYONE__', write: true }]
+      shared ? [] : [{ groupId: '__EVERYONE__', write: true }]
     );
   }
 
