@@ -3,6 +3,14 @@ const pino = require('pino');
 // Log levels https://github.com/pinojs/pino/issues/123
 const levels = ['fatal', 'error', 'warn', 'info', 'debug', 'silent'];
 
+const defaults = {
+  name: 'sqlpad-app',
+  redact: {
+    paths: ['passhash', '*.passhash'],
+    censor: '******'
+  }
+};
+
 class Logger {
   constructor(logLevel = 'warn') {
     if (!levels.includes(logLevel)) {
@@ -10,7 +18,7 @@ class Logger {
     }
     this.logLevel = logLevel;
     this.logger = pino({
-      name: 'sqlpad-app',
+      ...defaults,
       level: logLevel
     });
   }
@@ -20,7 +28,7 @@ class Logger {
       throw new Error(`Unknown log level ${logLevel}`);
     }
     this.logger = pino({
-      name: 'sqlpad-app',
+      ...defaults,
       level: logLevel
     });
   }
