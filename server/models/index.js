@@ -87,6 +87,35 @@ class Models {
 
     return query;
   }
+
+  /**
+   * Create or Update query
+   * Remove existing query acl entries and add new ones if they should be added
+   * TODO should probably validate userIds are valid
+   * TODO should email be allowed here and be translated to userIds?
+   * TODO add transaction support here once all models are in SQLite (this is risky otherwise)
+   * @param {*} data
+   */
+  async upsertQuery(data) {
+    const { acl, ...query } = data;
+    const newOrUpdatedQuery = await this.queries.save(query);
+    const queryId = newOrUpdatedQuery._id;
+
+    await this.queryAcl.removeByQueryId(queryId);
+
+    if (acl && acl.length) {
+      const aclRows = acl.map(row => {
+        return {
+          queryId,
+          userId: row.userId,
+          write: row.write
+        };
+      });
+      await this.queryAcl.bulkCreate(aclRows);
+    }
+
+    return this.findQueryById(queryId);
+  }
 }
 
 module.exports = Models;

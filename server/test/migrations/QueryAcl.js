@@ -15,7 +15,6 @@ describe('QueryAcl', function() {
       createdDate: new Date(),
       updatedDate: new Date(),
       createdBy: 'testuser',
-      modifiedBy: 'testuser',
       lastAccessDate: new Date()
     });
 
@@ -27,7 +26,6 @@ describe('QueryAcl', function() {
       createdDate: new Date(),
       updatedDate: new Date(),
       createdBy: 'testuser',
-      modifiedBy: 'testuser',
       lastAccessDate: new Date()
     });
 

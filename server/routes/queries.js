@@ -107,30 +107,6 @@ async function getQuery(req, res) {
 router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, getQuery);
 
 /**
- * Remove existing query acl entries and add new ones if they should be added
- * TODO should probably validate userIds are valid
- * TODO should email be allowed here and be translated to userIds?
- * TODO add transaction support here once all models are in SQLite (this is risky otherwise)
- * @param {import('../models')} models
- * @param {string} queryId
- * @param {array<object>} acl
- */
-async function updateQueryAcl(models, queryId, acl) {
-  await models.queryAcl.removeByQueryId(queryId);
-
-  if (acl && acl.length) {
-    const aclRows = acl.map(row => {
-      return {
-        queryId,
-        userId: row.userId,
-        write: row.write
-      };
-    });
-    await models.queryAcl.bulkCreate(aclRows);
-  }
-}
-
-/**
  * @param {import('express').Request & Req} req
  * @param {*} res
  */
@@ -146,21 +122,18 @@ async function createQuery(req, res) {
     queryText,
     chartConfiguration,
     createdBy: email,
-    modifiedBy: email
+    modifiedBy: email,
+    acl
   };
 
   try {
-    const newQuery = await models.queries.save(query);
+    const newQuery = await models.upsertQuery(query);
+
     // This is async, but save operation doesn't care about when/if finished
     pushQueryToSlack(req.config, newQuery);
 
-    await updateQueryAcl(models, newQuery._id, acl);
-
-    // Get the full query object for response
-    const queryWithAcl = await models.findQueryById(newQuery._id);
-
     return res.json({
-      query: queryWithAcl
+      query: newQuery
     });
   } catch (error) {
     sendError(res, error, 'Problem saving query');
@@ -190,6 +163,7 @@ async function updateQuery(req, res) {
     const isCreator = query.createdBy === user.email;
     const isAdmin = user.role === 'admin';
     const hasPermission = hasAclWrite || isCreator || isAdmin;
+
     if (!hasPermission) {
       // TODO send 403 forbidden
       return sendError(res, null, 'Access to query not permitted');
@@ -211,17 +185,13 @@ async function updateQuery(req, res) {
       connectionId,
       queryText,
       chartConfiguration,
-      modifiedBy: email
+      modifiedBy: email,
+      acl
     });
 
-    const newQuery = await models.queries.save(query);
+    const updatedQuery = await models.upsertQuery(query);
 
-    await updateQueryAcl(models, newQuery._id, acl);
-
-    // Get the full query object for response
-    const queryWithAcl = await models.findQueryById(newQuery._id);
-
-    return res.json({ query: queryWithAcl });
+    return res.json({ query: updatedQuery });
   } catch (error) {
     sendError(res, error, 'Problem saving query');
   }

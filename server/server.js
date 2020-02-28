@@ -10,6 +10,7 @@ const appLog = require('./lib/appLog');
 const Config = require('./lib/config');
 const { makeDb, getDb } = require('./lib/db');
 const migrate = require('./lib/migrate');
+const loadSeedData = require('./lib/loadSeedData');
 
 // Parse command line flags to see if anything special needs to happen
 require('./lib/cli-flow.js');
@@ -81,7 +82,13 @@ let server;
 async function startServer() {
   const { models, nedb, sequelizeDb } = await getDb();
 
+  // Before application starts up migrate data models
   await migrate(config, appLog, nedb, sequelizeDb.sequelize);
+
+  // Load seed data after migrations
+  await loadSeedData(appLog, config, models);
+
+  // Create expressjs app
   const app = makeApp(config, models);
 
   // determine if key pair exists for certs
