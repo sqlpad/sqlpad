@@ -57,7 +57,7 @@ router.delete('/api/queries/:_id', mustBeAuthenticated, deleteQuery);
 async function listQueries(req, res) {
   const { models, user } = req;
   try {
-    const queries = await models.findQueriesForUser(user._id);
+    const queries = await models.findQueriesForUser(user);
     return res.json({ queries });
   } catch (error) {
     sendError(res, error, 'Problem querying query database');
@@ -90,7 +90,10 @@ async function getQuery(req, res) {
 
     // Otherwise user needs permission via ACL
     const foundAccess = query.acl.find(
-      acl => acl.userId === consts.EVERYONE_ID || acl.userId === user._id
+      acl =>
+        acl.groupId === consts.EVERYONE_ID ||
+        acl.userId === user._id ||
+        acl.userEmail === user.email
     );
 
     if (foundAccess) {
@@ -147,21 +150,25 @@ router.post('/api/queries', mustBeAuthenticated, createQuery);
  * @param {*} res
  */
 async function updateQuery(req, res) {
-  const { models, params, user } = req;
+  const { models, params, user, body } = req;
   try {
-    const query = await models.queries.findOneById(params._id);
+    const query = await models.findQueryById(params._id);
     if (!query) {
       return sendError(res, null, 'Query not found');
     }
 
     // Check to see if user has permission to do this
-    const queryUserAcl = await models.queryAcl.findOneByQueryIdUserId(
-      params._id,
-      user._id
-    );
-    const hasAclWrite = queryUserAcl && queryUserAcl.write;
     const isCreator = query.createdBy === user.email;
     const isAdmin = user.role === 'admin';
+    const hasAclWrite = query.acl
+      .filter(acl => acl.write)
+      .find(
+        acl =>
+          acl.groupId === consts.EVERYONE_ID ||
+          acl.userId === user._id ||
+          acl.userEmail === user.email
+      );
+
     const hasPermission = hasAclWrite || isCreator || isAdmin;
 
     if (!hasPermission) {
@@ -176,8 +183,7 @@ async function updateQuery(req, res) {
       queryText,
       chartConfiguration,
       acl
-    } = req.body;
-    const { email } = req.user;
+    } = body;
 
     Object.assign(query, {
       name,
@@ -185,7 +191,7 @@ async function updateQuery(req, res) {
       connectionId,
       queryText,
       chartConfiguration,
-      modifiedBy: email,
+      modifiedBy: user.email,
       acl
     });
 

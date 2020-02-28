@@ -30,18 +30,17 @@ class Models {
    * Fetching all query/user/acl data is not ideal, but is probably okay for now
    * This will become problematic for large SQLPad environments
    * Eventually this can be a better SQL query once all data is moved to SQLite
-   * @param {string} userId
+   * @param {object} user
    */
-  async findQueriesForUser(userId) {
+  async findQueriesForUser(user) {
     const queries = await this.queries.findAll();
-    const user = await this.users.findOneById(userId);
 
     // If user is an admin return all queries and avoid extra work
     if (user.role === 'admin') {
       return queries;
     }
 
-    const queryAcls = await this.queryAcl.findAllByUserId(userId);
+    const queryAcls = await this.queryAcl.findAllByUser(user);
     const queryAclsByQueryId = _.groupBy(queryAcls, 'queryId');
 
     const usersQueries = queries.map(query => {
@@ -67,24 +66,12 @@ class Models {
   }
 
   /**
-   * Finds query
+   * Finds query and adds query.acl property
    * @param {string} id - query id
    */
   async findQueryById(id) {
     const query = await this.queries.findOneById(id);
-    let queryAcls = await this.queryAcl.findAllByQueryId(id);
-
-    // queryAcl has userId, not email address
-    // We need to get all user object and index for efficient lookups
-    const users = await this.users.findAll();
-    const usersById = _.keyBy(users, '_id');
-
-    query.acl = queryAcls.map(queryAcl => {
-      // TODO everyone const isn't real user and won't show up here
-      queryAcl.user = usersById[queryAcls.userId];
-      return queryAcl;
-    });
-
+    query.acl = await this.queryAcl.findAllByQueryId(id);
     return query;
   }
 
@@ -108,6 +95,8 @@ class Models {
         return {
           queryId,
           userId: row.userId,
+          userEmail: row.userEmail,
+          groupId: row.groupId,
           write: row.write
         };
       });

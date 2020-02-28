@@ -126,10 +126,10 @@ describe('api/queries', function() {
     assert(!body3.error);
   });
 
-  it('Special __EVERYONE__ gives access like expected', async function() {
+  it('acl userEmail gives access like expected', async function() {
     const body1 = await utils.put('editor', `/api/queries/${query._id}`, {
       ...createQueryBody,
-      acl: [{ userId: consts.EVERYONE_ID, write: true }]
+      acl: [{ userEmail: 'editor2@test.com', write: true }]
     });
     assert(!body1.error);
 
@@ -138,7 +138,24 @@ describe('api/queries', function() {
 
     const body3 = await utils.put('editor2', `/api/queries/${query._id}`, {
       ...createQueryBody,
-      acl: [{ userId: consts.EVERYONE_ID, write: true }]
+      acl: [{ userEmail: 'editor2@test.com', write: true }]
+    });
+    assert(!body3.error);
+  });
+
+  it('groupId __EVERYONE__ gives access like expected', async function() {
+    const body1 = await utils.put('editor', `/api/queries/${query._id}`, {
+      ...createQueryBody,
+      acl: [{ groupId: consts.EVERYONE_ID, write: true }]
+    });
+    assert(!body1.error);
+
+    const body2 = await utils.get('editor2', `/api/queries/${query._id}`);
+    assert(body2.query);
+
+    const body3 = await utils.put('editor2', `/api/queries/${query._id}`, {
+      ...createQueryBody,
+      acl: [{ groupId: consts.EVERYONE_ID, write: true }]
     });
     assert(!body3.error);
   });
