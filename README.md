@@ -227,6 +227,10 @@ Minimum level for web logs. Should be one of 'fatal', 'error', 'warn', 'info', '
 Env var: `SQLPAD_WEB_LOG_LEVEL`  
 Default: `info`
 
+**seedDataPath**  
+Path to root of seed data directories. See Seed Data documentation.  
+Env var: `SQLPAD_SEED_DATA_PATH`
+
 ### Connection configuration
 
 As of 3.2.0 connections may be defined via application configuration.
