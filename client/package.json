@@ -33,13 +33,13 @@
     "whatwg-fetch": "^3.0.0"
   },
   "scripts": {
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "analyze": "source-map-explorer \"build/static/js/*.js\"",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test --env=jsdom",
-    "fixlint": "eslint --fix '**/*.js'",
-    "lint": "eslint '**/*.js'"
+    "fixlint": "eslint --fix \"**/*.js\"",
+    "lint": "eslint \"**/*.js\""
   },
   "browserslist": [
     ">0.2%",
