@@ -46,6 +46,10 @@ function splitSql(sql) {
     currentQuery += '\n';
   });
 
+  if (currentQuery.trim() !== '') {
+    queries.push(currentQuery.trim());
+  }
+
   return queries;
 }
 

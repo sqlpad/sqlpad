@@ -1,6 +1,16 @@
 const assert = require('assert');
 const splitSql = require('../../lib/splitSql');
 
+const singleNoSeparator = `
+SELECT value 
+FROM some_table
+`.trim();
+
+const singleWithSeparator = `
+SELECT value 
+FROM some_table;
+`.trim();
+
 const noComments = `
 SELECT value FROM some_table;
 SELECT value FROM another_table;
@@ -28,6 +38,18 @@ FROM
 const comments = q1 + q2;
 
 describe('lib/splitSql', function() {
+  it('handles single query without separator', function() {
+    const queries = splitSql(singleNoSeparator);
+    assert.strictEqual(queries.length, 1);
+    assert.strictEqual(queries[0], singleNoSeparator);
+  });
+
+  it('handles single query with separator', function() {
+    const queries = splitSql(singleWithSeparator);
+    assert.strictEqual(queries.length, 1);
+    assert.strictEqual(queries[0], singleWithSeparator);
+  });
+
   it('handles queries without comments', function() {
     const queries = splitSql(noComments);
     assert.strictEqual(queries.length, 2);
