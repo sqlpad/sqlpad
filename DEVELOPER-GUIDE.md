@@ -97,6 +97,10 @@ npm run lint
 npm run fixlint
 ```
 
+## Developing on Windows
+
+To run `build/scripts.sh` on Windows, you may want to use an application like [cmder](https://cmder.net/). It will allow you to run `scripts/build.sh` by calling `sh` directly with `sh scripts/build.sh`.
+
 ## Mock driver
 
 When SQLPad server is run in debug mode, a mock driver implementation is available to generate data. The data returned by the query run is determined by information parsed from the comment block. The rest of the query may be anything.
