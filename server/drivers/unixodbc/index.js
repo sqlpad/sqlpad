@@ -91,6 +91,14 @@ async function runQuery(query, connection) {
       // An error already happened we're just trying to ensure it closed okay
       appLog.error(error, 'error closing connection after error');
     }
+    // unixodb error has additional info about why the error occurred
+    // It has an array of objects with messages.
+    // If that exists try to create a message of everything together and throw that
+    // Otherwise throw what we got
+    if (Array.isArray(error.odbcErrors)) {
+      const message = error.odbcErrors.map(e => e.message).join('; ');
+      throw new Error(message);
+    }
     throw error;
   }
 }
