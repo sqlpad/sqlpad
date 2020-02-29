@@ -184,7 +184,7 @@ async function runQuery(query, connection, user) {
     throw error;
   }
 
-  let { rows, incomplete } = results;
+  let { rows, incomplete, suppressedResultSet } = results;
 
   if (!Array.isArray(rows)) {
     appLog.warn(
@@ -201,6 +201,7 @@ async function runQuery(query, connection, user) {
   }
 
   finalResult.incomplete = Boolean(incomplete);
+  finalResult.suppressedResultSet = Boolean(suppressedResultSet);
   finalResult.rows = rows;
   finalResult.stopTime = new Date();
   finalResult.queryRunTime = finalResult.stopTime - finalResult.startTime;
@@ -212,7 +213,9 @@ async function runQuery(query, connection, user) {
       ...queryContext,
       stopTime: finalResult.stopTime,
       queryRunTime: finalResult.queryRunTime,
-      rowCount: rows.length
+      rowCount: rows.length,
+      incomplete: finalResult.incomplete,
+      suppressedResultSet: finalResult.suppressedResultSet
     },
     'Query finished'
   );

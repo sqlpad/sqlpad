@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ExportButton from './common/ExportButton.js';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
+import SuppressedSetNotification from './common/SuppressedSetNotification';
 import SqlpadTauChart from './common/SqlpadTauChart.js';
 import { exportPng } from './common/tauChartRef';
 import fetchJson from './utilities/fetch-json.js';
@@ -38,6 +39,7 @@ function QueryChartOnly({ queryId }) {
     exportPng(queryId, query && query.name);
   };
 
+  const suppressedSet = queryResult ? queryResult.suppressedResultSet : false;
   const incomplete = queryResult ? queryResult.incomplete : false;
   const cacheKey = queryResult ? queryResult.cacheKey : null;
 
@@ -54,6 +56,7 @@ function QueryChartOnly({ queryId }) {
       <div style={{ height: '50px' }}>
         <span style={{ fontSize: '1.5rem' }}>{query ? query.name : ''}</span>
         <div style={{ float: 'right' }}>
+          {suppressedSet && <SuppressedSetNotification />}
           {incomplete && <IncompleteDataNotification />}
           <ExportButton
             cacheKey={cacheKey}

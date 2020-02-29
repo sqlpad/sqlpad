@@ -5,6 +5,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
+import SuppressedSetNotification from '../common/SuppressedSetNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 import styles from './QueryResultHeader.module.css';
 
@@ -33,6 +34,7 @@ function QueryResultHeader({
     queryResult && queryResult.rows ? queryResult.rows.length : '';
 
   const incomplete = queryResult ? queryResult.incomplete : false;
+  const suppressedSet = queryResult ? queryResult.suppressedResultSet : false;
 
   const csvDownloadLink = `/download-results/${cacheKey}.csv`;
   const xlsxDownloadLink = `/download-results/${cacheKey}.xlsx`;
@@ -93,6 +95,7 @@ function QueryResultHeader({
         </span>
       </div>
 
+      {suppressedSet && <SuppressedSetNotification />}
       {incomplete && <IncompleteDataNotification />}
     </div>
   );
