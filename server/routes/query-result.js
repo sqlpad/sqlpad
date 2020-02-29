@@ -53,6 +53,8 @@ router.post('/api/query-result', mustHaveConnectionAccess, async function(
   };
 
   try {
+    // TODO - untangle user error from server error
+    // An expected result should be sent 200, while unexpected 500
     const queryResult = await getQueryResult(req, data);
     return res.send({ queryResult });
   } catch (error) {

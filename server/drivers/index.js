@@ -129,10 +129,10 @@ requireValidate('./mock');
  * @param {object} [user] user may not be provided if chart links turned on
  * @returns {Promise}
  */
-function runQuery(query, connection, user) {
+async function runQuery(query, connection, user) {
   const driver = drivers[connection.driver];
 
-  const queryResult = {
+  const finalResult = {
     id: uuid.v4(),
     cacheKey: null,
     startTime: new Date(),
@@ -145,38 +145,79 @@ function runQuery(query, connection, user) {
   };
 
   const renderedConnection = renderConnection(connection, user);
+  const connectionName = renderedConnection.name;
 
-  return driver.runQuery(query, renderedConnection).then(results => {
-    const { rows, incomplete } = results;
-    if (!Array.isArray(rows)) {
-      throw new Error(`${connection.driver}.runQuery() must return rows array`);
-    }
+  appLog.debug(
+    {
+      originalConnection: connection,
+      renderedConnection,
+      user
+    },
+    'Rendered connection for user'
+  );
 
-    queryResult.incomplete = incomplete || false;
-    queryResult.rows = rows;
-    queryResult.stopTime = new Date();
-    queryResult.queryRunTime = queryResult.stopTime - queryResult.startTime;
-    queryResult.meta = getMeta(rows);
-    queryResult.fields = Object.keys(queryResult.meta);
+  const queryContext = {
+    driver: connection.driver,
+    userId: user && user._id,
+    userEmail: user && user.email,
+    connectionId: connection._id,
+    connectionName,
+    query,
+    startTime: finalResult.startTime
+  };
 
-    const connectionName = renderedConnection.name;
-    const rowCount = rows.length;
-    const { startTime, stopTime, queryRunTime } = queryResult;
+  appLog.info(queryContext, 'Running query');
 
-    appLog.info({
-      userId: user && user._id,
-      userEmail: user && user.email,
-      connectionId: connection._id,
-      connectionName,
-      startTime,
-      stopTime,
-      queryRunTime,
-      rowCount,
-      query
-    });
+  let results;
+  try {
+    results = await driver.runQuery(query, renderedConnection);
+  } catch (error) {
+    // It is logged INFO because it isn't necessarily a server/application error
+    // It could just be a bad query
+    appLog.info(
+      { ...queryContext, error: error.toString() },
+      'Error running query'
+    );
 
-    return queryResult;
-  });
+    // Rethrow the error
+    // The error here is something expected and should be shown to user
+    throw error;
+  }
+
+  let { rows, incomplete } = results;
+
+  if (!Array.isArray(rows)) {
+    appLog.warn(
+      {
+        driver: connection.driver,
+        connectionId: connection._id,
+        connectionName,
+        query
+      },
+      'Expected rows to be an array but received %s.',
+      typeof rows
+    );
+    rows = [];
+  }
+
+  finalResult.incomplete = Boolean(incomplete);
+  finalResult.rows = rows;
+  finalResult.stopTime = new Date();
+  finalResult.queryRunTime = finalResult.stopTime - finalResult.startTime;
+  finalResult.meta = getMeta(rows);
+  finalResult.fields = Object.keys(finalResult.meta);
+
+  appLog.info(
+    {
+      ...queryContext,
+      stopTime: finalResult.stopTime,
+      queryRunTime: finalResult.queryRunTime,
+      rowCount: rows.length
+    },
+    'Query finished'
+  );
+
+  return finalResult;
 }
 
 /**
