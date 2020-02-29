@@ -4,7 +4,7 @@
   "private": true,
   "devDependencies": {
     "husky": "^4.2.3",
-    "lint-staged": "^10.0.7",
+    "lint-staged": "^10.0.8",
     "prettier": "^1.19.1"
   },
   "prettier": {
@@ -12,7 +12,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npx lint-staged"
     }
   },
   "lint-staged": {
@@ -22,7 +22,7 @@
     ]
   },
   "scripts": {
-    "fixlint": "npm run fixlint --prefix client && npm run fixlint --prefix server && prettier --write '**/*.js'",
-    "lint": "npm run lint --prefix client && npm run lint --prefix server && prettier --check '**/*.js'"
+    "fixlint": "npm run fixlint --prefix client && npm run fixlint --prefix server && prettier --write \"**/*.js\"",
+    "lint": "npm run lint --prefix client && npm run lint --prefix server && prettier --check \"**/*.js\""
   }
 }
