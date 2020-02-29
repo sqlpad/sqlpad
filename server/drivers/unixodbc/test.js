@@ -80,11 +80,16 @@ describe('drivers/unixodbc', function() {
     const query = `
       SELECT id FROM test;
       SELECT name from test;
-      SELECT * FROM test;
+      SELECT * FROM test WHERE id = 2
     `;
     return unixodbc.runQuery(query, connection).then(results => {
-      assert(results.incomplete, 'incomplete');
-      assert.equal(results.rows.length, 2, 'row length');
+      // incomplete indicates truncated results
+      // suppressedResultSet indicates missing set
+      assert.strictEqual(results.suppressedResultSet, true);
+      assert.strictEqual(results.incomplete, false);
+      assert.equal(results.rows.length, 1, 'row length');
+      assert.strictEqual(results.rows[0].id, 2);
+      assert.strictEqual(results.rows[0].name, 'two');
     });
   });
 
