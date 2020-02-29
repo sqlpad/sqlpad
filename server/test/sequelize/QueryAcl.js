@@ -2,25 +2,47 @@ const assert = require('assert');
 const TestUtils = require('../utils');
 
 describe('QueryAcl', function() {
-  const utils = new TestUtils();
+  it('write expected results', async function() {
+    const utils = new TestUtils();
+    await utils.init();
 
-  before(function() {
-    return utils.init();
-  });
-
-  it('write defaults to false', async function() {
     const sdb = utils.sequelizeDb;
-    const queryAcl = await sdb.QueryAcl.create({
-      queryId: 'foo',
-      userId: 'bar'
+    const queryId = 'query1';
+    const qa1 = await sdb.QueryAcl.create({
+      queryId,
+      userId: 'test'
     });
-    assert(queryAcl.id);
-    assert.strictEqual(queryAcl.queryId, 'foo');
-    assert.strictEqual(queryAcl.userId, 'bar');
-    assert.strictEqual(queryAcl.write, false);
+    assert(qa1.id);
+    assert.strictEqual(qa1.queryId, queryId);
+    assert.strictEqual(qa1.userId, 'test');
+    assert.strictEqual(qa1.write, false);
+
+    const qa2 = await sdb.QueryAcl.create({
+      queryId,
+      userEmail: 'test@sqlpad.com'
+    });
+    assert.strictEqual(qa2.queryId, queryId);
+    assert(!qa2.userId);
+    assert.strictEqual(qa2.userEmail, 'test@sqlpad.com');
+    assert(!qa2.groupId);
+    assert.strictEqual(qa2.write, false);
+
+    const qa3 = await sdb.QueryAcl.create({
+      queryId,
+      groupId: 'group',
+      write: true
+    });
+    assert.strictEqual(qa3.queryId, queryId);
+    assert(!qa3.userId);
+    assert(!qa3.userEmail);
+    assert.strictEqual(qa3.groupId, 'group');
+    assert.strictEqual(qa3.write, true);
   });
 
-  it('honors unique constraint on queryId & userId', async function() {
+  it('honors unique constraints', async function() {
+    const utils = new TestUtils();
+    await utils.init();
+
     await assert.rejects(async () => {
       await utils.models.queryAcl.create({
         queryId: 'q1',
@@ -29,6 +51,28 @@ describe('QueryAcl', function() {
       await utils.models.queryAcl.create({
         queryId: 'q1',
         userId: 'u1'
+      });
+    });
+
+    await assert.rejects(async () => {
+      await utils.models.queryAcl.create({
+        queryId: 'q1',
+        userEmail: 'e1'
+      });
+      await utils.models.queryAcl.create({
+        queryId: 'q1',
+        userEmail: 'e1'
+      });
+    });
+
+    await assert.rejects(async () => {
+      await utils.models.queryAcl.create({
+        queryId: 'q1',
+        groupId: 'group1'
+      });
+      await utils.models.queryAcl.create({
+        queryId: 'q1',
+        groupId: 'group1'
       });
     });
   });

@@ -15,10 +15,10 @@ const connection = {
 };
 const test_schema_name = 'dba'; // sqlite3 does not really have owner
 
-const createTable = 'CREATE TABLE test (id integer);'; // NOTE test(s) will fail if table already exists, expect empty database
-const insert1 = 'INSERT INTO test (id) VALUES (1);';
-const insert2 = 'INSERT INTO test (id) VALUES (2);';
-const insert3 = 'INSERT INTO test (id) VALUES (3);';
+const createTable = 'CREATE TABLE test (id INTEGER, name TEXT );'; // NOTE test(s) will fail if table already exists, expect empty database
+const insert1 = "INSERT INTO test (id, name) VALUES (1, 'one');";
+const insert2 = "INSERT INTO test (id, name) VALUES (2, 'two');";
+const insert3 = "INSERT INTO test (id, name) VALUES (3, 'three');";
 
 // TODO test more datatypes:
 //   * integer (different sizes
@@ -74,5 +74,36 @@ describe('drivers/unixodbc', function() {
         assert(results.incomplete, 'incomplete');
         assert.equal(results.rows.length, 2, 'row length');
       });
+  });
+
+  it('Runs multiple statements', function() {
+    const query = `
+      SELECT id FROM test;
+      SELECT name from test;
+      SELECT * FROM test WHERE id = 2
+    `;
+    return unixodbc.runQuery(query, connection).then(results => {
+      // incomplete indicates truncated results
+      // suppressedResultSet indicates missing set
+      assert.strictEqual(results.suppressedResultSet, true);
+      assert.strictEqual(results.incomplete, false);
+      assert.equal(results.rows.length, 1, 'row length');
+      assert.strictEqual(results.rows[0].id, 2);
+      assert.strictEqual(results.rows[0].name, 'two');
+    });
+  });
+
+  it('Throws helpful error', async function() {
+    let error;
+    try {
+      await unixodbc.runQuery('SELECT * FROM fake_table', connection);
+    } catch (e) {
+      error = e;
+    }
+    assert(error);
+    assert(
+      error.message.includes('fake_table'),
+      'Error message has table reference'
+    );
   });
 });

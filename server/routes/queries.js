@@ -4,7 +4,7 @@ const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
 const sendError = require('../lib/sendError');
 const pushQueryToSlack = require('../lib/pushQueryToSlack');
-const consts = require('../lib/consts');
+const decorateQueryUserAccess = require('../lib/decorateQueryUserAccess');
 
 // NOTE: this non-api route is special since it redirects legacy urls
 router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
@@ -35,7 +35,9 @@ async function deleteQuery(req, res) {
       return sendError(res, null, 'Query not found');
     }
 
-    if (user.role === 'admin' || user.email === query.createdBy) {
+    const decorated = decorateQueryUserAccess(query, user);
+
+    if (decorated.canDelete) {
       await models.queries.removeById(params._id);
       await models.queryAcl.removeByQueryId(params._id);
       return res.json({});
@@ -57,8 +59,10 @@ router.delete('/api/queries/:_id', mustBeAuthenticated, deleteQuery);
 async function listQueries(req, res) {
   const { models, user } = req;
   try {
-    const queries = await models.findQueriesForUser(user._id);
-    return res.json({ queries });
+    const queries = await models.findQueriesForUser(user);
+    return res.json({
+      queries: queries.map(query => decorateQueryUserAccess(query, user))
+    });
   } catch (error) {
     sendError(res, error, 'Problem querying query database');
   }
@@ -83,18 +87,9 @@ async function getQuery(req, res) {
       });
     }
 
-    // If user is admin or creator return it
-    if (user.role === 'admin' || query.createdBy === user.email) {
-      return res.json({ query });
-    }
-
-    // Otherwise user needs permission via ACL
-    const foundAccess = query.acl.find(
-      acl => acl.userId === consts.EVERYONE_ID || acl.userId === user._id
-    );
-
-    if (foundAccess) {
-      return res.json({ query });
+    const decorated = decorateQueryUserAccess(query, user);
+    if (decorated.canRead) {
+      return res.json({ query: decorated });
     }
 
     // TODO send 403 forbidden
@@ -105,30 +100,6 @@ async function getQuery(req, res) {
 }
 
 router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, getQuery);
-
-/**
- * Remove existing query acl entries and add new ones if they should be added
- * TODO should probably validate userIds are valid
- * TODO should email be allowed here and be translated to userIds?
- * TODO add transaction support here once all models are in SQLite (this is risky otherwise)
- * @param {import('../models')} models
- * @param {string} queryId
- * @param {array<object>} acl
- */
-async function updateQueryAcl(models, queryId, acl) {
-  await models.queryAcl.removeByQueryId(queryId);
-
-  if (acl && acl.length) {
-    const aclRows = acl.map(row => {
-      return {
-        queryId,
-        userId: row.userId,
-        write: row.write
-      };
-    });
-    await models.queryAcl.bulkCreate(aclRows);
-  }
-}
 
 /**
  * @param {import('express').Request & Req} req
@@ -146,21 +117,18 @@ async function createQuery(req, res) {
     queryText,
     chartConfiguration,
     createdBy: email,
-    modifiedBy: email
+    modifiedBy: email,
+    acl
   };
 
   try {
-    const newQuery = await models.queries.save(query);
+    const newQuery = await models.upsertQuery(query);
+
     // This is async, but save operation doesn't care about when/if finished
     pushQueryToSlack(req.config, newQuery);
 
-    await updateQueryAcl(models, newQuery._id, acl);
-
-    // Get the full query object for response
-    const queryWithAcl = await models.findQueryById(newQuery._id);
-
     return res.json({
-      query: queryWithAcl
+      query: decorateQueryUserAccess(newQuery, user)
     });
   } catch (error) {
     sendError(res, error, 'Problem saving query');
@@ -174,23 +142,16 @@ router.post('/api/queries', mustBeAuthenticated, createQuery);
  * @param {*} res
  */
 async function updateQuery(req, res) {
-  const { models, params, user } = req;
+  const { models, params, user, body } = req;
   try {
-    const query = await models.queries.findOneById(params._id);
+    const query = await models.findQueryById(params._id);
     if (!query) {
       return sendError(res, null, 'Query not found');
     }
 
-    // Check to see if user has permission to do this
-    const queryUserAcl = await models.queryAcl.findOneByQueryIdUserId(
-      params._id,
-      user._id
-    );
-    const hasAclWrite = queryUserAcl && queryUserAcl.write;
-    const isCreator = query.createdBy === user.email;
-    const isAdmin = user.role === 'admin';
-    const hasPermission = hasAclWrite || isCreator || isAdmin;
-    if (!hasPermission) {
+    const decorated = decorateQueryUserAccess(query, user);
+
+    if (!decorated.canWrite) {
       // TODO send 403 forbidden
       return sendError(res, null, 'Access to query not permitted');
     }
@@ -202,8 +163,7 @@ async function updateQuery(req, res) {
       queryText,
       chartConfiguration,
       acl
-    } = req.body;
-    const { email } = req.user;
+    } = body;
 
     Object.assign(query, {
       name,
@@ -211,17 +171,13 @@ async function updateQuery(req, res) {
       connectionId,
       queryText,
       chartConfiguration,
-      modifiedBy: email
+      modifiedBy: user.email,
+      acl
     });
 
-    const newQuery = await models.queries.save(query);
+    const updatedQuery = await models.upsertQuery(query);
 
-    await updateQueryAcl(models, newQuery._id, acl);
-
-    // Get the full query object for response
-    const queryWithAcl = await models.findQueryById(newQuery._id);
-
-    return res.json({ query: queryWithAcl });
+    return res.json({ query: decorateQueryUserAccess(updatedQuery, user) });
   } catch (error) {
     sendError(res, error, 'Problem saving query');
   }

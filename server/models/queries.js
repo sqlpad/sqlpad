@@ -43,7 +43,7 @@ const schema = Joi.object({
   createdBy: Joi.string().required(),
   // modifiedBy is EMAIL of user
   // TODO change userId once data moved to sqlite
-  modifiedBy: Joi.string().required(),
+  modifiedBy: Joi.string().optional(),
   lastAccessDate: Joi.date().default(Date.now)
 });
 

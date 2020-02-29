@@ -13,7 +13,7 @@ function pushQueryToSlack(config, query) {
         text: `New Query <${PUBLIC_URL}${BASE_URL}/queries/${query._id}|${
           query.name
         }> 
-saved by ${query.modifiedBy} on SQLPad 
+saved by ${query.modifiedBy || query.createdBy} on SQLPad 
 ${'```sql'}
 ${query.queryText}
 ${'```'}`

@@ -1,4 +1,5 @@
 const consts = require('../lib/consts');
+const { Op } = require('sequelize');
 
 // NOTE - because QueryAcl is driven off of Sequelize ORM model
 // and not nedb (which is schemaless) I am skipping defining a Joi schema here.
@@ -16,9 +17,19 @@ class QueryAcl {
     this.config = config;
   }
 
-  findAllByUserId(userId) {
+  findAll() {
+    return this.sequelizeDb.QueryAcl.findAll();
+  }
+
+  findAllByUser(user) {
     return this.sequelizeDb.QueryAcl.findAll({
-      where: { userId: [userId, consts.EVERYONE_ID] }
+      where: {
+        [Op.or]: [
+          { userId: user._id },
+          { userEmail: user.email },
+          { groupId: consts.EVERYONE_ID }
+        ]
+      }
     });
   }
 
@@ -30,12 +41,6 @@ class QueryAcl {
 
   findOneById(id) {
     return this.sequelizeDb.QueryAcl.findOne({ where: { id } });
-  }
-
-  findOneByQueryIdUserId(queryId, userId) {
-    return this.sequelizeDb.QueryAcl.findOne({
-      where: { queryId, userId: [userId, consts.EVERYONE_ID] }
-    });
   }
 
   removeByQueryId(queryId) {

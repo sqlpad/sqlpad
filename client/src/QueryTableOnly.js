@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import ExportButton from './common/ExportButton.js';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
+import SuppressedSetNotification from './common/SuppressedSetNotification';
 import QueryResultContainer from './common/QueryResultContainer.js';
 import fetchJson from './utilities/fetch-json.js';
 
@@ -36,6 +37,7 @@ function QueryTableOnly({ queryId }) {
     runQuery(queryId);
   }, [queryId]);
 
+  const suppressedSet = queryResult ? queryResult.suppressedResultSet : false;
   const incomplete = queryResult ? queryResult.incomplete : false;
   const cacheKey = queryResult ? queryResult.cacheKey : null;
 
@@ -52,6 +54,7 @@ function QueryTableOnly({ queryId }) {
       <div style={{ height: '50px' }}>
         <span style={{ fontSize: '1.5rem' }}>{query ? query.name : ''}</span>
         <div style={{ float: 'right' }}>
+          {suppressedSet && <SuppressedSetNotification />}
           {incomplete && <IncompleteDataNotification />}
           <ExportButton cacheKey={cacheKey} />
         </div>

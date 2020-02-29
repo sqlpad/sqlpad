@@ -1,5 +1,6 @@
 const odbc = require('odbc');
 const appLog = require('../../lib/appLog');
+const splitSql = require('../../lib/splitSql');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'unixodbc';
@@ -53,8 +54,38 @@ async function runQuery(query, connection) {
   let connectionInstance;
   try {
     let incomplete = false;
+    let suppressedResultSet = false;
     connectionInstance = await odbc.connect(cn);
-    const queryResult = await connectionInstance.query(query);
+    const queries = splitSql(query);
+
+    let queryResult;
+    let lastResult;
+
+    for (const query of queries) {
+      // eslint-disable-next-line no-await-in-loop
+      const result = await connectionInstance.query(query);
+
+      // If result has columns it is a candidate for lastQueryResultWithRows
+      // Until SQLPad has capability to show multiple result sets we are showing the last one with results
+      if (result.columns) {
+        // If queryResult was already set we're suppressing a result set
+        // Eventually we'll show all results but not at this point
+        if (queryResult) {
+          suppressedResultSet = true;
+        }
+
+        queryResult = result;
+      }
+
+      // Keep reference to result as last result
+      lastResult = result;
+    }
+
+    // If queryResult was never populated because none of the queries returned results, use last result
+    if (!queryResult) {
+      queryResult = lastResult;
+    }
+
     await connectionInstance.close();
 
     // Format data correctly
@@ -79,7 +110,7 @@ async function runQuery(query, connection) {
       }
     }
 
-    return { rows, incomplete };
+    return { rows, incomplete, suppressedResultSet };
   } catch (error) {
     appLog.error(error);
     try {
@@ -90,6 +121,14 @@ async function runQuery(query, connection) {
       // Do nothing here.
       // An error already happened we're just trying to ensure it closed okay
       appLog.error(error, 'error closing connection after error');
+    }
+    // unixodb error has additional info about why the error occurred
+    // It has an array of objects with messages.
+    // If that exists try to create a message of everything together and throw that
+    // Otherwise throw what we got
+    if (Array.isArray(error.odbcErrors)) {
+      const message = error.odbcErrors.map(e => e.message).join('; ');
+      throw new Error(message);
     }
     throw error;
   }
