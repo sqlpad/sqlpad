@@ -28,10 +28,10 @@
   },
   "scripts": {
     "prepublishOnly": "cd .. && ./scripts/build.sh",
-    "start": "node-dev server.js --config \"./config.dev.ini\" | pino-pretty",
+    "start": "node-dev server.js --config './config.dev.ini' | pino-pretty",
     "test": "rimraf ../dbtest && mocha test --timeout 10000 --recursive --exit",
-    "fixlint": "eslint --fix \"**/*.js\"",
-    "lint": "eslint \"**/*.js\""
+    "fixlint": "eslint --fix '**/*.js'",
+    "lint": "eslint '**/*.js'"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.0",
