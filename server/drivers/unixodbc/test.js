@@ -75,4 +75,18 @@ describe('drivers/unixodbc', function() {
         assert.equal(results.rows.length, 2, 'row length');
       });
   });
+
+  it('Throws helpful error', async function() {
+    let error;
+    try {
+      await unixodbc.runQuery('SELECT * FROM fake_table', connection);
+    } catch (e) {
+      error = e;
+    }
+    assert(error);
+    assert(
+      error.message.includes('fake_table'),
+      'Error message has table reference'
+    );
+  });
 });
