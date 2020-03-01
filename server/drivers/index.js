@@ -6,6 +6,7 @@ const validate = require('./validate');
 const renderConnection = require('./render-connection');
 
 const drivers = {
+  cassandra: require('./cassandra'),
   crate: require('./crate'),
   drill: require('./drill'),
   hdb: require('./hdb'),
@@ -13,10 +14,9 @@ const drivers = {
   mysql: require('./mysql'),
   postgres: require('./postgres'),
   presto: require('./presto'),
+  snowflake: require('./snowflake'),
   sqlserver: require('./sqlserver'),
-  vertica: require('./vertica'),
-  cassandra: require('./cassandra'),
-  snowflake: require('./snowflake')
+  vertica: require('./vertica')
 };
 
 // unixodbc is an optional dependency due to it needing to be compiled
