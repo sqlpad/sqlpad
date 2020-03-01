@@ -1,4 +1,3 @@
-const renderConnection = require('./render-connection');
 const DriverConnection = require('./driver-connection');
 
 /**
@@ -39,7 +38,6 @@ function getSchema(connection, user) {
 
 module.exports = {
   getSchema,
-  renderConnection,
   runQuery,
   testConnection
 };

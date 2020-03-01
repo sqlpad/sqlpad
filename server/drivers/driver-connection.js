@@ -1,6 +1,6 @@
 const uuid = require('uuid/v4');
 const drivers = require('./drivers');
-const renderConnection = require('./render-connection');
+const renderConnection = require('../lib/render-connection');
 const appLog = require('../lib/appLog');
 const getMeta = require('../lib/getMeta');
 
@@ -17,9 +17,18 @@ class DriverConnection {
    */
   constructor(connection, user) {
     this.id = uuid();
-    this.connection = connection;
+    this.connection = renderConnection(connection, user);
     this.driver = drivers[connection.driver];
     this.user = user;
+
+    appLog.debug(
+      {
+        originalConnection: connection,
+        renderedConnection: this.connection,
+        user
+      },
+      'Rendered connection for user'
+    );
   }
 
   /**
@@ -44,17 +53,7 @@ class DriverConnection {
       rows: []
     };
 
-    const renderedConnection = renderConnection(connection, user);
-    const connectionName = renderedConnection.name;
-
-    appLog.debug(
-      {
-        originalConnection: connection,
-        renderedConnection,
-        user
-      },
-      'Rendered connection for user'
-    );
+    const connectionName = connection.name;
 
     const queryContext = {
       driver: connection.driver,
@@ -70,7 +69,7 @@ class DriverConnection {
 
     let results;
     try {
-      results = await driver.runQuery(query, renderedConnection);
+      results = await driver.runQuery(query, connection);
     } catch (error) {
       // It is logged INFO because it isn't necessarily a server/application error
       // It could just be a bad query
@@ -129,8 +128,7 @@ class DriverConnection {
    * it is considered a successful connection config
    */
   testConnection() {
-    const renderedConnection = renderConnection(this.connection, this.user);
-    return this.driver.testConnection(renderedConnection);
+    return this.driver.testConnection(this.connection);
   }
 
   /**
@@ -144,8 +142,7 @@ class DriverConnection {
       ...this.connection,
       maxRows: Number.MAX_SAFE_INTEGER
     };
-    const renderedConnection = renderConnection(connectionMaxed, this.user);
-    return this.driver.getSchema(renderedConnection);
+    return this.driver.getSchema(connectionMaxed);
   }
 }
 
