@@ -50,29 +50,6 @@ function formatSchemaQueryResults(queryResult) {
   return tree;
 }
 
-/**
- * Clean value to boolean
- * If value is not a boolean or can't be converted, an error is thrown
- * This is probably unnecessary but more a precaution
- * @param {any} value
- */
-function ensureBoolean(value) {
-  if (typeof value === 'boolean') {
-    return value;
-  }
-  if (typeof value === 'string' && value.toLowerCase() === 'true') {
-    return true;
-  } else if (typeof value === 'string' && value.toLowerCase() === 'false') {
-    return false;
-  } else if (value === 1) {
-    return true;
-  } else if (value === 0) {
-    return false;
-  }
-  throw new Error(`Unexpected value for boolean: ${value}`);
-}
-
 module.exports = {
-  ensureBoolean,
   formatSchemaQueryResults
 };

@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const { runQuery } = require('../drivers/index');
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
 const sendError = require('../lib/sendError');
+const DriverConnection = require('../lib/driver-connection');
 
 // This allows executing a query relying on the saved query text
 // Instead of relying on an open endpoint that executes arbitrary sql
@@ -72,7 +72,8 @@ async function getQueryResult(req, data) {
   }
   connection.maxRows = Number(req.config.get('queryResultMaxRows'));
 
-  const queryResult = await runQuery(queryText, connection, user);
+  const driverConnection = new DriverConnection(connection, user);
+  const queryResult = await driverConnection.runQuery(queryText);
   queryResult.cacheKey = cacheKey;
 
   if (req.config.get('queryHistoryRetentionTimeInDays') > 0) {
