@@ -1,5 +1,5 @@
 const uuid = require('uuid/v4');
-const drivers = require('../drivers/drivers');
+const drivers = require('../drivers');
 const renderConnection = require('./render-connection');
 const appLog = require('./appLog');
 const getMeta = require('./getMeta');

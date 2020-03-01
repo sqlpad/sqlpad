@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
-const drivers = require('../drivers/drivers');
+const drivers = require('../drivers');
 
 router.get('/api/drivers', mustBeAuthenticated, function(req, res) {
   const { config } = req;

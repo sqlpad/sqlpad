@@ -1,4 +1,4 @@
-const drivers = require('../drivers/drivers');
+const drivers = require('../drivers');
 
 /**
  * Clean value to boolean
