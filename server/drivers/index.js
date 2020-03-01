@@ -1,5 +1,4 @@
 const renderConnection = require('./render-connection');
-const drivers = require('./drivers');
 const DriverConnection = require('./driver-connection');
 
 /**
@@ -38,22 +37,7 @@ function getSchema(connection, user) {
   return driverConnection.getSchema();
 }
 
-/**
- * Gets array of driver objects
- * @returns {array} drivers
- */
-function getDrivers() {
-  return Object.keys(drivers).map(id => {
-    return {
-      id,
-      name: drivers[id].name,
-      fields: drivers[id].fields
-    };
-  });
-}
-
 module.exports = {
-  getDrivers,
   getSchema,
   renderConnection,
   runQuery,

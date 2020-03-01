@@ -10,31 +10,6 @@ describe('drivers', function() {
     assert(typeof drivers.testConnection === 'function');
   });
 
-  it('getDrivers()', function() {
-    const driverItems = drivers.getDrivers();
-    assert(Array.isArray(driverItems), 'driverItems is array');
-    assert(driverItems.find(item => item.id === 'crate'));
-    assert(driverItems.find(item => item.id === 'hdb'));
-    assert(driverItems.find(item => item.id === 'mysql'));
-    assert(driverItems.find(item => item.id === 'postgres'));
-    assert(driverItems.find(item => item.id === 'presto'));
-    assert(driverItems.find(item => item.id === 'sqlserver'));
-    assert(driverItems.find(item => item.id === 'vertica'));
-
-    const postgres = driverItems.find(item => item.id === 'postgres');
-    assert.equal(postgres.id, 'postgres');
-    assert.equal(postgres.name, 'Postgres');
-    assert(Array.isArray(postgres.fields));
-    assert(
-      postgres.fields.find(field => field.key === 'postgresSsl'),
-      'has postgres specific field'
-    );
-    assert(
-      !postgres.fields.find(field => field.key === 'sqlserverEncrypt'),
-      'Does not have a SQL Server field'
-    );
-  });
-
   it('renders connection with user', function() {
     const secret = '123<>!@#$%^&*()-_+=';
     const user = {
