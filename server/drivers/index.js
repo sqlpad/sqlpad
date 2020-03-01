@@ -1,4 +1,4 @@
-const DriverConnection = require('./driver-connection');
+const DriverConnection = require('../lib/driver-connection');
 
 /**
  * Run query using driver implementation of connection

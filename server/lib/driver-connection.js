@@ -1,8 +1,8 @@
 const uuid = require('uuid/v4');
-const drivers = require('./drivers');
-const renderConnection = require('../lib/render-connection');
-const appLog = require('../lib/appLog');
-const getMeta = require('../lib/getMeta');
+const drivers = require('../drivers/drivers');
+const renderConnection = require('./render-connection');
+const appLog = require('./appLog');
+const getMeta = require('./getMeta');
 
 /**
  * Driver connection represents a driver and connection pairing, resulting in a connected database connection.

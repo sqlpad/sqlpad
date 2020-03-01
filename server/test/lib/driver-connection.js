@@ -1,5 +1,5 @@
 const assert = require('assert');
-const DriverConnection = require('../drivers/driver-connection');
+const DriverConnection = require('../../lib/driver-connection');
 
 describe('DriverConnection', function() {
   it('loads and exposes api', async function() {
