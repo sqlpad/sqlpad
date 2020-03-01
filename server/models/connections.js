@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const drivers = require('../drivers');
 const makeCipher = require('../lib/makeCipher');
+const validateConnection = require('../lib/validate-connection');
 
 class Connections {
   /**
@@ -73,7 +73,7 @@ class Connections {
     }
     connection.modifiedDate = new Date();
 
-    connection = drivers.validateConnection(connection);
+    connection = validateConnection(connection);
     const { _id } = connection;
 
     const existing = await this.findOneById(_id);

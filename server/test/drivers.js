@@ -35,43 +35,6 @@ describe('drivers', function() {
     );
   });
 
-  it('validateConnection()', function() {
-    const validPostgres = drivers.validateConnection({
-      name: 'testname',
-      driver: 'postgres',
-      host: 'host',
-      port: 'port',
-      postgresSsl: true,
-      somethingStripped: 'shouldnotmakeit'
-    });
-    assert.equal(Object.keys(validPostgres).length, 5, 'only 5 keys valid');
-    assert.equal(validPostgres.name, 'testname');
-    assert.equal(validPostgres.driver, 'postgres');
-    assert.equal(validPostgres.host, 'host');
-    assert.equal(validPostgres.port, 'port');
-    assert.equal(validPostgres.postgresSsl, true);
-
-    assert.throws(() => {
-      drivers.validateConnection({ name: 'name' });
-    }, 'missing driver throws error');
-
-    assert.throws(() => {
-      drivers.validateConnection({ driver: 'postgres' });
-    }, 'missing name throws error');
-
-    assert.throws(() => {
-      drivers.validateConnection({ name: 'name', driver: 'not exist' });
-    }, 'missing driver imp throws error');
-
-    assert.throws(() => {
-      drivers.validateConnection({
-        name: 'name',
-        driver: 'postgres',
-        postgresSsl: 'notboolean'
-      });
-    }, 'boolean not convertable throws error');
-  });
-
   it('renders connection with user', function() {
     const secret = '123<>!@#$%^&*()-_+=';
     const user = {
