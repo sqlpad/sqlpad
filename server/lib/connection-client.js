@@ -23,6 +23,9 @@ class ConnectionClient {
     this.driver = drivers[connection.driver];
     this.user = user;
     this.Client = this.driver.Client;
+    this.connectedAt = null;
+
+    // TODO how to handle TTL so connections aren't open forever
 
     appLog.debug(
       {
@@ -45,6 +48,7 @@ class ConnectionClient {
     }
     this.client = new Client(this.connection);
     await this.client.connect();
+    this.connectedAt = new Date();
   }
 
   async disconnect() {
