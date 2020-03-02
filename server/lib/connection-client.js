@@ -5,12 +5,14 @@ const appLog = require('./appLog');
 const getMeta = require('./getMeta');
 
 /**
- * Driver connection represents a driver and connection pairing, resulting in a connected database connection.
- * In the future, it will optionally support a persisted connection,
- * maintaining state about whether a connection is connected or not.
- * These persisted connections will be reused across runQuery calls.
+ * Connection client runs queries for a given connection and user
+ * It wraps the driver implementation used by the connection configuration
+ * Older-style driver implementations are one-off functions.
+ * Database connections are made, the user query is run, and then the database connection is closed.
+ * Newer-style driver implementations may include a `Client` class,
+ * which provides the ability to connect and disconnect to the database, and run queries with that connection.
  */
-class DriverConnection {
+class ConnectionClient {
   /**
    * @param {object} connection
    * @param {object} [user] - user to run query under. may not be provided if chart links turned on
@@ -20,6 +22,7 @@ class DriverConnection {
     this.connection = renderConnection(connection, user);
     this.driver = drivers[connection.driver];
     this.user = user;
+    this.Client = this.driver.Client;
 
     appLog.debug(
       {
@@ -31,8 +34,31 @@ class DriverConnection {
     );
   }
 
+  isConnected() {
+    return Boolean(this.client);
+  }
+
+  async connect() {
+    const { Client } = this;
+    if (!Client) {
+      throw new Error('Does not support persistent connection');
+    }
+    this.client = new Client(this.connection);
+    await this.client.connect();
+  }
+
+  async disconnect() {
+    if (this.client) {
+      const client = this.client;
+      this.client = null;
+      await client.disconnect();
+    }
+  }
+
   /**
    * Run query using driver implementation of connection
+   * If the connectionClient supports persistent database connections and is connected,
+   * it'll use the database connection already established.
    * @param {*} query
    * @returns {Promise}
    */
@@ -69,7 +95,15 @@ class DriverConnection {
 
     let results;
     try {
-      results = await driver.runQuery(query, connection);
+      // If client is connected use that connection,
+      // otherwise use driver.runQuery to run query with fresh one-off connection
+      if (this.isConnected()) {
+        // uses pre-existing connection to run query, and keeps connection open
+        results = await this.client.runQuery(query);
+      } else {
+        // Opens a new connection to db, runs query, then closes connection
+        results = await driver.runQuery(query, connection);
+      }
     } catch (error) {
       // It is logged INFO because it isn't necessarily a server/application error
       // It could just be a bad query
@@ -146,4 +180,4 @@ class DriverConnection {
   }
 }
 
-module.exports = DriverConnection;
+module.exports = ConnectionClient;

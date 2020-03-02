@@ -2,7 +2,7 @@ const router = require('express').Router();
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
 const sendError = require('../lib/sendError');
-const DriverConnection = require('../lib/driver-connection');
+const ConnectionClient = require('../lib/connection-client');
 
 // This allows executing a query relying on the saved query text
 // Instead of relying on an open endpoint that executes arbitrary sql
@@ -43,13 +43,16 @@ router.post('/api/query-result', mustHaveConnectionAccess, async function(
   req,
   res
 ) {
+  const { body, user } = req;
+
   const data = {
-    cacheKey: req.body.cacheKey,
-    connectionId: req.body.connectionId,
-    queryId: req.body.queryId,
-    queryName: req.body.queryName,
-    queryText: req.body.queryText,
-    user: req.user
+    cacheKey: body.cacheKey,
+    connectionId: body.connectionId,
+    queryId: body.queryId,
+    queryName: body.queryName,
+    queryText: body.queryText,
+    connectionClientId: body.connectionClientId,
+    user
   };
 
   try {
@@ -63,20 +66,38 @@ router.post('/api/query-result', mustHaveConnectionAccess, async function(
 });
 
 async function getQueryResult(req, data) {
-  const { models } = req;
-  const { connectionId, cacheKey, queryId, queryName, queryText, user } = data;
+  const { models, config } = req;
+  const {
+    connectionId,
+    clientId,
+    cacheKey,
+    queryId,
+    queryName,
+    queryText,
+    user
+  } = data;
+
+  let queryResult;
+
   const connection = await models.connections.findOneById(connectionId);
 
   if (!connection) {
     throw new Error('Please choose a connection');
   }
-  connection.maxRows = Number(req.config.get('queryResultMaxRows'));
 
-  const driverConnection = new DriverConnection(connection, user);
-  const queryResult = await driverConnection.runQuery(queryText);
+  if (clientId) {
+    // get connectionClient by clientId
+    // run query
+    // TODO
+  } else {
+    connection.maxRows = Number(config.get('queryResultMaxRows'));
+    const connectionClient = new ConnectionClient(connection, user);
+    queryResult = await connectionClient.runQuery(queryText);
+  }
+
   queryResult.cacheKey = cacheKey;
 
-  if (req.config.get('queryHistoryRetentionTimeInDays') > 0) {
+  if (config.get('queryHistoryRetentionTimeInDays') > 0) {
     await models.queryHistory.removeOldEntries();
     await models.queryHistory.save({
       userId: user._id,
@@ -94,7 +115,7 @@ async function getQueryResult(req, data) {
     });
   }
 
-  if (req.config.get('allowCsvDownload')) {
+  if (config.get('allowCsvDownload')) {
     models.resultCache.saveResultCache(cacheKey, queryName);
     await models.resultCache.writeXlsx(cacheKey, queryResult);
     await models.resultCache.writeCsv(cacheKey, queryResult);
