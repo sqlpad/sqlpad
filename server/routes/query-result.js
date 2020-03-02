@@ -1,3 +1,4 @@
+require('../typedefs');
 const router = require('express').Router();
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
@@ -65,11 +66,15 @@ router.post('/api/query-result', mustHaveConnectionAccess, async function(
   }
 });
 
+/**
+ * @param {import('express').Request & Req} req
+ * @param {object} data
+ */
 async function getQueryResult(req, data) {
   const { models, config } = req;
   const {
     connectionId,
-    clientId,
+    connectionClientId,
     cacheKey,
     queryId,
     queryName,
@@ -85,10 +90,14 @@ async function getQueryResult(req, data) {
     throw new Error('Please choose a connection');
   }
 
-  if (clientId) {
-    // get connectionClient by clientId
-    // run query
-    // TODO
+  if (connectionClientId) {
+    const connectionClient = await models.connectionClients.getOneById(
+      connectionClientId
+    );
+    if (!connectionClient) {
+      throw new Error('Connection client disconnected');
+    }
+    queryResult = await connectionClient.runQuery(queryText);
   } else {
     connection.maxRows = Number(config.get('queryResultMaxRows'));
     const connectionClient = new ConnectionClient(connection, user);
