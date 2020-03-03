@@ -131,7 +131,7 @@ class Client {
       if (Array.isArray(result)) {
         resultRows = resultRows.concat(_.flatten(result.map(r => r.rows)));
       } else {
-        resultRows = resultRows.rows;
+        resultRows = resultRows.rows || [];
       }
 
       if (resultRows.length >= maxRows) {
