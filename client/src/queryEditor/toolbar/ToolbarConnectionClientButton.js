@@ -49,8 +49,8 @@ function ToolbarConnectionClientButton({
 
 export default connect(
   ['connectionClient', 'connections', 'selectedConnectionId'],
-  {
-    connectConnectionClient,
+  store => ({
+    connectConnectionClient: connectConnectionClient(store),
     disconnectConnectionClient
-  }
+  })
 )(ToolbarConnectionClientButton);

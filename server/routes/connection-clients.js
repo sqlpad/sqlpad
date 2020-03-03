@@ -110,14 +110,51 @@ router.post(
   createConnectionClient
 );
 
-// TODO how should keep-alive requests be handled? PUT? should there be a body?
-// router.put(
-//   '/api/connection-clients/:connectionClientId',
-//   mustBeAdmin,
-//   async function(req, res) {
-//     res.json({});
-//   }
-// );
+/**
+ * Creates and connects a connectionClient
+ * @param {import('express').Request & Req} req
+ * @param {*} res
+ */
+async function keepAliveConnectionClient(req, res) {
+  const { models, params, user } = req;
+  try {
+    const connectionClient = models.connectionClients.getOneById(
+      params.connectionClientId
+    );
+
+    // If no connection client it was already closed
+    // This is effectively a no-op
+    if (!connectionClient) {
+      return res.json({});
+    }
+
+    // Only the owner of the connection or admin can get the client
+    if (connectionClient.user._id !== user._id || user.role !== 'admin') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    connectionClient.keepAlive();
+
+    const data = {
+      connectionClient: {
+        id: connectionClient.id,
+        name: connectionClient.connection.name,
+        connectedAt: connectionClient.connectedAt,
+        lastKeepAliveAt: connectionClient.lastKeepAliveAt
+      }
+    };
+
+    return res.json(data);
+  } catch (error) {
+    sendError(res, error, 'Problem updating connection client');
+  }
+}
+
+router.put(
+  '/api/connection-clients/:connectionClientId',
+  mustBeAuthenticated,
+  keepAliveConnectionClient
+);
 
 /**
  * Creates and connects a connectionClient

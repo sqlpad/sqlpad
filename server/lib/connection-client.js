@@ -41,6 +41,14 @@ class ConnectionClient {
     return Boolean(this.client);
   }
 
+  keepAlive() {
+    if (this.isConnected()) {
+      this.lastKeepAliveAt = new Date();
+      return true;
+    }
+    return false;
+  }
+
   async connect() {
     const { Client } = this;
     if (!Client) {
@@ -49,6 +57,28 @@ class ConnectionClient {
     this.client = new Client(this.connection);
     await this.client.connect();
     this.connectedAt = new Date();
+    this.lastKeepAliveAt = new Date();
+
+    // Every n ms check to see if lastKeepAliveAt is too old
+    // If it is too old, disconnect this
+    this.cleanupInterval = setInterval(() => {
+      appLog.info('Checking last keep alive at');
+      const now = new Date();
+      const TIMEOUT = 30000;
+      if (now - this.lastKeepAliveAt > TIMEOUT) {
+        this.disconnect().catch(error => appLog.error(error));
+        if (this.cleanupInterval) {
+          clearInterval(this.cleanupInterval);
+        }
+        const id = this.id;
+        const connectionName = this.connection && this.connection.name;
+        const driver = this.connection && this.connection.driver;
+        appLog.debug(
+          { id, connectionName, driver },
+          'Disconnecting client connection'
+        );
+      }
+    }, 10000);
   }
 
   async disconnect() {
