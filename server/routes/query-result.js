@@ -91,7 +91,7 @@ async function getQueryResult(req, data) {
   }
 
   if (connectionClientId) {
-    const connectionClient = await models.connectionClients.getOneById(
+    const connectionClient = models.connectionClients.getOneById(
       connectionClientId
     );
     if (!connectionClient) {

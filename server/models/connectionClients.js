@@ -24,7 +24,7 @@ class ConnectionClients {
    * @returns {ConnectionClient}
    */
   getOneById(id) {
-    this.connectionClients.find(connectionClient => {
+    return this.connectionClients.find(connectionClient => {
       return connectionClient.id === id;
     });
   }
@@ -48,7 +48,7 @@ class ConnectionClients {
    * @param {string} id
    */
   async disconnectForId(id) {
-    const connectionClient = this.getConnectionClientById(id);
+    const connectionClient = this.getOneById(id);
 
     // remove client from array immediately
     // Disconnecting is async but in-memory state should represent what things will be
