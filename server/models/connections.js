@@ -4,7 +4,10 @@ const drivers = require('../drivers');
 const validateConnection = require('../lib/validate-connection');
 
 function addSupportsConnectionClient(connection) {
-  const { ...copy } = connection;
+  if (!connection) {
+    return connection;
+  }
+  const copy = _.cloneDeep(connection);
   const driver = drivers[connection.driver];
   if (!driver) {
     copy.supportsConnectionClient = false;
@@ -66,6 +69,9 @@ class Connections {
       .getConnections()
       .find(connection => connection._id === id);
 
+    if (!connectionFromEnv) {
+      return null;
+    }
     return addSupportsConnectionClient(connectionFromEnv);
   }
 
