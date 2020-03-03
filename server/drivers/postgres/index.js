@@ -207,18 +207,9 @@ async function runQuery(query, connection) {
  * Test connectivity of connection
  * @param {*} connection
  */
-async function testConnection(connection) {
+function testConnection(connection) {
   const query = "SELECT 'success' AS TestQuery;";
-  const client = new Client(connection);
-  await client.connect();
-  try {
-    const result = await client.runQuery(query);
-    await client.disconnect();
-    return result;
-  } catch (error) {
-    await client.disconnect();
-    throw error;
-  }
+  return runQuery(query, connection);
 }
 
 /**
@@ -226,16 +217,8 @@ async function testConnection(connection) {
  * @param {*} connection
  */
 async function getSchema(connection) {
-  const client = new Client(connection);
-  await client.connect();
-  try {
-    const result = await client.runQuery(SCHEMA_SQL);
-    await client.disconnect();
-    return formatSchemaQueryResults(result);
-  } catch (error) {
-    await client.disconnect();
-    throw error;
-  }
+  const queryResult = await runQuery(SCHEMA_SQL, connection);
+  return formatSchemaQueryResults(queryResult);
 }
 
 const fields = [
