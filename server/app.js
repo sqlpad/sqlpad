@@ -116,6 +116,7 @@ function makeApp(config, models) {
     require('./routes/password-reset.js'),
     require('./routes/connections.js'),
     require('./routes/connection-accesses.js'),
+    require('./routes/connection-clients.js'),
     require('./routes/test-connection.js'),
     require('./routes/queries.js'),
     require('./routes/query-history.js'),
