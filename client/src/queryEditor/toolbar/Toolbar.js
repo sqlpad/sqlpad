@@ -13,6 +13,7 @@ import ToolbarShareQueryButton from './ToolbarShareQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
 import ToolbarTagsButton from './ToolbarTagsButton';
 import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
+import ToolbarConnectionClientButton from './ToolbarConnectionClientButton';
 
 function Toolbar() {
   return (
@@ -44,6 +45,10 @@ function Toolbar() {
         <ToolbarFormatQueryButton />
         <ToolbarShareQueryButton />
         <ToolbarSaveButton />
+
+        <ToolbarSpacer />
+
+        <ToolbarConnectionClientButton />
 
         <ToolbarSpacer />
 

@@ -11,6 +11,7 @@ function sortConnections(connections) {
 
 export const initialState = {
   selectedConnectionId: '',
+  connectionClient: null,
   connections: [],
   connectionsLastUpdated: null,
   connectionsLoading: false
@@ -27,11 +28,56 @@ export async function initSelectedConnection(state) {
   }
 }
 
+/**
+ * Open a client connection for the currently selected connection
+ * @param {*} state
+ */
+export const connectConnectionClient = async state => {
+  const { selectedConnectionId } = state;
+  const json = await fetchJson('POST', '/api/connection-clients', {
+    connectionId: selectedConnectionId
+  });
+  if (json.error) {
+    return message.error('Problem connecting to database');
+  }
+  return { connectionClient: json.connectionClient };
+};
+
+/**
+ * Disconnect the current connection client if one exists
+ * @param {*} state
+ */
+export const disconnectConnectionClient = async state => {
+  const { connectionClient } = state;
+  if (!connectionClient) {
+    return;
+  }
+  await fetchJson('DELETE', `/api/connection-clients/${connectionClient.id}`);
+  return { connectionClient: null };
+};
+
+/**
+ * Select connection and disconnect connectionClient if it exists
+ * @param {*} state
+ * @param {*} selectedConnectionId
+ */
 export const selectConnectionId = (state, selectedConnectionId) => {
+  const { connectionClient } = state;
   localforage
     .setItem('selectedConnectionId', selectedConnectionId)
     .catch(error => message.error(error));
-  return { selectedConnectionId };
+
+  if (connectionClient) {
+    fetchJson('DELETE', `/api/connection-clients/${connectionClient.id}`).catch(
+      json => {
+        if (json.error) {
+          message.error(json.error);
+        }
+      }
+    );
+  }
+
+  return { selectedConnectionId, connectionClient: null };
 };
 
 export const deleteConnection = async (state, connectionId) => {
