@@ -1,6 +1,18 @@
 const _ = require('lodash');
 const makeCipher = require('../lib/makeCipher');
+const drivers = require('../drivers');
 const validateConnection = require('../lib/validate-connection');
+
+function addSupportsConnectionClient(connection) {
+  const { ...copy } = connection;
+  const driver = drivers[connection.driver];
+  if (!driver) {
+    copy.supportsConnectionClient = false;
+  } else {
+    copy.supportsConnectionClient = Boolean(drivers[connection.driver].Client);
+  }
+  return copy;
+}
 
 class Connections {
   /**
@@ -34,16 +46,18 @@ class Connections {
       return this.decipherConnection(conn);
     });
 
-    const allConnections = connectionsFromDb.concat(
-      this.config.getConnections()
-    );
+    const allConnections = connectionsFromDb
+      .concat(this.config.getConnections())
+      .map(connection => addSupportsConnectionClient(connection));
+
     return _.sortBy(allConnections, c => c.name.toLowerCase());
   }
 
   async findOneById(id) {
-    const connection = await this.nedb.connections.findOne({ _id: id });
+    let connection = await this.nedb.connections.findOne({ _id: id });
     if (connection) {
       connection.editable = true;
+      connection = addSupportsConnectionClient(connection);
       return this.decipherConnection(connection);
     }
 
@@ -52,7 +66,7 @@ class Connections {
       .getConnections()
       .find(connection => connection._id === id);
 
-    return connectionFromEnv;
+    return addSupportsConnectionClient(connectionFromEnv);
   }
 
   async removeOneById(id) {
