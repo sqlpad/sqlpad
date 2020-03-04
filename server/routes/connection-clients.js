@@ -139,7 +139,10 @@ async function keepAliveConnectionClient(req, res) {
     }
 
     // Only the owner of the connection or admin can get the client
-    if (connectionClient.user._id !== user._id || user.role !== 'admin') {
+    const allowed =
+      connectionClient.user._id === user._id || user.role === 'admin';
+
+    if (!allowed) {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
