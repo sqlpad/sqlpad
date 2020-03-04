@@ -19,6 +19,14 @@ class ConnectionClients {
   }
 
   /**
+   * Get all connection clients
+   * @returns {array}
+   */
+  findAll() {
+    return this.connectionClients.slice();
+  }
+
+  /**
    * Get connected connection client by id
    * @param {string} id - id of connection client
    * @returns {ConnectionClient}

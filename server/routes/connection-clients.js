@@ -1,28 +1,35 @@
 require('../typedefs');
 const router = require('express').Router();
-// const mustBeAdmin = require('../middleware/must-be-admin.js');
+const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const sendError = require('../lib/sendError');
 
-// /**
-//  * @param {import('express').Request & Req} req
-//  * @param {*} res
-//  */
-// async function listConnectionClients(req, res) {
-//   try {
-//     // TODO
-//     // get all connection clients
-//     // strip sensitive info
-//     // return list of connection clients
-//     return res.json({
-//       connectionClients: []
-//     });
-//   } catch (error) {
-//     sendError(res, error, 'Problem querying connection database');
-//   }
-// }
+/**
+ * @param {import('express').Request & Req} req
+ * @param {*} res
+ */
+async function listConnectionClients(req, res) {
+  try {
+    const connectionClients = req.models.connectionClients
+      .findAll()
+      .map(connectionClient => {
+        return {
+          id: connectionClient.id,
+          name: connectionClient.connection.name,
+          connectedAt: connectionClient,
+          lastKeepAliveAt: connectionClient.lastKeepAliveAt
+        };
+      });
 
-// router.get('/api/connection-clients', mustBeAdmin, listConnectionClients);
+    return res.json({
+      connectionClients
+    });
+  } catch (error) {
+    sendError(res, error, 'Problem listing connection clients');
+  }
+}
+
+router.get('/api/connection-clients', mustBeAdmin, listConnectionClients);
 
 /**
  * Get a connection client by id
@@ -51,7 +58,8 @@ async function getConnectionClient(req, res) {
       connectionClient: {
         id: connectionClient.id,
         name: connectionClient.connection.name,
-        connectedAt: connectionClient.connectedAt
+        connectedAt: connectionClient,
+        lastKeepAliveAt: connectionClient.lastKeepAliveAt
       }
     };
 
@@ -94,7 +102,8 @@ async function createConnectionClient(req, res) {
       connectionClient: {
         id: connectionClient.id,
         name: connectionClient.connection.name,
-        connectedAt: connectionClient.connectedAt
+        connectedAt: connectionClient.connectedAt,
+        lastKeepAliveAt: connectionClient.lastKeepAliveAt
       }
     };
 
