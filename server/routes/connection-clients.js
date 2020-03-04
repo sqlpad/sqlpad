@@ -51,7 +51,10 @@ async function getConnectionClient(req, res) {
     }
 
     // Only the owner of the connection or admin can get the client
-    if (connectionClient.user._id !== user._id || user.role !== 'admin') {
+    const allowed =
+      connectionClient.user._id === user._id || user.role === 'admin';
+
+    if (!allowed) {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
@@ -59,7 +62,7 @@ async function getConnectionClient(req, res) {
       connectionClient: {
         id: connectionClient.id,
         name: connectionClient.connection.name,
-        connectedAt: connectionClient,
+        connectedAt: connectionClient.connectedAt,
         lastKeepAliveAt: connectionClient.lastKeepAliveAt
       }
     };
@@ -138,9 +141,8 @@ async function keepAliveConnectionClient(req, res) {
       return res.json({});
     }
 
-    // Only the owner of the connection or admin can get the client
-    const allowed =
-      connectionClient.user._id === user._id || user.role === 'admin';
+    // Only the owner of the connection client can keep client alive
+    const allowed = connectionClient.user._id === user._id;
 
     if (!allowed) {
       return res.status(403).json({ error: 'Forbidden' });
@@ -175,9 +177,21 @@ router.put(
  * @param {*} res
  */
 async function disconnectConnectionClient(req, res) {
-  const { models, params } = req;
+  const { models, params, user } = req;
   const { connectionClientId } = params;
   try {
+    const connectionClient = models.connectionClients.getOneById(
+      params.connectionClientId
+    );
+
+    // Only the owner of the connection or admin can disconnect the client
+    const allowed =
+      connectionClient.user._id === user._id || user.role === 'admin';
+
+    if (!allowed) {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
     await models.connectionClients.disconnectForId(connectionClientId);
     return res.json({});
   } catch (error) {
