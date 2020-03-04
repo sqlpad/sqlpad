@@ -46,4 +46,36 @@ describe('drivers/mock', function() {
       assert.equal(results.rows.length, 10, 'row length');
     });
   });
+
+  it('Client cannot connect more than once', async function() {
+    const client = new mock.Client(connection);
+    await client.connect();
+    await assert.rejects(client.connect());
+    await client.disconnect();
+  });
+
+  it('Client handles multiple disconnects', async function() {
+    const client = new mock.Client(connection);
+    await client.connect();
+    await client.disconnect();
+    await client.disconnect();
+  });
+
+  it('Client handles multiple runQuery calls', async function() {
+    const client = new mock.Client(connection);
+    await client.connect();
+
+    const results1 = await client.runQuery(`
+      -- dimensions = product 1, color 1, orderdate 10
+    `);
+    assert.equal(results1.incomplete, false);
+    assert.equal(results1.rows.length, 10);
+    const results2 = await client.runQuery(`
+    -- dimensions = product 1, color 1, orderdate 10
+  `);
+    assert.equal(results2.incomplete, false);
+    assert.equal(results2.rows.length, 10);
+
+    await client.disconnect();
+  });
 });

@@ -237,13 +237,60 @@ Array(500)
 /**
  * Get schema for connection
  */
-async function getSchema() {
+async function getSchema(connection) {
   const fakeSchemaQueryResult = {
     rows: schemaRows,
     incomplete: false
   };
-  await wait(Math.random() * 5000);
+  const waitMs =
+    connection && connection.hasOwnProperty('wait')
+      ? parseInt(connection.wait, 10)
+      : 2000;
+
+  await wait(waitMs);
   return formatSchemaQueryResults(fakeSchemaQueryResult);
+}
+
+class Client {
+  constructor(connection) {
+    this.connection = connection;
+    this.client = null;
+  }
+
+  async connect() {
+    // presumably this would make some db connection call, then populate client
+    if (this.client) {
+      throw new Error('Client already connected');
+    }
+    await wait(10);
+    // this is just a mocked example of what a client might be like
+    this.client = {
+      end: async () => {
+        await wait(10);
+      }
+    };
+  }
+
+  async disconnect() {
+    // presumably this would disconnect some client from the db
+    if (this.client) {
+      const client = this.client;
+      this.client = null;
+      try {
+        await client.end();
+      } catch (error) {
+        // log the error but don't make a big deal
+        // Current thinking is disconnect can be called multiple times
+      }
+    }
+  }
+
+  async runQuery(query) {
+    // Normally this would use the connected client and make a db call
+    // This driver doesn't have that, so it will just call the mock runQuery function
+    await wait(10);
+    return runQuery(query, this.connection);
+  }
 }
 
 const fields = [
@@ -325,10 +372,11 @@ const fields = [
 ];
 
 module.exports = {
-  id,
-  name,
+  Client,
   fields,
   getSchema,
+  id,
+  name,
   runQuery,
   testConnection
 };
