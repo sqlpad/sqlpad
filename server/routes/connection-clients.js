@@ -9,14 +9,15 @@ const sendError = require('../lib/sendError');
  * @param {*} res
  */
 async function listConnectionClients(req, res) {
+  const { models } = req;
   try {
-    const connectionClients = req.models.connectionClients
+    const connectionClients = models.connectionClients
       .findAll()
       .map(connectionClient => {
         return {
           id: connectionClient.id,
           name: connectionClient.connection.name,
-          connectedAt: connectionClient,
+          connectedAt: connectionClient.connectedAt,
           lastKeepAliveAt: connectionClient.lastKeepAliveAt
         };
       });
