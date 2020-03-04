@@ -5,7 +5,6 @@ const connection = {
   name: 'test postgres',
   driver: 'postgres',
   host: 'localhost',
-  port: 5432,
   database: 'sqlpad',
   username: 'sqlpad',
   password: 'sqlpad',
@@ -13,6 +12,9 @@ const connection = {
 };
 
 describe('drivers/postgres', function() {
+  // I'm unable to use the test.sh script that stands up the docker-compose prior to running tests
+  // Instead I'm running postgres, and running mocha directly
+  // which means the table created for testing needs to be cleared out each run, but won't exist the first time
   before(async function() {
     await postgres.runQuery('DROP TABLE IF EXISTS sqlpad_test;', connection);
     await postgres.runQuery(

@@ -25,8 +25,6 @@ class ConnectionClient {
     this.Client = this.driver.Client;
     this.connectedAt = null;
 
-    // TODO how to handle TTL so connections aren't open forever
-
     appLog.debug(
       {
         originalConnection: connection,
@@ -37,10 +35,18 @@ class ConnectionClient {
     );
   }
 
+  /**
+   * Determines whether the connectionClient is connected to the db.
+   * For now the existence of this.client indicates an open connection
+   */
   isConnected() {
     return Boolean(this.client);
   }
 
+  /**
+   * Updates lastKeepAliveAt to indicate a request was made to keep this connection alive.
+   * This may need to actually make a db call if drivers implement an automatic disconnect after some period of inactivity
+   */
   keepAlive() {
     if (this.isConnected()) {
       this.lastKeepAliveAt = new Date();
@@ -49,6 +55,11 @@ class ConnectionClient {
     return false;
   }
 
+  /**
+   * Create a persistent database connection if the driver implementation supports it.
+   * Also sets up a poll to check on keep alive requests,
+   * and disconnects the connection if a user is not actively using the connection
+   */
   async connect() {
     const { Client } = this;
     if (!Client) {
@@ -81,6 +92,9 @@ class ConnectionClient {
     }, 10000);
   }
 
+  /**
+   * Close the database connection
+   */
   async disconnect() {
     if (this.client) {
       const client = this.client;
@@ -90,10 +104,12 @@ class ConnectionClient {
   }
 
   /**
-   * Run query using driver implementation of connection
+   * Run query
    * If the connectionClient supports persistent database connections and is connected,
    * it'll use the database connection already established.
-   * @param {*} query
+   * If not connected or does not support persistent connection,
+   * it uses the driver.runQuery() implementation that will open a connection, run query, then close.
+   * @param {string} query
    * @returns {Promise}
    */
   async runQuery(query) {
