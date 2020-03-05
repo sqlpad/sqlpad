@@ -1,6 +1,10 @@
 const assert = require('assert');
 const unixodbc = require('./index.js');
 
+// Using Windows? You may need to change your db path to something like
+// process.env.ODBC_CONNECTION_STRING =
+//   'Driver={SQLite3 ODBC Driver};Database=C:\\Users\\<your_user_dir>\\sqlite_test.sqlite';
+
 const connection = {
   connection_string: process.env.ODBC_CONNECTION_STRING, // I.e. ensure os variable is set to connection string
   schema_sql: `
@@ -15,10 +19,11 @@ const connection = {
 };
 const test_schema_name = 'dba'; // sqlite3 does not really have owner
 
-const createTable = 'CREATE TABLE test (id INTEGER, name TEXT );'; // NOTE test(s) will fail if table already exists, expect empty database
-const insert1 = "INSERT INTO test (id, name) VALUES (1, 'one');";
-const insert2 = "INSERT INTO test (id, name) VALUES (2, 'two');";
-const insert3 = "INSERT INTO test (id, name) VALUES (3, 'three');";
+const dropTable = 'DROP TABLE IF EXISTS sqlpad_test;';
+const createTable = 'CREATE TABLE sqlpad_test (id INTEGER, name TEXT );'; // NOTE test(s) will fail if table already exists, expect empty database
+const insert1 = "INSERT INTO sqlpad_test (id, name) VALUES (1, 'one');";
+const insert2 = "INSERT INTO sqlpad_test (id, name) VALUES (2, 'two');";
+const insert3 = "INSERT INTO sqlpad_test (id, name) VALUES (3, 'three');";
 
 // TODO test more datatypes:
 //   * integer (different sizes
@@ -30,13 +35,13 @@ const insert3 = "INSERT INTO test (id, name) VALUES (3, 'three');";
 //   * datetime
 //   * interval
 describe('drivers/unixodbc', function() {
-  before(function() {
+  before(async function() {
     this.timeout(10000);
-    return unixodbc
-      .runQuery(createTable, connection)
-      .then(() => unixodbc.runQuery(insert1, connection))
-      .then(() => unixodbc.runQuery(insert2, connection))
-      .then(() => unixodbc.runQuery(insert3, connection));
+    await unixodbc.runQuery(dropTable, connection);
+    await unixodbc.runQuery(createTable, connection);
+    await unixodbc.runQuery(insert1, connection);
+    await unixodbc.runQuery(insert2, connection);
+    await unixodbc.runQuery(insert3, connection);
   });
 
   it('tests connection', function() {
@@ -46,51 +51,53 @@ describe('drivers/unixodbc', function() {
   it('getSchema()', function() {
     return unixodbc.getSchema(connection).then(schemaInfo => {
       assert(schemaInfo[test_schema_name], test_schema_name);
-      assert(schemaInfo[test_schema_name].test, test_schema_name + '.test');
-      const columns = schemaInfo[test_schema_name].test;
+      assert(
+        schemaInfo[test_schema_name].sqlpad_test,
+        test_schema_name + '.sqlpad_test'
+      );
+      const columns = schemaInfo[test_schema_name].sqlpad_test;
       assert.equal(columns.length, 1, 'columns.length');
       assert.equal(columns[0].table_schema, test_schema_name, 'table_schema');
-      assert.equal(columns[0].table_name, 'test', 'table_name');
+      assert.equal(columns[0].table_name, 'sqlpad_test', 'table_name');
       // column metadata not available in sqlite3
       assert.equal(columns[0].column_name, 'unknown', 'column_name');
       assert.equal(columns[0].data_type, 'unknown', 'data_type');
     });
   });
 
-  it('runQuery under limit', function() {
-    return unixodbc
-      .runQuery('SELECT * FROM test WHERE id = 1;', connection)
-      .then(results => {
-        assert(!results.incomplete, 'not incomplete');
-        assert.equal(results.rows.length, 1, 'row length');
-      });
+  it('runQuery under limit', async function() {
+    const results = await unixodbc.runQuery(
+      'SELECT * FROM sqlpad_test WHERE id = 1;',
+      connection
+    );
+    assert(!results.incomplete, 'not incomplete');
+    assert.equal(results.rows.length, 1, 'row length');
   });
 
-  it('runQuery over limit', function() {
+  it('runQuery over limit', async function() {
     const connectionWithMaxRows = { ...connection, maxRows: 2 };
-    return unixodbc
-      .runQuery('SELECT * FROM test;', connectionWithMaxRows)
-      .then(results => {
-        assert(results.incomplete, 'incomplete');
-        assert.equal(results.rows.length, 2, 'row length');
-      });
+    const results = await unixodbc.runQuery(
+      'SELECT * FROM sqlpad_test;',
+      connectionWithMaxRows
+    );
+    assert(results.incomplete, 'incomplete');
+    assert.equal(results.rows.length, 2, 'row length');
   });
 
-  it('Runs multiple statements', function() {
+  it('Runs multiple statements', async function() {
     const query = `
-      SELECT id FROM test;
-      SELECT name from test;
-      SELECT * FROM test WHERE id = 2
+      SELECT id FROM sqlpad_test;
+      SELECT name FROM sqlpad_test;
+      SELECT * FROM sqlpad_test WHERE id = 2
     `;
-    return unixodbc.runQuery(query, connection).then(results => {
-      // incomplete indicates truncated results
-      // suppressedResultSet indicates missing set
-      assert.strictEqual(results.suppressedResultSet, true);
-      assert.strictEqual(results.incomplete, false);
-      assert.equal(results.rows.length, 1, 'row length');
-      assert.strictEqual(results.rows[0].id, 2);
-      assert.strictEqual(results.rows[0].name, 'two');
-    });
+    const results = await unixodbc.runQuery(query, connection);
+    // incomplete indicates truncated results
+    // suppressedResultSet indicates missing set
+    assert.strictEqual(results.suppressedResultSet, true);
+    assert.strictEqual(results.incomplete, false);
+    assert.equal(results.rows.length, 1, 'row length');
+    assert.strictEqual(results.rows[0].id, 2);
+    assert.strictEqual(results.rows[0].name, 'two');
   });
 
   it('Throws helpful error', async function() {
@@ -105,5 +112,33 @@ describe('drivers/unixodbc', function() {
       error.message.includes('fake_table'),
       'Error message has table reference'
     );
+  });
+
+  it('Client cannot connect more than once', async function() {
+    const client = new unixodbc.Client(connection);
+    await client.connect();
+    await assert.rejects(client.connect());
+    await client.disconnect();
+  });
+
+  it('Client handles multiple disconnects', async function() {
+    const client = new unixodbc.Client(connection);
+    await client.connect();
+    await client.disconnect();
+    await client.disconnect();
+  });
+
+  it('Client handles multiple runQuery calls', async function() {
+    const client = new unixodbc.Client(connection);
+    await client.connect();
+
+    const results1 = await client.runQuery('SELECT * FROM sqlpad_test');
+    assert.equal(results1.incomplete, false);
+    assert.equal(results1.rows.length, 3);
+    const results2 = await client.runQuery('SELECT * FROM sqlpad_test');
+    assert.equal(results2.incomplete, false);
+    assert.equal(results2.rows.length, 3);
+
+    await client.disconnect();
   });
 });

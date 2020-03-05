@@ -30,12 +30,20 @@ describe('api/connections', function() {
     assert(body.connection._id, 'has _id');
     assert.equal(body.connection.driver, 'postgres');
     assert.equal(body.connection.username, 'username');
+
+    // As of writing this test, only postgres and mock connections should have this set to true
+    assert.equal(body.connection.supportsConnectionClient, true);
+
     connection = body.connection;
   });
 
-  it('Gets array of 1', async function() {
-    const body = await utils.get('admin', '/api/connections');
-    assert.equal(body.connections.length, 1, '0 length');
+  it('Gets list of connections', async function() {
+    const { connections } = await utils.get('admin', '/api/connections');
+    assert.equal(connections.length, 1);
+    const connection = connections[0];
+
+    // supportsConnectionClient expected to be set for list API as well
+    assert.equal(connection.supportsConnectionClient, true);
   });
 
   it('Updates connection', async function() {
@@ -57,6 +65,7 @@ describe('api/connections', function() {
     assert.equal(body.connection.name, 'test connection update');
     assert.equal(body.connection.driver, 'postgres');
     assert.equal(body.connection.username, 'username');
+    assert.equal(body.connection.supportsConnectionClient, true);
   });
 
   it('Gets updated connection', async function() {

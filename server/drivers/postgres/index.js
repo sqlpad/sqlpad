@@ -4,10 +4,145 @@ const _ = require('lodash');
 const PgCursor = require('pg-cursor');
 const SocksConnection = require('socksjs');
 const appLog = require('../../lib/appLog');
+const splitSql = require('../../lib/splitSql');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'postgres';
 const name = 'Postgres';
+
+/**
+ * A promise wrapper for pgCursor
+ * Regular use case of cursors is to fetch chunks at a time
+ * SQLPad uses them as a way to confidently get a set number of rows without relying on using LIMIT in a SQL query.
+ * The cursor is then closed after first result is received
+ * @param {pg.Client} client
+ * @param {string} query
+ * @param {number} rows
+ */
+function asyncQueryViaCursor(cursor, rows) {
+  return new Promise((resolve, reject) => {
+    cursor.read(rows, (err, rows) => {
+      cursor.close(closeError => {
+        if (closeError) {
+          appLog.error(closeError, 'Error closing postgres cursor');
+        }
+        if (err) {
+          return reject(err);
+        }
+        resolve(rows);
+      });
+    });
+  });
+}
+
+class Client {
+  constructor(connection) {
+    this.connection = connection;
+    this.client = null;
+  }
+
+  async connect() {
+    if (this.client) {
+      throw new Error('Client already connected');
+    }
+
+    const connection = this.connection;
+
+    const pgConfig = {
+      user: connection.username,
+      password: connection.password,
+      database: connection.database,
+      host: connection.host,
+      port: connection.port || undefined,
+      ssl: connection.postgresSsl,
+      stream: createSocksConnection(connection)
+    };
+
+    // TODO cache key/cert values
+    if (connection.postgresKey && connection.postgresCert) {
+      pgConfig.ssl = {
+        key: fs.readFileSync(connection.postgresKey),
+        cert: fs.readFileSync(connection.postgresCert)
+      };
+      if (connection.postgresCA) {
+        pgConfig.ssl['ca'] = fs.readFileSync(connection.postgresCA);
+      }
+    }
+
+    this.pgConfig = pgConfig;
+    this.client = new pg.Client(pgConfig);
+
+    await this.client.connect();
+
+    if (connection.preQueryStatements) {
+      const queries = splitSql(connection.preQueryStatements);
+      for (const query of queries) {
+        // eslint-disable-next-line no-await-in-loop
+        await this.runQuery(query);
+      }
+    }
+  }
+
+  async disconnect() {
+    if (this.client) {
+      const client = this.client;
+      this.client = null;
+      try {
+        await client.end();
+      } catch (error) {
+        appLog.error(error, 'Error ending postgres client');
+      }
+    }
+  }
+
+  async runQuery(query) {
+    let incomplete = false;
+    const { maxRows } = this.connection;
+    const maxRowsPlusOne = maxRows + 1;
+
+    if (this.connection.denyMultipleStatements) {
+      const statements = splitSql(query);
+      if (statements.length > 1) {
+        throw new Error('Running multiple statements not allowed');
+      }
+    }
+
+    try {
+      const cursor = this.client.query(new PgCursor(query));
+
+      let resultRows = await asyncQueryViaCursor(cursor, maxRowsPlusOne);
+
+      if (resultRows.length === maxRowsPlusOne) {
+        incomplete = true;
+        resultRows.pop(); // get rid of that extra record. we only get 1 more than the max to see if there would have been more...
+      }
+      return { rows: resultRows, incomplete };
+    } catch (error) {
+      // pg_cursor can't handle multi-statements at the moment
+      // as a work around we'll retry the query the old way, but we lose the maxRows protection
+
+      // Run query without try/catch here
+      // The error should throw and buble up
+      const result = await this.client.query(query);
+
+      // multi-statements returns array of result objects but runQuery should return rows array
+      // transform array of results objects to flat rows array
+      let resultRows = [];
+      if (Array.isArray(result)) {
+        resultRows = resultRows.concat(_.flatten(result.map(r => r.rows)));
+      } else {
+        resultRows = resultRows.rows || [];
+      }
+
+      if (resultRows.length >= maxRows) {
+        incomplete = true;
+        resultRows = resultRows.slice(0, maxRows);
+      }
+
+      return { rows: resultRows, incomplete };
+    }
+  }
+}
 
 function createSocksConnection(connection) {
   if (connection.useSocks) {
@@ -55,118 +190,17 @@ const SCHEMA_SQL = `
  * @param {string} query
  * @param {object} connection
  */
-function runQuery(query, connection) {
-  const pgConfig = {
-    user: connection.username,
-    password: connection.password,
-    database: connection.database,
-    host: connection.host,
-    ssl: connection.postgresSsl,
-    stream: createSocksConnection(connection),
-    multipleStatements: !connection.denyMultipleStatements,
-    preQueryStatements: connection.preQueryStatements
-  };
-  // TODO cache key/cert values
-  if (connection.postgresKey && connection.postgresCert) {
-    pgConfig.ssl = {
-      key: fs.readFileSync(connection.postgresKey),
-      cert: fs.readFileSync(connection.postgresCert)
-    };
-    if (connection.postgresCA) {
-      pgConfig.ssl['ca'] = fs.readFileSync(connection.postgresCA);
-    }
+async function runQuery(query, connection) {
+  const client = new Client(connection);
+  await client.connect();
+  try {
+    const result = await client.runQuery(query);
+    await client.disconnect();
+    return result;
+  } catch (error) {
+    await client.disconnect();
+    throw error;
   }
-  if (connection.port) pgConfig.port = connection.port;
-
-  return new Promise((resolve, reject) => {
-    const client = new pg.Client(pgConfig);
-    let resultRows = [];
-
-    client.connect(err => {
-      if (err) {
-        client.end();
-        return reject(err);
-      }
-
-      function _runQuery(
-        query,
-        params = { addRowsToResults: true, closeConnection: true }
-      ) {
-        const cursor = client.query(new PgCursor(query));
-        return cursor.read(connection.maxRows + 1, (err, rows) => {
-          if (err) {
-            // pg_cursor can't handle multi-statements at the moment
-            // as a work around we'll retry the query the old way, but we lose the maxRows protection
-            if (pgConfig.multipleStatements) {
-              return client.query(query, (err, result) => {
-                client.end();
-                if (err) {
-                  return reject(err);
-                }
-                if (params.addRowsToResults) {
-                  // multi-statements returns array of result objects but runQuery should return rows array
-                  // transform array of results objects to flat rows array
-                  if (Array.isArray(result)) {
-                    resultRows = resultRows.concat(
-                      _.flatten(result.map(r => r.rows))
-                    );
-                  } else {
-                    resultRows.push(result.rows);
-                  }
-                  return resolve({ rows: resultRows });
-                }
-              });
-            } else {
-              return reject(
-                new Error('Running multiple statements not allowed')
-              );
-            }
-          }
-          let incomplete = false;
-          if (rows.length === connection.maxRows + 1) {
-            incomplete = true;
-            rows.pop(); // get rid of that extra record. we only get 1 more than the max to see if there would have been more...
-          }
-          if (err) {
-            reject(err);
-          } else if (params.addRowsToResults) {
-            resultRows = resultRows.concat(rows);
-            resolve({ rows: resultRows, incomplete });
-          }
-          if (params.closeConnection) {
-            cursor.close(err => {
-              if (err) {
-                appLog.error(err, 'error closing pg-cursor');
-              }
-              // Calling end() without setImmediate causes error within node-pg
-              setImmediate(() => {
-                client.end(error => {
-                  if (error) {
-                    appLog.error(error);
-                  }
-                });
-              });
-            });
-          }
-        });
-      }
-
-      // Run pre query statements
-      // Statements split by JS because Postgres multipleStatements maybe turned off
-      if (pgConfig.preQueryStatements) {
-        pgConfig.preQueryStatements
-          .trim()
-          .split(';')
-          .forEach(q => {
-            if (q)
-              _runQuery(q, { addRowsToResults: false, closeConnection: false });
-          });
-      }
-
-      // Run actual query
-      _runQuery(query);
-    });
-  });
 }
 
 /**
@@ -182,10 +216,9 @@ function testConnection(connection) {
  * Get schema for connection
  * @param {*} connection
  */
-function getSchema(connection) {
-  return runQuery(SCHEMA_SQL, connection).then(queryResult =>
-    formatSchemaQueryResults(queryResult)
-  );
+async function getSchema(connection) {
+  const queryResult = await runQuery(SCHEMA_SQL, connection);
+  return formatSchemaQueryResults(queryResult);
 }
 
 const fields = [
@@ -274,6 +307,7 @@ const fields = [
 ];
 
 module.exports = {
+  Client,
   id,
   name,
   fields,

@@ -6,6 +6,7 @@ const QueryHistory = require('./queryHistory');
 const Queries = require('./queries');
 const Connections = require('./connections');
 const ConnectionAccesses = require('./connectionAccesses');
+const ConnectionClients = require('./connectionClients');
 const QueryAcl = require('./queryAcl');
 const decorateQueryUserAccess = require('../lib/decorateQueryUserAccess');
 
@@ -18,6 +19,7 @@ class Models {
     this.queries = new Queries(nedb, sequelizeDb, config);
     this.connections = new Connections(nedb, sequelizeDb, config);
     this.connectionAccesses = new ConnectionAccesses(nedb, sequelizeDb, config);
+    this.connectionClients = new ConnectionClients(nedb, sequelizeDb, config);
     this.queryAcl = new QueryAcl(nedb, sequelizeDb, config);
   }
 

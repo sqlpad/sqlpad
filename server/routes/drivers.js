@@ -8,10 +8,12 @@ router.get('/api/drivers', mustBeAuthenticated, function(req, res) {
   const debug = config.get('debug');
 
   const driversArray = Object.keys(drivers).map(id => {
+    const supportsConnectionClient = Boolean(drivers[id].Client);
     return {
       id,
       name: drivers[id].name,
-      fields: drivers[id].fields
+      fields: drivers[id].fields,
+      supportsConnectionClient
     };
   });
 

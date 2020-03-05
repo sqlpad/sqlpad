@@ -11,6 +11,8 @@ function sortConnections(connections) {
 
 export const initialState = {
   selectedConnectionId: '',
+  connectionClient: null,
+  connectionClientInterval: null,
   connections: [],
   connectionsLastUpdated: null,
   connectionsLoading: false
@@ -27,11 +29,101 @@ export async function initSelectedConnection(state) {
   }
 }
 
+/**
+ * Open a client connection for the currently selected connection
+ * @param {*} state
+ */
+export const connectConnectionClient = store => async state => {
+  const { selectedConnectionId } = state;
+  const json = await fetchJson('POST', '/api/connection-clients', {
+    connectionId: selectedConnectionId
+  });
+  if (json.error) {
+    return message.error('Problem connecting to database');
+  }
+
+  // Poll connection-clients api to keep it alive
+  const connectionClientInterval = setInterval(async () => {
+    const updateJson = await fetchJson(
+      'PUT',
+      `/api/connection-clients/${json.connectionClient.id}`
+    );
+
+    // Not sure if this should message user here
+    // In the event of an error this could get really noisy
+    if (updateJson.error) {
+      message.error(updateJson.error);
+    }
+
+    // If the PUT didn't return a connectionClient object,
+    // the connectionClient has been disconnected
+    if (!updateJson.connectionClient && connectionClientInterval) {
+      clearInterval(connectionClientInterval);
+      store.setState({
+        connectionClientInterval: null,
+        connectionClient: null
+      });
+    } else {
+      store.setState({
+        connectionClient: updateJson.connectionClient
+      });
+    }
+  }, 10000);
+
+  return { connectionClient: json.connectionClient, connectionClientInterval };
+};
+
+/**
+ * Disconnect the current connection client if one exists
+ * @param {*} state
+ */
+export const disconnectConnectionClient = async state => {
+  const { connectionClient, connectionClientInterval } = state;
+  if (connectionClientInterval) {
+    clearInterval(connectionClientInterval);
+  }
+  if (connectionClient) {
+    fetchJson('DELETE', `/api/connection-clients/${connectionClient.id}`).then(
+      json => {
+        if (json.error) {
+          message.error(json.error);
+        }
+      }
+    );
+  }
+  return { connectionClient: null, connectionClientInterval: null };
+};
+
+/**
+ * Select connection and disconnect connectionClient if it exists
+ * @param {*} state
+ * @param {*} selectedConnectionId
+ */
 export const selectConnectionId = (state, selectedConnectionId) => {
+  const { connectionClient, connectionClientInterval } = state;
   localforage
     .setItem('selectedConnectionId', selectedConnectionId)
     .catch(error => message.error(error));
-  return { selectedConnectionId };
+
+  if (connectionClient) {
+    fetchJson('DELETE', `/api/connection-clients/${connectionClient.id}`).then(
+      json => {
+        if (json.error) {
+          message.error(json.error);
+        }
+      }
+    );
+  }
+
+  if (connectionClientInterval) {
+    clearInterval(connectionClientInterval);
+  }
+
+  return {
+    selectedConnectionId,
+    connectionClient: null,
+    connectionClientInterval: null
+  };
 };
 
 export const deleteConnection = async (state, connectionId) => {

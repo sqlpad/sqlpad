@@ -108,7 +108,13 @@ export const loadQuery = async (state, queryId) => {
 };
 
 export const runQuery = store => async state => {
-  const { cacheKey, query, selectedText, selectedConnectionId } = state;
+  const {
+    cacheKey,
+    query,
+    selectedText,
+    selectedConnectionId,
+    connectionClient
+  } = state;
 
   store.setState({
     isRunning: true,
@@ -116,6 +122,7 @@ export const runQuery = store => async state => {
   });
   const postData = {
     connectionId: selectedConnectionId,
+    connectionClientId: connectionClient && connectionClient.id,
     cacheKey,
     queryId: query._id,
     queryName: query.name,

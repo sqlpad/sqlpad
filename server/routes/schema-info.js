@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const sendError = require('../lib/sendError');
-const DriverConnection = require('../lib/driver-connection');
+const ConnectionClient = require('../lib/connection-client');
 
 router.get(
   '/api/schema-info/:connectionId',
@@ -24,8 +24,8 @@ router.get(
         return res.json({ schemaInfo });
       }
 
-      const driverConnection = new DriverConnection(conn, user);
-      schemaInfo = await driverConnection.getSchema();
+      const connectionClient = new ConnectionClient(conn, user);
+      schemaInfo = await connectionClient.getSchema();
       if (Object.keys(schemaInfo).length) {
         await models.schemaInfo.saveSchemaInfo(connectionId, schemaInfo);
       }
