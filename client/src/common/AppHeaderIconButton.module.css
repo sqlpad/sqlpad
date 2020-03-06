@@ -1,0 +1,50 @@
+.btn {
+  line-height: 1.499;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  padding: 4px;
+  font-size: 14px;
+  border-radius: 2px;
+  color: rgba(255, 255, 255, 0.85);
+  background-color: transparent;
+  border: none;
+  border-color: transparent;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+}
+
+.btn:active,
+.btn:hover,
+.btn:focus {
+  text-decoration: none;
+  outline: none;
+  border: 2px solid var(--primary-color);
+}
+
+.btn:hover {
+  color: var(--primary-light-color);
+}
+
+.btn:active {
+  color: var(--primary-dark-color);
+}
+
+.btn:disabled,
+.btn[disabled] {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.btn[disabled]:hover {
+  border: none;
+  color: rgba(255, 255, 255, 0.65);
+}
