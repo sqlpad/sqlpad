@@ -29,7 +29,7 @@ function UserButton({ currentUser, clearQueries }) {
         <MenuButton className={`${styles.btn} ${styles.ghost}`}>
           {currentUser.name || currentUser.email}
         </MenuButton>
-        <MenuList className="slide-down">
+        <MenuList style={{ padding: 8 }} className="slide-down">
           <MenuItem
             onSelect={async () => {
               await fetchJson('GET', '/api/signout');
