@@ -8,6 +8,7 @@ import UsersButton from './UsersButton';
 import ConnectionAccessButton from './ConnectionAccessButton';
 import HistoryButton from './HistoryButton';
 import AboutButton from './AboutButton';
+import UserButton from './UserButton';
 
 function Appheader() {
   return (
@@ -30,6 +31,7 @@ function Appheader() {
 
         <ToolbarSpacer grow />
         <AboutButton />
+        <UserButton />
         <ToolbarMenu />
       </div>
     </div>
