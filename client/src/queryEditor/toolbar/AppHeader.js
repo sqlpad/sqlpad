@@ -3,6 +3,10 @@ import QueryListButton from './QueryListButton';
 import ToolbarMenu from './ToolbarMenu';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
+import ConnectionsButton from './ConnectionsButton';
+import UsersButton from './UsersButton';
+import ConnectionAccessButton from './ConnectionAccessButton';
+import HistoryButton from './HistoryButton';
 
 function Appheader() {
   return (
@@ -18,6 +22,10 @@ function Appheader() {
       <div style={{ display: 'flex' }}>
         <QueryListButton />
         <ToolbarNewQueryButton />
+        <ConnectionsButton />
+        <UsersButton />
+        <ConnectionAccessButton />
+        <HistoryButton />
 
         <ToolbarSpacer grow />
 
