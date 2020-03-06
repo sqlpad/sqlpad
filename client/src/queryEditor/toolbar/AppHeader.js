@@ -32,7 +32,6 @@ function Appheader() {
         <ToolbarSpacer grow />
         <AboutButton />
         <UserButton />
-        <ToolbarMenu />
       </div>
     </div>
   );
