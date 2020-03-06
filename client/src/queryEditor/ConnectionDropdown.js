@@ -64,7 +64,7 @@ function ConnectionDropdown({
       </Select>
       <ConnectionEditDrawer
         visible={showEdit}
-        placement="right"
+        placement="left"
         onClose={() => setShowEdit(false)}
         onConnectionSaved={handleConnectionSaved}
       />

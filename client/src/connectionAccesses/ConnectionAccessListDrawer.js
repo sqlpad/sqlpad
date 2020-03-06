@@ -9,7 +9,7 @@ function ConnectionAccessListDrawer({ visible, onClose }) {
       visible={visible}
       width={600}
       onClose={onClose}
-      placement="right"
+      placement="left"
     >
       <ConnectionAccessList onClose={onClose} />
     </Drawer>

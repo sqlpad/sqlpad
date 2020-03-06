@@ -140,7 +140,7 @@ function ConnectionList({
         visible={showEdit}
         onClose={handleEditDrawerClose}
         onConnectionSaved={handleConnectionSaved}
-        placement="right"
+        placement="left"
       />
     </>
   );
