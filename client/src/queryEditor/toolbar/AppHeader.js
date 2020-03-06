@@ -7,6 +7,7 @@ import ConnectionsButton from './ConnectionsButton';
 import UsersButton from './UsersButton';
 import ConnectionAccessButton from './ConnectionAccessButton';
 import HistoryButton from './HistoryButton';
+import AboutButton from './AboutButton';
 
 function Appheader() {
   return (
@@ -28,7 +29,7 @@ function Appheader() {
         <HistoryButton />
 
         <ToolbarSpacer grow />
-
+        <AboutButton />
         <ToolbarMenu />
       </div>
     </div>
