@@ -15,7 +15,12 @@ function Drawer({ title, visible, onClose, width, placement, children }) {
 
   if (visible) {
     return (
-      <Dialog onDismiss={onClose} className={styles.Dialog} style={style}>
+      <Dialog
+        aria-label={title}
+        onDismiss={onClose}
+        className={styles.Dialog}
+        style={style}
+      >
         <div className={styles.titleWrapper}>
           {title}
           <IconButton onClick={onClose}>

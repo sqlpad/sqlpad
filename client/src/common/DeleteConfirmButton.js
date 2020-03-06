@@ -33,6 +33,7 @@ const DeleteConfirmButton = React.forwardRef(
         )}
         {visible && (
           <Dialog
+            area-label={confirmMessage}
             onDismiss={() => setVisible(false)}
             className={styles.Dialog}
             initialFocusRef={cancelEl}

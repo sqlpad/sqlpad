@@ -78,6 +78,26 @@ input {
   outline: none;
 }
 
+/* 
+  This helps fix weird pop in animation for icon menu button 
+  (It also looks nice)
+*/
+@keyframes slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.slide-down[data-reach-menu-list],
+.slide-down[data-reach-menu-items] {
+  border-radius: 2px;
+  animation: slide-down 0.1s ease;
+}
+
 /*  Utilities
 ============================================================================ */
 .truncate {
