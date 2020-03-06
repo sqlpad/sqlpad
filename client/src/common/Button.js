@@ -6,22 +6,32 @@ const ICON_SIZE = 18;
 
 const Button = React.forwardRef(
   (
-    { children, icon, type, htmlType, tooltip, disabled, className, ...rest },
+    {
+      children,
+      icon,
+      variant,
+      htmlType,
+      tooltip,
+      disabled,
+      className,
+      ...rest
+    },
     ref
   ) => {
     const classNames = [styles.btn];
 
-    if (type === 'primary') {
+    if (variant === 'primary') {
       classNames.push(styles.primary);
-    } else if (type === 'danger') {
+    } else if (variant === 'danger') {
       classNames.push(styles.danger);
+    } else if (variant === 'ghost') {
+      classNames.push(styles.ghost);
     }
 
     if (className) {
       classNames.push(className);
     }
 
-    // TODO change type prop to variant, htmlType to type
     const button = (
       <button
         ref={ref}

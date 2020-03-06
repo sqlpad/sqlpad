@@ -74,7 +74,7 @@ function InviteUserForm({ onInvited }) {
           <Button
             htmlType="submit"
             className="w-100"
-            type="primary"
+            variant="primary"
             onClick={onInviteClick}
             disabled={isInviting}
           >

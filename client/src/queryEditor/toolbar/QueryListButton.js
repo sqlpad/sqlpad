@@ -1,4 +1,4 @@
-import AppHeaderButton from '../../common/AppHeaderButton';
+import Button from '../../common/Button';
 import React, { useState } from 'react';
 import QueryListDrawer from '../../queries/QueryListDrawer';
 
@@ -7,9 +7,9 @@ function QueryListButton() {
 
   return (
     <>
-      <AppHeaderButton onClick={() => setShowQueries(true)}>
+      <Button variant="ghost" onClick={() => setShowQueries(true)}>
         Queries
-      </AppHeaderButton>
+      </Button>
       <QueryListDrawer
         visible={showQueries}
         onClose={() => setShowQueries(false)}

@@ -16,7 +16,7 @@ const ConnectedToolbarRunButton = connect(mapStateToProps, store => ({
 
 function ToolbarRunButton({ isRunning, runQuery }) {
   return (
-    <Button type="primary" onClick={() => runQuery()} disabled={isRunning}>
+    <Button variant="primary" onClick={() => runQuery()} disabled={isRunning}>
       Run
     </Button>
   );

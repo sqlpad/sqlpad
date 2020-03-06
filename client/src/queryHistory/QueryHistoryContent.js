@@ -82,7 +82,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
     <Button
       style={{ width: 135 }}
       key="refresh"
-      type="primary"
+      variant="primary"
       onClick={handleRefresh}
       disabled={isRunning}
     >
@@ -94,7 +94,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
       <Button
         style={{ width: 135, marginRight: 8 }}
         key="addFilter"
-        type="primary"
+        variant="primary"
         onClick={handleAddFilter}
       >
         Add Filter
@@ -130,7 +130,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
         <Button
           htmlType="submit"
           style={{ width: 120 }}
-          type="primary"
+          variant="primary"
           onClick={handleApplyFilter}
           disabled={isRunning}
         >

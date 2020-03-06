@@ -171,7 +171,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
           <Button
             htmlType="submit"
             style={{ width: 120 }}
-            type="primary"
+            variant="primary"
             onClick={createConnectionAccess}
             disabled={creating}
           >

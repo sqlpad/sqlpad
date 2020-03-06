@@ -16,7 +16,7 @@ const DeleteConfirmButton = React.forwardRef(
           <IconButton
             onClick={() => setVisible(true)}
             ref={ref}
-            type="danger"
+            variant="danger"
             {...rest}
           >
             <DeleteIcon />
@@ -25,7 +25,7 @@ const DeleteConfirmButton = React.forwardRef(
           <Button
             onClick={() => setVisible(true)}
             ref={ref}
-            type="danger"
+            variant="danger"
             {...rest}
           >
             {children}
@@ -43,7 +43,7 @@ const DeleteConfirmButton = React.forwardRef(
             </div>
             <div className={styles.buttonWrapper}>
               <Button
-                type="danger"
+                variant="danger"
                 className={styles.button}
                 onClick={() => {
                   setVisible(false);

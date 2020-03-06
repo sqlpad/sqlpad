@@ -59,7 +59,7 @@ function SignIn({ config, refreshAppContext }) {
         style={{ width: '100%' }}
         onClick={signIn}
         htmlType="submit"
-        type="primary"
+        variant="primary"
       >
         Sign in
       </Button>
@@ -85,7 +85,7 @@ function SignIn({ config, refreshAppContext }) {
   const googleForm = (
     <div>
       <a href={config.baseUrl + '/auth/google'}>
-        <Button type="primary">
+        <Button variant="primary">
           <GoogleIcon />
           Sign in with Google
         </Button>

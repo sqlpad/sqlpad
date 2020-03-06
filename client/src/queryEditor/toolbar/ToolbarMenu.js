@@ -60,7 +60,7 @@ function ToolbarMenu({ currentUser, clearQueries }) {
 
   return (
     <div>
-      <IconMenu icon={<DotsVerticalIcon aria-label="menu" />}>
+      <IconMenu variant="ghost" icon={<DotsVerticalIcon aria-label="menu" />}>
         {menuItems}
         <MenuItem
           key="queryHistory"

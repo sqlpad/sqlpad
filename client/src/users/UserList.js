@@ -52,7 +52,7 @@ function UserList({ currentUser }) {
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button
           style={{ width: 135 }}
-          type="primary"
+          variant="primary"
           onClick={() => setShowAddUser(true)}
         >
           Add user
