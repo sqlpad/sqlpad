@@ -1,4 +1,4 @@
-const uuid = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const drivers = require('../drivers');
 const renderConnection = require('./render-connection');
 const appLog = require('./appLog');
@@ -18,7 +18,7 @@ class ConnectionClient {
    * @param {object} [user] - user to run query under. may not be provided if chart links turned on
    */
   constructor(connection, user) {
-    this.id = uuid();
+    this.id = uuidv4();
     this.connection = renderConnection(connection, user);
     this.driver = drivers[connection.driver];
     this.user = user;
@@ -118,7 +118,7 @@ class ConnectionClient {
     const user = this.user;
 
     const finalResult = {
-      id: uuid.v4(),
+      id: uuidv4(),
       cacheKey: null,
       startTime: new Date(),
       stopTime: null,

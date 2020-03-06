@@ -18,7 +18,7 @@ const IconMenu = ({ children, icon, tooltip, ...rest }) => {
             null
           )}
       </MenuButton>
-      <MenuList>{children}</MenuList>
+      <MenuList className="slide-down">{children}</MenuList>
     </Menu>
   );
 

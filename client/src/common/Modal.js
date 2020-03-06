@@ -8,6 +8,7 @@ function Modal({ title, visible, onClose, width, children }) {
   if (visible) {
     return (
       <Dialog
+        aria-label={title}
         onDismiss={onClose}
         className={styles.Dialog}
         style={{

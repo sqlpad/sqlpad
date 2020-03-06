@@ -1,5 +1,5 @@
 const assert = require('assert');
-const uuid = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const TestUtils = require('../utils');
 
 describe('api/password-reset', function() {
@@ -7,7 +7,7 @@ describe('api/password-reset', function() {
 
   async function setReset() {
     const user = await utils.models.users.findOneByEmail('admin@test.com');
-    const passwordResetId = uuid.v4();
+    const passwordResetId = uuidv4();
     user.passwordResetId = passwordResetId;
     await utils.models.users.save(user);
     return passwordResetId;

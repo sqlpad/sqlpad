@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const uuid = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const getMeta = require('../lib/getMeta');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const urlFilterToNeDbFilter = require('../lib/urlFilterToNeDbFilter');
@@ -9,7 +9,7 @@ router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
   const { models } = req;
   try {
     const queryHistory = {
-      id: uuid.v4(),
+      id: uuidv4(),
       cacheKey: null,
       startTime: new Date(),
       stopTime: null,
