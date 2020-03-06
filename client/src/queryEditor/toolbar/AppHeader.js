@@ -1,5 +1,6 @@
 import React from 'react';
 import AboutButton from './AboutButton';
+import AppMenu from './AppMenu';
 import ConnectionAccessButton from './ConnectionAccessButton';
 import ConnectionsButton from './ConnectionsButton';
 import HistoryButton from './HistoryButton';
@@ -32,6 +33,7 @@ function Appheader() {
         <ToolbarSpacer grow />
         <AboutButton />
         <UserButton />
+        <AppMenu />
       </div>
     </div>
   );

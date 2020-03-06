@@ -8,10 +8,10 @@ import IconMenu from '../../common/IconMenu';
 import ConnectionAccessListDrawer from '../../connectionAccesses/ConnectionAccessListDrawer';
 import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
 import QueryHistoryModal from '../../queryHistory/QueryHistoryModal';
+import { clearQueries } from '../../stores/queries';
 import UserList from '../../users/UserList';
 import fetchJson from '../../utilities/fetch-json.js';
 import AboutModal from './AboutModal';
-import { clearQueries } from '../../stores/queries';
 
 function mapStateToProps(state) {
   return {
@@ -19,11 +19,11 @@ function mapStateToProps(state) {
   };
 }
 
-const ConnectedToolbarMenu = connect(mapStateToProps, store => ({
+const Connected = connect(mapStateToProps, store => ({
   clearQueries
-}))(React.memo(ToolbarMenu));
+}))(React.memo(AppMenu));
 
-function ToolbarMenu({ currentUser, clearQueries }) {
+function AppMenu({ currentUser, clearQueries }) {
   const [showUsers, setShowUsers] = useState(false);
   const [redirectToSignIn, setRedirectToSignIn] = useState(false);
   const [showQueryHistory, setShowQueryHistory] = useState(false);
@@ -116,4 +116,4 @@ function ToolbarMenu({ currentUser, clearQueries }) {
   );
 }
 
-export default ConnectedToolbarMenu;
+export default Connected;
