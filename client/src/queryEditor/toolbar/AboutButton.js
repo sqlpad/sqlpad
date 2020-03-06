@@ -8,7 +8,11 @@ function AboutButton({ currentUser, clearQueries }) {
 
   return (
     <div>
-      <IconButton variant="ghost" onClick={() => setShowAbout(true)}>
+      <IconButton
+        tooltip="About"
+        variant="ghost"
+        onClick={() => setShowAbout(true)}
+      >
         <InfoIcon />
       </IconButton>
       <AboutModal visible={showAbout} onClose={() => setShowAbout(false)} />
