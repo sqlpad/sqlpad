@@ -1,4 +1,4 @@
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
 import {
@@ -24,7 +24,7 @@ export const NEW_QUERY = {
 };
 
 export const initialState = {
-  cacheKey: uuid.v4(),
+  cacheKey: uuidv4(),
   isRunning: false,
   isSaving: false,
   queries: [],

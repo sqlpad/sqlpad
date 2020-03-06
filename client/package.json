@@ -29,6 +29,7 @@
     "react-window": "^1.8.5",
     "taucharts": "^2.8.0",
     "unistore": "^3.5.1",
+    "uuid": "^7.0.2",
     "whatwg-fetch": "^3.0.0"
   },
   "scripts": {

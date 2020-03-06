@@ -77,7 +77,7 @@
     "sql-formatter": "^2.3.3",
     "sqlite3": "^4.1.1",
     "umzug": "^2.2.0",
-    "uuid": "^3.4.0",
+    "uuid": "^7.0.2",
     "vertica": "^0.5.5"
   },
   "main": "./app.js",

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import Button from '../common/Button';
 import FormExplain from '../common/FormExplain';
 import message from '../common/message';
@@ -23,7 +23,7 @@ function EditUserForm({ user }) {
   };
 
   const generatePasswordResetLink = async () => {
-    const passwordResetId = uuid.v4();
+    const passwordResetId = uuidv4();
     const json = await fetchJson('PUT', '/api/users/' + user._id, {
       passwordResetId
     });

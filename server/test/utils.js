@@ -1,5 +1,5 @@
 const assert = require('assert');
-const uuid = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const request = require('supertest');
 const Config = require('../lib/config');
 const appLog = require('../lib/appLog');
@@ -30,7 +30,7 @@ class TestUtils {
 
     this.config = config;
     this.appLog = appLog;
-    this.instanceAlias = uuid.v1();
+    this.instanceAlias = uuidv4();
     this.sequelizeDb = undefined;
     this.app = undefined;
     this.models = undefined;

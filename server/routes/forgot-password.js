@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const uuid = require('uuid');
+const { v4: uuidv4 } = require('uuid');
 const makeEmail = require('../lib/email');
 const sendError = require('../lib/sendError');
 
@@ -23,7 +23,7 @@ router.post('/api/forgot-password', async function(req, res) {
       return res.json({});
     }
 
-    user.passwordResetId = uuid.v4();
+    user.passwordResetId = uuidv4();
 
     await models.users.save(user);
 
