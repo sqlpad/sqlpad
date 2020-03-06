@@ -1,14 +1,13 @@
 import React from 'react';
+import AboutButton from './AboutButton';
+import ConnectionAccessButton from './ConnectionAccessButton';
+import ConnectionsButton from './ConnectionsButton';
+import HistoryButton from './HistoryButton';
 import QueryListButton from './QueryListButton';
-import ToolbarMenu from './ToolbarMenu';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
-import ConnectionsButton from './ConnectionsButton';
-import UsersButton from './UsersButton';
-import ConnectionAccessButton from './ConnectionAccessButton';
-import HistoryButton from './HistoryButton';
-import AboutButton from './AboutButton';
 import UserButton from './UserButton';
+import UsersButton from './UsersButton';
 
 function Appheader() {
   return (
