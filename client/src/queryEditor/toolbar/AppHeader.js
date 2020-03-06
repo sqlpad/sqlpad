@@ -3,6 +3,7 @@ import AboutButton from './AboutButton';
 import ConnectionAccessButton from './ConnectionAccessButton';
 import ConnectionsButton from './ConnectionsButton';
 import HistoryButton from './HistoryButton';
+import LogoButton from './LogoButton';
 import QueryListButton from './QueryListButton';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
@@ -21,13 +22,13 @@ function Appheader() {
       }}
     >
       <div style={{ display: 'flex' }}>
+        <LogoButton />
         <QueryListButton />
         <ToolbarNewQueryButton />
         <ConnectionsButton />
         <UsersButton />
         <ConnectionAccessButton />
         <HistoryButton />
-
         <ToolbarSpacer grow />
         <AboutButton />
         <UserButton />
