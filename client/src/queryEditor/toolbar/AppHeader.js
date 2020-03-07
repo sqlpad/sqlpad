@@ -1,5 +1,4 @@
 import React from 'react';
-import AboutButton from './AboutButton';
 import AppHeaderAdminSection from './AppHeaderAdminSection';
 import AppMenu from './AppMenu';
 import HistoryButton from './HistoryButton';
@@ -7,7 +6,7 @@ import Logo from './Logo';
 import QueryListButton from './QueryListButton';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
-import UserButton from './UserButton';
+import AppHeaderUser from './AppHeaderUser';
 
 function Appheader() {
   return (
@@ -27,8 +26,7 @@ function Appheader() {
         <HistoryButton />
         <AppHeaderAdminSection />
         <ToolbarSpacer grow />
-        <AboutButton />
-        <UserButton />
+        <AppHeaderUser />
         <AppMenu />
       </div>
     </div>
