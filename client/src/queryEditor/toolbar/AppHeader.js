@@ -4,7 +4,7 @@ import AppMenu from './AppMenu';
 import ConnectionAccessButton from './ConnectionAccessButton';
 import ConnectionsButton from './ConnectionsButton';
 import HistoryButton from './HistoryButton';
-import LogoButton from './LogoButton';
+import Logo from './Logo';
 import QueryListButton from './QueryListButton';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
@@ -23,7 +23,7 @@ function Appheader() {
       }}
     >
       <div style={{ display: 'flex' }}>
-        <LogoButton />
+        <Logo />
         <QueryListButton />
         <ToolbarNewQueryButton />
         <ConnectionsButton />
