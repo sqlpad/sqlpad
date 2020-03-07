@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from 'unistore/react';
-import Button from '../../common/Button';
-import QueryHistoryModal from '../../queryHistory/QueryHistoryModal';
-import { clearQueries } from '../../stores/queries';
+import Button from '../common/Button';
+import QueryHistoryModal from '../queryHistory/QueryHistoryModal';
+import { clearQueries } from '../stores/queries';
 
 function mapStateToProps(state) {
   return {

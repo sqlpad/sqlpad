@@ -1,6 +1,6 @@
-import Button from '../../common/Button';
+import Button from '../common/Button';
 import React, { useState } from 'react';
-import QueryListDrawer from '../../queries/QueryListDrawer';
+import QueryListDrawer from '../queries/QueryListDrawer';
 
 function QueryListButton() {
   const [showQueries, setShowQueries] = useState(false);

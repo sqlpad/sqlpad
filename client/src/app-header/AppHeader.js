@@ -5,7 +5,7 @@ import HistoryButton from './HistoryButton';
 import Logo from './Logo';
 import QueryListButton from './QueryListButton';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
-import ToolbarSpacer from './ToolbarSpacer';
+import AppHeaderSpacer from './AppHeaderSpacer';
 import AppHeaderUser from './AppHeaderUser';
 
 function Appheader() {
@@ -25,7 +25,7 @@ function Appheader() {
         <ToolbarNewQueryButton />
         <HistoryButton />
         <AppHeaderAdminSection />
-        <ToolbarSpacer grow />
+        <AppHeaderSpacer grow />
         <AppHeaderUser />
         <AppMenu />
       </div>

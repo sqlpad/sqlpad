@@ -16,7 +16,7 @@ import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryResultHeader from './QueryResultHeader.js';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
-import AppHeader from './toolbar/AppHeader';
+import AppHeader from '../app-header/AppHeader';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 
 const deboucedResearchChart = debounce(resizeChart, 700);

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { connect } from 'unistore/react';
-import Button from '../../common/Button';
-import Drawer from '../../common/Drawer';
-import ConnectionAccessListDrawer from '../../connectionAccesses/ConnectionAccessListDrawer';
-import ConnectionListDrawer from '../../connections/ConnectionListDrawer';
-import UserList from '../../users/UserList';
+import Button from '../common/Button';
+import Drawer from '../common/Drawer';
+import ConnectionAccessListDrawer from '../connectionAccesses/ConnectionAccessListDrawer';
+import ConnectionListDrawer from '../connections/ConnectionListDrawer';
+import UserList from '../users/UserList';
 import AppHeaderDivider from './AppHeaderDivider';
 
 function mapStateToProps(state) {

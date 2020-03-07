@@ -3,9 +3,9 @@ import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'unistore/react';
-import IconMenu from '../../common/IconMenu';
-import { clearQueries } from '../../stores/queries';
-import fetchJson from '../../utilities/fetch-json.js';
+import IconMenu from '../common/IconMenu';
+import { clearQueries } from '../stores/queries';
+import fetchJson from '../utilities/fetch-json.js';
 import AboutModal from './AboutModal';
 
 const Connected = connect(null, store => ({

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'unistore/react';
-import Button from '../../common/Button';
-import { resetNewQuery } from '../../stores/queries';
+import Button from '../common/Button';
+import { resetNewQuery } from '../stores/queries';
 
 function mapStateToProps(state) {
   return {};
