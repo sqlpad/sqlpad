@@ -20,7 +20,7 @@
   box-shadow: none;
   border-radius: 0;
   color: #fff;
-  background-color: var(--primary-color);
+  background-color: var(--primary-darkest-color);
   border-color: var(--primary-color);
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
 }
