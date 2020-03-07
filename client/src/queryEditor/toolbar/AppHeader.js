@@ -1,15 +1,13 @@
 import React from 'react';
 import AboutButton from './AboutButton';
+import AppHeaderAdminSection from './AppHeaderAdminSection';
 import AppMenu from './AppMenu';
-import ConnectionAccessButton from './ConnectionAccessButton';
-import ConnectionsButton from './ConnectionsButton';
 import HistoryButton from './HistoryButton';
 import Logo from './Logo';
 import QueryListButton from './QueryListButton';
 import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
 import UserButton from './UserButton';
-import UsersButton from './UsersButton';
 
 function Appheader() {
   return (
@@ -26,10 +24,8 @@ function Appheader() {
         <Logo />
         <QueryListButton />
         <ToolbarNewQueryButton />
-        <ConnectionsButton />
-        <UsersButton />
-        <ConnectionAccessButton />
         <HistoryButton />
+        <AppHeaderAdminSection />
         <ToolbarSpacer grow />
         <AboutButton />
         <UserButton />

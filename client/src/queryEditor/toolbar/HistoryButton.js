@@ -20,7 +20,7 @@ function HistoryButton({ currentUser, clearQueries }) {
   return (
     <div>
       <Button variant="ghost" onClick={() => setShowQueryHistory(true)}>
-        Query History
+        History
       </Button>
       <QueryHistoryModal
         visible={showQueryHistory}

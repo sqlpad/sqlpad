@@ -1,7 +1,6 @@
-import NewIcon from 'mdi-react/PlusIcon';
 import React from 'react';
 import { connect } from 'unistore/react';
-import IconButton from '../../common/IconButton';
+import Button from '../../common/Button';
 import { resetNewQuery } from '../../stores/queries';
 
 function mapStateToProps(state) {
@@ -14,14 +13,14 @@ const ConnectedToolbarNewQueryButton = connect(mapStateToProps, store => ({
 
 function ToolbarNewQueryButton({ resetNewQuery }) {
   return (
-    <IconButton
+    <Button
       variant="ghost"
       to="/queries/new"
       tooltip="New query"
       onClick={() => resetNewQuery()}
     >
-      <NewIcon />
-    </IconButton>
+      New
+    </Button>
   );
 }
 
