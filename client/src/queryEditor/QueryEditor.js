@@ -16,6 +16,7 @@ import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryResultHeader from './QueryResultHeader.js';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
+import AppHeader from '../app-header/AppHeader';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 
 const deboucedResearchChart = debounce(resizeChart, 700);
@@ -117,6 +118,7 @@ function QueryEditor(props) {
         flexDirection: 'column'
       }}
     >
+      <AppHeader />
       <Toolbar />
       <div style={{ position: 'relative', flexGrow: 1 }}>{sqlTabPane}</div>
       <UnsavedQuerySelector queryId={queryId} />

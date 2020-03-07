@@ -10,11 +10,14 @@
   --REFERENCE-button-active-color: #096dd9;
   --REFERENCE-primary-color: #1890ff;
 
-  --primary-color: #1890ff;
-  --primary-dark-color: #0070d8;
-  --primary-light-color: #42a4ff;
+  --primary-color: hsl(209, 100%, 55%);
+  --primary-dark-color: hsl(209, 100%, 42%);
+  --primary-light-color: hsl(209, 100%, 63%);
+  --primary-darkest-color: hsl(209, 50%, 25%);
+
+  --primary-color-30: rgba(24, 143, 255, 0.3);
   --primary-color-90: rgba(24, 144, 255, 0.9);
-  --primary-color-30: rgba(24, 144, 255, 0.3);
+
   --secondary-color: rgb(250, 50, 173);
   --secondary-dark-color: hsl(323, 100%, 50%);
   --secondary-color-90: rgba(250, 50, 173, 0.9);

@@ -5,10 +5,15 @@ import iconButtonStyles from './IconButton.module.css';
 
 const ICON_SIZE = 18;
 
-const IconMenu = ({ children, icon, tooltip, ...rest }) => {
+const IconMenu = ({ children, icon, tooltip, variant, ...rest }) => {
+  const className =
+    variant === 'ghost'
+      ? `${iconButtonStyles.btn} ${iconButtonStyles.ghost}`
+      : iconButtonStyles.btn;
+
   const menu = (
     <Menu>
-      <MenuButton className={iconButtonStyles.btn} {...rest}>
+      <MenuButton className={className} {...rest}>
         {icon &&
           React.cloneElement(
             icon,

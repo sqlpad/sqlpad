@@ -78,7 +78,11 @@ function ConnectionList({
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button style={{ width: 135 }} type="primary" onClick={newConnection}>
+        <Button
+          style={{ width: 135 }}
+          variant="primary"
+          onClick={newConnection}
+        >
           Add connection
         </Button>
       </div>
@@ -136,7 +140,7 @@ function ConnectionList({
         visible={showEdit}
         onClose={handleEditDrawerClose}
         onConnectionSaved={handleConnectionSaved}
-        placement="right"
+        placement="left"
       />
     </>
   );

@@ -98,3 +98,27 @@
   padding: 0 10px;
   border-color: #d9d9d9;
 }
+
+.ghost {
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 1px 0 transparent;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.ghost:hover,
+.ghost:focus {
+  color: rgba(255, 255, 255, 0.85);
+  background-color: transparent;
+}
+
+.ghost:active {
+  color: rgba(255, 255, 255, 1);
+  background-color: transparent;
+}
+
+.ghost:disabled,
+.ghost[disabled] {
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+}

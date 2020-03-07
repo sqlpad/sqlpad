@@ -71,7 +71,7 @@ function ConnectionAccessList({ currentUser }) {
         </Button>
         <Button
           style={{ width: 135 }}
-          type="primary"
+          variant="primary"
           onClick={newConnectionAccess}
         >
           Create Access
@@ -129,7 +129,7 @@ function ConnectionAccessList({ currentUser }) {
         visible={showAccessCreate}
         onClose={handleCreateDrawerClose}
         onConnectionAccessSaved={handleConnectionAccessSaved}
-        placement="right"
+        placement="left"
       />
     </>
   );

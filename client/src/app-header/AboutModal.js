@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
-import Modal from '../../common/Modal';
+import Modal from '../common/Modal';
 import AboutContent from './AboutContent';
 
 function mapStateToProps(state) {

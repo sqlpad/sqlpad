@@ -1,11 +1,9 @@
 import React from 'react';
 import ConnectionDropDown from '../ConnectionDropdown';
 import ChartButton from './ChartButton';
-import QueryListButton from './QueryListButton';
 import ToolbarCloneButton from './ToolbarCloneButton';
+import ToolbarConnectionClientButton from './ToolbarConnectionClientButton';
 import ToolbarFormatQueryButton from './ToolbarFormatQueryButton';
-import ToolbarMenu from './ToolbarMenu';
-import ToolbarNewQueryButton from './ToolbarNewQueryButton';
 import ToolbarQueryNameInput from './ToolbarQueryNameInput';
 import ToolbarRunButton from './ToolbarRunButton';
 import ToolbarSaveButton from './ToolbarSaveButton';
@@ -13,7 +11,6 @@ import ToolbarShareQueryButton from './ToolbarShareQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
 import ToolbarTagsButton from './ToolbarTagsButton';
 import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
-import ToolbarConnectionClientButton from './ToolbarConnectionClientButton';
 
 function Toolbar() {
   return (
@@ -26,15 +23,12 @@ function Toolbar() {
       }}
     >
       <div style={{ display: 'flex' }}>
-        <QueryListButton />
-        <ToolbarNewQueryButton />
-
-        <ToolbarSpacer grow />
-
         <ToolbarToggleSchemaButton />
         <ConnectionDropDown />
-
         <ToolbarSpacer />
+        <ToolbarConnectionClientButton />
+
+        <ToolbarSpacer grow />
 
         <ToolbarQueryNameInput />
 
@@ -46,9 +40,7 @@ function Toolbar() {
         <ToolbarShareQueryButton />
         <ToolbarSaveButton />
 
-        <ToolbarSpacer />
-
-        <ToolbarConnectionClientButton />
+        <ToolbarSpacer grow />
 
         <ToolbarSpacer />
 
@@ -57,10 +49,6 @@ function Toolbar() {
         <ToolbarSpacer />
 
         <ChartButton />
-
-        <ToolbarSpacer grow />
-
-        <ToolbarMenu />
       </div>
     </div>
   );

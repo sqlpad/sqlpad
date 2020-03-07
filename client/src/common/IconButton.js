@@ -7,7 +7,7 @@ const ICON_SIZE = 18;
 
 const IconButton = React.forwardRef(
   (
-    { children, type, to, icon, tooltip, disabled, className, ...rest },
+    { children, variant, to, icon, tooltip, disabled, className, ...rest },
     ref
   ) => {
     const classNames = [styles.btn];
@@ -16,8 +16,10 @@ const IconButton = React.forwardRef(
       classNames.push(className);
     }
 
-    if (type === 'danger') {
+    if (variant === 'danger') {
       classNames.push(styles.danger);
+    } else if (variant === 'ghost') {
+      classNames.push(styles.ghost);
     }
 
     let button;

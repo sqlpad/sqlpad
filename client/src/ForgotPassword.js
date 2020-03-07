@@ -39,7 +39,7 @@ function ForgotPassword() {
           required
         />
         <Spacer size={2} />
-        <Button style={{ width: '100%' }} htmlType="submit" type="primary">
+        <Button style={{ width: '100%' }} htmlType="submit" variant="primary">
           Reset Password
         </Button>
       </form>

@@ -244,7 +244,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
           <Button
             htmlType="submit"
             style={{ width: 120 }}
-            type="primary"
+            variant="primary"
             onClick={saveConnection}
             disabled={saving}
           >

@@ -29,7 +29,7 @@ function ChartButton() {
         <ChartInputsContainer />
         <Spacer size={2} />
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button type="primary" onClick={() => setVisible(false)}>
+          <Button variant="primary" onClick={() => setVisible(false)}>
             OK
           </Button>
         </div>
