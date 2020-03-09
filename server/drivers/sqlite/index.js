@@ -164,9 +164,9 @@ async function getSchema(connection) {
       FROM 
         sqlite_master
     `);
-    // TODO add the pragma calls to get columns
 
-    // For each table row, call PRAGMA to get info, and merge the results back into the main query result
+    // For each table row, call PRAGMA to get info,
+    // and use the combined results for the schema results
     const columnRows = [];
     for (const tableRow of queryResult.rows) {
       const { table_name } = tableRow;

@@ -6,7 +6,7 @@ const connection = {
 };
 
 const dropTable = 'DROP TABLE IF EXISTS sqlpad_test;';
-const createTable = 'CREATE TABLE sqlpad_test (id INTEGER, name TEXT );'; // NOTE test(s) will fail if table already exists, expect empty database
+const createTable = 'CREATE TABLE sqlpad_test (id INTEGER, name TEXT );';
 const insert1 = "INSERT INTO sqlpad_test (id, name) VALUES (1, 'one');";
 const insert2 = "INSERT INTO sqlpad_test (id, name) VALUES (2, 'two');";
 const insert3 = "INSERT INTO sqlpad_test (id, name) VALUES (3, 'three');";
