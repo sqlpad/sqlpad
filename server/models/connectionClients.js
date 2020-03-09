@@ -48,6 +48,7 @@ class ConnectionClients {
     await connectionClient.connect();
     connectionClient.scheduleCleanupInterval();
     this.connectionClients.push(connectionClient);
+    return this.getOneById(connectionClient.id);
   }
 
   /**

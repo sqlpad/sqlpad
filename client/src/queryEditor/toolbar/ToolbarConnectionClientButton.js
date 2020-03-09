@@ -5,6 +5,9 @@ import {
   connectConnectionClient,
   disconnectConnectionClient
 } from '../../stores/connections';
+import IconButton from '../../common/IconButton';
+import ConnectedIcon from 'mdi-react/ServerNetworkIcon';
+import DisconnectedIcon from 'mdi-react/ServerNetworkOffIcon';
 
 function ToolbarConnectionClientButton({
   connectionClient,
@@ -25,6 +28,7 @@ function ToolbarConnectionClientButton({
     setFetching(false);
   }
 
+  // If no connections or one isn't selected don't render anything
   if (!connections || connections.length === 0 || !selectedConnectionId) {
     return null;
   }
@@ -32,18 +36,25 @@ function ToolbarConnectionClientButton({
   const connection = connections.find(
     connection => connection._id === selectedConnectionId
   );
-  if (!connection || !connection.supportsConnectionClient) {
+
+  const supportedAndEnabled =
+    connection &&
+    connection.supportsConnectionClient &&
+    connection.multiStatementTransactionEnabled;
+
+  if (!supportedAndEnabled) {
     return null;
   }
 
   return (
-    <Button
-      tooltip="Connected keeps a single connection open, auto opens and closes for each query"
-      disabled={fetching}
+    <IconButton
       onClick={handleClick}
+      tooltip={
+        connectionClient ? 'Disconnect from database' : 'Connect to database'
+      }
     >
-      {connectionClient ? 'Connected' : 'Auto'}
-    </Button>
+      {connectionClient ? <ConnectedIcon /> : <DisconnectedIcon />}
+    </IconButton>
   );
 }
 
