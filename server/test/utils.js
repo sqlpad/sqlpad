@@ -1,6 +1,7 @@
 const assert = require('assert');
 const { v4: uuidv4 } = require('uuid');
 const rimraf = require('rimraf');
+const mkdirp = require('mkdirp');
 const path = require('path');
 const request = require('supertest');
 const Config = require('../lib/config');
@@ -11,8 +12,9 @@ const migrate = require('../lib/migrate');
 const loadSeedData = require('../lib/loadSeedData');
 
 function clearArtifacts() {
+  mkdirp.sync(path.join(__dirname, '/artifacts'));
   return new Promise((resolve, reject) => {
-    return rimraf(path.join(__dirname, '/artifacts'), err => {
+    return rimraf(path.join(__dirname, '/artifacts/*'), err => {
       if (err) {
         return reject(err);
       }
