@@ -89,7 +89,7 @@ class ConnectionClient {
 
     const ONE_HOUR_MS = 1000 * 60 * 60;
     const inactivityTimeoutMs =
-      parseInt(this.connection.inactivityTimeoutMs, 10) || ONE_HOUR_MS;
+      parseInt(this.connection.inactivityTimeout, 10) || ONE_HOUR_MS;
 
     this.cleanupInterval = setInterval(() => {
       const now = new Date();

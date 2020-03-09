@@ -8,6 +8,7 @@ import TextArea from '../common/TextArea';
 import message from '../common/message';
 import Select from '../common/Select';
 import fetchJson from '../utilities/fetch-json.js';
+import FormExplain from '../common/FormExplain';
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';
@@ -41,6 +42,15 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       if (json.error) {
         message.error(json.error);
       } else {
+        // connection.inactivityTimeout is milliseconds
+        // Convert to minutes for a more user-friendly experience
+        const inactivityTimeout =
+          json.connection && parseInt(json.connection.inactivityTimeout, 10);
+        if (inactivityTimeout) {
+          json.connection.inactivityTimeout = Math.round(
+            inactivityTimeout / 1000 / 60
+          );
+        }
         setConnectionEdits(json.connection);
       }
     }
@@ -76,6 +86,12 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
     setSaving(true);
 
+    // connectionEdits.inactivityTimeout is storing minutes, but needs to send milliseconds
+    const inactivityTimeout = parseInt(connectionEdits.inactivityTimeout, 10);
+    if (inactivityTimeout) {
+      connectionEdits.inactivityTimeout = inactivityTimeout * 60 * 1000;
+    }
+
     let json;
     if (connectionEdits._id) {
       json = await fetchJson(
@@ -106,8 +122,54 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
         return null;
       }
 
+      const fieldsJsx = [];
+      if (driver.supportsConnectionClient) {
+        const mstKey = 'multiStatementTransactionEnabled';
+        fieldsJsx.push(
+          <HorizontalFormItem key={mstKey}>
+            <input
+              type="checkbox"
+              checked={
+                connectionEdits.multiStatementTransactionEnabled || false
+              }
+              id={mstKey}
+              name={mstKey}
+              onChange={e =>
+                setConnectionValue(e.target.name, e.target.checked)
+              }
+            />
+            <label htmlFor={mstKey} style={{ marginLeft: 8 }}>
+              Enable multi-statement transaction mode
+            </label>
+            <FormExplain>
+              When using multi-statement transaction mode a persistent database
+              connection will be opened and used for query executions, allowing
+              things like opening transactions and creating temp tables across
+              query executions.
+            </FormExplain>
+          </HorizontalFormItem>
+        );
+
+        fieldsJsx.push(
+          <HorizontalFormItem
+            key={'inactivityTimeout'}
+            label={'Inactivity timeout (minutes)'}
+          >
+            <Input
+              name="inactivityTimeout"
+              type="number"
+              value={connectionEdits.inactivityTimeout || ''}
+              onChange={e => setConnectionValue(e.target.name, e.target.value)}
+            />
+            <FormExplain>
+              Number of minutes to allow a connection to be idle before closing.
+            </FormExplain>
+          </HorizontalFormItem>
+        );
+      }
+
       const { fields } = driver;
-      return fields.map(field => {
+      const driverInputs = fields.map(field => {
         if (field.formType === TEXT) {
           const value = connectionEdits[field.key] || '';
           return (
@@ -174,6 +236,8 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
         }
         return null;
       });
+
+      return fieldsJsx.concat(driverInputs);
     }
   };
 
