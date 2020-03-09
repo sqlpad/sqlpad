@@ -11,8 +11,10 @@ const makeApp = require('../app');
 const migrate = require('../lib/migrate');
 const loadSeedData = require('../lib/loadSeedData');
 
+const TEST_ARTIFACTS_DIR = path.join(__dirname, '/artifacts');
+
 function clearArtifacts() {
-  mkdirp.sync(path.join(__dirname, '/artifacts'));
+  mkdirp.sync(TEST_ARTIFACTS_DIR);
   return new Promise((resolve, reject) => {
     return rimraf(path.join(__dirname, '/artifacts/*'), err => {
       if (err) {
@@ -30,7 +32,7 @@ class TestUtils {
         debug: true,
         // Despite being in-memory, still need a file path for cache and session files
         // Eventually these will be moved to sqlite and we can be fully-in-memory
-        dbPath: '../dbtest',
+        dbPath: TEST_ARTIFACTS_DIR,
         dbInMemory: true,
         ...args
       },
