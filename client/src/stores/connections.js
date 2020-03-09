@@ -30,11 +30,30 @@ export async function initSelectedConnection(state) {
 }
 
 /**
- * Open a client connection for the currently selected connection
+ * Open a connection client for the currently selected connection if supported
  * @param {*} state
  */
 export const connectConnectionClient = store => async state => {
-  const { selectedConnectionId } = state;
+  const { connectionClient, connections, selectedConnectionId } = state;
+
+  // If a connectionClient is already open, or connections or selected connection id doesn't exist, do nothing
+  if (connectionClient || !connections || !selectedConnectionId) {
+    return;
+  }
+
+  const connection = connections.find(
+    connection => connection._id === selectedConnectionId
+  );
+
+  const supportedAndEnabled =
+    connection &&
+    connection.supportsConnectionClient &&
+    connection.multiStatementTransactionEnabled;
+
+  if (!supportedAndEnabled) {
+    return;
+  }
+
   const json = await fetchJson('POST', '/api/connection-clients', {
     connectionId: selectedConnectionId
   });

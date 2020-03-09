@@ -2,21 +2,31 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
 import Button from '../../common/Button';
+import { connectConnectionClient } from '../../stores/connections';
 import { runQuery } from '../../stores/queries';
 
 function mapStateToProps(state) {
+  const { isRunning } = state;
   return {
-    isRunning: state.isRunning
+    isRunning
   };
 }
 
 const ConnectedToolbarRunButton = connect(mapStateToProps, store => ({
+  connectConnectionClient: connectConnectionClient(store),
   runQuery: runQuery(store)
 }))(React.memo(ToolbarRunButton));
 
-function ToolbarRunButton({ isRunning, runQuery }) {
+function ToolbarRunButton({ isRunning, connectConnectionClient, runQuery }) {
   return (
-    <Button variant="primary" onClick={() => runQuery()} disabled={isRunning}>
+    <Button
+      variant="primary"
+      onClick={async () => {
+        await connectConnectionClient();
+        runQuery();
+      }}
+      disabled={isRunning}
+    >
       Run
     </Button>
   );
