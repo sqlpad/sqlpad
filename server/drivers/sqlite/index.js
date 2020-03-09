@@ -157,16 +157,36 @@ async function getSchema(connection) {
     // For SQLite get tables, then iterate over and get columns for each
     const queryResult = await db.runQuery(`
       SELECT
-        'sqlite' as table_schema,
+        'main' as table_schema,
         name as table_name,
-        'unknown' as column_name,
-        'unknown' as data_type
+        null as column_name,
+        null as data_type
       FROM 
         sqlite_master
-      WHERE 
-        type = 'table';
     `);
     // TODO add the pragma calls to get columns
+
+    // For each table row, call PRAGMA to get info, and merge the results back into the main query result
+    const columnRows = [];
+    for (const tableRow of queryResult.rows) {
+      const { table_name } = tableRow;
+      // eslint-disable-next-line no-await-in-loop
+      const columnQueryResult = await db.runQuery(
+        `PRAGMA table_info(${table_name})`
+      );
+      columnQueryResult.rows.forEach(row => {
+        columnRows.push({
+          table_schema: 'main',
+          table_name,
+          column_name: row.name,
+          data_type: row.type
+        });
+      });
+    }
+    // Replace the table queryResult rows with those from column rows
+    // The table names will be lifted up (we'll otherwise have null "columns" listed in tree)
+    queryResult.rows = columnRows;
+
     await db.disconnect();
     return formatSchemaQueryResults(queryResult);
   } catch (error) {

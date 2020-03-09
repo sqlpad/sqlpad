@@ -11,6 +11,7 @@ const drivers = {
   postgres: require('./postgres'),
   presto: require('./presto'),
   snowflake: require('./snowflake'),
+  sqlite: require('./sqlite'),
   sqlserver: require('./sqlserver'),
   vertica: require('./vertica')
 };

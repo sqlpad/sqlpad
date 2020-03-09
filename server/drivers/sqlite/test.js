@@ -5,8 +5,6 @@ const connection = {
   filename: './sqlpad_test_sqlite.db'
 };
 
-const test_schema_name = 'sqlite';
-
 const dropTable = 'DROP TABLE IF EXISTS sqlpad_test;';
 const createTable = 'CREATE TABLE sqlpad_test (id INTEGER, name TEXT );'; // NOTE test(s) will fail if table already exists, expect empty database
 const insert1 = "INSERT INTO sqlpad_test (id, name) VALUES (1, 'one');";
@@ -30,14 +28,11 @@ describe('drivers/sqlite', function() {
   it('getSchema()', async function() {
     const schemaInfo = await sqlite3.getSchema(connection);
 
-    assert(schemaInfo[test_schema_name], test_schema_name);
-    assert(
-      schemaInfo[test_schema_name].sqlpad_test,
-      test_schema_name + '.sqlpad_test'
-    );
-    const columns = schemaInfo[test_schema_name].sqlpad_test;
+    assert(schemaInfo.main);
+    assert(schemaInfo.main.sqlpad_test, 'main.sqlpad_test');
+    const columns = schemaInfo.main.sqlpad_test;
     assert.equal(columns.length, 1, 'columns.length');
-    assert.equal(columns[0].table_schema, test_schema_name, 'table_schema');
+    assert.equal(columns[0].table_schema, 'main', 'table_schema');
     assert.equal(columns[0].table_name, 'sqlpad_test', 'table_name');
     // column metadata not available in sqlite3
     assert.equal(columns[0].column_name, 'unknown', 'column_name');
