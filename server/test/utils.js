@@ -1,5 +1,7 @@
 const assert = require('assert');
 const { v4: uuidv4 } = require('uuid');
+const rimraf = require('rimraf');
+const path = require('path');
 const request = require('supertest');
 const Config = require('../lib/config');
 const appLog = require('../lib/appLog');
@@ -7,6 +9,17 @@ const db = require('../lib/db');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
 const loadSeedData = require('../lib/loadSeedData');
+
+function clearArtifacts() {
+  return new Promise((resolve, reject) => {
+    return rimraf(path.join(__dirname, '/artifacts'), err => {
+      if (err) {
+        return reject(err);
+      }
+      resolve();
+    });
+  });
+}
 
 class TestUtils {
   constructor(args = {}, env = {}) {
@@ -20,7 +33,7 @@ class TestUtils {
         ...args
       },
       {
-        SQLPAD_APP_LOG_LEVEL: 'silent',
+        SQLPAD_APP_LOG_LEVEL: 'error',
         SQLPAD_WEB_LOG_LEVEL: 'silent',
         ...env
       }
@@ -79,7 +92,20 @@ class TestUtils {
     await loadSeedData(this.appLog, this.config, this.models);
   }
 
+  async addUserApiHelper(key, user) {
+    const newUser = await this.models.users.save(user);
+    // If user already exists, update the _id, otherwise add new one (using the original data)
+    if (this.users[key]) {
+      this.users[key]._id = newUser._id;
+    } else {
+      // We must use original user object passed in as it has the password. the response from .save() does not
+      this.users[key] = { ...user, _id: newUser._id };
+    }
+    return newUser;
+  }
+
   async init(withUsers) {
+    await clearArtifacts();
     await this.initDbs();
     await this.migrate();
     await this.loadSeedData();
@@ -93,8 +119,7 @@ class TestUtils {
     if (withUsers) {
       for (const key of Object.keys(this.users)) {
         // eslint-disable-next-line no-await-in-loop
-        const newUser = await this.models.users.save(this.users[key]);
-        this.users[key]._id = newUser._id;
+        await this.addUserApiHelper(key, this.users[key]);
       }
     }
   }
