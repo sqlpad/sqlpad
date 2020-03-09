@@ -46,7 +46,7 @@ class ConnectionClients {
   async createNew(connection, user) {
     const connectionClient = new ConnectionClient(connection, user);
     await connectionClient.connect();
-    connectionClient.scheduleKeepAliveInterval();
+    connectionClient.scheduleCleanupInterval();
     this.connectionClients.push(connectionClient);
   }
 
