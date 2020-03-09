@@ -1,13 +1,12 @@
+import ConnectedIcon from 'mdi-react/ServerNetworkIcon';
+import DisconnectedIcon from 'mdi-react/ServerNetworkOffIcon';
 import React, { useState } from 'react';
 import { connect } from 'unistore/react';
-import Button from '../../common/Button';
+import IconButton from '../../common/IconButton';
 import {
   connectConnectionClient,
   disconnectConnectionClient
 } from '../../stores/connections';
-import IconButton from '../../common/IconButton';
-import ConnectedIcon from 'mdi-react/ServerNetworkIcon';
-import DisconnectedIcon from 'mdi-react/ServerNetworkOffIcon';
 
 function ToolbarConnectionClientButton({
   connectionClient,
