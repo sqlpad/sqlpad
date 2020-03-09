@@ -1,7 +1,3 @@
-function getCacheKey(connectionId) {
-  return 'schemaCache:' + connectionId;
-}
-
 class SchemaInfo {
   /**
    * @param {*} nedb
@@ -15,12 +11,11 @@ class SchemaInfo {
   }
 
   /**
-   * Get schemaInfo for connection id
-   * @param {string} connectionId
+   * Get schemaInfo for schema id
+   * @param {string} schemaCacheId
    */
-  async getSchemaInfo(connectionId) {
-    const cacheKey = getCacheKey(connectionId);
-    const doc = await this.nedb.cache.findOne({ cacheKey });
+  async getSchemaInfo(schemaCacheId) {
+    const doc = await this.nedb.cache.findOne({ cacheKey: schemaCacheId });
 
     if (!doc) {
       return;
@@ -41,11 +36,11 @@ class SchemaInfo {
    * Save schemaInfo to cache db object
    * Schema needs to be stringified as JSON
    * Column names could have dots in name (incompatible with nedb)
-   * @param {string} connectionId
+   * @param {string} schemaCacheId
    * @param {object} schemaInfo
    */
-  async saveSchemaInfo(connectionId, schemaInfo) {
-    const cacheKey = getCacheKey(connectionId);
+  async saveSchemaInfo(schemaCacheId, schemaInfo) {
+    const cacheKey = schemaCacheId;
     if (schemaInfo && Object.keys(schemaInfo).length) {
       const schema = JSON.stringify(schemaInfo);
       const doc = {

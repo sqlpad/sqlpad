@@ -1,4 +1,5 @@
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4, v5: uuidv5 } = require('uuid');
+const consts = require('./consts');
 const drivers = require('../drivers');
 const renderConnection = require('./render-connection');
 const appLog = require('./appLog');
@@ -227,6 +228,26 @@ class ConnectionClient {
       maxRows: Number.MAX_SAFE_INTEGER
     };
     return this.driver.getSchema(connectionMaxed);
+  }
+
+  /**
+   * A given connection may no longer return the same result given user template support
+   * To ensure schema is appropriately cached an ID must be derived from the resulting connection for a user
+   * Its possible and likely that a given connection will be the same for a few users,
+   * so we don't want to cache this on (connectionId, userId) pairing.
+   * Instead we'll use a hash of connection after template rendering
+   */
+  getSchemaCacheId() {
+    const keyValuesString = Object.keys(this.connection)
+      .sort()
+      .map(key => {
+        return `${key}:${this.connection[key]}`;
+      })
+      .join('::');
+
+    return (
+      'schemacache:' + uuidv5(keyValuesString, consts.CONNECTION_HASH_NAMESPACE)
+    );
   }
 }
 

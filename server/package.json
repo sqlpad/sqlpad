@@ -29,7 +29,7 @@
   "scripts": {
     "prepublishOnly": "cd .. && ./scripts/build.sh",
     "start": "node-dev server.js --config \"./config.dev.ini\" | pino-pretty",
-    "test": "rimraf ../dbtest && mocha test --timeout 10000 --recursive --exit",
+    "test": "mocha test --timeout 10000 --recursive --exit",
     "fixlint": "eslint --fix \"**/*.js\"",
     "lint": "eslint \"**/*.js\""
   },
