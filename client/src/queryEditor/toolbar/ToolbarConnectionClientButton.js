@@ -49,6 +49,7 @@ function ToolbarConnectionClientButton({
   return (
     <IconButton
       onClick={handleClick}
+      disabled={fetching}
       tooltip={
         connectionClient ? 'Disconnect from database' : 'Connect to database'
       }
