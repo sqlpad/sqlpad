@@ -57,9 +57,39 @@ class ConnectionClient {
   }
 
   /**
+   * Get last keep alive at time
+   */
+  getLastKeepAliveAt() {
+    return this.lastKeepAliveAt;
+  }
+
+  getConnectionName() {
+    return this.connection.name;
+  }
+
+  getConnectionDriver() {
+    return this.connection.driver;
+  }
+
+  /**
+   * Set up a poll to check on keep alive requests
+   * and disconnect if keep alive has not been updated within range of keepAliveTimeoutMs
+   * @param {number} [keepAliveTimeoutMs] - max amount of time to allow from keep alive ping before closing
+   * @param {number} [intervalMs] - interval ms to check keep alive time
+   */
+  scheduleKeepAliveInterval(keepAliveTimeoutMs = 30000, intervalMs = 10000) {
+    this.keepAlive();
+    this.keepAliveCleanupInterval = setInterval(() => {
+      appLog.debug('Checking last keep alive at');
+      const now = new Date();
+      if (now - this.getLastKeepAliveAt() > keepAliveTimeoutMs) {
+        this.disconnect().catch(error => appLog.error(error));
+      }
+    }, intervalMs);
+  }
+
+  /**
    * Create a persistent database connection if the driver implementation supports it.
-   * Also sets up a poll to check on keep alive requests,
-   * and disconnects the connection if a user is not actively using the connection
    */
   async connect() {
     const { Client } = this;
@@ -69,28 +99,7 @@ class ConnectionClient {
     this.client = new Client(this.connection);
     await this.client.connect();
     this.connectedAt = new Date();
-    this.lastKeepAliveAt = new Date();
-
-    // Every n ms check to see if lastKeepAliveAt is too old
-    // If it is too old, disconnect this
-    this.cleanupInterval = setInterval(() => {
-      appLog.info('Checking last keep alive at');
-      const now = new Date();
-      const TIMEOUT = 30000;
-      if (now - this.lastKeepAliveAt > TIMEOUT) {
-        this.disconnect().catch(error => appLog.error(error));
-        if (this.cleanupInterval) {
-          clearInterval(this.cleanupInterval);
-        }
-        const id = this.id;
-        const connectionName = this.connection && this.connection.name;
-        const driver = this.connection && this.connection.driver;
-        appLog.debug(
-          { id, connectionName, driver },
-          'Disconnecting client connection'
-        );
-      }
-    }, 10000);
+    this.keepAlive();
   }
 
   /**
@@ -100,7 +109,18 @@ class ConnectionClient {
     if (this.client) {
       const client = this.client;
       this.client = null;
+      const id = this.id;
+      const connectionName = this.getConnectionName();
+      const driver = this.getConnectionDriver();
+      appLog.debug(
+        { id, connectionName, driver },
+        'Disconnecting client connection'
+      );
       await client.disconnect();
+    }
+    // Remove cleanup interval if it had been scheduled
+    if (this.keepAliveCleanupInterval) {
+      clearInterval(this.keepAliveCleanupInterval);
     }
   }
 
