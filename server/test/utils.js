@@ -35,7 +35,7 @@ class TestUtils {
         ...args
       },
       {
-        SQLPAD_APP_LOG_LEVEL: 'error',
+        SQLPAD_APP_LOG_LEVEL: 'silent',
         SQLPAD_WEB_LOG_LEVEL: 'silent',
         ...env
       }
