@@ -3,7 +3,9 @@ const passhash = require('../lib/passhash.js');
 
 const schema = Joi.object({
   _id: Joi.string().optional(), // will be auto-gen by nedb
-  email: Joi.string().required(),
+  email: Joi.string()
+    .lowercase()
+    .required(),
   name: Joi.string().optional(),
   role: Joi.string()
     .lowercase()
@@ -60,7 +62,7 @@ class Users {
 
   findOneByEmail(email) {
     return this.nedb.users.findOne({
-      email: { $regex: new RegExp(email, 'i') }
+      email: email.toLowerCase()
     });
   }
 
