@@ -28,7 +28,15 @@ function ensureBoolean(value) {
  * @param {object} connection
  */
 function validateConnection(connection) {
-  const coreFields = ['_id', 'name', 'driver', 'createdDate', 'modifiedDate'];
+  const coreFields = [
+    '_id',
+    'name',
+    'driver',
+    'createdDate',
+    'modifiedDate',
+    'multiStatementTransactionEnabled',
+    'idleTimeout'
+  ];
   if (!connection.name) {
     throw new Error('connection.name required');
   }

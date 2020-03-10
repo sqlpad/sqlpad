@@ -1,7 +1,7 @@
 const assert = require('assert').strict;
 const TestUtils = require('../utils');
 
-describe('api/connection-accesses', function() {
+describe('api/connection-clients', function() {
   const utils = new TestUtils();
   let connection1;
   let connectionClient1;
@@ -15,7 +15,9 @@ describe('api/connection-accesses', function() {
       database: 'sqlpad',
       username: 'sqlpad',
       password: 'sqlpad',
-      wait: 10
+      wait: 10,
+      idleTimeout: 4000,
+      multiStatementTransactionEnabled: true
     });
     connection1 = connBody.connection;
   });

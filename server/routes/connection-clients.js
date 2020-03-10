@@ -148,7 +148,13 @@ async function keepAliveConnectionClient(req, res) {
       return res.status(403).json({ error: 'Forbidden' });
     }
 
-    connectionClient.keepAlive();
+    const keptAlive = connectionClient.keepAlive();
+    if (!keptAlive) {
+      // remove from in-memory store and respond with nothing
+      // disconnect here is not necessary, but should be safe
+      await models.connectionClients.disconnectForId(params.connectionClientId);
+      return res.json({});
+    }
 
     const data = {
       connectionClient: {

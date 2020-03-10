@@ -46,7 +46,7 @@ class ConnectionClient {
 
   /**
    * Updates lastKeepAliveAt to indicate a request was made to keep this connection alive.
-   * This may need to actually make a db call if drivers implement an automatic disconnect after some period of inactivity
+   * This may need to actually make a db call if drivers implement an automatic disconnect after some period of idle
    */
   keepAlive() {
     if (this.isConnected()) {
@@ -57,9 +57,67 @@ class ConnectionClient {
   }
 
   /**
+   * Get last keep alive at time
+   */
+  getLastKeepAliveAt() {
+    return this.lastKeepAliveAt;
+  }
+
+  /**
+   * Get last activity at time (last time user ran query with connected client)
+   */
+  getLastActivityAt() {
+    return this.lastActivityAt;
+  }
+
+  getConnectionName() {
+    return this.connection.name;
+  }
+
+  getConnectionDriver() {
+    return this.connection.driver;
+  }
+
+  /**
+   * Set up a poll to check on keep alive and activity requests
+   * and disconnect if keep alive has not been updated within range of keepAliveTimeoutMs
+   * @param {number} [keepAliveTimeoutMs] - max amount of time to allow from keep alive ping before closing
+   * @param {number} [intervalMs] - interval ms to check keep alive time
+   */
+  scheduleCleanupInterval(keepAliveTimeoutMs = 30000, intervalMs = 10000) {
+    this.keepAlive();
+
+    const ONE_HOUR_MS = 1000 * 60 * 60;
+    const idleTimeoutMs =
+      parseInt(this.connection.idleTimeout, 10) || ONE_HOUR_MS;
+
+    this.cleanupInterval = setInterval(() => {
+      const now = new Date();
+      const sinceLastKeepAliveMs = now - this.getLastKeepAliveAt();
+      const sinceLastActivityMs = now - this.getLastActivityAt();
+
+      appLog.debug(
+        {
+          id: this.id,
+          connectionName: this.getConnectionName(),
+          driver: this.getConnectionDriver(),
+          sinceLastKeepAliveMs,
+          sinceLastActivityMs
+        },
+        'Checking last keep alive at'
+      );
+
+      if (
+        sinceLastKeepAliveMs > keepAliveTimeoutMs ||
+        sinceLastActivityMs > idleTimeoutMs
+      ) {
+        this.disconnect().catch(error => appLog.error(error));
+      }
+    }, intervalMs);
+  }
+
+  /**
    * Create a persistent database connection if the driver implementation supports it.
-   * Also sets up a poll to check on keep alive requests,
-   * and disconnects the connection if a user is not actively using the connection
    */
   async connect() {
     const { Client } = this;
@@ -69,37 +127,30 @@ class ConnectionClient {
     this.client = new Client(this.connection);
     await this.client.connect();
     this.connectedAt = new Date();
-    this.lastKeepAliveAt = new Date();
-
-    // Every n ms check to see if lastKeepAliveAt is too old
-    // If it is too old, disconnect this
-    this.cleanupInterval = setInterval(() => {
-      appLog.info('Checking last keep alive at');
-      const now = new Date();
-      const TIMEOUT = 30000;
-      if (now - this.lastKeepAliveAt > TIMEOUT) {
-        this.disconnect().catch(error => appLog.error(error));
-        if (this.cleanupInterval) {
-          clearInterval(this.cleanupInterval);
-        }
-        const id = this.id;
-        const connectionName = this.connection && this.connection.name;
-        const driver = this.connection && this.connection.driver;
-        appLog.debug(
-          { id, connectionName, driver },
-          'Disconnecting client connection'
-        );
-      }
-    }, 10000);
+    this.lastActivityAt = new Date();
+    this.keepAlive();
   }
 
   /**
    * Close the database connection
    */
   async disconnect() {
+    // Remove cleanup interval if it had been scheduled
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      delete this.cleanupInterval;
+    }
+    // If client still exists disconnect
     if (this.client) {
       const client = this.client;
       this.client = null;
+      const id = this.id;
+      const connectionName = this.getConnectionName();
+      const driver = this.getConnectionDriver();
+      appLog.debug(
+        { id, connectionName, driver },
+        'Disconnecting client connection'
+      );
       await client.disconnect();
     }
   }
@@ -150,7 +201,10 @@ class ConnectionClient {
       // otherwise use driver.runQuery to run query with fresh one-off connection
       if (this.isConnected()) {
         // uses pre-existing connection to run query, and keeps connection open
+        // lastActivityAt is updated both before and after query (the query could take a while)
+        this.lastActivityAt = new Date();
         results = await this.client.runQuery(query);
+        this.lastActivityAt = new Date();
       } else {
         // Opens a new connection to db, runs query, then closes connection
         results = await driver.runQuery(query, connection);

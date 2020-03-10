@@ -1,9 +1,15 @@
 import keymaster from 'keymaster';
 import { useEffect } from 'react';
 import { connect } from 'unistore/react';
+import { connectConnectionClient } from '../stores/connections';
 import { formatQuery, runQuery, saveQuery } from '../stores/queries';
 
-function Shortcuts({ saveQuery, runQuery, formatQuery }) {
+function Shortcuts({
+  connectConnectionClient,
+  formatQuery,
+  runQuery,
+  saveQuery
+}) {
   useEffect(() => {
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts,
@@ -14,7 +20,7 @@ function Shortcuts({ saveQuery, runQuery, formatQuery }) {
       return false;
     });
     keymaster('ctrl+return, command+return', e => {
-      runQuery();
+      connectConnectionClient().then(() => runQuery());
       return false;
     });
     keymaster('shift+return', e => {
@@ -27,12 +33,13 @@ function Shortcuts({ saveQuery, runQuery, formatQuery }) {
       keymaster.unbind('ctrl+s, command+s');
       keymaster.unbind('shift+return');
     };
-  }, [saveQuery, runQuery, formatQuery]);
+  }, [saveQuery, runQuery, connectConnectionClient, formatQuery]);
 
   return null;
 }
 
 export default connect(null, store => ({
+  connectConnectionClient: connectConnectionClient(store),
   formatQuery,
   runQuery: runQuery(store),
   saveQuery: saveQuery(store)
