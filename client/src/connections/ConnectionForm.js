@@ -137,13 +137,12 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
               }
             />
             <label htmlFor={mstKey} style={{ marginLeft: 8 }}>
-              Enable multi-statement transaction mode
+              Enable multi-statement transaction support
             </label>
             <FormExplain>
-              When using multi-statement transaction mode a persistent database
-              connection will be opened and used for query executions, allowing
-              things like opening transactions and creating temp tables across
-              query executions.
+              When enabled a persistent database connection will be opened and
+              used for query executions, allowing things like opening
+              transactions and creating temp tables across query executions.
             </FormExplain>
           </HorizontalFormItem>
         );
