@@ -58,7 +58,7 @@ describe('lib/connection-clients', function() {
     connectionClient.scheduleCleanupInterval(400, 100);
     assert(connectionClient.isConnected());
 
-    await wait(500);
+    await wait(600);
     assert(!connectionClient.isConnected());
   });
 
