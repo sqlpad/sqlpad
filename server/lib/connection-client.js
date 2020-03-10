@@ -46,7 +46,7 @@ class ConnectionClient {
 
   /**
    * Updates lastKeepAliveAt to indicate a request was made to keep this connection alive.
-   * This may need to actually make a db call if drivers implement an automatic disconnect after some period of inactivity
+   * This may need to actually make a db call if drivers implement an automatic disconnect after some period of idle
    */
   keepAlive() {
     if (this.isConnected()) {
@@ -88,8 +88,8 @@ class ConnectionClient {
     this.keepAlive();
 
     const ONE_HOUR_MS = 1000 * 60 * 60;
-    const inactivityTimeoutMs =
-      parseInt(this.connection.inactivityTimeout, 10) || ONE_HOUR_MS;
+    const idleTimeoutMs =
+      parseInt(this.connection.idleTimeout, 10) || ONE_HOUR_MS;
 
     this.cleanupInterval = setInterval(() => {
       const now = new Date();
@@ -109,7 +109,7 @@ class ConnectionClient {
 
       if (
         sinceLastKeepAliveMs > keepAliveTimeoutMs ||
-        sinceLastActivityMs > inactivityTimeoutMs
+        sinceLastActivityMs > idleTimeoutMs
       ) {
         this.disconnect().catch(error => appLog.error(error));
       }

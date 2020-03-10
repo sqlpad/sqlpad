@@ -16,7 +16,7 @@ describe('api/connection-clients', function() {
       username: 'sqlpad',
       password: 'sqlpad',
       wait: 10,
-      inactivityTimeout: 4000,
+      idleTimeout: 4000,
       multiStatementTransactionEnabled: true
     });
     connection1 = connBody.connection;

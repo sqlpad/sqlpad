@@ -42,14 +42,12 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       if (json.error) {
         message.error(json.error);
       } else {
-        // connection.inactivityTimeout is milliseconds
+        // connection.idleTimeout is milliseconds
         // Convert to minutes for a more user-friendly experience
-        const inactivityTimeout =
-          json.connection && parseInt(json.connection.inactivityTimeout, 10);
-        if (inactivityTimeout) {
-          json.connection.inactivityTimeout = Math.round(
-            inactivityTimeout / 1000 / 60
-          );
+        const idleTimeout =
+          json.connection && parseInt(json.connection.idleTimeout, 10);
+        if (idleTimeout) {
+          json.connection.idleTimeout = Math.round(idleTimeout / 1000 / 60);
         }
         setConnectionEdits(json.connection);
       }
@@ -86,10 +84,10 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
     setSaving(true);
 
-    // connectionEdits.inactivityTimeout is storing minutes, but needs to send milliseconds
-    const inactivityTimeout = parseInt(connectionEdits.inactivityTimeout, 10);
-    if (inactivityTimeout) {
-      connectionEdits.inactivityTimeout = inactivityTimeout * 60 * 1000;
+    // connectionEdits.idleTimeout is storing minutes, but needs to send milliseconds
+    const idleTimeout = parseInt(connectionEdits.idleTimeout, 10);
+    if (idleTimeout) {
+      connectionEdits.idleTimeout = idleTimeout * 60 * 1000;
     }
 
     let json;
@@ -151,14 +149,11 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
         );
 
         fieldsJsx.push(
-          <HorizontalFormItem
-            key={'inactivityTimeout'}
-            label={'Inactivity timeout (minutes)'}
-          >
+          <HorizontalFormItem key="idleTimeout" label="Idle timeout (minutes)">
             <Input
-              name="inactivityTimeout"
+              name="idleTimeout"
               type="number"
-              value={connectionEdits.inactivityTimeout || ''}
+              value={connectionEdits.idleTimeout || ''}
               onChange={e => setConnectionValue(e.target.name, e.target.value)}
             />
             <FormExplain>
