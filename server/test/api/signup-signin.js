@@ -49,6 +49,21 @@ describe('api/signup', function() {
     });
     assert(!body2.error, 'Expect no error');
   });
+
+  it('allows emails containing +', async function() {
+    const body = await utils.post('admin', '/api/users', {
+      email: 'user+foobar@test.com',
+      role: 'editor'
+    });
+    assert(!body.error, 'no error');
+
+    const body2 = await utils.post(null, '/api/signup', {
+      password: 'password',
+      passwordConfirmation: 'password',
+      email: 'user+foobar@test.com'
+    });
+    assert(!body2.error, 'Expect no error');
+  });
 });
 
 describe('api/signin', function() {

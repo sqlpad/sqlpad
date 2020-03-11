@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.1.1
+
+### March 10, 2020
+
+- Fix auth for email addresses containing `+` and quoted `@` characters
+
 ## 4.1.0
 
 ### February 25, 2020
