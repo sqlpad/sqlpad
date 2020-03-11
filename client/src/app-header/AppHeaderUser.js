@@ -11,14 +11,10 @@ function mapStateToProps(state) {
 const Connected = connect(mapStateToProps)(React.memo(UserButton));
 
 function UserButton({ currentUser }) {
-  if(currentUser._id === "noauth") {
+  if (currentUser._id === "noauth") {
   	return null
   }
-  else {
-  	return (
-    <div className={styles.style}> {currentUser.name || currentUser.email}</div>
-  	);
-  }
+  return <div className={styles.style}> {currentUser.name || currentUser.email}</div>
   
 }
 
