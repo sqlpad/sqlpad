@@ -13,7 +13,8 @@ const drivers = {
   snowflake: require('./snowflake'),
   sqlite: require('./sqlite'),
   sqlserver: require('./sqlserver'),
-  vertica: require('./vertica')
+  vertica: require('./vertica'),
+  bigquery: require('./bigquery')
 };
 
 // unixodbc is an optional dependency due to it needing to be compiled
