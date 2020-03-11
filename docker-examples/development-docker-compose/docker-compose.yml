@@ -1,0 +1,28 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: sqlpad
+      POSTGRES_PASSWORD: sqlpad
+
+  sqlpad:
+    build:
+      context: ../../.
+      dockerfile: Dockerfile.dev
+    hostname: 'sqlpad'
+    ports:
+      - '3000:3000'
+    environment:
+      - SQLPAD_DEBUG=FALSE
+      - DISABLE_USERPASS_AUTH=FALSE
+      - DISABLE_AUTH=TRUE
+    entrypoint: ["/bin/sh", "-c", "exec nodemon /usr/app/server.js --watch /usr/app --dbPath /var/lib/sqlpad --port 3000"]
+    volumes:
+      - ../../server/server.js:/usr/app/server.js
+      - ../../server/app.js:/usr/app/app.js
+      - ../../server/middleware/:/usr/app/middleware/
+      - ../../server/routes:/usr/app/routes/
+      - ../../client:/usr/app/client
+
