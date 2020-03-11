@@ -107,7 +107,7 @@ function makeApp(config, models) {
   if (!config.get('disableUserpassAuth')) {
     app.use(passportBasic);
   }
-  console.log("value for disableAuth: ", config.get('disableAuth'));
+  
   if (config.get('disableAuth')) {
     app.use(disableAuth);
   }
