@@ -11,7 +11,6 @@ function mapStateToProps(state) {
 const Connected = connect(mapStateToProps)(React.memo(UserButton));
 
 function UserButton({ currentUser }) {
-	console.log("currentUser is: ", currentUser);
   if(currentUser._id === "noauth") {
   	return null
   }
