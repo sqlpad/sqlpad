@@ -10,3 +10,5 @@ node_modules/
 sqlpad.tar.gz
 server/drivers/sqlite/sqlpad_test_sqlite.db
 server/test/artifacts
+
+Dockerfile.dev
