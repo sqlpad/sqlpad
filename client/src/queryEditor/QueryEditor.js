@@ -1,11 +1,15 @@
 import debounce from 'lodash/debounce';
 import PropTypes from 'prop-types';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
+import AppHeader from '../app-header/AppHeader';
 import { resizeChart } from '../common/tauChartRef';
 import SchemaSidebar from '../schema/SchemaSidebar.js';
-import { loadConnections } from '../stores/connections';
+import {
+  connectConnectionClient,
+  loadConnections
+} from '../stores/connections';
 import { loadQuery, resetNewQuery } from '../stores/queries';
 import { loadTags } from '../stores/tags';
 import DocumentTitle from './DocumentTitle';
@@ -16,13 +20,13 @@ import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryResultHeader from './QueryResultHeader.js';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
-import AppHeader from '../app-header/AppHeader';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 
 const deboucedResearchChart = debounce(resizeChart, 700);
 
 function QueryEditor(props) {
   const {
+    connectConnectionClient,
     loadConnections,
     loadQuery,
     loadTags,
@@ -32,18 +36,29 @@ function QueryEditor(props) {
     showVis
   } = props;
 
-  useEffect(() => {
-    loadConnections();
-    loadTags();
-  }, [loadConnections, loadTags]);
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    if (queryId === 'new') {
-      resetNewQuery();
-    } else {
-      loadQuery(queryId);
+    Promise.all([loadConnections(), loadTags()]).then(() =>
+      setInitialized(true)
+    );
+  }, [loadConnections, loadTags]);
+
+  // Once initialized reset or load query on changes accordingly
+  useEffect(() => {
+    if (initialized) {
+      if (queryId === 'new') {
+        resetNewQuery();
+        connectConnectionClient();
+      } else {
+        loadQuery(queryId).then(() => connectConnectionClient());
+      }
     }
-  }, [queryId, resetNewQuery, loadQuery]);
+  }, [initialized, connectConnectionClient, queryId, resetNewQuery, loadQuery]);
+
+  if (!initialized) {
+    return null;
+  }
 
   function handleVisPaneResize() {
     deboucedResearchChart(queryId);
@@ -151,8 +166,9 @@ function mapStateToProps(state, props) {
 }
 
 export default connect(mapStateToProps, store => ({
+  connectConnectionClient: connectConnectionClient(store),
   loadConnections: loadConnections(store),
-  loadTags,
   loadQuery,
+  loadTags,
   resetNewQuery
 }))(QueryEditor);
