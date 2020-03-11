@@ -5,7 +5,7 @@ module.exports = function(req, res, next) {
       _id: 'noauth',
       role: 'admin',
       email: 'test@example.com'
-    }
+    };
   }
   next();
 };

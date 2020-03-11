@@ -26,9 +26,8 @@ function AppMenu({ currentUser, clearQueries }) {
     return <Redirect push to="/signin" />;
   }
 
-  
-  let hideSignOut = false
-  if (currentUser._id === "noauth") {
+  let hideSignOut = false;
+  if (currentUser._id === 'noauth') {
     hideSignOut = true;
   }
 

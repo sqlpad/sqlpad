@@ -10,7 +10,6 @@ import AppHeaderDivider from './AppHeaderDivider';
 function mapStateToProps(state) {
   return {
     currentUser: state.currentUser
-
   };
 }
 
@@ -21,12 +20,12 @@ function AppHeaderAdminSection({ currentUser }) {
   const [showConnectionAccesses, setShowConnectionAccesses] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
 
-  if (currentUser.role !== "admin") {
+  if (currentUser.role !== 'admin') {
     return null;
   }
-  
+
   let hideButton = false;
-  if (currentUser._id === "noauth") {
+  if (currentUser._id === 'noauth') {
     hideButton = true;
   }
 
