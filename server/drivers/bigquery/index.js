@@ -7,7 +7,6 @@ const name = 'BigQuery';
 
 /**
  * Return the query timeout in seconds from the app config.
- * Perhaps the config object should be available to the database drivers.
  */
 let _timeoutSeconds;
 function getTimeoutSeconds() {
@@ -40,7 +39,7 @@ function newBigQuery(connection) {
  * @param {object} connection
  */
 function runQuery(queryString, connection = {}) {
-  const timeoutSeconds = getTimeoutSeconds();
+  const timeoutSeconds = getTimeoutSeconds() - 1; // A little less than the SQLPad timeout
   const bigquery = newBigQuery(connection);
   let incomplete = false;
   const t1 = process.hrtime();

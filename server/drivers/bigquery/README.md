@@ -5,6 +5,7 @@
 - This incorporates [prior incomplete work by `hongkongkiwi` on GitHub](https://github.com/hongkongkiwi/sqlpad/commit/d731b24b6c1e7a2ccc18e8528263e830bca17660) (last commit on Dec 7, 2018.
 - Queries time out after 5 minutes. When a query times out, an error is thrown, and the error message is displayed in the results area of SQLPad.
 - The driver uses the [Standard SQL dialect](https://cloud.google.com/bigquery/docs/reference/standard-sql/enabling-standard-sql), which is more powerful and standards-compliant than the older BigQuery Legacy SQL dialect. (The latter is still the default dialect of the `bq` CLI tool).
+- The driver uses a query timeout one second less than the SQLPad config setting `timeoutSeconds` (env var `SQLPAD_TIMEOUT_SECONDS`).
 
 ## Testing
 
