@@ -3,11 +3,16 @@ import { connect } from 'unistore/react';
 import Select from '../common/Select';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
-import { addUpdateConnection, selectConnectionId } from '../stores/connections';
+import {
+  addUpdateConnection,
+  connectConnectionClient,
+  selectConnectionId
+} from '../stores/connections';
 import styles from './ConnectionDropdown.module.css';
 
 function ConnectionDropdown({
   addUpdateConnection,
+  connectConnectionClient,
   connections,
   currentUser,
   selectConnectionId,
@@ -24,12 +29,14 @@ function ConnectionDropdown({
       return setShowConnections(true);
     }
     selectConnectionId(event.target.value);
+    connectConnectionClient();
   };
 
   const handleConnectionSaved = connection => {
     addUpdateConnection(connection);
     selectConnectionId(connection._id);
     setShowEdit(false);
+    connectConnectionClient();
   };
 
   const style = !selectedConnectionId
@@ -76,7 +83,11 @@ function ConnectionDropdown({
   );
 }
 
-export default connect(['connections', 'currentUser', 'selectedConnectionId'], {
-  selectConnectionId,
-  addUpdateConnection
-})(ConnectionDropdown);
+export default connect(
+  ['connections', 'currentUser', 'selectedConnectionId'],
+  store => ({
+    connectConnectionClient: connectConnectionClient(store),
+    selectConnectionId,
+    addUpdateConnection
+  })
+)(ConnectionDropdown);
