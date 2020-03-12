@@ -9,19 +9,24 @@ import AppHeaderDivider from './AppHeaderDivider';
 
 function mapStateToProps(state) {
   return {
-    isAdmin: state.currentUser && state.currentUser.role === 'admin'
+    currentUser: state.currentUser
   };
 }
 
 const Connected = connect(mapStateToProps)(React.memo(AppHeaderAdminSection));
 
-function AppHeaderAdminSection({ isAdmin }) {
+function AppHeaderAdminSection({ currentUser }) {
   const [showConnections, setShowConnections] = useState(false);
   const [showConnectionAccesses, setShowConnectionAccesses] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
 
-  if (!isAdmin) {
+  if (currentUser.role !== 'admin') {
     return null;
+  }
+
+  let hideButton = false;
+  if (currentUser._id === 'noauth') {
+    hideButton = true;
   }
 
   return [
@@ -59,6 +64,7 @@ function AppHeaderAdminSection({ isAdmin }) {
       key="user-button"
       variant="ghost"
       onClick={() => setShowUsers(true)}
+      hidden={hideButton}
     >
       Users
     </Button>,

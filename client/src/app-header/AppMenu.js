@@ -8,16 +8,27 @@ import { clearQueries } from '../stores/queries';
 import fetchJson from '../utilities/fetch-json.js';
 import AboutModal from './AboutModal';
 
-const Connected = connect(null, store => ({
+function mapStateToProps(state) {
+  return {
+    currentUser: state.currentUser
+  };
+}
+
+const Connected = connect(mapStateToProps, store => ({
   clearQueries
 }))(React.memo(AppMenu));
 
-function AppMenu({ clearQueries }) {
+function AppMenu({ currentUser, clearQueries }) {
   const [redirectToSignIn, setRedirectToSignIn] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
 
   if (redirectToSignIn) {
     return <Redirect push to="/signin" />;
+  }
+
+  let hideSignOut = false;
+  if (currentUser._id === 'noauth') {
+    hideSignOut = true;
   }
 
   return (
@@ -30,6 +41,7 @@ function AppMenu({ clearQueries }) {
             clearQueries();
             setRedirectToSignIn(true);
           }}
+          hidden={hideSignOut}
         >
           Sign out
         </MenuItem>

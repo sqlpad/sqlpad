@@ -48,6 +48,7 @@ function makeApp(config, models) {
   const favicon = require('serve-favicon');
   const passport = require('passport');
   const passportBasic = require('./middleware/passport-basic');
+  const disableAuth = require('./middleware/disable-auth');
 
   const app = express();
 
@@ -105,6 +106,10 @@ function makeApp(config, models) {
   // This is currently used for running integration tests and serves as a convenient alternative to API keys
   if (!config.get('disableUserpassAuth')) {
     app.use(passportBasic);
+  }
+
+  if (config.get('disableAuth')) {
+    app.use(disableAuth);
   }
 
   /*  Routes

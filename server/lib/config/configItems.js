@@ -110,6 +110,11 @@ const configItems = [
     default: false
   },
   {
+    key: 'disableAuth',
+    envVar: 'DISABLE_AUTH',
+    default: false
+  },
+  {
     key: 'allowCsvDownload',
     envVar: 'SQLPAD_ALLOW_CSV_DOWNLOAD',
     default: true
