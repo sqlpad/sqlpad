@@ -81,6 +81,10 @@ Env var: `SQLPAD_DB_IN_MEMORY`
 Add a variety of logging to console while running SQLPad  
 Env var: `SQLPAD_DEBUG`
 
+**disableAuth**
+Set to TRUE to disable authentication altogether.
+Env var: `DISABLE_AUTH`
+
 **disableUserpassAuth**  
 Set to TRUE to disable built-in user authentication. Use to restrict auth to OAuth only.  
 Env var: `DISABLE_USERPASS_AUTH`
