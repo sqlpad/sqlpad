@@ -63,13 +63,11 @@ It's hackable and basic.
 
 ## Why not SQLPad?
 
-SQLPad is not a dashboarding tool, and likely will never become one. If you're looking for open-source dashboarding check out [redash](https://redash.io/), [Metabase](https://www.metabase.com/) or [Superset](https://github.com/apache/incubator-superset.
+It's not a dashboarding tool, and likely will never become one. If you're looking for open-source dashboarding check out [redash](https://redash.io/), [Metabase](https://www.metabase.com/) or [Superset](https://github.com/apache/incubator-superset).
 
-SQLPad can't handle a query with 2 columns returned of the same name.
+It can't handle a query with 2 columns returned of the same name.
 
-SQLPad doesn't know what it wants to be when it grows up. It might be finished, but it could keep changing and evolving too. (But probably not into a dashboarding tool.)
-
-SQLPad uses an in-memory database and is intended to be run as a single instance. Running multiple instances with loadbalancing in front will yield unpredictable results.
+It uses an in-memory database and is intended to be run as a single instance. Running multiple instances with loadbalancing in front will yield unpredictable results.
 
 It's written in Node.js, which was exciting in 2014 but in hindsight Python or Java would have been a better choice.
 
