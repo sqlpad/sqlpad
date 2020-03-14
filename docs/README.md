@@ -42,7 +42,9 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
   <div class="db-container">
     <img src="images/logo-vertica.jpg" data-origin="images/logo-vertica.png" alt="Vertica" >
   </div>
-  <div class="db-container db-container-text">Crate</div>
+  <div class="db-container">
+    <img src="images/logo-crate.svg" data-origin="images/logo-crate.svg" alt="Crate" >
+  </div>
   <div class="db-container db-container-text">Presto</div>
   <div class="db-container db-container-text">SAP Hana</div>
   <div class="db-container db-container-text">Apache Drill</div>
