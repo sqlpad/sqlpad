@@ -253,3 +253,65 @@ When using JSON file, provide `<connectionId>` as a key under `connections`.
     <tr><td>keyspace</td><td>Keyspace</td><td>text</td></tr>
   </tbody>
 </table>
+
+## Snowflake
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>snowflake</code></td><td>text</td></tr>
+    <tr><td>account</td><td>Account</td><td>text</td></tr>
+    <tr><td>username</td><td>User name</td><td>text</td></tr>
+    <tr><td>password</td><td>Password</td><td>text</td></tr>
+    <tr><td>warehouse</td><td>Warehouse</td><td>text</td></tr>
+    <tr><td>database</td><td>Database</td><td>text</td></tr>
+    <tr><td>schema</td><td>Schema</td><td>text</td></tr>
+    <tr><td>role</td><td>Role</td><td>text</td></tr>
+    <tr><td>preQueryStatements</td><td>Pre-query statements</td><td>text</td></tr>
+  </tbody>
+</table>
+
+## BigQuery
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>bigquery</code></td><td>text</td></tr>
+    <tr><td>projectId</td><td>Project ID</td><td>text</td></tr>
+    <tr><td>keyFile</td><td>JSON keyfile for service account</td><td>text</td></tr>
+    <tr><td>datasetName</td><td>Dataset to use</td><td>text</td></tr>
+    <tr><td>datasetLocation</td><td>Location for this dataset</td><td>text</td></tr>
+  </tbody>
+</table>
+
+## SQLite
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>sqlite</code></td><td>text</td></tr>
+    <tr><td>filename</td><td>Path to file</td><td>text</td></tr>
+    <tr><td>readonly</td><td>Open file in read only mode</td><td>boolean</td></tr>
+  </tbody>
+</table>
