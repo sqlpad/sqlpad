@@ -54,8 +54,12 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
   <div class="db-container" style="background-color: black">
     <img src="images/logo-apachedrill.png" data-origin="images/logo-apachedrill.png" alt="Apache Drill" >
   </div>
-  <div class="db-container db-container-text">Cassandra</div>
-  <div class="db-container db-container-text">Snowflake</div>
+  <div class="db-container" style="background-color: black">
+    <img src="images/logo-cassandra.png" data-origin="images/logo-cassandra.png" alt="Cassandra" >
+  </div>
+  <div class="db-container">
+    <img src="images/logo-snowflake.png" data-origin="images/logo-snowflake.png" alt="Snowflake" >
+  </div>
   <div class="db-container db-container-text">BigQuery</div>
   <div class="db-container db-container-text">SQLite</div>
   <div class="db-container db-container-text">Many others via ODBC</div>
