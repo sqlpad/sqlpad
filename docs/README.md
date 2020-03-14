@@ -60,8 +60,12 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
   <div class="db-container">
     <img src="images/logo-snowflake.png" data-origin="images/logo-snowflake.png" alt="Snowflake" >
   </div>
-  <div class="db-container db-container-text">BigQuery</div>
-  <div class="db-container db-container-text">SQLite</div>
+  <div class="db-container">
+    <img src="images/logo-bigquery.png" data-origin="images/logo-bigquery.png" alt="BigQuery" >
+  </div>
+  <div class="db-container">
+    <img src="images/logo-sqlite.svg" data-origin="images/logo-sqlite.svg" alt="SQLite" >
+  </div>
   <div class="db-container db-container-text">Many others via ODBC</div>
 </div>
 
