@@ -7,8 +7,6 @@ client/public
 db
 dbtest
 docker-validation
-docs
-docs-source
 scripts
 server/node_modules
 server/public
