@@ -1,5 +1,0 @@
-baseURL = "https://rickbergfalk.github.io/sqlpad/"
-languageCode = "en-us"
-title = "SQLPad - A web app for running SQL queries and visualizing the results"
-publishDir = "../docs"
-pygmentsCodeFences = true

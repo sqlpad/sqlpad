@@ -1,0 +1,9 @@
+- Guide
+  - [Getting Started](/getting-started.md)
+  - [Configuration](/configuration.md)
+  - [Connections](/connections.md)
+  - [Authentication](/authentication.md)
+  - [Seed Data](/seed-data.md)
+  - [Logging](/logging.md)
+- Release Notes
+  - [Version 3](/version-3.md)
