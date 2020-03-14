@@ -79,7 +79,7 @@ It's hackable and basic.
 
 ## Why not SQLPad?
 
-It's not a dashboarding tool, and likely will never become one. If you're looking for open-source dashboarding check out [redash](https://redash.io/), [Metabase](https://www.metabase.com/) or [Superset](https://github.com/apache/incubator-superset).
+It's not a dashboarding tool, and likely will never become one. If you're looking for open-source dashboarding check out [Redash](https://redash.io/), [Metabase](https://www.metabase.com/) or [Superset](https://github.com/apache/incubator-superset).
 
 It can't handle a query with 2 columns returned of the same name.
 
