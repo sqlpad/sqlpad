@@ -1,0 +1,29 @@
+.db-images {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.db-container {
+  margin: 8px;
+  width: 160px;
+  font-size: 18pt;
+  height: 160px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.1);
+  padding: 12px;
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.3);
+  font-variant: small-caps;
+}
+
+.db-container-bg {
+  background-color: rgb(212, 61, 180);
+  color: white;
+  background-image: linear-gradient(
+    135deg,
+    rgb(24, 24, 24) 18.8%,
+    rgb(10, 10, 10) 100.2%
+  );
+}

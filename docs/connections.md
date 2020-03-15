@@ -1,4 +1,4 @@
-# Connections (Data Sources)
+# Connections
 
 A `Connection` in SQLPad is a configuration to a specific database instance. Business Intelligence and reporting software may call these "data sources". A connection may involve a connection string, user credentials, host, port, etc. The data required by a connection depends on the database driver it uses to connect to the target database.
 
