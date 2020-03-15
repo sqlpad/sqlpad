@@ -1,6 +1,6 @@
 # Connections (Data Sources)
 
-A `Connection` in SQLPad is a configuration to a specific database instance. Other BI software may call these "data sources". A connection may involve a connection string, user credentials, host, port, etc. The data required by a connection depends on the database driver it uses to connect to the target database.
+A `Connection` in SQLPad is a configuration to a specific database instance. Business Intelligence and reporting software may call these "data sources". A connection may involve a connection string, user credentials, host, port, etc. The data required by a connection depends on the database driver it uses to connect to the target database.
 
 When a user write's a query, they'll pick a connection to use to run it. This connection choice will also be saved with the query.
 
