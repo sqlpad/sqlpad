@@ -42,12 +42,12 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       if (json.error) {
         message.error(json.error);
       } else {
-        // connection.idleTimeout is milliseconds
+        // connection.idleTimeout is seconds
         // Convert to minutes for a more user-friendly experience
         const idleTimeout =
           json.connection && parseInt(json.connection.idleTimeout, 10);
         if (idleTimeout) {
-          json.connection.idleTimeout = Math.round(idleTimeout / 1000 / 60);
+          json.connection.idleTimeoutMinutes = Math.round(idleTimeout / 60);
         }
         setConnectionEdits(json.connection);
       }
@@ -84,10 +84,10 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
     setSaving(true);
 
-    // connectionEdits.idleTimeout is storing minutes, but needs to send milliseconds
-    const idleTimeout = parseInt(connectionEdits.idleTimeout, 10);
-    if (idleTimeout) {
-      connectionEdits.idleTimeout = idleTimeout * 60 * 1000;
+    // connectionEdits.idleTimeoutMinutes needs to be converted to seconds
+    const idleTimeoutMinutes = parseInt(connectionEdits.idleTimeoutMinutes, 10);
+    if (idleTimeoutMinutes) {
+      connectionEdits.idleTimeout = idleTimeoutMinutes * 60;
     }
 
     let json;
@@ -148,11 +148,14 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
         );
 
         fieldsJsx.push(
-          <HorizontalFormItem key="idleTimeout" label="Idle timeout (minutes)">
+          <HorizontalFormItem
+            key="idleTimeoutMinutes"
+            label="Idle timeout (minutes)"
+          >
             <Input
-              name="idleTimeout"
+              name="idleTimeoutMinutes"
               type="number"
-              value={connectionEdits.idleTimeout || ''}
+              value={connectionEdits.idleTimeoutMinutes || ''}
               onChange={e => setConnectionValue(e.target.name, e.target.value)}
             />
             <FormExplain>

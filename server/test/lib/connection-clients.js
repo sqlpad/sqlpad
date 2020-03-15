@@ -21,7 +21,7 @@ describe('lib/connection-clients', function() {
         __dirname,
         '../artifacts/connection-client-test.sqlite'
       ),
-      idleTimeout: 1000,
+      idleTimeout: 1,
       multiStatementTransactionEnabled: true
     });
 
