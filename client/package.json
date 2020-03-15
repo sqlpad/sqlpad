@@ -4,18 +4,18 @@
   "private": true,
   "proxy": "http://localhost:3010",
   "dependencies": {
-    "@reach/dialog": "^0.8.5",
-    "@reach/menu-button": "^0.8.5",
-    "@reach/tooltip": "^0.8.5",
+    "@reach/dialog": "^0.9.0",
+    "@reach/menu-button": "^0.9.0",
+    "@reach/tooltip": "^0.9.0",
     "brace": "^0.11.1",
     "d3": "^5.15.0",
-    "downshift": "^5.0.3",
+    "downshift": "^5.0.5",
     "humanize-duration": "^3.22.0",
     "keymaster": "^1.6.2",
     "localforage": "^1.7.3",
     "lodash": "^4.17.15",
     "match-sorter": "^4.0.2",
-    "mdi-react": "^6.7.0",
+    "mdi-react": "^7.0.0",
     "mitt": "^1.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.0",
@@ -50,6 +50,6 @@
   "devDependencies": {
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
-    "source-map-explorer": "^2.3.1"
+    "source-map-explorer": "^2.4.0"
   }
 }
