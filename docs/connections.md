@@ -1,4 +1,12 @@
-# Connection Configuration
+# Connections
+
+A `Connection` in SQLPad is a configuration to a specific database instance. Business Intelligence and reporting software may call these "data sources". A connection may involve a connection string, user credentials, host, port, etc. The data required by a connection depends on the database driver it uses to connect to the target database.
+
+When a user write's a query, they'll pick a connection to use to run it. This connection choice will also be saved with the query.
+
+Admins can create connections in the UI, but connections can also be created in a JSON or INI config file, via a complicated environment variable convention, or via experimental seed data files.
+
+## Defining Connections via Configuration
 
 ?> As of 3.2.0 connections may be defined via application configuration.
 
@@ -12,7 +20,7 @@ How connections are defined in configuration depends on the source of the config
 
 ?> **TODO** connection user replacement values need to be documented
 
-## Via Environment Variable
+### Via Environment Variable
 
 When using environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTIONS__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTIONS`, `<connectionId>`, and `<fieldName>`. Both connection ID and field name values are case sensitive. Boolean values should be the value `true` or `false`.
 
@@ -25,7 +33,7 @@ SQLPAD_CONNECTIONS__prod123__host=localhost
 SQLPAD_CONNECTIONS__prod123__mysqlInsecureAuth=true
 ```
 
-## Via INI File
+### Via INI File
 
 When defining a connection in an INI file, use section header with the value `connections.<connectionId>`.
 
@@ -37,7 +45,7 @@ host = localhost
 mysqlInsecureAuth = true
 ```
 
-## Via JSON File
+### Via JSON File
 
 When using JSON file, provide `<connectionId>` as a key under `connections`.
 
@@ -251,5 +259,111 @@ When using JSON file, provide `<connectionId>` as a key under `connections`.
     <tr><td>contactPoints</td><td>Contact points (comma delimited)</td><td>text</td></tr>
     <tr><td>localDataCenter</td><td>Local data center</td><td>text</td></tr>
     <tr><td>keyspace</td><td>Keyspace</td><td>text</td></tr>
+  </tbody>
+</table>
+
+## Snowflake
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>snowflake</code></td><td>text</td></tr>
+    <tr><td>account</td><td>Account</td><td>text</td></tr>
+    <tr><td>username</td><td>User name</td><td>text</td></tr>
+    <tr><td>password</td><td>Password</td><td>text</td></tr>
+    <tr><td>warehouse</td><td>Warehouse</td><td>text</td></tr>
+    <tr><td>database</td><td>Database</td><td>text</td></tr>
+    <tr><td>schema</td><td>Schema</td><td>text</td></tr>
+    <tr><td>role</td><td>Role</td><td>text</td></tr>
+    <tr><td>preQueryStatements</td><td>Pre-query statements</td><td>text</td></tr>
+  </tbody>
+</table>
+
+## BigQuery
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>bigquery</code></td><td>text</td></tr>
+    <tr><td>projectId</td><td>Project ID</td><td>text</td></tr>
+    <tr><td>keyFile</td><td>JSON keyfile for service account</td><td>text</td></tr>
+    <tr><td>datasetName</td><td>Dataset to use</td><td>text</td></tr>
+    <tr><td>datasetLocation</td><td>Location for this dataset</td><td>text</td></tr>
+  </tbody>
+</table>
+
+## SQLite
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>sqlite</code></td><td>text</td></tr>
+    <tr><td>filename</td><td>Path to file</td><td>text</td></tr>
+    <tr><td>readonly</td><td>Open file in read only mode</td><td>boolean</td></tr>
+  </tbody>
+</table>
+
+## ODBC (unixodbc)
+
+?> Despite the underlying `driver` being `unixodbc`, this appears to be functional on Windows.
+
+The ODBC driver by default use the following SQL to try and obtain schema information for the database connected. This may not work for your target database however.
+
+If information schema is not supported by your target database, you may override this query using the `schema_sql` key.
+
+This query is used for the schema sidebar and autocomplete purposes, and is not required to be able to run queries against the target database.
+
+```sql
+SELECT
+  c.table_schema AS table_schema,
+  c.table_name AS table_name,
+  c.column_name AS column_name,
+  c.data_type AS data_type
+FROM
+  INFORMATION_SCHEMA.columns c
+WHERE
+  c.table_schema NOT IN ('INFORMATION_SCHEMA', 'information_schema')
+ORDER BY
+  c.table_schema,
+  c.table_name,
+  c.ordinal_position
+```
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>unixodbc</code></td><td>text</td></tr>
+    <tr><td>connection_string</td><td>ODBC connection string</td><td>text</td></tr>
+    <tr><td>schema_sql</td><td>Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)</td><td>text</td></tr>
+    <tr><td>username</td><td>Username (optional). Will be added to connect_string as <code>Uid</code> key</td><td>text</td></tr>
+    <tr><td>password</td><td>Password (optional). Will be added to connect_string as <code>Pwd</docd> key</td><td>text</td></tr>
   </tbody>
 </table>

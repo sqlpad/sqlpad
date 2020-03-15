@@ -317,7 +317,7 @@ Allows access on every connection to every user.
 
 Query history entries created before the retention period will be deleted automatically.
 
-- Key: `queryHistoryRetentionTimeInDays
+- Key: `queryHistoryRetentionTimeInDays`
 - Env: `SQLPAD_QUERY_HISTORY_RETENTION_PERIOD_IN_DAYS`
 - Default: `30`
 
