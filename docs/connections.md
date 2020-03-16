@@ -6,6 +6,16 @@ When a user write's a query, they'll pick a connection to use to run it. This co
 
 Admins can create connections in the UI, but connections can also be created in a JSON or INI config file, via a complicated environment variable convention, or via experimental seed data files.
 
+## Multi-Statement Transaction Support
+
+!> This feature is under-development, and only available in `latest` or future `4.2+` release
+
+Multi-statement transaction support adds the ability for a user to use the same underlying connection across query executions. This allows things like opening a transaction, running queries, and rolling the transaction back or comitting the transaction across query runs. It also opens up the ability to create and use temp tables that are generally scoped per connection session.
+
+Multi-statement transaction support is opt-in based on connection configuration. If a connection uses a driver and multi-statement transaction support is not enabled, the connection falls back to the legacy SQLPad behavior of opening a new connection for each query execution, then immediately closing it following the query.
+
+Work is under way to add multi-statement transaction support to drivers that benefit from the addition. At this time SQLite, Postgres, and ODBC drivers support this approach.
+
 ## Defining Connections via Configuration
 
 ?> As of 3.2.0 connections may be defined via application configuration.
@@ -159,6 +169,8 @@ When using JSON file, provide `<connectionId>` as a key under `connections`.
   <tbody>
     <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
     <tr><td>driver</td><td>Must be <code>postgres</code></td><td>text</td></tr>
+    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
+    <tr><td>idleTimeout</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
     <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
     <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
     <tr><td>database</td><td>Database</td><td>text</td></tr>
@@ -319,6 +331,8 @@ When using JSON file, provide `<connectionId>` as a key under `connections`.
   <tbody>
     <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
     <tr><td>driver</td><td>Must be <code>sqlite</code></td><td>text</td></tr>
+    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
+    <tr><td>idleTimeout</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
     <tr><td>filename</td><td>Path to file</td><td>text</td></tr>
     <tr><td>readonly</td><td>Open file in read only mode</td><td>boolean</td></tr>
   </tbody>
@@ -361,6 +375,8 @@ ORDER BY
   <tbody>
     <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
     <tr><td>driver</td><td>Must be <code>unixodbc</code></td><td>text</td></tr>
+    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
+    <tr><td>idleTimeout</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
     <tr><td>connection_string</td><td>ODBC connection string</td><td>text</td></tr>
     <tr><td>schema_sql</td><td>Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)</td><td>text</td></tr>
     <tr><td>username</td><td>Username (optional). Will be added to connect_string as <code>Uid</code> key</td><td>text</td></tr>
