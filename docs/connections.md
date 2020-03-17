@@ -20,19 +20,21 @@ Work is under way to add multi-statement transaction support to drivers that ben
 
 ?> As of 3.2.0 connections may be defined via application configuration.
 
-Every connection defined should provide a `name` and `driver` value, with driver equaling the value specified in the `driver` rows below. `name` will be the label used in the UI to label the connection.
-
-Field names and values are case sensitive.
-
-The connection ID value used can be any alphanumeric value, and is case-sensitive. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
-
-How connections are defined in configuration depends on the source of the configuration.
-
 ?> **TODO** connection user replacement values need to be documented
 
 ### Via Environment Variable
 
-When using environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTIONS__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTIONS`, `<connectionId>`, and `<fieldName>`. Both connection ID and field name values are case sensitive. Boolean values should be the value `true` or `false`.
+When defining connections via environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTIONS__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTIONS`, `<connectionId>`, and `<fieldName>`.
+
+All values (connectionId, fieldName, and value for the environment variable) are case sensitive.
+
+The connection ID value used can be any alphanumeric value. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
+
+The fieldName referenced in the environment variable should correspond with a field key noted in the table below for the driver used.
+
+Boolean values should be the value `true` or `false`.
+
+Every connection defined should provide a `name` and `driver` value, with driver equaling the value specified in the `driver` rows below. `name` will be the label used in the UI to label the connection.
 
 Example for a MySQL connection with id `prod123`.
 
@@ -47,6 +49,12 @@ SQLPAD_CONNECTIONS__prod123__mysqlInsecureAuth=true
 
 When defining a connection in an INI file, use section header with the value `connections.<connectionId>`.
 
+Every connection defined should provide a `name` and `driver` value, with driver equaling the value specified in the `driver` rows below. `name` will be the label used in the UI to label the connection.
+
+Field names and values are case sensitive.
+
+The connection ID value used can be any alphanumeric value, and is case-sensitive. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
+
 ```ini
 [connections.prod123]
 name = Production 123
@@ -58,6 +66,12 @@ mysqlInsecureAuth = true
 ### Via JSON File
 
 When using JSON file, provide `<connectionId>` as a key under `connections`.
+
+Every connection defined should provide a `name` and `driver` value, with driver equaling the value specified in the `driver` rows below. `name` will be the label used in the UI to label the connection.
+
+Field names and values are case sensitive.
+
+The connection ID value used can be any alphanumeric value, and is case-sensitive. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
 
 ```json
 {
