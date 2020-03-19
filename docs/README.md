@@ -52,8 +52,6 @@ SQLPad is a self-hosted web app for writing and running SQL queries and optional
 
 It's a simple tool for exploratory data work and visualizations, or quick convenient access to run a SQL query here and there.
 
-It's hackable and basic.
-
 ## Why not SQLPad?
 
 It's not a dashboarding tool, and likely will never become one. If you're looking for open-source dashboarding check out [Redash](https://redash.io/), [Metabase](https://www.metabase.com/) or [Superset](https://github.com/apache/incubator-superset).
@@ -61,5 +59,3 @@ It's not a dashboarding tool, and likely will never become one. If you're lookin
 It can't handle a query with 2 columns returned of the same name.
 
 It uses an in-memory database and is intended to be run as a single instance. Running multiple instances with loadbalancing in front will yield unpredictable results.
-
-It's hackable and basic.
