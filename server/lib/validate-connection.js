@@ -35,7 +35,7 @@ function validateConnection(connection) {
     'createdDate',
     'modifiedDate',
     'multiStatementTransactionEnabled',
-    'idleTimeout'
+    'idleTimeoutSeconds'
   ];
   if (!connection.name) {
     throw new Error('connection.name required');
