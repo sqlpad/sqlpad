@@ -10,7 +10,8 @@ services:
       - MSSQL_SA_PASSWORD=SuperP4ssw0rd!
       - MSSQL_PID=Express
   sqlpad:
-    image: 'sqlpad/sqlpad:latest'
+    # Use Dockerfile at root of this project
+    build: ../../
     hostname: 'sqlpad'
     ports:
       - '3000:3000'

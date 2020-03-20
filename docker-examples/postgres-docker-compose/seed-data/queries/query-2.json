@@ -1,0 +1,13 @@
+{
+  "id": "seed-query-2",
+  "name": "Shared prebuilt query",
+  "connectionId": "pg-demo",
+  "queryText": "-- This is a shared query by a user that does not exist\n\nSELECT * FROM test",
+  "createdBy": "not-real-user-but-that-is-okay-for-now@sqlpad.com",
+  "acl": [
+    {
+      "groupId": "__EVERYONE__",
+      "write": false
+    }
+  ]
+}
