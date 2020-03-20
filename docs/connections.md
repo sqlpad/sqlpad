@@ -200,7 +200,7 @@ Example JSON config file with connection:
     <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
     <tr><td>driver</td><td>Must be <code>postgres</code></td><td>text</td></tr>
     <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
-    <tr><td>idleTimeout</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
+    <tr><td>idleTimeoutSeconds</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
     <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
     <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
     <tr><td>database</td><td>Database</td><td>text</td></tr>
@@ -362,7 +362,7 @@ Example JSON config file with connection:
     <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
     <tr><td>driver</td><td>Must be <code>sqlite</code></td><td>text</td></tr>
     <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
-    <tr><td>idleTimeout</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
+    <tr><td>idleTimeoutSeconds</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
     <tr><td>filename</td><td>Path to file</td><td>text</td></tr>
     <tr><td>readonly</td><td>Open file in read only mode</td><td>boolean</td></tr>
   </tbody>
@@ -406,7 +406,7 @@ ORDER BY
     <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
     <tr><td>driver</td><td>Must be <code>unixodbc</code></td><td>text</td></tr>
     <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
-    <tr><td>idleTimeout</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
+    <tr><td>idleTimeoutSeconds</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
     <tr><td>connection_string</td><td>ODBC connection string</td><td>text</td></tr>
     <tr><td>schema_sql</td><td>Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)</td><td>text</td></tr>
     <tr><td>username</td><td>Username (optional). Will be added to connect_string as <code>Uid</code> key</td><td>text</td></tr>

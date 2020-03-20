@@ -42,12 +42,13 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       if (json.error) {
         message.error(json.error);
       } else {
-        // connection.idleTimeout is seconds
-        // Convert to minutes for a more user-friendly experience
-        const idleTimeout =
-          json.connection && parseInt(json.connection.idleTimeout, 10);
-        if (idleTimeout) {
-          json.connection.idleTimeoutMinutes = Math.round(idleTimeout / 60);
+        // Convert seconds to minutes for a more user-friendly experience
+        const idleTimeoutSeconds =
+          json.connection && parseInt(json.connection.idleTimeoutSeconds, 10);
+        if (idleTimeoutSeconds) {
+          json.connection.idleTimeoutMinutes = Math.round(
+            idleTimeoutSeconds / 60
+          );
         }
         setConnectionEdits(json.connection);
       }
@@ -87,7 +88,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
     // connectionEdits.idleTimeoutMinutes needs to be converted to seconds
     const idleTimeoutMinutes = parseInt(connectionEdits.idleTimeoutMinutes, 10);
     if (idleTimeoutMinutes) {
-      connectionEdits.idleTimeout = idleTimeoutMinutes * 60;
+      connectionEdits.idleTimeoutSeconds = idleTimeoutMinutes * 60;
     }
 
     let json;

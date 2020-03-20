@@ -80,7 +80,7 @@ class ConnectionClient {
 
   /**
    * Set up a poll to check on keep alive and activity requests
-   * and disconnect if keep alive has not been updated within range of keepAliveTimeoutMs or idleTimeout (seconds)
+   * and disconnect if keep alive has not been updated within range of keepAliveTimeoutMs or idleTimeoutSeconds (seconds)
    * @param {number} [keepAliveTimeoutMs] - max amount of time to allow from keep alive ping before closing
    * @param {number} [intervalMs] - interval ms to check keep alive time
    */
@@ -89,7 +89,7 @@ class ConnectionClient {
 
     const ONE_HOUR_SECONDS = 60 * 60;
     const idleTimeoutSeconds =
-      parseInt(this.connection.idleTimeout, 10) || ONE_HOUR_SECONDS;
+      parseInt(this.connection.idleTimeoutSeconds, 10) || ONE_HOUR_SECONDS;
     const idleTimeoutMs = idleTimeoutSeconds * 1000;
 
     this.cleanupInterval = setInterval(() => {
