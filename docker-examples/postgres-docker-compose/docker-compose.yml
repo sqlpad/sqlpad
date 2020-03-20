@@ -8,7 +8,8 @@ services:
       POSTGRES_PASSWORD: sqlpad
 
   sqlpad:
-    image: 'sqlpad/sqlpad:latest'
+    # Use Dockerfile at root of this project
+    build: ../../
     hostname: 'sqlpad'
     ports:
       - '3000:3000'

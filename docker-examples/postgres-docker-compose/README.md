@@ -6,9 +6,10 @@ Open command line in this directory containing the docker-compose file then type
 
 ```sh
 # pull/download docker images in compose file
-# This will be done automatically, but can be useful to
-# ensure images are up-to-date if using ":latest" tag for SQLPad like this example does
 docker-compose pull
+
+# Because sqlpad uses a docker file instead of an image on docker hub, it must be built
+docker-compose build
 
 # Then to start sqlpad and postgres do
 docker-compose up
