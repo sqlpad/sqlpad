@@ -1,0 +1,20 @@
+{
+  "debug": true,
+  "admin": "admin@sqlpad.com",
+  "adminPassword": "admin",
+  "appLogLevel": "info",
+  "webLogLevel": "warn",
+  "seedDataPath": "/etc/sqlpad/seed-data",
+  "connections": {
+    "pg-demo": {
+      "name": "Postgres demo",
+      "driver": "postgres",
+      "host": "postgres",
+      "database": "sqlpad",
+      "username": "sqlpad",
+      "password": "sqlpad",
+      "multiStatementTransactionEnabled": true,
+      "idleTimeoutSeconds": 86400
+    }
+  }
+}
