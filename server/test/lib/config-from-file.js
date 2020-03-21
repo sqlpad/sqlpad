@@ -26,7 +26,7 @@ describe('configFromFile', function() {
 
   it('Warns for old JSON', function() {
     const [config, warnings] = fromFile(
-      path.join(__dirname, '../fixtures/oldConfig.json')
+      path.join(__dirname, '../fixtures/old-config.json')
     );
     assert(config);
     assert.equal(warnings.length, 1, 'has warnings');

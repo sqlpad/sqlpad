@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { v4: uuidv4 } = require('uuid');
-const getMeta = require('../lib/getMeta');
+const getMeta = require('../lib/get-meta');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const urlFilterToNeDbFilter = require('../lib/urlFilterToNeDbFilter');
 const sendError = require('../lib/sendError');

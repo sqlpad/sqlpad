@@ -3,7 +3,7 @@ const consts = require('./consts');
 const drivers = require('../drivers');
 const renderConnection = require('./render-connection');
 const appLog = require('./app-log');
-const getMeta = require('./getMeta');
+const getMeta = require('./get-meta');
 
 /**
  * Connection client runs queries for a given connection and user
