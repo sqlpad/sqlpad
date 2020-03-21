@@ -1,6 +1,6 @@
 const path = require('path');
 const { Sequelize } = require('sequelize');
-const appLog = require('../lib/appLog');
+const appLog = require('../lib/app-log');
 
 class SequelizeDb {
   constructor(config) {

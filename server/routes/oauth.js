@@ -1,7 +1,7 @@
 const passport = require('passport');
 const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const router = require('express').Router();
-const appLog = require('../lib/appLog');
+const appLog = require('../lib/app-log');
 const checkWhitelist = require('../lib/check-whitelist.js');
 
 /**

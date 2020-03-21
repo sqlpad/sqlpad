@@ -1,6 +1,6 @@
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
-const appLog = require('./appLog');
+const appLog = require('./app-log');
 const packageJson = require('../package.json');
 const configItems = require('./config/configItems');
 

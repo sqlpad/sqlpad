@@ -4,7 +4,7 @@ const BasicStrategy = require('passport-http').BasicStrategy;
 const router = require('express').Router();
 const checkWhitelist = require('../lib/check-whitelist');
 const sendError = require('../lib/sendError');
-const appLog = require('../lib/appLog');
+const appLog = require('../lib/app-log');
 const passhash = require('../lib/passhash.js');
 
 async function handleSignup(req, res, next) {

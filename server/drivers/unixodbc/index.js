@@ -1,5 +1,5 @@
 const odbc = require('odbc');
-const appLog = require('../../lib/appLog');
+const appLog = require('../../lib/app-log');
 const splitSql = require('../../lib/splitSql');
 const { formatSchemaQueryResults } = require('../utils');
 

@@ -3,7 +3,7 @@ const pg = require('pg');
 const _ = require('lodash');
 const PgCursor = require('pg-cursor');
 const SocksConnection = require('socksjs');
-const appLog = require('../../lib/appLog');
+const appLog = require('../../lib/app-log');
 const splitSql = require('../../lib/splitSql');
 const { formatSchemaQueryResults } = require('../utils');
 

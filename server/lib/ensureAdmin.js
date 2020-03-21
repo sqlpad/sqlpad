@@ -1,5 +1,5 @@
 const passhash = require('./passhash');
-const appLog = require('./appLog');
+const appLog = require('./app-log');
 
 /**
  * Ensure admin email is a user if provided

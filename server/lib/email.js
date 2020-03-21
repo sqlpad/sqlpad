@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const appLog = require('./appLog');
+const appLog = require('./app-log');
 
 function makeEmail(config) {
   /**

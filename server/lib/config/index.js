@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const appLog = require('../appLog');
+const appLog = require('../app-log');
 const validateConnection = require('../validate-connection');
 const fromDefault = require('./fromDefault');
 const fromEnv = require('./fromEnv');

@@ -1,4 +1,4 @@
-const appLog = require('./appLog');
+const appLog = require('./app-log');
 
 /**
  * Logs actual error and sends standard error response
