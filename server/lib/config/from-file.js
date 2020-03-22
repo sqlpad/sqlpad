@@ -1,6 +1,6 @@
 const fs = require('fs');
 const ini = require('ini');
-const configItems = require('./configItems');
+const configItems = require('./config-items');
 
 /**
  * Reads and parses config file.

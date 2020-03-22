@@ -21,7 +21,7 @@ class SequelizeDb {
     this.sequelize = sequelize;
     this.Sequelize = Sequelize;
 
-    this.QueryAcl = require('./QueryAcl')(sequelize);
+    this.QueryAcl = require('./query-acl')(sequelize);
   }
 }
 

@@ -1,6 +1,6 @@
 const assert = require('assert');
 const path = require('path');
-const fromFile = require('../../lib/config/fromFile');
+const fromFile = require('../../lib/config/from-file');
 
 describe('configFromFile', function() {
   it('handles missing file', function() {
