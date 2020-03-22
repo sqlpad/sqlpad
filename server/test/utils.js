@@ -26,7 +26,7 @@ function clearArtifacts() {
 }
 
 class TestUtils {
-  constructor(args = {}, env = {}) {
+  constructor(args = {}) {
     const config = new Config(
       {
         debug: true,
@@ -34,13 +34,11 @@ class TestUtils {
         // Eventually these will be moved to sqlite and we can be fully-in-memory
         dbPath: TEST_ARTIFACTS_DIR,
         dbInMemory: true,
+        appLogLevel: 'silent',
+        webLogLevel: 'silent',
         ...args
       },
-      {
-        SQLPAD_APP_LOG_LEVEL: 'silent',
-        SQLPAD_WEB_LOG_LEVEL: 'silent',
-        ...env
-      }
+      {}
     );
 
     appLog.setLevel(config.get('appLogLevel'));
