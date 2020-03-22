@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const mustBeAdmin = require('../middleware/must-be-admin.js');
-const sendError = require('../lib/sendError');
+const sendError = require('../lib/send-error');
 const ConnectionClient = require('../lib/connection-client');
 
 /**

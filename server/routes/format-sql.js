@@ -1,7 +1,7 @@
 const sqlFormatter = require('sql-formatter');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const sendError = require('../lib/sendError');
+const sendError = require('../lib/send-error');
 
 /**
  * Returns formatted query in same object format it was sent

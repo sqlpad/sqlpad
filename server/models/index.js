@@ -8,7 +8,7 @@ const Connections = require('./connections');
 const ConnectionAccesses = require('./connection-accesses');
 const ConnectionClients = require('./connection-clients');
 const QueryAcl = require('./query-acl');
-const decorateQueryUserAccess = require('../lib/decorateQueryUserAccess');
+const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 class Models {
   constructor(nedb, sequelizeDb, config) {

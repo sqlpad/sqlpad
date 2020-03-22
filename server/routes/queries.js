@@ -2,9 +2,9 @@ require('../typedefs');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
-const sendError = require('../lib/sendError');
-const pushQueryToSlack = require('../lib/pushQueryToSlack');
-const decorateQueryUserAccess = require('../lib/decorateQueryUserAccess');
+const sendError = require('../lib/send-error');
+const pushQueryToSlack = require('../lib/push-query-to-slack');
+const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 // NOTE: this non-api route is special since it redirects legacy urls
 router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(

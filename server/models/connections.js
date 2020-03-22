@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const makeCipher = require('../lib/makeCipher');
+const makeCipher = require('../lib/make-cipher');
 const drivers = require('../drivers');
 const validateConnection = require('../lib/validate-connection');
 

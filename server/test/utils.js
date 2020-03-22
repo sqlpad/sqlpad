@@ -9,7 +9,7 @@ const appLog = require('../lib/app-log');
 const db = require('../lib/db');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
-const loadSeedData = require('../lib/loadSeedData');
+const loadSeedData = require('../lib/load-seed-data');
 
 const TEST_ARTIFACTS_DIR = path.join(__dirname, '/artifacts');
 

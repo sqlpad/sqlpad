@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const sendError = require('../lib/sendError');
+const sendError = require('../lib/send-error');
 
 // This route used to set new password given a passwordResetId
 router.post('/api/password-reset/:passwordResetId', async function(req, res) {

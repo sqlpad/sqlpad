@@ -2,7 +2,7 @@ const router = require('express').Router();
 const makeEmail = require('../lib/email');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const sendError = require('../lib/sendError');
+const sendError = require('../lib/send-error');
 
 router.get('/api/users', mustBeAuthenticated, async function(req, res) {
   const { models } = req;
