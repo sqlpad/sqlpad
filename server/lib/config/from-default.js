@@ -1,4 +1,4 @@
-const definitions = require('./configItems');
+const definitions = require('./config-items');
 
 /**
  * Gets default config values

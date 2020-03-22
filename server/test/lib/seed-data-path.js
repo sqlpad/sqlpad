@@ -4,7 +4,7 @@ const TestUtils = require('../utils');
 describe('seedDataPath', function() {
   it('Loads files as expected', async function() {
     const utils = new TestUtils({
-      seedDataPath: './test/fixtures/seedData'
+      seedDataPath: './test/fixtures/seed-data'
     });
     await utils.init();
     const queries = await utils.models.queries.findAll();
@@ -21,7 +21,7 @@ describe('seedDataPath', function() {
 
   it('Handles child directories with no valid files', async function() {
     const utils = new TestUtils({
-      seedDataPath: './test/fixtures/seedDataEmptyChild'
+      seedDataPath: './test/fixtures/seed-data-empty-child'
     });
     await utils.init();
     const queries = await utils.models.queries.findAll();
@@ -30,7 +30,7 @@ describe('seedDataPath', function() {
 
   it('Handles directory that does not exist', async function() {
     const utils = new TestUtils({
-      seedDataPath: './test/fixtures/doesnotexist'
+      seedDataPath: './test/fixtures/does-not-exist'
     });
     await utils.init();
     const queries = await utils.models.queries.findAll();
@@ -39,7 +39,7 @@ describe('seedDataPath', function() {
 
   it('throws for invalid data', async function() {
     const utils = new TestUtils({
-      seedDataPath: './test/fixtures/seedDataBadFile'
+      seedDataPath: './test/fixtures/seed-data-bad-file'
     });
     await assert.rejects(() => utils.init());
     const queries = await utils.models.queries.findAll();

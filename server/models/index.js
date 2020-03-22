@@ -1,14 +1,14 @@
 const _ = require('lodash');
 const Users = require('./users');
-const SchemaInfo = require('./schemaInfo');
-const ResultCache = require('./resultCache');
-const QueryHistory = require('./queryHistory');
+const SchemaInfo = require('./schema-info');
+const ResultCache = require('./result-cache');
+const QueryHistory = require('./query-history');
 const Queries = require('./queries');
 const Connections = require('./connections');
-const ConnectionAccesses = require('./connectionAccesses');
-const ConnectionClients = require('./connectionClients');
-const QueryAcl = require('./queryAcl');
-const decorateQueryUserAccess = require('../lib/decorateQueryUserAccess');
+const ConnectionAccesses = require('./connection-accesses');
+const ConnectionClients = require('./connection-clients');
+const QueryAcl = require('./query-acl');
+const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 class Models {
   constructor(nedb, sequelizeDb, config) {

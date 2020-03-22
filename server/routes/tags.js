@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const sendError = require('../lib/sendError');
+const sendError = require('../lib/send-error');
 
 router.get('/api/tags', mustBeAuthenticated, async function(req, res) {
   const { models } = req;

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const splitSql = require('../../lib/splitSql');
+const splitSql = require('../../lib/split-sql');
 
 const singleNoSeparator = `
 SELECT value 

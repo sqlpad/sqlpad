@@ -1,6 +1,6 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
-const urlFilterToNeDbFilter = require('../../lib/urlFilterToNeDbFilter');
+const urlFilterToNeDbFilter = require('../../lib/url-filter-to-nedb-filter');
 
 const queryText1 = `
   -- QUERY1

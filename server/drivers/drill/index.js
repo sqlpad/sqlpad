@@ -1,5 +1,5 @@
 const drill = require('./drill.js');
-const appLog = require('../../lib/appLog');
+const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'drill';

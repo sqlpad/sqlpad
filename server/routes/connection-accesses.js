@@ -3,7 +3,7 @@ const router = require('express').Router();
 const consts = require('../lib/consts');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const sendError = require('../lib/sendError');
+const sendError = require('../lib/send-error');
 
 /**
  * @param {import('express').Request & Req} req

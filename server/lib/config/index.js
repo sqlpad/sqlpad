@@ -1,11 +1,11 @@
 const _ = require('lodash');
-const appLog = require('../appLog');
+const appLog = require('../app-log');
 const validateConnection = require('../validate-connection');
-const fromDefault = require('./fromDefault');
-const fromEnv = require('./fromEnv');
-const fromCli = require('./fromCli');
-const fromFile = require('./fromFile');
-const getOldConfigWarning = require('./getOldConfigWarning');
+const fromDefault = require('./from-default');
+const fromEnv = require('./from-env');
+const fromCli = require('./from-cli');
+const fromFile = require('./from-file');
+const getOldConfigWarning = require('./get-old-config-warning');
 
 class Config {
   constructor(argv, env) {

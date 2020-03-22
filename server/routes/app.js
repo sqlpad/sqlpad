@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const packageJson = require('../package.json');
-const sendError = require('../lib/sendError');
+const sendError = require('../lib/send-error');
 
 // NOTE: this route needs a wildcard because it is fetched as a relative url
 // from the front-end. The static SPA does not know if sqlpad is mounted at

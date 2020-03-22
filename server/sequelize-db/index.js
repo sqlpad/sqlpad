@@ -1,6 +1,6 @@
 const path = require('path');
 const { Sequelize } = require('sequelize');
-const appLog = require('../lib/appLog');
+const appLog = require('../lib/app-log');
 
 class SequelizeDb {
   constructor(config) {
@@ -21,7 +21,7 @@ class SequelizeDb {
     this.sequelize = sequelize;
     this.Sequelize = Sequelize;
 
-    this.QueryAcl = require('./QueryAcl')(sequelize);
+    this.QueryAcl = require('./query-acl')(sequelize);
   }
 }
 

@@ -171,7 +171,7 @@ SQLPad v3 is a UI redesign/refresh along with a large file structure change and 
 - SAML authentication support
 - Remember selected connection id / schema toggle
 - Configurable session time and secret
-- Support for JSON and INI config file added. File should config using `key` fields found in [configItems.js](https://github.com/rickbergfalk/sqlpad/blob/master/server/lib/config/configItems.js). Config file path default is `$HOME/.sqlpadrc` and may otherwise be specified using `--config` via command line or `SQLPAD_CONFIG` environment variable.
+- Support for JSON and INI config file added. File should config using `key` fields found in [configItems.js](https://github.com/rickbergfalk/sqlpad/blob/master/server/lib/config/config-items.js). Config file path default is `$HOME/.sqlpadrc` and may otherwise be specified using `--config` via command line or `SQLPAD_CONFIG` environment variable.
 
 #### Fixes
 

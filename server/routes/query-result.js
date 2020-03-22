@@ -2,7 +2,7 @@ require('../typedefs');
 const router = require('express').Router();
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
-const sendError = require('../lib/sendError');
+const sendError = require('../lib/send-error');
 const ConnectionClient = require('../lib/connection-client');
 
 // This allows executing a query relying on the saved query text
