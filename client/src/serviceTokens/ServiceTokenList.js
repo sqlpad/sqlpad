@@ -8,7 +8,6 @@ import message from '../common/message';
 import Modal from '../common/Modal';
 import ServiceTokenForm from './ServiceTokenForm';
 import ServiceTokenDetails from './ServiceTokenDetails';
-import Text from '../common/Text';
 
 function ServiceTokenList({ currentUser }) {
   const [serviceTokens, setServiceTokens] = useState([]);

@@ -1,9 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-// NOTE - because ServiceTokens is driven off of Sequelize ORM model
-// and not nedb (which is schemaless) I am skipping defining a Joi schema here.
-// For info on what QueryAcl schema is, see sequelize/QueryAcl.js
-
 const maskToken = token => {
   return '********************'.concat(token.slice(-5));
 };
@@ -37,6 +33,7 @@ class ServiceTokens {
       signOpts.expiresIn = data.duration * 60 * 60;
     }
 
+    // Generate the token
     const token = jwt.sign(
       {
         name: data.name,
@@ -46,14 +43,16 @@ class ServiceTokens {
       signOpts
     );
 
+    // Save only the masked token in the database
     data.modifiedDate = new Date();
     data.maskedToken = maskToken(token);
-    await this.sequelizeDb.ServiceTokens.create(data);
+    const newToken = await this.sequelizeDb.ServiceTokens.create(data);
 
-    // Do not write the actual token into the database, send it back
-    // to the client only once
-    data.token = token;
-    return data;
+    // Send the client the token only once
+    const tokenToClient = JSON.parse(JSON.stringify(newToken));
+    tokenToClient.token = token;
+
+    return tokenToClient;
   }
 
   findOneById(id) {
