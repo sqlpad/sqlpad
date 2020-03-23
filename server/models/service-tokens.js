@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 // NOTE - because ServiceTokens is driven off of Sequelize ORM model
 // and not nedb (which is schemaless) I am skipping defining a Joi schema here.
 // For info on what QueryAcl schema is, see sequelize/QueryAcl.js
