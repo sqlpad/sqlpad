@@ -1,6 +1,6 @@
 const passport = require('passport');
 const SamlStrategy = require('passport-saml').Strategy;
-const router = require('express').Router();
+const express = require('express');
 const appLog = require('../lib/app-log');
 
 /**
@@ -13,6 +13,8 @@ function makeSamlAuth(config) {
   const samlCallbackUrl = config.get('samlCallbackUrl');
   const samlCert = config.get('samlCert');
   const samlAuthContext = config.get('samlAuthContext');
+
+  const router = express.Router();
 
   if (
     samlEntryPoint &&

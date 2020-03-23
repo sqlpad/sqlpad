@@ -26,7 +26,7 @@ function clearArtifacts() {
 }
 
 class TestUtils {
-  constructor(args = {}, env = {}) {
+  constructor(args = {}) {
     const config = new Config(
       {
         debug: true,
@@ -34,15 +34,16 @@ class TestUtils {
         // Eventually these will be moved to sqlite and we can be fully-in-memory
         dbPath: TEST_ARTIFACTS_DIR,
         dbInMemory: true,
+        appLogLevel: 'silent',
+        webLogLevel: 'silent',
         ...args
       },
-      {
-        SQLPAD_APP_LOG_LEVEL: 'silent',
-        SQLPAD_WEB_LOG_LEVEL: 'silent',
-        ...env
-      }
+      {}
     );
 
+    // TODO - this is problematic because multiple TestUtils are created all at once in describe()
+    // and last one wins. This modifies a global state,
+    // so there is no way for this to be enabled just for 1 test and not another
     appLog.setLevel(config.get('appLogLevel'));
 
     this.config = config;
@@ -128,39 +129,39 @@ class TestUtils {
     }
   }
 
-  addAuth(req, role) {
-    if (this.users[role]) {
-      const username = this.users[role].email;
-      const password = this.users[role].password;
+  addAuth(req, userKey) {
+    if (this.users[userKey]) {
+      const username = this.users[userKey].email;
+      const password = this.users[userKey].password;
       return req.auth(username, password);
     }
     return req;
   }
 
-  async del(role, url, statusCode = 200) {
+  async del(userKey, url, statusCode = 200) {
     let req = request(this.app).delete(url);
-    req = this.addAuth(req, role);
+    req = this.addAuth(req, userKey);
     const response = await req.expect(statusCode);
     return response.body;
   }
 
-  async get(role, url, statusCode = 200) {
+  async get(userKey, url, statusCode = 200) {
     let req = request(this.app).get(url);
-    req = this.addAuth(req, role);
+    req = this.addAuth(req, userKey);
     const response = await req.expect(statusCode);
     return response.body;
   }
 
-  async post(role, url, body, statusCode = 200) {
+  async post(userKey, url, body, statusCode = 200) {
     let req = request(this.app).post(url);
-    req = this.addAuth(req, role);
+    req = this.addAuth(req, userKey);
     const response = await req.send(body).expect(statusCode);
     return response.body;
   }
 
-  async put(role, url, body, statusCode = 200) {
+  async put(userKey, url, body, statusCode = 200) {
     let req = request(this.app).put(url);
-    req = this.addAuth(req, role);
+    req = this.addAuth(req, userKey);
     const response = await req.send(body).expect(statusCode);
     return response.body;
   }

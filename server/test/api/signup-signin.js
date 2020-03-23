@@ -1,7 +1,7 @@
 const assert = require('assert');
 const TestUtil = require('../utils');
 
-describe('api/signup', function() {
+describe('api/signup & api/signin', function() {
   const utils = new TestUtil();
 
   before(function() {
@@ -15,6 +15,26 @@ describe('api/signup', function() {
       email: 'admin@test.com'
     });
     assert(!body.error, 'Expect no error');
+  });
+
+  it('allows new user sign in', async function() {
+    const body = await utils.post(null, '/api/signin', {
+      password: 'admin',
+      email: 'admin@test.com'
+    });
+    assert(!body.error, 'Expect no error');
+  });
+
+  it('unauthorized for bad signin', async function() {
+    await utils.post(
+      null,
+      '/api/signin',
+      {
+        password: 'wrong-password',
+        email: 'admin@test.com'
+      },
+      401
+    );
   });
 
   it('prevents duplicate signups', async function() {
@@ -66,18 +86,25 @@ describe('api/signup', function() {
   });
 });
 
-describe('api/signin', function() {
-  const utils = new TestUtil();
-
-  before(function() {
-    return utils.init(true);
+describe('local auth disabled', async function() {
+  const utils = new TestUtil({
+    disableUserpassAuth: 'true'
   });
 
-  it('signs in user', async function() {
-    const body = await utils.post(null, '/api/signin', {
-      password: 'admin',
-      email: 'admin@test.com'
-    });
-    assert(!body.error, 'Expect no error');
+  before(function() {
+    return utils.init();
+  });
+
+  it('api/signup is not available', async function() {
+    await utils.post(
+      null,
+      '/api/signup',
+      {
+        password: 'admin',
+        passwordConfirmation: 'admin',
+        email: 'admin@test.com'
+      },
+      404
+    );
   });
 });
