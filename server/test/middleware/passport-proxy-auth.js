@@ -129,10 +129,9 @@ describe('passport-proxy-auth', function() {
     assert.equal(user.data.customField, 'custom data value');
   });
 
-  it('Matches existing user and logs in', async function() {
+  it('Matches existing user via email', async function() {
     const utils = new TestUtil({
       proxyAuthEnabled: true,
-      proxyAuthAutoSignUp: true,
       proxyAuthHeaders: 'email:X-WEBAUTH-EMAIL'
     });
     await utils.init(true);
@@ -143,6 +142,42 @@ describe('passport-proxy-auth', function() {
       .expect(200);
 
     const user = body.users.find(user => user.email === 'admin@test.com');
+    assert.equal(user.role, 'admin');
+  });
+
+  it('Matches existing user via id', async function() {
+    const utils = new TestUtil({
+      proxyAuthEnabled: true,
+      proxyAuthHeaders: 'id:X-WEBAUTH-ID'
+    });
+    await utils.init(true);
+
+    const id = utils.users.admin._id;
+
+    const { body } = await request(utils.app)
+      .get('/api/users')
+      .set('X-WEBAUTH-ID', id)
+      .expect(200);
+
+    const user = body.users.find(user => user._id === id);
+    assert.equal(user.role, 'admin');
+  });
+
+  it('Matches existing user via _id', async function() {
+    const utils = new TestUtil({
+      proxyAuthEnabled: true,
+      proxyAuthHeaders: '_id:X-WEBAUTH-ID'
+    });
+    await utils.init(true);
+
+    const id = utils.users.admin._id;
+
+    const { body } = await request(utils.app)
+      .get('/api/users')
+      .set('X-WEBAUTH-ID', id)
+      .expect(200);
+
+    const user = body.users.find(user => user._id === id);
     assert.equal(user.role, 'admin');
   });
 
