@@ -217,6 +217,13 @@ SAML Issuer
 - Key: `samlIssuer`
 - Env: `SAML_ISSUER`
 
+## serviceTokenSecret
+
+Secret to sign the generated Service Tokens
+
+- Key: `serviceTokenSecret`
+- Env: `SERVICE_TOKEN_SECRET`
+
 ## sessionMinutes
 
 Minutes to keep a session active. Will extended by this amount each request.
