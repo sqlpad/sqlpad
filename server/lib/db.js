@@ -60,7 +60,6 @@ async function initNedb(config) {
     connectionAccesses: getDatastore('connectionaccesses.db'),
     queries: getDatastore('queries.db'),
     queryHistory: getDatastore('queryhistory.db'),
-    serviceTokens: getDatastore('servicetokens.db'),
     cache: getDatastore('cache.db'),
     instances: [
       'users',
@@ -68,7 +67,6 @@ async function initNedb(config) {
       'connectionAccesses',
       'queries',
       'queryHistory',
-      'serviceTokens',
       'cache'
     ]
   };
@@ -124,7 +122,6 @@ async function initNedb(config) {
   await nedb.queryHistory.ensureIndex({ fieldName: 'connectionName' });
   await nedb.queryHistory.ensureIndex({ fieldName: 'userEmail' });
   await nedb.queryHistory.ensureIndex({ fieldName: 'createdDate' });
-  await nedb.serviceTokens.ensureIndex({ fieldName: 'name', unique: true });
 
   // Set autocompaction
   nedb.instances.forEach(dbname => {
