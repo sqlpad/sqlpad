@@ -8,6 +8,7 @@ const Connections = require('./connections');
 const ConnectionAccesses = require('./connectionAccesses');
 const ConnectionClients = require('./connectionClients');
 const QueryAcl = require('./queryAcl');
+const ServiceTokens = require('./serviceTokens');
 const decorateQueryUserAccess = require('../lib/decorateQueryUserAccess');
 
 class Models {
@@ -21,6 +22,7 @@ class Models {
     this.connectionAccesses = new ConnectionAccesses(nedb, sequelizeDb, config);
     this.connectionClients = new ConnectionClients(nedb, sequelizeDb, config);
     this.queryAcl = new QueryAcl(nedb, sequelizeDb, config);
+    this.serviceTokens = new ServiceTokens(nedb, sequelizeDb, config);
   }
 
   /**
