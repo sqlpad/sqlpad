@@ -4,7 +4,7 @@ const TestUtil = require('../utils');
 
 describe('api/signup & api/signin', function() {
   const utils = new TestUtil({
-    proxyAuthEnabled: false
+    authProxyEnabled: false
   });
 
   before(function() {
@@ -121,7 +121,7 @@ describe('api/signup & api/signin', function() {
 describe('local auth disabled', async function() {
   const utils = new TestUtil({
     disableUserpassAuth: 'true',
-    proxyAuthEnabled: false
+    authProxyEnabled: false
   });
 
   before(function() {

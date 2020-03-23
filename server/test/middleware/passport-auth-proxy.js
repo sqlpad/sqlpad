@@ -5,10 +5,10 @@ const TestUtil = require('../utils');
 describe('passport-proxy-auth', function() {
   it('auto sign up creates user w/default role', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthAutoSignUp: true,
-      proxyAuthDefaultRole: 'editor',
-      proxyAuthHeaders: 'email:X-WEBAUTH-EMAIL'
+      authProxyEnabled: true,
+      authProxyAutoSignUp: true,
+      authProxyDefaultRole: 'editor',
+      authProxyHeaders: 'email:X-WEBAUTH-EMAIL'
     });
     await utils.init();
 
@@ -24,9 +24,9 @@ describe('passport-proxy-auth', function() {
 
   it('401 if auto sign up and missing default role', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthAutoSignUp: true,
-      proxyAuthHeaders: 'email:X-WEBAUTH-EMAIL'
+      authProxyEnabled: true,
+      authProxyAutoSignUp: true,
+      authProxyHeaders: 'email:X-WEBAUTH-EMAIL'
     });
     await utils.init();
 
@@ -38,9 +38,9 @@ describe('passport-proxy-auth', function() {
 
   it('401 if auto sign up and missing email', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthAutoSignUp: true,
-      proxyAuthHeaders:
+      authProxyEnabled: true,
+      authProxyAutoSignUp: true,
+      authProxyHeaders:
         'id:X-WEBAUTH-ID name:X-WEBAUTH-NAME role:X-WEBAUTH-ROLE'
     });
     await utils.init();
@@ -55,9 +55,9 @@ describe('passport-proxy-auth', function() {
 
   it('401 if missing id and email', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthAutoSignUp: true,
-      proxyAuthHeaders:
+      authProxyEnabled: true,
+      authProxyAutoSignUp: true,
+      authProxyHeaders:
         'id:X-WEBAUTH-ID email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME role:X-WEBAUTH-ROLE'
     });
     await utils.init();
@@ -71,9 +71,9 @@ describe('passport-proxy-auth', function() {
 
   it('401 if user does not exist and auto sign up turned off', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthAutoSignUp: false,
-      proxyAuthHeaders:
+      authProxyEnabled: true,
+      authProxyAutoSignUp: false,
+      authProxyHeaders:
         'id:X-WEBAUTH-ID email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME role:X-WEBAUTH-ROLE'
     });
     await utils.init();
@@ -89,7 +89,7 @@ describe('passport-proxy-auth', function() {
 
   it('401 if proxy auth turned off', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: false
+      authProxyEnabled: false
     });
     await utils.init();
 
@@ -105,9 +105,9 @@ describe('passport-proxy-auth', function() {
 
   it('All fields used for user without default role', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthAutoSignUp: true,
-      proxyAuthHeaders:
+      authProxyEnabled: true,
+      authProxyAutoSignUp: true,
+      authProxyHeaders:
         'id:X-WEBAUTH-ID email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME role:X-WEBAUTH-ROLE data.customField:X-WEBAUTH-CUSTOM-FIELD'
     });
     await utils.init();
@@ -131,8 +131,8 @@ describe('passport-proxy-auth', function() {
 
   it('Matches existing user via email', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthHeaders: 'email:X-WEBAUTH-EMAIL'
+      authProxyEnabled: true,
+      authProxyHeaders: 'email:X-WEBAUTH-EMAIL'
     });
     await utils.init(true);
 
@@ -147,8 +147,8 @@ describe('passport-proxy-auth', function() {
 
   it('Matches existing user via id', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthHeaders: 'id:X-WEBAUTH-ID'
+      authProxyEnabled: true,
+      authProxyHeaders: 'id:X-WEBAUTH-ID'
     });
     await utils.init(true);
 
@@ -165,8 +165,8 @@ describe('passport-proxy-auth', function() {
 
   it('Matches existing user via _id', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthHeaders: '_id:X-WEBAUTH-ID'
+      authProxyEnabled: true,
+      authProxyHeaders: '_id:X-WEBAUTH-ID'
     });
     await utils.init(true);
 
@@ -183,9 +183,9 @@ describe('passport-proxy-auth', function() {
 
   it('Updates existing user if changes', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthAutoSignUp: true,
-      proxyAuthHeaders: 'email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME'
+      authProxyEnabled: true,
+      authProxyAutoSignUp: true,
+      authProxyHeaders: 'email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME'
     });
     await utils.init(true);
 
@@ -201,9 +201,9 @@ describe('passport-proxy-auth', function() {
 
   it('User not updated if no changes', async function() {
     const utils = new TestUtil({
-      proxyAuthEnabled: true,
-      proxyAuthAutoSignUp: true,
-      proxyAuthHeaders: 'email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME'
+      authProxyEnabled: true,
+      authProxyAutoSignUp: true,
+      authProxyHeaders: 'email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME'
     });
     await utils.init(true);
 

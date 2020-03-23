@@ -235,17 +235,17 @@ const configItems = [
     default: ''
   },
   {
-    key: 'proxyAuthEnabled',
+    key: 'authProxyEnabled',
     envVar: 'SQLPAD_PROXY_AUTH_ENABLED',
     default: false
   },
   {
-    key: 'proxyAuthAutoSignUp',
+    key: 'authProxyAutoSignUp',
     envVar: 'SQLPAD_PROXY_AUTH_AUTO_SIGN_UP',
     default: false
   },
   {
-    key: 'proxyAuthDefaultRole',
+    key: 'authProxyDefaultRole',
     envVar: 'SQLPAD_PROXY_AUTH_DEFAULT_ROLE',
     default: ''
   },
@@ -254,7 +254,7 @@ const configItems = [
   // Other attributes may be mapped as well, including data attributes via data.somePropertyName
   // Example `id:X-WEBAUTH-ID email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME role:X-WEBAUTH-ROLE data.field:X-WEBAUTH-field`
   {
-    key: 'proxyAuthHeaders',
+    key: 'authProxyHeaders',
     envVar: 'SQLPAD_PROXY_AUTH_HEADERS',
     default: ''
   }

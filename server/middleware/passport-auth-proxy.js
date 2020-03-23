@@ -5,7 +5,7 @@ const passportCustom = require('passport-custom');
 const CustomStrategy = passportCustom.Strategy;
 
 /**
- * Derive user object from headers and proxyAuthHeaders config
+ * Derive user object from headers and authProxyHeaders config
  * If no headers are defined or mapped, null is returned
  * @param {import('express').Request & Req} req
  */
@@ -13,7 +13,7 @@ function getHeaderUser(req) {
   const { config } = req;
   const headerUser = {};
   config
-    .get('proxyAuthHeaders')
+    .get('authProxyHeaders')
     .split(' ')
     .forEach(pairing => {
       const [fieldName, headerName] = pairing.split(':').map(v => v.trim());
@@ -55,8 +55,8 @@ async function authProxyStrategy(req, done) {
       return done(null, false);
     }
 
-    if (!headerUser.role && config.get('proxyAuthDefaultRole')) {
-      headerUser.role = config.get('proxyAuthDefaultRole');
+    if (!headerUser.role && config.get('authProxyDefaultRole')) {
+      headerUser.role = config.get('authProxyDefaultRole');
     }
 
     // Try to find existing user in SQLPad's db
@@ -86,7 +86,7 @@ async function authProxyStrategy(req, done) {
     }
 
     // If auto sign up is turned on create user
-    if (config.get('proxyAuthAutoSignUp')) {
+    if (config.get('authProxyAutoSignUp')) {
       // If role or email are not provided no auth
       if (!headerUser.role || !headerUser.email) {
         return done(null, false);
@@ -111,7 +111,7 @@ passport.use('auth-proxy', new CustomStrategy(authProxyStrategy));
  * @param {*} res
  */
 function passportProxyAuth(req, res, next) {
-  if (!req.isAuthenticated() && req.config.get('proxyAuthEnabled')) {
+  if (!req.isAuthenticated() && req.config.get('authProxyEnabled')) {
     // Only try to authenticate if headers are present to identify a user
     // This is necessary for routes that do not require authentication.
     // It may make sense to move all auth like this into the middleware that requires auth?

@@ -36,8 +36,8 @@ class TestUtils {
         dbInMemory: true,
         appLogLevel: 'silent',
         webLogLevel: 'silent',
-        proxyAuthEnabled: true,
-        proxyAuthHeaders: 'email:X-WEBAUTH-EMAIL',
+        authProxyEnabled: true,
+        authProxyHeaders: 'email:X-WEBAUTH-EMAIL',
         ...args
       },
       {}
