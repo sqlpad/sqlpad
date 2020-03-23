@@ -85,3 +85,26 @@ describe('api/signup & api/signin', function() {
     assert(!body2.error, 'Expect no error');
   });
 });
+
+describe('local auth disabled', async function() {
+  const utils = new TestUtil({
+    disableUserpassAuth: 'true'
+  });
+
+  before(function() {
+    return utils.init();
+  });
+
+  it('api/signup is not available', async function() {
+    await utils.post(
+      null,
+      '/api/signup',
+      {
+        password: 'admin',
+        passwordConfirmation: 'admin',
+        email: 'admin@test.com'
+      },
+      404
+    );
+  });
+});

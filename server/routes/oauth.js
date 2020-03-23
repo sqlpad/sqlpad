@@ -1,6 +1,6 @@
 const passport = require('passport');
 const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
-const router = require('express').Router();
+const express = require('express');
 const appLog = require('../lib/app-log');
 const checkWhitelist = require('../lib/check-whitelist.js');
 
@@ -13,6 +13,8 @@ function makeGoogleAuth(config) {
   const googleClientId = config.get('googleClientId');
   const googleClientSecret = config.get('googleClientSecret');
   const publicUrl = config.get('publicUrl');
+
+  const router = express.Router();
 
   async function passportGoogleStrategyHandler(
     req,
