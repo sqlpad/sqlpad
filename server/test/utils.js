@@ -41,6 +41,9 @@ class TestUtils {
       {}
     );
 
+    // TODO - this is problematic because multiple TestUtils are created all at once in describe()
+    // and last one wins. This modifies a global state,
+    // so there is no way for this to be enabled just for 1 test and not another
     appLog.setLevel(config.get('appLogLevel'));
 
     this.config = config;
