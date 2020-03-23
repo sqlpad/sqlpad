@@ -36,6 +36,8 @@ class TestUtils {
         dbInMemory: true,
         appLogLevel: 'silent',
         webLogLevel: 'silent',
+        proxyAuthEnabled: true,
+        proxyAuthHeaders: 'email:X-WEBAUTH-EMAIL',
         ...args
       },
       {}
@@ -129,39 +131,38 @@ class TestUtils {
     }
   }
 
-  addAuth(req, userKey) {
-    if (this.users[userKey]) {
-      const username = this.users[userKey].email;
-      const password = this.users[userKey].password;
-      return req.auth(username, password);
-    }
-    return req;
-  }
-
   async del(userKey, url, statusCode = 200) {
-    let req = request(this.app).delete(url);
-    req = this.addAuth(req, userKey);
+    const req = request(this.app).delete(url);
+    if (this.users[userKey]) {
+      req.set('X-WEBAUTH-EMAIL', this.users[userKey].email);
+    }
     const response = await req.expect(statusCode);
     return response.body;
   }
 
   async get(userKey, url, statusCode = 200) {
-    let req = request(this.app).get(url);
-    req = this.addAuth(req, userKey);
+    const req = request(this.app).get(url);
+    if (this.users[userKey]) {
+      req.set('X-WEBAUTH-EMAIL', this.users[userKey].email);
+    }
     const response = await req.expect(statusCode);
     return response.body;
   }
 
   async post(userKey, url, body, statusCode = 200) {
-    let req = request(this.app).post(url);
-    req = this.addAuth(req, userKey);
+    const req = request(this.app).post(url);
+    if (this.users[userKey]) {
+      req.set('X-WEBAUTH-EMAIL', this.users[userKey].email);
+    }
     const response = await req.send(body).expect(statusCode);
     return response.body;
   }
 
   async put(userKey, url, body, statusCode = 200) {
-    let req = request(this.app).put(url);
-    req = this.addAuth(req, userKey);
+    const req = request(this.app).put(url);
+    if (this.users[userKey]) {
+      req.set('X-WEBAUTH-EMAIL', this.users[userKey].email);
+    }
     const response = await req.send(body).expect(statusCode);
     return response.body;
   }
