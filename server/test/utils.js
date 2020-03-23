@@ -26,7 +26,7 @@ function clearArtifacts() {
 }
 
 class TestUtils {
-  constructor(args = {}, env = {}) {
+  constructor(args = {}) {
     const config = new Config(
       {
         debug: true,
@@ -34,15 +34,16 @@ class TestUtils {
         // Eventually these will be moved to sqlite and we can be fully-in-memory
         dbPath: TEST_ARTIFACTS_DIR,
         dbInMemory: true,
+        appLogLevel: 'silent',
+        webLogLevel: 'silent',
         ...args
       },
-      {
-        SQLPAD_APP_LOG_LEVEL: 'silent',
-        SQLPAD_WEB_LOG_LEVEL: 'silent',
-        ...env
-      }
+      {}
     );
 
+    // TODO - this is problematic because multiple TestUtils are created all at once in describe()
+    // and last one wins. This modifies a global state,
+    // so there is no way for this to be enabled just for 1 test and not another
     appLog.setLevel(config.get('appLogLevel'));
 
     this.config = config;
