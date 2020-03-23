@@ -5,6 +5,38 @@ const passportCustom = require('passport-custom');
 const CustomStrategy = passportCustom.Strategy;
 
 /**
+ * Derive user object from headers and proxyAuthHeaders config
+ * If no headers are defined or mapped, null is returned
+ * @param {import('express').Request & Req} req
+ */
+function getHeaderUser(req) {
+  const { config } = req;
+  const headerUser = {};
+  config
+    .get('proxyAuthHeaders')
+    .split(' ')
+    .forEach(pairing => {
+      const [fieldName, headerName] = pairing.split(':').map(v => v.trim());
+      const value = req.get(headerName);
+      if (value !== null && value !== undefined) {
+        _.set(headerUser, fieldName, req.get(headerName));
+      }
+    });
+
+  // nedb uses user._id for ids, but user.id should also be supported
+  // However .id should always be deleted
+  if (headerUser.id && !headerUser._id) {
+    headerUser._id = headerUser.id;
+  }
+  delete headerUser.id;
+
+  if (Object.keys(headerUser).length > 0) {
+    return headerUser;
+  }
+  return null;
+}
+
+/**
  * An auth-proxy custom strategy
  * If enabled, iterate over headers and map the values to a user object
  * Look up that user and perform usual auth validations
@@ -15,25 +47,7 @@ async function authProxyStrategy(req, done) {
   try {
     const { config, models } = req;
 
-    const headerUser = {};
-
-    config
-      .get('proxyAuthHeaders')
-      .split(' ')
-      .forEach(pairing => {
-        const [fieldName, headerName] = pairing.split(':').map(v => v.trim());
-        const value = req.get(headerName);
-        if (value !== null && value !== undefined) {
-          _.set(headerUser, fieldName, req.get(headerName));
-        }
-      });
-
-    // nedb uses user._id for ids, but user.id should also be supported
-    // However .id should always be deleted
-    if (headerUser.id && !headerUser._id) {
-      headerUser._id = headerUser.id;
-    }
-    delete headerUser.id;
+    const headerUser = getHeaderUser(req) || {};
 
     // If id and email are not provided we don't have anything to look existing user account up with
     // The request is incomplete and not authorized
@@ -98,6 +112,14 @@ passport.use('auth-proxy', new CustomStrategy(authProxyStrategy));
  */
 function passportProxyAuth(req, res, next) {
   if (!req.isAuthenticated() && req.config.get('proxyAuthEnabled')) {
+    // Only try to authenticate if headers are present to identify a user
+    // This is necessary for routes that do not require authentication.
+    // It may make sense to move all auth like this into the middleware that requires auth?
+    const headerUser = getHeaderUser(req);
+    if (!headerUser) {
+      return next();
+    }
+
     return passport.authenticate('auth-proxy', { session: false })(
       req,
       res,
