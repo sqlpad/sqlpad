@@ -60,19 +60,16 @@ class TestUtils {
       admin: {
         _id: undefined, // set if created
         email: 'admin@test.com',
-        password: 'admin',
         role: 'admin'
       },
       editor: {
         _id: undefined, // set if created
         email: 'editor@test.com',
-        password: 'editor',
         role: 'editor'
       },
       editor2: {
         _id: undefined, // set if created
         email: 'editor2@test.com',
-        password: 'editor2',
         role: 'editor2'
       }
     };
