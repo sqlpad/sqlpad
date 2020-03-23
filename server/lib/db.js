@@ -1,11 +1,11 @@
 const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
-const appLog = require('./appLog');
-const ensureAdmin = require('./ensureAdmin');
+const appLog = require('./app-log');
+const ensureAdmin = require('./ensure-admin');
 const consts = require('./consts');
 const Models = require('../models');
-const SequelizeDb = require('../sequelizeDb');
+const SequelizeDb = require('../sequelize-db');
 
 const TEN_MINUTES = 1000 * 60 * 10;
 const FIVE_MINUTES = 1000 * 60 * 5;

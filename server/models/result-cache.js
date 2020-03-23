@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const sanitize = require('sanitize-filename');
-const appLog = require('../lib/appLog');
+const appLog = require('../lib/app-log');
 const xlsx = require('node-xlsx');
 const { parse } = require('json2csv');
 

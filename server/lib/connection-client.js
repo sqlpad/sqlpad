@@ -2,8 +2,8 @@ const { v4: uuidv4, v5: uuidv5 } = require('uuid');
 const consts = require('./consts');
 const drivers = require('../drivers');
 const renderConnection = require('./render-connection');
-const appLog = require('./appLog');
-const getMeta = require('./getMeta');
+const appLog = require('./app-log');
+const getMeta = require('./get-meta');
 
 /**
  * Connection client runs queries for a given connection and user

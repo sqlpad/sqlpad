@@ -4,7 +4,7 @@ const express = require('express');
 const helmet = require('helmet');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
-const appLog = require('./lib/appLog');
+const appLog = require('./lib/app-log');
 
 /**
  * Create an express app using config

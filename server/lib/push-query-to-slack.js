@@ -1,4 +1,4 @@
-const appLog = require('./appLog');
+const appLog = require('./app-log');
 const request = require('request');
 
 function pushQueryToSlack(config, query) {

@@ -1,7 +1,7 @@
 const passport = require('passport');
 const SamlStrategy = require('passport-saml').Strategy;
 const router = require('express').Router();
-const appLog = require('../lib/appLog');
+const appLog = require('../lib/app-log');
 
 /**
  * Adds passport SAML strategy and SAML auth routes if SAML is configured

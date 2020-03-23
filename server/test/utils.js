@@ -5,11 +5,11 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const request = require('supertest');
 const Config = require('../lib/config');
-const appLog = require('../lib/appLog');
+const appLog = require('../lib/app-log');
 const db = require('../lib/db');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
-const loadSeedData = require('../lib/loadSeedData');
+const loadSeedData = require('../lib/load-seed-data');
 
 const TEST_ARTIFACTS_DIR = path.join(__dirname, '/artifacts');
 

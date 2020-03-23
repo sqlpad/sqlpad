@@ -1,8 +1,8 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
-const fromDefault = require('../../lib/config/fromDefault');
-const fromEnv = require('../../lib/config/fromEnv');
-const fromCli = require('../../lib/config/fromCli');
+const fromDefault = require('../../lib/config/from-default');
+const fromEnv = require('../../lib/config/from-env');
+const fromCli = require('../../lib/config/from-cli');
 
 describe('config', function() {
   it('default', function() {

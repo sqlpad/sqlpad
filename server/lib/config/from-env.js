@@ -1,4 +1,4 @@
-const definitions = require('./configItems');
+const definitions = require('./config-items');
 
 /**
  * Gets config values from environment

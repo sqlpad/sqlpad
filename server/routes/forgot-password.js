@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { v4: uuidv4 } = require('uuid');
 const makeEmail = require('../lib/email');
-const sendError = require('../lib/sendError');
+const sendError = require('../lib/send-error');
 
 router.post('/api/forgot-password', async function(req, res) {
   const { models, appLog } = req;

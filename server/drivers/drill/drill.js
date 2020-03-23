@@ -1,7 +1,7 @@
 const fetch = require('node-fetch');
 let request = require('request');
 let url = require('url');
-const appLog = require('../../lib/appLog');
+const appLog = require('../../lib/app-log');
 
 exports.version = '1.0';
 

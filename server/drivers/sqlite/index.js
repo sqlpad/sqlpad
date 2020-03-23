@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3');
-const appLog = require('../../lib/appLog');
-const splitSql = require('../../lib/splitSql');
+const appLog = require('../../lib/app-log');
+const splitSql = require('../../lib/split-sql');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'sqlite';

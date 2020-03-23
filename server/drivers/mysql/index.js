@@ -1,6 +1,6 @@
 const fs = require('fs');
 const mysql = require('mysql');
-const appLog = require('../../lib/appLog');
+const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'mysql';

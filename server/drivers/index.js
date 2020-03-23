@@ -1,4 +1,4 @@
-const appLog = require('../lib/appLog');
+const appLog = require('../lib/app-log');
 const validate = require('./validate');
 
 const drivers = {
