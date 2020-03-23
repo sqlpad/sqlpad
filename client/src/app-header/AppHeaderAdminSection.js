@@ -5,6 +5,7 @@ import Drawer from '../common/Drawer';
 import ConnectionAccessListDrawer from '../connectionAccesses/ConnectionAccessListDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
 import UserList from '../users/UserList';
+import ServiceTokenListDrawer from '../serviceTokens/ServiceTokenListDrawer';
 import AppHeaderDivider from './AppHeaderDivider';
 
 function mapStateToProps(state) {
@@ -19,6 +20,7 @@ function AppHeaderAdminSection({ currentUser }) {
   const [showConnections, setShowConnections] = useState(false);
   const [showConnectionAccesses, setShowConnectionAccesses] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
+  const [showServiceTokens, setShowServiceTokens] = useState(false);
 
   if (currentUser.role !== 'admin') {
     return null;
@@ -78,7 +80,21 @@ function AppHeaderAdminSection({ currentUser }) {
       placement="left"
     >
       <UserList />
-    </Drawer>
+    </Drawer>,
+
+    <Button
+      key="service-tokens-button"
+      variant="ghost"
+      onClick={() => setShowServiceTokens(true)}
+    >
+      Service Tokens
+    </Button>,
+
+    <ServiceTokenListDrawer
+      key="service-tokens-drawer"
+      visible={showServiceTokens}
+      onClose={() => setShowServiceTokens(false)}
+    />
   ];
 }
 

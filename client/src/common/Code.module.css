@@ -1,0 +1,21 @@
+pre {
+  font-family: 'Courier 10 Pitch', Courier, monospace;
+  font-size: 95%;
+  line-height: 140%;
+  display: inline-block;
+  word-wrap: break-word;
+}
+
+code {
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+  font-size: 95%;
+  line-height: 140%;
+  background: #faf8f0;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  white-space: normal;
+}
+
+.danger {
+  color: var(--secondary-color);
+}
