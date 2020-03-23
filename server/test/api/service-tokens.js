@@ -1,4 +1,5 @@
 const assert = require('assert');
+const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const TestUtils = require('../utils');
 
@@ -6,6 +7,8 @@ describe('api/service-tokens', function() {
   const serviceTokenSecret = 'secr3t';
   const utils = new TestUtils({ serviceTokenSecret });
   const utilsNoJwtSecret = new TestUtils();
+  let editorServiceToken;
+  let adminServiceToken;
 
   before(async function() {
     await utils.init(true);
@@ -39,6 +42,7 @@ describe('api/service-tokens', function() {
     });
 
     assert(!body.error, 'no error');
+    assert(body.serviceToken.id, 'has id');
     assert(body.serviceToken.name, 'has name');
     assert(body.serviceToken.role, 'has role');
     assert(body.serviceToken.maskedToken, 'has maskedToken');
@@ -53,6 +57,9 @@ describe('api/service-tokens', function() {
     assert.equal(decodedTokenPayload.role, 'editor');
     assert(decodedTokenPayload.iat, 'has issued at');
     assert(!decodedTokenPayload.exp, 'no expiration time');
+
+    // Save the token
+    editorServiceToken = body.serviceToken;
   });
 
   it('Creates service token with expiry date', async function() {
@@ -63,6 +70,7 @@ describe('api/service-tokens', function() {
     });
 
     assert(!body.error, 'no error');
+    assert(body.serviceToken.id, 'has id');
     assert(body.serviceToken.name, 'has name');
     assert(body.serviceToken.role, 'has role');
     assert(body.serviceToken.maskedToken, 'has maskedToken');
@@ -77,6 +85,9 @@ describe('api/service-tokens', function() {
     assert.equal(decodedTokenPayload.role, 'admin');
     assert(decodedTokenPayload.iat, 'has issued at');
     assert(decodedTokenPayload.exp, 'has expiration time');
+
+    // Save the token
+    adminServiceToken = body.serviceToken;
   });
 
   it('Re-creates service token with existing name', async function() {
@@ -90,9 +101,50 @@ describe('api/service-tokens', function() {
     assert.equal(body.error, 'Service token already exists');
   });
 
+  it('Accessing API endpoint without service token', async function() {
+    await request(utils.app)
+      .get('/api/users')
+      .expect(401);
+  });
+
+  it('Accessing API endpoint with invalid service token', async function() {
+    await request(utils.app)
+      .get('/api/users')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer invalid.jwt.token')
+      .expect(401);
+  });
+
+  it('Accessing API endpoint with valid service token', async function() {
+    await request(utils.app)
+      .get('/api/users')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer ' + editorServiceToken.token)
+      .expect(200);
+  });
+
+  it('Accessing API restricted endpoint with valid service token and no permission', async function() {
+    await request(utils.app)
+      .get('/api/service-tokens')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer ' + editorServiceToken.token)
+      .expect(403);
+  });
+
+  it('Accessing restricted API endpoint with valid service token and permission', async function() {
+    await request(utils.app)
+      .get('/api/service-tokens')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer ' + adminServiceToken.token)
+      .expect(200);
+  });
+
   it('Delete and get service tokens', async function() {
-    // Delete an existing token
-    const bodyDel = await utils.del('admin', '/api/service-tokens/1');
+    // Delete the admin service token
+    const bodyDel = await utils.del(
+      'admin',
+      '/api/service-tokens/' + adminServiceToken.id
+    );
     assert(!bodyDel.error, 'no error');
 
     // Get tokens after delete, expecting one entry
@@ -100,5 +152,13 @@ describe('api/service-tokens', function() {
     assert(!bodyGet.error, 'no error');
     assert(Array.isArray(bodyGet.serviceTokens), 'serviceTokens is an array');
     assert.equal(bodyGet.serviceTokens.length, 1, '1 length');
+  });
+
+  it('Accessing API restricted endpoint with deleted service token', async function() {
+    await request(utils.app)
+      .get('/api/service-tokens')
+      .set('Accept', 'application/json')
+      .set('Authorization', 'Bearer ' + adminServiceToken.token)
+      .expect(401);
   });
 });
