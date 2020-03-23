@@ -80,7 +80,7 @@ function ServiceTokenList({ currentUser }) {
           <DeleteConfirmButton
             key="delete"
             confirmMessage="Delete service token?"
-            onConfirm={e => deleteServiceToken(item._id)}
+            onConfirm={e => deleteServiceToken(item.id)}
             style={{ marginLeft: 8 }}
           >
             Delete

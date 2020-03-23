@@ -1,23 +1,6 @@
-const Joi = require('@hapi/joi');
-const jwt = require('jsonwebtoken');
-
-const schema = Joi.object({
-  _id: Joi.string().optional(), // will be auto-gen by nedb
-  name: Joi.string().required(),
-  role: Joi.string()
-    .lowercase()
-    .allow('admin', 'editor', 'viewer')
-    .required(),
-  maskedToken: Joi.string(),
-  duration: Joi.number()
-    .integer()
-    .min(1)
-    .max(365)
-    .default(0),
-  expiryDate: Joi.date(),
-  createdDate: Joi.date().default(Date.now),
-  modifiedDate: Joi.date().default(Date.now)
-});
+// NOTE - because ServiceTokens is driven off of Sequelize ORM model
+// and not nedb (which is schemaless) I am skipping defining a Joi schema here.
+// For info on what QueryAcl schema is, see sequelize/QueryAcl.js
 
 const maskToken = token => {
   return '********************'.concat(token.slice(-5));
@@ -63,37 +46,28 @@ class ServiceTokens {
 
     data.modifiedDate = new Date();
     data.maskedToken = maskToken(token);
+    await this.sequelizeDb.ServiceTokens.create(data);
 
-    const joiResult = schema.validate(data);
-    if (joiResult.error) {
-      return Promise.reject(joiResult.error);
-    }
-
-    await this.nedb.serviceTokens.update({ name: data.name }, joiResult.value, {
-      upsert: true
-    });
-
+    // Do not write the actual token into the database, send it back
+    // to the client only once
     data.token = token;
     return data;
   }
 
   findOneById(id) {
-    return this.nedb.serviceTokens.findOne({ _id: id });
+    return this.sequelizeDb.ServiceTokens.findOne({ where: { id } });
   }
 
   findOneByName(name) {
-    return this.nedb.serviceTokens.findOne({ name });
+    return this.sequelizeDb.ServiceTokens.findOne({ where: { name } });
   }
 
   async removeOneById(id) {
-    return this.nedb.serviceTokens.remove({ _id: id });
+    return this.sequelizeDb.ServiceTokens.destroy({ where: { id } });
   }
 
   findAll() {
-    return this.nedb.serviceTokens
-      .cfind({}, {})
-      .sort({ createdDate: 1 })
-      .exec();
+    return this.sequelizeDb.ServiceTokens.findAll();
   }
 }
 

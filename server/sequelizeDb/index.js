@@ -22,6 +22,7 @@ class SequelizeDb {
     this.Sequelize = Sequelize;
 
     this.QueryAcl = require('./QueryAcl')(sequelize);
+    this.ServiceTokens = require('./ServiceTokens')(sequelize);
   }
 }
 
