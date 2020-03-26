@@ -358,3 +358,35 @@ Path to root of seed data directories. See Seed Data documentation.
 
 - Key: `seedDataPath`
 - Env: `SQLPAD_SEED_DATA_PATH`
+
+## authProxyEnabled
+
+Enable auth proxy authentication support
+
+- Key: `authProxyEnabled`
+- Env: `SQLPAD_AUTH_PROXY_ENABLED`
+- Default: `false`
+
+## authProxyAutoSignUp
+
+Auto create a user record if it does not exist when new user is detected via auth proxy
+
+- Key: `authProxyAutoSignUp`
+- Env: `SQLPAD_AUTH_PROXY_AUTO_SIGN_UP`
+- Default: `false`
+
+## authProxyDefaultRole
+
+Default role to assign user created when `authProxyAutoSignUp` is turned on. By default this is an empty-string and not used, expecting a role to be provided via header-mapping.
+
+- Key: `authProxyDefaultRole`
+- Env: `SQLPAD_AUTH_PROXY_DEFAULT_ROLE`
+
+## authProxyHeaders
+
+Space-delimited field:header mappings to use to derive user information from HTTP headers. A mapping to `email` is required at a minimum assuming `authProxyDefaultRole` is set. Otherwise `role`, `id`, `name` and `data.<customField>` fields may be set.
+
+When supplying both `id` and `email`, `id` will be used for user matching instead of `email`, updating SQLPad user `email` fields when they change (assuming `id` is not changing).
+
+- Key: `authProxyHeaders`
+- Env: `SQLPAD_AUTH_PROXY_HEADERS`
