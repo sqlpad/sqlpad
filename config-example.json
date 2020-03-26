@@ -40,5 +40,9 @@
   "whitelistedDomains": "",
   "appLogLevel": "info",
   "webLogLevel": "info",
-  "seedDataPath": ""
+  "seedDataPath": "",
+  "authProxyEnabled": false,
+  "authProxyAutoSignUp": false,
+  "authProxyDefaultRole": "",
+  "authProxyHeaders": ""
 }

@@ -238,6 +238,30 @@ const configItems = [
     key: 'seedDataPath',
     envVar: 'SQLPAD_SEED_DATA_PATH',
     default: ''
+  },
+  {
+    key: 'authProxyEnabled',
+    envVar: 'SQLPAD_AUTH_PROXY_ENABLED',
+    default: false
+  },
+  {
+    key: 'authProxyAutoSignUp',
+    envVar: 'SQLPAD_AUTH_PROXY_AUTO_SIGN_UP',
+    default: false
+  },
+  {
+    key: 'authProxyDefaultRole',
+    envVar: 'SQLPAD_AUTH_PROXY_DEFAULT_ROLE',
+    default: ''
+  },
+  // Define headers to map to user attributes, space delimited
+  // At a minimum, email or id must be mapped, as they will be used as a user identifier
+  // Other attributes may be mapped as well, including data attributes via data.somePropertyName
+  // Example `id:X-WEBAUTH-ID email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME role:X-WEBAUTH-ROLE data.field:X-WEBAUTH-field`
+  {
+    key: 'authProxyHeaders',
+    envVar: 'SQLPAD_AUTH_PROXY_HEADERS',
+    default: ''
   }
 ];
 

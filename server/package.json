@@ -63,6 +63,7 @@
     "node-xlsx": "^0.15.0",
     "nodemailer": "^6.4.5",
     "passport": "^0.4.1",
+    "passport-custom": "^1.1.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",

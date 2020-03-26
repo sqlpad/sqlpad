@@ -48,6 +48,7 @@ function makeApp(config, models) {
   const favicon = require('serve-favicon');
   const passport = require('passport');
   const passportBasic = require('./middleware/passport-basic');
+  const passportAuthProxy = require('./middleware/passport-auth-proxy');
   const disableAuth = require('./middleware/disable-auth');
 
   const app = express();
@@ -110,6 +111,10 @@ function makeApp(config, models) {
 
   if (config.get('disableAuth')) {
     app.use(disableAuth);
+  }
+
+  if (config.get('authProxyEnabled')) {
+    app.use(passportAuthProxy);
   }
 
   /*  Routes
