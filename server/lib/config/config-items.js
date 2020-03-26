@@ -241,17 +241,17 @@ const configItems = [
   },
   {
     key: 'authProxyEnabled',
-    envVar: 'SQLPAD_PROXY_AUTH_ENABLED',
+    envVar: 'SQLPAD_AUTH_PROXY_ENABLED',
     default: false
   },
   {
     key: 'authProxyAutoSignUp',
-    envVar: 'SQLPAD_PROXY_AUTH_AUTO_SIGN_UP',
+    envVar: 'SQLPAD_AUTH_PROXY_AUTO_SIGN_UP',
     default: false
   },
   {
     key: 'authProxyDefaultRole',
-    envVar: 'SQLPAD_PROXY_AUTH_DEFAULT_ROLE',
+    envVar: 'SQLPAD_AUTH_PROXY_DEFAULT_ROLE',
     default: ''
   },
   // Define headers to map to user attributes, space delimited
@@ -260,7 +260,7 @@ const configItems = [
   // Example `id:X-WEBAUTH-ID email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME role:X-WEBAUTH-ROLE data.field:X-WEBAUTH-field`
   {
     key: 'authProxyHeaders',
-    envVar: 'SQLPAD_PROXY_AUTH_HEADERS',
+    envVar: 'SQLPAD_AUTH_PROXY_HEADERS',
     default: ''
   }
 ];
