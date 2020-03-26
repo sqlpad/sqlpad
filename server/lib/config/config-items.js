@@ -110,6 +110,11 @@ const configItems = [
     default: false
   },
   {
+    key: 'serviceTokenSecret',
+    envVar: 'SERVICE_TOKEN_SECRET',
+    default: ''
+  },
+  {
     key: 'disableAuth',
     envVar: 'DISABLE_AUTH',
     default: false
