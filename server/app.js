@@ -143,7 +143,7 @@ function makeApp(config, models) {
     require('./routes/signout.js'),
     require('./routes/service-tokens.js'),
     require('./routes/local-auth.js')(config),
-    require('./routes/oauth.js')(config),
+    require('./routes/google-auth.js')(config),
     require('./routes/saml.js')(config)
   ];
 
