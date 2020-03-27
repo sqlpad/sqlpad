@@ -5,6 +5,7 @@ const levels = ['fatal', 'error', 'warn', 'info', 'debug', 'silent'];
 
 const defaults = {
   name: 'sqlpad-app',
+  timestamp: pino.stdTimeFunctions.isoTime,
   redact: {
     paths: ['passhash', '*.passhash'],
     censor: '******'
