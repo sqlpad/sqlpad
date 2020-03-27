@@ -4,9 +4,9 @@
   "private": true,
   "proxy": "http://localhost:3010",
   "dependencies": {
-    "@reach/dialog": "^0.9.0",
-    "@reach/menu-button": "^0.9.0",
-    "@reach/tooltip": "^0.9.0",
+    "@reach/dialog": "^0.9.1",
+    "@reach/menu-button": "^0.9.1",
+    "@reach/tooltip": "^0.9.1",
     "brace": "^0.11.1",
     "d3": "^5.15.0",
     "downshift": "^5.0.5",
@@ -14,18 +14,18 @@
     "keymaster": "^1.6.2",
     "localforage": "^1.7.3",
     "lodash": "^4.17.15",
-    "match-sorter": "^4.0.2",
+    "match-sorter": "^4.1.0",
     "mdi-react": "^7.0.0",
     "mitt": "^1.2.0",
     "prop-types": "^15.7.2",
-    "react": "^16.13.0",
+    "react": "^16.13.1",
     "react-ace": "^7.0.5",
-    "react-dom": "^16.13.0",
+    "react-dom": "^16.13.1",
     "react-draggable": "^4.2.0",
     "react-measure": "^2.3.0",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.0",
-    "react-split-pane": "^0.1.89",
+    "react-scripts": "^3.4.1",
+    "react-split-pane": "^0.1.91",
     "react-window": "^1.8.5",
     "taucharts": "^2.8.0",
     "unistore": "^3.5.1",
@@ -48,8 +48,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "eslint-config-prettier": "^6.10.0",
+    "eslint-config-prettier": "^6.10.1",
     "eslint-plugin-prettier": "^3.1.2",
-    "source-map-explorer": "^2.4.0"
+    "source-map-explorer": "^2.4.1"
   }
 }
