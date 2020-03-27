@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
+const pino = require('pino');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const appLog = require('./lib/app-log');
@@ -28,6 +29,7 @@ function makeApp(config, models) {
 
   const expressPino = require('express-pino-logger')({
     level: webLogLevel,
+    timestamp: pino.stdTimeFunctions.isoTime,
     name: 'sqlpad-web',
     // express-pino-logger logs all the headers by default
     // Removing these for now but open to adding them back in based on feedback
