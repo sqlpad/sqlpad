@@ -1,4 +1,5 @@
 const basic = require('./basic');
+const google = require('./google');
 const local = require('./local');
 const saml = require('./saml');
 
@@ -7,8 +8,9 @@ const saml = require('./saml');
  * @param {object} config
  */
 function registerAuthStrategies(config) {
-  local(config);
   basic(config);
+  google(config);
+  local(config);
   saml(config);
 }
 
