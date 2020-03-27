@@ -6,6 +6,7 @@ const pino = require('pino');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const appLog = require('./lib/app-log');
+const registerAuthStrategies = require('./auth-strategies/register-auth-strategies');
 
 /**
  * Create an express app using config
@@ -18,6 +19,8 @@ function makeApp(config, models) {
   if (!models) {
     throw new Error('models is required to create app');
   }
+
+  registerAuthStrategies(config);
 
   const baseUrl = config.get('baseUrl');
   const dbPath = config.get('dbPath');
