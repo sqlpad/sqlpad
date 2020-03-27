@@ -1,5 +1,6 @@
 const basic = require('./basic');
 const google = require('./google');
+const jwtServiceToken = require('./jwt-service-token');
 const local = require('./local');
 const saml = require('./saml');
 
@@ -10,6 +11,7 @@ const saml = require('./saml');
 function registerAuthStrategies(config) {
   basic(config);
   google(config);
+  jwtServiceToken(config);
   local(config);
   saml(config);
 }
