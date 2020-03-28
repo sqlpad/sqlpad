@@ -1,7 +1,7 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
+const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link.js');
 const sendError = require('../lib/send-error');
 const pushQueryToSlack = require('../lib/push-query-to-slack');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
@@ -75,7 +75,7 @@ router.get('/api/queries', mustBeAuthenticated, listQueries);
  * @param {*} res
  */
 async function getQuery(req, res) {
-  const { models, user, params } = req;
+  const { models, user, params, config } = req;
   try {
     const query = await models.findQueryById(params._id);
 
@@ -85,6 +85,11 @@ async function getQuery(req, res) {
       return res.json({
         query: {}
       });
+    }
+
+    // If table and chart links do not require send query regardless of user access
+    if (!config.get('tableChartLinksRequireAuth')) {
+      return res.json({ query });
     }
 
     const decorated = decorateQueryUserAccess(query, user);

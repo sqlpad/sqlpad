@@ -109,8 +109,8 @@ async function getQueryResult(req, data) {
   if (config.get('queryHistoryRetentionTimeInDays') > 0) {
     await models.queryHistory.removeOldEntries();
     await models.queryHistory.save({
-      userId: user._id,
-      userEmail: user.email,
+      userId: user ? user._id : 'unauthenticated link',
+      userEmail: user ? user.email : 'anauthenticated link',
       connectionId: connection._id,
       connectionName: connection.name,
       startTime: queryResult.startTime,

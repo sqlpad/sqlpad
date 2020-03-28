@@ -1,12 +1,13 @@
 const passport = require('passport');
+const authProxy = require('./auth-proxy');
+const basic = require('./basic');
+const google = require('./google');
+const jwtServiceToken = require('./jwt-service-token');
+const local = require('./local');
+const saml = require('./saml');
 
-// For actual passport strategy implementations, refer to related route files:
-//   Local & Basic:  routes/signup-signin-signout.js
-//   Google:         routes/oauth.js
-//   SAML:           routes/saml.js
+// The serializeUser/deserializeUser functions apply regardless of the strategy used.
 //
-// The passport config below applies regardless of the strategy used.
-
 // Given a user object, extract the id to use for session
 // nedb objects use `._id`, but some auth implementations at one point used `.id`
 passport.serializeUser(function(user, done) {
@@ -32,3 +33,18 @@ passport.deserializeUser(async function(req, id, done) {
     done(error);
   }
 });
+
+/**
+ * Register auth strategies (if configured)
+ * @param {object} config
+ */
+function authStrategies(config) {
+  authProxy(config);
+  basic(config);
+  google(config);
+  jwtServiceToken(config);
+  local(config);
+  saml(config);
+}
+
+module.exports = authStrategies;

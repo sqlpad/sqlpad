@@ -82,6 +82,16 @@ class Config {
     );
   }
 
+  samlAuthConfigured() {
+    return (
+      this.all.samlEntryPoint &&
+      this.all.samlIssuer &&
+      this.all.samlCallbackUrl &&
+      this.all.samlCert &&
+      this.all.samlAuthContext
+    );
+  }
+
   /**
    * Get connections from config.
    * These are provided at runtime and not upserted
