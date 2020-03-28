@@ -106,8 +106,6 @@ function makeApp(config, models) {
 
   /*  Passport setup
   ============================================================================= */
-  require('./middleware/passport.js');
-
   // If local auth is not disabled, support basic auth using a user's email and password
   // This is currently used for running integration tests and serves as a convenient alternative to API keys
   if (!config.get('disableUserpassAuth')) {
