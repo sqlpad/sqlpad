@@ -1,10 +1,15 @@
 const passport = require('passport');
-const express = require('express');
+const router = require('express').Router();
 const checkWhitelist = require('../lib/check-whitelist');
 const sendError = require('../lib/send-error');
 
 async function handleSignup(req, res, next) {
-  const { models } = req;
+  const { models, config } = req;
+
+  if (config.get('disableUserpassAuth')) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
   try {
     const whitelistedDomains = req.config.get('whitelistedDomains');
 
@@ -49,29 +54,13 @@ async function handleSignup(req, res, next) {
   }
 }
 
-function sendSuccess(req, res) {
-  res.json({});
-}
-
-/**
- * Adds local routes if not disabled
- * @param {object} config
- */
-function makeLocalAuth(config) {
-  const router = express.Router();
-
-  if (!config.get('disableUserpassAuth')) {
-    router.post(
-      '/api/signup',
-      handleSignup,
-      passport.authenticate('local'),
-      sendSuccess
-    );
-
-    router.post('/api/signin', passport.authenticate('local'), sendSuccess);
+router.post(
+  '/api/signup',
+  handleSignup,
+  passport.authenticate('local'),
+  function(req, res) {
+    res.json({});
   }
+);
 
-  return router;
-}
-
-module.exports = makeLocalAuth;
+module.exports = router;

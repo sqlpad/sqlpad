@@ -136,6 +136,6 @@ describe('local auth disabled', async function() {
         passwordConfirmation: 'admin',
         email: 'admin@test.com'
       })
-      .expect(404);
+      .expect(403);
   });
 });
