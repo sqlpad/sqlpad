@@ -6,7 +6,7 @@ const pino = require('pino');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const appLog = require('./lib/app-log');
-const registerAuthStrategies = require('./auth-strategies/register-auth-strategies');
+const authStrategies = require('./auth-strategies');
 
 /**
  * Create an express app using config
@@ -102,7 +102,7 @@ function makeApp(config, models) {
 
   /*  Passport setup
   ============================================================================= */
-  registerAuthStrategies(config);
+  authStrategies(config);
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(passportBasic);

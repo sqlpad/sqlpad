@@ -38,7 +38,7 @@ passport.deserializeUser(async function(req, id, done) {
  * Register auth strategies (if configured)
  * @param {object} config
  */
-function registerAuthStrategies(config) {
+function authStrategies(config) {
   authProxy(config);
   basic(config);
   google(config);
@@ -47,4 +47,4 @@ function registerAuthStrategies(config) {
   saml(config);
 }
 
-module.exports = registerAuthStrategies;
+module.exports = authStrategies;
