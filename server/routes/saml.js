@@ -1,38 +1,26 @@
 const passport = require('passport');
-const express = require('express');
+const router = require('express').Router();
 
-/**
- * Adds SAML auth routes if SAML is configured
- * @param {object} config
- */
-function makeSamlAuth(config) {
-  const router = express.Router();
-
-  if (config.samlAuthConfigured()) {
-    router.post(
-      '/login/callback',
-      passport.authenticate('saml', {
-        failureRedirect: '/',
-        failureFlash: true
-      }),
-      function(req, res) {
-        res.redirect('/');
-      }
-    );
-
-    router.get(
-      '/auth/saml',
-      passport.authenticate('saml', {
-        failureRedirect: '/',
-        failureFlash: true
-      }),
-      function(req, res) {
-        res.redirect('/');
-      }
-    );
+router.post(
+  '/login/callback',
+  passport.authenticate('saml', {
+    failureRedirect: '/',
+    failureFlash: true
+  }),
+  function(req, res) {
+    res.redirect('/');
   }
+);
 
-  return router;
-}
+router.get(
+  '/auth/saml',
+  passport.authenticate('saml', {
+    failureRedirect: '/',
+    failureFlash: true
+  }),
+  function(req, res) {
+    res.redirect('/');
+  }
+);
 
-module.exports = makeSamlAuth;
+module.exports = router;

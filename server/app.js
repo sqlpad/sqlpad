@@ -132,7 +132,7 @@ function makeApp(config, models) {
     require('./routes/signup.js'),
     require('./routes/signin.js'),
     require('./routes/google-auth.js'),
-    require('./routes/saml.js')(config)
+    require('./routes/saml.js')
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
