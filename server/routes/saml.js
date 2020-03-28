@@ -9,7 +9,6 @@ function makeSamlAuth(config) {
   const router = express.Router();
 
   if (config.samlAuthConfigured()) {
-    // Add SAML auth routes
     router.post(
       '/login/callback',
       passport.authenticate('saml', {

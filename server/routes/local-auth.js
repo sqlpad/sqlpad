@@ -54,7 +54,7 @@ function sendSuccess(req, res) {
 }
 
 /**
- * Adds local and basic auth strategy and routes if not disabled
+ * Adds local routes if not disabled
  * @param {object} config
  */
 function makeLocalAuth(config) {
