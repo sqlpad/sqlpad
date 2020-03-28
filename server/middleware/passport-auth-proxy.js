@@ -1,28 +1,49 @@
 require('../typedefs');
 const passport = require('passport');
-const getHeaderUser = require('../auth-strategies/get-header-user');
+const _ = require('lodash');
 
 /**
  * @param {import('express').Request & Req} req
  * @param {*} res
  */
-function passportProxyAuth(req, res, next) {
-  if (!req.isAuthenticated() && req.config.get('authProxyEnabled')) {
-    // Only try to authenticate if headers are present to identify a user
-    // This is necessary for routes that do not require authentication.
-    // It may make sense to move all auth like this into the middleware that requires auth?
-    const headerUser = getHeaderUser(req);
-    if (!headerUser) {
-      return next();
-    }
+function passportAuthProxy(req, res, next) {
+  const { config } = req;
 
-    return passport.authenticate('auth-proxy', { session: false })(
-      req,
-      res,
-      next
-    );
+  if (!req.isAuthenticated() && config.get('authProxyEnabled')) {
+    // Derive headerUser from headers
+    let headerUser = {};
+    config
+      .get('authProxyHeaders')
+      .split(' ')
+      .forEach(pairing => {
+        const [fieldName, headerName] = pairing.split(':').map(v => v.trim());
+        const value = req.get(headerName);
+        if (value !== null && value !== undefined) {
+          _.set(headerUser, fieldName, req.get(headerName));
+        }
+      });
+
+    // nedb uses user._id for ids, but user.id should also be supported
+    // However .id should always be deleted
+    if (headerUser.id && !headerUser._id) {
+      headerUser._id = headerUser.id;
+    }
+    delete headerUser.id;
+
+    // Only try to authenticate if headers are present to identify a user
+    // We otherwise assume the request is not meant to be authenticated (not all routes require it)
+    // This is necessary for routes that do not require authentication.
+    if (Object.keys(headerUser).length > 0) {
+      // Set req.headerUser for auth-proxy reference later
+      req.headerUser = headerUser;
+      return passport.authenticate('auth-proxy', { session: false })(
+        req,
+        res,
+        next
+      );
+    }
   }
   next();
 }
 
-module.exports = passportProxyAuth;
+module.exports = passportAuthProxy;

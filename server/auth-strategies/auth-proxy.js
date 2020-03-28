@@ -4,7 +4,6 @@ const passport = require('passport');
 const passportCustom = require('passport-custom');
 const CustomStrategy = passportCustom.Strategy;
 const appLog = require('../lib/app-log');
-const getHeaderUser = require('./get-header-user');
 
 /**
  * An auth-proxy custom strategy
@@ -15,9 +14,15 @@ const getHeaderUser = require('./get-header-user');
  */
 async function authProxyStrategy(req, done) {
   try {
-    const { config, models } = req;
+    const { config, models, headerUser } = req;
 
-    const headerUser = getHeaderUser(req) || {};
+    // This shouldn't happen as the header deriving happens in middleware
+    if (!headerUser) {
+      appLog.warn(
+        'Auth proxy authentication attempted, but req.headerUser not populated'
+      );
+      return done(null, false);
+    }
 
     // If id and email are not provided we don't have anything to look existing user account up with
     // The request is incomplete and not authorized
