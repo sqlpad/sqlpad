@@ -20,8 +20,6 @@ function makeApp(config, models) {
     throw new Error('models is required to create app');
   }
 
-  registerAuthStrategies(config);
-
   const baseUrl = config.get('baseUrl');
   const dbPath = config.get('dbPath');
   const debug = config.get('debug');
@@ -100,25 +98,16 @@ function makeApp(config, models) {
     })
   );
 
-  app.use(passport.initialize());
-  app.use(passport.session());
   app.use(baseUrl, express.static(path.join(__dirname, 'public')));
 
   /*  Passport setup
   ============================================================================= */
-  // If local auth is not disabled, support basic auth using a user's email and password
-  // This is currently used for running integration tests and serves as a convenient alternative to API keys
-  if (!config.get('disableUserpassAuth')) {
-    app.use(passportBasic);
-  }
-
-  if (config.get('disableAuth')) {
-    app.use(disableAuth);
-  }
-
-  if (config.get('authProxyEnabled')) {
-    app.use(passportAuthProxy);
-  }
+  registerAuthStrategies(config);
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(passportBasic);
+  app.use(disableAuth);
+  app.use(passportAuthProxy);
 
   /*  Routes
   ============================================================================= */
