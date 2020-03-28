@@ -75,7 +75,7 @@ router.get('/api/queries', mustBeAuthenticated, listQueries);
  * @param {*} res
  */
 async function getQuery(req, res) {
-  const { models, user, params } = req;
+  const { models, user, params, config } = req;
   try {
     const query = await models.findQueryById(params._id);
 
@@ -85,6 +85,11 @@ async function getQuery(req, res) {
       return res.json({
         query: {}
       });
+    }
+
+    // If table and chart links do not require send query regardless of user access
+    if (!config.get('tableChartLinksRequireAuth')) {
+      return res.json({ query });
     }
 
     const decorated = decorateQueryUserAccess(query, user);
