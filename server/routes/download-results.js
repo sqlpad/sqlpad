@@ -1,6 +1,6 @@
 const fs = require('fs');
 const router = require('express').Router();
-const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
+const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link.js');
 
 router.get(
   '/download-results/:cacheKey.csv',

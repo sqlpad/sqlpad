@@ -1,7 +1,7 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link-noauth.js');
+const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link.js');
 const sendError = require('../lib/send-error');
 const pushQueryToSlack = require('../lib/push-query-to-slack');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
