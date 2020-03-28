@@ -111,28 +111,36 @@ function makeApp(config, models) {
 
   /*  Routes
   ============================================================================= */
+  // TODO - separate these out, creating a protected router and non-protected router
+  // Protected will always require auth, non-protected won't
+  // The auth-or-chart-link routes need to be figured out.
   const routers = [
-    require('./routes/drivers.js'),
-    require('./routes/users.js'),
+    // No auth required for thee
     require('./routes/forgot-password.js'),
     require('./routes/password-reset.js'),
+    require('./routes/signout.js'),
+    require('./routes/signup.js'),
+    require('./routes/signin.js'),
+    require('./routes/google-auth.js'),
+    require('./routes/saml.js'),
+
+    // Mix of auth required or chart link
+    require('./routes/query-result.js'),
+    require('./routes/download-results.js'),
+    require('./routes/queries.js'),
+
+    // Auth required
+    require('./routes/drivers.js'),
+    require('./routes/users.js'),
     require('./routes/connections.js'),
     require('./routes/connection-accesses.js'),
     require('./routes/connection-clients.js'),
     require('./routes/test-connection.js'),
-    require('./routes/queries.js'),
     require('./routes/query-history.js'),
-    require('./routes/query-result.js'),
-    require('./routes/download-results.js'), // streams result download to browser
     require('./routes/schema-info.js'),
     require('./routes/tags.js'),
     require('./routes/format-sql.js'),
-    require('./routes/signout.js'),
-    require('./routes/service-tokens.js'),
-    require('./routes/signup.js'),
-    require('./routes/signin.js'),
-    require('./routes/google-auth.js'),
-    require('./routes/saml.js')
+    require('./routes/service-tokens.js')
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
