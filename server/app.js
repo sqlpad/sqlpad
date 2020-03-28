@@ -131,7 +131,7 @@ function makeApp(config, models) {
     require('./routes/service-tokens.js'),
     require('./routes/signup.js'),
     require('./routes/signin.js'),
-    require('./routes/google-auth.js')(config),
+    require('./routes/google-auth.js'),
     require('./routes/saml.js')(config)
   ];
 
