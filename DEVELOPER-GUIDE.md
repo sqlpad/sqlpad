@@ -113,6 +113,27 @@ It can be used within SQLPad by creating a connection using the SQLite driver, a
 
 The data in the database is somewhat nonsensical. It is also not randomized so that the results can be predictable. If you'd like to expand on this database, feel free.
 
+## Running Tests
+
+SQLPad's test cases focus on the API server, with majority of tests being integration tests, with some unit tests sprinkled throughout.
+
+Tests are located under `server/test` directory, and use `mocha` as a test runner. Tests may be run by running `npm test` within the server directory. For tests to run successfully, dependencies must be installed and the test database fixture generated.
+
+```sh
+cd server
+# if dependencies have not yet been installed (build.sh will do this)
+npm ci
+# If test fixture has not yet been generated (build.sh will do this)
+node generate-test-db-fixture.js
+# Run tests
+npm test
+
+# If you are aiming to run a specific test case,
+# you may do so using npx to call mocha,
+# specifying the path to the test file and --exit to exit after tests have run
+npx mocha test/path/to/file.js --exit
+```
+
 ## Releases
 
 SQLPad tries to follow [semantic versioning](https://semver.org/). As an application, this primarily means breaking HTTP API changes, breaking configuration changes, or major UI design changes will result in a major version bump. Minor and patch version bumps will consist of enhancements and fixes.
