@@ -6,7 +6,6 @@ const drivers = {
   crate: require('./crate'),
   drill: require('./drill'),
   hdb: require('./hdb'),
-  mock: require('./mock'),
   mysql: require('./mysql'),
   postgres: require('./postgres'),
   presto: require('./presto'),

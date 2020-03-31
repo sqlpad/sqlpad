@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
-const sqliteDriver = require('../drivers/sqlite');
+const sqliteDriver = require('./drivers/sqlite');
 
 /**
  * This script generates server/test/fixtures/test.sqlite file for testing and dev purposes
@@ -17,7 +17,7 @@ const sqliteDriver = require('../drivers/sqlite');
  * If always distributed it can serve as a good debug tool for others.
  */
 
-const filename = path.join(__dirname, 'fixtures/test.sqlite');
+const filename = path.join(__dirname, 'test/fixtures/test.sqlite');
 
 const client = new sqliteDriver.Client({
   filename

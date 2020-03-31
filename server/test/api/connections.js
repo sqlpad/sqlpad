@@ -31,7 +31,7 @@ describe('api/connections', function() {
     assert.equal(body.connection.driver, 'postgres');
     assert.equal(body.connection.username, 'username');
 
-    // As of writing this test, only postgres and mock connections should have this set to true
+    // As of writing this test, only postgres and sqlite connections should have this set to true
     assert.equal(body.connection.supportsConnectionClient, true);
 
     connection = body.connection;
