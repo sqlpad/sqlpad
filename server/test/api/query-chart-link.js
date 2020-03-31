@@ -3,10 +3,10 @@ const TestUtils = require('../utils');
 const request = require('supertest');
 
 const queryText = `
-  -- dimensions = department 10, orderdate 10
-  -- measures = cost, revenue, profit
-  -- orderby = department desc, orderdate asc
-  -- limit = 100
+  SELECT * 
+  FROM vw_sales 
+  ORDER BY id 
+  LIMIT 10
 `;
 
 describe('query table/chart link no auth', function() {
@@ -19,13 +19,9 @@ describe('query table/chart link no auth', function() {
     await utils.init(true);
 
     const connBody = await utils.post('admin', '/api/connections', {
-      name: 'test mock',
-      driver: 'mock',
-      host: 'localhost',
-      database: 'sqlpad',
-      username: 'sqlpad',
-      password: 'sqlpad',
-      wait: 0
+      name: 'test',
+      driver: 'sqlite',
+      filename: './test/fixtures/sales.sqlite'
     });
     connection = connBody.connection;
 

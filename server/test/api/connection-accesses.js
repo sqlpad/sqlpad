@@ -17,23 +17,15 @@ describe('api/connection-accesses', function() {
 
     let connBody = await utils.post('admin', '/api/connections', {
       name: 'test connection 1',
-      driver: 'mock',
-      host: 'localhost',
-      database: 'sqlpad',
-      username: 'sqlpad',
-      password: 'sqlpad',
-      wait: 0
+      driver: 'sqlite',
+      filename: './test/fixtures/sales.sqlite'
     });
     connection1 = connBody.connection;
 
     connBody = await utils.post('admin', '/api/connections', {
       name: 'test connection 2',
-      driver: 'mock',
-      host: 'localhost',
-      database: 'sqlpad',
-      username: 'sqlpad',
-      password: 'sqlpad',
-      wait: 0
+      driver: 'sqlite',
+      filename: './test/fixtures/sales.sqlite'
     });
     connection2 = connBody.connection;
 

@@ -2,10 +2,10 @@ const assert = require('assert');
 const TestUtils = require('../utils');
 
 const queryText = `
-  -- dimensions = department 10, orderdate 10
-  -- measures = cost, revenue, profit
-  -- orderby = department desc, orderdate asc
-  -- limit = 100
+  SELECT id, color
+  FROM vw_sales 
+  ORDER BY id 
+  LIMIT 10
 `;
 
 function validateQueryResult(queryResult) {
@@ -15,13 +15,13 @@ function validateQueryResult(queryResult) {
   assert(queryResult.stopTime, 'stopTime');
   assert(queryResult.queryRunTime >= 0, 'queryRunTime');
   assert(Array.isArray(queryResult.fields), 'fields');
-  assert.equal(queryResult.fields.length, 5, 'fields length');
-  assert.equal(queryResult.fields[0], 'department', 'field department');
+  assert.equal(queryResult.fields.length, 2, 'fields length');
+  assert.equal(queryResult.fields[0], 'id', 'field id');
   assert.equal(queryResult.incomplete, false, 'incomplete');
   assert(queryResult.meta, 'meta');
-  assert(queryResult.meta.department, 'meta.department');
+  assert(queryResult.meta.color, 'meta.color');
   assert(Array.isArray(queryResult.rows), 'rows is array');
-  assert.equal(queryResult.rows.length, 100, 'rows length');
+  assert.equal(queryResult.rows.length, 10, 'rows length');
 }
 
 describe('api/query-result', function() {
@@ -33,19 +33,15 @@ describe('api/query-result', function() {
     await utils.init(true);
 
     const connBody = await utils.post('admin', '/api/connections', {
-      name: 'test postgres',
-      driver: 'mock',
-      host: 'localhost',
-      database: 'sqlpad',
-      username: 'sqlpad',
-      password: 'sqlpad',
-      wait: 0
+      name: 'test connection',
+      driver: 'sqlite',
+      filename: './test/fixtures/sales.sqlite'
     });
     connection = connBody.connection;
 
     const queryBody = await utils.post('admin', '/api/queries', {
       name: 'test query',
-      tags: ['test', 'postgres'],
+      tags: ['test'],
       connectionId: connection._id,
       queryText
     });

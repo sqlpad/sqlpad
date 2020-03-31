@@ -4,18 +4,18 @@ const urlFilterToNeDbFilter = require('../../lib/url-filter-to-nedb-filter');
 
 const queryText1 = `
   -- QUERY1
-  -- dimensions = department 10, orderdate 10
-  -- measures = cost, revenue, profit
-  -- orderby = department desc, orderdate asc
-  -- limit = 100
+  SELECT * 
+  FROM vw_sales 
+  ORDER BY id 
+  LIMIT 10
 `;
 
 const queryText2 = `
   -- QUERY2
-  -- dimensions = department 10, orderdate 10
-  -- measures = cost, revenue, profit
-  -- orderby = department desc, orderdate asc
-  -- limit = 100
+  SELECT * 
+  FROM vw_sales 
+  ORDER BY id 
+  LIMIT 10
 `;
 
 describe('api/query-history', function() {
@@ -28,12 +28,8 @@ describe('api/query-history', function() {
 
     const connBody = await utils.post('admin', '/api/connections', {
       name: 'test postgres',
-      driver: 'mock',
-      host: 'localhost',
-      database: 'sqlpad',
-      username: 'sqlpad',
-      password: 'sqlpad',
-      wait: 0
+      driver: 'sqlite',
+      filename: './test/fixtures/sales.sqlite'
     });
     connection = connBody.connection;
 

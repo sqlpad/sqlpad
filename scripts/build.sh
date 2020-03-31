@@ -22,3 +22,6 @@ npm run build --prefix $SQLPAD_CLIENT_DIR
 rm -rf ${SQLPAD_SERVER_DIR}/public
 mkdir ${SQLPAD_SERVER_DIR}/public
 cp -r ${SQLPAD_CLIENT_DIR}/build/* ${SQLPAD_SERVER_DIR}/public
+
+# Build test deb for test cases and to use during dev
+node ${SQLPAD_SERVER_DIR}/generate-test-db-fixture.js

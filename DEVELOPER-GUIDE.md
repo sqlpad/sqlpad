@@ -101,28 +101,17 @@ npm run fixlint
 
 To run `build/scripts.sh` on Windows, you may want to use an application like [cmder](https://cmder.net/). It will allow you to run `scripts/build.sh` by calling `sh` directly with `sh scripts/build.sh`.
 
-## Mock driver
+## Test/Dev Database Connection
 
-When SQLPad server is run in debug mode, a mock driver implementation is available to generate data. The data returned by the query run is determined by information parsed from the comment block. The rest of the query may be anything.
+A Node.js script, `server/generate-test-db-fixture.js`, can be used to generate a test sqlite database to be used for tests and local development. This replaces the previous mock driver implementation that was enabled when the `debug` flag was turned on.
 
-Measure fields will contain random data.
+This test database allows for running SQL you likely know, instead of having to remember and use some variables set in SQL comments.
 
-```sql
--- At least one dimension field is required. MUST include number of unique values
--- orderdate and orderdatetime should not be used at same time
--- dimensions = department 10, color 10, product 10, orderdate|orderdatetime 500
+The script adds a sqlite database under `server/test/fixtures/sales.sqlite`.
 
--- Optional measures
--- measures = cost, revenue, profit
+It can be used within SQLPad by creating a connection using the SQLite driver, and setting the filename to `./test/fixtures/sales.sqlite`.
 
--- Optional order by. MUST be a dimension or measure returned and MUST include direction
--- orderby = department asc, product desc
-
--- Optional limit
--- limit = 100
-
-SELECT * FROM the_actual_query_doesnt_matter
-```
+The data in the database is somewhat nonsensical. It is also not randomized so that the results can be predictable. If you'd like to expand on this database, feel free.
 
 ## Releases
 

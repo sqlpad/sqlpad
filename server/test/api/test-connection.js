@@ -10,13 +10,9 @@ describe('api/test-connection', function() {
 
   it('tests connection', async function() {
     const body = await utils.post('admin', '/api/test-connection', {
-      name: 'test mock',
-      driver: 'mock',
-      host: 'localhost',
-      database: 'sqlpad',
-      username: 'sqlpad',
-      password: 'sqlpad',
-      wait: 0
+      name: 'test connection',
+      driver: 'sqlite',
+      filename: './test/fixtures/sales.sqlite'
     });
     assert(!body.error, 'Expect no error');
   });

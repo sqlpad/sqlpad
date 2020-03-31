@@ -10,12 +10,8 @@ describe('api/connection-clients', function() {
     await utils.init(true);
     let connBody = await utils.post('admin', '/api/connections', {
       name: 'test connection 1',
-      driver: 'mock',
-      host: 'localhost',
-      database: 'sqlpad',
-      username: 'sqlpad',
-      password: 'sqlpad',
-      wait: 10,
+      driver: 'sqlite',
+      filename: './test/fixtures/sales.sqlite',
       idleTimeoutSeconds: 4,
       multiStatementTransactionEnabled: true
     });
