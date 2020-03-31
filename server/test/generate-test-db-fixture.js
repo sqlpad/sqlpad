@@ -5,6 +5,18 @@ const path = require('path');
 const moment = require('moment');
 const sqliteDriver = require('../drivers/sqlite');
 
+/**
+ * This script generates server/test/fixtures/test.sqlite file for testing and dev purposes
+ *
+ * The idea of this sqlite database file is to be used for development and testing,
+ * to replace the `mock` driver that parses SQL comments and generates some output.
+ *
+ * This db can be extended to potentially have better views that simulate larger amounts of data.
+ *
+ * The generated file should try to remain a reasonable size (a few MBs).
+ * If always distributed it can serve as a good debug tool for others.
+ */
+
 const filename = path.join(__dirname, 'fixtures/test.sqlite');
 
 const client = new sqliteDriver.Client({
@@ -185,8 +197,8 @@ async function main() {
     );`
   );
 
-  const NUM_BATCHES = 200;
-  const ROWS_PER_BATCH = 300;
+  const NUM_BATCHES = 100;
+  const ROWS_PER_BATCH = 100;
   for (let batch = 0; batch < NUM_BATCHES; batch++) {
     if (batch % 10 === 0) {
       console.log(
@@ -206,8 +218,8 @@ async function main() {
       const hype = hypes[rowId % hypes.length];
       const orderTimestamp = moment
         .utc('2020-01-01')
-        .add(rowId * 3, 'minute')
-        .add(rowId * 7, 'seconds')
+        .add(rowId * 43, 'minute')
+        .add(rowId * 37, 'seconds')
         .toISOString();
 
       const dayOfMonthMultiplier =
@@ -274,13 +286,16 @@ async function main() {
 
   // Lastly create a bunch of junk tables so simulate large schemas
   console.log('creating dummy tables for large schema');
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < 500; i++) {
     await client.runQuery(`CREATE TABLE z_fake_table_products_${i} (
       id INTEGER PRIMARY KEY, 
       name TEXT, 
       category TEXT, 
       color TEXT,
-      price REAL
+      price REAL,
+      quantity INT,
+      created_at DATETIME,
+      updated_at DATETIME
     )`);
   }
 
