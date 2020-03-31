@@ -18,14 +18,14 @@ describe('api/connection-accesses', function() {
     let connBody = await utils.post('admin', '/api/connections', {
       name: 'test connection 1',
       driver: 'sqlite',
-      filename: './test/fixtures/test.sqlite'
+      filename: './test/fixtures/sales.sqlite'
     });
     connection1 = connBody.connection;
 
     connBody = await utils.post('admin', '/api/connections', {
       name: 'test connection 2',
       driver: 'sqlite',
-      filename: './test/fixtures/test.sqlite'
+      filename: './test/fixtures/sales.sqlite'
     });
     connection2 = connBody.connection;
 

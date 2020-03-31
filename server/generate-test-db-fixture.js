@@ -6,7 +6,7 @@ const moment = require('moment');
 const sqliteDriver = require('./drivers/sqlite');
 
 /**
- * This script generates server/test/fixtures/test.sqlite file for testing and dev purposes
+ * This script generates server/test/fixtures/sales.sqlite file for testing and dev purposes
  *
  * The idea of this sqlite database file is to be used for development and testing,
  * to replace the `mock` driver that parses SQL comments and generates some output.
@@ -17,7 +17,7 @@ const sqliteDriver = require('./drivers/sqlite');
  * If always distributed it can serve as a good debug tool for others.
  */
 
-const filename = path.join(__dirname, 'test/fixtures/test.sqlite');
+const filename = path.join(__dirname, 'test/fixtures/sales.sqlite');
 
 const client = new sqliteDriver.Client({
   filename

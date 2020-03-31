@@ -29,7 +29,7 @@ describe('api/query-history', function() {
     const connBody = await utils.post('admin', '/api/connections', {
       name: 'test postgres',
       driver: 'sqlite',
-      filename: './test/fixtures/test.sqlite'
+      filename: './test/fixtures/sales.sqlite'
     });
     connection = connBody.connection;
 

@@ -12,7 +12,7 @@ describe('api/test-connection', function() {
     const body = await utils.post('admin', '/api/test-connection', {
       name: 'test connection',
       driver: 'sqlite',
-      filename: './test/fixtures/test.sqlite'
+      filename: './test/fixtures/sales.sqlite'
     });
     assert(!body.error, 'Expect no error');
   });
