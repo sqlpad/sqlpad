@@ -105,30 +105,35 @@ function makeApp(config, models) {
   authStrategies(config);
   app.use(passport.initialize());
   app.use(passport.session());
-  app.use(passportBasic);
-  app.use(disableAuth);
-  app.use(passportAuthProxy);
 
   /*  Routes
   ============================================================================= */
-  // TODO - separate these out, creating a protected router and non-protected router
-  // Protected will always require auth, non-protected won't
-  // The auth-or-chart-link routes need to be figured out.
-  const routers = [
-    // No auth required for thee
+  const preAuthRouters = [
     require('./routes/forgot-password.js'),
     require('./routes/password-reset.js'),
     require('./routes/signout.js'),
     require('./routes/signup.js'),
     require('./routes/signin.js'),
     require('./routes/google-auth.js'),
-    require('./routes/saml.js'),
+    require('./routes/saml.js')
+  ];
 
+  // Add pre-auth routes to app
+  preAuthRouters.forEach(router => app.use(baseUrl, router));
+
+  // Add authentication middlewares like HTTP basic, auth proxy, or disable auth
+  // These attempt to authenticate the request based on information passed every request
+  app.use(passportBasic);
+  app.use(disableAuth);
+  app.use(passportAuthProxy);
+
+  const routers = [
     // Mix of auth required or chart link
+    // Eventually the chart-link stuff can be removed or separated out
+    // and auth check can happen as middleware prior to these routes
     require('./routes/query-result.js'),
     require('./routes/download-results.js'),
     require('./routes/queries.js'),
-
     // Auth required
     require('./routes/drivers.js'),
     require('./routes/users.js'),
@@ -144,9 +149,7 @@ function makeApp(config, models) {
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
-  routers.forEach(function(router) {
-    app.use(baseUrl, router);
-  });
+  routers.forEach(router => app.use(baseUrl, router));
 
   // Add '*/api/app' route last and without baseUrl
   app.use(require('./routes/app.js'));
