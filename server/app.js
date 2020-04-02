@@ -6,7 +6,12 @@ const pino = require('pino');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const appLog = require('./lib/app-log');
+const bodyParser = require('body-parser');
+const favicon = require('serve-favicon');
+const passport = require('passport');
 const authStrategies = require('./auth-strategies');
+const sessionlessAuth = require('./middleware/sessionless-auth.js');
+const expressPinoLogger = require('express-pino-logger');
 
 /**
  * Create an express app using config
@@ -20,16 +25,8 @@ function makeApp(config, models) {
     throw new Error('models is required to create app');
   }
 
-  const baseUrl = config.get('baseUrl');
-  const dbPath = config.get('dbPath');
-  const debug = config.get('debug');
-  const webLogLevel = config.get('webLogLevel');
-  const cookieName = config.get('cookieName');
-  const cookieSecret = config.get('cookieSecret');
-  const sessionMinutes = config.get('sessionMinutes');
-
-  const expressPino = require('express-pino-logger')({
-    level: webLogLevel,
+  const expressPino = expressPinoLogger({
+    level: config.get('webLogLevel'),
     timestamp: pino.stdTimeFunctions.isoTime,
     name: 'sqlpad-web',
     // express-pino-logger logs all the headers by default
@@ -47,13 +44,6 @@ function makeApp(config, models) {
 
   /*  Express setup
   ============================================================================= */
-  const bodyParser = require('body-parser');
-  const favicon = require('serve-favicon');
-  const passport = require('passport');
-  const passportBasic = require('./middleware/passport-basic');
-  const passportAuthProxy = require('./middleware/passport-auth-proxy');
-  const disableAuth = require('./middleware/disable-auth');
-
   const app = express();
 
   // Default helmet protections, minus frameguard (becaue of sqlpad iframe embed), adding referrerPolicy
@@ -73,7 +63,8 @@ function makeApp(config, models) {
     next();
   });
 
-  app.set('env', debug ? 'development' : 'production');
+  const expressEnv = config.get('debug') ? 'development' : 'production';
+  app.set('env', expressEnv);
 
   app.use(expressPino);
   app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
@@ -84,19 +75,24 @@ function makeApp(config, models) {
     })
   );
 
+  const cookieMaxAgeMs = parseInt(config.get('sessionMinutes'), 10) * 60 * 1000;
+  const sessionPath = path.join(config.get('dbPath'), '/sessions');
+
   app.use(
     session({
       store: new FileStore({
-        path: path.join(dbPath, '/sessions')
+        path: sessionPath
       }),
       saveUninitialized: false,
       resave: true,
       rolling: true,
-      cookie: { maxAge: 1000 * 60 * sessionMinutes },
-      secret: cookieSecret,
-      name: cookieName
+      cookie: { maxAge: cookieMaxAgeMs },
+      secret: config.get('cookieSecret'),
+      name: config.get('cookieName')
     })
   );
+
+  const baseUrl = config.get('baseUrl');
 
   app.use(baseUrl, express.static(path.join(__dirname, 'public')));
 
@@ -121,11 +117,11 @@ function makeApp(config, models) {
   // Add pre-auth routes to app
   preAuthRouters.forEach(router => app.use(baseUrl, router));
 
-  // Add authentication middlewares like HTTP basic, auth proxy, or disable auth
+  // Add sessionless authentication middleware
+  // This handles things like HTTP basic, auth proxy, disable auth, and JWT service tokens
   // These attempt to authenticate the request based on information passed every request
-  app.use(passportBasic);
-  app.use(disableAuth);
-  app.use(passportAuthProxy);
+  // They do not persist a session
+  app.use(sessionlessAuth);
 
   const routers = [
     // Mix of auth required or chart link
