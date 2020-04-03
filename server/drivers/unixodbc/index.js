@@ -126,7 +126,7 @@ class Client {
 
         // If result has columns it is a candidate for lastQueryResultWithRows
         // Until SQLPad has capability to show multiple result sets we are showing the last one with results
-        if (result.columns) {
+        if (result && result.columns) {
           // If queryResult was already set we're suppressing a result set
           // Eventually we'll show all results but not at this point
           if (queryResult) {
@@ -140,9 +140,19 @@ class Client {
         lastResult = result;
       }
 
-      // If queryResult was never populated because none of the queries returned results, use last result
-      if (!queryResult) {
+      // If queryResult was never populated because none of the queries returned results, use last result if it exists
+      if (!queryResult && lastResult) {
         queryResult = lastResult;
+      }
+
+      // The result of the query seems to be dependent on the odbc driver impmlementation used
+      // Try to determine if the result is what we expect. If not, return an empty rows array
+      if (
+        !queryResult ||
+        !queryResult.columns ||
+        queryResult.columns.length === 0
+      ) {
+        return { rows: [] };
       }
 
       // Format data correctly
