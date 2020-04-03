@@ -3,6 +3,7 @@ const _ = require('lodash');
 const passport = require('passport');
 const passportCustom = require('passport-custom');
 const CustomStrategy = passportCustom.Strategy;
+const getHeaderUser = require('../lib/get-header-user');
 const appLog = require('../lib/app-log');
 
 /**
@@ -14,7 +15,9 @@ const appLog = require('../lib/app-log');
  */
 async function authProxyStrategy(req, done) {
   try {
-    const { config, models, headerUser } = req;
+    const { config, models } = req;
+
+    const headerUser = getHeaderUser(req);
 
     // This shouldn't happen as the header deriving happens in middleware
     if (!headerUser) {
