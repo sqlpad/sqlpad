@@ -52,8 +52,6 @@ function sessionlessAuth(req, res, next) {
   if (config.get('authProxyEnabled')) {
     const headerUser = getHeaderUser(req);
     if (headerUser) {
-      // Set req.headerUser for auth-proxy reference later
-      req.headerUser = headerUser;
       return passport.authenticate('auth-proxy', { session: false })(
         req,
         res,
