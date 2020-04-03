@@ -138,4 +138,28 @@ describe('api/signin', function() {
       assert(!response2.error, 'Expect no error');
     });
   });
+
+  describe('auth proxy', function() {
+    it('logs in with session', async function() {
+      const utils = new TestUtil({
+        authProxyEnabled: true,
+        authProxyAutoSignUp: true,
+        authProxyDefaultRole: 'admin',
+        authProxyHeaders: 'email:X-WEBAUTH-EMAIL'
+      });
+      await utils.init();
+
+      const agent = request.agent(utils.app);
+
+      // This signin call authenticates, auto-creates the user and creates a session
+      await agent
+        .post('/api/signin')
+        .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
+        .expect(200);
+
+      // agent should have session cookie to allow further action
+      const r2 = await agent.get('/api/app');
+      assert.equal(r2.body.currentUser.email, 'test@sqlpad.com');
+    });
+  });
 });
