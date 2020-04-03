@@ -25,7 +25,8 @@ describe('api/signup & api/signin', function() {
   });
 
   it('allows new user sign in', async function() {
-    const { body } = await request(utils.app)
+    const agent = request.agent(utils.app);
+    const { body } = await agent
       .post('/api/signin')
       .send({
         password: 'admin',
@@ -34,6 +35,10 @@ describe('api/signup & api/signin', function() {
       .expect(200);
 
     assert(!body.error, 'Expect no error');
+
+    // agent should have session cookie to allow further action
+    const r2 = await agent.get('/api/app');
+    assert.equal(r2.body.currentUser.email, 'admin@test.com');
   });
 
   it('unauthorized for bad signin', async function() {
