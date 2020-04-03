@@ -1,5 +1,5 @@
 const passport = require('passport');
-const _ = require('lodash');
+const getHeaderUser = require('../lib/get-header-user');
 require('../typedefs');
 
 /**
@@ -50,32 +50,8 @@ function sessionlessAuth(req, res, next) {
 
   // If auth proxy is turned on, try to derive a user from headers
   if (config.get('authProxyEnabled')) {
-    // Derive headerUser from headers
-    let headerUser = {};
-    config
-      .get('authProxyHeaders')
-      .split(' ')
-      .forEach(pairing => {
-        const [fieldName, headerName] = pairing.split(':').map(v => v.trim());
-        const value = req.get(headerName);
-        if (value !== null && value !== undefined) {
-          _.set(headerUser, fieldName, req.get(headerName));
-        }
-      });
-
-    // nedb uses user._id for ids, but user.id should also be supported
-    // If .id was mapped, and _id wasn't, assign it to ._id and delete .id
-    if (headerUser.id && !headerUser._id) {
-      headerUser._id = headerUser.id;
-    }
-    delete headerUser.id;
-
-    // Only try to authenticate if headers are present to identify a user
-    // We otherwise assume the request is not meant to be authenticated (not all routes require it)
-    // This is necessary for routes that do not require authentication.
-    if (Object.keys(headerUser).length > 0) {
-      // Set req.headerUser for auth-proxy reference later
-      req.headerUser = headerUser;
+    const headerUser = getHeaderUser(req);
+    if (headerUser) {
       return passport.authenticate('auth-proxy', { session: false })(
         req,
         res,
