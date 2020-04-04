@@ -1,4 +1,5 @@
 const assert = require('assert');
+const { v4: uuidv4 } = require('uuid');
 const TestUtils = require('../utils');
 
 describe('api/users', function() {
@@ -45,9 +46,11 @@ describe('api/users', function() {
   });
 
   it('Updates user', async function() {
+    const passwordResetId = uuidv4();
     const body = await utils.put('admin', `/api/users/${user._id}`, {
       role: 'admin',
       name: 'test',
+      passwordResetId,
       data: {
         test: true
       }
@@ -56,6 +59,7 @@ describe('api/users', function() {
     assert.equal(body.user.role, 'admin');
     assert.equal(body.user.email, 'user1@test.com');
     assert.equal(body.user.name, 'test');
+    assert.equal(body.user.passwordResetId, passwordResetId);
     assert.equal(body.user.data.test, true);
     assert(new Date(body.user.modifiedDate) > new Date(user.modifiedDate));
   });
