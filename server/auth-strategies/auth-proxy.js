@@ -58,7 +58,7 @@ async function authProxyStrategy(req, done) {
 
       if (!_.isEqual(headerUser, existingForCompare)) {
         _.merge(existingUser, headerUser);
-        existingUser = await models.users.save(existingUser);
+        existingUser = await models.users.update(existingUser);
       }
       return done(null, existingUser);
     }
@@ -71,7 +71,7 @@ async function authProxyStrategy(req, done) {
       }
 
       // Auto create the user
-      const newUser = await models.users.save(headerUser);
+      const newUser = await models.users.create(headerUser);
       return done(null, newUser);
     }
 

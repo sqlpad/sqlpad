@@ -40,9 +40,24 @@ class Users {
     this.config = config;
   }
 
-  async save(data) {
-    if (!data.email) {
-      throw new Error('email required when saving user');
+  async create(data) {
+    data.modifiedDate = new Date();
+    if (data.password) {
+      data.passhash = await passhash.getPasshash(data.password);
+    }
+
+    const joiResult = schema.validate(data);
+    if (joiResult.error) {
+      return Promise.reject(joiResult.error);
+    }
+
+    const newUser = await this.nedb.users.insert(joiResult.value);
+    return newUser;
+  }
+
+  async update(data) {
+    if (!data._id) {
+      throw new Error('_id required when saving user');
     }
 
     data.modifiedDate = new Date();
@@ -56,10 +71,8 @@ class Users {
       return Promise.reject(joiResult.error);
     }
 
-    await this.nedb.users.update({ email: data.email }, joiResult.value, {
-      upsert: true
-    });
-    return this.findOneByEmail(data.email);
+    await this.nedb.users.update({ _id: data._id }, joiResult.value);
+    return this.findOneById(data._id);
   }
 
   findOneByEmail(email) {

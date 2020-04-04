@@ -20,7 +20,7 @@ router.post('/api/password-reset/:passwordResetId', async function(req, res) {
     }
     user.password = req.body.password;
     user.passwordResetId = '';
-    await models.users.save(user);
+    await models.users.update(user);
     return res.json({});
   } catch (error) {
     sendError(res, error, 'Problem querying user database');

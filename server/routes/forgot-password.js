@@ -25,7 +25,7 @@ router.post('/api/forgot-password', async function(req, res) {
 
     user.passwordResetId = uuidv4();
 
-    await models.users.save(user);
+    await models.users.update(user);
 
     // Send email, but do not block response
     const resetPath = `/password-reset/${user.passwordResetId}`;
