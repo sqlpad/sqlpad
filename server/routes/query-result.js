@@ -99,7 +99,6 @@ async function getQueryResult(req, data) {
     }
     queryResult = await connectionClient.runQuery(queryText);
   } else {
-    connection.maxRows = Number(config.get('queryResultMaxRows'));
     const connectionClient = new ConnectionClient(connection, user);
     queryResult = await connectionClient.runQuery(queryText);
   }

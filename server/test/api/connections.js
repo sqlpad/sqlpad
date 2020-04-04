@@ -2,7 +2,9 @@ const assert = require('assert');
 const TestUtils = require('../utils');
 
 describe('api/connections', function() {
-  const utils = new TestUtils();
+  const utils = new TestUtils({
+    queryResultMaxRows: 800
+  });
   let connection;
 
   before(function() {
@@ -30,6 +32,7 @@ describe('api/connections', function() {
     assert(body.connection._id, 'has _id');
     assert.equal(body.connection.driver, 'postgres');
     assert.equal(body.connection.username, 'username');
+    assert.equal(body.connection.maxRows, 800, 'decorated with maxRows');
 
     // As of writing this test, only postgres and sqlite connections should have this set to true
     assert.equal(body.connection.supportsConnectionClient, true);
@@ -66,6 +69,7 @@ describe('api/connections', function() {
     assert.equal(body.connection.driver, 'postgres');
     assert.equal(body.connection.username, 'username');
     assert.equal(body.connection.supportsConnectionClient, true);
+    assert.equal(body.connection.maxRows, 800, 'decorated with maxRows');
   });
 
   it('Gets updated connection', async function() {

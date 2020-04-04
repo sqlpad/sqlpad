@@ -3,20 +3,6 @@ const makeCipher = require('../lib/make-cipher');
 const drivers = require('../drivers');
 const validateConnection = require('../lib/validate-connection');
 
-function addSupportsConnectionClient(connection) {
-  if (!connection) {
-    return connection;
-  }
-  const copy = _.cloneDeep(connection);
-  const driver = drivers[connection.driver];
-  if (!driver) {
-    copy.supportsConnectionClient = false;
-  } else {
-    copy.supportsConnectionClient = Boolean(drivers[connection.driver].Client);
-  }
-  return copy;
-}
-
 class Connections {
   /**
    * @param {*} nedb
@@ -30,6 +16,23 @@ class Connections {
     const { cipher, decipher } = makeCipher(config.get('passphrase'));
     this.cipher = cipher;
     this.decipher = decipher;
+  }
+
+  decorateConnection(connection) {
+    if (!connection) {
+      return connection;
+    }
+    const copy = _.cloneDeep(connection);
+    copy.maxRows = Number(this.config.get('queryResultMaxRows'));
+    const driver = drivers[connection.driver];
+    if (!driver) {
+      copy.supportsConnectionClient = false;
+    } else {
+      copy.supportsConnectionClient = Boolean(
+        drivers[connection.driver].Client
+      );
+    }
+    return copy;
   }
 
   decipherConnection(connection) {
@@ -51,7 +54,7 @@ class Connections {
 
     const allConnections = connectionsFromDb
       .concat(this.config.getConnections())
-      .map(connection => addSupportsConnectionClient(connection));
+      .map(connection => this.decorateConnection(connection));
 
     return _.sortBy(allConnections, c => c.name.toLowerCase());
   }
@@ -60,7 +63,7 @@ class Connections {
     let connection = await this.nedb.connections.findOne({ _id: id });
     if (connection) {
       connection.editable = true;
-      connection = addSupportsConnectionClient(connection);
+      connection = this.decorateConnection(connection);
       return this.decipherConnection(connection);
     }
 
@@ -72,7 +75,7 @@ class Connections {
     if (!connectionFromEnv) {
       return null;
     }
-    return addSupportsConnectionClient(connectionFromEnv);
+    return this.decorateConnection(connectionFromEnv);
   }
 
   async removeOneById(id) {
