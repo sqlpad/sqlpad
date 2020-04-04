@@ -1,18 +1,72 @@
-FROM node:12.3.1-alpine
+FROM node:12.16.1-alpine AS build
+
+RUN apk add --update --no-cache \
+    python \
+    make \
+    g++
+
+WORKDIR /sqlpad
+
+# By copying just the package files and installing node layers, 
+# we can take advantage of caching
+# SQLPad is really 3 node projects though
+# * root directory for linting
+# * client/ for web front end
+# * server/ for server (and what eventually holds built front end)
+COPY ./package* ./
+COPY ./client/package* ./client/
+COPY ./server/package* ./server/
+
+# Install dependencies
+RUN npm ci
+RUN npm ci --prefix client
+RUN npm ci --prefix server
+
+# Copy rest of the project into docker
+COPY . .
+
+# Build front-end and copy files into server public dir
+RUN npm run build --prefix client && \
+    rm -rf server/public && \
+    mkdir server/public && \
+    cp -r client/build/* server/public
+
+# Build test db used for dev, debugging and running tests
+RUN node server/generate-test-db-fixture.js
+
+# Run tests and linting to validate build
+RUN npm run test --prefix server
+RUN npm run lint
+
+# Remove any dev dependencies from server
+# We don't care about root or client directories 
+# as they are not going to be copied to next stage
+WORKDIR /sqlpad/server
+RUN npm prune --production
+
+# Start another stage with a fresh node
+# Copy the server directory that has all the necessary node modules + front end build
+FROM node:12.16.1-alpine
+
+WORKDIR /usr/app
+
+COPY --from=build /sqlpad/docker-entrypoint /
+COPY --from=build /sqlpad/server .
 
 ENV NODE_ENV production
 EXPOSE 3000
 ENTRYPOINT ["/docker-entrypoint"]
 
-WORKDIR /sqlpad
+# Things to think about for future docker builds
+# Perhaps add a healthcheck?
+# Should nginx be used to front sqlpad?
+#
+# Should ODBC drivers be installed? (once ODBC is compiling that is)
+# 
+# If you are wanting to use ODBC in docker build, 
+# fork this, make sure it compiles unixodbc driver in first stage, 
+# and add specific ODBC drivers here in this stage
 
-COPY . .
-
-RUN scripts/build.sh && \
-    npm cache clean --force && \
-    cp -r /sqlpad/server /usr/app && \
-    cp /sqlpad/docker-entrypoint / && \
-    chmod +x /docker-entrypoint && \
-    rm -rf /sqlpad
+RUN ["chmod", "+x", "/docker-entrypoint"]
 
 WORKDIR /var/lib/sqlpad
