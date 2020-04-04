@@ -97,7 +97,7 @@ class TestUtils {
   }
 
   async addUserApiHelper(key, user) {
-    const newUser = await this.models.users.save(user);
+    const newUser = await this.models.users.create(user);
     // If user already exists, update the _id, otherwise add new one (using the original data)
     if (this.users[key]) {
       this.users[key]._id = newUser._id;

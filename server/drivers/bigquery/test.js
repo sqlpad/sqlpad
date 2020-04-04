@@ -35,6 +35,7 @@ describe('drivers/bigquery', function() {
           done();
         });
     } else {
+      // eslint-disable-next-line no-console
       console.log(
         'Define BIGQUERY_TEST_GCP_PROJECT_ID, BIGQUERY_TEST_DATASET_NAME, BIGQUERY_TEST_CREDENTIALS_FILE, and BIGQUERY_TEST_DATASET_LOCATION to run the bigquery driver tests'
       );

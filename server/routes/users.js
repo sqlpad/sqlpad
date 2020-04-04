@@ -22,9 +22,13 @@ router.post('/api/users', mustBeAdmin, async function(req, res) {
     if (user) {
       return sendError(res, null, 'User already exists');
     }
-    user = await models.users.save({
+
+    // Only accept certain fields
+    user = await models.users.create({
       email: req.body.email.toLowerCase(),
-      role: req.body.role
+      role: req.body.role,
+      name: req.body.name,
+      data: req.body.data
     });
 
     const email = makeEmail(req.config);
@@ -48,15 +52,26 @@ router.put('/api/users/:_id', mustBeAdmin, async function(req, res) {
     if (!updateUser) {
       return sendError(res, null, 'user not found');
     }
+
     // this route could handle potentially different kinds of updates
-    // only update user properties that are explicitly provided in body
+    // only update user properties that are explicitly allowed to be updated and present
     if (body.role != null) {
       updateUser.role = body.role;
     }
     if (body.passwordResetId != null) {
       updateUser.passwordResetId = body.passwordResetId;
     }
-    const updatedUser = await models.users.save(updateUser);
+    if (body.name) {
+      updateUser.name = body.name;
+    }
+    if (body.email) {
+      updateUser.email = body.email.toLowerCase();
+    }
+    if (body.data) {
+      updateUser.data = body.data;
+    }
+
+    const updatedUser = await models.users.update(updateUser);
     return res.json({ user: updatedUser });
   } catch (error) {
     sendError(res, error, 'Problem saving user');

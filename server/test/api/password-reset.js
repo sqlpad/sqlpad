@@ -9,7 +9,7 @@ describe('api/password-reset', function() {
     const user = await utils.models.users.findOneByEmail('admin@test.com');
     const passwordResetId = uuidv4();
     user.passwordResetId = passwordResetId;
-    await utils.models.users.save(user);
+    await utils.models.users.update(user);
     return passwordResetId;
   }
 

@@ -27,13 +27,13 @@ async function passportGoogleStrategyHandler(
 
     if (user) {
       user.signupDate = new Date();
-      const newUser = await models.users.save(user);
+      const newUser = await models.users.update(user);
       newUser.id = newUser._id;
       return done(null, newUser);
     }
     const whitelistedDomains = config.get('whitelistedDomains');
     if (openAdminRegistration || checkWhitelist(whitelistedDomains, email)) {
-      const newUser = await models.users.save({
+      const newUser = await models.users.create({
         email,
         role: openAdminRegistration ? 'admin' : 'editor',
         signupDate: new Date()

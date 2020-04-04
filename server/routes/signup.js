@@ -29,7 +29,7 @@ async function handleSignup(req, res, next) {
     if (user) {
       user.password = req.body.password;
       user.signupDate = new Date();
-      await models.users.save(user);
+      await models.users.update(user);
       return next();
     }
 
@@ -39,7 +39,7 @@ async function handleSignup(req, res, next) {
       adminRegistrationOpen ||
       checkWhitelist(whitelistedDomains, req.body.email)
     ) {
-      user = await models.users.save({
+      user = await models.users.create({
         email: req.body.email,
         password: req.body.password,
         role: adminRegistrationOpen ? 'admin' : 'editor',

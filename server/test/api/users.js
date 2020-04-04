@@ -1,4 +1,5 @@
 const assert = require('assert');
+const { v4: uuidv4 } = require('uuid');
 const TestUtils = require('../utils');
 
 describe('api/users', function() {
@@ -19,13 +20,24 @@ describe('api/users', function() {
   it('Creates user', async function() {
     const body = await utils.post('admin', '/api/users', {
       email: 'user1@test.com',
-      role: 'editor'
+      name: 'user1',
+      role: 'editor',
+      data: {
+        create: true
+      }
     });
 
     assert(!body.error, 'no error');
-    assert(body.user._id, 'has _id');
-    assert.equal(body.user.email, 'user1@test.com');
+
     user = body.user;
+
+    assert(user._id, 'has _id');
+    assert.equal(user.email, 'user1@test.com');
+    assert.equal(user.name, 'user1');
+    assert.equal(user.role, 'editor');
+    assert.equal(user.data.create, true);
+    assert(user.modifiedDate);
+    assert(user.createdDate);
   });
 
   it('Gets list of users', async function() {
@@ -34,11 +46,22 @@ describe('api/users', function() {
   });
 
   it('Updates user', async function() {
+    const passwordResetId = uuidv4();
     const body = await utils.put('admin', `/api/users/${user._id}`, {
-      role: 'admin'
+      role: 'admin',
+      name: 'test',
+      passwordResetId,
+      data: {
+        test: true
+      }
     });
     assert(!body.error, 'no error');
     assert.equal(body.user.role, 'admin');
+    assert.equal(body.user.email, 'user1@test.com');
+    assert.equal(body.user.name, 'test');
+    assert.equal(body.user.passwordResetId, passwordResetId);
+    assert.equal(body.user.data.test, true);
+    assert(new Date(body.user.modifiedDate) > new Date(user.modifiedDate));
   });
 
   it('Requires authentication', function() {
