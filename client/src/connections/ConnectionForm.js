@@ -262,88 +262,84 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
   }
 
   return (
-    <div style={{ height: '100%' }}>
-      <form
-        onSubmit={saveConnection}
-        autoComplete="off"
+    <form
+      onSubmit={saveConnection}
+      autoComplete="off"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%'
+      }}
+    >
+      <div style={{ overflowY: 'auto', flexGrow: 1 }}>
+        <HorizontalFormItem label="Connection name">
+          <Input
+            name="name"
+            value={name}
+            error={!name}
+            onChange={e => setConnectionValue(e.target.name, e.target.value)}
+          />
+        </HorizontalFormItem>
+        <HorizontalFormItem label="Driver">
+          <Select
+            name="driver"
+            value={driver}
+            error={!driver}
+            onChange={event => setConnectionValue('driver', event.target.value)}
+          >
+            {driverSelectOptions}
+          </Select>
+        </HorizontalFormItem>
+
+        {renderDriverFields()}
+      </div>
+      <div
         style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%'
+          borderTop: '1px solid #e8e8e8',
+          paddingTop: '22px',
+          textAlign: 'right'
         }}
       >
-        <div style={{ overflowY: 'auto', flexGrow: 1, height: '100%' }}>
-          <HorizontalFormItem label="Connection name">
-            <Input
-              name="name"
-              value={name}
-              error={!name}
-              onChange={e => setConnectionValue(e.target.name, e.target.value)}
-            />
-          </HorizontalFormItem>
-          <HorizontalFormItem label="Driver">
-            <Select
-              name="driver"
-              value={driver}
-              error={!driver}
-              onChange={event =>
-                setConnectionValue('driver', event.target.value)
-              }
-            >
-              {driverSelectOptions}
-            </Select>
-          </HorizontalFormItem>
-
-          {renderDriverFields()}
-        </div>
-        <div
-          style={{
-            borderTop: '1px solid #e8e8e8',
-            paddingTop: '22px',
-            textAlign: 'right'
-          }}
+        <Button
+          htmlType="submit"
+          style={{ width: 120 }}
+          variant="primary"
+          onClick={saveConnection}
+          disabled={saving}
         >
-          <Button
-            htmlType="submit"
-            style={{ width: 120 }}
-            variant="primary"
-            onClick={saveConnection}
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : 'Save'}
-          </Button>{' '}
-          <Button
-            style={{ width: 120 }}
-            onClick={testConnection}
-            disabled={testing}
-          >
-            {testing ? 'Testing...' : 'Test'}
-            {!testing && testSuccess && (
-              <SuccessIcon
-                style={{
-                  marginLeft: 8,
-                  height: 18,
-                  width: 18,
-                  marginBottom: -4
-                }}
-                color="#52c41a"
-              />
-            )}
-            {!testing && testFailed && (
-              <CloseCircleOutlineIcon
-                style={{
-                  marginLeft: 8,
-                  height: 18,
-                  width: 18,
-                  marginBottom: -4
-                }}
-                color="#eb2f96"
-              />
-            )}
-          </Button>
-        </div>
-      </form>
-    </div>
+          {saving ? 'Saving...' : 'Save'}
+        </Button>{' '}
+        <Button
+          style={{ width: 120 }}
+          onClick={testConnection}
+          disabled={testing}
+        >
+          {testing ? 'Testing...' : 'Test'}
+          {!testing && testSuccess && (
+            <SuccessIcon
+              style={{
+                marginLeft: 8,
+                height: 18,
+                width: 18,
+                marginBottom: -4
+              }}
+              color="#52c41a"
+            />
+          )}
+          {!testing && testFailed && (
+            <CloseCircleOutlineIcon
+              style={{
+                marginLeft: 8,
+                height: 18,
+                width: 18,
+                marginBottom: -4
+              }}
+              color="#eb2f96"
+            />
+          )}
+        </Button>
+      </div>
+    </form>
   );
 }
 

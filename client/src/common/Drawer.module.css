@@ -25,6 +25,6 @@
 .dialogBody {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: calc(100vh - 45px);
   padding: 16px;
 }
