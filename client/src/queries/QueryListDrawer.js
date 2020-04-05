@@ -197,82 +197,84 @@ function QueryListDrawer({
       onClose={handleClose}
       placement="left"
     >
-      <div className={styles.filterContainer}>
-        <div className={styles.filterRow}>
-          <Select
-            style={{ width: 140, marginRight: 8, flex: '0 0 auto' }}
-            value={creatorSearch}
-            onChange={e => setCreatorSearch(e.target.value)}
-          >
-            <option value={MY_QUERIES}>My queries</option>
-            <option value={SHARED}>Shared with me</option>
-            <option value={ALL}>All</option>
-          </Select>
-          <Select
-            style={{ marginRight: 8 }}
-            value={connectionId}
-            onChange={e => setConnectionId(e.target.value)}
-          >
-            <option value="">All connections</option>
-            {connections.map(connection => {
-              return (
-                <option key={connection._id} value={connection._id}>
-                  {connection.name}
-                </option>
-              );
-            })}
-          </Select>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div className={styles.filterContainer}>
+          <div className={styles.filterRow}>
+            <Select
+              style={{ width: 140, marginRight: 8, flex: '0 0 auto' }}
+              value={creatorSearch}
+              onChange={e => setCreatorSearch(e.target.value)}
+            >
+              <option value={MY_QUERIES}>My queries</option>
+              <option value={SHARED}>Shared with me</option>
+              <option value={ALL}>All</option>
+            </Select>
+            <Select
+              style={{ marginRight: 8 }}
+              value={connectionId}
+              onChange={e => setConnectionId(e.target.value)}
+            >
+              <option value="">All connections</option>
+              {connections.map(connection => {
+                return (
+                  <option key={connection._id} value={connection._id}>
+                    {connection.name}
+                  </option>
+                );
+              })}
+            </Select>
 
-          <Select
-            style={{ width: 170, flex: '0 0 auto' }}
-            value={sort}
-            onChange={e => setSort(e.target.value)}
-          >
-            <option value="SAVE_DATE">Order by last saved</option>
-            <option value="NAME">Order by name</option>
-          </Select>
+            <Select
+              style={{ width: 170, flex: '0 0 auto' }}
+              value={sort}
+              onChange={e => setSort(e.target.value)}
+            >
+              <option value="SAVE_DATE">Order by last saved</option>
+              <option value="NAME">Order by name</option>
+            </Select>
+          </div>
+
+          <MultiSelect
+            selectedItems={searches}
+            options={availableSearches}
+            onChange={items => setSearches(items)}
+            placeholder="search"
+          />
         </div>
 
-        <MultiSelect
-          selectedItems={searches}
-          options={availableSearches}
-          onChange={items => setSearches(items)}
-          placeholder="search"
-        />
-      </div>
-
-      <Measure
-        bounds
-        onResize={contentRect => {
-          setDimensions(contentRect.bounds);
-        }}
-      >
-        {({ measureRef }) => (
-          <div
-            ref={measureRef}
-            style={{
-              display: 'flex',
-              width: '100%',
-              height: '100%'
-            }}
-          >
-            <List
-              // position absolute takes list out of flow,
-              // preventing some weird react-measure behavior in Firefox
-              style={{ position: 'absolute' }}
-              height={dimensions.height}
-              itemCount={filteredQueries.length}
-              itemSize={60}
-              width={dimensions.width}
-              overscanCount={2}
+        <Measure
+          bounds
+          onResize={contentRect => {
+            setDimensions(contentRect.bounds);
+          }}
+        >
+          {({ measureRef }) => (
+            <div
+              ref={measureRef}
+              style={{
+                display: 'flex',
+                width: '100%',
+                height: '100%'
+              }}
             >
-              {Row}
-            </List>
-          </div>
-        )}
-      </Measure>
+              <List
+                // position absolute takes list out of flow,
+                // preventing some weird react-measure behavior in Firefox
+                style={{ position: 'absolute' }}
+                height={dimensions.height}
+                itemCount={filteredQueries.length}
+                itemSize={60}
+                width={dimensions.width}
+                overscanCount={2}
+              >
+                {Row}
+              </List>
+            </div>
+          )}
+        </Measure>
 
-      <QueryPreview query={preview} />
+        <QueryPreview query={preview} />
+      </div>
     </Drawer>
   );
 }

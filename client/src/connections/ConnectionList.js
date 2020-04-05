@@ -75,9 +75,59 @@ function ConnectionList({
     return connection;
   });
 
+  const listItems = decoratedConnections.map(item => {
+    let description = '';
+    if (item.user) {
+      description = item.user + '@';
+    }
+    description += [item.displayHost, item.displayDatabase, item.displaySchema]
+      .filter(part => part && part.trim())
+      .join(' / ');
+
+    const actions = [];
+
+    if (currentUser.role === 'admin' && item.editable) {
+      actions.push(
+        <Button
+          key="edit"
+          style={{ marginLeft: 8 }}
+          onClick={() => editConnection(item)}
+        >
+          edit
+        </Button>
+      );
+      actions.push(
+        <DeleteConfirmButton
+          key="delete"
+          confirmMessage="Delete connection?"
+          onConfirm={e => deleteConnection(item._id)}
+          style={{ marginLeft: 8 }}
+        >
+          Delete
+        </DeleteConfirmButton>
+      );
+    }
+
+    return (
+      <ListItem key={item._id}>
+        <div style={{ flexGrow: 1, padding: 8 }}>
+          {item.name}
+          <br />
+          <Text type="secondary">{description}</Text>
+        </div>
+        {actions}
+      </ListItem>
+    );
+  });
+
   return (
-    <>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'flex-end'
+        }}
+      >
         <Button
           style={{ width: 135 }}
           variant="primary"
@@ -86,55 +136,7 @@ function ConnectionList({
           Add connection
         </Button>
       </div>
-      {decoratedConnections.map(item => {
-        let description = '';
-        if (item.user) {
-          description = item.user + '@';
-        }
-        description += [
-          item.displayHost,
-          item.displayDatabase,
-          item.displaySchema
-        ]
-          .filter(part => part && part.trim())
-          .join(' / ');
-
-        const actions = [];
-
-        if (currentUser.role === 'admin' && item.editable) {
-          actions.push(
-            <Button
-              key="edit"
-              style={{ marginLeft: 8 }}
-              onClick={() => editConnection(item)}
-            >
-              edit
-            </Button>
-          );
-          actions.push(
-            <DeleteConfirmButton
-              key="delete"
-              confirmMessage="Delete connection?"
-              onConfirm={e => deleteConnection(item._id)}
-              style={{ marginLeft: 8 }}
-            >
-              Delete
-            </DeleteConfirmButton>
-          );
-        }
-
-        return (
-          <ListItem key={item._id}>
-            <div style={{ flexGrow: 1, padding: 8 }}>
-              {item.name}
-              <br />
-              <Text type="secondary">{description}</Text>
-            </div>
-            {actions}
-          </ListItem>
-        );
-      })}
-
+      <div style={{ flexGrow: 1 }}>{listItems}</div>
       <ConnectionEditDrawer
         connectionId={connectionId}
         visible={showEdit}
@@ -142,7 +144,7 @@ function ConnectionList({
         onConnectionSaved={handleConnectionSaved}
         placement="left"
       />
-    </>
+    </div>
   );
 }
 
