@@ -56,20 +56,39 @@ describe('lib/config/fromFile', function() {
     assert.equal(Object.keys(config).length, 3, '3 items');
   });
 
-  it('Warns for old config file', function() {
+  it('Errors for old config file key', function() {
     const config = new Config(
       { config: path.join(__dirname, '../fixtures/old-config.json') },
       {}
     );
-
     const validations = config.getValidations();
-    assert(validations.warnings);
-    const found = validations.warnings.find(
-      warning =>
-        warning.includes('cert-passphrase') &&
-        warning.includes('NOT RECOGNIZED')
+    assert(validations.errors);
+    const found = validations.errors.find(
+      error =>
+        error.includes('cert-passphrase') && error.includes('NOT RECOGNIZED')
     );
-    assert(found, 'has warning about old key');
+    assert(found, 'has error about old key');
+  });
+
+  it('Errors for old cli flag', function() {
+    const config = new Config({ debug: true }, {});
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find(
+      error => error.includes('debug') && error.includes('NOT RECOGNIZED')
+    );
+    assert(found, 'has error about old key');
+  });
+
+  it('Errors for old env var', function() {
+    const config = new Config({}, { SQLPAD_DEBUG: 'true' });
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find(
+      error =>
+        error.includes('SQLPAD_DEBUG') && error.includes('NOT RECOGNIZED')
+    );
+    assert(found, 'has error about old key');
   });
 
   it('Warns for deprecated config', function() {
