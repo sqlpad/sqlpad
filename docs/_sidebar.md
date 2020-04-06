@@ -4,6 +4,7 @@
   - [Connections](/connections.md)
   - [Authentication](/authentication.md)
   - [Seed Data](/seed-data.md)
+  - [Connection Templates](/connection-templates.md)
   - [Logging](/logging.md)
 - Release Notes
   - [Version 3](/version-3.md)

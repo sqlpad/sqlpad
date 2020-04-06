@@ -1,5 +1,55 @@
 # Changelog
 
+## 4.2.0
+
+### April 6, 2020
+
+#### Features
+
+- Add Google BigQuery support [documentation](https://rickbergfalk.github.io/sqlpad/#/connections?id=bigquery)
+
+- Add SQLite support [documentation](https://rickbergfalk.github.io/sqlpad/#/connections?id=sqlite)
+
+- Adds batch query support to ODBC (last statement is shown in UI)
+
+- Auth: Add option to disable authentication. [documentation](https://rickbergfalk.github.io/sqlpad/#/authentication?id=no-authentication)
+
+  When auth is disabled, application no longer requires authentication.
+
+- Auth: Add proxy authentication support. [documentation](https://rickbergfalk.github.io/sqlpad/#/authentication?id=auth-proxy)
+
+- Add private/shared query model.
+
+  Going forward queries are _private_ by default. When sharing is enabled, query is shared with all users (and they are given write permissions). Finer-grained access to be added in the future (share with specific user, read vs write)
+
+- Add connection and query seed data support [documentation](https://rickbergfalk.github.io/sqlpad/#/seed-data)
+
+- Add service tokens (api tokens). New menu option is available when logged in as admin.
+
+- Add application header for application-level administration
+
+- Adds multi-statement transaction support for Postgres, SQLite, and ODBC. [documentation](https://rickbergfalk.github.io/sqlpad/#/connections?id=multi-statement-transaction-support)
+
+- Add config deprecation for following keys: `debug`, `tableChartLinksRequireAuth`, `keyPath`, `certPath`, `certPassphrase`
+
+- Add connection template support [documentation](https://rickbergfalk.github.io/sqlpad/#/connection-templates)
+
+- Adds additional query run logging for queries executed and details surrounding them (logged under `info` level)
+
+#### Fixes
+
+- Fix: long connection form display to always show save/test buttons
+
+- Use ISO 8601 timestamps for log messages instead of unix epoch
+
+#### Maintenance / Misc / Dev updates
+
+- Updated dependencies
+- Introduced SQLite as backing store. nedb data (embedded db currently in use) will eventually be migrated to SQLite.
+- Added migration framework. Migrations are run at server startup.
+- Added mult-stage build
+- Lots of refactoring to better organize authentication, addition of new features.
+
 ## 4.1.1
 
 ### March 10, 2020

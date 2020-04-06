@@ -16,13 +16,13 @@ Local authentication can be disabled by setting `disableUserpassAuth` to `true`.
 
 ## No Authentication
 
-!> This is under development and available in `latest` or future 4.2 release
+?> Available as of `4.2.0`
 
 SQLPad can be configured to run without any configuration at all. This can be enabled by setting `disableAuth` to `true`.
 
 ## Auth Proxy
 
-!> This is under development and available in `latest` or future 4.2 release
+?> Available as of `4.2.0`
 
 !> When using this feature be sure to restrict access to SQLPad by listening to a restricted IP using `ip`/`SQLPAD_IP` configuration or other method
 

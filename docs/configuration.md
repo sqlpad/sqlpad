@@ -11,7 +11,7 @@ node server.js --config ~/sqlpad.ini
 
 For INI and JSON config file examples, see [config-example.ini](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.ini) and [config-example.json](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.json) in GitHub repository.
 
-!> For examples below, **key** refers to key in INI/JSON file. **Env** for environment variable.
+?> For examples below, **key** refers to key in INI/JSON file. **Env** for environment variable.
 
 ## admin
 
@@ -44,12 +44,16 @@ Path to mount sqlpad app following domain. Example, if '/sqlpad' is provided que
 
 ## certPassphrase
 
+!> Deprecated. To be removed in v6. [Use reverse proxy](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md)
+
 Passphrase for your SSL certification file
 
 - Key: `certPassphrase`
 - Env: `CERT_PASSPHRASE`
 
 ## certPath
+
+!> Deprecated. To be removed in v6. [Use reverse proxy](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md)
 
 Absolute path to where SSL certificate is stored
 
@@ -87,6 +91,8 @@ If enabled, runs embedded database `nedb` in memory. `dbPath` is still required 
 - Env: `SQLPAD_DB_IN_MEMORY`
 
 ## debug
+
+!> Deprecated. To be removed in v5. Set app and/or web log level to `debug` instead.
 
 Add a variety of logging to console while running SQLPad
 
@@ -145,6 +151,8 @@ IP address to bind to. By default SQLPad will listen from all available addresse
 - Default: `0.0.0.0`
 
 ## keyPath
+
+!> Deprecated. To be removed in v6. [Use reverse proxy](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md)
 
 Absolute path to where SSL certificate key is stored
 
@@ -290,6 +298,8 @@ Acquire socket from systemd if available
 - Env: `SQLPAD_SYSTEMD_SOCKET`
 
 ## tableChartLinksRequireAuth
+
+!> Deprecated. To be removed in v5. Use reverse-proxy and alternative auth mechanism such as auth-proxy to authenticate user passively instead (or open GitHub issue requesting per-query public sharing links feature).
 
 When false, table and chart result links will be operational without login.
 

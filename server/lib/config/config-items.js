@@ -151,7 +151,7 @@ const configItems = [
     envVar: 'SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH',
     default: true,
     deprecated:
-      'To be removed in v5. Use reverse-proxy and alternative auth mechanism such as auth-proxy to authenticate user passively instead (or request per-query public sharing links be created in GitHub).'
+      'To be removed in v5. Use reverse-proxy and alternative auth mechanism such as auth-proxy to authenticate user passively instead (or open GitHub issue requesting per-query public sharing links feature).'
   },
   {
     key: 'smtpFrom',

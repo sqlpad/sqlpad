@@ -2,7 +2,7 @@
 
 !> **EXPERIMENTAL This feature may continue to change before being finalized. Use at your own risk**
 
-?> Version added: latest (in development)
+?> Available as of `4.2.0`
 
 Data may be seeded to a SQLPad instance via JSON files on the file system. At this time only query and connection data may be seeded.
 

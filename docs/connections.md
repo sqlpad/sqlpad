@@ -8,7 +8,7 @@ Admins can create connections in the UI, but connections can also be created in 
 
 ## Multi-Statement Transaction Support
 
-!> This feature is under-development, and only available in `latest` or future `4.2+` release
+?> Available as of `4.2.0`
 
 Multi-statement transaction support adds the ability for a user to use the same underlying connection across query executions. This allows things like opening a transaction, running queries, and rolling the transaction back or comitting the transaction across query runs. It also opens up the ability to create and use temp tables that are generally scoped per connection session.
 

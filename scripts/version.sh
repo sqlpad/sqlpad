@@ -35,4 +35,4 @@ git commit -a -m "v$VERSION"
 git tag -a "v$VERSION" -m "v$VERSION"
 
 git push origin master
-git push --tags
+git push origin "v$VERSION"
