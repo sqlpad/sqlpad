@@ -1,6 +1,5 @@
 const fs = require('fs');
 const ini = require('ini');
-const configItems = require('./config-items');
 
 /**
  * Reads and parses config file.
@@ -9,7 +8,6 @@ const configItems = require('./config-items');
  */
 function fromFile(configFilePath) {
   let parsedFile = {};
-  const warnings = [];
 
   if (fs.existsSync(configFilePath)) {
     const fileText = fs.readFileSync(configFilePath, { encoding: 'utf8' });
@@ -23,25 +21,9 @@ function fromFile(configFilePath) {
         throw new Error(`Error parsing config file ${configFilePath}`);
       }
     }
-
-    // Validate that the config file uses the keys defined in configItems
-    // Prior to SQLPad 3 the saved config file was a JSON result of what minimist parsed from argv
-    // This means that there could be cliFlag's in the json ie `cert-passphrase` or `dir` for dbPath
-    // These are no longer supported from a file
-    Object.keys(parsedFile)
-      // connections is a special key that we will ignore for now
-      // It will define connections by id and is not to have a warning message
-      .filter(key => key !== 'connections')
-      .forEach(key => {
-        const configItem = configItems.find(item => item.key === key);
-        if (!configItem) {
-          let warningMessage = `Config key ${key} in file ${configFilePath} not recognized.`;
-          warnings.push(warningMessage);
-        }
-      });
   }
 
-  return [parsedFile, warnings];
+  return parsedFile;
 }
 
 module.exports = fromFile;

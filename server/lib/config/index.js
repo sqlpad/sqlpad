@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const appLog = require('../app-log');
+const configItems = require('./config-items');
 const validateConnection = require('../validate-connection');
 const fromDefault = require('./from-default');
 const fromEnv = require('./from-env');
@@ -11,11 +12,11 @@ class Config {
   constructor(argv, env) {
     this.argv = argv;
 
-    const configFilePathFromConfig = argv.config || env.SQLPAD_CONFIG;
+    const configFilePath = argv.config || env.SQLPAD_CONFIG;
 
     const defaultConfig = fromDefault();
     const envConfig = fromEnv(env);
-    const [fileConfig, warnings] = fromFile(configFilePathFromConfig);
+    const fileConfig = fromFile(configFilePath);
     const cliConfig = fromCli(argv);
 
     const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
@@ -32,8 +33,10 @@ class Config {
       }
     });
 
+    this.configFilePath = configFilePath;
+    this.envConfig = envConfig;
     this.fileConfig = fileConfig;
-    this.warnings = warnings;
+    this.cliConfig = cliConfig;
     this.all = all;
   }
 
@@ -52,15 +55,40 @@ class Config {
 
   getValidations() {
     const errors = [];
+    const warnings = [];
 
     // By default dbPath will exist as empty string, which is not valid
     if (this.all.dbPath === '') {
       errors.push(getOldConfigWarning());
     }
 
+    // Check for any unknown keys provided in config
+    // Validate that the config file uses the keys defined in configItems
+    // Prior to SQLPad 3 the saved config file was a JSON result of what minimist parsed from argv
+    // This means that there could be cliFlag's in the json ie `cert-passphrase` or `dir` for dbPath
+    // These are no longer supported from a file
+    Object.keys(this.all)
+      // connections is a special key that we will ignore for now
+      // It will define connections by id and is not to have a warning message
+      .filter(key => key !== 'connections')
+      .forEach(key => {
+        const configItem = configItems.find(item => item.key === key);
+        if (!configItem) {
+          if (this.fileConfig.hasOwnProperty(key)) {
+            warnings.push(
+              `Config key ${key} in file ${this.configFilePath} not recognized.`
+            );
+          }
+          if (this.cliConfig.hasOwnProperty(key)) {
+            warnings.push(`CLI flag key ${key} not recognized.`);
+          }
+          // We cannot find old keys from ENV since we only pick the environment variables from a known list
+        }
+      });
+
     return {
       errors,
-      warnings: [...this.warnings]
+      warnings
     };
   }
 
