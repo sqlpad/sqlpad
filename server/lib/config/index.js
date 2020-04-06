@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const appLog = require('../app-log');
+const configItems = require('./config-items');
 const validateConnection = require('../validate-connection');
 const fromDefault = require('./from-default');
 const fromEnv = require('./from-env');
@@ -11,11 +12,11 @@ class Config {
   constructor(argv, env) {
     this.argv = argv;
 
-    const configFilePathFromConfig = argv.config || env.SQLPAD_CONFIG;
+    const configFilePath = argv.config || env.SQLPAD_CONFIG;
 
     const defaultConfig = fromDefault();
     const envConfig = fromEnv(env);
-    const [fileConfig, warnings] = fromFile(configFilePathFromConfig);
+    const fileConfig = fromFile(configFilePath);
     const cliConfig = fromCli(argv);
 
     const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
@@ -32,8 +33,10 @@ class Config {
       }
     });
 
+    this.configFilePath = configFilePath;
+    this.envConfig = envConfig;
     this.fileConfig = fileConfig;
-    this.warnings = warnings;
+    this.cliConfig = cliConfig;
     this.all = all;
   }
 
@@ -52,15 +55,48 @@ class Config {
 
   getValidations() {
     const errors = [];
+    const warnings = [];
 
     // By default dbPath will exist as empty string, which is not valid
     if (this.all.dbPath === '') {
       errors.push(getOldConfigWarning());
     }
 
+    // Check for any unknown or deprecated keys provided in config
+    // Connections key is filtered out from consideration here because it is special and dynamic
+    // When dealing with unknown keys, the unknown key will only ever come from a file or CLI.
+    // Config from environment vars will only ever be plucked from the known list of config items
+    const userProvidedConfigs = {
+      ...this.envConfig,
+      ...this.fileConfig,
+      ...this.cliConfig
+    };
+    Object.keys(userProvidedConfigs)
+      .filter(key => key !== 'connections')
+      .forEach(key => {
+        const configItem = configItems.find(item => item.key === key);
+        if (!configItem) {
+          if (this.fileConfig.hasOwnProperty(key)) {
+            warnings.push(
+              `CONFIG NOT RECOGNIZED: Key ${key} in file ${this.configFilePath}.`
+            );
+          }
+          if (this.cliConfig.hasOwnProperty(key)) {
+            warnings.push(`CONFIG NOT RECOGNIZED: CLI flag ${key}.`);
+          }
+          return;
+        }
+
+        if (configItem.deprecated) {
+          warnings.push(
+            `DEPRECATED CONFIG: ${configItem.key} / ${configItem.envVar}. ${configItem.deprecated}`
+          );
+        }
+      });
+
     return {
       errors,
-      warnings: [...this.warnings]
+      warnings
     };
   }
 

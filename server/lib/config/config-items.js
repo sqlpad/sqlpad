@@ -62,17 +62,23 @@ const configItems = [
   {
     key: 'certPassphrase',
     envVar: 'CERT_PASSPHRASE',
-    default: ''
+    default: '',
+    deprecated:
+      'To be removed in v6. Delegate SSL to reverse proxy instead https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md'
   },
   {
     key: 'keyPath',
     envVar: 'KEY_PATH',
-    default: ''
+    default: '',
+    deprecated:
+      'To be removed in v6. Delegate SSL to reverse proxy instead https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md'
   },
   {
     key: 'certPath',
     envVar: 'CERT_PATH',
-    default: ''
+    default: '',
+    deprecated:
+      'To be removed in v6. Delegate SSL to reverse proxy instead https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md'
   },
   {
     key: 'admin',
@@ -87,7 +93,8 @@ const configItems = [
   {
     key: 'debug',
     envVar: 'SQLPAD_DEBUG',
-    default: false
+    default: false,
+    deprecated: 'To be removed in v5. Set app/web log levels to debug instead.'
   },
   {
     key: 'googleClientId',
@@ -142,7 +149,9 @@ const configItems = [
   {
     key: 'tableChartLinksRequireAuth',
     envVar: 'SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH',
-    default: true
+    default: true,
+    deprecated:
+      'To be removed in v5. Use reverse-proxy and alternative auth mechanism such as auth-proxy to authenticate user passively instead (or request per-query public sharing links be created in GitHub).'
   },
   {
     key: 'smtpFrom',
