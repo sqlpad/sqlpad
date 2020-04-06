@@ -2,6 +2,7 @@ const _ = require('lodash');
 const appLog = require('../app-log');
 const configItems = require('./config-items');
 const validateConnection = require('../validate-connection');
+const removedEnv = require('./removed-env');
 const fromDefault = require('./from-default');
 const fromEnv = require('./from-env');
 const fromCli = require('./from-cli');
@@ -11,6 +12,7 @@ const getOldConfigWarning = require('./get-old-config-warning');
 class Config {
   constructor(argv, env) {
     this.argv = argv;
+    this.env = env;
 
     const configFilePath = argv.config || env.SQLPAD_CONFIG;
 
@@ -62,6 +64,17 @@ class Config {
       errors.push(getOldConfigWarning());
     }
 
+    // Check for any old environment variables in env.
+    // This must be handled separately from other unknown checks,
+    // as fromEnv() only gets config it knows about, so it will never have unknown values
+    removedEnv.forEach(key => {
+      if (this.env[key]) {
+        errors.push(
+          `CONFIG NOT RECOGNIZED: Environment variable ${key} no longer supported.`
+        );
+      }
+    });
+
     // Check for any unknown or deprecated keys provided in config
     // Connections key is filtered out from consideration here because it is special and dynamic
     // When dealing with unknown keys, the unknown key will only ever come from a file or CLI.
@@ -75,14 +88,16 @@ class Config {
       .filter(key => key !== 'connections')
       .forEach(key => {
         const configItem = configItems.find(item => item.key === key);
+        // If the key is unknown, generate error message
+        // Error level messages will stop application startup
         if (!configItem) {
           if (this.fileConfig.hasOwnProperty(key)) {
-            warnings.push(
+            errors.push(
               `CONFIG NOT RECOGNIZED: Key ${key} in file ${this.configFilePath}.`
             );
           }
           if (this.cliConfig.hasOwnProperty(key)) {
-            warnings.push(`CONFIG NOT RECOGNIZED: CLI flag ${key}.`);
+            errors.push(`CONFIG NOT RECOGNIZED: CLI flag ${key}.`);
           }
           return;
         }
