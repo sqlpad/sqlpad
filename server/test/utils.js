@@ -29,7 +29,6 @@ class TestUtils {
   constructor(args = {}) {
     const config = new Config(
       {
-        debug: true,
         // Despite being in-memory, still need a file path for cache and session files
         // Eventually these will be moved to sqlite and we can be fully-in-memory
         dbPath: TEST_ARTIFACTS_DIR,

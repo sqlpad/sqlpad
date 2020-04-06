@@ -12,8 +12,8 @@ SQLPad version:  ${packageJson.version}
 
 CLI examples: 
 
-  sqlpad --dbPath ../db --port 3010 --debug --baseUrl /sqlpad
-  node server.js --dbPath ../db --port 3010 --debug --baseUrl /sqlpad
+  sqlpad --dbPath ../db --port 3010 --baseUrl /sqlpad
+  node server.js --dbPath ../db --port 3010 --baseUrl /sqlpad
   node server.js --config path/to/file.json
   node server.js --config path/to/file.ini
 
