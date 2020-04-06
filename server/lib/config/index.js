@@ -66,7 +66,12 @@ class Config {
     // Connections key is filtered out from consideration here because it is special and dynamic
     // When dealing with unknown keys, the unknown key will only ever come from a file or CLI.
     // Config from environment vars will only ever be plucked from the known list of config items
-    Object.keys(this.all)
+    const userProvidedConfigs = {
+      ...this.envConfig,
+      ...this.fileConfig,
+      ...this.cliConfig
+    };
+    Object.keys(userProvidedConfigs)
       .filter(key => key !== 'connections')
       .forEach(key => {
         const configItem = configItems.find(item => item.key === key);
@@ -84,7 +89,7 @@ class Config {
 
         if (configItem.deprecated) {
           warnings.push(
-            `DEPRECATED CONFIG: key ${configItem.key} / env var ${configItem.envVar}. ${configItem.deprecated}`
+            `DEPRECATED CONFIG: ${configItem.key} / ${configItem.envVar}. ${configItem.deprecated}`
           );
         }
       });
