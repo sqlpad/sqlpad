@@ -56,7 +56,7 @@ describe('lib/config/fromFile', function() {
     assert.equal(Object.keys(config).length, 3, '3 items');
   });
 
-  it('Warns for old JSON', function() {
+  it('Warns for old config file', function() {
     const config = new Config(
       { config: path.join(__dirname, '../fixtures/old-config.json') },
       {}
@@ -64,10 +64,23 @@ describe('lib/config/fromFile', function() {
 
     const validations = config.getValidations();
     assert(validations.warnings);
-    const found = validations.warnings.find(warning =>
-      `${warning}`.includes('Config key cert-passphrase')
+    const found = validations.warnings.find(
+      warning =>
+        warning.includes('cert-passphrase') &&
+        warning.includes('NOT RECOGNIZED')
     );
     assert(found, 'has warning about old key');
+  });
+
+  it('Warns for deprecated config', function() {
+    const config = new Config({ certPath: 'is going away' }, {});
+
+    const validations = config.getValidations();
+    assert(validations.warnings);
+    const found = validations.warnings.find(
+      warning => warning.includes('certPath') && warning.includes('DEPRECATED')
+    );
+    assert(found, 'has deprecated key warning');
   });
 });
 

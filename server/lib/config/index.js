@@ -62,27 +62,30 @@ class Config {
       errors.push(getOldConfigWarning());
     }
 
-    // Check for any unknown keys provided in config
-    // Validate that the config file uses the keys defined in configItems
-    // Prior to SQLPad 3 the saved config file was a JSON result of what minimist parsed from argv
-    // This means that there could be cliFlag's in the json ie `cert-passphrase` or `dir` for dbPath
-    // These are no longer supported from a file
+    // Check for any unknown or deprecated keys provided in config
+    // Connections key is filtered out from consideration here because it is special and dynamic
+    // When dealing with unknown keys, the unknown key will only ever come from a file or CLI.
+    // Config from environment vars will only ever be plucked from the known list of config items
     Object.keys(this.all)
-      // connections is a special key that we will ignore for now
-      // It will define connections by id and is not to have a warning message
       .filter(key => key !== 'connections')
       .forEach(key => {
         const configItem = configItems.find(item => item.key === key);
         if (!configItem) {
           if (this.fileConfig.hasOwnProperty(key)) {
             warnings.push(
-              `Config key ${key} in file ${this.configFilePath} not recognized.`
+              `CONFIG NOT RECOGNIZED: Key ${key} in file ${this.configFilePath}.`
             );
           }
           if (this.cliConfig.hasOwnProperty(key)) {
-            warnings.push(`CLI flag key ${key} not recognized.`);
+            warnings.push(`CONFIG NOT RECOGNIZED: CLI flag ${key}.`);
           }
-          // We cannot find old keys from ENV since we only pick the environment variables from a known list
+          return;
+        }
+
+        if (configItem.deprecated) {
+          warnings.push(
+            `DEPRECATED CONFIG: key ${configItem.key} / env var ${configItem.envVar}. ${configItem.deprecated}`
+          );
         }
       });
 
