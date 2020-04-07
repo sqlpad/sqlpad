@@ -6,6 +6,10 @@
 
 - `debug` config option removed. Use `appLogLevel` set to `debug` instead.
 
+- `tableChartLinksRequireAuth` config option removed.
+
+  All table/chart links require authentication going forward. If unauthenticated access to these URLs is necessary, look into whether an alternate auth solution may be used to passively provide authentication as necessary (like auth proxy for example.)
+
 ## 4.2.0
 
 ### April 6, 2020

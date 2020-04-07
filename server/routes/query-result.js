@@ -1,7 +1,6 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
-const mustHaveConnectionAccessOrChartLink = require('../middleware/must-have-connection-access-or-chart-link-noauth');
 const sendError = require('../lib/send-error');
 const ConnectionClient = require('../lib/connection-client');
 
@@ -9,7 +8,7 @@ const ConnectionClient = require('../lib/connection-client');
 // Instead of relying on an open endpoint that executes arbitrary sql
 router.get(
   '/api/query-result/:_queryId',
-  mustHaveConnectionAccessOrChartLink,
+  mustHaveConnectionAccess,
   async function(req, res) {
     const { models } = req;
     try {

@@ -90,15 +90,6 @@ If enabled, runs embedded database `nedb` in memory. `dbPath` is still required 
 - Key: `dbInMemory`
 - Env: `SQLPAD_DB_IN_MEMORY`
 
-## debug
-
-!> Deprecated. To be removed in v5. Set app and/or web log level to `debug` instead.
-
-Add a variety of logging to console while running SQLPad
-
-- Key: `debug`
-- Env: `SQLPAD_DEBUG`
-
 ## disableAuth
 
 Set to TRUE to disable authentication altogether.
@@ -296,16 +287,6 @@ Acquire socket from systemd if available
 
 - Key: `systemdSocket`
 - Env: `SQLPAD_SYSTEMD_SOCKET`
-
-## tableChartLinksRequireAuth
-
-!> Deprecated. To be removed in v5. Use reverse-proxy and alternative auth mechanism such as auth-proxy to authenticate user passively instead (or open GitHub issue requesting per-query public sharing links feature).
-
-When false, table and chart result links will be operational without login.
-
-- Key: `tableChartLinksRequireAuth`
-- Env: `SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH`
-- Default: `true`
 
 ## timeoutSeconds
 

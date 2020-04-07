@@ -1,17 +1,12 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link.js');
 const sendError = require('../lib/send-error');
 const pushQueryToSlack = require('../lib/push-query-to-slack');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 // NOTE: this non-api route is special since it redirects legacy urls
-router.get('/queries/:_id', mustBeAuthenticatedOrChartLink, function(
-  req,
-  res,
-  next
-) {
+router.get('/queries/:_id', mustBeAuthenticated, function(req, res, next) {
   const { query, params, config } = req;
   const { format } = query;
   const baseUrl = config.get('baseUrl');
@@ -75,7 +70,7 @@ router.get('/api/queries', mustBeAuthenticated, listQueries);
  * @param {*} res
  */
 async function getQuery(req, res) {
-  const { models, user, params, config } = req;
+  const { models, user, params } = req;
   try {
     const query = await models.findQueryById(params._id);
 
@@ -85,11 +80,6 @@ async function getQuery(req, res) {
       return res.json({
         query: {}
       });
-    }
-
-    // If table and chart links do not require send query regardless of user access
-    if (!config.get('tableChartLinksRequireAuth')) {
-      return res.json({ query });
     }
 
     const decorated = decorateQueryUserAccess(query, user);
@@ -104,7 +94,7 @@ async function getQuery(req, res) {
   }
 }
 
-router.get('/api/queries/:_id', mustBeAuthenticatedOrChartLink, getQuery);
+router.get('/api/queries/:_id', mustBeAuthenticated, getQuery);
 
 /**
  * @param {import('express').Request & Req} req
