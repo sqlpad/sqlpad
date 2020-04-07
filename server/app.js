@@ -63,9 +63,6 @@ function makeApp(config, models) {
     next();
   });
 
-  const expressEnv = config.get('debug') ? 'development' : 'production';
-  app.set('env', expressEnv);
-
   app.use(expressPino);
   app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
   app.use(bodyParser.json());

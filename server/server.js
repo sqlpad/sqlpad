@@ -22,14 +22,15 @@ appLog.setLevel(config.get('appLogLevel'));
 appLog.debug(config.get(), 'Final config values');
 appLog.debug(config.getConnections(), 'Connections from config');
 
-makeDb(config);
-
+// Validate configuration and warn/error as appropriate
 const configValidations = config.getValidations();
 configValidations.warnings.map(warning => appLog.warn(warning));
 if (configValidations.errors.length > 0) {
   configValidations.errors.forEach(error => appLog.error(error));
   process.exit(1);
 }
+
+makeDb(config);
 
 const baseUrl = config.get('baseUrl');
 const ip = config.get('ip');

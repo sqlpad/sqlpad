@@ -1,5 +1,11 @@
 # Changelog
 
+## In development (v5)
+
+#### Breaking
+
+- `debug` config option removed. Use `appLogLevel` set to `debug` instead.
+
 ## 4.2.0
 
 ### April 6, 2020

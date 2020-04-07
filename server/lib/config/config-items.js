@@ -91,12 +91,6 @@ const configItems = [
     default: ''
   },
   {
-    key: 'debug',
-    envVar: 'SQLPAD_DEBUG',
-    default: false,
-    deprecated: 'To be removed in v5. Set app/web log levels to debug instead.'
-  },
-  {
     key: 'googleClientId',
     envVar: 'GOOGLE_CLIENT_ID',
     default: ''
