@@ -1,6 +1,5 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
-const request = require('supertest');
 
 const queryText = `
   SELECT * 
@@ -16,7 +15,6 @@ describe('query table/chart require auth', function() {
   const utils = new TestUtils({});
   let query;
   let connection;
-  let cacheKey;
 
   before(async function() {
     await utils.init(true);
