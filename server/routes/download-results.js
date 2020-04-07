@@ -1,10 +1,10 @@
 const fs = require('fs');
 const router = require('express').Router();
-const mustBeAuthenticatedOrChartLink = require('../middleware/must-be-authenticated-or-chart-link.js');
+const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 
 router.get(
   '/download-results/:cacheKey.csv',
-  mustBeAuthenticatedOrChartLink,
+  mustBeAuthenticated,
   async function(req, res, next) {
     const { models, appLog } = req;
     const { cacheKey } = req.params;
@@ -34,7 +34,7 @@ router.get(
 
 router.get(
   '/download-results/:cacheKey.xlsx',
-  mustBeAuthenticatedOrChartLink,
+  mustBeAuthenticated,
   async function(req, res, next) {
     const { models, appLog } = req;
     const { cacheKey } = req.params;
@@ -69,7 +69,7 @@ router.get(
 
 router.get(
   '/download-results/:cacheKey.json',
-  mustBeAuthenticatedOrChartLink,
+  mustBeAuthenticated,
   async function(req, res, next) {
     const { models, appLog } = req;
     const { cacheKey } = req.params;

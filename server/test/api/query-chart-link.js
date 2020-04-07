@@ -9,8 +9,11 @@ const queryText = `
   LIMIT 10
 `;
 
-describe('query table/chart link no auth', function() {
-  const utils = new TestUtils({ tableChartLinksRequireAuth: false });
+// This test used to ensure that these routes were accessible with tableChartLinksRequireAuth=false
+// This setting no longer exists, and auth is *always required* for these routes
+// The tests have been updated accordingly to ensure this is as expected
+describe('query table/chart require auth', function() {
+  const utils = new TestUtils({});
   let query;
   let connection;
   let cacheKey;
@@ -35,20 +38,12 @@ describe('query table/chart link no auth', function() {
   });
 
   it('Gets query without auth', async function() {
-    const body = await utils.get(null, `/api/queries/${query._id}`);
+    const body = await utils.get(null, `/api/queries/${query._id}`, 302);
     assert(!body.error, 'Expect no error');
   });
 
   it('Gets result without auth', async function() {
-    const body = await utils.get(null, `/api/query-result/${query._id}`);
+    const body = await utils.get(null, `/api/query-result/${query._id}`, 302);
     assert(!body.error, 'Expect no error');
-    cacheKey = body.queryResult.cacheKey;
-  });
-
-  it('Downloads results without auth', async function() {
-    const csvRes = await request(utils.app)
-      .get(`/download-results/${cacheKey}.csv`)
-      .expect(200);
-    assert(csvRes.text);
   });
 });

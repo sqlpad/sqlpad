@@ -120,14 +120,10 @@ function makeApp(config, models) {
   // They do not persist a session
   app.use(sessionlessAuth);
 
-  const routers = [
-    // Mix of auth required or chart link
-    // Eventually the chart-link stuff can be removed or separated out
-    // and auth check can happen as middleware prior to these routes
+  const authRequiredRouters = [
     require('./routes/query-result.js'),
     require('./routes/download-results.js'),
     require('./routes/queries.js'),
-    // Auth required
     require('./routes/drivers.js'),
     require('./routes/users.js'),
     require('./routes/connections.js'),
@@ -142,7 +138,7 @@ function makeApp(config, models) {
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
-  routers.forEach(router => app.use(baseUrl, router));
+  authRequiredRouters.forEach(router => app.use(baseUrl, router));
 
   // Add '*/api/app' route last and without baseUrl
   app.use(require('./routes/app.js'));
