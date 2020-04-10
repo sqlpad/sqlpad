@@ -46,7 +46,7 @@ async function handleSignup(req, res, next) {
     });
     return next();
   } else {
-    return res.errors('Email address not whitelisted', 400);
+    return res.errors('Email address not whitelisted', 403);
   }
 }
 

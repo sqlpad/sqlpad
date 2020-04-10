@@ -32,7 +32,7 @@ function handleSignin(req, res, next) {
 }
 
 router.post('/api/signin', handleSignin, function(req, res) {
-  res.json({});
+  res.data(null);
 });
 
 module.exports = router;
