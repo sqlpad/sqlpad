@@ -1,8 +1,8 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
-const sendError = require('../lib/send-error');
 const ConnectionClient = require('../lib/connection-client');
+const wrap = require('../lib/wrap');
 
 /**
  * @param {import('express').Request & Req} req
@@ -13,39 +13,32 @@ async function getSchemaInfo(req, res) {
   const { connectionId } = req.params;
   const reload = req.query.reload === 'true';
 
-  try {
-    const conn = await models.connections.findOneById(connectionId);
+  const conn = await models.connections.findOneById(connectionId);
 
-    if (!conn) {
-      throw new Error('Connection not found');
-    }
-
-    const connectionClient = new ConnectionClient(conn, user);
-    const schemaCacheId = connectionClient.getSchemaCacheId();
-
-    let schemaInfo = await models.schemaInfo.getSchemaInfo(schemaCacheId);
-
-    if (schemaInfo && !reload) {
-      return res.json({ schemaInfo });
-    }
-
-    schemaInfo = await connectionClient.getSchema();
-    if (Object.keys(schemaInfo).length) {
-      await models.schemaInfo.saveSchemaInfo(schemaCacheId, schemaInfo);
-    }
-    return res.json({ schemaInfo });
-  } catch (error) {
-    if (error.message === 'Connection not found') {
-      return sendError(res, error);
-    }
-    sendError(res, error, 'Problem getting schema info');
+  if (!conn) {
+    return res.errors('Connection not found', 404);
   }
+
+  const connectionClient = new ConnectionClient(conn, user);
+  const schemaCacheId = connectionClient.getSchemaCacheId();
+
+  let schemaInfo = await models.schemaInfo.getSchemaInfo(schemaCacheId);
+
+  if (schemaInfo && !reload) {
+    return res.data(schemaInfo);
+  }
+
+  schemaInfo = await connectionClient.getSchema();
+  if (Object.keys(schemaInfo).length) {
+    await models.schemaInfo.saveSchemaInfo(schemaCacheId, schemaInfo);
+  }
+  return res.data(schemaInfo);
 }
 
 router.get(
   '/api/schema-info/:connectionId',
   mustHaveConnectionAccess,
-  getSchemaInfo
+  wrap(getSchemaInfo)
 );
 
 module.exports = router;

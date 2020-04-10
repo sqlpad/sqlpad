@@ -27,8 +27,8 @@ function handleSignin(req, res, next) {
   }
 
   // We aren't sure how to authenticate this request
-  // TODO - a more appropriate reponse might be 400 or 401
-  return res.status(403).json({ error: 'Forbidden' });
+  // Whatever was sent is not supported
+  return res.errors('Unexpected authentication format', 400);
 }
 
 router.post('/api/signin', handleSignin, function(req, res) {

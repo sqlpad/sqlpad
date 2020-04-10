@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const mustBeAdmin = require('../middleware/must-be-admin.js');
-const sendError = require('../lib/send-error');
+const wrap = require('../lib/wrap');
 
 /**
  * @param {import('express').Request & Req} req
@@ -8,15 +8,11 @@ const sendError = require('../lib/send-error');
  */
 async function listServiceTokens(req, res) {
   const { models } = req;
-  try {
-    const serviceTokens = await models.serviceTokens.findAll();
-    return res.json({ serviceTokens });
-  } catch (error) {
-    sendError(res, error, 'Problem getting service tokens');
-  }
+  const serviceTokens = await models.serviceTokens.findAll();
+  return res.data(serviceTokens);
 }
 
-router.get('/api/service-tokens', mustBeAdmin, listServiceTokens);
+router.get('/api/service-tokens', mustBeAdmin, wrap(listServiceTokens));
 
 /**
  * @param {import('express').Request & Req} req
@@ -24,25 +20,22 @@ router.get('/api/service-tokens', mustBeAdmin, listServiceTokens);
  */
 async function generateServiceToken(req, res) {
   const { models } = req;
-  try {
-    let serviceToken = await models.serviceTokens.findOneByName(req.body.name);
-    if (serviceToken) {
-      return sendError(res, null, 'Service token already exists');
-    }
 
-    serviceToken = await models.serviceTokens.generate({
-      name: req.body.name,
-      role: req.body.role,
-      duration: req.body.duration
-    });
-
-    return res.json({ serviceToken });
-  } catch (error) {
-    sendError(res, error);
+  let serviceToken = await models.serviceTokens.findOneByName(req.body.name);
+  if (serviceToken) {
+    return res.errors('Service token already exists', 400);
   }
+
+  serviceToken = await models.serviceTokens.generate({
+    name: req.body.name,
+    role: req.body.role,
+    duration: req.body.duration
+  });
+
+  return res.data(serviceToken);
 }
 
-router.post('/api/service-tokens', mustBeAdmin, generateServiceToken);
+router.post('/api/service-tokens', mustBeAdmin, wrap(generateServiceToken));
 
 /**
  * @param {import('express').Request & Req} req
@@ -50,14 +43,14 @@ router.post('/api/service-tokens', mustBeAdmin, generateServiceToken);
  */
 async function deleteServiceToken(req, res) {
   const { models } = req;
-  try {
-    await models.serviceTokens.removeOneById(req.params._id);
-    return res.json({});
-  } catch (error) {
-    sendError(res, error, 'Problem deleting service token');
-  }
+  await models.serviceTokens.removeOneById(req.params._id);
+  return res.data(null);
 }
 
-router.delete('/api/service-tokens/:_id', mustBeAdmin, deleteServiceToken);
+router.delete(
+  '/api/service-tokens/:_id',
+  mustBeAdmin,
+  wrap(deleteServiceToken)
+);
 
 module.exports = router;
