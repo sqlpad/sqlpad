@@ -182,6 +182,20 @@ function makeApp(config, models) {
     res.sendStatus(404);
   });
 
+  // Add an error handler for /api
+  app.use(baseUrl + '/api/', function(err, req, res, next) {
+    if (res.headersSent) {
+      return next(err);
+    }
+    return res.status(500).json({
+      errors: [
+        {
+          title: 'Internal Server Error'
+        }
+      ]
+    });
+  });
+
   // Anything else should render the client-side app
   // Client-side routing will take care of things from here
   // Because index.html will be served via static plugin,
