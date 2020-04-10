@@ -19,7 +19,11 @@ router.get('/api/service-tokens', mustBeAdmin, wrap(listServiceTokens));
  * @param {*} res
  */
 async function generateServiceToken(req, res) {
-  const { models } = req;
+  const { models, config } = req;
+
+  if (!config.get('serviceTokenSecret')) {
+    return res.errors('Forbidden', 403);
+  }
 
   let serviceToken = await models.serviceTokens.findOneByName(req.body.name);
   if (serviceToken) {
