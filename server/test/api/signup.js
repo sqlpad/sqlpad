@@ -35,8 +35,7 @@ describe('api/signup', function() {
         email: 'admin@test.com'
       })
       .expect(200);
-
-    assert(!r1.body.error, 'Expect no error');
+    TestUtil.bodyHasData(r1.body);
 
     const agent = request.agent(utils.app);
 
@@ -47,11 +46,12 @@ describe('api/signup', function() {
         email: 'admin@test.com'
       })
       .expect(200);
-    assert(!r2.body.error, 'Expect no error');
+    TestUtil.bodyHasData(r2.body);
 
     // agent should have session cookie to allow further action
     const r3 = await agent.get('/api/app');
-    assert.equal(r3.body.currentUser.email, 'admin@test.com');
+    TestUtil.bodyHasData(r3.body);
+    assert.equal(r3.body.data.currentUser.email, 'admin@test.com');
   });
 
   it('prevents duplicate signups', async function() {
@@ -76,9 +76,9 @@ describe('api/signup', function() {
         passwordConfirmation: 'admin',
         email: 'admin@test.com'
       })
-      .expect(200);
+      .expect(400);
 
-    assert(r2.body.error, 'Expect error user already signed up');
+    TestUtil.bodyHasErrors(r2.body);
   });
 
   it('prevents open signups', async function() {
@@ -94,7 +94,7 @@ describe('api/signup', function() {
         passwordConfirmation: 'notwhitelisted',
         email: 'notwhitelisted@test.com'
       })
-      .expect(200);
-    assert(body.error, 'Expect error needing whitelist');
+      .expect(403);
+    TestUtil.bodyHasErrors(body);
   });
 });

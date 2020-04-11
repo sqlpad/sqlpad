@@ -8,21 +8,21 @@ describe('api/connection-clients', function() {
 
   before(async function() {
     await utils.init(true);
-    let connBody = await utils.post('admin', '/api/connections', {
+    const connBody = await utils.post('admin', '/api/connections', {
       name: 'test connection 1',
       driver: 'sqlite',
       filename: './test/fixtures/sales.sqlite',
       idleTimeoutSeconds: 4,
       multiStatementTransactionEnabled: true
     });
-    connection1 = connBody.connection;
+    connection1 = connBody.data;
   });
 
   it('creates a connection client', async function() {
     const body = await utils.post('editor', '/api/connection-clients', {
       connectionId: connection1._id
     });
-    const { connectionClient } = body;
+    const { data: connectionClient } = body;
     connectionClient1 = connectionClient;
     assert.equal(connectionClient.name, 'test connection 1');
     assert(connectionClient.id);
@@ -35,8 +35,7 @@ describe('api/connection-clients', function() {
       'editor',
       `/api/connection-clients/${connectionClient1.id}`
     );
-    assert(!body.error);
-    assert.equal(body.connectionClient.id, connectionClient1.id);
+    assert.equal(body.data.id, connectionClient1.id);
   });
 
   it('admin is allowed to get client', async function() {
@@ -44,17 +43,15 @@ describe('api/connection-clients', function() {
       'admin',
       `/api/connection-clients/${connectionClient1.id}`
     );
-    assert(!body.error);
-    assert.equal(body.connectionClient.id, connectionClient1.id);
+    assert.equal(body.data.id, connectionClient1.id);
   });
 
   it('Non-creator non-admin is not allowed to get client', async function() {
-    const body = await utils.get(
+    await utils.get(
       'editor2',
       `/api/connection-clients/${connectionClient1.id}`,
       403
     );
-    assert(body.error);
   });
 
   it('does not allow editor access to list', async function() {
@@ -63,8 +60,8 @@ describe('api/connection-clients', function() {
 
   it('allows admin to list connection clients', async function() {
     const body = await utils.get('admin', '/api/connection-clients');
-    assert.equal(body.connectionClients.length, 1);
-    const connectionClient = body.connectionClients[0];
+    assert.equal(body.data.length, 1);
+    const connectionClient = body.data[0];
     assert.equal(connectionClient.name, 'test connection 1');
     assert(connectionClient.id);
     assert(connectionClient.connectedAt);
@@ -76,7 +73,7 @@ describe('api/connection-clients', function() {
       'editor',
       `/api/connection-clients/${connectionClient1.id}`
     );
-    const { connectionClient } = body;
+    const { data: connectionClient } = body;
     assert.equal(connectionClient.name, 'test connection 1');
     assert(connectionClient.id);
     assert(connectionClient.connectedAt);
@@ -112,29 +109,30 @@ describe('api/connection-clients', function() {
   });
 
   it('Creator can disconnect client', async function() {
-    const delBody = await utils.del(
+    await utils.del(
       'editor',
       `/api/connection-clients/${connectionClient1.id}`
     );
-    assert(!delBody.error);
 
     // connection client should now be removed
     const body = await utils.get('admin', '/api/connection-clients');
-    assert.equal(body.connectionClients.length, 0);
+    assert.equal(body.data.length, 0);
   });
 
   it('Admin can disconnect client', async function() {
-    const { connectionClient } = await utils.post(
+    const { data: connectionClient } = await utils.post(
       'editor',
       '/api/connection-clients',
       {
         connectionId: connection1._id
       }
     );
-    const delBody = await utils.del(
+    await utils.del('admin', `/api/connection-clients/${connectionClient.id}`);
+
+    const { data } = await utils.get(
       'admin',
       `/api/connection-clients/${connectionClient.id}`
     );
-    assert(!delBody.error);
+    assert(!data);
   });
 });

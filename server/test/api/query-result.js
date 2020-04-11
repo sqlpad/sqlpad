@@ -37,7 +37,7 @@ describe('api/query-result', function() {
       driver: 'sqlite',
       filename: './test/fixtures/sales.sqlite'
     });
-    connection = connBody.connection;
+    connection = connBody.data;
 
     const queryBody = await utils.post('admin', '/api/queries', {
       name: 'test query',
@@ -45,13 +45,12 @@ describe('api/query-result', function() {
       connectionId: connection._id,
       queryText
     });
-    query = queryBody.query;
+    query = queryBody.data;
   });
 
   it('GET /api/query-result/:queryId', async function() {
     const body = await utils.get('admin', `/api/query-result/${query._id}`);
-    assert(!body.error, 'Expect no error');
-    validateQueryResult(body.queryResult);
+    validateQueryResult(body.data);
   });
 
   it('POST /api/query-result', async function() {
@@ -61,8 +60,6 @@ describe('api/query-result', function() {
       queryName: 'test query',
       queryText
     });
-
-    assert(!body.error, 'Expect no error');
-    validateQueryResult(body.queryResult);
+    validateQueryResult(body.data);
   });
 });

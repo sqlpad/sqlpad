@@ -17,22 +17,21 @@ describe('api/service-tokens', function() {
 
   it('Returns empty array', async function() {
     const body = await utils.get('admin', '/api/service-tokens');
-    assert(!body.error, 'no error');
-    assert(Array.isArray(body.serviceTokens), 'serviceTokens is an array');
-    assert.equal(body.serviceTokens.length, 0, '0 length');
+    assert(Array.isArray(body.data), 'data is an array');
+    assert.equal(body.data.length, 0, '0 length');
   });
 
   it('Creates service token without no secret', async function() {
-    const body = await utilsNoJwtSecret.post('admin', '/api/service-tokens', {
-      name: 'Test Service Token - Infinite',
-      role: 'admin'
-    });
-
-    assert(body.error, 'error');
-    assert.equal(
-      body.error,
-      'Service Token (JWT) Secret not defined in server config'
+    const body = await utilsNoJwtSecret.post(
+      'admin',
+      '/api/service-tokens',
+      {
+        name: 'Test Service Token - Infinite',
+        role: 'admin'
+      },
+      403
     );
+    assert.equal(body.errors[0].title, 'Forbidden');
   });
 
   it('Creates service token without expiry date', async function() {
@@ -42,24 +41,21 @@ describe('api/service-tokens', function() {
     });
 
     assert(!body.error, 'no error');
-    assert(body.serviceToken.id, 'has id');
-    assert(body.serviceToken.name, 'has name');
-    assert(body.serviceToken.role, 'has role');
-    assert(body.serviceToken.maskedToken, 'has maskedToken');
-    assert(body.serviceToken.token, 'has token');
-    assert(!body.serviceToken.expiryDate, 'no expiryDate');
+    assert(body.data.id, 'has id');
+    assert(body.data.name, 'has name');
+    assert(body.data.role, 'has role');
+    assert(body.data.maskedToken, 'has maskedToken');
+    assert(body.data.token, 'has token');
+    assert(!body.data.expiryDate, 'no expiryDate');
 
-    const decodedTokenPayload = jwt.verify(
-      body.serviceToken.token,
-      serviceTokenSecret
-    );
+    const decodedTokenPayload = jwt.verify(body.data.token, serviceTokenSecret);
     assert.equal(decodedTokenPayload.name, 'Test Service Token - Infinite');
     assert.equal(decodedTokenPayload.role, 'editor');
     assert(decodedTokenPayload.iat, 'has issued at');
     assert(!decodedTokenPayload.exp, 'no expiration time');
 
     // Save the token
-    editorServiceToken = body.serviceToken;
+    editorServiceToken = body.data;
   });
 
   it('Creates service token with expiry date', async function() {
@@ -69,44 +65,42 @@ describe('api/service-tokens', function() {
       duration: 168
     });
 
-    assert(!body.error, 'no error');
-    assert(body.serviceToken.id, 'has id');
-    assert(body.serviceToken.name, 'has name');
-    assert(body.serviceToken.role, 'has role');
-    assert(body.serviceToken.maskedToken, 'has maskedToken');
-    assert(body.serviceToken.token, 'has token');
-    assert(body.serviceToken.expiryDate, 'has expiryDate');
+    assert(body.data.id, 'has id');
+    assert(body.data.name, 'has name');
+    assert(body.data.role, 'has role');
+    assert(body.data.maskedToken, 'has maskedToken');
+    assert(body.data.token, 'has token');
+    assert(body.data.expiryDate, 'has expiryDate');
 
-    const decodedTokenPayload = jwt.verify(
-      body.serviceToken.token,
-      serviceTokenSecret
-    );
+    const decodedTokenPayload = jwt.verify(body.data.token, serviceTokenSecret);
     assert.equal(decodedTokenPayload.name, 'Test Service Token');
     assert.equal(decodedTokenPayload.role, 'admin');
     assert(decodedTokenPayload.iat, 'has issued at');
     assert(decodedTokenPayload.exp, 'has expiration time');
 
     // Save the token
-    adminServiceToken = body.serviceToken;
+    adminServiceToken = body.data;
   });
 
   it('Re-creates service token with existing name', async function() {
-    const body = await utils.post('admin', '/api/service-tokens', {
-      name: 'Test Service Token',
-      role: 'admin',
-      duration: 168
-    });
+    const body = await utils.post(
+      'admin',
+      '/api/service-tokens',
+      {
+        name: 'Test Service Token',
+        role: 'admin',
+        duration: 168
+      },
+      400
+    );
 
-    assert(body.error, 'error');
-    assert.equal(body.error, 'Service token already exists');
+    assert.equal(body.errors[0].title, 'Service token already exists');
   });
 
-  // Expecting 302 is weird here, but it'll change to 401 the future
-  // must-be-authenticated middleware responds with a redirect (302) to sign in
   it('Accessing API endpoint without service token', async function() {
     await request(utils.app)
       .get('/api/users')
-      .expect(302);
+      .expect(401);
   });
 
   it('Accessing API endpoint with invalid service token', async function() {
@@ -143,17 +137,12 @@ describe('api/service-tokens', function() {
 
   it('Delete and get service tokens', async function() {
     // Delete the admin service token
-    const bodyDel = await utils.del(
-      'admin',
-      '/api/service-tokens/' + adminServiceToken.id
-    );
-    assert(!bodyDel.error, 'no error');
+    await utils.del('admin', '/api/service-tokens/' + adminServiceToken.id);
 
     // Get tokens after delete, expecting one entry
     const bodyGet = await utils.get('admin', '/api/service-tokens');
-    assert(!bodyGet.error, 'no error');
-    assert(Array.isArray(bodyGet.serviceTokens), 'serviceTokens is an array');
-    assert.equal(bodyGet.serviceTokens.length, 1, '1 length');
+    assert(Array.isArray(bodyGet.data), 'data is an array');
+    assert.equal(bodyGet.data.length, 1, '1 length');
   });
 
   it('Accessing API restricted endpoint with deleted service token', async function() {

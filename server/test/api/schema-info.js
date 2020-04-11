@@ -40,8 +40,7 @@ describe('api/schema-info', function() {
       name: 'sqlite-test',
       filename: './test/artifacts/{{user.data.dbfilename}}'
     });
-    assert(!body.error, 'no error');
-    connection = body.connection;
+    connection = body.data;
 
     // With user 1 create a table
     // Then with user 2 create a different table
@@ -58,18 +57,16 @@ describe('api/schema-info', function() {
       'user1',
       `/api/schema-info/${connection._id}`
     );
-    assert(!body1.error, 'Expect no error');
-    assert(body1.schemaInfo, 'body.schemaInfo');
-    assert(body1.schemaInfo.main.user1, 'user1 table exists');
-    assert(!body1.schemaInfo.main.user2, 'user2 table does not exist');
+    assert(body1.data, 'body.data');
+    assert(body1.data.main.user1, 'user1 table exists');
+    assert(!body1.data.main.user2, 'user2 table does not exist');
 
     const body2 = await utils.get(
       'user2',
       `/api/schema-info/${connection._id}`
     );
-    assert(!body2.error, 'Expect no error');
-    assert(body2.schemaInfo, 'body.schemaInfo');
-    assert(!body2.schemaInfo.main.user1, 'user1 table does not exist');
-    assert(body2.schemaInfo.main.user2, 'user2 table exists');
+    assert(body2.data, 'body.data');
+    assert(!body2.data.main.user1, 'user1 table does not exist');
+    assert(body2.data.main.user2, 'user2 table exists');
   });
 });

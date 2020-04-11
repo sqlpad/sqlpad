@@ -28,12 +28,11 @@ describe('api/signin', function() {
           email: 'admin@test.com'
         })
         .expect(200);
-
-      assert(!body.error, 'Expect no error');
+      TestUtil.bodyHasData(body);
 
       // agent should have session cookie to allow further action
       const r2 = await agent.get('/api/app');
-      assert.equal(r2.body.currentUser.email, 'admin@test.com');
+      assert.equal(r2.body.data.currentUser.email, 'admin@test.com');
     });
 
     it('unauthorized for bad signin', async function() {
@@ -43,7 +42,7 @@ describe('api/signin', function() {
 
       await utils.init();
 
-      await request(utils.app)
+      let res = await request(utils.app)
         .post('/api/signup')
         .send({
           email: 'admin@test.com',
@@ -51,14 +50,16 @@ describe('api/signin', function() {
           passwordConfirmation: 'admin'
         })
         .expect(200);
+      TestUtil.bodyHasData(res.body);
 
-      await request(utils.app)
+      res = await request(utils.app)
         .post('/api/signin')
         .send({
           email: 'admin@test.com',
           password: 'wrong-password'
         })
         .expect(401);
+      TestUtil.bodyHasErrors(res.body);
     });
 
     it('supports case insensitive login', async function() {
@@ -96,7 +97,7 @@ describe('api/signin', function() {
           email: 'Usercase@test.com'
         })
         .expect(200);
-      assert(!body.error, 'Expect no error');
+      TestUtil.bodyHasData(body);
     });
 
     it('allows emails containing +', async function() {
@@ -125,7 +126,7 @@ describe('api/signin', function() {
           role: 'editor'
         })
         .expect(200);
-      assert(!response1.body.error, 'no error');
+      TestUtil.bodyHasData(response1.body);
 
       const response2 = await request(utils.app)
         .post('/api/signup')
@@ -135,7 +136,7 @@ describe('api/signin', function() {
           email: 'user+foobar@test.com'
         })
         .expect(200);
-      assert(!response2.error, 'Expect no error');
+      TestUtil.bodyHasData(response2.body);
     });
   });
 
@@ -152,14 +153,15 @@ describe('api/signin', function() {
       const agent = request.agent(utils.app);
 
       // This signin call authenticates, auto-creates the user and creates a session
-      await agent
+      const r1 = await agent
         .post('/api/signin')
         .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
         .expect(200);
+      TestUtil.bodyHasData(r1.body);
 
       // agent should have session cookie to allow further action
       const r2 = await agent.get('/api/app');
-      assert.equal(r2.body.currentUser.email, 'test@sqlpad.com');
+      assert.equal(r2.body.data.currentUser.email, 'test@sqlpad.com');
     });
   });
 });

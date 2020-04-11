@@ -24,7 +24,7 @@ describe('query table/chart require auth', function() {
       driver: 'sqlite',
       filename: './test/fixtures/sales.sqlite'
     });
-    connection = connBody.connection;
+    connection = connBody.data;
 
     const queryBody = await utils.post('admin', '/api/queries', {
       name: 'test query',
@@ -32,16 +32,15 @@ describe('query table/chart require auth', function() {
       connectionId: connection._id,
       queryText
     });
-    query = queryBody.query;
+    query = queryBody.data;
   });
 
-  it('Gets query without auth', async function() {
-    const body = await utils.get(null, `/api/queries/${query._id}`, 302);
-    assert(!body.error, 'Expect no error');
+  it('Gets query without auth not permitted', async function() {
+    await utils.get(null, `/api/queries/${query._id}`, 401);
   });
 
-  it('Gets result without auth', async function() {
-    const body = await utils.get(null, `/api/query-result/${query._id}`, 302);
+  it('Gets result without auth not permitted', async function() {
+    const body = await utils.get(null, `/api/query-result/${query._id}`, 401);
     assert(!body.error, 'Expect no error');
   });
 });
