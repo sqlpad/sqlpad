@@ -42,7 +42,7 @@ async function getConnectionClient(req, res) {
   );
 
   if (!connectionClient) {
-    return res.errors('Connection not found', 404);
+    return res.data(null);
   }
 
   // Only the owner of the connection or admin can get the client
