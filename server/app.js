@@ -11,6 +11,7 @@ const favicon = require('serve-favicon');
 const passport = require('passport');
 const authStrategies = require('./auth-strategies');
 const sessionlessAuth = require('./middleware/sessionless-auth.js');
+const decorateReqRes = require('./middleware/decorate-req-res');
 const expressPinoLogger = require('express-pino-logger');
 
 /**
@@ -55,45 +56,8 @@ function makeApp(config, models) {
   app.use(helmet.xssFilter());
   app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
-  // Decorate req with app things
-  app.use(function(req, res, next) {
-    req.config = config;
-    req.models = models;
-    req.appLog = appLog;
-
-    res.errors = (data, httpStatusCode) => {
-      if (!httpStatusCode) {
-        return next(new Error('res.errors missing status code'));
-      }
-      let errors = [];
-      if (Array.isArray(data)) {
-        errors = data;
-      } else {
-        errors.push(data);
-      }
-      // Ensure errors are objects with a title property
-      errors = errors.map(e => {
-        if (typeof e === 'string') {
-          return { title: e };
-        }
-        if (e instanceof Error) {
-          const title = e.message || e.toString();
-          return { title };
-        }
-        if (e.title) {
-          return e;
-        }
-        return { title: 'Something happened' };
-      });
-      return res.status(httpStatusCode).json({ errors });
-    };
-
-    res.data = data => {
-      return res.json({ data: data || null });
-    };
-
-    next();
-  });
+  // Decorate req and res with SQLPad objects and utils
+  app.use(decorateReqRes(config, models, appLog));
 
   app.use(expressPino);
   app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
@@ -179,7 +143,13 @@ function makeApp(config, models) {
   // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
   app.use(baseUrl + '/api/', function(req, res) {
     req.log.debug('reached catch all api route');
-    res.sendStatus(404);
+    return res.status(404).json({
+      errors: [
+        {
+          title: 'Not found'
+        }
+      ]
+    });
   });
 
   // Add an error handler for /api
