@@ -25,7 +25,7 @@ describe('lib/connection-clients', function() {
       multiStatementTransactionEnabled: true
     });
 
-    connection1 = connBody.connection;
+    connection1 = connBody.data;
   });
 
   it('Keep-alive keeps it alive', async function() {
