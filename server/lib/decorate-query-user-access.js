@@ -17,7 +17,7 @@ function decorateQueryUserAccess(query, user) {
     clone.canRead = true;
     clone.canWrite = true;
     clone.canDelete = true;
-  } else if (clone.acl.length) {
+  } else if (clone.acl && clone.acl.length) {
     const writeAcl = clone.acl
       // filter acl records that match for this user
       .filter(
