@@ -25,13 +25,11 @@ router.get('/queries/:_id', mustBeAuthenticated, function(req, res, next) {
  */
 async function deleteQuery(req, res) {
   const { models, params, user } = req;
-  const query = await models.queries.findOneById(params._id);
+  const query = await models.findQueryById(params._id);
   if (!query) {
     return res.errors('Query not found', 404);
   }
-
   const decorated = decorateQueryUserAccess(query, user);
-
   if (decorated.canDelete) {
     await models.queries.removeById(params._id);
     await models.queryAcl.removeByQueryId(params._id);
@@ -139,8 +137,8 @@ async function updateQuery(req, res) {
   });
 
   const updatedQuery = await models.upsertQuery(query);
-
-  return res.data(decorateQueryUserAccess(updatedQuery, user));
+  const data = decorateQueryUserAccess(updatedQuery, user);
+  return res.data(data);
 }
 
 router.put('/api/queries/:_id', mustBeAuthenticated, wrap(updateQuery));

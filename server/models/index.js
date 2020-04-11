@@ -63,6 +63,7 @@ class Models {
   async findQueryById(id) {
     const query = await this.queries.findOneById(id);
     query.acl = await this.queryAcl.findAllByQueryId(id);
+    query.acl = query.acl.map(acl => acl.toJSON());
     return query;
   }
 
