@@ -13,7 +13,7 @@ router.get(
       .sort()
       .filter(t => t);
 
-    return res.data(tags);
+    return res.utils.data(tags);
   })
 );
 

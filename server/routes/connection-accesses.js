@@ -20,7 +20,7 @@ async function listConnectionAccesses(req, res) {
   } else {
     connectionAccesses = await models.connectionAccesses.findAllActive();
   }
-  return res.data(connectionAccesses);
+  return res.utils.data(connectionAccesses);
 }
 
 router.get(
@@ -38,7 +38,7 @@ async function getConnectionAccess(req, res) {
   const connectionAccess = await models.connectionAccesses.findOneById(
     req.params._id
   );
-  return res.data(connectionAccess);
+  return res.utils.data(connectionAccess);
 }
 
 router.get(
@@ -66,10 +66,10 @@ async function createConnectionAccess(req, res) {
   if (req.body.userId !== consts.EVERYONE_ID) {
     user = await models.users.findOneById(req.body.userId);
     if (!user) {
-      return res.errors('User does not exist', 400);
+      return res.utils.errors('User does not exist', 400);
     }
     if (user.role === 'admin') {
-      return res.errors(
+      return res.utils.errors(
         'User is admin and already has access to connection',
         400
       );
@@ -78,7 +78,7 @@ async function createConnectionAccess(req, res) {
   if (req.body.connectionId !== consts.EVERY_CONNECTION_ID) {
     connection = await models.connections.findOneById(req.body.connectionId);
     if (!connection) {
-      return res.errors('Connection does not exist', 400);
+      return res.utils.errors('Connection does not exist', 400);
     }
   }
   let activeAccess = await models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
@@ -86,7 +86,7 @@ async function createConnectionAccess(req, res) {
     req.body.userId
   );
   if (activeAccess) {
-    return res.errors('User has active access to connection', 400);
+    return res.utils.errors('User has active access to connection', 400);
   }
   let connectionAccess = await models.connectionAccesses.save({
     connectionId: req.body.connectionId,
@@ -95,7 +95,7 @@ async function createConnectionAccess(req, res) {
     userEmail: user.email,
     duration: req.body.duration
   });
-  return res.data(connectionAccess);
+  return res.utils.data(connectionAccess);
 }
 
 router.post(
@@ -113,7 +113,7 @@ async function updateConnectionAccess(req, res) {
   const connectionAccess = await models.connectionAccesses.expire(
     req.params._id
   );
-  return res.data(connectionAccess);
+  return res.utils.data(connectionAccess);
 }
 
 router.put(

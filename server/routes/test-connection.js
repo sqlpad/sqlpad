@@ -12,7 +12,7 @@ router.post(
   wrap(async function(req, res) {
     const connectionClient = new ConnectionClient(req.body, req.user);
     await connectionClient.testConnection();
-    res.data();
+    res.utils.data();
   })
 );
 

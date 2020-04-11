@@ -16,7 +16,7 @@ async function getSchemaInfo(req, res) {
   const conn = await models.connections.findOneById(connectionId);
 
   if (!conn) {
-    return res.errors('Connection not found', 404);
+    return res.utils.getNotFound();
   }
 
   const connectionClient = new ConnectionClient(conn, user);
@@ -25,14 +25,14 @@ async function getSchemaInfo(req, res) {
   let schemaInfo = await models.schemaInfo.getSchemaInfo(schemaCacheId);
 
   if (schemaInfo && !reload) {
-    return res.data(schemaInfo);
+    return res.utils.data(schemaInfo);
   }
 
   schemaInfo = await connectionClient.getSchema();
   if (Object.keys(schemaInfo).length) {
     await models.schemaInfo.saveSchemaInfo(schemaCacheId, schemaInfo);
   }
-  return res.data(schemaInfo);
+  return res.utils.data(schemaInfo);
 }
 
 router.get(

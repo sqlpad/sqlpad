@@ -8,10 +8,10 @@ router.post(
   wrap(async function(req, res) {
     const { models, appLog } = req;
     if (!req.body.email) {
-      return res.errors('Email address must be provided', 400);
+      return res.utils.errors('Email address must be provided', 400);
     }
     if (!req.config.smtpConfigured()) {
-      return res.errors('Email must be configured', 400);
+      return res.utils.errors('Email must be configured', 400);
     }
 
     const email = makeEmail(req.config);
@@ -21,7 +21,7 @@ router.post(
     // If user not found send success regardless
     // This is not a user-validation service
     if (!user) {
-      return res.data(null);
+      return res.utils.data(null);
     }
 
     user.passwordResetId = uuidv4();
@@ -34,7 +34,7 @@ router.post(
       .sendForgotPassword(req.body.email, resetPath)
       .catch(error => appLog.error(error));
 
-    return res.data(null);
+    return res.utils.data(null);
   })
 );
 

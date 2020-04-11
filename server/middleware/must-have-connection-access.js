@@ -17,6 +17,6 @@ module.exports = [
     if (connectionAccess) {
       return next();
     }
-    return res.errors('Forbidden', 403);
+    return res.utils.errors('Forbidden', 403);
   }
 ];

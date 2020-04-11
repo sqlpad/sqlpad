@@ -12,7 +12,7 @@ router.get('/api/drivers', mustBeAuthenticated, function(req, res) {
       supportsConnectionClient
     };
   });
-  return res.data(driversArray);
+  return res.utils.data(driversArray);
 });
 
 module.exports = router;

@@ -19,7 +19,7 @@ router.get(
           }
         : undefined;
 
-    return res.data({
+    return res.utils.data({
       adminRegistrationOpen,
       currentUser,
       config: {

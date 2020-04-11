@@ -9,7 +9,7 @@ const wrap = require('../lib/wrap');
 async function listServiceTokens(req, res) {
   const { models } = req;
   const serviceTokens = await models.serviceTokens.findAll();
-  return res.data(serviceTokens);
+  return res.utils.data(serviceTokens);
 }
 
 router.get('/api/service-tokens', mustBeAdmin, wrap(listServiceTokens));
@@ -22,12 +22,12 @@ async function generateServiceToken(req, res) {
   const { models, config } = req;
 
   if (!config.get('serviceTokenSecret')) {
-    return res.errors('Forbidden', 403);
+    return res.utils.errors('Forbidden', 403);
   }
 
   let serviceToken = await models.serviceTokens.findOneByName(req.body.name);
   if (serviceToken) {
-    return res.errors('Service token already exists', 400);
+    return res.utils.errors('Service token already exists', 400);
   }
 
   serviceToken = await models.serviceTokens.generate({
@@ -36,7 +36,7 @@ async function generateServiceToken(req, res) {
     duration: req.body.duration
   });
 
-  return res.data(serviceToken);
+  return res.utils.data(serviceToken);
 }
 
 router.post('/api/service-tokens', mustBeAdmin, wrap(generateServiceToken));
@@ -48,7 +48,7 @@ router.post('/api/service-tokens', mustBeAdmin, wrap(generateServiceToken));
 async function deleteServiceToken(req, res) {
   const { models } = req;
   await models.serviceTokens.removeOneById(req.params._id);
-  return res.data(null);
+  return res.utils.deleteOk();
 }
 
 router.delete(

@@ -82,6 +82,15 @@ class TestUtils {
     }
   }
 
+  static validateDeleteBody(body, statusCode) {
+    if (statusCode === 200) {
+      assert(body.hasOwnProperty('meta'), 'delete has meta');
+      assert(!body.hasOwnProperty('data'), 'delete does not have data');
+    } else {
+      TestUtils.bodyHasErrors(body);
+    }
+  }
+
   static bodyHasData(body) {
     assert(body.hasOwnProperty('data'), 'body has data property for 200');
     assert(!body.hasOwnProperty('errors'), 'body does not have errors for 200');
@@ -151,7 +160,7 @@ class TestUtils {
       req.set('X-WEBAUTH-EMAIL', this.users[userKey].email);
     }
     const response = await req.expect(statusCode);
-    TestUtils.validateBody(response.body, statusCode);
+    TestUtils.validateDeleteBody(response.body, statusCode);
     return response.body;
   }
 

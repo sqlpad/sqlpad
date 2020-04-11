@@ -35,7 +35,7 @@ function sessionlessAuth(req, res, next) {
       return next(err);
     }
     if (!user) {
-      return res.errors({ title: 'Unauthorized', detail }, 401);
+      return res.utils.errors({ title: 'Unauthorized', detail }, 401);
     }
     // When called without creating a session, no callback is used
     req.logIn(user, { session: false });

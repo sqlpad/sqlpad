@@ -10,12 +10,12 @@ router.get(
     const { models, config } = req;
     const { cacheKey } = req.params;
     if (!config.get('allowCsvDownload')) {
-      return res.errors('Result downloads disabled', 403);
+      return res.utils.errors('Result downloads disabled', 403);
     }
 
     const cache = await models.resultCache.findOneByCacheKey(cacheKey);
     if (!cache) {
-      return res.errors('Result not found', 404);
+      return res.utils.errors('Result not found', 404);
     }
     let filename = cache.queryName + '.csv';
     res.setHeader(
@@ -34,12 +34,12 @@ router.get(
     const { models, config } = req;
     const { cacheKey } = req.params;
     if (!config.get('allowCsvDownload')) {
-      return res.errors('Result downloads disabled', 403);
+      return res.utils.errors('Result downloads disabled', 403);
     }
 
     const cache = await models.resultCache.findOneByCacheKey(cacheKey);
     if (!cache) {
-      return res.errors('Result not found', 404);
+      return res.utils.errors('Result not found', 404);
     }
     let filename = cache.queryName + '.xlsx';
     res.setHeader(
@@ -61,12 +61,12 @@ router.get(
     const { models, config } = req;
     const { cacheKey } = req.params;
     if (!config.get('allowCsvDownload')) {
-      return res.errors('Result downloads disabled', 403);
+      return res.utils.errors('Result downloads disabled', 403);
     }
 
     const cache = await models.resultCache.findOneByCacheKey(cacheKey);
     if (!cache) {
-      return res.errors('Result not found', 404);
+      return res.utils.errors('Result not found', 404);
     }
     let filename = cache.queryName + '.json';
     res.setHeader(

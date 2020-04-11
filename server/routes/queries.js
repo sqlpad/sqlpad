@@ -21,64 +21,64 @@ router.get('/queries/:_id', mustBeAuthenticated, function(req, res, next) {
 
 /**
  * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Res} res
  */
 async function deleteQuery(req, res) {
   const { models, params, user } = req;
   const query = await models.findQueryById(params._id);
   if (!query) {
-    return res.errors('Query not found', 404);
+    return res.utils.deleteNotFound();
   }
   const decorated = decorateQueryUserAccess(query, user);
   if (decorated.canDelete) {
     await models.queries.removeById(params._id);
     await models.queryAcl.removeByQueryId(params._id);
-    return res.data(null);
+    return res.utils.deleteOk();
   }
 
-  return res.errors('Access to query forbidden', 403);
+  return res.utils.errors('Access to query forbidden', 403);
 }
 
 router.delete('/api/queries/:_id', mustBeAuthenticated, wrap(deleteQuery));
 
 /**
  * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Res} res
  */
 async function listQueries(req, res) {
   const { models, user } = req;
   const queries = await models.findQueriesForUser(user);
   const decorated = queries.map(query => decorateQueryUserAccess(query, user));
-  return res.data(decorated);
+  return res.utils.data(decorated);
 }
 
 router.get('/api/queries', mustBeAuthenticated, wrap(listQueries));
 
 /**
  * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Res} res
  */
 async function getQuery(req, res) {
   const { models, user, params } = req;
   const query = await models.findQueryById(params._id);
 
   if (!query) {
-    return res.errors('Query not found', 404);
+    return res.utils.getNotFound();
   }
 
   const decorated = decorateQueryUserAccess(query, user);
   if (decorated.canRead) {
-    return res.data(decorated);
+    return res.utils.data(decorated);
   }
 
-  return res.errors('Access to query forbidden', 403);
+  return res.utils.errors('Access to query forbidden', 403);
 }
 
 router.get('/api/queries/:_id', mustBeAuthenticated, wrap(getQuery));
 
 /**
  * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Res} res
  */
 async function createQuery(req, res) {
   const { models, body, user } = req;
@@ -101,27 +101,27 @@ async function createQuery(req, res) {
   // This is async, but save operation doesn't care about when/if finished
   pushQueryToSlack(req.config, newQuery);
 
-  return res.data(decorateQueryUserAccess(newQuery, user));
+  return res.utils.data(decorateQueryUserAccess(newQuery, user));
 }
 
 router.post('/api/queries', mustBeAuthenticated, wrap(createQuery));
 
 /**
  * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Res} res
  */
 async function updateQuery(req, res) {
   const { models, params, user, body } = req;
 
   const query = await models.findQueryById(params._id);
   if (!query) {
-    return res.errors('Query not found', 404);
+    return res.utils.updateNotFound();
   }
 
   const decorated = decorateQueryUserAccess(query, user);
 
   if (!decorated.canWrite) {
-    return res.errors('Access to query forbidden', 403);
+    return res.utils.errors('Access to query forbidden', 403);
   }
 
   const { name, tags, connectionId, queryText, chartConfiguration, acl } = body;
@@ -138,7 +138,7 @@ async function updateQuery(req, res) {
 
   const updatedQuery = await models.upsertQuery(query);
   const data = decorateQueryUserAccess(updatedQuery, user);
-  return res.data(data);
+  return res.utils.data(data);
 }
 
 router.put('/api/queries/:_id', mustBeAuthenticated, wrap(updateQuery));

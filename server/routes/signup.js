@@ -7,13 +7,13 @@ async function handleSignup(req, res, next) {
   const { models, config } = req;
 
   if (config.get('disableUserpassAuth')) {
-    return res.errors('Forbidden', 403);
+    return res.utils.errors('Forbidden', 403);
   }
 
   const whitelistedDomains = req.config.get('whitelistedDomains');
 
   if (req.body.password !== req.body.passwordConfirmation) {
-    return res.errors('Passwords do not match', 400);
+    return res.utils.errors('Passwords do not match', 400);
   }
 
   let [user, adminRegistrationOpen] = await Promise.all([
@@ -22,7 +22,7 @@ async function handleSignup(req, res, next) {
   ]);
 
   if (user && user.passhash) {
-    return res.errors('User already signed up', 400);
+    return res.utils.errors('User already signed up', 400);
   }
 
   if (user) {
@@ -46,7 +46,7 @@ async function handleSignup(req, res, next) {
     });
     return next();
   } else {
-    return res.errors('Email address not whitelisted', 403);
+    return res.utils.errors('Email address not whitelisted', 403);
   }
 }
 
@@ -55,7 +55,7 @@ router.post(
   wrap(handleSignup),
   passport.authenticate('local'),
   function(req, res) {
-    res.data('signup', {});
+    res.utils.data('signup', {});
   }
 );
 

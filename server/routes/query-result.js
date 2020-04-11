@@ -13,7 +13,7 @@ router.get(
     const { models } = req;
     const query = await models.queries.findOneById(req.params._queryId);
     if (!query) {
-      return res.errors('Query not found', 404);
+      return res.utils.getNotFound();
     }
     const data = {
       connectionId: query.connectionId,
@@ -26,9 +26,9 @@ router.get(
     // IMPORTANT: Send actual error here since it might have info on why the query is bad
     try {
       const queryResult = await getQueryResult(req, data);
-      return res.data(queryResult);
+      return res.utils.data(queryResult);
     } catch (error) {
-      return res.errors(error, 400);
+      return res.utils.errors(error, 400);
     }
   })
 );
@@ -56,9 +56,9 @@ router.post(
     // Unexpected server error should be 500 Should a query error be 200 or 400?
     try {
       const queryResult = await getQueryResult(req, data);
-      return res.data(queryResult);
+      return res.utils.data(queryResult);
     } catch (error) {
-      return res.errors(error, 400);
+      return res.utils.errors(error, 400);
     }
   })
 );

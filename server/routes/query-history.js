@@ -43,7 +43,7 @@ router.get(
     queryHistory.meta = getMeta(dbQueryHistory);
     queryHistory.fields = Object.keys(queryHistory.meta);
 
-    return res.data(queryHistory);
+    return res.utils.data(queryHistory);
   })
 );
 
@@ -56,9 +56,9 @@ router.get(
       req.params._id
     );
     if (!queryHistoryItem) {
-      return res.errors('Query history item not found', 404);
+      return res.utils.getNotFound();
     }
-    return res.data(queryHistoryItem);
+    return res.utils.data(queryHistoryItem);
   })
 );
 

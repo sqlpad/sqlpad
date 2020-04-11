@@ -10,7 +10,7 @@ router.get(
   wrap(async function(req, res) {
     const { models } = req;
     const users = await models.users.findAll();
-    return res.data(users);
+    return res.utils.data(users);
   })
 );
 
@@ -23,7 +23,7 @@ router.post(
 
     let user = await models.users.findOneByEmail(req.body.email);
     if (user) {
-      return res.errors('user already exists', 400);
+      return res.utils.errors('user already exists', 400);
     }
 
     // Only accept certain fields
@@ -39,7 +39,7 @@ router.post(
     if (req.config.smtpConfigured()) {
       email.sendInvite(req.body.email).catch(error => appLog.error(error));
     }
-    return res.data(user);
+    return res.utils.data(user);
   })
 );
 
@@ -49,12 +49,12 @@ router.put(
   wrap(async function(req, res) {
     const { params, body, user, models } = req;
     if (user._id === params._id && user.role === 'admin' && body.role != null) {
-      return res.errors("You can't unadmin yourself", 400);
+      return res.utils.errors("You can't unadmin yourself", 400);
     }
 
     const updateUser = await models.users.findOneById(params._id);
     if (!updateUser) {
-      return res.errors('user not found', 400);
+      return res.utils.errors('user not found', 400);
     }
 
     // this route could handle potentially different kinds of updates
@@ -76,7 +76,7 @@ router.put(
     }
 
     const updatedUser = await models.users.update(updateUser);
-    return res.data(updatedUser);
+    return res.utils.data(updatedUser);
   })
 );
 
@@ -86,10 +86,10 @@ router.delete(
   wrap(async function(req, res) {
     const { models } = req;
     if (req.user._id === req.params._id) {
-      return res.errors("You can't delete yourself", 400);
+      return res.utils.errors("You can't delete yourself", 400);
     }
     await models.users.removeById(req.params._id);
-    return res.data(null);
+    return res.utils.deleteOk();
   })
 );
 

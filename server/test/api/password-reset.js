@@ -36,7 +36,7 @@ describe('api/password-reset', function() {
         password: 'admin',
         passwordConfirmation: 'admin'
       },
-      404
+      400
     );
     assert(
       errors.find(e => e.title === 'Password reset permissions not found')

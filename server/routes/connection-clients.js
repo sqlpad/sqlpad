@@ -22,7 +22,7 @@ async function listConnectionClients(req, res) {
       };
     });
 
-  return res.data(connectionClients);
+  return res.utils.data(connectionClients);
 }
 
 router.get('/api/connection-clients', mustBeAdmin, wrap(listConnectionClients));
@@ -42,7 +42,7 @@ async function getConnectionClient(req, res) {
   );
 
   if (!connectionClient) {
-    return res.data(null);
+    return res.utils.data(null);
   }
 
   // Only the owner of the connection or admin can get the client
@@ -50,10 +50,10 @@ async function getConnectionClient(req, res) {
     connectionClient.user._id === user._id || user.role === 'admin';
 
   if (!allowed) {
-    return res.errors('Forbidden', 403);
+    return res.utils.errors('Forbidden', 403);
   }
 
-  return res.data({
+  return res.utils.data({
     id: connectionClient.id,
     name: connectionClient.connection.name,
     connectedAt: connectionClient.connectedAt,
@@ -77,12 +77,12 @@ async function createConnectionClient(req, res) {
 
   const { connectionId } = body;
   if (!connectionId) {
-    return res.errors('connectionId required', 400);
+    return res.utils.errors('connectionId required', 400);
   }
 
   const connection = await models.connections.findOneById(connectionId);
   if (!connection) {
-    return res.errors('connectionId invalid', 400);
+    return res.utils.errors('connectionId invalid', 400);
   }
 
   const connectionClient = await models.connectionClients.createNew(
@@ -90,7 +90,7 @@ async function createConnectionClient(req, res) {
     user
   );
 
-  return res.data({
+  return res.utils.data({
     id: connectionClient.id,
     name: connectionClient.connection.name,
     connectedAt: connectionClient.connectedAt,
@@ -119,14 +119,14 @@ async function keepAliveConnectionClient(req, res) {
   // If no connection client it was already closed
   // This is effectively a no-op
   if (!connectionClient) {
-    return res.data(null);
+    return res.utils.data(null);
   }
 
   // Only the owner of the connection client can keep client alive
   const allowed = connectionClient.user._id === user._id;
 
   if (!allowed) {
-    return res.errors('Forbidden', 403);
+    return res.utils.errors('Forbidden', 403);
   }
 
   const keptAlive = connectionClient.keepAlive();
@@ -134,10 +134,10 @@ async function keepAliveConnectionClient(req, res) {
     // remove from in-memory store and respond with nothing
     // disconnect here is not necessary, but should be safe
     await models.connectionClients.disconnectForId(params.connectionClientId);
-    return res.data(null);
+    return res.utils.data(null);
   }
 
-  return res.data({
+  return res.utils.data({
     id: connectionClient.id,
     name: connectionClient.connection.name,
     connectedAt: connectionClient.connectedAt,
@@ -169,11 +169,11 @@ async function disconnectConnectionClient(req, res) {
     connectionClient.user._id === user._id || user.role === 'admin';
 
   if (!allowed) {
-    return res.errors('Forbidden', 403);
+    return res.utils.errors('Forbidden', 403);
   }
 
   await models.connectionClients.disconnectForId(connectionClientId);
-  return res.data(null);
+  return res.utils.deleteOk();
 }
 
 router.delete(

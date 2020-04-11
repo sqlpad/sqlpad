@@ -29,13 +29,13 @@ function handleSignin(req, res, next) {
       return next(err);
     }
     if (!user) {
-      return res.errors({ title: 'Unauthorized', detail }, 401);
+      return res.utils.errors({ title: 'Unauthorized', detail }, 401);
     }
     return req.logIn(user, err => {
       if (err) {
         return next(err);
       }
-      return res.data(null);
+      return res.utils.data(null);
     });
   }
 
@@ -52,11 +52,11 @@ function handleSignin(req, res, next) {
 
   // We aren't sure how to authenticate this request
   // Whatever was sent is not supported
-  return res.errors('Unexpected authentication format', 400);
+  return res.utils.errors('Unexpected authentication format', 400);
 }
 
 router.post('/api/signin', handleSignin, function(req, res) {
-  res.data(null);
+  res.utils.data(null);
 });
 
 module.exports = router;

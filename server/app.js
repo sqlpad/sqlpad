@@ -11,7 +11,7 @@ const favicon = require('serve-favicon');
 const passport = require('passport');
 const authStrategies = require('./auth-strategies');
 const sessionlessAuth = require('./middleware/sessionless-auth.js');
-const decorateReqRes = require('./middleware/decorate-req-res');
+const ResponseUtils = require('./lib/response-utils.js');
 const expressPinoLogger = require('express-pino-logger');
 
 /**
@@ -57,7 +57,15 @@ function makeApp(config, models) {
   app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
   // Decorate req and res with SQLPad objects and utils
-  app.use(decorateReqRes(config, models, appLog));
+  app.use(function(req, res, next) {
+    req.config = config;
+    req.models = models;
+    req.appLog = appLog;
+
+    res.utils = new ResponseUtils(res, next);
+
+    next();
+  });
 
   app.use(expressPino);
   app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
