@@ -29,7 +29,7 @@ router.get(
     const { models } = req;
     const connection = await models.connections.findOneById(req.params._id);
     if (!connection) {
-      return res.errors('Connection not found', 404);
+      return res.data();
     }
     return res.data(removePassword(connection));
   })
