@@ -17,9 +17,53 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
       .expect(200);
 
-    const user = body.users[0];
+    const user = body.data[0];
     assert.equal(user.email, 'test@sqlpad.com');
     assert.equal(user.role, 'editor');
+  });
+
+  it('Does not start session when used via middleware', async function() {
+    const utils = new TestUtil({
+      authProxyEnabled: true,
+      authProxyAutoSignUp: true,
+      authProxyDefaultRole: 'editor',
+      authProxyHeaders: 'email:X-WEBAUTH-EMAIL'
+    });
+    await utils.init();
+
+    const agent = request.agent(utils.app);
+
+    // This api call passively authenticates, auto-creates the user and returns api result
+    const r1 = await agent
+      .get('/api/users')
+      .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
+      .expect(200);
+    TestUtil.bodyHasData(r1.body);
+
+    // This call should respond, but with no current user
+    const r2 = await agent.get('/api/app').expect(200);
+    assert(!r2.body.data.currentUser);
+
+    // This call requiring auth should respond 401
+    const r3 = await agent.get('/api/users').expect(401);
+    TestUtil.bodyHasErrors(r3.body);
+  });
+
+  it('401 has expected errors object', async function() {
+    // Don't care about what is actually tested here
+    // other than to ensure the body has errors object
+    // Rest of 401s can be trusted to be expected shape
+    const utils = new TestUtil({
+      authProxyEnabled: true,
+      authProxyHeaders: 'email:X-WEBAUTH-EMAIL'
+    });
+    await utils.init();
+
+    const res = await request(utils.app)
+      .get('/api/users')
+      .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
+      .expect(401);
+    TestUtil.bodyHasErrors(res.body);
   });
 
   it('401 if auto sign up and missing default role', async function() {
@@ -93,14 +137,13 @@ describe('passport-proxy-auth', function() {
     });
     await utils.init();
 
-    // must-be-authenticated middleware sends 302 redirect
     await request(utils.app)
       .get('/api/users')
       .set('X-WEBAUTH-ID', 'test001')
       .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
       .set('X-WEBAUTH-NAME', 'Test user')
       .set('X-WEBAUTH-ROLE', 'admin')
-      .expect(302);
+      .expect(401);
   });
 
   it('All fields used for user without default role', async function() {
@@ -121,7 +164,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-CUSTOM-FIELD', 'custom data value')
       .expect(200);
 
-    const user = body.users[0];
+    const user = body.data[0];
     assert.equal(user.email, 'test@sqlpad.com');
     assert.equal(user.role, 'admin');
     assert.equal(user.name, 'Test user');
@@ -141,7 +184,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-EMAIL', 'admin@test.com')
       .expect(200);
 
-    const user = body.users.find(user => user.email === 'admin@test.com');
+    const user = body.data.find(user => user.email === 'admin@test.com');
     assert.equal(user.role, 'admin');
   });
 
@@ -159,7 +202,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-ID', id)
       .expect(200);
 
-    const user = body.users.find(user => user._id === id);
+    const user = body.data.find(user => user._id === id);
     assert.equal(user.role, 'admin');
   });
 
@@ -177,7 +220,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-ID', id)
       .expect(200);
 
-    const user = body.users.find(user => user._id === id);
+    const user = body.data.find(user => user._id === id);
     assert.equal(user.role, 'admin');
   });
 
@@ -195,7 +238,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-NAME', 'New admin name')
       .expect(200);
 
-    const user = body.users.find(user => user.email === 'admin@test.com');
+    const user = body.data.find(user => user.email === 'admin@test.com');
     assert.equal(user.name, 'New admin name');
   });
 
@@ -213,7 +256,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-NAME', 'New admin name')
       .expect(200);
 
-    const user1 = response1.body.users.find(
+    const user1 = response1.body.data.find(
       user => user.email === 'admin@test.com'
     );
     assert.equal(user1.name, 'New admin name');
@@ -225,7 +268,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-EMAIL', 'admin@test.com')
       .set('X-WEBAUTH-NAME', 'New admin name')
       .expect(200);
-    const user2 = response2.body.users.find(
+    const user2 = response2.body.data.find(
       user => user.email === 'admin@test.com'
     );
 
