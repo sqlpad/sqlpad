@@ -38,9 +38,6 @@ async function getConnectionAccess(req, res) {
   const connectionAccess = await models.connectionAccesses.findOneById(
     req.params._id
   );
-  if (!connectionAccess) {
-    return res.errors('Connection access not found', 404);
-  }
   return res.data(connectionAccess);
 }
 

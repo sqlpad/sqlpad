@@ -82,7 +82,7 @@ async function createConnectionClient(req, res) {
 
   const connection = await models.connections.findOneById(connectionId);
   if (!connection) {
-    return res.errors('Connection not found', 404);
+    return res.errors('connectionId invalid', 400);
   }
 
   const connectionClient = await models.connectionClients.createNew(
