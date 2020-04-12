@@ -17,7 +17,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
     if (json.error) {
       message.error(json.error);
     } else {
-      const connections = json.connections;
+      const connections = json.data;
       connections.unshift({
         _id: '__EVERY_CONNECTION__',
         name: 'Every Connection'
@@ -35,7 +35,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
     if (json.error) {
       message.error(json.error);
     } else {
-      const users = json.users;
+      const users = json.data;
       users.unshift({
         _id: '__EVERYONE__',
         email: 'Everyone'
@@ -67,7 +67,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
       setCreating(false);
       return message.error(json.error);
     }
-    return onConnectionAccessSaved(json.connectionAccess);
+    return onConnectionAccessSaved(json.data);
   };
 
   const {

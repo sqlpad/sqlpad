@@ -30,7 +30,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }) {
       setGenerating(false);
       return message.error(json.error);
     }
-    return onServiceTokenGenerated(json.serviceToken);
+    return onServiceTokenGenerated(json.data);
   };
 
   const { name = '', role = '', duration = '' } = serviceTokenEdits;

@@ -45,7 +45,7 @@ export const loadSchemaInfo = store => async (state, connectionId, reload) => {
       'GET',
       `/api/schema-info/${connectionId}${qs}`
     );
-    const { error, schemaInfo } = json;
+    const { error, data } = json;
     if (error) {
       store.setState({
         schema: {
@@ -57,12 +57,12 @@ export const loadSchemaInfo = store => async (state, connectionId, reload) => {
       });
       return message.error(error);
     }
-    updateCompletions(schemaInfo);
+    updateCompletions(data);
 
     // Pre-expand schemas
     const expanded = {};
-    if (schemaInfo) {
-      Object.keys(schemaInfo).forEach(schemaName => {
+    if (data) {
+      Object.keys(data).forEach(schemaName => {
         expanded[schemaName] = true;
       });
     }
@@ -72,7 +72,7 @@ export const loadSchemaInfo = store => async (state, connectionId, reload) => {
         ...schema,
         [connectionId]: {
           loading: false,
-          schemaInfo,
+          schemaInfo: data,
           expanded
         }
       }

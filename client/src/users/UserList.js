@@ -20,8 +20,8 @@ function UserList({ currentUser }) {
     if (json.error) {
       message.error(json.error);
     }
-    if (json.users) {
-      const users = json.users.map(user => {
+    if (json.data) {
+      const users = json.data.map(user => {
         user.key = user._id;
         return user;
       });
@@ -37,7 +37,7 @@ function UserList({ currentUser }) {
   const handleDelete = async user => {
     const json = await fetchJson('DELETE', '/api/users/' + user._id);
     if (json.error) {
-      return message.error('Delete Failed: ' + json.error.toString());
+      return message.error('Delete Failed: ' + json.error);
     }
     loadUsersFromServer();
   };

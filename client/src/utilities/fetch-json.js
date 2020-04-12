@@ -1,7 +1,7 @@
 import 'whatwg-fetch';
 import message from '../common/message';
 
-export default function fetchJson(method, url, body) {
+export default async function fetchJson(method, url, body) {
   const BASE_URL = window.BASE_URL || '';
   const opts = {
     method: method.toUpperCase(),
@@ -23,23 +23,42 @@ export default function fetchJson(method, url, body) {
     fetchUrl = BASE_URL + '/' + url;
   }
 
-  return fetch(fetchUrl, opts)
-    .then(response => {
-      // API server will send 200 even if error occurs
-      // Eventually this should change to proper status code usage
-      if (response.redirected) {
-        return (window.location = response.url);
-      } else if (response.status === 200) {
-        return response.json();
-      } else {
-        console.error(response);
-        throw new Error('Server responded not ok');
-      }
-    })
-    .catch(error => {
-      message.error(error.toString());
-      return {
-        error: 'Server responded not ok'
-      };
-    });
+  let response;
+  try {
+    response = await fetch(fetchUrl, opts);
+    if (response.redirected) {
+      window.location = response.url;
+      return {};
+    }
+  } catch (error) {
+    const title = 'Network error';
+    message.error(title);
+    return {
+      errors: [{ title }],
+      error: title
+    };
+  }
+
+  try {
+    const json = await response.json();
+
+    // New v5 API format sends { data } or { errors }
+    // If errors is sent, also decorate with `error` prop that is a string similar to legacy implementation
+    // This is to ease the transition on front-end, and can be removed later at some point
+    if (json.errors) {
+      const error = json.errors[0] || {};
+      json.error = error.detail || error.title || '';
+    }
+
+    return json;
+  } catch (error) {
+    // An error parsing JSON. This is unexepected, log to console
+    // Send a more generic message in response
+    console.error(response);
+    const title = 'Server responded not ok';
+    return {
+      errors: [{ title }],
+      error: title
+    };
+  }
 }

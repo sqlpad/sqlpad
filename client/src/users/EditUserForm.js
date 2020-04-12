@@ -18,7 +18,7 @@ function EditUserForm({ user }) {
       role: event.target.value
     });
     if (json.error) {
-      return message.error('Update failed: ' + json.error.toString());
+      return message.error('Update failed: ' + json.error);
     }
   };
 
@@ -28,7 +28,7 @@ function EditUserForm({ user }) {
       passwordResetId
     });
     if (json.error) {
-      return message.error('Update failed: ' + json.error.toString());
+      return message.error('Update failed: ' + json.error);
     }
     setPasswordResetId(passwordResetId);
   };
@@ -38,7 +38,7 @@ function EditUserForm({ user }) {
       passwordResetId: ''
     });
     if (json.error) {
-      return message.error('Remove reset failed: ' + json.error.toString());
+      return message.error('Remove reset failed: ' + json.error);
     }
     setPasswordResetId(null);
   };

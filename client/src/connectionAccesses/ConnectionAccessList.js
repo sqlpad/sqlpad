@@ -28,7 +28,7 @@ function ConnectionAccessList({ currentUser }) {
       if (json.error) {
         message.error(json.error);
       } else {
-        setConnectionAccesses(json.connectionAccesses);
+        setConnectionAccesses(json.data);
       }
     }
 

@@ -34,7 +34,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
 
       setIsRunning(false);
       setQueryError(json.error);
-      setQueryHistory(json.queryHistory);
+      setQueryHistory(json.data);
     }
 
     if (isRunning) {
