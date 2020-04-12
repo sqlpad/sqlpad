@@ -65,7 +65,7 @@ export const connectConnectionClient = store => async state => {
   const connectionClientInterval = setInterval(async () => {
     const updateJson = await fetchJson(
       'PUT',
-      `/api/connection-clients/${json.connectionClient.id}`
+      `/api/connection-clients/${json.data.id}`
     );
 
     // Not sure if this should message user here
