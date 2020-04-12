@@ -6,6 +6,6 @@ module.exports = [
     if (req.user.role === 'admin') {
       return next();
     }
-    return res.utils.errors('Forbidden', 403);
+    return res.utils.forbidden();
   }
 ];

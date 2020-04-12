@@ -50,7 +50,7 @@ async function getConnectionClient(req, res) {
     connectionClient.user._id === user._id || user.role === 'admin';
 
   if (!allowed) {
-    return res.utils.errors('Forbidden', 403);
+    return res.utils.forbidden();
   }
 
   return res.utils.data({
@@ -125,7 +125,7 @@ async function keepAliveConnectionClient(req, res) {
   const allowed = connectionClient.user._id === user._id;
 
   if (!allowed) {
-    return res.utils.errors('Forbidden', 403);
+    return res.utils.forbidden();
   }
 
   const keptAlive = connectionClient.keepAlive();
@@ -169,7 +169,7 @@ async function disconnectConnectionClient(req, res) {
     connectionClient.user._id === user._id || user.role === 'admin';
 
   if (!allowed) {
-    return res.utils.errors('Forbidden', 403);
+    return res.utils.forbidden();
   }
 
   await models.connectionClients.disconnectForId(connectionClientId);

@@ -36,7 +36,7 @@ async function deleteQuery(req, res) {
     return res.utils.deleteOk();
   }
 
-  return res.utils.errors('Access to query forbidden', 403);
+  return res.utils.forbidden();
 }
 
 router.delete('/api/queries/:_id', mustBeAuthenticated, wrap(deleteQuery));
@@ -71,7 +71,7 @@ async function getQuery(req, res) {
     return res.utils.data(decorated);
   }
 
-  return res.utils.errors('Access to query forbidden', 403);
+  return res.utils.forbidden();
 }
 
 router.get('/api/queries/:_id', mustBeAuthenticated, wrap(getQuery));
@@ -121,7 +121,7 @@ async function updateQuery(req, res) {
   const decorated = decorateQueryUserAccess(query, user);
 
   if (!decorated.canWrite) {
-    return res.utils.errors('Access to query forbidden', 403);
+    return res.utils.forbidden();
   }
 
   const { name, tags, connectionId, queryText, chartConfiguration, acl } = body;

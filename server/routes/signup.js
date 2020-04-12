@@ -7,7 +7,7 @@ async function handleSignup(req, res, next) {
   const { models, config } = req;
 
   if (config.get('disableUserpassAuth')) {
-    return res.utils.errors('Forbidden', 403);
+    return res.utils.forbidden();
   }
 
   const whitelistedDomains = req.config.get('whitelistedDomains');
@@ -46,7 +46,7 @@ async function handleSignup(req, res, next) {
     });
     return next();
   } else {
-    return res.utils.errors('Email address not whitelisted', 403);
+    return res.utils.forbidden();
   }
 }
 

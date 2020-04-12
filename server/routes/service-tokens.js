@@ -22,7 +22,7 @@ async function generateServiceToken(req, res) {
   const { models, config } = req;
 
   if (!config.get('serviceTokenSecret')) {
-    return res.utils.errors('Forbidden', 403);
+    return res.utils.forbidden();
   }
 
   let serviceToken = await models.serviceTokens.findOneByName(req.body.name);
