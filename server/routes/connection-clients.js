@@ -5,8 +5,8 @@ const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const wrap = require('../lib/wrap');
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function listConnectionClients(req, res) {
   const { models } = req;
@@ -31,8 +31,8 @@ router.get('/api/connection-clients', mustBeAdmin, wrap(listConnectionClients));
  * Get a connection client by id
  * If connection client does is not found it means it was probably disconnected, or never existed
  * (May want to build out a historical reference of connection clients to be able to tell the difference)
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function getConnectionClient(req, res) {
   const { models, params, user } = req;
@@ -42,7 +42,7 @@ async function getConnectionClient(req, res) {
   );
 
   if (!connectionClient) {
-    return res.utils.data(null);
+    return res.utils.getNotFound();
   }
 
   // Only the owner of the connection or admin can get the client
@@ -69,8 +69,8 @@ router.get(
 
 /**
  * Creates and connects a connectionClient
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function createConnectionClient(req, res) {
   const { models, body, user } = req;
@@ -106,8 +106,8 @@ router.post(
 
 /**
  * Creates and connects a connectionClient
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function keepAliveConnectionClient(req, res) {
   const { models, params, user } = req;
@@ -117,9 +117,8 @@ async function keepAliveConnectionClient(req, res) {
   );
 
   // If no connection client it was already closed
-  // This is effectively a no-op
   if (!connectionClient) {
-    return res.utils.data(null);
+    return res.utils.updateNotFound();
   }
 
   // Only the owner of the connection client can keep client alive
@@ -131,10 +130,11 @@ async function keepAliveConnectionClient(req, res) {
 
   const keptAlive = connectionClient.keepAlive();
   if (!keptAlive) {
+    // If keepAlive failed it was already closed
     // remove from in-memory store and respond with nothing
     // disconnect here is not necessary, but should be safe
     await models.connectionClients.disconnectForId(params.connectionClientId);
-    return res.utils.data(null);
+    return res.utils.updateNotFound();
   }
 
   return res.utils.data({
@@ -153,8 +153,8 @@ router.put(
 
 /**
  * Creates and connects a connectionClient
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function disconnectConnectionClient(req, res) {
   const { models, params, user } = req;

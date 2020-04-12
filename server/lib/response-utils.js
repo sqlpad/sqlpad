@@ -58,7 +58,7 @@ class ResponseUtils {
    * Send a 200 null data response for get /item/<id> that doesn't exist
    */
   getNotFound() {
-    return this.data(null);
+    return this.data();
   }
 
   /**
@@ -73,6 +73,25 @@ class ResponseUtils {
    */
   deleteOk() {
     return this.res.json({ meta: null });
+  }
+
+  /**
+   * User is not authenticated
+   * @param {String} [detail] - optional message to include in detail property
+   */
+  unauthorized(detail) {
+    const error = {
+      title: 'Unauthorized'
+    };
+    return this.errors({ ...error, detail }, 401);
+  }
+
+  /**
+   * For when request was understood, and user is authenticated,
+   * but user is not allowed to perform the action
+   */
+  forbidden() {
+    return this.errors('Forbidden', 403);
   }
 }
 

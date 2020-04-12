@@ -3,8 +3,8 @@ const mustBeAdmin = require('../middleware/must-be-admin.js');
 const wrap = require('../lib/wrap');
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function listServiceTokens(req, res) {
   const { models } = req;
@@ -15,8 +15,8 @@ async function listServiceTokens(req, res) {
 router.get('/api/service-tokens', mustBeAdmin, wrap(listServiceTokens));
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function generateServiceToken(req, res) {
   const { models, config } = req;
@@ -42,8 +42,8 @@ async function generateServiceToken(req, res) {
 router.post('/api/service-tokens', mustBeAdmin, wrap(generateServiceToken));
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function deleteServiceToken(req, res) {
   const { models } = req;

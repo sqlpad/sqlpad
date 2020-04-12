@@ -21,7 +21,7 @@ router.post(
     // If user not found send success regardless
     // This is not a user-validation service
     if (!user) {
-      return res.utils.data(null);
+      return res.utils.data();
     }
 
     user.passwordResetId = uuidv4();
@@ -34,7 +34,7 @@ router.post(
       .sendForgotPassword(req.body.email, resetPath)
       .catch(error => appLog.error(error));
 
-    return res.utils.data(null);
+    return res.utils.data();
   })
 );
 

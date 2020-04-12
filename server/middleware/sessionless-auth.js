@@ -9,8 +9,8 @@ require('../typedefs');
  * and do not use the session cookie like other methods.
  * (Google and SAML authenticate with their targets, but still result in a SQLPad user and associated session)
  *
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  * @param {function} next
  */
 function sessionlessAuth(req, res, next) {
@@ -35,7 +35,7 @@ function sessionlessAuth(req, res, next) {
       return next(err);
     }
     if (!user) {
-      return res.utils.errors({ title: 'Unauthorized', detail }, 401);
+      return res.utils.unauthorized(detail);
     }
     // When called without creating a session, no callback is used
     req.logIn(user, { session: false });

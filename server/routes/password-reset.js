@@ -23,7 +23,7 @@ router.post(
     user.password = req.body.password;
     user.passwordResetId = '';
     await models.users.update(user);
-    return res.utils.data(null);
+    return res.utils.data();
   })
 );
 

@@ -64,7 +64,7 @@ router.post(
 );
 
 /**
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  * @param {object} data
  */
 async function getQueryResult(req, data) {

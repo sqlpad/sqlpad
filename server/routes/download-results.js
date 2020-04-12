@@ -3,20 +3,33 @@ const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const wrap = require('../lib/wrap');
 
+async function getCache(req, res, next) {
+  const { models, config } = req;
+  const { cacheKey } = req.params;
+  if (!config.get('allowCsvDownload')) {
+    // This is not an `/api/` route returning JSON, so just send standard status
+    return res.sendStatus(403);
+  }
+
+  const cache = await models.resultCache.findOneByCacheKey(cacheKey);
+  if (!cache) {
+    // This is not an `/api/` route returning JSON, so just send standard status
+    return res.sendStatus(404);
+  }
+
+  req.cache = cache;
+
+  next();
+}
+
 router.get(
   '/download-results/:cacheKey.csv',
   mustBeAuthenticated,
+  wrap(getCache),
   wrap(async function(req, res) {
-    const { models, config } = req;
+    const { models, cache } = req;
     const { cacheKey } = req.params;
-    if (!config.get('allowCsvDownload')) {
-      return res.utils.errors('Result downloads disabled', 403);
-    }
 
-    const cache = await models.resultCache.findOneByCacheKey(cacheKey);
-    if (!cache) {
-      return res.utils.errors('Result not found', 404);
-    }
     let filename = cache.queryName + '.csv';
     res.setHeader(
       'Content-disposition',
@@ -30,17 +43,11 @@ router.get(
 router.get(
   '/download-results/:cacheKey.xlsx',
   mustBeAuthenticated,
+  wrap(getCache),
   wrap(async function(req, res) {
-    const { models, config } = req;
+    const { models, cache } = req;
     const { cacheKey } = req.params;
-    if (!config.get('allowCsvDownload')) {
-      return res.utils.errors('Result downloads disabled', 403);
-    }
 
-    const cache = await models.resultCache.findOneByCacheKey(cacheKey);
-    if (!cache) {
-      return res.utils.errors('Result not found', 404);
-    }
     let filename = cache.queryName + '.xlsx';
     res.setHeader(
       'Content-disposition',
@@ -57,17 +64,11 @@ router.get(
 router.get(
   '/download-results/:cacheKey.json',
   mustBeAuthenticated,
+  wrap(getCache),
   wrap(async function(req, res) {
-    const { models, config } = req;
+    const { models, cache } = req;
     const { cacheKey } = req.params;
-    if (!config.get('allowCsvDownload')) {
-      return res.utils.errors('Result downloads disabled', 403);
-    }
 
-    const cache = await models.resultCache.findOneByCacheKey(cacheKey);
-    if (!cache) {
-      return res.utils.errors('Result not found', 404);
-    }
     let filename = cache.queryName + '.json';
     res.setHeader(
       'Content-disposition',

@@ -4,7 +4,7 @@ function mustBeAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   }
-  return res.utils.errors('Unauthorized', 401);
+  return res.utils.unauthorized();
 }
 
 module.exports = mustBeAuthenticated;

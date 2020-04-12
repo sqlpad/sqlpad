@@ -8,7 +8,7 @@ require('../typedefs');
  * Requests calling this route directly will have a session created and a correpsonding cookie
  * This is unlike the more passive sessionless authentication middleware,
  * which will authenticate without starting a session
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  * @param {object} res
  * @param {function} next
  */
@@ -29,13 +29,13 @@ function handleSignin(req, res, next) {
       return next(err);
     }
     if (!user) {
-      return res.utils.errors({ title: 'Unauthorized', detail }, 401);
+      return res.utils.unauthorized(detail);
     }
     return req.logIn(user, err => {
       if (err) {
         return next(err);
       }
-      return res.utils.data(null);
+      return res.utils.data();
     });
   }
 
@@ -56,7 +56,7 @@ function handleSignin(req, res, next) {
 }
 
 router.post('/api/signin', handleSignin, function(req, res) {
-  res.utils.data(null);
+  res.utils.data();
 });
 
 module.exports = router;

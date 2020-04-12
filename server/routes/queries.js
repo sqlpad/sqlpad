@@ -20,7 +20,7 @@ router.get('/queries/:_id', mustBeAuthenticated, function(req, res, next) {
 });
 
 /**
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  * @param {Res} res
  */
 async function deleteQuery(req, res) {
@@ -42,7 +42,7 @@ async function deleteQuery(req, res) {
 router.delete('/api/queries/:_id', mustBeAuthenticated, wrap(deleteQuery));
 
 /**
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  * @param {Res} res
  */
 async function listQueries(req, res) {
@@ -55,7 +55,7 @@ async function listQueries(req, res) {
 router.get('/api/queries', mustBeAuthenticated, wrap(listQueries));
 
 /**
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  * @param {Res} res
  */
 async function getQuery(req, res) {
@@ -77,7 +77,7 @@ async function getQuery(req, res) {
 router.get('/api/queries/:_id', mustBeAuthenticated, wrap(getQuery));
 
 /**
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  * @param {Res} res
  */
 async function createQuery(req, res) {
@@ -107,7 +107,7 @@ async function createQuery(req, res) {
 router.post('/api/queries', mustBeAuthenticated, wrap(createQuery));
 
 /**
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  * @param {Res} res
  */
 async function updateQuery(req, res) {

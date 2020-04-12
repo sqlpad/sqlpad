@@ -8,8 +8,8 @@ const wrap = require('../lib/wrap');
 // TODO - Separate out validation from saving to prevent having to intercept save error and respond accordingly
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function listConnectionAccesses(req, res) {
   const { models } = req;
@@ -30,8 +30,8 @@ router.get(
 );
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function getConnectionAccess(req, res) {
   const { models } = req;
@@ -48,8 +48,8 @@ router.get(
 );
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function createConnectionAccess(req, res) {
   const { models } = req;
@@ -105,8 +105,8 @@ router.post(
 );
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function updateConnectionAccess(req, res) {
   const { models } = req;

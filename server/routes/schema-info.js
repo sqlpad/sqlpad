@@ -5,8 +5,8 @@ const ConnectionClient = require('../lib/connection-client');
 const wrap = require('../lib/wrap');
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function getSchemaInfo(req, res) {
   const { models, user } = req;
