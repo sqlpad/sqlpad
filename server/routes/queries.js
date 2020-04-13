@@ -5,20 +5,6 @@ const pushQueryToSlack = require('../lib/push-query-to-slack');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 const wrap = require('../lib/wrap');
 
-// NOTE: this non-api route is special since it redirects legacy urls
-// TODO FIXME XXX REMOVE V5
-router.get('/queries/:_id', mustBeAuthenticated, function(req, res, next) {
-  const { query, params, config } = req;
-  const { format } = query;
-  const baseUrl = config.get('baseUrl');
-  if (format === 'table') {
-    return res.redirect(`${baseUrl}/query-table/${params._id}`);
-  } else if (format === 'chart') {
-    return res.redirect(`${baseUrl}/query-chart/${params._id}`);
-  }
-  next();
-});
-
 /**
  * @param {Req} req
  * @param {Res} res
