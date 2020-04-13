@@ -9,9 +9,7 @@ describe('api/drivers', function() {
   });
 
   it('gets drivers', async function() {
-    const body = await utils.get('editor', '/api/drivers');
-    const { drivers, error } = body;
-    assert(!error, 'Expect no error');
+    const drivers = await utils.get('editor', '/api/drivers');
 
     const postgres = drivers.find(i => i.id === 'postgres');
     assert(postgres, 'has postgres');

@@ -21,15 +21,13 @@ describe('api/signin', function() {
         .expect(200);
 
       const agent = request.agent(utils.app);
-      const { body } = await agent
+      await agent
         .post('/api/signin')
         .send({
           password: 'admin',
           email: 'admin@test.com'
         })
         .expect(200);
-
-      assert(!body.error, 'Expect no error');
 
       // agent should have session cookie to allow further action
       const r2 = await agent.get('/api/app');
@@ -88,7 +86,7 @@ describe('api/signin', function() {
         })
         .expect(200);
 
-      const { body } = await request(utils.app)
+      await request(utils.app)
         .post('/api/signup')
         .send({
           password: 'password',
@@ -96,7 +94,6 @@ describe('api/signin', function() {
           email: 'Usercase@test.com'
         })
         .expect(200);
-      assert(!body.error, 'Expect no error');
     });
 
     it('allows emails containing +', async function() {
@@ -117,7 +114,7 @@ describe('api/signin', function() {
         .expect(200);
 
       // Add user via API using admin
-      const response1 = await request(utils.app)
+      await request(utils.app)
         .post('/api/users')
         .auth('admin@test.com', 'admin')
         .send({
@@ -125,9 +122,8 @@ describe('api/signin', function() {
           role: 'editor'
         })
         .expect(200);
-      assert(!response1.body.error, 'no error');
 
-      const response2 = await request(utils.app)
+      await request(utils.app)
         .post('/api/signup')
         .send({
           password: 'password',
@@ -135,7 +131,6 @@ describe('api/signin', function() {
           email: 'user+foobar@test.com'
         })
         .expect(200);
-      assert(!response2.error, 'Expect no error');
     });
   });
 

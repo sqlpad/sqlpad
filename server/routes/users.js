@@ -2,25 +2,28 @@ const router = require('express').Router();
 const makeEmail = require('../lib/email');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const sendError = require('../lib/send-error');
+const wrap = require('../lib/wrap');
 
-router.get('/api/users', mustBeAuthenticated, async function(req, res) {
-  const { models } = req;
-  try {
+router.get(
+  '/api/users',
+  mustBeAuthenticated,
+  wrap(async function(req, res) {
+    const { models } = req;
     const users = await models.users.findAll();
-    return res.json({ users });
-  } catch (error) {
-    sendError(res, error, 'Problem getting uers');
-  }
-});
+    return res.utils.data(users);
+  })
+);
 
 // create/whitelist/invite user
-router.post('/api/users', mustBeAdmin, async function(req, res) {
-  const { models, appLog } = req;
-  try {
+router.post(
+  '/api/users',
+  mustBeAdmin,
+  wrap(async function(req, res) {
+    const { models, appLog } = req;
+
     let user = await models.users.findOneByEmail(req.body.email);
     if (user) {
-      return sendError(res, null, 'User already exists');
+      return res.utils.error('user already exists');
     }
 
     // Only accept certain fields
@@ -36,21 +39,22 @@ router.post('/api/users', mustBeAdmin, async function(req, res) {
     if (req.config.smtpConfigured()) {
       email.sendInvite(req.body.email).catch(error => appLog.error(error));
     }
-    return res.json({ user });
-  } catch (error) {
-    sendError(res, error, 'Problem saving user');
-  }
-});
+    return res.utils.data(user);
+  })
+);
 
-router.put('/api/users/:_id', mustBeAdmin, async function(req, res) {
-  const { params, body, user, models } = req;
-  if (user._id === params._id && user.role === 'admin' && body.role != null) {
-    return sendError(res, null, "You can't unadmin yourself");
-  }
-  try {
+router.put(
+  '/api/users/:_id',
+  mustBeAdmin,
+  wrap(async function(req, res) {
+    const { params, body, user, models } = req;
+    if (user._id === params._id && user.role === 'admin' && body.role != null) {
+      return res.utils.error("You can't unadmin yourself");
+    }
+
     const updateUser = await models.users.findOneById(params._id);
     if (!updateUser) {
-      return sendError(res, null, 'user not found');
+      return res.utils.error('user not found');
     }
 
     // this route could handle potentially different kinds of updates
@@ -72,23 +76,21 @@ router.put('/api/users/:_id', mustBeAdmin, async function(req, res) {
     }
 
     const updatedUser = await models.users.update(updateUser);
-    return res.json({ user: updatedUser });
-  } catch (error) {
-    sendError(res, error, 'Problem saving user');
-  }
-});
+    return res.utils.data(updatedUser);
+  })
+);
 
-router.delete('/api/users/:_id', mustBeAdmin, async function(req, res) {
-  const { models } = req;
-  if (req.user._id === req.params._id) {
-    return sendError(res, null, "You can't delete yourself");
-  }
-  try {
+router.delete(
+  '/api/users/:_id',
+  mustBeAdmin,
+  wrap(async function(req, res) {
+    const { models } = req;
+    if (req.user._id === req.params._id) {
+      return res.utils.error("You can't delete yourself");
+    }
     await models.users.removeById(req.params._id);
-    return res.json({});
-  } catch (error) {
-    sendError(res, error, 'Problem deleting user');
-  }
-});
+    return res.utils.data();
+  })
+);
 
 module.exports = router;

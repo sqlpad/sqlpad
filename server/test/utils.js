@@ -91,6 +91,14 @@ class TestUtils {
     );
   }
 
+  static validateErrorBody(body) {
+    assert(body.title, 'Error response has title');
+  }
+
+  static validateListSuccessBody(body) {
+    assert(Array.isArray(body), 'Body is an array');
+  }
+
   async loadSeedData() {
     await loadSeedData(this.appLog, this.config, this.models);
   }

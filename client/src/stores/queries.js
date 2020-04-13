@@ -49,10 +49,15 @@ export const formatQuery = async state => {
     return;
   }
 
-  setLocalQueryText(query._id, json.query);
+  if (!json.data || !json.data.query) {
+    console.warn('unexpected API result');
+    return;
+  }
+
+  setLocalQueryText(query._id, json.data.query);
 
   return {
-    query: { ...query, queryText: json.query },
+    query: { ...query, queryText: json.data.query },
     unsavedChanges: true
   };
 };
@@ -71,7 +76,7 @@ export const loadQueries = store => async state => {
     store.setState({
       queriesLoading: false,
       queriesLastUpdated: new Date(),
-      queries: json.queries || []
+      queries: json.data || []
     });
   }
 };
@@ -94,15 +99,15 @@ export const deleteQuery = store => async (state, queryId) => {
 };
 
 export const loadQuery = async (state, queryId) => {
-  const { error, query } = await fetchJson('GET', `/api/queries/${queryId}`);
+  const { error, data } = await fetchJson('GET', `/api/queries/${queryId}`);
   if (error) {
     message.error(error);
   }
   return {
-    query,
+    query: data,
     queryError: undefined,
     queryResult: undefined,
-    selectedConnectionId: query.connectionId,
+    selectedConnectionId: data.connectionId,
     unsavedChanges: false
   };
 };
@@ -128,7 +133,7 @@ export const runQuery = store => async state => {
     queryName: query.name,
     queryText: selectedText || query.queryText
   };
-  const { queryResult, error } = await fetchJson(
+  const { data, error } = await fetchJson(
     'POST',
     '/api/query-result',
     postData
@@ -139,7 +144,7 @@ export const runQuery = store => async state => {
   store.setState({
     isRunning: false,
     queryError: error,
-    queryResult
+    queryResult: data
   });
 };
 
@@ -156,7 +161,7 @@ export const saveQuery = store => async state => {
   });
   if (query._id) {
     fetchJson('PUT', `/api/queries/${query._id}`, queryData).then(json => {
-      const { error, query } = json;
+      const { error, data } = json;
       const { queries } = store.getState();
       if (error) {
         message.error(error);
@@ -164,20 +169,20 @@ export const saveQuery = store => async state => {
         return;
       }
       message.success('Query Saved');
-      removeLocalQueryText(query._id);
+      removeLocalQueryText(data._id);
       const updatedQueries = queries.map(q => {
-        return q._id === query._id ? query : q;
+        return q._id === data._id ? data : q;
       });
       store.setState({
         isSaving: false,
         unsavedChanges: false,
-        query,
+        query: data,
         queries: updatedQueries
       });
     });
   } else {
     fetchJson('POST', `/api/queries`, queryData).then(json => {
-      const { error, query } = json;
+      const { error, data } = json;
       const { queries } = store.getState();
       if (error) {
         message.error(error);
@@ -186,16 +191,16 @@ export const saveQuery = store => async state => {
       }
       window.history.replaceState(
         {},
-        query.name,
-        `${window.BASE_URL}/queries/${query._id}`
+        data.name,
+        `${window.BASE_URL}/queries/${data._id}`
       );
       message.success('Query Saved');
-      removeLocalQueryText(query._id);
+      removeLocalQueryText(data._id);
       store.setState({
         isSaving: false,
         unsavedChanges: false,
-        query,
-        queries: [query].concat(queries)
+        query: data,
+        queries: [data].concat(queries)
       });
     });
   }

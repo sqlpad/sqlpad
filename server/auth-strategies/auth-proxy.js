@@ -10,7 +10,7 @@ const appLog = require('../lib/app-log');
  * An auth-proxy custom strategy
  * If enabled, iterate over headers and map the values to a user object
  * Look up that user and perform usual auth validations
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  * @param {function} done
  */
 async function authProxyStrategy(req, done) {

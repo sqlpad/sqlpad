@@ -9,8 +9,8 @@ require('../typedefs');
  * and do not use the session cookie like other methods.
  * (Google and SAML authenticate with their targets, but still result in a SQLPad user and associated session)
  *
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  * @param {function} next
  */
 function sessionlessAuth(req, res, next) {
@@ -18,6 +18,27 @@ function sessionlessAuth(req, res, next) {
 
   // If the request is already authenticated via something that keeps a session continue
   if (req.isAuthenticated()) {
+    return next();
+  }
+
+  /**
+   * A custom passport authenticate handler to control shape of response
+   * Passport otherwise responds with a 401 when not authenticated
+   * To keep this response consistent with other APIs, this formats error accordingly
+   * @param {*} err
+   * @param {*} user
+   * @param {*} info
+   */
+  function handleAuth(err, user, info) {
+    const detail = info && info.message;
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.utils.unauthorized(detail);
+    }
+    // When called without creating a session, no callback is used
+    req.logIn(user, { session: false });
     return next();
   }
 
@@ -38,13 +59,13 @@ function sessionlessAuth(req, res, next) {
     // If authorization starts with Bearer and serviceTokenSecret is set,
     // we're going to guess it is a service token jwt
     if (authHeader.startsWith('Bearer ') && config.get('serviceTokenSecret')) {
-      return passport.authenticate('jwt', { session: false })(req, res, next);
+      return passport.authenticate('jwt', handleAuth)(req, res, next);
     }
 
     // If authoriztion starts with Basic and local auth isn't disabled,
     // try HTTP basic authentication
     if (authHeader.startsWith('Basic ') && !config.get('disableUserpassAuth')) {
-      return passport.authenticate('basic', { session: false })(req, res, next);
+      return passport.authenticate('basic', handleAuth)(req, res, next);
     }
   }
 
@@ -52,11 +73,7 @@ function sessionlessAuth(req, res, next) {
   if (config.get('authProxyEnabled')) {
     const headerUser = getHeaderUser(req);
     if (headerUser) {
-      return passport.authenticate('auth-proxy', { session: false })(
-        req,
-        res,
-        next
-      );
+      return passport.authenticate('auth-proxy', handleAuth)(req, res, next);
     }
   }
 

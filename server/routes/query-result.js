@@ -1,72 +1,70 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
-const sendError = require('../lib/send-error');
 const ConnectionClient = require('../lib/connection-client');
+const wrap = require('../lib/wrap');
 
 // This allows executing a query relying on the saved query text
 // Instead of relying on an open endpoint that executes arbitrary sql
 router.get(
   '/api/query-result/:_queryId',
   mustHaveConnectionAccess,
-  async function(req, res) {
+  wrap(async function(req, res) {
     const { models } = req;
-    try {
-      const query = await models.queries.findOneById(req.params._queryId);
-      if (!query) {
-        return sendError(res, null, 'Query not found (save query first)');
-      }
-      const data = {
-        connectionId: query.connectionId,
-        cacheKey: query._id,
-        queryId: query._id,
-        queryName: query.name,
-        queryText: query.queryText,
-        user: req.user
-      };
-      // IMPORTANT: Send actual error here since it might have info on why the query is bad
-      try {
-        const queryResult = await getQueryResult(req, data);
-        return res.send({ queryResult });
-      } catch (error) {
-        sendError(res, error);
-      }
-    } catch (error) {
-      sendError(res, error, 'Problem querying query database');
+    const query = await models.queries.findOneById(req.params._queryId);
+    if (!query) {
+      return res.utils.notFound();
     }
-  }
+    const data = {
+      connectionId: query.connectionId,
+      cacheKey: query._id,
+      queryId: query._id,
+      queryName: query.name,
+      queryText: query.queryText,
+      user: req.user
+    };
+    // IMPORTANT: Send actual error here since it might have info on why the query is bad
+    try {
+      const queryResult = await getQueryResult(req, data);
+      return res.utils.data(queryResult);
+    } catch (error) {
+      return res.utils.error(error);
+    }
+  })
 );
 
 // Accepts raw inputs from client
 // Used during query editing
-router.post('/api/query-result', mustHaveConnectionAccess, async function(
-  req,
-  res
-) {
-  const { body, user } = req;
+router.post(
+  '/api/query-result',
+  mustHaveConnectionAccess,
+  wrap(async function(req, res) {
+    const { body, user } = req;
 
-  const data = {
-    cacheKey: body.cacheKey,
-    connectionId: body.connectionId,
-    queryId: body.queryId,
-    queryName: body.queryName,
-    queryText: body.queryText,
-    connectionClientId: body.connectionClientId,
-    user
-  };
+    const data = {
+      cacheKey: body.cacheKey,
+      connectionId: body.connectionId,
+      queryId: body.queryId,
+      queryName: body.queryName,
+      queryText: body.queryText,
+      connectionClientId: body.connectionClientId,
+      user
+    };
 
-  try {
-    // TODO - untangle user error from server error
-    // An expected result should be sent 200, while unexpected 500
-    const queryResult = await getQueryResult(req, data);
-    return res.send({ queryResult });
-  } catch (error) {
-    sendError(res, error);
-  }
-});
+    // IMPORTANT: Send actual error here since it might have info on why the query is bad
+    // TODO untangle user error from server error.
+    // Unexpected server error should be 500 Should a query error be 200 or 400?
+    try {
+      const queryResult = await getQueryResult(req, data);
+      return res.utils.data(queryResult);
+    } catch (error) {
+      return res.utils.error(error);
+    }
+  })
+);
 
 /**
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  * @param {object} data
  */
 async function getQueryResult(req, data) {

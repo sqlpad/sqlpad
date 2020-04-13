@@ -3,11 +3,15 @@ const { v4: uuidv4 } = require('uuid');
 const getMeta = require('../lib/get-meta');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const urlFilterToNeDbFilter = require('../lib/url-filter-to-nedb-filter');
-const sendError = require('../lib/send-error');
+const wrap = require('../lib/wrap');
 
-router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
-  const { models } = req;
-  try {
+// TODO v5 - change this to an array of items?
+router.get(
+  '/api/query-history',
+  mustBeAuthenticated,
+  wrap(async function(req, res) {
+    const { models } = req;
+
     const queryHistory = {
       id: uuidv4(),
       cacheKey: null,
@@ -40,28 +44,23 @@ router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
     queryHistory.meta = getMeta(dbQueryHistory);
     queryHistory.fields = Object.keys(queryHistory.meta);
 
-    return res.json({ queryHistory });
-  } catch (error) {
-    sendError(res, error, error.message);
-  }
-});
+    return res.utils.data(queryHistory);
+  })
+);
 
-router.get('/api/query-history/:_id', mustBeAuthenticated, async function(
-  req,
-  res
-) {
-  const { models } = req;
-  try {
+router.get(
+  '/api/query-history/:_id',
+  mustBeAuthenticated,
+  wrap(async function(req, res) {
+    const { models } = req;
     const queryHistoryItem = await models.queryHistory.findOneById(
       req.params._id
     );
     if (!queryHistoryItem) {
-      return sendError(res, null, 'Query history item not found');
+      return res.utils.notFound();
     }
-    return res.json({ queryHistoryItem });
-  } catch (error) {
-    sendError(res, error, 'Problem querying query history database');
-  }
-});
+    return res.utils.data(queryHistoryItem);
+  })
+);
 
 module.exports = router;

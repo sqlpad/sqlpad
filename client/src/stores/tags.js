@@ -6,11 +6,11 @@ export const initialState = {
 };
 
 export const loadTags = async state => {
-  const { error, tags } = await fetchJson('GET', '/api/tags');
+  const { error, data } = await fetchJson('GET', '/api/tags');
   if (error) {
     message.error(error);
   }
-  return { availableTags: tags };
+  return { availableTags: data };
 };
 
 export default { initialState, loadTags };

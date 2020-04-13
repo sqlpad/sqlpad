@@ -27,7 +27,7 @@ describe('api/signup', function() {
     });
     await utils.init();
 
-    const r1 = await request(utils.app)
+    await request(utils.app)
       .post('/api/signup')
       .send({
         password: 'admin',
@@ -36,18 +36,15 @@ describe('api/signup', function() {
       })
       .expect(200);
 
-    assert(!r1.body.error, 'Expect no error');
-
     const agent = request.agent(utils.app);
 
-    const r2 = await agent
+    await agent
       .post('/api/signin')
       .send({
         password: 'admin',
         email: 'admin@test.com'
       })
       .expect(200);
-    assert(!r2.body.error, 'Expect no error');
 
     // agent should have session cookie to allow further action
     const r3 = await agent.get('/api/app');
@@ -69,16 +66,14 @@ describe('api/signup', function() {
       })
       .expect(200);
 
-    const r2 = await request(utils.app)
+    await request(utils.app)
       .post('/api/signup')
       .send({
         password: 'admin',
         passwordConfirmation: 'admin',
         email: 'admin@test.com'
       })
-      .expect(200);
-
-    assert(r2.body.error, 'Expect error user already signed up');
+      .expect(400);
   });
 
   it('prevents open signups', async function() {
@@ -87,14 +82,13 @@ describe('api/signup', function() {
     });
     await utils.init(true);
 
-    const { body } = await request(utils.app)
+    await request(utils.app)
       .post('/api/signup')
       .send({
         password: 'notwhitelisted',
         passwordConfirmation: 'notwhitelisted',
         email: 'notwhitelisted@test.com'
       })
-      .expect(200);
-    assert(body.error, 'Expect error needing whitelist');
+      .expect(403);
   });
 });

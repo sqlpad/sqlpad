@@ -65,7 +65,7 @@ export const connectConnectionClient = store => async state => {
   const connectionClientInterval = setInterval(async () => {
     const updateJson = await fetchJson(
       'PUT',
-      `/api/connection-clients/${json.connectionClient.id}`
+      `/api/connection-clients/${json.data.id}`
     );
 
     // Not sure if this should message user here
@@ -76,7 +76,7 @@ export const connectConnectionClient = store => async state => {
 
     // If the PUT didn't return a connectionClient object,
     // the connectionClient has been disconnected
-    if (!updateJson.connectionClient && connectionClientInterval) {
+    if (!updateJson.data && connectionClientInterval) {
       clearInterval(connectionClientInterval);
       store.setState({
         connectionClientInterval: null,
@@ -84,12 +84,12 @@ export const connectConnectionClient = store => async state => {
       });
     } else {
       store.setState({
-        connectionClient: updateJson.connectionClient
+        connectionClient: updateJson.data
       });
     }
   }, 10000);
 
-  return { connectionClient: json.connectionClient, connectionClientInterval };
+  return { connectionClient: json.data, connectionClientInterval };
 };
 
 /**
@@ -184,18 +184,18 @@ export const loadConnections = store => async (state, force) => {
       new Date() - connectionsLastUpdated > ONE_HOUR_MS)
   ) {
     store.setState({ connectionsLoading: true });
-    const { error, connections } = await fetchJson('GET', '/api/connections/');
-    if (error) {
-      message.error(error);
+    const json = await fetchJson('GET', '/api/connections/');
+    if (json.error) {
+      message.error(json.error);
     }
     const update = {
       connectionsLoading: false,
       connectionsLastUpdated: new Date(),
-      connections: sortConnections(connections)
+      connections: sortConnections(json.data)
     };
 
-    if (connections && connections.length === 1) {
-      update.selectedConnectionId = connections[0]._id;
+    if (json.data && json.data.length === 1) {
+      update.selectedConnectionId = json.data[0]._id;
     }
 
     store.setState(update);

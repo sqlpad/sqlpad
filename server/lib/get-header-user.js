@@ -3,7 +3,7 @@ require('../typedefs');
 
 /**
  * Derive header user from request headers
- * @param {import('express').Request & Req} req
+ * @param {Req} req
  */
 function getHeaderUser(req) {
   const { config } = req;

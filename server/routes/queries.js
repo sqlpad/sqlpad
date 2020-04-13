@@ -1,11 +1,12 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const sendError = require('../lib/send-error');
 const pushQueryToSlack = require('../lib/push-query-to-slack');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
+const wrap = require('../lib/wrap');
 
 // NOTE: this non-api route is special since it redirects legacy urls
+// TODO FIXME XXX REMOVE V5
 router.get('/queries/:_id', mustBeAuthenticated, function(req, res, next) {
   const { query, params, config } = req;
   const { format } = query;
@@ -19,86 +20,65 @@ router.get('/queries/:_id', mustBeAuthenticated, function(req, res, next) {
 });
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function deleteQuery(req, res) {
   const { models, params, user } = req;
-  try {
-    const query = await models.queries.findOneById(params._id);
-    if (!query) {
-      return sendError(res, null, 'Query not found');
-    }
-
-    const decorated = decorateQueryUserAccess(query, user);
-
-    if (decorated.canDelete) {
-      await models.queries.removeById(params._id);
-      await models.queryAcl.removeByQueryId(params._id);
-      return res.json({});
-    }
-
-    // TODO send 403 forbidden
-    sendError(res, null, 'Access to query not permitted');
-  } catch (error) {
-    sendError(res, error, 'Problem deleting query');
+  const query = await models.findQueryById(params._id);
+  if (!query) {
+    return res.utils.notFound();
   }
+  const decorated = decorateQueryUserAccess(query, user);
+  if (decorated.canDelete) {
+    await models.queries.removeById(params._id);
+    await models.queryAcl.removeByQueryId(params._id);
+    return res.utils.data();
+  }
+
+  return res.utils.forbidden();
 }
 
-router.delete('/api/queries/:_id', mustBeAuthenticated, deleteQuery);
+router.delete('/api/queries/:_id', mustBeAuthenticated, wrap(deleteQuery));
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function listQueries(req, res) {
   const { models, user } = req;
-  try {
-    const queries = await models.findQueriesForUser(user);
-    return res.json({
-      queries: queries.map(query => decorateQueryUserAccess(query, user))
-    });
-  } catch (error) {
-    sendError(res, error, 'Problem querying query database');
-  }
+  const queries = await models.findQueriesForUser(user);
+  const decorated = queries.map(query => decorateQueryUserAccess(query, user));
+  return res.utils.data(decorated);
 }
 
-router.get('/api/queries', mustBeAuthenticated, listQueries);
+router.get('/api/queries', mustBeAuthenticated, wrap(listQueries));
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function getQuery(req, res) {
   const { models, user, params } = req;
-  try {
-    const query = await models.findQueryById(params._id);
+  const query = await models.findQueryById(params._id);
 
-    // TODO send proper 404
-    // Leaving this in until all APIs are fixed up
-    if (!query) {
-      return res.json({
-        query: {}
-      });
-    }
-
-    const decorated = decorateQueryUserAccess(query, user);
-    if (decorated.canRead) {
-      return res.json({ query: decorated });
-    }
-
-    // TODO send 403 forbidden
-    sendError(res, null, 'Access to query not permitted');
-  } catch (error) {
-    sendError(res, error, 'Problem getting query');
+  if (!query) {
+    return res.utils.notFound();
   }
+
+  const decorated = decorateQueryUserAccess(query, user);
+  if (decorated.canRead) {
+    return res.utils.data(decorated);
+  }
+
+  return res.utils.forbidden();
 }
 
-router.get('/api/queries/:_id', mustBeAuthenticated, getQuery);
+router.get('/api/queries/:_id', mustBeAuthenticated, wrap(getQuery));
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function createQuery(req, res) {
   const { models, body, user } = req;
@@ -116,68 +96,51 @@ async function createQuery(req, res) {
     acl
   };
 
-  try {
-    const newQuery = await models.upsertQuery(query);
+  const newQuery = await models.upsertQuery(query);
 
-    // This is async, but save operation doesn't care about when/if finished
-    pushQueryToSlack(req.config, newQuery);
+  // This is async, but save operation doesn't care about when/if finished
+  pushQueryToSlack(req.config, newQuery);
 
-    return res.json({
-      query: decorateQueryUserAccess(newQuery, user)
-    });
-  } catch (error) {
-    sendError(res, error, 'Problem saving query');
-  }
+  return res.utils.data(decorateQueryUserAccess(newQuery, user));
 }
 
-router.post('/api/queries', mustBeAuthenticated, createQuery);
+router.post('/api/queries', mustBeAuthenticated, wrap(createQuery));
 
 /**
- * @param {import('express').Request & Req} req
- * @param {*} res
+ * @param {Req} req
+ * @param {Res} res
  */
 async function updateQuery(req, res) {
   const { models, params, user, body } = req;
-  try {
-    const query = await models.findQueryById(params._id);
-    if (!query) {
-      return sendError(res, null, 'Query not found');
-    }
 
-    const decorated = decorateQueryUserAccess(query, user);
-
-    if (!decorated.canWrite) {
-      // TODO send 403 forbidden
-      return sendError(res, null, 'Access to query not permitted');
-    }
-
-    const {
-      name,
-      tags,
-      connectionId,
-      queryText,
-      chartConfiguration,
-      acl
-    } = body;
-
-    Object.assign(query, {
-      name,
-      tags,
-      connectionId,
-      queryText,
-      chartConfiguration,
-      modifiedBy: user.email,
-      acl
-    });
-
-    const updatedQuery = await models.upsertQuery(query);
-
-    return res.json({ query: decorateQueryUserAccess(updatedQuery, user) });
-  } catch (error) {
-    sendError(res, error, 'Problem saving query');
+  const query = await models.findQueryById(params._id);
+  if (!query) {
+    return res.utils.notFound();
   }
+
+  const decorated = decorateQueryUserAccess(query, user);
+
+  if (!decorated.canWrite) {
+    return res.utils.forbidden();
+  }
+
+  const { name, tags, connectionId, queryText, chartConfiguration, acl } = body;
+
+  Object.assign(query, {
+    name,
+    tags,
+    connectionId,
+    queryText,
+    chartConfiguration,
+    modifiedBy: user.email,
+    acl
+  });
+
+  const updatedQuery = await models.upsertQuery(query);
+  const data = decorateQueryUserAccess(updatedQuery, user);
+  return res.utils.data(data);
 }
 
-router.put('/api/queries/:_id', mustBeAuthenticated, updateQuery);
+router.put('/api/queries/:_id', mustBeAuthenticated, wrap(updateQuery));
 
 module.exports = router;

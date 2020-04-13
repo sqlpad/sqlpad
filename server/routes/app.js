@@ -1,13 +1,14 @@
 const router = require('express').Router();
 const packageJson = require('../package.json');
-const sendError = require('../lib/send-error');
+const wrap = require('../lib/wrap');
 
 // NOTE: this route needs a wildcard because it is fetched as a relative url
 // from the front-end. The static SPA does not know if sqlpad is mounted at
 // the root of a domain or if there is a base-url provided in the config
-router.get('*/api/app', async (req, res) => {
-  const { config, models } = req;
-  try {
+router.get(
+  '*/api/app',
+  wrap(async (req, res) => {
+    const { config, models } = req;
     const adminRegistrationOpen = await models.users.adminRegistrationOpen();
     const currentUser =
       req.isAuthenticated() && req.user
@@ -18,7 +19,7 @@ router.get('*/api/app', async (req, res) => {
           }
         : undefined;
 
-    return res.json({
+    return res.utils.data({
       adminRegistrationOpen,
       currentUser,
       config: {
@@ -33,9 +34,7 @@ router.get('*/api/app', async (req, res) => {
       },
       version: packageJson.version
     });
-  } catch (error) {
-    sendError(res, error, 'Problem querying users');
-  }
-});
+  })
+);
 
 module.exports = router;

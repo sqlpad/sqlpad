@@ -1,30 +1,30 @@
 const router = require('express').Router();
-const sendError = require('../lib/send-error');
+const wrap = require('../lib/wrap');
 
 // This route used to set new password given a passwordResetId
-router.post('/api/password-reset/:passwordResetId', async function(req, res) {
-  try {
+// NOTE: This route doesn't fit API REST conventions used elsewhere in app
+router.post(
+  '/api/password-reset/:passwordResetId',
+  wrap(async function(req, res) {
     const { models } = req;
     const user = await models.users.findOneByPasswordResetId(
       req.params.passwordResetId
     );
 
     if (!user) {
-      return sendError(res, null, 'Password reset permissions not found');
+      return res.utils.error('Password reset permissions not found');
     }
     if (req.body.email !== user.email) {
-      return sendError(res, null, 'Incorrect email address');
+      return res.utils.error('Incorrect email address');
     }
     if (req.body.password !== req.body.passwordConfirmation) {
-      return sendError(res, null, 'Passwords do not match');
+      return res.utils.error('Passwords do not match');
     }
     user.password = req.body.password;
     user.passwordResetId = '';
     await models.users.update(user);
-    return res.json({});
-  } catch (error) {
-    sendError(res, error, 'Problem querying user database');
-  }
-});
+    return res.utils.data();
+  })
+);
 
 module.exports = router;

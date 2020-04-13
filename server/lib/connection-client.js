@@ -22,6 +22,11 @@ class ConnectionClient {
     this.id = uuidv4();
     this.connection = renderConnection(connection, user);
     this.driver = drivers[connection.driver];
+
+    if (!this.driver) {
+      throw new Error('Invalid driver');
+    }
+
     this.user = user;
     this.Client = this.driver.Client;
     this.connectedAt = null;

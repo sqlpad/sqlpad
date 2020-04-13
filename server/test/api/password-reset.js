@@ -19,26 +19,26 @@ describe('api/password-reset', function() {
 
   it('Allows resetting password', async function() {
     const passwordResetId = await setReset();
-    const body = await utils.post(
-      'admin',
-      `/api/password-reset/${passwordResetId}`,
-      {
-        email: 'admin@test.com',
-        password: 'admin',
-        passwordConfirmation: 'admin'
-      }
-    );
-    assert(!body.error, 'Expect no error');
-  });
-
-  it('Errors for wrong passwordResetId', async function() {
-    await setReset();
-    const body = await utils.post('admin', `/api/password-reset/123`, {
+    await utils.post('admin', `/api/password-reset/${passwordResetId}`, {
       email: 'admin@test.com',
       password: 'admin',
       passwordConfirmation: 'admin'
     });
-    assert(body.error, 'Expect error');
+  });
+
+  it('Errors for wrong passwordResetId', async function() {
+    await setReset();
+    const body = await utils.post(
+      'admin',
+      `/api/password-reset/123`,
+      {
+        email: 'admin@test.com',
+        password: 'admin',
+        passwordConfirmation: 'admin'
+      },
+      400
+    );
+    assert.equal(body.title, 'Password reset permissions not found');
   });
 
   it('Errors for wrong email', async function() {
@@ -50,9 +50,10 @@ describe('api/password-reset', function() {
         email: 'wrongemail@test.com',
         password: 'admin',
         passwordConfirmation: 'admin'
-      }
+      },
+      400
     );
-    assert(body.error, 'Expect error');
+    assert.equal(body.title, 'Incorrect email address');
   });
 
   it('Errors for mismatched passwords', async function() {
@@ -64,8 +65,9 @@ describe('api/password-reset', function() {
         email: 'admin@test.com',
         password: 'admin2',
         passwordConfirmation: 'admin'
-      }
+      },
+      400
     );
-    assert(body.error, 'Expect error');
+    assert.equal(body.title, 'Passwords do not match');
   });
 });
