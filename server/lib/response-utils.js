@@ -23,7 +23,7 @@ class ResponseUtils {
       data.id = data._id;
     }
 
-    return this.res.json(data);
+    return this.res.json(data || {});
   }
 
   /**
