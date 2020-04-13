@@ -66,19 +66,18 @@ async function createConnectionAccess(req, res) {
   if (req.body.userId !== consts.EVERYONE_ID) {
     user = await models.users.findOneById(req.body.userId);
     if (!user) {
-      return res.utils.errors('User does not exist', 400);
+      return res.utils.error('User does not exist');
     }
     if (user.role === 'admin') {
-      return res.utils.errors(
-        'User is admin and already has access to connection',
-        400
+      return res.utils.error(
+        'User is admin and already has access to connection'
       );
     }
   }
   if (req.body.connectionId !== consts.EVERY_CONNECTION_ID) {
     connection = await models.connections.findOneById(req.body.connectionId);
     if (!connection) {
-      return res.utils.errors('Connection does not exist', 400);
+      return res.utils.error('Connection does not exist');
     }
   }
   let activeAccess = await models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
@@ -86,7 +85,7 @@ async function createConnectionAccess(req, res) {
     req.body.userId
   );
   if (activeAccess) {
-    return res.utils.errors('User has active access to connection', 400);
+    return res.utils.error('User has active access to connection');
   }
   let connectionAccess = await models.connectionAccesses.save({
     connectionId: req.body.connectionId,

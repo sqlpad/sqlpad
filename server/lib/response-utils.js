@@ -23,67 +23,36 @@ class ResponseUtils {
       data.id = data._id;
     }
 
-    return this.res.json({ data: data || null });
+    return this.res.json(data);
   }
 
   /**
-   * Send error responses to client using status code
-   * @param {*} data
-   * @param {number} httpStatusCode
+   * Send a 400 error response to client.
+   * Derives error object from data passed in
+   * @param {(string|Error|object)} data - string, Error, or preformed object
    */
-  errors(data, httpStatusCode) {
-    if (!httpStatusCode) {
-      return this.next(new Error('res.errors missing status code'));
-    }
-    let errors = [];
-    if (Array.isArray(data)) {
-      errors = data;
+  error(data) {
+    const error = {};
+
+    // Populate error object from data passed in
+    if (typeof data === 'string') {
+      error.title = data;
+    } else if (data instanceof Error) {
+      error.title = data.message || data.toString();
+    } else if (typeof data === 'object') {
+      Object.assign(error, data);
     } else {
-      errors.push(data);
+      throw new Error('Unexpected error data');
     }
-    // Ensure errors are objects with a title property
-    errors = errors.map(e => {
-      if (typeof e === 'string') {
-        return { title: e };
-      }
-      if (e instanceof Error) {
-        const title = e.message || e.toString();
-        return { title };
-      }
-      if (e.title) {
-        return e;
-      }
-      return { title: 'Something happened' };
-    });
-    return this.res.status(httpStatusCode).json({ errors });
+
+    return this.res.status(400).json(error);
   }
 
   /**
    * Send a 404 with an error object
    */
-  updateNotFound() {
-    return this.errors('Not found', 404);
-  }
-
-  /**
-   * Send a 200 null data response for get /item/<id> that doesn't exist
-   */
-  getNotFound() {
-    return this.data();
-  }
-
-  /**
-   * Send a 404 with an error object
-   */
-  deleteNotFound() {
-    return this.errors('Not found', 404);
-  }
-
-  /**
-   * Send a 200 with a meta object
-   */
-  deleteOk() {
-    return this.res.json({ meta: null });
+  notFound() {
+    this.res.status(404).json({ title: 'Not found' });
   }
 
   /**
@@ -92,9 +61,10 @@ class ResponseUtils {
    */
   unauthorized(detail) {
     const error = {
-      title: 'Unauthorized'
+      title: 'Unauthorized',
+      detail
     };
-    return this.errors({ ...error, detail }, 401);
+    return this.res.status(401).json(error);
   }
 
   /**
@@ -102,7 +72,10 @@ class ResponseUtils {
    * but user is not allowed to perform the action
    */
   forbidden() {
-    return this.errors('Forbidden', 403);
+    const error = {
+      title: 'Forbidden'
+    };
+    return this.res.status(403).json(error);
   }
 }
 

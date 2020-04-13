@@ -27,13 +27,13 @@ async function deleteQuery(req, res) {
   const { models, params, user } = req;
   const query = await models.findQueryById(params._id);
   if (!query) {
-    return res.utils.deleteNotFound();
+    return res.utils.notFound();
   }
   const decorated = decorateQueryUserAccess(query, user);
   if (decorated.canDelete) {
     await models.queries.removeById(params._id);
     await models.queryAcl.removeByQueryId(params._id);
-    return res.utils.deleteOk();
+    return res.utils.data();
   }
 
   return res.utils.forbidden();
@@ -63,7 +63,7 @@ async function getQuery(req, res) {
   const query = await models.findQueryById(params._id);
 
   if (!query) {
-    return res.utils.getNotFound();
+    return res.utils.notFound();
   }
 
   const decorated = decorateQueryUserAccess(query, user);
@@ -115,7 +115,7 @@ async function updateQuery(req, res) {
 
   const query = await models.findQueryById(params._id);
   if (!query) {
-    return res.utils.updateNotFound();
+    return res.utils.notFound();
   }
 
   const decorated = decorateQueryUserAccess(query, user);

@@ -42,7 +42,7 @@ async function getConnectionClient(req, res) {
   );
 
   if (!connectionClient) {
-    return res.utils.getNotFound();
+    return res.utils.notFound();
   }
 
   // Only the owner of the connection or admin can get the client
@@ -77,12 +77,12 @@ async function createConnectionClient(req, res) {
 
   const { connectionId } = body;
   if (!connectionId) {
-    return res.utils.errors('connectionId required', 400);
+    return res.utils.error('connectionId required');
   }
 
   const connection = await models.connections.findOneById(connectionId);
   if (!connection) {
-    return res.utils.errors('connectionId invalid', 400);
+    return res.utils.error('connectionId invalid');
   }
 
   const connectionClient = await models.connectionClients.createNew(
@@ -118,7 +118,7 @@ async function keepAliveConnectionClient(req, res) {
 
   // If no connection client it was already closed
   if (!connectionClient) {
-    return res.utils.updateNotFound();
+    return res.utils.notFound();
   }
 
   // Only the owner of the connection client can keep client alive
@@ -134,7 +134,7 @@ async function keepAliveConnectionClient(req, res) {
     // remove from in-memory store and respond with nothing
     // disconnect here is not necessary, but should be safe
     await models.connectionClients.disconnectForId(params.connectionClientId);
-    return res.utils.updateNotFound();
+    return res.utils.notFound();
   }
 
   return res.utils.data({
@@ -173,7 +173,7 @@ async function disconnectConnectionClient(req, res) {
   }
 
   await models.connectionClients.disconnectForId(connectionClientId);
-  return res.utils.deleteOk();
+  return res.utils.data();
 }
 
 router.delete(

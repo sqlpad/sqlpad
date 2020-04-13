@@ -16,7 +16,7 @@ async function getSchemaInfo(req, res) {
   const conn = await models.connections.findOneById(connectionId);
 
   if (!conn) {
-    return res.utils.getNotFound();
+    return res.utils.notFound();
   }
 
   const connectionClient = new ConnectionClient(conn, user);

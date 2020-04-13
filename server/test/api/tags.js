@@ -10,8 +10,8 @@ describe('api/tags', function() {
 
   it('Returns empty array', async function() {
     const body = await utils.get('admin', '/api/tags');
-    assert(Array.isArray(body.data), 'data is an array');
-    assert.equal(body.data.length, 0, '0 length');
+    TestUtils.validateListSuccessBody(body);
+    assert.equal(body.length, 0, '0 length');
   });
 
   it('Returns expected array', async function() {
@@ -29,6 +29,6 @@ describe('api/tags', function() {
     });
 
     const body = await utils.get('admin', '/api/tags');
-    assert.equal(body.data.length, 3, '3 length');
+    assert.equal(body.length, 3, '3 length');
   });
 });

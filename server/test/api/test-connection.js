@@ -15,7 +15,7 @@ describe('api/test-connection', function() {
     });
   });
 
-  it('tests connection failure', async function() {
+  it('tests connection failure for invalid driver', async function() {
     await utils.post(
       'admin',
       '/api/test-connection',

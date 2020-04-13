@@ -34,7 +34,6 @@ export default async function fetchJson(method, url, body) {
     const title = 'Network error';
     message.error(title);
     return {
-      errors: [{ title }],
       error: title
     };
   }
@@ -42,23 +41,23 @@ export default async function fetchJson(method, url, body) {
   try {
     const json = await response.json();
 
-    // New v5 API format sends { data } or { errors }
-    // If errors is sent, also decorate with `error` prop that is a string similar to legacy implementation
-    // This is to ease the transition on front-end, and can be removed later at some point
-    if (json.errors) {
-      const error = json.errors[0] || {};
-      json.error = error.detail || error.title || '';
+    // New v5 API format the body is the data or error
+    // Which is what depends on status code. 2xx is data, 4xx or 5xx is error
+    // If 200-299 the body is data
+    if (response.ok) {
+      return { data: json };
     }
 
-    return json;
+    // The body is an error object with a .title at a minimum, possibly .detail and other props
+    // To ease transition, we'll convert the error object into an error string for now
+    // At some point front-end can be updated to handle error object
+    return { error: json.detail || json.title || '' };
   } catch (error) {
     // An error parsing JSON. This is unexepected, log to console
     // Send a more generic message in response
     console.error(response);
-    const title = 'Server responded not ok';
     return {
-      errors: [{ title }],
-      error: title
+      error: 'Server responded not ok'
     };
   }
 }

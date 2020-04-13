@@ -8,10 +8,10 @@ router.post(
   wrap(async function(req, res) {
     const { models, appLog } = req;
     if (!req.body.email) {
-      return res.utils.errors('Email address must be provided', 400);
+      return res.utils.error('Email address must be provided');
     }
     if (!req.config.smtpConfigured()) {
-      return res.utils.errors('Email must be configured', 400);
+      return res.utils.error('Email must be configured');
     }
 
     const email = makeEmail(req.config);

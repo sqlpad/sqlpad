@@ -26,20 +26,18 @@ describe('api/query-history', function() {
   before(async function() {
     await utils.init(true);
 
-    const connBody = await utils.post('admin', '/api/connections', {
+    connection = await utils.post('admin', '/api/connections', {
       name: 'test postgres',
       driver: 'sqlite',
       filename: './test/fixtures/sales.sqlite'
     });
-    connection = connBody.data;
 
-    const body = await utils.post('admin', '/api/queries', {
+    query1 = await utils.post('admin', '/api/queries', {
       name: 'test query 1',
       tags: ['test', 'postgres'],
       connectionId: connection._id,
       queryText: queryText1
     });
-    query1 = body.data;
   });
 
   it('Convert URL filters to NeDB compatibles', function() {
@@ -96,9 +94,9 @@ describe('api/query-history', function() {
 
   it('Gets array of 0 items', async function() {
     const body = await utils.get('admin', '/api/query-history');
-    assert(Array.isArray(body.data.rows), 'queryHistory is an array');
-    assert.equal(body.data.incomplete, false, 'Complete');
-    assert.equal(body.data.rows.length, 0, '0 length');
+    assert(Array.isArray(body.rows), 'queryHistory is an array');
+    assert.equal(body.incomplete, false, 'Complete');
+    assert.equal(body.rows.length, 0, '0 length');
   });
 
   it('Gets array of 4 items', async function() {
@@ -120,9 +118,8 @@ describe('api/query-history', function() {
 
     // Check if every query stored in query history
     const body = await utils.get('admin', '/api/query-history');
-    assert(Array.isArray(body.data.rows), 'data is an array');
-    assert.equal(body.data.incomplete, false, 'Complete');
-    assert.equal(body.data.rows.length, 4, '4 length');
+    assert.equal(body.incomplete, false, 'Complete');
+    assert.equal(body.rows.length, 4, '4 length');
 
     // Check if every history entry has every required key
     const historyObjectKeys = [
@@ -140,14 +137,14 @@ describe('api/query-history', function() {
     ];
 
     // First and second two history items (reverse ordered) needs to free text query with queryId and queryName
-    assert.deepEqual(Object.keys(body.data.rows[3]), historyObjectKeys);
-    assert.deepEqual(Object.keys(body.data.rows[2]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body.rows[3]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body.rows[2]), historyObjectKeys);
 
     // Third and fourth history items (reverse ordered) needs to saved text query with no queryId and queryName
     historyObjectKeys.splice(historyObjectKeys.indexOf('queryId'), 1);
     historyObjectKeys.splice(historyObjectKeys.indexOf('queryName'), 1);
-    assert.deepEqual(Object.keys(body.data.rows[1]), historyObjectKeys);
-    assert.deepEqual(Object.keys(body.data.rows[0]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body.rows[1]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body.rows[0]), historyObjectKeys);
   });
 
   it('Gets filtered array of 2 items', async function() {
@@ -156,8 +153,8 @@ describe('api/query-history', function() {
       'admin',
       '/api/query-history?filter=queryText|regex|QUERY2'
     );
-    assert(Array.isArray(body.data.rows), 'data is an array');
-    assert.equal(body.data.incomplete, false, 'Complete');
-    assert.equal(body.data.rows.length, 2, '2 length');
+    assert(Array.isArray(body.rows), 'data is an array');
+    assert.equal(body.incomplete, false, 'Complete');
+    assert.equal(body.rows.length, 2, '2 length');
   });
 });

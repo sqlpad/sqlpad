@@ -34,10 +34,10 @@ describe('api/app', function() {
 
   it('returns expected values', async function() {
     const body = await utils.get(null, '/api/app');
-    expectKeys(body.data, expectedKeys);
-    expectKeys(body.data.config, expectedConfigKeys);
+    expectKeys(body, expectedKeys);
+    expectKeys(body.config, expectedConfigKeys);
     assert.equal(
-      Object.keys(body.data.config).length,
+      Object.keys(body.config).length,
       expectedConfigKeys.length,
       'config should only have keys specified'
     );
@@ -45,6 +45,6 @@ describe('api/app', function() {
 
   it('handles unknown baseUrl', async function() {
     const body = await utils.get(null, '/literally/any/path/api/app');
-    expectKeys(body.data, expectedKeys);
+    expectKeys(body, expectedKeys);
   });
 });

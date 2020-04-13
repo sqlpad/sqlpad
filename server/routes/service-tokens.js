@@ -27,7 +27,7 @@ async function generateServiceToken(req, res) {
 
   let serviceToken = await models.serviceTokens.findOneByName(req.body.name);
   if (serviceToken) {
-    return res.utils.errors('Service token already exists', 400);
+    return res.utils.error('Service token already exists');
   }
 
   serviceToken = await models.serviceTokens.generate({
@@ -48,7 +48,7 @@ router.post('/api/service-tokens', mustBeAdmin, wrap(generateServiceToken));
 async function deleteServiceToken(req, res) {
   const { models } = req;
   await models.serviceTokens.removeOneById(req.params._id);
-  return res.utils.deleteOk();
+  return res.utils.data();
 }
 
 router.delete(

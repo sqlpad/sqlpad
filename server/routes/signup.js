@@ -13,7 +13,7 @@ async function handleSignup(req, res, next) {
   const whitelistedDomains = req.config.get('whitelistedDomains');
 
   if (req.body.password !== req.body.passwordConfirmation) {
-    return res.utils.errors('Passwords do not match', 400);
+    return res.utils.error('Passwords do not match');
   }
 
   let [user, adminRegistrationOpen] = await Promise.all([
@@ -22,7 +22,7 @@ async function handleSignup(req, res, next) {
   ]);
 
   if (user && user.passhash) {
-    return res.utils.errors('User already signed up', 400);
+    return res.utils.error('User already signed up');
   }
 
   if (user) {

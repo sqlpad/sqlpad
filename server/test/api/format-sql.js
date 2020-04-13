@@ -13,7 +13,7 @@ describe('api/format-sql', function() {
       query: 'SELECT column_one, column_two FROM sometable'
     });
     assert.equal(
-      body.data.query,
+      body.query,
       'SELECT\n  column_one,\n  column_two\nFROM\n  sometable'
     );
   });

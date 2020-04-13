@@ -17,7 +17,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
       .expect(200);
 
-    const user = body.data[0];
+    const user = body[0];
     assert.equal(user.email, 'test@sqlpad.com');
     assert.equal(user.role, 'editor');
   });
@@ -34,19 +34,17 @@ describe('passport-proxy-auth', function() {
     const agent = request.agent(utils.app);
 
     // This api call passively authenticates, auto-creates the user and returns api result
-    const r1 = await agent
+    await agent
       .get('/api/users')
       .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
       .expect(200);
-    TestUtil.bodyHasData(r1.body);
 
     // This call should respond, but with no current user
     const r2 = await agent.get('/api/app').expect(200);
-    assert(!r2.body.data.currentUser);
+    assert(!r2.body.currentUser);
 
     // This call requiring auth should respond 401
-    const r3 = await agent.get('/api/users').expect(401);
-    TestUtil.bodyHasErrors(r3.body);
+    await agent.get('/api/users').expect(401);
   });
 
   it('401 has expected errors object', async function() {
@@ -63,7 +61,7 @@ describe('passport-proxy-auth', function() {
       .get('/api/users')
       .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
       .expect(401);
-    TestUtil.bodyHasErrors(res.body);
+    assert(res.body.title);
   });
 
   it('401 if auto sign up and missing default role', async function() {
@@ -164,7 +162,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-CUSTOM-FIELD', 'custom data value')
       .expect(200);
 
-    const user = body.data[0];
+    const user = body[0];
     assert.equal(user.email, 'test@sqlpad.com');
     assert.equal(user.role, 'admin');
     assert.equal(user.name, 'Test user');
@@ -184,7 +182,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-EMAIL', 'admin@test.com')
       .expect(200);
 
-    const user = body.data.find(user => user.email === 'admin@test.com');
+    const user = body.find(user => user.email === 'admin@test.com');
     assert.equal(user.role, 'admin');
   });
 
@@ -202,7 +200,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-ID', id)
       .expect(200);
 
-    const user = body.data.find(user => user._id === id);
+    const user = body.find(user => user._id === id);
     assert.equal(user.role, 'admin');
   });
 
@@ -220,7 +218,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-ID', id)
       .expect(200);
 
-    const user = body.data.find(user => user._id === id);
+    const user = body.find(user => user._id === id);
     assert.equal(user.role, 'admin');
   });
 
@@ -238,7 +236,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-NAME', 'New admin name')
       .expect(200);
 
-    const user = body.data.find(user => user.email === 'admin@test.com');
+    const user = body.find(user => user.email === 'admin@test.com');
     assert.equal(user.name, 'New admin name');
   });
 
@@ -256,9 +254,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-NAME', 'New admin name')
       .expect(200);
 
-    const user1 = response1.body.data.find(
-      user => user.email === 'admin@test.com'
-    );
+    const user1 = response1.body.find(user => user.email === 'admin@test.com');
     assert.equal(user1.name, 'New admin name');
 
     await new Promise(resolve => setTimeout(resolve, 100));
@@ -268,9 +264,7 @@ describe('passport-proxy-auth', function() {
       .set('X-WEBAUTH-EMAIL', 'admin@test.com')
       .set('X-WEBAUTH-NAME', 'New admin name')
       .expect(200);
-    const user2 = response2.body.data.find(
-      user => user.email === 'admin@test.com'
-    );
+    const user2 = response2.body.find(user => user.email === 'admin@test.com');
 
     assert.equal(user1.modifiedDate, user2.modifiedDate);
   });

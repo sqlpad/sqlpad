@@ -8,7 +8,7 @@ const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 router.post('/api/format-sql', mustBeAuthenticated, function(req, res) {
   const { body } = req;
   if (!body.query) {
-    return res.utils.errors('query property must be provided', 400);
+    return res.utils.error('query property must be provided');
   }
   const data = {
     query: sqlFormatter.format(body.query)

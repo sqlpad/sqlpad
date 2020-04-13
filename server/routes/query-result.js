@@ -13,7 +13,7 @@ router.get(
     const { models } = req;
     const query = await models.queries.findOneById(req.params._queryId);
     if (!query) {
-      return res.utils.getNotFound();
+      return res.utils.notFound();
     }
     const data = {
       connectionId: query.connectionId,
@@ -28,7 +28,7 @@ router.get(
       const queryResult = await getQueryResult(req, data);
       return res.utils.data(queryResult);
     } catch (error) {
-      return res.utils.errors(error, 400);
+      return res.utils.error(error);
     }
   })
 );
@@ -58,7 +58,7 @@ router.post(
       const queryResult = await getQueryResult(req, data);
       return res.utils.data(queryResult);
     } catch (error) {
-      return res.utils.errors(error, 400);
+      return res.utils.error(error);
     }
   })
 );

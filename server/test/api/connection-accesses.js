@@ -15,55 +15,50 @@ describe('api/connection-accesses', function() {
   before(async function() {
     await utils.init(true);
 
-    let connBody = await utils.post('admin', '/api/connections', {
+    connection1 = await utils.post('admin', '/api/connections', {
       name: 'test connection 1',
       driver: 'sqlite',
       filename: './test/fixtures/sales.sqlite'
     });
-    connection1 = connBody.data;
 
-    connBody = await utils.post('admin', '/api/connections', {
+    connection2 = await utils.post('admin', '/api/connections', {
       name: 'test connection 2',
       driver: 'sqlite',
       filename: './test/fixtures/sales.sqlite'
     });
-    connection2 = connBody.data;
 
-    let userBody = await utils.post('admin', '/api/users', {
+    admin2 = await utils.post('admin', '/api/users', {
       email: 'admin2@test.com',
       role: 'admin'
     });
-    admin2 = userBody.data;
 
-    userBody = await utils.post('admin', '/api/users', {
+    user1 = await utils.post('admin', '/api/users', {
       email: 'user1@test.com',
       role: 'editor'
     });
-    user1 = userBody.data;
 
-    userBody = await utils.post('admin', '/api/users', {
+    user2 = await utils.post('admin', '/api/users', {
       email: 'user2@test.com',
       role: 'editor'
     });
-    user2 = userBody.data;
   });
 
   it('Get default connection accesses', async function() {
     const body = await utils.get('admin', '/api/connection-accesses');
-    assert(Array.isArray(body.data), 'data is an array');
-    assert.equal(body.data.length, 1, '1 length');
-    assert(body.data[0]._id, 'has _id');
-    assert.equal(body.data[0].connectionId, consts.EVERY_CONNECTION_ID);
-    assert.equal(body.data[0].connectionName, consts.EVERY_CONNECTION_NAME);
-    assert.equal(body.data[0].userId, consts.EVERYONE_ID);
-    assert.equal(body.data[0].userName, consts.EVERYONE_NAME);
-    assert.equal(body.data[0].duration, 0);
-    assert.equal(new Date(body.data[0].expiryDate).getFullYear(), 2099);
-    defeaultConnectionAccess = body.data[0];
+    TestUtils.validateListSuccessBody(body);
+    assert.equal(body.length, 1, '1 length');
+    assert(body[0]._id, 'has _id');
+    assert.equal(body[0].connectionId, consts.EVERY_CONNECTION_ID);
+    assert.equal(body[0].connectionName, consts.EVERY_CONNECTION_NAME);
+    assert.equal(body[0].userId, consts.EVERYONE_ID);
+    assert.equal(body[0].userName, consts.EVERYONE_NAME);
+    assert.equal(body[0].duration, 0);
+    assert.equal(new Date(body[0].expiryDate).getFullYear(), 2099);
+    defeaultConnectionAccess = body[0];
   });
 
   it('Detect default active connection when creating new access', async function() {
-    const { errors } = await utils.post(
+    const body = await utils.post(
       'admin',
       '/api/connection-accesses',
       {
@@ -74,7 +69,7 @@ describe('api/connection-accesses', function() {
       400
     );
 
-    assert.equal(errors[0].title, 'User has active access to connection');
+    assert.equal(body.title, 'User has active access to connection');
   });
 
   it('Expire default access on every connection to every user', function() {
@@ -86,12 +81,12 @@ describe('api/connection-accesses', function() {
 
   it('Returns empty array', async function() {
     const body = await utils.get('admin', '/api/connection-accesses');
-    assert(Array.isArray(body.data), 'data is an array');
-    assert.equal(body.data.length, 0, '0 length');
+    TestUtils.validateListSuccessBody(body);
+    assert.equal(body.length, 0, '0 length');
   });
 
   it('Do not create access for admin', async function() {
-    const { errors } = await utils.post(
+    const body = await utils.post(
       'admin',
       '/api/connection-accesses',
       {
@@ -103,7 +98,7 @@ describe('api/connection-accesses', function() {
     );
 
     assert.equal(
-      errors[0].title,
+      body.title,
       'User is admin and already has access to connection'
     );
   });
@@ -115,13 +110,13 @@ describe('api/connection-accesses', function() {
       duration: 3600
     });
 
-    assert(body.data._id, 'has _id');
-    assert(body.data.connectionId, 'has connectionId');
-    assert(body.data.userId, 'has userId');
-    assert.equal(body.data.connectionName, 'test connection 1');
-    assert.equal(body.data.userEmail, 'user1@test.com');
-    assert.equal(body.data.duration, 3600);
-    connectionAccess1 = body.data;
+    assert(body._id, 'has _id');
+    assert(body.connectionId, 'has connectionId');
+    assert(body.userId, 'has userId');
+    assert.equal(body.connectionName, 'test connection 1');
+    assert.equal(body.userEmail, 'user1@test.com');
+    assert.equal(body.duration, 3600);
+    connectionAccess1 = body;
 
     body = await utils.post('admin', '/api/connection-accesses', {
       connectionId: connection2._id,
@@ -129,17 +124,17 @@ describe('api/connection-accesses', function() {
       duration: 3600
     });
 
-    assert(body.data._id, 'has _id');
-    assert(body.data.connectionId, 'has connectionId');
-    assert(body.data.userId, 'has userId');
-    assert.equal(body.data.connectionName, 'test connection 2');
-    assert.equal(body.data.userEmail, 'user2@test.com');
-    assert.equal(body.data.duration, 3600);
+    assert(body._id, 'has _id');
+    assert(body.connectionId, 'has connectionId');
+    assert(body.userId, 'has userId');
+    assert.equal(body.connectionName, 'test connection 2');
+    assert.equal(body.userEmail, 'user2@test.com');
+    assert.equal(body.duration, 3600);
   });
 
   it('Gets array of active accesses', async function() {
     const body = await utils.get('admin', '/api/connection-accesses');
-    assert.equal(body.data.length, 2, '2 length');
+    assert.equal(body.length, 2, '2 length');
   });
 
   it('Requires authentication', function() {
@@ -177,7 +172,7 @@ describe('api/connection-accesses', function() {
 
   it('Gets array of 1 active access ', async function() {
     const body = await utils.get('editor', '/api/connection-accesses');
-    assert.equal(body.data.length, 1, '1 length');
+    assert.equal(body.length, 1, '1 length');
   });
 
   it('Gets array of 3 accesses including inactives', async function() {
@@ -185,6 +180,6 @@ describe('api/connection-accesses', function() {
       'editor',
       '/api/connection-accesses?includeInactives=true'
     );
-    assert.equal(body.data.length, 3, '3 length');
+    assert.equal(body.length, 3, '3 length');
   });
 });

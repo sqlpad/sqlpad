@@ -19,20 +19,18 @@ describe('query table/chart require auth', function() {
   before(async function() {
     await utils.init(true);
 
-    const connBody = await utils.post('admin', '/api/connections', {
+    connection = await utils.post('admin', '/api/connections', {
       name: 'test',
       driver: 'sqlite',
       filename: './test/fixtures/sales.sqlite'
     });
-    connection = connBody.data;
 
-    const queryBody = await utils.post('admin', '/api/queries', {
+    query = await utils.post('admin', '/api/queries', {
       name: 'test query',
       tags: ['test'],
       connectionId: connection._id,
       queryText
     });
-    query = queryBody.data;
   });
 
   it('Gets query without auth not permitted', async function() {

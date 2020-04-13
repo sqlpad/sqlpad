@@ -52,7 +52,7 @@ function handleSignin(req, res, next) {
 
   // We aren't sure how to authenticate this request
   // Whatever was sent is not supported
-  return res.utils.errors('Unexpected authentication format', 400);
+  return res.utils.error('Unexpected authentication format');
 }
 
 router.post('/api/signin', handleSignin, function(req, res) {

@@ -12,13 +12,13 @@ router.post(
     );
 
     if (!user) {
-      return res.utils.errors('Password reset permissions not found', 400);
+      return res.utils.error('Password reset permissions not found');
     }
     if (req.body.email !== user.email) {
-      return res.utils.errors('Incorrect email address', 400);
+      return res.utils.error('Incorrect email address');
     }
     if (req.body.password !== req.body.passwordConfirmation) {
-      return res.utils.errors('Passwords do not match', 400);
+      return res.utils.error('Passwords do not match');
     }
     user.password = req.body.password;
     user.passwordResetId = '';

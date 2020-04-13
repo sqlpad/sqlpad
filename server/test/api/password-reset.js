@@ -28,7 +28,7 @@ describe('api/password-reset', function() {
 
   it('Errors for wrong passwordResetId', async function() {
     await setReset();
-    const { errors } = await utils.post(
+    const body = await utils.post(
       'admin',
       `/api/password-reset/123`,
       {
@@ -38,14 +38,12 @@ describe('api/password-reset', function() {
       },
       400
     );
-    assert(
-      errors.find(e => e.title === 'Password reset permissions not found')
-    );
+    assert.equal(body.title, 'Password reset permissions not found');
   });
 
   it('Errors for wrong email', async function() {
     const passwordResetId = await setReset();
-    const { errors } = await utils.post(
+    const body = await utils.post(
       'admin',
       `/api/password-reset/${passwordResetId}`,
       {
@@ -55,12 +53,12 @@ describe('api/password-reset', function() {
       },
       400
     );
-    assert(errors.find(e => e.title === 'Incorrect email address'));
+    assert.equal(body.title, 'Incorrect email address');
   });
 
   it('Errors for mismatched passwords', async function() {
     const passwordResetId = await setReset();
-    const { errors } = await utils.post(
+    const body = await utils.post(
       'admin',
       `/api/password-reset/${passwordResetId}`,
       {
@@ -70,6 +68,6 @@ describe('api/password-reset', function() {
       },
       400
     );
-    assert(errors.find(e => e.title === 'Passwords do not match'));
+    assert.equal(body.title, 'Passwords do not match');
   });
 });

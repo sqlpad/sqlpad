@@ -52,7 +52,7 @@ router.put(
     const { models } = req;
     let connection = await models.connections.findOneById(req.params._id);
     if (!connection) {
-      return res.utils.updateNotFound();
+      return res.utils.notFound();
     }
     Object.assign(connection, req.body);
     connection = await models.connections.save(connection);
@@ -64,9 +64,13 @@ router.delete(
   '/api/connections/:_id',
   mustBeAdmin,
   wrap(async function(req, res) {
-    const { models } = req;
-    await models.connections.removeOneById(req.params._id);
-    return res.utils.deleteOk();
+    const { models, params } = req;
+    let connection = await models.connections.findOneById(params._id);
+    if (!connection) {
+      return res.utils.notFound();
+    }
+    await models.connections.removeOneById(params._id);
+    return res.utils.data();
   })
 );
 

@@ -151,13 +151,7 @@ function makeApp(config, models) {
   // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
   app.use(baseUrl + '/api/', function(req, res) {
     req.log.debug('reached catch all api route');
-    return res.status(404).json({
-      errors: [
-        {
-          title: 'Not found'
-        }
-      ]
-    });
+    return res.utils.notFound();
   });
 
   // Add an error handler for /api
@@ -166,11 +160,7 @@ function makeApp(config, models) {
       return next(err);
     }
     return res.status(500).json({
-      errors: [
-        {
-          title: 'Internal Server Error'
-        }
-      ]
+      title: 'Internal Server Error'
     });
   });
 

@@ -5,6 +5,7 @@ const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const urlFilterToNeDbFilter = require('../lib/url-filter-to-nedb-filter');
 const wrap = require('../lib/wrap');
 
+// TODO v5 - change this to an array of items?
 router.get(
   '/api/query-history',
   mustBeAuthenticated,
@@ -56,7 +57,7 @@ router.get(
       req.params._id
     );
     if (!queryHistoryItem) {
-      return res.utils.getNotFound();
+      return res.utils.notFound();
     }
     return res.utils.data(queryHistoryItem);
   })
