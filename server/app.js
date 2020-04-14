@@ -82,7 +82,8 @@ function makeApp(config, models) {
   app.use(
     session({
       store: new FileStore({
-        path: sessionPath
+        path: sessionPath,
+        logFn: () => {}
       }),
       saveUninitialized: false,
       resave: true,
