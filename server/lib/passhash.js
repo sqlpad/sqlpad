@@ -14,17 +14,10 @@ function comparePassword(password, passhash) {
  * Returns bcrypt hash of password
  * @param {string} password
  */
-function getPasshash(password) {
-  return new Promise((resolve, reject) => {
-    bcrypt.genSalt(10, function(err, salt) {
-      bcrypt.hash(password, salt, function(err, hash) {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(hash);
-      });
-    });
-  });
+async function getPasshash(password) {
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
 }
 
 module.exports = {
