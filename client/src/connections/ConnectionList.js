@@ -54,36 +54,7 @@ function ConnectionList({
     }
   };
 
-  // TODO - server driver implementations should implement functions
-  // that get decorated normalized display values
-  const decoratedConnections = connections.map(connection => {
-    connection.key = connection._id;
-    connection.displayDatabase = connection.database;
-    connection.displaySchema = '';
-    let displayPort = connection.port ? ':' + connection.port : '';
-
-    if (connection.driver === 'hdb') {
-      connection.displayDatabase = connection.hanadatabase;
-      connection.displaySchema = connection.hanaSchema;
-      displayPort = connection.hanaport ? ':' + connection.hanaport : '';
-    } else if (connection.driver === 'presto') {
-      connection.displayDatabase = connection.prestoCatalog;
-      connection.displaySchema = connection.prestoSchema;
-    }
-
-    connection.displayHost = (connection.host || '') + displayPort;
-    return connection;
-  });
-
-  const listItems = decoratedConnections.map(item => {
-    let description = '';
-    if (item.user) {
-      description = item.user + '@';
-    }
-    description += [item.displayHost, item.displayDatabase, item.displaySchema]
-      .filter(part => part && part.trim())
-      .join(' / ');
-
+  const listItems = connections.map(item => {
     const actions = [];
 
     if (currentUser.role === 'admin' && item.editable) {
@@ -111,9 +82,10 @@ function ConnectionList({
     return (
       <ListItem key={item._id}>
         <div style={{ flexGrow: 1, padding: 8 }}>
-          {item.name}
-          <br />
-          <Text type="secondary">{description}</Text>
+          <span style={{ width: 300, display: 'inline-block', marginRight: 8 }}>
+            {item.name}
+          </span>
+          <Text type="secondary">{item.driver}</Text>
         </div>
         {actions}
       </ListItem>
