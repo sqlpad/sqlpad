@@ -1,9 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import QueryHistoryFilterItem from './QueryHistoryFilterItem';
-import QueryHistoryResultHeader from './QueryHistoryResultHeader';
 import QueryResultContainer from '../common/QueryResultContainer';
 import fetchJson from '../utilities/fetch-json.js';
 import Button from '../common/Button';
+
+// Previous implementation used server get-meta to supply meta info and fields for /api/query-history
+// This API has changed in v5 to return an array of objects to make it consistent with other list APIs
+// To accomodate the loss of meta/fields, they are being hardcoded here so we can reuse the query result grid
+// This should be fine... it'll just need updating if the API changes shape
+const historyMeta = {
+  userEmail: {
+    datatype: 'string'
+  },
+  connectionName: {
+    datatype: 'string'
+  },
+  startTime: {
+    datatype: 'datetime'
+  },
+  stopTime: {
+    datatype: 'datetime'
+  },
+  queryRunTime: {
+    datatype: 'number'
+  },
+  queryId: {
+    datatype: 'string'
+  },
+  queryName: {
+    datatype: 'string'
+  },
+  queryText: {
+    datatype: 'string'
+  },
+  incomplete: {
+    datatype: 'boolean'
+  },
+  rowCount: {
+    datatype: 'number'
+  },
+  createdDate: {
+    datatype: 'datetime'
+  }
+};
+
+const historyFields = Object.keys(historyMeta);
+
+function getQueryResult(rows) {
+  return {
+    rows,
+    fields: historyFields,
+    meta: historyMeta
+  };
+}
 
 function QueryHistoryContent({ onConnectionAccessSaved }) {
   const [isRunning, setIsRunning] = useState(true);
@@ -34,7 +83,8 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
 
       setIsRunning(false);
       setQueryError(json.error);
-      setQueryHistory(json.data);
+      const queryResult = getQueryResult(json.data);
+      setQueryHistory(queryResult);
     }
 
     if (isRunning) {
@@ -140,6 +190,14 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
     );
   }
 
+  let rowCount = null;
+  if (queryHistory && queryHistory.rows) {
+    rowCount = <div>{queryHistory.rows.length} rows</div>;
+  }
+
+  // TODO - setting a fixed height for now until display issue is sorted out for large number of results
+  // The flex based layout wasn't working for some reason
+  // (seems fine if grid is not rendered -- is it an issue with react-measure?)
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -149,17 +207,13 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
         {filterForm}
       </div>
       <br />
-      <QueryHistoryResultHeader
-        isRunning={isRunning}
-        queryResult={queryHistory}
-        runQueryStartTime={null}
-      />
+      {rowCount}
       <div style={{ display: 'flex', flexGrow: 1, height: '100%' }}>
         <div
           style={{
             position: 'relative',
             width: '100%',
-            height: '100%',
+            height: 300,
             border: '1px solid #CCC'
           }}
         >

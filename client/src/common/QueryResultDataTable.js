@@ -102,7 +102,7 @@ class QueryResultDataTable extends React.PureComponent {
       queryResult.fields.forEach(field => {
         if (!columnWidths[field]) {
           const fieldMeta = queryResult.meta[field];
-          let valueLength = fieldMeta.maxValueLength;
+          let valueLength = fieldMeta.maxValueLength || 10;
 
           if (field.length > valueLength) {
             valueLength = field.length;
