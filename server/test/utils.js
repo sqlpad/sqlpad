@@ -13,18 +13,6 @@ const loadSeedData = require('../lib/load-seed-data');
 
 const TEST_ARTIFACTS_DIR = path.join(__dirname, '/artifacts');
 
-function clearArtifacts() {
-  mkdirp.sync(TEST_ARTIFACTS_DIR);
-  return new Promise((resolve, reject) => {
-    return rimraf(path.join(__dirname, '/artifacts/*'), err => {
-      if (err) {
-        return reject(err);
-      }
-      resolve();
-    });
-  });
-}
-
 class TestUtils {
   constructor(args = {}) {
     const config = new Config(
@@ -115,8 +103,20 @@ class TestUtils {
     return newUser;
   }
 
+  static clearArtifacts() {
+    mkdirp.sync(TEST_ARTIFACTS_DIR);
+    return new Promise((resolve, reject) => {
+      return rimraf(path.join(TEST_ARTIFACTS_DIR, '*'), err => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
+  }
+
   async init(withUsers) {
-    await clearArtifacts();
+    await TestUtils.clearArtifacts();
     await this.initDbs();
     await this.migrate();
     await this.loadSeedData();
