@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.3.0
+
+### April 16, 2020
+
+- Support multiple datasets in BigQuery connection
+- Fix sql splitting for strings containing `;`
+
 ## 4.2.0
 
 ### April 6, 2020
