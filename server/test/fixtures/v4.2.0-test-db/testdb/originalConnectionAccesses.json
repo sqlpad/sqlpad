@@ -1,0 +1,22 @@
+[
+  {
+    "connectionId": "__EVERY_CONNECTION__",
+    "connectionName": "Every Connection",
+    "userId": "__EVERYONE__",
+    "userEmail": "Everyone",
+    "duration": 0,
+    "expiryDate": "2099-04-16T00:52:38.737Z",
+    "_id": "B3XjMkwzTt5L8MHi"
+  },
+  {
+    "connectionId": "4A3G0I509JXhBLrV",
+    "connectionName": "Test Sales DB (mst - 30 min - readonly)",
+    "userId": "__EVERYONE__",
+    "userEmail": "Everyone",
+    "duration": 9000,
+    "expiryDate": "2020-04-15T01:51:31.345Z",
+    "createdDate": 1586906491346,
+    "modifiedDate": 1586906491346,
+    "_id": "sYrRlMhbM3jaDbQ4"
+  }
+]

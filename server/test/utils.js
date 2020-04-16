@@ -11,15 +11,19 @@ const makeApp = require('../app');
 const migrate = require('../lib/migrate');
 const loadSeedData = require('../lib/load-seed-data');
 
-const TEST_ARTIFACTS_DIR = path.join(__dirname, '/artifacts');
+// At the start of any test run, clean out the root artifacts directory
+before(function(done) {
+  rimraf(path.join(__dirname, '/artifacts/*'), done);
+});
 
 class TestUtils {
   constructor(args = {}) {
+    this.instanceAlias = uuidv4();
     const config = new Config(
       {
         // Despite being in-memory, still need a file path for cache and session files
         // Eventually these will be moved to sqlite and we can be fully-in-memory
-        dbPath: TEST_ARTIFACTS_DIR,
+        dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
         appLogLevel: 'silent',
         webLogLevel: 'silent',
@@ -37,7 +41,7 @@ class TestUtils {
 
     this.config = config;
     this.appLog = appLog;
-    this.instanceAlias = uuidv4();
+
     this.sequelizeDb = undefined;
     this.app = undefined;
     this.models = undefined;
@@ -60,6 +64,19 @@ class TestUtils {
         role: 'editor2'
       }
     };
+  }
+
+  prepDbDir() {
+    const dbPath = this.config.get('dbPath');
+    mkdirp.sync(dbPath);
+    return new Promise((resolve, reject) => {
+      return rimraf(path.join(dbPath, '*'), err => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
   }
 
   async initDbs() {
@@ -103,20 +120,8 @@ class TestUtils {
     return newUser;
   }
 
-  static clearArtifacts() {
-    mkdirp.sync(TEST_ARTIFACTS_DIR);
-    return new Promise((resolve, reject) => {
-      return rimraf(path.join(TEST_ARTIFACTS_DIR, '*'), err => {
-        if (err) {
-          return reject(err);
-        }
-        resolve();
-      });
-    });
-  }
-
   async init(withUsers) {
-    await TestUtils.clearArtifacts();
+    await this.prepDbDir();
     await this.initDbs();
     await this.migrate();
     await this.loadSeedData();
