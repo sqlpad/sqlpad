@@ -56,6 +56,12 @@ describe('v4-to-v5', function() {
     originalQueryHistory = await utils.nedb.queryHistory.find({});
     originalUsers = await utils.nedb.users.find({});
 
+    assert(originalQueries);
+    assert(originalConnectionAccesses);
+    assert(originalConnections);
+    assert(originalQueryHistory);
+    assert(originalUsers);
+
     // write source files for reference
     fs.writeFileSync(
       path.join(sourceDir, 'originalQueries.json'),
