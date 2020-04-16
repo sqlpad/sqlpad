@@ -56,10 +56,31 @@ describe('lib/splitSql', function() {
     assert.strictEqual(queries[0], 'SELECT value FROM some_table;');
     assert.strictEqual(queries[1], 'SELECT value FROM another_table;');
   });
-  it('handles comples comments', function() {
+  it('handles complex comments', function() {
     const queries = splitSql(comments);
     assert.strictEqual(queries.length, 2);
     assert.strictEqual(queries[0], q1);
     assert.strictEqual(queries[1], q2);
+  });
+
+  it('handles string literals', function() {
+    const stringLiteral = `
+      SELECT listagg(DISTINCT t.field, '; ') AS my_agg
+      FROM some_table t
+    `.trim();
+
+    const queries = splitSql(stringLiteral);
+    assert.strictEqual(queries.length, 1);
+    assert.strictEqual(queries[0], stringLiteral);
+  });
+
+  it('handles escaped string literals', function() {
+    const query = `
+      SELECT 'little bobby ''tables''' AS quoted_string;
+    `.trim();
+
+    const queries = splitSql(query);
+    assert.strictEqual(queries.length, 1);
+    assert.strictEqual(queries[0], query);
   });
 });
