@@ -67,7 +67,7 @@ describe('lib/splitSql', function() {
 
   it('handles escaped string literals', function() {
     const query = `
-      SELECT 'little bobby ''tables''' AS quoted_string;
+      SELECT 'little bobby ;'';tables;''' AS quoted_string;
     `.trim();
 
     const queries = splitSql(query);
