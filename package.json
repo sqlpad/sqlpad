@@ -3,8 +3,8 @@
   "version": "4.3.0",
   "private": true,
   "devDependencies": {
-    "husky": "^4.2.3",
-    "lint-staged": "^10.0.9",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.1.4",
     "prettier": "^1.19.1"
   },
   "prettier": {
