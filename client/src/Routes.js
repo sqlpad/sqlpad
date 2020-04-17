@@ -16,12 +16,12 @@ import QueryEditor from './queryEditor/QueryEditor.js';
 import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
-import initApp from './stores/initApp';
+import { refreshAppContext } from './stores/config';
 
-function Routes({ config, initApp }) {
+function Routes({ config, refreshAppContext }) {
   useEffect(() => {
-    initApp();
-  }, [initApp]);
+    refreshAppContext();
+  }, [refreshAppContext]);
 
   if (!config) {
     return null;
@@ -85,5 +85,5 @@ function Routes({ config, initApp }) {
 }
 
 export default connect(['config'], {
-  initApp
+  refreshAppContext
 })(Routes);
