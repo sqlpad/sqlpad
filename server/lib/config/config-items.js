@@ -97,6 +97,11 @@ const configItems = [
     deprecated: 'To be removed in v5. Set app/web log levels to debug instead.'
   },
   {
+    key: 'defaultConnectionId',
+    envVar: 'SQLPAD_DEFAULT_CONNECTION_ID',
+    default: ''
+  },
+  {
     key: 'googleClientId',
     envVar: 'GOOGLE_CLIENT_ID',
     default: ''

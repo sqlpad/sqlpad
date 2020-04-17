@@ -8,15 +8,6 @@ export const initialState = {
   schema: {} // schema.<connectionId>.loading / schemaInfo / lastUpdated
 };
 
-export async function initSchema() {
-  const showSchema = await localforage.getItem('showSchema');
-  if (typeof showSchema === 'boolean') {
-    return {
-      showSchema
-    };
-  }
-}
-
 export function toggleSchema(state) {
   const showSchema = !state.showSchema;
   localforage

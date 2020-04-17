@@ -9,6 +9,7 @@
   "cookieSecret": "secret-used-to-sign-cookies-please-set-and-make-strong",
   "dbPath": "",
   "debug": false,
+  "defaultConnectionId": "",
   "disableAuth": false,
   "disableUserpassAuth": false,
   "editorWordWrap": false,

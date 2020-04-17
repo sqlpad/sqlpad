@@ -22,14 +22,15 @@ router.get('*/api/app', async (req, res) => {
       adminRegistrationOpen,
       currentUser,
       config: {
-        publicUrl: config.get('publicUrl'),
         allowCsvDownload: config.get('allowCsvDownload'),
-        editorWordWrap: config.get('editorWordWrap'),
         baseUrl: config.get('baseUrl'),
-        smtpConfigured: config.smtpConfigured(),
+        defaultConnectionId: config.get('defaultConnectionId'),
+        editorWordWrap: config.get('editorWordWrap'),
         googleAuthConfigured: config.googleAuthConfigured(),
         localAuthConfigured: !config.get('disableUserpassAuth'),
-        samlConfigured: Boolean(config.get('samlEntryPoint'))
+        publicUrl: config.get('publicUrl'),
+        samlConfigured: Boolean(config.get('samlEntryPoint')),
+        smtpConfigured: config.smtpConfigured()
       },
       version: packageJson.version
     });
