@@ -16,21 +16,12 @@ import QueryEditor from './queryEditor/QueryEditor.js';
 import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
-import { refreshAppContext } from './stores/config';
-import { initSelectedConnection } from './stores/connections';
-import { initSchema } from './stores/schema';
+import initApp from './stores/initApp';
 
-function Routes({
-  config,
-  refreshAppContext,
-  initSchema,
-  initSelectedConnection
-}) {
+function Routes({ config, initApp }) {
   useEffect(() => {
-    refreshAppContext();
-    initSchema();
-    initSelectedConnection();
-  }, [refreshAppContext, initSchema, initSelectedConnection]);
+    initApp();
+  }, [initApp]);
 
   if (!config) {
     return null;
@@ -94,7 +85,5 @@ function Routes({
 }
 
 export default connect(['config'], {
-  refreshAppContext,
-  initSchema,
-  initSelectedConnection
+  initApp
 })(Routes);
