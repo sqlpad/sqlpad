@@ -16,6 +16,7 @@ const expectedKeys = [
 
 const expectedConfigKeys = [
   'baseUrl',
+  'defaultConnectionId',
   'allowCsvDownload',
   'editorWordWrap',
   'publicUrl',
