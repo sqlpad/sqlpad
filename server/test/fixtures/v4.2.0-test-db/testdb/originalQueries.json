@@ -1,7 +1,11 @@
 [
   {
     "name": "plot chart query (not shared)",
-    "tags": ["one", "two", "three"],
+    "tags": [
+      "one",
+      "two",
+      "three"
+    ],
     "connectionId": "4A3G0I509JXhBLrV",
     "queryText": "SELECT\n  region,\n  color,\n  order_date,\n  SUM(revenue) AS revenue_sum,\n  SUM(cost) AS cost_sum\nFROM\n  vw_sales\nWHERE \n  order_date < '2020-02-01'\nGROUP BY \n  region,\n  color,\n  order_date\nORDER BY \n  order_date",
     "chartConfiguration": {
@@ -28,7 +32,11 @@
   },
   {
     "name": "Line chart query (not shared)",
-    "tags": ["one", "two", "three"],
+    "tags": [
+      "one",
+      "two",
+      "three"
+    ],
     "connectionId": "4A3G0I509JXhBLrV",
     "queryText": "SELECT\n  region,\n  color,\n  order_date,\n  SUM(revenue) AS revenue_sum\nFROM\n  vw_sales\nWHERE \n  order_date < '2020-02-01'\nGROUP BY \n  region,\n  color,\n  order_date\nORDER BY \n  order_date",
     "chartConfiguration": {
@@ -67,7 +75,11 @@
   },
   {
     "name": "Basic query w/tags, shared",
-    "tags": ["one", "two", "three"],
+    "tags": [
+      "one",
+      "two",
+      "three"
+    ],
     "connectionId": "4A3G0I509JXhBLrV",
     "queryText": "select * from vw_sales limit 100",
     "chartConfiguration": {
