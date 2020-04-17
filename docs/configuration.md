@@ -99,6 +99,13 @@ Add a variety of logging to console while running SQLPad
 - Key: `debug`
 - Env: `SQLPAD_DEBUG`
 
+## defaultConnectionId
+
+Default connection to select on SQLPad load if connection not previousy selected. Once selected, connection selections are cached locally in the browser.
+
+- key: `defaultConnectionId`
+- Env: `SQLPAD_DEFAULT_CONNECTION_ID`
+
 ## disableAuth
 
 Set to TRUE to disable authentication altogether.
