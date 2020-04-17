@@ -271,6 +271,11 @@ const configItems = [
     key: 'authProxyHeaders',
     envVar: 'SQLPAD_AUTH_PROXY_HEADERS',
     default: ''
+  },
+  {
+    key: 'defaultConnectionId',
+    envVar: 'SQLPAD_DEFAULT_CONNECTION_ID',
+    default: ''
   }
 ];
 
