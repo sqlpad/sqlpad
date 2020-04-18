@@ -1,6 +1,6 @@
 const assert = require('assert');
 const path = require('path');
-const fs = require('fs');
+// const fs = require('fs');
 const ncp = require('ncp').ncp;
 const TestUtils = require('../utils');
 
@@ -34,7 +34,8 @@ describe('v4-to-v5', function() {
   before('preps the env', async function() {
     utils = new TestUtils({
       dbPath: path.join(__dirname, '../artifacts/v4-to-v5'),
-      dbInMemory: false
+      dbInMemory: false,
+      appLogLevel: 'debug'
     });
 
     const destination = utils.config.get('dbPath');
@@ -63,26 +64,26 @@ describe('v4-to-v5', function() {
     assert(originalUsers);
 
     // write source files for reference
-    fs.writeFileSync(
-      path.join(sourceDir, 'originalQueries.json'),
-      JSON.stringify(originalQueries, null, 2)
-    );
-    fs.writeFileSync(
-      path.join(sourceDir, 'originalConnectionAccesses.json'),
-      JSON.stringify(originalConnectionAccesses, null, 2)
-    );
-    fs.writeFileSync(
-      path.join(sourceDir, 'originalConnections.json'),
-      JSON.stringify(originalConnections, null, 2)
-    );
-    fs.writeFileSync(
-      path.join(sourceDir, 'originalQueryHistory.json'),
-      JSON.stringify(originalQueryHistory, null, 2)
-    );
-    fs.writeFileSync(
-      path.join(sourceDir, 'originalUsers.json'),
-      JSON.stringify(originalUsers, null, 2)
-    );
+    // fs.writeFileSync(
+    //   path.join(sourceDir, 'originalQueries.json'),
+    //   JSON.stringify(originalQueries, null, 2)
+    // );
+    // fs.writeFileSync(
+    //   path.join(sourceDir, 'originalConnectionAccesses.json'),
+    //   JSON.stringify(originalConnectionAccesses, null, 2)
+    // );
+    // fs.writeFileSync(
+    //   path.join(sourceDir, 'originalConnections.json'),
+    //   JSON.stringify(originalConnections, null, 2)
+    // );
+    // fs.writeFileSync(
+    //   path.join(sourceDir, 'originalQueryHistory.json'),
+    //   JSON.stringify(originalQueryHistory, null, 2)
+    // );
+    // fs.writeFileSync(
+    //   path.join(sourceDir, 'originalUsers.json'),
+    //   JSON.stringify(originalUsers, null, 2)
+    // );
   });
 
   it('Migrates', async function() {
