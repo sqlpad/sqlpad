@@ -280,12 +280,19 @@ async function up(queryInterface, config, appLog, nedb) {
     role: {
       type: Sequelize.STRING
     },
+    name: {
+      type: Sequelize.STRING
+    },
     passhash: {
       type: Sequelize.STRING
+    },
+    password_reset_id: {
+      type: Sequelize.UUID
     },
     data: {
       type: Sequelize.JSON
     },
+    // Originally signupDate
     signup_at: {
       type: Sequelize.DATE
     },
