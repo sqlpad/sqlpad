@@ -60,8 +60,12 @@ async function up(queryInterface, config, appLog, nedb) {
     }
   });
 
-  await queryInterface.bulkInsert('queries', queriesData);
-  await queryInterface.bulkInsert('query_tags', queryTagsData);
+  if (queriesData.length) {
+    await queryInterface.bulkInsert('queries', queriesData);
+  }
+  if (queryTagsData.length) {
+    await queryInterface.bulkInsert('query_tags', queryTagsData);
+  }
 
   /**
    * CONNECTIONS
@@ -96,7 +100,9 @@ async function up(queryInterface, config, appLog, nedb) {
     };
   });
 
-  await queryInterface.bulkInsert('connections', connectionData);
+  if (connectionData.length) {
+    await queryInterface.bulkInsert('connections', connectionData);
+  }
 
   /**
    * CONNECTION ACCESSES
@@ -120,7 +126,12 @@ async function up(queryInterface, config, appLog, nedb) {
     };
   });
 
-  await queryInterface.bulkInsert('connection_accesses', connectionAccessData);
+  if (connectionAccessData.length) {
+    await queryInterface.bulkInsert(
+      'connection_accesses',
+      connectionAccessData
+    );
+  }
 
   /**
    * QUERY HISTORY
@@ -146,7 +157,9 @@ async function up(queryInterface, config, appLog, nedb) {
     };
   });
 
-  await queryInterface.bulkInsert('query_history', historyData);
+  if (historyData.length) {
+    await queryInterface.bulkInsert('query_history', historyData);
+  }
 
   /**
    * USERS
@@ -169,7 +182,9 @@ async function up(queryInterface, config, appLog, nedb) {
     };
   });
 
-  await queryInterface.bulkInsert('users', userData);
+  if (userData.length) {
+    await queryInterface.bulkInsert('users', userData);
+  }
 }
 
 module.exports = {
