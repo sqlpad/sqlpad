@@ -175,8 +175,7 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.INTEGER,
       allowNull: false
     },
-    // Originally expiryDate
-    expiry_at: {
+    expiry_date: {
       type: Sequelize.DATE,
       allowNull: false
     },

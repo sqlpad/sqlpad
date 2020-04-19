@@ -112,7 +112,7 @@ async function up(queryInterface, config, appLog, nedb) {
       user_id: original.userId,
       user_email: original.userEmail,
       duration: original.duration || 0,
-      expiry_at: original.expiryDate || new Date(),
+      expiry_date: original.expiryDate || new Date(),
       created_at: original.createdDate
         ? new Date(original.createdDate)
         : new Date(),
