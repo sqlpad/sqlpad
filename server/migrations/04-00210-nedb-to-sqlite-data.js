@@ -81,17 +81,18 @@ async function up(queryInterface, config, appLog, nedb) {
       ...rest
     } = original;
 
-    // TODO FIXME XXX decript username/password,
+    // TODO FIXME XXX decrypt username/password,
     // and encrypt all of rest as JSON
 
     return {
       id: _id,
+      name,
       driver,
-      created_at: createdDate,
-      modified_at: modifiedDate,
       multi_statement_transaction_enabled: multiStatementTransactionEnabled,
       idle_timeout_seconds: idleTimeoutSeconds,
-      data: JSON.stringify(rest)
+      data: JSON.stringify(rest),
+      created_at: createdDate,
+      modified_at: modifiedDate
     };
   });
 
@@ -110,14 +111,14 @@ async function up(queryInterface, config, appLog, nedb) {
       connection_name: original.connectionName,
       user_id: original.userId,
       user_email: original.userEmail,
-      duration: original.duration,
-      expiry_at: original.expiryDate,
+      duration: original.duration || 0,
+      expiry_at: original.expiryDate || new Date(),
       created_at: original.createdDate
         ? new Date(original.createdDate)
-        : undefined,
+        : new Date(),
       modified_at: original.createdDate
         ? new Date(original.modifiedDate)
-        : undefined
+        : new Date()
     };
   });
 
@@ -133,8 +134,8 @@ async function up(queryInterface, config, appLog, nedb) {
     return {
       user_id: original.userId,
       user_email: original.userEmail,
-      connection_id: original.connection_id,
-      connection_name: original.connection_name,
+      connection_id: original.connectionId,
+      connection_name: original.connectionName,
       start_time: original.startTime,
       stop_time: original.stopTime,
       query_run_time: original.queryRunTime,
@@ -166,7 +167,7 @@ async function up(queryInterface, config, appLog, nedb) {
       data: JSON.stringify(original.data),
       signup_at: original.signupDate,
       created_at: original.createdDate,
-      modified_at: original.modifiedDate
+      modified_at: original.modifiedDate || new Date()
     };
   });
 

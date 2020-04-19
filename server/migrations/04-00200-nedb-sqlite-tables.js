@@ -19,7 +19,8 @@ async function up(queryInterface, config, appLog, nedb) {
       primaryKey: true
     },
     name: {
-      type: Sequelize.TEXT
+      type: Sequelize.TEXT,
+      allowNull: false
     },
     connection_id: {
       type: Sequelize.STRING
@@ -37,7 +38,8 @@ async function up(queryInterface, config, appLog, nedb) {
     // (possibly weird, but user ids may not be known ahead of time
     // email is human friendly too
     created_by: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     modified_by: {
       type: Sequelize.STRING
@@ -74,7 +76,8 @@ async function up(queryInterface, config, appLog, nedb) {
         type: Sequelize.STRING
       },
       tag: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       }
     },
     {
@@ -110,13 +113,15 @@ async function up(queryInterface, config, appLog, nedb) {
       primaryKey: true
     },
     name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     description: {
       type: Sequelize.TEXT
     },
     driver: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     multi_statement_transaction_enabled: {
       type: Sequelize.BOOLEAN
@@ -127,7 +132,8 @@ async function up(queryInterface, config, appLog, nedb) {
     // Holds all driver-specific fields
     // It is encrypted JSON
     data: {
-      type: Sequelize.TEXT
+      type: Sequelize.TEXT,
+      allowNull: false
     },
     // Originally createdDate
     created_at: {
@@ -150,31 +156,39 @@ async function up(queryInterface, config, appLog, nedb) {
       autoIncrement: true
     },
     connection_id: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     connection_name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     user_id: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     user_email: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     duration: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
+      allowNull: false
     },
     // Originally expiryDate
     expiry_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     },
     // Originally createdDate
     created_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     },
     // Originally modifiedDate
     modified_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     }
   });
 
@@ -203,16 +217,20 @@ async function up(queryInterface, config, appLog, nedb) {
       autoIncrement: true
     },
     connection_id: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     connection_name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     user_id: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     user_email: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     start_time: {
       type: Sequelize.DATE
@@ -230,7 +248,8 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.STRING
     },
     query_text: {
-      type: Sequelize.TEXT
+      type: Sequelize.TEXT,
+      allowNull: false
     },
     incomplete: {
       type: Sequelize.BOOLEAN
@@ -240,7 +259,8 @@ async function up(queryInterface, config, appLog, nedb) {
     },
     // Originally createdDate
     created_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     }
   });
 
@@ -275,10 +295,12 @@ async function up(queryInterface, config, appLog, nedb) {
       primaryKey: true
     },
     email: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     role: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
+      allowNull: false
     },
     name: {
       type: Sequelize.STRING
@@ -298,11 +320,13 @@ async function up(queryInterface, config, appLog, nedb) {
     },
     // Originally createdDate
     created_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     },
     // originally modifiedDate
     modified_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     }
   });
 
