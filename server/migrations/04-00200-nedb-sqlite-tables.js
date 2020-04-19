@@ -290,51 +290,57 @@ async function up(queryInterface, config, appLog, nedb) {
    * USERS
    * ========================================================
    */
-  await queryInterface.createTable('users', {
-    id: {
-      type: Sequelize.STRING,
-      primaryKey: true
-    },
-    email: {
-      type: Sequelize.STRING,
-      allowNull: false
-    },
-    role: {
-      type: Sequelize.STRING,
-      allowNull: false
-    },
-    name: {
-      type: Sequelize.STRING
-    },
-    passhash: {
-      type: Sequelize.STRING
-    },
-    password_reset_id: {
-      type: Sequelize.UUID
-    },
-    data: {
-      type: Sequelize.JSON
-    },
-    // Originally signupDate
-    signup_at: {
-      type: Sequelize.DATE
-    },
-    // Originally createdDate
-    created_at: {
-      type: Sequelize.DATE,
-      allowNull: false
-    },
-    // originally modifiedDate
-    updated_at: {
-      type: Sequelize.DATE
-    }
-  });
-
-  await migrationUtils.addOrReplaceIndex(
-    queryInterface,
+  await queryInterface.createTable(
     'users',
-    'users_email',
-    ['email']
+    {
+      id: {
+        type: Sequelize.STRING,
+        primaryKey: true
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      role: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      name: {
+        type: Sequelize.STRING
+      },
+      passhash: {
+        type: Sequelize.STRING
+      },
+      password_reset_id: {
+        type: Sequelize.UUID
+      },
+      data: {
+        type: Sequelize.JSON
+      },
+      // Originally signupDate
+      signup_at: {
+        type: Sequelize.DATE
+      },
+      // Originally createdDate
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false
+      },
+      // originally modifiedDate
+      updated_at: {
+        type: Sequelize.DATE
+      }
+    },
+    {
+      uniqueKeys: {
+        users_email: {
+          fields: ['email']
+        },
+        users_password_reset_id: {
+          fields: ['password_reset_id']
+        }
+      }
+    }
   );
 }
 
