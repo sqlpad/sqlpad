@@ -41,7 +41,8 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.STRING,
       allowNull: false
     },
-    modified_by: {
+    // also email address
+    updated_by: {
       type: Sequelize.STRING
     },
     created_at: {

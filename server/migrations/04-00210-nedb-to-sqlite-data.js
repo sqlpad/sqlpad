@@ -45,7 +45,7 @@ async function up(queryInterface, config, appLog, nedb) {
       query_text: originalQuery.queryText,
       chart: JSON.stringify(originalQuery.chartConfiguration),
       created_by: originalQuery.createdBy,
-      modified_by: originalQuery.modifiedBy,
+      updated_by: originalQuery.modifiedBy,
       created_at: originalQuery.createdDate,
       updated_at: originalQuery.modifiedDate,
       last_accessed_at: originalQuery.lastAccessDate

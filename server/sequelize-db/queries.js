@@ -45,9 +45,8 @@ module.exports = function(sequelize) {
         type: DataTypes.STRING,
         allowNull: false
       },
-      // modifiedBy is also an email address
-      // TODO change to updatedBy to match sequelize updatedAt
-      modifiedBy: {
+      // updatedBy is also an email address. Originally modifiedBy
+      updatedBy: {
         type: DataTypes.STRING
       },
       createdAt: {
