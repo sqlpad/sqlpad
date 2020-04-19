@@ -45,10 +45,11 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.STRING
     },
     created_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     },
     // Originally modifiedDate
-    modified_at: {
+    updated_at: {
       type: Sequelize.DATE
     },
     // Originally lastAccessDate
@@ -73,7 +74,8 @@ async function up(queryInterface, config, appLog, nedb) {
         autoIncrement: true
       },
       query_id: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       tag: {
         type: Sequelize.STRING,
@@ -137,10 +139,11 @@ async function up(queryInterface, config, appLog, nedb) {
     },
     // Originally createdDate
     created_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     },
     // Originally modifiedDate
-    modified_at: {
+    updated_at: {
       type: Sequelize.DATE
     }
   });
@@ -185,9 +188,8 @@ async function up(queryInterface, config, appLog, nedb) {
       allowNull: false
     },
     // Originally modifiedDate
-    modified_at: {
-      type: Sequelize.DATE,
-      allowNull: false
+    updated_at: {
+      type: Sequelize.DATE
     }
   });
 
@@ -323,9 +325,8 @@ async function up(queryInterface, config, appLog, nedb) {
       allowNull: false
     },
     // originally modifiedDate
-    modified_at: {
-      type: Sequelize.DATE,
-      allowNull: false
+    updated_at: {
+      type: Sequelize.DATE
     }
   });
 

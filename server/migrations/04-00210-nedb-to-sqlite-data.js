@@ -47,7 +47,7 @@ async function up(queryInterface, config, appLog, nedb) {
       created_by: originalQuery.createdBy,
       modified_by: originalQuery.modifiedBy,
       created_at: originalQuery.createdDate,
-      modified_at: originalQuery.modifiedDate,
+      updated_at: originalQuery.modifiedDate,
       last_accessed_at: originalQuery.lastAccessDate
     };
     queriesData.push(newQuery);
@@ -92,7 +92,7 @@ async function up(queryInterface, config, appLog, nedb) {
       idle_timeout_seconds: idleTimeoutSeconds,
       data: JSON.stringify(rest),
       created_at: createdDate,
-      modified_at: modifiedDate
+      updated_at: modifiedDate
     };
   });
 
@@ -116,9 +116,7 @@ async function up(queryInterface, config, appLog, nedb) {
       created_at: original.createdDate
         ? new Date(original.createdDate)
         : new Date(),
-      modified_at: original.createdDate
-        ? new Date(original.modifiedDate)
-        : new Date()
+      updated_at: original.modifiedDate ? new Date(original.modifiedDate) : null
     };
   });
 
@@ -167,7 +165,7 @@ async function up(queryInterface, config, appLog, nedb) {
       data: JSON.stringify(original.data),
       signup_at: original.signupDate,
       created_at: original.createdDate,
-      modified_at: original.modifiedDate || new Date()
+      updated_at: original.modifiedDate
     };
   });
 
