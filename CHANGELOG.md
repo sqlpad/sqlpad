@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.4.0
+
+### April 22, 2020
+
+- Adds ability to set initial default connection via configuration `defaultConnectionId`. (Only for initial load. User connections are then cached locally)
+- Changes default query list filter to "all queries" instead of "my queries".
+- Defaults schema sidebar to open, and removes local caching of toggle selection.
+- Fixes autocomplete missing when schema sidebar is hidden on load.
+- Updates dependencies
+
 ## 4.3.0
 
 ### April 16, 2020
