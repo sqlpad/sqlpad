@@ -13,16 +13,18 @@ function sortConnections(connections) {
 const initApp = async state => {
   try {
     let [
-      showSchema,
       selectedConnectionId,
       appContext,
-      connectionsResponse
+      connectionsResponse,
+      tagsResponse
     ] = await Promise.all([
-      localforage.getItem('showSchema'),
       localforage.getItem('selectedConnectionId'),
       refreshAppContext(),
-      fetchJson('GET', '/api/connections/')
+      fetchJson('GET', '/api/connections/'),
+      fetchJson('GET', '/api/tags')
     ]);
+
+    const availableTags = tagsResponse.tags || [];
 
     const connections = sortConnections(connectionsResponse.connections || []);
 
@@ -32,12 +34,11 @@ const initApp = async state => {
 
     const update = {
       initialized: true,
+      availableTags,
       ...appContext,
       connections,
       connectionsLastUpdated: new Date()
     };
-
-    console.log(connectionsResponse);
 
     const { defaultConnectionId } = appContext.config || {};
     if (defaultConnectionId) {
@@ -54,10 +55,6 @@ const initApp = async state => {
       if (Boolean(selectedConnection)) {
         update.selectedConnectionId = selectedConnectionId;
       }
-    }
-
-    if (typeof showSchema === 'boolean') {
-      update.showSchema = showSchema;
     }
 
     return update;
