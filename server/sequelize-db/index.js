@@ -23,6 +23,12 @@ class SequelizeDb {
 
     this.QueryAcl = require('./query-acl')(sequelize);
     this.ServiceTokens = require('./service-tokens')(sequelize);
+    this.Queries = require('./queries')(sequelize);
+    this.QueryTags = require('./query-tags')(sequelize);
+    this.Connections = require('./connections')(sequelize);
+    this.Users = require('./users')(sequelize);
+    this.QueryHistory = require('./query-history')(sequelize);
+    this.ConnectionAccesses = require('./connections-accesses')(sequelize);
   }
 }
 
