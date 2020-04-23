@@ -176,9 +176,9 @@ async function up(queryInterface, config, appLog, nedb) {
       password_reset_id: original.passwordResetId,
       passhash: original.passhash,
       data: JSON.stringify(original.data),
-      signup_at: original.signupDate,
-      created_at: original.createdDate,
-      updated_at: original.modifiedDate
+      signup_at: original.signupDate ? new Date(original.signupDate) : null,
+      created_at: new Date(original.createdDate),
+      updated_at: original.modifiedDate ? new Date(original.modifiedDate) : null
     };
   });
 

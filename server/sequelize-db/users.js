@@ -49,7 +49,7 @@ module.exports = function(sequelize) {
       }
     },
     {
-      tableName: 'queries',
+      tableName: 'users',
       underscored: true
     }
   );
