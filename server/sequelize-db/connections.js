@@ -25,6 +25,9 @@ module.exports = function(sequelize) {
       idleTimeoutSeconds: {
         type: DataTypes.INTEGER
       },
+      data: {
+        type: DataTypes.JSON
+      },
       // Originally createdDate
       createdAt: {
         type: DataTypes.DATE

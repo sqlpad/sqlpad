@@ -95,8 +95,8 @@ async function up(queryInterface, config, appLog, nedb) {
       multi_statement_transaction_enabled: multiStatementTransactionEnabled,
       idle_timeout_seconds: idleTimeoutSeconds,
       data: JSON.stringify(rest),
-      created_at: createdDate,
-      updated_at: modifiedDate
+      created_at: createdDate ? new Date(createdDate) : new Date(),
+      updated_at: modifiedDate ? new Date(modifiedDate) : new Date()
     };
   });
 
@@ -118,7 +118,7 @@ async function up(queryInterface, config, appLog, nedb) {
       user_id: original.userId,
       user_email: original.userEmail,
       duration: original.duration || 0,
-      expiry_date: original.expiryDate || new Date(),
+      expiry_date: new Date(original.expiryDate),
       created_at: original.createdDate
         ? new Date(original.createdDate)
         : new Date(),
@@ -148,7 +148,7 @@ async function up(queryInterface, config, appLog, nedb) {
       start_time: original.startTime,
       stop_time: original.stopTime,
       query_run_time: original.queryRunTime,
-      query_id: original.queryId,
+      query_id: original.queryId || null,
       query_name: original.queryName,
       query_text: original.queryText,
       incomplete: original.incomplete,
