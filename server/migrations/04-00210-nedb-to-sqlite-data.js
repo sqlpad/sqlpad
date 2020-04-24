@@ -49,8 +49,7 @@ async function up(queryInterface, config, appLog, nedb) {
       created_by: originalQuery.createdBy,
       updated_by: originalQuery.modifiedBy,
       created_at: originalQuery.createdDate,
-      updated_at: originalQuery.modifiedDate,
-      last_accessed_at: originalQuery.lastAccessDate
+      updated_at: originalQuery.modifiedDate
     };
     queriesData.push(newQuery);
 

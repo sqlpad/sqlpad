@@ -51,9 +51,6 @@ async function up(queryInterface, config, appLog, nedb) {
     },
     updated_at: {
       type: Sequelize.DATE
-    },
-    last_accessed_at: {
-      type: Sequelize.DATE
     }
   });
 
