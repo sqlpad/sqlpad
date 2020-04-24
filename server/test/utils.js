@@ -18,7 +18,6 @@ before(function(done) {
 
 class TestUtils {
   constructor(args = {}) {
-    this.instanceAlias = uuidv4();
     const config = new Config(
       {
         // Despite being in-memory, still need a file path for cache and session files
@@ -41,7 +40,7 @@ class TestUtils {
 
     this.config = config;
     this.appLog = appLog;
-
+    this.instanceAlias = uuidv4();
     this.sequelizeDb = undefined;
     this.app = undefined;
     this.models = undefined;
