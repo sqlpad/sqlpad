@@ -96,11 +96,6 @@ describe('v4-to-v5', function() {
         new Date(original.createdDate).toISOString(),
         'createdAt'
       );
-      assert.equal(
-        new Date(query.lastAccessedAt).toISOString(),
-        new Date(original.lastAccessDate).toISOString(),
-        'lastAccessedAt'
-      );
 
       if (original.tags) {
         const foundTags = queryTags
