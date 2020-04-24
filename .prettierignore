@@ -10,3 +10,4 @@ docker-validation
 scripts
 server/node_modules
 server/public
+server/test/fixtures/**/*.json

@@ -1,0 +1,4 @@
+{"connectionId":"__EVERY_CONNECTION__","connectionName":"Every Connection","userId":"__EVERYONE__","userEmail":"Everyone","duration":0,"expiryDate":{"$$date":1586906458354},"_id":"B3XjMkwzTt5L8MHi","modifiedDate":{"$$date":1586906458354}}
+{"connectionId":"4A3G0I509JXhBLrV","connectionName":"Test Sales DB (mst - 30 min - readonly)","userId":"__EVERYONE__","userEmail":"Everyone","duration":9000,"expiryDate":{"$$date":1586915491345},"createdDate":1586906491346,"modifiedDate":1586906491346,"_id":"sYrRlMhbM3jaDbQ4"}
+{"$$indexCreated":{"fieldName":"connectionId","unique":false,"sparse":false}}
+{"$$indexCreated":{"fieldName":"userId","unique":false,"sparse":false}}
