@@ -1,28 +1,26 @@
 const _ = require('lodash');
-const makeCipher = require('../lib/make-cipher');
+const Cryptr = require('cryptr');
 const drivers = require('../drivers');
 const validateConnection = require('../lib/validate-connection');
 
 class Connections {
   /**
-   * @param {*} nedb
-   * @param {*} sequelizeDb
+   * @param {import('../sequelize-db')} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, sequelizeDb, config) {
-    this.nedb = nedb;
+  constructor(sequelizeDb, config) {
     this.sequelizeDb = sequelizeDb;
     this.config = config;
-    const { cipher, decipher } = makeCipher(config.get('passphrase'));
-    this.cipher = cipher;
-    this.decipher = decipher;
+    this.cryptr = new Cryptr(config.get('passphrase'));
   }
 
   decorateConnection(connection) {
     if (!connection) {
       return connection;
     }
-    const copy = _.cloneDeep(connection);
+    const copy = _.cloneDeep(
+      connection.toJSON ? connection.toJSON() : connection
+    );
     copy.maxRows = Number(this.config.get('queryResultMaxRows'));
     const driver = drivers[connection.driver];
     if (!driver) {
@@ -36,17 +34,19 @@ class Connections {
   }
 
   decipherConnection(connection) {
-    if (connection.username) {
-      connection.username = this.decipher(connection.username);
+    if (connection.data) {
+      connection.data = JSON.parse(this.cryptr.decrypt(connection.data));
     }
-    if (connection.password) {
-      connection.password = this.decipher(connection.password);
-    }
+
+    // For legacy use, spread data onto connection object
+    // This isn't great but needed for backwards compat at this time
+    Object.assign(connection, connection.data);
+
     return connection;
   }
 
   async findAll() {
-    let connectionsFromDb = await this.nedb.connections.find({});
+    let connectionsFromDb = await this.sequelizeDb.Connections.findAll({});
     connectionsFromDb = connectionsFromDb.map(conn => {
       conn.editable = true;
       return this.decipherConnection(conn);
@@ -60,8 +60,9 @@ class Connections {
   }
 
   async findOneById(id) {
-    let connection = await this.nedb.connections.findOne({ _id: id });
+    let connection = await this.sequelizeDb.findOne({ where: { id } });
     if (connection) {
+      connection = connection.toJS();
       connection.editable = true;
       connection = this.decorateConnection(connection);
       return this.decipherConnection(connection);
@@ -79,29 +80,64 @@ class Connections {
   }
 
   async removeOneById(id) {
-    return this.nedb.connections.remove({ _id: id });
+    return this.sequelizeDb.Connections.destroy({ where: { id } });
   }
 
-  // TODO - break save function out into create/update
-  async save(connection) {
-    if (!connection) {
-      throw new Error('connections.save() requires a connection');
-    }
+  async create(connection) {
+    const {
+      name,
+      driver,
+      createdDate,
+      modifiedDate,
+      multiStatementTransactionEnabled,
+      idleTimeoutSeconds,
+      id,
+      ...rest
+    } = connection;
 
-    connection.username = this.cipher(connection.username || '');
-    connection.password = this.cipher(connection.password || '');
+    const data = this.cryptr.encrypt(JSON.stringify(rest));
+    const createData = {
+      name,
+      driver,
+      multiStatementTransactionEnabled,
+      idleTimeoutSeconds,
+      data
+    };
+    const created = await this.sequelizeDb.Connections.create(createData);
+    return this.findOneById(created.id);
+  }
+
+  /**
+   *
+   * @param {string} id - id of connection
+   * @param {object} connection - connection object with .data field
+   */
+  async update(id, connection) {
+    if (!connection) {
+      throw new Error('connection required');
+    }
 
     connection = validateConnection(connection);
-    const { _id } = connection;
 
-    const existing = await this.findOneById(_id);
-    if (existing) {
-      await this.nedb.connections.update({ _id }, connection, {});
-      return this.findOneById(_id);
-    }
+    const {
+      name,
+      driver,
+      multiStatementTransactionEnabled,
+      idleTimeoutSeconds,
+      data
+    } = connection;
 
-    const newDoc = await this.nedb.connections.insert(connection);
-    return this.findOneById(newDoc._id);
+    let updateData = {
+      name,
+      driver,
+      multiStatementTransactionEnabled,
+      idleTimeoutSeconds
+    };
+
+    updateData.data = this.cryptr.encrypt(JSON.stringify(data));
+
+    await this.sequelizeDb.Connections.update(updateData, { where: { id } });
+    return this.findOneById(id);
   }
 }
 

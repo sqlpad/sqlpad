@@ -28,15 +28,6 @@ function ensureBoolean(value) {
  * @param {object} connection
  */
 function validateConnection(connection) {
-  const coreFields = [
-    '_id',
-    'name',
-    'driver',
-    'createdAt',
-    'updatedAt',
-    'multiStatementTransactionEnabled',
-    'idleTimeoutSeconds'
-  ];
   if (!connection.name) {
     throw new Error('connection.name required');
   }
@@ -47,11 +38,11 @@ function validateConnection(connection) {
   if (!driver) {
     throw new Error(`driver implementation ${connection.driver} not found`);
   }
-  const validFields = driver.fields.map(field => field.key).concat(coreFields);
+  const validFields = driver.fields.map(field => field.key);
   const cleanedConnection = validFields.reduce(
     (cleanedConnection, fieldKey) => {
-      if (connection.hasOwnProperty(fieldKey)) {
-        let value = connection[fieldKey];
+      if (connection.data.hasOwnProperty(fieldKey)) {
+        let value = connection.data[fieldKey];
         const fieldDefinition = driver.fields.find(
           field => field.key === fieldKey
         );
