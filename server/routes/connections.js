@@ -22,8 +22,8 @@ router.get(
         name,
         driver,
         editable,
-        createdDate,
-        modifiedDate,
+        createdAt,
+        updatedAt,
         supportsConnectionClient,
         multiStatementTransactionEnabled,
         idleTimeoutSeconds
@@ -33,8 +33,8 @@ router.get(
         name,
         driver,
         editable,
-        createdDate,
-        modifiedDate,
+        createdAt,
+        updatedAt,
         supportsConnectionClient,
         multiStatementTransactionEnabled,
         idleTimeoutSeconds

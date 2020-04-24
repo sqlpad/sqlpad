@@ -13,8 +13,7 @@ const schema = Joi.object({
   queryName: Joi.string().allow(''),
   queryText: Joi.string().required(),
   rowCount: Joi.number().integer(),
-  incomplete: Joi.boolean(),
-  createdDate: Joi.date().default(new Date())
+  incomplete: Joi.boolean()
 });
 
 class QueryHistory {
@@ -54,7 +53,7 @@ class QueryHistory {
     const retentionPeriodStartTime = new Date(new Date().getTime() - days);
 
     return this.nedb.queryHistory.remove(
-      { createdDate: { $lt: retentionPeriodStartTime } },
+      { createdAt: { $lt: retentionPeriodStartTime } },
       { multi: true }
     );
   }

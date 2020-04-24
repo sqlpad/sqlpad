@@ -44,7 +44,6 @@ class ServiceTokens {
     );
 
     // Save only the masked token in the database
-    data.modifiedDate = new Date();
     data.maskedToken = maskToken(token);
     const newToken = await this.sequelizeDb.ServiceTokens.create(data);
 

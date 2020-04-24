@@ -27,7 +27,7 @@ async function handleSignup(req, res, next) {
 
   if (user) {
     user.password = req.body.password;
-    user.signupDate = new Date();
+    user.signupAt = new Date();
     await models.users.update(user);
     return next();
   }
@@ -42,7 +42,7 @@ async function handleSignup(req, res, next) {
       email: req.body.email,
       password: req.body.password,
       role: adminRegistrationOpen ? 'admin' : 'editor',
-      signupDate: new Date()
+      signupAt: new Date()
     });
     return next();
   } else {

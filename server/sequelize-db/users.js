@@ -35,15 +35,12 @@ module.exports = function(sequelize) {
       data: {
         type: DataTypes.JSON
       },
-      // Originally signupDate
       signupAt: {
         type: DataTypes.DATE
       },
-      // Originally createdDate
       createdAt: {
         type: DataTypes.DATE
       },
-      // Originally modifiedDate
       updatedAt: {
         type: DataTypes.DATE
       }

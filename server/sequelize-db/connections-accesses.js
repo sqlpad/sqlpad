@@ -37,11 +37,9 @@ module.exports = function(sequelize) {
         type: DataTypes.DATE,
         allowNull: false
       },
-      // Originally createdDate
       createdAt: {
         type: DataTypes.DATE
       },
-      // Originally modifiedDate
       updatedAt: {
         type: DataTypes.DATE
       }

@@ -45,8 +45,7 @@ class SchemaInfo {
       const schema = JSON.stringify(schemaInfo);
       const doc = {
         cacheKey,
-        schema,
-        modifiedDate: new Date()
+        schema
       };
       return this.nedb.cache.update({ cacheKey }, doc, {
         upsert: true

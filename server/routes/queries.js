@@ -78,7 +78,7 @@ async function createQuery(req, res) {
     queryText,
     chartConfiguration,
     createdBy: email,
-    modifiedBy: email,
+    updatedBy: email,
     acl
   };
 
@@ -118,7 +118,7 @@ async function updateQuery(req, res) {
     connectionId,
     queryText,
     chartConfiguration,
-    modifiedBy: user.email,
+    updatedBy: user.email,
     acl
   });
 

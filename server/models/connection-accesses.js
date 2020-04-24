@@ -13,8 +13,8 @@ const schema = Joi.object({
     .max(86400)
     .default(0),
   expiryDate: Joi.date().default(Date.now),
-  createdDate: Joi.date().default(Date.now),
-  modifiedDate: Joi.date().default(Date.now)
+  createdAt: Joi.date().default(Date.now),
+  updatedAt: Joi.date().default(Date.now)
 });
 
 class ConnectionAccesses {
@@ -78,7 +78,6 @@ class ConnectionAccesses {
     }
 
     connectionAccess.expiryDate = new Date();
-    connectionAccess.modifiedDate = new Date();
 
     await this.nedb.connectionAccesses.update({ _id: id }, connectionAccess);
     return this.findOneById(id);

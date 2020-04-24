@@ -131,7 +131,7 @@ describe('api/query-history', function() {
       'queryText',
       'incomplete',
       'rowCount',
-      'createdDate'
+      'createdAt'
     ];
 
     // First and second two history items (reverse ordered) needs to free text query with queryId and queryName

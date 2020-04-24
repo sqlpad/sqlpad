@@ -45,18 +45,16 @@ module.exports = function(sequelize) {
         type: DataTypes.STRING,
         allowNull: false
       },
-      // updatedBy is also an email address. Originally modifiedBy
+      // updatedBy is also an email address.
       updatedBy: {
         type: DataTypes.STRING
       },
       createdAt: {
         type: DataTypes.DATE
       },
-      // Originally modifiedDate
       updatedAt: {
         type: DataTypes.DATE
       },
-      // Originally lastAccessDate
       lastAccessedAt: {
         type: DataTypes.DATE
       }

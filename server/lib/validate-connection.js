@@ -32,8 +32,8 @@ function validateConnection(connection) {
     '_id',
     'name',
     'driver',
-    'createdDate',
-    'modifiedDate',
+    'createdAt',
+    'updatedAt',
     'multiStatementTransactionEnabled',
     'idleTimeoutSeconds'
   ];

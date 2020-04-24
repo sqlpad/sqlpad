@@ -36,13 +36,11 @@ const schema = Joi.object({
       .unknown(true)
       .optional()
   }).optional(),
-  createdDate: Joi.date().default(Date.now),
-  modifiedDate: Joi.date().default(Date.now),
   // createdBy is EMAIL of user
   createdBy: Joi.string().required(),
-  // modifiedBy is EMAIL of user
-  modifiedBy: Joi.string().optional(),
-  lastAccessDate: Joi.date().default(Date.now)
+  // updatedBy is EMAIL of user
+  updatedBy: Joi.string().optional(),
+  lastAccessedAt: Joi.date().default(Date.now)
 });
 
 class Queries {
@@ -75,8 +73,7 @@ class Queries {
    * @param {object} query
    */
   async save(query) {
-    query.modifiedDate = new Date();
-    query.lastAccessDate = new Date();
+    query.lastAccessedAt = new Date();
 
     // clean tags if present
     // sqlpad v1 saved a lot of bad inputs

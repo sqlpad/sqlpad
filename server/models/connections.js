@@ -91,11 +91,6 @@ class Connections {
     connection.username = this.cipher(connection.username || '');
     connection.password = this.cipher(connection.password || '');
 
-    if (!connection.createdDate) {
-      connection.createdDate = new Date();
-    }
-    connection.modifiedDate = new Date();
-
     connection = validateConnection(connection);
     const { _id } = connection;
 

@@ -28,11 +28,9 @@ module.exports = function(sequelize) {
       data: {
         type: DataTypes.TEXT
       },
-      // Originally createdDate
       createdAt: {
         type: DataTypes.DATE
       },
-      // Originally modifiedDate
       updatedAt: {
         type: DataTypes.DATE
       }

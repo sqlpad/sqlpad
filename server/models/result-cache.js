@@ -52,7 +52,6 @@ class ResultCache {
     }
     const EIGHT_HOURS = 1000 * 60 * 60 * 8;
     const expiration = new Date(Date.now() + EIGHT_HOURS);
-    const modifiedDate = new Date();
 
     const savedQueryName = sanitize(
       (queryName || 'SQLPad Query Results') +
@@ -63,14 +62,8 @@ class ResultCache {
     const doc = {
       cacheKey,
       expiration,
-      queryName: savedQueryName,
-      modifiedDate
+      queryName: savedQueryName
     };
-
-    const existing = await this.findOneByCacheKey(cacheKey);
-    if (!existing) {
-      doc.createdDate = new Date();
-    }
 
     return this.nedb.cache.update({ cacheKey }, doc, {
       upsert: true

@@ -266,6 +266,6 @@ describe('passport-proxy-auth', function() {
       .expect(200);
     const user2 = response2.body.find(user => user.email === 'admin@test.com');
 
-    assert.equal(user1.modifiedDate, user2.modifiedDate);
+    assert.equal(user1.updatedAt, user2.updatedAt);
   });
 });

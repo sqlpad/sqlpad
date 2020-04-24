@@ -31,8 +31,8 @@ describe('api/users', function() {
     assert.equal(user.name, 'user1');
     assert.equal(user.role, 'editor');
     assert.equal(user.data.create, true);
-    assert(user.modifiedDate);
-    assert(user.createdDate);
+    assert(user.updatedAt);
+    assert(user.createdAt);
   });
 
   it('Gets list of users', async function() {
@@ -56,7 +56,7 @@ describe('api/users', function() {
     assert.equal(body.name, 'test');
     assert.equal(body.passwordResetId, passwordResetId);
     assert.equal(body.data.test, true);
-    assert(new Date(body.modifiedDate) > new Date(user.modifiedDate));
+    assert(new Date(body.updatedAt) > new Date(user.updatedAt));
   });
 
   it('Requires authentication', function() {

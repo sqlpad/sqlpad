@@ -26,7 +26,7 @@ async function passportGoogleStrategyHandler(
     ]);
 
     if (user) {
-      user.signupDate = new Date();
+      user.signupAt = new Date();
       const newUser = await models.users.update(user);
       newUser.id = newUser._id;
       return done(null, newUser);
@@ -36,7 +36,7 @@ async function passportGoogleStrategyHandler(
       const newUser = await models.users.create({
         email,
         role: openAdminRegistration ? 'admin' : 'editor',
-        signupDate: new Date()
+        signupAt: new Date()
       });
       newUser.id = newUser._id;
       return done(null, newUser);

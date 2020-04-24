@@ -49,11 +49,9 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.DATE,
       allowNull: false
     },
-    // Originally modifiedDate
     updated_at: {
       type: Sequelize.DATE
     },
-    // Originally lastAccessDate
     last_accessed_at: {
       type: Sequelize.DATE
     }
@@ -138,12 +136,10 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.TEXT,
       allowNull: false
     },
-    // Originally createdDate
     created_at: {
       type: Sequelize.DATE,
       allowNull: false
     },
-    // Originally modifiedDate
     updated_at: {
       type: Sequelize.DATE
     }
@@ -183,12 +179,10 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.DATE,
       allowNull: false
     },
-    // Originally createdDate
     created_at: {
       type: Sequelize.DATE,
       allowNull: false
     },
-    // Originally modifiedDate
     updated_at: {
       type: Sequelize.DATE
     }
@@ -259,7 +253,6 @@ async function up(queryInterface, config, appLog, nedb) {
     row_count: {
       type: Sequelize.INTEGER
     },
-    // Originally createdDate
     created_at: {
       type: Sequelize.DATE,
       allowNull: false
@@ -318,16 +311,13 @@ async function up(queryInterface, config, appLog, nedb) {
       data: {
         type: Sequelize.JSON
       },
-      // Originally signupDate
       signup_at: {
         type: Sequelize.DATE
       },
-      // Originally createdDate
       created_at: {
         type: Sequelize.DATE,
         allowNull: false
       },
-      // originally modifiedDate
       updated_at: {
         type: Sequelize.DATE
       }

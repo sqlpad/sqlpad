@@ -18,9 +18,7 @@ const schema = Joi.object({
   password: Joi.string()
     .optional()
     .strip(),
-  createdDate: Joi.date().default(Date.now),
-  modifiedDate: Joi.date().default(Date.now),
-  signupDate: Joi.date().optional(),
+  signupAt: Joi.date().optional(),
   // `data` field is intended to be something end users populate via various means
   // That is data can be anything, managed by user, not by SQLPad
   // The data object's primary purpose will be to store values for replacement in connection templates
@@ -41,7 +39,6 @@ class Users {
   }
 
   async create(data) {
-    data.modifiedDate = new Date();
     if (data.password) {
       data.passhash = await passhash.getPasshash(data.password);
     }
@@ -59,8 +56,6 @@ class Users {
     if (!data._id) {
       throw new Error('_id required when saving user');
     }
-
-    data.modifiedDate = new Date();
 
     if (data.password) {
       data.passhash = await passhash.getPasshash(data.password);
