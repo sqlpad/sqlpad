@@ -11,11 +11,12 @@
   All table/chart links require authentication going forward. If unauthenticated access to these URLs is necessary, look into whether an alternate auth solution may be used to passively provide authentication as necessary (like auth proxy for example.)
 
 - data model changes:
+
   - `createdDate` fields have been renamed to `createdAt` (`created_at` in table)
   - `modifiedDate` fields have been renamed to `updatedAt` (`updated_at` in table)
   - `user.signupDate` renamed to `user.signupAt` (`signup_at` in table)
-  - `query.lastAccessDate` renamed to `query.lastAccessedAt` (`last_accessed_at` in table)
   - `query.modifiedBy` renamed to `query.updatedBy` (`updated_by` in table)
+  - `query.lastAccessDate` is removed. It was basically `updatedAt`
 
 ## 4.2.0
 
