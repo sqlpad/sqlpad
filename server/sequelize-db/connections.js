@@ -26,7 +26,7 @@ module.exports = function(sequelize) {
         type: DataTypes.INTEGER
       },
       data: {
-        type: DataTypes.JSON
+        type: DataTypes.TEXT
       },
       // Originally createdDate
       createdAt: {

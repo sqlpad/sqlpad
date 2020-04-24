@@ -1,4 +1,6 @@
 const _ = require('lodash');
+const Cryptr = require('cryptr');
+const makeCipher = require('../lib/make-cipher');
 
 // NOTE: This migration should *ONLY* do data transport from nedb to sqlite
 // At some point nedb will be removed from repo and this migration will be removed
@@ -85,8 +87,18 @@ async function up(queryInterface, config, appLog, nedb) {
       ...rest
     } = original;
 
-    // TODO FIXME XXX decrypt username/password,
-    // and encrypt all of rest as JSON
+    // Migrate to better encrypted db details
+    // Decrypt username/password using old deprecated method
+    // Encrypt all user-provided connection info with cryptr
+    const oldCipher = makeCipher(config.get('passphrase'));
+    if (rest.username) {
+      rest.username = oldCipher.decipher(rest.username);
+    }
+    if (rest.password) {
+      rest.password = oldCipher.decipher(rest.password);
+    }
+    const cryptr = new Cryptr(config.get('passphrase'));
+    const encryptedData = cryptr.encrypt(JSON.stringify(rest));
 
     return {
       id: _id,
@@ -94,7 +106,7 @@ async function up(queryInterface, config, appLog, nedb) {
       driver,
       multi_statement_transaction_enabled: multiStatementTransactionEnabled,
       idle_timeout_seconds: idleTimeoutSeconds,
-      data: JSON.stringify(rest),
+      data: encryptedData,
       created_at: createdDate ? new Date(createdDate) : new Date(),
       updated_at: modifiedDate ? new Date(modifiedDate) : new Date()
     };

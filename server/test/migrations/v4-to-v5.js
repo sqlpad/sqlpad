@@ -1,8 +1,10 @@
 const assert = require('assert');
 const path = require('path');
+const Cryptr = require('cryptr');
 // const fs = require('fs');
 const ncp = require('ncp').ncp;
 const TestUtils = require('../utils');
+const makeCipher = require('../../lib/make-cipher');
 
 ncp.limit = 16;
 
@@ -140,6 +142,8 @@ describe('v4-to-v5', function() {
   it('Connections migrated as expected', async function() {
     const connections = await utils.sequelizeDb.Connections.findAll({});
 
+    const oldCipher = makeCipher(utils.config.get('passphrase'));
+
     assert.equal(connections.length, originalConnections.length);
 
     for (const original of originalConnections) {
@@ -159,13 +163,23 @@ describe('v4-to-v5', function() {
         'idle timeout seconds'
       );
 
-      // for every data field in new connection, confirm it was on base object of original
+      let decryptedData;
       if (connection.data) {
-        // You have to parse JSON fields in Sequelize!?
-        const data = JSON.parse(connection.data);
-        Object.keys(data).forEach(key => {
-          const value = data[key];
-          assert.equal(value, original[key], `matches ${key}:${value}`);
+        const cryptr = new Cryptr(utils.config.get('passphrase'));
+        decryptedData = JSON.parse(cryptr.decrypt(connection.data));
+      }
+
+      // for every data field in new connection, confirm it was on base object of original
+      // username and password need to be decrypted first using old cipher methods
+      if (decryptedData) {
+        Object.keys(decryptedData).forEach(key => {
+          const value = decryptedData[key];
+          if (key === 'username' || key === 'password') {
+            const originalValue = oldCipher.decipher(original[key]);
+            assert.equal(value, originalValue, `matches ${key}:${value}`);
+          } else {
+            assert.equal(value, original[key], `matches ${key}:${value}`);
+          }
         });
       }
 
