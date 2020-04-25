@@ -330,6 +330,39 @@ async function up(queryInterface, config, appLog, nedb) {
       }
     }
   );
+
+  /**
+   * CACHE
+   * ========================================================
+   */
+  await queryInterface.createTable('cache', {
+    id: {
+      type: Sequelize.STRING,
+      primaryKey: true
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    schema: {
+      type: Sequelize.JSON
+    },
+    expiry_date: {
+      type: Sequelize.DATE,
+      allowNull: false
+    },
+    created_at: {
+      type: Sequelize.DATE,
+      allowNull: false
+    }
+  });
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'cache',
+    'cache_expiry_date',
+    ['expiry_date']
+  );
 }
 
 module.exports = {
