@@ -20,7 +20,7 @@ class Users {
     }
 
     const newUser = await this.sequelizeDb.Users.create(rest);
-    return newUser;
+    return this.findOneById(newUser.id);
   }
 
   async update(id, changes) {
@@ -36,14 +36,16 @@ class Users {
     return this.findOneById(id);
   }
 
-  findOneByEmail(email) {
-    return this.sequelizeDb.Users.findOne({
+  async findOneByEmail(email) {
+    const user = await this.sequelizeDb.Users.findOne({
       where: { email: email.toLowerCase() }
     });
+    return user && user.toJSON();
   }
 
-  findOneById(id) {
-    return this.sequelizeDb.Users.findOne({ where: { id } });
+  async findOneById(id) {
+    const user = await this.sequelizeDb.Users.findOne({ where: { id } });
+    return user && user.toJSON();
   }
 
   findOneByPasswordResetId(passwordResetId) {

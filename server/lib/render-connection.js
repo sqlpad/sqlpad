@@ -12,13 +12,19 @@ const _ = require('lodash');
 function renderConnection(connection, user) {
   const replaced = {};
   Object.keys(connection).forEach(key => {
-    const value = connection[key];
-    if (typeof value === 'string') {
-      _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
-      const compiled = _.template(value);
-      replaced[key] = compiled({ user });
+    // data is an object of values, but values may be top level too
+    if (key === 'data') {
+      const value = renderConnection(connection.data, user);
+      connection.data = value;
     } else {
-      replaced[key] = value;
+      const value = connection[key];
+      if (typeof value === 'string') {
+        _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
+        const compiled = _.template(value);
+        replaced[key] = compiled({ user });
+      } else {
+        replaced[key] = value;
+      }
     }
   });
   return replaced;

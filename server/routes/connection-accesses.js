@@ -87,7 +87,7 @@ async function createConnectionAccess(req, res) {
   if (activeAccess) {
     return res.utils.error('User has active access to connection');
   }
-  let connectionAccess = await models.connectionAccesses.save({
+  let connectionAccess = await models.connectionAccesses.create({
     connectionId: req.body.connectionId,
     connectionName: connection.name,
     userId: req.body.userId,

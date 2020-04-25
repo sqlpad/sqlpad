@@ -62,7 +62,7 @@ class Queries {
     // commit transaction
     // return updated object
     let created;
-    await this.sequelizeDb.transaction(async transaction => {
+    await this.sequelizeDb.sequelize.transaction(async transaction => {
       const { id, createdAt, updatedAt, tags, ...data } = query;
       created = await this.sequelizeDb.Queries.create(data, {
         transaction
@@ -96,7 +96,7 @@ class Queries {
     // update query
     // commit transaction
     // return updated object
-    await this.sequelizeDb.transaction(async transaction => {
+    await this.sequelizeDb.sequelize.transaction(async transaction => {
       if (Array.isArray(query.tags)) {
         const tagData = query.tags
           .filter(tag => {
@@ -110,8 +110,12 @@ class Queries {
           where: { queryId: id }
         });
         await this.sequelizeDb.QueryTags.bulkCreate(tagData, { transaction });
-        const { id, createdAt, updatedAt, tags, ...updateData } = query;
-        await this.sequelizeDb.Queries.update(updateData, {
+        const update = { ...query };
+        delete update.id;
+        delete update.createdAt;
+        delete update.updatedAt;
+        delete update.tags;
+        await this.sequelizeDb.Queries.update(update, {
           transaction,
           where: { id }
         });

@@ -26,9 +26,10 @@ async function handleSignup(req, res, next) {
   }
 
   if (user) {
-    user.password = req.body.password;
-    user.signupAt = new Date();
-    await models.users.update(user);
+    await models.users.update(user.id, {
+      password: req.body.password,
+      signupAt: new Date()
+    });
     return next();
   }
 

@@ -75,7 +75,7 @@ router.put(
       updateUser.data = body.data;
     }
 
-    const updatedUser = await models.users.update(updateUser);
+    const updatedUser = await models.users.update(params.id, updateUser);
     return res.utils.data(updatedUser);
   })
 );

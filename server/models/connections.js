@@ -60,9 +60,11 @@ class Connections {
   }
 
   async findOneById(id) {
-    let connection = await this.sequelizeDb.findOne({ where: { id } });
+    let connection = await this.sequelizeDb.Connections.findOne({
+      where: { id }
+    });
     if (connection) {
-      connection = connection.toJS();
+      connection = connection.toJSON();
       connection.editable = true;
       connection = this.decorateConnection(connection);
       return this.decipherConnection(connection);
@@ -84,26 +86,10 @@ class Connections {
   }
 
   async create(connection) {
-    const {
-      name,
-      driver,
-      createdDate,
-      modifiedDate,
-      multiStatementTransactionEnabled,
-      idleTimeoutSeconds,
-      id,
-      ...rest
-    } = connection;
+    const { data, ...rest } = connection;
+    rest.data = this.cryptr.encrypt(JSON.stringify(data || {}));
 
-    const data = this.cryptr.encrypt(JSON.stringify(rest));
-    const createData = {
-      name,
-      driver,
-      multiStatementTransactionEnabled,
-      idleTimeoutSeconds,
-      data
-    };
-    const created = await this.sequelizeDb.Connections.create(createData);
+    const created = await this.sequelizeDb.Connections.create(rest);
     return this.findOneById(created.id);
   }
 

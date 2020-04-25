@@ -5,6 +5,9 @@ const wrap = require('../lib/wrap');
 
 function removePassword(connection) {
   connection.password = '';
+  if (connection.data && connection.data.password) {
+    connection.data.password = '';
+  }
   return connection;
 }
 
@@ -63,7 +66,7 @@ router.post(
   mustBeAdmin,
   wrap(async function(req, res) {
     const { models } = req;
-    const newConnection = await models.connections.save(req.body);
+    const newConnection = await models.connections.create(req.body);
     return res.utils.data(removePassword(newConnection));
   })
 );
@@ -78,7 +81,7 @@ router.put(
       return res.utils.notFound();
     }
     Object.assign(connection, req.body);
-    connection = await models.connections.save(connection);
+    connection = await models.connections.update(req.params.id, connection);
     return res.utils.data(removePassword(connection));
   })
 );

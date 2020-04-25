@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const urlFilterToNeDbFilter = require('../lib/url-filter-to-nedb-filter');
+const urlFilterToDbFilter = require('../lib/url-filter-to-db-filter');
 const wrap = require('../lib/wrap');
 
 router.get(
@@ -9,8 +9,8 @@ router.get(
   wrap(async function(req, res) {
     const { models } = req;
 
-    // Convert URL filter to NeDB compatible filter object
-    const dbFilter = urlFilterToNeDbFilter(req.query.filter);
+    // Convert URL filter to Sequelize compatible filter object
+    const dbFilter = urlFilterToDbFilter(req.query.filter);
     const dbQueryHistory = await models.queryHistory.findByFilter(dbFilter);
 
     const rows = dbQueryHistory.map(q => {

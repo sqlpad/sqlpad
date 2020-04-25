@@ -103,7 +103,7 @@ class ConnectionAccesses {
 
   findAllActive() {
     return this.sequelizeDb.ConnectionAccesses.findAll({
-      where: { [Op.gt]: new Date() },
+      where: { expiryDate: { [Op.gt]: new Date() } },
       order: [['expiryDate', 'DESC']]
     });
   }

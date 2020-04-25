@@ -35,7 +35,9 @@ describe('api/query-result', function() {
     connection = await utils.post('admin', '/api/connections', {
       name: 'test connection',
       driver: 'sqlite',
-      filename: './test/fixtures/sales.sqlite'
+      data: {
+        filename: './test/fixtures/sales.sqlite'
+      }
     });
 
     query = await utils.post('admin', '/api/queries', {

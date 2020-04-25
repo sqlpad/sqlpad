@@ -11,7 +11,9 @@ describe('api/connection-clients', function() {
     connection1 = await utils.post('admin', '/api/connections', {
       name: 'test connection 1',
       driver: 'sqlite',
-      filename: './test/fixtures/sales.sqlite',
+      data: {
+        filename: './test/fixtures/sales.sqlite'
+      },
       idleTimeoutSeconds: 4,
       multiStatementTransactionEnabled: true
     });

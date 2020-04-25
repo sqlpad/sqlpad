@@ -21,10 +21,6 @@ class QueryHistory {
   }
 
   findByFilter(filter) {
-    if (filter) {
-      throw new Error('update filter in query-history');
-    }
-
     return this.sequelizeDb.QueryHistory.findAll({
       where: filter,
       order: [['startTime', 'DESC']]

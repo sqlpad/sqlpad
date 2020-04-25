@@ -38,7 +38,9 @@ describe('api/schema-info', function() {
     const body = await utils.post('admin', '/api/connections', {
       driver: 'sqlite',
       name: 'sqlite-test',
-      filename: './test/artifacts/{{user.data.dbfilename}}'
+      data: {
+        filename: './test/artifacts/{{user.data.dbfilename}}'
+      }
     });
     connection = body;
 

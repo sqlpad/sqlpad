@@ -1,6 +1,7 @@
 const assert = require('assert');
+const { Op } = require('sequelize');
 const TestUtils = require('../utils');
-const urlFilterToNeDbFilter = require('../../lib/url-filter-to-nedb-filter');
+const urlFilterToDbFilter = require('../../lib/url-filter-to-db-filter');
 
 const queryText1 = `
   -- QUERY1
@@ -29,7 +30,9 @@ describe('api/query-history', function() {
     connection = await utils.post('admin', '/api/connections', {
       name: 'test postgres',
       driver: 'sqlite',
-      filename: './test/fixtures/sales.sqlite'
+      data: {
+        filename: './test/fixtures/sales.sqlite'
+      }
     });
 
     query1 = await utils.post('admin', '/api/queries', {
@@ -42,52 +45,46 @@ describe('api/query-history', function() {
 
   it('Convert URL filters to NeDB compatibles', function() {
     // String operators
-    assert.deepEqual(urlFilterToNeDbFilter('field1|regex|myPattern'), {
-      $and: [{ field1: { $regex: new RegExp('myPattern') } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|regex|myPattern'), {
+      [Op.and]: [{ field1: { [Op.regexp]: new RegExp('myPattern') } }]
     });
 
     // Numeric operators
-    assert.deepEqual(urlFilterToNeDbFilter('field1|lt|123'), {
-      $and: [{ field1: { $lt: 123 } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|lt|123'), {
+      [Op.and]: [{ field1: { [Op.lt]: 123 } }]
     });
-    assert.deepEqual(urlFilterToNeDbFilter('field1|gt|123'), {
-      $and: [{ field1: { $gt: 123 } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|gt|123'), {
+      [Op.and]: [{ field1: { [Op.gt]: 123 } }]
     });
-    assert.deepEqual(urlFilterToNeDbFilter('field1|ne|123'), {
-      $and: [{ field1: { $ne: 123 } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|ne|123'), {
+      [Op.and]: [{ field1: { [Op.ne]: 123 } }]
     });
-    assert.deepEqual(urlFilterToNeDbFilter('field1|eq|123'), {
-      $and: [{ field1: 123 }]
+    assert.deepEqual(urlFilterToDbFilter('field1|eq|123'), {
+      [Op.and]: [{ field1: 123 }]
     });
 
     // Datetime operators
-    assert.deepEqual(urlFilterToNeDbFilter('field1|before|2020-03-01'), {
-      $and: [{ field1: { $lt: new Date('2020-03-01') } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|before|2020-03-01'), {
+      [Op.and]: [{ field1: { [Op.lt]: new Date('2020-03-01') } }]
     });
-    assert.deepEqual(
-      urlFilterToNeDbFilter('field1|before|2020-03-01 00:00:00'),
-      {
-        $and: [{ field1: { $lt: new Date('2020-03-01 00:00:00') } }]
-      }
-    );
-    assert.deepEqual(urlFilterToNeDbFilter('field1|after|2020-03-01'), {
-      $and: [{ field1: { $gt: new Date('2020-03-01') } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|before|2020-03-01 00:00:00'), {
+      [Op.and]: [{ field1: { [Op.lt]: new Date('2020-03-01 00:00:00') } }]
     });
-    assert.deepEqual(
-      urlFilterToNeDbFilter('field1|after|2020-03-01 00:00:00'),
-      {
-        $and: [{ field1: { $gt: new Date('2020-03-01 00:00:00') } }]
-      }
-    );
+    assert.deepEqual(urlFilterToDbFilter('field1|after|2020-03-01'), {
+      [Op.and]: [{ field1: { [Op.gt]: new Date('2020-03-01') } }]
+    });
+    assert.deepEqual(urlFilterToDbFilter('field1|after|2020-03-01 00:00:00'), {
+      [Op.and]: [{ field1: { [Op.gt]: new Date('2020-03-01 00:00:00') } }]
+    });
 
     // Multiple filter conditions
     const multiUrlFilter =
       'field1|eq|500,field2|regex|myPattern,field3|before|2020-03-01';
-    assert.deepEqual(urlFilterToNeDbFilter(multiUrlFilter), {
-      $and: [
+    assert.deepEqual(urlFilterToDbFilter(multiUrlFilter), {
+      [Op.and]: [
         { field1: 500 },
-        { field2: { $regex: new RegExp('myPattern') } },
-        { field3: { $lt: new Date('2020-03-01') } }
+        { field2: { [Op.regexp]: new RegExp('myPattern') } },
+        { field3: { [Op.lt]: new Date('2020-03-01') } }
       ]
     });
   });
@@ -120,9 +117,12 @@ describe('api/query-history', function() {
     assert.equal(body.length, 4, '4 length');
 
     // Check if every history entry has every required key
-    const historyObjectKeys = [
-      'userEmail',
+    let historyObjectKeys = [
+      'id',
+      'connectionId',
       'connectionName',
+      'userId',
+      'userEmail',
       'startTime',
       'stopTime',
       'queryRunTime',
@@ -139,8 +139,6 @@ describe('api/query-history', function() {
     assert.deepEqual(Object.keys(body[2]), historyObjectKeys);
 
     // Third and fourth history items (reverse ordered) needs to saved text query with no queryId and queryName
-    historyObjectKeys.splice(historyObjectKeys.indexOf('queryId'), 1);
-    historyObjectKeys.splice(historyObjectKeys.indexOf('queryName'), 1);
     assert.deepEqual(Object.keys(body[1]), historyObjectKeys);
     assert.deepEqual(Object.keys(body[0]), historyObjectKeys);
   });
@@ -149,7 +147,7 @@ describe('api/query-history', function() {
     // Check if filters applied correctly
     const body = await utils.get(
       'admin',
-      '/api/query-history?filter=queryText|regex|QUERY2'
+      '/api/query-history?filter=queryText|like|%25QUERY2%25'
     );
     assert.equal(body.length, 2, '2 length');
   });

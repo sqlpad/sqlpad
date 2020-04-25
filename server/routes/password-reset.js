@@ -20,9 +20,11 @@ router.post(
     if (req.body.password !== req.body.passwordConfirmation) {
       return res.utils.error('Passwords do not match');
     }
-    user.password = req.body.password;
-    user.passwordResetId = '';
-    await models.users.update(user);
+    const changes = {
+      password: req.body.password,
+      passwordResetId: null
+    };
+    await models.users.update(user.id, changes);
     return res.utils.data();
   })
 );

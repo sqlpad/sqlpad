@@ -60,7 +60,7 @@ class TestUtils {
       editor2: {
         id: undefined, // set if created
         email: 'editor2@test.com',
-        role: 'editor2'
+        role: 'editor'
       }
     };
   }

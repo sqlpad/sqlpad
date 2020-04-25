@@ -121,7 +121,7 @@ async function getQueryResult(req, data) {
   }
 
   if (config.get('allowCsvDownload')) {
-    models.resultCache.saveResultCache(cacheKey, queryName);
+    await models.resultCache.saveResultCache(cacheKey, queryName);
     await models.resultCache.writeXlsx(cacheKey, queryResult);
     await models.resultCache.writeCsv(cacheKey, queryResult);
     await models.resultCache.writeJson(cacheKey, queryResult);

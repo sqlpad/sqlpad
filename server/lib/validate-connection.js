@@ -39,28 +39,26 @@ function validateConnection(connection) {
     throw new Error(`driver implementation ${connection.driver} not found`);
   }
   const validFields = driver.fields.map(field => field.key);
-  const cleanedConnection = validFields.reduce(
-    (cleanedConnection, fieldKey) => {
-      if (connection.data.hasOwnProperty(fieldKey)) {
-        let value = connection.data[fieldKey];
-        const fieldDefinition = driver.fields.find(
-          field => field.key === fieldKey
-        );
 
-        if (fieldDefinition) {
-          if (fieldDefinition.formType === 'CHECKBOX') {
-            value = ensureBoolean(value);
-          }
+  connection.data = validFields.reduce((cleanedData, fieldKey) => {
+    if (connection.data.hasOwnProperty(fieldKey)) {
+      let value = connection.data[fieldKey];
+      const fieldDefinition = driver.fields.find(
+        field => field.key === fieldKey
+      );
+
+      if (fieldDefinition) {
+        if (fieldDefinition.formType === 'CHECKBOX') {
+          value = ensureBoolean(value);
         }
-
-        cleanedConnection[fieldKey] = value;
       }
-      return cleanedConnection;
-    },
-    {}
-  );
 
-  return cleanedConnection;
+      cleanedData[fieldKey] = value;
+    }
+    return cleanedData;
+  }, {});
+
+  return connection;
 }
 
 module.exports = validateConnection;

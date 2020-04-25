@@ -1,63 +1,62 @@
+const { Op } = require('sequelize');
+
 /**
  * Transforms URL formatted filter parameters to NeDB compatible filter objects
  * @param {string} url formatted filter (i.e. queryText|regex|DELETE)
  * @returns {object} NeDB compatible filter object
  */
-module.exports = function urlFilterToNeDbFilter(urlFilter) {
-  let neDbFilter = {};
+module.exports = function urlFilterToDbFilter(urlFilter) {
+  let dbFilter = {};
   if (typeof urlFilter === 'string') {
-    neDbFilter = {
-      $and: urlFilter
+    dbFilter = {
+      [Op.and]: urlFilter
         .trim()
         .split(',')
         .map(f => {
-          let neDbFilterObj = {};
+          let dbFilterObj = {};
           if (f) {
             let [key, operator, value] = f.split('|');
 
             // Do nothing if no value
             if (!value) {
-              neDbFilterObj = {};
+              dbFilterObj = {};
 
               // Transform only if every required component available
             } else if (key && operator && value) {
-              let neDbOperator = operator;
-              let neDbValue = value;
+              let dbOperator = operator;
+              let dbValue = value;
               switch (operator) {
                 case 'regex':
-                  neDbOperator = `$${operator}`;
-                  neDbValue = new RegExp(value);
+                  // TODO FIXME XXX - SQLite doesn't support regex
+                  dbOperator = Op.regexp;
+                  dbValue = new RegExp(value);
                   break;
                 case 'lt':
                 case 'gt':
                 case 'eq':
                 case 'ne':
-                  neDbOperator = `$${operator}`;
-                  neDbValue = parseInt(value);
+                  dbOperator = Op[operator];
+                  dbValue = parseInt(value);
                   break;
                 case 'before':
-                  neDbOperator = '$lt';
-                  neDbValue = new Date(
-                    Date.parse(new Date(value).toISOString())
-                  );
+                  dbOperator = Op.lt;
+                  dbValue = new Date(Date.parse(new Date(value).toISOString()));
                   break;
                 case 'after':
-                  neDbOperator = '$gt';
-                  neDbValue = new Date(
-                    Date.parse(new Date(value).toISOString())
-                  );
+                  dbOperator = Op.gt;
+                  dbValue = new Date(Date.parse(new Date(value).toISOString()));
                   break;
                 default:
-                  neDbOperator = `$${operator}`;
-                  neDbValue = value;
+                  dbOperator = Op[operator];
+                  dbValue = value;
               }
 
-              // NeDB filter object format
-              if (neDbOperator === '$eq') {
-                neDbFilterObj = { [key]: neDbValue };
+              // DB filter object format
+              if (dbOperator === Op.eq) {
+                dbFilterObj = { [key]: dbValue };
               } else {
-                neDbFilterObj = {
-                  [key]: { [neDbOperator]: neDbValue }
+                dbFilterObj = {
+                  [key]: { [dbOperator]: dbValue }
                 };
               }
 
@@ -67,10 +66,10 @@ module.exports = function urlFilterToNeDbFilter(urlFilter) {
             }
           }
 
-          return neDbFilterObj;
+          return dbFilterObj;
         })
     };
   }
 
-  return neDbFilter;
+  return dbFilter;
 };

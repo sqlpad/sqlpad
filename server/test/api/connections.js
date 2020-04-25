@@ -21,15 +21,18 @@ describe('api/connections', function() {
     const body = await utils.post('admin', '/api/connections', {
       driver: 'postgres',
       name: 'test connection',
-      host: 'localhost',
-      database: 'testdb',
-      username: 'username',
-      password: 'password'
+      data: {
+        host: 'localhost',
+        database: 'testdb',
+        username: 'username',
+        password: 'password'
+      }
     });
 
     assert(body.id, 'has id');
     assert.equal(body.driver, 'postgres');
     assert.equal(body.username, 'username');
+    assert.equal(body.data.username, 'username');
     assert.equal(body.maxRows, 800, 'decorated with maxRows');
 
     // As of writing this test, only postgres and sqlite connections should have this set to true
@@ -51,16 +54,19 @@ describe('api/connections', function() {
     const body = await utils.put('admin', `/api/connections/${connection.id}`, {
       driver: 'postgres',
       name: 'test connection update',
-      host: 'localhost',
-      database: 'testdb',
-      username: 'username',
-      password: 'password'
+      data: {
+        host: 'localhost',
+        database: 'testdb',
+        username: 'username',
+        password: 'password'
+      }
     });
 
     assert(body.id, 'has id');
     assert.equal(body.name, 'test connection update');
     assert.equal(body.driver, 'postgres');
     assert.equal(body.username, 'username');
+    assert.equal(body.data.username, 'username');
     assert.equal(body.supportsConnectionClient, true);
     assert.equal(body.maxRows, 800, 'decorated with maxRows');
   });
@@ -81,10 +87,12 @@ describe('api/connections', function() {
       {
         driver: 'postgres',
         name: 'test connection 2',
-        host: 'localhost',
-        database: 'testdb',
-        username: 'username',
-        password: 'password'
+        data: {
+          host: 'localhost',
+          database: 'testdb',
+          username: 'username',
+          password: 'password'
+        }
       },
       403
     );

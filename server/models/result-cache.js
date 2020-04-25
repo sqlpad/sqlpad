@@ -56,6 +56,13 @@ class ResultCache {
       (name || 'SQLPad Query Results') + ' ' + moment().format('YYYY-MM-DD')
     );
 
+    const exists = await this.sequelizeDb.Cache.findOne({ where: { id } });
+    if (exists) {
+      return this.sequelizeDb.Cache.update(
+        { name: savedQueryName, expiryDate },
+        { where: { id } }
+      );
+    }
     return this.sequelizeDb.Cache.create({
       id,
       name: savedQueryName,

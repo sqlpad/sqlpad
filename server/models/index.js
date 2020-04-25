@@ -77,7 +77,13 @@ class Models {
    */
   async upsertQuery(data) {
     const { acl, ...query } = data;
-    const newOrUpdatedQuery = await this.queries.save(query);
+    let newOrUpdatedQuery;
+    if (query.id) {
+      newOrUpdatedQuery = await this.queries.update(query.id, query);
+    } else {
+      newOrUpdatedQuery = await this.queries.create(query);
+    }
+
     const queryId = newOrUpdatedQuery.id;
 
     await this.queryAcl.removeByQueryId(queryId);
