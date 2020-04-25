@@ -78,7 +78,14 @@ class Models {
   async upsertQuery(data) {
     const { acl, ...query } = data;
     let newOrUpdatedQuery;
+
+    let exists = false;
     if (query.id) {
+      const found = await this.queries.findOneById(query.id);
+      exists = Boolean(found);
+    }
+
+    if (exists) {
       newOrUpdatedQuery = await this.queries.update(query.id, query);
     } else {
       newOrUpdatedQuery = await this.queries.create(query);

@@ -80,7 +80,7 @@ class Queries {
     // return updated object
     let created;
     await this.sequelizeDb.sequelize.transaction(async transaction => {
-      const { id, createdAt, updatedAt, tags, ...data } = query;
+      const { createdAt, updatedAt, tags, ...data } = query;
       created = await this.sequelizeDb.Queries.create(data, {
         transaction
       });

@@ -64,8 +64,11 @@ async function loadSeedData(appLog, config, models) {
   );
   for (const connection of connections) {
     const existing = await models.connections.findOneById(connection.id);
-    const data = { ...existing, ...connection };
-    await models.connections.save(data);
+    if (existing) {
+      await models.connections.update(existing.id, connection);
+    } else {
+      await models.connections.create(connection);
+    }
   }
 }
 
