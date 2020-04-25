@@ -50,6 +50,7 @@ async function authProxyStrategy(req, done) {
     // If existing user is found, see if there are changes and update it
     // Only perform update if actual changes though
     if (existingUser) {
+      const existingId = existingUser.id;
       // Get a subset of existing user to use for comparison
       const existingForCompare = {};
       Object.keys(headerUser).forEach(key => {
@@ -58,7 +59,8 @@ async function authProxyStrategy(req, done) {
 
       if (!_.isEqual(headerUser, existingForCompare)) {
         _.merge(existingUser, headerUser);
-        existingUser = await models.users.update(existingUser);
+        delete existingUser.id;
+        existingUser = await models.users.update(existingId, existingUser);
       }
       return done(null, existingUser);
     }
