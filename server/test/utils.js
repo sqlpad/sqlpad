@@ -48,17 +48,17 @@ class TestUtils {
 
     this.users = {
       admin: {
-        _id: undefined, // set if created
+        id: undefined, // set if created
         email: 'admin@test.com',
         role: 'admin'
       },
       editor: {
-        _id: undefined, // set if created
+        id: undefined, // set if created
         email: 'editor@test.com',
         role: 'editor'
       },
       editor2: {
-        _id: undefined, // set if created
+        id: undefined, // set if created
         email: 'editor2@test.com',
         role: 'editor2'
       }
@@ -109,12 +109,12 @@ class TestUtils {
 
   async addUserApiHelper(key, user) {
     const newUser = await this.models.users.create(user);
-    // If user already exists, update the _id, otherwise add new one (using the original data)
+    // If user already exists, update the id, otherwise add new one (using the original data)
     if (this.users[key]) {
-      this.users[key]._id = newUser._id;
+      this.users[key].id = newUser.id;
     } else {
       // We must use original user object passed in as it has the password. the response from .save() does not
-      this.users[key] = { ...user, _id: newUser._id };
+      this.users[key] = { ...user, id: newUser.id };
     }
     return newUser;
   }

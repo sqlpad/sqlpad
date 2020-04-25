@@ -9,20 +9,9 @@ class ResponseUtils {
 
   /**
    * Send data response to client
-   * If `id` is not present and `_id` is, `id` will be populated with `_id` value
    * @param {(object|object[])} [data] - data to send to client
    */
   data(data) {
-    if (Array.isArray(data)) {
-      data.forEach(item => {
-        if (!item.id && item._id) {
-          item.id = item._id;
-        }
-      });
-    } else if (data && data._id && !data.id) {
-      data.id = data._id;
-    }
-
     return this.res.json(data || {});
   }
 

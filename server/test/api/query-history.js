@@ -35,7 +35,7 @@ describe('api/query-history', function() {
     query1 = await utils.post('admin', '/api/queries', {
       name: 'test query 1',
       tags: ['test', 'postgres'],
-      connectionId: connection._id,
+      connectionId: connection.id,
       queryText: queryText1
     });
   });
@@ -100,17 +100,17 @@ describe('api/query-history', function() {
 
   it('Gets array of 4 items', async function() {
     // Run some queries to generate query history by saved queries
-    await utils.get('admin', `/api/query-result/${query1._id}`);
-    await utils.get('admin', `/api/query-result/${query1._id}`);
+    await utils.get('admin', `/api/query-result/${query1.id}`);
+    await utils.get('admin', `/api/query-result/${query1.id}`);
 
     // Run some queries to generate query history directly from the query editor
     await utils.post('admin', `/api/query-result`, {
-      connectionId: connection._id,
+      connectionId: connection.id,
       cacheKey: 'cachekey',
       queryText: queryText2
     });
     await utils.post('admin', `/api/query-result`, {
-      connectionId: connection._id,
+      connectionId: connection.id,
       cacheKey: 'cachekey',
       queryText: queryText2
     });

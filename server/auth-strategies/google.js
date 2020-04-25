@@ -28,7 +28,6 @@ async function passportGoogleStrategyHandler(
     if (user) {
       user.signupAt = new Date();
       const newUser = await models.users.update(user);
-      newUser.id = newUser._id;
       return done(null, newUser);
     }
     const whitelistedDomains = config.get('whitelistedDomains');
@@ -38,7 +37,6 @@ async function passportGoogleStrategyHandler(
         role: openAdminRegistration ? 'admin' : 'editor',
         signupAt: new Date()
       });
-      newUser.id = newUser._id;
       return done(null, newUser);
     }
     // at this point we don't have an error, but authentication is invalid

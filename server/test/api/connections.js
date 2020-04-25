@@ -27,7 +27,7 @@ describe('api/connections', function() {
       password: 'password'
     });
 
-    assert(body._id, 'has _id');
+    assert(body.id, 'has id');
     assert.equal(body.driver, 'postgres');
     assert.equal(body.username, 'username');
     assert.equal(body.maxRows, 800, 'decorated with maxRows');
@@ -48,20 +48,16 @@ describe('api/connections', function() {
   });
 
   it('Updates connection', async function() {
-    const body = await utils.put(
-      'admin',
-      `/api/connections/${connection._id}`,
-      {
-        driver: 'postgres',
-        name: 'test connection update',
-        host: 'localhost',
-        database: 'testdb',
-        username: 'username',
-        password: 'password'
-      }
-    );
+    const body = await utils.put('admin', `/api/connections/${connection.id}`, {
+      driver: 'postgres',
+      name: 'test connection update',
+      host: 'localhost',
+      database: 'testdb',
+      username: 'username',
+      password: 'password'
+    });
 
-    assert(body._id, 'has _id');
+    assert(body.id, 'has id');
     assert.equal(body.name, 'test connection update');
     assert.equal(body.driver, 'postgres');
     assert.equal(body.username, 'username');
@@ -70,12 +66,12 @@ describe('api/connections', function() {
   });
 
   it('Gets updated connection', async function() {
-    const body = await utils.get('admin', `/api/connections/${connection._id}`);
+    const body = await utils.get('admin', `/api/connections/${connection.id}`);
     assert.equal(body.name, 'test connection update');
   });
 
   it('Requires authentication', function() {
-    return utils.get(null, `/api/connections/${connection._id}`, 401);
+    return utils.get(null, `/api/connections/${connection.id}`, 401);
   });
 
   it('Create requires admin', function() {
@@ -95,11 +91,11 @@ describe('api/connections', function() {
   });
 
   it('Delete requires admin', async function() {
-    await utils.del('editor', `/api/connections/${connection._id}`, 403);
+    await utils.del('editor', `/api/connections/${connection.id}`, 403);
   });
 
   it('Deletes connection', async function() {
-    await utils.del('admin', `/api/connections/${connection._id}`);
-    await utils.del('admin', `/api/connections/${connection._id}`, 404);
+    await utils.del('admin', `/api/connections/${connection.id}`);
+    await utils.del('admin', `/api/connections/${connection.id}`, 404);
   });
 });

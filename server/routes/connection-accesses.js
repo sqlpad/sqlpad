@@ -36,13 +36,13 @@ router.get(
 async function getConnectionAccess(req, res) {
   const { models } = req;
   const connectionAccess = await models.connectionAccesses.findOneById(
-    req.params._id
+    req.params.id
   );
   return res.utils.data(connectionAccess);
 }
 
 router.get(
-  '/api/connection-accesses/:_id',
+  '/api/connection-accesses/:id',
   mustBeAuthenticated,
   wrap(getConnectionAccess)
 );
@@ -110,13 +110,13 @@ router.post(
 async function updateConnectionAccess(req, res) {
   const { models } = req;
   const connectionAccess = await models.connectionAccesses.expire(
-    req.params._id
+    req.params.id
   );
   return res.utils.data(connectionAccess);
 }
 
 router.put(
-  '/api/connection-accesses/:_id/expire',
+  '/api/connection-accesses/:id/expire',
   mustBeAdmin,
   wrap(updateConnectionAccess)
 );

@@ -19,7 +19,7 @@ class QueryAcl {
     return this.sequelizeDb.QueryAcl.findAll({
       where: {
         [Op.or]: [
-          { userId: user._id },
+          { userId: user.id },
           { userEmail: user.email },
           { groupId: consts.EVERYONE_ID }
         ]

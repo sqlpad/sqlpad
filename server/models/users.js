@@ -15,6 +15,9 @@ class Users {
     if (password) {
       rest.passhash = await passhash.getPasshash(password);
     }
+    if (rest.email) {
+      rest.email = rest.email.toLowerCase();
+    }
 
     const newUser = await this.sequelizeDb.Users.create(rest);
     return newUser;
@@ -24,6 +27,9 @@ class Users {
     const { password, ...rest } = changes;
     if (password) {
       rest.passhash = await passhash.getPasshash(password);
+    }
+    if (rest.email) {
+      rest.email = rest.email.toLowerCase();
     }
 
     await this.sequelizeDb.Users.update(changes, { where: { id } });

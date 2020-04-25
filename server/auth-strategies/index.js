@@ -7,11 +7,9 @@ const local = require('./local');
 const saml = require('./saml');
 
 // The serializeUser/deserializeUser functions apply regardless of the strategy used.
-//
 // Given a user object, extract the id to use for session
-// nedb objects use `._id`, but some auth implementations at one point used `.id`
 passport.serializeUser(function(user, done) {
-  done(null, user.id || user._id);
+  done(null, user.id);
 });
 
 // deserializeUser takes the id from the session and turns it into a user object.
@@ -25,8 +23,7 @@ passport.deserializeUser(async function(req, id, done) {
   try {
     const user = await models.users.findOneById(id);
     if (user) {
-      // decorate req.user with full user object, plus `id` aliased for _id
-      return done(null, { ...user, id: user._id });
+      return done(null, user);
     }
     done(null, false);
   } catch (error) {

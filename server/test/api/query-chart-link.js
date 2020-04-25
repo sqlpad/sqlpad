@@ -28,17 +28,17 @@ describe('query table/chart require auth', function() {
     query = await utils.post('admin', '/api/queries', {
       name: 'test query',
       tags: ['test'],
-      connectionId: connection._id,
+      connectionId: connection.id,
       queryText
     });
   });
 
   it('Gets query without auth not permitted', async function() {
-    await utils.get(null, `/api/queries/${query._id}`, 401);
+    await utils.get(null, `/api/queries/${query.id}`, 401);
   });
 
   it('Gets result without auth not permitted', async function() {
-    const body = await utils.get(null, `/api/query-result/${query._id}`, 401);
+    const body = await utils.get(null, `/api/query-result/${query.id}`, 401);
     assert(!body.error, 'Expect no error');
   });
 });

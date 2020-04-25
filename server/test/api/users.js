@@ -26,7 +26,7 @@ describe('api/users', function() {
       }
     });
 
-    assert(user._id, 'has id');
+    assert(user.id, 'has id');
     assert.equal(user.email, 'user1@test.com');
     assert.equal(user.name, 'user1');
     assert.equal(user.role, 'editor');
@@ -43,7 +43,7 @@ describe('api/users', function() {
 
   it('Updates user', async function() {
     const passwordResetId = uuidv4();
-    const body = await utils.put('admin', `/api/users/${user._id}`, {
+    const body = await utils.put('admin', `/api/users/${user.id}`, {
       role: 'admin',
       name: 'test',
       passwordResetId,
@@ -76,7 +76,7 @@ describe('api/users', function() {
   });
 
   it('Deletes user', async function() {
-    await utils.del('admin', `/api/users/${user._id}`);
+    await utils.del('admin', `/api/users/${user.id}`);
   });
 
   it('Returns expected list', async function() {

@@ -44,15 +44,15 @@ router.post(
 );
 
 router.put(
-  '/api/users/:_id',
+  '/api/users/:id',
   mustBeAdmin,
   wrap(async function(req, res) {
     const { params, body, user, models } = req;
-    if (user._id === params._id && user.role === 'admin' && body.role != null) {
+    if (user.id === params.id && user.role === 'admin' && body.role != null) {
       return res.utils.error("You can't unadmin yourself");
     }
 
-    const updateUser = await models.users.findOneById(params._id);
+    const updateUser = await models.users.findOneById(params.id);
     if (!updateUser) {
       return res.utils.error('user not found');
     }
@@ -81,14 +81,14 @@ router.put(
 );
 
 router.delete(
-  '/api/users/:_id',
+  '/api/users/:id',
   mustBeAdmin,
   wrap(async function(req, res) {
     const { models } = req;
-    if (req.user._id === req.params._id) {
+    if (req.user.id === req.params.id) {
       return res.utils.error("You can't delete yourself");
     }
-    await models.users.removeById(req.params._id);
+    await models.users.removeById(req.params.id);
     return res.utils.data();
   })
 );

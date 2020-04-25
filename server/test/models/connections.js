@@ -33,7 +33,7 @@ describe('config.getConnections', function() {
     assert.equal(cs.length, 1, 'cs should have 1');
     const connection = cs[0];
     assert.strictEqual(connection.editable, false, 'connection.editable');
-    assert.strictEqual(connection._id, 'abc', 'connection._id');
+    assert.strictEqual(connection.id, 'abc', 'connection.id');
     assert.strictEqual(connection.driver, 'postgres', 'connection.driver');
     assert.strictEqual(connection.name, 'env-postgres', 'connection.name');
     assert.strictEqual(connection.host, 'localhost', 'connection.host');
@@ -49,7 +49,7 @@ describe('config.getConnections', function() {
     process.env.SQLPAD_CONNECTIONS__abc__postgresSsl = 'true';
 
     const allConnections = await utils.models.connections.findAll();
-    const connection = allConnections.find(c => c._id === 'abc');
+    const connection = allConnections.find(c => c.id === 'abc');
     assert.strictEqual(connection.name, 'env-postgres', 'connection.name');
     assert.strictEqual(connection.editable, false, 'connection.editable');
 

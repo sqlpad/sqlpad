@@ -41,19 +41,19 @@ describe('api/query-result', function() {
     query = await utils.post('admin', '/api/queries', {
       name: 'test query',
       tags: ['test'],
-      connectionId: connection._id,
+      connectionId: connection.id,
       queryText
     });
   });
 
   it('GET /api/query-result/:queryId', async function() {
-    const body = await utils.get('admin', `/api/query-result/${query._id}`);
+    const body = await utils.get('admin', `/api/query-result/${query.id}`);
     validateQueryResult(body);
   });
 
   it('POST /api/query-result', async function() {
     const body = await utils.post('admin', `/api/query-result`, {
-      connectionId: connection._id,
+      connectionId: connection.id,
       cacheKey: 'cachekey',
       queryName: 'test query',
       queryText

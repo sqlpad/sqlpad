@@ -53,18 +53,12 @@ describe('api/schema-info', function() {
   });
 
   it('Gets schema-info honoring connection templates', async function() {
-    const body1 = await utils.get(
-      'user1',
-      `/api/schema-info/${connection._id}`
-    );
+    const body1 = await utils.get('user1', `/api/schema-info/${connection.id}`);
     assert(body1, 'body');
     assert(body1.main.user1, 'user1 table exists');
     assert(!body1.main.user2, 'user2 table does not exist');
 
-    const body2 = await utils.get(
-      'user2',
-      `/api/schema-info/${connection._id}`
-    );
+    const body2 = await utils.get('user2', `/api/schema-info/${connection.id}`);
     assert(body2, 'body');
     assert(!body2.main.user1, 'user1 table does not exist');
     assert(body2.main.user2, 'user2 table exists');

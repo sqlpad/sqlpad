@@ -9,14 +9,14 @@ describe('seedDataPath', function() {
     await utils.init();
     const queries = await utils.models.queries.findAll();
     assert.strictEqual(queries.length, 2);
-    assert(queries.find(q => q._id === 'seed-query-1'));
+    assert(queries.find(q => q.id === 'seed-query-1'));
     const queryAcls = await utils.models.queryAcl.findAllByQueryId(
       'seed-query-1'
     );
     assert.equal(queryAcls.length, 3);
     const connections = await utils.models.connections.findAll();
     assert.equal(connections.length, 1);
-    assert.strictEqual(connections[0]._id, 'seed-connection-1');
+    assert.strictEqual(connections[0].id, 'seed-connection-1');
   });
 
   it('Handles child directories with no valid files', async function() {

@@ -47,8 +47,6 @@ function validateConnection(connection) {
           field => field.key === fieldKey
         );
 
-        // field definition may not exist since
-        // this could be a core field like _id, name
         if (fieldDefinition) {
           if (fieldDefinition.formType === 'CHECKBOX') {
             value = ensureBoolean(value);

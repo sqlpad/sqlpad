@@ -14,7 +14,7 @@ router.get(
     const dbQueryHistory = await models.queryHistory.findByFilter(dbFilter);
 
     const rows = dbQueryHistory.map(q => {
-      delete q._id;
+      delete q.id;
       delete q.userId;
       delete q.connectionId;
       return q;
@@ -25,12 +25,12 @@ router.get(
 );
 
 router.get(
-  '/api/query-history/:_id',
+  '/api/query-history/:id',
   mustBeAuthenticated,
   wrap(async function(req, res) {
     const { models } = req;
     const queryHistoryItem = await models.queryHistory.findOneById(
-      req.params._id
+      req.params.id
     );
     if (!queryHistoryItem) {
       return res.utils.notFound();

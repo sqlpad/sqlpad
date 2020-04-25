@@ -18,7 +18,7 @@ router.get(
     // Only send client the common fields that won't have any sensitive info
     const summaries = docs.map(doc => {
       const {
-        _id,
+        id,
         name,
         driver,
         editable,
@@ -29,7 +29,7 @@ router.get(
         idleTimeoutSeconds
       } = doc;
       return {
-        _id,
+        id,
         name,
         driver,
         editable,
@@ -46,11 +46,11 @@ router.get(
 );
 
 router.get(
-  '/api/connections/:_id',
+  '/api/connections/:id',
   mustBeAdmin,
   wrap(async function(req, res) {
     const { models } = req;
-    const connection = await models.connections.findOneById(req.params._id);
+    const connection = await models.connections.findOneById(req.params.id);
     if (!connection) {
       return res.utils.data();
     }
@@ -69,11 +69,11 @@ router.post(
 );
 
 router.put(
-  '/api/connections/:_id',
+  '/api/connections/:id',
   mustBeAdmin,
   wrap(async function(req, res) {
     const { models } = req;
-    let connection = await models.connections.findOneById(req.params._id);
+    let connection = await models.connections.findOneById(req.params.id);
     if (!connection) {
       return res.utils.notFound();
     }
@@ -84,15 +84,15 @@ router.put(
 );
 
 router.delete(
-  '/api/connections/:_id',
+  '/api/connections/:id',
   mustBeAdmin,
   wrap(async function(req, res) {
     const { models, params } = req;
-    let connection = await models.connections.findOneById(params._id);
+    let connection = await models.connections.findOneById(params.id);
     if (!connection) {
       return res.utils.notFound();
     }
-    await models.connections.removeOneById(params._id);
+    await models.connections.removeOneById(params.id);
     return res.utils.data();
   })
 );

@@ -32,7 +32,7 @@ describe('api/queries', function() {
 
   it('Creates query', async function() {
     const body = await utils.post('editor', '/api/queries', createQueryBody);
-    assert(body._id, 'has _id');
+    assert(body.id, 'has id');
     assert.equal(body.name, 'test query');
     query = body;
   });
@@ -43,20 +43,20 @@ describe('api/queries', function() {
   });
 
   it('Updates query', async function() {
-    const body = await utils.put('editor', `/api/queries/${query._id}`, {
+    const body = await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       name: 'test query2'
     });
-    assert(body._id, 'has _id');
+    assert(body.id, 'has id');
     assert.equal(body.name, 'test query2');
   });
 
   it('Requires authentication', function() {
-    return utils.get(null, `/api/queries/${query._id}`, 401);
+    return utils.get(null, `/api/queries/${query.id}`, 401);
   });
 
   it('Owner can get own query', async function() {
-    const body = await utils.get('editor', `/api/queries/${query._id}`);
+    const body = await utils.get('editor', `/api/queries/${query.id}`);
     assert.equal(body.name, 'test query2');
     // can<Action> represents what user that made API call can do
     assert.strictEqual(body.canRead, true);
@@ -65,11 +65,11 @@ describe('api/queries', function() {
   });
 
   it('Editor2 cannot get query without permission', async function() {
-    await utils.get('editor2', `/api/queries/${query._id}`, 403);
+    await utils.get('editor2', `/api/queries/${query.id}`, 403);
   });
 
   it('Permissions for other users are not used', async function() {
-    await utils.put('editor', `/api/queries/${query._id}`, {
+    await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       name: 'test query2',
       acl: [
@@ -80,27 +80,27 @@ describe('api/queries', function() {
     });
 
     // editor2 cannot read based on the above acl
-    await utils.get('editor2', `/api/queries/${query._id}`, 403);
+    await utils.get('editor2', `/api/queries/${query.id}`, 403);
 
     // Add read access for editor 2
-    await utils.put('editor', `/api/queries/${query._id}`, {
+    await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
         { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
-        { userId: utils.users.editor2._id, write: false }
+        { userId: utils.users.editor2.id, write: false }
       ]
     });
 
     // Editor 2 can read at this point
-    await utils.get('editor2', `/api/queries/${query._id}`);
+    await utils.get('editor2', `/api/queries/${query.id}`);
 
     // But not write
     await utils.put(
       'editor2',
-      `/api/queries/${query._id}`,
+      `/api/queries/${query.id}`,
       {
         ...createQueryBody,
         acl: [
@@ -108,14 +108,14 @@ describe('api/queries', function() {
           { userEmail: 'fakeEmail', write: true },
           { groupId: 'fakeGroup', write: true },
           { groupId: '__EVERYONE__', write: false },
-          { userId: utils.users.editor2._id, write: false }
+          { userId: utils.users.editor2.id, write: false }
         ]
       },
       403
     );
 
     // Add write access for editor 2
-    await utils.put('editor', `/api/queries/${query._id}`, {
+    await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       name: 'test query2',
       acl: [
@@ -123,13 +123,13 @@ describe('api/queries', function() {
         { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { groupId: '__EVERYONE__', write: false },
-        { userId: utils.users.editor2._id, write: true }
+        { userId: utils.users.editor2.id, write: true }
       ]
     });
   });
 
   it('honors max matching permission only', async function() {
-    await utils.put('editor', `/api/queries/${query._id}`, {
+    await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       name: 'test query2',
       acl: [
@@ -137,18 +137,18 @@ describe('api/queries', function() {
         { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { groupId: '__EVERYONE__', write: false },
-        { userId: utils.users.editor2._id, write: false }
+        { userId: utils.users.editor2.id, write: false }
       ]
     });
 
     await utils.put(
       'editor2',
-      `/api/queries/${query._id}`,
+      `/api/queries/${query.id}`,
       createQueryBody,
       403
     );
 
-    await utils.put('editor', `/api/queries/${query._id}`, {
+    await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       name: 'test query2',
       acl: [
@@ -156,30 +156,30 @@ describe('api/queries', function() {
         { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { groupId: '__EVERYONE__', write: true },
-        { userId: utils.users.editor2._id, write: false }
+        { userId: utils.users.editor2.id, write: false }
       ]
     });
 
-    await utils.put('editor2', `/api/queries/${query._id}`, createQueryBody);
+    await utils.put('editor2', `/api/queries/${query.id}`, createQueryBody);
   });
 
   it('ACL userId permissions work as expected', async function() {
-    await utils.put('editor', `/api/queries/${query._id}`, {
+    await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
         { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
-        { userId: utils.users.editor2._id, write: false }
+        { userId: utils.users.editor2.id, write: false }
       ]
     });
 
-    await utils.get('editor2', `/api/queries/${query._id}`);
+    await utils.get('editor2', `/api/queries/${query.id}`);
 
     await utils.put(
       'editor2',
-      `/api/queries/${query._id}`,
+      `/api/queries/${query.id}`,
       {
         ...createQueryBody,
         acl: [
@@ -187,41 +187,41 @@ describe('api/queries', function() {
           { userEmail: 'fakeEmail', write: true },
           { groupId: 'fakeGroup', write: true },
           { groupId: '__EVERYONE__', write: false },
-          { userId: utils.users.editor2._id, write: false }
+          { userId: utils.users.editor2.id, write: false }
         ]
       },
       403
     );
 
     // Now use editor to give access, editor 2 should be able to update
-    await utils.put('editor', `/api/queries/${query._id}`, {
+    await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
         { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
-        { userId: utils.users.editor2._id, write: true }
+        { userId: utils.users.editor2.id, write: true }
       ]
     });
 
     // editor2 can update
-    await utils.put('editor2', `/api/queries/${query._id}`, {
+    await utils.put('editor2', `/api/queries/${query.id}`, {
       ...createQueryBody,
       acl: [
         { userId: 'fakeUser', write: true },
         { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
-        { userId: utils.users.editor2._id, write: false }
+        { userId: utils.users.editor2.id, write: false }
       ]
     });
 
     // editor2 should not be able to delete
-    await utils.del('editor2', `/api/queries/${query._id}`, 403);
+    await utils.del('editor2', `/api/queries/${query.id}`, 403);
   });
 
   it('Admin is exempt from query ACL', async function() {
-    const body1 = await utils.get('admin', `/api/queries/${query._id}`);
+    const body1 = await utils.get('admin', `/api/queries/${query.id}`);
     // can<Action> represents what user that made API call can do
     assert.strictEqual(body1.canRead, true);
     assert.strictEqual(body1.canWrite, true);
@@ -230,14 +230,14 @@ describe('api/queries', function() {
     const body2 = await utils.get('admin', '/api/queries');
     assert.equal(body2.length, 1);
 
-    await utils.put('admin', `/api/queries/${query._id}`, {
+    await utils.put('admin', `/api/queries/${query.id}`, {
       ...createQueryBody,
-      acl: [{ userId: utils.users.editor2._id, write: true }]
+      acl: [{ userId: utils.users.editor2.id, write: true }]
     });
   });
 
   it('ACL userEmail gives access like expected', async function() {
-    const body1 = await utils.put('editor', `/api/queries/${query._id}`, {
+    const body1 = await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       acl: [{ userEmail: 'editor2@test.com', write: true }]
     });
@@ -246,13 +246,13 @@ describe('api/queries', function() {
     assert.strictEqual(body1.canWrite, true);
     assert.strictEqual(body1.canDelete, true);
 
-    const body2 = await utils.get('editor2', `/api/queries/${query._id}`);
+    const body2 = await utils.get('editor2', `/api/queries/${query.id}`);
     assert(body2);
     assert.strictEqual(body2.canRead, true);
     assert.strictEqual(body2.canWrite, true);
     assert.strictEqual(body2.canDelete, false);
 
-    const body3 = await utils.put('editor2', `/api/queries/${query._id}`, {
+    const body3 = await utils.put('editor2', `/api/queries/${query.id}`, {
       ...createQueryBody,
       acl: [{ userEmail: 'editor2@test.com', write: false }]
     });
@@ -262,18 +262,18 @@ describe('api/queries', function() {
   });
 
   it('ACL groupId __EVERYONE__ gives access like expected', async function() {
-    await utils.put('editor', `/api/queries/${query._id}`, {
+    await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
       acl: [{ groupId: consts.EVERYONE_ID, write: true }]
     });
 
-    const body2 = await utils.get('editor2', `/api/queries/${query._id}`);
+    const body2 = await utils.get('editor2', `/api/queries/${query.id}`);
     assert(body2);
     assert.strictEqual(body2.canRead, true);
     assert.strictEqual(body2.canWrite, true);
     assert.strictEqual(body2.canDelete, false);
 
-    const body3 = await utils.put('editor2', `/api/queries/${query._id}`, {
+    const body3 = await utils.put('editor2', `/api/queries/${query.id}`, {
       ...createQueryBody,
       acl: [{ groupId: consts.EVERYONE_ID, write: false }]
     });
@@ -284,17 +284,17 @@ describe('api/queries', function() {
 
   it('Owner can delete query', async function() {
     const body = await utils.post('editor', '/api/queries', createQueryBody);
-    await utils.del('editor', `/api/queries/${body._id}`);
+    await utils.del('editor', `/api/queries/${body.id}`);
   });
 
   it('Admin can delete query', async function() {
     const body = await utils.post('editor', '/api/queries', createQueryBody);
-    await utils.del('admin', `/api/queries/${body._id}`);
+    await utils.del('admin', `/api/queries/${body.id}`);
   });
 
   it('Non-owner cannot delete query', async function() {
     const body = await utils.post('editor', '/api/queries', createQueryBody);
-    await utils.del('editor2', `/api/queries/${body._id}`, 403);
+    await utils.del('editor2', `/api/queries/${body.id}`, 403);
   });
 
   it('ACL does not permit query deletion', async function() {
@@ -302,6 +302,6 @@ describe('api/queries', function() {
       ...createQueryBody,
       acl: [{ userId: consts.EVERYONE_ID, write: true }]
     });
-    await utils.del('editor2', `/api/queries/${body._id}`, 403);
+    await utils.del('editor2', `/api/queries/${body.id}`, 403);
   });
 });

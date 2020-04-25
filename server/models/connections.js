@@ -71,7 +71,7 @@ class Connections {
     // If connection was not found in db try env
     const connectionFromEnv = this.config
       .getConnections()
-      .find(connection => connection._id === id);
+      .find(connection => connection.id === id);
 
     if (!connectionFromEnv) {
       return null;

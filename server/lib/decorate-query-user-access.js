@@ -23,7 +23,7 @@ function decorateQueryUserAccess(query, user) {
       .filter(
         acl =>
           acl.groupId === consts.EVERYONE_ID ||
-          acl.userId === user._id ||
+          acl.userId === user.id ||
           acl.userEmail === user.email
       )
       // and return first one that has write
@@ -34,7 +34,7 @@ function decorateQueryUserAccess(query, user) {
     const canRead = query.acl.find(
       acl =>
         acl.groupId === consts.EVERYONE_ID ||
-        acl.userId === user._id ||
+        acl.userId === user.id ||
         acl.userEmail === user.email
     );
     clone.canRead = Boolean(canRead);

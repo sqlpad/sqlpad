@@ -101,19 +101,6 @@ async function initNedb(config) {
     );
   }
 
-  // Ensure all email addresses are lower case
-  // A long time ago a previous version of SQLPad did not enforce this
-  // It might not matter anymore but just in case
-  appLog.info('Ensuring user email address is lower case');
-  const users = await nedb.users.find({});
-  for (const user of users) {
-    if (user.email && user.email !== user.email.toLowerCase()) {
-      user.email = user.email.toLowerCase();
-      // eslint-disable-next-line no-await-in-loop
-      await nedb.users.update({ _id: user._id }, user, {});
-    }
-  }
-
   // Apply indexes
   await nedb.users.ensureIndex({ fieldName: 'email', unique: true });
   await nedb.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
@@ -131,14 +118,15 @@ async function initNedb(config) {
   const sequelizeDb = new SequelizeDb(config);
 
   // Schedule cleanups
-  const models = new Models(nedb, sequelizeDb, config);
+  const models = new Models(sequelizeDb, config);
   setInterval(async () => {
     await models.resultCache.removeExpired();
     await models.queryHistory.removeOldEntries();
   }, FIVE_MINUTES);
 
   // Ensure admin is set as specified if provided
-  await ensureAdmin(nedb, admin, adminPassword);
+  // TODO FIXME XXX move to after migrate, pass in config
+  await ensureAdmin(models, admin, adminPassword);
 
   return { nedb, models, sequelizeDb };
 }
