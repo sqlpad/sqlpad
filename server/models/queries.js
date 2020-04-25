@@ -1,3 +1,4 @@
+const _ = require('lodash');
 /*
 "chartConfiguration": {
     "chartType": "line",
@@ -40,10 +41,26 @@ class Queries {
     return query;
   }
 
-  findAll() {
-    let queries = this.sequelizeDb.Queries.findAll({});
+  async findAll() {
+    let queries = await this.sequelizeDb.Queries.findAll({});
     queries = queries.map(query => query.toJSON());
-    // TODO FIXME XXX get tags
+
+    // This is not efficient, but necessary until pagination is in
+    // Get *all* query tags. group by queryId, then iterate and merge into queries
+    // Sequelize include not used here because it is not efficient SQL
+    let queryTags = await this.sequelizeDb.QueryTags.findAll({
+      attributes: ['queryId', 'tag']
+    });
+    queryTags = queryTags.map(qt => qt.toJSON());
+    const tagsByQuery = _.groupBy(queryTags, 'queryId');
+
+    queries = queries.map(query => {
+      const queryTags = tagsByQuery[query.id];
+      if (queryTags) {
+        query.tags = queryTags.map(qt => qt.tag);
+      }
+      return query;
+    });
     return queries;
   }
 
