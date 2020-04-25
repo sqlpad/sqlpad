@@ -32,7 +32,7 @@ class Users {
       rest.email = rest.email.toLowerCase();
     }
 
-    await this.sequelizeDb.Users.update(changes, { where: { id } });
+    await this.sequelizeDb.Users.update(rest, { where: { id } });
     return this.findOneById(id);
   }
 
