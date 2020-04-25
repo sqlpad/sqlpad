@@ -85,11 +85,51 @@ class Connections {
     return this.sequelizeDb.Connections.destroy({ where: { id } });
   }
 
+  /**
+   *
+   * @param {object} connection
+   */
   async create(connection) {
-    const { data, ...rest } = connection;
-    rest.data = this.cryptr.encrypt(JSON.stringify(data || {}));
+    const {
+      id,
+      name,
+      description,
+      driver,
+      multiStatementTransactionEnabled,
+      idleTimeoutSeconds,
+      data,
+      createdAt,
+      updatedAt,
+      ...legacyDriverFields
+    } = connection;
 
-    const created = await this.sequelizeDb.Connections.create(rest);
+    let createObj = {
+      id,
+      name,
+      description,
+      driver,
+      multiStatementTransactionEnabled,
+      idleTimeoutSeconds
+    };
+
+    // Old connections had driver-specific fields flat on connection object
+    // With v5 those moved to data, but the old format needs to be supported
+    // if data is supplied, we assume that this is a new format
+    // if no data, then we assume all fields we don't know about are driver-specific fields
+    if (data) {
+      createObj.data = data;
+    } else {
+      createObj.data = legacyDriverFields;
+    }
+
+    createObj = validateConnection(createObj);
+
+    // if data is set encrypt it
+    if (createObj.data) {
+      createObj.data = this.cryptr.encrypt(JSON.stringify(createObj.data));
+    }
+
+    const created = await this.sequelizeDb.Connections.create(createObj);
     return this.findOneById(created.id);
   }
 
@@ -103,26 +143,50 @@ class Connections {
       throw new Error('connection required');
     }
 
-    connection = validateConnection(connection);
+    // Below uses destructing to deduce legacy driver fields
+    // id is already declared in function, so it is being cloned and deleted here
+    const clone = { ...connection };
+    delete clone.id;
 
     const {
       name,
+      description,
       driver,
       multiStatementTransactionEnabled,
       idleTimeoutSeconds,
-      data
-    } = connection;
+      data,
+      createdAt,
+      updatedAt,
+      ...legacyDriverFields
+    } = clone;
 
-    let updateData = {
+    let updateObj = {
+      id,
       name,
+      description,
       driver,
       multiStatementTransactionEnabled,
       idleTimeoutSeconds
     };
 
-    updateData.data = this.cryptr.encrypt(JSON.stringify(data));
+    // Old connections had driver-specific fields flat on connection object
+    // With v5 those moved to data, but the old format needs to be supported
+    // if data is supplied, we assume that this is a new format
+    // if no data, then we assume all fields we don't know about are driver-specific fields
+    if (data) {
+      updateObj.data = data;
+    } else {
+      updateObj.data = legacyDriverFields;
+    }
 
-    await this.sequelizeDb.Connections.update(updateData, { where: { id } });
+    updateObj = validateConnection(updateObj);
+
+    // if data is set encrypt it
+    if (updateObj.data) {
+      updateObj.data = this.cryptr.encrypt(JSON.stringify(updateObj.data));
+    }
+
+    await this.sequelizeDb.Connections.update(updateObj, { where: { id } });
     return this.findOneById(id);
   }
 }
