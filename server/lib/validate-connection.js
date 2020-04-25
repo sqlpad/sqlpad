@@ -28,22 +28,53 @@ function ensureBoolean(value) {
  * @param {object} connection
  */
 function validateConnection(connection) {
-  if (!connection.name) {
+  // driver fields used to be placed on base object, but have since moved to `data`
+  // This needs to support both for v5 to allow for a transition period
+  const {
+    id,
+    name,
+    description,
+    driver,
+    multiStatementTransactionEnabled,
+    idleTimeoutSeconds,
+    data,
+    createdAt,
+    updatedAt,
+    ...legacyDriverFields
+  } = connection;
+
+  if (!name) {
     throw new Error('connection.name required');
   }
-  if (!connection.driver) {
+  if (!driver) {
     throw new Error('connection.driver required');
   }
-  const driver = drivers[connection.driver];
-  if (!driver) {
-    throw new Error(`driver implementation ${connection.driver} not found`);
+  const driverImplementation = drivers[driver];
+  if (!driverImplementation) {
+    throw new Error(`driver implementation ${driver} not found`);
   }
-  const validFields = driver.fields.map(field => field.key);
+  const validFields = driverImplementation.fields.map(field => field.key);
 
-  connection.data = validFields.reduce((cleanedData, fieldKey) => {
-    if (connection.data.hasOwnProperty(fieldKey)) {
-      let value = connection.data[fieldKey];
-      const fieldDefinition = driver.fields.find(
+  // If data is provided, use that for driver fields
+  // Otherwise use legacy driver fields (the leftovers of fields we do not know about)
+  const driverFields = data || legacyDriverFields;
+
+  const cleanConnection = {
+    id,
+    name,
+    description,
+    driver,
+    multiStatementTransactionEnabled,
+    idleTimeoutSeconds,
+    data,
+    createdAt,
+    updatedAt
+  };
+
+  const cleanedData = validFields.reduce((cleanedData, fieldKey) => {
+    if (driverFields.hasOwnProperty(fieldKey)) {
+      let value = driverFields[fieldKey];
+      const fieldDefinition = driverImplementation.fields.find(
         field => field.key === fieldKey
       );
 
@@ -58,7 +89,20 @@ function validateConnection(connection) {
     return cleanedData;
   }, {});
 
-  return connection;
+  if (cleanedData && Object.keys(cleanedData).length) {
+    cleanConnection.data = cleanedData;
+  }
+
+  // Strip fields set to undefined
+  const evenMoreClean = {};
+  Object.keys(cleanConnection).forEach(key => {
+    const value = cleanConnection[key];
+    if (value !== undefined) {
+      evenMoreClean[key] = value;
+    }
+  });
+
+  return evenMoreClean;
 }
 
 module.exports = validateConnection;
