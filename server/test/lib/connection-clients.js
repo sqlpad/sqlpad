@@ -17,10 +17,12 @@ describe('lib/connection-clients', function() {
     connection1 = await utils.post('admin', '/api/connections', {
       driver: 'sqlite',
       name: 'connection-client-test',
-      filename: path.join(
-        __dirname,
-        '../artifacts/connection-client-test.sqlite'
-      ),
+      data: {
+        filename: path.join(
+          __dirname,
+          '../artifacts/connection-client-test.sqlite'
+        )
+      },
       idleTimeoutSeconds: 1,
       multiStatementTransactionEnabled: true
     });
