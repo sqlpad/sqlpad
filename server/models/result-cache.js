@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
+const { Op } = require('sequelize');
 const sanitize = require('sanitize-filename');
 const appLog = require('../lib/app-log');
 const xlsx = require('node-xlsx');
@@ -19,73 +20,67 @@ BigInt.prototype.toJSON = function() {
 
 class ResultCache {
   /**
-   * @param {*} nedb
-   * @param {*} sequelizeDb
+   * @param {import('../sequelize-db')} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, sequelizeDb, config) {
-    this.nedb = nedb;
+  constructor(sequelizeDb, config) {
     this.sequelizeDb = sequelizeDb;
     this.config = config;
     this.dbPath = config.get('dbPath');
   }
 
-  xlsxFilePath(cacheKey) {
-    return path.join(this.dbPath, '/cache/', cacheKey + '.xlsx');
+  xlsxFilePath(id) {
+    return path.join(this.dbPath, '/cache/', id + '.xlsx');
   }
 
-  csvFilePath(cacheKey) {
-    return path.join(this.dbPath, '/cache/', cacheKey + '.csv');
+  csvFilePath(id) {
+    return path.join(this.dbPath, '/cache/', id + '.csv');
   }
 
-  jsonFilePath(cacheKey) {
-    return path.join(this.dbPath, '/cache/', cacheKey + '.json');
+  jsonFilePath(id) {
+    return path.join(this.dbPath, '/cache/', id + '.json');
   }
 
-  async findOneByCacheKey(cacheKey) {
-    return this.nedb.cache.findOne({ cacheKey });
+  async findOneByCacheKey(id) {
+    return this.sequelizeDb.Cache.findOne({ where: { id } });
   }
 
-  async saveResultCache(cacheKey, queryName) {
-    if (!cacheKey) {
-      throw new Error('cacheKey required');
+  async saveResultCache(id, name) {
+    if (!id) {
+      throw new Error('id required');
     }
     const EIGHT_HOURS = 1000 * 60 * 60 * 8;
-    const expiration = new Date(Date.now() + EIGHT_HOURS);
-    const modifiedDate = new Date();
+    const expiryDate = new Date(Date.now() + EIGHT_HOURS);
 
     const savedQueryName = sanitize(
-      (queryName || 'SQLPad Query Results') +
-        ' ' +
-        moment().format('YYYY-MM-DD')
+      (name || 'SQLPad Query Results') + ' ' + moment().format('YYYY-MM-DD')
     );
 
-    const doc = {
-      cacheKey,
-      expiration,
-      queryName: savedQueryName,
-      modifiedDate
-    };
-
-    const existing = await this.findOneByCacheKey(cacheKey);
-    if (!existing) {
-      doc.createdDate = new Date();
+    const exists = await this.sequelizeDb.Cache.findOne({ where: { id } });
+    if (exists) {
+      return this.sequelizeDb.Cache.update(
+        { name: savedQueryName, expiryDate },
+        { where: { id } }
+      );
     }
-
-    return this.nedb.cache.update({ cacheKey }, doc, {
-      upsert: true
+    return this.sequelizeDb.Cache.create({
+      id,
+      name: savedQueryName,
+      expiryDate
     });
   }
 
   async removeExpired() {
     try {
-      const docs = await this.nedb.cache.find({
-        expiration: { $lt: new Date() }
+      const docs = await this.sequelizeDb.Cache.findAll({
+        where: { expiryDate: { [Op.lt]: new Date() } }
       });
+
       for (const doc of docs) {
         const filepaths = [
-          this.xlsxFilePath(doc.cacheKey),
-          this.csvFilePath(doc.cacheKey)
+          this.xlsxFilePath(doc.id),
+          this.csvFilePath(doc.id),
+          this.jsonFilePath(doc.id)
         ];
         filepaths.forEach(fp => {
           if (fs.existsSync(fp)) {
@@ -93,14 +88,14 @@ class ResultCache {
           }
         });
         // eslint-disable-next-line no-await-in-loop
-        await this.nedb.cache.remove({ _id: doc._id }, {});
+        await this.sequelizeDb.Cache.destroy({ where: { id: doc.id } });
       }
     } catch (error) {
       appLog.error(error);
     }
   }
 
-  writeXlsx(cacheKey, queryResult) {
+  writeXlsx(id, queryResult) {
     // loop through rows and build out an array of arrays
     const resultArray = [];
     resultArray.push(queryResult.fields);
@@ -116,7 +111,7 @@ class ResultCache {
       { name: 'query-results', data: resultArray }
     ]);
     return new Promise(resolve => {
-      fs.writeFile(this.xlsxFilePath(cacheKey), xlsxBuffer, function(err) {
+      fs.writeFile(this.xlsxFilePath(id), xlsxBuffer, function(err) {
         // if there's an error log it but otherwise continue on
         // we can still send results even if download file failed to create
         if (err) {
@@ -127,11 +122,11 @@ class ResultCache {
     });
   }
 
-  writeCsv(cacheKey, queryResult) {
+  writeCsv(id, queryResult) {
     return new Promise(resolve => {
       try {
         const csv = parse(queryResult.rows, { fields: queryResult.fields });
-        fs.writeFile(this.csvFilePath(cacheKey), csv, function(err) {
+        fs.writeFile(this.csvFilePath(id), csv, function(err) {
           if (err) {
             appLog.error(err);
           }
@@ -144,11 +139,11 @@ class ResultCache {
     });
   }
 
-  writeJson(cacheKey, queryResult) {
+  writeJson(id, queryResult) {
     return new Promise(resolve => {
       try {
         const json = JSON.stringify(queryResult.rows);
-        fs.writeFile(this.jsonFilePath(cacheKey), json, function(err) {
+        fs.writeFile(this.jsonFilePath(id), json, function(err) {
           if (err) {
             appLog.error(err);
           }

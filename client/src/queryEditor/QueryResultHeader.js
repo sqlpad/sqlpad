@@ -121,7 +121,7 @@ function mapStateToProps(state) {
     cacheKey,
     config,
     isRunning,
-    queryId: state.query && state.query._id,
+    queryId: state.query && state.query.id,
     queryResult,
     runQueryStartTime
   };

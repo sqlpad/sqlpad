@@ -25,53 +25,84 @@ function ensureBoolean(value) {
 /**
  * Validates connection object based on its driver
  * Unnecessary fields will be stripped out
+ * driver field values on base of object are moved to connection.data
  * @param {object} connection
  */
 function validateConnection(connection) {
-  const coreFields = [
-    '_id',
-    'name',
-    'driver',
-    'createdDate',
-    'modifiedDate',
-    'multiStatementTransactionEnabled',
-    'idleTimeoutSeconds'
-  ];
-  if (!connection.name) {
+  // driver fields used to be placed on base object, but have since moved to `data`
+  // This needs to support both for v5 to allow for a transition period
+  const {
+    id,
+    name,
+    description,
+    driver,
+    multiStatementTransactionEnabled,
+    idleTimeoutSeconds,
+    data,
+    createdAt,
+    updatedAt,
+    ...legacyDriverFields
+  } = connection;
+
+  if (!name) {
     throw new Error('connection.name required');
   }
-  if (!connection.driver) {
+  if (!driver) {
     throw new Error('connection.driver required');
   }
-  const driver = drivers[connection.driver];
-  if (!driver) {
-    throw new Error(`driver implementation ${connection.driver} not found`);
+  const driverImplementation = drivers[driver];
+  if (!driverImplementation) {
+    throw new Error(`driver implementation ${driver} not found`);
   }
-  const validFields = driver.fields.map(field => field.key).concat(coreFields);
-  const cleanedConnection = validFields.reduce(
-    (cleanedConnection, fieldKey) => {
-      if (connection.hasOwnProperty(fieldKey)) {
-        let value = connection[fieldKey];
-        const fieldDefinition = driver.fields.find(
-          field => field.key === fieldKey
-        );
+  const validFields = driverImplementation.fields.map(field => field.key);
 
-        // field definition may not exist since
-        // this could be a core field like _id, name
-        if (fieldDefinition) {
-          if (fieldDefinition.formType === 'CHECKBOX') {
-            value = ensureBoolean(value);
-          }
+  // If data is provided, use that for driver fields
+  // Otherwise use legacy driver fields (the leftovers of fields we do not know about)
+  const driverFields = data || legacyDriverFields;
+
+  const cleanConnection = {
+    id,
+    name,
+    description,
+    driver,
+    multiStatementTransactionEnabled,
+    idleTimeoutSeconds,
+    createdAt,
+    updatedAt
+  };
+
+  const cleanedData = validFields.reduce((cleanedData, fieldKey) => {
+    if (driverFields.hasOwnProperty(fieldKey)) {
+      let value = driverFields[fieldKey];
+      const fieldDefinition = driverImplementation.fields.find(
+        field => field.key === fieldKey
+      );
+
+      if (fieldDefinition) {
+        if (fieldDefinition.formType === 'CHECKBOX') {
+          value = ensureBoolean(value);
         }
-
-        cleanedConnection[fieldKey] = value;
       }
-      return cleanedConnection;
-    },
-    {}
-  );
 
-  return cleanedConnection;
+      cleanedData[fieldKey] = value;
+    }
+    return cleanedData;
+  }, {});
+
+  if (cleanedData && Object.keys(cleanedData).length) {
+    cleanConnection.data = cleanedData;
+  }
+
+  // Strip fields set to undefined
+  const evenMoreClean = {};
+  Object.keys(cleanConnection).forEach(key => {
+    const value = cleanConnection[key];
+    if (value !== undefined) {
+      evenMoreClean[key] = value;
+    }
+  });
+
+  return evenMoreClean;
 }
 
 module.exports = validateConnection;

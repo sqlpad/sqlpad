@@ -47,14 +47,10 @@ router.post('/api/service-tokens', mustBeAdmin, wrap(generateServiceToken));
  */
 async function deleteServiceToken(req, res) {
   const { models } = req;
-  await models.serviceTokens.removeOneById(req.params._id);
+  await models.serviceTokens.removeOneById(req.params.id);
   return res.utils.data();
 }
 
-router.delete(
-  '/api/service-tokens/:_id',
-  mustBeAdmin,
-  wrap(deleteServiceToken)
-);
+router.delete('/api/service-tokens/:id', mustBeAdmin, wrap(deleteServiceToken));
 
 module.exports = router;

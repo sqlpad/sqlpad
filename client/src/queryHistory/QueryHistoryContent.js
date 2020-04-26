@@ -39,7 +39,7 @@ const historyMeta = {
   rowCount: {
     datatype: 'number'
   },
-  createdDate: {
+  createdAt: {
     datatype: 'datetime'
   }
 };
@@ -113,7 +113,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
 
   const handleAddFilter = () => {
     const newFilters = [...filters];
-    newFilters.push({ field: 'userEmail', operator: 'regex', value: '' });
+    newFilters.push({ field: 'userEmail', operator: 'contains', value: '' });
     setFilters(newFilters);
   };
 

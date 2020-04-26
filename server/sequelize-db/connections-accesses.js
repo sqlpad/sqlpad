@@ -37,13 +37,13 @@ module.exports = function(sequelize) {
         type: DataTypes.DATE,
         allowNull: false
       },
-      // Originally createdDate
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
       },
-      // Originally modifiedDate
       updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
       }
     },
     {

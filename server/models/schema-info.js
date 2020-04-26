@@ -1,11 +1,9 @@
 class SchemaInfo {
   /**
-   * @param {*} nedb
-   * @param {*} sequelizeDb
+   * @param {import('../sequelize-db')}
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, sequelizeDb, config) {
-    this.nedb = nedb;
+  constructor(sequelizeDb, config) {
     this.sequelizeDb = sequelizeDb;
     this.config = config;
   }
@@ -15,42 +13,40 @@ class SchemaInfo {
    * @param {string} schemaCacheId
    */
   async getSchemaInfo(schemaCacheId) {
-    const doc = await this.nedb.cache.findOne({ cacheKey: schemaCacheId });
+    const doc = await this.sequelizeDb.Cache.findOne({
+      where: { id: schemaCacheId }
+    });
 
     if (!doc) {
       return;
     }
 
-    let schemaInfo;
-    try {
-      schemaInfo =
-        typeof doc.schema === 'string' ? JSON.parse(doc.schema) : doc.schema;
-    } catch (error) {
-      // do nothing. valid schema will be updated
-    }
-
-    return schemaInfo;
+    return doc.data;
   }
 
   /**
    * Save schemaInfo to cache db object
-   * Schema needs to be stringified as JSON
-   * Column names could have dots in name (incompatible with nedb)
    * @param {string} schemaCacheId
-   * @param {object} schemaInfo
+   * @param {object} schema
    */
-  async saveSchemaInfo(schemaCacheId, schemaInfo) {
-    const cacheKey = schemaCacheId;
-    if (schemaInfo && Object.keys(schemaInfo).length) {
-      const schema = JSON.stringify(schemaInfo);
-      const doc = {
-        cacheKey,
-        schema,
-        modifiedDate: new Date()
-      };
-      return this.nedb.cache.update({ cacheKey }, doc, {
-        upsert: true
+  async saveSchemaInfo(schemaCacheId, schema) {
+    const id = schemaCacheId;
+    const existing = await this.sequelizeDb.Cache.findOne({ where: { id } });
+    const ONE_DAY = 1000 * 60 * 60 * 24;
+    const expiryDate = new Date(Date.now() + ONE_DAY);
+
+    if (!existing) {
+      return this.sequelizeDb.Cache.create({
+        id,
+        data: schema,
+        expiryDate,
+        name: 'schema cache'
       });
+    } else {
+      return this.sequelizeDb.Cache.update(
+        { data: schema, expiryDate, name: 'schema cache' },
+        { where: { id } }
+      );
     }
   }
 }

@@ -42,7 +42,7 @@ export const connectConnectionClient = store => async state => {
   }
 
   const connection = connections.find(
-    connection => connection._id === selectedConnectionId
+    connection => connection.id === selectedConnectionId
   );
 
   const supportedAndEnabled =
@@ -151,17 +151,17 @@ export const deleteConnection = async (state, connectionId) => {
   if (json.error) {
     return message.error('Delete failed');
   }
-  const filtered = connections.filter(c => c._id !== connectionId);
+  const filtered = connections.filter(c => c.id !== connectionId);
   return { connections: sortConnections(filtered) };
 };
 
 // Updates store (is not resonponsible for API call)
 export const addUpdateConnection = async (state, connection) => {
   const { connections } = state;
-  const found = connections.find(c => c._id === connection._id);
+  const found = connections.find(c => c.id === connection.id);
   if (found) {
     const mappedConnections = connections.map(c => {
-      if (c._id === connection._id) {
+      if (c.id === connection.id) {
         return connection;
       }
       return c;
@@ -195,7 +195,7 @@ export const loadConnections = store => async (state, force) => {
     };
 
     if (json.data && json.data.length === 1) {
-      update.selectedConnectionId = json.data[0]._id;
+      update.selectedConnectionId = json.data[0].id;
     }
 
     store.setState(update);

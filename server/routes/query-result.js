@@ -17,8 +17,8 @@ router.get(
     }
     const data = {
       connectionId: query.connectionId,
-      cacheKey: query._id,
-      queryId: query._id,
+      cacheKey: query.id,
+      queryId: query.id,
       queryName: query.name,
       queryText: query.queryText,
       user: req.user
@@ -105,9 +105,9 @@ async function getQueryResult(req, data) {
   if (config.get('queryHistoryRetentionTimeInDays') > 0) {
     await models.queryHistory.removeOldEntries();
     await models.queryHistory.save({
-      userId: user ? user._id : 'unauthenticated link',
+      userId: user ? user.id : 'unauthenticated link',
       userEmail: user ? user.email : 'anauthenticated link',
-      connectionId: connection._id,
+      connectionId: connection.id,
       connectionName: connection.name,
       startTime: queryResult.startTime,
       stopTime: queryResult.stopTime,
@@ -121,7 +121,7 @@ async function getQueryResult(req, data) {
   }
 
   if (config.get('allowCsvDownload')) {
-    models.resultCache.saveResultCache(cacheKey, queryName);
+    await models.resultCache.saveResultCache(cacheKey, queryName);
     await models.resultCache.writeXlsx(cacheKey, queryResult);
     await models.resultCache.writeCsv(cacheKey, queryResult);
     await models.resultCache.writeJson(cacheKey, queryResult);

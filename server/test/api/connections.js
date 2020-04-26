@@ -21,15 +21,18 @@ describe('api/connections', function() {
     const body = await utils.post('admin', '/api/connections', {
       driver: 'postgres',
       name: 'test connection',
-      host: 'localhost',
-      database: 'testdb',
-      username: 'username',
-      password: 'password'
+      data: {
+        host: 'localhost',
+        database: 'testdb',
+        username: 'username',
+        password: 'password'
+      }
     });
 
-    assert(body._id, 'has _id');
+    assert(body.id, 'has id');
     assert.equal(body.driver, 'postgres');
     assert.equal(body.username, 'username');
+    assert.equal(body.data.username, 'username');
     assert.equal(body.maxRows, 800, 'decorated with maxRows');
 
     // As of writing this test, only postgres and sqlite connections should have this set to true
@@ -48,34 +51,35 @@ describe('api/connections', function() {
   });
 
   it('Updates connection', async function() {
-    const body = await utils.put(
-      'admin',
-      `/api/connections/${connection._id}`,
-      {
-        driver: 'postgres',
-        name: 'test connection update',
+    const body = await utils.put('admin', `/api/connections/${connection.id}`, {
+      driver: 'postgres',
+      name: 'test connection update',
+      data: {
         host: 'localhost',
         database: 'testdb',
         username: 'username',
         password: 'password'
       }
-    );
+    });
 
-    assert(body._id, 'has _id');
+    assert(body.id, 'has id');
     assert.equal(body.name, 'test connection update');
     assert.equal(body.driver, 'postgres');
     assert.equal(body.username, 'username');
+    assert.equal(body.data.username, 'username');
     assert.equal(body.supportsConnectionClient, true);
     assert.equal(body.maxRows, 800, 'decorated with maxRows');
   });
 
   it('Gets updated connection', async function() {
-    const body = await utils.get('admin', `/api/connections/${connection._id}`);
+    const body = await utils.get('admin', `/api/connections/${connection.id}`);
     assert.equal(body.name, 'test connection update');
+    assert.equal(body.data.username, 'username');
+    assert.equal(body.username, 'username');
   });
 
   it('Requires authentication', function() {
-    return utils.get(null, `/api/connections/${connection._id}`, 401);
+    return utils.get(null, `/api/connections/${connection.id}`, 401);
   });
 
   it('Create requires admin', function() {
@@ -85,21 +89,23 @@ describe('api/connections', function() {
       {
         driver: 'postgres',
         name: 'test connection 2',
-        host: 'localhost',
-        database: 'testdb',
-        username: 'username',
-        password: 'password'
+        data: {
+          host: 'localhost',
+          database: 'testdb',
+          username: 'username',
+          password: 'password'
+        }
       },
       403
     );
   });
 
   it('Delete requires admin', async function() {
-    await utils.del('editor', `/api/connections/${connection._id}`, 403);
+    await utils.del('editor', `/api/connections/${connection.id}`, 403);
   });
 
   it('Deletes connection', async function() {
-    await utils.del('admin', `/api/connections/${connection._id}`);
-    await utils.del('admin', `/api/connections/${connection._id}`, 404);
+    await utils.del('admin', `/api/connections/${connection.id}`);
+    await utils.del('admin', `/api/connections/${connection.id}`, 404);
   });
 });

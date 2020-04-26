@@ -5,6 +5,9 @@ const wrap = require('../lib/wrap');
 
 function removePassword(connection) {
   connection.password = '';
+  if (connection.data && connection.data.password) {
+    connection.data.password = '';
+  }
   return connection;
 }
 
@@ -18,23 +21,23 @@ router.get(
     // Only send client the common fields that won't have any sensitive info
     const summaries = docs.map(doc => {
       const {
-        _id,
+        id,
         name,
         driver,
         editable,
-        createdDate,
-        modifiedDate,
+        createdAt,
+        updatedAt,
         supportsConnectionClient,
         multiStatementTransactionEnabled,
         idleTimeoutSeconds
       } = doc;
       return {
-        _id,
+        id,
         name,
         driver,
         editable,
-        createdDate,
-        modifiedDate,
+        createdAt,
+        updatedAt,
         supportsConnectionClient,
         multiStatementTransactionEnabled,
         idleTimeoutSeconds
@@ -46,11 +49,11 @@ router.get(
 );
 
 router.get(
-  '/api/connections/:_id',
+  '/api/connections/:id',
   mustBeAdmin,
   wrap(async function(req, res) {
     const { models } = req;
-    const connection = await models.connections.findOneById(req.params._id);
+    const connection = await models.connections.findOneById(req.params.id);
     if (!connection) {
       return res.utils.data();
     }
@@ -63,36 +66,36 @@ router.post(
   mustBeAdmin,
   wrap(async function(req, res) {
     const { models } = req;
-    const newConnection = await models.connections.save(req.body);
+    const newConnection = await models.connections.create(req.body);
     return res.utils.data(removePassword(newConnection));
   })
 );
 
 router.put(
-  '/api/connections/:_id',
+  '/api/connections/:id',
   mustBeAdmin,
   wrap(async function(req, res) {
     const { models } = req;
-    let connection = await models.connections.findOneById(req.params._id);
+    let connection = await models.connections.findOneById(req.params.id);
     if (!connection) {
       return res.utils.notFound();
     }
     Object.assign(connection, req.body);
-    connection = await models.connections.save(connection);
+    connection = await models.connections.update(req.params.id, connection);
     return res.utils.data(removePassword(connection));
   })
 );
 
 router.delete(
-  '/api/connections/:_id',
+  '/api/connections/:id',
   mustBeAdmin,
   wrap(async function(req, res) {
     const { models, params } = req;
-    let connection = await models.connections.findOneById(params._id);
+    let connection = await models.connections.findOneById(params.id);
     if (!connection) {
       return res.utils.notFound();
     }
-    await models.connections.removeOneById(params._id);
+    await models.connections.removeOneById(params.id);
     return res.utils.data();
   })
 );

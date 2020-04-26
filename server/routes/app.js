@@ -13,7 +13,7 @@ router.get(
     const currentUser =
       req.isAuthenticated() && req.user
         ? {
-            _id: req.user.id,
+            id: req.user.id,
             email: req.user.email,
             role: req.user.role
           }

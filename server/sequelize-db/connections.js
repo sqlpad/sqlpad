@@ -6,7 +6,8 @@ module.exports = function(sequelize) {
     {
       id: {
         type: DataTypes.STRING,
-        primaryKey: true
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4
       },
       name: {
         type: DataTypes.STRING,
@@ -28,13 +29,13 @@ module.exports = function(sequelize) {
       data: {
         type: DataTypes.TEXT
       },
-      // Originally createdDate
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
       },
-      // Originally modifiedDate
       updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
       }
     },
     {

@@ -46,8 +46,7 @@ async function getConnectionClient(req, res) {
   }
 
   // Only the owner of the connection or admin can get the client
-  const allowed =
-    connectionClient.user._id === user._id || user.role === 'admin';
+  const allowed = connectionClient.user.id === user.id || user.role === 'admin';
 
   if (!allowed) {
     return res.utils.forbidden();
@@ -122,7 +121,7 @@ async function keepAliveConnectionClient(req, res) {
   }
 
   // Only the owner of the connection client can keep client alive
-  const allowed = connectionClient.user._id === user._id;
+  const allowed = connectionClient.user.id === user.id;
 
   if (!allowed) {
     return res.utils.forbidden();
@@ -165,8 +164,7 @@ async function disconnectConnectionClient(req, res) {
   );
 
   // Only the owner of the connection or admin can disconnect the client
-  const allowed =
-    connectionClient.user._id === user._id || user.role === 'admin';
+  const allowed = connectionClient.user.id === user.id || user.role === 'admin';
 
   if (!allowed) {
     return res.utils.forbidden();

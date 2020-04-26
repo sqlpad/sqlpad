@@ -27,7 +27,7 @@ function AppMenu({ currentUser, clearQueries }) {
   }
 
   let hideSignOut = false;
-  if (currentUser._id === 'noauth') {
+  if (currentUser.id === 'noauth') {
     hideSignOut = true;
   }
 

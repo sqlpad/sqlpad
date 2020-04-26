@@ -3,7 +3,7 @@ import SqlpadTauChart from '../common/SqlpadTauChart';
 
 function mapStateToProps(state) {
   return {
-    queryId: (state.query && state.query._id) || 'new',
+    queryId: (state.query && state.query.id) || 'new',
     isRunning: state.isRunning,
     queryError: state.queryError,
     queryResult: state.queryResult,

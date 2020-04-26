@@ -19,7 +19,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
     } else {
       const connections = json.data;
       connections.unshift({
-        _id: '__EVERY_CONNECTION__',
+        id: '__EVERY_CONNECTION__',
         name: 'Every Connection'
       });
       setConnections(connections);
@@ -37,7 +37,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
     } else {
       const users = json.data;
       users.unshift({
-        _id: '__EVERYONE__',
+        id: '__EVERYONE__',
         email: 'Everyone'
       });
       setUsers(users);
@@ -89,7 +89,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
       .sort((a, b) => a.name > b.name)
       .forEach(connection =>
         connectionSelectOptions.push(
-          <option key={connection._id} value={connection._id}>
+          <option key={connection.id} value={connection.id}>
             {connection.name}
           </option>
         )
@@ -109,7 +109,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
       .sort((a, b) => a.name > b.name)
       .forEach(user =>
         userSelectOptions.push(
-          <option key={user._id} value={user._id}>
+          <option key={user.id} value={user.id}>
             {user.email}
           </option>
         )

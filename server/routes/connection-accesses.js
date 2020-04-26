@@ -36,13 +36,13 @@ router.get(
 async function getConnectionAccess(req, res) {
   const { models } = req;
   const connectionAccess = await models.connectionAccesses.findOneById(
-    req.params._id
+    req.params.id
   );
   return res.utils.data(connectionAccess);
 }
 
 router.get(
-  '/api/connection-accesses/:_id',
+  '/api/connection-accesses/:id',
   mustBeAuthenticated,
   wrap(getConnectionAccess)
 );
@@ -87,7 +87,7 @@ async function createConnectionAccess(req, res) {
   if (activeAccess) {
     return res.utils.error('User has active access to connection');
   }
-  let connectionAccess = await models.connectionAccesses.save({
+  let connectionAccess = await models.connectionAccesses.create({
     connectionId: req.body.connectionId,
     connectionName: connection.name,
     userId: req.body.userId,
@@ -110,13 +110,13 @@ router.post(
 async function updateConnectionAccess(req, res) {
   const { models } = req;
   const connectionAccess = await models.connectionAccesses.expire(
-    req.params._id
+    req.params.id
   );
   return res.utils.data(connectionAccess);
 }
 
 router.put(
-  '/api/connection-accesses/:_id/expire',
+  '/api/connection-accesses/:id/expire',
   mustBeAdmin,
   wrap(updateConnectionAccess)
 );

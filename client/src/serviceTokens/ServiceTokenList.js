@@ -87,7 +87,7 @@ function ServiceTokenList({ currentUser }) {
         );
 
         return (
-          <ListItem key={item._id}>
+          <ListItem key={item.id}>
             <div style={{ flexGrow: 1, padding: 8 }}>
               <b>Name:</b> {item.name}
               <br />

@@ -49,9 +49,9 @@ module.exports = function(sequelize) {
       rowCount: {
         type: DataTypes.INTEGER
       },
-      // Originally createdDate
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
       }
     },
     {

@@ -6,12 +6,10 @@ const maskToken = token => {
 
 class ServiceTokens {
   /**
-   * @param {*} nedb
-   * @param {*} sequelizeDb
+   * @param {import('../sequelize-db')} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, sequelizeDb, config) {
-    this.nedb = nedb;
+  constructor(sequelizeDb, config) {
     this.sequelizeDb = sequelizeDb;
     this.config = config;
   }
@@ -44,7 +42,6 @@ class ServiceTokens {
     );
 
     // Save only the masked token in the database
-    data.modifiedDate = new Date();
     data.maskedToken = maskToken(token);
     const newToken = await this.sequelizeDb.ServiceTokens.create(data);
 

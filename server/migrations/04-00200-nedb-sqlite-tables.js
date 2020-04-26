@@ -49,13 +49,9 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.DATE,
       allowNull: false
     },
-    // Originally modifiedDate
     updated_at: {
-      type: Sequelize.DATE
-    },
-    // Originally lastAccessDate
-    last_accessed_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     }
   });
 
@@ -138,14 +134,13 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.TEXT,
       allowNull: false
     },
-    // Originally createdDate
     created_at: {
       type: Sequelize.DATE,
       allowNull: false
     },
-    // Originally modifiedDate
     updated_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     }
   });
 
@@ -183,14 +178,13 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.DATE,
       allowNull: false
     },
-    // Originally createdDate
     created_at: {
       type: Sequelize.DATE,
       allowNull: false
     },
-    // Originally modifiedDate
     updated_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     }
   });
 
@@ -259,7 +253,6 @@ async function up(queryInterface, config, appLog, nedb) {
     row_count: {
       type: Sequelize.INTEGER
     },
-    // Originally createdDate
     created_at: {
       type: Sequelize.DATE,
       allowNull: false
@@ -318,18 +311,16 @@ async function up(queryInterface, config, appLog, nedb) {
       data: {
         type: Sequelize.JSON
       },
-      // Originally signupDate
       signup_at: {
         type: Sequelize.DATE
       },
-      // Originally createdDate
       created_at: {
         type: Sequelize.DATE,
         allowNull: false
       },
-      // originally modifiedDate
       updated_at: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false
       }
     },
     {
@@ -342,6 +333,39 @@ async function up(queryInterface, config, appLog, nedb) {
         }
       }
     }
+  );
+
+  /**
+   * CACHE
+   * ========================================================
+   */
+  await queryInterface.createTable('cache', {
+    id: {
+      type: Sequelize.STRING,
+      primaryKey: true
+    },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false
+    },
+    data: {
+      type: Sequelize.JSON
+    },
+    expiry_date: {
+      type: Sequelize.DATE,
+      allowNull: false
+    },
+    created_at: {
+      type: Sequelize.DATE,
+      allowNull: false
+    }
+  });
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'cache',
+    'cache_expiry_date',
+    ['expiry_date']
   );
 }
 

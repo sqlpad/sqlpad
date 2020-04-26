@@ -11,21 +11,21 @@ const wrap = require('../lib/wrap');
  */
 async function deleteQuery(req, res) {
   const { models, params, user } = req;
-  const query = await models.findQueryById(params._id);
+  const query = await models.findQueryById(params.id);
   if (!query) {
     return res.utils.notFound();
   }
   const decorated = decorateQueryUserAccess(query, user);
   if (decorated.canDelete) {
-    await models.queries.removeById(params._id);
-    await models.queryAcl.removeByQueryId(params._id);
+    await models.queries.removeById(params.id);
+    await models.queryAcl.removeByQueryId(params.id);
     return res.utils.data();
   }
 
   return res.utils.forbidden();
 }
 
-router.delete('/api/queries/:_id', mustBeAuthenticated, wrap(deleteQuery));
+router.delete('/api/queries/:id', mustBeAuthenticated, wrap(deleteQuery));
 
 /**
  * @param {Req} req
@@ -46,7 +46,7 @@ router.get('/api/queries', mustBeAuthenticated, wrap(listQueries));
  */
 async function getQuery(req, res) {
   const { models, user, params } = req;
-  const query = await models.findQueryById(params._id);
+  const query = await models.findQueryById(params.id);
 
   if (!query) {
     return res.utils.notFound();
@@ -60,7 +60,7 @@ async function getQuery(req, res) {
   return res.utils.forbidden();
 }
 
-router.get('/api/queries/:_id', mustBeAuthenticated, wrap(getQuery));
+router.get('/api/queries/:id', mustBeAuthenticated, wrap(getQuery));
 
 /**
  * @param {Req} req
@@ -78,7 +78,7 @@ async function createQuery(req, res) {
     queryText,
     chartConfiguration,
     createdBy: email,
-    modifiedBy: email,
+    updatedBy: email,
     acl
   };
 
@@ -99,7 +99,7 @@ router.post('/api/queries', mustBeAuthenticated, wrap(createQuery));
 async function updateQuery(req, res) {
   const { models, params, user, body } = req;
 
-  const query = await models.findQueryById(params._id);
+  const query = await models.findQueryById(params.id);
   if (!query) {
     return res.utils.notFound();
   }
@@ -118,7 +118,7 @@ async function updateQuery(req, res) {
     connectionId,
     queryText,
     chartConfiguration,
-    modifiedBy: user.email,
+    updatedBy: user.email,
     acl
   });
 
@@ -127,6 +127,6 @@ async function updateQuery(req, res) {
   return res.utils.data(data);
 }
 
-router.put('/api/queries/:_id', mustBeAuthenticated, wrap(updateQuery));
+router.put('/api/queries/:id', mustBeAuthenticated, wrap(updateQuery));
 
 module.exports = router;

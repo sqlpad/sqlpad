@@ -2,12 +2,10 @@ const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
 const appLog = require('./app-log');
-const ensureAdmin = require('./ensure-admin');
-const consts = require('./consts');
 const Models = require('../models');
 const SequelizeDb = require('../sequelize-db');
 
-const TEN_MINUTES = 1000 * 60 * 10;
+const ONE_DAY = 1000 * 60 * 60 * 24;
 const FIVE_MINUTES = 1000 * 60 * 5;
 
 /**
@@ -38,13 +36,8 @@ async function getDb(instanceAlias = 'default') {
  * @param {object} config
  */
 async function initNedb(config) {
-  const admin = config.get('admin');
-  const adminPassword = config.get('adminPassword');
   const dbPath = config.get('dbPath');
   const dbInMemory = config.get('dbInMemory');
-  const allowConnectionAccessToEveryone = config.get(
-    'allowConnectionAccessToEveryone'
-  );
 
   mkdirp.sync(path.join(dbPath, '/cache'));
 
@@ -79,41 +72,6 @@ async function initNedb(config) {
     })
   );
 
-  // create default connection accesses
-  if (allowConnectionAccessToEveryone) {
-    appLog.info('Creating access on every connection to every user...');
-    await nedb.connectionAccesses.update(
-      {
-        connectionId: consts.EVERY_CONNECTION_ID,
-        userId: consts.EVERYONE_ID
-      },
-      {
-        connectionId: consts.EVERY_CONNECTION_ID,
-        connectionName: consts.EVERY_CONNECTION_NAME,
-        userId: consts.EVERYONE_ID,
-        userEmail: consts.EVERYONE_EMAIL,
-        duration: 0,
-        expiryDate: new Date(new Date().setFullYear(2099))
-      },
-      {
-        upsert: true
-      }
-    );
-  }
-
-  // Ensure all email addresses are lower case
-  // A long time ago a previous version of SQLPad did not enforce this
-  // It might not matter anymore but just in case
-  appLog.info('Ensuring user email address is lower case');
-  const users = await nedb.users.find({});
-  for (const user of users) {
-    if (user.email && user.email !== user.email.toLowerCase()) {
-      user.email = user.email.toLowerCase();
-      // eslint-disable-next-line no-await-in-loop
-      await nedb.users.update({ _id: user._id }, user, {});
-    }
-  }
-
   // Apply indexes
   await nedb.users.ensureIndex({ fieldName: 'email', unique: true });
   await nedb.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
@@ -125,20 +83,17 @@ async function initNedb(config) {
 
   // Set autocompaction
   nedb.instances.forEach(dbname => {
-    nedb[dbname].nedb.persistence.setAutocompactionInterval(TEN_MINUTES);
+    nedb[dbname].nedb.persistence.setAutocompactionInterval(ONE_DAY);
   });
 
   const sequelizeDb = new SequelizeDb(config);
 
   // Schedule cleanups
-  const models = new Models(nedb, sequelizeDb, config);
+  const models = new Models(sequelizeDb, config);
   setInterval(async () => {
     await models.resultCache.removeExpired();
     await models.queryHistory.removeOldEntries();
   }, FIVE_MINUTES);
-
-  // Ensure admin is set as specified if provided
-  await ensureAdmin(nedb, admin, adminPassword);
 
   return { nedb, models, sequelizeDb };
 }

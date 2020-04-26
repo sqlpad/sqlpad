@@ -12,17 +12,17 @@ const ServiceTokens = require('./service-tokens');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 class Models {
-  constructor(nedb, sequelizeDb, config) {
-    this.users = new Users(nedb, sequelizeDb, config);
-    this.schemaInfo = new SchemaInfo(nedb, sequelizeDb, config);
-    this.resultCache = new ResultCache(nedb, sequelizeDb, config);
-    this.queryHistory = new QueryHistory(nedb, sequelizeDb, config);
-    this.queries = new Queries(nedb, sequelizeDb, config);
-    this.connections = new Connections(nedb, sequelizeDb, config);
-    this.connectionAccesses = new ConnectionAccesses(nedb, sequelizeDb, config);
-    this.connectionClients = new ConnectionClients(nedb, sequelizeDb, config);
-    this.queryAcl = new QueryAcl(nedb, sequelizeDb, config);
-    this.serviceTokens = new ServiceTokens(nedb, sequelizeDb, config);
+  constructor(sequelizeDb, config) {
+    this.users = new Users(sequelizeDb, config);
+    this.schemaInfo = new SchemaInfo(sequelizeDb, config);
+    this.resultCache = new ResultCache(sequelizeDb, config);
+    this.queryHistory = new QueryHistory(sequelizeDb, config);
+    this.queries = new Queries(sequelizeDb, config);
+    this.connections = new Connections(sequelizeDb, config);
+    this.connectionAccesses = new ConnectionAccesses(sequelizeDb, config);
+    this.connectionClients = new ConnectionClients(sequelizeDb, config);
+    this.queryAcl = new QueryAcl(sequelizeDb, config);
+    this.serviceTokens = new ServiceTokens(sequelizeDb, config);
   }
 
   /**
@@ -46,7 +46,7 @@ class Models {
       queries
         // Join in query ACL info needed for decorateQueryUserAccess
         .map(query => {
-          query.acl = queryAclsByQueryId[query._id] || [];
+          query.acl = queryAclsByQueryId[query.id] || [];
           return query;
         })
         // Decorate query with canRead/canWrite/canDelete
@@ -77,8 +77,21 @@ class Models {
    */
   async upsertQuery(data) {
     const { acl, ...query } = data;
-    const newOrUpdatedQuery = await this.queries.save(query);
-    const queryId = newOrUpdatedQuery._id;
+    let newOrUpdatedQuery;
+
+    let exists = false;
+    if (query.id) {
+      const found = await this.queries.findOneById(query.id);
+      exists = Boolean(found);
+    }
+
+    if (exists) {
+      newOrUpdatedQuery = await this.queries.update(query.id, query);
+    } else {
+      newOrUpdatedQuery = await this.queries.create(query);
+    }
+
+    const queryId = newOrUpdatedQuery.id;
 
     await this.queryAcl.removeByQueryId(queryId);
 

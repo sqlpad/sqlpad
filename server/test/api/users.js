@@ -26,13 +26,13 @@ describe('api/users', function() {
       }
     });
 
-    assert(user._id, 'has id');
+    assert(user.id, 'has id');
     assert.equal(user.email, 'user1@test.com');
     assert.equal(user.name, 'user1');
     assert.equal(user.role, 'editor');
     assert.equal(user.data.create, true);
-    assert(user.modifiedDate);
-    assert(user.createdDate);
+    assert(user.updatedAt);
+    assert(user.createdAt);
   });
 
   it('Gets list of users', async function() {
@@ -43,7 +43,7 @@ describe('api/users', function() {
 
   it('Updates user', async function() {
     const passwordResetId = uuidv4();
-    const body = await utils.put('admin', `/api/users/${user._id}`, {
+    const body = await utils.put('admin', `/api/users/${user.id}`, {
       role: 'admin',
       name: 'test',
       passwordResetId,
@@ -56,7 +56,7 @@ describe('api/users', function() {
     assert.equal(body.name, 'test');
     assert.equal(body.passwordResetId, passwordResetId);
     assert.equal(body.data.test, true);
-    assert(new Date(body.modifiedDate) > new Date(user.modifiedDate));
+    assert(new Date(body.updatedAt) > new Date(user.updatedAt));
   });
 
   it('Requires authentication', function() {
@@ -76,7 +76,7 @@ describe('api/users', function() {
   });
 
   it('Deletes user', async function() {
-    await utils.del('admin', `/api/users/${user._id}`);
+    await utils.del('admin', `/api/users/${user.id}`);
   });
 
   it('Returns expected list', async function() {

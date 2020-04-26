@@ -166,7 +166,7 @@ describe('passport-proxy-auth', function() {
     assert.equal(user.email, 'test@sqlpad.com');
     assert.equal(user.role, 'admin');
     assert.equal(user.name, 'Test user');
-    assert.equal(user._id, 'test001');
+    assert.equal(user.id, 'test001');
     assert.equal(user.data.customField, 'custom data value');
   });
 
@@ -193,32 +193,32 @@ describe('passport-proxy-auth', function() {
     });
     await utils.init(true);
 
-    const id = utils.users.admin._id;
+    const id = utils.users.admin.id;
 
     const { body } = await request(utils.app)
       .get('/api/users')
       .set('X-WEBAUTH-ID', id)
       .expect(200);
 
-    const user = body.find(user => user._id === id);
+    const user = body.find(user => user.id === id);
     assert.equal(user.role, 'admin');
   });
 
-  it('Matches existing user via _id', async function() {
+  it('Matches existing user via id', async function() {
     const utils = new TestUtil({
       authProxyEnabled: true,
-      authProxyHeaders: '_id:X-WEBAUTH-ID'
+      authProxyHeaders: 'id:X-WEBAUTH-ID'
     });
     await utils.init(true);
 
-    const id = utils.users.admin._id;
+    const id = utils.users.admin.id;
 
     const { body } = await request(utils.app)
       .get('/api/users')
       .set('X-WEBAUTH-ID', id)
       .expect(200);
 
-    const user = body.find(user => user._id === id);
+    const user = body.find(user => user.id === id);
     assert.equal(user.role, 'admin');
   });
 
@@ -266,6 +266,6 @@ describe('passport-proxy-auth', function() {
       .expect(200);
     const user2 = response2.body.find(user => user.email === 'admin@test.com');
 
-    assert.equal(user1.modifiedDate, user2.modifiedDate);
+    assert.equal(user1.updatedAt, user2.updatedAt);
   });
 });

@@ -29,7 +29,7 @@ async function authProxyStrategy(req, done) {
 
     // If id and email are not provided we don't have anything to look existing user account up with
     // The request is incomplete and not authorized
-    if (!headerUser._id && !headerUser.email) {
+    if (!headerUser.id && !headerUser.email) {
       return done(null, false);
     }
 
@@ -40,8 +40,8 @@ async function authProxyStrategy(req, done) {
     // Try to find existing user in SQLPad's db
     // This tries to find a match on both id and email, with id taking priority
     let existingUser;
-    if (headerUser._id) {
-      existingUser = await models.users.findOneById(headerUser._id);
+    if (headerUser.id) {
+      existingUser = await models.users.findOneById(headerUser.id);
     }
     if (!existingUser && headerUser.email) {
       existingUser = await models.users.findOneByEmail(headerUser.email);
@@ -50,6 +50,7 @@ async function authProxyStrategy(req, done) {
     // If existing user is found, see if there are changes and update it
     // Only perform update if actual changes though
     if (existingUser) {
+      const existingId = existingUser.id;
       // Get a subset of existing user to use for comparison
       const existingForCompare = {};
       Object.keys(headerUser).forEach(key => {
@@ -58,7 +59,8 @@ async function authProxyStrategy(req, done) {
 
       if (!_.isEqual(headerUser, existingForCompare)) {
         _.merge(existingUser, headerUser);
-        existingUser = await models.users.update(existingUser);
+        delete existingUser.id;
+        existingUser = await models.users.update(existingId, existingUser);
       }
       return done(null, existingUser);
     }

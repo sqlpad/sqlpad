@@ -47,7 +47,7 @@ describe('api/connection-accesses', function() {
     const body = await utils.get('admin', '/api/connection-accesses');
     TestUtils.validateListSuccessBody(body);
     assert.equal(body.length, 1, '1 length');
-    assert(body[0]._id, 'has _id');
+    assert(body[0].id, 'has id');
     assert.equal(body[0].connectionId, consts.EVERY_CONNECTION_ID);
     assert.equal(body[0].connectionName, consts.EVERY_CONNECTION_NAME);
     assert.equal(body[0].userId, consts.EVERYONE_ID);
@@ -62,8 +62,8 @@ describe('api/connection-accesses', function() {
       'admin',
       '/api/connection-accesses',
       {
-        connectionId: connection1._id,
-        userId: user1._id,
+        connectionId: connection1.id,
+        userId: user1.id,
         duration: 3600
       },
       400
@@ -75,7 +75,7 @@ describe('api/connection-accesses', function() {
   it('Expire default access on every connection to every user', function() {
     return utils.put(
       'admin',
-      `/api/connection-accesses/${defeaultConnectionAccess._id}/expire`
+      `/api/connection-accesses/${defeaultConnectionAccess.id}/expire`
     );
   });
 
@@ -90,8 +90,8 @@ describe('api/connection-accesses', function() {
       'admin',
       '/api/connection-accesses',
       {
-        connectionId: connection1._id,
-        userId: admin2._id,
+        connectionId: connection1.id,
+        userId: admin2.id,
         duration: 3600
       },
       400
@@ -105,12 +105,12 @@ describe('api/connection-accesses', function() {
 
   it('Creates connection accesses', async function() {
     let body = await utils.post('admin', '/api/connection-accesses', {
-      connectionId: connection1._id,
-      userId: user1._id,
+      connectionId: connection1.id,
+      userId: user1.id,
       duration: 3600
     });
 
-    assert(body._id, 'has _id');
+    assert(body.id, 'has id');
     assert(body.connectionId, 'has connectionId');
     assert(body.userId, 'has userId');
     assert.equal(body.connectionName, 'test connection 1');
@@ -119,12 +119,12 @@ describe('api/connection-accesses', function() {
     connectionAccess1 = body;
 
     body = await utils.post('admin', '/api/connection-accesses', {
-      connectionId: connection2._id,
-      userId: user2._id,
+      connectionId: connection2.id,
+      userId: user2.id,
       duration: 3600
     });
 
-    assert(body._id, 'has _id');
+    assert(body.id, 'has id');
     assert(body.connectionId, 'has connectionId');
     assert(body.userId, 'has userId');
     assert.equal(body.connectionName, 'test connection 2');
@@ -138,7 +138,7 @@ describe('api/connection-accesses', function() {
   });
 
   it('Requires authentication', function() {
-    return utils.get(null, `/api/connection-accesses/${connection1._id}`, 401);
+    return utils.get(null, `/api/connection-accesses/${connection1.id}`, 401);
   });
 
   it('Create requires admin', function() {
@@ -146,8 +146,8 @@ describe('api/connection-accesses', function() {
       'editor',
       '/api/connection-accesses',
       {
-        connectionId: connection2._id,
-        userId: user2._id,
+        connectionId: connection2.id,
+        userId: user2.id,
         duration: 3600
       },
       403
@@ -166,7 +166,7 @@ describe('api/connection-accesses', function() {
   it('Expire active connection', function() {
     return utils.put(
       'admin',
-      `/api/connection-accesses/${connectionAccess1._id}/expire`
+      `/api/connection-accesses/${connectionAccess1.id}/expire`
     );
   });
 

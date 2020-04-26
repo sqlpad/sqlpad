@@ -7,10 +7,11 @@ describe('api/password-reset', function() {
 
   async function setReset() {
     const user = await utils.models.users.findOneByEmail('admin@test.com');
-    const passwordResetId = uuidv4();
-    user.passwordResetId = passwordResetId;
-    await utils.models.users.update(user);
-    return passwordResetId;
+    const update = {
+      passwordResetId: uuidv4()
+    };
+    await utils.models.users.update(user.id, update);
+    return update.passwordResetId;
   }
 
   before(function() {

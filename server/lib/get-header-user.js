@@ -26,13 +26,6 @@ function getHeaderUser(req) {
       }
     });
 
-  // nedb uses user._id for ids, but user.id should also be supported
-  // If .id was mapped, and _id wasn't, assign it to ._id and delete .id
-  if (headerUser.id && !headerUser._id) {
-    headerUser._id = headerUser.id;
-  }
-  delete headerUser.id;
-
   if (Object.keys(headerUser).length > 0) {
     return headerUser;
   }

@@ -159,13 +159,13 @@ class Config {
    * SQLPAD_CONNECTIONS__<connectionId>__<connectionFieldName>
    *
    * <connectionId> can be any value to associate a grouping a fields to a connection instance
-   * If supplying a connection that was previously defined in the nedb database,
-   * this would map internally to connection._id object.
+   * If supplying a connection that was previously defined in the embedded database,
+   * this would map internally to connection.id object.
    *
    * <connectionFieldName> should be a field name identified in drivers.
    *
    * To define connections via envvars, `driver` field should be supplied.
-   * _id field is not required, as it is defined in second env var fragment.
+   * id field is not required, as it is defined in second env var fragment.
    *
    * Example: SQLPAD_CONNECTIONS__ab123__sqlserverEncrypt=""
    *
@@ -206,7 +206,7 @@ class Config {
     Object.keys(connectionsMap).forEach(id => {
       try {
         let connection = connectionsMap[id];
-        connection._id = id;
+        connection.id = id;
         connection = validateConnection(connection);
         connection.editable = false;
         connectionsFromConfig.push(connection);

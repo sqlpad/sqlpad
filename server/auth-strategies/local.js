@@ -28,8 +28,7 @@ function enableLocal(config) {
           );
           if (isMatch) {
             return done(null, {
-              id: user._id,
-              _id: user._id,
+              id: user.id,
               role: user.role,
               email: user.email
             });

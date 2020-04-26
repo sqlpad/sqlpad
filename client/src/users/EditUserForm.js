@@ -14,7 +14,7 @@ function EditUserForm({ user }) {
 
   const handleRoleChange = async event => {
     setRole(event.target.value);
-    const json = await fetchJson('PUT', '/api/users/' + user._id, {
+    const json = await fetchJson('PUT', '/api/users/' + user.id, {
       role: event.target.value
     });
     if (json.error) {
@@ -24,7 +24,7 @@ function EditUserForm({ user }) {
 
   const generatePasswordResetLink = async () => {
     const passwordResetId = uuidv4();
-    const json = await fetchJson('PUT', '/api/users/' + user._id, {
+    const json = await fetchJson('PUT', '/api/users/' + user.id, {
       passwordResetId
     });
     if (json.error) {
@@ -34,7 +34,7 @@ function EditUserForm({ user }) {
   };
 
   const removePasswordResetLink = async () => {
-    const json = await fetchJson('PUT', '/api/users/' + user._id, {
+    const json = await fetchJson('PUT', '/api/users/' + user.id, {
       passwordResetId: ''
     });
     if (json.error) {

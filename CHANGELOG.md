@@ -10,6 +10,21 @@
 
   All table/chart links require authentication going forward. If unauthenticated access to these URLs is necessary, look into whether an alternate auth solution may be used to passively provide authentication as necessary (like auth proxy for example.)
 
+- data model changes:
+
+  - `createdDate` fields have been renamed to `createdAt` (`created_at` in table)
+  - `modifiedDate` fields have been renamed to `updatedAt` (`updated_at` in table)
+  - `user.signupDate` renamed to `user.signupAt` (`signup_at` in table)
+  - `query.modifiedBy` renamed to `query.updatedBy` (`updated_by` in table)
+  - `query.lastAccessDate` is removed. It was basically `updatedAt`
+  - Connection driver-specific fields have been moved to `connection.data`. Fields are still decorated on base of object for compatibility, but will be removed at some point.
+  - `cache` table has changed to use `id` instead of `cacheKey`.
+  - `cache.expiration` has renamed to `cache.expiryDate` for consistency with other models
+  - `cache.queryName` has renamed to `cache.name` for more generic use
+  - `cache.schema` has been renamed to `cache.data` and stores raw JSON for generic use
+
+- Regex filter for query history no longer supported
+
 ## 4.2.0
 
 ### April 6, 2020

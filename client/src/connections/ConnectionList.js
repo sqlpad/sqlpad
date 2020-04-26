@@ -28,7 +28,7 @@ function ConnectionList({
   }, [loadConnections]);
 
   const editConnection = connection => {
-    setConnectionId(connection._id);
+    setConnectionId(connection.id);
     setShowEdit(true);
   };
 
@@ -50,7 +50,7 @@ function ConnectionList({
     // this is a new connection
     // New connections can be selected and then all the drawer closed
     if (!connectionId) {
-      selectConnectionId(connection._id);
+      selectConnectionId(connection.id);
     }
   };
 
@@ -71,7 +71,7 @@ function ConnectionList({
         <DeleteConfirmButton
           key="delete"
           confirmMessage="Delete connection?"
-          onConfirm={e => deleteConnection(item._id)}
+          onConfirm={e => deleteConnection(item.id)}
           style={{ marginLeft: 8 }}
         >
           Delete
@@ -80,7 +80,7 @@ function ConnectionList({
     }
 
     return (
-      <ListItem key={item._id}>
+      <ListItem key={item.id}>
         <div style={{ flexGrow: 1, padding: 8 }}>
           <span style={{ width: 300, display: 'inline-block', marginRight: 8 }}>
             {item.name}

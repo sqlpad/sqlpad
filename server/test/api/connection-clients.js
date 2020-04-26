@@ -11,7 +11,9 @@ describe('api/connection-clients', function() {
     connection1 = await utils.post('admin', '/api/connections', {
       name: 'test connection 1',
       driver: 'sqlite',
-      filename: './test/fixtures/sales.sqlite',
+      data: {
+        filename: './test/fixtures/sales.sqlite'
+      },
       idleTimeoutSeconds: 4,
       multiStatementTransactionEnabled: true
     });
@@ -19,7 +21,7 @@ describe('api/connection-clients', function() {
 
   it('creates a connection client', async function() {
     connectionClient1 = await utils.post('editor', '/api/connection-clients', {
-      connectionId: connection1._id
+      connectionId: connection1.id
     });
     assert.equal(connectionClient1.name, 'test connection 1');
     assert(connectionClient1.id);
@@ -120,7 +122,7 @@ describe('api/connection-clients', function() {
       'editor',
       '/api/connection-clients',
       {
-        connectionId: connection1._id
+        connectionId: connection1.id
       }
     );
     await utils.del('admin', `/api/connection-clients/${connectionClient.id}`);

@@ -6,6 +6,18 @@ const makeCipher = require('../lib/make-cipher');
 // At some point nedb will be removed from repo and this migration will be removed
 
 /**
+ * Some dates in nedb are stored as numbers, some as strings
+ * This cleans them so they are okay with sequelize
+ * @param {number|string} dateVal
+ */
+function cleanDate(dateVal) {
+  if (dateVal === null || dateVal === undefined) {
+    return undefined;
+  }
+  return new Date(dateVal);
+}
+
+/**
  * @param {import('sequelize').QueryInterface} queryInterface
  * @param {import('../lib/config')} config
  * @param {import('../lib/logger')} appLog
@@ -48,9 +60,8 @@ async function up(queryInterface, config, appLog, nedb) {
       chart: JSON.stringify(originalQuery.chartConfiguration),
       created_by: originalQuery.createdBy,
       updated_by: originalQuery.modifiedBy,
-      created_at: originalQuery.createdDate,
-      updated_at: originalQuery.modifiedDate,
-      last_accessed_at: originalQuery.lastAccessDate
+      created_at: cleanDate(originalQuery.createdDate) || new Date(),
+      updated_at: cleanDate(originalQuery.modifiedDate) || new Date()
     };
     queriesData.push(newQuery);
 
@@ -107,8 +118,8 @@ async function up(queryInterface, config, appLog, nedb) {
       multi_statement_transaction_enabled: multiStatementTransactionEnabled,
       idle_timeout_seconds: idleTimeoutSeconds,
       data: encryptedData,
-      created_at: createdDate ? new Date(createdDate) : new Date(),
-      updated_at: modifiedDate ? new Date(modifiedDate) : new Date()
+      created_at: cleanDate(createdDate) || new Date(),
+      updated_at: cleanDate(modifiedDate)
     };
   });
 
@@ -120,7 +131,6 @@ async function up(queryInterface, config, appLog, nedb) {
    * CONNECTION ACCESSES
    * ========================================================
    */
-
   const originalConnectionAccesses = await nedb.connectionAccesses.find({});
 
   const connectionAccessData = originalConnectionAccesses.map(original => {
@@ -130,11 +140,9 @@ async function up(queryInterface, config, appLog, nedb) {
       user_id: original.userId,
       user_email: original.userEmail,
       duration: original.duration || 0,
-      expiry_date: new Date(original.expiryDate),
-      created_at: original.createdDate
-        ? new Date(original.createdDate)
-        : new Date(),
-      updated_at: original.modifiedDate ? new Date(original.modifiedDate) : null
+      expiry_date: cleanDate(original.expiryDate) || new Date(),
+      created_at: cleanDate(original.createdDate) || new Date(),
+      updated_at: cleanDate(original.modifiedDate) || new Date()
     };
   });
 
@@ -157,15 +165,15 @@ async function up(queryInterface, config, appLog, nedb) {
       user_email: original.userEmail,
       connection_id: original.connectionId,
       connection_name: original.connectionName,
-      start_time: original.startTime,
-      stop_time: original.stopTime,
+      start_time: cleanDate(original.startTime),
+      stop_time: cleanDate(original.stopTime),
       query_run_time: original.queryRunTime,
       query_id: original.queryId || null,
       query_name: original.queryName,
       query_text: original.queryText,
       incomplete: original.incomplete,
       row_count: original.rowCount,
-      created_at: original.createdDate
+      created_at: cleanDate(original.createdDate) || new Date()
     };
   });
 
@@ -188,9 +196,9 @@ async function up(queryInterface, config, appLog, nedb) {
       password_reset_id: original.passwordResetId,
       passhash: original.passhash,
       data: JSON.stringify(original.data),
-      signup_at: original.signupDate ? new Date(original.signupDate) : null,
-      created_at: new Date(original.createdDate),
-      updated_at: original.modifiedDate ? new Date(original.modifiedDate) : null
+      signup_at: cleanDate(original.signupDate),
+      created_at: cleanDate(original.createdDate) || new Date(),
+      updated_at: cleanDate(original.modifiedDate) || new Date()
     };
   });
 
