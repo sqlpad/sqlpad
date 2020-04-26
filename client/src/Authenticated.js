@@ -1,25 +1,24 @@
-import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { connect } from 'unistore/react';
-import { refreshAppContext } from './stores/config';
 import { Redirect } from 'react-router-dom';
+import initApp from './stores/initApp';
 
-function Authenticated({ children, currentUser, refreshAppContext }) {
+function Authenticated({ children, currentUser, initApp, initialized }) {
   useEffect(() => {
-    refreshAppContext();
-  }, [refreshAppContext]);
+    initApp();
+  }, [initApp]);
 
   if (!currentUser) {
     return <Redirect to={{ pathname: '/signin' }} />;
   }
 
+  if (!initialized) {
+    return null;
+  }
+
   return children;
 }
 
-Authenticated.propTypes = {
-  admin: PropTypes.bool
-};
-
-export default connect(['currentUser'], {
-  refreshAppContext
+export default connect(['currentUser', 'initialized'], {
+  initApp
 })(Authenticated);

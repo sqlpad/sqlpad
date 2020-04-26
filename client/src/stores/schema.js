@@ -1,27 +1,14 @@
-import localforage from 'localforage';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
 import updateCompletions from '../utilities/updateCompletions.js';
 
 export const initialState = {
-  showSchema: false,
+  showSchema: true,
   schema: {} // schema.<connectionId>.loading / schemaInfo / lastUpdated
 };
 
-export async function initSchema() {
-  const showSchema = await localforage.getItem('showSchema');
-  if (typeof showSchema === 'boolean') {
-    return {
-      showSchema
-    };
-  }
-}
-
 export function toggleSchema(state) {
   const showSchema = !state.showSchema;
-  localforage
-    .setItem('showSchema', showSchema)
-    .catch(error => message.error(error));
   return {
     showSchema
   };

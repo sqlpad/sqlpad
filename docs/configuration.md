@@ -90,6 +90,13 @@ If enabled, runs embedded database `nedb` in memory. `dbPath` is still required 
 - Key: `dbInMemory`
 - Env: `SQLPAD_DB_IN_MEMORY`
 
+## defaultConnectionId
+
+Default connection to select on SQLPad load if connection not previousy selected. Once selected, connection selections are cached locally in the browser.
+
+- key: `defaultConnectionId`
+- Env: `SQLPAD_DEFAULT_CONNECTION_ID`
+
 ## disableAuth
 
 Set to TRUE to disable authentication altogether.

@@ -17,20 +17,11 @@ import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
 import { refreshAppContext } from './stores/config';
-import { initSelectedConnection } from './stores/connections';
-import { initSchema } from './stores/schema';
 
-function Routes({
-  config,
-  refreshAppContext,
-  initSchema,
-  initSelectedConnection
-}) {
+function Routes({ config, refreshAppContext }) {
   useEffect(() => {
     refreshAppContext();
-    initSchema();
-    initSelectedConnection();
-  }, [refreshAppContext, initSchema, initSelectedConnection]);
+  }, [refreshAppContext]);
 
   if (!config) {
     return null;
@@ -94,7 +85,5 @@ function Routes({
 }
 
 export default connect(['config'], {
-  refreshAppContext,
-  initSchema,
-  initSelectedConnection
+  refreshAppContext
 })(Routes);

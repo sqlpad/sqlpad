@@ -1,7 +1,7 @@
 import OpenIcon from 'mdi-react/MenuDownIcon';
 import ClosedIcon from 'mdi-react/MenuRightIcon';
 import RefreshIcon from 'mdi-react/RefreshIcon';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
@@ -50,13 +50,6 @@ function SchemaSidebar({
     width: -1,
     height: -1
   });
-
-  // Load schema on connection changes
-  useEffect(() => {
-    if (connectionId) {
-      loadSchemaInfo(connectionId);
-    }
-  }, [connectionId, loadSchemaInfo]);
 
   const handleRefreshClick = e => {
     e.preventDefault();

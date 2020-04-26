@@ -102,7 +102,7 @@ function QueryListDrawer({
 }) {
   const [preview, setPreview] = useState(null);
   const [searches, setSearches] = useState([]);
-  const [creatorSearch, setCreatorSearch] = useState(MY_QUERIES);
+  const [creatorSearch, setCreatorSearch] = useState(ALL);
   const [sort, setSort] = useState('SAVE_DATE');
   const [connectionId, setConnectionId] = useState('');
   const [dimensions, setDimensions] = useState({
@@ -207,7 +207,7 @@ function QueryListDrawer({
             >
               <option value={MY_QUERIES}>My queries</option>
               <option value={SHARED}>Shared with me</option>
-              <option value={ALL}>All</option>
+              <option value={ALL}>All queries</option>
             </Select>
             <Select
               style={{ marginRight: 8 }}
