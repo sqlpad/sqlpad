@@ -8,6 +8,7 @@
   "cookieName": "sqlpad.sid",
   "cookieSecret": "secret-used-to-sign-cookies-please-set-and-make-strong",
   "dbPath": "",
+  "defaultConnectionId": "",
   "disableAuth": false,
   "disableUserpassAuth": false,
   "editorWordWrap": false,

@@ -33,6 +33,7 @@ class ConnectionClient {
 
     appLog.debug(
       {
+        connectionClientId: this.id,
         originalConnection: connection,
         renderedConnection: this.connection,
         user
@@ -102,21 +103,26 @@ class ConnectionClient {
       const sinceLastKeepAliveMs = now - this.getLastKeepAliveAt();
       const sinceLastActivityMs = now - this.getLastActivityAt();
 
-      appLog.debug(
-        {
-          id: this.id,
-          connectionName: this.getConnectionName(),
-          driver: this.getConnectionDriver(),
-          sinceLastKeepAliveMs,
-          sinceLastActivityMs
-        },
-        'Checking last keep alive at'
-      );
+      const keepAliveExceeded = sinceLastKeepAliveMs > keepAliveTimeoutMs;
+      const lastActivityExceeded = sinceLastActivityMs > idleTimeoutMs;
 
-      if (
-        sinceLastKeepAliveMs > keepAliveTimeoutMs ||
-        sinceLastActivityMs > idleTimeoutMs
-      ) {
+      if (keepAliveExceeded || lastActivityExceeded) {
+        let msg = '';
+        if (keepAliveExceeded) {
+          msg += `Connection client keep alive exceeded timeout of ${keepAliveTimeoutMs}`;
+        } else {
+          msg += `Connection client last activity exceeded timeout of ${idleTimeoutMs}`;
+        }
+        appLog.debug(
+          {
+            connectionClientId: this.id,
+            connectionName: this.getConnectionName(),
+            driver: this.getConnectionDriver(),
+            sinceLastKeepAliveMs,
+            sinceLastActivityMs
+          },
+          msg
+        );
         this.disconnect().catch(error => appLog.error(error));
       }
     }, intervalMs);
@@ -150,11 +156,10 @@ class ConnectionClient {
     if (this.client) {
       const client = this.client;
       this.client = null;
-      const id = this.id;
       const connectionName = this.getConnectionName();
       const driver = this.getConnectionDriver();
       appLog.debug(
-        { id, connectionName, driver },
+        { connectionClientId: this.id, connectionName, driver },
         'Disconnecting client connection'
       );
       await client.disconnect();
@@ -190,6 +195,7 @@ class ConnectionClient {
     const connectionName = connection.name;
 
     const queryContext = {
+      connectionClientId: this.id,
       driver: connection.driver,
       userId: user && user.id,
       userEmail: user && user.email,

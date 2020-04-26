@@ -18,10 +18,12 @@ function splitSql(sql) {
   lines.forEach(line => {
     const chars = line.split('');
     let inLineComment = false;
+    let inStringLiteral = false;
     for (let i = 0; i < chars.length; i++) {
       const char = chars[i];
       const next = chars[i + 1] || '';
       const both = char + next;
+
       // if we got two dashes this and rest of line is a comment
       if (!inLineComment && both === '--') {
         inLineComment = true;
@@ -33,12 +35,20 @@ function splitSql(sql) {
         inBlockComment = false;
       }
 
+      const inComment = inLineComment || inBlockComment;
+
+      // If not in a comment and string literal starting/ending and is not escaped
+      // toggle string literal
+      if (!inComment && char === "'") {
+        inStringLiteral = !inStringLiteral;
+      }
+
       // add the letter to current query
       currentQuery += char;
 
       // If we reach a separator and not in comment,
       // Add current query to queries and reset current query
-      if (char === ';' && !inBlockComment && !inLineComment) {
+      if (char === ';' && !inComment && !inStringLiteral) {
         queries.push(currentQuery.trim());
         currentQuery = '';
       }

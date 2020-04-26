@@ -18,17 +18,6 @@ export const initialState = {
   connectionsLoading: false
 };
 
-export async function initSelectedConnection(state) {
-  const selectedConnectionId = await localforage.getItem(
-    'selectedConnectionId'
-  );
-  if (typeof selectedConnectionId === 'string') {
-    return {
-      selectedConnectionId
-    };
-  }
-}
-
 /**
  * Open a connection client for the currently selected connection if supported
  * @param {*} state

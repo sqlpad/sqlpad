@@ -18,9 +18,7 @@ class Connections {
     if (!connection) {
       return connection;
     }
-    const copy = _.cloneDeep(
-      connection.toJSON ? connection.toJSON() : connection
-    );
+    const copy = _.cloneDeep(connection);
     copy.maxRows = Number(this.config.get('queryResultMaxRows'));
     const driver = drivers[connection.driver];
     if (!driver) {
@@ -49,8 +47,9 @@ class Connections {
   async findAll() {
     let connectionsFromDb = await this.sequelizeDb.Connections.findAll({});
     connectionsFromDb = connectionsFromDb.map(conn => {
-      conn.editable = true;
-      return this.decipherConnection(conn);
+      let jsonConn = conn.toJSON();
+      jsonConn.editable = true;
+      return this.decipherConnection(jsonConn);
     });
 
     const allConnections = connectionsFromDb
