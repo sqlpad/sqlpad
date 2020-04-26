@@ -39,7 +39,7 @@ const historyMeta = {
   rowCount: {
     datatype: 'number'
   },
-  createdDate: {
+  createdAt: {
     datatype: 'datetime'
   }
 };

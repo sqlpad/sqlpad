@@ -90,10 +90,10 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
     }
 
     let json;
-    if (connectionEdits._id) {
+    if (connectionEdits.id) {
       json = await fetchJson(
         'PUT',
-        '/api/connections/' + connectionEdits._id,
+        '/api/connections/' + connectionEdits.id,
         connectionEdits
       );
     } else {

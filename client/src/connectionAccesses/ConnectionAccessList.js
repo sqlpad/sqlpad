@@ -60,7 +60,7 @@ function ConnectionAccessList({ currentUser }) {
 
   const handleConnectionAccessSaved = connectionAccess => {
     setShowAccessCreate(false);
-    setNewConnectionAccessId(connectionAccess._id);
+    setNewConnectionAccessId(connectionAccess.id);
   };
 
   return (
@@ -87,7 +87,7 @@ function ConnectionAccessList({ currentUser }) {
             <DeleteConfirmButton
               key="expire"
               confirmMessage="Expire connection access?"
-              onConfirm={e => expireConnectionAccess(item._id)}
+              onConfirm={e => expireConnectionAccess(item.id)}
               style={{ marginLeft: 8 }}
             >
               Expire
@@ -96,7 +96,7 @@ function ConnectionAccessList({ currentUser }) {
         }
 
         return (
-          <ListItem key={item._id}>
+          <ListItem key={item.id}>
             <div style={{ flexGrow: 1, padding: 8 }}>
               <b>Connection:</b> {item.connectionName}
               <br />

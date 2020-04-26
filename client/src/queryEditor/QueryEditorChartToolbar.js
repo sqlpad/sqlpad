@@ -7,7 +7,7 @@ import { exportPng } from '../common/tauChartRef';
 
 function mapStateToProps(state) {
   return {
-    queryId: (state.query && state.query._id) || 'new',
+    queryId: (state.query && state.query.id) || 'new',
     queryName: (state.query && state.query.name) || 'New query',
     queryResult: state.queryResult
   };
