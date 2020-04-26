@@ -9,7 +9,6 @@ const consts = require('./consts');
  */
 async function ensureConnectionAccess(sequelizeDb, config) {
   if (config.get('allowConnectionAccessToEveryone')) {
-    appLog.info('Creating access on every connection to every user...');
     const existing = await sequelizeDb.ConnectionAccesses.findOne({
       where: {
         connectionId: consts.EVERY_CONNECTION_ID,
@@ -17,6 +16,7 @@ async function ensureConnectionAccess(sequelizeDb, config) {
       }
     });
     if (!existing) {
+      appLog.info('Creating access on every connection to every user...');
       await sequelizeDb.ConnectionAccesses.create({
         connectionId: consts.EVERY_CONNECTION_ID,
         connectionName: consts.EVERY_CONNECTION_NAME,
