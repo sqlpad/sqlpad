@@ -25,6 +25,7 @@ function ensureBoolean(value) {
 /**
  * Validates connection object based on its driver
  * Unnecessary fields will be stripped out
+ * driver field values on base of object are moved to connection.data
  * @param {object} connection
  */
 function validateConnection(connection) {
@@ -66,7 +67,6 @@ function validateConnection(connection) {
     driver,
     multiStatementTransactionEnabled,
     idleTimeoutSeconds,
-    data,
     createdAt,
     updatedAt
   };

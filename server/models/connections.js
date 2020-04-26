@@ -30,6 +30,10 @@ class Connections {
         drivers[connection.driver].Client
       );
     }
+
+    // Flatten data onto main object for backwards compat
+    Object.assign(copy, copy.data);
+
     return copy;
   }
 
