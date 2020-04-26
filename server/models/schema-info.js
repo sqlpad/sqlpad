@@ -21,15 +21,7 @@ class SchemaInfo {
       return;
     }
 
-    let schemaInfo;
-    try {
-      schemaInfo =
-        typeof doc.schema === 'string' ? JSON.parse(doc.schema) : doc.schema;
-    } catch (error) {
-      // do nothing. valid schema will be updated
-    }
-
-    return schemaInfo;
+    return doc.data;
   }
 
   /**
@@ -46,13 +38,13 @@ class SchemaInfo {
     if (!existing) {
       return this.sequelizeDb.Cache.create({
         id,
-        schema,
+        data: schema,
         expiryDate,
         name: 'schema cache'
       });
     } else {
       return this.sequelizeDb.Cache.update(
-        { schema, expiryDate, name: 'schema cache' },
+        { data: schema, expiryDate, name: 'schema cache' },
         { where: { id } }
       );
     }

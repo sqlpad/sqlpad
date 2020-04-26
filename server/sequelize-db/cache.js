@@ -12,7 +12,7 @@ module.exports = function(sequelize) {
         type: DataTypes.STRING,
         allowNull: false
       },
-      schema: {
+      data: {
         type: DataTypes.JSON
       },
       expiryDate: {

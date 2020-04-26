@@ -65,4 +65,10 @@ describe('api/schema-info', function() {
     assert(!body2.main.user1, 'user1 table does not exist');
     assert(body2.main.user2, 'user2 table exists');
   });
+
+  it('Read from cache is successful', async function() {
+    const body1 = await utils.get('user1', `/api/schema-info/${connection.id}`);
+    assert(body1, 'body');
+    assert(body1.main.user1, 'user1 table exists');
+  });
 });

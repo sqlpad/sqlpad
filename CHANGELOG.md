@@ -17,6 +17,11 @@
   - `user.signupDate` renamed to `user.signupAt` (`signup_at` in table)
   - `query.modifiedBy` renamed to `query.updatedBy` (`updated_by` in table)
   - `query.lastAccessDate` is removed. It was basically `updatedAt`
+  - Connection driver-specific fields have been moved to `connection.data`. Fields are still decorated on base of object for compatibility, but will be removed at some point.
+  - `cache` table has changed to use `id` instead of `cacheKey`.
+  - `cache.expiration` has renamed to `cache.expiryDate` for consistency with other models
+  - `cache.queryName` has renamed to `cache.name` for more generic use
+  - `cache.schema` has been renamed to `cache.data` and stores raw JSON for generic use
 
 ## 4.2.0
 

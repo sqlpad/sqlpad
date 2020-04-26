@@ -344,7 +344,7 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.STRING,
       allowNull: false
     },
-    schema: {
+    data: {
       type: Sequelize.JSON
     },
     expiry_date: {
