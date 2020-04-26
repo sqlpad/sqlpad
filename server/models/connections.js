@@ -31,20 +31,17 @@ class Connections {
       );
     }
 
-    // Flatten data onto main object for backwards compat
+    // For legacy use, spread driver-field data onto connection object
+    // This isn't great but needed for backwards compat at this time
     Object.assign(copy, copy.data);
 
     return copy;
   }
 
   decipherConnection(connection) {
-    if (connection.data) {
+    if (connection.data && typeof connection.data === 'string') {
       connection.data = JSON.parse(this.cryptr.decrypt(connection.data));
     }
-
-    // For legacy use, spread data onto connection object
-    // This isn't great but needed for backwards compat at this time
-    Object.assign(connection, connection.data);
 
     return connection;
   }
@@ -70,8 +67,8 @@ class Connections {
     if (connection) {
       connection = connection.toJSON();
       connection.editable = true;
-      connection = this.decorateConnection(connection);
-      return this.decipherConnection(connection);
+      connection = this.decipherConnection(connection);
+      return this.decorateConnection(connection);
     }
 
     // If connection was not found in db try env

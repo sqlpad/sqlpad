@@ -74,6 +74,8 @@ describe('api/connections', function() {
   it('Gets updated connection', async function() {
     const body = await utils.get('admin', `/api/connections/${connection.id}`);
     assert.equal(body.name, 'test connection update');
+    assert.equal(body.data.username, 'username');
+    assert.equal(body.username, 'username');
   });
 
   it('Requires authentication', function() {

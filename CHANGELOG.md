@@ -23,6 +23,8 @@
   - `cache.queryName` has renamed to `cache.name` for more generic use
   - `cache.schema` has been renamed to `cache.data` and stores raw JSON for generic use
 
+- Regex filter for query history no longer supported
+
 ## 4.2.0
 
 ### April 6, 2020
