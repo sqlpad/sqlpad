@@ -2,12 +2,11 @@ const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
 const appLog = require('./app-log');
-const ensureAdmin = require('./ensure-admin');
 const consts = require('./consts');
 const Models = require('../models');
 const SequelizeDb = require('../sequelize-db');
 
-const TEN_MINUTES = 1000 * 60 * 10;
+const ONE_DAY = 1000 * 60 * 60 * 24;
 const FIVE_MINUTES = 1000 * 60 * 5;
 
 /**
@@ -38,8 +37,6 @@ async function getDb(instanceAlias = 'default') {
  * @param {object} config
  */
 async function initNedb(config) {
-  const admin = config.get('admin');
-  const adminPassword = config.get('adminPassword');
   const dbPath = config.get('dbPath');
   const dbInMemory = config.get('dbInMemory');
   const allowConnectionAccessToEveryone = config.get(
@@ -79,6 +76,7 @@ async function initNedb(config) {
     })
   );
 
+  // TODO FIXME XXX Move to server
   // create default connection accesses
   if (allowConnectionAccessToEveryone) {
     appLog.info('Creating access on every connection to every user...');
@@ -112,7 +110,7 @@ async function initNedb(config) {
 
   // Set autocompaction
   nedb.instances.forEach(dbname => {
-    nedb[dbname].nedb.persistence.setAutocompactionInterval(TEN_MINUTES);
+    nedb[dbname].nedb.persistence.setAutocompactionInterval(ONE_DAY);
   });
 
   const sequelizeDb = new SequelizeDb(config);
@@ -123,10 +121,6 @@ async function initNedb(config) {
     await models.resultCache.removeExpired();
     await models.queryHistory.removeOldEntries();
   }, FIVE_MINUTES);
-
-  // Ensure admin is set as specified if provided
-  // TODO FIXME XXX move to after migrate, pass in config
-  await ensureAdmin(models, admin, adminPassword);
 
   return { nedb, models, sequelizeDb };
 }

@@ -11,6 +11,7 @@ const Config = require('./lib/config');
 const { makeDb, getDb } = require('./lib/db');
 const migrate = require('./lib/migrate');
 const loadSeedData = require('./lib/load-seed-data');
+const ensureAdmin = require('./lib/ensure-admin');
 
 // Parse command line flags to see if anything special needs to happen
 require('./lib/cli-flow.js');
@@ -88,6 +89,9 @@ async function startServer() {
 
   // Load seed data after migrations
   await loadSeedData(appLog, config, models);
+
+  // Ensure admin is set if configured
+  await ensureAdmin(models, config);
 
   // Create expressjs app
   const app = makeApp(config, models);

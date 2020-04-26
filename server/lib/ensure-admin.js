@@ -4,10 +4,12 @@ const appLog = require('./app-log');
  * Ensure admin email is a user if provided
  * If password is provided, update password
  * @param {import('../models')} models
- * @param {string} adminEmail
- * @param {string} adminPassword
+ * @param {import('./config')} config
  */
-async function ensureAdmin(models, adminEmail, adminPassword) {
+async function ensureAdmin(models, config) {
+  const adminEmail = config.get('admin');
+  const adminPassword = config.get('adminPassword');
+
   if (!adminEmail) {
     return;
   }
