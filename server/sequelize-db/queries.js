@@ -51,10 +51,12 @@ module.exports = function(sequelize) {
         type: DataTypes.STRING
       },
       createdAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
       },
       updatedAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        allowNull: false
       }
     },
     {

@@ -50,7 +50,8 @@ async function up(queryInterface, config, appLog, nedb) {
       allowNull: false
     },
     updated_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     }
   });
 
@@ -138,7 +139,8 @@ async function up(queryInterface, config, appLog, nedb) {
       allowNull: false
     },
     updated_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     }
   });
 
@@ -181,7 +183,8 @@ async function up(queryInterface, config, appLog, nedb) {
       allowNull: false
     },
     updated_at: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
+      allowNull: false
     }
   });
 
@@ -316,7 +319,8 @@ async function up(queryInterface, config, appLog, nedb) {
         allowNull: false
       },
       updated_at: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false
       }
     },
     {
