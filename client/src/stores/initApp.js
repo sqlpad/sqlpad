@@ -24,9 +24,9 @@ const initApp = async state => {
       fetchJson('GET', '/api/tags')
     ]);
 
-    const availableTags = tagsResponse.tags || [];
+    const availableTags = tagsResponse.data || [];
 
-    const connections = sortConnections(connectionsResponse.connections || []);
+    const connections = sortConnections(connectionsResponse.data || []);
 
     if (!appContext) {
       appContext = {};
