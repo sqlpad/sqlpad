@@ -10,6 +10,7 @@ const db = require('../lib/db');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
 const loadSeedData = require('../lib/load-seed-data');
+const ensureConnectionAccess = require('../lib/ensure-connection-access');
 
 // At the start of any test run, clean out the root artifacts directory
 before(function(done) {
@@ -124,6 +125,7 @@ class TestUtils {
     await this.initDbs();
     await this.migrate();
     await this.loadSeedData();
+    await ensureConnectionAccess(this.sequelizeDb, this.config);
 
     this.app = makeApp(this.config, this.models);
 

@@ -12,6 +12,7 @@ const { makeDb, getDb } = require('./lib/db');
 const migrate = require('./lib/migrate');
 const loadSeedData = require('./lib/load-seed-data');
 const ensureAdmin = require('./lib/ensure-admin');
+const ensureConnectionAccess = require('./lib/ensure-connection-access');
 
 // Parse command line flags to see if anything special needs to happen
 require('./lib/cli-flow.js');
@@ -92,6 +93,9 @@ async function startServer() {
 
   // Ensure admin is set if configured
   await ensureAdmin(models, config);
+
+  // Create a connection accesses entry for everyone if set
+  await ensureConnectionAccess(sequelizeDb, config);
 
   // Create expressjs app
   const app = makeApp(config, models);

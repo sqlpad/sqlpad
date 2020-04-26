@@ -2,7 +2,6 @@ const path = require('path');
 const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
 const appLog = require('./app-log');
-const consts = require('./consts');
 const Models = require('../models');
 const SequelizeDb = require('../sequelize-db');
 
@@ -39,9 +38,6 @@ async function getDb(instanceAlias = 'default') {
 async function initNedb(config) {
   const dbPath = config.get('dbPath');
   const dbInMemory = config.get('dbInMemory');
-  const allowConnectionAccessToEveryone = config.get(
-    'allowConnectionAccessToEveryone'
-  );
 
   mkdirp.sync(path.join(dbPath, '/cache'));
 
@@ -75,29 +71,6 @@ async function initNedb(config) {
       return nedb[dbname].loadDatabase();
     })
   );
-
-  // TODO FIXME XXX Move to server
-  // create default connection accesses
-  if (allowConnectionAccessToEveryone) {
-    appLog.info('Creating access on every connection to every user...');
-    await nedb.connectionAccesses.update(
-      {
-        connectionId: consts.EVERY_CONNECTION_ID,
-        userId: consts.EVERYONE_ID
-      },
-      {
-        connectionId: consts.EVERY_CONNECTION_ID,
-        connectionName: consts.EVERY_CONNECTION_NAME,
-        userId: consts.EVERYONE_ID,
-        userEmail: consts.EVERYONE_EMAIL,
-        duration: 0,
-        expiryDate: new Date(new Date().setFullYear(2099))
-      },
-      {
-        upsert: true
-      }
-    );
-  }
 
   // Apply indexes
   await nedb.users.ensureIndex({ fieldName: 'email', unique: true });
