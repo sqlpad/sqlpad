@@ -6,7 +6,7 @@
  * @param {import('sequelize').QueryInterface} queryInterface
  * @param {String} tableName
  * @param {String} indexName
- * @param {Array<String>} fields - collection of nedb objects created in /lib/db.js
+ * @param {Array<String>} fields - array of field names
  */
 async function addOrReplaceIndex(queryInterface, tableName, indexName, fields) {
   const indexes = await queryInterface.showIndex(tableName);

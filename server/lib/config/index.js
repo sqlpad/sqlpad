@@ -159,7 +159,7 @@ class Config {
    * SQLPAD_CONNECTIONS__<connectionId>__<connectionFieldName>
    *
    * <connectionId> can be any value to associate a grouping a fields to a connection instance
-   * If supplying a connection that was previously defined in the nedb database,
+   * If supplying a connection that was previously defined in the embedded database,
    * this would map internally to connection.id object.
    *
    * <connectionFieldName> should be a field name identified in drivers.
