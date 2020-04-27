@@ -129,6 +129,20 @@ input {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
+/* Might be trying out more of just plain css, less of css.modules */
+.sp-error-block {
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.3rem;
+  padding: 24px;
+  text-align: center;
+  color: hsl(323, 100%, 42%);
+}
+
 .spinning {
   -webkit-animation: spin 2s linear infinite;
   -moz-animation: spin 2s linear infinite;

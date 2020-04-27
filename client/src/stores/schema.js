@@ -15,7 +15,7 @@ export function toggleSchema(state) {
 }
 
 export const loadSchemaInfo = store => async (state, connectionId, reload) => {
-  const { schema } = state;
+  const { schema, showSchema } = state;
   if (!schema[connectionId] || reload) {
     store.setState({
       schema: {
@@ -38,11 +38,17 @@ export const loadSchemaInfo = store => async (state, connectionId, reload) => {
         schema: {
           ...schema,
           [connectionId]: {
-            loading: false
+            loading: false,
+            error
           }
         }
       });
-      return message.error(error);
+      // If sidebar is not shown, send error notification
+      // It is otherwise shown in sidebar where schema would be
+      if (!showSchema) {
+        message.error(error);
+      }
+      return;
     }
     updateCompletions(data);
 
@@ -60,6 +66,7 @@ export const loadSchemaInfo = store => async (state, connectionId, reload) => {
         [connectionId]: {
           loading: false,
           schemaInfo: data,
+          error: null,
           expanded
         }
       }
