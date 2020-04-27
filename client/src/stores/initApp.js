@@ -15,16 +15,12 @@ const initApp = async state => {
     let [
       selectedConnectionId,
       appContext,
-      connectionsResponse,
-      tagsResponse
+      connectionsResponse
     ] = await Promise.all([
       localforage.getItem('selectedConnectionId'),
       refreshAppContext(),
-      fetchJson('GET', '/api/connections/'),
-      fetchJson('GET', '/api/tags')
+      fetchJson('GET', '/api/connections/')
     ]);
-
-    const availableTags = tagsResponse.data || [];
 
     const connections = sortConnections(connectionsResponse.data || []);
 
@@ -34,7 +30,6 @@ const initApp = async state => {
 
     const update = {
       initialized: true,
-      availableTags,
       ...appContext,
       connections,
       connectionsLastUpdated: new Date()

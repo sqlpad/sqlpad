@@ -1,28 +1,30 @@
 const _ = require('lodash');
-const Users = require('./users');
-const SchemaInfo = require('./schema-info');
-const ResultCache = require('./result-cache');
-const QueryHistory = require('./query-history');
-const Queries = require('./queries');
-const Connections = require('./connections');
 const ConnectionAccesses = require('./connection-accesses');
 const ConnectionClients = require('./connection-clients');
+const Connections = require('./connections');
+const Queries = require('./queries');
 const QueryAcl = require('./query-acl');
+const QueryHistory = require('./query-history');
+const ResultCache = require('./result-cache');
+const SchemaInfo = require('./schema-info');
 const ServiceTokens = require('./service-tokens');
+const Tags = require('./tags');
+const Users = require('./users');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 class Models {
   constructor(sequelizeDb, config) {
-    this.users = new Users(sequelizeDb, config);
-    this.schemaInfo = new SchemaInfo(sequelizeDb, config);
-    this.resultCache = new ResultCache(sequelizeDb, config);
-    this.queryHistory = new QueryHistory(sequelizeDb, config);
-    this.queries = new Queries(sequelizeDb, config);
-    this.connections = new Connections(sequelizeDb, config);
     this.connectionAccesses = new ConnectionAccesses(sequelizeDb, config);
     this.connectionClients = new ConnectionClients(sequelizeDb, config);
+    this.connections = new Connections(sequelizeDb, config);
+    this.queries = new Queries(sequelizeDb, config);
     this.queryAcl = new QueryAcl(sequelizeDb, config);
+    this.queryHistory = new QueryHistory(sequelizeDb, config);
+    this.resultCache = new ResultCache(sequelizeDb, config);
+    this.schemaInfo = new SchemaInfo(sequelizeDb, config);
     this.serviceTokens = new ServiceTokens(sequelizeDb, config);
+    this.tags = new Tags(sequelizeDb, config);
+    this.users = new Users(sequelizeDb, config);
   }
 
   /**
