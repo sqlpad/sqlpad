@@ -138,9 +138,6 @@ export const runQuery = store => async state => {
     '/api/query-result',
     postData
   );
-  if (error) {
-    message.error(error);
-  }
   store.setState({
     isRunning: false,
     queryError: error,
