@@ -28,7 +28,14 @@ async function getSchemaInfo(req, res) {
     return res.utils.data(schemaInfo);
   }
 
-  schemaInfo = await connectionClient.getSchema();
+  try {
+    schemaInfo = await connectionClient.getSchema();
+  } catch (error) {
+    // Assumption is that error is due to user configuration
+    // letting it bubble up results in 500, but it should be 400
+    return res.utils.error(error);
+  }
+
   if (Object.keys(schemaInfo).length) {
     await models.schemaInfo.saveSchemaInfo(schemaCacheId, schemaInfo);
   }
