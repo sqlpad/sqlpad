@@ -10,10 +10,10 @@ function pushQueryToSlack(config, query) {
     const options = {
       method: 'post',
       body: {
-        text: `New Query <${PUBLIC_URL}${BASE_URL}/queries/${query._id}|${
+        text: `New Query <${PUBLIC_URL}${BASE_URL}/queries/${query.id}|${
           query.name
         }> 
-saved by ${query.modifiedBy || query.createdBy} on SQLPad 
+saved by ${query.updatedBy || query.createdBy} on SQLPad 
 ${'```sql'}
 ${query.queryText}
 ${'```'}`

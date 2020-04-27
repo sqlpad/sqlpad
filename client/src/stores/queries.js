@@ -9,7 +9,7 @@ import {
 const ONE_HOUR_MS = 1000 * 60 * 60;
 
 export const NEW_QUERY = {
-  _id: '',
+  id: '',
   name: '',
   tags: [],
   connectionId: '',
@@ -49,10 +49,15 @@ export const formatQuery = async state => {
     return;
   }
 
-  setLocalQueryText(query._id, json.query);
+  if (!json.data || !json.data.query) {
+    console.warn('unexpected API result');
+    return;
+  }
+
+  setLocalQueryText(query.id, json.data.query);
 
   return {
-    query: { ...query, queryText: json.query },
+    query: { ...query, queryText: json.data.query },
     unsavedChanges: true
   };
 };
@@ -71,7 +76,7 @@ export const loadQueries = store => async state => {
     store.setState({
       queriesLoading: false,
       queriesLastUpdated: new Date(),
-      queries: json.queries || []
+      queries: json.data || []
     });
   }
 };
@@ -83,7 +88,7 @@ export const clearQueries = () => {
 export const deleteQuery = store => async (state, queryId) => {
   const { queries } = state;
   const filteredQueries = queries.filter(q => {
-    return q._id !== queryId;
+    return q.id !== queryId;
   });
   store.setState({ queries: filteredQueries });
   const json = await fetchJson('DELETE', '/api/queries/' + queryId);
@@ -94,15 +99,15 @@ export const deleteQuery = store => async (state, queryId) => {
 };
 
 export const loadQuery = async (state, queryId) => {
-  const { error, query } = await fetchJson('GET', `/api/queries/${queryId}`);
+  const { error, data } = await fetchJson('GET', `/api/queries/${queryId}`);
   if (error) {
     message.error(error);
   }
   return {
-    query,
+    query: data,
     queryError: undefined,
     queryResult: undefined,
-    selectedConnectionId: query.connectionId,
+    selectedConnectionId: data.connectionId,
     unsavedChanges: false
   };
 };
@@ -124,22 +129,19 @@ export const runQuery = store => async state => {
     connectionId: selectedConnectionId,
     connectionClientId: connectionClient && connectionClient.id,
     cacheKey,
-    queryId: query._id,
+    queryId: query.id,
     queryName: query.name,
     queryText: selectedText || query.queryText
   };
-  const { queryResult, error } = await fetchJson(
+  const { data, error } = await fetchJson(
     'POST',
     '/api/query-result',
     postData
   );
-  if (error) {
-    message.error(error);
-  }
   store.setState({
     isRunning: false,
     queryError: error,
-    queryResult
+    queryResult: data
   });
 };
 
@@ -154,9 +156,9 @@ export const saveQuery = store => async state => {
   const queryData = Object.assign({}, query, {
     connectionId: selectedConnectionId
   });
-  if (query._id) {
-    fetchJson('PUT', `/api/queries/${query._id}`, queryData).then(json => {
-      const { error, query } = json;
+  if (query.id) {
+    fetchJson('PUT', `/api/queries/${query.id}`, queryData).then(json => {
+      const { error, data } = json;
       const { queries } = store.getState();
       if (error) {
         message.error(error);
@@ -164,20 +166,20 @@ export const saveQuery = store => async state => {
         return;
       }
       message.success('Query Saved');
-      removeLocalQueryText(query._id);
+      removeLocalQueryText(data.id);
       const updatedQueries = queries.map(q => {
-        return q._id === query._id ? query : q;
+        return q.id === data.id ? data : q;
       });
       store.setState({
         isSaving: false,
         unsavedChanges: false,
-        query,
+        query: data,
         queries: updatedQueries
       });
     });
   } else {
     fetchJson('POST', `/api/queries`, queryData).then(json => {
-      const { error, query } = json;
+      const { error, data } = json;
       const { queries } = store.getState();
       if (error) {
         message.error(error);
@@ -186,16 +188,16 @@ export const saveQuery = store => async state => {
       }
       window.history.replaceState(
         {},
-        query.name,
-        `${window.BASE_URL}/queries/${query._id}`
+        data.name,
+        `${window.BASE_URL}/queries/${data.id}`
       );
       message.success('Query Saved');
-      removeLocalQueryText(query._id);
+      removeLocalQueryText(data.id);
       store.setState({
         isSaving: false,
         unsavedChanges: false,
-        query,
-        queries: [query].concat(queries)
+        query: data,
+        queries: [data].concat(queries)
       });
     });
   }
@@ -203,7 +205,7 @@ export const saveQuery = store => async state => {
 
 export const handleCloneClick = state => {
   const { query } = state;
-  delete query._id;
+  delete query.id;
   const name = 'Copy of ' + query.name;
   window.history.replaceState({}, name, `${window.BASE_URL}/queries/new`);
   return { query: { ...query, name }, unsavedChanges: true };
@@ -221,7 +223,7 @@ export const resetNewQuery = state => {
 export const setQueryState = (state, field, value) => {
   const { query } = state;
   if (field === 'queryText') {
-    setLocalQueryText(query._id, value);
+    setLocalQueryText(query.id, value);
   }
   return { query: { ...query, [field]: value }, unsavedChanges: true };
 };

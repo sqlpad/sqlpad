@@ -15,17 +15,19 @@ import { loadSchemaInfo, toggleSchemaItem } from '../stores/schema';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
+import ErrorBlock from '../common/ErrorBlock';
 
 const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
 
 function mapStateToProps(state, props) {
-  const { loading, schemaInfo, expanded } =
+  const { loading, schemaInfo, expanded, error } =
     (state.schema && state.schema[state.selectedConnectionId]) || {};
   return {
     expanded,
     connectionId: state.selectedConnectionId,
     schemaInfo: schemaInfo || {},
+    error,
     loading
   };
 }
@@ -42,6 +44,7 @@ function SchemaSidebar({
   connectionId,
   loadSchemaInfo,
   schemaInfo,
+  error,
   loading,
   toggleSchemaItem
 }) {
@@ -115,6 +118,34 @@ function SchemaSidebar({
     }
   };
 
+  let content = null;
+  if (error) {
+    content = <ErrorBlock>{error}</ErrorBlock>;
+  } else if (loading) {
+    content = (
+      <div className={styles.schemaSpinner}>
+        <SpinKitCube />
+      </div>
+    );
+  } else if (true) {
+    content = (
+      <ul style={{ paddingLeft: 0 }}>
+        <List
+          // position absolute takes list out of flow,
+          // preventing some weird react-measure behavior in Firefox
+          style={{ position: 'absolute' }}
+          height={dimensions.height}
+          itemCount={visibleItems.length}
+          itemSize={22}
+          width={dimensions.width}
+          overscanCount={10}
+        >
+          {Row}
+        </List>
+      </ul>
+    );
+  }
+
   return (
     <Measure
       bounds
@@ -155,26 +186,7 @@ function SchemaSidebar({
                 width: '100%'
               }}
             >
-              {loading ? (
-                <div className={styles.schemaSpinner}>
-                  <SpinKitCube />
-                </div>
-              ) : (
-                <ul style={{ paddingLeft: 0 }}>
-                  <List
-                    // position absolute takes list out of flow,
-                    // preventing some weird react-measure behavior in Firefox
-                    style={{ position: 'absolute' }}
-                    height={dimensions.height}
-                    itemCount={visibleItems.length}
-                    itemSize={22}
-                    width={dimensions.width}
-                    overscanCount={10}
-                  >
-                    {Row}
-                  </List>
-                </ul>
-              )}
+              {content}
             </div>
           </div>
         </Sidebar>

@@ -1,5 +1,4 @@
 {
-  "debug": true,
   "admin": "admin@sqlpad.com",
   "adminPassword": "admin",
   "appLogLevel": "info",

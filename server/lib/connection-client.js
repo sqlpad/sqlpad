@@ -22,6 +22,11 @@ class ConnectionClient {
     this.id = uuidv4();
     this.connection = renderConnection(connection, user);
     this.driver = drivers[connection.driver];
+
+    if (!this.driver) {
+      throw new Error('Invalid driver');
+    }
+
     this.user = user;
     this.Client = this.driver.Client;
     this.connectedAt = null;
@@ -192,9 +197,9 @@ class ConnectionClient {
     const queryContext = {
       connectionClientId: this.id,
       driver: connection.driver,
-      userId: user && user._id,
+      userId: user && user.id,
       userEmail: user && user.email,
-      connectionId: connection._id,
+      connectionId: connection.id,
       connectionName,
       query,
       startTime: finalResult.startTime
@@ -235,7 +240,7 @@ class ConnectionClient {
       appLog.warn(
         {
           driver: connection.driver,
-          connectionId: connection._id,
+          connectionId: connection.id,
           connectionName,
           query
         },

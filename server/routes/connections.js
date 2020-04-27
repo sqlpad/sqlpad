@@ -1,80 +1,103 @@
 const router = require('express').Router();
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const sendError = require('../lib/send-error');
+const wrap = require('../lib/wrap');
 
 function removePassword(connection) {
   connection.password = '';
+  if (connection.data && connection.data.password) {
+    connection.data.password = '';
+  }
   return connection;
 }
 
-router.get('/api/connections', mustBeAuthenticated, async function(req, res) {
-  const { models } = req;
-  try {
+router.get(
+  '/api/connections',
+  mustBeAuthenticated,
+  wrap(async function(req, res) {
+    const { models } = req;
     const docs = await models.connections.findAll();
-    return res.json({
-      connections: docs.map(removePassword)
-    });
-  } catch (error) {
-    sendError(res, error, 'Problem querying connection database');
-  }
-});
 
-router.get('/api/connections/:_id', mustBeAuthenticated, async function(
-  req,
-  res
-) {
-  const { models } = req;
-  try {
-    const connection = await models.connections.findOneById(req.params._id);
+    // Only send client the common fields that won't have any sensitive info
+    const summaries = docs.map(doc => {
+      const {
+        id,
+        name,
+        driver,
+        editable,
+        createdAt,
+        updatedAt,
+        supportsConnectionClient,
+        multiStatementTransactionEnabled,
+        idleTimeoutSeconds
+      } = doc;
+      return {
+        id,
+        name,
+        driver,
+        editable,
+        createdAt,
+        updatedAt,
+        supportsConnectionClient,
+        multiStatementTransactionEnabled,
+        idleTimeoutSeconds
+      };
+    });
+
+    return res.utils.data(summaries);
+  })
+);
+
+router.get(
+  '/api/connections/:id',
+  mustBeAdmin,
+  wrap(async function(req, res) {
+    const { models } = req;
+    const connection = await models.connections.findOneById(req.params.id);
     if (!connection) {
-      return sendError(res, null, 'Connection not found');
+      return res.utils.data();
     }
-    return res.json({
-      connection: removePassword(connection)
-    });
-  } catch (error) {
-    sendError(res, error, 'Problem querying connection database');
-  }
-});
+    return res.utils.data(removePassword(connection));
+  })
+);
 
-router.post('/api/connections', mustBeAdmin, async function(req, res) {
-  const { models } = req;
-  try {
-    const newConnection = await models.connections.save(req.body);
-    return res.json({
-      connection: removePassword(newConnection)
-    });
-  } catch (error) {
-    sendError(res, error, 'Problem saving connection');
-  }
-});
+router.post(
+  '/api/connections',
+  mustBeAdmin,
+  wrap(async function(req, res) {
+    const { models } = req;
+    const newConnection = await models.connections.create(req.body);
+    return res.utils.data(removePassword(newConnection));
+  })
+);
 
-router.put('/api/connections/:_id', mustBeAdmin, async function(req, res) {
-  const { models } = req;
-  try {
-    let connection = await models.connections.findOneById(req.params._id);
+router.put(
+  '/api/connections/:id',
+  mustBeAdmin,
+  wrap(async function(req, res) {
+    const { models } = req;
+    let connection = await models.connections.findOneById(req.params.id);
     if (!connection) {
-      return sendError(res, null, 'Connection not found');
+      return res.utils.notFound();
     }
     Object.assign(connection, req.body);
-    connection = await models.connections.save(connection);
-    return res.json({
-      connection: removePassword(connection)
-    });
-  } catch (error) {
-    sendError(res, error, 'Problem saving connection');
-  }
-});
+    connection = await models.connections.update(req.params.id, connection);
+    return res.utils.data(removePassword(connection));
+  })
+);
 
-router.delete('/api/connections/:_id', mustBeAdmin, async function(req, res) {
-  const { models } = req;
-  try {
-    await models.connections.removeOneById(req.params._id);
-    return res.json({});
-  } catch (error) {
-    sendError(res, error, 'Problem deleting connection');
-  }
-});
+router.delete(
+  '/api/connections/:id',
+  mustBeAdmin,
+  wrap(async function(req, res) {
+    const { models, params } = req;
+    let connection = await models.connections.findOneById(params.id);
+    if (!connection) {
+      return res.utils.notFound();
+    }
+    await models.connections.removeOneById(params.id);
+    return res.utils.data();
+  })
+);
 
 module.exports = router;

@@ -14,18 +14,18 @@ describe('lib/connection-clients', function() {
   before(async function() {
     await utils.init(true);
 
-    const connBody = await utils.post('admin', '/api/connections', {
+    connection1 = await utils.post('admin', '/api/connections', {
       driver: 'sqlite',
       name: 'connection-client-test',
-      filename: path.join(
-        __dirname,
-        '../artifacts/connection-client-test.sqlite'
-      ),
+      data: {
+        filename: path.join(
+          __dirname,
+          '../artifacts/connection-client-test.sqlite'
+        )
+      },
       idleTimeoutSeconds: 1,
       multiStatementTransactionEnabled: true
     });
-
-    connection1 = connBody.connection;
   });
 
   it('Keep-alive keeps it alive', async function() {

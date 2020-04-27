@@ -91,10 +91,9 @@ const configItems = [
     default: ''
   },
   {
-    key: 'debug',
-    envVar: 'SQLPAD_DEBUG',
-    default: false,
-    deprecated: 'To be removed in v5. Set app/web log levels to debug instead.'
+    key: 'defaultConnectionId',
+    envVar: 'SQLPAD_DEFAULT_CONNECTION_ID',
+    default: ''
   },
   {
     key: 'defaultConnectionId',
@@ -150,13 +149,6 @@ const configItems = [
     key: 'slackWebhook',
     envVar: 'SQLPAD_SLACK_WEBHOOK',
     default: ''
-  },
-  {
-    key: 'tableChartLinksRequireAuth',
-    envVar: 'SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH',
-    default: true,
-    deprecated:
-      'To be removed in v5. Use reverse-proxy and alternative auth mechanism such as auth-proxy to authenticate user passively instead (or open GitHub issue requesting per-query public sharing links feature).'
   },
   {
     key: 'smtpFrom',

@@ -1,18 +1,12 @@
 const consts = require('../lib/consts');
 const { Op } = require('sequelize');
 
-// NOTE - because QueryAcl is driven off of Sequelize ORM model
-// and not nedb (which is schemaless) I am skipping defining a Joi schema here.
-// For info on what QueryAcl schema is, see sequelize/QueryAcl.js
-
 class QueryAcl {
   /**
-   * @param {*} nedb
-   * @param {*} sequelizeDb
+   * @param {import('../sequelize-db')} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, sequelizeDb, config) {
-    this.nedb = nedb;
+  constructor(sequelizeDb, config) {
     this.sequelizeDb = sequelizeDb;
     this.config = config;
   }
@@ -25,7 +19,7 @@ class QueryAcl {
     return this.sequelizeDb.QueryAcl.findAll({
       where: {
         [Op.or]: [
-          { userId: user._id },
+          { userId: user.id },
           { userEmail: user.email },
           { groupId: consts.EVERYONE_ID }
         ]

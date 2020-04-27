@@ -22,7 +22,7 @@ function ServiceTokenList({ currentUser }) {
     if (json.error) {
       message.error(json.error);
     } else {
-      setServiceTokens(json.serviceTokens);
+      setServiceTokens(json.data);
     }
   };
 
@@ -40,7 +40,7 @@ function ServiceTokenList({ currentUser }) {
       `/api/service-tokens/${serviceTokenId}`
     );
     if (json.error) {
-      return message.error('Delete failed: ' + json.error.toString());
+      return message.error('Delete failed: ' + json.error);
     }
     loadServiceTokensFromServer();
   };
@@ -87,7 +87,7 @@ function ServiceTokenList({ currentUser }) {
         );
 
         return (
-          <ListItem key={item._id}>
+          <ListItem key={item.id}>
             <div style={{ flexGrow: 1, padding: 8 }}>
               <b>Name:</b> {item.name}
               <br />

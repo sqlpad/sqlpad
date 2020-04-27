@@ -27,7 +27,7 @@ function AppHeaderAdminSection({ currentUser }) {
   }
 
   let hideButton = false;
-  if (currentUser._id === 'noauth') {
+  if (currentUser.id === 'noauth') {
     hideButton = true;
   }
 

@@ -17,6 +17,6 @@ module.exports = [
     if (connectionAccess) {
       return next();
     }
-    return res.status(200).json({ error: 'No access to this connection' });
+    return res.utils.forbidden();
   }
 ];

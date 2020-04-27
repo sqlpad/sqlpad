@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt-nodejs');
+const bcrypt = require('bcryptjs');
 
 /**
  * Compares password string to passhash string
@@ -7,25 +7,17 @@ const bcrypt = require('bcrypt-nodejs');
  * @returns {Promise<boolean>}
  */
 function comparePassword(password, passhash) {
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(password, passhash, (err, isMatch) => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(isMatch);
-    });
-  });
+  return bcrypt.compare(password, passhash);
 }
 
-function getPasshash(password) {
-  return new Promise((resolve, reject) => {
-    bcrypt.hash(password, null, null, (err, hash) => {
-      if (err) {
-        return reject(err);
-      }
-      return resolve(hash);
-    });
-  });
+/**
+ * Returns bcrypt hash of password
+ * @param {string} password
+ */
+async function getPasshash(password) {
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(password, salt);
+  return hash;
 }
 
 module.exports = {

@@ -7,12 +7,12 @@ export default function getDecoratedQueries(queries, connections) {
   // Create index of lookups
   // TODO this should come from API
   const connectionsById = connections.reduce((connMap, connection) => {
-    connMap[connection._id] = connection;
+    connMap[connection.id] = connection;
     return connMap;
   }, {});
 
   return queries.map(query => {
-    query.key = query._id;
+    query.key = query.id;
 
     const connection = connectionsById[query.connectionId];
     query.connectionName = connection ? connection.name : '';

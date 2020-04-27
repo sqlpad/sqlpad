@@ -22,12 +22,12 @@ function QueryChartOnly({ queryId }) {
       setQueryError(queryJson.error);
       return;
     }
-    setQuery(queryJson.query);
+    setQuery(queryJson.data);
 
     const resultJson = await fetchJson('GET', '/api/query-result/' + queryId);
     setIsRunning(false);
     setQueryError(resultJson.error);
-    setQueryResult(resultJson.queryResult);
+    setQueryResult(resultJson.data);
   };
 
   useEffect(() => {

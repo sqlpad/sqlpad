@@ -11,6 +11,8 @@ const Config = require('./lib/config');
 const { makeDb, getDb } = require('./lib/db');
 const migrate = require('./lib/migrate');
 const loadSeedData = require('./lib/load-seed-data');
+const ensureAdmin = require('./lib/ensure-admin');
+const ensureConnectionAccess = require('./lib/ensure-connection-access');
 
 // Parse command line flags to see if anything special needs to happen
 require('./lib/cli-flow.js');
@@ -22,14 +24,15 @@ appLog.setLevel(config.get('appLogLevel'));
 appLog.debug(config.get(), 'Final config values');
 appLog.debug(config.getConnections(), 'Connections from config');
 
-makeDb(config);
-
+// Validate configuration and warn/error as appropriate
 const configValidations = config.getValidations();
 configValidations.warnings.map(warning => appLog.warn(warning));
 if (configValidations.errors.length > 0) {
   configValidations.errors.forEach(error => appLog.error(error));
   process.exit(1);
 }
+
+makeDb(config);
 
 const baseUrl = config.get('baseUrl');
 const ip = config.get('ip');
@@ -87,6 +90,12 @@ async function startServer() {
 
   // Load seed data after migrations
   await loadSeedData(appLog, config, models);
+
+  // Ensure admin is set if configured
+  await ensureAdmin(models, config);
+
+  // Create a connection accesses entry for everyone if set
+  await ensureConnectionAccess(sequelizeDb, config);
 
   // Create expressjs app
   const app = makeApp(config, models);

@@ -15,7 +15,7 @@ export function toggleSchema(state) {
 }
 
 export const loadSchemaInfo = store => async (state, connectionId, reload) => {
-  const { schema } = state;
+  const { schema, showSchema } = state;
   if (!schema[connectionId] || reload) {
     store.setState({
       schema: {
@@ -32,24 +32,30 @@ export const loadSchemaInfo = store => async (state, connectionId, reload) => {
       'GET',
       `/api/schema-info/${connectionId}${qs}`
     );
-    const { error, schemaInfo } = json;
+    const { error, data } = json;
     if (error) {
       store.setState({
         schema: {
           ...schema,
           [connectionId]: {
-            loading: false
+            loading: false,
+            error
           }
         }
       });
-      return message.error(error);
+      // If sidebar is not shown, send error notification
+      // It is otherwise shown in sidebar where schema would be
+      if (!showSchema) {
+        message.error(error);
+      }
+      return;
     }
-    updateCompletions(schemaInfo);
+    updateCompletions(data);
 
     // Pre-expand schemas
     const expanded = {};
-    if (schemaInfo) {
-      Object.keys(schemaInfo).forEach(schemaName => {
+    if (data) {
+      Object.keys(data).forEach(schemaName => {
         expanded[schemaName] = true;
       });
     }
@@ -59,7 +65,8 @@ export const loadSchemaInfo = store => async (state, connectionId, reload) => {
         ...schema,
         [connectionId]: {
           loading: false,
-          schemaInfo,
+          schemaInfo: data,
+          error: null,
           expanded
         }
       }

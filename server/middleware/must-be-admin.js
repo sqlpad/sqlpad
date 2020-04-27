@@ -6,6 +6,6 @@ module.exports = [
     if (req.user.role === 'admin') {
       return next();
     }
-    return res.status(403).json({ error: 'Forbidden' });
+    return res.utils.forbidden();
   }
 ];

@@ -1,67 +1,42 @@
 const router = require('express').Router();
-const { v4: uuidv4 } = require('uuid');
-const getMeta = require('../lib/get-meta');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const urlFilterToNeDbFilter = require('../lib/url-filter-to-nedb-filter');
-const sendError = require('../lib/send-error');
+const urlFilterToDbFilter = require('../lib/url-filter-to-db-filter');
+const wrap = require('../lib/wrap');
 
-router.get('/api/query-history', mustBeAuthenticated, async function(req, res) {
-  const { models } = req;
-  try {
-    const queryHistory = {
-      id: uuidv4(),
-      cacheKey: null,
-      startTime: new Date(),
-      stopTime: null,
-      queryRunTime: null,
-      fields: [],
-      incomplete: false,
-      meta: {},
-      rows: []
-    };
+router.get(
+  '/api/query-history',
+  mustBeAuthenticated,
+  wrap(async function(req, res) {
+    const { models } = req;
 
-    // Convert URL filter to NeDB compatible filter object
-    const dbFilter = urlFilterToNeDbFilter(req.query.filter);
+    // Convert URL filter to Sequelize compatible filter object
+    const dbFilter = urlFilterToDbFilter(req.query.filter);
     const dbQueryHistory = await models.queryHistory.findByFilter(dbFilter);
 
-    dbQueryHistory.map(q => {
-      delete q._id;
+    const rows = dbQueryHistory.map(q => {
+      delete q.id;
       delete q.userId;
       delete q.connectionId;
       return q;
     });
 
-    queryHistory.incomplete =
-      dbQueryHistory.length >= req.config.get('queryHistoryResultMaxRows');
-    queryHistory.rows = dbQueryHistory;
-    queryHistory.stopTime = new Date();
-    queryHistory.queryRunTime =
-      dbQueryHistory.stopTime - dbQueryHistory.startTime;
-    queryHistory.meta = getMeta(dbQueryHistory);
-    queryHistory.fields = Object.keys(queryHistory.meta);
+    return res.utils.data(rows);
+  })
+);
 
-    return res.json({ queryHistory });
-  } catch (error) {
-    sendError(res, error, error.message);
-  }
-});
-
-router.get('/api/query-history/:_id', mustBeAuthenticated, async function(
-  req,
-  res
-) {
-  const { models } = req;
-  try {
+router.get(
+  '/api/query-history/:id',
+  mustBeAuthenticated,
+  wrap(async function(req, res) {
+    const { models } = req;
     const queryHistoryItem = await models.queryHistory.findOneById(
-      req.params._id
+      req.params.id
     );
     if (!queryHistoryItem) {
-      return sendError(res, null, 'Query history item not found');
+      return res.utils.notFound();
     }
-    return res.json({ queryHistoryItem });
-  } catch (error) {
-    sendError(res, error, 'Problem querying query history database');
-  }
-});
+    return res.utils.data(queryHistoryItem);
+  })
+);
 
 module.exports = router;

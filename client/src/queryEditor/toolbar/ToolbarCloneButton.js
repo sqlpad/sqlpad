@@ -6,7 +6,7 @@ import { handleCloneClick } from '../../stores/queries';
 
 function mapStateToProps(state) {
   return {
-    queryId: state.query && state.query._id
+    queryId: state.query && state.query.id
   };
 }
 

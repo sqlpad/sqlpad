@@ -25,10 +25,6 @@ async function getItemDirectoryData(appLog, seedDataPath, dir) {
       const data = fs.readFileSync(filePath, 'utf8');
       try {
         const parsed = JSON.parse(data);
-        if (parsed.id) {
-          parsed._id = parsed.id;
-          delete parsed.id;
-        }
         items.push(parsed);
       } catch (error) {
         appLog.error(error, 'Error reading and parsing seed data %s', filePath);
@@ -56,7 +52,7 @@ async function loadSeedData(appLog, config, models) {
 
   const queries = await getItemDirectoryData(appLog, seedDataPath, 'queries');
   for (const query of queries) {
-    const existing = await models.queries.findOneById(query._id);
+    const existing = await models.queries.findOneById(query.id);
     const data = { ...existing, ...query };
     await models.upsertQuery(data);
   }
@@ -68,8 +64,11 @@ async function loadSeedData(appLog, config, models) {
   );
   for (const connection of connections) {
     const existing = await models.connections.findOneById(connection.id);
-    const data = { ...existing, ...connection };
-    await models.connections.save(data);
+    if (existing) {
+      await models.connections.update(existing.id, connection);
+    } else {
+      await models.connections.create(connection);
+    }
   }
 }
 

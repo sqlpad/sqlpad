@@ -20,9 +20,9 @@ function UserList({ currentUser }) {
     if (json.error) {
       message.error(json.error);
     }
-    if (json.users) {
-      const users = json.users.map(user => {
-        user.key = user._id;
+    if (json.data) {
+      const users = json.data.map(user => {
+        user.key = user.id;
         return user;
       });
       setUsers(users);
@@ -35,9 +35,9 @@ function UserList({ currentUser }) {
   }, []);
 
   const handleDelete = async user => {
-    const json = await fetchJson('DELETE', '/api/users/' + user._id);
+    const json = await fetchJson('DELETE', '/api/users/' + user.id);
     if (json.error) {
-      return message.error('Delete Failed: ' + json.error.toString());
+      return message.error('Delete Failed: ' + json.error);
     }
     loadUsersFromServer();
   };
@@ -62,7 +62,7 @@ function UserList({ currentUser }) {
       {users.map(user => {
         const actions = [];
 
-        if (currentUser && currentUser._id !== user._id) {
+        if (currentUser && currentUser.id !== user.id) {
           actions.push(
             <Button
               key="edit"
@@ -84,14 +84,14 @@ function UserList({ currentUser }) {
           );
         }
 
-        const userSignupInfo = !user.signupDate ? (
+        const userSignupInfo = !user.signupAt ? (
           <em> - not signed up yet</em>
         ) : (
           ''
         );
 
         return (
-          <ListItem key={user._id}>
+          <ListItem key={user.id}>
             <div style={{ flexGrow: 1, padding: 8 }}>
               {user.email}
               <br />

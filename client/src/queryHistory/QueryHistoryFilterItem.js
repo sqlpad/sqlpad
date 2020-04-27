@@ -17,11 +17,14 @@ const QueryHistoryFilterItem = ({
     notEqual: { key: 'ne', label: 'Not equal' },
     before: { key: 'before', label: 'Before' },
     after: { key: 'after', label: 'After' },
-    regex: { key: 'regex', label: 'Contains' }
+    contains: { key: 'contains', label: 'Contains' }
   };
   const fields = {
-    userEmail: { label: 'userEmail', operators: [operators.regex] },
-    connectionName: { label: 'connectionName', operators: [operators.regex] },
+    userEmail: { label: 'userEmail', operators: [operators.contains] },
+    connectionName: {
+      label: 'connectionName',
+      operators: [operators.contains]
+    },
     startTime: {
       label: 'startTime',
       operators: [operators.before, operators.after]
@@ -30,9 +33,9 @@ const QueryHistoryFilterItem = ({
       label: 'queryRunTime',
       operators: [operators.greaterThan, operators.lowerThan]
     },
-    queryId: { label: 'queryId', operators: [operators.regex] },
-    queryName: { label: 'queryName', operators: [operators.regex] },
-    queryText: { label: 'queryText', operators: [operators.regex] },
+    queryId: { label: 'queryId', operators: [operators.contains] },
+    queryName: { label: 'queryName', operators: [operators.contains] },
+    queryText: { label: 'queryText', operators: [operators.contains] },
     rowCount: {
       label: 'rowCount',
       operators: [

@@ -1,35 +1,17 @@
-const Joi = require('@hapi/joi');
 const consts = require('../lib/consts');
-
-const schema = Joi.object({
-  _id: Joi.string().optional(), // will be auto-gen by nedb
-  connectionId: Joi.string().required(),
-  connectionName: Joi.string().required(),
-  userId: Joi.string().required(),
-  userEmail: Joi.string().required(),
-  duration: Joi.number()
-    .integer()
-    .min(900)
-    .max(86400)
-    .default(0),
-  expiryDate: Joi.date().default(Date.now),
-  createdDate: Joi.date().default(Date.now),
-  modifiedDate: Joi.date().default(Date.now)
-});
+const { Op } = require('sequelize');
 
 class ConnectionAccesses {
   /**
-   * @param {*} nedb
-   * @param {*} sequelizeDb
+   * @param {import('../sequelize-db')} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, sequelizeDb, config) {
-    this.nedb = nedb;
+  constructor(sequelizeDb, config) {
     this.sequelizeDb = sequelizeDb;
     this.config = config;
   }
 
-  async save(data) {
+  async create(data) {
     if (!data.connectionId) {
       throw new Error('connectionId required when saving connection access');
     }
@@ -44,25 +26,15 @@ class ConnectionAccesses {
       data.expiryDate = new Date().setFullYear(2099);
     }
 
-    const joiResult = schema.validate(data);
-    if (joiResult.error) {
-      return Promise.reject(joiResult.error);
-    }
+    await this.sequelizeDb.ConnectionAccesses.create({
+      connectionId: data.connectionId,
+      connectionName: data.connectionName,
+      userId: data.userId,
+      userEmail: data.userEmail,
+      duration: data.duration,
+      expiryDate: data.expiryDate
+    });
 
-    await this.nedb.connectionAccesses.update(
-      {
-        connectionId: data.connectionId,
-        connectionName: data.connectionName,
-        userId: data.userId,
-        userEmail: data.userEmail,
-        duration: data.duration,
-        expiryDate: data.expiryDate
-      },
-      joiResult.value,
-      {
-        upsert: true
-      }
-    );
     return this.findOneActiveByConnectionIdAndUserId(
       data.connectionId,
       data.userId
@@ -70,77 +42,80 @@ class ConnectionAccesses {
   }
 
   async expire(id) {
-    const connectionAccess = await this.nedb.connectionAccesses.findOne({
-      _id: id
+    const connectionAccess = await this.sequelizeDb.ConnectionAccesses.findOne({
+      where: { id }
     });
     if (!connectionAccess) {
       throw new Error('Connection access not found');
     }
-
-    connectionAccess.expiryDate = new Date();
-    connectionAccess.modifiedDate = new Date();
-
-    await this.nedb.connectionAccesses.update({ _id: id }, connectionAccess);
+    await this.sequelizeDb.ConnectionAccesses.update(
+      { expiryDate: new Date() },
+      { where: { id } }
+    );
     return this.findOneById(id);
   }
 
   findOneById(id) {
-    return this.nedb.connectionAccesses.findOne({ _id: id });
+    return this.sequelizeDb.ConnectionAccesses.findOne({ where: { id } });
   }
 
   findOneActiveByConnectionIdAndUserId(connectionId, userId) {
-    return this.nedb.connectionAccesses.findOne({
-      $and: [
-        {
-          $or: [
-            {
-              connectionId: { $in: [connectionId, consts.EVERY_CONNECTION_ID] },
-              userId
+    const where = {
+      [Op.and]: {
+        [Op.or]: [
+          {
+            connectionId: {
+              [Op.in]: [connectionId, consts.EVERY_CONNECTION_ID]
             },
-            {
-              connectionId,
-              userId: { $in: [connectionId, consts.EVERYONE_ID] }
-            },
-            {
-              connectionId: consts.EVERY_CONNECTION_ID,
-              userId: consts.EVERYONE_ID
-            }
-          ],
-          expiryDate: { $gt: new Date() }
-        }
-      ]
-    });
+            userId
+          },
+          {
+            connectionId,
+            userId: { [Op.in]: [connectionId, consts.EVERYONE_ID] }
+          },
+          {
+            connectionId: consts.EVERY_CONNECTION_ID,
+            userId: consts.EVERYONE_ID
+          }
+        ]
+      },
+      expiryDate: { [Op.gt]: new Date() }
+    };
+
+    return this.sequelizeDb.ConnectionAccesses.findOne({ where });
   }
 
   findAllActiveByConnectionId(connectionId) {
-    return this.nedb.connectionAccesses.findOne({
-      connectionId: { $in: [connectionId, consts.EVERY_CONNECTION_ID] },
-      expiryDate: { $gt: new Date() }
-    });
+    const where = {
+      connectionId: { [Op.in]: [connectionId, consts.EVERY_CONNECTION_ID] },
+      expiryDate: { [Op.gt]: new Date() }
+    };
+
+    return this.sequelizeDb.ConnectionAccesses.findOne({ where });
   }
 
   findAllByConnectionId(connectionId) {
-    return this.nedb.connectionAccesses.findAll({
-      connectionId: { $in: [connectionId, consts.EVERY_CONNECTION_ID] }
-    });
+    const where = {
+      connectionId: { [Op.in]: [connectionId, consts.EVERY_CONNECTION_ID] }
+    };
+    return this.sequelizeDb.ConnectionAccesses.findAll({ where });
   }
 
   findAllActive() {
-    return this.nedb.connectionAccesses
-      .cfind({ expiryDate: { $gt: new Date() } })
-      .sort({ expiryDate: -1 })
-      .exec();
+    return this.sequelizeDb.ConnectionAccesses.findAll({
+      where: { expiryDate: { [Op.gt]: new Date() } },
+      order: [['expiryDate', 'DESC']]
+    });
   }
 
   findAll() {
-    return this.nedb.connectionAccesses
-      .cfind({}, {})
-      .sort({ expiryDate: -1 })
-      .exec();
+    return this.sequelizeDb.ConnectionAccesses.findAll({
+      order: [['expiryDate', 'DESC']]
+    });
   }
 
   removeById(id) {
-    return this.nedb.connectionAccesses.remove({ _id: id });
+    return this.sequelizeDb.ConnectionAccesses.destroy({ where: { id } });
   }
 }
 

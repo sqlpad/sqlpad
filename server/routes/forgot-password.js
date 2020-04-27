@@ -1,26 +1,27 @@
 const router = require('express').Router();
 const { v4: uuidv4 } = require('uuid');
 const makeEmail = require('../lib/email');
-const sendError = require('../lib/send-error');
+const wrap = require('../lib/wrap');
 
-router.post('/api/forgot-password', async function(req, res) {
-  const { models, appLog } = req;
-  if (!req.body.email) {
-    return sendError(res, null, 'Email address must be provided');
-  }
-  if (!req.config.smtpConfigured()) {
-    return sendError(res, null, 'Email must be configured');
-  }
+router.post(
+  '/api/forgot-password',
+  wrap(async function(req, res) {
+    const { models, appLog } = req;
+    if (!req.body.email) {
+      return res.utils.error('Email address must be provided');
+    }
+    if (!req.config.smtpConfigured()) {
+      return res.utils.error('Email must be configured');
+    }
 
-  const email = makeEmail(req.config);
+    const email = makeEmail(req.config);
 
-  try {
     const user = await models.users.findOneByEmail(req.body.email);
 
     // If user not found send success regardless
     // This is not a user-validation service
     if (!user) {
-      return res.json({});
+      return res.utils.data();
     }
 
     user.passwordResetId = uuidv4();
@@ -33,10 +34,8 @@ router.post('/api/forgot-password', async function(req, res) {
       .sendForgotPassword(req.body.email, resetPath)
       .catch(error => appLog.error(error));
 
-    return res.json({});
-  } catch (error) {
-    sendError(res, error, 'Problem saving user');
-  }
-});
+    return res.utils.data();
+  })
+);
 
 module.exports = router;

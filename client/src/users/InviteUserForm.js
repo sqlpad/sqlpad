@@ -24,7 +24,7 @@ function InviteUserForm({ onInvited }) {
     const json = await fetchJson('POST', '/api/users', user);
     setIsInviting(false);
     if (json.error) {
-      message.error('Add user failed: ' + json.error.toString());
+      message.error('Add user failed: ' + json.error);
       return false;
     }
     setEmail(null);

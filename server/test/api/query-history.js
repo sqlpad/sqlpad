@@ -1,6 +1,7 @@
 const assert = require('assert');
+const { Op } = require('sequelize');
 const TestUtils = require('../utils');
-const urlFilterToNeDbFilter = require('../../lib/url-filter-to-nedb-filter');
+const urlFilterToDbFilter = require('../../lib/url-filter-to-db-filter');
 
 const queryText1 = `
   -- QUERY1
@@ -26,110 +27,102 @@ describe('api/query-history', function() {
   before(async function() {
     await utils.init(true);
 
-    const connBody = await utils.post('admin', '/api/connections', {
+    connection = await utils.post('admin', '/api/connections', {
       name: 'test postgres',
       driver: 'sqlite',
-      filename: './test/fixtures/sales.sqlite'
+      data: {
+        filename: './test/fixtures/sales.sqlite'
+      }
     });
-    connection = connBody.connection;
 
-    const body = await utils.post('admin', '/api/queries', {
+    query1 = await utils.post('admin', '/api/queries', {
       name: 'test query 1',
       tags: ['test', 'postgres'],
-      connectionId: connection._id,
+      connectionId: connection.id,
       queryText: queryText1
     });
-    query1 = body.query;
   });
 
   it('Convert URL filters to NeDB compatibles', function() {
     // String operators
-    assert.deepEqual(urlFilterToNeDbFilter('field1|regex|myPattern'), {
-      $and: [{ field1: { $regex: new RegExp('myPattern') } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|regex|myPattern'), {
+      [Op.and]: [{ field1: { [Op.regexp]: new RegExp('myPattern') } }]
     });
 
     // Numeric operators
-    assert.deepEqual(urlFilterToNeDbFilter('field1|lt|123'), {
-      $and: [{ field1: { $lt: 123 } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|lt|123'), {
+      [Op.and]: [{ field1: { [Op.lt]: 123 } }]
     });
-    assert.deepEqual(urlFilterToNeDbFilter('field1|gt|123'), {
-      $and: [{ field1: { $gt: 123 } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|gt|123'), {
+      [Op.and]: [{ field1: { [Op.gt]: 123 } }]
     });
-    assert.deepEqual(urlFilterToNeDbFilter('field1|ne|123'), {
-      $and: [{ field1: { $ne: 123 } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|ne|123'), {
+      [Op.and]: [{ field1: { [Op.ne]: 123 } }]
     });
-    assert.deepEqual(urlFilterToNeDbFilter('field1|eq|123'), {
-      $and: [{ field1: 123 }]
+    assert.deepEqual(urlFilterToDbFilter('field1|eq|123'), {
+      [Op.and]: [{ field1: 123 }]
     });
 
     // Datetime operators
-    assert.deepEqual(urlFilterToNeDbFilter('field1|before|2020-03-01'), {
-      $and: [{ field1: { $lt: new Date('2020-03-01') } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|before|2020-03-01'), {
+      [Op.and]: [{ field1: { [Op.lt]: new Date('2020-03-01') } }]
     });
-    assert.deepEqual(
-      urlFilterToNeDbFilter('field1|before|2020-03-01 00:00:00'),
-      {
-        $and: [{ field1: { $lt: new Date('2020-03-01 00:00:00') } }]
-      }
-    );
-    assert.deepEqual(urlFilterToNeDbFilter('field1|after|2020-03-01'), {
-      $and: [{ field1: { $gt: new Date('2020-03-01') } }]
+    assert.deepEqual(urlFilterToDbFilter('field1|before|2020-03-01 00:00:00'), {
+      [Op.and]: [{ field1: { [Op.lt]: new Date('2020-03-01 00:00:00') } }]
     });
-    assert.deepEqual(
-      urlFilterToNeDbFilter('field1|after|2020-03-01 00:00:00'),
-      {
-        $and: [{ field1: { $gt: new Date('2020-03-01 00:00:00') } }]
-      }
-    );
+    assert.deepEqual(urlFilterToDbFilter('field1|after|2020-03-01'), {
+      [Op.and]: [{ field1: { [Op.gt]: new Date('2020-03-01') } }]
+    });
+    assert.deepEqual(urlFilterToDbFilter('field1|after|2020-03-01 00:00:00'), {
+      [Op.and]: [{ field1: { [Op.gt]: new Date('2020-03-01 00:00:00') } }]
+    });
 
     // Multiple filter conditions
     const multiUrlFilter =
       'field1|eq|500,field2|regex|myPattern,field3|before|2020-03-01';
-    assert.deepEqual(urlFilterToNeDbFilter(multiUrlFilter), {
-      $and: [
+    assert.deepEqual(urlFilterToDbFilter(multiUrlFilter), {
+      [Op.and]: [
         { field1: 500 },
-        { field2: { $regex: new RegExp('myPattern') } },
-        { field3: { $lt: new Date('2020-03-01') } }
+        { field2: { [Op.regexp]: new RegExp('myPattern') } },
+        { field3: { [Op.lt]: new Date('2020-03-01') } }
       ]
     });
   });
 
   it('Gets array of 0 items', async function() {
     const body = await utils.get('admin', '/api/query-history');
-    assert(!body.error, 'Expect no error');
-    assert(Array.isArray(body.queryHistory.rows), 'queryHistory is an array');
-    assert.equal(body.queryHistory.incomplete, false, 'Complete');
-    assert.equal(body.queryHistory.rows.length, 0, '0 length');
+    TestUtils.validateListSuccessBody(body);
+    assert.equal(body.length, 0, '0 length');
   });
 
   it('Gets array of 4 items', async function() {
     // Run some queries to generate query history by saved queries
-    await utils.get('admin', `/api/query-result/${query1._id}`);
-    await utils.get('admin', `/api/query-result/${query1._id}`);
+    await utils.get('admin', `/api/query-result/${query1.id}`);
+    await utils.get('admin', `/api/query-result/${query1.id}`);
 
     // Run some queries to generate query history directly from the query editor
     await utils.post('admin', `/api/query-result`, {
-      connectionId: connection._id,
+      connectionId: connection.id,
       cacheKey: 'cachekey',
       queryText: queryText2
     });
     await utils.post('admin', `/api/query-result`, {
-      connectionId: connection._id,
+      connectionId: connection.id,
       cacheKey: 'cachekey',
       queryText: queryText2
     });
 
     // Check if every query stored in query history
     const body = await utils.get('admin', '/api/query-history');
-    assert(!body.error, 'Expect no error');
-    assert(Array.isArray(body.queryHistory.rows), 'queryHistory is an array');
-    assert.equal(body.queryHistory.incomplete, false, 'Complete');
-    assert.equal(body.queryHistory.rows.length, 4, '4 length');
+    assert.equal(body.length, 4, '4 length');
 
     // Check if every history entry has every required key
-    const historyObjectKeys = [
-      'userEmail',
+    let historyObjectKeys = [
+      'id',
+      'connectionId',
       'connectionName',
+      'userId',
+      'userEmail',
       'startTime',
       'stopTime',
       'queryRunTime',
@@ -138,30 +131,24 @@ describe('api/query-history', function() {
       'queryText',
       'incomplete',
       'rowCount',
-      'createdDate'
+      'createdAt'
     ];
 
     // First and second two history items (reverse ordered) needs to free text query with queryId and queryName
-    assert.deepEqual(Object.keys(body.queryHistory.rows[3]), historyObjectKeys);
-    assert.deepEqual(Object.keys(body.queryHistory.rows[2]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body[3]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body[2]), historyObjectKeys);
 
     // Third and fourth history items (reverse ordered) needs to saved text query with no queryId and queryName
-    historyObjectKeys.splice(historyObjectKeys.indexOf('queryId'), 1);
-    historyObjectKeys.splice(historyObjectKeys.indexOf('queryName'), 1);
-    assert.deepEqual(Object.keys(body.queryHistory.rows[1]), historyObjectKeys);
-    assert.deepEqual(Object.keys(body.queryHistory.rows[0]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body[1]), historyObjectKeys);
+    assert.deepEqual(Object.keys(body[0]), historyObjectKeys);
   });
 
   it('Gets filtered array of 2 items', async function() {
     // Check if filters applied correctly
     const body = await utils.get(
       'admin',
-      '/api/query-history?filter=queryText|regex|QUERY2'
+      '/api/query-history?filter=queryText|like|%25QUERY2%25'
     );
-
-    assert(!body.error, 'Expect no error');
-    assert(Array.isArray(body.queryHistory.rows), 'queryHistory is an array');
-    assert.equal(body.queryHistory.incomplete, false, 'Complete');
-    assert.equal(body.queryHistory.rows.length, 2, '2 length');
+    assert.equal(body.length, 2, '2 length');
   });
 });

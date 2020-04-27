@@ -11,6 +11,7 @@ const favicon = require('serve-favicon');
 const passport = require('passport');
 const authStrategies = require('./auth-strategies');
 const sessionlessAuth = require('./middleware/sessionless-auth.js');
+const ResponseUtils = require('./lib/response-utils.js');
 const expressPinoLogger = require('express-pino-logger');
 
 /**
@@ -55,16 +56,16 @@ function makeApp(config, models) {
   app.use(helmet.xssFilter());
   app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
-  // Decorate req with app things
+  // Decorate req and res with SQLPad objects and utils
   app.use(function(req, res, next) {
     req.config = config;
     req.models = models;
     req.appLog = appLog;
+
+    res.utils = new ResponseUtils(res, next);
+
     next();
   });
-
-  const expressEnv = config.get('debug') ? 'development' : 'production';
-  app.set('env', expressEnv);
 
   app.use(expressPino);
   app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
@@ -81,7 +82,8 @@ function makeApp(config, models) {
   app.use(
     session({
       store: new FileStore({
-        path: sessionPath
+        path: sessionPath,
+        logFn: () => {}
       }),
       saveUninitialized: false,
       resave: true,
@@ -123,14 +125,10 @@ function makeApp(config, models) {
   // They do not persist a session
   app.use(sessionlessAuth);
 
-  const routers = [
-    // Mix of auth required or chart link
-    // Eventually the chart-link stuff can be removed or separated out
-    // and auth check can happen as middleware prior to these routes
+  const authRequiredRouters = [
     require('./routes/query-result.js'),
     require('./routes/download-results.js'),
     require('./routes/queries.js'),
-    // Auth required
     require('./routes/drivers.js'),
     require('./routes/users.js'),
     require('./routes/connections.js'),
@@ -145,7 +143,7 @@ function makeApp(config, models) {
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
-  routers.forEach(router => app.use(baseUrl, router));
+  authRequiredRouters.forEach(router => app.use(baseUrl, router));
 
   // Add '*/api/app' route last and without baseUrl
   app.use(require('./routes/app.js'));
@@ -154,7 +152,18 @@ function makeApp(config, models) {
   // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
   app.use(baseUrl + '/api/', function(req, res) {
     req.log.debug('reached catch all api route');
-    res.sendStatus(404);
+    return res.utils.notFound();
+  });
+
+  // Add an error handler for /api
+  app.use(baseUrl + '/api/', function(err, req, res, next) {
+    if (res.headersSent) {
+      return next(err);
+    }
+    appLog.error(err);
+    return res.status(500).json({
+      title: 'Internal Server Error'
+    });
   });
 
   // Anything else should render the client-side app

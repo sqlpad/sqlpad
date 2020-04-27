@@ -10,29 +10,20 @@ const db = require('../lib/db');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
 const loadSeedData = require('../lib/load-seed-data');
+const ensureConnectionAccess = require('../lib/ensure-connection-access');
 
-const TEST_ARTIFACTS_DIR = path.join(__dirname, '/artifacts');
-
-function clearArtifacts() {
-  mkdirp.sync(TEST_ARTIFACTS_DIR);
-  return new Promise((resolve, reject) => {
-    return rimraf(path.join(__dirname, '/artifacts/*'), err => {
-      if (err) {
-        return reject(err);
-      }
-      resolve();
-    });
-  });
-}
+// At the start of any test run, clean out the root artifacts directory
+before(function(done) {
+  rimraf(path.join(__dirname, '/artifacts/*'), done);
+});
 
 class TestUtils {
   constructor(args = {}) {
     const config = new Config(
       {
-        debug: true,
         // Despite being in-memory, still need a file path for cache and session files
         // Eventually these will be moved to sqlite and we can be fully-in-memory
-        dbPath: TEST_ARTIFACTS_DIR,
+        dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
         appLogLevel: 'silent',
         webLogLevel: 'silent',
@@ -58,21 +49,34 @@ class TestUtils {
 
     this.users = {
       admin: {
-        _id: undefined, // set if created
+        id: undefined, // set if created
         email: 'admin@test.com',
         role: 'admin'
       },
       editor: {
-        _id: undefined, // set if created
+        id: undefined, // set if created
         email: 'editor@test.com',
         role: 'editor'
       },
       editor2: {
-        _id: undefined, // set if created
+        id: undefined, // set if created
         email: 'editor2@test.com',
-        role: 'editor2'
+        role: 'editor'
       }
     };
+  }
+
+  prepDbDir() {
+    const dbPath = this.config.get('dbPath');
+    mkdirp.sync(dbPath);
+    return new Promise((resolve, reject) => {
+      return rimraf(path.join(dbPath, '*'), err => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
   }
 
   async initDbs() {
@@ -92,27 +96,36 @@ class TestUtils {
     );
   }
 
+  static validateErrorBody(body) {
+    assert(body.title, 'Error response has title');
+  }
+
+  static validateListSuccessBody(body) {
+    assert(Array.isArray(body), 'Body is an array');
+  }
+
   async loadSeedData() {
     await loadSeedData(this.appLog, this.config, this.models);
   }
 
   async addUserApiHelper(key, user) {
     const newUser = await this.models.users.create(user);
-    // If user already exists, update the _id, otherwise add new one (using the original data)
+    // If user already exists, update the id, otherwise add new one (using the original data)
     if (this.users[key]) {
-      this.users[key]._id = newUser._id;
+      this.users[key].id = newUser.id;
     } else {
       // We must use original user object passed in as it has the password. the response from .save() does not
-      this.users[key] = { ...user, _id: newUser._id };
+      this.users[key] = { ...user, id: newUser.id };
     }
     return newUser;
   }
 
   async init(withUsers) {
-    await clearArtifacts();
+    await this.prepDbDir();
     await this.initDbs();
     await this.migrate();
     await this.loadSeedData();
+    await ensureConnectionAccess(this.sequelizeDb, this.config);
 
     this.app = makeApp(this.config, this.models);
 

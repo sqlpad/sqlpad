@@ -1,14 +1,15 @@
-const passhash = require('./passhash');
 const appLog = require('./app-log');
 
 /**
  * Ensure admin email is a user if provided
  * If password is provided, update password
- * @param {object} nedb
- * @param {string} adminEmail
- * @param {string} adminPassword
+ * @param {import('../models')} models
+ * @param {import('./config')} config
  */
-async function ensureAdmin(nedb, adminEmail, adminPassword) {
+async function ensureAdmin(models, config) {
+  const adminEmail = config.get('admin');
+  const adminPassword = config.get('adminPassword');
+
   if (!adminEmail) {
     return;
   }
@@ -18,13 +19,13 @@ async function ensureAdmin(nedb, adminEmail, adminPassword) {
     // if so, set the admin to true
     // if not, whitelist the email address.
     // Then log that the person should visit the signup url to finish registration.
-    const user = await nedb.users.findOne({ email: adminEmail });
+    const user = await models.users.findOneByEmail(adminEmail);
     if (user) {
       const changes = { role: 'admin' };
       if (adminPassword) {
-        changes.passhash = await passhash.getPasshash(adminPassword);
+        changes.password = adminPassword;
       }
-      await nedb.users.update({ _id: user._id }, { $set: changes }, {});
+      await models.users.update(user.id, changes);
       appLog.info('Admin access granted to %s', adminEmail);
       return;
     }
@@ -34,9 +35,9 @@ async function ensureAdmin(nedb, adminEmail, adminPassword) {
       role: 'admin'
     };
     if (adminPassword) {
-      newAdmin.passhash = await passhash.getPasshash(adminPassword);
+      newAdmin.password = adminPassword;
     }
-    await nedb.users.insert(newAdmin);
+    await models.users.create(newAdmin);
     appLog.info('Admin access granted to %s', adminEmail);
     appLog.info('Please visit signup to complete registration.');
   } catch (error) {

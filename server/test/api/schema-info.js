@@ -38,10 +38,11 @@ describe('api/schema-info', function() {
     const body = await utils.post('admin', '/api/connections', {
       driver: 'sqlite',
       name: 'sqlite-test',
-      filename: './test/artifacts/{{user.data.dbfilename}}'
+      data: {
+        filename: './test/artifacts/{{user.data.dbfilename}}'
+      }
     });
-    assert(!body.error, 'no error');
-    connection = body.connection;
+    connection = body;
 
     // With user 1 create a table
     // Then with user 2 create a different table
@@ -54,22 +55,20 @@ describe('api/schema-info', function() {
   });
 
   it('Gets schema-info honoring connection templates', async function() {
-    const body1 = await utils.get(
-      'user1',
-      `/api/schema-info/${connection._id}`
-    );
-    assert(!body1.error, 'Expect no error');
-    assert(body1.schemaInfo, 'body.schemaInfo');
-    assert(body1.schemaInfo.main.user1, 'user1 table exists');
-    assert(!body1.schemaInfo.main.user2, 'user2 table does not exist');
+    const body1 = await utils.get('user1', `/api/schema-info/${connection.id}`);
+    assert(body1, 'body');
+    assert(body1.main.user1, 'user1 table exists');
+    assert(!body1.main.user2, 'user2 table does not exist');
 
-    const body2 = await utils.get(
-      'user2',
-      `/api/schema-info/${connection._id}`
-    );
-    assert(!body2.error, 'Expect no error');
-    assert(body2.schemaInfo, 'body.schemaInfo');
-    assert(!body2.schemaInfo.main.user1, 'user1 table does not exist');
-    assert(body2.schemaInfo.main.user2, 'user2 table exists');
+    const body2 = await utils.get('user2', `/api/schema-info/${connection.id}`);
+    assert(body2, 'body');
+    assert(!body2.main.user1, 'user1 table does not exist');
+    assert(body2.main.user2, 'user2 table exists');
+  });
+
+  it('Read from cache is successful', async function() {
+    const body1 = await utils.get('user1', `/api/schema-info/${connection.id}`);
+    assert(body1, 'body');
+    assert(body1.main.user1, 'user1 table exists');
   });
 });

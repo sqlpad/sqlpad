@@ -31,7 +31,7 @@ function QueryPreview({ query }) {
           display: 'flex'
         }}
       >
-        <SqlEditor readOnly value={query.queryText} />
+        <SqlEditor readOnly value={query.queryText || ''} />
       </div>
     </div>
   );

@@ -72,8 +72,8 @@ function getSortedFilteredQueries(
 
   filteredQueries = filteredQueries.sort((a, b) => {
     if (sort === 'SAVE_DATE') {
-      const aDate = a.modifiedDate || a.createdDate;
-      const bDate = b.modifiedDate || b.createdDate;
+      const aDate = a.updatedAt || a.createdAt;
+      const bDate = b.updatedAt || b.createdAt;
       if (aDate < bDate) return 1;
       if (bDate < aDate) return -1;
       return 0;
@@ -133,16 +133,16 @@ function QueryListDrawer({
 
   const Row = ({ index, style }) => {
     const query = filteredQueries[index];
-    const tableUrl = `/query-table/${query._id}`;
-    const chartUrl = `/query-chart/${query._id}`;
-    const queryUrl = `/queries/${query._id}`;
+    const tableUrl = `/query-table/${query.id}`;
+    const chartUrl = `/query-chart/${query.id}`;
+    const queryUrl = `/queries/${query.id}`;
 
     const hasChart =
       query && query.chartConfiguration && query.chartConfiguration.chartType;
 
     return (
       <ListItem
-        key={query._id}
+        key={query.id}
         className={styles.ListItem}
         onMouseEnter={() => setPreview(query)}
         onMouseLeave={() => setPreview(null)}
@@ -177,7 +177,7 @@ function QueryListDrawer({
             icon
             key="del"
             confirmMessage={`Delete ${query.name}`}
-            onConfirm={e => deleteQuery(query._id)}
+            onConfirm={e => deleteQuery(query.id)}
             disabled={!query.canDelete}
           >
             Delete
@@ -217,7 +217,7 @@ function QueryListDrawer({
               <option value="">All connections</option>
               {connections.map(connection => {
                 return (
-                  <option key={connection._id} value={connection._id}>
+                  <option key={connection.id} value={connection.id}>
                     {connection.name}
                   </option>
                 );

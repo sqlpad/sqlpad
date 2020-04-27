@@ -31,7 +31,7 @@ export const connectConnectionClient = store => async state => {
   }
 
   const connection = connections.find(
-    connection => connection._id === selectedConnectionId
+    connection => connection.id === selectedConnectionId
   );
 
   const supportedAndEnabled =
@@ -54,7 +54,7 @@ export const connectConnectionClient = store => async state => {
   const connectionClientInterval = setInterval(async () => {
     const updateJson = await fetchJson(
       'PUT',
-      `/api/connection-clients/${json.connectionClient.id}`
+      `/api/connection-clients/${json.data.id}`
     );
 
     // Not sure if this should message user here
@@ -65,7 +65,7 @@ export const connectConnectionClient = store => async state => {
 
     // If the PUT didn't return a connectionClient object,
     // the connectionClient has been disconnected
-    if (!updateJson.connectionClient && connectionClientInterval) {
+    if (!updateJson.data && connectionClientInterval) {
       clearInterval(connectionClientInterval);
       store.setState({
         connectionClientInterval: null,
@@ -73,12 +73,12 @@ export const connectConnectionClient = store => async state => {
       });
     } else {
       store.setState({
-        connectionClient: updateJson.connectionClient
+        connectionClient: updateJson.data
       });
     }
   }, 10000);
 
-  return { connectionClient: json.connectionClient, connectionClientInterval };
+  return { connectionClient: json.data, connectionClientInterval };
 };
 
 /**
@@ -140,17 +140,17 @@ export const deleteConnection = async (state, connectionId) => {
   if (json.error) {
     return message.error('Delete failed');
   }
-  const filtered = connections.filter(c => c._id !== connectionId);
+  const filtered = connections.filter(c => c.id !== connectionId);
   return { connections: sortConnections(filtered) };
 };
 
 // Updates store (is not resonponsible for API call)
 export const addUpdateConnection = async (state, connection) => {
   const { connections } = state;
-  const found = connections.find(c => c._id === connection._id);
+  const found = connections.find(c => c.id === connection.id);
   if (found) {
     const mappedConnections = connections.map(c => {
-      if (c._id === connection._id) {
+      if (c.id === connection.id) {
         return connection;
       }
       return c;
@@ -173,18 +173,18 @@ export const loadConnections = store => async (state, force) => {
       new Date() - connectionsLastUpdated > ONE_HOUR_MS)
   ) {
     store.setState({ connectionsLoading: true });
-    const { error, connections } = await fetchJson('GET', '/api/connections/');
-    if (error) {
-      message.error(error);
+    const json = await fetchJson('GET', '/api/connections/');
+    if (json.error) {
+      message.error(json.error);
     }
     const update = {
       connectionsLoading: false,
       connectionsLastUpdated: new Date(),
-      connections: sortConnections(connections)
+      connections: sortConnections(json.data)
     };
 
-    if (connections && connections.length === 1) {
-      update.selectedConnectionId = connections[0]._id;
+    if (json.data && json.data.length === 1) {
+      update.selectedConnectionId = json.data[0].id;
     }
 
     store.setState(update);

@@ -2,7 +2,7 @@ const assert = require('assert');
 const validateConnection = require('../../lib/validate-connection');
 
 describe('drivers', function() {
-  it('validateConnection()', function() {
+  it('validateConnection() for old', function() {
     const validPostgres = validateConnection({
       name: 'testname',
       driver: 'postgres',
@@ -11,25 +11,34 @@ describe('drivers', function() {
       postgresSsl: true,
       somethingStripped: 'shouldnotmakeit'
     });
-    assert.equal(Object.keys(validPostgres).length, 5, 'only 5 keys valid');
+    assert.equal(Object.keys(validPostgres).length, 3, 'only 3 keys valid');
     assert.equal(validPostgres.name, 'testname');
     assert.equal(validPostgres.driver, 'postgres');
-    assert.equal(validPostgres.host, 'host');
-    assert.equal(validPostgres.port, 'port');
-    assert.equal(validPostgres.postgresSsl, true);
+    assert.equal(validPostgres.data.host, 'host');
+    assert.equal(validPostgres.data.port, 'port');
+    assert.equal(validPostgres.data.postgresSsl, true);
+  });
 
-    assert.throws(() => {
-      validateConnection({ name: 'name' });
-    }, 'missing driver throws error');
+  it('validateConnection() for current', function() {
+    const validPostgres = validateConnection({
+      name: 'testname',
+      driver: 'postgres',
+      data: {
+        host: 'host',
+        port: 'port',
+        postgresSsl: true,
+        somethingStripped: 'shouldnotmakeit'
+      }
+    });
+    assert.equal(Object.keys(validPostgres).length, 3, 'only 3 keys valid');
+    assert.equal(validPostgres.name, 'testname');
+    assert.equal(validPostgres.driver, 'postgres');
+    assert.equal(validPostgres.data.host, 'host');
+    assert.equal(validPostgres.data.port, 'port');
+    assert.equal(validPostgres.data.postgresSsl, true);
+  });
 
-    assert.throws(() => {
-      validateConnection({ driver: 'postgres' });
-    }, 'missing name throws error');
-
-    assert.throws(() => {
-      validateConnection({ name: 'name', driver: 'not exist' });
-    }, 'missing driver imp throws error');
-
+  it('invalid bool throws', function() {
     assert.throws(() => {
       validateConnection({
         name: 'name',
@@ -37,5 +46,23 @@ describe('drivers', function() {
         postgresSsl: 'notboolean'
       });
     }, 'boolean not convertable throws error');
+  });
+
+  it('missing driver throws', function() {
+    assert.throws(() => {
+      validateConnection({ name: 'name' });
+    }, 'missing driver throws error');
+  });
+
+  it('missing name throws', function() {
+    assert.throws(() => {
+      validateConnection({ driver: 'postgres' });
+    }, 'missing name throws error');
+  });
+
+  it('missing driver imp throws', function() {
+    assert.throws(() => {
+      validateConnection({ name: 'name', driver: 'not exist' });
+    }, 'missing driver imp throws error');
   });
 });

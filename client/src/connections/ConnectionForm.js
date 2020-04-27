@@ -28,7 +28,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
     if (json.error) {
       message.error(json.error);
     } else {
-      setDrivers(json.drivers);
+      setDrivers(json.data);
     }
   }
 
@@ -44,13 +44,11 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       } else {
         // Convert seconds to minutes for a more user-friendly experience
         const idleTimeoutSeconds =
-          json.connection && parseInt(json.connection.idleTimeoutSeconds, 10);
+          json.data && parseInt(json.data.idleTimeoutSeconds, 10);
         if (idleTimeoutSeconds) {
-          json.connection.idleTimeoutMinutes = Math.round(
-            idleTimeoutSeconds / 60
-          );
+          json.data.idleTimeoutMinutes = Math.round(idleTimeoutSeconds / 60);
         }
-        setConnectionEdits(json.connection);
+        setConnectionEdits(json.data);
       }
     }
   }
@@ -92,10 +90,10 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
     }
 
     let json;
-    if (connectionEdits._id) {
+    if (connectionEdits.id) {
       json = await fetchJson(
         'PUT',
-        '/api/connections/' + connectionEdits._id,
+        '/api/connections/' + connectionEdits.id,
         connectionEdits
       );
     } else {
@@ -106,7 +104,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       setSaving(false);
       return message.error(json.error);
     }
-    return onConnectionSaved(json.connection);
+    return onConnectionSaved(json.data);
   };
 
   const renderDriverFields = () => {

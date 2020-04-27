@@ -1,99 +1,71 @@
-const Joi = require('@hapi/joi');
 const passhash = require('../lib/passhash.js');
-
-const schema = Joi.object({
-  _id: Joi.string().optional(), // will be auto-gen by nedb
-  email: Joi.string()
-    .lowercase()
-    .required(),
-  name: Joi.string().optional(),
-  role: Joi.string()
-    .lowercase()
-    .allow('admin', 'editor', 'viewer'),
-  passwordResetId: Joi.string()
-    .guid()
-    .optional()
-    .empty(''),
-  passhash: Joi.string().optional(), // may not exist if user hasn't signed up yet
-  password: Joi.string()
-    .optional()
-    .strip(),
-  createdDate: Joi.date().default(Date.now),
-  modifiedDate: Joi.date().default(Date.now),
-  signupDate: Joi.date().optional(),
-  // `data` field is intended to be something end users populate via various means
-  // That is data can be anything, managed by user, not by SQLPad
-  // The data object's primary purpose will be to store values for replacement in connection templates
-  // For any official SQLPad use, fields should be specified on user object
-  data: Joi.object().optional()
-});
 
 class Users {
   /**
-   * @param {*} nedb
-   * @param {*} sequelizeDb
+   * @param {import('../sequelize-db')} sequelizeDb
    * @param {import('../lib/config')} config
    */
-  constructor(nedb, sequelizeDb, config) {
-    this.nedb = nedb;
+  constructor(sequelizeDb, config) {
     this.sequelizeDb = sequelizeDb;
     this.config = config;
   }
 
   async create(data) {
-    data.modifiedDate = new Date();
-    if (data.password) {
-      data.passhash = await passhash.getPasshash(data.password);
+    const { password, ...rest } = data;
+    if (password) {
+      rest.passhash = await passhash.getPasshash(password);
+    }
+    if (rest.email) {
+      rest.email = rest.email.toLowerCase();
     }
 
-    const joiResult = schema.validate(data);
-    if (joiResult.error) {
-      return Promise.reject(joiResult.error);
-    }
-
-    const newUser = await this.nedb.users.insert(joiResult.value);
-    return newUser;
+    const newUser = await this.sequelizeDb.Users.create(rest);
+    return this.findOneById(newUser.id);
   }
 
-  async update(data) {
-    if (!data._id) {
-      throw new Error('_id required when saving user');
+  async update(id, changes) {
+    const { password, ...rest } = changes;
+    if (password) {
+      rest.passhash = await passhash.getPasshash(password);
+    }
+    if (rest.email) {
+      rest.email = rest.email.toLowerCase();
     }
 
-    data.modifiedDate = new Date();
-
-    if (data.password) {
-      data.passhash = await passhash.getPasshash(data.password);
-    }
-
-    const joiResult = schema.validate(data);
-    if (joiResult.error) {
-      return Promise.reject(joiResult.error);
-    }
-
-    await this.nedb.users.update({ _id: data._id }, joiResult.value);
-    return this.findOneById(data._id);
+    await this.sequelizeDb.Users.update(rest, { where: { id } });
+    return this.findOneById(id);
   }
 
-  findOneByEmail(email) {
-    return this.nedb.users.findOne({
-      email: email.toLowerCase()
+  async findOneByEmail(email) {
+    const user = await this.sequelizeDb.Users.findOne({
+      where: { email: email.toLowerCase() }
     });
+    return user && user.toJSON();
   }
 
-  findOneById(id) {
-    return this.nedb.users.findOne({ _id: id });
+  async findOneById(id) {
+    const user = await this.sequelizeDb.Users.findOne({ where: { id } });
+    return user && user.toJSON();
   }
 
   findOneByPasswordResetId(passwordResetId) {
-    return this.nedb.users.findOne({ passwordResetId });
+    return this.sequelizeDb.Users.findOne({ where: { passwordResetId } });
   }
 
   findAll() {
-    return this.nedb.users
-      .cfind({}, { password: 0, passhash: 0 })
-      .sort({ email: 1 })
-      .exec();
+    return this.sequelizeDb.Users.findAll({
+      attributes: [
+        'id',
+        'name',
+        'email',
+        'role',
+        'data',
+        'signupAt',
+        'createdAt',
+        'updatedAt'
+      ],
+      order: [['email']]
+    });
   }
 
   /**
@@ -101,12 +73,15 @@ class Users {
    * @returns {Promise<boolean>} administrationOpen
    */
   async adminRegistrationOpen() {
-    const doc = await this.nedb.users.findOne({ role: 'admin' });
+    const doc = await this.sequelizeDb.Users.findOne({
+      attributes: ['id'],
+      where: { role: 'admin' }
+    });
     return !doc;
   }
 
   removeById(id) {
-    return this.nedb.users.remove({ _id: id });
+    return this.sequelizeDb.Users.destroy({ where: { id } });
   }
 }
 

@@ -20,7 +20,7 @@ function QueryTableOnly({ queryId }) {
     if (queryJson.error) {
       console.error(queryJson.error);
     }
-    setQuery(queryJson.query);
+    setQuery(queryJson.data);
 
     const queryResultJson = await fetchJson(
       'GET',
@@ -29,7 +29,7 @@ function QueryTableOnly({ queryId }) {
 
     setIsRunning(false);
     setQueryError(queryResultJson.error);
-    setQueryResult(queryResultJson.queryResult);
+    setQueryResult(queryResultJson.data);
   };
 
   useEffect(() => {

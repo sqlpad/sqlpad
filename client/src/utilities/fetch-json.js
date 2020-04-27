@@ -1,7 +1,7 @@
 import 'whatwg-fetch';
 import message from '../common/message';
 
-export default function fetchJson(method, url, body) {
+export default async function fetchJson(method, url, body) {
   const BASE_URL = window.BASE_URL || '';
   const opts = {
     method: method.toUpperCase(),
@@ -23,23 +23,41 @@ export default function fetchJson(method, url, body) {
     fetchUrl = BASE_URL + '/' + url;
   }
 
-  return fetch(fetchUrl, opts)
-    .then(response => {
-      // API server will send 200 even if error occurs
-      // Eventually this should change to proper status code usage
-      if (response.redirected) {
-        return (window.location = response.url);
-      } else if (response.status === 200) {
-        return response.json();
-      } else {
-        console.error(response);
-        throw new Error('Server responded not ok');
-      }
-    })
-    .catch(error => {
-      message.error(error.toString());
-      return {
-        error: 'Server responded not ok'
-      };
-    });
+  let response;
+  try {
+    response = await fetch(fetchUrl, opts);
+    if (response.redirected) {
+      window.location = response.url;
+      return {};
+    }
+  } catch (error) {
+    const title = 'Network error';
+    message.error(title);
+    return {
+      error: title
+    };
+  }
+
+  try {
+    const json = await response.json();
+
+    // New v5 API format the body is the data or error
+    // Which is what depends on status code. 2xx is data, 4xx or 5xx is error
+    // If 200-299 the body is data
+    if (response.ok) {
+      return { data: json };
+    }
+
+    // The body is an error object with a .title at a minimum, possibly .detail and other props
+    // To ease transition, we'll convert the error object into an error string for now
+    // At some point front-end can be updated to handle error object
+    return { error: json.detail || json.title || '' };
+  } catch (error) {
+    // An error parsing JSON. This is unexepected, log to console
+    // Send a more generic message in response
+    console.error(response);
+    return {
+      error: 'Server responded not ok'
+    };
+  }
 }

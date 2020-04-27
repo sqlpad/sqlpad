@@ -32,37 +32,34 @@ describe('api/query-result', function() {
   before(async function() {
     await utils.init(true);
 
-    const connBody = await utils.post('admin', '/api/connections', {
+    connection = await utils.post('admin', '/api/connections', {
       name: 'test connection',
       driver: 'sqlite',
-      filename: './test/fixtures/sales.sqlite'
+      data: {
+        filename: './test/fixtures/sales.sqlite'
+      }
     });
-    connection = connBody.connection;
 
-    const queryBody = await utils.post('admin', '/api/queries', {
+    query = await utils.post('admin', '/api/queries', {
       name: 'test query',
       tags: ['test'],
-      connectionId: connection._id,
+      connectionId: connection.id,
       queryText
     });
-    query = queryBody.query;
   });
 
   it('GET /api/query-result/:queryId', async function() {
-    const body = await utils.get('admin', `/api/query-result/${query._id}`);
-    assert(!body.error, 'Expect no error');
-    validateQueryResult(body.queryResult);
+    const body = await utils.get('admin', `/api/query-result/${query.id}`);
+    validateQueryResult(body);
   });
 
   it('POST /api/query-result', async function() {
     const body = await utils.post('admin', `/api/query-result`, {
-      connectionId: connection._id,
+      connectionId: connection.id,
       cacheKey: 'cachekey',
       queryName: 'test query',
       queryText
     });
-
-    assert(!body.error, 'Expect no error');
-    validateQueryResult(body.queryResult);
+    validateQueryResult(body);
   });
 });
