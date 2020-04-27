@@ -19,14 +19,16 @@ function QueryTagsModal({ tags, visible, onClose, setQueryState }) {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    fetchJson('GET', '/api/tags').then(response => {
-      const { data } = response;
-      if (data) {
-        const options = data.map(tag => ({ name: tag, id: tag }));
-        setOptions(options);
-      }
-    });
-  }, []);
+    if (visible) {
+      fetchJson('GET', '/api/tags').then(response => {
+        const { data } = response;
+        if (data) {
+          const options = data.map(tag => ({ name: tag, id: tag }));
+          setOptions(options);
+        }
+      });
+    }
+  }, [visible]);
 
   const selectedItems = tags.map(tag => ({ name: tag, id: tag }));
 
