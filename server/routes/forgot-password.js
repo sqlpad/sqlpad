@@ -24,12 +24,12 @@ router.post(
       return res.utils.data();
     }
 
-    user.passwordResetId = uuidv4();
+    const passwordResetId = uuidv4();
 
-    await models.users.update(user);
+    await models.users.update(user.id, { passwordResetId });
 
     // Send email, but do not block response
-    const resetPath = `/password-reset/${user.passwordResetId}`;
+    const resetPath = `/password-reset/${passwordResetId}`;
     email
       .sendForgotPassword(req.body.email, resetPath)
       .catch(error => appLog.error(error));

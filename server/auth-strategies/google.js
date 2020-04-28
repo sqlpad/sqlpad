@@ -27,7 +27,9 @@ async function passportGoogleStrategyHandler(
 
     if (user) {
       user.signupAt = new Date();
-      const newUser = await models.users.update(user);
+      const newUser = await models.users.update(user.id, {
+        signupAt: new Date()
+      });
       return done(null, newUser);
     }
     const whitelistedDomains = config.get('whitelistedDomains');
