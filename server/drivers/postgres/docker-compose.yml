@@ -4,6 +4,7 @@ services:
     image: postgres:9.6-alpine
     environment:
       POSTGRES_USER: sqlpad
+      POSTGRES_PASSWORD: sqlpad
       POSTGRES_DB: sqlpad
-    ports: 
-      - "5432:5432"
+    ports:
+      - '5432:5432'
