@@ -1,12 +1,9 @@
-// NOTE this import 'brace' must occur before the importing of brace extensions
-import 'brace';
-import 'brace/mode/sql';
-import 'brace/theme/sqlserver';
-
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import Measure from 'react-measure';
 import { diff as DiffEditor } from 'react-ace';
+require(`ace-builds/src-noconflict/mode-sql`);
+require(`ace-builds/src-noconflict/theme-sqlserver`);
 
 function SqlDiff({ value }) {
   const [dimensions, setDimensions] = useState({ width: -1, height: -1 });

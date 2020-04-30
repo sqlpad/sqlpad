@@ -1,13 +1,11 @@
-// NOTE this import 'brace' must occur before the importing of brace extensions
-import 'brace';
-import 'brace/ext/searchbox';
-import 'brace/mode/sql';
-import 'brace/theme/sqlserver';
 import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { connect } from 'unistore/react';
 import Measure from 'react-measure';
 import AceEditor from 'react-ace';
+import 'ace-builds/src-min-noconflict/ext-searchbox';
+require(`ace-builds/src-noconflict/mode-sql`);
+require(`ace-builds/src-noconflict/theme-sqlserver`);
 
 const noop = () => {};
 
@@ -42,6 +40,15 @@ function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
 
   const { width, height } = dimensions;
 
+  const setOptions = {
+    useWorker: true,
+    enableBasicAutocompletion: true,
+    enableLiveAutocompletion: true,
+    enableSnippets: false,
+    showLineNumbers: true,
+    tabSize: 2,
+  };
+
   return (
     <Measure
       bounds
@@ -50,21 +57,20 @@ function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
       {({ measureRef }) => (
         <div ref={measureRef} className="h-100 w-100">
           <AceEditor
-            focus={!readOnly}
             editorProps={{ $blockScrolling: Infinity }}
-            enableBasicAutocompletion
-            enableLiveAutocompletion
+            focus={!readOnly}
             height={height + 'px'}
             highlightActiveLine={false}
             mode="sql"
             name="query-ace-editor"
-            onLoad={(editor) => setEditor(editor)}
             onChange={onChange || noop}
+            onLoad={(editor) => setEditor(editor)}
             onSelectionChange={handleSelection}
+            readOnly={readOnly}
+            setOptions={setOptions}
             showGutter={false}
             showPrintMargin={false}
             theme="sqlserver"
-            readOnly={readOnly}
             value={value}
             width={width + 'px'}
           />
