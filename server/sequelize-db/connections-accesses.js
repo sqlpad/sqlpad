@@ -25,9 +25,12 @@ module.exports = function (sequelize) {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      // Number of seconds connection access is valid from creation
+      // Used to set expiryDate
       duration: {
         type: DataTypes.INTEGER,
         allowNull: false,
+        defaultValue: 0,
         validate: {
           min: 0,
           max: 86400,
