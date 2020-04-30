@@ -29,29 +29,6 @@ const renderValue = (input, fieldMeta) => {
   }
 };
 
-/**
- * There's a strange bug when using Chrome.
- * When the Ace editor is focused, and the user scrolls horizontally on result grid
- * the cursor appears to stay focused on the Ace editor, but no input is accepted other than deletes.
- * The frozen input behavior goes away if another element is given focus,
- * and then the user clicks on the Ace editor again.
- * Fortunately clearing focus on the focused element and refocusing it fixes this bug.
- *
- * This was removed with the change from react-virtualized to react-window, but the problem persists.
- * This is likely an ace editor issue and should probably stay until the editor is fixed
- * or changed to something else like monaco
- *
- * UPDATE: this also happens if you run a query with results then follow it with a query that errors out.
- * To counter this the blur/focus has been added after component will unmount.
- */
-function handleFrozenAceBug() {
-  const element = document.activeElement;
-  if (element) {
-    element.blur();
-    element.focus();
-  }
-}
-
 // Hide the overflow so the scroll bar never shows in the header grid
 const headerStyle = {
   overflowX: 'hidden',
@@ -87,12 +64,6 @@ class QueryResultDataTable extends React.PureComponent {
     },
     columnWidths: {},
   };
-
-  componentWillUnmount() {
-    setTimeout(() => {
-      handleFrozenAceBug();
-    }, 300);
-  }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     const { queryResult } = nextProps;
@@ -161,7 +132,6 @@ class QueryResultDataTable extends React.PureComponent {
       },
       () => {
         this.recalc(columnIndex);
-        handleFrozenAceBug();
       }
     );
   };
@@ -241,7 +211,6 @@ class QueryResultDataTable extends React.PureComponent {
   // synchronize the scroll position of the header grid
   handleGridScroll = ({ scrollLeft }) => {
     this.headerGrid.current.scrollTo({ scrollLeft });
-    handleFrozenAceBug();
   };
 
   handleContainerResize = (contentRect) => {
