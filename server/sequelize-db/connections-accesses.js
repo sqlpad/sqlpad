@@ -33,7 +33,6 @@ module.exports = function (sequelize) {
         defaultValue: 0,
         validate: {
           min: 0,
-          max: 86400,
         },
       },
       expiryDate: {
