@@ -1,9 +1,5 @@
-// import various ace editor things
-import * as ace from 'brace';
-import 'brace/mode/sql';
-import 'brace/theme/sqlserver';
-import 'brace/ext/searchbox';
-import 'brace/ext/language_tools';
+import * as ace from 'ace-builds/src-noconflict/ace';
+import 'ace-builds/src-min-noconflict/ext-language_tools';
 
 export default updateCompletions;
 
