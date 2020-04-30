@@ -22,5 +22,5 @@ async function getPasshash(password) {
 
 module.exports = {
   comparePassword,
-  getPasshash
+  getPasshash,
 };

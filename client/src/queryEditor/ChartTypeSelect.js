@@ -9,7 +9,7 @@ function mapStateToProps(state) {
     chartType:
       state.query &&
       state.query.chartConfiguration &&
-      state.query.chartConfiguration.chartType
+      state.query.chartConfiguration.chartType,
   };
 }
 
@@ -21,9 +21,9 @@ function ChartTypeSelect({
   chartType,
   handleChartTypeChange,
   className,
-  style
+  style,
 }) {
-  const chartOptions = chartDefinitions.map(d => {
+  const chartOptions = chartDefinitions.map((d) => {
     return (
       <option key={d.chartType} value={d.chartType}>
         {d.chartLabel}
@@ -34,7 +34,7 @@ function ChartTypeSelect({
   return (
     <Select
       className={className}
-      onChange={event => handleChartTypeChange(event.target.value)}
+      onChange={(event) => handleChartTypeChange(event.target.value)}
       style={style}
       value={chartType}
     >

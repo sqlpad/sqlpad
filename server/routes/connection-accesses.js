@@ -56,11 +56,11 @@ async function createConnectionAccess(req, res) {
 
   let user = {
     id: consts.EVERYONE_ID,
-    email: consts.EVERYONE_EMAIL
+    email: consts.EVERYONE_EMAIL,
   };
   let connection = {
     id: consts.EVERY_CONNECTION_ID,
-    name: consts.EVERY_CONNECTION_NAME
+    name: consts.EVERY_CONNECTION_NAME,
   };
 
   if (req.body.userId !== consts.EVERYONE_ID) {
@@ -92,7 +92,7 @@ async function createConnectionAccess(req, res) {
     connectionName: connection.name,
     userId: req.body.userId,
     userEmail: user.email,
-    duration: req.body.duration
+    duration: req.body.duration,
   });
   return res.utils.data(connectionAccess);
 }

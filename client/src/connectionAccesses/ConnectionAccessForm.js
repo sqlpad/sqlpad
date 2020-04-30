@@ -20,7 +20,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
       const connections = json.data;
       connections.unshift({
         id: '__EVERY_CONNECTION__',
-        name: 'Every Connection'
+        name: 'Every Connection',
       });
       setConnections(connections);
     }
@@ -38,7 +38,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
       const users = json.data;
       users.unshift({
         id: '__EVERYONE__',
-        email: 'Everyone'
+        email: 'Everyone',
       });
       setUsers(users);
     }
@@ -49,7 +49,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
   }, []);
 
   const setConnectionAccessValue = (key, value) => {
-    setConnectionAccessEdits(prev => ({ ...prev, [key]: value }));
+    setConnectionAccessEdits((prev) => ({ ...prev, [key]: value }));
   };
 
   const createConnectionAccess = async () => {
@@ -73,7 +73,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
   const {
     connectionId = '',
     userId = '',
-    duration = ''
+    duration = '',
   } = connectionAccessEdits;
 
   const connectionSelectOptions = [<option key="none" value="" />];
@@ -87,7 +87,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
   } else {
     connections
       .sort((a, b) => a.name > b.name)
-      .forEach(connection =>
+      .forEach((connection) =>
         connectionSelectOptions.push(
           <option key={connection.id} value={connection.id}>
             {connection.name}
@@ -107,7 +107,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
   } else {
     users
       .sort((a, b) => a.name > b.name)
-      .forEach(user =>
+      .forEach((user) =>
         userSelectOptions.push(
           <option key={user.id} value={user.id}>
             {user.email}
@@ -124,7 +124,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          height: '100%'
+          height: '100%',
         }}
       >
         <HorizontalFormItem label="Connection">
@@ -132,7 +132,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
             name="connectionId"
             value={connectionId}
             error={!connectionId}
-            onChange={event =>
+            onChange={(event) =>
               setConnectionAccessValue('connectionId', event.target.value)
             }
           >
@@ -144,7 +144,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
             name="userId"
             value={userId}
             error={!userId}
-            onChange={event =>
+            onChange={(event) =>
               setConnectionAccessValue('userId', event.target.value)
             }
           >
@@ -155,7 +155,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
           <Input
             name="duration"
             value={duration}
-            onChange={e =>
+            onChange={(e) =>
               setConnectionAccessValue(e.target.name, e.target.value)
             }
           />
@@ -165,7 +165,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
           style={{
             borderTop: '1px solid #e8e8e8',
             paddingTop: '22px',
-            textAlign: 'right'
+            textAlign: 'right',
           }}
         >
           <Button

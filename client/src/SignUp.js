@@ -17,12 +17,12 @@ function SignUp({ adminRegistrationOpen }) {
     document.title = 'SQLPad - Sign Up';
   }, []);
 
-  const signUp = async e => {
+  const signUp = async (e) => {
     e.preventDefault();
     const json = await fetchJson('POST', '/api/signup', {
       email,
       password,
-      passwordConfirmation
+      passwordConfirmation,
     });
     if (json.error) {
       return message.error(json.error);
@@ -53,7 +53,7 @@ function SignUp({ adminRegistrationOpen }) {
           name="email"
           type="email"
           placeholder="Email address"
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
         <Spacer />
@@ -61,7 +61,7 @@ function SignUp({ adminRegistrationOpen }) {
           name="password"
           type="password"
           placeholder="Password"
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
         <Spacer />
@@ -69,7 +69,7 @@ function SignUp({ adminRegistrationOpen }) {
           name="passwordConfirmation"
           type="password"
           placeholder="Confirm Password"
-          onChange={e => setPasswordConfirmation(e.target.value)}
+          onChange={(e) => setPasswordConfirmation(e.target.value)}
           required
         />
         <Spacer size={2} />

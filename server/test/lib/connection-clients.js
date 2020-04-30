@@ -4,14 +4,14 @@ const TestUtils = require('../utils');
 const ConnectionClient = require('../../lib/connection-client');
 
 function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-describe('lib/connection-clients', function() {
+describe('lib/connection-clients', function () {
   const utils = new TestUtils();
   let connection1;
 
-  before(async function() {
+  before(async function () {
     await utils.init(true);
 
     connection1 = await utils.post('admin', '/api/connections', {
@@ -21,14 +21,14 @@ describe('lib/connection-clients', function() {
         filename: path.join(
           __dirname,
           '../artifacts/connection-client-test.sqlite'
-        )
+        ),
       },
       idleTimeoutSeconds: 1,
-      multiStatementTransactionEnabled: true
+      multiStatementTransactionEnabled: true,
     });
   });
 
-  it('Keep-alive keeps it alive', async function() {
+  it('Keep-alive keeps it alive', async function () {
     const connectionClient = new ConnectionClient(
       connection1,
       utils.users.admin
@@ -47,7 +47,7 @@ describe('lib/connection-clients', function() {
     assert(connectionClient.isConnected());
   });
 
-  it('Without keep alive it closes', async function() {
+  it('Without keep alive it closes', async function () {
     const connectionClient = new ConnectionClient(
       connection1,
       utils.users.admin
@@ -62,7 +62,7 @@ describe('lib/connection-clients', function() {
     assert(!connectionClient.isConnected());
   });
 
-  it('Stays-open with activity', async function() {
+  it('Stays-open with activity', async function () {
     const connectionClient = new ConnectionClient(
       connection1,
       utils.users.admin
@@ -85,7 +85,7 @@ describe('lib/connection-clients', function() {
     assert(connectionClient.isConnected());
   });
 
-  it('Closes without activity', async function() {
+  it('Closes without activity', async function () {
     const connectionClient = new ConnectionClient(
       connection1,
       utils.users.admin

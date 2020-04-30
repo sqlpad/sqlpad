@@ -16,14 +16,14 @@ class QueryHistory {
 
   async findAll() {
     return this.sequelizeDb.QueryHistory.findAll({
-      order: [['startTime', 'DESC']]
+      order: [['startTime', 'DESC']],
     });
   }
 
   findByFilter(filter) {
     return this.sequelizeDb.QueryHistory.findAll({
       where: filter,
-      order: [['startTime', 'DESC']]
+      order: [['startTime', 'DESC']],
     });
   }
 
@@ -33,7 +33,7 @@ class QueryHistory {
     const retentionPeriodStartTime = new Date(new Date().getTime() - days);
 
     return this.sequelizeDb.QueryHistory.destroy({
-      where: { createdAt: { [Op.lt]: retentionPeriodStartTime } }
+      where: { createdAt: { [Op.lt]: retentionPeriodStartTime } },
     });
   }
 

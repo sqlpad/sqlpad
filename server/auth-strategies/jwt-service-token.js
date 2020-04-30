@@ -20,9 +20,9 @@ function enableJwtServiceToken(config) {
         {
           passReqToCallback: true,
           jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-          secretOrKey: config.get('serviceTokenSecret')
+          secretOrKey: config.get('serviceTokenSecret'),
         },
-        async function(req, jwt_payload, done) {
+        async function (req, jwt_payload, done) {
           try {
             const { models } = req;
             const serviceToken = await models.serviceTokens.findOneByName(

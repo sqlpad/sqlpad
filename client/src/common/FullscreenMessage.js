@@ -10,7 +10,7 @@ export default function FullscreenMessage({ children }) {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
       }}
     >
       {children}

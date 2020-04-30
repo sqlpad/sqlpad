@@ -38,7 +38,7 @@ class Users {
 
   async findOneByEmail(email) {
     const user = await this.sequelizeDb.Users.findOne({
-      where: { email: email.toLowerCase() }
+      where: { email: email.toLowerCase() },
     });
     return user && user.toJSON();
   }
@@ -62,9 +62,9 @@ class Users {
         'data',
         'signupAt',
         'createdAt',
-        'updatedAt'
+        'updatedAt',
       ],
-      order: [['email']]
+      order: [['email']],
     });
   }
 
@@ -75,7 +75,7 @@ class Users {
   async adminRegistrationOpen() {
     const doc = await this.sequelizeDb.Users.findOne({
       attributes: ['id'],
-      where: { role: 'admin' }
+      where: { role: 'admin' },
     });
     return !doc;
   }

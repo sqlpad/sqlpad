@@ -20,5 +20,5 @@ function Authenticated({ children, currentUser, initApp, initialized }) {
 }
 
 export default connect(['currentUser', 'initialized'], {
-  initApp
+  initApp,
 })(Authenticated);

@@ -19,62 +19,62 @@ const queryText2 = `
   LIMIT 10
 `;
 
-describe('api/query-history', function() {
+describe('api/query-history', function () {
   const utils = new TestUtils();
   let connection;
   let query1;
 
-  before(async function() {
+  before(async function () {
     await utils.init(true);
 
     connection = await utils.post('admin', '/api/connections', {
       name: 'test postgres',
       driver: 'sqlite',
       data: {
-        filename: './test/fixtures/sales.sqlite'
-      }
+        filename: './test/fixtures/sales.sqlite',
+      },
     });
 
     query1 = await utils.post('admin', '/api/queries', {
       name: 'test query 1',
       tags: ['test', 'postgres'],
       connectionId: connection.id,
-      queryText: queryText1
+      queryText: queryText1,
     });
   });
 
-  it('Convert URL filters to NeDB compatibles', function() {
+  it('Convert URL filters to NeDB compatibles', function () {
     // String operators
     assert.deepEqual(urlFilterToDbFilter('field1|regex|myPattern'), {
-      [Op.and]: [{ field1: { [Op.regexp]: new RegExp('myPattern') } }]
+      [Op.and]: [{ field1: { [Op.regexp]: new RegExp('myPattern') } }],
     });
 
     // Numeric operators
     assert.deepEqual(urlFilterToDbFilter('field1|lt|123'), {
-      [Op.and]: [{ field1: { [Op.lt]: 123 } }]
+      [Op.and]: [{ field1: { [Op.lt]: 123 } }],
     });
     assert.deepEqual(urlFilterToDbFilter('field1|gt|123'), {
-      [Op.and]: [{ field1: { [Op.gt]: 123 } }]
+      [Op.and]: [{ field1: { [Op.gt]: 123 } }],
     });
     assert.deepEqual(urlFilterToDbFilter('field1|ne|123'), {
-      [Op.and]: [{ field1: { [Op.ne]: 123 } }]
+      [Op.and]: [{ field1: { [Op.ne]: 123 } }],
     });
     assert.deepEqual(urlFilterToDbFilter('field1|eq|123'), {
-      [Op.and]: [{ field1: 123 }]
+      [Op.and]: [{ field1: 123 }],
     });
 
     // Datetime operators
     assert.deepEqual(urlFilterToDbFilter('field1|before|2020-03-01'), {
-      [Op.and]: [{ field1: { [Op.lt]: new Date('2020-03-01') } }]
+      [Op.and]: [{ field1: { [Op.lt]: new Date('2020-03-01') } }],
     });
     assert.deepEqual(urlFilterToDbFilter('field1|before|2020-03-01 00:00:00'), {
-      [Op.and]: [{ field1: { [Op.lt]: new Date('2020-03-01 00:00:00') } }]
+      [Op.and]: [{ field1: { [Op.lt]: new Date('2020-03-01 00:00:00') } }],
     });
     assert.deepEqual(urlFilterToDbFilter('field1|after|2020-03-01'), {
-      [Op.and]: [{ field1: { [Op.gt]: new Date('2020-03-01') } }]
+      [Op.and]: [{ field1: { [Op.gt]: new Date('2020-03-01') } }],
     });
     assert.deepEqual(urlFilterToDbFilter('field1|after|2020-03-01 00:00:00'), {
-      [Op.and]: [{ field1: { [Op.gt]: new Date('2020-03-01 00:00:00') } }]
+      [Op.and]: [{ field1: { [Op.gt]: new Date('2020-03-01 00:00:00') } }],
     });
 
     // Multiple filter conditions
@@ -84,18 +84,18 @@ describe('api/query-history', function() {
       [Op.and]: [
         { field1: 500 },
         { field2: { [Op.regexp]: new RegExp('myPattern') } },
-        { field3: { [Op.lt]: new Date('2020-03-01') } }
-      ]
+        { field3: { [Op.lt]: new Date('2020-03-01') } },
+      ],
     });
   });
 
-  it('Gets array of 0 items', async function() {
+  it('Gets array of 0 items', async function () {
     const body = await utils.get('admin', '/api/query-history');
     TestUtils.validateListSuccessBody(body);
     assert.equal(body.length, 0, '0 length');
   });
 
-  it('Gets array of 4 items', async function() {
+  it('Gets array of 4 items', async function () {
     // Run some queries to generate query history by saved queries
     await utils.get('admin', `/api/query-result/${query1.id}`);
     await utils.get('admin', `/api/query-result/${query1.id}`);
@@ -104,12 +104,12 @@ describe('api/query-history', function() {
     await utils.post('admin', `/api/query-result`, {
       connectionId: connection.id,
       cacheKey: 'cachekey',
-      queryText: queryText2
+      queryText: queryText2,
     });
     await utils.post('admin', `/api/query-result`, {
       connectionId: connection.id,
       cacheKey: 'cachekey',
-      queryText: queryText2
+      queryText: queryText2,
     });
 
     // Check if every query stored in query history
@@ -131,7 +131,7 @@ describe('api/query-history', function() {
       'queryText',
       'incomplete',
       'rowCount',
-      'createdAt'
+      'createdAt',
     ];
 
     // First and second two history items (reverse ordered) needs to free text query with queryId and queryName
@@ -143,7 +143,7 @@ describe('api/query-history', function() {
     assert.deepEqual(Object.keys(body[0]), historyObjectKeys);
   });
 
-  it('Gets filtered array of 2 items', async function() {
+  it('Gets filtered array of 2 items', async function () {
     // Check if filters applied correctly
     const body = await utils.get(
       'admin',

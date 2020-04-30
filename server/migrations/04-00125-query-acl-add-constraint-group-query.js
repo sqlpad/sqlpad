@@ -8,10 +8,10 @@
 async function up(queryInterface, config, appLog, nedb) {
   await queryInterface.addConstraint('query_acl', ['group_id', 'query_id'], {
     type: 'unique',
-    name: 'query_acl_group_id_query_id_key'
+    name: 'query_acl_group_id_query_id_key',
   });
 }
 
 module.exports = {
-  up
+  up,
 };

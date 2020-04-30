@@ -11,7 +11,7 @@ const _ = require('lodash');
  */
 function renderConnection(connection, user) {
   const replaced = {};
-  Object.keys(connection).forEach(key => {
+  Object.keys(connection).forEach((key) => {
     // data is an object of values, but values may be top level too
     if (key === 'data') {
       const value = renderConnection(connection.data, user);

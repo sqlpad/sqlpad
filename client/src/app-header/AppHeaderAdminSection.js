@@ -10,7 +10,7 @@ import AppHeaderDivider from './AppHeaderDivider';
 
 function mapStateToProps(state) {
   return {
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
   };
 }
 
@@ -94,7 +94,7 @@ function AppHeaderAdminSection({ currentUser }) {
       key="service-tokens-drawer"
       visible={showServiceTokens}
       onClose={() => setShowServiceTokens(false)}
-    />
+    />,
   ];
 }
 

@@ -72,7 +72,7 @@ function ExportButton({ config, cacheKey, onSaveImageClick }) {
 
 ExportButton.propTypes = {
   cacheKey: PropTypes.string,
-  onSaveImageClick: PropTypes.func
+  onSaveImageClick: PropTypes.func,
 };
 
 export default connect(['config'])(ExportButton);

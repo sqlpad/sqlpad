@@ -42,11 +42,11 @@ function runQuery(query, connection) {
     user: connection.username,
     password: connection.password,
     defaultSchema: connection.drillDefaultSchema,
-    ssl: connection.ssl || false
+    ssl: connection.ssl || false,
   };
   const client = new drill.Client(drillConfig);
 
-  return client.query(drillConfig, query).then(result => {
+  return client.query(drillConfig, query).then((result) => {
     if (!result) {
       throw new Error('No result returned');
     } else if (result.errorMessage && result.errorMessage.length > 0) {
@@ -87,7 +87,7 @@ function getSchema(connection) {
     connection.drillCatalog
     // connection.drillSchema
   );
-  return runQuery(schemaSql, connection).then(queryResult =>
+  return runQuery(schemaSql, connection).then((queryResult) =>
     formatSchemaQueryResults(queryResult)
   );
 }
@@ -96,33 +96,33 @@ const fields = [
   {
     key: 'host',
     formType: 'TEXT',
-    label: 'Host/Server/IP Address'
+    label: 'Host/Server/IP Address',
   },
   {
     key: 'port',
     formType: 'TEXT',
-    label: 'Port (optional)'
+    label: 'Port (optional)',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username'
+    label: 'Database Username',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password'
+    label: 'Database Password',
   },
   {
     key: 'drillDefaultSchema',
     formType: 'TEXT',
-    label: 'Default Schema'
+    label: 'Default Schema',
   },
   {
     key: 'ssl',
     formType: 'CHECKBOX',
-    label: 'Use SSL to connect to Drill'
-  }
+    label: 'Use SSL to connect to Drill',
+  },
 ];
 
 module.exports = {
@@ -131,5 +131,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

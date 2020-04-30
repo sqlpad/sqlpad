@@ -20,7 +20,7 @@ const SCHEMA_SQL = `
  * @param {*} client
  */
 function shutdownClient(client) {
-  client.shutdown().catch(error => {
+  client.shutdown().catch((error) => {
     appLog.error('Error shutting down cassandra connection');
     appLog.error(error);
   });
@@ -39,14 +39,14 @@ async function runQuery(query, connection) {
     localDataCenter,
     maxRows,
     username,
-    password
+    password,
   } = connection;
   const caConfig = {
-    contactPoints: contactPoints.split(',').map(cp => cp.trim()),
+    contactPoints: contactPoints.split(',').map((cp) => cp.trim()),
     // Unfamiliar with cassandra - docs mention datacenter1 and this works as a default so leaving it in
     // If someone familiar with cassandra can expand on this please do
     localDataCenter: localDataCenter || 'datacenter1',
-    keyspace
+    keyspace,
   };
 
   if (connection.username && connection.password) {
@@ -93,28 +93,28 @@ const fields = [
   {
     key: 'contactPoints',
     formType: 'TEXT',
-    label: 'Contact points (comma delimited)'
+    label: 'Contact points (comma delimited)',
   },
   {
     key: 'localDataCenter',
     formType: 'TEXT',
-    label: 'Local data center'
+    label: 'Local data center',
   },
   {
     key: 'keyspace',
     formType: 'TEXT',
-    label: 'Keyspace'
+    label: 'Keyspace',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username'
+    label: 'Database Username',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password'
-  }
+    label: 'Database Password',
+  },
 ];
 
 module.exports = {
@@ -123,5 +123,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

@@ -20,9 +20,9 @@ function enableSaml(config) {
           callbackUrl: config.get('samlCallbackUrl'),
           cert: config.get('samlCert'),
           authnContext: config.get('samlAuthContext'),
-          identifierFormat: null
+          identifierFormat: null,
         },
-        async function(req, p, done) {
+        async function (req, p, done) {
           const email =
             p[
               'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
@@ -36,7 +36,7 @@ function enableSaml(config) {
           return done(null, {
             id: user.id,
             role: user.role,
-            email: user.email
+            email: user.email,
           });
         }
       )

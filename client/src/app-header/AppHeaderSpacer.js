@@ -12,7 +12,7 @@ function AppHeaderSpacer({ grow }) {
 }
 
 AppHeaderSpacer.propTypes = {
-  grow: PropTypes.bool
+  grow: PropTypes.bool,
 };
 
 export default AppHeaderSpacer;

@@ -8,7 +8,7 @@ import styles from './QueryHistoryResultHeader.module.css';
 function QueryHistoryResultHeader({
   isRunning,
   queryResult,
-  runQueryStartTime
+  runQueryStartTime,
 }) {
   if (isRunning || !queryResult) {
     return (
@@ -43,11 +43,11 @@ function QueryHistoryResultHeader({
 QueryHistoryResultHeader.propTypes = {
   isRunning: PropTypes.bool,
   queryResult: PropTypes.object,
-  runQueryStartTime: PropTypes.instanceOf(Date)
+  runQueryStartTime: PropTypes.instanceOf(Date),
 };
 
 QueryHistoryResultHeader.defaultProps = {
-  isRunning: false
+  isRunning: false,
 };
 
 export default QueryHistoryResultHeader;

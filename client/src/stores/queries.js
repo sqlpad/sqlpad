@@ -3,7 +3,7 @@ import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
 import {
   setLocalQueryText,
-  removeLocalQueryText
+  removeLocalQueryText,
 } from '../utilities/localQueryText';
 
 const ONE_HOUR_MS = 1000 * 60 * 60;
@@ -16,11 +16,11 @@ export const NEW_QUERY = {
   queryText: '',
   chartConfiguration: {
     chartType: '',
-    fields: {} // key value for chart
+    fields: {}, // key value for chart
   },
   canRead: true,
   canWrite: true,
-  canDelete: true
+  canDelete: true,
 };
 
 export const initialState = {
@@ -34,14 +34,14 @@ export const initialState = {
   runQueryStartTime: undefined,
   selectedText: '',
   showValidation: false,
-  unsavedChanges: false
+  unsavedChanges: false,
 };
 
-export const formatQuery = async state => {
+export const formatQuery = async (state) => {
   const { query } = state;
 
   const json = await fetchJson('POST', '/api/format-sql', {
-    query: query.queryText
+    query: query.queryText,
   });
 
   if (json.error) {
@@ -58,11 +58,11 @@ export const formatQuery = async state => {
 
   return {
     query: { ...query, queryText: json.data.query },
-    unsavedChanges: true
+    unsavedChanges: true,
   };
 };
 
-export const loadQueries = store => async state => {
+export const loadQueries = (store) => async (state) => {
   const { queriesLastUpdated, queries } = state;
   if (
     !queries.length ||
@@ -76,7 +76,7 @@ export const loadQueries = store => async state => {
     store.setState({
       queriesLoading: false,
       queriesLastUpdated: new Date(),
-      queries: json.data || []
+      queries: json.data || [],
     });
   }
 };
@@ -85,9 +85,9 @@ export const clearQueries = () => {
   return { queries: [] };
 };
 
-export const deleteQuery = store => async (state, queryId) => {
+export const deleteQuery = (store) => async (state, queryId) => {
   const { queries } = state;
-  const filteredQueries = queries.filter(q => {
+  const filteredQueries = queries.filter((q) => {
     return q.id !== queryId;
   });
   store.setState({ queries: filteredQueries });
@@ -108,22 +108,22 @@ export const loadQuery = async (state, queryId) => {
     queryError: undefined,
     queryResult: undefined,
     selectedConnectionId: data.connectionId,
-    unsavedChanges: false
+    unsavedChanges: false,
   };
 };
 
-export const runQuery = store => async state => {
+export const runQuery = (store) => async (state) => {
   const {
     cacheKey,
     query,
     selectedText,
     selectedConnectionId,
-    connectionClient
+    connectionClient,
   } = state;
 
   store.setState({
     isRunning: true,
-    runQueryStartTime: new Date()
+    runQueryStartTime: new Date(),
   });
   const postData = {
     connectionId: selectedConnectionId,
@@ -131,7 +131,7 @@ export const runQuery = store => async state => {
     cacheKey,
     queryId: query.id,
     queryName: query.name,
-    queryText: selectedText || query.queryText
+    queryText: selectedText || query.queryText,
   };
   const { data, error } = await fetchJson(
     'POST',
@@ -141,11 +141,11 @@ export const runQuery = store => async state => {
   store.setState({
     isRunning: false,
     queryError: error,
-    queryResult: data
+    queryResult: data,
   });
 };
 
-export const saveQuery = store => async state => {
+export const saveQuery = (store) => async (state) => {
   const { query, selectedConnectionId } = state;
   if (!query.name) {
     message.error('Query name required');
@@ -154,10 +154,10 @@ export const saveQuery = store => async state => {
   }
   store.setState({ isSaving: true });
   const queryData = Object.assign({}, query, {
-    connectionId: selectedConnectionId
+    connectionId: selectedConnectionId,
   });
   if (query.id) {
-    fetchJson('PUT', `/api/queries/${query.id}`, queryData).then(json => {
+    fetchJson('PUT', `/api/queries/${query.id}`, queryData).then((json) => {
       const { error, data } = json;
       const { queries } = store.getState();
       if (error) {
@@ -167,18 +167,18 @@ export const saveQuery = store => async state => {
       }
       message.success('Query Saved');
       removeLocalQueryText(data.id);
-      const updatedQueries = queries.map(q => {
+      const updatedQueries = queries.map((q) => {
         return q.id === data.id ? data : q;
       });
       store.setState({
         isSaving: false,
         unsavedChanges: false,
         query: data,
-        queries: updatedQueries
+        queries: updatedQueries,
       });
     });
   } else {
-    fetchJson('POST', `/api/queries`, queryData).then(json => {
+    fetchJson('POST', `/api/queries`, queryData).then((json) => {
       const { error, data } = json;
       const { queries } = store.getState();
       if (error) {
@@ -197,13 +197,13 @@ export const saveQuery = store => async state => {
         isSaving: false,
         unsavedChanges: false,
         query: data,
-        queries: [data].concat(queries)
+        queries: [data].concat(queries),
       });
     });
   }
 };
 
-export const handleCloneClick = state => {
+export const handleCloneClick = (state) => {
   const { query } = state;
   delete query.id;
   const name = 'Copy of ' + query.name;
@@ -211,12 +211,12 @@ export const handleCloneClick = state => {
   return { query: { ...query, name }, unsavedChanges: true };
 };
 
-export const resetNewQuery = state => {
+export const resetNewQuery = (state) => {
   return {
     query: Object.assign({}, NEW_QUERY),
     queryError: undefined,
     queryResult: undefined,
-    unsavedChanges: false
+    unsavedChanges: false,
   };
 };
 
@@ -240,10 +240,10 @@ export const handleChartConfigurationFieldsChange = (
       ...query,
       chartConfiguration: {
         ...query.chartConfiguration,
-        fields: { ...fields, [chartFieldId]: queryResultField }
-      }
+        fields: { ...fields, [chartFieldId]: queryResultField },
+      },
     },
-    unsavedChanges: true
+    unsavedChanges: true,
   };
 };
 
@@ -252,9 +252,9 @@ export const handleChartTypeChange = (state, chartType) => {
   return {
     query: {
       ...query,
-      chartConfiguration: { ...query.chartConfiguration, chartType }
+      chartConfiguration: { ...query.chartConfiguration, chartType },
     },
-    unsavedChanges: true
+    unsavedChanges: true,
   };
 };
 
@@ -276,5 +276,5 @@ export default {
   resetNewQuery,
   runQuery,
   saveQuery,
-  setQueryState
+  setQueryState,
 };

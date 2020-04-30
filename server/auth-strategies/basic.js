@@ -12,9 +12,9 @@ function enableBasic(config) {
   passport.use(
     new BasicStrategy(
       {
-        passReqToCallback: true
+        passReqToCallback: true,
       },
-      async function(req, username, password, callback) {
+      async function (req, username, password, callback) {
         try {
           const { models } = req;
           const user = await models.users.findOneByEmail(username);

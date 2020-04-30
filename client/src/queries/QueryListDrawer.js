@@ -33,7 +33,7 @@ function getSortedFilteredQueries(
   let filteredQueries = getDecoratedQueries(queries, connections);
 
   if (creatorSearch !== ALL) {
-    filteredQueries = filteredQueries.filter(query => {
+    filteredQueries = filteredQueries.filter((query) => {
       if (creatorSearch === MY_QUERIES) {
         return query.createdBy === currentUser.email;
       }
@@ -45,21 +45,21 @@ function getSortedFilteredQueries(
   }
 
   if (connectionId) {
-    filteredQueries = filteredQueries.filter(query => {
+    filteredQueries = filteredQueries.filter((query) => {
       return query.connectionId === connectionId;
     });
   }
 
   if (searches && searches.length) {
-    searches.forEach(search => {
+    searches.forEach((search) => {
       if (search.tag) {
         filteredQueries = filteredQueries.filter(
-          query => query.tags && query.tags.includes(search.tag)
+          (query) => query.tags && query.tags.includes(search.tag)
         );
       } else {
         // search is just open text search
         const lowerSearch = search.name.toLowerCase();
-        filteredQueries = filteredQueries.filter(q => {
+        filteredQueries = filteredQueries.filter((q) => {
           return (
             (q.name && q.name.toLowerCase().search(lowerSearch) !== -1) ||
             (q.queryText &&
@@ -98,7 +98,7 @@ function QueryListDrawer({
   loadQueries,
   onClose,
   queries,
-  visible
+  visible,
 }) {
   const [preview, setPreview] = useState(null);
   const [searches, setSearches] = useState([]);
@@ -107,7 +107,7 @@ function QueryListDrawer({
   const [connectionId, setConnectionId] = useState('');
   const [dimensions, setDimensions] = useState({
     width: -1,
-    height: -1
+    height: -1,
   });
 
   useEffect(() => {
@@ -177,7 +177,7 @@ function QueryListDrawer({
             icon
             key="del"
             confirmMessage={`Delete ${query.name}`}
-            onConfirm={e => deleteQuery(query.id)}
+            onConfirm={(e) => deleteQuery(query.id)}
             disabled={!query.canDelete}
           >
             Delete
@@ -203,7 +203,7 @@ function QueryListDrawer({
             <Select
               style={{ width: 140, marginRight: 8, flex: '0 0 auto' }}
               value={creatorSearch}
-              onChange={e => setCreatorSearch(e.target.value)}
+              onChange={(e) => setCreatorSearch(e.target.value)}
             >
               <option value={MY_QUERIES}>My queries</option>
               <option value={SHARED}>Shared with me</option>
@@ -212,10 +212,10 @@ function QueryListDrawer({
             <Select
               style={{ marginRight: 8 }}
               value={connectionId}
-              onChange={e => setConnectionId(e.target.value)}
+              onChange={(e) => setConnectionId(e.target.value)}
             >
               <option value="">All connections</option>
-              {connections.map(connection => {
+              {connections.map((connection) => {
                 return (
                   <option key={connection.id} value={connection.id}>
                     {connection.name}
@@ -227,7 +227,7 @@ function QueryListDrawer({
             <Select
               style={{ width: 170, flex: '0 0 auto' }}
               value={sort}
-              onChange={e => setSort(e.target.value)}
+              onChange={(e) => setSort(e.target.value)}
             >
               <option value="SAVE_DATE">Order by last saved</option>
               <option value="NAME">Order by name</option>
@@ -237,14 +237,14 @@ function QueryListDrawer({
           <MultiSelect
             selectedItems={searches}
             options={availableSearches}
-            onChange={items => setSearches(items)}
+            onChange={(items) => setSearches(items)}
             placeholder="search"
           />
         </div>
 
         <Measure
           bounds
-          onResize={contentRect => {
+          onResize={(contentRect) => {
             setDimensions(contentRect.bounds);
           }}
         >
@@ -254,7 +254,7 @@ function QueryListDrawer({
               style={{
                 display: 'flex',
                 width: '100%',
-                height: '100%'
+                height: '100%',
               }}
             >
               <List
@@ -282,10 +282,10 @@ function QueryListDrawer({
 QueryListDrawer.propTypes = {
   visible: PropTypes.bool,
   onClose: PropTypes.func,
-  queries: PropTypes.array
+  queries: PropTypes.array,
 };
 
-export default connect(['queries', 'connections', 'currentUser'], store => ({
+export default connect(['queries', 'connections', 'currentUser'], (store) => ({
   loadQueries: loadQueries(store),
-  deleteQuery: deleteQuery(store)
+  deleteQuery: deleteQuery(store),
 }))(React.memo(QueryListDrawer));

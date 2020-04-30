@@ -8,7 +8,7 @@ import {
   selectConnectionId,
   deleteConnection,
   addUpdateConnection,
-  loadConnections
+  loadConnections,
 } from '../stores/connections';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 
@@ -18,7 +18,7 @@ function ConnectionList({
   deleteConnection,
   connections,
   addUpdateConnection,
-  selectConnectionId
+  selectConnectionId,
 }) {
   const [connectionId, setConnectionId] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
@@ -27,7 +27,7 @@ function ConnectionList({
     loadConnections();
   }, [loadConnections]);
 
-  const editConnection = connection => {
+  const editConnection = (connection) => {
     setConnectionId(connection.id);
     setShowEdit(true);
   };
@@ -42,7 +42,7 @@ function ConnectionList({
     setShowEdit(false);
   };
 
-  const handleConnectionSaved = connection => {
+  const handleConnectionSaved = (connection) => {
     addUpdateConnection(connection);
     setConnectionId(null);
     setShowEdit(false);
@@ -54,7 +54,7 @@ function ConnectionList({
     }
   };
 
-  const listItems = connections.map(item => {
+  const listItems = connections.map((item) => {
     const actions = [];
 
     if (currentUser.role === 'admin' && item.editable) {
@@ -71,7 +71,7 @@ function ConnectionList({
         <DeleteConfirmButton
           key="delete"
           confirmMessage="Delete connection?"
-          onConfirm={e => deleteConnection(item.id)}
+          onConfirm={(e) => deleteConnection(item.id)}
           style={{ marginLeft: 8 }}
         >
           Delete
@@ -97,7 +97,7 @@ function ConnectionList({
       <div
         style={{
           display: 'flex',
-          justifyContent: 'flex-end'
+          justifyContent: 'flex-end',
         }}
       >
         <Button
@@ -120,9 +120,9 @@ function ConnectionList({
   );
 }
 
-export default connect(['connections', 'currentUser'], store => ({
+export default connect(['connections', 'currentUser'], (store) => ({
   selectConnectionId,
   deleteConnection,
   addUpdateConnection,
-  loadConnections: loadConnections(store)
+  loadConnections: loadConnections(store),
 }))(ConnectionList);

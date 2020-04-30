@@ -11,14 +11,14 @@ async function up(queryInterface, config, appLog, nedb) {
     'query_acl',
     {
       user_id: null,
-      group_id: '__EVERYONE__' // value in consts.EVERYONE_ID at time of migration
+      group_id: '__EVERYONE__', // value in consts.EVERYONE_ID at time of migration
     },
     {
-      user_id: '__EVERYONE__' // value in consts.EVERYONE_ID at time of migration
+      user_id: '__EVERYONE__', // value in consts.EVERYONE_ID at time of migration
     }
   );
 }
 
 module.exports = {
-  up
+  up,
 };

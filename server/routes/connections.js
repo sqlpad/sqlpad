@@ -14,12 +14,12 @@ function removePassword(connection) {
 router.get(
   '/api/connections',
   mustBeAuthenticated,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models } = req;
     const docs = await models.connections.findAll();
 
     // Only send client the common fields that won't have any sensitive info
-    const summaries = docs.map(doc => {
+    const summaries = docs.map((doc) => {
       const {
         id,
         name,
@@ -29,7 +29,7 @@ router.get(
         updatedAt,
         supportsConnectionClient,
         multiStatementTransactionEnabled,
-        idleTimeoutSeconds
+        idleTimeoutSeconds,
       } = doc;
       return {
         id,
@@ -40,7 +40,7 @@ router.get(
         updatedAt,
         supportsConnectionClient,
         multiStatementTransactionEnabled,
-        idleTimeoutSeconds
+        idleTimeoutSeconds,
       };
     });
 
@@ -51,7 +51,7 @@ router.get(
 router.get(
   '/api/connections/:id',
   mustBeAdmin,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models } = req;
     const connection = await models.connections.findOneById(req.params.id);
     if (!connection) {
@@ -64,7 +64,7 @@ router.get(
 router.post(
   '/api/connections',
   mustBeAdmin,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models } = req;
     const newConnection = await models.connections.create(req.body);
     return res.utils.data(removePassword(newConnection));
@@ -74,7 +74,7 @@ router.post(
 router.put(
   '/api/connections/:id',
   mustBeAdmin,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models } = req;
     let connection = await models.connections.findOneById(req.params.id);
     if (!connection) {
@@ -89,7 +89,7 @@ router.put(
 router.delete(
   '/api/connections/:id',
   mustBeAdmin,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models, params } = req;
     let connection = await models.connections.findOneById(params.id);
     if (!connection) {

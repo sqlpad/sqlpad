@@ -21,7 +21,7 @@ function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
       // built-in behavior only starts autocomplete when at least 1 character has been typed
       // In ace the . resets the prefix token and clears the completer
       // In order to get completions for 'sometable.' we need to fire the completer manually
-      editor.commands.on('afterExec', e => {
+      editor.commands.on('afterExec', (e) => {
         if (e.command.name === 'insertstring' && /^[\w.]$/.test(e.args)) {
           if (e.args === '.') {
             editor.execCommand('startAutocomplete');
@@ -33,7 +33,7 @@ function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
     }
   }, [editor, onChange, config]);
 
-  const handleSelection = selection => {
+  const handleSelection = (selection) => {
     if (editor && editor.session) {
       const selectedText = editor.session.getTextRange(selection.getRange());
       onSelectionChange(selectedText);
@@ -43,7 +43,10 @@ function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
   const { width, height } = dimensions;
 
   return (
-    <Measure bounds onResize={contentRect => setDimensions(contentRect.bounds)}>
+    <Measure
+      bounds
+      onResize={(contentRect) => setDimensions(contentRect.bounds)}
+    >
       {({ measureRef }) => (
         <div ref={measureRef} className="h-100 w-100">
           <AceEditor
@@ -55,7 +58,7 @@ function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
             highlightActiveLine={false}
             mode="sql"
             name="query-ace-editor"
-            onLoad={editor => setEditor(editor)}
+            onLoad={(editor) => setEditor(editor)}
             onChange={onChange || noop}
             onSelectionChange={handleSelection}
             showGutter={false}
@@ -75,13 +78,13 @@ SqlEditor.propTypes = {
   onChange: PropTypes.func,
   onSelectionChange: PropTypes.func,
   readOnly: PropTypes.bool,
-  value: PropTypes.string
+  value: PropTypes.string,
 };
 
 SqlEditor.defaultProps = {
   onSelectionChange: () => {},
   readOnly: false,
-  value: ''
+  value: '',
 };
 
 export default connect(['config'])(React.memo(SqlEditor));

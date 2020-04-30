@@ -47,14 +47,14 @@ class Models {
     return (
       queries
         // Join in query ACL info needed for decorateQueryUserAccess
-        .map(query => {
+        .map((query) => {
           query.acl = queryAclsByQueryId[query.id] || [];
           return query;
         })
         // Decorate query with canRead/canWrite/canDelete
-        .map(query => decorateQueryUserAccess(query, user))
+        .map((query) => decorateQueryUserAccess(query, user))
         // Only include queries user can read
-        .filter(query => query.canRead)
+        .filter((query) => query.canRead)
     );
   }
 
@@ -65,7 +65,7 @@ class Models {
   async findQueryById(id) {
     const query = await this.queries.findOneById(id);
     query.acl = await this.queryAcl.findAllByQueryId(id);
-    query.acl = query.acl.map(acl => acl.toJSON());
+    query.acl = query.acl.map((acl) => acl.toJSON());
     return query;
   }
 
@@ -98,13 +98,13 @@ class Models {
     await this.queryAcl.removeByQueryId(queryId);
 
     if (acl && acl.length) {
-      const aclRows = acl.map(row => {
+      const aclRows = acl.map((row) => {
         return {
           queryId,
           userId: row.userId,
           userEmail: row.userEmail,
           groupId: row.groupId,
-          write: row.write
+          write: row.write,
         };
       });
       await this.queryAcl.bulkCreate(aclRows);

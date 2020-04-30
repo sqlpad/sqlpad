@@ -21,7 +21,7 @@ function UserList({ currentUser }) {
       message.error(json.error);
     }
     if (json.data) {
-      const users = json.data.map(user => {
+      const users = json.data.map((user) => {
         user.key = user.id;
         return user;
       });
@@ -34,7 +34,7 @@ function UserList({ currentUser }) {
     loadUsersFromServer();
   }, []);
 
-  const handleDelete = async user => {
+  const handleDelete = async (user) => {
     const json = await fetchJson('DELETE', '/api/users/' + user.id);
     if (json.error) {
       return message.error('Delete Failed: ' + json.error);
@@ -59,7 +59,7 @@ function UserList({ currentUser }) {
         </Button>
       </div>
 
-      {users.map(user => {
+      {users.map((user) => {
         const actions = [];
 
         if (currentUser && currentUser.id !== user.id) {
@@ -76,7 +76,7 @@ function UserList({ currentUser }) {
             <DeleteConfirmButton
               key="delete"
               confirmMessage={`Delete ${user.email}?`}
-              onConfirm={e => handleDelete(user)}
+              onConfirm={(e) => handleDelete(user)}
               style={{ marginLeft: 8 }}
             >
               Delete

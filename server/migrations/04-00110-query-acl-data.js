@@ -9,13 +9,13 @@ async function up(queryInterface, config, appLog, nedb) {
   const queries = await nedb.queries.find({});
 
   if (queries.length) {
-    const records = queries.map(query => {
+    const records = queries.map((query) => {
       return {
         query_id: query._id,
         user_id: '__EVERYONE__', // value in consts.EVERYONE_ID at time of migration
         write: true,
         created_at: new Date(),
-        updated_at: new Date()
+        updated_at: new Date(),
       };
     });
 
@@ -24,5 +24,5 @@ async function up(queryInterface, config, appLog, nedb) {
 }
 
 module.exports = {
-  up
+  up,
 };

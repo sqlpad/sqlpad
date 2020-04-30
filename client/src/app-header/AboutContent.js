@@ -16,7 +16,7 @@ function AboutContent({ version }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-around',
-          marginBottom: 16
+          marginBottom: 16,
         }}
       >
         <a
@@ -77,11 +77,11 @@ function AboutContent({ version }) {
 }
 
 AboutContent.propTypes = {
-  version: PropTypes.string
+  version: PropTypes.string,
 };
 
 AboutContent.defaultProps = {
-  version: ''
+  version: '',
 };
 
 export default AboutContent;

@@ -30,7 +30,7 @@ class ConnectionClients {
    * @returns {ConnectionClient}
    */
   getOneById(id) {
-    return this.connectionClients.find(connectionClient => {
+    return this.connectionClients.find((connectionClient) => {
       return connectionClient.id === id;
     });
   }
@@ -59,9 +59,11 @@ class ConnectionClients {
 
     // remove client from array immediately
     // Disconnecting is async but in-memory state should represent what things will be
-    this.connectionClients = this.connectionClients.filter(connectionClient => {
-      return connectionClient.id !== id;
-    });
+    this.connectionClients = this.connectionClients.filter(
+      (connectionClient) => {
+        return connectionClient.id !== id;
+      }
+    );
 
     if (connectionClient) {
       await connectionClient.disconnect();

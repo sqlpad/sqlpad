@@ -1,9 +1,9 @@
 function searchTables(tableMap, searchRegEx) {
   const res = {};
-  Object.keys(tableMap).forEach(tableName => {
+  Object.keys(tableMap).forEach((tableName) => {
     if (
       searchRegEx.test(tableName) ||
-      tableMap[tableName].some(col => searchRegEx.test(col.column_name))
+      tableMap[tableName].some((col) => searchRegEx.test(col.column_name))
     ) {
       res[tableName] = tableMap[tableName];
     }
@@ -21,7 +21,7 @@ export default function searchSchemaInfo(schemaInfo, search) {
   const searchRegEx = new RegExp(search, 'i');
 
   if (schemaInfo) {
-    Object.keys(schemaInfo).forEach(schemaName => {
+    Object.keys(schemaInfo).forEach((schemaName) => {
       const filteredTableMap = searchTables(
         schemaInfo[schemaName],
         searchRegEx

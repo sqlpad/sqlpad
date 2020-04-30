@@ -26,13 +26,13 @@ const Menu = React.forwardRef(({ isOpen, ...rest }, ref) => {
 
 function getItems(allItems, selectedItems, inputValue) {
   const selectedById = {};
-  selectedItems.forEach(item => (selectedById[item.id] = item));
+  selectedItems.forEach((item) => (selectedById[item.id] = item));
 
-  const unselectedItems = allItems.filter(item => !selectedById[item.id]);
+  const unselectedItems = allItems.filter((item) => !selectedById[item.id]);
 
   return inputValue
     ? matchSorter(unselectedItems, inputValue, {
-        keys: ['name']
+        keys: ['name'],
       })
     : unselectedItems;
 }

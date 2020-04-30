@@ -5,7 +5,7 @@ const wrap = require('../lib/wrap');
 
 router.post(
   '/api/forgot-password',
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models, appLog } = req;
     if (!req.body.email) {
       return res.utils.error('Email address must be provided');
@@ -32,7 +32,7 @@ router.post(
     const resetPath = `/password-reset/${passwordResetId}`;
     email
       .sendForgotPassword(req.body.email, resetPath)
-      .catch(error => appLog.error(error));
+      .catch((error) => appLog.error(error));
 
     return res.utils.data();
   })

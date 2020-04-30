@@ -6,12 +6,12 @@ import { clearQueries } from '../stores/queries';
 
 function mapStateToProps(state) {
   return {
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
   };
 }
 
-const Connected = connect(mapStateToProps, store => ({
-  clearQueries
+const Connected = connect(mapStateToProps, (store) => ({
+  clearQueries,
 }))(React.memo(HistoryButton));
 
 function HistoryButton({ currentUser, clearQueries }) {

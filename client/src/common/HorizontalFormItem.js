@@ -4,7 +4,7 @@ export default function HorizontalFormItem({
   leftWidth = '35%',
   rightWidth = '65%',
   label,
-  children
+  children,
 }) {
   return (
     <div style={{ marginTop: 24, display: 'flex', alignItems: 'flex-start' }}>
@@ -13,7 +13,7 @@ export default function HorizontalFormItem({
           flexBasis: leftWidth,
           marginRight: 16,
           marginTop: 4,
-          textAlign: 'left'
+          textAlign: 'left',
         }}
       >
         <label htmlFor={label}>{label}</label>

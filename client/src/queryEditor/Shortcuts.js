@@ -8,22 +8,22 @@ function Shortcuts({
   connectConnectionClient,
   formatQuery,
   runQuery,
-  saveQuery
+  saveQuery,
 }) {
   useEffect(() => {
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts,
     // we want the event to fire all the time for any element
     keymaster.filter = () => true;
-    keymaster('ctrl+s, command+s', e => {
+    keymaster('ctrl+s, command+s', (e) => {
       saveQuery();
       return false;
     });
-    keymaster('ctrl+return, command+return', e => {
+    keymaster('ctrl+return, command+return', (e) => {
       connectConnectionClient().then(() => runQuery());
       return false;
     });
-    keymaster('shift+return', e => {
+    keymaster('shift+return', (e) => {
       formatQuery();
       return false;
     });
@@ -38,9 +38,9 @@ function Shortcuts({
   return null;
 }
 
-export default connect(null, store => ({
+export default connect(null, (store) => ({
   connectConnectionClient: connectConnectionClient(store),
   formatQuery,
   runQuery: runQuery(store),
-  saveQuery: saveQuery(store)
+  saveQuery: saveQuery(store),
 }))(Shortcuts);

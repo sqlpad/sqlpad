@@ -11,10 +11,10 @@ async function up(queryInterface, config, appLog, nedb) {
   // remove not-null constraint for user_id
   await queryInterface.changeColumn('query_acl', 'user_id', {
     type: Sequelize.STRING,
-    allowNull: true
+    allowNull: true,
   });
 }
 
 module.exports = {
-  up
+  up,
 };

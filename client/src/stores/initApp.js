@@ -7,19 +7,19 @@ import sortBy from 'lodash/sortBy';
 window.localforage = localforage;
 
 function sortConnections(connections) {
-  return sortBy(connections, [connection => connection.name.toLowerCase()]);
+  return sortBy(connections, [(connection) => connection.name.toLowerCase()]);
 }
 
-const initApp = async state => {
+const initApp = async (state) => {
   try {
     let [
       selectedConnectionId,
       appContext,
-      connectionsResponse
+      connectionsResponse,
     ] = await Promise.all([
       localforage.getItem('selectedConnectionId'),
       refreshAppContext(),
-      fetchJson('GET', '/api/connections/')
+      fetchJson('GET', '/api/connections/'),
     ]);
 
     const connections = sortConnections(connectionsResponse.data || []);
@@ -32,12 +32,14 @@ const initApp = async state => {
       initialized: true,
       ...appContext,
       connections,
-      connectionsLastUpdated: new Date()
+      connectionsLastUpdated: new Date(),
     };
 
     const { defaultConnectionId } = appContext.config || {};
     if (defaultConnectionId) {
-      const foundDefault = connections.find(c => c._id === defaultConnectionId);
+      const foundDefault = connections.find(
+        (c) => c._id === defaultConnectionId
+      );
       if (Boolean(foundDefault)) {
         update.selectedConnectionId = defaultConnectionId;
       }
@@ -45,7 +47,7 @@ const initApp = async state => {
 
     if (typeof selectedConnectionId === 'string') {
       const selectedConnection = connections.find(
-        c => c._id === selectedConnectionId
+        (c) => c._id === selectedConnectionId
       );
       if (Boolean(selectedConnection)) {
         update.selectedConnectionId = selectedConnectionId;

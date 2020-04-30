@@ -9,12 +9,12 @@ import { saveQuery } from '../../stores/queries';
 function mapStateToProps(state) {
   return {
     isSaving: state.isSaving,
-    unsavedChanges: state.unsavedChanges
+    unsavedChanges: state.unsavedChanges,
   };
 }
 
-const ConnectedToolbarSaveButton = connect(mapStateToProps, store => ({
-  saveQuery: saveQuery(store)
+const ConnectedToolbarSaveButton = connect(mapStateToProps, (store) => ({
+  saveQuery: saveQuery(store),
 }))(React.memo(ToolbarSaveButton));
 
 function ToolbarSaveButton({ isSaving, saveQuery, unsavedChanges }) {
@@ -28,7 +28,7 @@ function ToolbarSaveButton({ isSaving, saveQuery, unsavedChanges }) {
 ToolbarSaveButton.propTypes = {
   isSaving: PropTypes.bool.isRequired,
   saveQuery: PropTypes.func.isRequired,
-  unsavedChanges: PropTypes.bool.isRequired
+  unsavedChanges: PropTypes.bool.isRequired,
 };
 
 export default ConnectedToolbarSaveButton;

@@ -10,12 +10,12 @@ class SequelizeDb {
       dialect: 'sqlite',
       // sequelize may pass more than message,
       // but it appears to be the sequelize object and it is quite excessive
-      logging: message => {
+      logging: (message) => {
         appLog.debug(message);
       },
       storage: config.get('dbInMemory')
         ? ':memory:'
-        : path.join(config.get('dbPath'), 'sqlpad.sqlite')
+        : path.join(config.get('dbPath'), 'sqlpad.sqlite'),
     });
 
     this.sequelize = sequelize;

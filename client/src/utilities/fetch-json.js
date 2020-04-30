@@ -11,8 +11,8 @@ export default async function fetchJson(method, url, body) {
       'Content-Type': 'application/json',
       'Cache-Control': 'no-cache',
       Expires: '-1',
-      Pragma: 'no-cache'
-    }
+      Pragma: 'no-cache',
+    },
   };
   if (body) {
     opts.body = JSON.stringify(body);
@@ -34,7 +34,7 @@ export default async function fetchJson(method, url, body) {
     const title = 'Network error';
     message.error(title);
     return {
-      error: title
+      error: title,
     };
   }
 
@@ -57,7 +57,7 @@ export default async function fetchJson(method, url, body) {
     // Send a more generic message in response
     console.error(response);
     return {
-      error: 'Server responded not ok'
+      error: 'Server responded not ok',
     };
   }
 }

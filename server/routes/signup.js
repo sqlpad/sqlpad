@@ -18,7 +18,7 @@ async function handleSignup(req, res, next) {
 
   let [user, adminRegistrationOpen] = await Promise.all([
     models.users.findOneByEmail(req.body.email),
-    models.users.adminRegistrationOpen()
+    models.users.adminRegistrationOpen(),
   ]);
 
   if (user && user.passhash) {
@@ -28,7 +28,7 @@ async function handleSignup(req, res, next) {
   if (user) {
     await models.users.update(user.id, {
       password: req.body.password,
-      signupAt: new Date()
+      signupAt: new Date(),
     });
     return next();
   }
@@ -43,7 +43,7 @@ async function handleSignup(req, res, next) {
       email: req.body.email,
       password: req.body.password,
       role: adminRegistrationOpen ? 'admin' : 'editor',
-      signupAt: new Date()
+      signupAt: new Date(),
     });
     return next();
   } else {
@@ -55,7 +55,7 @@ router.post(
   '/api/signup',
   wrap(handleSignup),
   passport.authenticate('local'),
-  function(req, res) {
+  function (req, res) {
     res.utils.data('signup', {});
   }
 );

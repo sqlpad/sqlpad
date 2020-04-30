@@ -8,10 +8,10 @@
 async function up(queryInterface, config, appLog, nedb) {
   await queryInterface.addIndex('query_acl', {
     fields: ['query_id'],
-    name: 'query_acl_query_id'
+    name: 'query_acl_query_id',
   });
 }
 
 module.exports = {
-  up
+  up,
 };

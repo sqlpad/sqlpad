@@ -28,7 +28,7 @@ function QueryEditor(props) {
     queryId,
     resetNewQuery,
     showSchema,
-    showVis
+    showVis,
   } = props;
 
   // Once initialized reset or load query on changes accordingly
@@ -81,7 +81,7 @@ function QueryEditor(props) {
             top: 30,
             bottom: 0,
             left: 0,
-            right: 0
+            right: 0,
           }}
         >
           <QueryEditorResult />
@@ -111,7 +111,7 @@ function QueryEditor(props) {
         height: '100vh',
         width: '100%',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
       }}
     >
       <AppHeader />
@@ -130,7 +130,7 @@ QueryEditor.propTypes = {
   queryId: PropTypes.string.isRequired,
   resetNewQuery: PropTypes.func.isRequired,
   showSchema: PropTypes.bool,
-  showVis: PropTypes.bool
+  showVis: PropTypes.bool,
 };
 
 function mapStateToProps(state, props) {
@@ -141,12 +141,12 @@ function mapStateToProps(state, props) {
 
   return {
     showVis,
-    showSchema: state.showSchema
+    showSchema: state.showSchema,
   };
 }
 
-export default connect(mapStateToProps, store => ({
+export default connect(mapStateToProps, (store) => ({
   connectConnectionClient: connectConnectionClient(store),
   loadQuery,
-  resetNewQuery
+  resetNewQuery,
 }))(QueryEditor);

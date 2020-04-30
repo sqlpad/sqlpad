@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'unistore/react';
 import {
   handleChartConfigurationFieldsChange,
-  handleChartTypeChange
+  handleChartTypeChange,
 } from '../stores/queries';
 import ChartInputs from './ChartInputs.js';
 
@@ -16,20 +16,20 @@ function mapStateToProps(state) {
     fields:
       state.query &&
       state.query.chartConfiguration &&
-      state.query.chartConfiguration.fields
+      state.query.chartConfiguration.fields,
   };
 }
 
 const Connected = connect(mapStateToProps, {
   handleChartConfigurationFieldsChange,
-  handleChartTypeChange
+  handleChartTypeChange,
 })(React.memo(ChartInputsContainer));
 
 function ChartInputsContainer({
   chartType,
   fields,
   queryResult,
-  handleChartConfigurationFieldsChange
+  handleChartConfigurationFieldsChange,
 }) {
   return (
     <ChartInputs

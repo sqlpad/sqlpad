@@ -18,7 +18,7 @@ async function getItemDirectoryData(appLog, seedDataPath, dir) {
   if (dirExists(dirPath)) {
     const fileNames = fs.readdirSync(dirPath);
     const jsonFileNames = fileNames.filter(
-      name => path.extname(name.toLowerCase()) === '.json'
+      (name) => path.extname(name.toLowerCase()) === '.json'
     );
     for (const jsonFileName of jsonFileNames) {
       const filePath = path.join(dirPath, jsonFileName);

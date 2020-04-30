@@ -12,7 +12,7 @@ function QueryTableOnly({ queryId }) {
   const [query, setQuery] = useState(null);
   const [queryError, setQueryError] = useState(null);
 
-  const runQuery = async queryId => {
+  const runQuery = async (queryId) => {
     setIsRunning(true);
 
     const queryJson = await fetchJson('GET', '/api/queries/' + queryId);
@@ -48,7 +48,7 @@ function QueryTableOnly({ queryId }) {
         height: '100vh',
         width: '100%',
         flexDirection: 'column',
-        padding: '16px'
+        padding: '16px',
       }}
     >
       <div style={{ height: '50px' }}>
@@ -65,7 +65,7 @@ function QueryTableOnly({ queryId }) {
             position: 'relative',
             width: '100%',
             height: '100%',
-            border: '1px solid #CCC'
+            border: '1px solid #CCC',
           }}
         >
           <QueryResultContainer
@@ -80,7 +80,7 @@ function QueryTableOnly({ queryId }) {
 }
 
 QueryTableOnly.propTypes = {
-  queryId: PropTypes.string.isRequired
+  queryId: PropTypes.string.isRequired,
 };
 
 export default QueryTableOnly;

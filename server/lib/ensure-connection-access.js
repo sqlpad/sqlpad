@@ -12,8 +12,8 @@ async function ensureConnectionAccess(sequelizeDb, config) {
     const existing = await sequelizeDb.ConnectionAccesses.findOne({
       where: {
         connectionId: consts.EVERY_CONNECTION_ID,
-        userId: consts.EVERYONE_ID
-      }
+        userId: consts.EVERYONE_ID,
+      },
     });
     if (!existing) {
       appLog.info('Creating access on every connection to every user...');
@@ -23,7 +23,7 @@ async function ensureConnectionAccess(sequelizeDb, config) {
         userId: consts.EVERYONE_ID,
         userEmail: consts.EVERYONE_EMAIL,
         duration: 0,
-        expiryDate: new Date(new Date().setFullYear(2099))
+        expiryDate: new Date(new Date().setFullYear(2099)),
       });
     }
   }

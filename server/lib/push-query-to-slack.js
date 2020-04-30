@@ -16,12 +16,12 @@ function pushQueryToSlack(config, query) {
 saved by ${query.updatedBy || query.createdBy} on SQLPad 
 ${'```sql'}
 ${query.queryText}
-${'```'}`
+${'```'}`,
       },
       json: true,
-      url: SLACK_WEBHOOK
+      url: SLACK_WEBHOOK,
     };
-    request(options, function(err) {
+    request(options, function (err) {
       if (err) {
         appLog.error(err, 'Problem sending query to slack');
       }

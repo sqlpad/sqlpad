@@ -1,23 +1,23 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
 
-describe('api/connections', function() {
+describe('api/connections', function () {
   const utils = new TestUtils({
-    queryResultMaxRows: 800
+    queryResultMaxRows: 800,
   });
   let connection;
 
-  before(function() {
+  before(function () {
     return utils.init(true);
   });
 
-  it('Returns empty array', async function() {
+  it('Returns empty array', async function () {
     const body = await utils.get('admin', '/api/connections');
     TestUtils.validateListSuccessBody(body);
     assert.equal(body.length, 0, '0 length');
   });
 
-  it('Creates connection', async function() {
+  it('Creates connection', async function () {
     const body = await utils.post('admin', '/api/connections', {
       driver: 'postgres',
       name: 'test connection',
@@ -25,8 +25,8 @@ describe('api/connections', function() {
         host: 'localhost',
         database: 'testdb',
         username: 'username',
-        password: 'password'
-      }
+        password: 'password',
+      },
     });
 
     assert(body.id, 'has id');
@@ -41,7 +41,7 @@ describe('api/connections', function() {
     connection = body;
   });
 
-  it('Gets list of connections', async function() {
+  it('Gets list of connections', async function () {
     const body = await utils.get('admin', '/api/connections');
     assert.equal(body.length, 1);
     const connection = body[0];
@@ -50,7 +50,7 @@ describe('api/connections', function() {
     assert.equal(connection.supportsConnectionClient, true);
   });
 
-  it('Updates connection', async function() {
+  it('Updates connection', async function () {
     const body = await utils.put('admin', `/api/connections/${connection.id}`, {
       driver: 'postgres',
       name: 'test connection update',
@@ -58,8 +58,8 @@ describe('api/connections', function() {
         host: 'localhost',
         database: 'testdb',
         username: 'username',
-        password: 'password'
-      }
+        password: 'password',
+      },
     });
 
     assert(body.id, 'has id');
@@ -71,18 +71,18 @@ describe('api/connections', function() {
     assert.equal(body.maxRows, 800, 'decorated with maxRows');
   });
 
-  it('Gets updated connection', async function() {
+  it('Gets updated connection', async function () {
     const body = await utils.get('admin', `/api/connections/${connection.id}`);
     assert.equal(body.name, 'test connection update');
     assert.equal(body.data.username, 'username');
     assert.equal(body.username, 'username');
   });
 
-  it('Requires authentication', function() {
+  it('Requires authentication', function () {
     return utils.get(null, `/api/connections/${connection.id}`, 401);
   });
 
-  it('Create requires admin', function() {
+  it('Create requires admin', function () {
     return utils.post(
       'editor',
       '/api/connections',
@@ -93,18 +93,18 @@ describe('api/connections', function() {
           host: 'localhost',
           database: 'testdb',
           username: 'username',
-          password: 'password'
-        }
+          password: 'password',
+        },
       },
       403
     );
   });
 
-  it('Delete requires admin', async function() {
+  it('Delete requires admin', async function () {
     await utils.del('editor', `/api/connections/${connection.id}`, 403);
   });
 
-  it('Deletes connection', async function() {
+  it('Deletes connection', async function () {
     await utils.del('admin', `/api/connections/${connection.id}`);
     await utils.del('admin', `/api/connections/${connection.id}`, 404);
   });

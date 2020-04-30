@@ -18,5 +18,5 @@ module.exports = [
       return next();
     }
     return res.utils.forbidden();
-  }
+  },
 ];

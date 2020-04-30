@@ -46,20 +46,20 @@ function runQuery(query, connection) {
       // tedious deprecated The default value for `config.options.enableArithAbort`
       // will change from `false` to `true` in the next major version of `tedious`.
       // Set the value to `true` or `false` explicitly to silence this message. ../../node_modules/mssql/lib/tedious/connection-pool.js:61:23
-      enableArithAbort: true
+      enableArithAbort: true,
     },
     pool: {
       max: 1,
       min: 0,
-      idleTimeoutMillis: 1000
-    }
+      idleTimeoutMillis: 1000,
+    },
   };
 
   let incomplete;
   const rows = [];
 
   return new Promise((resolve, reject) => {
-    const pool = new mssql.ConnectionPool(config, err => {
+    const pool = new mssql.ConnectionPool(config, (err) => {
       if (err) {
         return reject(err);
       }
@@ -69,7 +69,7 @@ function runQuery(query, connection) {
       request.stream = true;
       request.query(query);
 
-      request.on('row', row => {
+      request.on('row', (row) => {
         // Special handling if columns were not given names
         if (row[''] && row[''].length) {
           for (let i = 0; i < row[''].length; i++) {
@@ -93,7 +93,7 @@ function runQuery(query, connection) {
 
       // Error events may fire multiple times
       // If we get an ECANCEL error and too many rows were handled it was intentional
-      request.on('error', err => {
+      request.on('error', (err) => {
         if (err.code === 'ECANCEL' && incomplete) {
           return;
         }
@@ -107,7 +107,7 @@ function runQuery(query, connection) {
       });
     });
 
-    pool.on('error', err => reject(err));
+    pool.on('error', (err) => reject(err));
   });
 }
 
@@ -125,7 +125,7 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  return runQuery(SCHEMA_SQL, connection).then(queryResult =>
+  return runQuery(SCHEMA_SQL, connection).then((queryResult) =>
     formatSchemaQueryResults(queryResult)
   );
 }
@@ -134,48 +134,48 @@ const fields = [
   {
     key: 'host',
     formType: 'TEXT',
-    label: 'Host/Server/IP Address'
+    label: 'Host/Server/IP Address',
   },
   {
     key: 'port',
     formType: 'TEXT',
-    label: 'Port (optional)'
+    label: 'Port (optional)',
   },
   {
     key: 'database',
     formType: 'TEXT',
-    label: 'Database'
+    label: 'Database',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username'
+    label: 'Database Username',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password'
+    label: 'Database Password',
   },
   {
     key: 'domain',
     formType: 'TEXT',
-    label: 'Domain'
+    label: 'Domain',
   },
   {
     key: 'sqlserverEncrypt',
     formType: 'CHECKBOX',
-    label: 'Encrypt (necessary for Azure)'
+    label: 'Encrypt (necessary for Azure)',
   },
   {
     key: 'sqlserverMultiSubnetFailover',
     formType: 'CHECKBOX',
-    label: 'MultiSubnetFailover'
+    label: 'MultiSubnetFailover',
   },
   {
     key: 'readOnlyIntent',
     formType: 'CHECKBOX',
-    label: 'ReadOnly Application Intent'
-  }
+    label: 'ReadOnly Application Intent',
+  },
 ];
 
 module.exports = {
@@ -184,5 +184,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

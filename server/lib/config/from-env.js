@@ -7,7 +7,7 @@ const definitions = require('./config-items');
  */
 module.exports = function getEnvConfig(env) {
   return definitions
-    .filter(definition => definition.hasOwnProperty('envVar'))
+    .filter((definition) => definition.hasOwnProperty('envVar'))
     .reduce((envMap, definition) => {
       const { key, envVar } = definition;
       if (env[envVar]) {

@@ -8,8 +8,8 @@ const defaults = {
   timestamp: pino.stdTimeFunctions.isoTime,
   redact: {
     paths: ['passhash', '*.passhash'],
-    censor: '******'
-  }
+    censor: '******',
+  },
 };
 
 class Logger {
@@ -20,7 +20,7 @@ class Logger {
     this.logLevel = logLevel;
     this.logger = pino({
       ...defaults,
-      level: logLevel
+      level: logLevel,
     });
   }
 
@@ -30,7 +30,7 @@ class Logger {
     }
     this.logger = pino({
       ...defaults,
-      level: logLevel
+      level: logLevel,
     });
   }
 

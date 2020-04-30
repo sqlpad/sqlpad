@@ -22,7 +22,7 @@ const name = 'Postgres';
 function asyncQueryViaCursor(cursor, rows) {
   return new Promise((resolve, reject) => {
     cursor.read(rows, (err, rows) => {
-      cursor.close(closeError => {
+      cursor.close((closeError) => {
         if (closeError) {
           appLog.error(closeError, 'Error closing postgres cursor');
         }
@@ -55,14 +55,14 @@ class Client {
       host: connection.host,
       port: connection.port || undefined,
       ssl: connection.postgresSsl,
-      stream: createSocksConnection(connection)
+      stream: createSocksConnection(connection),
     };
 
     // TODO cache key/cert values
     if (connection.postgresKey && connection.postgresCert) {
       pgConfig.ssl = {
         key: fs.readFileSync(connection.postgresKey),
-        cert: fs.readFileSync(connection.postgresCert)
+        cert: fs.readFileSync(connection.postgresCert),
       };
       if (connection.postgresCA) {
         pgConfig.ssl['ca'] = fs.readFileSync(connection.postgresCA);
@@ -129,7 +129,7 @@ class Client {
       // transform array of results objects to flat rows array
       let resultRows = [];
       if (Array.isArray(result)) {
-        resultRows = resultRows.concat(_.flatten(result.map(r => r.rows)));
+        resultRows = resultRows.concat(_.flatten(result.map((r) => r.rows)));
       } else {
         resultRows = resultRows.rows || [];
       }
@@ -149,13 +149,13 @@ function createSocksConnection(connection) {
     return new SocksConnection(
       {
         host: connection.host,
-        port: connection.port
+        port: connection.port,
       },
       {
         host: connection.socksHost,
         port: connection.socksPort,
         user: connection.socksUsername,
-        pass: connection.socksPassword
+        pass: connection.socksPassword,
       }
     );
   }
@@ -225,85 +225,85 @@ const fields = [
   {
     key: 'host',
     formType: 'TEXT',
-    label: 'Host/Server/IP Address'
+    label: 'Host/Server/IP Address',
   },
   {
     key: 'port',
     formType: 'TEXT',
-    label: 'Port (optional)'
+    label: 'Port (optional)',
   },
   {
     key: 'database',
     formType: 'TEXT',
-    label: 'Database'
+    label: 'Database',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username'
+    label: 'Database Username',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password'
+    label: 'Database Password',
   },
   {
     key: 'postgresSsl',
     formType: 'CHECKBOX',
-    label: 'Use SSL'
+    label: 'Use SSL',
   },
   {
     key: 'postgresCert',
     formType: 'TEXT',
-    label: 'Database Certificate Path'
+    label: 'Database Certificate Path',
   },
   {
     key: 'postgresKey',
     formType: 'TEXT',
-    label: 'Database Key Path'
+    label: 'Database Key Path',
   },
   {
     key: 'postgresCA',
     formType: 'TEXT',
-    label: 'Database CA Path'
+    label: 'Database CA Path',
   },
   {
     key: 'useSocks',
     formType: 'CHECKBOX',
-    label: 'Connect through SOCKS proxy'
+    label: 'Connect through SOCKS proxy',
   },
   {
     key: 'socksHost',
     formType: 'TEXT',
-    label: 'Proxy hostname'
+    label: 'Proxy hostname',
   },
   {
     key: 'socksPort',
     formType: 'TEXT',
-    label: 'Proxy port'
+    label: 'Proxy port',
   },
   {
     key: 'socksUsername',
     formType: 'TEXT',
-    label: 'Username for socks proxy'
+    label: 'Username for socks proxy',
   },
   {
     key: 'socksPassword',
     formType: 'TEXT',
-    label: 'Password for socks proxy'
+    label: 'Password for socks proxy',
   },
   {
     key: 'denyMultipleStatements',
     formType: 'CHECKBOX',
-    label: 'Deny multiple statements per query'
+    label: 'Deny multiple statements per query',
   },
   {
     key: 'preQueryStatements',
     formType: 'TEXTAREA',
     label: 'Pre-query Statements (Optional)',
     placeholder:
-      'Use to enforce session variables like:\n  SET statement_timeout = 15000;\n\nDeny multiple statements per query to avoid overwritten values.'
-  }
+      'Use to enforce session variables like:\n  SET statement_timeout = 15000;\n\nDeny multiple statements per query to avoid overwritten values.',
+  },
 ];
 
 module.exports = {
@@ -313,5 +313,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

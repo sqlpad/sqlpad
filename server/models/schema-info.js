@@ -14,7 +14,7 @@ class SchemaInfo {
    */
   async getSchemaInfo(schemaCacheId) {
     const doc = await this.sequelizeDb.Cache.findOne({
-      where: { id: schemaCacheId }
+      where: { id: schemaCacheId },
     });
 
     if (!doc) {
@@ -40,7 +40,7 @@ class SchemaInfo {
         id,
         data: schema,
         expiryDate,
-        name: 'schema cache'
+        name: 'schema cache',
       });
     } else {
       return this.sequelizeDb.Cache.update(

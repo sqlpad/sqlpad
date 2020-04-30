@@ -7,14 +7,14 @@ import tcTrendline from 'taucharts/dist/plugins/trendline';
 
 const getUnmetFields = (chartType, selectedFieldMap) => {
   const chartDefinition = chartDefinitions.find(
-    def => def.chartType === chartType
+    (def) => def.chartType === chartType
   );
   if (!chartDefinition) {
     throw new Error(`Unknown chartType ${chartType}`);
   }
   const unmetRequiredFields = [];
 
-  chartDefinition.fields.forEach(field => {
+  chartDefinition.fields.forEach((field) => {
     if (field.required && !selectedFieldMap[field.fieldId]) {
       unmetRequiredFields.push(field);
     }
@@ -30,7 +30,7 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
   const selectedFields = chartConfiguration && chartConfiguration.fields;
 
   const chartDefinition = chartDefinitions.find(
-    def => def.chartType === chartType
+    (def) => def.chartType === chartType
   );
 
   if (!dataRows.length || !chartDefinition) {
@@ -46,23 +46,23 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
         cssPaths: [
           // NOTE: We must ref the file in vendor dir for export images to work
           // (we don't know what the webpack bundle css path will be)
-          window.BASE_URL + '/javascripts/vendor/tauCharts/tauCharts.min.css'
-        ]
-      })
+          window.BASE_URL + '/javascripts/vendor/tauCharts/tauCharts.min.css',
+        ],
+      }),
     ],
     settings: {
       asyncRendering: true,
       renderingTimeout: 10000,
       syncRenderingInterval: 50,
       handleRenderingErrors: true,
-      utcTime: true
-    }
+      utcTime: true,
+    },
   };
 
   // loop through data rows and convert types as needed
-  dataRows = dataRows.map(row => {
+  dataRows = dataRows.map((row) => {
     const newRow = {};
-    Object.keys(row).forEach(col => {
+    Object.keys(row).forEach((col) => {
       const datatype = queryResult.meta[col].datatype;
       if (datatype === 'date' || datatype === 'datetime') {
         newRow[col] = new Date(row[col]);
@@ -79,9 +79,9 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
     // Here we'll convert a number to a string,
     // to trick tauCharts into thinking its a dimension
     const forceDimensionFields = chartDefinition.fields.filter(
-      field => field.forceDimension === true
+      (field) => field.forceDimension === true
     );
-    forceDimensionFields.forEach(fieldDefinition => {
+    forceDimensionFields.forEach((fieldDefinition) => {
       const col = selectedFields[fieldDefinition.fieldId];
       const colDatatype = meta[col] ? meta[col].datatype : null;
       if (col && colDatatype === 'number' && newRow[col]) {
@@ -98,7 +98,7 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
     chartConfiguration.fields
   ).reduce((fieldsMap, field) => {
     const fieldDefinition = chartDefinition.fields.find(
-      f => f.fieldId === field
+      (f) => f.fieldId === field
     );
     const value = chartConfiguration.fields[field];
 
@@ -140,7 +140,7 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
     valueFacet,
     barlabel,
     labelFacet,
-    color
+    color,
   } = cleanedChartConfigurationFields;
 
   switch (chartType) {
@@ -167,7 +167,7 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
       }
       if (yMin || yMax) {
         chartConfig.guide = {
-          y: { autoScale: false }
+          y: { autoScale: false },
         };
         if (yMin) {
           chartConfig.guide.y.min = Number(yMin);

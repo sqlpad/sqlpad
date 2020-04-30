@@ -2,28 +2,28 @@ const assert = require('assert');
 const { v4: uuidv4 } = require('uuid');
 const TestUtils = require('../utils');
 
-describe('api/users', function() {
+describe('api/users', function () {
   const utils = new TestUtils();
   let user;
 
-  before(function() {
+  before(function () {
     return utils.init(true);
   });
 
-  it('Returns initial array', async function() {
+  it('Returns initial array', async function () {
     const body = await utils.get('admin', '/api/users');
     TestUtils.validateListSuccessBody(body);
     assert.equal(body.length, 3, '3 length');
   });
 
-  it('Creates user', async function() {
+  it('Creates user', async function () {
     user = await utils.post('admin', '/api/users', {
       email: 'user1@test.com',
       name: 'user1',
       role: 'editor',
       data: {
-        create: true
-      }
+        create: true,
+      },
     });
 
     assert(user.id, 'has id');
@@ -35,21 +35,21 @@ describe('api/users', function() {
     assert(user.createdAt);
   });
 
-  it('Gets list of users', async function() {
+  it('Gets list of users', async function () {
     const body = await utils.get('admin', '/api/users');
     TestUtils.validateListSuccessBody(body);
     assert.equal(body.length, 4, '4 length');
   });
 
-  it('Updates user', async function() {
+  it('Updates user', async function () {
     const passwordResetId = uuidv4();
     const body = await utils.put('admin', `/api/users/${user.id}`, {
       role: 'admin',
       name: 'test',
       passwordResetId,
       data: {
-        test: true
-      }
+        test: true,
+      },
     });
     assert.equal(body.role, 'admin');
     assert.equal(body.email, 'user1@test.com');
@@ -59,27 +59,27 @@ describe('api/users', function() {
     assert(new Date(body.updatedAt) > new Date(user.updatedAt));
   });
 
-  it('Requires authentication', function() {
+  it('Requires authentication', function () {
     return utils.get(null, `/api/users`, 401);
   });
 
-  it('Create requires admin', function() {
+  it('Create requires admin', function () {
     return utils.post(
       'editor',
       '/api/users',
       {
         email: 'user2@test.com',
-        role: 'editor'
+        role: 'editor',
       },
       403
     );
   });
 
-  it('Deletes user', async function() {
+  it('Deletes user', async function () {
     await utils.del('admin', `/api/users/${user.id}`);
   });
 
-  it('Returns expected list', async function() {
+  it('Returns expected list', async function () {
     const body = await utils.get('admin', '/api/users');
     assert.equal(body.length, 3, '3 length');
   });

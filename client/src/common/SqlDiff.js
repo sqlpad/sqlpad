@@ -17,7 +17,10 @@ function SqlDiff({ value }) {
   const key = `${width}${height}`;
 
   return (
-    <Measure bounds onResize={contentRect => setDimensions(contentRect.bounds)}>
+    <Measure
+      bounds
+      onResize={(contentRect) => setDimensions(contentRect.bounds)}
+    >
       {({ measureRef }) => (
         <div ref={measureRef} className="h-100 w-100">
           <DiffEditor
@@ -39,11 +42,11 @@ function SqlDiff({ value }) {
 }
 
 SqlDiff.propTypes = {
-  value: PropTypes.arrayOf(PropTypes.string)
+  value: PropTypes.arrayOf(PropTypes.string),
 };
 
 SqlDiff.defaultProps = {
-  value: ['', '']
+  value: ['', ''],
 };
 
 export default SqlDiff;

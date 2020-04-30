@@ -2,11 +2,11 @@ const assert = require('assert');
 const request = require('supertest');
 const TestUtil = require('../utils');
 
-describe('api/signin', function() {
-  describe('local auth', async function() {
-    it('allows new user sign in', async function() {
+describe('api/signin', function () {
+  describe('local auth', async function () {
+    it('allows new user sign in', async function () {
       const utils = new TestUtil({
-        authProxyEnabled: false
+        authProxyEnabled: false,
       });
 
       await utils.init();
@@ -16,7 +16,7 @@ describe('api/signin', function() {
         .send({
           password: 'admin',
           passwordConfirmation: 'admin',
-          email: 'admin@test.com'
+          email: 'admin@test.com',
         })
         .expect(200);
 
@@ -25,7 +25,7 @@ describe('api/signin', function() {
         .post('/api/signin')
         .send({
           password: 'admin',
-          email: 'admin@test.com'
+          email: 'admin@test.com',
         })
         .expect(200);
 
@@ -34,9 +34,9 @@ describe('api/signin', function() {
       assert.equal(r2.body.currentUser.email, 'admin@test.com');
     });
 
-    it('unauthorized for bad signin', async function() {
+    it('unauthorized for bad signin', async function () {
       const utils = new TestUtil({
-        authProxyEnabled: false
+        authProxyEnabled: false,
       });
 
       await utils.init();
@@ -46,7 +46,7 @@ describe('api/signin', function() {
         .send({
           email: 'admin@test.com',
           password: 'admin',
-          passwordConfirmation: 'admin'
+          passwordConfirmation: 'admin',
         })
         .expect(200);
 
@@ -54,14 +54,14 @@ describe('api/signin', function() {
         .post('/api/signin')
         .send({
           email: 'admin@test.com',
-          password: 'wrong-password'
+          password: 'wrong-password',
         })
         .expect(401);
     });
 
-    it('supports case insensitive login', async function() {
+    it('supports case insensitive login', async function () {
       const utils = new TestUtil({
-        authProxyEnabled: false
+        authProxyEnabled: false,
       });
 
       await utils.init();
@@ -72,7 +72,7 @@ describe('api/signin', function() {
         .send({
           password: 'admin',
           passwordConfirmation: 'admin',
-          email: 'admin@test.com'
+          email: 'admin@test.com',
         })
         .expect(200);
 
@@ -82,7 +82,7 @@ describe('api/signin', function() {
         .auth('admin@test.com', 'admin')
         .send({
           email: 'userCase@test.com',
-          role: 'editor'
+          role: 'editor',
         })
         .expect(200);
 
@@ -91,14 +91,14 @@ describe('api/signin', function() {
         .send({
           password: 'password',
           passwordConfirmation: 'password',
-          email: 'Usercase@test.com'
+          email: 'Usercase@test.com',
         })
         .expect(200);
     });
 
-    it('allows emails containing +', async function() {
+    it('allows emails containing +', async function () {
       const utils = new TestUtil({
-        authProxyEnabled: false
+        authProxyEnabled: false,
       });
 
       await utils.init();
@@ -109,7 +109,7 @@ describe('api/signin', function() {
         .send({
           password: 'admin',
           passwordConfirmation: 'admin',
-          email: 'admin@test.com'
+          email: 'admin@test.com',
         })
         .expect(200);
 
@@ -119,7 +119,7 @@ describe('api/signin', function() {
         .auth('admin@test.com', 'admin')
         .send({
           email: 'user+foobar@test.com',
-          role: 'editor'
+          role: 'editor',
         })
         .expect(200);
 
@@ -128,19 +128,19 @@ describe('api/signin', function() {
         .send({
           password: 'password',
           passwordConfirmation: 'password',
-          email: 'user+foobar@test.com'
+          email: 'user+foobar@test.com',
         })
         .expect(200);
     });
   });
 
-  describe('auth proxy', function() {
-    it('logs in with session', async function() {
+  describe('auth proxy', function () {
+    it('logs in with session', async function () {
       const utils = new TestUtil({
         authProxyEnabled: true,
         authProxyAutoSignUp: true,
         authProxyDefaultRole: 'admin',
-        authProxyHeaders: 'email:X-WEBAUTH-EMAIL'
+        authProxyHeaders: 'email:X-WEBAUTH-EMAIL',
       });
       await utils.init();
 

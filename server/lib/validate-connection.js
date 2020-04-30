@@ -54,7 +54,7 @@ function validateConnection(connection) {
   if (!driverImplementation) {
     throw new Error(`driver implementation ${driver} not found`);
   }
-  const validFields = driverImplementation.fields.map(field => field.key);
+  const validFields = driverImplementation.fields.map((field) => field.key);
 
   // If data is provided, use that for driver fields
   // Otherwise use legacy driver fields (the leftovers of fields we do not know about)
@@ -68,14 +68,14 @@ function validateConnection(connection) {
     multiStatementTransactionEnabled,
     idleTimeoutSeconds,
     createdAt,
-    updatedAt
+    updatedAt,
   };
 
   const cleanedData = validFields.reduce((cleanedData, fieldKey) => {
     if (driverFields.hasOwnProperty(fieldKey)) {
       let value = driverFields[fieldKey];
       const fieldDefinition = driverImplementation.fields.find(
-        field => field.key === fieldKey
+        (field) => field.key === fieldKey
       );
 
       if (fieldDefinition) {
@@ -95,7 +95,7 @@ function validateConnection(connection) {
 
   // Strip fields set to undefined
   const evenMoreClean = {};
-  Object.keys(cleanConnection).forEach(key => {
+  Object.keys(cleanConnection).forEach((key) => {
     const value = cleanConnection[key];
     if (value !== undefined) {
       evenMoreClean[key] = value;

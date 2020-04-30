@@ -34,7 +34,9 @@ router.delete('/api/queries/:id', mustBeAuthenticated, wrap(deleteQuery));
 async function listQueries(req, res) {
   const { models, user } = req;
   const queries = await models.findQueriesForUser(user);
-  const decorated = queries.map(query => decorateQueryUserAccess(query, user));
+  const decorated = queries.map((query) =>
+    decorateQueryUserAccess(query, user)
+  );
   return res.utils.data(decorated);
 }
 
@@ -79,7 +81,7 @@ async function createQuery(req, res) {
     chartConfiguration,
     createdBy: email,
     updatedBy: email,
-    acl
+    acl,
   };
 
   const newQuery = await models.upsertQuery(query);
@@ -119,7 +121,7 @@ async function updateQuery(req, res) {
     queryText,
     chartConfiguration,
     updatedBy: user.email,
-    acl
+    acl,
   });
 
   const updatedQuery = await models.upsertQuery(query);

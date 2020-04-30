@@ -36,7 +36,7 @@ class ConnectionClient {
         connectionClientId: this.id,
         originalConnection: connection,
         renderedConnection: this.connection,
-        user
+        user,
       },
       'Rendered connection for user'
     );
@@ -119,11 +119,11 @@ class ConnectionClient {
             connectionName: this.getConnectionName(),
             driver: this.getConnectionDriver(),
             sinceLastKeepAliveMs,
-            sinceLastActivityMs
+            sinceLastActivityMs,
           },
           msg
         );
-        this.disconnect().catch(error => appLog.error(error));
+        this.disconnect().catch((error) => appLog.error(error));
       }
     }, intervalMs);
   }
@@ -189,7 +189,7 @@ class ConnectionClient {
       fields: [],
       incomplete: false,
       meta: {},
-      rows: []
+      rows: [],
     };
 
     const connectionName = connection.name;
@@ -202,7 +202,7 @@ class ConnectionClient {
       connectionId: connection.id,
       connectionName,
       query,
-      startTime: finalResult.startTime
+      startTime: finalResult.startTime,
     };
 
     appLog.info(queryContext, 'Running query');
@@ -242,7 +242,7 @@ class ConnectionClient {
           driver: connection.driver,
           connectionId: connection.id,
           connectionName,
-          query
+          query,
         },
         'Expected rows to be an array but received %s.',
         typeof rows
@@ -265,7 +265,7 @@ class ConnectionClient {
         queryRunTime: finalResult.queryRunTime,
         rowCount: rows.length,
         incomplete: finalResult.incomplete,
-        suppressedResultSet: finalResult.suppressedResultSet
+        suppressedResultSet: finalResult.suppressedResultSet,
       },
       'Query finished'
     );
@@ -291,7 +291,7 @@ class ConnectionClient {
     // Increase the max rows without modifiying original connection
     const connectionMaxed = {
       ...this.connection,
-      maxRows: Number.MAX_SAFE_INTEGER
+      maxRows: Number.MAX_SAFE_INTEGER,
     };
     return this.driver.getSchema(connectionMaxed);
   }
@@ -306,7 +306,7 @@ class ConnectionClient {
   getSchemaCacheId() {
     const keyValuesString = Object.keys(this.connection)
       .sort()
-      .map(key => {
+      .map((key) => {
         return `${key}:${this.connection[key]}`;
       })
       .join('::');

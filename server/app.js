@@ -37,10 +37,10 @@ function makeApp(config, models) {
         'req.headers',
         'res.headers',
         'req.remoteAddress',
-        'req.remotePort'
+        'req.remotePort',
       ],
-      remove: true
-    }
+      remove: true,
+    },
   });
 
   /*  Express setup
@@ -57,7 +57,7 @@ function makeApp(config, models) {
   app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 
   // Decorate req and res with SQLPad objects and utils
-  app.use(function(req, res, next) {
+  app.use(function (req, res, next) {
     req.config = config;
     req.models = models;
     req.appLog = appLog;
@@ -72,7 +72,7 @@ function makeApp(config, models) {
   app.use(bodyParser.json());
   app.use(
     bodyParser.urlencoded({
-      extended: true
+      extended: true,
     })
   );
 
@@ -83,14 +83,14 @@ function makeApp(config, models) {
     session({
       store: new FileStore({
         path: sessionPath,
-        logFn: () => {}
+        logFn: () => {},
       }),
       saveUninitialized: false,
       resave: true,
       rolling: true,
       cookie: { maxAge: cookieMaxAgeMs },
       secret: config.get('cookieSecret'),
-      name: config.get('cookieName')
+      name: config.get('cookieName'),
     })
   );
 
@@ -113,11 +113,11 @@ function makeApp(config, models) {
     require('./routes/signup.js'),
     require('./routes/signin.js'),
     require('./routes/google-auth.js'),
-    require('./routes/saml.js')
+    require('./routes/saml.js'),
   ];
 
   // Add pre-auth routes to app
-  preAuthRouters.forEach(router => app.use(baseUrl, router));
+  preAuthRouters.forEach((router) => app.use(baseUrl, router));
 
   // Add sessionless authentication middleware
   // This handles things like HTTP basic, auth proxy, disable auth, and JWT service tokens
@@ -139,30 +139,30 @@ function makeApp(config, models) {
     require('./routes/schema-info.js'),
     require('./routes/tags.js'),
     require('./routes/format-sql.js'),
-    require('./routes/service-tokens.js')
+    require('./routes/service-tokens.js'),
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
-  authRequiredRouters.forEach(router => app.use(baseUrl, router));
+  authRequiredRouters.forEach((router) => app.use(baseUrl, router));
 
   // Add '*/api/app' route last and without baseUrl
   app.use(require('./routes/app.js'));
 
   // For any missing api route, return a 404
   // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
-  app.use(baseUrl + '/api/', function(req, res) {
+  app.use(baseUrl + '/api/', function (req, res) {
     req.log.debug('reached catch all api route');
     return res.utils.notFound();
   });
 
   // Add an error handler for /api
-  app.use(baseUrl + '/api/', function(err, req, res, next) {
+  app.use(baseUrl + '/api/', function (err, req, res, next) {
     if (res.headersSent) {
       return next(err);
     }
     appLog.error(err);
     return res.status(500).json({
-      title: 'Internal Server Error'
+      title: 'Internal Server Error',
     });
   });
 

@@ -9,10 +9,10 @@ async function up(queryInterface, config, appLog, nedb) {
   // Add unique constraint for (user_email, query_id) and (group_id, query_id)
   await queryInterface.addConstraint('query_acl', ['user_email', 'query_id'], {
     type: 'unique',
-    name: 'query_acl_user_email_query_id_key'
+    name: 'query_acl_user_email_query_id_key',
   });
 }
 
 module.exports = {
-  up
+  up,
 };

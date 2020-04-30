@@ -7,7 +7,7 @@ const definitions = require('./config-items');
 module.exports = function getDefaultConfig() {
   const defaultMap = {};
 
-  definitions.forEach(definition => {
+  definitions.forEach((definition) => {
     defaultMap[definition.key] = definition.default;
   });
 

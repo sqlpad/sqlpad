@@ -12,41 +12,41 @@ async function up(queryInterface, config, appLog, nedb) {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     role: {
       type: Sequelize.STRING,
-      allowNull: true
+      allowNull: true,
     },
     masked_token: {
       type: Sequelize.STRING,
-      allowNull: true
+      allowNull: true,
     },
     duration: {
       type: Sequelize.INTEGER,
-      defaultValue: 0
+      defaultValue: 0,
     },
     expiry_date: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
     },
     created_at: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: false,
     },
     updated_at: {
-      type: Sequelize.DATE
-    }
+      type: Sequelize.DATE,
+    },
   });
 
   await queryInterface.addConstraint('service_tokens', ['name'], {
     type: 'unique',
-    name: 'service_tokens_name_key'
+    name: 'service_tokens_name_key',
   });
 }
 
 module.exports = {
-  up
+  up,
 };

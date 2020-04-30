@@ -32,7 +32,7 @@ async function ensureAdmin(models, config) {
 
     const newAdmin = {
       email: adminEmail,
-      role: 'admin'
+      role: 'admin',
     };
     if (adminPassword) {
       newAdmin.password = adminPassword;

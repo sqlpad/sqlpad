@@ -2,7 +2,7 @@ const assert = require('assert');
 const TestUtils = require('../utils');
 
 function expectKeys(data, expectedKeys) {
-  Object.keys(data).forEach(key =>
+  Object.keys(data).forEach((key) =>
     assert(expectedKeys.includes(key), `expected key ${key}`)
   );
 }
@@ -11,7 +11,7 @@ const expectedKeys = [
   'adminRegistrationOpen',
   'currentUser',
   'config',
-  'version'
+  'version',
 ];
 
 const expectedConfigKeys = [
@@ -23,17 +23,17 @@ const expectedConfigKeys = [
   'smtpConfigured',
   'googleAuthConfigured',
   'localAuthConfigured',
-  'samlConfigured'
+  'samlConfigured',
 ];
 
-describe('api/app', function() {
+describe('api/app', function () {
   const utils = new TestUtils();
 
-  before(function() {
+  before(function () {
     return utils.init(true);
   });
 
-  it('returns expected values', async function() {
+  it('returns expected values', async function () {
     const body = await utils.get(null, '/api/app');
     expectKeys(body, expectedKeys);
     expectKeys(body.config, expectedConfigKeys);
@@ -44,7 +44,7 @@ describe('api/app', function() {
     );
   });
 
-  it('handles unknown baseUrl', async function() {
+  it('handles unknown baseUrl', async function () {
     const body = await utils.get(null, '/literally/any/path/api/app');
     expectKeys(body, expectedKeys);
   });

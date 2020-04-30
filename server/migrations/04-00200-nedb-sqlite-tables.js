@@ -16,43 +16,43 @@ async function up(queryInterface, config, appLog, nedb) {
   await queryInterface.createTable('queries', {
     id: {
       type: Sequelize.STRING,
-      primaryKey: true
+      primaryKey: true,
     },
     name: {
       type: Sequelize.TEXT,
-      allowNull: false
+      allowNull: false,
     },
     connection_id: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     query_text: {
-      type: Sequelize.TEXT
+      type: Sequelize.TEXT,
     },
     // With addition of multiple queries per query...
     // unsure what direction charts will go.
     // Leaving this as a JSON object
     chart: {
-      type: Sequelize.JSON
+      type: Sequelize.JSON,
     },
     // email address
     // (possibly weird, but user ids may not be known ahead of time
     // email is human friendly too
     created_by: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     // also email address
     updated_by: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     created_at: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: false,
     },
     updated_at: {
       type: Sequelize.DATE,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   });
 
   await migrationUtils.addOrReplaceIndex(
@@ -68,23 +68,23 @@ async function up(queryInterface, config, appLog, nedb) {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
       },
       query_id: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       tag: {
         type: Sequelize.STRING,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       uniqueKeys: {
         query_tags_query_id_tag: {
-          fields: ['query_id', 'tag']
-        }
-      }
+          fields: ['query_id', 'tag'],
+        },
+      },
     }
   );
 
@@ -109,39 +109,39 @@ async function up(queryInterface, config, appLog, nedb) {
   await queryInterface.createTable('connections', {
     id: {
       type: Sequelize.STRING,
-      primaryKey: true
+      primaryKey: true,
     },
     name: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     description: {
-      type: Sequelize.TEXT
+      type: Sequelize.TEXT,
     },
     driver: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     multi_statement_transaction_enabled: {
-      type: Sequelize.BOOLEAN
+      type: Sequelize.BOOLEAN,
     },
     idle_timeout_seconds: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
     },
     // Holds all driver-specific fields
     // It is encrypted JSON
     data: {
       type: Sequelize.TEXT,
-      allowNull: false
+      allowNull: false,
     },
     created_at: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: false,
     },
     updated_at: {
       type: Sequelize.DATE,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   });
 
   /**
@@ -152,40 +152,40 @@ async function up(queryInterface, config, appLog, nedb) {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     connection_id: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     connection_name: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     user_id: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     user_email: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     duration: {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     expiry_date: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: false,
     },
     created_at: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: false,
     },
     updated_at: {
       type: Sequelize.DATE,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   });
 
   await migrationUtils.addOrReplaceIndex(
@@ -210,53 +210,53 @@ async function up(queryInterface, config, appLog, nedb) {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     connection_id: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     connection_name: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     user_id: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     user_email: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     start_time: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
     },
     stop_time: {
-      type: Sequelize.DATE
+      type: Sequelize.DATE,
     },
     query_run_time: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
     },
     query_id: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     query_name: {
-      type: Sequelize.STRING
+      type: Sequelize.STRING,
     },
     query_text: {
       type: Sequelize.TEXT,
-      allowNull: false
+      allowNull: false,
     },
     incomplete: {
-      type: Sequelize.BOOLEAN
+      type: Sequelize.BOOLEAN,
     },
     row_count: {
-      type: Sequelize.INTEGER
+      type: Sequelize.INTEGER,
     },
     created_at: {
       type: Sequelize.DATE,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   });
 
   await migrationUtils.addOrReplaceIndex(
@@ -289,49 +289,49 @@ async function up(queryInterface, config, appLog, nedb) {
     {
       id: {
         type: Sequelize.STRING,
-        primaryKey: true
+        primaryKey: true,
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       role: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       passhash: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       password_reset_id: {
-        type: Sequelize.UUID
+        type: Sequelize.UUID,
       },
       data: {
-        type: Sequelize.JSON
+        type: Sequelize.JSON,
       },
       signup_at: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       created_at: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updated_at: {
         type: Sequelize.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       uniqueKeys: {
         users_email: {
-          fields: ['email']
+          fields: ['email'],
         },
         users_password_reset_id: {
-          fields: ['password_reset_id']
-        }
-      }
+          fields: ['password_reset_id'],
+        },
+      },
     }
   );
 
@@ -342,23 +342,23 @@ async function up(queryInterface, config, appLog, nedb) {
   await queryInterface.createTable('cache', {
     id: {
       type: Sequelize.STRING,
-      primaryKey: true
+      primaryKey: true,
     },
     name: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     data: {
-      type: Sequelize.JSON
+      type: Sequelize.JSON,
     },
     expiry_date: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: false,
     },
     created_at: {
       type: Sequelize.DATE,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   });
 
   await migrationUtils.addOrReplaceIndex(
@@ -370,5 +370,5 @@ async function up(queryInterface, config, appLog, nedb) {
 }
 
 module.exports = {
-  up
+  up,
 };

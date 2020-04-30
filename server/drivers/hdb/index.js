@@ -38,20 +38,20 @@ function runQuery(query, connection) {
       database: connection.hanadatabase,
       user: connection.username,
       password: connection.password,
-      schema: connection.hanaSchema
+      schema: connection.hanaSchema,
     });
 
-    client.on('error', err => {
+    client.on('error', (err) => {
       appLog.error(err, 'Network connection error');
       return reject(err);
     });
 
-    client.connect(err => {
+    client.connect((err) => {
       if (err) {
         appLog.error(err, 'Connect error');
         return reject(err);
       }
-      return client.execute(query, function(err, rs) {
+      return client.execute(query, function (err, rs) {
         let rows = [];
 
         if (err) {
@@ -72,7 +72,7 @@ function runQuery(query, connection) {
 
         const stream = rs.createObjectStream();
 
-        stream.on('data', data => {
+        stream.on('data', (data) => {
           if (rows.length < connection.maxRows) {
             return rows.push(data);
           }
@@ -80,7 +80,7 @@ function runQuery(query, connection) {
           return resolve({ rows, incomplete: true });
         });
 
-        stream.on('error', error => {
+        stream.on('error', (error) => {
           client.disconnect();
           return reject(error);
         });
@@ -117,33 +117,33 @@ const fields = [
   {
     key: 'host',
     formType: 'TEXT',
-    label: 'Host/Server/IP Address'
+    label: 'Host/Server/IP Address',
   },
   {
     key: 'hanaport',
     formType: 'TEXT',
-    label: 'Port (e.g. 39015)'
+    label: 'Port (e.g. 39015)',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username'
+    label: 'Database Username',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password'
+    label: 'Database Password',
   },
   {
     key: 'hanadatabase',
     formType: 'TEXT',
-    label: 'Tenant'
+    label: 'Tenant',
   },
   {
     key: 'hanaSchema',
     formType: 'TEXT',
-    label: 'Schema (optional)'
-  }
+    label: 'Schema (optional)',
+  },
 ];
 
 module.exports = {
@@ -152,5 +152,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

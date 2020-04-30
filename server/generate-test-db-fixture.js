@@ -20,7 +20,7 @@ const sqliteDriver = require('./drivers/sqlite');
 const filename = path.join(__dirname, 'test/fixtures/sales.sqlite');
 
 const client = new sqliteDriver.Client({
-  filename
+  filename,
 });
 
 const regions = [
@@ -28,7 +28,7 @@ const regions = [
   { region: 'West', multiplier: 1.4 },
   { region: 'South', multiplier: 1.1 },
   { region: 'Midwest', multiplier: 1.2 },
-  { region: 'East', multiplier: 1.2 }
+  { region: 'East', multiplier: 1.2 },
 ];
 
 // This is just another number to use as a metric for charts
@@ -39,98 +39,98 @@ const products = [
     name: 'Awesome Wooden Ball',
     category: 'toy',
     color: 'azure',
-    price: 3.99
+    price: 3.99,
   },
   {
     name: 'Awesome Wooden Ball',
     category: 'toy',
     color: 'lime',
-    price: 4.99
+    price: 4.99,
   },
   {
     name: 'Fantastic Rubber Tuna',
     category: 'toy',
     color: 'azure',
-    price: 8.99
+    price: 8.99,
   },
   {
     name: 'Fantastic Rubber Tuna',
     category: 'toy',
     color: 'indigo',
-    price: 7.99
+    price: 7.99,
   },
   {
     name: 'Fantastic Rubber Tuna',
     category: 'toy',
     color: 'cyan',
-    price: 9.99
+    price: 9.99,
   },
   {
     name: 'Generic Wooden Keyboard',
     category: 'tech',
     color: 'azure',
-    price: 29.99
+    price: 29.99,
   },
   {
     name: 'Generic Wooden Keyboard',
     category: 'tech',
     color: 'lime',
-    price: 25.99
+    price: 25.99,
   },
   {
     name: 'Generic Wooden Keyboard',
     category: 'tech',
     color: 'red',
-    price: 31.99
+    price: 31.99,
   },
   {
     name: 'Generic Wooden Keyboard',
     category: 'tech',
     color: 'azure',
-    price: 31.99
+    price: 31.99,
   },
   {
     name: 'Handmade Granite Monitor',
     category: 'tech',
     color: 'cyan',
-    price: 99.99
+    price: 99.99,
   },
   {
     name: 'Incredible Rubber ball',
     category: 'toy',
     color: 'lime',
-    price: 12.99
+    price: 12.99,
   },
   {
     name: 'Refined Frozen Fish',
     category: 'food',
     color: 'cyan',
-    price: 22.99
+    price: 22.99,
   },
   {
     name: 'Rustic Concrete Chips',
     category: 'food',
     color: 'azure',
-    price: 2.99
+    price: 2.99,
   },
   {
     name: 'Rustic Metal Bacon',
     category: 'food',
     color: 'red',
-    price: 7.99
+    price: 7.99,
   },
   {
     name: 'Rustic Metal Bacon',
     category: 'food',
     color: 'azure',
-    price: 8.99
+    price: 8.99,
   },
   {
     name: 'Unbranded Granite laptop',
     category: 'tech',
     color: 'indigo',
-    price: 149.99
-  }
+    price: 149.99,
+  },
 ];
 
 async function main() {
@@ -302,7 +302,7 @@ async function main() {
   console.log('%s creation finished', filename);
 }
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error);
   process.exit(1);
 });

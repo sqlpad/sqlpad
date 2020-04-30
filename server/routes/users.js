@@ -7,7 +7,7 @@ const wrap = require('../lib/wrap');
 router.get(
   '/api/users',
   mustBeAuthenticated,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models } = req;
     const users = await models.users.findAll();
     return res.utils.data(users);
@@ -18,7 +18,7 @@ router.get(
 router.post(
   '/api/users',
   mustBeAdmin,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models, appLog } = req;
 
     let user = await models.users.findOneByEmail(req.body.email);
@@ -31,13 +31,13 @@ router.post(
       email: req.body.email.toLowerCase(),
       role: req.body.role,
       name: req.body.name,
-      data: req.body.data
+      data: req.body.data,
     });
 
     const email = makeEmail(req.config);
 
     if (req.config.smtpConfigured()) {
-      email.sendInvite(req.body.email).catch(error => appLog.error(error));
+      email.sendInvite(req.body.email).catch((error) => appLog.error(error));
     }
     return res.utils.data(user);
   })
@@ -46,7 +46,7 @@ router.post(
 router.put(
   '/api/users/:id',
   mustBeAdmin,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { params, body, user, models } = req;
     if (user.id === params.id && user.role === 'admin' && body.role != null) {
       return res.utils.error("You can't unadmin yourself");
@@ -83,7 +83,7 @@ router.put(
 router.delete(
   '/api/users/:id',
   mustBeAdmin,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models } = req;
     if (req.user.id === req.params.id) {
       return res.utils.error("You can't delete yourself");

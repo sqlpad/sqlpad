@@ -14,5 +14,5 @@ async function up(queryInterface, config, appLog, nedb) {
 }
 
 module.exports = {
-  up
+  up,
 };

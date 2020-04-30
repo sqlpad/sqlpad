@@ -15,7 +15,7 @@ router.get(
         ? {
             id: req.user.id,
             email: req.user.email,
-            role: req.user.role
+            role: req.user.role,
           }
         : undefined;
 
@@ -31,9 +31,9 @@ router.get(
         localAuthConfigured: !config.get('disableUserpassAuth'),
         publicUrl: config.get('publicUrl'),
         samlConfigured: Boolean(config.get('samlEntryPoint')),
-        smtpConfigured: config.smtpConfigured()
+        smtpConfigured: config.smtpConfigured(),
       },
-      version: packageJson.version
+      version: packageJson.version,
     });
   })
 );

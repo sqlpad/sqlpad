@@ -26,7 +26,7 @@ router.get(
   '/download-results/:cacheKey.csv',
   mustBeAuthenticated,
   wrap(getCache),
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models, cache } = req;
     const { cacheKey } = req.params;
 
@@ -44,7 +44,7 @@ router.get(
   '/download-results/:cacheKey.xlsx',
   mustBeAuthenticated,
   wrap(getCache),
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models, cache } = req;
     const { cacheKey } = req.params;
 
@@ -65,7 +65,7 @@ router.get(
   '/download-results/:cacheKey.json',
   mustBeAuthenticated,
   wrap(getCache),
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models, cache } = req;
     const { cacheKey } = req.params;
 

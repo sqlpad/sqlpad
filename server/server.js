@@ -26,9 +26,9 @@ appLog.debug(config.getConnections(), 'Connections from config');
 
 // Validate configuration and warn/error as appropriate
 const configValidations = config.getValidations();
-configValidations.warnings.map(warning => appLog.warn(warning));
+configValidations.warnings.map((warning) => appLog.warn(warning));
 if (configValidations.errors.length > 0) {
-  configValidations.errors.forEach(error => appLog.error(error));
+  configValidations.errors.forEach((error) => appLog.error(error));
   process.exit(1);
 }
 
@@ -119,12 +119,12 @@ async function startServer() {
     const httpsOptions = {
       key: privateKey,
       cert: certificate,
-      passphrase: certPassphrase
+      passphrase: certPassphrase,
     };
 
     server = https
       .createServer(httpsOptions, app)
-      .listen(_port, ip, function() {
+      .listen(_port, ip, function () {
         const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
         const url = `https://${hostIp}:${_port}${baseUrl}`;
         appLog.info('Welcome to SQLPad!. Visit %s to get started', url);
@@ -142,7 +142,7 @@ async function startServer() {
       // TODO FIXME XXX  Persist the new port to the in-memory store.
       // config.set('port', _port)
     }
-    server = http.createServer(app).listen(_port, ip, function() {
+    server = http.createServer(app).listen(_port, ip, function () {
       const hostIp = ip === '0.0.0.0' ? 'localhost' : ip;
       const url = `http://${hostIp}:${_port}${baseUrl}`;
       appLog.info('Welcome to SQLPad! Visit %s to get started', url);
@@ -151,7 +151,7 @@ async function startServer() {
   server.setTimeout(timeoutSeconds * 1000);
 }
 
-startServer().catch(error => {
+startServer().catch((error) => {
   appLog.error(error, 'Error starting SQLPad');
   process.exit(1);
 });
@@ -162,7 +162,7 @@ function handleShutdownSignal(signal) {
     process.exit(0);
   } else {
     appLog.info('Received %s, shutting down server...', signal);
-    server.close(function() {
+    server.close(function () {
       process.exit(0);
     });
   }

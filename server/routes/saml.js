@@ -5,9 +5,9 @@ router.post(
   '/login/callback',
   passport.authenticate('saml', {
     failureRedirect: '/',
-    failureFlash: true
+    failureFlash: true,
   }),
-  function(req, res) {
+  function (req, res) {
     res.redirect('/');
   }
 );
@@ -16,9 +16,9 @@ router.get(
   '/auth/saml',
   passport.authenticate('saml', {
     failureRedirect: '/',
-    failureFlash: true
+    failureFlash: true,
   }),
-  function(req, res) {
+  function (req, res) {
     res.redirect('/');
   }
 );

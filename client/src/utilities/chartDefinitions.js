@@ -8,66 +8,66 @@ const chartDefinitions = [
         fieldId: 'x',
         required: true,
         label: 'x',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'y',
         required: true,
         label: 'y',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'split',
         required: false,
         label: 'color / line for each',
         inputType: 'field-dropdown',
-        forceDimension: true
+        forceDimension: true,
       },
       {
         fieldId: 'size',
         required: false,
         label: 'size',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'xFacet',
         requied: false,
         label: 'x Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
+        forceDimension: true,
       },
       {
         fieldId: 'yFacet',
         required: false,
         label: 'y Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
+        forceDimension: true,
       },
       {
         fieldId: 'filter',
         required: false,
         label: 'Quick Filter',
-        inputType: 'checkbox'
+        inputType: 'checkbox',
       },
       {
         fieldId: 'trendline',
         required: false,
         label: 'Show Trendline',
-        inputType: 'checkbox'
+        inputType: 'checkbox',
       },
       {
         fieldId: 'yMin',
         required: false,
         label: 'y Axis Min',
-        inputType: 'textbox'
+        inputType: 'textbox',
       },
       {
         fieldId: 'yMax',
         required: false,
         label: 'y Axis Max',
-        inputType: 'textbox'
-      }
-    ]
+        inputType: 'textbox',
+      },
+    ],
   },
   {
     chartType: 'bar',
@@ -78,29 +78,29 @@ const chartDefinitions = [
         fieldId: 'barlabel',
         required: true,
         label: 'Bar Label',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'barvalue',
         required: true,
         label: 'Bar Value',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'labelFacet',
         required: false,
         label: 'Bar Label Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
+        forceDimension: true,
       },
       {
         fieldId: 'valueFacet',
         required: false,
         label: 'Bar Value Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
-      }
-    ]
+        forceDimension: true,
+      },
+    ],
   },
   {
     chartType: 'verticalbar',
@@ -111,29 +111,29 @@ const chartDefinitions = [
         fieldId: 'barlabel',
         required: true,
         label: 'Bar Label',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'barvalue',
         required: true,
         label: 'Bar Value',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'labelFacet',
         required: false,
         label: 'Bar Label Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
+        forceDimension: true,
       },
       {
         fieldId: 'valueFacet',
         required: false,
         label: 'Bar Value Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
-      }
-    ]
+        forceDimension: true,
+      },
+    ],
   },
   {
     chartType: 'bubble',
@@ -144,53 +144,53 @@ const chartDefinitions = [
         fieldId: 'x',
         label: 'x Axis',
         inputType: 'field-dropdown',
-        required: true
+        required: true,
       },
       {
         fieldId: 'y',
         label: 'y Axis',
         inputType: 'field-dropdown',
-        required: true
+        required: true,
       },
       {
         fieldId: 'size',
         label: 'Size',
         inputType: 'field-dropdown',
-        required: false
+        required: false,
       },
       {
         fieldId: 'color',
         label: 'Color',
         inputType: 'field-dropdown',
-        required: false
+        required: false,
       },
       {
         fieldId: 'xFacet',
         requied: false,
         label: 'x Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
+        forceDimension: true,
       },
       {
         fieldId: 'yFacet',
         required: false,
         label: 'y Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
+        forceDimension: true,
       },
       {
         fieldId: 'filter',
         required: false,
         label: 'Quick Filter',
-        inputType: 'checkbox'
+        inputType: 'checkbox',
       },
       {
         fieldId: 'trendline',
         required: false,
         label: 'Show Trendline',
-        inputType: 'checkbox'
-      }
-    ]
+        inputType: 'checkbox',
+      },
+    ],
   },
   {
     chartType: 'stacked-bar-vertical',
@@ -201,35 +201,35 @@ const chartDefinitions = [
         fieldId: 'barlabel',
         required: true,
         label: 'Bar Label',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'barvalue',
         required: true,
         label: 'Bar Value',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'color',
         label: 'Color',
         inputType: 'field-dropdown',
-        required: false
+        required: false,
       },
       {
         fieldId: 'labelFacet',
         required: false,
         label: 'Bar Label Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
+        forceDimension: true,
       },
       {
         fieldId: 'valueFacet',
         required: false,
         label: 'Bar Value Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
-      }
-    ]
+        forceDimension: true,
+      },
+    ],
   },
   {
     chartType: 'stacked-bar-horizontal',
@@ -240,36 +240,36 @@ const chartDefinitions = [
         fieldId: 'barlabel',
         required: true,
         label: 'Bar Label',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'barvalue',
         required: true,
         label: 'Bar Value',
-        inputType: 'field-dropdown'
+        inputType: 'field-dropdown',
       },
       {
         fieldId: 'color',
         label: 'Color',
         inputType: 'field-dropdown',
-        required: false
+        required: false,
       },
       {
         fieldId: 'labelFacet',
         required: false,
         label: 'Bar Label Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
+        forceDimension: true,
       },
       {
         fieldId: 'valueFacet',
         required: false,
         label: 'Bar Value Facet',
         inputType: 'field-dropdown',
-        forceDimension: true
-      }
-    ]
-  }
+        forceDimension: true,
+      },
+    ],
+  },
 ];
 
 export default chartDefinitions;

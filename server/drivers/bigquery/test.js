@@ -8,7 +8,7 @@ const connection = {
   datasetName: process.env.BIGQUERY_TEST_DATASET_NAME,
   keyFile: process.env.BIGQUERY_TEST_CREDENTIALS_FILE,
   datasetLocation: process.env.BIGQUERY_TEST_DATASET_LOCATION,
-  maxRows: 10
+  maxRows: 10,
 };
 
 const testTable = 'sqlpad_test';
@@ -17,10 +17,10 @@ const createTable = `CREATE TABLE ${connection.datasetName}.${testTable} (id int
 const inserts = `INSERT INTO ${connection.datasetName}.${testTable} (id) VALUES (1), (2), (3)`;
 const testTimeoutMsecs = 15000;
 
-describe('drivers/bigquery', function() {
+describe('drivers/bigquery', function () {
   this.timeout(testTimeoutMsecs); // Set a large default timeout for all tests because BigQuery can be slow to respond.
 
-  before(function(done) {
+  before(function (done) {
     if (
       connection.projectId &&
       connection.datasetName &&
@@ -31,7 +31,7 @@ describe('drivers/bigquery', function() {
         .runQuery(dropTable, connection)
         .then(() => bigquery.runQuery(createTable, connection))
         .then(() => bigquery.runQuery(inserts, connection))
-        .then(function() {
+        .then(function () {
           done();
         });
     } else {
@@ -43,15 +43,15 @@ describe('drivers/bigquery', function() {
     }
   });
 
-  it('implements testConnection', function() {
-    return bigquery.testConnection(connection).then(results => {
+  it('implements testConnection', function () {
+    return bigquery.testConnection(connection).then((results) => {
       assert(results, 'testConnection returns results');
       assert(!results.incomplete, 'testConnection results are marked complete');
     });
   });
 
-  it('implements getSchema', function() {
-    return bigquery.getSchema(connection).then(schemaInfo => {
+  it('implements getSchema', function () {
+    return bigquery.getSchema(connection).then((schemaInfo) => {
       const schema = schemaInfo[connection.datasetName];
       const MSG = 'schema query returns expected results';
 
@@ -66,19 +66,19 @@ describe('drivers/bigquery', function() {
     });
   });
 
-  it('implements runQuery and reports successful queries as complete that return <= maxRows', function() {
+  it('implements runQuery and reports successful queries as complete that return <= maxRows', function () {
     return bigquery
       .runQuery(
         `SELECT id FROM ${connection.datasetName}.${testTable} WHERE id = 1`,
         connection
       )
-      .then(results => {
+      .then((results) => {
         assert(!results.incomplete, 'results should be marked complete');
         assert.equal(results.rows.length, 1, 'right number of rows');
       });
   });
 
-  it('implements runQuery and reports successful queries as incomplete that return > maxRows', function() {
+  it('implements runQuery and reports successful queries as incomplete that return > maxRows', function () {
     const limitedConnection = { ...connection, maxRows: 2 };
 
     return bigquery
@@ -86,13 +86,13 @@ describe('drivers/bigquery', function() {
         `SELECT * FROM ${connection.datasetName}.${testTable}`,
         limitedConnection
       )
-      .then(results => {
+      .then((results) => {
         assert(results.incomplete, 'results should be marked incomplete');
         assert.equal(results.rows.length, 2, 'right number of rows');
       });
   });
 
-  it('implements runQuery and can run queries with no maxRows defined', function() {
+  it('implements runQuery and can run queries with no maxRows defined', function () {
     const connectionWithoutMaxRows = { ...connection };
     delete connectionWithoutMaxRows.maxRows;
 
@@ -101,24 +101,24 @@ describe('drivers/bigquery', function() {
         `SELECT * FROM ${connection.datasetName}.${testTable}`,
         connectionWithoutMaxRows
       )
-      .then(results => {
+      .then((results) => {
         assert(!results.incomplete, 'results should be marked complete');
         assert.equal(results.rows.length, 3, 'right number of rows');
       });
   });
 
-  it('supports Standard SQL dialect by default', function() {
+  it('supports Standard SQL dialect by default', function () {
     return bigquery
       .runQuery(
         `SELECT CAST(id AS INT64) FROM ${connection.datasetName}.${testTable} WHERE id = 1`,
         connection
       )
-      .then(results => {
+      .then((results) => {
         assert(results, 'returns results');
       });
   });
 
-  it('throws errors for Legacy SQL', function() {
+  it('throws errors for Legacy SQL', function () {
     let error;
     return bigquery
       .runQuery(
@@ -128,7 +128,7 @@ describe('drivers/bigquery', function() {
       .then(() => {
         assert.fail('An error should have been thrown for Legacy SQL.');
       })
-      .catch(e => {
+      .catch((e) => {
         error = e;
       })
       .then(() => {
@@ -139,7 +139,7 @@ describe('drivers/bigquery', function() {
       });
   });
 
-  it('returns descriptive error message for a missing table', function() {
+  it('returns descriptive error message for a missing table', function () {
     let error;
     return bigquery
       .runQuery(
@@ -151,7 +151,7 @@ describe('drivers/bigquery', function() {
           'An error should have been thrown when referencing a missing table.'
         );
       })
-      .catch(e => {
+      .catch((e) => {
         error = e;
       })
       .then(() => {
@@ -162,7 +162,7 @@ describe('drivers/bigquery', function() {
       });
   });
 
-  it('returns descriptive error message for bad syntax', function() {
+  it('returns descriptive error message for bad syntax', function () {
     let error;
 
     return bigquery
@@ -173,7 +173,7 @@ describe('drivers/bigquery', function() {
       .then(() => {
         assert.fail('An error should have been thrown for bad syntax.');
       })
-      .catch(e => {
+      .catch((e) => {
         error = e;
       })
       .then(() => {

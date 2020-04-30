@@ -14,14 +14,14 @@ import Tag from './Tag';
 function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
   const input = useRef();
 
-  const itemToString = item => (item ? item.name : '');
+  const itemToString = (item) => (item ? item.name : '');
 
   const stateReducer = (state, changes) => {
     switch (changes.type) {
       case Downshift.stateChangeTypes.keyDownArrowUp:
         return {
           ...changes,
-          isOpen: state.highlightedIndex === 0 ? false : state.isOpen
+          isOpen: state.highlightedIndex === 0 ? false : state.isOpen,
         };
       case Downshift.stateChangeTypes.keyDownEnter:
       case Downshift.stateChangeTypes.clickItem:
@@ -29,18 +29,18 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
           ...changes,
           highlightedIndex: 0,
           isOpen: false,
-          inputValue: ''
+          inputValue: '',
         };
       default:
         return changes;
     }
   };
 
-  const removeItem = item => {
-    onChange(selectedItems.filter(i => i !== item));
+  const removeItem = (item) => {
+    onChange(selectedItems.filter((i) => i !== item));
   };
 
-  const handleSelection = selectedItem => {
+  const handleSelection = (selectedItem) => {
     const callOnChange = () => {
       onChange(selectedItems);
     };
@@ -71,7 +71,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
         inputValue,
         getItemProps,
         highlightedIndex,
-        toggleMenu
+        toggleMenu,
       }) => (
         <div style={{ position: 'relative' }}>
           <div
@@ -80,7 +80,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
               isOpen
                 ? {
                     borderBottomRightRadius: 0,
-                    borderBottomLeftRadius: 0
+                    borderBottomLeftRadius: 0,
                   }
                 : null
             }
@@ -90,7 +90,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
             }}
           >
             {selectedItems.length > 0
-              ? selectedItems.map(item => (
+              ? selectedItems.map((item) => (
                   <Tag key={item.id} onClose={() => removeItem(item)}>
                     {item.component || item.name}
                   </Tag>
@@ -108,7 +108,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                     highlightedIndex === null
                   ) {
                     const existingItem = selectedItems.find(
-                      i => i.name === inputValue.toLowerCase()
+                      (i) => i.name === inputValue.toLowerCase()
                     );
 
                     // If there isn't an existing item selected already
@@ -121,7 +121,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                         inputValue
                       );
                       const found = items.find(
-                        item =>
+                        (item) =>
                           item.name.toLowerCase() ===
                             inputValue.toLowerCase() ||
                           item.id.toLowerCase() === inputValue.toLowerCase()
@@ -132,14 +132,14 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                       } else {
                         selectItem({
                           id: inputValue,
-                          name: inputValue
+                          name: inputValue,
                         });
                       }
                     }
 
                     setState({
                       inputValue: '',
-                      isOpen: false
+                      isOpen: false,
                     });
                   }
                   if (event.key === 'Backspace' && !inputValue) {
@@ -148,7 +148,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                   if (event.key === 'Escape' && !isOpen) {
                     event.nativeEvent.preventDownshiftDefault = true;
                   }
-                }
+                },
               })}
             />
           </div>
@@ -162,7 +162,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                         item,
                         index,
                         isActive: highlightedIndex === index,
-                        isSelected: selectedItems.includes(item)
+                        isSelected: selectedItems.includes(item),
                       })}
                     >
                       {item.component || item.name}

@@ -5,8 +5,8 @@ const d1 = new Date();
 const d2 = new Date(new Date().getTime() + 60000);
 const noTime = new Date('2019-01-01T00:00:00.000Z');
 
-describe('lib/get-meta.js', function() {
-  it('returns expected results', function() {
+describe('lib/get-meta.js', function () {
+  it('returns expected results', function () {
     const rows = [
       // To ensure nulls are handled appropriately start and end with them
       {
@@ -17,7 +17,7 @@ describe('lib/get-meta.js', function() {
         string: null,
         datetime: null,
         numberString: null,
-        date: noTime
+        date: noTime,
       },
       {
         alwaysNull: null,
@@ -27,7 +27,7 @@ describe('lib/get-meta.js', function() {
         string: 'abcdefg',
         datetime: d2,
         numberString: 100,
-        date: null
+        date: null,
       },
       {
         alwaysNull: null,
@@ -37,7 +37,7 @@ describe('lib/get-meta.js', function() {
         string: '0',
         datetime: d1,
         numberString: 0,
-        date: noTime
+        date: noTime,
       },
       {
         alwaysNull: null,
@@ -47,8 +47,8 @@ describe('lib/get-meta.js', function() {
         string: 'abc',
         datetime: null,
         numberString: null,
-        date: noTime
-      }
+        date: noTime,
+      },
     ];
 
     const meta = getMeta(rows);

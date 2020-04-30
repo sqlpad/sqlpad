@@ -9,7 +9,7 @@ const wrap = require('../lib/wrap');
 router.get(
   '/api/query-result/:_queryId',
   mustHaveConnectionAccess,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models } = req;
     const query = await models.queries.findOneById(req.params._queryId);
     if (!query) {
@@ -21,7 +21,7 @@ router.get(
       queryId: query.id,
       queryName: query.name,
       queryText: query.queryText,
-      user: req.user
+      user: req.user,
     };
     // IMPORTANT: Send actual error here since it might have info on why the query is bad
     try {
@@ -38,7 +38,7 @@ router.get(
 router.post(
   '/api/query-result',
   mustHaveConnectionAccess,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { body, user } = req;
 
     const data = {
@@ -48,7 +48,7 @@ router.post(
       queryName: body.queryName,
       queryText: body.queryText,
       connectionClientId: body.connectionClientId,
-      user
+      user,
     };
 
     // IMPORTANT: Send actual error here since it might have info on why the query is bad
@@ -76,7 +76,7 @@ async function getQueryResult(req, data) {
     queryId,
     queryName,
     queryText,
-    user
+    user,
   } = data;
 
   let queryResult;
@@ -116,7 +116,7 @@ async function getQueryResult(req, data) {
       queryName,
       queryText,
       incomplete: queryResult.incomplete,
-      rowCount: queryResult.rows.length
+      rowCount: queryResult.rows.length,
     });
   }
 

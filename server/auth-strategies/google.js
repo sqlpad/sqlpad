@@ -15,20 +15,20 @@ async function passportGoogleStrategyHandler(
 
   if (!email) {
     return done(null, false, {
-      message: 'email not provided from Google'
+      message: 'email not provided from Google',
     });
   }
 
   try {
     let [openAdminRegistration, user] = await Promise.all([
       models.users.adminRegistrationOpen(),
-      models.users.findOneByEmail(email)
+      models.users.findOneByEmail(email),
     ]);
 
     if (user) {
       user.signupAt = new Date();
       const newUser = await models.users.update(user.id, {
-        signupAt: new Date()
+        signupAt: new Date(),
       });
       return done(null, newUser);
     }
@@ -37,7 +37,7 @@ async function passportGoogleStrategyHandler(
       const newUser = await models.users.create({
         email,
         role: openAdminRegistration ? 'admin' : 'editor',
-        signupAt: new Date()
+        signupAt: new Date(),
       });
       return done(null, newUser);
     }
@@ -45,7 +45,7 @@ async function passportGoogleStrategyHandler(
     // per passport docs, we call done() here without an error
     // instead passing false for user and a message why
     return done(null, false, {
-      message: "You haven't been invited by an admin yet."
+      message: "You haven't been invited by an admin yet.",
     });
   } catch (error) {
     done(error, null);
@@ -73,7 +73,7 @@ function enableGoogle(config) {
           callbackURL: publicUrl + baseUrl + '/auth/google/callback',
           // This option tells the strategy to use the userinfo endpoint instead
           userProfileURL:
-            'https://www.googleapis.com/oauth2/v3/userinfo?alt=json'
+            'https://www.googleapis.com/oauth2/v3/userinfo?alt=json',
         },
         passportGoogleStrategyHandler
       )

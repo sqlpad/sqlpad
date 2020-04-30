@@ -8,13 +8,13 @@ import { runQuery } from '../../stores/queries';
 function mapStateToProps(state) {
   const { isRunning } = state;
   return {
-    isRunning
+    isRunning,
   };
 }
 
-const ConnectedToolbarRunButton = connect(mapStateToProps, store => ({
+const ConnectedToolbarRunButton = connect(mapStateToProps, (store) => ({
   connectConnectionClient: connectConnectionClient(store),
-  runQuery: runQuery(store)
+  runQuery: runQuery(store),
 }))(React.memo(ToolbarRunButton));
 
 function ToolbarRunButton({ isRunning, connectConnectionClient, runQuery }) {
@@ -34,7 +34,7 @@ function ToolbarRunButton({ isRunning, connectConnectionClient, runQuery }) {
 
 ToolbarRunButton.propTypes = {
   isRunning: PropTypes.bool.isRequired,
-  runQuery: PropTypes.func.isRequired
+  runQuery: PropTypes.func.isRequired,
 };
 
 export default ConnectedToolbarRunButton;

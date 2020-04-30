@@ -15,7 +15,7 @@ const connection = {
         'unknown' as data_type
     FROM sqlite_master
     WHERE type = 'table';
-`
+`,
 };
 const test_schema_name = 'dba'; // sqlite3 does not really have owner
 
@@ -34,8 +34,8 @@ const insert3 = "INSERT INTO sqlpad_test (id, name) VALUES (3, 'three');";
 //   * date
 //   * datetime
 //   * interval
-describe('drivers/unixodbc', function() {
-  before(async function() {
+describe('drivers/unixodbc', function () {
+  before(async function () {
     this.timeout(10000);
     await unixodbc.runQuery(dropTable, connection);
     await unixodbc.runQuery(createTable, connection);
@@ -44,12 +44,12 @@ describe('drivers/unixodbc', function() {
     await unixodbc.runQuery(insert3, connection);
   });
 
-  it('tests connection', function() {
+  it('tests connection', function () {
     return unixodbc.testConnection(connection);
   });
 
-  it('getSchema()', function() {
-    return unixodbc.getSchema(connection).then(schemaInfo => {
+  it('getSchema()', function () {
+    return unixodbc.getSchema(connection).then((schemaInfo) => {
       assert(schemaInfo[test_schema_name], test_schema_name);
       assert(
         schemaInfo[test_schema_name].sqlpad_test,
@@ -65,7 +65,7 @@ describe('drivers/unixodbc', function() {
     });
   });
 
-  it('runQuery under limit', async function() {
+  it('runQuery under limit', async function () {
     const results = await unixodbc.runQuery(
       'SELECT * FROM sqlpad_test WHERE id = 1;',
       connection
@@ -74,7 +74,7 @@ describe('drivers/unixodbc', function() {
     assert.equal(results.rows.length, 1, 'row length');
   });
 
-  it('runQuery over limit', async function() {
+  it('runQuery over limit', async function () {
     const connectionWithMaxRows = { ...connection, maxRows: 2 };
     const results = await unixodbc.runQuery(
       'SELECT * FROM sqlpad_test;',
@@ -84,7 +84,7 @@ describe('drivers/unixodbc', function() {
     assert.equal(results.rows.length, 2, 'row length');
   });
 
-  it('Runs multiple statements', async function() {
+  it('Runs multiple statements', async function () {
     const query = `
       SELECT id FROM sqlpad_test;
       SELECT name FROM sqlpad_test;
@@ -100,7 +100,7 @@ describe('drivers/unixodbc', function() {
     assert.strictEqual(results.rows[0].name, 'two');
   });
 
-  it('Throws helpful error', async function() {
+  it('Throws helpful error', async function () {
     let error;
     try {
       await unixodbc.runQuery('SELECT * FROM fake_table', connection);
@@ -114,21 +114,21 @@ describe('drivers/unixodbc', function() {
     );
   });
 
-  it('Client cannot connect more than once', async function() {
+  it('Client cannot connect more than once', async function () {
     const client = new unixodbc.Client(connection);
     await client.connect();
     await assert.rejects(client.connect());
     await client.disconnect();
   });
 
-  it('Client handles multiple disconnects', async function() {
+  it('Client handles multiple disconnects', async function () {
     const client = new unixodbc.Client(connection);
     await client.connect();
     await client.disconnect();
     await client.disconnect();
   });
 
-  it('Client handles multiple runQuery calls', async function() {
+  it('Client handles multiple runQuery calls', async function () {
     const client = new unixodbc.Client(connection);
     await client.connect();
 

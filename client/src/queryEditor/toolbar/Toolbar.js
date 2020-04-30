@@ -19,7 +19,7 @@ function Toolbar() {
         width: '100%',
         backgroundColor: 'rgba(0, 0, 0, 0.04)',
         padding: 6,
-        borderBottom: '1px solid rgb(204, 204, 204)'
+        borderBottom: '1px solid rgb(204, 204, 204)',
       }}
     >
       <div style={{ display: 'flex' }}>

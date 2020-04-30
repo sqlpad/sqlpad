@@ -8,7 +8,7 @@ function AppHeaderDivider() {
         marginTop: '4px',
         marginBottom: '4px',
         marginRight: 4,
-        marginLeft: 4
+        marginLeft: 4,
       }}
     />
   );

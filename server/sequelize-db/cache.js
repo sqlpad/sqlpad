@@ -1,33 +1,33 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = function(sequelize) {
+module.exports = function (sequelize) {
   const Cache = sequelize.define(
     'Cache',
     {
       id: {
         type: DataTypes.STRING,
-        primaryKey: true
+        primaryKey: true,
       },
       name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       data: {
-        type: DataTypes.JSON
+        type: DataTypes.JSON,
       },
       expiryDate: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       tableName: 'cache',
       underscored: true,
-      updatedAt: false
+      updatedAt: false,
     }
   );
 

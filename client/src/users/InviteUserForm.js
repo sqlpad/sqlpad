@@ -13,12 +13,12 @@ function InviteUserForm({ onInvited }) {
   const [role, setRole] = useState(null);
   const [isInviting, setIsInviting] = useState(null);
 
-  const onInviteClick = async event => {
+  const onInviteClick = async (event) => {
     event.preventDefault();
     event.stopPropagation();
     const user = {
       email,
-      role
+      role,
     };
     setIsInviting(true);
     const json = await fetchJson('POST', '/api/users', user);
@@ -47,7 +47,7 @@ function InviteUserForm({ onInvited }) {
             type="email"
             value={email || ''}
             error={!email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </label>
         <Spacer size={2} />
@@ -57,7 +57,7 @@ function InviteUserForm({ onInvited }) {
           <Select
             name="role"
             value={role || ''}
-            onChange={event => setRole(event.target.value)}
+            onChange={(event) => setRole(event.target.value)}
             error={!role}
           >
             <option value="" />

@@ -6,7 +6,7 @@ import schema from './schema';
 const unistoreStore = createStore({
   ...queries.initialState,
   ...schema.initialState,
-  ...connections.initialState
+  ...connections.initialState,
 });
 
 export default unistoreStore;

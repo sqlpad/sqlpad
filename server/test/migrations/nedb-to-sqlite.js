@@ -17,7 +17,7 @@ let originalUsers;
 
 function copyDbFiles(source, destination) {
   return new Promise((resolve, reject) => {
-    ncp(source, destination, function(err) {
+    ncp(source, destination, function (err) {
       if (err) {
         return reject(err);
       }
@@ -26,16 +26,16 @@ function copyDbFiles(source, destination) {
   });
 }
 
-describe('v4-to-v5', function() {
+describe('v4-to-v5', function () {
   /**
    * @type {TestUtils}
    */
   let utils;
 
-  before('preps the env', async function() {
+  before('preps the env', async function () {
     utils = new TestUtils({
       dbPath: path.join(__dirname, '../artifacts/v4-to-v5'),
-      dbInMemory: false
+      dbInMemory: false,
     });
 
     const destination = utils.config.get('dbPath');
@@ -46,11 +46,11 @@ describe('v4-to-v5', function() {
     await utils.initDbs();
   });
 
-  after(function() {
+  after(function () {
     return utils.sequelizeDb.sequelize.close();
   });
 
-  it('Before migration - has queries', async function() {
+  it('Before migration - has queries', async function () {
     originalQueries = await utils.nedb.queries.find({});
     originalConnectionAccesses = await utils.nedb.connectionAccesses.find({});
     originalConnections = await utils.nedb.connections.find({});
@@ -64,18 +64,18 @@ describe('v4-to-v5', function() {
     assert(originalUsers);
   });
 
-  it('Migrates', async function() {
+  it('Migrates', async function () {
     await utils.migrate();
   });
 
-  it('Queries & tags migrated as expected', async function() {
+  it('Queries & tags migrated as expected', async function () {
     const queries = await utils.sequelizeDb.Queries.findAll({});
     const queryTags = await utils.sequelizeDb.QueryTags.findAll({});
 
     assert.equal(queries.length, originalQueries.length);
 
     for (const original of originalQueries) {
-      const query = queries.find(item => item.id === original._id);
+      const query = queries.find((item) => item.id === original._id);
 
       assert.equal(query.id, original._id);
       assert.equal(query.name, original.name);
@@ -99,18 +99,18 @@ describe('v4-to-v5', function() {
 
       if (original.tags) {
         const foundTags = queryTags
-          .filter(qt => qt.queryId === query.id)
-          .map(qt => qt.tag);
+          .filter((qt) => qt.queryId === query.id)
+          .map((qt) => qt.tag);
 
         assert.equal(foundTags.length, original.tags.length);
-        original.tags.forEach(tag => {
+        original.tags.forEach((tag) => {
           assert(foundTags.includes(tag));
         });
       }
     }
   });
 
-  it('Connections migrated as expected', async function() {
+  it('Connections migrated as expected', async function () {
     const connections = await utils.sequelizeDb.Connections.findAll({});
 
     const oldCipher = makeCipher(utils.config.get('passphrase'));
@@ -118,7 +118,7 @@ describe('v4-to-v5', function() {
     assert.equal(connections.length, originalConnections.length);
 
     for (const original of originalConnections) {
-      const connection = connections.find(item => item.id === original._id);
+      const connection = connections.find((item) => item.id === original._id);
 
       assert.equal(connection.id, original._id);
       assert.equal(connection.name, original.name);
@@ -143,7 +143,7 @@ describe('v4-to-v5', function() {
       // for every data field in new connection, confirm it was on base object of original
       // username and password need to be decrypted first using old cipher methods
       if (decryptedData) {
-        Object.keys(decryptedData).forEach(key => {
+        Object.keys(decryptedData).forEach((key) => {
           const value = decryptedData[key];
           if (key === 'username' || key === 'password') {
             const originalValue = oldCipher.decipher(original[key]);
@@ -167,7 +167,7 @@ describe('v4-to-v5', function() {
     }
   });
 
-  it('Connection Accesses migrated as expected', async function() {
+  it('Connection Accesses migrated as expected', async function () {
     const connectionAccesses = await utils.sequelizeDb.ConnectionAccesses.findAll(
       {}
     );
@@ -178,7 +178,7 @@ describe('v4-to-v5', function() {
       // id is not kept for connection accesses,
       // so we need to find it by other means
       const connectionAccess = connectionAccesses.find(
-        item =>
+        (item) =>
           item.connectionId === original.connectionId &&
           item.userId === original.userId
       );
@@ -197,7 +197,7 @@ describe('v4-to-v5', function() {
     }
   });
 
-  it('Query history migrated as expected', async function() {
+  it('Query history migrated as expected', async function () {
     const queryHistory = await utils.sequelizeDb.QueryHistory.findAll({});
 
     assert.equal(queryHistory.length, originalQueryHistory.length);
@@ -205,7 +205,7 @@ describe('v4-to-v5', function() {
     for (const original of originalQueryHistory) {
       // id is not kept for query history so we'll just see if we can find a match
       const found = queryHistory.find(
-        item =>
+        (item) =>
           item.connectionId === original.connectionId &&
           item.userId === original.userId &&
           item.userEmail === original.userEmail &&
@@ -226,13 +226,13 @@ describe('v4-to-v5', function() {
     }
   });
 
-  it('Users migrated as expected', async function() {
+  it('Users migrated as expected', async function () {
     const users = await utils.sequelizeDb.Users.findAll({});
 
     assert.equal(users.length, originalUsers.length);
 
     for (const original of originalUsers) {
-      let user = users.find(item => item.id === original._id);
+      let user = users.find((item) => item.id === original._id);
       user = user.toJSON();
       assert.equal(user.email, original.email);
       assert.equal(user.role, original.role);

@@ -14,7 +14,7 @@ function ForgotPassword() {
     document.title = 'SQLPad - Forgot Password';
   }, []);
 
-  const resetPassword = async e => {
+  const resetPassword = async (e) => {
     e.preventDefault();
     const json = await fetchJson('POST', '/api/forgot-password', { email });
     if (json.error) {
@@ -35,7 +35,7 @@ function ForgotPassword() {
           name="email"
           type="email"
           placeholder="Email address"
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
         <Spacer size={2} />

@@ -5,7 +5,7 @@ const wrap = require('../lib/wrap');
 // NOTE: This route doesn't fit API REST conventions used elsewhere in app
 router.post(
   '/api/password-reset/:passwordResetId',
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const { models } = req;
     const user = await models.users.findOneByPasswordResetId(
       req.params.passwordResetId
@@ -22,7 +22,7 @@ router.post(
     }
     const changes = {
       password: req.body.password,
-      passwordResetId: null
+      passwordResetId: null,
     };
     await models.users.update(user.id, changes);
     return res.utils.data();

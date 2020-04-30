@@ -5,17 +5,17 @@ import SqlEditor from '../common/SqlEditor';
 
 function mapStateToProps(state, props) {
   return {
-    value: state.query && state.query.queryText
+    value: state.query && state.query.queryText,
   };
 }
 
 function QueryEditorSqlEditor({
   value,
   setQueryState,
-  handleQuerySelectionChange
+  handleQuerySelectionChange,
 }) {
-  const onChange = useCallback(value => setQueryState('queryText', value), [
-    setQueryState
+  const onChange = useCallback((value) => setQueryState('queryText', value), [
+    setQueryState,
   ]);
 
   return (
@@ -31,7 +31,7 @@ function QueryEditorSqlEditor({
 
 const ConnectedQueryEditorSqlEditor = connect(mapStateToProps, {
   setQueryState,
-  handleQuerySelectionChange
+  handleQuerySelectionChange,
 })(QueryEditorSqlEditor);
 
 export default ConnectedQueryEditorSqlEditor;

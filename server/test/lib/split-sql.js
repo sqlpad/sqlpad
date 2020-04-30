@@ -1,22 +1,22 @@
 const assert = require('assert');
 const splitSql = require('../../lib/split-sql');
 
-describe('lib/splitSql', function() {
-  it('handles single query without separator', function() {
+describe('lib/splitSql', function () {
+  it('handles single query without separator', function () {
     const query = 'SELECT value FROM some_table';
     const queries = splitSql(query);
     assert.strictEqual(queries.length, 1);
     assert.strictEqual(queries[0], query);
   });
 
-  it('handles single query with separator', function() {
+  it('handles single query with separator', function () {
     const query = 'SELECT value FROM some_table;';
     const queries = splitSql(query);
     assert.strictEqual(queries.length, 1);
     assert.strictEqual(queries[0], query);
   });
 
-  it('handles queries without comments', function() {
+  it('handles queries without comments', function () {
     const q1 = 'SELECT value FROM some_table;';
     const q2 = 'SELECT value FROM another_table;';
     const noComments = `${q1}\n${q2}`;
@@ -26,7 +26,7 @@ describe('lib/splitSql', function() {
     assert.strictEqual(queries[1], q2);
   });
 
-  it('handles complex comments', function() {
+  it('handles complex comments', function () {
     const q1 = `
       -- this is a comment; it has;stuff
       SELECT value FROM some_table;
@@ -54,7 +54,7 @@ describe('lib/splitSql', function() {
     assert.strictEqual(queries[1], q2);
   });
 
-  it('handles string literals', function() {
+  it('handles string literals', function () {
     const stringLiteral = `
       SELECT listagg(DISTINCT t.field, '; ') AS my_agg
       FROM some_table t
@@ -65,7 +65,7 @@ describe('lib/splitSql', function() {
     assert.strictEqual(queries[0], stringLiteral);
   });
 
-  it('handles escaped string literals', function() {
+  it('handles escaped string literals', function () {
     const query = `
       SELECT 'little bobby ;'';tables;''' AS quoted_string;
     `.trim();

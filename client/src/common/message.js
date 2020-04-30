@@ -8,8 +8,8 @@ export function MessageDisplayer() {
   const [messages, setMessages] = useState([]);
 
   function onMessage(message) {
-    setMessages(messages => [...messages, message]);
-    setTimeout(() => setMessages(messages => messages.slice(1)), 3000);
+    setMessages((messages) => [...messages, message]);
+    setTimeout(() => setMessages((messages) => messages.slice(1)), 3000);
   }
 
   useEffect(() => {
@@ -30,10 +30,10 @@ export function MessageDisplayer() {
 }
 
 export default {
-  error: function(message) {
+  error: function (message) {
     emitter.emit('message', { type: 'error', message });
   },
-  success: function(message) {
+  success: function (message) {
     emitter.emit('message', { type: 'success', message });
-  }
+  },
 };

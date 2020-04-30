@@ -33,14 +33,14 @@ function isNumeric(value) {
 module.exports = function getMeta(rows) {
   const meta = {};
 
-  rows.forEach(row => {
+  rows.forEach((row) => {
     _.forOwn(row, (value, key) => {
       if (!meta[key]) {
         meta[key] = {
           datatype: null,
           max: null,
           min: null,
-          maxValueLength: 0
+          maxValueLength: 0,
         };
       }
 

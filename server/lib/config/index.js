@@ -24,7 +24,7 @@ class Config {
     const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
 
     // Clean string boolean values
-    Object.keys(all).forEach(key => {
+    Object.keys(all).forEach((key) => {
       const value = all[key];
       if (typeof value === 'string') {
         if (value.trim().toLowerCase() === 'true') {
@@ -67,7 +67,7 @@ class Config {
     // Check for any old environment variables in env.
     // This must be handled separately from other unknown checks,
     // as fromEnv() only gets config it knows about, so it will never have unknown values
-    removedEnv.forEach(key => {
+    removedEnv.forEach((key) => {
       if (this.env.hasOwnProperty(key)) {
         errors.push(
           `CONFIG NOT RECOGNIZED: Environment variable "${key}" no longer supported.`
@@ -78,9 +78,11 @@ class Config {
     // Check CLI config for any unknown flags
     // Flag must be from config-items + select values (-v -h --version --help, _ is used for all non-named values)
     const additionalCliFlags = ['_', 'h', 'help', 'v', 'version'];
-    Object.keys(this.argv).forEach(key => {
+    Object.keys(this.argv).forEach((key) => {
       const inAdditional = additionalCliFlags.includes(key);
-      const inConfigItems = Boolean(configItems.find(item => item.key === key));
+      const inConfigItems = Boolean(
+        configItems.find((item) => item.key === key)
+      );
       if (!inAdditional && !inConfigItems) {
         errors.push(`CONFIG NOT RECOGNIZED: cli flag "${key}"`);
       }
@@ -90,9 +92,9 @@ class Config {
     // Connections key is filtered out from consideration here because it is not driven by config-items
     // If key is not found in config items, raise error message to prevent application startup
     Object.keys(this.fileConfig)
-      .filter(key => key !== 'connections')
-      .filter(key => !configItems.find(item => item.key === key))
-      .forEach(key => {
+      .filter((key) => key !== 'connections')
+      .filter((key) => !configItems.find((item) => item.key === key))
+      .forEach((key) => {
         errors.push(
           `CONFIG NOT RECOGNIZED: Key "${key}" in file ${this.configFilePath}.`
         );
@@ -102,12 +104,12 @@ class Config {
     const userProvidedConfigs = {
       ...this.envConfig,
       ...this.fileConfig,
-      ...this.cliConfig
+      ...this.cliConfig,
     };
     Object.keys(userProvidedConfigs)
-      .filter(key => key !== 'connections')
-      .forEach(key => {
-        const configItem = configItems.find(item => item.key === key);
+      .filter((key) => key !== 'connections')
+      .forEach((key) => {
+        const configItem = configItems.find((item) => item.key === key);
         if (configItem && configItem.deprecated) {
           warnings.push(
             `DEPRECATED CONFIG: ${configItem.key} / ${configItem.envVar}. ${configItem.deprecated}`
@@ -117,7 +119,7 @@ class Config {
 
     return {
       errors,
-      warnings
+      warnings,
     };
   }
 
@@ -184,7 +186,7 @@ class Config {
   getConnections(env = process.env) {
     // Create a map of connections from parsing environment variable
     const connectionsMapFromEnv = Object.keys(env)
-      .filter(key => key.startsWith('SQLPAD_CONNECTIONS__'))
+      .filter((key) => key.startsWith('SQLPAD_CONNECTIONS__'))
       .reduce((connectionsMap, envVar) => {
         // eslint-disable-next-line no-unused-vars
         const [prefix, id, field] = envVar.split('__');
@@ -203,7 +205,7 @@ class Config {
     const connectionsMap = { ...connectionsMapFromEnv, ...connections };
 
     const connectionsFromConfig = [];
-    Object.keys(connectionsMap).forEach(id => {
+    Object.keys(connectionsMap).forEach((id) => {
       try {
         let connection = connectionsMap[id];
         connection.id = id;

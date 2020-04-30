@@ -4,7 +4,7 @@ const appLog = require('./app-log');
 const packageJson = require('../package.json');
 const configItems = require('./config/config-items');
 
-const keyLengths = configItems.map(item => item.key.length);
+const keyLengths = configItems.map((item) => item.key.length);
 const keyPadding = Math.max(...keyLengths) + 2;
 
 const helpText = `
@@ -20,7 +20,7 @@ CLI examples:
 Options:
 
 ${configItems
-  .map(option => {
+  .map((option) => {
     return `  --${option.key.padEnd(keyPadding)}${option.description}\n`;
   })
   .join('')}`;

@@ -58,7 +58,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
   }, [connectionId]);
 
   const setConnectionValue = (key, value) => {
-    setConnectionEdits(prev => ({ ...prev, [key]: value }));
+    setConnectionEdits((prev) => ({ ...prev, [key]: value }));
   };
 
   const testConnection = async () => {
@@ -73,7 +73,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
     setTestSuccess(json.error ? false : true);
   };
 
-  const saveConnection = async event => {
+  const saveConnection = async (event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -111,7 +111,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
     if (connectionEdits.driver && drivers.length) {
       // NOTE connection.driver is driverId
       const driver = drivers.find(
-        driver => driver.id === connectionEdits.driver
+        (driver) => driver.id === connectionEdits.driver
       );
 
       if (!driver) {
@@ -131,7 +131,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
               }
               id={mstKey}
               name={mstKey}
-              onChange={e =>
+              onChange={(e) =>
                 setConnectionValue(e.target.name, e.target.checked)
               }
             />
@@ -155,7 +155,9 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
               name="idleTimeoutMinutes"
               type="number"
               value={connectionEdits.idleTimeoutMinutes || ''}
-              onChange={e => setConnectionValue(e.target.name, e.target.value)}
+              onChange={(e) =>
+                setConnectionValue(e.target.name, e.target.value)
+              }
             />
             <FormExplain>
               Number of minutes to allow a connection to be idle before closing.
@@ -165,7 +167,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       }
 
       const { fields } = driver;
-      const driverInputs = fields.map(field => {
+      const driverInputs = fields.map((field) => {
         if (field.formType === TEXT) {
           const value = connectionEdits[field.key] || '';
           return (
@@ -173,7 +175,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
               <Input
                 name={field.key}
                 value={value}
-                onChange={e =>
+                onChange={(e) =>
                   setConnectionValue(e.target.name, e.target.value)
                 }
               />
@@ -190,7 +192,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                 autoComplete="new-password"
                 name={field.key}
                 value={value}
-                onChange={e =>
+                onChange={(e) =>
                   setConnectionValue(e.target.name, e.target.value)
                 }
               />
@@ -205,7 +207,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                 checked={checked}
                 id={field.key}
                 name={field.key}
-                onChange={e =>
+                onChange={(e) =>
                   setConnectionValue(e.target.name, e.target.checked)
                 }
               />
@@ -223,7 +225,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                 value={value}
                 cols={45}
                 placeholder={field.placeholder}
-                onChange={e =>
+                onChange={(e) =>
                   setConnectionValue(e.target.name, e.target.value)
                 }
               />
@@ -250,7 +252,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
   } else {
     drivers
       .sort((a, b) => a.name > b.name)
-      .forEach(driver =>
+      .forEach((driver) =>
         driverSelectOptions.push(
           <option key={driver.id} value={driver.id}>
             {driver.name}
@@ -266,7 +268,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '100%',
       }}
     >
       <div style={{ overflowY: 'auto', flexGrow: 1 }}>
@@ -275,7 +277,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
             name="name"
             value={name}
             error={!name}
-            onChange={e => setConnectionValue(e.target.name, e.target.value)}
+            onChange={(e) => setConnectionValue(e.target.name, e.target.value)}
           />
         </HorizontalFormItem>
         <HorizontalFormItem label="Driver">
@@ -283,7 +285,9 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
             name="driver"
             value={driver}
             error={!driver}
-            onChange={event => setConnectionValue('driver', event.target.value)}
+            onChange={(event) =>
+              setConnectionValue('driver', event.target.value)
+            }
           >
             {driverSelectOptions}
           </Select>
@@ -295,7 +299,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
         style={{
           borderTop: '1px solid #e8e8e8',
           paddingTop: '22px',
-          textAlign: 'right'
+          textAlign: 'right',
         }}
       >
         <Button
@@ -319,7 +323,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                 marginLeft: 8,
                 height: 18,
                 width: 18,
-                marginBottom: -4
+                marginBottom: -4,
               }}
               color="#52c41a"
             />
@@ -330,7 +334,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                 marginLeft: 8,
                 height: 18,
                 width: 18,
-                marginBottom: -4
+                marginBottom: -4,
               }}
               color="#eb2f96"
             />

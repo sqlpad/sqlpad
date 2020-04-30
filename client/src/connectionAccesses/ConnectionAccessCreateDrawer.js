@@ -7,7 +7,7 @@ function ConnectionAccessCreateDrawer({
   visible,
   onClose,
   onConnectionAccessSaved,
-  placement
+  placement,
 }) {
   return (
     <Drawer

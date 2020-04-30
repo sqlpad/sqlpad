@@ -10,13 +10,13 @@ const fields = [
   {
     key: 'filename',
     formType: 'TEXT',
-    label: 'Filename / path' // empty string is anonymous disk backed. :memory: is in memory
+    label: 'Filename / path', // empty string is anonymous disk backed. :memory: is in memory
   },
   {
     key: 'readonly',
     formType: 'CHECKBOX',
-    label: 'Read only'
-  }
+    label: 'Read only',
+  },
 ];
 
 class Client {
@@ -37,18 +37,22 @@ class Client {
 
     if (readonly) {
       return new Promise((resolve, reject) => {
-        this.db = new sqlite3.Database(filename, sqlite3.OPEN_READONLY, err => {
-          if (err) {
-            this.db = null;
-            return reject(err);
+        this.db = new sqlite3.Database(
+          filename,
+          sqlite3.OPEN_READONLY,
+          (err) => {
+            if (err) {
+              this.db = null;
+              return reject(err);
+            }
+            return resolve();
           }
-          return resolve();
-        });
+        );
       });
     }
 
     return new Promise((resolve, reject) => {
-      this.db = new sqlite3.Database(filename, err => {
+      this.db = new sqlite3.Database(filename, (err) => {
         if (err) {
           this.db = null;
           return reject(err);
@@ -64,7 +68,7 @@ class Client {
       this.db = null;
 
       return new Promise((resolve, reject) => {
-        db.close(err => {
+        db.close((err) => {
           if (err) {
             appLog.error(err, 'Error ending sqlite db');
             return reject(err);
@@ -174,12 +178,12 @@ async function getSchema(connection) {
       const columnQueryResult = await db.runQuery(
         `PRAGMA table_info(${table_name})`
       );
-      columnQueryResult.rows.forEach(row => {
+      columnQueryResult.rows.forEach((row) => {
         columnRows.push({
           table_schema: 'main',
           table_name,
           column_name: row.name,
-          data_type: row.type
+          data_type: row.type,
         });
       });
     }
@@ -202,5 +206,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

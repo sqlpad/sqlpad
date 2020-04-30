@@ -8,9 +8,12 @@ function mapStateToProps(state) {
   return {};
 }
 
-const ConnectedToolbarToggleSchemaButton = connect(mapStateToProps, store => ({
-  toggleSchema
-}))(React.memo(ToolbarToggleSchemaButton));
+const ConnectedToolbarToggleSchemaButton = connect(
+  mapStateToProps,
+  (store) => ({
+    toggleSchema,
+  })
+)(React.memo(ToolbarToggleSchemaButton));
 
 function ToolbarToggleSchemaButton({ toggleSchema }) {
   return (

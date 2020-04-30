@@ -15,7 +15,7 @@ function QueryPreview({ query }) {
       <div>Connection {query.connectionName}</div>
       <div>By {query.createdBy}</div>
       <div>
-        {query.tags && query.tags.map(tag => <Tag key={tag}>{tag}</Tag>)}
+        {query.tags && query.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
       </div>
 
       <Divider />
@@ -28,7 +28,7 @@ function QueryPreview({ query }) {
       <div
         style={{
           flexGrow: 1,
-          display: 'flex'
+          display: 'flex',
         }}
       >
         <SqlEditor readOnly value={query.queryText || ''} />
@@ -38,7 +38,7 @@ function QueryPreview({ query }) {
 }
 
 QueryPreview.propTypes = {
-  query: PropTypes.object
+  query: PropTypes.object,
 };
 
 export default React.memo(QueryPreview);

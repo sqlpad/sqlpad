@@ -18,7 +18,7 @@ const IconMenu = ({ children, icon, tooltip, variant, ...rest }) => {
           React.cloneElement(
             icon,
             {
-              size: ICON_SIZE
+              size: ICON_SIZE,
             },
             null
           )}

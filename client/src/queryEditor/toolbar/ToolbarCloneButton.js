@@ -6,12 +6,12 @@ import { handleCloneClick } from '../../stores/queries';
 
 function mapStateToProps(state) {
   return {
-    queryId: state.query && state.query.id
+    queryId: state.query && state.query.id,
   };
 }
 
-const ConnectedToolbarCloneButton = connect(mapStateToProps, store => ({
-  handleCloneClick
+const ConnectedToolbarCloneButton = connect(mapStateToProps, (store) => ({
+  handleCloneClick,
 }))(React.memo(ToolbarCloneButton));
 
 function ToolbarCloneButton({ handleCloneClick, queryId }) {

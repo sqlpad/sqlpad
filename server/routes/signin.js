@@ -31,7 +31,7 @@ function handleSignin(req, res, next) {
     if (!user) {
       return res.utils.unauthorized(detail);
     }
-    return req.logIn(user, err => {
+    return req.logIn(user, (err) => {
       if (err) {
         return next(err);
       }
@@ -55,7 +55,7 @@ function handleSignin(req, res, next) {
   return res.utils.error('Unexpected authentication format');
 }
 
-router.post('/api/signin', handleSignin, function(req, res) {
+router.post('/api/signin', handleSignin, function (req, res) {
   res.utils.data();
 });
 

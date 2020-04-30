@@ -1,33 +1,33 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
 
-describe('config.getConnections', function() {
+describe('config.getConnections', function () {
   const utils = new TestUtils();
 
-  before(function() {
+  before(function () {
     return utils.init(true);
   });
 
-  it('handles empty object', function() {
+  it('handles empty object', function () {
     const cs = utils.config.getConnections({});
     assert(Array.isArray(cs));
   });
 
-  it('skips partial connections', function() {
+  it('skips partial connections', function () {
     const cs = utils.config.getConnections({
-      SQLPAD_CONNECTIONS__abc__driver: 'postgres'
+      SQLPAD_CONNECTIONS__abc__driver: 'postgres',
     });
     assert(Array.isArray(cs));
     assert.equal(cs.length, 0, 'c should be empty');
   });
 
-  it('parses connection properly', function() {
+  it('parses connection properly', function () {
     const cs = utils.config.getConnections({
       SQLPAD_CONNECTIONS__abc__driver: 'postgres',
       SQLPAD_CONNECTIONS__abc__name: 'env-postgres',
       SQLPAD_CONNECTIONS__abc__host: 'localhost',
       SQLPAD_CONNECTIONS__abc__port: '5432',
-      SQLPAD_CONNECTIONS__abc__postgresSsl: 'true'
+      SQLPAD_CONNECTIONS__abc__postgresSsl: 'true',
     });
     assert(Array.isArray(cs));
     assert.equal(cs.length, 1, 'cs should have 1');
@@ -49,7 +49,7 @@ describe('config.getConnections', function() {
     );
   });
 
-  it('includes env connection in all connections', async function() {
+  it('includes env connection in all connections', async function () {
     process.env.SQLPAD_CONNECTIONS__abc__driver = 'postgres';
     process.env.SQLPAD_CONNECTIONS__abc__name = 'env-postgres';
     process.env.SQLPAD_CONNECTIONS__abc__host = 'localhost';
@@ -57,7 +57,7 @@ describe('config.getConnections', function() {
     process.env.SQLPAD_CONNECTIONS__abc__postgresSsl = 'true';
 
     const allConnections = await utils.models.connections.findAll();
-    const connection = allConnections.find(c => c.id === 'abc');
+    const connection = allConnections.find((c) => c.id === 'abc');
     assert.strictEqual(connection.name, 'env-postgres', 'connection.name');
     assert.strictEqual(connection.editable, false, 'connection.editable');
 
@@ -68,7 +68,7 @@ describe('config.getConnections', function() {
     delete process.env.SQLPAD_CONNECTIONS__abc__postgresSsl;
   });
 
-  it('includes env connection by id', async function() {
+  it('includes env connection by id', async function () {
     process.env.SQLPAD_CONNECTIONS__abc__driver = 'postgres';
     process.env.SQLPAD_CONNECTIONS__abc__name = 'env-postgres';
     process.env.SQLPAD_CONNECTIONS__abc__host = 'localhost';

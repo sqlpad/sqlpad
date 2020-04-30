@@ -9,7 +9,7 @@ const ConnectionClient = require('../lib/connection-client');
 router.post(
   '/api/test-connection',
   mustBeAdmin,
-  wrap(async function(req, res) {
+  wrap(async function (req, res) {
     const connectionClient = new ConnectionClient(req.body, req.user);
     // testConnection will throw if configuration is invalid
     // This is expected

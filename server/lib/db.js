@@ -60,13 +60,13 @@ async function initNedb(config) {
       'connectionAccesses',
       'queries',
       'queryHistory',
-      'cache'
-    ]
+      'cache',
+    ],
   };
 
   // Load dbs, migrate data, and apply indexes
   await Promise.all(
-    nedb.instances.map(dbname => {
+    nedb.instances.map((dbname) => {
       appLog.info('Loading %s', dbname);
       return nedb[dbname].loadDatabase();
     })
@@ -82,7 +82,7 @@ async function initNedb(config) {
   await nedb.queryHistory.ensureIndex({ fieldName: 'createdDate' });
 
   // Set autocompaction
-  nedb.instances.forEach(dbname => {
+  nedb.instances.forEach((dbname) => {
     nedb[dbname].nedb.persistence.setAutocompactionInterval(ONE_DAY);
   });
 
@@ -117,5 +117,5 @@ function makeDb(config, instanceAlias = 'default') {
 
 module.exports = {
   makeDb,
-  getDb
+  getDb,
 };

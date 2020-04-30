@@ -9,10 +9,10 @@ const Sequelize = require('sequelize');
 // eslint-disable-next-line no-unused-vars
 async function up(queryInterface, config, appLog, nedb) {
   await queryInterface.addColumn('query_acl', 'user_email', {
-    type: Sequelize.STRING
+    type: Sequelize.STRING,
   });
 }
 
 module.exports = {
-  up
+  up,
 };

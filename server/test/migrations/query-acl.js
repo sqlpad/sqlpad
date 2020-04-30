@@ -1,10 +1,10 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
 
-describe('QueryAcl', function() {
+describe('QueryAcl', function () {
   const utils = new TestUtils();
 
-  before(async function() {
+  before(async function () {
     await utils.initDbs();
 
     await utils.nedb.queries.insert({
@@ -15,7 +15,7 @@ describe('QueryAcl', function() {
       createdDate: new Date(),
       updatedDate: new Date(),
       createdBy: 'testuser',
-      lastAccessDate: new Date()
+      lastAccessDate: new Date(),
     });
 
     await utils.nedb.queries.insert({
@@ -26,13 +26,13 @@ describe('QueryAcl', function() {
       createdDate: new Date(),
       updatedDate: new Date(),
       createdBy: 'testuser',
-      lastAccessDate: new Date()
+      lastAccessDate: new Date(),
     });
 
     await utils.migrate();
   });
 
-  it('created QueryAcl records', async function() {
+  it('created QueryAcl records', async function () {
     const sdb = utils.sequelizeDb;
     const queryAcls = await sdb.QueryAcl.findAll();
     assert(queryAcls);

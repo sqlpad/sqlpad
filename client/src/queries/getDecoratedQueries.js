@@ -11,7 +11,7 @@ export default function getDecoratedQueries(queries, connections) {
     return connMap;
   }, {});
 
-  return queries.map(query => {
+  return queries.map((query) => {
     query.key = query.id;
 
     const connection = connectionsById[query.connectionId];

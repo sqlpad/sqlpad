@@ -7,8 +7,8 @@ function mapStateToProps(state) {
   return {};
 }
 
-const ConnectedToolbarNewQueryButton = connect(mapStateToProps, store => ({
-  resetNewQuery
+const ConnectedToolbarNewQueryButton = connect(mapStateToProps, (store) => ({
+  resetNewQuery,
 }))(React.memo(ToolbarNewQueryButton));
 
 function ToolbarNewQueryButton({ resetNewQuery }) {

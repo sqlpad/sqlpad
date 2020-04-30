@@ -1,56 +1,56 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = function(sequelize) {
+module.exports = function (sequelize) {
   const Users = sequelize.define(
     'Users',
     {
       id: {
         type: DataTypes.STRING,
         primaryKey: true,
-        defaultValue: DataTypes.UUIDV4
+        defaultValue: DataTypes.UUIDV4,
       },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          isLowercase: true
-        }
+          isLowercase: true,
+        },
       },
       role: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
           isLowercase: true,
-          isIn: [['admin', 'editor', 'viewer']]
-        }
+          isIn: [['admin', 'editor', 'viewer']],
+        },
       },
       name: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       passhash: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       passwordResetId: {
-        type: DataTypes.UUID
+        type: DataTypes.UUID,
       },
       data: {
-        type: DataTypes.JSON
+        type: DataTypes.JSON,
       },
       signupAt: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
       },
       createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updatedAt: {
         type: DataTypes.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       tableName: 'users',
-      underscored: true
+      underscored: true,
     }
   );
 

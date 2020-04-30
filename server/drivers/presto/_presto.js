@@ -5,7 +5,7 @@ module.exports = { send };
 
 // Util - setTimeout as a promise
 function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Get Presto headers from config
@@ -26,15 +26,15 @@ function send(config, query) {
     return Promise.reject(new Error('config.url is required'));
   }
   const results = {
-    data: []
+    data: [],
   };
   return fetch(`${config.url}/v1/statement`, {
     method: 'POST',
     body: query,
-    headers: getHeaders(config)
+    headers: getHeaders(config),
   })
-    .then(response => response.json())
-    .then(statement => handleStatementAndGetMore(results, statement, config));
+    .then((response) => response.json())
+    .then((statement) => handleStatementAndGetMore(results, statement, config));
 }
 
 function updateResults(results, statement) {
@@ -59,6 +59,6 @@ function handleStatementAndGetMore(results, statement, config) {
   }
   return wait(NEXT_URI_TIMEOUT)
     .then(() => fetch(statement.nextUri, { headers: getHeaders(config) }))
-    .then(response => response.json())
-    .then(statement => handleStatementAndGetMore(results, statement, config));
+    .then((response) => response.json())
+    .then((statement) => handleStatementAndGetMore(results, statement, config));
 }

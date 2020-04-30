@@ -2,14 +2,14 @@ const assert = require('assert');
 const TestUtils = require('../utils');
 const ConnectionClient = require('../../lib/connection-client');
 
-describe('api/schema-info', function() {
+describe('api/schema-info', function () {
   this.timeout(10000);
   const utils = new TestUtils();
   let connection;
   let user1;
   let user2;
 
-  before(async function() {
+  before(async function () {
     await utils.init(true);
 
     // Create some users to use to ensure dynamic connection is cached properly
@@ -19,8 +19,8 @@ describe('api/schema-info', function() {
       role: 'admin',
       name: 'user1',
       data: {
-        dbfilename: 'user1.sqlite'
-      }
+        dbfilename: 'user1.sqlite',
+      },
     });
 
     user2 = await utils.addUserApiHelper('user2', {
@@ -29,8 +29,8 @@ describe('api/schema-info', function() {
       role: 'admin',
       name: 'user2',
       data: {
-        dbfilename: 'user2.sqlite'
-      }
+        dbfilename: 'user2.sqlite',
+      },
     });
 
     // Create a connection that looks to user data for db connection info
@@ -39,8 +39,8 @@ describe('api/schema-info', function() {
       driver: 'sqlite',
       name: 'sqlite-test',
       data: {
-        filename: './test/artifacts/{{user.data.dbfilename}}'
-      }
+        filename: './test/artifacts/{{user.data.dbfilename}}',
+      },
     });
     connection = body;
 
@@ -54,7 +54,7 @@ describe('api/schema-info', function() {
     await user2CC.runQuery(`CREATE TABLE user2 (id INT, name TEXT)`);
   });
 
-  it('Gets schema-info honoring connection templates', async function() {
+  it('Gets schema-info honoring connection templates', async function () {
     const body1 = await utils.get('user1', `/api/schema-info/${connection.id}`);
     assert(body1, 'body');
     assert(body1.main.user1, 'user1 table exists');
@@ -66,7 +66,7 @@ describe('api/schema-info', function() {
     assert(body2.main.user2, 'user2 table exists');
   });
 
-  it('Read from cache is successful', async function() {
+  it('Read from cache is successful', async function () {
     const body1 = await utils.get('user1', `/api/schema-info/${connection.id}`);
     assert(body1, 'body');
     assert(body1.main.user1, 'user1 table exists');

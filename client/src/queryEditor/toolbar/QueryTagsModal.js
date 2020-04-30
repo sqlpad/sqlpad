@@ -7,7 +7,7 @@ import fetchJson from '../../utilities/fetch-json';
 
 function mapStateToProps(state) {
   return {
-    tags: (state.query && state.query.tags) || []
+    tags: (state.query && state.query.tags) || [],
   };
 }
 
@@ -20,22 +20,22 @@ function QueryTagsModal({ tags, visible, onClose, setQueryState }) {
 
   useEffect(() => {
     if (visible) {
-      fetchJson('GET', '/api/tags').then(response => {
+      fetchJson('GET', '/api/tags').then((response) => {
         const { data } = response;
         if (data) {
-          const options = data.map(tag => ({ name: tag, id: tag }));
+          const options = data.map((tag) => ({ name: tag, id: tag }));
           setOptions(options);
         }
       });
     }
   }, [visible]);
 
-  const selectedItems = tags.map(tag => ({ name: tag, id: tag }));
+  const selectedItems = tags.map((tag) => ({ name: tag, id: tag }));
 
-  const handleChange = selectedItems => {
+  const handleChange = (selectedItems) => {
     setQueryState(
       'tags',
-      selectedItems.map(item => item.name)
+      selectedItems.map((item) => item.name)
     );
   };
 

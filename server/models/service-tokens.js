@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const maskToken = token => {
+const maskToken = (token) => {
   return '********************'.concat(token.slice(-5));
 };
 
@@ -35,7 +35,7 @@ class ServiceTokens {
     const token = jwt.sign(
       {
         name: data.name,
-        role: data.role
+        role: data.role,
       },
       secret,
       signOpts

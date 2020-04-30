@@ -2,11 +2,11 @@ const assert = require('assert');
 const request = require('supertest');
 const TestUtil = require('../utils');
 
-describe('api/signup', function() {
-  it('only allowed if local auth enabled', async function() {
+describe('api/signup', function () {
+  it('only allowed if local auth enabled', async function () {
     const utils = new TestUtil({
       disableUserpassAuth: 'true',
-      authProxyEnabled: false
+      authProxyEnabled: false,
     });
 
     await utils.init();
@@ -16,14 +16,14 @@ describe('api/signup', function() {
       .send({
         password: 'admin',
         passwordConfirmation: 'admin',
-        email: 'admin@test.com'
+        email: 'admin@test.com',
       })
       .expect(403);
   });
 
-  it('allows new user signup', async function() {
+  it('allows new user signup', async function () {
     const utils = new TestUtil({
-      authProxyEnabled: false
+      authProxyEnabled: false,
     });
     await utils.init();
 
@@ -32,7 +32,7 @@ describe('api/signup', function() {
       .send({
         password: 'admin',
         passwordConfirmation: 'admin',
-        email: 'admin@test.com'
+        email: 'admin@test.com',
       })
       .expect(200);
 
@@ -42,7 +42,7 @@ describe('api/signup', function() {
       .post('/api/signin')
       .send({
         password: 'admin',
-        email: 'admin@test.com'
+        email: 'admin@test.com',
       })
       .expect(200);
 
@@ -51,9 +51,9 @@ describe('api/signup', function() {
     assert.equal(r3.body.currentUser.email, 'admin@test.com');
   });
 
-  it('prevents duplicate signups', async function() {
+  it('prevents duplicate signups', async function () {
     const utils = new TestUtil({
-      authProxyEnabled: false
+      authProxyEnabled: false,
     });
     await utils.init();
 
@@ -62,7 +62,7 @@ describe('api/signup', function() {
       .send({
         password: 'admin',
         passwordConfirmation: 'admin',
-        email: 'admin@test.com'
+        email: 'admin@test.com',
       })
       .expect(200);
 
@@ -71,14 +71,14 @@ describe('api/signup', function() {
       .send({
         password: 'admin',
         passwordConfirmation: 'admin',
-        email: 'admin@test.com'
+        email: 'admin@test.com',
       })
       .expect(400);
   });
 
-  it('prevents open signups', async function() {
+  it('prevents open signups', async function () {
     const utils = new TestUtil({
-      authProxyEnabled: false
+      authProxyEnabled: false,
     });
     await utils.init(true);
 
@@ -87,7 +87,7 @@ describe('api/signup', function() {
       .send({
         password: 'notwhitelisted',
         passwordConfirmation: 'notwhitelisted',
-        email: 'notwhitelisted@test.com'
+        email: 'notwhitelisted@test.com',
       })
       .expect(403);
   });

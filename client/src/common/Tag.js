@@ -8,7 +8,7 @@ function Tag({ children, onClose }) {
       <span>{children}</span>
       {onClose && (
         <button
-          onClick={e => {
+          onClick={(e) => {
             e.stopPropagation();
             onClose();
           }}

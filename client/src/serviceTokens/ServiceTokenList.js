@@ -34,7 +34,7 @@ function ServiceTokenList({ currentUser }) {
     setShowServiceTokenForm(true);
   };
 
-  const deleteServiceToken = async serviceTokenId => {
+  const deleteServiceToken = async (serviceTokenId) => {
     const json = await fetchJson(
       'DELETE',
       `/api/service-tokens/${serviceTokenId}`
@@ -50,7 +50,7 @@ function ServiceTokenList({ currentUser }) {
     setShowGeneratedServiceToken(false);
   };
 
-  const handleServiceTokenGenerated = serviceToken => {
+  const handleServiceTokenGenerated = (serviceToken) => {
     setGenerateServiceToken(serviceToken);
     setShowServiceTokenForm(false);
     setShowGeneratedServiceToken(true);
@@ -72,14 +72,14 @@ function ServiceTokenList({ currentUser }) {
           Generate
         </Button>
       </div>
-      {serviceTokens.map(item => {
+      {serviceTokens.map((item) => {
         const actions = [];
 
         actions.push(
           <DeleteConfirmButton
             key="delete"
             confirmMessage="Delete service token?"
-            onConfirm={e => deleteServiceToken(item.id)}
+            onConfirm={(e) => deleteServiceToken(item.id)}
             style={{ marginLeft: 8 }}
           >
             Delete

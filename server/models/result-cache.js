@@ -14,7 +14,7 @@ const { parse } = require('json2csv');
 // "TypeError: Do not know how to serialize a BigInt"
 /* global BigInt:writable */
 /* eslint no-extend-native: ["error", { "exceptions": ["BigInt"] }] */
-BigInt.prototype.toJSON = function() {
+BigInt.prototype.toJSON = function () {
   return this.toString();
 };
 
@@ -66,23 +66,23 @@ class ResultCache {
     return this.sequelizeDb.Cache.create({
       id,
       name: savedQueryName,
-      expiryDate
+      expiryDate,
     });
   }
 
   async removeExpired() {
     try {
       const docs = await this.sequelizeDb.Cache.findAll({
-        where: { expiryDate: { [Op.lt]: new Date() } }
+        where: { expiryDate: { [Op.lt]: new Date() } },
       });
 
       for (const doc of docs) {
         const filepaths = [
           this.xlsxFilePath(doc.id),
           this.csvFilePath(doc.id),
-          this.jsonFilePath(doc.id)
+          this.jsonFilePath(doc.id),
         ];
-        filepaths.forEach(fp => {
+        filepaths.forEach((fp) => {
           if (fs.existsSync(fp)) {
             fs.unlinkSync(fp);
           }
@@ -108,10 +108,10 @@ class ResultCache {
       resultArray.push(row);
     }
     const xlsxBuffer = xlsx.build([
-      { name: 'query-results', data: resultArray }
+      { name: 'query-results', data: resultArray },
     ]);
-    return new Promise(resolve => {
-      fs.writeFile(this.xlsxFilePath(id), xlsxBuffer, function(err) {
+    return new Promise((resolve) => {
+      fs.writeFile(this.xlsxFilePath(id), xlsxBuffer, function (err) {
         // if there's an error log it but otherwise continue on
         // we can still send results even if download file failed to create
         if (err) {
@@ -123,10 +123,10 @@ class ResultCache {
   }
 
   writeCsv(id, queryResult) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       try {
         const csv = parse(queryResult.rows, { fields: queryResult.fields });
-        fs.writeFile(this.csvFilePath(id), csv, function(err) {
+        fs.writeFile(this.csvFilePath(id), csv, function (err) {
           if (err) {
             appLog.error(err);
           }
@@ -140,10 +140,10 @@ class ResultCache {
   }
 
   writeJson(id, queryResult) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       try {
         const json = JSON.stringify(queryResult.rows);
-        fs.writeFile(this.jsonFilePath(id), json, function(err) {
+        fs.writeFile(this.jsonFilePath(id), json, function (err) {
           if (err) {
             appLog.error(err);
           }

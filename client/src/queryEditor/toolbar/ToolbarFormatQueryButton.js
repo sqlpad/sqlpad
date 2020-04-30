@@ -8,8 +8,8 @@ function mapStateToProps(state) {
   return {};
 }
 
-const ConnectedToolbarFormatQueryButton = connect(mapStateToProps, store => ({
-  formatQuery
+const ConnectedToolbarFormatQueryButton = connect(mapStateToProps, (store) => ({
+  formatQuery,
 }))(React.memo(ToolbarFormatQueryButton));
 
 function ToolbarFormatQueryButton({ formatQuery }) {

@@ -12,7 +12,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }) {
   const [generating, setGenerating] = useState(false);
 
   const setServiceTokenValue = (key, value) => {
-    setServiceTokenEdits(prev => ({ ...prev, [key]: value }));
+    setServiceTokenEdits((prev) => ({ ...prev, [key]: value }));
   };
 
   const generateServiceToken = async () => {
@@ -54,7 +54,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }) {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          height: '100%'
+          height: '100%',
         }}
       >
         <HorizontalFormItem label="Service Name">
@@ -62,7 +62,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }) {
             name="name"
             value={name || ''}
             error={!name}
-            onChange={event =>
+            onChange={(event) =>
               setServiceTokenValue(event.target.name, event.target.value)
             }
           />
@@ -72,7 +72,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }) {
             name="role"
             value={role}
             error={!role}
-            onChange={event =>
+            onChange={(event) =>
               setServiceTokenValue(event.target.name, event.target.value)
             }
           >
@@ -85,7 +85,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }) {
           <Input
             name="duration"
             value={duration}
-            onChange={event =>
+            onChange={(event) =>
               setServiceTokenValue(event.target.name, event.target.value)
             }
           />
@@ -95,7 +95,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }) {
           style={{
             borderTop: '1px solid #e8e8e8',
             paddingTop: '22px',
-            textAlign: 'right'
+            textAlign: 'right',
           }}
         >
           <Button

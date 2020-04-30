@@ -18,7 +18,7 @@ function SignIn({ config, refreshAppContext }) {
     document.title = 'SQLPad - Sign In';
   }, []);
 
-  const signIn = async e => {
+  const signIn = async (e) => {
     e.preventDefault();
 
     const json = await fetchJson('POST', '/api/signin', { email, password });
@@ -43,7 +43,7 @@ function SignIn({ config, refreshAppContext }) {
         name="email"
         type="email"
         placeholder="Email address"
-        onChange={e => setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
         required
       />
       <Spacer />
@@ -51,7 +51,7 @@ function SignIn({ config, refreshAppContext }) {
         name="password"
         type="password"
         placeholder="Password"
-        onChange={e => setPassword(e.target.value)}
+        onChange={(e) => setPassword(e.target.value)}
         required
       />
       <Spacer size={2} />
@@ -68,7 +68,7 @@ function SignIn({ config, refreshAppContext }) {
         style={{
           display: 'inline-block',
           width: '100%',
-          textAlign: 'center'
+          textAlign: 'center',
         }}
         to="/signup"
       >

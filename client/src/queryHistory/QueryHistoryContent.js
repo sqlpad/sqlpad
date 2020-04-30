@@ -10,38 +10,38 @@ import Button from '../common/Button';
 // This should be fine... it'll just need updating if the API changes shape
 const historyMeta = {
   userEmail: {
-    datatype: 'string'
+    datatype: 'string',
   },
   connectionName: {
-    datatype: 'string'
+    datatype: 'string',
   },
   startTime: {
-    datatype: 'datetime'
+    datatype: 'datetime',
   },
   stopTime: {
-    datatype: 'datetime'
+    datatype: 'datetime',
   },
   queryRunTime: {
-    datatype: 'number'
+    datatype: 'number',
   },
   queryId: {
-    datatype: 'string'
+    datatype: 'string',
   },
   queryName: {
-    datatype: 'string'
+    datatype: 'string',
   },
   queryText: {
-    datatype: 'string'
+    datatype: 'string',
   },
   incomplete: {
-    datatype: 'boolean'
+    datatype: 'boolean',
   },
   rowCount: {
-    datatype: 'number'
+    datatype: 'number',
   },
   createdAt: {
-    datatype: 'datetime'
-  }
+    datatype: 'datetime',
+  },
 };
 
 const historyFields = Object.keys(historyMeta);
@@ -50,7 +50,7 @@ function getQueryResult(rows) {
   return {
     rows,
     fields: historyFields,
-    meta: historyMeta
+    meta: historyMeta,
   };
 }
 
@@ -62,7 +62,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
 
   useEffect(() => {
     function buildFilterUrlParameter() {
-      const urlFilters = filters.map(f => {
+      const urlFilters = filters.map((f) => {
         if (['before', 'after'].includes(f.operator)) {
           try {
             f.value = new Date(f.value).toISOString();
@@ -117,13 +117,13 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
     setFilters(newFilters);
   };
 
-  const handleRemoveFilter = index => {
+  const handleRemoveFilter = (index) => {
     const newFilters = [...filters];
     newFilters.splice(index, 1);
     setFilters(newFilters);
   };
 
-  const handleApplyFilter = e => {
+  const handleApplyFilter = (e) => {
     setIsRunning(true);
   };
 
@@ -137,7 +137,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
       disabled={isRunning}
     >
       {isRunning ? 'Searching...' : 'Refresh'}
-    </Button>
+    </Button>,
   ];
   if (filters.length === 0) {
     buttons.unshift(
@@ -158,7 +158,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          height: '100%'
+          height: '100%',
         }}
       >
         <p>Display queries that meet all of the following criteria:</p>
@@ -214,7 +214,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
             position: 'relative',
             width: '100%',
             height: 300,
-            border: '1px solid #CCC'
+            border: '1px solid #CCC',
           }}
         >
           <QueryResultContainer

@@ -12,10 +12,10 @@ function EditUserForm({ user }) {
   const [role, setRole] = useState(user.role);
   const [passwordResetId, setPasswordResetId] = useState(user.passwordResetId);
 
-  const handleRoleChange = async event => {
+  const handleRoleChange = async (event) => {
     setRole(event.target.value);
     const json = await fetchJson('PUT', '/api/users/' + user.id, {
-      role: event.target.value
+      role: event.target.value,
     });
     if (json.error) {
       return message.error('Update failed: ' + json.error);
@@ -25,7 +25,7 @@ function EditUserForm({ user }) {
   const generatePasswordResetLink = async () => {
     const passwordResetId = uuidv4();
     const json = await fetchJson('PUT', '/api/users/' + user.id, {
-      passwordResetId
+      passwordResetId,
     });
     if (json.error) {
       return message.error('Update failed: ' + json.error);
@@ -35,7 +35,7 @@ function EditUserForm({ user }) {
 
   const removePasswordResetLink = async () => {
     const json = await fetchJson('PUT', '/api/users/' + user.id, {
-      passwordResetId: ''
+      passwordResetId: '',
     });
     if (json.error) {
       return message.error('Remove reset failed: ' + json.error);

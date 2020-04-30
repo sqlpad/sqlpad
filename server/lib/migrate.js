@@ -7,17 +7,17 @@ function runMigrations(config, appLog, nedb, sequelizeInstance) {
     storage: 'sequelize',
     storageOptions: {
       sequelize: sequelizeInstance,
-      tableName: 'schema_version'
+      tableName: 'schema_version',
     },
-    logging: message => {
+    logging: (message) => {
       appLog.info(message);
     },
     migrations: {
       params: [sequelizeInstance.queryInterface, config, appLog, nedb],
       path: path.join(__dirname, '../migrations'),
       // The pattern that determines whether or not a file is a migration.
-      pattern: /^\d+[\w-]+\.js$/
-    }
+      pattern: /^\d+[\w-]+\.js$/,
+    },
   });
 
   return umzug.up();

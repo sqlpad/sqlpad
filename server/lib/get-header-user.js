@@ -18,8 +18,8 @@ function getHeaderUser(req) {
   config
     .get('authProxyHeaders')
     .split(' ')
-    .forEach(pairing => {
-      const [fieldName, headerName] = pairing.split(':').map(v => v.trim());
+    .forEach((pairing) => {
+      const [fieldName, headerName] = pairing.split(':').map((v) => v.trim());
       const value = req.get(headerName);
       if (value !== null && value !== undefined) {
         _.set(headerUser, fieldName, req.get(headerName));

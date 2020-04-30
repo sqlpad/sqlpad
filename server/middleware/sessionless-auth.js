@@ -47,7 +47,7 @@ function sessionlessAuth(req, res, next) {
     req.user = {
       id: 'noauth',
       role: 'admin',
-      email: 'test@example.com'
+      email: 'test@example.com',
     };
     return next();
   }

@@ -15,7 +15,7 @@ function QueryResultHeader({
   isRunning,
   queryId,
   queryResult,
-  runQueryStartTime
+  runQueryStartTime,
 }) {
   if (isRunning || !queryResult) {
     return (
@@ -106,13 +106,13 @@ QueryResultHeader.propTypes = {
   config: PropTypes.object,
   isRunning: PropTypes.bool,
   queryResult: PropTypes.object,
-  runQueryStartTime: PropTypes.instanceOf(Date)
+  runQueryStartTime: PropTypes.instanceOf(Date),
 };
 
 QueryResultHeader.defaultProps = {
   cacheKey: '',
   config: {},
-  isRunning: false
+  isRunning: false,
 };
 
 function mapStateToProps(state) {
@@ -123,7 +123,7 @@ function mapStateToProps(state) {
     isRunning,
     queryId: state.query && state.query.id,
     queryResult,
-    runQueryStartTime
+    runQueryStartTime,
   };
 }
 

@@ -12,7 +12,7 @@ function ToolbarSpacer({ grow }) {
 }
 
 ToolbarSpacer.propTypes = {
-  grow: PropTypes.bool
+  grow: PropTypes.bool,
 };
 
 export default ToolbarSpacer;

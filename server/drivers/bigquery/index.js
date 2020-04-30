@@ -24,7 +24,7 @@ function getTimeoutSeconds() {
  * @param {string} datasets
  */
 function splitDatasets(datasets) {
-  return datasets.split(',').map(name => name.trim());
+  return datasets.split(',').map((name) => name.trim());
 }
 
 /**
@@ -36,7 +36,7 @@ function newBigQuery(connection) {
     projectId: connection.projectId,
     keyFilename: connection.keyFile,
     // Location must match that of the dataset(s) referenced in the query.
-    location: connection.datasetLocation
+    location: connection.datasetLocation,
   });
 }
 
@@ -56,7 +56,7 @@ function runQuery(queryString, connection = {}) {
     connection.hasOwnProperty('maxRows') && connection.maxRows !== null;
 
   const query = {
-    query: queryString
+    query: queryString,
   };
 
   const datasets = splitDatasets(connection.datasetName);
@@ -91,7 +91,7 @@ function runQuery(queryString, connection = {}) {
 
       return {
         incomplete,
-        rows
+        rows,
       };
     });
 }
@@ -114,13 +114,13 @@ function getSchema(connection) {
   const bigquery = newBigQuery(connection);
 
   const queries = splitDatasets(connection.datasetName).map(
-    name => `SELECT * FROM \`${name}.__TABLES__\``
+    (name) => `SELECT * FROM \`${name}.__TABLES__\``
   );
 
   const query = {
     query: queries.join(' UNION ALL '),
     // Location must match that of the dataset(s) referenced in the query.
-    location: connection.datasetLocation
+    location: connection.datasetLocation,
   };
 
   return bigquery
@@ -131,17 +131,14 @@ function getSchema(connection) {
     )
     .then(([tables]) =>
       Promise.all(
-        tables.map(table =>
-          bigquery
-            .dataset(table.dataset_id)
-            .table(table.table_id)
-            .getMetadata()
+        tables.map((table) =>
+          bigquery.dataset(table.dataset_id).table(table.table_id).getMetadata()
         )
       )
     )
-    .then(tables => {
+    .then((tables) => {
       const tableSchema = {
-        rows: []
+        rows: [],
       };
       for (let table of tables) {
         const tableInfo = table[0];
@@ -154,7 +151,7 @@ function getSchema(connection) {
             table_schema: datasetId,
             table_name: tableId,
             column_name: field.name,
-            data_type: field.type
+            data_type: field.type,
           });
         }
       }
@@ -166,23 +163,23 @@ const fields = [
   {
     key: 'projectId',
     formType: 'TEXT',
-    label: 'Google Cloud Console Project ID'
+    label: 'Google Cloud Console Project ID',
   },
   {
     key: 'keyFile',
     formType: 'TEXT',
-    label: 'JSON Keyfile for Service Account'
+    label: 'JSON Keyfile for Service Account',
   },
   {
     key: 'datasetName',
     formType: 'TEXT',
-    label: 'Datasets set to use. Comma separate names.'
+    label: 'Datasets set to use. Comma separate names.',
   },
   {
     key: 'datasetLocation',
     formType: 'TEXT',
-    label: 'Location for the datasets, e.g. US'
-  }
+    label: 'Location for the datasets, e.g. US',
+  },
 ];
 
 module.exports = {
@@ -191,5 +188,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

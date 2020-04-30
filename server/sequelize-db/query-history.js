@@ -1,63 +1,63 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = function(sequelize) {
+module.exports = function (sequelize) {
   const QueryHistory = sequelize.define(
     'QueryHistory',
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
       },
       connectionId: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       connectionName: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       userId: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       userEmail: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       startTime: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
       },
       stopTime: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
       },
       queryRunTime: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
       },
       queryId: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       queryName: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       queryText: {
-        type: DataTypes.TEXT
+        type: DataTypes.TEXT,
       },
       incomplete: {
-        type: DataTypes.BOOLEAN
+        type: DataTypes.BOOLEAN,
       },
       rowCount: {
-        type: DataTypes.INTEGER
+        type: DataTypes.INTEGER,
       },
       createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       tableName: 'query_history',
       underscored: true,
-      updatedAt: false
+      updatedAt: false,
     }
   );
 

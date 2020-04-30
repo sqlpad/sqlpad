@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = function(sequelize) {
+module.exports = function (sequelize) {
   // An entry in this table gives access to a query for a user_id, user_email, or group_id
   const ServiceTokens = sequelize.define(
     'ServiceTokens',
@@ -8,42 +8,42 @@ module.exports = function(sequelize) {
       id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
       },
       name: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
       },
       role: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
       },
       maskedToken: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
       },
       duration: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
         validate: {
           min: 0,
-          max: 730
-        }
+          max: 730,
+        },
       },
       expiryDate: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
       },
       createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updatedAt: {
         type: DataTypes.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       tableName: 'service_tokens',
-      underscored: true
+      underscored: true,
     }
   );
 

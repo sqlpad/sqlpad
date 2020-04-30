@@ -6,7 +6,7 @@ import fetchJson from '../utilities/fetch-json.js';
 const ONE_HOUR_MS = 1000 * 60 * 60;
 
 function sortConnections(connections) {
-  return sortBy(connections, [connection => connection.name.toLowerCase()]);
+  return sortBy(connections, [(connection) => connection.name.toLowerCase()]);
 }
 
 export const initialState = {
@@ -15,14 +15,14 @@ export const initialState = {
   connectionClientInterval: null,
   connections: [],
   connectionsLastUpdated: null,
-  connectionsLoading: false
+  connectionsLoading: false,
 };
 
 /**
  * Open a connection client for the currently selected connection if supported
  * @param {*} state
  */
-export const connectConnectionClient = store => async state => {
+export const connectConnectionClient = (store) => async (state) => {
   const { connectionClient, connections, selectedConnectionId } = state;
 
   // If a connectionClient is already open, or connections or selected connection id doesn't exist, do nothing
@@ -31,7 +31,7 @@ export const connectConnectionClient = store => async state => {
   }
 
   const connection = connections.find(
-    connection => connection.id === selectedConnectionId
+    (connection) => connection.id === selectedConnectionId
   );
 
   const supportedAndEnabled =
@@ -44,7 +44,7 @@ export const connectConnectionClient = store => async state => {
   }
 
   const json = await fetchJson('POST', '/api/connection-clients', {
-    connectionId: selectedConnectionId
+    connectionId: selectedConnectionId,
   });
   if (json.error) {
     return message.error('Problem connecting to database');
@@ -69,11 +69,11 @@ export const connectConnectionClient = store => async state => {
       clearInterval(connectionClientInterval);
       store.setState({
         connectionClientInterval: null,
-        connectionClient: null
+        connectionClient: null,
       });
     } else {
       store.setState({
-        connectionClient: updateJson.data
+        connectionClient: updateJson.data,
       });
     }
   }, 10000);
@@ -85,14 +85,14 @@ export const connectConnectionClient = store => async state => {
  * Disconnect the current connection client if one exists
  * @param {*} state
  */
-export const disconnectConnectionClient = async state => {
+export const disconnectConnectionClient = async (state) => {
   const { connectionClient, connectionClientInterval } = state;
   if (connectionClientInterval) {
     clearInterval(connectionClientInterval);
   }
   if (connectionClient) {
     fetchJson('DELETE', `/api/connection-clients/${connectionClient.id}`).then(
-      json => {
+      (json) => {
         if (json.error) {
           message.error(json.error);
         }
@@ -111,11 +111,11 @@ export const selectConnectionId = (state, selectedConnectionId) => {
   const { connectionClient, connectionClientInterval } = state;
   localforage
     .setItem('selectedConnectionId', selectedConnectionId)
-    .catch(error => message.error(error));
+    .catch((error) => message.error(error));
 
   if (connectionClient) {
     fetchJson('DELETE', `/api/connection-clients/${connectionClient.id}`).then(
-      json => {
+      (json) => {
         if (json.error) {
           message.error(json.error);
         }
@@ -130,7 +130,7 @@ export const selectConnectionId = (state, selectedConnectionId) => {
   return {
     selectedConnectionId,
     connectionClient: null,
-    connectionClientInterval: null
+    connectionClientInterval: null,
   };
 };
 
@@ -140,16 +140,16 @@ export const deleteConnection = async (state, connectionId) => {
   if (json.error) {
     return message.error('Delete failed');
   }
-  const filtered = connections.filter(c => c.id !== connectionId);
+  const filtered = connections.filter((c) => c.id !== connectionId);
   return { connections: sortConnections(filtered) };
 };
 
 // Updates store (is not resonponsible for API call)
 export const addUpdateConnection = async (state, connection) => {
   const { connections } = state;
-  const found = connections.find(c => c.id === connection.id);
+  const found = connections.find((c) => c.id === connection.id);
   if (found) {
-    const mappedConnections = connections.map(c => {
+    const mappedConnections = connections.map((c) => {
       if (c.id === connection.id) {
         return connection;
       }
@@ -160,7 +160,7 @@ export const addUpdateConnection = async (state, connection) => {
   return { connections: sortConnections([connection].concat(connections)) };
 };
 
-export const loadConnections = store => async (state, force) => {
+export const loadConnections = (store) => async (state, force) => {
   const { connections, connectionsLoading, connectionsLastUpdated } = state;
   if (connectionsLoading) {
     return;
@@ -180,7 +180,7 @@ export const loadConnections = store => async (state, force) => {
     const update = {
       connectionsLoading: false,
       connectionsLastUpdated: new Date(),
-      connections: sortConnections(json.data)
+      connections: sortConnections(json.data),
     };
 
     if (json.data && json.data.length === 1) {
@@ -196,5 +196,5 @@ export default {
   selectConnectionId,
   deleteConnection,
   addUpdateConnection,
-  loadConnections
+  loadConnections,
 };

@@ -13,12 +13,12 @@ async function listConnectionClients(req, res) {
 
   const connectionClients = models.connectionClients
     .findAll()
-    .map(connectionClient => {
+    .map((connectionClient) => {
       return {
         id: connectionClient.id,
         name: connectionClient.connection.name,
         connectedAt: connectionClient.connectedAt,
-        lastKeepAliveAt: connectionClient.lastKeepAliveAt
+        lastKeepAliveAt: connectionClient.lastKeepAliveAt,
       };
     });
 
@@ -56,7 +56,7 @@ async function getConnectionClient(req, res) {
     id: connectionClient.id,
     name: connectionClient.connection.name,
     connectedAt: connectionClient.connectedAt,
-    lastKeepAliveAt: connectionClient.lastKeepAliveAt
+    lastKeepAliveAt: connectionClient.lastKeepAliveAt,
   });
 }
 
@@ -93,7 +93,7 @@ async function createConnectionClient(req, res) {
     id: connectionClient.id,
     name: connectionClient.connection.name,
     connectedAt: connectionClient.connectedAt,
-    lastKeepAliveAt: connectionClient.lastKeepAliveAt
+    lastKeepAliveAt: connectionClient.lastKeepAliveAt,
   });
 }
 
@@ -140,7 +140,7 @@ async function keepAliveConnectionClient(req, res) {
     id: connectionClient.id,
     name: connectionClient.connection.name,
     connectedAt: connectionClient.connectedAt,
-    lastKeepAliveAt: connectionClient.lastKeepAliveAt
+    lastKeepAliveAt: connectionClient.lastKeepAliveAt,
   });
 }
 

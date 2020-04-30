@@ -6,7 +6,7 @@ import ConnectionListDrawer from '../connections/ConnectionListDrawer';
 import {
   addUpdateConnection,
   connectConnectionClient,
-  selectConnectionId
+  selectConnectionId,
 } from '../stores/connections';
 import styles from './ConnectionDropdown.module.css';
 
@@ -16,12 +16,12 @@ function ConnectionDropdown({
   connections,
   currentUser,
   selectConnectionId,
-  selectedConnectionId
+  selectedConnectionId,
 }) {
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
 
-  const handleChange = event => {
+  const handleChange = (event) => {
     if (event.target.value === 'new') {
       return setShowEdit(true);
     }
@@ -32,7 +32,7 @@ function ConnectionDropdown({
     connectConnectionClient();
   };
 
-  const handleConnectionSaved = connection => {
+  const handleConnectionSaved = (connection) => {
     addUpdateConnection(connection);
     selectConnectionId(connection.id);
     setShowEdit(false);
@@ -54,7 +54,7 @@ function ConnectionDropdown({
         onChange={handleChange}
       >
         <option value="">... choose connection</option>
-        {connections.map(conn => {
+        {connections.map((conn) => {
           return (
             <option key={conn.id} value={conn.id} name={conn.name}>
               {conn.name}
@@ -85,9 +85,9 @@ function ConnectionDropdown({
 
 export default connect(
   ['connections', 'currentUser', 'selectedConnectionId'],
-  store => ({
+  (store) => ({
     connectConnectionClient: connectConnectionClient(store),
     selectConnectionId,
-    addUpdateConnection
+    addUpdateConnection,
   })
 )(ConnectionDropdown);

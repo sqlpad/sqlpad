@@ -7,7 +7,7 @@ function ConnectionEditDrawer({
   visible,
   onClose,
   onConnectionSaved,
-  placement
+  placement,
 }) {
   const title = connectionId ? 'Edit connection' : 'New connection';
   return (

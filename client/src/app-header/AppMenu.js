@@ -10,12 +10,12 @@ import AboutModal from './AboutModal';
 
 function mapStateToProps(state) {
   return {
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
   };
 }
 
-const Connected = connect(mapStateToProps, store => ({
-  clearQueries
+const Connected = connect(mapStateToProps, (store) => ({
+  clearQueries,
 }))(React.memo(AppMenu));
 
 function AppMenu({ currentUser, clearQueries }) {

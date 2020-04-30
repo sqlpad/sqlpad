@@ -43,7 +43,7 @@ function ConnectionAccessList({ currentUser }) {
     setShowAccessCreate(true);
   };
 
-  const expireConnectionAccess = async connectionAccessId => {
+  const expireConnectionAccess = async (connectionAccessId) => {
     const json = await fetchJson(
       'PUT',
       `/api/connection-accesses/${connectionAccessId}/expire`
@@ -58,7 +58,7 @@ function ConnectionAccessList({ currentUser }) {
     setShowAccessCreate(false);
   };
 
-  const handleConnectionAccessSaved = connectionAccess => {
+  const handleConnectionAccessSaved = (connectionAccess) => {
     setShowAccessCreate(false);
     setNewConnectionAccessId(connectionAccess.id);
   };
@@ -77,7 +77,7 @@ function ConnectionAccessList({ currentUser }) {
           Create Access
         </Button>
       </div>
-      {connectionAccesses.map(item => {
+      {connectionAccesses.map((item) => {
         const actions = [];
         const timeToExpire = new Date(item.expiryDate) - new Date();
         const expired = timeToExpire < 0;
@@ -87,7 +87,7 @@ function ConnectionAccessList({ currentUser }) {
             <DeleteConfirmButton
               key="expire"
               confirmMessage="Expire connection access?"
-              onConfirm={e => expireConnectionAccess(item.id)}
+              onConfirm={(e) => expireConnectionAccess(item.id)}
               style={{ marginLeft: 8 }}
             >
               Expire
@@ -114,7 +114,7 @@ function ConnectionAccessList({ currentUser }) {
                   Time to Expire:{' '}
                   {humanizeDuration(timeToExpire, {
                     units: ['d', 'h', 'm'],
-                    round: true
+                    round: true,
                   })}
                 </Text>
               ) : (

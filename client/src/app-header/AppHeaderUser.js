@@ -4,7 +4,7 @@ import styles from './AppHeaderUser.module.css';
 
 function mapStateToProps(state) {
   return {
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
   };
 }
 

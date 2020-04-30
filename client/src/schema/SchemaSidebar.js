@@ -28,14 +28,14 @@ function mapStateToProps(state, props) {
     connectionId: state.selectedConnectionId,
     schemaInfo: schemaInfo || {},
     error,
-    loading
+    loading,
   };
 }
 
 function mapActions(store) {
   return {
     loadSchemaInfo: loadSchemaInfo(store),
-    toggleSchemaItem
+    toggleSchemaItem,
   };
 }
 
@@ -46,15 +46,15 @@ function SchemaSidebar({
   schemaInfo,
   error,
   loading,
-  toggleSchemaItem
+  toggleSchemaItem,
 }) {
   const [search, setSearch] = useState('');
   const [dimensions, setDimensions] = useState({
     width: -1,
-    height: -1
+    height: -1,
   });
 
-  const handleRefreshClick = e => {
+  const handleRefreshClick = (e) => {
     e.preventDefault();
     if (connectionId) {
       loadSchemaInfo(connectionId, true);
@@ -66,8 +66,8 @@ function SchemaSidebar({
 
   // For windowed list rendering, we need to determine what is visible due to expanded parent
   // Show item if every parent is expanded (or doesn't have a parent)
-  const visibleItems = schemaList.filter(row =>
-    row.parentIds.every(id => expanded[id])
+  const visibleItems = schemaList.filter((row) =>
+    row.parentIds.every((id) => expanded[id])
   );
 
   const Row = ({ index, style }) => {
@@ -149,7 +149,7 @@ function SchemaSidebar({
   return (
     <Measure
       bounds
-      onResize={contentRect => {
+      onResize={(contentRect) => {
         setDimensions(contentRect.bounds);
       }}
     >
@@ -159,7 +159,7 @@ function SchemaSidebar({
             <Input
               value={search}
               placeholder="Search schema"
-              onChange={event => setSearch(event.target.value)}
+              onChange={(event) => setSearch(event.target.value)}
             />
             <IconButton
               tooltip="Refresh schema"
@@ -176,14 +176,14 @@ function SchemaSidebar({
           <div
             style={{
               display: 'flex',
-              flexGrow: 1
+              flexGrow: 1,
             }}
           >
             <div
               ref={measureRef}
               style={{
                 display: 'flex',
-                width: '100%'
+                width: '100%',
               }}
             >
               {content}

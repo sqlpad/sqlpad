@@ -17,24 +17,24 @@ export default function getSchemaList(schemaInfo) {
   const schemaList = [];
 
   if (schemaInfo) {
-    Object.keys(schemaInfo).forEach(schemaName => {
+    Object.keys(schemaInfo).forEach((schemaName) => {
       const schemaId = schemaName;
       schemaList.push({
         type: 'schema',
         name: schemaName,
         id: schemaId,
-        parentIds: []
+        parentIds: [],
       });
-      Object.keys(schemaInfo[schemaName]).forEach(tableName => {
+      Object.keys(schemaInfo[schemaName]).forEach((tableName) => {
         const tableId = `${schemaName}.${tableName}`;
         schemaList.push({
           type: 'table',
           name: tableName,
           schemaName,
           id: tableId,
-          parentIds: [schemaId]
+          parentIds: [schemaId],
         });
-        schemaInfo[schemaName][tableName].forEach(column => {
+        schemaInfo[schemaName][tableName].forEach((column) => {
           const columnId = `${schemaName}.${tableName}.${column.column_name}`;
           schemaList.push({
             type: 'column',
@@ -44,7 +44,7 @@ export default function getSchemaList(schemaInfo) {
             tableName,
             schemaName,
             id: columnId,
-            parentIds: [schemaId, tableId]
+            parentIds: [schemaId, tableId],
           });
         });
       });

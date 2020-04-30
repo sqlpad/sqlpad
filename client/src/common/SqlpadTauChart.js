@@ -10,7 +10,7 @@ function SqlpadTauChart({
   queryError,
   queryResult,
   chartConfiguration,
-  queryId
+  queryId,
 }) {
   useEffect(() => {
     let chart;
@@ -61,7 +61,7 @@ SqlpadTauChart.propTypes = {
   isRunning: PropTypes.bool,
   chartConfiguration: PropTypes.object,
   queryError: PropTypes.string,
-  queryResult: PropTypes.object
+  queryResult: PropTypes.object,
 };
 
 export default SqlpadTauChart;

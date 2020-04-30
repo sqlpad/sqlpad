@@ -8,12 +8,12 @@ import { setQueryState } from '../../stores/queries';
 function mapStateToProps(state) {
   const acl = state.query.acl || [];
   return {
-    shared: acl.length > 0
+    shared: acl.length > 0,
   };
 }
 
-const ConnectedToolbarShareQueryButton = connect(mapStateToProps, store => ({
-  setQueryState
+const ConnectedToolbarShareQueryButton = connect(mapStateToProps, (store) => ({
+  setQueryState,
 }))(React.memo(ToolbarShareQueryButton));
 
 function ToolbarShareQueryButton({ shared, setQueryState }) {

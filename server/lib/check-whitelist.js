@@ -20,7 +20,7 @@ module.exports = function checkWhitelist(whitelistedDomains, email) {
     const domain = email.split('@').pop();
     const whitelistDomains = whitelistedDomains
       .split(' ')
-      .map(domain => domain.trim());
+      .map((domain) => domain.trim());
 
     return whitelistDomains.includes(domain);
   }

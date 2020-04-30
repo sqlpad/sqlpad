@@ -21,18 +21,18 @@ function decorateQueryUserAccess(query, user) {
     const writeAcl = clone.acl
       // filter acl records that match for this user
       .filter(
-        acl =>
+        (acl) =>
           acl.groupId === consts.EVERYONE_ID ||
           acl.userId === user.id ||
           acl.userEmail === user.email
       )
       // and return first one that has write
-      .find(a => a.write === true);
+      .find((a) => a.write === true);
     clone.canWrite = Boolean(writeAcl);
 
     // A record in ACL allows read permissions
     const canRead = query.acl.find(
-      acl =>
+      (acl) =>
         acl.groupId === consts.EVERYONE_ID ||
         acl.userId === user.id ||
         acl.userEmail === user.email

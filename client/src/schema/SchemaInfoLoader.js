@@ -4,13 +4,13 @@ import { loadSchemaInfo } from '../stores/schema';
 
 function mapStateToProps(state, props) {
   return {
-    connectionId: state.selectedConnectionId
+    connectionId: state.selectedConnectionId,
   };
 }
 
 function mapActions(store) {
   return {
-    loadSchemaInfo: loadSchemaInfo(store)
+    loadSchemaInfo: loadSchemaInfo(store),
   };
 }
 

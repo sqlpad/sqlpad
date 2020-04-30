@@ -3,7 +3,7 @@ import { connect } from 'unistore/react';
 import { setQueryState } from '../stores/queries';
 import {
   getLocalQueryText,
-  removeLocalQueryText
+  removeLocalQueryText,
 } from '../utilities/localQueryText';
 import Modal from '../common/Modal';
 import SqlDiff from '../common/SqlDiff';
@@ -14,7 +14,7 @@ function UnsavedQuerySelector({ queryId, queryText, setQueryState }) {
   const [unsavedQueryText, setUnsavedQueryText] = useState('');
 
   useEffect(() => {
-    getLocalQueryText(queryId).then(localQueryText => {
+    getLocalQueryText(queryId).then((localQueryText) => {
       if (typeof localQueryText === 'string' && localQueryText.trim() !== '') {
         setShowModal(true);
         setUnsavedQueryText(localQueryText);
@@ -54,7 +54,7 @@ function UnsavedQuerySelector({ queryId, queryText, setQueryState }) {
 
 function mapStateToProps(state, props) {
   return {
-    queryText: state.query && state.query.queryText
+    queryText: state.query && state.query.queryText,
   };
 }
 

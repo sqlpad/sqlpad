@@ -13,7 +13,7 @@ function QueryChartOnly({ queryId }) {
   const [query, setQuery] = useState(null);
   const [queryError, setQueryError] = useState(null);
 
-  const runQuery = async queryId => {
+  const runQuery = async (queryId) => {
     setIsRunning(true);
 
     const queryJson = await fetchJson('GET', '/api/queries/' + queryId);
@@ -50,7 +50,7 @@ function QueryChartOnly({ queryId }) {
         height: '100vh',
         width: '100%',
         flexDirection: 'column',
-        padding: '16px'
+        padding: '16px',
       }}
     >
       <div style={{ height: '50px' }}>
@@ -79,7 +79,7 @@ function QueryChartOnly({ queryId }) {
 }
 
 QueryChartOnly.propTypes = {
-  queryId: PropTypes.string.isRequired
+  queryId: PropTypes.string.isRequired,
 };
 
 export default QueryChartOnly;

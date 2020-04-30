@@ -51,7 +51,7 @@ async function up(queryInterface, config, appLog, nedb) {
   const queriesData = [];
   const queryTagsData = [];
 
-  queries.forEach(originalQuery => {
+  queries.forEach((originalQuery) => {
     const newQuery = {
       id: originalQuery._id,
       name: originalQuery.name,
@@ -61,13 +61,13 @@ async function up(queryInterface, config, appLog, nedb) {
       created_by: originalQuery.createdBy,
       updated_by: originalQuery.modifiedBy,
       created_at: cleanDate(originalQuery.createdDate) || new Date(),
-      updated_at: cleanDate(originalQuery.modifiedDate) || new Date()
+      updated_at: cleanDate(originalQuery.modifiedDate) || new Date(),
     };
     queriesData.push(newQuery);
 
     if (originalQuery.tags && originalQuery.tags.length) {
       const tags = _.uniq(originalQuery.tags).sort();
-      tags.forEach(tag => {
+      tags.forEach((tag) => {
         queryTagsData.push({ query_id: originalQuery._id, tag });
       });
     }
@@ -86,7 +86,7 @@ async function up(queryInterface, config, appLog, nedb) {
    */
   const originalConnections = await nedb.connections.find({});
 
-  const connectionData = originalConnections.map(original => {
+  const connectionData = originalConnections.map((original) => {
     const {
       name,
       driver,
@@ -119,7 +119,7 @@ async function up(queryInterface, config, appLog, nedb) {
       idle_timeout_seconds: idleTimeoutSeconds,
       data: encryptedData,
       created_at: cleanDate(createdDate) || new Date(),
-      updated_at: cleanDate(modifiedDate)
+      updated_at: cleanDate(modifiedDate),
     };
   });
 
@@ -133,7 +133,7 @@ async function up(queryInterface, config, appLog, nedb) {
    */
   const originalConnectionAccesses = await nedb.connectionAccesses.find({});
 
-  const connectionAccessData = originalConnectionAccesses.map(original => {
+  const connectionAccessData = originalConnectionAccesses.map((original) => {
     return {
       connection_id: original.connectionId,
       connection_name: original.connectionName,
@@ -142,7 +142,7 @@ async function up(queryInterface, config, appLog, nedb) {
       duration: original.duration || 0,
       expiry_date: cleanDate(original.expiryDate) || new Date(),
       created_at: cleanDate(original.createdDate) || new Date(),
-      updated_at: cleanDate(original.modifiedDate) || new Date()
+      updated_at: cleanDate(original.modifiedDate) || new Date(),
     };
   });
 
@@ -159,7 +159,7 @@ async function up(queryInterface, config, appLog, nedb) {
    */
   const originalHistory = await nedb.queryHistory.find({});
 
-  const historyData = originalHistory.map(original => {
+  const historyData = originalHistory.map((original) => {
     return {
       user_id: original.userId,
       user_email: original.userEmail,
@@ -173,7 +173,7 @@ async function up(queryInterface, config, appLog, nedb) {
       query_text: original.queryText,
       incomplete: original.incomplete,
       row_count: original.rowCount,
-      created_at: cleanDate(original.createdDate) || new Date()
+      created_at: cleanDate(original.createdDate) || new Date(),
     };
   });
 
@@ -187,7 +187,7 @@ async function up(queryInterface, config, appLog, nedb) {
    */
   const originalUsers = await nedb.users.find({});
 
-  const userData = originalUsers.map(original => {
+  const userData = originalUsers.map((original) => {
     return {
       id: original._id,
       email: original.email,
@@ -198,7 +198,7 @@ async function up(queryInterface, config, appLog, nedb) {
       data: JSON.stringify(original.data),
       signup_at: cleanDate(original.signupDate),
       created_at: cleanDate(original.createdDate) || new Date(),
-      updated_at: cleanDate(original.modifiedDate) || new Date()
+      updated_at: cleanDate(original.modifiedDate) || new Date(),
     };
   });
 
@@ -208,5 +208,5 @@ async function up(queryInterface, config, appLog, nedb) {
 }
 
 module.exports = {
-  up
+  up,
 };

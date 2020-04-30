@@ -9,7 +9,7 @@ function mapStateToProps(state) {
   return {
     queryId: (state.query && state.query.id) || 'new',
     queryName: (state.query && state.query.name) || 'New query',
-    queryResult: state.queryResult
+    queryResult: state.queryResult,
   };
 }
 
@@ -19,7 +19,7 @@ function QueryEditorChartToolbar({
   queryResult,
   queryId,
   queryName,
-  children
+  children,
 }) {
   const downloadEnabled =
     queryResult && queryResult.rows && queryResult.rows.length;
@@ -34,7 +34,7 @@ function QueryEditorChartToolbar({
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'center',
-          padding: 4
+          padding: 4,
         }}
       >
         <IconButton

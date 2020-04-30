@@ -21,15 +21,15 @@ class QueryAcl {
         [Op.or]: [
           { userId: user.id },
           { userEmail: user.email },
-          { groupId: consts.EVERYONE_ID }
-        ]
-      }
+          { groupId: consts.EVERYONE_ID },
+        ],
+      },
     });
   }
 
   findAllByQueryId(queryId) {
     return this.sequelizeDb.QueryAcl.findAll({
-      where: { queryId }
+      where: { queryId },
     });
   }
 

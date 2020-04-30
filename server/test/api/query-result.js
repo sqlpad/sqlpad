@@ -24,41 +24,41 @@ function validateQueryResult(queryResult) {
   assert.equal(queryResult.rows.length, 10, 'rows length');
 }
 
-describe('api/query-result', function() {
+describe('api/query-result', function () {
   const utils = new TestUtils();
   let query;
   let connection;
 
-  before(async function() {
+  before(async function () {
     await utils.init(true);
 
     connection = await utils.post('admin', '/api/connections', {
       name: 'test connection',
       driver: 'sqlite',
       data: {
-        filename: './test/fixtures/sales.sqlite'
-      }
+        filename: './test/fixtures/sales.sqlite',
+      },
     });
 
     query = await utils.post('admin', '/api/queries', {
       name: 'test query',
       tags: ['test'],
       connectionId: connection.id,
-      queryText
+      queryText,
     });
   });
 
-  it('GET /api/query-result/:queryId', async function() {
+  it('GET /api/query-result/:queryId', async function () {
     const body = await utils.get('admin', `/api/query-result/${query.id}`);
     validateQueryResult(body);
   });
 
-  it('POST /api/query-result', async function() {
+  it('POST /api/query-result', async function () {
     const body = await utils.post('admin', `/api/query-result`, {
       connectionId: connection.id,
       cacheKey: 'cachekey',
       queryName: 'test query',
-      queryText
+      queryText,
     });
     validateQueryResult(body);
   });

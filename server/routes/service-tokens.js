@@ -33,7 +33,7 @@ async function generateServiceToken(req, res) {
   serviceToken = await models.serviceTokens.generate({
     name: req.body.name,
     role: req.body.role,
-    duration: req.body.duration
+    duration: req.body.duration,
   });
 
   return res.utils.data(serviceToken);

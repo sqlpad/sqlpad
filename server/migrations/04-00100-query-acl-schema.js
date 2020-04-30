@@ -12,36 +12,36 @@ async function up(queryInterface, config, appLog, nedb) {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     query_id: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     user_id: {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     },
     write: {
       type: Sequelize.BOOLEAN,
       allowNull: false,
-      defaultValue: false
+      defaultValue: false,
     },
     created_at: {
       type: Sequelize.DATE,
-      allowNull: false
+      allowNull: false,
     },
     updated_at: {
-      type: Sequelize.DATE
-    }
+      type: Sequelize.DATE,
+    },
   });
 
   await queryInterface.addConstraint('query_acl', ['query_id', 'user_id'], {
     type: 'unique',
-    name: 'query_acl_query_id_user_id_key'
+    name: 'query_acl_query_id_user_id_key',
   });
 }
 
 module.exports = {
-  up
+  up,
 };

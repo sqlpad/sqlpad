@@ -11,13 +11,13 @@
 async function addOrReplaceIndex(queryInterface, tableName, indexName, fields) {
   const indexes = await queryInterface.showIndex(tableName);
 
-  const found = indexes.find(index => index.name === indexName);
+  const found = indexes.find((index) => index.name === indexName);
 
   // If not found create the index
   if (!found) {
     return queryInterface.addIndex(tableName, {
       fields,
-      name: indexName
+      name: indexName,
     });
   }
 
@@ -44,11 +44,11 @@ async function addOrReplaceIndex(queryInterface, tableName, indexName, fields) {
     await queryInterface.removeIndex(tableName, indexName);
     await queryInterface.addIndex(tableName, {
       fields,
-      name: indexName
+      name: indexName,
     });
   }
 }
 
 module.exports = {
-  addOrReplaceIndex
+  addOrReplaceIndex,
 };

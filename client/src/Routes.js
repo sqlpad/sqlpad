@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Redirect,
   Route,
-  Switch
+  Switch,
 } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import Authenticated from './Authenticated';
@@ -85,5 +85,5 @@ function Routes({ config, refreshAppContext }) {
 }
 
 export default connect(['config'], {
-  refreshAppContext
+  refreshAppContext,
 })(Routes);

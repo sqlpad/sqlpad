@@ -32,7 +32,7 @@ class ConnectionAccesses {
       userId: data.userId,
       userEmail: data.userEmail,
       duration: data.duration,
-      expiryDate: data.expiryDate
+      expiryDate: data.expiryDate,
     });
 
     return this.findOneActiveByConnectionIdAndUserId(
@@ -43,7 +43,7 @@ class ConnectionAccesses {
 
   async expire(id) {
     const connectionAccess = await this.sequelizeDb.ConnectionAccesses.findOne({
-      where: { id }
+      where: { id },
     });
     if (!connectionAccess) {
       throw new Error('Connection access not found');
@@ -65,21 +65,21 @@ class ConnectionAccesses {
         [Op.or]: [
           {
             connectionId: {
-              [Op.in]: [connectionId, consts.EVERY_CONNECTION_ID]
+              [Op.in]: [connectionId, consts.EVERY_CONNECTION_ID],
             },
-            userId
+            userId,
           },
           {
             connectionId,
-            userId: { [Op.in]: [connectionId, consts.EVERYONE_ID] }
+            userId: { [Op.in]: [connectionId, consts.EVERYONE_ID] },
           },
           {
             connectionId: consts.EVERY_CONNECTION_ID,
-            userId: consts.EVERYONE_ID
-          }
-        ]
+            userId: consts.EVERYONE_ID,
+          },
+        ],
       },
-      expiryDate: { [Op.gt]: new Date() }
+      expiryDate: { [Op.gt]: new Date() },
     };
 
     return this.sequelizeDb.ConnectionAccesses.findOne({ where });
@@ -88,7 +88,7 @@ class ConnectionAccesses {
   findAllActiveByConnectionId(connectionId) {
     const where = {
       connectionId: { [Op.in]: [connectionId, consts.EVERY_CONNECTION_ID] },
-      expiryDate: { [Op.gt]: new Date() }
+      expiryDate: { [Op.gt]: new Date() },
     };
 
     return this.sequelizeDb.ConnectionAccesses.findOne({ where });
@@ -96,7 +96,7 @@ class ConnectionAccesses {
 
   findAllByConnectionId(connectionId) {
     const where = {
-      connectionId: { [Op.in]: [connectionId, consts.EVERY_CONNECTION_ID] }
+      connectionId: { [Op.in]: [connectionId, consts.EVERY_CONNECTION_ID] },
     };
     return this.sequelizeDb.ConnectionAccesses.findAll({ where });
   }
@@ -104,13 +104,13 @@ class ConnectionAccesses {
   findAllActive() {
     return this.sequelizeDb.ConnectionAccesses.findAll({
       where: { expiryDate: { [Op.gt]: new Date() } },
-      order: [['expiryDate', 'DESC']]
+      order: [['expiryDate', 'DESC']],
     });
   }
 
   findAll() {
     return this.sequelizeDb.ConnectionAccesses.findAll({
-      order: [['expiryDate', 'DESC']]
+      order: [['expiryDate', 'DESC']],
     });
   }
 

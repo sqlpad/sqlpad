@@ -9,7 +9,7 @@ const connection = {
   username: 'sqlpad',
   prestoCatalog: 'memory',
   // will be set after schema is created
-  prestoSchema: null
+  prestoSchema: null,
 };
 
 const schemaSql = 'CREATE SCHEMA test';
@@ -25,8 +25,8 @@ for (let i = 0; i < 1000; i++) {
 const insertSql =
   'INSERT INTO test (id, some_text) VALUES ' + values.join(', ');
 
-describe('drivers/presto', function() {
-  before(function() {
+describe('drivers/presto', function () {
+  before(function () {
     this.timeout(60000);
     return presto
       .runQuery(schemaSql, connection)
@@ -44,12 +44,12 @@ describe('drivers/presto', function() {
       });
   });
 
-  it('tests connection', function() {
+  it('tests connection', function () {
     return presto.testConnection(connection);
   });
 
-  it('getSchema()', function() {
-    return presto.getSchema(connection).then(schemaInfo => {
+  it('getSchema()', function () {
+    return presto.getSchema(connection).then((schemaInfo) => {
       assert(schemaInfo);
       assert(schemaInfo.test, 'test');
       assert(schemaInfo.test.test, 'test.test');
@@ -62,30 +62,30 @@ describe('drivers/presto', function() {
     });
   });
 
-  it('runQuery under limit', function() {
+  it('runQuery under limit', function () {
     return presto
       .runQuery('SELECT id FROM test WHERE id = 1 LIMIT 1', connection)
-      .then(results => {
+      .then((results) => {
         assert(!results.incomplete, 'not incomplete');
         assert.equal(results.rows.length, 1, 'rows length');
       });
   });
 
-  it('runQuery over limit', function() {
+  it('runQuery over limit', function () {
     const limitedConnection = { ...connection, maxRows: 2 };
     return presto
       .runQuery('SELECT * FROM test LIMIT 10', limitedConnection)
-      .then(results => {
+      .then((results) => {
         assert(results.incomplete, 'incomplete');
         assert.equal(results.rows.length, 2, 'row length');
       });
   });
 
-  it('returns descriptive error message', function() {
+  it('returns descriptive error message', function () {
     let error;
     return presto
       .runQuery('SELECT * FROM missing_table', connection)
-      .catch(e => {
+      .catch((e) => {
         error = e;
       })
       .then(() => {

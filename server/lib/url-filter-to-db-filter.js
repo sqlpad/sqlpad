@@ -12,7 +12,7 @@ module.exports = function urlFilterToDbFilter(urlFilter) {
       [Op.and]: urlFilter
         .trim()
         .split(',')
-        .map(f => {
+        .map((f) => {
           let dbFilterObj = {};
           if (f) {
             let [key, operator, value] = f.split('|');
@@ -60,7 +60,7 @@ module.exports = function urlFilterToDbFilter(urlFilter) {
                 dbFilterObj = { [key]: dbValue };
               } else {
                 dbFilterObj = {
-                  [key]: { [dbOperator]: dbValue }
+                  [key]: { [dbOperator]: dbValue },
                 };
               }
 
@@ -71,7 +71,7 @@ module.exports = function urlFilterToDbFilter(urlFilter) {
           }
 
           return dbFilterObj;
-        })
+        }),
     };
   }
 

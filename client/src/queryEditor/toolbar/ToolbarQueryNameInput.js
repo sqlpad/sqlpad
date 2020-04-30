@@ -6,12 +6,12 @@ import { setQueryState } from '../../stores/queries';
 function mapStateToProps(state) {
   return {
     queryName: state.query && state.query.name,
-    showValidation: state.showValidation
+    showValidation: state.showValidation,
   };
 }
 
-const ConnectedToolbarQueryNameInput = connect(mapStateToProps, store => ({
-  setQueryState
+const ConnectedToolbarQueryNameInput = connect(mapStateToProps, (store) => ({
+  setQueryState,
 }))(React.memo(ToolbarQueryNameInput));
 
 function ToolbarQueryNameInput({ queryName, setQueryState, showValidation }) {
@@ -23,7 +23,7 @@ function ToolbarQueryNameInput({ queryName, setQueryState, showValidation }) {
       style={{ width: 260 }}
       placeholder="Query name"
       value={queryName}
-      onChange={e => setQueryState('name', e.target.value)}
+      onChange={(e) => setQueryState('name', e.target.value)}
     />
   );
 }

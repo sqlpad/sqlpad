@@ -3,40 +3,40 @@ const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const TestUtils = require('../utils');
 
-describe('api/service-tokens', function() {
+describe('api/service-tokens', function () {
   const serviceTokenSecret = 'secr3t';
   const utils = new TestUtils({ serviceTokenSecret });
   const utilsNoJwtSecret = new TestUtils();
   let editorServiceToken;
   let adminServiceToken;
 
-  before(async function() {
+  before(async function () {
     await utils.init(true);
     await utilsNoJwtSecret.init(true);
   });
 
-  it('Returns empty array', async function() {
+  it('Returns empty array', async function () {
     const body = await utils.get('admin', '/api/service-tokens');
     TestUtils.validateListSuccessBody(body);
     assert.equal(body.length, 0, '0 length');
   });
 
-  it('Creates service token without no secret', async function() {
+  it('Creates service token without no secret', async function () {
     await utilsNoJwtSecret.post(
       'admin',
       '/api/service-tokens',
       {
         name: 'Test Service Token - Infinite',
-        role: 'admin'
+        role: 'admin',
       },
       403
     );
   });
 
-  it('Creates service token without expiry date', async function() {
+  it('Creates service token without expiry date', async function () {
     editorServiceToken = await utils.post('admin', '/api/service-tokens', {
       name: 'Test Service Token - Infinite',
-      role: 'editor'
+      role: 'editor',
     });
     assert(editorServiceToken.id, 'has id');
     assert(editorServiceToken.name, 'has name');
@@ -55,11 +55,11 @@ describe('api/service-tokens', function() {
     assert(!decodedTokenPayload.exp, 'no expiration time');
   });
 
-  it('Creates service token with expiry date', async function() {
+  it('Creates service token with expiry date', async function () {
     adminServiceToken = await utils.post('admin', '/api/service-tokens', {
       name: 'Test Service Token',
       role: 'admin',
-      duration: 168
+      duration: 168,
     });
 
     assert(adminServiceToken.id, 'has id');
@@ -79,27 +79,25 @@ describe('api/service-tokens', function() {
     assert(decodedTokenPayload.exp, 'has expiration time');
   });
 
-  it('Re-creates service token with existing name', async function() {
+  it('Re-creates service token with existing name', async function () {
     const body = await utils.post(
       'admin',
       '/api/service-tokens',
       {
         name: 'Test Service Token',
         role: 'admin',
-        duration: 168
+        duration: 168,
       },
       400
     );
     assert.equal(body.title, 'Service token already exists');
   });
 
-  it('Accessing API endpoint without service token', async function() {
-    await request(utils.app)
-      .get('/api/users')
-      .expect(401);
+  it('Accessing API endpoint without service token', async function () {
+    await request(utils.app).get('/api/users').expect(401);
   });
 
-  it('Accessing API endpoint with invalid service token', async function() {
+  it('Accessing API endpoint with invalid service token', async function () {
     await request(utils.app)
       .get('/api/users')
       .set('Accept', 'application/json')
@@ -107,7 +105,7 @@ describe('api/service-tokens', function() {
       .expect(401);
   });
 
-  it('Accessing API endpoint with valid service token', async function() {
+  it('Accessing API endpoint with valid service token', async function () {
     await request(utils.app)
       .get('/api/users')
       .set('Accept', 'application/json')
@@ -115,7 +113,7 @@ describe('api/service-tokens', function() {
       .expect(200);
   });
 
-  it('Accessing API restricted endpoint with valid service token and no permission', async function() {
+  it('Accessing API restricted endpoint with valid service token and no permission', async function () {
     await request(utils.app)
       .get('/api/service-tokens')
       .set('Accept', 'application/json')
@@ -123,7 +121,7 @@ describe('api/service-tokens', function() {
       .expect(403);
   });
 
-  it('Accessing restricted API endpoint with valid service token and permission', async function() {
+  it('Accessing restricted API endpoint with valid service token and permission', async function () {
     await request(utils.app)
       .get('/api/service-tokens')
       .set('Accept', 'application/json')
@@ -131,7 +129,7 @@ describe('api/service-tokens', function() {
       .expect(200);
   });
 
-  it('Delete and get service tokens', async function() {
+  it('Delete and get service tokens', async function () {
     // Delete the admin service token
     await utils.del('admin', '/api/service-tokens/' + adminServiceToken.id);
 
@@ -141,7 +139,7 @@ describe('api/service-tokens', function() {
     assert.equal(bodyGet.length, 1, '1 length');
   });
 
-  it('Accessing API restricted endpoint with deleted service token', async function() {
+  it('Accessing API restricted endpoint with deleted service token', async function () {
     await request(utils.app)
       .get('/api/service-tokens')
       .set('Accept', 'application/json')

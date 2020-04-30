@@ -55,7 +55,7 @@ function handleFrozenAceBug() {
 // Hide the overflow so the scroll bar never shows in the header grid
 const headerStyle = {
   overflowX: 'hidden',
-  overflowY: 'hidden'
+  overflowY: 'hidden',
 };
 
 const headerCellStyle = {
@@ -65,7 +65,7 @@ const headerCellStyle = {
   borderBottom: '1px solid #CCC',
   display: 'flex',
   paddingLeft: '.5rem',
-  paddingRight: '.5rem'
+  paddingRight: '.5rem',
 };
 
 const cellStyle = {
@@ -73,7 +73,7 @@ const cellStyle = {
   paddingLeft: '.5rem',
   paddingRight: '.5rem',
   borderBottom: '1px solid #CCC',
-  display: 'relative'
+  display: 'relative',
 };
 
 // NOTE: PureComponent's shallow compare works for this component
@@ -83,9 +83,9 @@ class QueryResultDataTable extends React.PureComponent {
   state = {
     dimensions: {
       width: -1,
-      height: -1
+      height: -1,
     },
-    columnWidths: {}
+    columnWidths: {},
   };
 
   componentWillUnmount() {
@@ -99,7 +99,7 @@ class QueryResultDataTable extends React.PureComponent {
     const { columnWidths } = prevState;
 
     if (queryResult && queryResult.fields) {
-      queryResult.fields.forEach(field => {
+      queryResult.fields.forEach((field) => {
         if (!columnWidths[field]) {
           const fieldMeta = queryResult.meta[field];
           // (This length is number of characters -- it later gets assigned ~ 20px per char)
@@ -126,7 +126,7 @@ class QueryResultDataTable extends React.PureComponent {
   // An empty dummy column is added to the grid for visual purposes
   // If dataKey was found this is a real column of data from the query result
   // If not, it's the dummy column at the end, and it should fill the rest of the grid width
-  getColumnWidth = index => {
+  getColumnWidth = (index) => {
     const { columnWidths } = this.state;
     const { queryResult } = this.props;
     const dataKey = queryResult.fields[index];
@@ -137,7 +137,7 @@ class QueryResultDataTable extends React.PureComponent {
     }
 
     const totalWidthFilled = queryResult.fields
-      .map(key => columnWidths[key])
+      .map((key) => columnWidths[key])
       .reduce((prev, curr) => prev + curr, 0);
 
     const fakeColumnWidth = width - totalWidthFilled;
@@ -149,14 +149,14 @@ class QueryResultDataTable extends React.PureComponent {
 
   resizeColumn = ({ dataKey, deltaX, columnIndex }) => {
     this.setState(
-      prevState => {
+      (prevState) => {
         const prevWidths = prevState.columnWidths;
         const newWidth = prevWidths[dataKey] + deltaX;
         return {
           columnWidths: {
             ...prevWidths,
-            [dataKey]: newWidth > 100 ? newWidth : 100
-          }
+            [dataKey]: newWidth > 100 ? newWidth : 100,
+          },
         };
       },
       () => {
@@ -166,7 +166,7 @@ class QueryResultDataTable extends React.PureComponent {
     );
   };
 
-  recalc = throttle(columnIndex => {
+  recalc = throttle((columnIndex) => {
     if (this.headerGrid.current.resetAfterColumnIndex) {
       this.headerGrid.current.resetAfterColumnIndex(columnIndex);
       this.bodyGrid.current.resetAfterColumnIndex(columnIndex);
@@ -244,7 +244,7 @@ class QueryResultDataTable extends React.PureComponent {
     handleFrozenAceBug();
   };
 
-  handleContainerResize = contentRect => {
+  handleContainerResize = (contentRect) => {
     this.setState({ dimensions: contentRect.bounds });
   };
 
@@ -296,7 +296,7 @@ class QueryResultDataTable extends React.PureComponent {
 }
 
 QueryResultDataTable.propTypes = {
-  queryResult: PropTypes.object
+  queryResult: PropTypes.object,
 };
 
 export default QueryResultDataTable;

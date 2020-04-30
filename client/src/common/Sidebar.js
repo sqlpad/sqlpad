@@ -9,7 +9,7 @@ export default function Sidebar({ children }) {
         height: '100%',
         padding: '8px',
         overflowY: 'auto',
-        overflowX: 'hidden'
+        overflowX: 'hidden',
       }}
     >
       {children}

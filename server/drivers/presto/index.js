@@ -38,9 +38,9 @@ function runQuery(query, connection) {
     url: `http://${connection.host}:${port}`,
     user: connection.username,
     catalog: connection.prestoCatalog,
-    schema: connection.prestoSchema
+    schema: connection.prestoSchema,
   };
-  return presto.send(prestoConfig, query).then(result => {
+  return presto.send(prestoConfig, query).then((result) => {
     if (!result) {
       throw new Error('No result returned');
     }
@@ -79,7 +79,7 @@ function getSchema(connection) {
     connection.prestoCatalog,
     connection.prestoSchema
   );
-  return runQuery(schemaSql, connection).then(queryResult =>
+  return runQuery(schemaSql, connection).then((queryResult) =>
     formatSchemaQueryResults(queryResult)
   );
 }
@@ -88,28 +88,28 @@ const fields = [
   {
     key: 'host',
     formType: 'TEXT',
-    label: 'Host/Server/IP Address'
+    label: 'Host/Server/IP Address',
   },
   {
     key: 'port',
     formType: 'TEXT',
-    label: 'Port (optional)'
+    label: 'Port (optional)',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username'
+    label: 'Database Username',
   },
   {
     key: 'prestoCatalog',
     formType: 'TEXT',
-    label: 'Catalog'
+    label: 'Catalog',
   },
   {
     key: 'prestoSchema',
     formType: 'TEXT',
-    label: 'Schema'
-  }
+    label: 'Schema',
+  },
 ];
 
 module.exports = {
@@ -118,5 +118,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

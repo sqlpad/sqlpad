@@ -51,7 +51,7 @@ class ResponseUtils {
   unauthorized(detail) {
     const error = {
       title: 'Unauthorized',
-      detail
+      detail,
     };
     return this.res.status(401).json(error);
   }
@@ -62,7 +62,7 @@ class ResponseUtils {
    */
   forbidden() {
     const error = {
-      title: 'Forbidden'
+      title: 'Forbidden',
     };
     return this.res.status(403).json(error);
   }

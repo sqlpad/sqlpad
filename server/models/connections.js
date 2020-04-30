@@ -46,7 +46,7 @@ class Connections {
 
   async findAll() {
     let connectionsFromDb = await this.sequelizeDb.Connections.findAll({});
-    connectionsFromDb = connectionsFromDb.map(conn => {
+    connectionsFromDb = connectionsFromDb.map((conn) => {
       let jsonConn = conn.toJSON();
       jsonConn.editable = true;
       return this.decipherConnection(jsonConn);
@@ -54,14 +54,14 @@ class Connections {
 
     const allConnections = connectionsFromDb
       .concat(this.config.getConnections())
-      .map(connection => this.decorateConnection(connection));
+      .map((connection) => this.decorateConnection(connection));
 
-    return _.sortBy(allConnections, c => c.name.toLowerCase());
+    return _.sortBy(allConnections, (c) => c.name.toLowerCase());
   }
 
   async findOneById(id) {
     let connection = await this.sequelizeDb.Connections.findOne({
-      where: { id }
+      where: { id },
     });
     if (connection) {
       connection = connection.toJSON();
@@ -73,7 +73,7 @@ class Connections {
     // If connection was not found in db try env
     const connectionFromEnv = this.config
       .getConnections()
-      .find(connection => connection.id === id);
+      .find((connection) => connection.id === id);
 
     if (!connectionFromEnv) {
       return null;
@@ -109,7 +109,7 @@ class Connections {
       description,
       driver,
       multiStatementTransactionEnabled,
-      idleTimeoutSeconds
+      idleTimeoutSeconds,
     };
 
     // Old connections had driver-specific fields flat on connection object
@@ -166,7 +166,7 @@ class Connections {
       description,
       driver,
       multiStatementTransactionEnabled,
-      idleTimeoutSeconds
+      idleTimeoutSeconds,
     };
 
     // Old connections had driver-specific fields flat on connection object

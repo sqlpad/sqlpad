@@ -18,25 +18,25 @@ function cleanBoolean(value) {
 const inputStyle = {
   marginBottom: 16,
   boxSizing: 'border-box',
-  width: `calc(1/2*100% - 8px)`
+  width: `calc(1/2*100% - 8px)`,
 };
 
 function ChartInputs({
   onChartConfigurationFieldsChange,
   queryChartConfigurationFields,
   queryResult,
-  chartType
+  chartType,
 }) {
   const changeChartConfigurationField = (chartFieldId, queryResultField) => {
     onChartConfigurationFieldsChange(chartFieldId, queryResultField);
   };
 
-  const renderFormGroup = inputDefinitionFields => {
+  const renderFormGroup = (inputDefinitionFields) => {
     const queryResultFields = queryResult.fields || [];
 
-    return inputDefinitionFields.map(field => {
+    return inputDefinitionFields.map((field) => {
       if (field.inputType === 'field-dropdown') {
-        const optionNodes = queryResultFields.map(qrfield => {
+        const optionNodes = queryResultFields.map((qrfield) => {
           return (
             <option key={qrfield} value={qrfield}>
               {qrfield}
@@ -64,7 +64,7 @@ function ChartInputs({
             <Select
               className="w-100"
               value={selectedQueryResultField}
-              onChange={event =>
+              onChange={(event) =>
                 changeChartConfigurationField(field.fieldId, event.target.value)
               }
             >
@@ -83,7 +83,7 @@ function ChartInputs({
               checked={checked}
               id={field.fieldId}
               name={field.fieldId}
-              onChange={e =>
+              onChange={(e) =>
                 changeChartConfigurationField(field.fieldId, e.target.checked)
               }
             />
@@ -99,7 +99,7 @@ function ChartInputs({
             <label>{field.label}</label>
             <Input
               value={value}
-              onChange={e =>
+              onChange={(e) =>
                 changeChartConfigurationField(field.fieldId, e.target.value)
               }
               className="w-100"
@@ -113,7 +113,7 @@ function ChartInputs({
   };
 
   const chartDefinition = chartDefinitions.find(
-    def => def.chartType === chartType
+    (def) => def.chartType === chartType
   );
 
   if (!chartDefinition || !chartDefinition.fields) {
@@ -129,7 +129,7 @@ function ChartInputs({
         flexWrap: 'wrap',
         alignContent: 'flex-start',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
       }}
     >
       {renderFormGroup(chartDefinition.fields)}
@@ -141,12 +141,12 @@ ChartInputs.propTypes = {
   chartType: PropTypes.string,
   onChartConfigurationFieldsChange: PropTypes.func.isRequired,
   queryChartConfigurationFields: PropTypes.object,
-  queryResult: PropTypes.object
+  queryResult: PropTypes.object,
 };
 
 ChartInputs.defaultProps = {
   queryChartConfigurationFields: {},
-  queryResult: {}
+  queryResult: {},
 };
 
 export default ChartInputs;

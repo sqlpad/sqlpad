@@ -13,7 +13,7 @@ const loadSeedData = require('../lib/load-seed-data');
 const ensureConnectionAccess = require('../lib/ensure-connection-access');
 
 // At the start of any test run, clean out the root artifacts directory
-before(function(done) {
+before(function (done) {
   rimraf(path.join(__dirname, '/artifacts/*'), done);
 });
 
@@ -29,7 +29,7 @@ class TestUtils {
         webLogLevel: 'silent',
         authProxyEnabled: true,
         authProxyHeaders: 'email:X-WEBAUTH-EMAIL',
-        ...args
+        ...args,
       },
       {}
     );
@@ -51,18 +51,18 @@ class TestUtils {
       admin: {
         id: undefined, // set if created
         email: 'admin@test.com',
-        role: 'admin'
+        role: 'admin',
       },
       editor: {
         id: undefined, // set if created
         email: 'editor@test.com',
-        role: 'editor'
+        role: 'editor',
       },
       editor2: {
         id: undefined, // set if created
         email: 'editor2@test.com',
-        role: 'editor'
-      }
+        role: 'editor',
+      },
     };
   }
 
@@ -70,7 +70,7 @@ class TestUtils {
     const dbPath = this.config.get('dbPath');
     mkdirp.sync(dbPath);
     return new Promise((resolve, reject) => {
-      return rimraf(path.join(dbPath, '*'), err => {
+      return rimraf(path.join(dbPath, '*'), (err) => {
         if (err) {
           return reject(err);
         }

@@ -4,7 +4,7 @@ import { connect } from 'unistore/react';
 function mapStateToProps(state, props) {
   const queryName = state.query && state.query.name;
   return {
-    title: props.queryId === 'new' ? 'New query' : queryName
+    title: props.queryId === 'new' ? 'New query' : queryName,
   };
 }
 

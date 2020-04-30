@@ -57,7 +57,7 @@ async function runQuery(query, connection) {
     const res = await crate.execute(query);
     const results = {
       rows: res.json,
-      incomplete: false
+      incomplete: false,
     };
     if (results.rows.length >= limit) {
       results.incomplete = true;
@@ -99,13 +99,13 @@ const fields = [
   {
     key: 'host',
     formType: 'TEXT',
-    label: 'Host/Server/IP Address'
+    label: 'Host/Server/IP Address',
   },
   {
     key: 'port',
     formType: 'TEXT',
-    label: 'Port (optional)'
-  }
+    label: 'Port (optional)',
+  },
 ];
 
 module.exports = {
@@ -114,5 +114,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

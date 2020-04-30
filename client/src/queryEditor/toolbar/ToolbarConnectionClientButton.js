@@ -5,7 +5,7 @@ import { connect } from 'unistore/react';
 import IconButton from '../../common/IconButton';
 import {
   connectConnectionClient,
-  disconnectConnectionClient
+  disconnectConnectionClient,
 } from '../../stores/connections';
 
 function ToolbarConnectionClientButton({
@@ -13,7 +13,7 @@ function ToolbarConnectionClientButton({
   connections,
   selectedConnectionId,
   connectConnectionClient,
-  disconnectConnectionClient
+  disconnectConnectionClient,
 }) {
   const [fetching, setFetching] = useState(false);
 
@@ -33,7 +33,7 @@ function ToolbarConnectionClientButton({
   }
 
   const connection = connections.find(
-    connection => connection.id === selectedConnectionId
+    (connection) => connection.id === selectedConnectionId
   );
 
   const supportedAndEnabled =
@@ -60,8 +60,8 @@ function ToolbarConnectionClientButton({
 
 export default connect(
   ['connectionClient', 'connections', 'selectedConnectionId'],
-  store => ({
+  (store) => ({
     connectConnectionClient: connectConnectionClient(store),
-    disconnectConnectionClient
+    disconnectConnectionClient,
   })
 )(ToolbarConnectionClientButton);

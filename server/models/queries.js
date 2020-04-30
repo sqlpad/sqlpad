@@ -31,10 +31,10 @@ class Queries {
     query = query.toJSON();
     const tags = await this.sequelizeDb.QueryTags.findAll({
       attributes: ['tag'],
-      where: { queryId: id }
+      where: { queryId: id },
     });
 
-    query.tags = tags.map(tagRow => {
+    query.tags = tags.map((tagRow) => {
       return tagRow.tag;
     });
 
@@ -43,21 +43,21 @@ class Queries {
 
   async findAll() {
     let queries = await this.sequelizeDb.Queries.findAll({});
-    queries = queries.map(query => query.toJSON());
+    queries = queries.map((query) => query.toJSON());
 
     // This is not efficient, but necessary until pagination is in
     // Get *all* query tags. group by queryId, then iterate and merge into queries
     // Sequelize include not used here because it is not efficient SQL
     let queryTags = await this.sequelizeDb.QueryTags.findAll({
-      attributes: ['queryId', 'tag']
+      attributes: ['queryId', 'tag'],
     });
-    queryTags = queryTags.map(qt => qt.toJSON());
+    queryTags = queryTags.map((qt) => qt.toJSON());
     const tagsByQuery = _.groupBy(queryTags, 'queryId');
 
-    queries = queries.map(query => {
+    queries = queries.map((query) => {
       const queryTags = tagsByQuery[query.id];
       if (queryTags) {
-        query.tags = queryTags.map(qt => qt.tag);
+        query.tags = queryTags.map((qt) => qt.tag);
       }
       return query;
     });
@@ -79,18 +79,18 @@ class Queries {
     // commit transaction
     // return updated object
     let created;
-    await this.sequelizeDb.sequelize.transaction(async transaction => {
+    await this.sequelizeDb.sequelize.transaction(async (transaction) => {
       const { createdAt, updatedAt, tags, ...data } = query;
       created = await this.sequelizeDb.Queries.create(data, {
-        transaction
+        transaction,
       });
 
       if (Array.isArray(query.tags)) {
         const tagData = query.tags
-          .filter(tag => {
+          .filter((tag) => {
             return typeof tag === 'string' && tag.trim() !== '';
           })
-          .map(tag => {
+          .map((tag) => {
             return { queryId: created.id, tag: tag.trim() };
           });
 
@@ -113,18 +113,18 @@ class Queries {
     // update query
     // commit transaction
     // return updated object
-    await this.sequelizeDb.sequelize.transaction(async transaction => {
+    await this.sequelizeDb.sequelize.transaction(async (transaction) => {
       if (Array.isArray(query.tags)) {
         const tagData = query.tags
-          .filter(tag => {
+          .filter((tag) => {
             return typeof tag === 'string' && tag.trim() !== '';
           })
-          .map(tag => {
+          .map((tag) => {
             return { queryId: id, tag: tag.trim() };
           });
         await this.sequelizeDb.QueryTags.destroy({
           transaction,
-          where: { queryId: id }
+          where: { queryId: id },
         });
         await this.sequelizeDb.QueryTags.bulkCreate(tagData, { transaction });
         const update = { ...query };
@@ -134,7 +134,7 @@ class Queries {
         delete update.tags;
         await this.sequelizeDb.Queries.update(update, {
           transaction,
-          where: { id }
+          where: { id },
         });
       }
     });

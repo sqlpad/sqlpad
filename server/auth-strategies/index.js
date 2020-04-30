@@ -8,7 +8,7 @@ const saml = require('./saml');
 
 // The serializeUser/deserializeUser functions apply regardless of the strategy used.
 // Given a user object, extract the id to use for session
-passport.serializeUser(function(user, done) {
+passport.serializeUser(function (user, done) {
   done(null, user.id);
 });
 
@@ -18,7 +18,7 @@ passport.serializeUser(function(user, done) {
 // it can take 3, one of which being the req object
 // https://github.com/jaredhanson/passport/issues/743
 // https://github.com/passport/www.passportjs.org/pull/83/files
-passport.deserializeUser(async function(req, id, done) {
+passport.deserializeUser(async function (req, id, done) {
   const { models } = req;
   try {
     const user = await models.users.findOneById(id);

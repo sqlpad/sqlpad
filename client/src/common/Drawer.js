@@ -6,7 +6,7 @@ import IconButton from './IconButton';
 
 function Drawer({ title, visible, onClose, width, placement, children }) {
   const style = {
-    width
+    width,
   };
 
   if (placement === 'right') {

@@ -12,7 +12,7 @@ function PasswordReset({ passwordResetId }) {
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [redirect, setRedirect] = useState(false);
 
-  const resetPassword = async e => {
+  const resetPassword = async (e) => {
     e.preventDefault();
     const json = await fetchJson(
       'POST',
@@ -20,7 +20,7 @@ function PasswordReset({ passwordResetId }) {
       {
         email,
         password,
-        passwordConfirmation
+        passwordConfirmation,
       }
     );
 
@@ -45,7 +45,7 @@ function PasswordReset({ passwordResetId }) {
           name="email"
           type="email"
           placeholder="Email address"
-          onChange={e => setEmail(e.target.value)}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
         <Spacer />
@@ -53,7 +53,7 @@ function PasswordReset({ passwordResetId }) {
           name="password"
           type="password"
           placeholder="Password"
-          onChange={e => setPassword(e.target.value)}
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
         <Spacer />
@@ -61,7 +61,7 @@ function PasswordReset({ passwordResetId }) {
           name="passwordConfirmation"
           type="password"
           placeholder="Confirm Password"
-          onChange={e => setPasswordConfirmation(e.target.value)}
+          onChange={(e) => setPasswordConfirmation(e.target.value)}
           required
         />
         <Spacer size={2} />

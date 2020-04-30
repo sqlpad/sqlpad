@@ -15,7 +15,7 @@ function splitSql(sql) {
   let currentQuery = '';
   let inBlockComment = false;
 
-  lines.forEach(line => {
+  lines.forEach((line) => {
     const chars = line.split('');
     let inLineComment = false;
     let inStringLiteral = false;

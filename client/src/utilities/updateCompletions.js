@@ -57,20 +57,20 @@ function updateCompletions(schemaInfo) {
   const matchMaps = {
     schema: {}, // will contain tables
     table: {},
-    schemaTable: {}
+    schemaTable: {},
   };
 
-  Object.keys(schemaInfo).forEach(schema => {
+  Object.keys(schemaInfo).forEach((schema) => {
     schemaCompletions.push({
       name: schema,
       value: schema,
       score: 0,
-      meta: 'schema'
+      meta: 'schema',
     });
     const SCHEMA = schema.toUpperCase();
     if (!matchMaps.schema[SCHEMA]) matchMaps.schema[SCHEMA] = [];
 
-    Object.keys(schemaInfo[schema]).forEach(table => {
+    Object.keys(schemaInfo[schema]).forEach((table) => {
       const SCHEMA_TABLE = SCHEMA + '.' + table.toUpperCase();
       const TABLE = table.toUpperCase();
       if (!matchMaps.table[TABLE]) matchMaps.table[TABLE] = [];
@@ -82,20 +82,20 @@ function updateCompletions(schemaInfo) {
         value: table,
         score: 0,
         meta: 'table',
-        schema
+        schema,
       };
       tableCompletions.push(tableCompletion);
       matchMaps.schema[SCHEMA].push(tableCompletion);
 
       const columns = schemaInfo[schema][table];
-      columns.forEach(column => {
+      columns.forEach((column) => {
         const columnCompletion = {
           name: schema + table + column.column_name,
           value: column.column_name,
           score: 0,
           meta: 'column',
           schema,
-          table
+          table,
         };
         matchMaps.table[TABLE].push(columnCompletion);
         matchMaps.schemaTable[SCHEMA_TABLE].push(columnCompletion);
@@ -106,14 +106,14 @@ function updateCompletions(schemaInfo) {
   const tableWantedCompletions = schemaCompletions.concat(tableCompletions);
 
   const myCompleter = {
-    getCompletions: function(editor, session, pos, prefix, callback) {
+    getCompletions: function (editor, session, pos, prefix, callback) {
       // figure out if there are any schemas/tables referenced in query
       const allTokens = session
         .getValue()
         .split(/\s+/)
-        .map(t => t.toUpperCase());
+        .map((t) => t.toUpperCase());
       const relevantDottedMatches = {};
-      Object.keys(matchMaps.schemaTable).forEach(schemaTable => {
+      Object.keys(matchMaps.schemaTable).forEach((schemaTable) => {
         if (allTokens.indexOf(schemaTable) >= 0) {
           relevantDottedMatches[schemaTable] =
             matchMaps.schemaTable[schemaTable];
@@ -123,7 +123,7 @@ function updateCompletions(schemaInfo) {
           relevantDottedMatches[table] = matchMaps.table[table];
         }
       });
-      Object.keys(matchMaps.table).forEach(table => {
+      Object.keys(matchMaps.table).forEach((table) => {
         if (allTokens.indexOf(table) >= 0) {
           relevantDottedMatches[table] = matchMaps.table[table];
           // HACK add schemaTable match for this table
@@ -140,30 +140,30 @@ function updateCompletions(schemaInfo) {
 
       // complete for schema and tables already referenced, plus their columns
       let matches = [];
-      Object.keys(relevantDottedMatches).forEach(key => {
+      Object.keys(relevantDottedMatches).forEach((key) => {
         matches = matches.concat(relevantDottedMatches[key]);
       });
       const schemas = {};
       const tables = {};
       const wantedColumnCompletions = [];
-      matches.forEach(match => {
+      matches.forEach((match) => {
         if (match.schema) schemas[match.schema] = match.schema;
         if (match.table) tables[match.table] = match.schema;
       });
-      Object.keys(schemas).forEach(schema => {
+      Object.keys(schemas).forEach((schema) => {
         wantedColumnCompletions.push({
           name: schema,
           value: schema,
           score: 0,
-          meta: 'schema'
+          meta: 'schema',
         });
       });
-      Object.keys(tables).forEach(table => {
+      Object.keys(tables).forEach((table) => {
         const tableCompletion = {
           name: table,
           value: table,
           score: 0,
-          meta: 'table'
+          meta: 'table',
         };
         wantedColumnCompletions.push(tableCompletion);
         const SCHEMA = tables[table].toUpperCase();
@@ -187,7 +187,7 @@ function updateCompletions(schemaInfo) {
         if (r === currentRow) {
           line = line.slice(0, pos.column);
         }
-        lineTokens = line.split(/\s+/).map(t => t.toUpperCase());
+        lineTokens = line.split(/\s+/).map((t) => t.toUpperCase());
 
         for (let i = lineTokens.length - 1; i >= 0; i--) {
           const token = lineTokens[i];
@@ -211,7 +211,7 @@ function updateCompletions(schemaInfo) {
       const currentTokens = currentLine
         .slice(0, pos.column)
         .split(/\s+/)
-        .map(t => t.toUpperCase());
+        .map((t) => t.toUpperCase());
       const precedingCharacter = currentLine.slice(pos.column - 1, pos.column);
       const precedingToken = currentTokens[currentTokens.length - 1];
 
@@ -248,10 +248,10 @@ function updateCompletions(schemaInfo) {
       }
       // No keywords found? User probably wants some keywords
       callback(null, null);
-    }
+    },
   };
 
-  ace.acequire(['ace/ext/language_tools'], langTools => {
+  ace.acequire(['ace/ext/language_tools'], (langTools) => {
     langTools.setCompleters([myCompleter]);
     // Note - later on might be able to set a completer for specific editor like:
     // editor.completers = [staticWordCompleter]

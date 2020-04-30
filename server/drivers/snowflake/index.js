@@ -42,7 +42,7 @@ function runQuery(query, connection) {
     warehouse: connection.warehouse,
     database: connection.database,
     schema: connection.schema,
-    preQueryStatements: connection.preQueryStatements
+    preQueryStatements: connection.preQueryStatements,
   };
 
   let incomplete;
@@ -52,7 +52,7 @@ function runQuery(query, connection) {
     const sfConnection = snowflake.createConnection(sfConfig);
     let preQueryCompletes = 0;
 
-    sfConnection.connect(err => {
+    sfConnection.connect((err) => {
       if (err) {
         return reject(err);
       }
@@ -85,12 +85,12 @@ function runQuery(query, connection) {
         sfConnection
           .execute({ sqlText: query })
           .streamRows()
-          .on('error', function(err) {
+          .on('error', function (err) {
             queryError = err;
             sfConnection.destroy();
             continueOn(onCompleted);
           })
-          .on('data', function(row) {
+          .on('data', function (row) {
             if (addRowsToResults) {
               // If we haven't hit the max yet add row to results
               if (rows.length < connection.maxRows) {
@@ -107,7 +107,7 @@ function runQuery(query, connection) {
               continueOn(onCompleted);
             }
           })
-          .on('end', function() {
+          .on('end', function () {
             if (closeConnection) {
               sfConnection.destroy();
             }
@@ -121,11 +121,11 @@ function runQuery(query, connection) {
         const preQueries = sfConfig.preQueryStatements
           .trim()
           .split(';')
-          .filter(q => {
+          .filter((q) => {
             return q;
           });
         // Run pre queries in parallel
-        preQueries.forEach(q => {
+        preQueries.forEach((q) => {
           // Don't add rows to results and keep the connection open for the next query
           _runQuery(q, {
             addRowsToResults: false,
@@ -139,7 +139,7 @@ function runQuery(query, connection) {
               if (preQueryCompletes === preQueries.length) {
                 _runQuery(query);
               }
-            }
+            },
           });
         });
       } else {
@@ -165,7 +165,7 @@ function testConnection(connection) {
  */
 function getSchema(connection) {
   const schemaSql = getSchemaSql(connection.schema);
-  return runQuery(schemaSql, connection).then(queryResult =>
+  return runQuery(schemaSql, connection).then((queryResult) =>
     formatSchemaQueryResults(queryResult)
   );
 }
@@ -174,45 +174,45 @@ const fields = [
   {
     key: 'account',
     formType: 'TEXT',
-    label: 'Account'
+    label: 'Account',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username'
+    label: 'Database Username',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password'
+    label: 'Database Password',
   },
   {
     key: 'warehouse',
     formType: 'TEXT',
-    label: 'Warehouse'
+    label: 'Warehouse',
   },
   {
     key: 'database',
     formType: 'TEXT',
-    label: 'Database'
+    label: 'Database',
   },
   {
     key: 'schema',
     formType: 'TEXT',
-    label: 'Schema'
+    label: 'Schema',
   },
   {
     key: 'role',
     formType: 'TEXT',
-    label: 'Role'
+    label: 'Role',
   },
   {
     key: 'preQueryStatements',
     formType: 'TEXTAREA',
     label: 'Pre-query Statements (Optional)',
     placeholder:
-      'Use to enforce session parameters like:\n  ALTER SESSION SET statement_timeout_in_seconds = 15;'
-  }
+      'Use to enforce session parameters like:\n  ALTER SESSION SET statement_timeout_in_seconds = 15;',
+  },
 ];
 
 module.exports = {
@@ -221,5 +221,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

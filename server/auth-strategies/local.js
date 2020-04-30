@@ -13,7 +13,7 @@ function enableLocal(config) {
     new PassportLocalStrategy(
       {
         passReqToCallback: true,
-        usernameField: 'email'
+        usernameField: 'email',
       },
       async function passportLocalStrategyHandler(req, email, password, done) {
         try {
@@ -30,7 +30,7 @@ function enableLocal(config) {
             return done(null, {
               id: user.id,
               role: user.role,
-              email: user.email
+              email: user.email,
             });
           }
           return done(null, false, { message: 'wrong email or password' });

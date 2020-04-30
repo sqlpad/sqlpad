@@ -3,7 +3,7 @@ import React from 'react';
 const Divider = ({ style, ...rest }) => {
   const s = Object.assign(
     {
-      height: 16
+      height: 16,
     },
     style
   );

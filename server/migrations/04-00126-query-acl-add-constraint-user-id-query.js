@@ -9,10 +9,10 @@ async function up(queryInterface, config, appLog, nedb) {
   // Swap unique constraint around for (query_id, user_id) for index strategy, then add query_id index
   await queryInterface.addConstraint('query_acl', ['user_id', 'query_id'], {
     type: 'unique',
-    name: 'query_acl_user_id_query_id_key'
+    name: 'query_acl_user_id_query_id_key',
   });
 }
 
 module.exports = {
-  up
+  up,
 };

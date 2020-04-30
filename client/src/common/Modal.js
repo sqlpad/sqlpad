@@ -12,7 +12,7 @@ function Modal({ title, visible, onClose, width, children }) {
         onDismiss={onClose}
         className={styles.Dialog}
         style={{
-          width
+          width,
         }}
       >
         <div className={styles.titleWrapper}>

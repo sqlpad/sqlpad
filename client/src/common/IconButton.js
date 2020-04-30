@@ -31,7 +31,7 @@ const IconButton = React.forwardRef(
       button = (
         <div style={{ display: 'inline', lineHeight: 'initial' }}>
           <Link to={to} className={classNames.join(' ')} {...rest}>
-            {React.Children.map(children, child => {
+            {React.Children.map(children, (child) => {
               return React.cloneElement(child, { size: ICON_SIZE }, null);
             })}
           </Link>
@@ -45,7 +45,7 @@ const IconButton = React.forwardRef(
           disabled={disabled}
           {...rest}
         >
-          {React.Children.map(children, child => {
+          {React.Children.map(children, (child) => {
             return React.cloneElement(child, { size: ICON_SIZE }, null);
           })}
         </button>

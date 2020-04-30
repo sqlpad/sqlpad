@@ -19,7 +19,7 @@ export const refreshAppContext = async () => {
     config,
     currentUser,
     adminRegistrationOpen,
-    version
+    version,
   };
 };
 

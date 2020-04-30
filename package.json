@@ -4,8 +4,8 @@
   "private": true,
   "devDependencies": {
     "husky": "^4.2.5",
-    "lint-staged": "^10.1.7",
-    "prettier": "^1.19.1"
+    "lint-staged": "^10.2.0",
+    "prettier": "^2.0.5"
   },
   "prettier": {
     "singleQuote": true

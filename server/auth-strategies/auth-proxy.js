@@ -53,7 +53,7 @@ async function authProxyStrategy(req, done) {
       const existingId = existingUser.id;
       // Get a subset of existing user to use for comparison
       const existingForCompare = {};
-      Object.keys(headerUser).forEach(key => {
+      Object.keys(headerUser).forEach((key) => {
         existingForCompare[key] = existingUser[key];
       });
 

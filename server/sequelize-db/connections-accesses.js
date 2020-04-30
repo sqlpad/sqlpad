@@ -1,54 +1,54 @@
 const { DataTypes } = require('sequelize');
 
-module.exports = function(sequelize) {
+module.exports = function (sequelize) {
   const ConnectionAccesses = sequelize.define(
     'ConnectionAccesses',
     {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
       },
       connectionId: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       connectionName: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       userId: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       userEmail: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
       },
       duration: {
         type: DataTypes.INTEGER,
         allowNull: false,
         validate: {
           min: 0,
-          max: 86400
-        }
+          max: 86400,
+        },
       },
       expiryDate: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
       createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
       },
       updatedAt: {
         type: DataTypes.DATE,
-        allowNull: false
-      }
+        allowNull: false,
+      },
     },
     {
       tableName: 'connection_accesses',
-      underscored: true
+      underscored: true,
     }
   );
 

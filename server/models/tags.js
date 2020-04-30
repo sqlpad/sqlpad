@@ -16,7 +16,7 @@ class Tags {
       { type: QueryTypes.SELECT }
     );
 
-    return rows.map(row => row.tag);
+    return rows.map((row) => row.tag);
   }
 }
 

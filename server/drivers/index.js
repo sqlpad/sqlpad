@@ -13,7 +13,7 @@ const drivers = {
   sqlite: require('./sqlite'),
   sqlserver: require('./sqlserver'),
   vertica: require('./vertica'),
-  bigquery: require('./bigquery')
+  bigquery: require('./bigquery'),
 };
 
 // unixodbc is an optional dependency due to it needing to be compiled
@@ -25,7 +25,7 @@ try {
 }
 
 // Validate each driver implementation to ensure it matches expectations
-Object.keys(drivers).forEach(id => {
+Object.keys(drivers).forEach((id) => {
   const driver = drivers[id];
   validate(id, driver);
 });

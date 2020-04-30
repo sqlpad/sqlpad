@@ -4,7 +4,7 @@ import QueryResultDataTable from '../common/QueryResultContainer.js';
 const ConnectedQueryEditorResult = connect([
   'isRunning',
   'queryError',
-  'queryResult'
+  'queryResult',
 ])(QueryResultDataTable);
 
 export default ConnectedQueryEditorResult;

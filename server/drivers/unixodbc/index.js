@@ -65,7 +65,7 @@ function getSchema(connection) {
   const schema_sql = connection.schema_sql
     ? connection.schema_sql
     : SCHEMA_SQL_INFORMATION_SCHEMA;
-  return runQuery(schema_sql, connection).then(queryResult =>
+  return runQuery(schema_sql, connection).then((queryResult) =>
     formatSchemaQueryResults(queryResult)
   );
 }
@@ -185,7 +185,7 @@ class Client {
       // If that exists try to create a message of everything together and throw that
       // Otherwise throw what we got
       if (Array.isArray(error.odbcErrors)) {
-        const message = error.odbcErrors.map(e => e.message).join('; ');
+        const message = error.odbcErrors.map((e) => e.message).join('; ');
         throw new Error(message);
       }
       throw error;
@@ -198,24 +198,24 @@ const fields = [
     key: 'connection_string',
     formType: 'TEXT',
     label:
-      'ODBC connection string. Examples:\ndsn=NAME\nDriver={SQLite3};Database=/tmp/my.db\n"Driver={Ingres};Server=VNODE;Database=mydb"'
+      'ODBC connection string. Examples:\ndsn=NAME\nDriver={SQLite3};Database=/tmp/my.db\n"Driver={Ingres};Server=VNODE;Database=mydb"',
   },
   {
     key: 'schema_sql',
     formType: 'TEXT',
     label:
-      'Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)'
+      'Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username (optional)'
+    label: 'Database Username (optional)',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password (optional)'
-  }
+    label: 'Database Password (optional)',
+  },
 ];
 
 module.exports = {
@@ -225,5 +225,5 @@ module.exports = {
   id,
   name,
   runQuery,
-  testConnection
+  testConnection,
 };
