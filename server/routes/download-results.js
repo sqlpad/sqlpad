@@ -30,7 +30,7 @@ router.get(
     const { models, cache } = req;
     const { cacheKey } = req.params;
 
-    let filename = cache.queryName + '.csv';
+    let filename = cache.name + '.csv';
     res.setHeader(
       'Content-disposition',
       'attachment; filename="' + encodeURIComponent(filename) + '"'
@@ -48,7 +48,7 @@ router.get(
     const { models, cache } = req;
     const { cacheKey } = req.params;
 
-    let filename = cache.queryName + '.xlsx';
+    let filename = cache.name + '.xlsx';
     res.setHeader(
       'Content-disposition',
       'attachment; filename="' + encodeURIComponent(filename) + '"'
@@ -69,7 +69,7 @@ router.get(
     const { models, cache } = req;
     const { cacheKey } = req.params;
 
-    let filename = cache.queryName + '.json';
+    let filename = cache.name + '.json';
     res.setHeader(
       'Content-disposition',
       'attachment; filename="' + encodeURIComponent(filename) + '"'
