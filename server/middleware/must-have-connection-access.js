@@ -5,18 +5,22 @@ const mustBeAuthenticated = require('./must-be-authenticated');
 module.exports = [
   mustBeAuthenticated,
   async function mustHaveConnectionAccess(req, res, next) {
-    const { models } = req;
-    if (req.user.role === 'admin') {
-      return next();
+    try {
+      const { models } = req;
+      if (req.user.role === 'admin') {
+        return next();
+      }
+      const connectionId = req.params.connectionId || req.body.connectionId;
+      const connectionAccess = await models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
+        connectionId,
+        req.user.id
+      );
+      if (connectionAccess) {
+        return next();
+      }
+      return res.utils.forbidden();
+    } catch (error) {
+      next(error);
     }
-    const connectionId = req.params.connectionId || req.body.connectionId;
-    const connectionAccess = await models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
-      connectionId,
-      req.user.id
-    );
-    if (connectionAccess) {
-      return next();
-    }
-    return res.utils.forbidden();
   },
 ];

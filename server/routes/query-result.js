@@ -8,13 +8,29 @@ const wrap = require('../lib/wrap');
 // Instead of relying on an open endpoint that executes arbitrary sql
 router.get(
   '/api/query-result/:_queryId',
-  mustHaveConnectionAccess,
   wrap(async function (req, res) {
-    const { models } = req;
+    const { models, user } = req;
     const query = await models.queries.findOneById(req.params._queryId);
     if (!query) {
       return res.utils.notFound();
     }
+
+    if (!user) {
+      return res.utils.unauthorized();
+    }
+
+    // Inline connection access since connectionId is not  part of body or params
+    // Admins are exempt from this check
+    if (user.role !== 'admin') {
+      const connectionAccess = await models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
+        query.connectionId,
+        user.id
+      );
+      if (!connectionAccess) {
+        return res.utils.forbidden();
+      }
+    }
+
     const data = {
       connectionId: query.connectionId,
       cacheKey: query.id,
