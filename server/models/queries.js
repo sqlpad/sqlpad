@@ -1,6 +1,6 @@
 const _ = require('lodash');
 /*
-"chartConfiguration": {
+"chart": {
     "chartType": "line",
     "fields": {
         "x": "created_month",

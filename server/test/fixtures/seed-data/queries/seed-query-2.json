@@ -3,6 +3,5 @@
   "name": "Seed query 2",
   "connectionId": "seed-connection-1",
   "queryText": "SELECT * FROM seed_table",
-  "chartConfiguration": {},
   "createdBy": "admin@sqlpad.com"
 }

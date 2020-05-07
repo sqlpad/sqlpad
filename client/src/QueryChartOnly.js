@@ -68,7 +68,7 @@ function QueryChartOnly({ queryId }) {
         <SqlpadTauChart
           queryId={queryId}
           queryName={query && query.name}
-          chartConfiguration={query && query.chartConfiguration}
+          chartConfiguration={query && query.chart}
           queryResult={queryResult}
           queryError={queryError}
           isRunning={isRunning}

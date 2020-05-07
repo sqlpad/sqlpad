@@ -9,14 +9,8 @@ import ChartInputs from './ChartInputs.js';
 function mapStateToProps(state) {
   return {
     queryResult: state.queryResult,
-    chartType:
-      state.query &&
-      state.query.chartConfiguration &&
-      state.query.chartConfiguration.chartType,
-    fields:
-      state.query &&
-      state.query.chartConfiguration &&
-      state.query.chartConfiguration.fields,
+    chartType: state.query && state.query.chart && state.query.chart.chartType,
+    fields: state.query && state.query.chart && state.query.chart.fields,
   };
 }
 

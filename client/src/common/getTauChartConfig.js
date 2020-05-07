@@ -24,10 +24,17 @@ const getUnmetFields = (chartType, selectedFieldMap) => {
 };
 
 export default function getTauChartConfig(chartConfiguration, queryResult) {
+  if (!chartConfiguration) {
+    return null;
+  }
   const meta = queryResult ? queryResult.meta : {};
   let dataRows = queryResult ? queryResult.rows : [];
-  const chartType = chartConfiguration && chartConfiguration.chartType;
-  const selectedFields = chartConfiguration && chartConfiguration.fields;
+  const chartType = chartConfiguration.chartType;
+  const selectedFields = chartConfiguration.fields;
+
+  if (!chartType || !selectedFields) {
+    return null;
+  }
 
   const chartDefinition = chartDefinitions.find(
     (def) => def.chartType === chartType

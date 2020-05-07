@@ -6,10 +6,7 @@ import chartDefinitions from '../utilities/chartDefinitions.js';
 
 function mapStateToProps(state) {
   return {
-    chartType:
-      state.query &&
-      state.query.chartConfiguration &&
-      state.query.chartConfiguration.chartType,
+    chartType: state.query && state.query.chart && state.query.chart.chartType,
   };
 }
 

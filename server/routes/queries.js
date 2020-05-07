@@ -70,7 +70,7 @@ router.get('/api/queries/:id', mustBeAuthenticated, wrap(getQuery));
  */
 async function createQuery(req, res) {
   const { models, body, user } = req;
-  const { name, tags, connectionId, queryText, chartConfiguration, acl } = body;
+  const { name, tags, connectionId, queryText, chart, acl } = body;
   const { email } = user;
 
   const query = {
@@ -78,7 +78,7 @@ async function createQuery(req, res) {
     tags,
     connectionId,
     queryText,
-    chartConfiguration,
+    chart,
     createdBy: email,
     updatedBy: email,
     acl,
@@ -112,14 +112,14 @@ async function updateQuery(req, res) {
     return res.utils.forbidden();
   }
 
-  const { name, tags, connectionId, queryText, chartConfiguration, acl } = body;
+  const { name, tags, connectionId, queryText, chart, acl } = body;
 
   Object.assign(query, {
     name,
     tags,
     connectionId,
     queryText,
-    chartConfiguration,
+    chart,
     updatedBy: user.email,
     acl,
   });
