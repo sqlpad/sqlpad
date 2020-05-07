@@ -7,7 +7,7 @@ const createQueryBody = {
   tags: ['one', 'two'],
   connectionId: 'someConnectionId',
   queryText: 'SELECT * FROM some_table',
-  chartConfiguration: {
+  chart: {
     chartType: 'line',
     fields: {
       x: 'field1',

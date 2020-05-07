@@ -137,8 +137,7 @@ function QueryListDrawer({
     const chartUrl = `/query-chart/${query.id}`;
     const queryUrl = `/queries/${query.id}`;
 
-    const hasChart =
-      query && query.chartConfiguration && query.chartConfiguration.chartType;
+    const hasChart = query && query.chart && query.chart.chartType;
 
     return (
       <ListItem

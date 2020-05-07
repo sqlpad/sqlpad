@@ -135,9 +135,7 @@ QueryEditor.propTypes = {
 
 function mapStateToProps(state, props) {
   const showVis =
-    state.query &&
-    state.query.chartConfiguration &&
-    Boolean(state.query.chartConfiguration.chartType);
+    state.query && state.query.chart && Boolean(state.query.chart.chartType);
 
   return {
     showVis,

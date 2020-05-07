@@ -14,7 +14,7 @@ export const NEW_QUERY = {
   tags: [],
   connectionId: '',
   queryText: '',
-  chartConfiguration: {
+  chart: {
     chartType: '',
     fields: {}, // key value for chart
   },
@@ -234,12 +234,12 @@ export const handleChartConfigurationFieldsChange = (
   queryResultField
 ) => {
   const { query } = state;
-  const { fields } = query.chartConfiguration;
+  const { fields } = query.chart;
   return {
     query: {
       ...query,
-      chartConfiguration: {
-        ...query.chartConfiguration,
+      chart: {
+        ...query.chart,
         fields: { ...fields, [chartFieldId]: queryResultField },
       },
     },
@@ -252,7 +252,7 @@ export const handleChartTypeChange = (state, chartType) => {
   return {
     query: {
       ...query,
-      chartConfiguration: { ...query.chartConfiguration, chartType },
+      chart: { ...query.chart, chartType },
     },
     unsavedChanges: true,
   };
