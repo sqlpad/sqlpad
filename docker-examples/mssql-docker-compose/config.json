@@ -1,0 +1,16 @@
+{
+  "admin": "admin@sqlpad.com",
+  "adminPassword": "admin",
+  "appLogLevel": "info",
+  "webLogLevel": "warn",
+  "connections": {
+    "sql-server-demo": {
+      "name": "sql server demo",
+      "driver": "mssql",
+      "host": "mssql",
+      "database": "master",
+      "username": "sa",
+      "password": "SuperP4ssw0rd!"
+    }
+  }
+}

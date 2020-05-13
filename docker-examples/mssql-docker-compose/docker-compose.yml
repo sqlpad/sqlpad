@@ -16,9 +16,10 @@ services:
     ports:
       - '3000:3000'
     environment:
-      - SQLPAD_DEBUG=TRUE
+      SQLPAD_CONFIG: /etc/sqlpad/config.json
     volumes:
       - sqlpad-volume:/var/lib/sqlpad
+      - ./config.json:/etc/sqlpad/config.json
 
 volumes:
   sqlpad-volume:
