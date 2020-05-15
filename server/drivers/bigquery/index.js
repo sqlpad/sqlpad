@@ -152,6 +152,7 @@ function getSchema(connection) {
             table_name: tableId,
             column_name: field.name,
             data_type: field.type,
+            column_description: field.description,
           });
         }
       }
