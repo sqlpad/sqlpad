@@ -16,6 +16,7 @@ import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
 import ErrorBlock from '../common/ErrorBlock';
+import Tooltip from '../common/Tooltip';
 
 const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
@@ -101,9 +102,22 @@ function SchemaSidebar({
       );
     }
     if (row.type === 'column') {
-      let secondary = ` ${row.dataType}`;
+      const secondary = [<span key="colType"> {row.dataType}</span>];
+
       if (row.description) {
-        secondary += ` - ${row.description}`;
+        const description = (
+          <Tooltip
+            key="colDesc"
+            label={row.description}
+            style={{
+              'max-width': '300px',
+              'white-space': 'normal',
+            }}
+          >
+            <span className={styles.description}> - {row.description}</span>
+          </Tooltip>
+        );
+        secondary.push(description);
       }
       return (
         <li
