@@ -42,6 +42,7 @@ function formatSchemaQueryResults(queryResult) {
           {
             column_name: "the column name",
             data_type: "string"
+            column_description: "an optional description"
           }
         ]
       }
