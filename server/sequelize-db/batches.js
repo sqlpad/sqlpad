@@ -52,8 +52,7 @@ module.exports = function (sequelize) {
       chart: {
         type: DataTypes.JSON,
       },
-      // Users create them but not update (the system does though)
-      createdBy: {
+      userId: {
         type: DataTypes.STRING,
         allowNull: false,
       },

@@ -58,8 +58,7 @@ async function up(queryInterface, config, appLog, nedb) {
     chart: {
       type: Sequelize.JSON,
     },
-    // Users create them but not update (the system does though)
-    created_by: {
+    user_id: {
       type: Sequelize.STRING,
       allowNull: false,
     },
@@ -76,8 +75,8 @@ async function up(queryInterface, config, appLog, nedb) {
   await migrationUtils.addOrReplaceIndex(
     queryInterface,
     'batches',
-    'batches_created_by',
-    ['created_by']
+    'batches_user_id',
+    ['user_id']
   );
 
   await migrationUtils.addOrReplaceIndex(
