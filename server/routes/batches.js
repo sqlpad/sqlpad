@@ -1,7 +1,6 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const pushQueryToSlack = require('../lib/push-query-to-slack');
 const wrap = require('../lib/wrap');
 
 /**
