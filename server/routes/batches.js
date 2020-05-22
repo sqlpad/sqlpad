@@ -1,6 +1,7 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
+const executeBatch = require('../lib/execute-batch');
 const wrap = require('../lib/wrap');
 
 /**
@@ -47,7 +48,7 @@ router.get('/api/batches/:id', mustBeAuthenticated, wrap(get));
  * @param {Res} res
  */
 async function create(req, res) {
-  const { models, body, user } = req;
+  const { models, body, user, appLog } = req;
   const {
     queryId,
     name,
@@ -71,7 +72,9 @@ async function create(req, res) {
 
   const newBatch = await models.batches.create(batch);
 
-  // TODO run statements here
+  // Run batch, but don't wait for it to send response
+  // Client will get status via polling or perhaps some future event mechanism
+  executeBatch(models, newBatch.id).catch((error) => appLog.error(error));
 
   return res.utils.data(newBatch);
 }
