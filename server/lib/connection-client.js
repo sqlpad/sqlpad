@@ -257,6 +257,11 @@ class ConnectionClient {
     finalResult.queryRunTime = finalResult.stopTime - finalResult.startTime;
     finalResult.meta = getMeta(rows);
     finalResult.fields = Object.keys(finalResult.meta);
+    finalResult.columns = Object.entries(finalResult.meta).map(
+      ([key, value]) => {
+        return { ...value, name: key };
+      }
+    );
 
     appLog.info(
       {
