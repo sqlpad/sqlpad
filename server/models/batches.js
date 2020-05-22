@@ -19,6 +19,7 @@ class Batches {
 
     const statements = await this.sequelizeDb.Statements.findAll({
       where: { batchId: id },
+      order: [['sequence', 'ASC']],
     });
     batch.statements = statements.map((s) => s.toJSON());
 
