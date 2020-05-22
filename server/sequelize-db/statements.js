@@ -25,7 +25,7 @@ module.exports = function (sequelize) {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
-          isIn: [['queued', 'running', 'finished', 'error', 'cancelled']],
+          isIn: [['queued', 'running', 'finished', 'error']],
         },
         defaultValue: 'queued',
       },
