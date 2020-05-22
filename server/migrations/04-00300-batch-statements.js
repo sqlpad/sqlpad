@@ -115,7 +115,6 @@ async function up(queryInterface, config, appLog, nedb) {
     },
     start_time: {
       type: Sequelize.DATE,
-      allowNull: false,
     },
     stop_time: {
       type: Sequelize.DATE,
