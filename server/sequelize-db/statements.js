@@ -5,12 +5,12 @@ module.exports = function (sequelize) {
     'Statements',
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         primaryKey: true,
-        autoIncrement: true,
+        defaultValue: Sequelize.UUIDV4,
       },
       batchId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.UUID,
         allowNull: false,
       },
       sequence: {

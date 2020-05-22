@@ -5,9 +5,9 @@ module.exports = function (sequelize) {
     'Batches',
     {
       id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
+        type: DataTypes.UUID,
         primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
       },
       // A batch can be run without saving the query
       queryId: {

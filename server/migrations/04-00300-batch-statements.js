@@ -16,9 +16,8 @@ async function up(queryInterface, config, appLog, nedb) {
    */
   await queryInterface.createTable('batches', {
     id: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.UUID,
       primaryKey: true,
-      autoIncrement: true,
     },
     query_id: {
       type: Sequelize.STRING,
@@ -92,12 +91,11 @@ async function up(queryInterface, config, appLog, nedb) {
    */
   await queryInterface.createTable('statements', {
     id: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.UUID,
       primaryKey: true,
-      autoIncrement: true,
     },
     batch_id: {
-      type: Sequelize.INTEGER,
+      type: Sequelize.UUID,
       allowNull: false,
     },
     sequence: {
