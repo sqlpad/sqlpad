@@ -39,8 +39,11 @@ module.exports = function (sequelize) {
       columns: {
         type: Sequelize.JSON,
       },
-      row_count: {
+      rowCount: {
         type: Sequelize.INTEGER,
+      },
+      resultPath: {
+        type: Sequelize.STRING,
       },
       error: {
         type: Sequelize.JSON,
