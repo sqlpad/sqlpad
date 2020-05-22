@@ -60,7 +60,7 @@ class Batches {
       .filter((s) => s.trim() !== '');
 
     await this.sequelizeDb.sequelize.transaction(async (transaction) => {
-      createdBatch = await this.sequelizeDb.Queries.create(batch, {
+      createdBatch = await this.sequelizeDb.Batches.create(batch, {
         transaction,
       });
 
