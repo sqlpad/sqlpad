@@ -1,7 +1,7 @@
 require('../typedefs');
 const router = require('express').Router();
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
-const ConnectionClient = require('../lib/connection-client');
+const executeBatch = require('../lib/execute-batch');
 const wrap = require('../lib/wrap');
 
 // This allows executing a query relying on the saved query text
@@ -95,30 +95,29 @@ async function getQueryResult(req, data) {
     user,
   } = data;
 
-  let queryResult;
-
   const connection = await models.connections.findOneById(connectionId);
 
   if (!connection) {
     throw new Error('Please choose a connection');
   }
 
-  if (connectionClientId) {
-    const connectionClient = models.connectionClients.getOneById(
-      connectionClientId
-    );
-    if (!connectionClient) {
-      throw new Error('Connection client disconnected');
-    }
-    queryResult = await connectionClient.runQuery(queryText);
-  } else {
-    const connectionClient = new ConnectionClient(connection, user);
-    queryResult = await connectionClient.runQuery(queryText);
-  }
+  const batchData = {
+    queryId,
+    name: queryName,
+    connectionId,
+    connectionClientId,
+    batchText: queryText,
+    selectedText: queryText,
+    userId: user.id,
+  };
+
+  const batch = await models.batches.create(batchData);
+  const queryResult = await executeBatch(config, models, batch.id);
 
   queryResult.cacheKey = cacheKey;
 
   if (config.get('queryHistoryRetentionTimeInDays') > 0) {
+    // TODO move to background job
     await models.queryHistory.removeOldEntries();
     await models.queryHistory.save({
       userId: user ? user.id : 'unauthenticated link',
