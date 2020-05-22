@@ -9,9 +9,9 @@ module.exports = function (sequelize) {
         autoIncrement: true,
         primaryKey: true,
       },
+      // A batch can be run without saving the query
       queryId: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       name: {
         type: DataTypes.STRING,
