@@ -1,3 +1,10 @@
+const util = require('util');
+const path = require('path');
+const fs = require('fs');
+const mkdirp = require('mkdirp');
+const papa = require('papaparse');
+const writeFile = util.promisify(fs.writeFile);
+
 class Statements {
   /**
    * @param {import('../sequelize-db')} sequelizeDb
@@ -35,33 +42,44 @@ class Statements {
     return this.sequelizeDb.Batches.destroy({ where: { id } });
   }
 
-  /**
-   * @param {String} id
-   * @param {Object} data
-   */
-  async update(id, data) {
-    let startTime;
-    let stopTime;
-    const { columns, rowCount, error, status } = data;
+  async updateStarted(id) {
+    const update = {
+      status: 'started',
+      startTime: new Date(),
+    };
+    await this.sequelizeDb.Statements.update(update, { where: { id } });
+    return this.findOneById(id);
+  }
 
-    if (status === 'started') {
-      startTime = new Date();
-    } else if (status === 'finished' || status === 'error') {
-      stopTime = new Date();
-    }
+  async updateErrored(id, error) {
+    const update = {
+      status: 'error',
+      stopTime: new Date(),
+      error,
+    };
+    await this.sequelizeDb.Statements.update(update, { where: { id } });
+    return this.findOneById(id);
+  }
+
+  async updateFinished(id, queryResult) {
+    const dbPath = this.config.get('dbPath');
+    const dir = id.slice(0, 3);
+    await mkdirp(path.join(dbPath, 'results', dir));
+    const resultPath = path.join('results', dir, `${id}.csv`);
+    const fullPath = path.join(dbPath, resultPath);
 
     const update = {
-      startTime,
-      stopTime,
-      columns,
-      rowCount,
-      error,
-      status,
+      status: 'finished',
+      stopTime: new Date(),
+      rowCount: queryResult.rows.length,
+      columns: queryResult.columns,
+      resultPath,
     };
 
-    await this.sequelizeDb.Statements.update(update, { where: { id } });
+    const csv = papa.unparse(queryResult.rows);
+    await writeFile(fullPath, csv);
 
-    return this.findOneById(id);
+    await this.sequelizeDb.Statements.update(update, { where: { id } });
   }
 }
 

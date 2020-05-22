@@ -5,12 +5,10 @@ const ConnectionClient = require('./connection-client');
  * Execute a query using batch/statement infrastructure
  * Batch must already be created.
  * Returns last statement result on finish to remain compatible with old "query-result" use
- * @param {Object} config
- * @param {Object} user
  * @param {import('../models/index')} models
  * @param {string} batchId
  */
-async function executeBatch(config, models, batchId) {
+async function executeBatch(models, batchId) {
   const batch = await models.batches.findOneById(batchId);
   const user = await models.users.findOneById(batch.userId);
   const connection = await models.connections.findOneById(batch.connectionId);
@@ -41,20 +39,11 @@ async function executeBatch(config, models, batchId) {
   let queryResult;
   for (const statement of batch.statements) {
     try {
-      await models.statements.update(statement.id, {
-        status: 'started',
-      });
+      await models.statements.updateStarted(statement.id);
       queryResult = await connectionClient.runQuery(statement.statementText);
-      await models.statements.update(statement.id, {
-        status: 'finished',
-        columns: queryResult.columns,
-        rowCount: queryResult.rows.length,
-      });
+      await models.statements.updateFinished(statement.id, queryResult);
     } catch (error) {
-      await models.statements.update(statement.id, {
-        status: 'error',
-        error,
-      });
+      await models.statements.updateErrored(statement.id, error);
     }
   }
 

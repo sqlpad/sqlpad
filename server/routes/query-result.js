@@ -112,7 +112,7 @@ async function getQueryResult(req, data) {
   };
 
   const batch = await models.batches.create(batchData);
-  const queryResult = await executeBatch(config, models, batch.id);
+  const queryResult = await executeBatch(models, batch.id);
 
   queryResult.cacheKey = cacheKey;
 
