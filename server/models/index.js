@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const Batches = require('./batches');
 const ConnectionAccesses = require('./connection-accesses');
 const ConnectionClients = require('./connection-clients');
 const Connections = require('./connections');
@@ -8,12 +9,14 @@ const QueryHistory = require('./query-history');
 const ResultCache = require('./result-cache');
 const SchemaInfo = require('./schema-info');
 const ServiceTokens = require('./service-tokens');
+const Statements = require('./statements');
 const Tags = require('./tags');
 const Users = require('./users');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 class Models {
   constructor(sequelizeDb, config) {
+    this.batches = new Batches(sequelizeDb, config);
     this.connectionAccesses = new ConnectionAccesses(sequelizeDb, config);
     this.connectionClients = new ConnectionClients(sequelizeDb, config);
     this.connections = new Connections(sequelizeDb, config);
@@ -23,6 +26,7 @@ class Models {
     this.resultCache = new ResultCache(sequelizeDb, config);
     this.schemaInfo = new SchemaInfo(sequelizeDb, config);
     this.serviceTokens = new ServiceTokens(sequelizeDb, config);
+    this.statements = new Statements(sequelizeDb, config);
     this.tags = new Tags(sequelizeDb, config);
     this.users = new Users(sequelizeDb, config);
   }

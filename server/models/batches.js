@@ -1,0 +1,103 @@
+const sqlLimiter = require('sql-limiter');
+
+class Batches {
+  /**
+   * @param {import('../sequelize-db')} sequelizeDb
+   * @param {import('../lib/config')} config
+   */
+  constructor(sequelizeDb, config) {
+    this.sequelizeDb = sequelizeDb;
+    this.config = config;
+  }
+
+  async findOneById(id) {
+    let batch = await this.sequelizeDb.Batches.findOne({ where: { id } });
+    if (!batch) {
+      return;
+    }
+    batch = batch.toJSON();
+
+    const statements = await this.sequelizeDb.Statements.findAll({
+      where: { batchId: id },
+    });
+    batch.statements = statements.map((s) => s.toJSON());
+
+    return batch;
+  }
+
+  async findAllForUser(user) {
+    let items = await this.sequelizeDb.Batches.findAll({
+      where: { userId: user.Id },
+    });
+    items = items.map((item) => item.toJSON());
+    return items;
+  }
+
+  async findAll() {
+    let items = await this.sequelizeDb.Batches.findAll({});
+    items = items.map((item) => item.toJSON());
+    return items;
+  }
+
+  removeById(id) {
+    return this.sequelizeDb.sequelize.transaction(async (transaction) => {
+      await this.sequelizeDb.Batches.destroy({ where: { id }, transaction });
+      throw new Error('TODO - remove statements');
+    });
+  }
+
+  /**
+   * Create a new batch (and statements)
+   * selectedText is parsed out into statements
+   * @param {object} batch
+   */
+  async create(batch) {
+    let createdBatch;
+
+    const statementTexts = sqlLimiter
+      .getStatements(batch.selectedText)
+      .map((s) => sqlLimiter.removeTerminator(s))
+      .filter((s) => s.trim() !== '');
+
+    await this.sequelizeDb.sequelize.transaction(async (transaction) => {
+      createdBatch = await this.sequelizeDb.Queries.create(batch, {
+        transaction,
+      });
+
+      const statements = statementTexts.map((statementText, i) => {
+        return {
+          batchId: createdBatch.id,
+          sequence: i + 1,
+          statementText,
+          status: 'queued',
+        };
+      });
+
+      await this.sequelizeDb.Statements.bulkCreate(statements, { transaction });
+    });
+
+    return this.findOneById(createdBatch.id);
+  }
+
+  /**
+   * Update batch object
+   * Statements are not updated through this method
+   * @param {string} id
+   * @param {string} status
+   */
+  async updateStatus(id, status) {
+    let stopTime;
+    if (status === 'error' || status === 'finished') {
+      stopTime = new Date();
+    }
+
+    await this.sequelizeDb.Batches.update(
+      { stopTime, status },
+      { where: { id } }
+    );
+
+    return this.findOneById(id);
+  }
+}
+
+module.exports = Batches;
