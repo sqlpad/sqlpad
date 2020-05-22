@@ -63,21 +63,27 @@ class Statements {
 
   async updateFinished(id, queryResult) {
     const dbPath = this.config.get('dbPath');
-    const dir = id.slice(0, 3);
-    await mkdirp(path.join(dbPath, 'results', dir));
-    const resultPath = path.join('results', dir, `${id}.csv`);
-    const fullPath = path.join(dbPath, resultPath);
+    const rowCount = queryResult.rows.length;
+
+    let resultPath;
+
+    // If rows returned write results csv
+    if (rowCount > 0) {
+      const dir = id.slice(0, 3);
+      await mkdirp(path.join(dbPath, 'results', dir));
+      resultPath = path.join('results', dir, `${id}.csv`);
+      const fullPath = path.join(dbPath, resultPath);
+      const csv = papa.unparse(queryResult.rows);
+      await writeFile(fullPath, csv);
+    }
 
     const update = {
       status: 'finished',
       stopTime: new Date(),
-      rowCount: queryResult.rows.length,
+      rowCount,
       columns: queryResult.columns,
       resultPath,
     };
-
-    const csv = papa.unparse(queryResult.rows);
-    await writeFile(fullPath, csv);
 
     await this.sequelizeDb.Statements.update(update, { where: { id } });
   }
