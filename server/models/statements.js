@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const writeFile = util.promisify(fs.writeFile);
+const readFile = util.promisify(fs.readFile);
 
 class Statements {
   /**
@@ -87,6 +88,26 @@ class Statements {
     };
 
     await this.sequelizeDb.Statements.update(update, { where: { id } });
+  }
+
+  async getStatementResults(id) {
+    const statement = await this.findOneById(id);
+    if (!statement) {
+      throw new Error('Statement not found');
+    }
+    const { resultPath } = statement;
+
+    // If no result path the query had no rows.
+    // Return empty array
+    if (!resultPath) {
+      return [];
+    }
+
+    const fileData = await readFile(
+      path.join(this.config.get('dbPath'), resultPath),
+      'utf8'
+    );
+    return JSON.parse(fileData);
   }
 }
 

@@ -152,26 +152,14 @@ router.get(
  * @param {Res} res
  */
 async function getBatchStatementResults(req, res) {
-  const { config, params, batch } = req;
+  const { params, batch, models } = req;
 
   const statement = batch.statements.find((s) => s.id === params.statementId);
   if (!statement) {
     return res.utils.notFound();
   }
 
-  const { resultPath } = statement;
-
-  // If no result path the query had no rows.
-  // Send empty array in case this is called.
-  if (!resultPath) {
-    return res.utils.data([]);
-  }
-
-  const fileData = await readFile(
-    path.join(config.get('dbPath'), resultPath),
-    'utf8'
-  );
-  const rows = JSON.parse(fileData);
+  const rows = await models.statements.getStatementResults(statement.id);
   return res.utils.data(rows);
 }
 
