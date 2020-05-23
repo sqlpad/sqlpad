@@ -123,6 +123,34 @@ describe('api/batches', function () {
       [1, 'blue'],
       [2, 'red'],
     ]);
+
+    // Test downloads
+    let res = await utils.getResponse(
+      'admin',
+      `/statement-result/${statement1.id}.csv`,
+      200
+    );
+    assert.equal(res.type, 'text/csv');
+    assert.equal(res.text, 'id,color\r\n1,blue');
+
+    res = await utils.getResponse(
+      'admin',
+      `/statement-result/${statement1.id}.json`,
+      200
+    );
+    assert.equal(res.type, 'application/json');
+    assert.equal(res.text, '[{"id":1,"color":"blue"}]');
+
+    res = await utils.getResponse(
+      'admin',
+      `/statement-result/${statement1.id}.xlsx`,
+      200
+    );
+    assert.equal(
+      res.type,
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    );
+    // For xlsx, we'll assume generated file is as expected
   });
 
   it('Only batch creator can view batch', async function () {

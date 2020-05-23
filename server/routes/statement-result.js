@@ -4,6 +4,8 @@ const xlsx = require('node-xlsx');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const wrap = require('../lib/wrap');
+const moment = require('moment');
+const sanitize = require('sanitize-filename');
 
 const FORMATS = ['csv', 'json', 'xlsx'];
 
@@ -43,25 +45,25 @@ async function handleDownload(req, res) {
   }
 
   const rows = await models.statements.getStatementResults(statementId);
-  const filename = `${batch.name}.${format}`;
   const columnNames = statement.columns.map((col) => col.name);
 
-  if (format === 'csv') {
-    res.setHeader(
-      'Content-disposition',
-      'attachment; filename="' + encodeURIComponent(filename) + '"'
-    );
-    res.setHeader('Content-Type', 'text/csv');
+  const name = batch.name || 'SQLPad Query Results';
+  const simpleDate = moment().format('YYYY-MM-DD');
+  const filename = encodeURIComponent(
+    sanitize(`${name} ${simpleDate}.${format}`)
+  );
+  res.setHeader(
+    'Content-disposition',
+    'attachment; filename="' + filename + '"'
+  );
 
+  if (format === 'csv') {
+    res.setHeader('Content-Type', 'text/csv');
     const csvData = papa.unparse([columnNames].concat(rows));
     return res.send(csvData);
   }
 
   if (format === 'xlsx') {
-    res.setHeader(
-      'Content-disposition',
-      'attachment; filename="' + encodeURIComponent(filename) + '"'
-    );
     res.setHeader(
       'Content-Type',
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -73,12 +75,7 @@ async function handleDownload(req, res) {
   }
 
   if (format === 'json') {
-    res.setHeader(
-      'Content-disposition',
-      'attachment; filename="' + encodeURIComponent(filename) + '"'
-    );
     res.setHeader('Content-Type', 'application/json');
-    // JSON format is an array of objects instead of array of array we have
     const arrOfObj = rows.map((row) => {
       const obj = {};
       columnNames.forEach((name, index) => {
@@ -86,7 +83,7 @@ async function handleDownload(req, res) {
       });
       return obj;
     });
-    res.send(JSON.stringify(arrOfObj));
+    return res.send(JSON.stringify(arrOfObj));
   }
 
   // Shouldn't happen

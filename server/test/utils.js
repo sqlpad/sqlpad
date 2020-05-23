@@ -159,6 +159,14 @@ class TestUtils {
     return response.body;
   }
 
+  async getResponse(userKey, url, statusCode = 200) {
+    const req = request(this.app).get(url);
+    if (this.users[userKey]) {
+      req.set('X-WEBAUTH-EMAIL', this.users[userKey].email);
+    }
+    return req.expect(statusCode);
+  }
+
   async post(userKey, url, body, statusCode = 200) {
     const req = request(this.app).post(url);
     if (this.users[userKey]) {
