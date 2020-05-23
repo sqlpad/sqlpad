@@ -72,20 +72,6 @@ async function initNedb(config) {
     })
   );
 
-  // Apply indexes
-  await nedb.users.ensureIndex({ fieldName: 'email', unique: true });
-  await nedb.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
-  await nedb.connectionAccesses.ensureIndex({ fieldName: 'connectionId' });
-  await nedb.connectionAccesses.ensureIndex({ fieldName: 'userId' });
-  await nedb.queryHistory.ensureIndex({ fieldName: 'connectionName' });
-  await nedb.queryHistory.ensureIndex({ fieldName: 'userEmail' });
-  await nedb.queryHistory.ensureIndex({ fieldName: 'createdDate' });
-
-  // Set autocompaction
-  nedb.instances.forEach((dbname) => {
-    nedb[dbname].nedb.persistence.setAutocompactionInterval(ONE_DAY);
-  });
-
   const sequelizeDb = new SequelizeDb(config);
 
   // Schedule cleanups

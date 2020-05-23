@@ -182,7 +182,6 @@ class ConnectionClient {
 
     const finalResult = {
       id: uuidv4(),
-      cacheKey: null,
       startTime: new Date(),
       stopTime: null,
       queryRunTime: null,

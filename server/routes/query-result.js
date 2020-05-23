@@ -33,7 +33,6 @@ router.get(
 
     const data = {
       connectionId: query.connectionId,
-      cacheKey: query.id,
       queryId: query.id,
       queryName: query.name,
       queryText: query.queryText,
@@ -58,7 +57,6 @@ router.post(
     const { body, user } = req;
 
     const data = {
-      cacheKey: body.cacheKey,
       connectionId: body.connectionId,
       queryId: body.queryId,
       queryName: body.queryName,
@@ -88,7 +86,6 @@ async function getQueryResult(req, data) {
   const {
     connectionId,
     connectionClientId,
-    cacheKey,
     queryId,
     queryName,
     queryText,
@@ -113,8 +110,6 @@ async function getQueryResult(req, data) {
 
   const batch = await models.batches.create(batchData);
   const queryResult = await executeBatch(models, batch.id);
-
-  queryResult.cacheKey = cacheKey;
 
   if (config.get('queryHistoryRetentionTimeInDays') > 0) {
     await models.queryHistory.save({

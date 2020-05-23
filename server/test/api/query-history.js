@@ -103,12 +103,10 @@ describe('api/query-history', function () {
     // Run some queries to generate query history directly from the query editor
     await utils.post('admin', `/api/query-result`, {
       connectionId: connection.id,
-      cacheKey: 'cachekey',
       queryText: queryText2,
     });
     await utils.post('admin', `/api/query-result`, {
       connectionId: connection.id,
-      cacheKey: 'cachekey',
       queryText: queryText2,
     });
 

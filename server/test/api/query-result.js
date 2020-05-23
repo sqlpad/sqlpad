@@ -10,7 +10,6 @@ const queryText = `
 
 function validateQueryResult(queryResult) {
   assert(queryResult.id, 'id');
-  assert(queryResult.cacheKey, 'cacheKey');
   assert(queryResult.startTime, 'startTime');
   assert(queryResult.stopTime, 'stopTime');
   assert(queryResult.queryRunTime >= 0, 'queryRunTime');
@@ -56,7 +55,6 @@ describe('api/query-result', function () {
   it('POST /api/query-result', async function () {
     const body = await utils.post('admin', `/api/query-result`, {
       connectionId: connection.id,
-      cacheKey: 'cachekey',
       queryName: 'test query',
       queryText,
     });
