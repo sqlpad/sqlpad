@@ -173,7 +173,10 @@ async function getBatchStatementResults(req, res) {
     return res.utils.data([]);
   }
 
-  const fileData = await readFile(path.join(config.get('dbPath'), resultPath));
+  const fileData = await readFile(
+    path.join(config.get('dbPath'), resultPath),
+    'utf8'
+  );
   const { data, errors } = papa.parse(fileData);
 
   // If there are errors this is unexpected and something the user cannot control

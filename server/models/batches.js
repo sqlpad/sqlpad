@@ -58,7 +58,7 @@ class Batches {
     const statementTexts = sqlLimiter
       .getStatements(batch.selectedText)
       .map((s) => sqlLimiter.removeTerminator(s))
-      .filter((s) => s.trim() !== '');
+      .filter((s) => s && s.trim() !== '');
 
     await this.sequelizeDb.sequelize.transaction(async (transaction) => {
       createdBatch = await this.sequelizeDb.Batches.create(batch, {

@@ -140,6 +140,7 @@ function makeApp(config, models) {
     require('./routes/tags.js'),
     require('./routes/format-sql.js'),
     require('./routes/service-tokens.js'),
+    require('./routes/batches'),
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
@@ -160,6 +161,7 @@ function makeApp(config, models) {
     if (res.headersSent) {
       return next(err);
     }
+    console.log(err);
     appLog.error(err);
     return res.status(500).json({
       title: 'Internal Server Error',
