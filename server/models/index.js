@@ -6,7 +6,6 @@ const Connections = require('./connections');
 const Queries = require('./queries');
 const QueryAcl = require('./query-acl');
 const QueryHistory = require('./query-history');
-const ResultCache = require('./result-cache');
 const SchemaInfo = require('./schema-info');
 const ServiceTokens = require('./service-tokens');
 const Statements = require('./statements');
@@ -23,7 +22,6 @@ class Models {
     this.queries = new Queries(sequelizeDb, config);
     this.queryAcl = new QueryAcl(sequelizeDb, config);
     this.queryHistory = new QueryHistory(sequelizeDb, config);
-    this.resultCache = new ResultCache(sequelizeDb, config);
     this.schemaInfo = new SchemaInfo(sequelizeDb, config);
     this.serviceTokens = new ServiceTokens(sequelizeDb, config);
     this.statements = new Statements(sequelizeDb, config);

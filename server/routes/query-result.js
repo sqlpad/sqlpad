@@ -117,8 +117,6 @@ async function getQueryResult(req, data) {
   queryResult.cacheKey = cacheKey;
 
   if (config.get('queryHistoryRetentionTimeInDays') > 0) {
-    // TODO move to background job
-    await models.queryHistory.removeOldEntries();
     await models.queryHistory.save({
       userId: user ? user.id : 'unauthenticated link',
       userEmail: user ? user.email : 'anauthenticated link',
@@ -133,13 +131,6 @@ async function getQueryResult(req, data) {
       incomplete: queryResult.incomplete,
       rowCount: queryResult.rows.length,
     });
-  }
-
-  if (config.get('allowCsvDownload')) {
-    await models.resultCache.saveResultCache(cacheKey, queryName);
-    await models.resultCache.writeXlsx(cacheKey, queryResult);
-    await models.resultCache.writeCsv(cacheKey, queryResult);
-    await models.resultCache.writeJson(cacheKey, queryResult);
   }
 
   return queryResult;

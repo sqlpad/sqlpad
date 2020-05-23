@@ -91,7 +91,7 @@ async function initNedb(config) {
   // Schedule cleanups
   const models = new Models(sequelizeDb, config);
   setInterval(async () => {
-    await models.resultCache.removeExpired();
+    // TODO - remove batch statement results?
     await models.queryHistory.removeOldEntries();
   }, FIVE_MINUTES);
 
