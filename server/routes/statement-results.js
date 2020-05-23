@@ -91,7 +91,7 @@ async function handleDownload(req, res) {
 }
 
 router.get(
-  '/statement-result/:statementId.:format',
+  '/statement-results/:statementId.:format',
   mustBeAuthenticated,
   wrap(handleDownload)
 );

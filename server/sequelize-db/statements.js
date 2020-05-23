@@ -41,7 +41,7 @@ module.exports = function (sequelize) {
       rowCount: {
         type: Sequelize.INTEGER,
       },
-      resultPath: {
+      resultsPath: {
         type: Sequelize.STRING,
       },
       error: {

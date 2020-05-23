@@ -122,7 +122,7 @@ async function up(queryInterface, config, appLog, nedb) {
     row_count: {
       type: Sequelize.INTEGER,
     },
-    result_path: {
+    results_path: {
       type: Sequelize.STRING,
     },
     error: {

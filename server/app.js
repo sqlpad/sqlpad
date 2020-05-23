@@ -138,7 +138,7 @@ function makeApp(config, models) {
 
   const authRequiredRouters = [
     require('./routes/query-result.js'),
-    require('./routes/statement-result.js'),
+    require('./routes/statement-results.js'),
     require('./routes/queries.js'),
     require('./routes/drivers.js'),
     require('./routes/users.js'),

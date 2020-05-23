@@ -65,14 +65,14 @@ class Statements {
     const dbPath = this.config.get('dbPath');
     const rowCount = queryResult.rows.length;
 
-    let resultPath;
+    let resultsPath;
 
     // If rows returned write results csv
     if (rowCount > 0) {
       const dir = id.slice(0, 3);
       await mkdirp(path.join(dbPath, 'results', dir));
-      resultPath = path.join('results', dir, `${id}.json`);
-      const fullPath = path.join(dbPath, resultPath);
+      resultsPath = path.join('results', dir, `${id}.json`);
+      const fullPath = path.join(dbPath, resultsPath);
       const arrOfArr = queryResult.rows.map((row) => {
         return queryResult.columns.map((col) => row[col.name]);
       });
@@ -84,7 +84,7 @@ class Statements {
       stopTime: new Date(),
       rowCount,
       columns: queryResult.columns,
-      resultPath,
+      resultsPath,
     };
 
     await this.sequelizeDb.Statements.update(update, { where: { id } });
@@ -95,16 +95,16 @@ class Statements {
     if (!statement) {
       throw new Error('Statement not found');
     }
-    const { resultPath } = statement;
+    const { resultsPath } = statement;
 
     // If no result path the query had no rows.
     // Return empty array
-    if (!resultPath) {
+    if (!resultsPath) {
       return [];
     }
 
     const fileData = await readFile(
-      path.join(this.config.get('dbPath'), resultPath),
+      path.join(this.config.get('dbPath'), resultsPath),
       'utf8'
     );
     return JSON.parse(fileData);

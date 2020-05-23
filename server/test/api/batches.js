@@ -75,8 +75,8 @@ describe('api/batches', function () {
     assert.equal(statement1.batchId, batch.id);
     assert.equal(statement1.status, 'finished');
     assert.equal(statement1.rowCount, 1);
-    assert(statement1.resultPath.indexOf(statement1.id));
-    assert(statement1.resultPath.includes('results'));
+    assert(statement1.resultsPath.indexOf(statement1.id));
+    assert(statement1.resultsPath.includes('results'));
 
     statement2 = statements[1];
     assert.equal(statement2.sequence, 2);
@@ -104,8 +104,8 @@ describe('api/batches', function () {
     assert.equal(statement1.batchId, batch.id);
     assert.equal(statement1.status, 'finished');
     assert.equal(statement1.rowCount, 1);
-    assert(statement1.resultPath.indexOf(statement1.id));
-    assert(statement1.resultPath.includes('results'));
+    assert(statement1.resultsPath.indexOf(statement1.id));
+    assert(statement1.resultsPath.includes('results'));
   });
 
   it('Gets statement result', async function () {
@@ -127,7 +127,7 @@ describe('api/batches', function () {
     // Test downloads
     let res = await utils.getResponse(
       'admin',
-      `/statement-result/${statement1.id}.csv`,
+      `/statement-results/${statement1.id}.csv`,
       200
     );
     assert.equal(res.type, 'text/csv');
@@ -135,7 +135,7 @@ describe('api/batches', function () {
 
     res = await utils.getResponse(
       'admin',
-      `/statement-result/${statement1.id}.json`,
+      `/statement-results/${statement1.id}.json`,
       200
     );
     assert.equal(res.type, 'application/json');
@@ -143,7 +143,7 @@ describe('api/batches', function () {
 
     res = await utils.getResponse(
       'admin',
-      `/statement-result/${statement1.id}.xlsx`,
+      `/statement-results/${statement1.id}.xlsx`,
       200
     );
     assert.equal(
@@ -184,7 +184,7 @@ describe('api/batches', function () {
     assert.equal(b.status, 'error');
     assert.equal(b.statements[0].status, 'error');
     assert.equal(b.statements[0].rowCount, null, 'no rowCount');
-    assert.equal(b.statements[0].resultPath, null, 'no resultpath');
+    assert.equal(b.statements[0].resultsPath, null, 'no resultpath');
     assert(b.statements[0].startTime, 'has startTime');
     assert(b.statements[0].stopTime, 'has stopTime');
     assert.deepEqual(b.statements[0].error, {
@@ -192,7 +192,7 @@ describe('api/batches', function () {
     });
     assert.equal(b.statements[1].status, 'queued');
     assert.equal(b.statements[1].rowCount, null, 'no rowCount');
-    assert.equal(b.statements[1].resultPath, null, 'no resultpath');
+    assert.equal(b.statements[1].resultsPath, null, 'no resultpath');
     assert.equal(b.statements[1].startTime, null, 'no startTime');
     assert.equal(b.statements[1].stopTime, null, 'no stopTime');
   });
@@ -206,6 +206,6 @@ describe('api/batches', function () {
     });
     await wait(500);
     b = await utils.get('admin', `/api/batches/${b.id}`);
-    assert.equal(b.statements[0].resultPath, null);
+    assert.equal(b.statements[0].resultsPath, null);
   });
 });
