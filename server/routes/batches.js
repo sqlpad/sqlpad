@@ -146,9 +146,14 @@ router.get(
 );
 
 /**
- * Get batch statement
+ * Get batch statement results
  * Only statement from batch created by that user are permitted.
  * Eventually this may need to expand to basing this on whether user has access to that query and/or connection
+ *
+ * TODO - finalize data format.
+ * Sends JSON because this is /api, and for client convenience.
+ * CSV can be different route along with xlsx, JSON
+ *
  * @param {Req} req
  * @param {Res} res
  */
