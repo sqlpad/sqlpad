@@ -150,9 +150,8 @@ router.get(
  * Only statement from batch created by that user are permitted.
  * Eventually this may need to expand to basing this on whether user has access to that query and/or connection
  *
- * TODO - finalize data format.
- * Sends JSON because this is /api, and for client convenience.
- * CSV can be different route along with xlsx, JSON
+ * This API sends an array of row arrays as JSON, to remain consistent with /api routes and for client convenience
+ * File downloads (CSV, JSON, and XLSX) will be implemented as other routes
  *
  * @param {Req} req
  * @param {Res} res
