@@ -185,7 +185,26 @@ async function getBatchStatementResults(req, res) {
     throw new Error(errors[0].message);
   }
 
-  return res.utils.data(data);
+  function cleanRow(row) {
+    return statement.columns.map((column, index) => {
+      const colValue = row[index];
+      if (column.type === 'number') {
+        if (colValue === null || colValue.trim() === '') {
+          return null;
+        }
+        if (isNaN(colValue)) {
+          return colValue;
+        }
+        return Number(colValue);
+      }
+      return colValue;
+    });
+  }
+
+  // data is an array of arrays, with first row being headers.
+  // Remove the first header;
+  const cleaned = data.slice(1).map((row) => cleanRow(row));
+  return res.utils.data(cleaned);
 }
 
 router.get(

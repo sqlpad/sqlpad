@@ -1,8 +1,8 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
 
-const query1 = 'SELECT id, color FROM vw_sales ORDER BY id LIMIT 1';
-const query2 = 'SELECT id, color FROM vw_sales ORDER BY id LIMIT 2';
+const query1 = `SELECT 1 AS id, 'blue' AS color`;
+const query2 = `SELECT 1 AS id, 'blue' AS color UNION ALL SELECT 2 AS id, 'red' AS color ORDER BY id`;
 
 const queryText = `${query1};${query2}`;
 
@@ -107,11 +107,20 @@ describe('api/batches', function () {
   });
 
   it('Gets statement result', async function () {
-    // const results = await utils.get(
-    //   'admin',
-    //   `/api/batches/${batch.id}/statements/${statement1.id}/results`
-    // );
-    // console.log(results);
+    const result1 = await utils.get(
+      'admin',
+      `/api/batches/${batch.id}/statements/${statement1.id}/results`
+    );
+    assert.deepEqual(result1, [[1, 'blue']]);
+
+    const result2 = await utils.get(
+      'admin',
+      `/api/batches/${batch.id}/statements/${statement2.id}/results`
+    );
+    assert.deepEqual(result2, [
+      [1, 'blue'],
+      [2, 'red'],
+    ]);
   });
 
   it('Only batch creator can view batch', async function () {
