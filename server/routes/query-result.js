@@ -109,25 +109,7 @@ async function getQueryResult(req, data) {
   };
 
   const batch = await models.batches.create(batchData);
-  const queryResult = await executeBatch(models, batch.id);
-
-  if (config.get('queryHistoryRetentionTimeInDays') > 0) {
-    await models.queryHistory.save({
-      userId: user ? user.id : 'unauthenticated link',
-      userEmail: user ? user.email : 'anauthenticated link',
-      connectionId: connection.id,
-      connectionName: connection.name,
-      startTime: queryResult.startTime,
-      stopTime: queryResult.stopTime,
-      queryRunTime: queryResult.queryRunTime,
-      queryId,
-      queryName,
-      queryText,
-      incomplete: queryResult.incomplete,
-      rowCount: queryResult.rows.length,
-    });
-  }
-
+  const queryResult = await executeBatch(config, models, batch.id);
   return queryResult;
 }
 

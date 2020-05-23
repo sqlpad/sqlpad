@@ -1,12 +1,8 @@
 require('../typedefs');
-const fs = require('fs');
-const path = require('path');
-const { promisify } = require('util');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const executeBatch = require('../lib/execute-batch');
 const wrap = require('../lib/wrap');
-const readFile = promisify(fs.readFile);
 
 /**
  * Create batch
@@ -14,7 +10,7 @@ const readFile = promisify(fs.readFile);
  * @param {Res} res
  */
 async function create(req, res) {
-  const { models, body, user, appLog } = req;
+  const { config, models, body, user, appLog } = req;
   const {
     queryId,
     name,
@@ -40,7 +36,9 @@ async function create(req, res) {
 
   // Run batch, but don't wait for it to send response
   // Client will get status via polling or perhaps some future event mechanism
-  executeBatch(models, newBatch.id).catch((error) => appLog.error(error));
+  executeBatch(config, models, newBatch.id).catch((error) =>
+    appLog.error(error)
+  );
 
   return res.utils.data(newBatch);
 }
