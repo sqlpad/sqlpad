@@ -37,14 +37,24 @@ async function executeBatch(models, batchId) {
 
   // run statements
   let queryResult;
+  let errored = false;
   for (const statement of batch.statements) {
     try {
       await models.statements.updateStarted(statement.id);
       queryResult = await connectionClient.runQuery(statement.statementText);
       await models.statements.updateFinished(statement.id, queryResult);
     } catch (error) {
-      await models.statements.updateErrored(statement.id, error);
+      errored = true;
+      await models.statements.updateErrored(statement.id, {
+        title: error.message,
+      });
+      await models.batches.updateStatus(batch.id, 'error');
+      break;
     }
+  }
+
+  if (!errored) {
+    await models.batches.updateStatus(batch.id, 'finished');
   }
 
   if (disconnectOnFinish) {

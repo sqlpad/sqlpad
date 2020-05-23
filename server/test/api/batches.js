@@ -54,13 +54,15 @@ describe('api/batches', function () {
     assert(batch.id);
     assert.equal(batch.statements.length, 2);
     assert.equal(batch.status, 'started');
-    batch = await utils.get('admin', `/api/batches/${batch.id}`);
   });
 
-  it('GETs batch statements', async function () {
+  it('GETs finished result', async function () {
     // this could be flaky,
     // but hopefully sqlite query runs faster than 1 second
-    await wait(1000);
+    await wait(500);
+    batch = await utils.get('admin', `/api/batches/${batch.id}`);
+    assert.equal(batch.status, 'finished');
+
     const statements = await utils.get(
       'admin',
       `/api/batches/${batch.id}/statements`
@@ -142,8 +144,29 @@ describe('api/batches', function () {
     );
   });
 
-  it.skip('Handles query error', async function () {
-    // TODO
+  it('Handles query error', async function () {
+    let b = await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      queryName: 'test query',
+      batchText: `SELECT * FROM; SELECT 1 AS id`,
+      selectedText: `SELECT * FROM; SELECT 1 AS id`,
+    });
+    await wait(500);
+    b = await utils.get('admin', `/api/batches/${b.id}`);
+    assert.equal(b.status, 'error');
+    assert.equal(b.statements[0].status, 'error');
+    assert.equal(b.statements[0].rowCount, null, 'no rowCount');
+    assert.equal(b.statements[0].resultPath, null, 'no resultpath');
+    assert(b.statements[0].startTime, 'has startTime');
+    assert(b.statements[0].stopTime, 'has stopTime');
+    assert.deepEqual(b.statements[0].error, {
+      title: 'SQLITE_ERROR: incomplete input',
+    });
+    assert.equal(b.statements[1].status, 'queued');
+    assert.equal(b.statements[1].rowCount, null, 'no rowCount');
+    assert.equal(b.statements[1].resultPath, null, 'no resultpath');
+    assert.equal(b.statements[1].startTime, null, 'no startTime');
+    assert.equal(b.statements[1].stopTime, null, 'no stopTime');
   });
 
   it('statement without rows does not create file', async function () {
@@ -155,7 +178,6 @@ describe('api/batches', function () {
     });
     await wait(500);
     b = await utils.get('admin', `/api/batches/${b.id}`);
-    console.log(b.statements[0]);
     assert.equal(b.statements[0].resultPath, null);
   });
 });
