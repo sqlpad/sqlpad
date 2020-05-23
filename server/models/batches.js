@@ -71,7 +71,6 @@ class Batches {
           sequence: i + 1,
           statementText,
           status: 'queued',
-          resultPath: '',
         };
       });
 

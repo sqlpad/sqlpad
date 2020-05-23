@@ -146,7 +146,16 @@ describe('api/batches', function () {
     // TODO
   });
 
-  it.skip('statement without rows does not create file', async function () {
-    // TODO
+  it('statement without rows does not create file', async function () {
+    let b = await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      queryName: 'test query',
+      batchText: `SELECT 1 AS id WHERE 1 = 0`,
+      selectedText: `SELECT 1 AS id WHERE 1 = 0`,
+    });
+    await wait(500);
+    b = await utils.get('admin', `/api/batches/${b.id}`);
+    console.log(b.statements[0]);
+    assert.equal(b.statements[0].resultPath, null);
   });
 });
