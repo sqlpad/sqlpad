@@ -79,6 +79,7 @@ class Statements {
       await writeFile(fullPath, JSON.stringify(arrOfArr));
     }
 
+    // TODO FIXME XXX handle incomplete flag
     const update = {
       status: 'finished',
       stopTime: new Date(),
