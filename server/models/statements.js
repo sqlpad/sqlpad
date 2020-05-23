@@ -2,7 +2,6 @@ const util = require('util');
 const path = require('path');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const papa = require('papaparse');
 const writeFile = util.promisify(fs.writeFile);
 
 class Statements {
@@ -71,10 +70,12 @@ class Statements {
     if (rowCount > 0) {
       const dir = id.slice(0, 3);
       await mkdirp(path.join(dbPath, 'results', dir));
-      resultPath = path.join('results', dir, `${id}.csv`);
+      resultPath = path.join('results', dir, `${id}.json`);
       const fullPath = path.join(dbPath, resultPath);
-      const csv = papa.unparse(queryResult.rows);
-      await writeFile(fullPath, csv);
+      const arrOfArr = queryResult.rows.map((row) => {
+        return queryResult.columns.map((col) => row[col.name]);
+      });
+      await writeFile(fullPath, JSON.stringify(arrOfArr));
     }
 
     const update = {

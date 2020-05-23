@@ -161,7 +161,6 @@ function makeApp(config, models) {
     if (res.headersSent) {
       return next(err);
     }
-    console.log(err);
     appLog.error(err);
     return res.status(500).json({
       title: 'Internal Server Error',

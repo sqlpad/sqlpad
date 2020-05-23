@@ -6,7 +6,6 @@ const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const executeBatch = require('../lib/execute-batch');
 const wrap = require('../lib/wrap');
-const papa = require('papaparse');
 const readFile = promisify(fs.readFile);
 
 /**
@@ -149,10 +148,6 @@ router.get(
  * Get batch statement results
  * Only statement from batch created by that user are permitted.
  * Eventually this may need to expand to basing this on whether user has access to that query and/or connection
- *
- * This API sends an array of row arrays as JSON, to remain consistent with /api routes and for client convenience
- * File downloads (CSV, JSON, and XLSX) will be implemented as other routes
- *
  * @param {Req} req
  * @param {Res} res
  */
@@ -176,34 +171,8 @@ async function getBatchStatementResults(req, res) {
     path.join(config.get('dbPath'), resultPath),
     'utf8'
   );
-  const { data, errors } = papa.parse(fileData);
-
-  // If there are errors this is unexpected and something the user cannot control
-  // Throw the first error message to return a 500
-  if (errors && errors.length) {
-    throw new Error(errors[0].message);
-  }
-
-  function cleanRow(row) {
-    return statement.columns.map((column, index) => {
-      const colValue = row[index];
-      if (column.type === 'number') {
-        if (colValue === null || colValue.trim() === '') {
-          return null;
-        }
-        if (isNaN(colValue)) {
-          return colValue;
-        }
-        return Number(colValue);
-      }
-      return colValue;
-    });
-  }
-
-  // data is an array of arrays, with first row being headers.
-  // Remove the first header;
-  const cleaned = data.slice(1).map((row) => cleanRow(row));
-  return res.utils.data(cleaned);
+  const rows = JSON.parse(fileData);
+  return res.utils.data(rows);
 }
 
 router.get(
