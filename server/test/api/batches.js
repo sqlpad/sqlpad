@@ -114,11 +114,26 @@ describe('api/batches', function () {
     // console.log(results);
   });
 
-  it.skip('Handles query error', async function () {
-    // TODO
+  it('Only batch creator can view batch', async function () {
+    const adminBatches = await utils.get('admin', `/api/batches`);
+    assert.equal(adminBatches.length, 1);
+    const editorBatches = await utils.get('editor', `/api/batches`);
+    assert.equal(editorBatches.length, 0);
+    await utils.get('editor', `/api/batches/${batch.id}`, 403);
+    await utils.get('editor', `/api/batches/${batch.id}/statements`, 403);
+    await utils.get(
+      'editor',
+      `/api/batches/${batch.id}/statements/${statement1.id}`,
+      403
+    );
+    await utils.get(
+      'editor',
+      `/api/batches/${batch.id}/statements/${statement1.id}/results`,
+      403
+    );
   });
 
-  it.skip('Only batch creator can view batch', async function () {
+  it.skip('Handles query error', async function () {
     // TODO
   });
 

@@ -28,7 +28,7 @@ class Batches {
 
   async findAllForUser(user) {
     let items = await this.sequelizeDb.Batches.findAll({
-      where: { userId: user.Id },
+      where: { userId: user.id },
     });
     items = items.map((item) => item.toJSON());
     return items;
