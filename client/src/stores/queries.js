@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
 import runQueryViaBatch from '../api/runQueryViaBatch';
