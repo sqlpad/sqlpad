@@ -4,7 +4,6 @@ const ConnectionClient = require('./connection-client');
 /**
  * Execute a query using batch/statement infrastructure
  * Batch must already be created.
- * Returns last statement result on finish to remain compatible with old "query-result" use
  * @param {Object} config
  * @param {import('../models/index')} models
  * @param {string} batchId
@@ -80,12 +79,6 @@ async function executeBatch(config, models, batchId) {
       rowCount: queryResult.rows.length,
     });
   }
-
-  // For /api/query-result compatibility, either throw error if it exists, or return last queryResult
-  if (statementError) {
-    throw statementError;
-  }
-  return queryResult;
 }
 
 module.exports = executeBatch;
