@@ -1,6 +1,6 @@
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
-import runQueryViaBatch from '../api/runQueryViaBatch';
+import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import {
   setLocalQueryText,
   removeLocalQueryText,

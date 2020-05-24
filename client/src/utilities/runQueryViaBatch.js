@@ -1,4 +1,4 @@
-import fetchJson from '../utilities/fetch-json';
+import fetchJson from './fetch-json';
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
