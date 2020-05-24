@@ -51,7 +51,6 @@ async function up(queryInterface, config, appLog, nedb) {
     },
     selected_text: {
       type: Sequelize.TEXT,
-      allowNull: false,
     },
     // Taking a snapshot of the chart config too, because that could change over time
     chart: {

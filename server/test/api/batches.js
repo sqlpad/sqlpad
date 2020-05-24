@@ -208,4 +208,26 @@ describe('api/batches', function () {
     b = await utils.get('admin', `/api/batches/${b.id}`);
     assert.equal(b.statements[0].resultsPath, null);
   });
+
+  it('selectedText is optional', async function () {
+    const b1 = await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      queryName: 'test query',
+      batchText: `SELECT 1 AS id; SELECT 2 AS id;`,
+    });
+    assert(b1.id);
+    assert.equal(b1.statements.length, 2);
+    assert.equal(b1.statements[0].statementText, 'SELECT 1 AS id');
+    assert.equal(b1.statements[1].statementText, ' SELECT 2 AS id');
+
+    const b2 = await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      queryName: 'test query',
+      batchText: `SELECT 1 AS id; SELECT 2 AS id;`,
+      selectedText: `SELECT 2 AS id;`,
+    });
+    assert(b2.id);
+    assert.equal(b2.statements.length, 1);
+    assert.equal(b2.statements[0].statementText, 'SELECT 2 AS id');
+  });
 });

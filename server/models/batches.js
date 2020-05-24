@@ -55,8 +55,10 @@ class Batches {
   async create(batch) {
     let createdBatch;
 
+    const queryText = batch.selectedText || batch.batchText;
+
     const statementTexts = sqlLimiter
-      .getStatements(batch.selectedText)
+      .getStatements(queryText)
       .map((s) => sqlLimiter.removeTerminator(s))
       .filter((s) => s && s.trim() !== '');
 

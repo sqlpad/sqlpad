@@ -44,6 +44,7 @@ module.exports = function (sequelize) {
       // in which case we can restore back to everything
       batchText: {
         type: DataTypes.TEXT,
+        allowNull: false,
       },
       selectedText: {
         type: DataTypes.TEXT,
