@@ -3,9 +3,7 @@ const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const executeBatch = require('../lib/execute-batch');
 const wrap = require('../lib/wrap');
-// const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
-
-// TODO FIXME XXX - use mustHaveConnectionAccess for compat with prior query-result api
+const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
 
 /**
  * Create batch
@@ -46,7 +44,12 @@ async function create(req, res) {
   return res.utils.data(newBatch);
 }
 
-router.post('/api/batches', mustBeAuthenticated, wrap(create));
+router.post(
+  '/api/batches',
+  mustBeAuthenticated,
+  mustHaveConnectionAccess,
+  wrap(create)
+);
 
 /**
  * List batches.
