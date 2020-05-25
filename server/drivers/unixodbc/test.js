@@ -92,8 +92,6 @@ describe('drivers/unixodbc', function () {
     `;
     const results = await unixodbc.runQuery(query, connection);
     // incomplete indicates truncated results
-    // suppressedResultSet indicates missing set
-    assert.strictEqual(results.suppressedResultSet, true);
     assert.strictEqual(results.incomplete, false);
     assert.equal(results.rows.length, 1, 'row length');
     assert.strictEqual(results.rows[0].id, 2);

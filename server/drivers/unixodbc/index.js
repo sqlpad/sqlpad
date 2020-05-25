@@ -114,7 +114,6 @@ class Client {
   async runQuery(query) {
     try {
       let incomplete = false;
-      let suppressedResultSet = false;
       const queries = splitSql(query);
 
       let queryResult;
@@ -127,12 +126,6 @@ class Client {
         // If result has columns it is a candidate for lastQueryResultWithRows
         // Until SQLPad has capability to show multiple result sets we are showing the last one with results
         if (result && result.columns) {
-          // If queryResult was already set we're suppressing a result set
-          // Eventually we'll show all results but not at this point
-          if (queryResult) {
-            suppressedResultSet = true;
-          }
-
           queryResult = result;
         }
 
@@ -177,7 +170,7 @@ class Client {
         }
       }
 
-      return { rows, incomplete, suppressedResultSet };
+      return { rows, incomplete };
     } catch (error) {
       appLog.error(error);
       // unixodb error has additional info about why the error occurred

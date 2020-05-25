@@ -3,9 +3,8 @@ import React, { useEffect } from 'react';
 import ExportButton from './common/ExportButton.js';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import QueryResultContainer from './common/QueryResultContainer.js';
-import SuppressedSetNotification from './common/SuppressedSetNotification';
-import useQueryResultById from './utilities/useQueryResultById';
 import QueryResultRunning from './common/QueryResultRunning';
+import useQueryResultById from './utilities/useQueryResultById';
 
 function QueryTableOnly({ queryId }) {
   const [queryError, queryResult, isRunning] = useQueryResultById(queryId);
@@ -29,7 +28,7 @@ function QueryTableOnly({ queryId }) {
     );
   }
 
-  const { name, links, incomplete, suppressedResultSet } = queryResult;
+  const { name, links, incomplete } = queryResult;
 
   return (
     <div
@@ -44,7 +43,6 @@ function QueryTableOnly({ queryId }) {
       <div style={{ height: '50px' }}>
         <span style={{ fontSize: '1.5rem' }}>{name || ''}</span>
         <div style={{ float: 'right' }}>
-          {suppressedResultSet && <SuppressedSetNotification />}
           {incomplete && <IncompleteDataNotification />}
           <ExportButton links={links} />
         </div>

@@ -233,7 +233,7 @@ class ConnectionClient {
       throw error;
     }
 
-    let { rows, incomplete, suppressedResultSet } = results;
+    let { rows, incomplete } = results;
 
     if (!Array.isArray(rows)) {
       appLog.warn(
@@ -250,7 +250,6 @@ class ConnectionClient {
     }
 
     finalResult.incomplete = Boolean(incomplete);
-    finalResult.suppressedResultSet = Boolean(suppressedResultSet);
     finalResult.rows = rows;
     finalResult.stopTime = new Date();
     finalResult.queryRunTime = finalResult.stopTime - finalResult.startTime;
@@ -269,7 +268,6 @@ class ConnectionClient {
         queryRunTime: finalResult.queryRunTime,
         rowCount: rows.length,
         incomplete: finalResult.incomplete,
-        suppressedResultSet: finalResult.suppressedResultSet,
       },
       'Query finished'
     );

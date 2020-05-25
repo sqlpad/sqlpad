@@ -2,11 +2,10 @@ import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import ExportButton from './common/ExportButton.js';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
+import QueryResultRunning from './common/QueryResultRunning';
 import SqlpadTauChart from './common/SqlpadTauChart.js';
-import SuppressedSetNotification from './common/SuppressedSetNotification';
 import { exportPng } from './common/tauChartRef';
 import useQueryResultById from './utilities/useQueryResultById';
-import QueryResultRunning from './common/QueryResultRunning';
 
 function QueryChartOnly({ queryId }) {
   const [queryError, queryResult, isRunning] = useQueryResultById(queryId);
@@ -30,7 +29,7 @@ function QueryChartOnly({ queryId }) {
     );
   }
 
-  const { name, chart, links, incomplete, suppressedResultSet } = queryResult;
+  const { name, chart, links, incomplete } = queryResult;
 
   const onSaveImageClick = () => {
     exportPng(queryId, name || '');
@@ -49,7 +48,6 @@ function QueryChartOnly({ queryId }) {
       <div style={{ height: '50px' }}>
         <span style={{ fontSize: '1.5rem' }}>{name || ''}</span>
         <div style={{ float: 'right' }}>
-          {suppressedResultSet && <SuppressedSetNotification />}
           {incomplete && <IncompleteDataNotification />}
           <ExportButton links={links} onSaveImageClick={onSaveImageClick} />
         </div>

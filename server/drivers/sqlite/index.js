@@ -90,7 +90,6 @@ class Client {
    */
   async runQuery(query) {
     let incomplete = false;
-    let suppressedResultSet = false;
     let rows = [];
 
     const { maxRows } = this.connection;
@@ -107,7 +106,7 @@ class Client {
       incomplete = true;
     }
 
-    return { rows, incomplete, suppressedResultSet };
+    return { rows, incomplete };
   }
 }
 

@@ -1,11 +1,10 @@
-import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import DownloadIcon from 'mdi-react/DownloadIcon';
+import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
-import SuppressedSetNotification from '../common/SuppressedSetNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 import styles from './QueryResultHeader.module.css';
 
@@ -33,7 +32,6 @@ function QueryResultHeader({
   const serverSec = queryResult.queryRunTime / 1000;
   const rowCount = rows.length;
   const incomplete = Boolean(queryResult.incomplete);
-  const suppressedSet = Boolean(queryResult.suppressedResultSet);
 
   return (
     <div className={styles.toolbar}>
@@ -88,8 +86,6 @@ function QueryResultHeader({
           </Link>
         </span>
       </div>
-
-      {suppressedSet && <SuppressedSetNotification />}
       {incomplete && <IncompleteDataNotification />}
     </div>
   );
