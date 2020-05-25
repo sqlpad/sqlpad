@@ -5,9 +5,6 @@ const unixodbc = require('./index.js');
 // process.env.ODBC_CONNECTION_STRING =
 //   'Driver={SQLite3 ODBC Driver};Database=C:\\Users\\<your_user_dir>\\sqlite_test.sqlite';
 
-process.env.ODBC_CONNECTION_STRING =
-  'Driver={SQLite3 ODBC Driver};Database=C:\\Users\\rickb\\sqlite_test.sqlite';
-
 const connection = {
   connection_string: process.env.ODBC_CONNECTION_STRING, // I.e. ensure os variable is set to connection string
   schema_sql: `
