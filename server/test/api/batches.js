@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const assert = require('assert');
 const TestUtils = require('../utils');
 
@@ -11,8 +12,6 @@ function wait(ms) {
 }
 
 describe('api/batches', function () {
-  this.timeout(5000);
-
   /**
    * @type {TestUtils}
    */
@@ -23,8 +22,17 @@ describe('api/batches', function () {
   let statement1;
   let statement2;
 
+  async function createBatchToCompletion(data) {
+    let batch = await utils.post('admin', `/api/batches`, data);
+    while (batch.status !== 'finished' && batch.status !== 'error') {
+      await wait(25);
+      batch = await utils.get('admin', `/api/batches/${batch.id}`);
+    }
+    return batch;
+  }
+
   before(async function () {
-    utils = new TestUtils();
+    utils = new TestUtils({ queryResultMaxRows: 3 });
     await utils.init(true);
 
     connection = await utils.post('admin', '/api/connections', {
@@ -47,7 +55,6 @@ describe('api/batches', function () {
     batch = await utils.post('admin', `/api/batches`, {
       connectionId: connection.id,
       queryId: query.id,
-      queryName: 'test query',
       batchText: queryText,
       selectedText: queryText,
     });
@@ -57,10 +64,11 @@ describe('api/batches', function () {
   });
 
   it('GETs finished result', async function () {
-    // this could be flaky,
-    // but hopefully sqlite query runs faster than 1 second
-    await wait(500);
     batch = await utils.get('admin', `/api/batches/${batch.id}`);
+    while (batch.status !== 'finished' && batch.status !== 'errored') {
+      await wait(50);
+      batch = await utils.get('admin', `/api/batches/${batch.id}`);
+    }
     assert.equal(batch.status, 'finished');
 
     const statements = await utils.get(
@@ -173,14 +181,10 @@ describe('api/batches', function () {
   });
 
   it('Handles query error', async function () {
-    let b = await utils.post('admin', `/api/batches`, {
+    let b = await createBatchToCompletion({
       connectionId: connection.id,
-      queryName: 'test query',
       batchText: `SELECT * FROM; SELECT 1 AS id`,
-      selectedText: `SELECT * FROM; SELECT 1 AS id`,
     });
-    await wait(500);
-    b = await utils.get('admin', `/api/batches/${b.id}`);
     assert.equal(b.status, 'error');
     assert.equal(b.statements[0].status, 'error');
     assert.equal(b.statements[0].rowCount, null, 'no rowCount');
@@ -198,36 +202,30 @@ describe('api/batches', function () {
   });
 
   it('statement without rows does not create file', async function () {
-    let b = await utils.post('admin', `/api/batches`, {
+    const b = await createBatchToCompletion({
       connectionId: connection.id,
-      queryName: 'test query',
       batchText: `SELECT 1 AS id WHERE 1 = 0`,
-      selectedText: `SELECT 1 AS id WHERE 1 = 0`,
     });
-    await wait(500);
-    b = await utils.get('admin', `/api/batches/${b.id}`);
     assert.equal(b.statements[0].resultsPath, null);
   });
 
-  it('selectedText is optional', async function () {
-    const b1 = await utils.post('admin', `/api/batches`, {
+  it('selectedText is honored', async function () {
+    const b = await utils.post('admin', `/api/batches`, {
       connectionId: connection.id,
-      queryName: 'test query',
-      batchText: `SELECT 1 AS id; SELECT 2 AS id;`,
-    });
-    assert(b1.id);
-    assert.equal(b1.statements.length, 2);
-    assert.equal(b1.statements[0].statementText, 'SELECT 1 AS id');
-    assert.equal(b1.statements[1].statementText, ' SELECT 2 AS id');
-
-    const b2 = await utils.post('admin', `/api/batches`, {
-      connectionId: connection.id,
-      queryName: 'test query',
       batchText: `SELECT 1 AS id; SELECT 2 AS id;`,
       selectedText: `SELECT 2 AS id;`,
     });
-    assert(b2.id);
-    assert.equal(b2.statements.length, 1);
-    assert.equal(b2.statements[0].statementText, 'SELECT 2 AS id');
+    assert(b.id);
+    assert.equal(b.statements.length, 1);
+    assert.equal(b.statements[0].statementText, 'SELECT 2 AS id');
+  });
+
+  it('incomplete is captured', async function () {
+    const b1 = await createBatchToCompletion({
+      connectionId: connection.id,
+      batchText: `SELECT 1 AS id UNION SELECT 2 AS id UNION SELECT 3 AS id UNION SELECT 4 AS id;`,
+    });
+    assert.equal(b1.statements[0].incomplete, true);
+    assert.equal(b1.statements[0].rowCount, 3);
   });
 });

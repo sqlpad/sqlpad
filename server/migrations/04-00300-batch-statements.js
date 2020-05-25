@@ -124,6 +124,9 @@ async function up(queryInterface, config, appLog, nedb) {
     results_path: {
       type: Sequelize.STRING,
     },
+    incomplete: {
+      type: Sequelize.BOOLEAN,
+    },
     error: {
       type: Sequelize.JSON,
     },

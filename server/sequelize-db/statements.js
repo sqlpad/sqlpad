@@ -44,6 +44,9 @@ module.exports = function (sequelize) {
       resultsPath: {
         type: Sequelize.STRING,
       },
+      incomplete: {
+        type: Sequelize.BOOLEAN,
+      },
       error: {
         type: Sequelize.JSON,
       },

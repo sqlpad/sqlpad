@@ -79,13 +79,13 @@ class Statements {
       await writeFile(fullPath, JSON.stringify(arrOfArr));
     }
 
-    // TODO FIXME XXX handle incomplete flag
     const update = {
       status: 'finished',
       stopTime: new Date(),
       rowCount,
       columns: queryResult.columns,
       resultsPath,
+      incomplete: queryResult.incomplete,
     };
 
     await this.sequelizeDb.Statements.update(update, { where: { id } });
