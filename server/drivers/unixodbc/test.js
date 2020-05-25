@@ -5,6 +5,9 @@ const unixodbc = require('./index.js');
 // process.env.ODBC_CONNECTION_STRING =
 //   'Driver={SQLite3 ODBC Driver};Database=C:\\Users\\<your_user_dir>\\sqlite_test.sqlite';
 
+process.env.ODBC_CONNECTION_STRING =
+  'Driver={SQLite3 ODBC Driver};Database=C:\\Users\\rickb\\sqlite_test.sqlite';
+
 const connection = {
   connection_string: process.env.ODBC_CONNECTION_STRING, // I.e. ensure os variable is set to connection string
   schema_sql: `
@@ -82,20 +85,6 @@ describe('drivers/unixodbc', function () {
     );
     assert(results.incomplete, 'incomplete');
     assert.equal(results.rows.length, 2, 'row length');
-  });
-
-  it('Runs multiple statements', async function () {
-    const query = `
-      SELECT id FROM sqlpad_test;
-      SELECT name FROM sqlpad_test;
-      SELECT * FROM sqlpad_test WHERE id = 2
-    `;
-    const results = await unixodbc.runQuery(query, connection);
-    // incomplete indicates truncated results
-    assert.strictEqual(results.incomplete, false);
-    assert.equal(results.rows.length, 1, 'row length');
-    assert.strictEqual(results.rows[0].id, 2);
-    assert.strictEqual(results.rows[0].name, 'two');
   });
 
   it('Throws helpful error', async function () {
