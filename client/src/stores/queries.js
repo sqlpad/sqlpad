@@ -125,10 +125,9 @@ export const runQuery = (store) => async (state) => {
     name: query.name,
     batchText: query.queryText,
     selectedText,
-    // TODO send chart
+    chart: query.chart,
   };
   const { data, error } = await runQueryViaBatch(postData);
-  console.log(data);
   store.setState({
     isRunning: false,
     queryError: error,
