@@ -1,7 +1,9 @@
+/* eslint-disable no-await-in-loop */
 const util = require('util');
 const path = require('path');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
+const { Op } = require('sequelize');
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
 const unlink = util.promisify(fs.unlink);
@@ -37,7 +39,7 @@ class Statements {
   }
 
   async removeById(id) {
-    const statement = this.findOneById(id);
+    const statement = await this.findOneById(id);
     const { resultsPath } = statement;
 
     if (resultsPath) {
@@ -136,6 +138,22 @@ class Statements {
     }
 
     return [];
+  }
+
+  async removeOldEntries() {
+    const days =
+      this.config.get('queryHistoryRetentionTimeInDays') * 86400 * 1000;
+    const retentionPeriodStartTime = new Date(new Date().getTime() - days);
+
+    const statements = await this.sequelizeDb.Statements.findAll({
+      where: { createdAt: { [Op.lt]: retentionPeriodStartTime } },
+      attributes: ['id'],
+      raw: true,
+    });
+
+    for (const statement of statements) {
+      await this.removeById(statement.id);
+    }
   }
 }
 

@@ -1,6 +1,10 @@
 /* eslint-disable no-await-in-loop */
 const assert = require('assert');
+const fs = require('fs');
+const util = require('util');
+const path = require('path');
 const TestUtils = require('../utils');
+const access = util.promisify(fs.access);
 
 const query1 = `SELECT 1 AS id, 'blue' AS color`;
 const query2 = `SELECT 1 AS id, 'blue' AS color UNION ALL SELECT 2 AS id, 'red' AS color ORDER BY id`;
@@ -32,7 +36,10 @@ describe('api/batches', function () {
   }
 
   before(async function () {
-    utils = new TestUtils({ queryResultMaxRows: 3 });
+    utils = new TestUtils({
+      queryResultMaxRows: 3,
+      queryHistoryRetentionTimeInDays: 0,
+    });
     await utils.init(true);
 
     connection = await utils.post('admin', '/api/connections', {
@@ -227,5 +234,63 @@ describe('api/batches', function () {
     });
     assert.equal(b1.statements[0].incomplete, true);
     assert.equal(b1.statements[0].rowCount, 3);
+  });
+
+  it('removing batch statement removes file', async function () {
+    const b1 = await createBatchToCompletion({
+      connectionId: connection.id,
+      batchText: `SELECT 1 AS id UNION SELECT 2 AS id UNION SELECT 3 AS id UNION SELECT 4 AS id;`,
+    });
+
+    const statement = b1.statements[0];
+    const dbPath = utils.config.get('dbPath');
+
+    let exists = true;
+    const fullPath = path.join(dbPath, statement.resultsPath);
+    try {
+      await access(fullPath);
+    } catch (error) {
+      exists = false;
+    }
+    assert(exists);
+
+    await utils.models.statements.removeById(statement.id);
+
+    try {
+      await access(fullPath);
+    } catch (error) {
+      exists = false;
+    }
+
+    assert(!exists);
+  });
+
+  it('is removed on history cleanup', async function () {
+    const b1 = await createBatchToCompletion({
+      connectionId: connection.id,
+      batchText: `SELECT 1 AS id UNION SELECT 2 AS id UNION SELECT 3 AS id UNION SELECT 4 AS id;`,
+    });
+
+    const statement = b1.statements[0];
+    const dbPath = utils.config.get('dbPath');
+
+    let exists = true;
+    const fullPath = path.join(dbPath, statement.resultsPath);
+    try {
+      await access(fullPath);
+    } catch (error) {
+      exists = false;
+    }
+    assert(exists);
+
+    await utils.models.statements.removeOldEntries();
+
+    try {
+      await access(fullPath);
+    } catch (error) {
+      exists = false;
+    }
+
+    assert(!exists);
   });
 });

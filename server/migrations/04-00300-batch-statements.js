@@ -146,6 +146,13 @@ async function up(queryInterface, config, appLog, nedb) {
     'statements_batch_id',
     ['batch_id']
   );
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'statements',
+    'statements_created_at',
+    ['created_at']
+  );
 }
 
 module.exports = {
