@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import runQueryViaBatch from '../api/runQueryViaBatch';
+import runQueryViaBatch from './runQueryViaBatch';
 import fetchJson from './fetch-json.js';
 
 function useQueryResultById(queryId) {

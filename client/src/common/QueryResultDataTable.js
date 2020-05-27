@@ -71,11 +71,10 @@ class QueryResultDataTable extends React.PureComponent {
 
     if (queryResult && queryResult.columns) {
       queryResult.columns.forEach((column) => {
-        const { name } = column;
+        const { name, maxValueLength } = column;
         if (!columnWidths[name]) {
-          const fieldMeta = queryResult.meta[name];
           // (This length is number of characters -- it later gets assigned ~ 20px per char)
-          let valueLength = fieldMeta.maxValueLength || 8;
+          let valueLength = maxValueLength || 8;
 
           if (name.length > valueLength) {
             valueLength = name.length;
@@ -183,14 +182,10 @@ class QueryResultDataTable extends React.PureComponent {
 
     // If dataKey is present this is a real data cell to render
     if (column) {
-      const fieldMeta = queryResult.meta[column.name];
-
-      // Account for extra row that was used for header row
       const value = queryResult.rows[rowIndex][column.name];
-
       return (
         <div style={finalStyle}>
-          <div className="truncate">{renderValue(value, fieldMeta)}</div>
+          <div className="truncate">{renderValue(value, column)}</div>
         </div>
       );
     }

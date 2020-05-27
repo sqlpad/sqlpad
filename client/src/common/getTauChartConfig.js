@@ -27,7 +27,7 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
   if (!chartConfiguration) {
     return null;
   }
-  const meta = queryResult ? queryResult.meta : {};
+  const columns = queryResult ? queryResult.columns : [];
   let dataRows = queryResult ? queryResult.rows : [];
   const chartType = chartConfiguration.chartType;
   const selectedFields = chartConfiguration.fields;
@@ -69,14 +69,14 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
   // loop through data rows and convert types as needed
   dataRows = dataRows.map((row) => {
     const newRow = {};
-    Object.keys(row).forEach((col) => {
-      const datatype = queryResult.meta[col].datatype;
+    columns.forEach((col) => {
+      const { datatype, name } = col;
       if (datatype === 'date' || datatype === 'datetime') {
-        newRow[col] = new Date(row[col]);
+        newRow[name] = new Date(row[name]);
       } else if (datatype === 'number') {
-        newRow[col] = Number(row[col]);
+        newRow[name] = Number(row[name]);
       } else {
-        newRow[col] = row[col];
+        newRow[name] = row[name];
       }
     });
 
@@ -89,10 +89,11 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
       (field) => field.forceDimension === true
     );
     forceDimensionFields.forEach((fieldDefinition) => {
-      const col = selectedFields[fieldDefinition.fieldId];
-      const colDatatype = meta[col] ? meta[col].datatype : null;
-      if (col && colDatatype === 'number' && newRow[col]) {
-        newRow[col] = newRow[col].toString();
+      const columnName = selectedFields[fieldDefinition.fieldId];
+      const column = columns.find((column) => column.name === columnName);
+      const colDatatype = column ? column.datatype : null;
+      if (columnName && colDatatype === 'number' && newRow[columnName]) {
+        newRow[columnName] = newRow[columnName].toString();
       }
     });
     return newRow;
@@ -103,16 +104,16 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
   // Unless they aren't column mapping fields (like trendline, quickfilter)
   const cleanedChartConfigurationFields = Object.keys(
     chartConfiguration.fields
-  ).reduce((fieldsMap, field) => {
+  ).reduce((fieldsMap, fieldColName) => {
     const fieldDefinition = chartDefinition.fields.find(
-      (f) => f.fieldId === field
+      (f) => f.fieldId === fieldColName
     );
-    const value = chartConfiguration.fields[field];
+    const columnName = chartConfiguration.fields[fieldColName];
 
     if (fieldDefinition && fieldDefinition.inputType !== 'field-dropdown') {
-      fieldsMap[field] = value;
-    } else if (meta[value]) {
-      fieldsMap[field] = value;
+      fieldsMap[fieldColName] = columnName;
+    } else if (columns.find((c) => c.name === columnName)) {
+      fieldsMap[fieldColName] = columnName;
     }
     return fieldsMap;
   }, {});

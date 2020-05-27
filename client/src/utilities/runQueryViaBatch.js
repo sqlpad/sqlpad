@@ -31,16 +31,12 @@ export default async function runQueryViaBatch(opt) {
     opt.selectedText = opt.batchText;
   }
 
-  console.log(opt);
-
   let batch;
   let error;
 
   let res = await fetchJson('POST', '/api/batches', opt);
   error = res.error;
   batch = res.data;
-
-  console.log(batch);
 
   while (!(batch.status === 'finished' || batch.status === 'error') && !error) {
     await sleep(500);
@@ -70,10 +66,6 @@ export default async function runQueryViaBatch(opt) {
   }
 
   const { columns } = statement;
-  const meta = {};
-  columns.forEach((col) => {
-    meta[col.name] = col;
-  });
 
   const rows = res.data.map((row) => {
     const obj = {};
@@ -104,10 +96,8 @@ export default async function runQueryViaBatch(opt) {
       batchId: batch.id,
       statementId: statement.id,
       columns,
-      meta,
       rows,
-      // TODO
-      incomplete: false,
+      incomplete: statement.incomplete,
       links,
       startTime: statement.startTime,
       stopTime: statement.stopTime,
