@@ -5,8 +5,6 @@ const appLog = require('./app-log');
 const Models = require('../models');
 const SequelizeDb = require('../sequelize-db');
 
-const FIVE_MINUTES = 1000 * 60 * 5;
-
 /**
  * Whenever possible nedb should be read from the app req object.
  * Sometimes this isn't possible or convenient at the moment however.
@@ -72,13 +70,7 @@ async function initNedb(config) {
   );
 
   const sequelizeDb = new SequelizeDb(config);
-
-  // Schedule cleanups
   const models = new Models(sequelizeDb, config);
-  setInterval(async () => {
-    // TODO - remove batch statement results?
-    await models.queryHistory.removeOldEntries();
-  }, FIVE_MINUTES);
 
   return { nedb, models, sequelizeDb };
 }
