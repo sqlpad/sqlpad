@@ -4,6 +4,8 @@ const fs = require('fs');
 const mkdirp = require('mkdirp');
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
+const unlink = util.promisify(fs.unlink);
+const access = util.promisify(fs.access);
 
 class Statements {
   /**
@@ -34,12 +36,27 @@ class Statements {
     return items;
   }
 
-  removeById(id) {
-    let notFinished = true;
-    if (notFinished) {
-      throw new Error('TODO remove data file');
+  async removeById(id) {
+    const statement = this.findOneById(id);
+    const { resultsPath } = statement;
+
+    if (resultsPath) {
+      const dbPath = this.config.get('dbPath');
+      const fullPath = path.join(dbPath, resultsPath);
+
+      let exists = true;
+      try {
+        await access(fullPath);
+      } catch (error) {
+        exists = false;
+      }
+
+      if (exists) {
+        await unlink(fullPath);
+      }
     }
-    return this.sequelizeDb.Batches.destroy({ where: { id } });
+
+    return this.sequelizeDb.Statements.destroy({ where: { id } });
   }
 
   async updateStarted(id) {
@@ -104,11 +121,21 @@ class Statements {
       return [];
     }
 
-    const fileData = await readFile(
-      path.join(this.config.get('dbPath'), resultsPath),
-      'utf8'
-    );
-    return JSON.parse(fileData);
+    const fullPath = path.join(this.config.get('dbPath'), resultsPath);
+
+    let exists = true;
+    try {
+      await access(fullPath);
+    } catch (error) {
+      exists = false;
+    }
+
+    if (exists) {
+      const fileData = await readFile(fullPath, 'utf8');
+      return JSON.parse(fileData);
+    }
+
+    return [];
   }
 }
 
