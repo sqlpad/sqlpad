@@ -5,7 +5,6 @@ const appLog = require('./app-log');
 const Models = require('../models');
 const SequelizeDb = require('../sequelize-db');
 
-const ONE_DAY = 1000 * 60 * 60 * 24;
 const FIVE_MINUTES = 1000 * 60 * 5;
 
 /**
