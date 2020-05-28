@@ -36,25 +36,51 @@ async function executeBatch(config, models, batchId) {
   }
 
   // run statements
+  const batchStartTime = new Date();
+  let stopTime;
   let queryResult;
   let statementError;
   for (const statement of batch.statements) {
+    let statementStartTime = new Date();
     try {
-      await models.statements.updateStarted(statement.id);
+      await models.statements.updateStarted(statement.id, statementStartTime);
       queryResult = await connectionClient.runQuery(statement.statementText);
-      await models.statements.updateFinished(statement.id, queryResult);
+      stopTime = new Date();
+      await models.statements.updateFinished(
+        statement.id,
+        queryResult,
+        stopTime,
+        stopTime - statementStartTime
+      );
     } catch (error) {
       statementError = error;
-      await models.statements.updateErrored(statement.id, {
-        title: error.message,
+      stopTime = new Date();
+
+      await models.statements.updateErrored(
+        statement.id,
+        {
+          title: error.message,
+        },
+        stopTime,
+        stopTime - statementStartTime
+      );
+
+      await models.batches.update(batch.id, {
+        status: 'error',
+        stopTime,
+        durationMs: stopTime - batchStartTime,
       });
-      await models.batches.updateStatus(batch.id, 'error');
       break;
     }
   }
+  stopTime = new Date();
 
   if (!statementError) {
-    await models.batches.updateStatus(batch.id, 'finished');
+    await models.batches.update(batch.id, {
+      status: 'finished',
+      stopTime,
+      durationMs: stopTime - batchStartTime,
+    });
   }
 
   if (disconnectOnFinish) {

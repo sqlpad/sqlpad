@@ -77,6 +77,9 @@ describe('api/batches', function () {
       batch = await utils.get('admin', `/api/batches/${batch.id}`);
     }
     assert.equal(batch.status, 'finished');
+    assert(batch.startTime);
+    assert(batch.stopTime);
+    assert(batch.durationMs > 0);
 
     const statements = await utils.get(
       'admin',
@@ -90,6 +93,9 @@ describe('api/batches', function () {
     assert.equal(statement1.batchId, batch.id);
     assert.equal(statement1.status, 'finished');
     assert.equal(statement1.rowCount, 1);
+    assert(statement1.startTime);
+    assert(statement1.stopTime);
+    assert(statement1.durationMs > 0);
     assert(statement1.resultsPath.indexOf(statement1.id));
     assert(statement1.resultsPath.includes('results'));
 

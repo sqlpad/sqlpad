@@ -86,19 +86,10 @@ class Batches {
    * Update batch object
    * Statements are not updated through this method
    * @param {string} id
-   * @param {string} status
+   * @param {data} data
    */
-  async updateStatus(id, status) {
-    let stopTime;
-    if (status === 'error' || status === 'finished') {
-      stopTime = new Date();
-    }
-
-    await this.sequelizeDb.Batches.update(
-      { stopTime, status },
-      { where: { id } }
-    );
-
+  async update(id, data) {
+    await this.sequelizeDb.Batches.update(data, { where: { id } });
     return this.findOneById(id);
   }
 }

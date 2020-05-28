@@ -61,26 +61,27 @@ class Statements {
     return this.sequelizeDb.Statements.destroy({ where: { id } });
   }
 
-  async updateStarted(id) {
+  async updateStarted(id, startTime) {
     const update = {
       status: 'started',
-      startTime: new Date(),
+      startTime,
     };
     await this.sequelizeDb.Statements.update(update, { where: { id } });
     return this.findOneById(id);
   }
 
-  async updateErrored(id, error) {
+  async updateErrored(id, error, stopTime, durationMs) {
     const update = {
       status: 'error',
-      stopTime: new Date(),
+      stopTime,
+      durationMs,
       error,
     };
     await this.sequelizeDb.Statements.update(update, { where: { id } });
     return this.findOneById(id);
   }
 
-  async updateFinished(id, queryResult) {
+  async updateFinished(id, queryResult, stopTime, durationMs) {
     const dbPath = this.config.get('dbPath');
     const rowCount = queryResult.rows.length;
 
@@ -100,7 +101,8 @@ class Statements {
 
     const update = {
       status: 'finished',
-      stopTime: new Date(),
+      stopTime,
+      durationMs,
       rowCount,
       columns: queryResult.columns,
       resultsPath,

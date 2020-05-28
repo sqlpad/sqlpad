@@ -33,7 +33,7 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.UUID,
     },
     status: {
-      type: Sequelize.STRING, // RUNNING, FINISHED, ERROR, CANCELLED... others?
+      type: Sequelize.STRING,
     },
     start_time: {
       type: Sequelize.DATE,
@@ -41,7 +41,10 @@ async function up(queryInterface, config, appLog, nedb) {
     stop_time: {
       type: Sequelize.DATE,
     },
-    // Both query_text and selected_query_text is captured,
+    duration_ms: {
+      type: Sequelize.INTEGER,
+    },
+    // Both query_text and selected_query_text are captured,
     // as user may execute just a portion of what is in their editor
     // In the future they may want to "restore" back to this version,
     // in which case we can restore back to everything
@@ -114,6 +117,9 @@ async function up(queryInterface, config, appLog, nedb) {
     },
     stop_time: {
       type: Sequelize.DATE,
+    },
+    duration_ms: {
+      type: Sequelize.INTEGER,
     },
     columns: {
       type: Sequelize.JSON,

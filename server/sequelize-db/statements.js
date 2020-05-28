@@ -35,6 +35,9 @@ module.exports = function (sequelize) {
       stopTime: {
         type: Sequelize.DATE,
       },
+      durationMs: {
+        type: Sequelize.INTEGER,
+      },
       columns: {
         type: Sequelize.JSON,
       },

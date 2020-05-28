@@ -39,6 +39,9 @@ module.exports = function (sequelize) {
       stopTime: {
         type: DataTypes.DATE,
       },
+      durationMs: {
+        type: DataTypes.INTEGER,
+      },
       // Both query_text and selected_query_text is captured,
       // as user may execute just a portion of what is in their editor
       // In the future they may want to "restore" back to this version,
