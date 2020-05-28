@@ -137,13 +137,10 @@ describe('api/query-history', function () {
       'userEmail',
       'startTime',
       'stopTime',
-      'queryRunTime',
+      'durationMs',
       'queryId',
       'queryName',
       'queryText',
-      'incomplete',
-      'rowCount',
-      'createdAt',
     ];
 
     // First and second two history items (reverse ordered) needs to free text query with queryId and queryName

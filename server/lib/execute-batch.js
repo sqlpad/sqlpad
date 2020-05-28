@@ -86,25 +86,6 @@ async function executeBatch(config, models, batchId) {
   if (disconnectOnFinish) {
     await connectionClient.disconnect();
   }
-
-  // Log query history for legacy purposes
-  // This may be able to be replaced by admin view using batches/statements
-  if (config.get('queryHistoryRetentionTimeInDays') > 0) {
-    await models.queryHistory.save({
-      userId: user ? user.id : 'unauthenticated link',
-      userEmail: user ? user.email : 'anauthenticated link',
-      connectionId: connection.id,
-      connectionName: connection.name,
-      startTime: queryResult.startTime,
-      stopTime: queryResult.stopTime,
-      queryRunTime: queryResult.queryRunTime,
-      queryId: batch.queryId,
-      queryName: batch.name,
-      queryText: batch.selectedText,
-      incomplete: queryResult.incomplete,
-      rowCount: queryResult.rows.length,
-    });
-  }
 }
 
 module.exports = executeBatch;

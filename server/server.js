@@ -102,7 +102,6 @@ async function startServer() {
 
   // Schedule cleanups
   setInterval(async () => {
-    await models.queryHistory.removeOldEntries();
     await models.statements.removeOldEntries();
   }, CLEANING_MS);
 
