@@ -34,19 +34,6 @@ class Batches {
     return items;
   }
 
-  async findAll() {
-    let items = await this.sequelizeDb.Batches.findAll({});
-    items = items.map((item) => item.toJSON());
-    return items;
-  }
-
-  removeById(id) {
-    return this.sequelizeDb.sequelize.transaction(async (transaction) => {
-      await this.sequelizeDb.Batches.destroy({ where: { id }, transaction });
-      throw new Error('TODO - remove statements');
-    });
-  }
-
   /**
    * Create a new batch (and statements)
    * selectedText is parsed out into statements
