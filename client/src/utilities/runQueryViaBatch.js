@@ -111,8 +111,7 @@ export default async function runQueryViaBatch(opt) {
       links,
       startTime: statement.startTime,
       stopTime: statement.stopTime,
-      queryRunTime:
-        new Date(statement.stopTime) - new Date(statement.startTime),
+      durationMs: statement.durationMs,
     },
     error,
   };

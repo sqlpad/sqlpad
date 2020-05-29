@@ -12,7 +12,7 @@ function getQueryResult(rows) {
       { name: 'connectionName', datatype: 'string' },
       { name: 'startTime', datatype: 'datetime' },
       { name: 'stopTime', datatype: 'datetime' },
-      { name: 'queryRunTime', datatype: 'number' },
+      { name: 'durationMs', datatype: 'number' },
       { name: 'queryId', datatype: 'string' },
       { name: 'queryName', datatype: 'string' },
       { name: 'queryText', datatype: 'string' },

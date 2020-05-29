@@ -29,7 +29,7 @@ function QueryResultHeader({
 
   const rows = queryResult.rows || [];
   const links = queryResult.links || {};
-  const serverSec = queryResult.queryRunTime / 1000;
+  const serverSec = queryResult.durationMs / 1000;
   const rowCount = rows.length;
   const incomplete = Boolean(queryResult.incomplete);
 

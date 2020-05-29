@@ -21,7 +21,7 @@ function QueryHistoryResultHeader({
     );
   }
 
-  const serverSec = queryResult ? queryResult.queryRunTime / 1000 : '';
+  const serverSec = queryResult ? queryResult.durationMs / 1000 : '';
   const rowCount =
     queryResult && queryResult.rows ? queryResult.rows.length : '';
 

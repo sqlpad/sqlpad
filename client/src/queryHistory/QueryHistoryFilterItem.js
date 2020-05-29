@@ -29,8 +29,8 @@ const QueryHistoryFilterItem = ({
       label: 'startTime',
       operators: [operators.before, operators.after],
     },
-    queryRunTime: {
-      label: 'queryRunTime',
+    durationMs: {
+      label: 'durationMs',
       operators: [operators.greaterThan, operators.lowerThan],
     },
     queryId: { label: 'queryId', operators: [operators.contains] },
