@@ -1,5 +1,7 @@
 # API
 
+!> API patterns described below are new to `latest` and upcoming v5 release
+
 ## Overview
 
 SQLPad aims to implement a REST-ish API, and as of v5, has been updated to be more consistent with itself and a typical REST API design.

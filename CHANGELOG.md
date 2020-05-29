@@ -6,11 +6,11 @@
 
 #### New
 
-- New `/batches` API for running multi-statement SQL. This replaces `/query-result` API, and is written in a more RESTful approach, removing the need to extend SQLPad timeouts. See API docs for more info (TODO).
+- New `/batches` API for running multi-statement SQL. This replaces `/query-result` API, and is written in a more RESTful approach, removing the need to extend SQLPad timeouts. See API docs for more info.
 
 #### Breaking
 
-- `/download-results/` API has been removed in favor of `/statement-results/`, which is similar but based on `statementId` instead of `cacheKey`. See API docs for more info (TODO).
+- `/download-results/` API has been removed in favor of `/statement-results/`, which is similar but based on `statementId` instead of `cacheKey`. See API docs for more info.
 
 - `debug` config option removed. Use `appLogLevel` set to `debug` instead.
 
