@@ -182,6 +182,7 @@ Example JSON config file with connection:
     <tr><td>database</td><td>Database</td><td>text</td></tr>
     <tr><td>username</td><td>Database Username</td><td>text</td></tr>
     <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>mysqlSsl</td><td>Use SSL</td><td>boolean</td></tr>
     <tr><td>mysqlInsecureAuth</td><td>Use old/insecure pre 4.1 Auth System</td><td>boolean</td></tr>
   </tbody>
 </table>
