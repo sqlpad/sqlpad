@@ -34,7 +34,9 @@ async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
         query_id,
         query_name AS name,
         query_text AS batch_text,
-        created_at
+        created_at,
+        row_count,
+        incomplete
       FROM 
         query_history
     `,
@@ -43,23 +45,53 @@ async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
     }
   );
 
-  rows = rows.map((row) => {
-    return {
-      ...row,
-      id: uuidv4(),
+  const batchRows = [];
+  const statementRows = [];
+
+  rows.forEach((row) => {
+    const { incomplete, row_count, ...batch } = row;
+    const batchId = uuidv4();
+    batchRows.push({
+      ...batch,
+      id: batchId,
       selected_text: row.batch_text,
       status: 'finished',
       updated_at: row.created_at,
-    };
+    });
+    statementRows.push({
+      id: uuidv4(),
+      sequence: 1,
+      batch_id: batchId,
+      statement_text: row.batch_text,
+      status: 'finished',
+      start_time: row.start_time,
+      stop_time: row.stop_time,
+      duration_ms: row.duration_ms,
+      incomplete,
+      row_count,
+      created_at: row.created_at,
+      updated_at: row.created_at,
+    });
   });
 
-  if (rows.length) {
-    await queryInterface.bulkInsert('batches', rows);
+  if (batchRows.length) {
+    await queryInterface.bulkInsert('batches', batchRows);
+    await queryInterface.bulkInsert('statements', statementRows);
   }
 
   await sequelizeDb.query(
     `
       CREATE VIEW vw_query_history AS 
+        WITH statement_summary AS (
+          SELECT 
+            batch_id, 
+            SUM(row_count) AS row_count, 
+            MAX(incomplete) AS incomplete
+          FROM 
+            statements
+          GROUP BY 
+            batch_id
+        )
         SELECT 
           b.id,
           b.query_id,
@@ -72,11 +104,14 @@ async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
           b.duration_ms,
           b.selected_text AS query_text,
           b.user_id,
-          u.email AS user_email
+          u.email AS user_email,
+          ss.row_count,
+          ss.incomplete
         FROM 
           batches b
           LEFT JOIN users u ON b.user_id = u.id
           LEFT JOIN connections c ON b.connection_id = c.id
+          LEFT JOIN statement_summary ss ON b.id = ss.batch_id
     `,
     {
       type: Sequelize.QueryTypes.RAW,

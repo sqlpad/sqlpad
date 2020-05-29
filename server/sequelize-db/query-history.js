@@ -38,6 +38,12 @@ module.exports = function (sequelize) {
       queryText: {
         type: DataTypes.TEXT,
       },
+      incomplete: {
+        type: DataTypes.BOOLEAN,
+      },
+      rowCount: {
+        type: DataTypes.INTEGER,
+      },
     },
     {
       tableName: 'vw_query_history',

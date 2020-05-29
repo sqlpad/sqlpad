@@ -223,7 +223,8 @@ describe('v4-to-v5', function () {
             new Date(original.startTime).toISOString() &&
           item.duration_ms === original.queryRunTime &&
           item.query_name === original.queryName &&
-          item.query_text === original.queryText
+          item.query_text === original.queryText &&
+          item.row_count === original.rowCount
       );
 
       // query id could be string or null and null !== null
