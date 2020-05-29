@@ -53,13 +53,23 @@ export default async function runQueryViaBatch(opt) {
     throw new Error('No statements?');
   }
 
+  // For short-term API compat
+  // Find out if a statement errored.
+  // If it did, return that
+  const statementWithError = batch.statements.find((s) => s.error);
+  if (statementWithError) {
+    return { error: statementWithError.error.title };
+  }
+
   const statement = batch.statements[batch.statements.length - 1];
 
   res = await fetchJson(
     'GET',
     `/api/batches/${batch.id}/statements/${statement.id}/results`
   );
-  error = res.error;
+  if (res.error) {
+    error = res.error;
+  }
 
   if (error) {
     return { error };

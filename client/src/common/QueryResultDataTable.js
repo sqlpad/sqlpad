@@ -217,7 +217,7 @@ class QueryResultDataTable extends React.PureComponent {
     const { queryResult } = this.props;
     const { height, width } = this.state.dimensions;
 
-    if (queryResult && queryResult.rows) {
+    if (queryResult && queryResult.rows && queryResult.columns) {
       const rowCount = queryResult.rows.length;
       // Add extra column to fill remaining grid width if necessary
       const columnCount = queryResult.columns.length + 1;
