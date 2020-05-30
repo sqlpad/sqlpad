@@ -105,4 +105,18 @@ describe('drivers/postgres', function () {
 
     await client.disconnect();
   });
+
+  it('Throws helpful error', async function () {
+    let error;
+    try {
+      await postgres.runQuery('SELECT * FROM fake_table', connection);
+    } catch (e) {
+      error = e;
+    }
+    assert(error);
+    assert(
+      error.message.includes('fake_table'),
+      'Error message has table reference'
+    );
+  });
 });
