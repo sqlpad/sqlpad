@@ -5,25 +5,20 @@ module.exports = function (sequelize) {
     'QueryHistory',
     {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.UUID,
         primaryKey: true,
-        autoIncrement: true,
       },
       connectionId: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       connectionName: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       userId: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       userEmail: {
         type: DataTypes.STRING,
-        allowNull: false,
       },
       startTime: {
         type: DataTypes.DATE,
@@ -31,7 +26,7 @@ module.exports = function (sequelize) {
       stopTime: {
         type: DataTypes.DATE,
       },
-      queryRunTime: {
+      durationMs: {
         type: DataTypes.INTEGER,
       },
       queryId: {
@@ -49,15 +44,12 @@ module.exports = function (sequelize) {
       rowCount: {
         type: DataTypes.INTEGER,
       },
-      createdAt: {
-        type: DataTypes.DATE,
-        allowNull: false,
-      },
     },
     {
-      tableName: 'query_history',
+      tableName: 'vw_query_history',
       underscored: true,
       updatedAt: false,
+      createdAt: false,
     }
   );
 

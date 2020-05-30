@@ -1,5 +1,6 @@
 const assert = require('assert');
 const path = require('path');
+const Sequelize = require('sequelize');
 const Cryptr = require('cryptr');
 const ncp = require('ncp').ncp;
 const TestUtils = require('../utils');
@@ -69,6 +70,7 @@ describe('v4-to-v5', function () {
   });
 
   it('Queries & tags migrated as expected', async function () {
+    // NOTE - using the sequelize model here may cause problems in future migrations
     const queries = await utils.sequelizeDb.Queries.findAll({});
     const queryTags = await utils.sequelizeDb.QueryTags.findAll({});
 
@@ -111,6 +113,7 @@ describe('v4-to-v5', function () {
   });
 
   it('Connections migrated as expected', async function () {
+    // NOTE - using the sequelize model here may cause problems in future migrations
     const connections = await utils.sequelizeDb.Connections.findAll({});
 
     const oldCipher = makeCipher(utils.config.get('passphrase'));
@@ -168,6 +171,7 @@ describe('v4-to-v5', function () {
   });
 
   it('Connection Accesses migrated as expected', async function () {
+    // NOTE - using the sequelize model here may cause problems in future migrations
     const connectionAccesses = await utils.sequelizeDb.ConnectionAccesses.findAll(
       {}
     );
@@ -198,7 +202,12 @@ describe('v4-to-v5', function () {
   });
 
   it('Query history migrated as expected', async function () {
-    const queryHistory = await utils.sequelizeDb.QueryHistory.findAll({});
+    const queryHistory = await utils.sequelizeDb.sequelize.query(
+      `SELECT * FROM vw_query_history`,
+      {
+        type: Sequelize.QueryTypes.SELECT,
+      }
+    );
 
     assert.equal(queryHistory.length, originalQueryHistory.length);
 
@@ -206,27 +215,27 @@ describe('v4-to-v5', function () {
       // id is not kept for query history so we'll just see if we can find a match
       const found = queryHistory.find(
         (item) =>
-          item.connectionId === original.connectionId &&
-          item.userId === original.userId &&
-          item.userEmail === original.userEmail &&
-          item.connectionName === original.connectionName &&
-          new Date(item.startTime).toISOString() ===
+          item.connection_id === original.connectionId &&
+          item.user_id === original.userId &&
+          item.user_email === original.userEmail &&
+          item.connection_name === original.connectionName &&
+          new Date(item.start_time).toISOString() ===
             new Date(original.startTime).toISOString() &&
-          item.queryRunTime === original.queryRunTime &&
-          item.queryName === original.queryName &&
-          item.queryText === original.queryText &&
-          item.incomplete === original.incomplete &&
-          item.rowCount === original.rowCount
+          item.duration_ms === original.queryRunTime &&
+          item.query_name === original.queryName &&
+          item.query_text === original.queryText &&
+          item.row_count === original.rowCount
       );
 
       // query id could be string or null and null !== null
-      assert.equal(found.queryId || '', original.queryId || '');
+      assert.equal(found.query_id || '', original.queryId || '');
 
       assert(found);
     }
   });
 
   it('Users migrated as expected', async function () {
+    // NOTE - using the sequelize model here may cause problems in future migrations
     const users = await utils.sequelizeDb.Users.findAll({});
 
     assert.equal(users.length, originalUsers.length);

@@ -14,6 +14,17 @@ const sessionlessAuth = require('./middleware/sessionless-auth.js');
 const ResponseUtils = require('./lib/response-utils.js');
 const expressPinoLogger = require('express-pino-logger');
 
+// This is a workaround till BigInt is fully supported by the standard
+// See https://tc39.es/ecma262/#sec-ecmascript-language-types-bigint-type
+// and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt
+// If this is not done, then a JSON.stringify(BigInt) throws
+// "TypeError: Do not know how to serialize a BigInt"
+/* global BigInt:writable */
+/* eslint no-extend-native: ["error", { "exceptions": ["BigInt"] }] */
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
+
 /**
  * Create an express app using config
  * @param {object} config
@@ -126,8 +137,7 @@ function makeApp(config, models) {
   app.use(sessionlessAuth);
 
   const authRequiredRouters = [
-    require('./routes/query-result.js'),
-    require('./routes/download-results.js'),
+    require('./routes/statement-results.js'),
     require('./routes/queries.js'),
     require('./routes/drivers.js'),
     require('./routes/users.js'),
@@ -140,6 +150,8 @@ function makeApp(config, models) {
     require('./routes/tags.js'),
     require('./routes/format-sql.js'),
     require('./routes/service-tokens.js'),
+    require('./routes/batches.js'),
+    require('./routes/statements.js'),
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route

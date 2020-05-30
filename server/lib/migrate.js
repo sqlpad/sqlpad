@@ -13,7 +13,13 @@ function runMigrations(config, appLog, nedb, sequelizeInstance) {
       appLog.info(message);
     },
     migrations: {
-      params: [sequelizeInstance.queryInterface, config, appLog, nedb],
+      params: [
+        sequelizeInstance.queryInterface,
+        config,
+        appLog,
+        nedb,
+        sequelizeInstance,
+      ],
       path: path.join(__dirname, '../migrations'),
       // The pattern that determines whether or not a file is a migration.
       pattern: /^\d+[\w-]+\.js$/,

@@ -1,6 +1,5 @@
 const sqlite3 = require('sqlite3');
 const appLog = require('../../lib/app-log');
-const splitSql = require('../../lib/split-sql');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'sqlite';
@@ -90,24 +89,16 @@ class Client {
    */
   async runQuery(query) {
     let incomplete = false;
-    let suppressedResultSet = false;
     let rows = [];
-
     const { maxRows } = this.connection;
-    const queries = splitSql(query);
-
-    for (const query of queries) {
-      // eslint-disable-next-line no-await-in-loop
-      const innerRows = await dbAllAsync(this.db, query);
-      rows = rows.concat(innerRows);
-    }
+    rows = await dbAllAsync(this.db, query);
 
     if (rows.length > maxRows) {
       rows = rows.slice(0, maxRows);
       incomplete = true;
     }
 
-    return { rows, incomplete, suppressedResultSet };
+    return { rows, incomplete };
   }
 }
 

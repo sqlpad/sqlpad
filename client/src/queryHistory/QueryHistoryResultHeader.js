@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
-import SuppressedSetNotification from '../common/SuppressedSetNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 import styles from './QueryHistoryResultHeader.module.css';
 
@@ -22,19 +21,16 @@ function QueryHistoryResultHeader({
     );
   }
 
-  const serverSec = queryResult ? queryResult.queryRunTime / 1000 : '';
+  const serverSec = queryResult ? queryResult.durationMs / 1000 : '';
   const rowCount =
     queryResult && queryResult.rows ? queryResult.rows.length : '';
 
   const incomplete = queryResult ? queryResult.incomplete : false;
-  const suppressedSet = queryResult ? queryResult.suppressedResultSet : false;
 
   return (
     <div className={styles.toolbar}>
       <div className={styles.toolbarItem}>{serverSec} seconds</div>
       <div className={styles.toolbarItem}>{rowCount} rows</div>
-
-      {suppressedSet && <SuppressedSetNotification />}
       {incomplete && <IncompleteDataNotification />}
     </div>
   );

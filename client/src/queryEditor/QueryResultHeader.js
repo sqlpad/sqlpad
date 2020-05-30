@@ -1,16 +1,14 @@
-import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import DownloadIcon from 'mdi-react/DownloadIcon';
+import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
-import SuppressedSetNotification from '../common/SuppressedSetNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 import styles from './QueryResultHeader.module.css';
 
 function QueryResultHeader({
-  cacheKey,
   config,
   isRunning,
   queryId,
@@ -29,17 +27,11 @@ function QueryResultHeader({
     );
   }
 
-  const serverSec = queryResult ? queryResult.queryRunTime / 1000 : '';
-  const rowCount =
-    queryResult && queryResult.rows ? queryResult.rows.length : '';
-
-  const incomplete = queryResult ? queryResult.incomplete : false;
-  const suppressedSet = queryResult ? queryResult.suppressedResultSet : false;
-
-  const csvDownloadLink = `/download-results/${cacheKey}.csv`;
-  const xlsxDownloadLink = `/download-results/${cacheKey}.xlsx`;
-  const jsonDownloadLink = `/download-results/${cacheKey}.json`;
-  const tableLink = `/query-table/${queryId}`;
+  const rows = queryResult.rows || [];
+  const links = queryResult.links || {};
+  const serverSec = queryResult.durationMs / 1000;
+  const rowCount = rows.length;
+  const incomplete = Boolean(queryResult.incomplete);
 
   return (
     <div className={styles.toolbar}>
@@ -53,7 +45,7 @@ function QueryResultHeader({
               className={styles.iconLink}
               target="_blank"
               rel="noopener noreferrer"
-              to={csvDownloadLink}
+              to={links.csv}
             >
               <DownloadIcon style={{ marginRight: 4 }} size={16} />
               .csv
@@ -63,7 +55,7 @@ function QueryResultHeader({
               className={styles.iconLink}
               target="_blank"
               rel="noopener noreferrer"
-              to={xlsxDownloadLink}
+              to={links.xlsx}
             >
               <DownloadIcon style={{ marginRight: 4 }} size={16} />
               .xlsx
@@ -73,7 +65,7 @@ function QueryResultHeader({
               className={styles.iconLink}
               target="_blank"
               rel="noopener noreferrer"
-              to={jsonDownloadLink}
+              to={links.json}
             >
               <DownloadIcon style={{ marginRight: 4 }} size={16} />
               .json
@@ -87,22 +79,19 @@ function QueryResultHeader({
             className={styles.iconLink}
             target="_blank"
             rel="noopener noreferrer"
-            to={tableLink}
+            to={links.table}
             disabled={!Boolean(queryId) || queryId === 'new'}
           >
             table <OpenInNewIcon style={{ marginLeft: 4 }} size={16} />
           </Link>
         </span>
       </div>
-
-      {suppressedSet && <SuppressedSetNotification />}
       {incomplete && <IncompleteDataNotification />}
     </div>
   );
 }
 
 QueryResultHeader.propTypes = {
-  cacheKey: PropTypes.string,
   config: PropTypes.object,
   isRunning: PropTypes.bool,
   queryResult: PropTypes.object,
@@ -110,15 +99,13 @@ QueryResultHeader.propTypes = {
 };
 
 QueryResultHeader.defaultProps = {
-  cacheKey: '',
   config: {},
   isRunning: false,
 };
 
 function mapStateToProps(state) {
-  const { cacheKey, config, isRunning, queryResult, runQueryStartTime } = state;
+  const { config, isRunning, queryResult, runQueryStartTime } = state;
   return {
-    cacheKey,
     config,
     isRunning,
     queryId: state.query && state.query.id,

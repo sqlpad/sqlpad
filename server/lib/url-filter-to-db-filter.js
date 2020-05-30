@@ -27,11 +27,7 @@ module.exports = function urlFilterToDbFilter(urlFilter) {
               let dbValue = value;
               switch (operator) {
                 case 'contains':
-                  // TODO - This approach is case-sensitive and it'd be nice to have it insensitive
-                  // SQLite doesn't support regex or ilike
-                  // As an alternate solution, target fields can be lowercased and liked with a lowercased value
-                  // but this is not easy in Sequelize
-                  // Using a queryBuilder like knex is maybe a better option here
+                  // SQLite's LIKE is case insensitive
                   dbOperator = Op.like;
                   dbValue = `%${value}%`;
                   break;

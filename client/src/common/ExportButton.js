@@ -10,12 +10,12 @@ const NavigationLink = React.forwardRef((props, ref) => {
   return <Link {...props} innerRef={ref} />;
 });
 
-function ExportButton({ config, cacheKey, onSaveImageClick }) {
-  if (!config || !cacheKey) {
+function ExportButton({ config, links, onSaveImageClick }) {
+  if (!config || !links) {
     return null;
   }
 
-  const { baseUrl, allowCsvDownload } = config;
+  const { allowCsvDownload } = config;
 
   const items = [];
   if (onSaveImageClick) {
@@ -30,7 +30,7 @@ function ExportButton({ config, cacheKey, onSaveImageClick }) {
       <MenuLink
         key="csv"
         as={NavigationLink}
-        to={`${baseUrl}/download-results/${cacheKey}.csv`}
+        to={links.csv}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -41,7 +41,7 @@ function ExportButton({ config, cacheKey, onSaveImageClick }) {
       <MenuLink
         key="xlsx"
         as={NavigationLink}
-        to={`${baseUrl}/download-results/${cacheKey}.xlsx`}
+        to={links.xlsx}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -52,7 +52,7 @@ function ExportButton({ config, cacheKey, onSaveImageClick }) {
       <MenuLink
         key="json"
         as={NavigationLink}
-        to={`${baseUrl}/download-results/${cacheKey}.json`}
+        to={links.json}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -71,7 +71,7 @@ function ExportButton({ config, cacheKey, onSaveImageClick }) {
 }
 
 ExportButton.propTypes = {
-  cacheKey: PropTypes.string,
+  links: PropTypes.object,
   onSaveImageClick: PropTypes.func,
 };
 

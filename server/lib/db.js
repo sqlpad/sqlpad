@@ -5,9 +5,6 @@ const appLog = require('./app-log');
 const Models = require('../models');
 const SequelizeDb = require('../sequelize-db');
 
-const ONE_DAY = 1000 * 60 * 60 * 24;
-const FIVE_MINUTES = 1000 * 60 * 5;
-
 /**
  * Whenever possible nedb should be read from the app req object.
  * Sometimes this isn't possible or convenient at the moment however.
@@ -72,28 +69,8 @@ async function initNedb(config) {
     })
   );
 
-  // Apply indexes
-  await nedb.users.ensureIndex({ fieldName: 'email', unique: true });
-  await nedb.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
-  await nedb.connectionAccesses.ensureIndex({ fieldName: 'connectionId' });
-  await nedb.connectionAccesses.ensureIndex({ fieldName: 'userId' });
-  await nedb.queryHistory.ensureIndex({ fieldName: 'connectionName' });
-  await nedb.queryHistory.ensureIndex({ fieldName: 'userEmail' });
-  await nedb.queryHistory.ensureIndex({ fieldName: 'createdDate' });
-
-  // Set autocompaction
-  nedb.instances.forEach((dbname) => {
-    nedb[dbname].nedb.persistence.setAutocompactionInterval(ONE_DAY);
-  });
-
   const sequelizeDb = new SequelizeDb(config);
-
-  // Schedule cleanups
   const models = new Models(sequelizeDb, config);
-  setInterval(async () => {
-    await models.resultCache.removeExpired();
-    await models.queryHistory.removeOldEntries();
-  }, FIVE_MINUTES);
 
   return { nedb, models, sequelizeDb };
 }

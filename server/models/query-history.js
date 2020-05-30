@@ -1,5 +1,3 @@
-const { Op } = require('sequelize');
-
 class QueryHistory {
   /**
    * @param {import('../sequelize-db')} sequelizeDb
@@ -24,16 +22,6 @@ class QueryHistory {
     return this.sequelizeDb.QueryHistory.findAll({
       where: filter,
       order: [['startTime', 'DESC']],
-    });
-  }
-
-  async removeOldEntries() {
-    const days =
-      this.config.get('queryHistoryRetentionTimeInDays') * 86400 * 1000;
-    const retentionPeriodStartTime = new Date(new Date().getTime() - days);
-
-    return this.sequelizeDb.QueryHistory.destroy({
-      where: { createdAt: { [Op.lt]: retentionPeriodStartTime } },
     });
   }
 

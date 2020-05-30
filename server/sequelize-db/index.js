@@ -30,6 +30,8 @@ class SequelizeDb {
     this.QueryHistory = require('./query-history')(sequelize);
     this.ConnectionAccesses = require('./connections-accesses')(sequelize);
     this.Cache = require('./cache')(sequelize);
+    this.Batches = require('./batches')(sequelize);
+    this.Statements = require('./statements')(sequelize);
   }
 }
 

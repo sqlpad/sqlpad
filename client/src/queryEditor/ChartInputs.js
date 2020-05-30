@@ -32,11 +32,14 @@ function ChartInputs({
   };
 
   const renderFormGroup = (inputDefinitionFields) => {
-    const queryResultFields = queryResult.fields || [];
+    let resultColumnNames = [];
+    if (queryResult && queryResult.columns) {
+      resultColumnNames = queryResult.columns.map((c) => c.name);
+    }
 
     return inputDefinitionFields.map((field) => {
       if (field.inputType === 'field-dropdown') {
-        const optionNodes = queryResultFields.map((qrfield) => {
+        const optionNodes = resultColumnNames.map((qrfield) => {
           return (
             <option key={qrfield} value={qrfield}>
               {qrfield}
@@ -47,7 +50,7 @@ function ChartInputs({
           queryChartConfigurationFields[field.fieldId];
         if (
           selectedQueryResultField &&
-          queryResultFields.indexOf(selectedQueryResultField) === -1
+          resultColumnNames.indexOf(selectedQueryResultField) === -1
         ) {
           optionNodes.push(
             <option

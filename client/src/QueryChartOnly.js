@@ -1,47 +1,39 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ExportButton from './common/ExportButton.js';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
-import SuppressedSetNotification from './common/SuppressedSetNotification';
+import QueryResultRunning from './common/QueryResultRunning';
 import SqlpadTauChart from './common/SqlpadTauChart.js';
 import { exportPng } from './common/tauChartRef';
-import fetchJson from './utilities/fetch-json.js';
+import useQueryResultById from './utilities/useQueryResultById';
 
 function QueryChartOnly({ queryId }) {
-  const [isRunning, setIsRunning] = useState(false);
-  const [queryResult, setQueryResult] = useState(null);
-  const [query, setQuery] = useState(null);
-  const [queryError, setQueryError] = useState(null);
-
-  const runQuery = async (queryId) => {
-    setIsRunning(true);
-
-    const queryJson = await fetchJson('GET', '/api/queries/' + queryId);
-    if (queryJson.error) {
-      setIsRunning(false);
-      setQueryError(queryJson.error);
-      return;
-    }
-    setQuery(queryJson.data);
-
-    const resultJson = await fetchJson('GET', '/api/query-result/' + queryId);
-    setIsRunning(false);
-    setQueryError(resultJson.error);
-    setQueryResult(resultJson.data);
-  };
+  const [queryError, queryResult, isRunning] = useQueryResultById(queryId);
 
   useEffect(() => {
     document.title = 'SQLPad';
-    runQuery(queryId);
-  }, [queryId]);
+  }, []);
+
+  if (isRunning || !queryResult) {
+    return (
+      <div
+        style={{
+          display: 'flex',
+          height: '100vh',
+          width: '100%',
+          flexDirection: 'column',
+        }}
+      >
+        <QueryResultRunning />
+      </div>
+    );
+  }
+
+  const { name, chart, links, incomplete } = queryResult;
 
   const onSaveImageClick = () => {
-    exportPng(queryId, query && query.name);
+    exportPng(queryId, name || '');
   };
-
-  const suppressedSet = queryResult ? queryResult.suppressedResultSet : false;
-  const incomplete = queryResult ? queryResult.incomplete : false;
-  const cacheKey = queryResult ? queryResult.cacheKey : null;
 
   return (
     <div
@@ -54,21 +46,17 @@ function QueryChartOnly({ queryId }) {
       }}
     >
       <div style={{ height: '50px' }}>
-        <span style={{ fontSize: '1.5rem' }}>{query ? query.name : ''}</span>
+        <span style={{ fontSize: '1.5rem' }}>{name || ''}</span>
         <div style={{ float: 'right' }}>
-          {suppressedSet && <SuppressedSetNotification />}
           {incomplete && <IncompleteDataNotification />}
-          <ExportButton
-            cacheKey={cacheKey}
-            onSaveImageClick={onSaveImageClick}
-          />
+          <ExportButton links={links} onSaveImageClick={onSaveImageClick} />
         </div>
       </div>
       <div style={{ height: '100%', display: 'flex' }}>
         <SqlpadTauChart
           queryId={queryId}
-          queryName={query && query.name}
-          chartConfiguration={query && query.chart}
+          queryName={name}
+          chartConfiguration={chart}
           queryResult={queryResult}
           queryError={queryError}
           isRunning={isRunning}

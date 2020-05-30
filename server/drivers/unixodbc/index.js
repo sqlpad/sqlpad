@@ -1,6 +1,5 @@
 const odbc = require('odbc');
 const appLog = require('../../lib/app-log');
-const splitSql = require('../../lib/split-sql');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'unixodbc';
@@ -114,36 +113,7 @@ class Client {
   async runQuery(query) {
     try {
       let incomplete = false;
-      let suppressedResultSet = false;
-      const queries = splitSql(query);
-
-      let queryResult;
-      let lastResult;
-
-      for (const query of queries) {
-        // eslint-disable-next-line no-await-in-loop
-        const result = await this.client.query(query);
-
-        // If result has columns it is a candidate for lastQueryResultWithRows
-        // Until SQLPad has capability to show multiple result sets we are showing the last one with results
-        if (result && result.columns) {
-          // If queryResult was already set we're suppressing a result set
-          // Eventually we'll show all results but not at this point
-          if (queryResult) {
-            suppressedResultSet = true;
-          }
-
-          queryResult = result;
-        }
-
-        // Keep reference to result as last result
-        lastResult = result;
-      }
-
-      // If queryResult was never populated because none of the queries returned results, use last result if it exists
-      if (!queryResult && lastResult) {
-        queryResult = lastResult;
-      }
+      const queryResult = await this.client.query(query);
 
       // The result of the query seems to be dependent on the odbc driver impmlementation used
       // Try to determine if the result is what we expect. If not, return an empty rows array
@@ -177,7 +147,7 @@ class Client {
         }
       }
 
-      return { rows, incomplete, suppressedResultSet };
+      return { rows, incomplete };
     } catch (error) {
       appLog.error(error);
       // unixodb error has additional info about why the error occurred

@@ -4,53 +4,22 @@ import QueryResultContainer from '../common/QueryResultContainer';
 import fetchJson from '../utilities/fetch-json.js';
 import Button from '../common/Button';
 
-// Previous implementation used server get-meta to supply meta info and fields for /api/query-history
-// This API has changed in v5 to return an array of objects to make it consistent with other list APIs
-// To accomodate the loss of meta/fields, they are being hardcoded here so we can reuse the query result grid
-// This should be fine... it'll just need updating if the API changes shape
-const historyMeta = {
-  userEmail: {
-    datatype: 'string',
-  },
-  connectionName: {
-    datatype: 'string',
-  },
-  startTime: {
-    datatype: 'datetime',
-  },
-  stopTime: {
-    datatype: 'datetime',
-  },
-  queryRunTime: {
-    datatype: 'number',
-  },
-  queryId: {
-    datatype: 'string',
-  },
-  queryName: {
-    datatype: 'string',
-  },
-  queryText: {
-    datatype: 'string',
-  },
-  incomplete: {
-    datatype: 'boolean',
-  },
-  rowCount: {
-    datatype: 'number',
-  },
-  createdAt: {
-    datatype: 'datetime',
-  },
-};
-
-const historyFields = Object.keys(historyMeta);
-
 function getQueryResult(rows) {
   return {
     rows,
-    fields: historyFields,
-    meta: historyMeta,
+    columns: [
+      { name: 'userEmail', datatype: 'string' },
+      { name: 'connectionName', datatype: 'string' },
+      { name: 'startTime', datatype: 'datetime' },
+      { name: 'stopTime', datatype: 'datetime' },
+      { name: 'durationMs', datatype: 'number' },
+      { name: 'queryId', datatype: 'string' },
+      { name: 'queryName', datatype: 'string' },
+      { name: 'queryText', datatype: 'string' },
+      { name: 'incomplete', datatype: 'boolean' },
+      { name: 'rowCount', datatype: 'number' },
+      { name: 'createdAt', datatype: 'datetime' },
+    ],
   };
 }
 

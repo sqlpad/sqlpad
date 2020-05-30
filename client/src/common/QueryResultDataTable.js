@@ -69,15 +69,15 @@ class QueryResultDataTable extends React.PureComponent {
     const { queryResult } = nextProps;
     const { columnWidths } = prevState;
 
-    if (queryResult && queryResult.fields) {
-      queryResult.fields.forEach((field) => {
-        if (!columnWidths[field]) {
-          const fieldMeta = queryResult.meta[field];
+    if (queryResult && queryResult.columns) {
+      queryResult.columns.forEach((column) => {
+        const { name, maxValueLength } = column;
+        if (!columnWidths[name]) {
           // (This length is number of characters -- it later gets assigned ~ 20px per char)
-          let valueLength = fieldMeta.maxValueLength || 8;
+          let valueLength = maxValueLength || 8;
 
-          if (field.length > valueLength) {
-            valueLength = field.length;
+          if (name.length > valueLength) {
+            valueLength = name.length;
           }
           let columnWidthGuess = valueLength * 20;
           if (columnWidthGuess < 100) {
@@ -86,7 +86,7 @@ class QueryResultDataTable extends React.PureComponent {
             columnWidthGuess = 350;
           }
 
-          columnWidths[field] = columnWidthGuess;
+          columnWidths[name] = columnWidthGuess;
         }
       });
     }
@@ -100,15 +100,15 @@ class QueryResultDataTable extends React.PureComponent {
   getColumnWidth = (index) => {
     const { columnWidths } = this.state;
     const { queryResult } = this.props;
-    const dataKey = queryResult.fields[index];
+    const column = queryResult.columns[index];
     const { width } = this.state.dimensions;
 
-    if (dataKey) {
-      return columnWidths[dataKey];
+    if (column) {
+      return columnWidths[column.name];
     }
 
-    const totalWidthFilled = queryResult.fields
-      .map((key) => columnWidths[key])
+    const totalWidthFilled = queryResult.columns
+      .map((col) => columnWidths[col.name])
       .reduce((prev, curr) => prev + curr, 0);
 
     const fakeColumnWidth = width - totalWidthFilled;
@@ -145,19 +145,19 @@ class QueryResultDataTable extends React.PureComponent {
 
   HeaderCell = ({ columnIndex, rowIndex, style }) => {
     const { queryResult } = this.props;
-    const dataKey = queryResult.fields[columnIndex];
+    const column = queryResult.columns[columnIndex];
 
     // If dataKey is present this is an actual header to render
-    if (dataKey) {
+    if (column) {
       return (
         <div style={Object.assign({}, style, headerCellStyle)}>
-          <div>{dataKey}</div>
+          <div>{column.name}</div>
           <Draggable
             axis="x"
             defaultClassName="DragHandle"
             defaultClassNameDragging="DragHandleActive"
             onDrag={(event, { deltaX }) => {
-              this.resizeColumn({ dataKey, deltaX, columnIndex });
+              this.resizeColumn({ dataKey: column.name, deltaX, columnIndex });
             }}
             position={{ x: 0 }}
             zIndex={999}
@@ -174,22 +174,18 @@ class QueryResultDataTable extends React.PureComponent {
 
   Cell = ({ columnIndex, rowIndex, style }) => {
     const { queryResult } = this.props;
-    const dataKey = queryResult.fields[columnIndex];
+    const column = queryResult.columns[columnIndex];
     const finalStyle = Object.assign({}, style, cellStyle);
     if (rowIndex % 2 === 0) {
       finalStyle.backgroundColor = '#fafafa';
     }
 
     // If dataKey is present this is a real data cell to render
-    if (dataKey) {
-      const fieldMeta = queryResult.meta[dataKey];
-
-      // Account for extra row that was used for header row
-      const value = queryResult.rows[rowIndex][dataKey];
-
+    if (column) {
+      const value = queryResult.rows[rowIndex][column.name];
       return (
         <div style={finalStyle}>
-          <div className="truncate">{renderValue(value, fieldMeta)}</div>
+          <div className="truncate">{renderValue(value, column)}</div>
         </div>
       );
     }
@@ -221,10 +217,10 @@ class QueryResultDataTable extends React.PureComponent {
     const { queryResult } = this.props;
     const { height, width } = this.state.dimensions;
 
-    if (queryResult && queryResult.rows) {
+    if (queryResult && queryResult.rows && queryResult.columns) {
       const rowCount = queryResult.rows.length;
       // Add extra column to fill remaining grid width if necessary
-      const columnCount = queryResult.fields.length + 1;
+      const columnCount = queryResult.columns.length + 1;
 
       return (
         <Measure bounds onResize={this.handleContainerResize}>

@@ -96,21 +96,33 @@ describe('api/query-history', function () {
   });
 
   it('Gets array of 4 items', async function () {
-    // Run some queries to generate query history by saved queries
-    await utils.get('admin', `/api/query-result/${query1.id}`);
-    await utils.get('admin', `/api/query-result/${query1.id}`);
+    // Run some queries to generate query history by saved
+    await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      queryId: query1.id,
+      queryName: 'test query',
+      batchText: query1.queryText,
+      selectedText: query1.queryText,
+    });
+    await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      queryId: query1.id,
+      queryName: 'test query',
+      batchText: query1.queryText,
+      selectedText: query1.queryText,
+    });
+    await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      batchText: queryText2,
+      selectedText: queryText2,
+    });
+    await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      batchText: queryText2,
+      selectedText: queryText2,
+    });
 
-    // Run some queries to generate query history directly from the query editor
-    await utils.post('admin', `/api/query-result`, {
-      connectionId: connection.id,
-      cacheKey: 'cachekey',
-      queryText: queryText2,
-    });
-    await utils.post('admin', `/api/query-result`, {
-      connectionId: connection.id,
-      cacheKey: 'cachekey',
-      queryText: queryText2,
-    });
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Check if every query stored in query history
     const body = await utils.get('admin', '/api/query-history');
@@ -125,13 +137,12 @@ describe('api/query-history', function () {
       'userEmail',
       'startTime',
       'stopTime',
-      'queryRunTime',
+      'durationMs',
       'queryId',
       'queryName',
       'queryText',
       'incomplete',
       'rowCount',
-      'createdAt',
     ];
 
     // First and second two history items (reverse ordered) needs to free text query with queryId and queryName

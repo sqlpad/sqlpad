@@ -182,7 +182,6 @@ class ConnectionClient {
 
     const finalResult = {
       id: uuidv4(),
-      cacheKey: null,
       startTime: new Date(),
       stopTime: null,
       queryRunTime: null,
@@ -234,7 +233,7 @@ class ConnectionClient {
       throw error;
     }
 
-    let { rows, incomplete, suppressedResultSet } = results;
+    let { rows, incomplete } = results;
 
     if (!Array.isArray(rows)) {
       appLog.warn(
@@ -251,12 +250,16 @@ class ConnectionClient {
     }
 
     finalResult.incomplete = Boolean(incomplete);
-    finalResult.suppressedResultSet = Boolean(suppressedResultSet);
     finalResult.rows = rows;
     finalResult.stopTime = new Date();
     finalResult.queryRunTime = finalResult.stopTime - finalResult.startTime;
     finalResult.meta = getMeta(rows);
     finalResult.fields = Object.keys(finalResult.meta);
+    finalResult.columns = Object.entries(finalResult.meta).map(
+      ([key, value]) => {
+        return { ...value, name: key };
+      }
+    );
 
     appLog.info(
       {
@@ -265,7 +268,6 @@ class ConnectionClient {
         queryRunTime: finalResult.queryRunTime,
         rowCount: rows.length,
         incomplete: finalResult.incomplete,
-        suppressedResultSet: finalResult.suppressedResultSet,
       },
       'Query finished'
     );

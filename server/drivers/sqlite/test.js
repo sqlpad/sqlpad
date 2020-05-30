@@ -65,11 +65,6 @@ describe('drivers/sqlite', function () {
       SELECT * FROM sqlpad_test WHERE id = 2
     `;
     const results = await sqlite3.runQuery(query, connection);
-    // Instead of taking the ODBC approach where a result set is suppressed and the last SELECT set is shown,
-    // The SQLite implementation shows a jumbled mix of results
-    // The reason for this is because we can't tell what was a successful SELECT query vs INSERT/DELETE
-    // as they all return an array of row objects
-    assert.strictEqual(results.suppressedResultSet, false);
     assert.strictEqual(results.incomplete, false);
     assert.equal(results.rows.length, 7, 'row length');
   });

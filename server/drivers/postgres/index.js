@@ -1,10 +1,10 @@
 const fs = require('fs');
 const pg = require('pg');
 const _ = require('lodash');
+const sqlLimiter = require('sql-limiter');
 const PgCursor = require('pg-cursor');
 const SocksConnection = require('socksjs');
 const appLog = require('../../lib/app-log');
-const splitSql = require('../../lib/split-sql');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'postgres';
@@ -75,7 +75,11 @@ class Client {
     await this.client.connect();
 
     if (connection.preQueryStatements) {
-      const queries = splitSql(connection.preQueryStatements);
+      const queries = sqlLimiter
+        .getStatements(connection.preQueryStatements)
+        .map((s) => sqlLimiter.removeTerminator(s))
+        .filter((s) => s && s.trim() !== '');
+
       for (const query of queries) {
         // eslint-disable-next-line no-await-in-loop
         await this.runQuery(query);
@@ -100,13 +104,10 @@ class Client {
     const { maxRows } = this.connection;
     const maxRowsPlusOne = maxRows + 1;
 
-    if (this.connection.denyMultipleStatements) {
-      const statements = splitSql(query);
-      if (statements.length > 1) {
-        throw new Error('Running multiple statements not allowed');
-      }
-    }
-
+    // TODO remove connection.denyMultipleStatements option
+    // TODO - simplify postgres driver to remove multi-statement considerations
+    // These are now being parsed and split in batch creation
+    // TODO - apply limit using sql-limiter
     try {
       const cursor = this.client.query(new PgCursor(query));
 

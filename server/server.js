@@ -44,6 +44,9 @@ const certPath = config.get('certPath');
 const systemdSocket = config.get('systemdSocket');
 const timeoutSeconds = config.get('timeoutSeconds');
 
+const HALF_HOUR = 1000 * 60 * 30;
+const CLEANING_MS = HALF_HOUR + parseInt(Math.random() * HALF_HOUR * 2);
+
 function isFdObject(ob) {
   return ob && typeof ob.fd === 'number';
 }
@@ -96,6 +99,11 @@ async function startServer() {
 
   // Create a connection accesses entry for everyone if set
   await ensureConnectionAccess(sequelizeDb, config);
+
+  // Schedule cleanups
+  setInterval(async () => {
+    await models.statements.removeOldEntries();
+  }, CLEANING_MS);
 
   // Create expressjs app
   const app = makeApp(config, models);

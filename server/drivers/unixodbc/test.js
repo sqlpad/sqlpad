@@ -84,22 +84,6 @@ describe('drivers/unixodbc', function () {
     assert.equal(results.rows.length, 2, 'row length');
   });
 
-  it('Runs multiple statements', async function () {
-    const query = `
-      SELECT id FROM sqlpad_test;
-      SELECT name FROM sqlpad_test;
-      SELECT * FROM sqlpad_test WHERE id = 2
-    `;
-    const results = await unixodbc.runQuery(query, connection);
-    // incomplete indicates truncated results
-    // suppressedResultSet indicates missing set
-    assert.strictEqual(results.suppressedResultSet, true);
-    assert.strictEqual(results.incomplete, false);
-    assert.equal(results.rows.length, 1, 'row length');
-    assert.strictEqual(results.rows[0].id, 2);
-    assert.strictEqual(results.rows[0].name, 'two');
-  });
-
   it('Throws helpful error', async function () {
     let error;
     try {

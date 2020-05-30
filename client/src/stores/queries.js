@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
+import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import {
   setLocalQueryText,
   removeLocalQueryText,
@@ -24,7 +24,6 @@ export const NEW_QUERY = {
 };
 
 export const initialState = {
-  cacheKey: uuidv4(),
   isRunning: false,
   isSaving: false,
   queries: [],
@@ -113,13 +112,7 @@ export const loadQuery = async (state, queryId) => {
 };
 
 export const runQuery = (store) => async (state) => {
-  const {
-    cacheKey,
-    query,
-    selectedText,
-    selectedConnectionId,
-    connectionClient,
-  } = state;
+  const { query, selectedText, selectedConnectionId, connectionClient } = state;
 
   store.setState({
     isRunning: true,
@@ -128,16 +121,13 @@ export const runQuery = (store) => async (state) => {
   const postData = {
     connectionId: selectedConnectionId,
     connectionClientId: connectionClient && connectionClient.id,
-    cacheKey,
     queryId: query.id,
-    queryName: query.name,
-    queryText: selectedText || query.queryText,
+    name: query.name,
+    batchText: query.queryText,
+    selectedText,
+    chart: query.chart,
   };
-  const { data, error } = await fetchJson(
-    'POST',
-    '/api/query-result',
-    postData
-  );
+  const { data, error } = await runQueryViaBatch(postData);
   store.setState({
     isRunning: false,
     queryError: error,
