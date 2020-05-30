@@ -187,6 +187,31 @@ Example JSON config file with connection:
   </tbody>
 </table>
 
+## MySQL2
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>mysql2</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>database</td><td>Database</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>mysqlInsecureAuth</td><td>Use old/insecure pre 4.1 Auth System</td><td>boolean</td></tr>
+    <tr><td>minTlsVersion</td><td>Minimum TLS version to allow. One of: <code>TLSv1.3</code>, <code>TLSv1.2</code>, <code>TLSv1.1</code>, or <code>TLSv1</code></td><td>text</td></tr>
+    <tr><td>maxTlsVersion</td><td>Maximum TLS version to allow. see above for options</td><td>text</td></tr>
+    <tr><td>mysqlSkipValidateServerCert</td><td>Do not validate servier certificate. (Don't use this for production)</td><td>boolean</td></tr>
+  </tbody>
+</table>
+
 ## PostgreSQL (postgres)
 
 <table>
