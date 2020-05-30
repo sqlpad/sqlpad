@@ -7,6 +7,7 @@ const drivers = {
   drill: require('./drill'),
   hdb: require('./hdb'),
   mysql: require('./mysql'),
+  mysql2: require('./mysql2'),
   postgres: require('./postgres'),
   presto: require('./presto'),
   snowflake: require('./snowflake'),

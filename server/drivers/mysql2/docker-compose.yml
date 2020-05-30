@@ -1,0 +1,11 @@
+version: '3'
+services:
+  mariadb:
+    image: mariadb:10.3
+    environment:
+      MYSQL_ROOT_PASSWORD: sqlpad
+      MYSQL_DATABASE: sqlpad
+      MYSQL_USER: sqlpad
+      MYSQL_PASSWORD: sqlpad
+    ports:
+      - "3306:3306"
