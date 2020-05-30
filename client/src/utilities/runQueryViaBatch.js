@@ -63,10 +63,7 @@ export default async function runQueryViaBatch(opt) {
 
   const statement = batch.statements[batch.statements.length - 1];
 
-  res = await fetchJson(
-    'GET',
-    `/api/batches/${batch.id}/statements/${statement.id}/results`
-  );
+  res = await fetchJson('GET', `/api/statements/${statement.id}/results`);
   if (res.error) {
     error = res.error;
   }

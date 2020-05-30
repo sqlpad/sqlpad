@@ -1,4 +1,4 @@
-# Batches API
+# Batches & Statements API
 
 !> Batches and related APIs are new to `latest` and upcoming v5 release
 
@@ -27,7 +27,7 @@ These results on the filesystem are kept according to the `queryHistoryRetention
 
 ## Creating a Batch
 
-Create a new batch and statements from SQL text.
+Execute SQL by creating a batch (and statements) from SQL text.
 
 **Request:**
 
@@ -167,7 +167,7 @@ Response body (200):
           "name": "color"
         }
       ],
-      "rowCount": 1,
+      "rowCount": 2,
       "resultsPath": "results\\652\\6526360d-6efa-4b36-8d41-b3b009d6d3cf.json",
       "incomplete": false,
       "error": null,
@@ -178,25 +178,109 @@ Response body (200):
 }
 ```
 
-## Get Batch Statements/Statement
+## Get Statements for a Batch
 
-Instead of getting the entire `batch` object with related `statements`, you may fetch just the `statements` for a given batch, or a single `statement` using the following APIs:
+Instead of getting the entire `batch` object with related `statements`, you may fetch just the `statements` for a given batch.
 
-**To get an array of statements for a batch**
+**Request**
 
 `GET /api/batches/<batchId>/statements`
 
-**To get a specific statement for a batch**
+**Response**
 
-`GET /api/batches/<batchId>/statements/<statementId>`
+Response body (200):
 
-## Get statement results
+```json
+[
+  {
+    "id": "6526360d-6efa-4b36-8d41-b3b009d6d3cf",
+    "batchId": "731cf09a-f289-4b27-9b28-561f748f98ac",
+    "sequence": 1,
+    "statementText": "SELECT 1 AS id, 'blue' AS color",
+    "status": "finished",
+    "startTime": "2020-05-29T23:25:58.491Z",
+    "stopTime": "2020-05-29T23:25:58.507Z",
+    "durationMs": 16,
+    "columns": [
+      {
+        "datatype": "number",
+        "max": 1,
+        "min": 1,
+        "maxValueLength": 0,
+        "name": "id"
+      },
+      {
+        "datatype": "string",
+        "max": null,
+        "min": null,
+        "maxValueLength": 4,
+        "name": "color"
+      }
+    ],
+    "rowCount": 2,
+    "resultsPath": "results\\652\\6526360d-6efa-4b36-8d41-b3b009d6d3cf.json",
+    "incomplete": false,
+    "error": null,
+    "createdAt": "2020-05-29T23:25:58.370Z",
+    "updatedAt": "2020-05-29T23:25:58.515Z"
+  }
+]
+```
+
+## Get Single Statement
+
+To get the details of a single statement:
+
+**Request**
+
+`GET /api/statements/<statementId>`
+
+**Response**
+
+Response body (200):
+
+```json
+{
+  "id": "6526360d-6efa-4b36-8d41-b3b009d6d3cf",
+  "batchId": "731cf09a-f289-4b27-9b28-561f748f98ac",
+  "sequence": 1,
+  "statementText": "SELECT 1 AS id, 'blue' AS color",
+  "status": "finished",
+  "startTime": "2020-05-29T23:25:58.491Z",
+  "stopTime": "2020-05-29T23:25:58.507Z",
+  "durationMs": 16,
+  "columns": [
+    {
+      "datatype": "number",
+      "max": 1,
+      "min": 1,
+      "maxValueLength": 0,
+      "name": "id"
+    },
+    {
+      "datatype": "string",
+      "max": null,
+      "min": null,
+      "maxValueLength": 4,
+      "name": "color"
+    }
+  ],
+  "rowCount": 2,
+  "resultsPath": "results\\652\\6526360d-6efa-4b36-8d41-b3b009d6d3cf.json",
+  "incomplete": false,
+  "error": null,
+  "createdAt": "2020-05-29T23:25:58.370Z",
+  "updatedAt": "2020-05-29T23:25:58.515Z"
+}
+```
+
+## Get Statement Results
 
 Statement results are returned as an array of row arrays.
 
-**Request:**
+**Request**
 
-`GET /api/batches/<batchId>/statements/<statementId>/results`
+`GET /api/statements/<statementId>/results`
 
 **Response**
 

@@ -8,4 +8,4 @@
   - [Logging](/logging.md)
 - API
   - [Overview](/api-overview.md)
-  - [Batches](/api-batches.md)
+  - [Batches & Statements](/api-batches.md)

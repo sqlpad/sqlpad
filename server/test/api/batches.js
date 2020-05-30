@@ -116,10 +116,7 @@ describe('api/batches', function () {
   });
 
   it('Gets statement from api', async function () {
-    statement1 = await utils.get(
-      'admin',
-      `/api/batches/${batch.id}/statements/${statement1.id}`
-    );
+    statement1 = await utils.get('admin', `/api/statements/${statement1.id}`);
     assert.equal(statement1.sequence, 1);
     assert.equal(statement1.statementText, query1);
     assert.equal(statement1.batchId, batch.id);
@@ -132,13 +129,13 @@ describe('api/batches', function () {
   it('Gets statement result', async function () {
     const result1 = await utils.get(
       'admin',
-      `/api/batches/${batch.id}/statements/${statement1.id}/results`
+      `/api/statements/${statement1.id}/results`
     );
     assert.deepEqual(result1, [[1, 'blue']]);
 
     const result2 = await utils.get(
       'admin',
-      `/api/batches/${batch.id}/statements/${statement2.id}/results`
+      `/api/statements/${statement2.id}/results`
     );
     assert.deepEqual(result2, [
       [1, 'blue'],
@@ -181,16 +178,8 @@ describe('api/batches', function () {
     assert.equal(editorBatches.length, 0);
     await utils.get('editor', `/api/batches/${batch.id}`, 403);
     await utils.get('editor', `/api/batches/${batch.id}/statements`, 403);
-    await utils.get(
-      'editor',
-      `/api/batches/${batch.id}/statements/${statement1.id}`,
-      403
-    );
-    await utils.get(
-      'editor',
-      `/api/batches/${batch.id}/statements/${statement1.id}/results`,
-      403
-    );
+    await utils.get('editor', `/api/statements/${statement1.id}`, 403);
+    await utils.get('editor', `/api/statements/${statement1.id}/results`, 403);
   });
 
   it('Handles query error', async function () {

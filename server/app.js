@@ -150,7 +150,8 @@ function makeApp(config, models) {
     require('./routes/tags.js'),
     require('./routes/format-sql.js'),
     require('./routes/service-tokens.js'),
-    require('./routes/batches'),
+    require('./routes/batches.js'),
+    require('./routes/statements.js'),
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
