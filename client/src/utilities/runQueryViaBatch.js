@@ -23,8 +23,12 @@ function sleep(ms) {
  * @param {Object} [opt.chart]
  */
 export default async function runQueryViaBatch(opt) {
-  if (!opt.batchText || !opt.connectionId) {
-    throw new Error('batchText and connectionName required');
+  if (!opt.connectionId) {
+    return { error: 'Connection required' };
+  }
+
+  if (!opt.batchText) {
+    return { error: 'SQL text required' };
   }
 
   if (!opt.selectedText) {
@@ -38,6 +42,10 @@ export default async function runQueryViaBatch(opt) {
   error = res.error;
   batch = res.data;
 
+  if (error) {
+    return { error };
+  }
+
   while (!(batch.status === 'finished' || batch.status === 'error') && !error) {
     await sleep(500);
     res = await fetchJson('GET', `/api/batches/${batch.id}`);
@@ -49,8 +57,9 @@ export default async function runQueryViaBatch(opt) {
     return { error };
   }
 
+  // This should not happen but just in case
   if (!batch.statements.length) {
-    throw new Error('No statements?');
+    return { error: 'Statements not found' };
   }
 
   // For short-term API compat
