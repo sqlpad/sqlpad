@@ -230,7 +230,7 @@ const fields = [
     key: 'mysqlSkipValidateServerCert',
     formType: 'CHECKBOX',
     label:
-      "Do not validate servier certificate. (Don't use this for production)",
+      "Do not validate server certificate. (Don't use this for production)",
   },
   {
     key: 'mysqlInsecureAuth',
