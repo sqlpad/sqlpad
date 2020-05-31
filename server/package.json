@@ -83,7 +83,7 @@
     "snowflake-sdk": "^1.5.2",
     "socksjs": "^0.5.0",
     "sql-formatter": "^2.3.3",
-    "sql-limiter": "^2.1.0",
+    "sql-limiter": "^2.1.1",
     "sqlite3": "^4.2.0",
     "umzug": "^2.3.0",
     "uuid": "^8.1.0",
