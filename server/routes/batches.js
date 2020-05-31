@@ -37,9 +37,11 @@ async function create(req, res) {
 
   // Run batch, but don't wait for it to send response
   // Client will get status via polling or perhaps some future event mechanism
-  executeBatch(config, models, newBatch.id).catch((error) =>
-    appLog.error(error)
-  );
+  if (newBatch.status !== 'error') {
+    executeBatch(config, models, newBatch.id).catch((error) =>
+      appLog.error(error)
+    );
+  }
 
   return res.utils.data(newBatch);
 }

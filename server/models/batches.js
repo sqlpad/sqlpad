@@ -44,13 +44,26 @@ class Batches {
 
     const queryText = batch.selectedText || batch.batchText;
 
-    const statementTexts = sqlLimiter
-      .getStatements(queryText)
-      .map((s) => sqlLimiter.removeTerminator(s))
-      .filter((s) => s && s.trim() !== '');
+    // sqlLimiter could fail at parsing the SQL text
+    // If this happens the error is captured and reported as if it were a query error
+
+    let error;
+    let statementTexts = [queryText];
+    try {
+      statementTexts = sqlLimiter
+        .getStatements(queryText)
+        .map((s) => sqlLimiter.removeTerminator(s))
+        .filter((s) => s && s.trim() !== '');
+    } catch (e) {
+      error = e;
+    }
 
     await this.sequelizeDb.sequelize.transaction(async (transaction) => {
-      createdBatch = await this.sequelizeDb.Batches.create(batch, {
+      const createData = { ...batch };
+      if (error) {
+        createData.status = 'error';
+      }
+      createdBatch = await this.sequelizeDb.Batches.create(createData, {
         transaction,
       });
 
@@ -59,7 +72,8 @@ class Batches {
           batchId: createdBatch.id,
           sequence: i + 1,
           statementText,
-          status: 'queued',
+          status: error ? 'error' : 'queued',
+          error: error && { title: error.message },
         };
       });
 
