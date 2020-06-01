@@ -126,6 +126,11 @@ const configItems = [
     default: false,
   },
   {
+    key: 'disableAuthDefaultRole',
+    envVar: 'SQLPAD_DISABLE_AUTH_DEFAULT_ROLE',
+    default: 'editor',
+  },
+  {
     key: 'allowCsvDownload',
     envVar: 'SQLPAD_ALLOW_CSV_DOWNLOAD',
     default: true,

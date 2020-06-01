@@ -46,7 +46,8 @@ function sessionlessAuth(req, res, next) {
   if (config.get('disableAuth')) {
     req.user = {
       id: 'noauth',
-      role: 'admin',
+      role:
+        config.get('disableAuthDefaultRole') === 'admin' ? 'admin' : 'editor',
       email: 'test@example.com',
     };
     return next();

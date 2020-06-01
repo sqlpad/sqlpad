@@ -10,6 +10,7 @@
   "dbPath": "",
   "defaultConnectionId": "",
   "disableAuth": false,
+  "disableAuthDefaultRole": "editor",
   "disableUserpassAuth": false,
   "editorWordWrap": false,
   "googleClientId": "",
