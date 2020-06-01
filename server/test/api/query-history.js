@@ -111,12 +111,12 @@ describe('api/query-history', function () {
       batchText: query1.queryText,
       selectedText: query1.queryText,
     });
-    await utils.post('admin', `/api/batches`, {
+    await utils.post('editor', `/api/batches`, {
       connectionId: connection.id,
       batchText: queryText2,
       selectedText: queryText2,
     });
-    await utils.post('admin', `/api/batches`, {
+    await utils.post('editor', `/api/batches`, {
       connectionId: connection.id,
       batchText: queryText2,
       selectedText: queryText2,
@@ -161,5 +161,11 @@ describe('api/query-history', function () {
       '/api/query-history?filter=queryText|like|%25QUERY2%25'
     );
     assert.equal(body.length, 2, '2 length');
+  });
+
+  it('Non-admin can only see own history', async function () {
+    const body = await utils.get('editor', '/api/query-history');
+    assert.equal(body.length, 2, '2 length');
+    assert.equal(body[0].queryText, queryText2);
   });
 });
