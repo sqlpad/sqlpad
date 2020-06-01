@@ -8,30 +8,12 @@ class QueryHistory {
     this.config = config;
   }
 
-  findOneById(id) {
-    return this.sequelizeDb.QueryHistory.findOne({ where: { id } });
-  }
-
-  async findAll() {
-    return this.sequelizeDb.QueryHistory.findAll({
-      order: [['startTime', 'DESC']],
-    });
-  }
-
-  findByFilter(filter) {
-    return this.sequelizeDb.QueryHistory.findAll({
+  async findByFilter(filter) {
+    const rows = await this.sequelizeDb.QueryHistory.findAll({
       where: filter,
       order: [['startTime', 'DESC']],
     });
-  }
-
-  /**
-   * Save queryHistory object
-   * returns saved queryHistory object
-   * @param {object} queryHistory
-   */
-  async save(data) {
-    return this.sequelizeDb.QueryHistory.create(data);
+    return rows.map((row) => row.toJSON());
   }
 }
 
