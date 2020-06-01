@@ -1,7 +1,7 @@
 const pino = require('pino');
 
 // Log levels https://github.com/pinojs/pino/issues/123
-const levels = ['fatal', 'error', 'warn', 'info', 'debug', 'silent'];
+const levels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'];
 
 const defaults = {
   name: 'sqlpad-app',
@@ -52,6 +52,10 @@ class Logger {
 
   debug(...args) {
     this.logger.debug(...args);
+  }
+
+  trace(...args) {
+    this.logger.trace(...args);
   }
 }
 
