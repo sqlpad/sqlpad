@@ -336,7 +336,7 @@ By default query history results are limited to 1,000 records.
 
 ## appLogLevel
 
-Minimum level for app logs. Should be one of 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'.
+Minimum level for app logs. Should be one of 'fatal', 'error', 'warn', 'info', 'debug' or 'silent'.
 
 - Key: `appLogLevel`
 - Env: `SQLPAD_APP_LOG_LEVEL`
@@ -344,7 +344,7 @@ Minimum level for app logs. Should be one of 'fatal', 'error', 'warn', 'info', '
 
 ## webLogLevel
 
-Minimum level for web logs. Should be one of 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'.
+Minimum level for web logs. Should be one of 'fatal', 'error', 'warn', 'info', 'debug' or 'silent'.
 
 - Key: `webLogLevel`
 - Env: `SQLPAD_WEB_LOG_LEVEL`
