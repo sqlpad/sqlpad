@@ -32,6 +32,7 @@ function QueryResultHeader({
   const serverSec = queryResult.durationMs / 1000;
   const rowCount = rows.length;
   const incomplete = Boolean(queryResult.incomplete);
+  const hasRows = rows.length > 0;
 
   return (
     <div className={styles.toolbar}>
@@ -39,7 +40,7 @@ function QueryResultHeader({
       <div className={styles.toolbarItem}>{rowCount} rows</div>
 
       <div className={styles.toolbarItem}>
-        {config.allowCsvDownload && (
+        {config.allowCsvDownload && hasRows && (
           <span className={styles.iconLinkWrapper}>
             <Link
               className={styles.iconLink}

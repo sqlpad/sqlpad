@@ -109,6 +109,7 @@ export default async function runQueryViaBatch(opt) {
 
   return {
     data: {
+      ...batch,
       batchId: batch.id,
       statementId: statement.id,
       columns,
