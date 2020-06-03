@@ -106,6 +106,7 @@
     "ncp": "^2.0.0",
     "node-dev": "^4.0.0",
     "pino-pretty": "^4.0.0",
+    "query-string": "^6.12.1",
     "supertest": "^4.0.2"
   }
 }
