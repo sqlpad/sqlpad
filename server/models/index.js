@@ -15,6 +15,7 @@ const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 class Models {
   constructor(sequelizeDb, config) {
+    this.sequelizeDb = sequelizeDb;
     this.batches = new Batches(sequelizeDb, config);
     this.connectionAccesses = new ConnectionAccesses(sequelizeDb, config);
     this.connectionClients = new ConnectionClients(sequelizeDb, config);
