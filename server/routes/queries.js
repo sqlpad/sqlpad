@@ -39,8 +39,11 @@ router.delete('/api/queries/:id', mustBeAuthenticated, wrap(deleteQuery));
 //   connection_id = 'connection_id'
 //   AND created_by = 'user_id'
 //   -- for access (if not admin)
-//   AND id IN (
-//     SELECT query_id FROM query_acl WHERE group_id = '__EVERYONE__' OR user_id = 'userId' OR user_email = 'user_email'
+//   AND (
+//     created_by = loggedInUserId
+//     OR id IN (
+//       SELECT query_id FROM query_acl WHERE group_id = '__EVERYONE__' OR user_id = 'userId' OR user_email = 'user_email'
+//     )
 //   )
 //   -- for tags
 //   AND id IN (
@@ -99,18 +102,18 @@ async function listQueries(req, res) {
 
   if (typeof ownedByUser === 'string') {
     if (ownedByUser === 'true') {
-      whereSqls.push('queries.created_by = :loggedInUserEmail');
+      whereSqls.push('queries.created_by = :userEmail');
     } else if (ownedByUser === 'false') {
-      whereSqls.push('queries.created_by != :loggedInUserEmail');
+      whereSqls.push('queries.created_by != :userEmail');
     }
-    params.loggedInUserEmail = user.email;
+    params.userEmail = user.email;
   }
 
   if (tags) {
     const tagSqls = [];
     tags.forEach((tag, index) => {
       let repKey = `tag_${index}`;
-      const repValue = `%${tag}%`;
+      const repValue = tag;
       params[repKey] = repValue;
       tagSqls.push(`
         SELECT qt.query_id 
@@ -118,12 +121,13 @@ async function listQueries(req, res) {
         WHERE qt.tag = :${repKey}
       `);
     });
-    whereSqls.push(`queries.id IN ( ${tagSqls.join(' INSTERSECT ')} )`);
+    whereSqls.push(`queries.id IN ( ${tagSqls.join(' INTERSECT ')} )`);
   }
 
   if (user.role !== 'admin') {
     whereSqls.push(`
-      queries.id IN ( 
+      queries.created_by = :userEmail
+      OR queries.id IN ( 
         SELECT qa.query_id 
         FROM query_acl qa 
         WHERE 
