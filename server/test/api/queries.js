@@ -2,6 +2,7 @@ const assert = require('assert');
 const consts = require('../../lib/consts');
 const TestUtils = require('../utils');
 const queryString = require('query-string');
+const parseLinkHeader = require('parse-link-header');
 
 const createQueryBody = {
   name: 'test query',
@@ -443,5 +444,25 @@ describe('api/queries', function () {
     body = await utils.get('editor', `/api/queries?${params}`);
     assert.equal(body.length, 1);
     assert.equal(body[0].id, query2.id);
+
+    // has link header
+    let res = await utils.getResponse('admin', `/api/queries?limit=1`, 200);
+    let links = parseLinkHeader(res.header.link);
+    assert(links.next);
+    assert.equal(links.next.limit, 1);
+    assert.equal(links.next.offset, 1);
+    assert.equal(links.next.url, '/api/queries?limit=1&offset=1');
+    res = await utils.getResponse(
+      'admin',
+      `/api/queries?limit=1&offset=1`,
+      200
+    );
+    links = parseLinkHeader(res.header.link);
+    assert.equal(links.next.limit, 1);
+    assert.equal(links.next.offset, 2);
+    assert.equal(links.next.url, '/api/queries?limit=1&offset=2');
+    assert.equal(links.prev.limit, 1);
+    assert.equal(links.prev.offset, 0);
+    assert.equal(links.prev.url, '/api/queries?limit=1&offset=0');
   });
 });

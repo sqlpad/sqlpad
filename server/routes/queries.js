@@ -1,6 +1,8 @@
 require('../typedefs');
 const { QueryTypes } = require('sequelize');
 const _ = require('lodash');
+const formatLinkHeader = require('format-link-header');
+const queryString = require('query-string');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const pushQueryToSlack = require('../lib/push-query-to-slack');
@@ -213,6 +215,31 @@ async function listQueries(req, res) {
   const decorated = queries.map((query) =>
     decorateQueryUserAccess(query, user)
   );
+
+  const link = {};
+  const limitNum = limit ? parseInt(limit, 10) : 0;
+  const offsetNum = offset ? parseInt(offset, 10) : 0;
+  if (offsetNum > 0) {
+    link.prev = {
+      rel: 'prev',
+      url: `/api/queries?${queryString.stringify(
+        { ...req.query, limit, offset: offsetNum - limitNum },
+        { arrayFormat: 'bracket' }
+      )}`,
+    };
+  }
+  if (queries.length === limitNum) {
+    link.next = {
+      rel: 'next',
+      url: `/api/queries?${queryString.stringify(
+        { ...req.query, limit, offset: offsetNum + limitNum },
+        { arrayFormat: 'bracket' }
+      )}`,
+    };
+  }
+
+  res.set('Link', formatLinkHeader(link));
+
   return res.utils.data(decorated);
 }
 
