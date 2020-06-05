@@ -6,7 +6,7 @@
   "connections": {
     "sql-server-demo": {
       "name": "sql server demo",
-      "driver": "mssql",
+      "driver": "sqlserver",
       "host": "mssql",
       "database": "master",
       "username": "sa",

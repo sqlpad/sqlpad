@@ -293,7 +293,9 @@ class ConnectionClient {
     // Increase the max rows without modifiying original connection
     const connectionMaxed = {
       ...this.connection,
-      maxRows: Number.MAX_SAFE_INTEGER,
+      // 1 million rows ought to be enough for pulling schema.
+      // Schema probably needs to be broken up into getting tables (and their schemas), and then batching column reads
+      maxRows: 1000000,
     };
     return this.driver.getSchema(connectionMaxed);
   }

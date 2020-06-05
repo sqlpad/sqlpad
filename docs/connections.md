@@ -265,6 +265,35 @@ Example JSON config file with connection:
   </tbody>
 </table>
 
+## Redshift Spectrum (experimental)
+
+Redshift Spectrum uses the Postgres driver behind the scenes, using a different query for pulling schema. See a setting that is not relevant for Redshift or something that can be added? Please open an issue.
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>redshiftSpectrum</code></td><td>text</td></tr>
+    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
+    <tr><td>idleTimeoutSeconds</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>database</td><td>Database</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>ssl</td><td>Use SSL</td><td>boolean</td></tr>
+    <tr><td>certPath</td><td>Database Certificate Path</td><td>text</td></tr>
+    <tr><td>keyPath</td><td>Database Key Path</td><td>text</td></tr>
+    <tr><td>caPath</td><td>Database CA Path</td><td>text</td></tr>
+  </tbody>
+</table>
+
 ## SQL Server
 
 <table>
