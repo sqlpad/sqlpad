@@ -2,6 +2,7 @@ const appLog = require('../lib/app-log');
 const validate = require('./validate');
 
 const drivers = {
+  bigquery: require('./bigquery'),
   cassandra: require('./cassandra'),
   crate: require('./crate'),
   drill: require('./drill'),
@@ -10,11 +11,11 @@ const drivers = {
   mysql2: require('./mysql2'),
   postgres: require('./postgres'),
   presto: require('./presto'),
+  redshiftSpectrum: require('./redshift-spectrum'),
   snowflake: require('./snowflake'),
   sqlite: require('./sqlite'),
   sqlserver: require('./sqlserver'),
   vertica: require('./vertica'),
-  bigquery: require('./bigquery'),
 };
 
 // unixodbc is an optional dependency due to it needing to be compiled
