@@ -1,17 +1,20 @@
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Measure from 'react-measure';
 import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
+import useSWR, { mutate } from 'swr';
 import { connect } from 'unistore/react';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Drawer from '../common/Drawer';
 import ListItem from '../common/ListItem';
+import message from '../common/message';
 import MultiSelect from '../common/MultiSelect';
 import Select from '../common/Select';
 import Text from '../common/Text';
-import { deleteQuery, loadQueries } from '../stores/queries';
+import fetchJson from '../utilities/fetch-json';
+import swrFetcher from '../utilities/swr-fetcher';
 import getAvailableSearchTags from './getAvailableSearchTags';
 import getDecoratedQueries from './getDecoratedQueries';
 import styles from './QueryList.module.css';
@@ -91,15 +94,7 @@ function getSortedFilteredQueries(
   return filteredQueries;
 }
 
-function QueryListDrawer({
-  connections,
-  currentUser,
-  deleteQuery,
-  loadQueries,
-  onClose,
-  queries,
-  visible,
-}) {
+function QueryListDrawer({ connections, currentUser, onClose, visible }) {
   const [preview, setPreview] = useState(null);
   const [searches, setSearches] = useState([]);
   const [creatorSearch, setCreatorSearch] = useState(ALL);
@@ -110,9 +105,18 @@ function QueryListDrawer({
     height: -1,
   });
 
-  useEffect(() => {
-    loadQueries();
-  }, [loadQueries]);
+  let { data } = useSWR('/api/queries', swrFetcher);
+  const queries = data || [];
+
+  const deleteQuery = async (queryId) => {
+    const { error } = await fetchJson('DELETE', `/api/queries/${queryId}`);
+    if (error) {
+      return message.error(error);
+    }
+    mutate('/api/queries', (queries) =>
+      queries.filter((q) => q.id !== queryId)
+    );
+  };
 
   function handleClose() {
     setPreview(null);
@@ -281,10 +285,8 @@ function QueryListDrawer({
 QueryListDrawer.propTypes = {
   visible: PropTypes.bool,
   onClose: PropTypes.func,
-  queries: PropTypes.array,
 };
 
-export default connect(['queries', 'connections', 'currentUser'], (store) => ({
-  loadQueries: loadQueries(store),
-  deleteQuery: deleteQuery(store),
-}))(React.memo(QueryListDrawer));
+export default connect(['connections', 'currentUser'])(
+  React.memo(QueryListDrawer)
+);
