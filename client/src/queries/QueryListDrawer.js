@@ -95,7 +95,7 @@ function getSortedFilteredQueries(
 }
 
 function QueryListDrawer({ connections, currentUser, onClose, visible }) {
-  const [preview, setPreview] = useState(null);
+  const [previewId, setPreviewId] = useState(null);
   const [searches, setSearches] = useState([]);
   const [creatorSearch, setCreatorSearch] = useState(ALL);
   const [sort, setSort] = useState('SAVE_DATE');
@@ -105,8 +105,11 @@ function QueryListDrawer({ connections, currentUser, onClose, visible }) {
     height: -1,
   });
 
-  let { data } = useSWR('/api/queries', swrFetcher);
-  const queries = data || [];
+  let { data: queries } = useSWR('/api/queries', swrFetcher);
+  queries = queries || [];
+
+  let { data: tags } = useSWR('/api/tags', swrFetcher);
+  tags = tags || [];
 
   const deleteQuery = async (queryId) => {
     const { error } = await fetchJson('DELETE', `/api/queries/${queryId}`);
@@ -119,11 +122,11 @@ function QueryListDrawer({ connections, currentUser, onClose, visible }) {
   };
 
   function handleClose() {
-    setPreview(null);
+    setPreviewId(null);
     onClose();
   }
 
-  const availableSearches = getAvailableSearchTags(queries);
+  const availableSearches = getAvailableSearchTags(tags);
 
   const filteredQueries = getSortedFilteredQueries(
     currentUser,
@@ -147,8 +150,8 @@ function QueryListDrawer({ connections, currentUser, onClose, visible }) {
       <ListItem
         key={query.id}
         className={styles.ListItem}
-        onMouseEnter={() => setPreview(query)}
-        onMouseLeave={() => setPreview(null)}
+        onMouseEnter={() => setPreviewId(query.id)}
+        onMouseLeave={() => setPreviewId(null)}
         style={style}
       >
         <Link className={styles.queryLink} to={queryUrl} onClick={handleClose}>
@@ -276,7 +279,7 @@ function QueryListDrawer({ connections, currentUser, onClose, visible }) {
           )}
         </Measure>
 
-        <QueryPreview query={preview} />
+        <QueryPreview queryId={previewId} />
       </div>
     </Drawer>
   );

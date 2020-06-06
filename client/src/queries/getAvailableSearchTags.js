@@ -1,14 +1,8 @@
-import uniq from 'lodash/uniq';
 import TagIcon from 'mdi-react/TagIcon';
 import React from 'react';
 
-export default function getAvailableSearchTags(queries) {
-  const tags = uniq(
-    queries
-      .map((q) => q.tags)
-      .reduce((a, b) => a.concat(b), [])
-      .filter((tag) => Boolean(tag))
-  ).map((tag) => {
+export default function getAvailableSearchTags(tags) {
+  return tags.sort().map((tag) => {
     return {
       id: tag,
       name: tag,
@@ -21,6 +15,4 @@ export default function getAvailableSearchTags(queries) {
       tag,
     };
   });
-
-  return tags.sort();
 }

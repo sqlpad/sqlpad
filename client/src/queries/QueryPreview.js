@@ -1,14 +1,23 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import useSWR from 'swr';
 import Divider from '../common/Divider';
 import SqlEditor from '../common/SqlEditor';
 import Tag from '../common/Tag';
+import swrFetcher from '../utilities/swr-fetcher';
 import styles from './QueryPreview.module.css';
 
-function QueryPreview({ query }) {
+function QueryPreview({ queryId }) {
+  let { data: query } = useSWR(
+    queryId ? `/api/queries/${queryId}` : null,
+    swrFetcher,
+    { dedupingInterval: 30 * 1000 }
+  );
+
   if (!query) {
     return null;
   }
+
   return (
     <div className={styles.preview}>
       <div className={styles.previewQueryName}>{query.name}</div>
@@ -21,10 +30,10 @@ function QueryPreview({ query }) {
       <Divider />
 
       {/* 
-            This style necessary to get proper sizing on SqlEditor.
-            It has height 100%, which looks to height of nearest containing BLOCK,
-            which apparently looks past this flex container. This causes weirdness
-          */}
+        This style necessary to get proper sizing on SqlEditor.
+        It has height 100%, which looks to height of nearest containing BLOCK,
+        which apparently looks past this flex container. This causes weirdness
+      */}
       <div
         style={{
           flexGrow: 1,
