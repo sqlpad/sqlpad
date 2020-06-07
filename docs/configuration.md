@@ -85,7 +85,7 @@ Directory to store SQLPad embedded database content. This includes queries, user
 
 ## dbInMemory
 
-If enabled, runs embedded database `nedb` in memory. `dbPath` is still required to be provided for cache and session support. (`dbPath` will be made optional in future release)
+If enabled, runs embedded database `nedb` in memory. In this case, the database contents will be lost when the application stops. `dbPath` is still required to be provided for cache and session support. (`dbPath` will be made optional in future release)
 
 - Key: `dbInMemory`
 - Env: `SQLPAD_DB_IN_MEMORY`
