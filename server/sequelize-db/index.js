@@ -6,16 +6,19 @@ class SequelizeDb {
   constructor(config) {
     this.config = config;
 
-    const sequelize = new Sequelize({
-      dialect: 'sqlite',
+    const connectionUri =
+      config.get('backendDatabaseUri') ||
+      'sqlite:' +
+        (config.get('dbInMemory')
+          ? ':memory:'
+          : path.join(config.get('dbPath'), 'sqlpad.sqlite'));
+
+    const sequelize = new Sequelize(connectionUri, {
       // sequelize may pass more than message,
       // but it appears to be the sequelize object and it is quite excessive
       logging: (message) => {
         appLog.debug(message);
       },
-      storage: config.get('dbInMemory')
-        ? ':memory:'
-        : path.join(config.get('dbPath'), 'sqlpad.sqlite'),
     });
 
     this.sequelize = sequelize;

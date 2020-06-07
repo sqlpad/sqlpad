@@ -6,7 +6,9 @@ Thinking SQLPad is for you? Here's a quick rundown of what you'll want to know.
 
 There are 2 options to run SQLPad: Install [Node.js](https://nodejs.org/) and [build and run SQLPad from the git repository](https://github.com/rickbergfalk/sqlpad/blob/master/DEVELOPER-GUIDE.md), or use the [docker images on Docker Hub](https://hub.docker.com/r/sqlpad/sqlpad/).
 
-SQLPad does not rely on any additional servers other than its own self. It uses its own embedded database stored on the local file system (which makes it easy to run, but not so easy to scale up). Today the database is a mix of [nedb](https://github.com/louischatriot/nedb) and [SQLite](https://www.sqlite.org/index.html), with the intention of moving all data into SQLite.
+SQLPad does not require any additional servers other than its own self. It uses its own embedded database stored on the local file system (which makes it easy to run, but not so easy to scale up). Today the database is a mix of [nedb](https://github.com/louischatriot/nedb) and [SQLite](https://www.sqlite.org/index.html), with the intention of moving all data into SQLite.
+
+(Experimental) You can replace the SQLite database with an external database, using the SQLPAD_BACKEND_DB_URI environment variable.
 
 The docker image runs on port 3000 by default and stores its local database files at `/var/lib/sqlpad`. See [docker-examples](https://github.com/rickbergfalk/sqlpad/tree/master/docker-examples) directory for example docker-compose setup with SQL Server.
 
