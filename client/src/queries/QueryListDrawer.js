@@ -11,6 +11,7 @@ import { connect } from 'unistore/react';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Drawer from '../common/Drawer';
 import ErrorBlock from '../common/ErrorBlock';
+import InfoBlock from '../common/InfoBlock';
 import Input from '../common/Input';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
@@ -21,6 +22,7 @@ import fetchJson from '../utilities/fetch-json';
 import swrFetcher from '../utilities/swr-fetcher';
 import styles from './QueryList.module.css';
 import QueryPreview from './QueryPreview';
+import { useDebounce } from 'use-debounce';
 
 const SHARED = 'SHARED';
 const MY_QUERIES = 'MY_QUERIES';
@@ -28,7 +30,7 @@ const ALL = 'ALL';
 
 function QueryListDrawer({ connections, currentUser, onClose, visible }) {
   const [previewId, setPreviewId] = useState(null);
-  const [search, setSearch] = useState([]);
+  const [search, setSearch] = useState('');
   const [searchTags, setSearchTags] = useState([]);
   const [creatorSearch, setCreatorSearch] = useState(ALL);
   const [sort, setSort] = useState('SAVE_DATE');
@@ -37,6 +39,7 @@ function QueryListDrawer({ connections, currentUser, onClose, visible }) {
     width: -1,
     height: -1,
   });
+  const [debouncedSearch] = useDebounce(search, 400);
 
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -59,8 +62,8 @@ function QueryListDrawer({ connections, currentUser, onClose, visible }) {
     params.ownedByUser = false;
   }
 
-  if (search) {
-    params.search = search;
+  if (debouncedSearch) {
+    params.search = debouncedSearch;
   }
 
   if (connectionId) {
@@ -260,7 +263,12 @@ function QueryListDrawer({ connections, currentUser, onClose, visible }) {
               }}
             >
               {error && <ErrorBlock>Error getting queries</ErrorBlock>}
-              {!error && (
+              {!error && !loading && queries.length === 0 && (
+                <div style={{ height: 150, width: '100%' }}>
+                  <InfoBlock>No queries found</InfoBlock>
+                </div>
+              )}
+              {!error && !loading && queries.length > 0 && (
                 <InfiniteLoader
                   isItemLoaded={(index) => index < queries.length}
                   itemCount={1000}
