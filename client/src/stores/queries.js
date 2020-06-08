@@ -67,8 +67,9 @@ export const clearQueries = () => {
 export const loadQuery = async (state, queryId) => {
   const { error, data } = await fetchJson('GET', `/api/queries/${queryId}`);
   if (error) {
-    message.error(error);
+    return message.error('Query not found');
   }
+
   return {
     query: data,
     queryError: undefined,
