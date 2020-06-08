@@ -30,7 +30,7 @@ const MY_QUERIES = 'MY_QUERIES';
 const ALL = 'ALL';
 
 function QueryListDrawer({ connections, onClose, visible }) {
-  const [previewId, setPreviewId] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [search, setSearch] = useState('');
   const [searchTags, setSearchTags] = useState([]);
   const [creatorSearch, setCreatorSearch] = useState(ALL);
@@ -118,7 +118,7 @@ function QueryListDrawer({ connections, onClose, visible }) {
   };
 
   function handleClose() {
-    setPreviewId(null);
+    setPreview(null);
     onClose();
   }
 
@@ -134,8 +134,8 @@ function QueryListDrawer({ connections, onClose, visible }) {
       <ListItem
         key={query.id}
         className={styles.ListItem}
-        onMouseEnter={() => setPreviewId(query.id)}
-        onMouseLeave={() => setPreviewId(null)}
+        onMouseEnter={() => setPreview(query)}
+        onMouseLeave={() => setPreview(null)}
         style={style}
       >
         <Link className={styles.queryLink} to={queryUrl} onClick={handleClose}>
@@ -302,7 +302,7 @@ function QueryListDrawer({ connections, onClose, visible }) {
           )}
         </Measure>
 
-        <QueryPreview queryId={previewId} />
+        <QueryPreview key={preview && preview.id} query={preview} />
       </div>
     </Drawer>
   );

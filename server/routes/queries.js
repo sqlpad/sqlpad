@@ -84,6 +84,8 @@ async function listQueries(req, res) {
       queries.id,
       queries.name,
       queries.chart,
+      queries.query_text,
+      queries.created_by,
       queries.connection_id,
       connections.name AS connection_name,
       connections.driver AS connection_driver
@@ -193,20 +195,34 @@ async function listQueries(req, res) {
       id: query.id,
       name: query.name,
       chart: query.chart,
-      connectionId: query.connection_id,
-      connectionName: query.connection_name,
-      connectionDriver: query.connection_driver,
+      queryText: query.query_text,
+      createdBy: query.created_by,
+      connection: {
+        id: query.connection_id,
+        name: query.connection_name,
+        driver: query.connection_driver,
+      },
     };
   });
   const queryIds = queries.map((query) => query.id);
+
+  let queryTags = await models.sequelizeDb.QueryTags.findAll({
+    attributes: ['queryId', 'tag'],
+    where: { queryId: queryIds },
+  });
+  queryTags = queryTags.map((qt) => qt.toJSON());
+  const queryTagsByQueryId = _.groupBy(queryTags, 'queryId');
 
   let acl = await models.sequelizeDb.QueryAcl.findAll({
     where: { queryId: queryIds },
   });
   acl = acl.map((acl) => acl.toJSON());
   const aclByQueryId = _.groupBy(acl, 'queryId');
+
   queries = queries.map((query) => {
     query.acl = aclByQueryId[query.id] || [];
+    query.tags = queryTagsByQueryId[query.id] || [];
+    query.tags = query.tags.map((t) => t.tag).sort();
     return query;
   });
 

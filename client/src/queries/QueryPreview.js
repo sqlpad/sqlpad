@@ -1,32 +1,24 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import useSWR from 'swr';
 import Divider from '../common/Divider';
 import SqlEditor from '../common/SqlEditor';
 import Tag from '../common/Tag';
-import swrFetcher from '../utilities/swr-fetcher';
 import styles from './QueryPreview.module.css';
 
-function QueryPreview({ queryId }) {
-  let { data: queryRes } = useSWR(
-    queryId ? `/api/queries/${queryId}` : null,
-    swrFetcher,
-    { dedupingInterval: 30 * 1000 }
-  );
-
-  if (!queryRes) {
+function QueryPreview({ query }) {
+  if (!query) {
     return null;
   }
 
-  const query = queryRes.data;
-
   return (
     <div className={styles.preview}>
-      <div className={styles.previewQueryName}>{query.name}</div>
-      <div>Connection {query.connectionName}</div>
-      <div>By {query.createdBy}</div>
       <div>
-        {query.tags && query.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
+        <div className={styles.previewQueryName}>{query.name}</div>
+        <div>Connection {query.connectionName}</div>
+        <div>By {query.createdBy}</div>
+        <div>
+          {query.tags && query.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
+        </div>
       </div>
 
       <Divider />

@@ -41,6 +41,13 @@ describe('api/queries', function () {
 
   it('Gets array of 1', async function () {
     const body = await utils.get('editor', '/api/queries');
+    const query = body[0];
+    assert(query.connection.id);
+    assert.equal(query.tags[0], 'one');
+    assert(query.canRead);
+    assert(query.canWrite);
+    assert(query.canDelete);
+
     assert.equal(body.length, 1, '1 length');
   });
 
