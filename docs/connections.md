@@ -466,5 +466,14 @@ ORDER BY
     <tr><td>schema_sql</td><td>Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)</td><td>text</td></tr>
     <tr><td>username</td><td>Username (optional). Will be added to connect_string as <code>Uid</code> key</td><td>text</td></tr>
     <tr><td>password</td><td>Password (optional). Will be added to connect_string as <code>Pwd</docd> key</td><td>text</td></tr>
+    <tr>
+      <td>limit_strategies</td>
+      <td>Comma separated list of limit strategies used to restrict queries. 
+      These strategies will be used to enforce and inject LIMIT and FETCH FIRST use in SELECT queries.
+      Allowed strategies are <code>limit</code>, <code>fetch</code>, and <code>first</code>.
+      <br/><br/>
+      Example: <code>limit, fetch</code></td>
+      <td>text</td>
+    </tr>
   </tbody>
 </table>
