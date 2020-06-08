@@ -99,9 +99,13 @@ function QueryListDrawer({ onClose, visible }) {
     [initialUrl]
   );
 
+  // (re)fetch queries when visible
+  // New queries may have been added since last viewing
   useEffect(() => {
-    getQueries(initialUrl);
-  }, [initialUrl, getQueries]);
+    if (visible) {
+      getQueries(initialUrl);
+    }
+  }, [visible, initialUrl, getQueries]);
 
   let { data: tagsRes } = useSWR('/api/tags', swrFetcher);
   const tags = tagsRes ? tagsRes.data : [];
