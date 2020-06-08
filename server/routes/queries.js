@@ -71,7 +71,7 @@ async function listQueries(req, res) {
   const {
     connectionId,
     tags,
-    searches,
+    search,
     createdBy,
     sortBy,
     ownedByUser,
@@ -142,15 +142,11 @@ async function listQueries(req, res) {
     params.userId = user.id;
   }
 
-  if (searches && searches.length > 0) {
-    searches.forEach((search, index) => {
-      const repKey = `search_${index}`;
-      const repValue = `%${search}%`;
-      params[repKey] = repValue;
-      whereSqls.push(
-        `( queries.name LIKE :${repKey} OR queries.query_text LIKE :${repKey} )`
-      );
-    });
+  if (search) {
+    params.search = `%${search}%`;
+    whereSqls.push(
+      `( queries.name LIKE :search OR queries.query_text LIKE :search )`
+    );
   }
 
   if (whereSqls.length > 0) {
@@ -176,7 +172,9 @@ async function listQueries(req, res) {
   }
   if (sortByField) {
     // sortByField is validated, no concern for SQL injection here
-    sql += ` ORDER BY queries.${sortByField} ${sortByDirection}`;
+    sql += ` ORDER BY queries.${
+      sortByField === 'updatedAt' ? 'updated_at' : 'name'
+    } ${sortByDirection}`;
   }
   if (limit) {
     sql += ` LIMIT ${parseInt(limit, 10)}`;

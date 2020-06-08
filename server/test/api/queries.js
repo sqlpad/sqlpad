@@ -377,7 +377,7 @@ describe('api/queries', function () {
     assert.equal(body.length, 1);
     assert(body.find((c) => c.id === query2.id));
 
-    // limit & orderby & offset
+    // limit & sortBy & offset
     params = queryString.stringify({ limit: 1, sortBy: '+name' });
     body = await utils.get('editor', `/api/queries?${params}`);
     assert.equal(body.length, 1);
@@ -424,21 +424,14 @@ describe('api/queries', function () {
 
     // searches
     params = queryString.stringify(
-      { searches: ['query2'] },
+      { search: 'query2' },
       { arrayFormat: 'bracket' }
     );
     body = await utils.get('editor', `/api/queries?${params}`);
     assert.equal(body.length, 1);
     assert.equal(body[0].id, query2.id);
     params = queryString.stringify(
-      { searches: ['select-query2'] },
-      { arrayFormat: 'bracket' }
-    );
-    body = await utils.get('editor', `/api/queries?${params}`);
-    assert.equal(body.length, 1);
-    assert.equal(body[0].id, query2.id);
-    params = queryString.stringify(
-      { searches: ['select-query2', 'query2'] },
+      { search: 'select-query2' },
       { arrayFormat: 'bracket' }
     );
     body = await utils.get('editor', `/api/queries?${params}`);
