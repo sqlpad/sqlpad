@@ -17,6 +17,9 @@ const Connected = connect(mapStateToProps, (store) => ({
 function HistoryButton({ currentUser, clearQueries }) {
   const [showQueryHistory, setShowQueryHistory] = useState(false);
 
+  // If an editor has no identity (e.g., logged in without authentication), query history is not available because it can not be distinguished from others'.
+  if (currentUser.id === 'noauth' && currentUser.role === 'editor') return;
+
   return (
     <div>
       <Button variant="ghost" onClick={() => setShowQueryHistory(true)}>
