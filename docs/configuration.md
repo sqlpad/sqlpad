@@ -114,7 +114,7 @@ Set to TRUE to disable authentication altogether.
 ## disableAuthDefaultRole
 
 Specifies the role associated with users when disableAuth is set to true.
-Acceptable values: admin, editor
+Acceptable values: `admin`, `editor`.
 
 - Key: `disableAuthDefaultRole`
 - Env: `SQLPAD_DISABLE_AUTH_DEFAULT_ROLE`

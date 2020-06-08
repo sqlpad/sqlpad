@@ -12,6 +12,9 @@ const wrap = require('../lib/wrap');
 async function getHistoryList(req, res) {
   const { models, user } = req;
 
+  // If an editor has no identity (e.g., logged in without authentication), query history is not available because it can not be distinguished from others'.
+  if (user.id === 'noauth' && user.role === 'editor') return res.utils.data();
+
   // Convert URL filter to Sequelize compatible filter object
   const urlFilter = urlFilterToDbFilter(req.query.filter);
 
