@@ -61,13 +61,23 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
     setConnectionEdits((prev) => ({ ...prev, [key]: value }));
   };
 
+  const setConnectionDataValue = (key, value) => {
+    setConnectionEdits((prev) => {
+      const data = prev.data || {};
+      return {
+        ...prev,
+        data: { ...data, [key]: value },
+      };
+    });
+  };
+
   const testConnection = async () => {
     setTesting(true);
-    const json = await fetchJson(
-      'POST',
-      '/api/test-connection',
-      connectionEdits
-    );
+    const data = connectionEdits.data || {};
+    const json = await fetchJson('POST', '/api/test-connection', {
+      ...connectionEdits,
+      ...data,
+    });
     setTesting(false);
     setTestFailed(json.error ? true : false);
     setTestSuccess(json.error ? false : true);
@@ -167,22 +177,30 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       }
 
       const { fields } = driver;
+      const connectionEditsData = connectionEdits.data || {};
       const driverInputs = fields.map((field) => {
         if (field.formType === TEXT) {
-          const value = connectionEdits[field.key] || '';
+          const value = connectionEditsData[field.key] || '';
           return (
             <HorizontalFormItem key={field.key} label={field.label}>
               <Input
                 name={field.key}
                 value={value}
                 onChange={(e) =>
-                  setConnectionValue(e.target.name, e.target.value)
+                  setConnectionDataValue(e.target.name, e.target.value)
                 }
               />
+              {field.description && (
+                <FormExplain>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: field.description }}
+                  />
+                </FormExplain>
+              )}
             </HorizontalFormItem>
           );
         } else if (field.formType === PASSWORD) {
-          const value = connectionEdits[field.key] || '';
+          const value = connectionEditsData[field.key] || '';
           // autoComplete='new-password' used to prevent browsers from autofilling username and password
           // Because we dont return a password, Chrome goes ahead and autofills
           return (
@@ -193,13 +211,20 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                 name={field.key}
                 value={value}
                 onChange={(e) =>
-                  setConnectionValue(e.target.name, e.target.value)
+                  setConnectionDataValue(e.target.name, e.target.value)
                 }
               />
+              {field.description && (
+                <FormExplain>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: field.description }}
+                  />
+                </FormExplain>
+              )}
             </HorizontalFormItem>
           );
         } else if (field.formType === CHECKBOX) {
-          const checked = connectionEdits[field.key] || false;
+          const checked = connectionEditsData[field.key] || false;
           return (
             <HorizontalFormItem key={field.key}>
               <input
@@ -208,16 +233,23 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                 id={field.key}
                 name={field.key}
                 onChange={(e) =>
-                  setConnectionValue(e.target.name, e.target.checked)
+                  setConnectionDataValue(e.target.name, e.target.checked)
                 }
               />
               <label htmlFor={field.key} style={{ marginLeft: 8 }}>
                 {field.label}
               </label>
+              {field.description && (
+                <FormExplain>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: field.description }}
+                  />
+                </FormExplain>
+              )}
             </HorizontalFormItem>
           );
         } else if (field.formType === TEXTAREA) {
-          const value = connectionEdits[field.key] || '';
+          const value = connectionEditsData[field.key] || '';
           return (
             <HorizontalFormItem key={field.key} label={field.label}>
               <TextArea
@@ -226,9 +258,16 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
                 cols={45}
                 placeholder={field.placeholder}
                 onChange={(e) =>
-                  setConnectionValue(e.target.name, e.target.value)
+                  setConnectionDataValue(e.target.name, e.target.value)
                 }
               />
+              {field.description && (
+                <FormExplain>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: field.description }}
+                  />
+                </FormExplain>
+              )}
             </HorizontalFormItem>
           );
         }
