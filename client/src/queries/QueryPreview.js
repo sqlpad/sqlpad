@@ -8,15 +8,17 @@ import swrFetcher from '../utilities/swr-fetcher';
 import styles from './QueryPreview.module.css';
 
 function QueryPreview({ queryId }) {
-  let { data: query } = useSWR(
+  let { data: queryRes } = useSWR(
     queryId ? `/api/queries/${queryId}` : null,
     swrFetcher,
     { dedupingInterval: 30 * 1000 }
   );
 
-  if (!query) {
+  if (!queryRes) {
     return null;
   }
+
+  const query = queryRes.data;
 
   return (
     <div className={styles.preview}>
