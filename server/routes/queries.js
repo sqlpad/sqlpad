@@ -34,7 +34,7 @@ router.delete('/api/queries/:id', mustBeAuthenticated, wrap(deleteQuery));
 // Target SQL query to be built
 //
 // SELECT
-//   *
+//   <columns>
 // FROM
 //   queries
 // WHERE
@@ -55,11 +55,10 @@ router.delete('/api/queries/:id', mustBeAuthenticated, wrap(deleteQuery));
 //     INSERSECT
 //     SELECT query_id FROM query_tags WHERE tag = 'tag3'
 //   )
-//   -- for each search term
-//   AND (name LIKE '%term1%' OR query_text LIKE '%term1%')
-//   AND (name LIKE '%term2%' OR query_text LIKE '%term2%')
+//   -- for search
+//   AND (name LIKE '%search%' OR query_text LIKE '%search%')
 // ORDER BY
-//   name
+//   name ASC
 //   -- updated_at DESC
 
 /**
@@ -128,6 +127,8 @@ async function listQueries(req, res) {
     whereSqls.push(`queries.id IN ( ${tagSqls.join(' INTERSECT ')} )`);
   }
 
+  // If not admin restrict to ACL rules
+  // User can see queries they've created, or queries they have access to via ACL
   if (user.role !== 'admin') {
     whereSqls.push(`
       queries.created_by = :userEmail
