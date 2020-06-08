@@ -39,6 +39,11 @@ function ConnectionDropdown({
     connectConnectionClient();
   };
 
+  // Only show the connection menu if there's more than one option to select.
+  if (currentUser.role === 'editor' && connections.length === 1) {
+    return null;
+  }
+
   const style = !selectedConnectionId
     ? { color: '#777', width: 220 }
     : { width: 220 };

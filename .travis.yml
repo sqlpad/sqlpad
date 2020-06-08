@@ -16,5 +16,4 @@ cache:
 install:
   - scripts/build.sh
 script:
-  - npm run lint
   - npm run test --prefix server

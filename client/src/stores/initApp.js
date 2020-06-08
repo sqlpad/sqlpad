@@ -35,25 +35,28 @@ const initApp = async (state) => {
       connectionsLastUpdated: new Date(),
     };
 
-    const { defaultConnectionId } = appContext.config || {};
-    if (defaultConnectionId) {
-      const foundDefault = connections.find(
-        (c) => c._id === defaultConnectionId
-      );
-      if (Boolean(foundDefault)) {
-        update.selectedConnectionId = defaultConnectionId;
+    if (connections.length === 1) {
+      update.selectedConnectionId = connections[0].id;
+    } else {
+      const { defaultConnectionId } = appContext.config || {};
+      if (defaultConnectionId) {
+        const foundDefault = connections.find(
+          (c) => c._id === defaultConnectionId
+        );
+        if (Boolean(foundDefault)) {
+          update.selectedConnectionId = defaultConnectionId;
+        }
+      }
+
+      if (typeof selectedConnectionId === 'string') {
+        const selectedConnection = connections.find(
+          (c) => c._id === selectedConnectionId
+        );
+        if (Boolean(selectedConnection)) {
+          update.selectedConnectionId = selectedConnectionId;
+        }
       }
     }
-
-    if (typeof selectedConnectionId === 'string') {
-      const selectedConnection = connections.find(
-        (c) => c._id === selectedConnectionId
-      );
-      if (Boolean(selectedConnection)) {
-        update.selectedConnectionId = selectedConnectionId;
-      }
-    }
-
     return update;
   } catch (error) {
     console.error(error);
