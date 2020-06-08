@@ -8,6 +8,7 @@ import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import useSWR, { mutate } from 'swr';
 import { connect } from 'unistore/react';
+import { useDebounce } from 'use-debounce';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Drawer from '../common/Drawer';
 import ErrorBlock from '../common/ErrorBlock';
@@ -17,18 +18,18 @@ import ListItem from '../common/ListItem';
 import message from '../common/message';
 import MultiSelect from '../common/MultiSelect';
 import Select from '../common/Select';
+import SpinKitCube from '../common/SpinKitCube.js';
 import Text from '../common/Text';
 import fetchJson from '../utilities/fetch-json';
 import swrFetcher from '../utilities/swr-fetcher';
 import styles from './QueryList.module.css';
 import QueryPreview from './QueryPreview';
-import { useDebounce } from 'use-debounce';
 
 const SHARED = 'SHARED';
 const MY_QUERIES = 'MY_QUERIES';
 const ALL = 'ALL';
 
-function QueryListDrawer({ connections, currentUser, onClose, visible }) {
+function QueryListDrawer({ connections, onClose, visible }) {
   const [previewId, setPreviewId] = useState(null);
   const [search, setSearch] = useState('');
   const [searchTags, setSearchTags] = useState([]);
@@ -47,7 +48,7 @@ function QueryListDrawer({ connections, currentUser, onClose, visible }) {
   const [error, setError] = useState(null);
 
   let params = {
-    limit: 5,
+    limit: 20,
   };
 
   if (sort === 'SAVE_DATE') {
@@ -262,13 +263,18 @@ function QueryListDrawer({ connections, currentUser, onClose, visible }) {
                 height: '100%',
               }}
             >
+              {loading && queries.length === 0 && (
+                <div className="h-100 w-100 flex-center">
+                  <SpinKitCube />
+                </div>
+              )}
               {error && <ErrorBlock>Error getting queries</ErrorBlock>}
               {!error && !loading && queries.length === 0 && (
                 <div style={{ height: 150, width: '100%' }}>
                   <InfoBlock>No queries found</InfoBlock>
                 </div>
               )}
-              {!error && !loading && queries.length > 0 && (
+              {!error && queries.length > 0 && (
                 <InfiniteLoader
                   isItemLoaded={(index) => index < queries.length}
                   itemCount={1000}
@@ -307,6 +313,4 @@ QueryListDrawer.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default connect(['connections', 'currentUser'])(
-  React.memo(QueryListDrawer)
-);
+export default connect(['connections'])(React.memo(QueryListDrawer));
