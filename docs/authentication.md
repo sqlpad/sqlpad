@@ -79,6 +79,18 @@ For OAuth to be useful this usually involves the following:
 - `PUBLIC_URL`=`http://localhost`
 - `DISABLE_USERPASS_AUTH`=`true` (optional - disables plain local user logins)
 
+## SAML
+
+SAML-based  authentication can be enabled by setting the necessary environment variables:
+
+- `SAML_AUTH_CONTEXT`
+- `SAML_CALLBACK_URL`
+- `SAML_CERT`
+- `SAML_ENTRY_POINT`
+- `SAML_ISSUER`
+- `PUBLIC_URL`
+- `DISABLE_USERPASS_AUTH`=`true` (optional - disables plain local user logins)
+
 ## Whitelist Domains for User Administration
 
 An entire domain can be whitelisted for username administration by setting enviornment variable `WHITELISTED_DOMAINS`. This may be particularly useful in combination with OAuth.
