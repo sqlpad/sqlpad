@@ -6,8 +6,7 @@ import Measure from 'react-measure';
 import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import useSWR, { mutate } from 'swr';
-import { connect } from 'unistore/react';
+import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Drawer from '../common/Drawer';
@@ -29,7 +28,7 @@ const SHARED = 'SHARED';
 const MY_QUERIES = 'MY_QUERIES';
 const ALL = 'ALL';
 
-function QueryListDrawer({ connections, onClose, visible }) {
+function QueryListDrawer({ onClose, visible }) {
   const [preview, setPreview] = useState(null);
   const [search, setSearch] = useState('');
   const [searchTags, setSearchTags] = useState([]);
@@ -106,6 +105,9 @@ function QueryListDrawer({ connections, onClose, visible }) {
 
   let { data: tagsRes } = useSWR('/api/tags', swrFetcher);
   const tags = tagsRes ? tagsRes.data : [];
+
+  let { data: connectionsRes } = useSWR('/api/connections', swrFetcher);
+  const connections = connectionsRes ? connectionsRes.data : [];
 
   const deleteQuery = async (queryId) => {
     const { error } = await fetchJson('DELETE', `/api/queries/${queryId}`);
@@ -312,4 +314,4 @@ QueryListDrawer.propTypes = {
   onClose: PropTypes.func,
 };
 
-export default connect(['connections'])(React.memo(QueryListDrawer));
+export default React.memo(QueryListDrawer);
