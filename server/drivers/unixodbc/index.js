@@ -1,5 +1,6 @@
 const odbc = require('odbc');
 const appLog = require('../../lib/app-log');
+const sqlLimiter = require('sql-limiter');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'unixodbc';
@@ -25,6 +26,29 @@ const SCHEMA_SQL_INFORMATION_SCHEMA = `
     c.table_name,
     c.ordinal_position
 `;
+
+/**
+ * Clean and validate strategies to use for sql-limiter
+ * @param {String} limitStrategies - comma delimited list of limit strategies
+ */
+function cleanAndValidateLimitStrategies(limitStrategies) {
+  const allowed = ['limit', 'fetch', 'first'];
+  const strategies = (limitStrategies || '')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter((s) => s !== '');
+
+  strategies.forEach((strategy) => {
+    if (!allowed.includes(strategy)) {
+      const allowedStr = allowed.map((s) => `"${s}"`).join(', ');
+      throw new Error(
+        `Limit strategy "${strategy}" not allowed. Must be one of ${allowedStr}`
+      );
+    }
+  });
+
+  return strategies;
+}
 
 /**
  * Run query for connection
@@ -111,9 +135,18 @@ class Client {
   }
 
   async runQuery(query) {
+    const { limit_strategies, maxRows } = this.connection;
+
+    let cleanedQuery = query;
+    const strategies = cleanAndValidateLimitStrategies(limit_strategies);
+
+    if (strategies.length) {
+      cleanedQuery = sqlLimiter.limit(query, strategies, maxRows + 1);
+    }
+
     try {
       let incomplete = false;
-      const queryResult = await this.client.query(query);
+      const queryResult = await this.client.query(cleanedQuery);
 
       // The result of the query seems to be dependent on the odbc driver impmlementation used
       // Try to determine if the result is what we expect. If not, return an empty rows array
@@ -167,24 +200,39 @@ const fields = [
   {
     key: 'connection_string',
     formType: 'TEXT',
-    label:
-      'ODBC connection string. Examples:\ndsn=NAME\nDriver={SQLite3};Database=/tmp/my.db\n"Driver={Ingres};Server=VNODE;Database=mydb"',
+    label: 'ODBC connection string',
+    description:
+      'Example: dsn=NAME Driver={SQLite3};Database=/tmp/my.db "Driver={Ingres};Server=VNODE;Database=mydb"',
   },
   {
     key: 'schema_sql',
     formType: 'TEXT',
-    label:
-      'Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)',
+    label: 'Database SQL for lookup schema',
+    description:
+      'Optional. If omitted defaults to checking INFORMATION_SCHEMA.',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username (optional)',
+    label: 'Database Username',
+    description: 'Optional',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password (optional)',
+    label: 'Database Password',
+    description: 'Optional',
+  },
+  {
+    key: 'limit_strategies',
+    formType: 'TEXT',
+    label: 'Limit strategies',
+    description: `
+      Comma separated list of limit strategies used to restrict queries. 
+      These strategies will be used to enforce and inject LIMIT and FETCH FIRST use in SELECT queries.
+      Allowed strategies are <code>limit</code>, <code>fetch</code>, and <code>first</code>.
+      <br/><br/>
+      Example: <code>limit, fetch</code>`,
   },
 ];
 
