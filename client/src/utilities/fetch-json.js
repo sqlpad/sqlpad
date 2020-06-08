@@ -1,4 +1,5 @@
 import 'whatwg-fetch';
+import parseLinkHeader from 'parse-link-header';
 import message from '../common/message';
 
 export default async function fetchJson(method, url, body) {
@@ -41,11 +42,14 @@ export default async function fetchJson(method, url, body) {
   try {
     const json = await response.json();
 
+    let link = response.headers.get('Link');
+    const links = link && parseLinkHeader(link);
+
     // New v5 API format the body is the data or error
     // Which is what depends on status code. 2xx is data, 4xx or 5xx is error
     // If 200-299 the body is data
     if (response.ok) {
-      return { data: json };
+      return { data: json, links };
     }
 
     // The body is an error object with a .title at a minimum, possibly .detail and other props
