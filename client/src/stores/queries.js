@@ -1,12 +1,11 @@
+import { mutate } from 'swr';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
-import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import {
-  setLocalQueryText,
   removeLocalQueryText,
+  setLocalQueryText,
 } from '../utilities/localQueryText';
-
-const ONE_HOUR_MS = 1000 * 60 * 60;
+import runQueryViaBatch from '../utilities/runQueryViaBatch';
 
 export const NEW_QUERY = {
   id: '',
@@ -61,47 +60,16 @@ export const formatQuery = async (state) => {
   };
 };
 
-export const loadQueries = (store) => async (state) => {
-  const { queriesLastUpdated, queries } = state;
-  if (
-    !queries.length ||
-    (queriesLastUpdated && new Date() - queriesLastUpdated > ONE_HOUR_MS)
-  ) {
-    store.setState({ queriesLoading: true });
-    const json = await fetchJson('GET', '/api/queries');
-    if (json.error) {
-      message.error(json.error);
-    }
-    store.setState({
-      queriesLoading: false,
-      queriesLastUpdated: new Date(),
-      queries: json.data || [],
-    });
-  }
-};
-
 export const clearQueries = () => {
   return { queries: [] };
-};
-
-export const deleteQuery = (store) => async (state, queryId) => {
-  const { queries } = state;
-  const filteredQueries = queries.filter((q) => {
-    return q.id !== queryId;
-  });
-  store.setState({ queries: filteredQueries });
-  const json = await fetchJson('DELETE', '/api/queries/' + queryId);
-  if (json.error) {
-    message.error(json.error);
-    store.setState({ queries });
-  }
 };
 
 export const loadQuery = async (state, queryId) => {
   const { error, data } = await fetchJson('GET', `/api/queries/${queryId}`);
   if (error) {
-    message.error(error);
+    return message.error('Query not found');
   }
+
   return {
     query: data,
     queryError: undefined,
@@ -155,6 +123,7 @@ export const saveQuery = (store) => async (state) => {
         store.setState({ isSaving: false });
         return;
       }
+      mutate('/api/queries');
       message.success('Query Saved');
       removeLocalQueryText(data.id);
       const updatedQueries = queries.map((q) => {
@@ -176,6 +145,7 @@ export const saveQuery = (store) => async (state) => {
         store.setState({ isSaving: false });
         return;
       }
+      mutate('/api/queries');
       window.history.replaceState(
         {},
         data.name,
@@ -254,14 +224,12 @@ export const handleQuerySelectionChange = (state, selectedText) => {
 
 export default {
   clearQueries,
-  deleteQuery,
   formatQuery,
   handleChartConfigurationFieldsChange,
   handleChartTypeChange,
   handleCloneClick,
   handleQuerySelectionChange,
   initialState,
-  loadQueries,
   loadQuery,
   resetNewQuery,
   runQuery,

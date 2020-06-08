@@ -1,6 +1,8 @@
 const assert = require('assert');
 const consts = require('../../lib/consts');
 const TestUtils = require('../utils');
+const queryString = require('query-string');
+const parseLinkHeader = require('parse-link-header');
 
 const createQueryBody = {
   name: 'test query',
@@ -17,7 +19,7 @@ const createQueryBody = {
 };
 
 describe('api/queries', function () {
-  const utils = new TestUtils();
+  let utils = new TestUtils();
   let query;
 
   before(function () {
@@ -39,6 +41,13 @@ describe('api/queries', function () {
 
   it('Gets array of 1', async function () {
     const body = await utils.get('editor', '/api/queries');
+    const query = body[0];
+    assert(query.connection.id);
+    assert.equal(query.tags[0], 'one');
+    assert(query.canRead);
+    assert(query.canWrite);
+    assert(query.canDelete);
+
     assert.equal(body.length, 1, '1 length');
   });
 
@@ -303,5 +312,157 @@ describe('api/queries', function () {
       acl: [{ userId: consts.EVERYONE_ID, write: true }],
     });
     await utils.del('editor2', `/api/queries/${body.id}`, 403);
+  });
+
+  it('supports url parameters', async function () {
+    utils = new TestUtils({ appLogLevel: 'error' });
+    await utils.init(true);
+
+    const connection1 = await utils.post('admin', '/api/connections', {
+      name: 'connection1',
+      driver: 'sqlite',
+      filename: './test/fixtures/sales.sqlite',
+    });
+    assert(connection1);
+    const connection2 = await utils.post('admin', '/api/connections', {
+      name: 'connection2',
+      driver: 'sqlite',
+      filename: './test/fixtures/sales.sqlite',
+    });
+    assert(connection2);
+
+    const query1 = await utils.post('editor', '/api/queries', {
+      name: 'query1',
+      tags: ['one', 'two'],
+      connectionId: connection1.id,
+      queryText: 'SELECT * FROM some_table -- query1',
+      chart: {
+        chartType: 'line',
+        fields: {
+          x: 'field1',
+          y: 'field2',
+        },
+      },
+    });
+
+    const query2 = await utils.post('editor2', '/api/queries', {
+      name: 'query2',
+      tags: ['two', 'three'],
+      connectionId: connection2.id,
+      queryText: 'SELECT * FROM some_table -- select-query2',
+      acl: [{ groupId: '__EVERYONE__' }],
+      chart: {
+        chartType: 'line',
+        fields: {
+          x: 'field1',
+          y: 'field2',
+        },
+      },
+    });
+
+    // connectionId
+    let body;
+    let params;
+    body = await utils.get(
+      'editor',
+      `/api/queries?connectionId=${connection1.id}`
+    );
+    assert.equal(body.length, 1);
+    assert(body.find((c) => c.id === query1.id));
+    body = await utils.get(
+      'editor',
+      `/api/queries?connectionId=${connection2.id}`
+    );
+    assert.equal(body.length, 1);
+    assert(body.find((c) => c.id === query2.id));
+
+    // ownedByUser
+    body = await utils.get('editor', `/api/queries?ownedByUser=true`);
+    assert.equal(body.length, 1);
+    assert(body.find((c) => c.id === query1.id));
+    body = await utils.get('editor', `/api/queries?ownedByUser=false`);
+    assert.equal(body.length, 1);
+    assert(body.find((c) => c.id === query2.id));
+
+    // limit & sortBy & offset
+    params = queryString.stringify({ limit: 1, sortBy: '+name' });
+    body = await utils.get('editor', `/api/queries?${params}`);
+    assert.equal(body.length, 1);
+    assert.equal(body[0].id, query1.id);
+    params = queryString.stringify({ limit: 1, sortBy: '-name' });
+    body = await utils.get('editor', `/api/queries?${params}`);
+    assert.equal(body.length, 1);
+    assert.equal(body[0].id, query2.id);
+    params = queryString.stringify({ limit: 1, offset: 1, sortBy: '-name' });
+    body = await utils.get('editor', `/api/queries?${params}`);
+    assert.equal(body.length, 1);
+    assert.equal(body[0].id, query1.id);
+
+    // tags
+    params = queryString.stringify(
+      { tags: ['one'] },
+      { arrayFormat: 'bracket' }
+    );
+    body = await utils.get('editor', `/api/queries?${params}`);
+    assert.equal(body.length, 1);
+    assert.equal(body[0].id, query1.id);
+    params = queryString.stringify(
+      { tags: ['one', 'two'] },
+      { arrayFormat: 'bracket' }
+    );
+    body = await utils.get('editor', `/api/queries?${params}`);
+    assert.equal(body.length, 1);
+    assert.equal(body[0].id, query1.id);
+    params = queryString.stringify(
+      { tags: ['two'] },
+      { arrayFormat: 'bracket' }
+    );
+    body = await utils.get('editor', `/api/queries?${params}`);
+    assert.equal(body.length, 2);
+
+    // createdBy
+    params = queryString.stringify(
+      { createdBy: utils.users.editor2.email },
+      { arrayFormat: 'bracket' }
+    );
+    body = await utils.get('editor', `/api/queries?${params}`);
+    assert.equal(body.length, 1);
+    assert.equal(body[0].id, query2.id);
+
+    // searches
+    params = queryString.stringify(
+      { search: 'query2' },
+      { arrayFormat: 'bracket' }
+    );
+    body = await utils.get('editor', `/api/queries?${params}`);
+    assert.equal(body.length, 1);
+    assert.equal(body[0].id, query2.id);
+    params = queryString.stringify(
+      { search: 'select-query2' },
+      { arrayFormat: 'bracket' }
+    );
+    body = await utils.get('editor', `/api/queries?${params}`);
+    assert.equal(body.length, 1);
+    assert.equal(body[0].id, query2.id);
+
+    // has link header
+    let res = await utils.getResponse('admin', `/api/queries?limit=1`, 200);
+    let links = parseLinkHeader(res.header.link);
+    assert(links.next);
+    assert.equal(links.next.limit, 1);
+    assert.equal(links.next.offset, 1);
+    assert.equal(links.next.url, '/api/queries?limit=1&offset=1');
+    res = await utils.getResponse(
+      'admin',
+      `/api/queries?limit=1&offset=1`,
+      200
+    );
+    links = parseLinkHeader(res.header.link);
+    assert.equal(links.next.limit, 1);
+    assert.equal(links.next.offset, 2);
+    assert.equal(links.next.url, '/api/queries?limit=1&offset=2');
+    assert.equal(links.prev.limit, 1);
+    assert.equal(links.prev.offset, 0);
+    assert.equal(links.prev.url, '/api/queries?limit=1&offset=0');
   });
 });

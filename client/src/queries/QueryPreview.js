@@ -9,22 +9,25 @@ function QueryPreview({ query }) {
   if (!query) {
     return null;
   }
+
   return (
     <div className={styles.preview}>
-      <div className={styles.previewQueryName}>{query.name}</div>
-      <div>Connection {query.connectionName}</div>
-      <div>By {query.createdBy}</div>
       <div>
-        {query.tags && query.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
+        <div className={styles.previewQueryName}>{query.name}</div>
+        <div>Connection {query.connectionName}</div>
+        <div>By {query.createdBy}</div>
+        <div>
+          {query.tags && query.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
+        </div>
       </div>
 
       <Divider />
 
       {/* 
-            This style necessary to get proper sizing on SqlEditor.
-            It has height 100%, which looks to height of nearest containing BLOCK,
-            which apparently looks past this flex container. This causes weirdness
-          */}
+        This style necessary to get proper sizing on SqlEditor.
+        It has height 100%, which looks to height of nearest containing BLOCK,
+        which apparently looks past this flex container. This causes weirdness
+      */}
       <div
         style={{
           flexGrow: 1,
@@ -41,4 +44,4 @@ QueryPreview.propTypes = {
   query: PropTypes.object,
 };
 
-export default React.memo(QueryPreview);
+export default QueryPreview;

@@ -15,6 +15,7 @@ const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 class Models {
   constructor(sequelizeDb, config) {
+    this.sequelizeDb = sequelizeDb;
     this.batches = new Batches(sequelizeDb, config);
     this.connectionAccesses = new ConnectionAccesses(sequelizeDb, config);
     this.connectionClients = new ConnectionClients(sequelizeDb, config);
@@ -66,6 +67,9 @@ class Models {
    */
   async findQueryById(id) {
     const query = await this.queries.findOneById(id);
+    if (!query) {
+      return null;
+    }
     query.acl = await this.queryAcl.findAllByQueryId(id);
     query.acl = query.acl.map((acl) => acl.toJSON());
     return query;
