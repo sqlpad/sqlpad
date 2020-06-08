@@ -44,4 +44,4 @@ QueryPreview.propTypes = {
   query: PropTypes.object,
 };
 
-export default React.memo(QueryPreview);
+export default QueryPreview;

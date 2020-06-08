@@ -112,9 +112,8 @@ function QueryListDrawer({ connections, onClose, visible }) {
     if (error) {
       return message.error(error);
     }
-    mutate('/api/queries', (queries) =>
-      queries.filter((q) => q.id !== queryId)
-    );
+    setQueries((queries) => queries.filter((q) => q.id !== queryId));
+    setPreview(null);
   };
 
   function handleClose() {
@@ -141,7 +140,7 @@ function QueryListDrawer({ connections, onClose, visible }) {
         <Link className={styles.queryLink} to={queryUrl} onClick={handleClose}>
           {query.name}
           <br />
-          <Text type="secondary">{query.connectionName}</Text>
+          <Text type="secondary">{query.connection.name}</Text>
         </Link>
         <div className={styles.listItemActions}>
           <Link
