@@ -19,7 +19,7 @@ router.post(
       await connectionClient.testConnection();
       res.utils.data();
     } catch (error) {
-      res.utils.error('Test failed');
+      res.utils.error(error);
     }
   })
 );
