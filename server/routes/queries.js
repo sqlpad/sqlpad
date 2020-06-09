@@ -195,7 +195,7 @@ async function listQueries(req, res) {
     return {
       id: query.id,
       name: query.name,
-      chart: query.chart,
+      chart: JSON.parse(query.chart),
       queryText: query.query_text,
       createdBy: query.created_by,
       connection: {
