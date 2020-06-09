@@ -134,6 +134,7 @@ input {
 /* Might be trying out more of just plain css, less of css.modules */
 .sp-error-block {
   height: 100%;
+  width: 100%;
 
   display: flex;
   justify-content: center;

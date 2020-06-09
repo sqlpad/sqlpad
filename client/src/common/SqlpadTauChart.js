@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { Chart } from 'taucharts';
 import SpinKitCube from './SpinKitCube.js';
+import ErrorBlock from './ErrorBlock.js';
 import getTauChartConfig from './getTauChartConfig';
 import { setFakeChartRef, delFakeChartRef } from './tauChartRef';
 
@@ -43,15 +44,7 @@ function SqlpadTauChart({
   }
 
   if (queryError) {
-    return (
-      <div
-        id="chart"
-        style={{ fontSize: '1.5rem', padding: 24, textAlign: 'center' }}
-        className="flex-center h-100 w-100 bg-error"
-      >
-        {queryError}
-      </div>
-    );
+    return <ErrorBlock>{queryError}</ErrorBlock>;
   }
 
   return <div id="chart" className="flex-center h-100 w-100" />;
