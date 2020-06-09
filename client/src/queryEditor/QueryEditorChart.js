@@ -5,7 +5,6 @@ function mapStateToProps(state) {
   return {
     queryId: (state.query && state.query.id) || 'new',
     isRunning: state.isRunning,
-    queryError: state.queryError,
     queryResult: state.queryResult,
     chartConfiguration: state.query && state.query.chart,
   };
