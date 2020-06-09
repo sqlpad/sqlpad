@@ -2,13 +2,15 @@ import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
 import React, { useEffect, useState } from 'react';
 import Button from '../common/Button';
+import ErrorBlock from '../common/ErrorBlock.js';
+import FormExplain from '../common/FormExplain';
 import HorizontalFormItem from '../common/HorizontalFormItem.js';
 import Input from '../common/Input';
-import TextArea from '../common/TextArea';
 import message from '../common/message';
 import Select from '../common/Select';
+import SpinKitCube from '../common/SpinKitCube.js';
+import TextArea from '../common/TextArea';
 import fetchJson from '../utilities/fetch-json.js';
-import FormExplain from '../common/FormExplain';
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';
@@ -19,9 +21,10 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
   const [connectionEdits, setConnectionEdits] = useState({});
   const [drivers, setDrivers] = useState([]);
   const [saving, setSaving] = useState(false);
-  const [testFailed, setTestFailed] = useState(false);
   const [testing, setTesting] = useState(false);
-  const [testSuccess, setTestSuccess] = useState(false);
+  const [tested, setTested] = useState(false);
+  const [testError, setTestError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   async function getDrivers() {
     const json = await fetchJson('GET', '/api/drivers');
@@ -38,7 +41,9 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
   async function getConnection(connectionId) {
     if (connectionId) {
+      setLoading(true);
       const json = await fetchJson('GET', `/api/connections/${connectionId}`);
+      setLoading(false);
       if (json.error) {
         message.error(json.error);
       } else {
@@ -79,8 +84,8 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       ...data,
     });
     setTesting(false);
-    setTestFailed(json.error ? true : false);
-    setTestSuccess(json.error ? false : true);
+    setTested(true);
+    setTestError(json.error);
   };
 
   const saveConnection = async (event) => {
@@ -300,6 +305,14 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       );
   }
 
+  if (loading) {
+    return (
+      <div className="h-100 w-100 flex-center">
+        <SpinKitCube />
+      </div>
+    );
+  }
+
   return (
     <form
       onSubmit={saveConnection}
@@ -334,6 +347,11 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
         {renderDriverFields()}
       </div>
+      {testError && (
+        <div>
+          <ErrorBlock>{testError}</ErrorBlock>
+        </div>
+      )}
       <div
         style={{
           borderTop: '1px solid #e8e8e8',
@@ -356,7 +374,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
           disabled={testing}
         >
           {testing ? 'Testing...' : 'Test'}
-          {!testing && testSuccess && (
+          {!testing && tested && !testError && (
             <SuccessIcon
               style={{
                 marginLeft: 8,
@@ -367,7 +385,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
               color="#52c41a"
             />
           )}
-          {!testing && testFailed && (
+          {!testing && tested && testError && (
             <CloseCircleOutlineIcon
               style={{
                 marginLeft: 8,
