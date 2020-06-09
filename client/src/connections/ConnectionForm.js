@@ -347,7 +347,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
         {renderDriverFields()}
       </div>
-      {testError && (
+      {!testing && testError && (
         <div>
           <ErrorBlock>{testError}</ErrorBlock>
         </div>
