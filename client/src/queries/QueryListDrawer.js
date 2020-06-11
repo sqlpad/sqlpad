@@ -108,11 +108,11 @@ function QueryListDrawer({ onClose, visible }) {
     }
   }, [visible, initialUrl, getQueries]);
 
-  let { data: tagsRes } = useSWR('/api/tags');
-  const tags = tagsRes ? tagsRes.data : [];
+  let { data: tagData } = useSWR('/api/tags');
+  const tags = tagData || [];
 
-  let { data: connectionsRes } = useSWR('/api/connections');
-  const connections = connectionsRes ? connectionsRes.data : [];
+  let { data: connectionsData } = useSWR('/api/connections');
+  const connections = connectionsData || [];
 
   const deleteQuery = async (queryId) => {
     const { error } = await fetchJson('DELETE', `/api/queries/${queryId}`);

@@ -11,21 +11,21 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
   const [connectionAccessEdits, setConnectionAccessEdits] = useState({});
   const [creating, setCreating] = useState(false);
 
-  let { data: connectionsRes } = useSWR('/api/connections');
+  let { data: apiConnections } = useSWR('/api/connections');
   const connections = [
     {
       id: '__EVERY_CONNECTION__',
       name: 'Every Connection',
     },
-  ].concat(connectionsRes ? connectionsRes.data : []);
+  ].concat(apiConnections || []);
 
-  let { data: usersRes } = useSWR('/api/users');
+  let { data: apiUsers } = useSWR('/api/users');
   const users = [
     {
       id: '__EVERYONE__',
       email: 'Everyone',
     },
-  ].concat(usersRes ? usersRes.data : []);
+  ].concat(apiUsers || []);
 
   const setConnectionAccessValue = (key, value) => {
     setConnectionAccessEdits((prev) => ({ ...prev, [key]: value }));

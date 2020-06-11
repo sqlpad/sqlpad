@@ -19,8 +19,8 @@ function ConnectionAccessList({ currentUser }) {
     url = url + '?includeInactives=true';
   }
 
-  let { data: caRes, mutate } = useSWR(url);
-  const connectionAccesses = caRes ? caRes.data : [];
+  let { data: caData, mutate } = useSWR(url);
+  const connectionAccesses = caData || [];
 
   const toggleShowInactives = () => {
     setShowInactives(!showInactives);
@@ -44,7 +44,7 @@ function ConnectionAccessList({ currentUser }) {
           }
         })
       : connectionAccesses.filter((item) => item.id !== connectionAccessId);
-    mutate({ data: updated });
+    mutate(updated);
     if (json.error) {
       return message.error('Expire Failed: ' + json.error.toString());
     }
@@ -56,7 +56,7 @@ function ConnectionAccessList({ currentUser }) {
 
   const handleConnectionAccessSaved = (connectionAccess) => {
     const updated = [connectionAccess].concat(connectionAccesses);
-    mutate({ data: updated });
+    mutate(updated);
     setShowAccessCreate(false);
   };
 
