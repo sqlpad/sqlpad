@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
@@ -11,39 +12,28 @@ import EditUserForm from './EditUserForm';
 import InviteUserForm from './InviteUserForm';
 
 function UserList({ currentUser }) {
-  const [users, setUsers] = useState([]);
   const [showAddUser, setShowAddUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
 
-  const loadUsersFromServer = async () => {
-    const json = await fetchJson('GET', '/api/users');
-    if (json.error) {
-      message.error(json.error);
-    }
-    if (json.data) {
-      const users = json.data.map((user) => {
-        user.key = user.id;
-        return user;
-      });
-      setUsers(users);
-    }
-  };
+  const { data: usersData, error, mutate } = useSWR('/api/users');
+  const users = (usersData || []).map((user) => ({ ...user, key: user.id }));
 
   useEffect(() => {
-    document.title = 'SQLPad - Users';
-    loadUsersFromServer();
-  }, []);
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
 
   const handleDelete = async (user) => {
     const json = await fetchJson('DELETE', '/api/users/' + user.id);
     if (json.error) {
       return message.error('Delete Failed: ' + json.error);
     }
-    loadUsersFromServer();
+    mutate(users.filter((u) => u.id !== user.id));
   };
 
   const handleOnInvited = () => {
-    loadUsersFromServer();
+    mutate();
     setShowAddUser(false);
   };
 
@@ -118,7 +108,7 @@ function UserList({ currentUser }) {
         visible={Boolean(editUser)}
         width={'500px'}
         onClose={() => {
-          loadUsersFromServer();
+          mutate();
           setEditUser(null);
         }}
       >
