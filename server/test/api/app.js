@@ -24,6 +24,7 @@ const expectedConfigKeys = [
   'googleAuthConfigured',
   'localAuthConfigured',
   'samlConfigured',
+  'samlLinkHtml',
 ];
 
 describe('api/app', function () {

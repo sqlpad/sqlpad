@@ -22,6 +22,7 @@
   "port": 80,
   "publicUrl": "",
   "queryResultMaxRows": 50000,
+  "samlLinkHtml": "",
   "samlAuthContext": "",
   "samlCallbackUrl": "",
   "samlCert": "",

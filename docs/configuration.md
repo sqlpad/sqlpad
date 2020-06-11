@@ -238,6 +238,13 @@ SAML Issuer
 - Key: `samlIssuer`
 - Env: `SAML_ISSUER`
 
+## samlLinkHtml
+
+HTML code for the sign-in link used for starting SAML authentication. The default is `Sign in with SSO`
+
+- Key: `samlLinkHtml`
+- Env: `SAML_LINK_HTML`
+
 ## serviceTokenSecret
 
 Secret to sign the generated Service Tokens

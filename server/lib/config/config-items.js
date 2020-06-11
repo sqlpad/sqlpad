@@ -211,6 +211,11 @@ const configItems = [
     default: '',
   },
   {
+    key: 'samlLinkHtml',
+    envVar: 'SAML_LINK_HTML',
+    default: 'Sign in with SSO',
+  },
+  {
     key: 'allowConnectionAccessToEveryone',
     envVar: 'SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE',
     default: true,

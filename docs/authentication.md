@@ -83,6 +83,7 @@ For OAuth to be useful this usually involves the following:
 
 SAML-based  authentication can be enabled by setting the necessary environment variables:
 
+- `SAML_LINK_HTML`
 - `SAML_AUTH_CONTEXT`
 - `SAML_CALLBACK_URL`
 - `SAML_CERT`
