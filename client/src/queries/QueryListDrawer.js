@@ -20,7 +20,6 @@ import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube.js';
 import Text from '../common/Text';
 import fetchJson from '../utilities/fetch-json';
-import swrFetcher from '../utilities/swr-fetcher';
 import styles from './QueryList.module.css';
 import QueryPreview from './QueryPreview';
 
@@ -107,10 +106,10 @@ function QueryListDrawer({ onClose, visible }) {
     }
   }, [visible, initialUrl, getQueries]);
 
-  let { data: tagsRes } = useSWR('/api/tags', swrFetcher);
+  let { data: tagsRes } = useSWR('/api/tags');
   const tags = tagsRes ? tagsRes.data : [];
 
-  let { data: connectionsRes } = useSWR('/api/connections', swrFetcher);
+  let { data: connectionsRes } = useSWR('/api/connections');
   const connections = connectionsRes ? connectionsRes.data : [];
 
   const deleteQuery = async (queryId) => {
