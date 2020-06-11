@@ -79,6 +79,8 @@ function QueryListDrawer({ onClose, visible }) {
   const getQueries = useCallback(
     (url) => {
       setLoading(true);
+      // This cannot use SWR at this time
+      // as we need to use links and manage state
       fetchJson('GET', url).then((response) => {
         const { data, links, error } = response;
         setLoading(false);
