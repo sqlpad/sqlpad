@@ -1,6 +1,7 @@
 import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
 import React, { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock.js';
 import FormExplain from '../common/FormExplain';
@@ -19,25 +20,14 @@ const TEXTAREA = 'TEXTAREA';
 
 function ConnectionForm({ connectionId, onConnectionSaved }) {
   const [connectionEdits, setConnectionEdits] = useState({});
-  const [drivers, setDrivers] = useState([]);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [tested, setTested] = useState(false);
   const [testError, setTestError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  async function getDrivers() {
-    const json = await fetchJson('GET', '/api/drivers');
-    if (json.error) {
-      message.error(json.error);
-    } else {
-      setDrivers(json.data);
-    }
-  }
-
-  useEffect(() => {
-    getDrivers();
-  }, []);
+  let { data: drivers } = useSWR('/api/drivers');
+  drivers = drivers || [];
 
   async function getConnection(connectionId) {
     if (connectionId) {

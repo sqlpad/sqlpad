@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import QueryHistoryFilterItem from './QueryHistoryFilterItem';
-import QueryResultContainer from '../common/QueryResultContainer';
-import fetchJson from '../utilities/fetch-json.js';
+import React, { useState } from 'react';
+import useSWR from 'swr';
 import Button from '../common/Button';
+import QueryResultContainer from '../common/QueryResultContainer';
+import QueryHistoryFilterItem from './QueryHistoryFilterItem';
 
 function getQueryResult(rows) {
   return {
@@ -23,46 +23,37 @@ function getQueryResult(rows) {
   };
 }
 
-function QueryHistoryContent({ onConnectionAccessSaved }) {
-  const [isRunning, setIsRunning] = useState(true);
+function QueryHistoryContent() {
   const [filters, setFilters] = useState([]);
-  const [queryError, setQueryError] = useState(null);
-  const [queryHistory, setQueryHistory] = useState({});
+  const [filterUrl, setFilterUrl] = useState('');
 
-  useEffect(() => {
-    function buildFilterUrlParameter() {
-      const urlFilters = filters.map((f) => {
-        if (['before', 'after'].includes(f.operator)) {
-          try {
-            f.value = new Date(f.value).toISOString();
-          } catch (error) {
-            f.value = error.message;
-          }
+  function buildFilterUrlParameter() {
+    const urlFilters = filters.map((f) => {
+      if (['before', 'after'].includes(f.operator)) {
+        try {
+          f.value = new Date(f.value).toISOString();
+        } catch (error) {
+          f.value = error.message;
         }
-        return `${f.field}|${f.operator}|${f.value}`;
-      });
-      return urlFilters.join(',');
-    }
+      }
+      return `${f.field}|${f.operator}|${f.value}`;
+    });
+    return urlFilters.join(',');
+  }
 
-    async function getQueryHistory() {
-      const json = await fetchJson(
-        'GET',
-        `/api/query-history?filter=${buildFilterUrlParameter()}`
-      );
+  const url = `/api/query-history?filter=${filterUrl}`;
 
-      setIsRunning(false);
-      setQueryError(json.error);
-      const queryResult = getQueryResult(json.data);
-      setQueryHistory(queryResult);
-    }
+  const {
+    data: historyData,
+    isValidating: isRunning,
+    error: queryError,
+    mutate,
+  } = useSWR(url);
 
-    if (isRunning) {
-      getQueryHistory();
-    }
-  }, [filters, isRunning]);
+  const queryHistory = getQueryResult(historyData || []) || {};
 
   const handleRefresh = () => {
-    setIsRunning(true);
+    mutate();
   };
 
   const setFilterValue = (index, filterItem) => {
@@ -93,7 +84,7 @@ function QueryHistoryContent({ onConnectionAccessSaved }) {
   };
 
   const handleApplyFilter = (e) => {
-    setIsRunning(true);
+    setFilterUrl(buildFilterUrlParameter());
   };
 
   let filterForm;
