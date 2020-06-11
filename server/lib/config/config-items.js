@@ -216,6 +216,16 @@ const configItems = [
     default: 'Sign in with SSO',
   },
   {
+    key: 'samlAutoSignUp',
+    envVar: 'SQLPAD_SAML_AUTO_SIGN_UP',
+    default: false,
+  },
+  {
+    key: 'samlDefaultRole',
+    envVar: 'SQLPAD_SAML_DEFAULT_ROLE',
+    default: 'editor',
+  },
+  {
     key: 'allowConnectionAccessToEveryone',
     envVar: 'SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE',
     default: true,

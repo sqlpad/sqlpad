@@ -23,6 +23,8 @@
   "publicUrl": "",
   "queryResultMaxRows": 50000,
   "samlLinkHtml": "",
+  "samlAutoSignUp": false,
+  "samlDefaultRole": "",
   "samlAuthContext": "",
   "samlCallbackUrl": "",
   "samlCert": "",

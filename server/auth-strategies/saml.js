@@ -27,17 +27,42 @@ function enableSaml(config) {
             p[
               'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
             ];
-          const { models } = req;
-          const user = await models.users.findOneByEmail(email);
-          appLog.info('User logged in via SAML %s', email);
-          if (!user) {
+
+          // If email is not provided - no auth
+          if (!email) {
             return done(null, false);
           }
-          return done(null, {
-            id: user.id,
-            role: user.role,
-            email: user.email,
-          });
+          appLog.info('User attempts log in via SAML %s', email);
+
+          const { models } = req;
+
+          let [openAdminRegistration, user] = await Promise.all([
+            models.users.adminRegistrationOpen(),
+            models.users.findOneByEmail(email),
+          ]);
+
+          if (user) {
+            return done(null, {
+              id: user.id,
+              role: user.role,
+              email: user.email,
+            });
+          }
+
+          // If auto sign up is turned on create user
+          if (openAdminRegistration || config.get('samlAutoSignUp')) {
+            const newUser = await models.users.create({
+              email,
+              role: openAdminRegistration
+                ? 'admin'
+                : config.get('samlDefaultRole'),
+              signupAt: new Date(),
+            });
+
+            return done(null, newUser);
+          }
+
+          return done(null, false);
         }
       )
     );
