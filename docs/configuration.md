@@ -205,14 +205,14 @@ By default query results are limited to 50,000 records.
 
 ## samlAuthContext
 
-SAML authentication context URL
+SAML authentication context URL. A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`.
 
 - Key: `samlAuthContext`
 - Env: `SAML_AUTH_CONTEXT`
 
 ## samlCallbackUrl
 
-SAML callback URL
+SAML callback URL. It will generally be constructed from the deployment's internet address and the fixed route, for example: https://mysqlpad.com/login/callback
 
 - Key: `samlCallbackUrl`
 - Env: `SAML_CALLBACK_URL`
