@@ -18,6 +18,7 @@ import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
+import { useSchemaState } from '../stores/schema-context';
 
 const deboucedResearchChart = debounce(resizeChart, 700);
 
@@ -27,7 +28,6 @@ function QueryEditor(props) {
     loadQuery,
     queryId,
     resetNewQuery,
-    showSchema,
     showVis,
   } = props;
 
@@ -44,6 +44,8 @@ function QueryEditor(props) {
   function handleVisPaneResize() {
     deboucedResearchChart(queryId);
   }
+
+  const { showSchema } = useSchemaState();
 
   const editorAndVis = showVis ? (
     <SplitPane
@@ -129,7 +131,6 @@ QueryEditor.propTypes = {
   loadQuery: PropTypes.func.isRequired,
   queryId: PropTypes.string.isRequired,
   resetNewQuery: PropTypes.func.isRequired,
-  showSchema: PropTypes.bool,
   showVis: PropTypes.bool,
 };
 
@@ -139,7 +140,6 @@ function mapStateToProps(state, props) {
 
   return {
     showVis,
-    showSchema: state.showSchema,
   };
 }
 
