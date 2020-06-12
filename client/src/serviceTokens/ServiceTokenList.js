@@ -1,34 +1,32 @@
 import React, { useEffect, useState } from 'react';
+import useSWR from 'swr';
 import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
-import fetchJson from '../utilities/fetch-json';
 import message from '../common/message';
 import Modal from '../common/Modal';
-import ServiceTokenForm from './ServiceTokenForm';
+import fetchJson from '../utilities/fetch-json';
 import ServiceTokenDetails from './ServiceTokenDetails';
+import ServiceTokenForm from './ServiceTokenForm';
 
 function ServiceTokenList({ currentUser }) {
-  const [serviceTokens, setServiceTokens] = useState([]);
   const [showServiceTokenForm, setShowServiceTokenForm] = useState(false);
   const [generatedServiceToken, setGenerateServiceToken] = useState(null);
   const [showGeneratedServiceToken, setShowGeneratedServiceToken] = useState(
     false
   );
 
-  const loadServiceTokensFromServer = async () => {
-    const json = await fetchJson('GET', '/api/service-tokens');
-    if (json.error) {
-      message.error(json.error);
-    } else {
-      setServiceTokens(json.data);
-    }
-  };
+  const { data: serviceTokensData, error, mutate } = useSWR(
+    '/api/service-tokens'
+  );
+  const serviceTokens = serviceTokensData || [];
 
   useEffect(() => {
-    loadServiceTokensFromServer();
-  }, [generatedServiceToken]);
+    if (error) {
+      message.error(error);
+    }
+  }, [error]);
 
   const generateServiceToken = () => {
     setShowServiceTokenForm(true);
@@ -42,7 +40,7 @@ function ServiceTokenList({ currentUser }) {
     if (json.error) {
       return message.error('Delete failed: ' + json.error);
     }
-    loadServiceTokensFromServer();
+    mutate(serviceTokens.filter((item) => item.id !== serviceTokenId));
   };
 
   const handleGenerateFormClose = () => {
@@ -51,6 +49,7 @@ function ServiceTokenList({ currentUser }) {
   };
 
   const handleServiceTokenGenerated = (serviceToken) => {
+    mutate();
     setGenerateServiceToken(serviceToken);
     setShowServiceTokenForm(false);
     setShowGeneratedServiceToken(true);

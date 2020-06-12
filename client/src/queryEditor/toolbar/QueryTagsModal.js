@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import useSWR from 'swr';
 import { connect } from 'unistore/react';
-import { setQueryState } from '../../stores/queries';
 import Modal from '../../common/Modal';
 import MultiSelect from '../../common/MultiSelect';
-import fetchJson from '../../utilities/fetch-json';
+import { setQueryState } from '../../stores/queries';
 
 function mapStateToProps(state) {
   return {
@@ -16,20 +16,8 @@ const ConnectedQueryTagsModal = connect(mapStateToProps, { setQueryState })(
 );
 
 function QueryTagsModal({ tags, visible, onClose, setQueryState }) {
-  const [options, setOptions] = useState([]);
-
-  useEffect(() => {
-    if (visible) {
-      fetchJson('GET', '/api/tags').then((response) => {
-        const { data } = response;
-        if (data) {
-          const options = data.map((tag) => ({ name: tag, id: tag }));
-          setOptions(options);
-        }
-      });
-    }
-  }, [visible]);
-
+  const { data: tagsData } = useSWR(visible ? '/api/tags' : null);
+  const options = (tagsData || []).map((tag) => ({ name: tag, id: tag }));
   const selectedItems = tags.map((tag) => ({ name: tag, id: tag }));
 
   const handleChange = (selectedItems) => {

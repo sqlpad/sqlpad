@@ -1,39 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'unistore/react';
 import humanizeDuration from 'humanize-duration';
+import React, { useState } from 'react';
+import useSWR from 'swr';
+import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
+import message from '../common/message';
 import Text from '../common/Text';
 import fetchJson from '../utilities/fetch-json';
-import message from '../common/message';
 import ConnectionAccessCreateDrawer from './ConnectionAccessCreateDrawer';
 
 function ConnectionAccessList({ currentUser }) {
-  const [connectionAccesses, setConnectionAccesses] = useState([]);
   const [showInactives, setShowInactives] = useState(false);
-  const [expiredConnectionAccessId, setExpiredConnectionAccessId] = useState(
-    null
-  );
-  const [newConnectionAccessId, setNewConnectionAccessId] = useState(null);
   const [showAccessCreate, setShowAccessCreate] = useState(false);
 
-  useEffect(() => {
-    async function getConnectionAccesses() {
-      let url = `/api/connection-accesses`;
-      if (showInactives) {
-        url = url + '?includeInactives=true';
-      }
-      const json = await fetchJson('GET', url);
-      if (json.error) {
-        message.error(json.error);
-      } else {
-        setConnectionAccesses(json.data);
-      }
-    }
+  let url = `/api/connection-accesses`;
+  if (showInactives) {
+    url = url + '?includeInactives=true';
+  }
 
-    getConnectionAccesses();
-  }, [showInactives, newConnectionAccessId, expiredConnectionAccessId]);
+  let { data: caData, mutate } = useSWR(url);
+  const connectionAccesses = caData || [];
 
   const toggleShowInactives = () => {
     setShowInactives(!showInactives);
@@ -48,10 +35,19 @@ function ConnectionAccessList({ currentUser }) {
       'PUT',
       `/api/connection-accesses/${connectionAccessId}/expire`
     );
+    const updated = showInactives
+      ? connectionAccesses.map((item) => {
+          if (item.id === connectionAccessId) {
+            return json.data;
+          } else {
+            return item;
+          }
+        })
+      : connectionAccesses.filter((item) => item.id !== connectionAccessId);
+    mutate(updated);
     if (json.error) {
       return message.error('Expire Failed: ' + json.error.toString());
     }
-    setExpiredConnectionAccessId(connectionAccessId);
   };
 
   const handleCreateDrawerClose = () => {
@@ -59,8 +55,9 @@ function ConnectionAccessList({ currentUser }) {
   };
 
   const handleConnectionAccessSaved = (connectionAccess) => {
+    const updated = [connectionAccess].concat(connectionAccesses);
+    mutate(updated);
     setShowAccessCreate(false);
-    setNewConnectionAccessId(connectionAccess.id);
   };
 
   return (

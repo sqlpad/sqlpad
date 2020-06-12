@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import useSWR from 'swr';
 import Button from '../common/Button';
 import HorizontalFormItem from '../common/HorizontalFormItem.js';
 import Input from '../common/Input';
@@ -8,45 +9,23 @@ import fetchJson from '../utilities/fetch-json.js';
 
 function ConnectionAccessForm({ onConnectionAccessSaved }) {
   const [connectionAccessEdits, setConnectionAccessEdits] = useState({});
-  const [connections, setConnections] = useState([]);
-  const [users, setUsers] = useState([]);
   const [creating, setCreating] = useState(false);
 
-  async function getConnections() {
-    const json = await fetchJson('GET', '/api/connections');
-    if (json.error) {
-      message.error(json.error);
-    } else {
-      const connections = json.data;
-      connections.unshift({
-        id: '__EVERY_CONNECTION__',
-        name: 'Every Connection',
-      });
-      setConnections(connections);
-    }
-  }
+  let { data: apiConnections } = useSWR('/api/connections');
+  const connections = [
+    {
+      id: '__EVERY_CONNECTION__',
+      name: 'Every Connection',
+    },
+  ].concat(apiConnections || []);
 
-  useEffect(() => {
-    getConnections();
-  }, []);
-
-  async function getUsers() {
-    const json = await fetchJson('GET', '/api/users');
-    if (json.error) {
-      message.error(json.error);
-    } else {
-      const users = json.data;
-      users.unshift({
-        id: '__EVERYONE__',
-        email: 'Everyone',
-      });
-      setUsers(users);
-    }
-  }
-
-  useEffect(() => {
-    getUsers();
-  }, []);
+  let { data: apiUsers } = useSWR('/api/users');
+  const users = [
+    {
+      id: '__EVERYONE__',
+      email: 'Everyone',
+    },
+  ].concat(apiUsers || []);
 
   const setConnectionAccessValue = (key, value) => {
     setConnectionAccessEdits((prev) => ({ ...prev, [key]: value }));
