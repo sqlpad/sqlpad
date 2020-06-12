@@ -12,17 +12,20 @@ import './css/vendorOverrides.css';
 import Routes from './Routes';
 import unistoreStore from './stores/unistoreStore';
 import swrFetcher from './utilities/swr-fetcher';
+import { SchemaProvider } from './stores/schema-context';
 
 ReactDOM.render(
   <Provider store={unistoreStore}>
-    <SWRConfig
-      value={{
-        fetcher: swrFetcher,
-      }}
-    >
-      <Routes />
-      <MessageDisplayer />
-    </SWRConfig>
+    <SchemaProvider>
+      <SWRConfig
+        value={{
+          fetcher: swrFetcher,
+        }}
+      >
+        <Routes />
+        <MessageDisplayer />
+      </SWRConfig>
+    </SchemaProvider>
   </Provider>,
   document.getElementById('root')
 );
