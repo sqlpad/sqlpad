@@ -5,9 +5,11 @@ import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
 import AppHeader from '../app-header/AppHeader';
 import { resizeChart } from '../common/tauChartRef';
+import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar.js';
 import { connectConnectionClient } from '../stores/connections';
 import { loadQuery, resetNewQuery } from '../stores/queries';
+import useSchemaState from '../stores/use-schema-state';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
@@ -17,8 +19,6 @@ import QueryResultHeader from './QueryResultHeader.js';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
-import SchemaInfoLoader from '../schema/SchemaInfoLoader';
-import { useSchemaState } from '../stores/schema-context';
 
 const deboucedResearchChart = debounce(resizeChart, 700);
 

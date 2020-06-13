@@ -11,7 +11,7 @@ import Input from '../common/Input';
 import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
-import { useSchemaState } from '../stores/schema-context';
+import useSchemaState from '../stores/use-schema-state';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';

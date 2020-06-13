@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { connect } from 'unistore/react';
-import { useSchemaState } from '../stores/schema-context';
+import useSchemaState from '../stores/use-schema-state';
 
 function mapStateToProps(state, props) {
   return {

@@ -1,18 +1,16 @@
+import { useCallback } from 'react';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
 import updateCompletions from '../utilities/updateCompletions.js';
+import { useKeyState } from './key-state';
 
-import React, { useState, useCallback } from 'react';
-
-const SchemaContext = React.createContext();
-
-function SchemaProvider({ children }) {
-  const [showSchema, setShowSchema] = useState(true);
-  const [schema, setSchema] = useState({});
+function useSchemaState() {
+  const [showSchema, setShowSchema] = useKeyState('showSchema', true);
+  const [schema, setSchema] = useKeyState('schema', {});
 
   const toggleSchema = useCallback(() => {
     setShowSchema((showSchema) => !showSchema);
-  }, []);
+  }, [setShowSchema]);
 
   const loadSchemaInfo = useCallback(
     async (connectionId, reload) => {
@@ -67,7 +65,7 @@ function SchemaProvider({ children }) {
         });
       }
     },
-    [schema, showSchema]
+    [schema, showSchema, setSchema]
   );
 
   const toggleSchemaItem = useCallback(
@@ -82,28 +80,16 @@ function SchemaProvider({ children }) {
         },
       });
     },
-    [schema]
+    [schema, setSchema]
   );
 
-  const value = {
+  return {
     showSchema,
     schema,
     toggleSchema,
     loadSchemaInfo,
     toggleSchemaItem,
   };
-
-  return (
-    <SchemaContext.Provider value={value}>{children}</SchemaContext.Provider>
-  );
 }
 
-function useSchemaState() {
-  const context = React.useContext(SchemaContext);
-  if (context === undefined) {
-    throw new Error('useSchemaState must be used within a CountProvider');
-  }
-  return context;
-}
-
-export { SchemaProvider, useSchemaState };
+export default useSchemaState;
