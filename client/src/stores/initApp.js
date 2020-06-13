@@ -3,6 +3,7 @@ import message from '../common/message';
 import { refreshAppContext } from './config';
 import fetchJson from '../utilities/fetch-json';
 import sortBy from 'lodash/sortBy';
+const queryString = require('query-string');
 
 window.localforage = localforage;
 
@@ -55,6 +56,25 @@ const initApp = async (state) => {
         if (Boolean(selectedConnection)) {
           update.selectedConnectionId = selectedConnectionId;
         }
+      }
+
+      const qs = queryString.parse(window.location.search);
+      const qsConnectionName = qs.connectionName;
+      if (qsConnectionName) {
+        const selectedConnection = connections.find(
+          (c) => c.name === qsConnectionName
+        );
+        if (Boolean(selectedConnection))
+          update.selectedConnectionId = selectedConnection.id;
+      }
+
+      const qsConnectionId = qs.connectionId;
+      if (qsConnectionId) {
+        const selectedConnection = connections.find(
+          (c) => c.id === qsConnectionId
+        );
+        if (Boolean(selectedConnection))
+          update.selectedConnectionId = selectedConnection.id;
       }
     }
     return update;
