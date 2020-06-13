@@ -99,9 +99,19 @@ function SignIn({ config, refreshAppContext }) {
     </div>
   );
 
+  function auto_redirects() {
+    if (!config.localAuthConfigured) {
+      if (!config.googleAuthConfigured && config.samlConfig)
+        return <Redirect push to={`${config.baseUr}/auth/saml`} />;
+      if (config.googleAuthConfigured && !config.samlConfig)
+        return <Redirect push to={`${config.baseUrl}/auth/google`} />;
+    }
+  }
+
   return (
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
+      {auto_redirects()}
       {config.localAuthConfigured && localForm}
       {config.googleAuthConfigured && googleForm}
       {config.samlConfigured && samlForm}
