@@ -1,6 +1,7 @@
 import ConnectedIcon from 'mdi-react/ServerNetworkIcon';
 import DisconnectedIcon from 'mdi-react/ServerNetworkOffIcon';
 import React, { useState } from 'react';
+import useSWR from 'swr';
 import { connect } from 'unistore/react';
 import IconButton from '../../common/IconButton';
 import {
@@ -10,12 +11,14 @@ import {
 
 function ToolbarConnectionClientButton({
   connectionClient,
-  connections,
   selectedConnectionId,
   connectConnectionClient,
   disconnectConnectionClient,
 }) {
   const [fetching, setFetching] = useState(false);
+
+  let { data: connectionsData } = useSWR('/api/connections');
+  const connections = connectionsData || [];
 
   async function handleClick() {
     setFetching(true);
@@ -59,7 +62,7 @@ function ToolbarConnectionClientButton({
 }
 
 export default connect(
-  ['connectionClient', 'connections', 'selectedConnectionId'],
+  ['connectionClient', 'selectedConnectionId'],
   (store) => ({
     connectConnectionClient: connectConnectionClient(store),
     disconnectConnectionClient,

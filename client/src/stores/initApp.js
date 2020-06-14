@@ -1,13 +1,8 @@
 import localforage from 'localforage';
-import sortBy from 'lodash/sortBy';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json';
 
 window.localforage = localforage;
-
-function sortConnections(connections) {
-  return sortBy(connections, [(connection) => connection.name.toLowerCase()]);
-}
 
 const initApp = async (state, config) => {
   try {
@@ -16,12 +11,10 @@ const initApp = async (state, config) => {
       fetchJson('GET', '/api/connections/'),
     ]);
 
-    const connections = sortConnections(connectionsResponse.data || []);
+    const connections = connectionsResponse.data || [];
 
     const update = {
       initialized: true,
-      connections,
-      connectionsLastUpdated: new Date(),
     };
 
     if (connections.length === 1) {
