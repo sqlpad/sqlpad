@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
-import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import Drawer from '../common/Drawer';
 import ConnectionAccessListDrawer from '../connectionAccesses/ConnectionAccessListDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
-import UserList from '../users/UserList';
 import ServiceTokenListDrawer from '../serviceTokens/ServiceTokenListDrawer';
+import UserList from '../users/UserList';
+import useAppContext from '../utilities/use-app-context';
 import AppHeaderDivider from './AppHeaderDivider';
 
-function mapStateToProps(state) {
-  return {
-    currentUser: state.currentUser,
-  };
-}
-
-const Connected = connect(mapStateToProps)(React.memo(AppHeaderAdminSection));
-
-function AppHeaderAdminSection({ currentUser }) {
+function AppHeaderAdminSection() {
+  const { currentUser } = useAppContext();
   const [showConnections, setShowConnections] = useState(false);
   const [showConnectionAccesses, setShowConnectionAccesses] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showServiceTokens, setShowServiceTokens] = useState(false);
 
-  if (currentUser.role !== 'admin') {
+  if (!currentUser || currentUser.role !== 'admin') {
     return null;
   }
 
@@ -98,4 +91,4 @@ function AppHeaderAdminSection({ currentUser }) {
   ];
 }
 
-export default Connected;
+export default React.memo(AppHeaderAdminSection);

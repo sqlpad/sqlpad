@@ -9,15 +9,16 @@ import {
   selectConnectionId,
 } from '../stores/connections';
 import styles from './ConnectionDropdown.module.css';
+import useAppContext from '../utilities/use-app-context';
 
 function ConnectionDropdown({
   addUpdateConnection,
   connectConnectionClient,
   connections,
-  currentUser,
   selectConnectionId,
   selectedConnectionId,
 }) {
+  const { currentUser } = useAppContext();
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
 
@@ -88,11 +89,8 @@ function ConnectionDropdown({
   );
 }
 
-export default connect(
-  ['connections', 'currentUser', 'selectedConnectionId'],
-  (store) => ({
-    connectConnectionClient: connectConnectionClient(store),
-    selectConnectionId,
-    addUpdateConnection,
-  })
-)(ConnectionDropdown);
+export default connect(['connections', 'selectedConnectionId'], (store) => ({
+  connectConnectionClient: connectConnectionClient(store),
+  selectConnectionId,
+  addUpdateConnection,
+}))(ConnectionDropdown);

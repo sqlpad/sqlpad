@@ -1,14 +1,23 @@
 import React, { useEffect } from 'react';
-import { connect } from 'unistore/react';
 import { Redirect } from 'react-router-dom';
+import { connect } from 'unistore/react';
 import initApp from './stores/initApp';
+import useAppContext from './utilities/use-app-context';
 
-function Authenticated({ children, currentUser, initApp, initialized }) {
+function Authenticated({ children, initApp, initialized }) {
+  const { config, currentUser } = useAppContext();
+
   useEffect(() => {
-    initApp();
-  }, [initApp]);
+    if (config) {
+      initApp(config);
+    }
+  }, [initApp, config]);
 
-  if (!currentUser) {
+  if (!config) {
+    return null;
+  }
+
+  if (config && !currentUser) {
     return <Redirect to={{ pathname: '/signin' }} />;
   }
 
@@ -19,6 +28,6 @@ function Authenticated({ children, currentUser, initApp, initialized }) {
   return children;
 }
 
-export default connect(['currentUser', 'initialized'], {
+export default connect(['initialized'], {
   initApp,
 })(Authenticated);

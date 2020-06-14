@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Redirect,
   Route,
   Switch,
 } from 'react-router-dom';
-import { connect } from 'unistore/react';
 import Authenticated from './Authenticated';
 import ForgotPassword from './ForgotPassword.js';
 import NotFound from './NotFound.js';
@@ -16,12 +15,10 @@ import QueryEditor from './queryEditor/QueryEditor.js';
 import QueryTableOnly from './QueryTableOnly.js';
 import SignIn from './SignIn.js';
 import SignUp from './SignUp.js';
-import { refreshAppContext } from './stores/config';
+import useAppContext from './utilities/use-app-context';
 
-function Routes({ config, refreshAppContext }) {
-  useEffect(() => {
-    refreshAppContext();
-  }, [refreshAppContext]);
+function Routes() {
+  const { config } = useAppContext();
 
   if (!config) {
     return null;
@@ -84,6 +81,4 @@ function Routes({ config, refreshAppContext }) {
   );
 }
 
-export default connect(['config'], {
-  refreshAppContext,
-})(Routes);
+export default Routes;

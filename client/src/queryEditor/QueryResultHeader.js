@@ -7,14 +7,15 @@ import { connect } from 'unistore/react';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer.js';
 import styles from './QueryResultHeader.module.css';
+import useAppContext from '../utilities/use-app-context';
 
 function QueryResultHeader({
-  config,
   isRunning,
   queryId,
   queryResult,
   runQueryStartTime,
 }) {
+  const { config } = useAppContext();
   if (isRunning || !queryResult) {
     return (
       <div className={styles.toolbar}>
@@ -93,21 +94,18 @@ function QueryResultHeader({
 }
 
 QueryResultHeader.propTypes = {
-  config: PropTypes.object,
   isRunning: PropTypes.bool,
   queryResult: PropTypes.object,
   runQueryStartTime: PropTypes.instanceOf(Date),
 };
 
 QueryResultHeader.defaultProps = {
-  config: {},
   isRunning: false,
 };
 
 function mapStateToProps(state) {
-  const { config, isRunning, queryResult, runQueryStartTime } = state;
+  const { isRunning, queryResult, runQueryStartTime } = state;
   return {
-    config,
     isRunning,
     queryId: state.query && state.query.id,
     queryResult,

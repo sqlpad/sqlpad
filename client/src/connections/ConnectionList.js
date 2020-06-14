@@ -11,15 +11,16 @@ import {
   loadConnections,
 } from '../stores/connections';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
+import useAppContext from '../utilities/use-app-context';
 
 function ConnectionList({
-  currentUser,
   loadConnections,
   deleteConnection,
   connections,
   addUpdateConnection,
   selectConnectionId,
 }) {
+  const { currentUser } = useAppContext();
   const [connectionId, setConnectionId] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
 
@@ -120,7 +121,7 @@ function ConnectionList({
   );
 }
 
-export default connect(['connections', 'currentUser'], (store) => ({
+export default connect(['connections'], (store) => ({
   selectConnectionId,
   deleteConnection,
   addUpdateConnection,

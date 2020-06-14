@@ -3,14 +3,16 @@ import DownloadIcon from 'mdi-react/DownloadIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { connect } from 'unistore/react';
+import useAppContext from '../utilities/use-app-context';
 import IconMenu from './IconMenu';
 
 const NavigationLink = React.forwardRef((props, ref) => {
   return <Link {...props} innerRef={ref} />;
 });
 
-function ExportButton({ config, links, onSaveImageClick }) {
+function ExportButton({ links, onSaveImageClick }) {
+  const { config } = useAppContext();
+
   if (!config || !links) {
     return null;
   }
@@ -75,4 +77,4 @@ ExportButton.propTypes = {
   onSaveImageClick: PropTypes.func,
 };
 
-export default connect(['config'])(ExportButton);
+export default ExportButton;

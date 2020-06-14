@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { connect } from 'unistore/react';
 import Button from './common/Button';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
 import fetchJson from './utilities/fetch-json.js';
+import useAppContext from './utilities/use-app-context';
 
-function SignUp({ adminRegistrationOpen }) {
+function SignUp() {
+  const { adminRegistrationOpen } = useAppContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
@@ -81,4 +82,4 @@ function SignUp({ adminRegistrationOpen }) {
   );
 }
 
-export default connect(['adminRegistrationOpen'])(SignUp);
+export default SignUp;

@@ -1,17 +1,10 @@
 import React from 'react';
-import { connect } from 'unistore/react';
+import useAppContext from '../utilities/use-app-context';
 import styles from './AppHeaderUser.module.css';
 
-function mapStateToProps(state) {
-  return {
-    currentUser: state.currentUser,
-  };
-}
-
-const Connected = connect(mapStateToProps)(React.memo(UserButton));
-
-function UserButton({ currentUser }) {
-  if (currentUser.id === 'noauth') {
+function UserButton() {
+  const { currentUser } = useAppContext();
+  if (!currentUser || currentUser.id === 'noauth') {
     return null;
   }
   return (
@@ -19,4 +12,4 @@ function UserButton({ currentUser }) {
   );
 }
 
-export default Connected;
+export default React.memo(UserButton);

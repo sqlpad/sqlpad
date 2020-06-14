@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
-import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
@@ -8,10 +7,12 @@ import message from '../common/message';
 import Modal from '../common/Modal';
 import Text from '../common/Text';
 import fetchJson from '../utilities/fetch-json.js';
+import useAppContext from '../utilities/use-app-context';
 import EditUserForm from './EditUserForm';
 import InviteUserForm from './InviteUserForm';
 
-function UserList({ currentUser }) {
+function UserList() {
+  const { currentUser } = useAppContext();
   const [showAddUser, setShowAddUser] = useState(false);
   const [editUser, setEditUser] = useState(null);
 
@@ -118,4 +119,4 @@ function UserList({ currentUser }) {
   );
 }
 
-export default connect(['currentUser'])(React.memo(UserList));
+export default React.memo(UserList);
