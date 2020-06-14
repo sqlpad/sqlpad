@@ -1,45 +1,23 @@
 import localforage from 'localforage';
 import message from '../common/message';
-import { refreshAppContext } from './config';
-import fetchJson from '../utilities/fetch-json';
-import sortBy from 'lodash/sortBy';
 const queryString = require('query-string');
 
 window.localforage = localforage;
 
-function sortConnections(connections) {
-  return sortBy(connections, [(connection) => connection.name.toLowerCase()]);
-}
-
-const initApp = async (state) => {
+const initApp = async (state, config, connections) => {
   try {
-    let [
-      selectedConnectionId,
-      appContext,
-      connectionsResponse,
-    ] = await Promise.all([
+    let [selectedConnectionId] = await Promise.all([
       localforage.getItem('selectedConnectionId'),
-      refreshAppContext(),
-      fetchJson('GET', '/api/connections/'),
     ]);
-
-    const connections = sortConnections(connectionsResponse.data || []);
-
-    if (!appContext) {
-      appContext = {};
-    }
 
     const update = {
       initialized: true,
-      ...appContext,
-      connections,
-      connectionsLastUpdated: new Date(),
     };
 
     if (connections.length === 1) {
       update.selectedConnectionId = connections[0].id;
     } else {
-      const { defaultConnectionId } = appContext.config || {};
+      const { defaultConnectionId } = config || {};
       if (defaultConnectionId) {
         const foundDefault = connections.find(
           (c) => c.id === defaultConnectionId

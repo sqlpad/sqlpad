@@ -1,7 +1,7 @@
 import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
 import React, { useEffect, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock.js';
 import FormExplain from '../common/FormExplain';
@@ -109,6 +109,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
       setSaving(false);
       return message.error(json.error);
     }
+    mutate('/api/connections');
     return onConnectionSaved(json.data);
   };
 

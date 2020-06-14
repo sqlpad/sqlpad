@@ -16,35 +16,8 @@ router.get(
   mustBeAuthenticated,
   wrap(async function (req, res) {
     const { models } = req;
-    const docs = await models.connections.findAll();
-
-    // Only send client the common fields that won't have any sensitive info
-    const summaries = docs.map((doc) => {
-      const {
-        id,
-        name,
-        driver,
-        editable,
-        createdAt,
-        updatedAt,
-        supportsConnectionClient,
-        multiStatementTransactionEnabled,
-        idleTimeoutSeconds,
-      } = doc;
-      return {
-        id,
-        name,
-        driver,
-        editable,
-        createdAt,
-        updatedAt,
-        supportsConnectionClient,
-        multiStatementTransactionEnabled,
-        idleTimeoutSeconds,
-      };
-    });
-
-    return res.utils.data(summaries);
+    const connections = await models.connections.findAll();
+    return res.utils.data(connections);
   })
 );
 

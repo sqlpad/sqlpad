@@ -11,7 +11,7 @@ import Input from '../common/Input';
 import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
-import { loadSchemaInfo, toggleSchemaItem } from '../stores/schema';
+import useSchemaState from '../stores/use-schema-state';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
@@ -22,33 +22,12 @@ const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
 
 function mapStateToProps(state, props) {
-  const { loading, schemaInfo, expanded, error } =
-    (state.schema && state.schema[state.selectedConnectionId]) || {};
   return {
-    expanded,
     connectionId: state.selectedConnectionId,
-    schemaInfo: schemaInfo || {},
-    error,
-    loading,
   };
 }
 
-function mapActions(store) {
-  return {
-    loadSchemaInfo: loadSchemaInfo(store),
-    toggleSchemaItem,
-  };
-}
-
-function SchemaSidebar({
-  expanded,
-  connectionId,
-  loadSchemaInfo,
-  schemaInfo,
-  error,
-  loading,
-  toggleSchemaItem,
-}) {
+function SchemaSidebar({ connectionId }) {
   const [search, setSearch] = useState('');
   const [dimensions, setDimensions] = useState({
     width: -1,
@@ -61,6 +40,10 @@ function SchemaSidebar({
       loadSchemaInfo(connectionId, true);
     }
   };
+
+  const { toggleSchemaItem, loadSchemaInfo, schema } = useSchemaState();
+  const { loading, schemaInfo, expanded, error } =
+    (schema && schema[connectionId]) || {};
 
   const filteredSchemaInfo = searchSchemaInfo(schemaInfo, search);
   const schemaList = getSchemaList(filteredSchemaInfo);
@@ -209,4 +192,4 @@ function SchemaSidebar({
   );
 }
 
-export default connect(mapStateToProps, mapActions)(React.memo(SchemaSidebar));
+export default connect(mapStateToProps)(React.memo(SchemaSidebar));

@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
-import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import QueryHistoryModal from '../queryHistory/QueryHistoryModal';
-import { clearQueries } from '../stores/queries';
+import useAppContext from '../utilities/use-app-context';
 
-function mapStateToProps(state) {
-  return {
-    currentUser: state.currentUser,
-  };
-}
-
-const Connected = connect(mapStateToProps, (store) => ({
-  clearQueries,
-}))(React.memo(HistoryButton));
-
-function HistoryButton({ currentUser, clearQueries }) {
+function HistoryButton() {
+  const { currentUser } = useAppContext();
   const [showQueryHistory, setShowQueryHistory] = useState(false);
+
+  if (!currentUser) {
+    return null;
+  }
 
   // If an editor has no identity (e.g., logged in without authentication), query history is not available because it can not be distinguished from others'.
   if (currentUser.id === 'noauth' && currentUser.role === 'editor') return;
@@ -33,4 +27,4 @@ function HistoryButton({ currentUser, clearQueries }) {
   );
 }
 
-export default Connected;
+export default React.memo(HistoryButton);

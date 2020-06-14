@@ -1,21 +1,11 @@
 import DatabaseIcon from 'mdi-react/DatabaseIcon';
 import React from 'react';
-import { connect } from 'unistore/react';
 import IconButton from '../../common/IconButton';
-import { toggleSchema } from '../../stores/schema';
+import useSchemaState from '../../stores/use-schema-state';
 
-function mapStateToProps(state) {
-  return {};
-}
+function ToolbarToggleSchemaButton() {
+  const { toggleSchema } = useSchemaState();
 
-const ConnectedToolbarToggleSchemaButton = connect(
-  mapStateToProps,
-  (store) => ({
-    toggleSchema,
-  })
-)(React.memo(ToolbarToggleSchemaButton));
-
-function ToolbarToggleSchemaButton({ toggleSchema }) {
   return (
     <IconButton tooltip="Toggle schema" onClick={toggleSchema}>
       <DatabaseIcon />
@@ -23,4 +13,4 @@ function ToolbarToggleSchemaButton({ toggleSchema }) {
   );
 }
 
-export default ConnectedToolbarToggleSchemaButton;
+export default React.memo(ToolbarToggleSchemaButton);

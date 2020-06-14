@@ -1,18 +1,20 @@
 import GoogleIcon from 'mdi-react/GoogleIcon';
 import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { connect } from 'unistore/react';
+import { mutate } from 'swr';
 import Button from './common/Button';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
-import { refreshAppContext } from './stores/config';
 import fetchJson from './utilities/fetch-json.js';
+import useAppContext from './utilities/use-app-context';
 
-function SignIn({ config, refreshAppContext }) {
+function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
+
+  const { config, currentUser } = useAppContext();
 
   useEffect(() => {
     document.title = 'SQLPad - Sign In';
@@ -25,11 +27,11 @@ function SignIn({ config, refreshAppContext }) {
     if (json.error) {
       return message.error('Username or password incorrect');
     }
-    await refreshAppContext();
+    await mutate('api/app');
     setRedirect(true);
   };
 
-  if (redirect) {
+  if (redirect && currentUser) {
     return <Redirect push to="/" />;
   }
 
@@ -115,4 +117,4 @@ function SignIn({ config, refreshAppContext }) {
   );
 }
 
-export default connect(['config'], { refreshAppContext })(SignIn);
+export default SignIn;

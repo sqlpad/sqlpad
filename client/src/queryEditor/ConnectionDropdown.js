@@ -1,25 +1,27 @@
 import React, { useState } from 'react';
+import useSWR from 'swr';
 import { connect } from 'unistore/react';
 import Select from '../common/Select';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
 import {
-  addUpdateConnection,
   connectConnectionClient,
   selectConnectionId,
 } from '../stores/connections';
+import useAppContext from '../utilities/use-app-context';
 import styles from './ConnectionDropdown.module.css';
 
 function ConnectionDropdown({
-  addUpdateConnection,
   connectConnectionClient,
-  connections,
-  currentUser,
   selectConnectionId,
   selectedConnectionId,
 }) {
+  const { currentUser } = useAppContext();
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
+
+  let { data: connectionsData, mutate } = useSWR('/api/connections');
+  const connections = connectionsData || [];
 
   const handleChange = (event) => {
     if (event.target.value === 'new') {
@@ -33,7 +35,7 @@ function ConnectionDropdown({
   };
 
   const handleConnectionSaved = (connection) => {
-    addUpdateConnection(connection);
+    mutate();
     selectConnectionId(connection.id);
     setShowEdit(false);
     connectConnectionClient();
@@ -88,11 +90,7 @@ function ConnectionDropdown({
   );
 }
 
-export default connect(
-  ['connections', 'currentUser', 'selectedConnectionId'],
-  (store) => ({
-    connectConnectionClient: connectConnectionClient(store),
-    selectConnectionId,
-    addUpdateConnection,
-  })
-)(ConnectionDropdown);
+export default connect(['selectedConnectionId'], (store) => ({
+  connectConnectionClient: connectConnectionClient(store),
+  selectConnectionId,
+}))(ConnectionDropdown);

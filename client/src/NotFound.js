@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
-import { connect } from 'unistore/react';
 import FullscreenMessage from './common/FullscreenMessage.js';
+import useAppContext from './utilities/use-app-context.js';
 
-function NotFound({ currentUser }) {
+function NotFound() {
+  const { currentUser } = useAppContext();
+
   useEffect(() => {
     document.title = 'SQLPad - Not Found';
   }, []);
@@ -17,4 +19,4 @@ function NotFound({ currentUser }) {
   return <FullscreenMessage>Not Found</FullscreenMessage>;
 }
 
-export default connect(['currentUser'])(NotFound);
+export default NotFound;

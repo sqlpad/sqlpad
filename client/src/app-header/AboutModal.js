@@ -1,18 +1,10 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'unistore/react';
 import Modal from '../common/Modal';
+import useAppContext from '../utilities/use-app-context';
 import AboutContent from './AboutContent';
 
-function mapStateToProps(state) {
-  return {
-    version: state.version || '',
-  };
-}
-
-const ConnectedAboutModal = connect(mapStateToProps)(React.memo(AboutModal));
-
-function AboutModal({ version, visible, onClose }) {
+function AboutModal({ visible, onClose }) {
+  const { version } = useAppContext();
   return (
     <>
       <Modal
@@ -27,8 +19,4 @@ function AboutModal({ version, visible, onClose }) {
   );
 }
 
-AboutModal.propTypes = {
-  version: PropTypes.string.isRequired,
-};
-
-export default ConnectedAboutModal;
+export default React.memo(AboutModal);

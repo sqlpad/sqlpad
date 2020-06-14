@@ -1,31 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import useSWR from 'swr';
 import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
+import message from '../common/message';
 import Text from '../common/Text';
-import {
-  selectConnectionId,
-  deleteConnection,
-  addUpdateConnection,
-  loadConnections,
-} from '../stores/connections';
+import { selectConnectionId } from '../stores/connections';
+import fetchJson from '../utilities/fetch-json';
+import useAppContext from '../utilities/use-app-context';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 
-function ConnectionList({
-  currentUser,
-  loadConnections,
-  deleteConnection,
-  connections,
-  addUpdateConnection,
-  selectConnectionId,
-}) {
+function ConnectionList({ selectConnectionId }) {
+  const { data: connectionsData, mutate } = useSWR('/api/connections');
+  let connections = connectionsData || [];
+
+  const deleteConnection = async (connectionId) => {
+    const json = await fetchJson('DELETE', '/api/connections/' + connectionId);
+    mutate();
+    if (json.error) {
+      return message.error('Delete failed');
+    }
+  };
+
+  const { currentUser } = useAppContext();
   const [connectionId, setConnectionId] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
-
-  useEffect(() => {
-    loadConnections();
-  }, [loadConnections]);
 
   const editConnection = (connection) => {
     setConnectionId(connection.id);
@@ -43,7 +43,6 @@ function ConnectionList({
   };
 
   const handleConnectionSaved = (connection) => {
-    addUpdateConnection(connection);
     setConnectionId(null);
     setShowEdit(false);
     // If there was not a connectionId previously passed to edit drawer
@@ -120,9 +119,6 @@ function ConnectionList({
   );
 }
 
-export default connect(['connections', 'currentUser'], (store) => ({
+export default connect([], (store) => ({
   selectConnectionId,
-  deleteConnection,
-  addUpdateConnection,
-  loadConnections: loadConnections(store),
 }))(ConnectionList);

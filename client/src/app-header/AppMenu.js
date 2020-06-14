@@ -7,18 +7,18 @@ import IconMenu from '../common/IconMenu';
 import { clearQueries } from '../stores/queries';
 import fetchJson from '../utilities/fetch-json.js';
 import AboutModal from './AboutModal';
+import useAppContext from '../utilities/use-app-context';
 
 function mapStateToProps(state) {
-  return {
-    currentUser: state.currentUser,
-  };
+  return {};
 }
 
 const Connected = connect(mapStateToProps, (store) => ({
   clearQueries,
 }))(React.memo(AppMenu));
 
-function AppMenu({ currentUser, clearQueries }) {
+function AppMenu({ clearQueries }) {
+  const { currentUser } = useAppContext();
   const [redirectToSignIn, setRedirectToSignIn] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
 
@@ -27,7 +27,7 @@ function AppMenu({ currentUser, clearQueries }) {
   }
 
   let hideSignOut = false;
-  if (currentUser.id === 'noauth') {
+  if (!currentUser || currentUser.id === 'noauth') {
     hideSignOut = true;
   }
 

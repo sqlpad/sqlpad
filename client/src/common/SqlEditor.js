@@ -1,15 +1,16 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
-import { connect } from 'unistore/react';
-import Measure from 'react-measure';
+import React, { useEffect, useState } from 'react';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-min-noconflict/ext-searchbox';
+import Measure from 'react-measure';
+import useAppContext from '../utilities/use-app-context';
 require(`ace-builds/src-noconflict/mode-sql`);
 require(`ace-builds/src-noconflict/theme-sqlserver`);
 
 const noop = () => {};
 
-function SqlEditor({ config, onChange, readOnly, value, onSelectionChange }) {
+function SqlEditor({ onChange, readOnly, value, onSelectionChange }) {
+  const { config } = useAppContext();
   const [dimensions, setDimensions] = useState({ width: -1, height: -1 });
   const [editor, setEditor] = useState(null);
 
@@ -93,4 +94,4 @@ SqlEditor.defaultProps = {
   value: '',
 };
 
-export default connect(['config'])(React.memo(SqlEditor));
+export default React.memo(SqlEditor);

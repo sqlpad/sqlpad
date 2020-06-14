@@ -1,21 +1,11 @@
 import localforage from 'localforage';
-import sortBy from 'lodash/sortBy';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json.js';
-
-const ONE_HOUR_MS = 1000 * 60 * 60;
-
-function sortConnections(connections) {
-  return sortBy(connections, [(connection) => connection.name.toLowerCase()]);
-}
 
 export const initialState = {
   selectedConnectionId: '',
   connectionClient: null,
   connectionClientInterval: null,
-  connections: [],
-  connectionsLastUpdated: null,
-  connectionsLoading: false,
 };
 
 /**
@@ -23,14 +13,17 @@ export const initialState = {
  * @param {*} state
  */
 export const connectConnectionClient = (store) => async (state) => {
-  const { connectionClient, connections, selectedConnectionId } = state;
+  const { connectionClient, selectedConnectionId } = state;
 
-  // If a connectionClient is already open, or connections or selected connection id doesn't exist, do nothing
-  if (connectionClient || !connections || !selectedConnectionId) {
+  // If a connectionClient is already open or selected connection id doesn't exist, do nothing
+  if (connectionClient || !selectedConnectionId) {
     return;
   }
 
-  const connection = connections.find(
+  // Regular users are not allowed to get connections by id, but they can get list of connections
+  // May want to store selected connection instead of just id
+  const { data: connections } = await fetchJson('GET', `/api/connections`);
+  const connection = (connections || []).find(
     (connection) => connection.id === selectedConnectionId
   );
 
@@ -134,67 +127,7 @@ export const selectConnectionId = (state, selectedConnectionId) => {
   };
 };
 
-export const deleteConnection = async (state, connectionId) => {
-  const { connections } = state;
-  const json = await fetchJson('DELETE', '/api/connections/' + connectionId);
-  if (json.error) {
-    return message.error('Delete failed');
-  }
-  const filtered = connections.filter((c) => c.id !== connectionId);
-  return { connections: sortConnections(filtered) };
-};
-
-// Updates store (is not resonponsible for API call)
-export const addUpdateConnection = async (state, connection) => {
-  const { connections } = state;
-  const found = connections.find((c) => c.id === connection.id);
-  if (found) {
-    const mappedConnections = connections.map((c) => {
-      if (c.id === connection.id) {
-        return connection;
-      }
-      return c;
-    });
-    return { connections: sortConnections(mappedConnections) };
-  }
-  return { connections: sortConnections([connection].concat(connections)) };
-};
-
-export const loadConnections = (store) => async (state, force) => {
-  const { connections, connectionsLoading, connectionsLastUpdated } = state;
-  if (connectionsLoading) {
-    return;
-  }
-
-  if (
-    force ||
-    !connections.length ||
-    (connectionsLastUpdated &&
-      new Date() - connectionsLastUpdated > ONE_HOUR_MS)
-  ) {
-    store.setState({ connectionsLoading: true });
-    const json = await fetchJson('GET', '/api/connections/');
-    if (json.error) {
-      message.error(json.error);
-    }
-    const update = {
-      connectionsLoading: false,
-      connectionsLastUpdated: new Date(),
-      connections: sortConnections(json.data),
-    };
-
-    if (json.data && json.data.length === 1) {
-      update.selectedConnectionId = json.data[0].id;
-    }
-
-    store.setState(update);
-  }
-};
-
 export default {
   initialState,
   selectConnectionId,
-  deleteConnection,
-  addUpdateConnection,
-  loadConnections,
 };

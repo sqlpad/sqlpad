@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import useSWR from 'swr';
-import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
@@ -10,7 +9,7 @@ import fetchJson from '../utilities/fetch-json';
 import ServiceTokenDetails from './ServiceTokenDetails';
 import ServiceTokenForm from './ServiceTokenForm';
 
-function ServiceTokenList({ currentUser }) {
+function ServiceTokenList() {
   const [showServiceTokenForm, setShowServiceTokenForm] = useState(false);
   const [generatedServiceToken, setGenerateServiceToken] = useState(null);
   const [showGeneratedServiceToken, setShowGeneratedServiceToken] = useState(
@@ -128,4 +127,4 @@ function ServiceTokenList({ currentUser }) {
   );
 }
 
-export default connect(['currentUser'])(ServiceTokenList);
+export default ServiceTokenList;
