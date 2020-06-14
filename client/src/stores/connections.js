@@ -20,9 +20,11 @@ export const connectConnectionClient = (store) => async (state) => {
     return;
   }
 
-  const { data: connection } = await fetchJson(
-    'GET',
-    `/api/connections/${selectedConnectionId}`
+  // Regular users are not allowed to get connections by id, but they can get list of connections
+  // May want to store selected connection instead of just id
+  const { data: connections } = await fetchJson('GET', `/api/connections`);
+  const connection = (connections || []).find(
+    (connection) => connection.id === selectedConnectionId
   );
 
   const supportedAndEnabled =
