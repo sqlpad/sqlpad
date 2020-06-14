@@ -1,6 +1,7 @@
 import localforage from 'localforage';
 import message from '../common/message';
 import fetchJson from '../utilities/fetch-json';
+const queryString = require('query-string');
 
 window.localforage = localforage;
 
@@ -37,6 +38,25 @@ const initApp = async (state, config) => {
         if (Boolean(selectedConnection)) {
           update.selectedConnectionId = selectedConnectionId;
         }
+      }
+
+      const qs = queryString.parse(window.location.search);
+      const qsConnectionName = qs.connectionName;
+      if (qsConnectionName) {
+        const selectedConnection = connections.find(
+          (c) => c.name === qsConnectionName
+        );
+        if (Boolean(selectedConnection))
+          update.selectedConnectionId = selectedConnection.id;
+      }
+
+      const qsConnectionId = qs.connectionId;
+      if (qsConnectionId) {
+        const selectedConnection = connections.find(
+          (c) => c.id === qsConnectionId
+        );
+        if (Boolean(selectedConnection))
+          update.selectedConnectionId = selectedConnection.id;
       }
     }
     return update;
