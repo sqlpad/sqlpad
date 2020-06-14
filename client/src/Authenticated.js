@@ -3,15 +3,19 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import initApp from './stores/initApp';
 import useAppContext from './utilities/use-app-context';
+import useSWR from 'swr';
 
 function Authenticated({ children, initApp, initialized }) {
   const { config, currentUser } = useAppContext();
 
+  let { data: connectionsData } = useSWR('/api/connections');
+  const connections = connectionsData || [];
+
   useEffect(() => {
-    if (config) {
-      initApp(config);
+    if (config && !initialized && connections.length > 0) {
+      initApp(config, connections);
     }
-  }, [initApp, config]);
+  }, [initApp, config, connections, initialized]);
 
   if (!config) {
     return null;

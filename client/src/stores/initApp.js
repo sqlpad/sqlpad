@@ -1,18 +1,14 @@
 import localforage from 'localforage';
 import message from '../common/message';
-import fetchJson from '../utilities/fetch-json';
 const queryString = require('query-string');
 
 window.localforage = localforage;
 
-const initApp = async (state, config) => {
+const initApp = async (state, config, connections) => {
   try {
-    let [selectedConnectionId, connectionsResponse] = await Promise.all([
+    let [selectedConnectionId] = await Promise.all([
       localforage.getItem('selectedConnectionId'),
-      fetchJson('GET', '/api/connections/'),
     ]);
-
-    const connections = connectionsResponse.data || [];
 
     const update = {
       initialized: true,
