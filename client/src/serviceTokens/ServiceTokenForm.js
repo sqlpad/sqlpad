@@ -38,7 +38,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }) {
   return (
     <div style={{ height: '100%' }}>
       <p>
-        You can make authorized API calls to some endpoints using a signed
+        You can make authorized API calls to some endpoints using a signed{' '}
         <Link to="jwt.io">JWT</Link> directly as a bearer token, rather than
         local user authentication, OAuth or SAML.
       </p>
