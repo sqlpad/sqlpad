@@ -101,6 +101,12 @@ Example JSON config file with connection:
   }
 }
 ```
+## Connection selection
+
+?> Available as of `4.5.0`
+
+A default connection selection can be set using the `defaultConnectionId` configuration item or `SQLPAD_DEFAULT_CONNECTION_ID`. It can also be specified as part of the query editor URL, i.e., `https://mysqlpad.example.com/queries/new?connectionName=connection1` or `https://mysqlpad.example.com/queries/new?connectionId=xxx-xxxxx-xxx-xxx`.
+
 
 ## CrateDB
 
