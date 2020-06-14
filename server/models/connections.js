@@ -31,7 +31,9 @@ class Connections {
 
     // For legacy use, spread driver-field data onto connection object
     // This isn't great but needed for backwards compat at this time
-    Object.assign(copy, copy.data);
+    if (copy.data) {
+      Object.assign(copy, copy.data);
+    }
 
     return copy;
   }
@@ -45,11 +47,22 @@ class Connections {
   }
 
   async findAll() {
-    let connectionsFromDb = await this.sequelizeDb.Connections.findAll({});
+    let connectionsFromDb = await this.sequelizeDb.Connections.findAll({
+      attributes: [
+        'id',
+        'name',
+        'description',
+        'driver',
+        'multiStatementTransactionEnabled',
+        'idleTimeoutSeconds',
+        'createdAt',
+        'updatedAt',
+      ],
+    });
     connectionsFromDb = connectionsFromDb.map((conn) => {
       let jsonConn = conn.toJSON();
       jsonConn.editable = true;
-      return this.decipherConnection(jsonConn);
+      return jsonConn;
     });
 
     const allConnections = connectionsFromDb
