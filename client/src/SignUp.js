@@ -45,8 +45,8 @@ function SignUp() {
             <p>
               Welcome to SQLPad! Since there are no admins currently registered,
               signup is open to anyone. By signing up, you will be granted admin
-              rights, and signup will be restricted to whitelisted email
-              addresses/domains
+              rights, and signup will be restricted to added email addresses and
+              allowed domains
             </p>
           </div>
         )}

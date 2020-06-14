@@ -1,6 +1,6 @@
 const passport = require('passport');
 const router = require('express').Router();
-const checkWhitelist = require('../lib/check-whitelist');
+const checkAllowedDomains = require('../lib/check-allowed-domains');
 const wrap = require('../lib/wrap');
 
 async function handleSignup(req, res, next) {
@@ -10,7 +10,7 @@ async function handleSignup(req, res, next) {
     return res.utils.forbidden();
   }
 
-  const whitelistedDomains = req.config.get('whitelistedDomains');
+  const allowedDomains = req.config.get('allowedDomains');
 
   if (req.body.password !== req.body.passwordConfirmation) {
     return res.utils.error('Passwords do not match');
@@ -33,11 +33,11 @@ async function handleSignup(req, res, next) {
     return next();
   }
 
-  // if open admin registration or whitelisted email create user
+  // if open admin registration or allowed email create user
   // otherwise exit
   if (
     adminRegistrationOpen ||
-    checkWhitelist(whitelistedDomains, req.body.email)
+    checkAllowedDomains(allowedDomains, req.body.email)
   ) {
     user = await models.users.create({
       email: req.body.email,

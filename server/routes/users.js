@@ -14,7 +14,7 @@ router.get(
   })
 );
 
-// create/whitelist/invite user
+// create/invite user
 router.post(
   '/api/users',
   mustBeAdmin,
