@@ -42,7 +42,7 @@ const initApp = async (state) => {
       const { defaultConnectionId } = appContext.config || {};
       if (defaultConnectionId) {
         const foundDefault = connections.find(
-          (c) => c._id === defaultConnectionId
+          (c) => c.id === defaultConnectionId
         );
         if (Boolean(foundDefault)) {
           update.selectedConnectionId = defaultConnectionId;
@@ -51,7 +51,7 @@ const initApp = async (state) => {
 
       if (typeof selectedConnectionId === 'string') {
         const selectedConnection = connections.find(
-          (c) => c._id === selectedConnectionId
+          (c) => c.id === selectedConnectionId
         );
         if (Boolean(selectedConnection)) {
           update.selectedConnectionId = selectedConnectionId;
