@@ -93,9 +93,15 @@ function SignIn({ config, refreshAppContext }) {
     </div>
   );
 
+  function createMarkupForSamlLink() {
+    return { __html: config.samlLinkHtml };
+  }
+
   const samlForm = (
     <div>
-      <a href={config.baseUrl + '/auth/saml'}>Sign in with ADFS</a>
+      <a href={config.baseUrl + '/auth/saml'}>
+        <span dangerouslySetInnerHTML={createMarkupForSamlLink()} />
+      </a>
     </div>
   );
 

@@ -31,6 +31,7 @@ router.get(
         localAuthConfigured: !config.get('disableUserpassAuth'),
         publicUrl: config.get('publicUrl'),
         samlConfigured: Boolean(config.get('samlEntryPoint')),
+        samlLinkHtml: config.get('samlLinkHtml'),
         smtpConfigured: config.smtpConfigured(),
       },
       version: packageJson.version,

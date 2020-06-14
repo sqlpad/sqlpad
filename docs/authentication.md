@@ -83,13 +83,18 @@ For OAuth to be useful this usually involves the following:
 
 SAML-based  authentication can be enabled by setting the necessary environment variables:
 
+- `SAML_LINK_HTML`
 - `SAML_AUTH_CONTEXT`
 - `SAML_CALLBACK_URL`
 - `SAML_CERT`
 - `SAML_ENTRY_POINT`
 - `SAML_ISSUER`
+- `SQLPAD_SAML_AUTO_SIGN_UP`
+- `SQLPAD_SAML_DEFAULT_ROLE`
 - `PUBLIC_URL`
 - `DISABLE_USERPASS_AUTH`=`true` (optional - disables plain local user logins)
+
+SQLPad users do not need to be added ahead of time, and may be created on the fly using `samlAutoSignUp`. Whenever a new user is detected (unable to match to existing user email), a user record will be added to SQLPad's user table and a user signed in. By default users are not auto-created and must otherwise be added ahead of time.
 
 ## Whitelist Domains for User Administration
 

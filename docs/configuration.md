@@ -238,6 +238,28 @@ SAML Issuer
 - Key: `samlIssuer`
 - Env: `SAML_ISSUER`
 
+## samlLinkHtml
+
+HTML code for the sign-in link used for starting SAML authentication. The default is `Sign in with SSO`
+
+- Key: `samlLinkHtml`
+- Env: `SAML_LINK_HTML`
+
+## samlAutoSignUp
+
+Auto create a user record if it does not exist when new user is detected via SAML
+
+- Key: `samlAutoSignUp`
+- Env: `SQLPAD_SAML_AUTO_SIGN_UP`
+- Default: `false`
+
+## samlDefaultRole
+
+Default role to assign user created when `samlAutoSignUp` is turned on. By default this is an empty-string and not used, expecting a role to be provided via header-mapping.
+
+- Key: `samlDefaultRole`
+- Env: `SQLPAD_SAML_DEFAULT_ROLE`
+
 ## serviceTokenSecret
 
 Secret to sign the generated Service Tokens
