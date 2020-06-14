@@ -6,7 +6,7 @@ By default, SQLPad supports local authentication with email and password. Passwo
 
 Once SQLPad is running, you may create an initial admin account by navigating to [http://localhost/signup](http://localhost/signup).
 
-Once an initial admin account has been created, all future users must be whitelisted by an admin within the users page. Other users may also be given admin rights, allowing them to add/edit database connections and whitelist/modify/remove SQLPad users.
+Once an initial admin account has been created, all future users must be added by an admin within the users page. Other users may also be given admin rights, allowing them to add/edit database connections and add/modify/remove SQLPad users.
 
 If for whatever reason you lose admin rights, and the last-admin-standing won't give you admin rights back, you can reinstate them to yourself by running
 
@@ -18,7 +18,7 @@ Local authentication can be disabled by setting `disableUserpassAuth` to `true`.
 
 ?> Available as of `4.2.0`
 
-SQLPad can be configured to run without any authentication at all. This can be enabled by setting `disableAuth` to `true`. 
+SQLPad can be configured to run without any authentication at all. This can be enabled by setting `disableAuth` to `true`.
 
 If enabled, `disableAuthDefaultRole` is used to assign admin or editor role to users. You'd want to configure connections via configuration file or environment variables if `disableAuthDefaultRole` is `editor`.
 
@@ -81,7 +81,7 @@ For OAuth to be useful this usually involves the following:
 
 ## SAML
 
-SAML-based  authentication can be enabled by setting the necessary environment variables:
+SAML-based authentication can be enabled by setting the necessary environment variables:
 
 - `SAML_LINK_HTML`
 - `SAML_AUTH_CONTEXT`
@@ -96,6 +96,6 @@ SAML-based  authentication can be enabled by setting the necessary environment v
 
 SQLPad users do not need to be added ahead of time, and may be created on the fly using `samlAutoSignUp`. Whenever a new user is detected (unable to match to existing user email), a user record will be added to SQLPad's user table and a user signed in. By default users are not auto-created and must otherwise be added ahead of time.
 
-## Whitelist Domains for User Administration
+## Allowed Domains for User Administration
 
-An entire domain can be whitelisted for username administration by setting enviornment variable `WHITELISTED_DOMAINS`. This may be particularly useful in combination with OAuth.
+An entire domain can be allowed for username administration by setting enviornment variable `SQLPAD_ALLOWED_DOMAINS`. This may be particularly useful in combination with OAuth.

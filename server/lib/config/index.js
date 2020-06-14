@@ -23,6 +23,12 @@ class Config {
 
     const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
 
+    // TODO Remove in v6
+    // If whitelistedDomains was provided, and allowedDomains was not, use that as allowedDomains
+    if (all.whitelistedDomains && !all.allowedDomains) {
+      all.allowedDomains = all.whitelistedDomains;
+    }
+
     // Clean string boolean values
     Object.keys(all).forEach((key) => {
       const value = all[key];

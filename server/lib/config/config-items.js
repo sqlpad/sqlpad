@@ -1,5 +1,10 @@
 const configItems = [
   {
+    key: 'allowedDomains',
+    envVar: 'SQLPAD_ALLOWED_DOMAINS',
+    default: '',
+  },
+  {
     key: 'config',
     envVar: 'SQLPAD_CONFIG',
     default: '',
@@ -184,6 +189,7 @@ const configItems = [
     key: 'whitelistedDomains',
     envVar: 'WHITELISTED_DOMAINS',
     default: '',
+    deprecated: 'To be removed in v6. Use allowedDomains instead',
   },
   {
     key: 'samlEntryPoint',

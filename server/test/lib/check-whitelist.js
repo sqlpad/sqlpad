@@ -1,27 +1,30 @@
 const assert = require('assert');
-const checkWhitelist = require('../../lib/check-whitelist');
+const checkAllowedDomains = require('../../lib/check-allowed-domains');
 
-describe('lib/check-whitelist', function () {
+describe('lib/check-allowed-domains', function () {
   it('allows email addresses matching any domain in the list', function () {
-    const whitelistedDomains = 'baz.com foo.bar.com';
-    assert(checkWhitelist(whitelistedDomains, 'user@baz.com'));
-    assert(checkWhitelist(whitelistedDomains, 'user@foo.bar.com'));
+    const allowedDomains = 'baz.com foo.bar.com';
+    assert(checkAllowedDomains(allowedDomains, 'user@baz.com'));
+    assert(checkAllowedDomains(allowedDomains, 'user@foo.bar.com'));
   });
 
   it('disallows email addresses that do not match domains exactly', function () {
-    const whitelistedDomains = 'baz.com foo.bar.com';
-    assert.equal(checkWhitelist(whitelistedDomains, 'user@bar.com'), false);
-    assert.equal(checkWhitelist(whitelistedDomains, 'user@123.baz.com'), false);
+    const allowedDomains = 'baz.com foo.bar.com';
+    assert.equal(checkAllowedDomains(allowedDomains, 'user@bar.com'), false);
+    assert.equal(
+      checkAllowedDomains(allowedDomains, 'user@123.baz.com'),
+      false
+    );
   });
 
   it('uses the last @ segment as the domain', function () {
-    const whitelistedDomains = 'baz.com';
+    const allowedDomains = 'baz.com';
     assert.equal(
       // Email addresses are allowed to contain multiple @ signs, as long as all
       // of the @'s in the local part of the email address are enclosed in
       // quotes. We need to make sure that we only treat the last @-delimited as
       // the domain.
-      checkWhitelist(whitelistedDomains, '"user@baz.com@"@not-whitelisted.com'),
+      checkAllowedDomains(allowedDomains, '"user@baz.com@"@not-allowed.com'),
       false
     );
   });

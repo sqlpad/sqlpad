@@ -15,7 +15,7 @@ For INI and JSON config file examples, see [config-example.ini](https://github.c
 
 ## admin
 
-Email address to whitelist/give admin permissions to.
+Email address to give admin permissions to.
 
 - Key: `admin`
 - Env: `SQLPAD_ADMIN`
@@ -118,7 +118,7 @@ Acceptable values: `admin`, `editor`.
 
 - Key: `disableAuthDefaultRole`
 - Env: `SQLPAD_DISABLE_AUTH_DEFAULT_ROLE`
-  
+
 ## disableUserpassAuth
 
 Set to TRUE to disable built-in user authentication. Probably desired when using other auths like OAuth or SAML.
@@ -340,12 +340,12 @@ HTTP server timeout as number of seconds. Extend as necessary for long running q
 - Env: `SQLPAD_TIMEOUT_SECONDS`
 - Default: `300`
 
-## whitelistedDomains
+## allowedDomains
 
 Allows pre-approval of email domains. Delimit multiple domains by empty space.
 
-- Key: `whitelistedDomains`
-- Env: `WHITELISTED_DOMAINS`
+- Key: `allowedDomains`
+- Env: `SQLPAD_ALLOWED_DOMAINS`
 
 ## allowConnectionAccessToEveryone
 

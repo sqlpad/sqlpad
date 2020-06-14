@@ -85,9 +85,9 @@ describe('api/signup', function () {
     await request(utils.app)
       .post('/api/signup')
       .send({
-        password: 'notwhitelisted',
-        passwordConfirmation: 'notwhitelisted',
-        email: 'notwhitelisted@test.com',
+        password: 'notAllowed',
+        passwordConfirmation: 'notAllowed',
+        email: 'notAllowed@test.com',
       })
       .expect(403);
   });

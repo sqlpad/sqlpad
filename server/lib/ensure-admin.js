@@ -17,7 +17,7 @@ async function ensureAdmin(models, config) {
   try {
     // if an admin was passed in the command line, check to see if a user exists with that email
     // if so, set the admin to true
-    // if not, whitelist the email address.
+    // if not, add the email address.
     // Then log that the person should visit the signup url to finish registration.
     const user = await models.users.findOneByEmail(adminEmail);
     if (user) {

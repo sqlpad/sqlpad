@@ -1,7 +1,7 @@
 const passport = require('passport');
 const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const appLog = require('../lib/app-log');
-const checkWhitelist = require('../lib/check-whitelist.js');
+const checkAllowedDomains = require('../lib/check-allowed-domains.js');
 
 async function passportGoogleStrategyHandler(
   req,
@@ -32,8 +32,8 @@ async function passportGoogleStrategyHandler(
       });
       return done(null, newUser);
     }
-    const whitelistedDomains = config.get('whitelistedDomains');
-    if (openAdminRegistration || checkWhitelist(whitelistedDomains, email)) {
+    const allowedDomains = config.get('allowedDomains');
+    if (openAdminRegistration || checkAllowedDomains(allowedDomains, email)) {
       const newUser = await models.users.create({
         email,
         role: openAdminRegistration ? 'admin' : 'editor',
