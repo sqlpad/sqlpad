@@ -11,7 +11,7 @@ import message from '../common/message';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube.js';
 import TextArea from '../common/TextArea';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';
@@ -32,7 +32,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
   async function getConnection(connectionId) {
     if (connectionId) {
       setLoading(true);
-      const json = await fetchJson('GET', `/api/connections/${connectionId}`);
+      const json = await api.get(`/api/connections/${connectionId}`);
       setLoading(false);
       if (json.error) {
         message.error(json.error);
@@ -69,7 +69,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
   const testConnection = async () => {
     setTesting(true);
     const data = connectionEdits.data || {};
-    const json = await fetchJson('POST', '/api/test-connection', {
+    const json = await api.post('/api/test-connection', {
       ...connectionEdits,
       ...data,
     });
@@ -96,13 +96,12 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
 
     let json;
     if (connectionEdits.id) {
-      json = await fetchJson(
-        'PUT',
-        '/api/connections/' + connectionEdits.id,
+      json = await api.put(
+        `/api/connections/${connectionEdits.id}`,
         connectionEdits
       );
     } else {
-      json = await fetchJson('POST', '/api/connections', connectionEdits);
+      json = await api.post('/api/connections', connectionEdits);
     }
 
     if (json.error) {

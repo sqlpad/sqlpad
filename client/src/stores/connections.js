@@ -1,6 +1,6 @@
 import localforage from 'localforage';
 import message from '../common/message';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 
 export const initialState = {
   selectedConnectionId: '',
@@ -22,7 +22,7 @@ export const connectConnectionClient = (store) => async (state) => {
 
   // Regular users are not allowed to get connections by id, but they can get list of connections
   // May want to store selected connection instead of just id
-  const { data: connections } = await fetchJson('GET', `/api/connections`);
+  const { data: connections } = await api.get(`/api/connections`);
   const connection = (connections || []).find(
     (connection) => connection.id === selectedConnectionId
   );
@@ -36,7 +36,7 @@ export const connectConnectionClient = (store) => async (state) => {
     return;
   }
 
-  const json = await fetchJson('POST', '/api/connection-clients', {
+  const json = await api.post('/api/connection-clients', {
     connectionId: selectedConnectionId,
   });
   if (json.error) {
@@ -45,10 +45,7 @@ export const connectConnectionClient = (store) => async (state) => {
 
   // Poll connection-clients api to keep it alive
   const connectionClientInterval = setInterval(async () => {
-    const updateJson = await fetchJson(
-      'PUT',
-      `/api/connection-clients/${json.data.id}`
-    );
+    const updateJson = await api.put(`/api/connection-clients/${json.data.id}`);
 
     // Not sure if this should message user here
     // In the event of an error this could get really noisy
@@ -84,13 +81,13 @@ export const disconnectConnectionClient = async (state) => {
     clearInterval(connectionClientInterval);
   }
   if (connectionClient) {
-    fetchJson('DELETE', `/api/connection-clients/${connectionClient.id}`).then(
-      (json) => {
+    api
+      .delete(`/api/connection-clients/${connectionClient.id}`)
+      .then((json) => {
         if (json.error) {
           message.error(json.error);
         }
-      }
-    );
+      });
   }
   return { connectionClient: null, connectionClientInterval: null };
 };
@@ -107,13 +104,13 @@ export const selectConnectionId = (state, selectedConnectionId) => {
     .catch((error) => message.error(error));
 
   if (connectionClient) {
-    fetchJson('DELETE', `/api/connection-clients/${connectionClient.id}`).then(
-      (json) => {
+    api
+      .delete(`/api/connection-clients/${connectionClient.id}`)
+      .then((json) => {
         if (json.error) {
           message.error(json.error);
         }
-      }
-    );
+      });
   }
 
   if (connectionClientInterval) {

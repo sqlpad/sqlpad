@@ -4,7 +4,7 @@ import HorizontalFormItem from '../common/HorizontalFormItem.js';
 import Input from '../common/Input';
 import message from '../common/message';
 import Select from '../common/Select';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 import { Link } from 'react-router-dom';
 
 function ServiceTokenForm({ onServiceTokenGenerated }) {
@@ -21,11 +21,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }) {
     }
 
     setGenerating(true);
-    const json = await fetchJson(
-      'POST',
-      '/api/service-tokens',
-      serviceTokenEdits
-    );
+    const json = await api.post('/api/service-tokens', serviceTokenEdits);
     if (json.error) {
       setGenerating(false);
       return message.error(json.error);

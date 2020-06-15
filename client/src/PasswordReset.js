@@ -4,7 +4,7 @@ import Button from './common/Button';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
-import fetchJson from './utilities/fetch-json.js';
+import { api } from './utilities/fetch-json.js';
 
 function PasswordReset({ passwordResetId }) {
   const [email, setEmail] = useState('');
@@ -14,15 +14,8 @@ function PasswordReset({ passwordResetId }) {
 
   const resetPassword = async (e) => {
     e.preventDefault();
-    const json = await fetchJson(
-      'POST',
-      '/api/password-reset/' + passwordResetId,
-      {
-        email,
-        password,
-        passwordConfirmation,
-      }
-    );
+    const body = { email, password, passwordConfirmation };
+    const json = await api.post(`/api/password-reset/${passwordResetId}`, body);
 
     if (json.error) {
       return message.error(json.error);

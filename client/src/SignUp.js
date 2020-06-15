@@ -4,7 +4,7 @@ import Button from './common/Button';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
-import fetchJson from './utilities/fetch-json.js';
+import { api } from './utilities/fetch-json.js';
 import useAppContext from './utilities/use-app-context';
 
 function SignUp() {
@@ -20,11 +20,8 @@ function SignUp() {
 
   const signUp = async (e) => {
     e.preventDefault();
-    const json = await fetchJson('POST', '/api/signup', {
-      email,
-      password,
-      passwordConfirmation,
-    });
+    const body = { email, password, passwordConfirmation };
+    const json = await api.post('/api/signup', body);
     if (json.error) {
       return message.error(json.error);
     }

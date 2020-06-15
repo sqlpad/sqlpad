@@ -6,7 +6,7 @@ import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Modal from '../common/Modal';
 import Text from '../common/Text';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 import useAppContext from '../utilities/use-app-context';
 import EditUserForm from './EditUserForm';
 import InviteUserForm from './InviteUserForm';
@@ -26,7 +26,7 @@ function UserList() {
   }, [error]);
 
   const handleDelete = async (user) => {
-    const json = await fetchJson('DELETE', '/api/users/' + user.id);
+    const json = await api.delete(`/api/users/${user.id}`);
     if (json.error) {
       return message.error('Delete Failed: ' + json.error);
     }

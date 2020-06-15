@@ -7,7 +7,7 @@ import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';
 import { selectConnectionId } from '../stores/connections';
-import fetchJson from '../utilities/fetch-json';
+import { api } from '../utilities/fetch-json';
 import useAppContext from '../utilities/use-app-context';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 
@@ -16,7 +16,7 @@ function ConnectionList({ selectConnectionId }) {
   let connections = connectionsData || [];
 
   const deleteConnection = async (connectionId) => {
-    const json = await fetchJson('DELETE', '/api/connections/' + connectionId);
+    const json = await api.delete(`/api/connections/${connectionId}`);
     mutate();
     if (json.error) {
       return message.error('Delete failed');

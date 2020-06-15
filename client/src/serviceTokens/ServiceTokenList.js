@@ -5,7 +5,7 @@ import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Modal from '../common/Modal';
-import fetchJson from '../utilities/fetch-json';
+import { api } from '../utilities/fetch-json';
 import ServiceTokenDetails from './ServiceTokenDetails';
 import ServiceTokenForm from './ServiceTokenForm';
 
@@ -32,10 +32,7 @@ function ServiceTokenList() {
   };
 
   const deleteServiceToken = async (serviceTokenId) => {
-    const json = await fetchJson(
-      'DELETE',
-      `/api/service-tokens/${serviceTokenId}`
-    );
+    const json = await api.delete(`/api/service-tokens/${serviceTokenId}`);
     if (json.error) {
       return message.error('Delete failed: ' + json.error);
     }

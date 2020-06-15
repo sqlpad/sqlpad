@@ -19,7 +19,7 @@ import MultiSelect from '../common/MultiSelect';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube.js';
 import Text from '../common/Text';
-import fetchJson from '../utilities/fetch-json';
+import { api } from '../utilities/fetch-json';
 import styles from './QueryList.module.css';
 import QueryPreview from './QueryPreview';
 
@@ -81,7 +81,7 @@ function QueryListDrawer({ onClose, visible }) {
       setLoading(true);
       // This cannot use SWR at this time
       // as we need to use links and manage state
-      fetchJson('GET', url).then((response) => {
+      api.get(url).then((response) => {
         const { data, links, error } = response;
         setLoading(false);
         setError(error);
@@ -115,7 +115,7 @@ function QueryListDrawer({ onClose, visible }) {
   const connections = connectionsData || [];
 
   const deleteQuery = async (queryId) => {
-    const { error } = await fetchJson('DELETE', `/api/queries/${queryId}`);
+    const { error } = await api.delete(`/api/queries/${queryId}`);
     if (error) {
       return message.error(error);
     }

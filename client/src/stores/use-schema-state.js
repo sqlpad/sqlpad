@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import message from '../common/message';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 import updateCompletions from '../utilities/updateCompletions.js';
 import { useKeyState } from './key-state';
 
@@ -24,10 +24,7 @@ function useSchemaState() {
         });
 
         const qs = reload ? '?reload=true' : '';
-        const json = await fetchJson(
-          'GET',
-          `/api/schema-info/${connectionId}${qs}`
-        );
+        const json = await api.get(`/api/schema-info/${connectionId}${qs}`);
         const { error, data } = json;
         if (error) {
           setSchema({

@@ -1,4 +1,4 @@
-import fetchJson from './fetch-json';
+import { api } from './fetch-json';
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -38,7 +38,7 @@ export default async function runQueryViaBatch(opt) {
   let batch;
   let error;
 
-  let res = await fetchJson('POST', '/api/batches', opt);
+  let res = await api.post('/api/batches', opt);
   error = res.error;
   batch = res.data;
 
@@ -48,7 +48,7 @@ export default async function runQueryViaBatch(opt) {
 
   while (!(batch.status === 'finished' || batch.status === 'error') && !error) {
     await sleep(500);
-    res = await fetchJson('GET', `/api/batches/${batch.id}`);
+    res = await api.get(`/api/batches/${batch.id}`);
     error = res.error;
     batch = res.data;
   }
@@ -72,7 +72,7 @@ export default async function runQueryViaBatch(opt) {
 
   const statement = batch.statements[batch.statements.length - 1];
 
-  res = await fetchJson('GET', `/api/statements/${statement.id}/results`);
+  res = await api.get(`/api/statements/${statement.id}/results`);
   if (res.error) {
     error = res.error;
   }

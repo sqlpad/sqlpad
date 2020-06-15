@@ -6,7 +6,7 @@ import Input from '../common/Input';
 import message from '../common/message';
 import Select from '../common/Select';
 import Spacer from '../common/Spacer.js';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 
 function InviteUserForm({ onInvited }) {
   const [email, setEmail] = useState(null);
@@ -21,7 +21,7 @@ function InviteUserForm({ onInvited }) {
       role,
     };
     setIsInviting(true);
-    const json = await fetchJson('POST', '/api/users', user);
+    const json = await api.post('/api/users', user);
     setIsInviting(false);
     if (json.error) {
       message.error('Add user failed: ' + json.error);

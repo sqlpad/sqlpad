@@ -6,7 +6,7 @@ import FormExplain from '../common/FormExplain';
 import message from '../common/message';
 import Select from '../common/Select';
 import Spacer from '../common/Spacer';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 
 function EditUserForm({ user }) {
   const [role, setRole] = useState(user.role);
@@ -14,7 +14,7 @@ function EditUserForm({ user }) {
 
   const handleRoleChange = async (event) => {
     setRole(event.target.value);
-    const json = await fetchJson('PUT', '/api/users/' + user.id, {
+    const json = await api.put('/api/users/' + user.id, {
       role: event.target.value,
     });
     if (json.error) {
@@ -24,7 +24,7 @@ function EditUserForm({ user }) {
 
   const generatePasswordResetLink = async () => {
     const passwordResetId = uuidv4();
-    const json = await fetchJson('PUT', '/api/users/' + user.id, {
+    const json = await api.put('/api/users/' + user.id, {
       passwordResetId,
     });
     if (json.error) {
@@ -34,7 +34,7 @@ function EditUserForm({ user }) {
   };
 
   const removePasswordResetLink = async () => {
-    const json = await fetchJson('PUT', '/api/users/' + user.id, {
+    const json = await api.put(`/api/users/${user.id}`, {
       passwordResetId: '',
     });
     if (json.error) {

@@ -5,7 +5,7 @@ import HorizontalFormItem from '../common/HorizontalFormItem.js';
 import Input from '../common/Input';
 import message from '../common/message';
 import Select from '../common/Select';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 
 function ConnectionAccessForm({ onConnectionAccessSaved }) {
   const [connectionAccessEdits, setConnectionAccessEdits] = useState({});
@@ -37,8 +37,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }) {
     }
 
     setCreating(true);
-    const json = await fetchJson(
-      'POST',
+    const json = await api.post(
       '/api/connection-accesses',
       connectionAccessEdits
     );

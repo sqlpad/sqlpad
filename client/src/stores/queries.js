@@ -1,6 +1,6 @@
 import { mutate } from 'swr';
 import message from '../common/message';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 import {
   removeLocalQueryText,
   setLocalQueryText,
@@ -38,7 +38,7 @@ export const initialState = {
 export const formatQuery = async (state) => {
   const { query } = state;
 
-  const json = await fetchJson('POST', '/api/format-sql', {
+  const json = await api.post('/api/format-sql', {
     query: query.queryText,
   });
 
@@ -65,7 +65,7 @@ export const clearQueries = () => {
 };
 
 export const loadQuery = async (state, queryId) => {
-  const { error, data } = await fetchJson('GET', `/api/queries/${queryId}`);
+  const { error, data } = await api.get(`/api/queries/${queryId}`);
   if (error) {
     return message.error('Query not found');
   }
@@ -115,7 +115,7 @@ export const saveQuery = (store) => async (state) => {
     connectionId: selectedConnectionId,
   });
   if (query.id) {
-    fetchJson('PUT', `/api/queries/${query.id}`, queryData).then((json) => {
+    api.put(`/api/queries/${query.id}`, queryData).then((json) => {
       const { error, data } = json;
       const { queries } = store.getState();
       if (error) {
@@ -137,7 +137,7 @@ export const saveQuery = (store) => async (state) => {
       });
     });
   } else {
-    fetchJson('POST', `/api/queries`, queryData).then((json) => {
+    api.post(`/api/queries`, queryData).then((json) => {
       const { error, data } = json;
       const { queries } = store.getState();
       if (error) {

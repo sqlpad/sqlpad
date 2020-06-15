@@ -6,7 +6,7 @@ import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';
-import fetchJson from '../utilities/fetch-json';
+import { api } from '../utilities/fetch-json';
 import useAppContext from '../utilities/use-app-context';
 import ConnectionAccessCreateDrawer from './ConnectionAccessCreateDrawer';
 
@@ -32,8 +32,7 @@ function ConnectionAccessList() {
   };
 
   const expireConnectionAccess = async (connectionAccessId) => {
-    const json = await fetchJson(
-      'PUT',
+    const json = await api.put(
       `/api/connection-accesses/${connectionAccessId}/expire`
     );
     const updated = showInactives

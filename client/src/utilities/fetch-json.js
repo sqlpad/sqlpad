@@ -65,3 +65,18 @@ export default async function fetchJson(method, url, body) {
     };
   }
 }
+
+export const api = {
+  put(url, body) {
+    return fetchJson('PUT', url, body);
+  },
+  delete(url) {
+    return fetchJson('DELETE', url);
+  },
+  post(url, body) {
+    return fetchJson('POST', url, body);
+  },
+  get(url) {
+    return fetchJson('GET', url);
+  },
+};
