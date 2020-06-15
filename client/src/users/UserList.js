@@ -26,7 +26,7 @@ function UserList() {
   }, [error]);
 
   const handleDelete = async (user) => {
-    const json = await api.delete('/api/users/' + user.id);
+    const json = await api.delete(`/api/users/${user.id}`);
     if (json.error) {
       return message.error('Delete Failed: ' + json.error);
     }

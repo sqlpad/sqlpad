@@ -16,7 +16,7 @@ function ConnectionList({ selectConnectionId }) {
   let connections = connectionsData || [];
 
   const deleteConnection = async (connectionId) => {
-    const json = await api.delete('/api/connections/' + connectionId);
+    const json = await api.delete(`/api/connections/${connectionId}`);
     mutate();
     if (json.error) {
       return message.error('Delete failed');

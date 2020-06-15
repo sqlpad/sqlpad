@@ -34,7 +34,7 @@ function EditUserForm({ user }) {
   };
 
   const removePasswordResetLink = async () => {
-    const json = await api.put('/api/users/' + user.id, {
+    const json = await api.put(`/api/users/${user.id}`, {
       passwordResetId: '',
     });
     if (json.error) {

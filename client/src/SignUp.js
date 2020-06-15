@@ -20,11 +20,8 @@ function SignUp() {
 
   const signUp = async (e) => {
     e.preventDefault();
-    const json = await api.post('/api/signup', {
-      email,
-      password,
-      passwordConfirmation,
-    });
+    const body = { email, password, passwordConfirmation };
+    const json = await api.post('/api/signup', body);
     if (json.error) {
       return message.error(json.error);
     }

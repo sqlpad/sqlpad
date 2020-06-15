@@ -97,7 +97,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }) {
     let json;
     if (connectionEdits.id) {
       json = await api.put(
-        '/api/connections/' + connectionEdits.id,
+        `/api/connections/${connectionEdits.id}`,
         connectionEdits
       );
     } else {
