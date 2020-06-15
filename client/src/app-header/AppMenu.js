@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'unistore/react';
 import IconMenu from '../common/IconMenu';
 import { clearQueries } from '../stores/queries';
-import fetchJson from '../utilities/fetch-json.js';
+import { api } from '../utilities/fetch-json.js';
 import AboutModal from './AboutModal';
 import useAppContext from '../utilities/use-app-context';
 
@@ -37,7 +37,7 @@ function AppMenu({ clearQueries }) {
         <MenuItem onSelect={() => setShowAbout(true)}>About</MenuItem>
         <MenuItem
           onSelect={async () => {
-            await fetchJson('GET', '/api/signout');
+            await api.get('/api/signout');
             clearQueries();
             setRedirectToSignIn(true);
           }}
