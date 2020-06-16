@@ -35,9 +35,17 @@ describe('lib/config/from-cli', function () {
 });
 
 describe('lib/config/fromFile', function () {
-  it('handles missing file', function () {
-    const config = fromFile(path.join(__dirname, '/missing.ini'));
-    assert.equal(Object.keys(config).length, 0, 'empty object');
+  it('throws for missing file', function () {
+    assert.throws(() => fromFile(path.join(__dirname, '/missing.ini')));
+  });
+
+  it('handles falsey path', function () {
+    function isEmpty(obj) {
+      assert.equal(Object.keys(obj).length, 0, 'empty object');
+    }
+    isEmpty(fromFile());
+    isEmpty(fromFile(null));
+    isEmpty(fromFile(''));
   });
 
   it('reads INI', function () {

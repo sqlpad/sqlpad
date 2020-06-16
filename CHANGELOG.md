@@ -35,6 +35,10 @@
 
 - Regex filter for query history no longer supported
 
+- Config file without an .json or .ini extension will be assumed to be JSON. Specific extensions will be required in a future release.
+
+- Config file that does not exist will throw an error at startup instead of silently ignoring.
+
 ## 4.4.0
 
 ### April 22, 2020
