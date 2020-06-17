@@ -18,21 +18,24 @@ import SignUp from './SignUp.js';
 import useAppContext from './utilities/use-app-context';
 
 function Routes() {
-  const { config } = useAppContext();
+  const { config, currentUser } = useAppContext();
 
   if (!config) {
     return null;
   }
 
+  function redirectToNew() {
+    if (currentUser) {
+      return <Redirect to={'/queries/new'} />;
+    }
+    return <Redirect to={'/signin'} />;
+  }
+
   return (
     <Router basename={config.baseUrl}>
       <Switch>
-        <Route exact path="/" render={() => <Redirect to={'/queries/new'} />} />
-        <Route
-          exact
-          path="/queries"
-          render={() => <Redirect to={'/queries/new'} />}
-        />
+        <Route exact path="/" render={redirectToNew} />
+        <Route exact path="/queries" render={redirectToNew} />
         <Route
           exact
           path="/queries/:queryId"
