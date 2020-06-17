@@ -25,7 +25,6 @@ export const NEW_QUERY = {
 export const initialState = {
   isRunning: false,
   isSaving: false,
-  queries: [],
   query: Object.assign({}, NEW_QUERY),
   queryError: undefined,
   queryResult: undefined,
@@ -58,10 +57,6 @@ export const formatQuery = async (state) => {
     query: { ...query, queryText: json.data.query },
     unsavedChanges: true,
   };
-};
-
-export const clearQueries = () => {
-  return { queries: [] };
 };
 
 export const loadQuery = async (state, queryId) => {
@@ -117,7 +112,6 @@ export const saveQuery = (store) => async (state) => {
   if (query.id) {
     api.put(`/api/queries/${query.id}`, queryData).then((json) => {
       const { error, data } = json;
-      const { queries } = store.getState();
       if (error) {
         message.error(error);
         store.setState({ isSaving: false });
@@ -126,20 +120,15 @@ export const saveQuery = (store) => async (state) => {
       mutate('/api/queries');
       message.success('Query Saved');
       removeLocalQueryText(data.id);
-      const updatedQueries = queries.map((q) => {
-        return q.id === data.id ? data : q;
-      });
       store.setState({
         isSaving: false,
         unsavedChanges: false,
         query: data,
-        queries: updatedQueries,
       });
     });
   } else {
     api.post(`/api/queries`, queryData).then((json) => {
       const { error, data } = json;
-      const { queries } = store.getState();
       if (error) {
         message.error(error);
         store.setState({ isSaving: false });
@@ -157,7 +146,6 @@ export const saveQuery = (store) => async (state) => {
         isSaving: false,
         unsavedChanges: false,
         query: data,
-        queries: [data].concat(queries),
       });
     });
   }
@@ -223,7 +211,6 @@ export const handleQuerySelectionChange = (state, selectedText) => {
 };
 
 export default {
-  clearQueries,
   formatQuery,
   handleChartConfigurationFieldsChange,
   handleChartTypeChange,

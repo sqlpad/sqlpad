@@ -2,22 +2,12 @@ import { MenuItem } from '@reach/menu-button';
 import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import { connect } from 'unistore/react';
 import IconMenu from '../common/IconMenu';
-import { clearQueries } from '../stores/queries';
 import { api } from '../utilities/fetch-json.js';
-import AboutModal from './AboutModal';
 import useAppContext from '../utilities/use-app-context';
+import AboutModal from './AboutModal';
 
-function mapStateToProps(state) {
-  return {};
-}
-
-const Connected = connect(mapStateToProps, (store) => ({
-  clearQueries,
-}))(React.memo(AppMenu));
-
-function AppMenu({ clearQueries }) {
+function AppMenu() {
   const { currentUser } = useAppContext();
   const [redirectToSignIn, setRedirectToSignIn] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
@@ -38,7 +28,6 @@ function AppMenu({ clearQueries }) {
         <MenuItem
           onSelect={async () => {
             await api.get('/api/signout');
-            clearQueries();
             setRedirectToSignIn(true);
           }}
           hidden={hideSignOut}
@@ -52,4 +41,4 @@ function AppMenu({ clearQueries }) {
   );
 }
 
-export default Connected;
+export default React.memo(AppMenu);
