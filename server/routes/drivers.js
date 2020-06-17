@@ -1,8 +1,13 @@
+require('../typedefs');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const drivers = require('../drivers');
 
-router.get('/api/drivers', mustBeAuthenticated, function (req, res) {
+/**
+ * @param {Req} req
+ * @param {Res} res
+ */
+function getDrivers(req, res) {
   const driversArray = Object.keys(drivers).map((id) => {
     const supportsConnectionClient = Boolean(drivers[id].Client);
     return {
@@ -13,6 +18,8 @@ router.get('/api/drivers', mustBeAuthenticated, function (req, res) {
     };
   });
   return res.utils.data(driversArray);
-});
+}
+
+router.get('/api/drivers', mustBeAuthenticated, getDrivers);
 
 module.exports = router;

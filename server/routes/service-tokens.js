@@ -1,3 +1,4 @@
+require('../typedefs');
 const router = require('express').Router();
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const wrap = require('../lib/wrap');
@@ -11,8 +12,6 @@ async function listServiceTokens(req, res) {
   const serviceTokens = await models.serviceTokens.findAll();
   return res.utils.data(serviceTokens);
 }
-
-router.get('/api/service-tokens', mustBeAdmin, wrap(listServiceTokens));
 
 /**
  * @param {Req} req
@@ -39,8 +38,6 @@ async function generateServiceToken(req, res) {
   return res.utils.data(serviceToken);
 }
 
-router.post('/api/service-tokens', mustBeAdmin, wrap(generateServiceToken));
-
 /**
  * @param {Req} req
  * @param {Res} res
@@ -51,6 +48,8 @@ async function deleteServiceToken(req, res) {
   return res.utils.data();
 }
 
+router.get('/api/service-tokens', mustBeAdmin, wrap(listServiceTokens));
+router.post('/api/service-tokens', mustBeAdmin, wrap(generateServiceToken));
 router.delete('/api/service-tokens/:id', mustBeAdmin, wrap(deleteServiceToken));
 
 module.exports = router;

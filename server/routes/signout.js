@@ -1,8 +1,13 @@
+require('../typedefs');
 const router = require('express').Router();
 const appLog = require('../lib/app-log');
 
-// Clear out session regardless of auth strategy
-router.get('/api/signout', function (req, res) {
+/**
+ * Clear out session regardless of auth strategy
+ * @param {Req} req
+ * @param {Res} res
+ */
+function handleSignout(req, res) {
   if (!req.session) {
     return res.utils.data('signout', {});
   }
@@ -12,6 +17,8 @@ router.get('/api/signout', function (req, res) {
     }
     res.utils.data('signout', {});
   });
-});
+}
+
+router.get('/api/signout', handleSignout);
 
 module.exports = router;

@@ -1,8 +1,14 @@
+require('../typedefs');
 const passport = require('passport');
 const router = require('express').Router();
 const checkAllowedDomains = require('../lib/check-allowed-domains');
 const wrap = require('../lib/wrap');
 
+/**
+ * @param {Req} req
+ * @param {Res} res
+ * @param {Function} next
+ */
 async function handleSignup(req, res, next) {
   const { models, config } = req;
 
