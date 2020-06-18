@@ -64,7 +64,7 @@
     "node-crate": "^2.0.6",
     "node-fetch": "^2.6.0",
     "node-xlsx": "^0.15.0",
-    "nodemailer": "^6.4.8",
+    "nodemailer": "^6.4.10",
     "papaparse": "^5.2.0",
     "passport": "^0.4.1",
     "passport-custom": "^1.1.1",

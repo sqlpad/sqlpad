@@ -31,7 +31,7 @@
     "react-window-infinite-loader": "^1.0.5",
     "swr": "^0.2.3",
     "taucharts": "^2.8.0",
-    "unistore": "^3.5.1",
+    "unistore": "^3.5.2",
     "use-debounce": "^3.4.2",
     "uuid": "^8.1.0",
     "whatwg-fetch": "^3.0.0"
