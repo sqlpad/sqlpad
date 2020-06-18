@@ -1,11 +1,11 @@
 const assert = require('assert');
-const getMeta = require('../../lib/get-meta.js');
+const getColumns = require('../../lib/get-columns.js');
 
 const d1 = new Date();
 const d2 = new Date(new Date().getTime() + 60000);
 const noTime = new Date('2019-01-01T00:00:00.000Z');
 
-describe('lib/get-meta.js', function () {
+describe('lib/get-columns.js', function () {
   it('returns expected results', function () {
     const rows = [
       // To ensure nulls are handled appropriately start and end with them
@@ -51,7 +51,7 @@ describe('lib/get-meta.js', function () {
       },
     ];
 
-    const meta = getMeta(rows);
+    const meta = getColumns(rows);
 
     assert.equal(meta.alwaysNull.datatype, null, 'null');
 

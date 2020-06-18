@@ -3,7 +3,7 @@ const consts = require('./consts');
 const drivers = require('../drivers');
 const renderConnection = require('./render-connection');
 const appLog = require('./app-log');
-const getMeta = require('./get-meta');
+const getColumns = require('./get-columns');
 
 /**
  * Connection client runs queries for a given connection and user
@@ -179,21 +179,11 @@ class ConnectionClient {
     const connection = this.connection;
     const driver = this.driver;
     const user = this.user;
-
-    const finalResult = {
-      id: uuidv4(),
-      startTime: new Date(),
-      stopTime: null,
-      queryRunTime: null,
-      fields: [],
-      incomplete: false,
-      meta: {},
-      rows: [],
-    };
-
     const connectionName = connection.name;
+    const startTime = new Date();
 
     const queryContext = {
+      executionId: uuidv4(),
       connectionClientId: this.id,
       driver: connection.driver,
       userId: user && user.id,
@@ -201,7 +191,7 @@ class ConnectionClient {
       connectionId: connection.id,
       connectionName,
       query,
-      startTime: finalResult.startTime,
+      startTime,
     };
 
     appLog.info(queryContext, 'Running query');
@@ -249,30 +239,28 @@ class ConnectionClient {
       rows = [];
     }
 
-    finalResult.incomplete = Boolean(incomplete);
-    finalResult.rows = rows;
-    finalResult.stopTime = new Date();
-    finalResult.queryRunTime = finalResult.stopTime - finalResult.startTime;
-    finalResult.meta = getMeta(rows);
-    finalResult.fields = Object.keys(finalResult.meta);
-    finalResult.columns = Object.entries(finalResult.meta).map(
-      ([key, value]) => {
-        return { ...value, name: key };
-      }
-    );
+    const columns = getColumns(rows);
+    const stopTime = new Date();
+    const queryRunTime = stopTime - startTime;
+
+    const queryResult = {
+      rows,
+      columns,
+      incomplete: Boolean(incomplete),
+    };
 
     appLog.info(
       {
         ...queryContext,
-        stopTime: finalResult.stopTime,
-        queryRunTime: finalResult.queryRunTime,
+        stopTime,
+        queryRunTime,
         rowCount: rows.length,
-        incomplete: finalResult.incomplete,
+        incomplete: Boolean(incomplete),
       },
       'Query finished'
     );
 
-    return finalResult;
+    return queryResult;
   }
 
   /**
