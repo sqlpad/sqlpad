@@ -8,11 +8,10 @@ import useSWR from 'swr';
 function Authenticated({ children, initApp, initialized }) {
   const { config, currentUser } = useAppContext();
 
-  let { data: connectionsData } = useSWR('/api/connections');
-  const connections = connectionsData || [];
+  let { data: connections } = useSWR('/api/connections');
 
   useEffect(() => {
-    if (config && !initialized && connections.length > 0) {
+    if (config && !initialized && connections) {
       initApp(config, connections);
     }
   }, [initApp, config, connections, initialized]);
