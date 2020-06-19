@@ -44,7 +44,7 @@ function SignIn() {
       <Input
         name="email"
         type="email"
-        placeholder="Email address"
+        placeholder="LDAP User / Email"
         onChange={(e) => setEmail(e.target.value)}
         required
       />

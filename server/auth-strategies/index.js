@@ -3,6 +3,7 @@ const authProxy = require('./auth-proxy');
 const basic = require('./basic');
 const google = require('./google');
 const jwtServiceToken = require('./jwt-service-token');
+const ldap = require('./ldap');
 const local = require('./local');
 const saml = require('./saml');
 
@@ -40,6 +41,7 @@ function authStrategies(config) {
   basic(config);
   google(config);
   jwtServiceToken(config);
+  ldap(config);
   local(config);
   saml(config);
 }
