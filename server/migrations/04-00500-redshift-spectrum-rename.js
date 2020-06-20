@@ -11,7 +11,7 @@ const Sequelize = require('sequelize');
 async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
   await sequelizeDb.query(
     `
-      UPDATE drivers
+      UPDATE connections
       SET driver = 'redshift'
       WHERE driver = 'redshiftSpectrum' 
     `,
