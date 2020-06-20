@@ -10,7 +10,10 @@ const ConnectionClient = require('../lib/connection-client');
  * @param {Res} res
  */
 async function testConnection(req, res) {
-  const connectionClient = new ConnectionClient(req.body, req.user);
+  const connectionClient = new ConnectionClient(
+    { ...req.body, maxRows: 1 },
+    req.user
+  );
   // testConnection will throw if configuration is invalid
   // This is expected
   // An assumption is made that this is due to user-input error

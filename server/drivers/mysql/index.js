@@ -1,6 +1,7 @@
+/* eslint-disable no-await-in-loop */
 const fs = require('fs');
 const mysql = require('mysql');
-const appLog = require('../../lib/app-log');
+const sqlLimiter = require('sql-limiter');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'mysql';
@@ -31,124 +32,145 @@ function getSchemaSql(database) {
   `;
 }
 
+class Client {
+  constructor(connection) {
+    this.connection = connection;
+    this.client = null; // AKA myConnection
+  }
+
+  /**
+   * Establish db client connection if not already connected
+   */
+  async connect() {
+    if (this.client) {
+      return;
+    }
+    const { connection } = this;
+
+    const myConfig = {
+      host: connection.host,
+      port: connection.port ? connection.port : 3306,
+      user: connection.username,
+      password: connection.password,
+      database: connection.database,
+      insecureAuth: connection.mysqlInsecureAuth,
+      timezone: 'Z',
+      supportBigNumbers: true,
+      ssl: connection.mysqlSsl,
+      multipleStatements: !connection.denyMultipleStatements,
+      preQueryStatements: connection.preQueryStatements,
+    };
+
+    // TODO cache key/cert values
+    if (connection.mysqlKey && connection.mysqlCert) {
+      myConfig.ssl = {
+        key: fs.readFileSync(connection.mysqlKey),
+        cert: fs.readFileSync(connection.mysqlCert),
+      };
+      if (connection.mysqlCA) {
+        myConfig.ssl['ca'] = fs.readFileSync(connection.mysqlCA);
+      }
+    }
+
+    this.client = mysql.createConnection(myConfig);
+
+    await new Promise((resolve, reject) => {
+      this.client.connect(async (err) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
+
+    // Run pre query statements
+    // Statements split by JS because MySQL multipleStatements is turned off
+    if (myConfig.preQueryStatements) {
+      // sqlLimiter may return empty statements so they should be stripped out
+      const statements = sqlLimiter
+        .getStatements(connection.preQueryStatements)
+        .map((s) => sqlLimiter.removeTerminator(s))
+        .filter((s) => s && s.trim() !== '');
+
+      for (const statement of statements) {
+        await new Promise((resolve, reject) => {
+          this.client.query(statement, (err) => {
+            if (err) {
+              return reject(err);
+            }
+            return resolve();
+          });
+        });
+      }
+    }
+  }
+
+  /**
+   * Disconnect the underlying client if connected
+   */
+  async disconnect() {
+    if (this.client) {
+      return new Promise((resolve, reject) => {
+        this.client.end((error) => {
+          if (error) {
+            return reject(error);
+          }
+          resolve();
+        });
+      });
+    }
+  }
+
+  /**
+   * Run query using underlying connection
+   * @param {string} query
+   */
+  async runQuery(query) {
+    if (!this.client) {
+      throw new Error('Must be connected');
+    }
+
+    const { maxRows } = this.connection;
+    const maxRowsPlusOne = maxRows + 1;
+    const limitedQuery = sqlLimiter.limit(
+      query,
+      ['limit', 'fetch'],
+      maxRowsPlusOne
+    );
+
+    return new Promise((resolve, reject) => {
+      // TODO - use fields from driver to return columns
+      // eslint-disable-next-line no-unused-vars
+      return this.client.query(limitedQuery, (error, rows, fields) => {
+        if (error) {
+          return reject(error);
+        }
+        if (rows.length === maxRowsPlusOne) {
+          return resolve({ rows: rows.slice(0, maxRows), incomplete: true });
+        }
+        return resolve({ rows, incomplete: false });
+      });
+    });
+  }
+}
+
 /**
  * Run query for connection
  * Should return { rows, incomplete }
  * @param {string} query
  * @param {object} connection
  */
-function runQuery(query, connection) {
-  const myConfig = {
-    host: connection.host,
-    port: connection.port ? connection.port : 3306,
-    user: connection.username,
-    password: connection.password,
-    database: connection.database,
-    insecureAuth: connection.mysqlInsecureAuth,
-    timezone: 'Z',
-    supportBigNumbers: true,
-    ssl: connection.mysqlSsl,
-    multipleStatements: !connection.denyMultipleStatements,
-    preQueryStatements: connection.preQueryStatements,
-  };
-  // TODO cache key/cert values
-  if (connection.mysqlKey && connection.mysqlCert) {
-    myConfig.ssl = {
-      key: fs.readFileSync(connection.mysqlKey),
-      cert: fs.readFileSync(connection.mysqlCert),
-    };
-    if (connection.mysqlCA) {
-      myConfig.ssl['ca'] = fs.readFileSync(connection.mysqlCA);
-    }
+async function runQuery(query, connection) {
+  const client = new Client(connection);
+  await client.connect();
+  try {
+    const result = await client.runQuery(query);
+    await client.disconnect();
+    return result;
+  } catch (error) {
+    await client.disconnect();
+    throw error;
   }
-
-  return new Promise((resolve, reject) => {
-    const myConnection = mysql.createConnection(myConfig);
-    let incomplete = false;
-    const rows = [];
-
-    myConnection.connect((err) => {
-      if (err) {
-        return reject(err);
-      }
-      let queryError;
-      let resultsSent = false;
-
-      function continueOn() {
-        if (!resultsSent) {
-          resultsSent = true;
-          if (queryError) {
-            return reject(queryError);
-          }
-          return resolve({ rows, incomplete });
-        }
-      }
-
-      function _runQuery(
-        query,
-        params = { addRowsToResults: true, closeConnection: true }
-      ) {
-        const myQuery = myConnection.query(query);
-        myQuery
-          .on('error', function (err) {
-            // Handle error,
-            // an 'end' event will be emitted after this as well
-            // so we'll call the callback there.
-            queryError = err;
-          })
-          .on('result', function (row) {
-            if (params.addRowsToResults) {
-              // If we haven't hit the max yet add row to results
-              if (rows.length < connection.maxRows) {
-                return rows.push(row);
-              }
-
-              // Too many rows
-              incomplete = true;
-
-              // Stop the query stream
-              myConnection.pause();
-
-              // Destroy the underlying connection
-              // Calling end() will wait and eventually time out
-              if (params.closeConnection) {
-                myConnection.destroy();
-              }
-              continueOn();
-            }
-          })
-          .on('end', function () {
-            // all rows have been received
-            // This will not fire if we end the connection early
-            // myConnection.end()
-            // myConnection.destroy()
-            if (params.closeConnection) {
-              myConnection.end((error) => {
-                if (error) {
-                  appLog.error(error, 'Error ending MySQL connection');
-                }
-                continueOn();
-              });
-            }
-          });
-      }
-
-      // Run pre query statements
-      // Statements split by JS because MySQL multipleStatements is turned off
-      if (myConfig.preQueryStatements) {
-        myConfig.preQueryStatements
-          .trim()
-          .split(';')
-          .forEach((q) => {
-            if (q)
-              _runQuery(q, { addRowsToResults: false, closeConnection: false });
-          });
-      }
-
-      // Run actual query
-      _runQuery(query);
-    });
-  });
 }
 
 /**
@@ -243,4 +265,5 @@ module.exports = {
   getSchema,
   runQuery,
   testConnection,
+  Client,
 };
