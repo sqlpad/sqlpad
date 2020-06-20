@@ -139,11 +139,12 @@ class Client {
     );
 
     return new Promise((resolve, reject) => {
+      // TODO - use fields from driver to return columns
+      // eslint-disable-next-line no-unused-vars
       return this.client.query(limitedQuery, (error, rows, fields) => {
         if (error) {
           return reject(error);
         }
-        console.log(fields);
         if (rows.length === maxRowsPlusOne) {
           return resolve({ rows: rows.slice(0, maxRows), incomplete: true });
         }
