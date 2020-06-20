@@ -27,6 +27,6 @@ describe('api/drivers', function () {
 
     const mysql = drivers.find((i) => i.id === 'mysql');
     assert(mysql);
-    assert.strictEqual(mysql.supportsConnectionClient, false);
+    assert.strictEqual(mysql.supportsConnectionClient, true);
   });
 });
