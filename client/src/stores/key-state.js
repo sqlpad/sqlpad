@@ -35,10 +35,11 @@ function useKeyState(key, defaultValue) {
 
   const setStatemittValue = useCallback(
     (value) => {
+      state[key] = value;
       emitter.emit(key, value);
       setValue(value);
     },
-    [emitter, key]
+    [emitter, state, key]
   );
 
   return [value, setStatemittValue];
