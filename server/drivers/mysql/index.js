@@ -3,6 +3,7 @@ const fs = require('fs');
 const mysql = require('mysql');
 const sqlLimiter = require('sql-limiter');
 const { formatSchemaQueryResults } = require('../utils');
+const appLog = require('../../lib/app-log');
 
 const id = 'mysql';
 const name = 'MySQL';
@@ -74,6 +75,10 @@ class Client {
 
     this.client = mysql.createConnection(myConfig);
 
+    this.client.on('error', (err) => {
+      appLog.error(err);
+    });
+
     await new Promise((resolve, reject) => {
       this.client.connect(async (err) => {
         if (err) {
@@ -110,14 +115,10 @@ class Client {
    */
   async disconnect() {
     if (this.client) {
-      return new Promise((resolve, reject) => {
-        this.client.end((error) => {
-          if (error) {
-            return reject(error);
-          }
-          resolve();
-        });
-      });
+      // Immediately destroys underlying socket.
+      // No additional callbacks are called.
+      this.client.destroy();
+      this.client = null;
     }
   }
 
