@@ -12,7 +12,7 @@ const drivers = {
   postgres: require('./postgres'),
   presto: require('./presto'),
   clickhouse: require('./clickhouse'),
-  redshiftSpectrum: require('./redshift-spectrum'),
+  redshift: require('./redshift'),
   snowflake: require('./snowflake'),
   sqlite: require('./sqlite'),
   sqlserver: require('./sqlserver'),

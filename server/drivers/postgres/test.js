@@ -57,23 +57,6 @@ describe('drivers/postgres', function () {
       });
   });
 
-  // This isn't officially supported across all drivers
-  // Official multiple statement support will start to look much different
-  // This is a test for legacy allowed postgres behavior
-  it('runQuery multiple statements', async function () {
-    const query = `
-      SELECT * FROM generate_series(1, 10) g1;
-      SELECT * FROM generate_series(1, 10) g2;
-    `;
-    const results = await postgres.runQuery(query, connection);
-    assert.strictEqual(results.incomplete, false);
-    assert.strictEqual(results.rows.length, 20);
-    assert.strictEqual(results.rows[0].g1, 1);
-    assert.strictEqual(results.rows[0].g2, undefined);
-    assert.strictEqual(results.rows[10].g1, undefined);
-    assert.strictEqual(results.rows[10].g2, 1);
-  });
-
   it('Client cannot connect more than once', async function () {
     const client = new postgres.Client(connection);
     await client.connect();

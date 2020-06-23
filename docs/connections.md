@@ -101,12 +101,12 @@ Example JSON config file with connection:
   }
 }
 ```
+
 ## Connection selection
 
 ?> Available as of `4.5.0`
 
 A default connection selection can be set using the `defaultConnectionId` configuration item or `SQLPAD_DEFAULT_CONNECTION_ID`. It can also be specified as part of the query editor URL, i.e., `https://mysqlpad.example.com/queries/new?connectionName=connection1` or `https://mysqlpad.example.com/queries/new?connectionId=xxx-xxxxx-xxx-xxx`.
-
 
 ## CrateDB
 
@@ -271,9 +271,9 @@ A default connection selection can be set using the `defaultConnectionId` config
   </tbody>
 </table>
 
-## Redshift Spectrum (experimental)
+## Redshift
 
-Redshift Spectrum uses the Postgres driver behind the scenes, using a different query for pulling schema. See a setting that is not relevant for Redshift or something that can be added? Please open an issue.
+Redshift uses the Postgres driver, using a different query for pulling schema.
 
 <table>
   <thead>
@@ -285,7 +285,7 @@ Redshift Spectrum uses the Postgres driver behind the scenes, using a different 
   </thead>
   <tbody>
     <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>redshiftSpectrum</code></td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>redshift</code></td><td>text</td></tr>
     <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
     <tr><td>idleTimeoutSeconds</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
     <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>

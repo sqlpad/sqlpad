@@ -4,8 +4,8 @@ const sqlLimiter = require('sql-limiter');
 const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
 
-const id = 'redshiftSpectrum';
-const name = 'Redshift Spectrum (experimental)';
+const id = 'redshift';
+const name = 'Redshift';
 
 class Client {
   constructor(connection) {
@@ -53,7 +53,7 @@ class Client {
       try {
         await client.end();
       } catch (error) {
-        appLog.error(error, 'Error ending postgres client');
+        appLog.error(error, 'Error ending Redshift client');
       }
     }
   }
