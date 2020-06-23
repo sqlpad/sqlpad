@@ -1,9 +1,6 @@
 const passport = require('passport');
-// const PassportLocalStrategy = require('passport-local').Strategy;
 const appLog = require('../lib/app-log');
-// const passhash = require('../lib/passhash.js');
 const ActiveDirectoryStrategy = require('passport-activedirectory');
-// const ActiveDirectory = require('activedirectory');
 
 function enableLdap(config) {
   if (!config.get('enableLdapAuth')) {

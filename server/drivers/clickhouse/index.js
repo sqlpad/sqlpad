@@ -65,7 +65,6 @@ function runQuery(query, connection) {
  * @param {*} connection
  */
 function testConnection(connection) {
-  // Presto cannot have ; at end of query
   const query = 'SELECT 1';
   return runQuery(query, connection);
 }
