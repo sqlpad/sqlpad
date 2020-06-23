@@ -47,7 +47,6 @@ function runQuery(query, connection) {
     insecureAuth: connection.mysqlInsecureAuth,
     timezone: 'Z',
     supportBigNumbers: true,
-    multipleStatements: !connection.denyMultipleStatements,
   };
   if (connection.mysqlSsl) {
     myConfig.ssl = {};
@@ -236,11 +235,6 @@ const fields = [
     key: 'mysqlInsecureAuth',
     formType: 'CHECKBOX',
     label: 'Use old/insecure pre 4.1 Auth System',
-  },
-  {
-    key: 'denyMultipleStatements',
-    formType: 'CHECKBOX',
-    label: 'Deny multiple statements per query',
   },
 ];
 

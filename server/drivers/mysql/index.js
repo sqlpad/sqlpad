@@ -58,7 +58,6 @@ class Client {
       timezone: 'Z',
       supportBigNumbers: true,
       ssl: connection.mysqlSsl,
-      multipleStatements: !connection.denyMultipleStatements,
       preQueryStatements: connection.preQueryStatements,
     };
 
@@ -146,7 +145,7 @@ class Client {
         if (error) {
           return reject(error);
         }
-        if (rows.length === maxRowsPlusOne) {
+        if (rows.length >= maxRowsPlusOne) {
           return resolve({ rows: rows.slice(0, maxRows), incomplete: true });
         }
         return resolve({ rows, incomplete: false });
@@ -244,11 +243,6 @@ const fields = [
     key: 'mysqlInsecureAuth',
     formType: 'CHECKBOX',
     label: 'Use old/insecure pre 4.1 Auth System',
-  },
-  {
-    key: 'denyMultipleStatements',
-    formType: 'CHECKBOX',
-    label: 'Deny multiple statements per query',
   },
   {
     key: 'preQueryStatements',
