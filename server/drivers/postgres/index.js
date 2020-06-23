@@ -1,39 +1,12 @@
 const fs = require('fs');
 const pg = require('pg');
-const _ = require('lodash');
 const sqlLimiter = require('sql-limiter');
-const PgCursor = require('pg-cursor');
 const SocksConnection = require('socksjs');
 const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'postgres';
 const name = 'Postgres';
-
-/**
- * A promise wrapper for pgCursor
- * Regular use case of cursors is to fetch chunks at a time
- * SQLPad uses them as a way to confidently get a set number of rows without relying on using LIMIT in a SQL query.
- * The cursor is then closed after first result is received
- * @param {pg.Client} client
- * @param {string} query
- * @param {number} rows
- */
-function asyncQueryViaCursor(cursor, rows) {
-  return new Promise((resolve, reject) => {
-    cursor.read(rows, (err, rows) => {
-      cursor.close((closeError) => {
-        if (closeError) {
-          appLog.error(closeError, 'Error closing postgres cursor');
-        }
-        if (err) {
-          return reject(err);
-        }
-        resolve(rows);
-      });
-    });
-  });
-}
 
 class Client {
   constructor(connection) {
@@ -72,9 +45,14 @@ class Client {
     this.pgConfig = pgConfig;
     this.client = new pg.Client(pgConfig);
 
+    this.client.on('error', (err) => {
+      appLog.error(err);
+    });
+
     await this.client.connect();
 
     if (connection.preQueryStatements) {
+      // sqlLimiter may return empty statements so they should be stripped out
       const queries = sqlLimiter
         .getStatements(connection.preQueryStatements)
         .map((s) => sqlLimiter.removeTerminator(s))
@@ -99,49 +77,30 @@ class Client {
     }
   }
 
+  // Queries are split prior to being run by this method
+  // It can be assumed it will only ever handle 1 statement at a time
   async runQuery(query) {
     let incomplete = false;
     const { maxRows } = this.connection;
     const maxRowsPlusOne = maxRows + 1;
 
-    // TODO remove connection.denyMultipleStatements option
-    // TODO - simplify postgres driver to remove multi-statement considerations
-    // These are now being parsed and split in batch creation
-    // TODO - apply limit using sql-limiter
-    try {
-      const cursor = this.client.query(new PgCursor(query));
+    const limitedQuery = sqlLimiter.limit(
+      query,
+      ['limit', 'fetch'],
+      maxRowsPlusOne
+    );
 
-      let resultRows = await asyncQueryViaCursor(cursor, maxRowsPlusOne);
+    // Run query without try/catch here
+    // The error should throw and buble up
+    const result = await this.client.query(limitedQuery);
+    let resultRows = result.rows || [];
 
-      if (resultRows.length === maxRowsPlusOne) {
-        incomplete = true;
-        resultRows.pop(); // get rid of that extra record. we only get 1 more than the max to see if there would have been more...
-      }
-      return { rows: resultRows, incomplete };
-    } catch (error) {
-      // pg_cursor can't handle multi-statements at the moment
-      // as a work around we'll retry the query the old way, but we lose the maxRows protection
-
-      // Run query without try/catch here
-      // The error should throw and buble up
-      const result = await this.client.query(query);
-
-      // multi-statements returns array of result objects but runQuery should return rows array
-      // transform array of results objects to flat rows array
-      let resultRows = [];
-      if (Array.isArray(result)) {
-        resultRows = resultRows.concat(_.flatten(result.map((r) => r.rows)));
-      } else {
-        resultRows = resultRows.rows || [];
-      }
-
-      if (resultRows.length >= maxRows) {
-        incomplete = true;
-        resultRows = resultRows.slice(0, maxRows);
-      }
-
-      return { rows: resultRows, incomplete };
+    if (resultRows.length >= maxRows) {
+      incomplete = true;
+      resultRows = resultRows.slice(0, maxRows);
     }
+
+    return { rows: resultRows, incomplete };
   }
 }
 
@@ -292,11 +251,6 @@ const fields = [
     key: 'socksPassword',
     formType: 'TEXT',
     label: 'Password for socks proxy',
-  },
-  {
-    key: 'denyMultipleStatements',
-    formType: 'CHECKBOX',
-    label: 'Deny multiple statements per query',
   },
   {
     key: 'preQueryStatements',
