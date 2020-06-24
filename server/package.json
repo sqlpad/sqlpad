@@ -79,7 +79,7 @@
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
     "sanitize-filename": "^1.6.3",
-    "sequelize": "^5.21.13",
+    "sequelize": "^5.22.0",
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.4.0",
     "snowflake-sdk": "^1.5.2",
