@@ -11,6 +11,7 @@ const drivers = {
   mysql2: require('./mysql2'),
   postgres: require('./postgres'),
   presto: require('./presto'),
+  clickhouse: require('./clickhouse'),
   redshift: require('./redshift'),
   snowflake: require('./snowflake'),
   sqlite: require('./sqlite'),
