@@ -30,15 +30,11 @@ Of course if you'd like to start the work without opening an issue with the unde
 
 Once a pull request has been submitted, a maintainer will review your pull request and either merge it, request changes, or close it with an explanation.
 
-## Becoming a Maintainer
+## Collaborator Invite
 
-If you've made a significant contribution to SQLPad and would like to become a core maintainer, please get in touch by emailing rick.bergfalk@gmail.com.
+If you've made a significant contribution to SQLPad you'll be invited to join as a collaborator. This will give you commit access to non-protected branches, the ability to review PRs, merge approved PRs, and lots of other things.
 
-Maintainers will get commit access to the repository, and will be requested to review pull requests and provide input on project direction. You might be pinged every now and then to review a pull request or provide your opinion on project direction.
-
-There is no hard commitment associated with becoming a maintainer. SQLPad is a side project worked on in people's spare time, and you can stop being a maintainer at any time.
-
-If you actively use SQLPad, have the JavaScript expertise, and think you might have just a few hours every month or two to help with bugs or library updates please consider it.
+No pressure to accept the invite or even do anything with the access. Contribute as much or as little as you'd like, even if it is just to weigh in on the direction of the project.
 
 ## Contributing Money
 
