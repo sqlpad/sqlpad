@@ -1,0 +1,6 @@
+version: '3'
+services:
+  clickhouse: 
+    image: yandex/clickhouse-server:latest
+    ports:
+      - "8123:8123"

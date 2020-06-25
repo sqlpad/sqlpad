@@ -121,6 +121,31 @@ const configItems = [
     default: false,
   },
   {
+    key: 'enableLdapAuth',
+    envVar: 'ENABLE_LDAP_AUTH',
+    default: false,
+  },
+  {
+    key: 'ldapUrl',
+    envVar: 'LDAP_URL',
+    default: '',
+  },
+  {
+    key: 'ldapBaseDN',
+    envVar: 'LDAP_BASE_DN',
+    default: '',
+  },
+  {
+    key: 'ldapUsername',
+    envVar: 'LDAP_USERNAME',
+    default: '',
+  },
+  {
+    key: 'ldapPassword',
+    envVar: 'LDAP_PASSWORD',
+    default: '',
+  },
+  {
     key: 'serviceTokenSecret',
     envVar: 'SERVICE_TOKEN_SECRET',
     default: '',
