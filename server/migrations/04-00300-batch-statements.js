@@ -57,7 +57,7 @@ async function up(queryInterface, config, appLog, nedb) {
     },
     // Taking a snapshot of the chart config too, because that could change over time
     chart: {
-      type: Sequelize.JSON,
+      type: Sequelize.STRING, // Sequelize.JSON,
     },
     user_id: {
       type: Sequelize.STRING,
@@ -122,7 +122,7 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.INTEGER,
     },
     columns: {
-      type: Sequelize.JSON,
+      type: Sequelize.STRING, // Sequelize.JSON,
     },
     row_count: {
       type: Sequelize.INTEGER,
@@ -134,7 +134,7 @@ async function up(queryInterface, config, appLog, nedb) {
       type: Sequelize.BOOLEAN,
     },
     error: {
-      type: Sequelize.JSON,
+      type: Sequelize.STRING, // Sequelize.JSON,
     },
     created_at: {
       type: Sequelize.DATE,

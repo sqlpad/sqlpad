@@ -39,7 +39,7 @@ module.exports = function (sequelize) {
         type: Sequelize.INTEGER,
       },
       columns: {
-        type: Sequelize.JSON,
+        type: Sequelize.STRING, // Sequelize.JSON,
       },
       rowCount: {
         type: Sequelize.INTEGER,
@@ -51,7 +51,7 @@ module.exports = function (sequelize) {
         type: Sequelize.BOOLEAN,
       },
       error: {
-        type: Sequelize.JSON,
+        type: Sequelize.STRING, // Sequelize.JSON,
       },
       createdAt: {
         type: Sequelize.DATE,

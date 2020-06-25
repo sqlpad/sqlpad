@@ -32,7 +32,7 @@ async function up(queryInterface, config, appLog, nedb) {
     // unsure what direction charts will go.
     // Leaving this as a JSON object
     chart: {
-      type: Sequelize.JSON,
+      type: Sequelize.STRING, // Sequelize.JSON
     },
     // email address
     // (possibly weird, but user ids may not be known ahead of time
@@ -309,7 +309,7 @@ async function up(queryInterface, config, appLog, nedb) {
         type: Sequelize.UUID,
       },
       data: {
-        type: Sequelize.JSON,
+        type: Sequelize.STRING, // Sequelize.JSON,
       },
       signup_at: {
         type: Sequelize.DATE,
@@ -349,7 +349,7 @@ async function up(queryInterface, config, appLog, nedb) {
       allowNull: false,
     },
     data: {
-      type: Sequelize.JSON,
+      type: Sequelize.STRING, // Sequelize.JSON,
     },
     expiry_date: {
       type: Sequelize.DATE,
