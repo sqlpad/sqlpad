@@ -5,12 +5,15 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const request = require('supertest');
 const Config = require('../lib/config');
+const { Sequelize } = require('sequelize');
 const appLog = require('../lib/app-log');
 const db = require('../lib/db');
 const makeApp = require('../app');
 const migrate = require('../lib/migrate');
 const loadSeedData = require('../lib/load-seed-data');
 const ensureConnectionAccess = require('../lib/ensure-connection-access');
+
+const USE_MSSQL = process.env.SQLPAD_TEST_DB === 'mssql';
 
 // At the start of any test run, clean out the root artifacts directory
 before(function (done) {
@@ -19,12 +22,20 @@ before(function (done) {
 
 class TestUtils {
   constructor(args = {}) {
+    // If `npm run test-mssql` is run, the mssql env is set
+    // If this env is set each test suite needs to create a dynamic db name to use for testing
+    // (figured a fresh db is easier than trying to clear dbs out when done)
+    this.dbname = USE_MSSQL ? `db${uuidv4()}`.replace(/-/g, '') : '';
+
     const config = new Config(
       {
         // Despite being in-memory, still need a file path for cache and session files
         // Eventually these will be moved to sqlite and we can be fully-in-memory
         dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
+        backendDatabaseUri: USE_MSSQL
+          ? `mssql://sa:SuperP4ssw0rd!@localhost:1433/${this.dbname}`
+          : '',
         appLogLevel: 'error',
         webLogLevel: 'error',
         authProxyEnabled: true,
@@ -80,6 +91,16 @@ class TestUtils {
   }
 
   async initDbs() {
+    // If mssql is given we need to create a db first
+    const backendDatabaseUri = this.config.get('backendDatabaseUri') || '';
+    if (backendDatabaseUri.startsWith('mssql')) {
+      const masterUri = backendDatabaseUri.replace(this.dbname, 'master');
+      const sequelize = new Sequelize(masterUri, {
+        logging: (message) => appLog.debug(message),
+      });
+      await sequelize.query(`CREATE DATABASE ${this.dbname};`);
+    }
+
     db.makeDb(this.config, this.instanceAlias);
     const { models, nedb, sequelizeDb } = await db.getDb(this.instanceAlias);
     this.models = models;
