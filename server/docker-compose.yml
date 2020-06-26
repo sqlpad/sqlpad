@@ -9,3 +9,11 @@ services:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=SuperP4ssw0rd!
       - MSSQL_PID=Express
+  postgres:
+    image: postgres:9.6-alpine
+    environment:
+      POSTGRES_USER: sqlpad
+      POSTGRES_PASSWORD: sqlpad
+      POSTGRES_DB: sqlpad
+    ports:
+      - '5432:5432'

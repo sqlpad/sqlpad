@@ -14,6 +14,7 @@ const loadSeedData = require('../lib/load-seed-data');
 const ensureConnectionAccess = require('../lib/ensure-connection-access');
 
 const USE_MSSQL = process.env.SQLPAD_TEST_DB === 'mssql';
+const USE_PG = process.env.SQLPAD_TEST_DB === 'pg';
 
 // At the start of any test run, clean out the root artifacts directory
 before(function (done) {
@@ -25,7 +26,14 @@ class TestUtils {
     // If `npm run test-mssql` is run, the mssql env is set
     // If this env is set each test suite needs to create a dynamic db name to use for testing
     // (figured a fresh db is easier than trying to clear dbs out when done)
-    this.dbname = USE_MSSQL ? `db${uuidv4()}`.replace(/-/g, '') : '';
+    this.dbname = USE_MSSQL || USE_PG ? `db${uuidv4()}`.replace(/-/g, '') : '';
+
+    let backendDatabaseUri = '';
+    if (USE_MSSQL) {
+      backendDatabaseUri = `mssql://sa:SuperP4ssw0rd!@localhost:1433/${this.dbname}`;
+    } else if (USE_PG) {
+      backendDatabaseUri = `postgres://sqlpad:sqlpad@localhost:5432/${this.dbname}`;
+    }
 
     const config = new Config(
       {
@@ -33,9 +41,7 @@ class TestUtils {
         // Eventually these will be moved to sqlite and we can be fully-in-memory
         dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
-        backendDatabaseUri: USE_MSSQL
-          ? `mssql://sa:SuperP4ssw0rd!@localhost:1433/${this.dbname}`
-          : '',
+        backendDatabaseUri,
         appLogLevel: 'error',
         webLogLevel: 'error',
         authProxyEnabled: true,
@@ -99,6 +105,12 @@ class TestUtils {
         logging: (message) => appLog.debug(message),
       });
       await sequelize.query(`CREATE DATABASE ${this.dbname};`);
+    } else if (backendDatabaseUri.startsWith('postgres')) {
+      const masterUri = `postgres://sqlpad:sqlpad@localhost:5432/sqlpad`;
+      const sequelize = new Sequelize(masterUri, {
+        logging: (message) => appLog.debug(message),
+      });
+      await sequelize.query(`CREATE DATABASE ${this.dbname}`);
     }
 
     db.makeDb(this.config, this.instanceAlias);
