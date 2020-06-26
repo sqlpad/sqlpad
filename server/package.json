@@ -34,6 +34,7 @@
     "test": "mocha test --timeout 10000 --recursive --exit --bail",
     "test-mssql": "env SQLPAD_TEST_DB=mssql mocha test --timeout 10000 --recursive --exit --bail",
     "test-pg": "env SQLPAD_TEST_DB=pg mocha test --timeout 10000 --recursive --exit --bail",
+    "test-mysql": "env SQLPAD_TEST_DB=mysql mocha test --timeout 10000 --recursive --exit --bail",
     "fixlint": "eslint --fix \"**/*.js\"",
     "lint": "eslint \"**/*.js\""
   },

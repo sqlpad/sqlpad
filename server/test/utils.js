@@ -15,6 +15,7 @@ const ensureConnectionAccess = require('../lib/ensure-connection-access');
 
 const USE_MSSQL = process.env.SQLPAD_TEST_DB === 'mssql';
 const USE_PG = process.env.SQLPAD_TEST_DB === 'pg';
+const USE_MYSQL = process.env.SQLPAD_TEST_DB === 'mysql';
 
 // At the start of any test run, clean out the root artifacts directory
 before(function (done) {
@@ -33,6 +34,8 @@ class TestUtils {
       backendDatabaseUri = `mssql://sa:SuperP4ssw0rd!@localhost:1433/${this.dbname}`;
     } else if (USE_PG) {
       backendDatabaseUri = `postgres://sqlpad:sqlpad@localhost:5432/${this.dbname}`;
+    } else if (USE_MSSQL) {
+      backendDatabaseUri = `mysql://sqlpad:sqlpad@localhost:3306/${this.dbname}`;
     }
 
     const config = new Config(
@@ -107,6 +110,12 @@ class TestUtils {
       await sequelize.query(`CREATE DATABASE ${this.dbname};`);
     } else if (backendDatabaseUri.startsWith('postgres')) {
       const masterUri = `postgres://sqlpad:sqlpad@localhost:5432/sqlpad`;
+      const sequelize = new Sequelize(masterUri, {
+        logging: (message) => appLog.debug(message),
+      });
+      await sequelize.query(`CREATE DATABASE ${this.dbname}`);
+    } else if (backendDatabaseUri.startsWith('mysql')) {
+      const masterUri = `mysql://sqlpad:sqlpad@localhost:3306/sqlpad`;
       const sequelize = new Sequelize(masterUri, {
         logging: (message) => appLog.debug(message),
       });

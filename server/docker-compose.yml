@@ -17,3 +17,12 @@ services:
       POSTGRES_DB: sqlpad
     ports:
       - '5432:5432'
+  mysql:
+    image: mariadb:10.3
+    environment:
+      MYSQL_ROOT_PASSWORD: sqlpad
+      MYSQL_DATABASE: sqlpad
+      MYSQL_USER: sqlpad
+      MYSQL_PASSWORD: sqlpad
+    ports:
+      - '3306:3306'
