@@ -425,3 +425,38 @@ When supplying both `id` and `email`, `id` will be used for user matching instea
 
 - Key: `authProxyHeaders`
 - Env: `SQLPAD_AUTH_PROXY_HEADERS`
+
+## enableLdapAuth
+
+Set to `true` to enable LDAP authentication
+
+- Key: `enableLdapAuth`
+- Env: `ENABLE_LDAP_AUTH`
+
+## ldapUrl
+
+LDAP server URL. Examples: `ldap://localhost:389`, `ldaps://ad.corporate.com:636`
+
+- Key: `ldapUrl`
+- Env: `LDAP_URL`
+
+## ldapBaseDN
+
+LDAP Base DN
+
+- Key: `ldapBaseDN`
+- Env: `LDAP_BASE_DN`
+
+## ldapUsername
+
+Username for LDAP lookup
+
+- Key: `ldapUsername`
+- Env: `LDAP_USERNAME`
+
+## ldapPassword
+
+Password for LDAP user used for LDAP lookup
+
+- Key: `ldapPassword`
+- Env: `LDAP_PASSWORD`
