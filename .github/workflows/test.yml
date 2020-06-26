@@ -29,20 +29,20 @@ jobs:
           MYSQL_ROOT_PASSWORD: password
         options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=5
 
-#      mssql:
-#        image: mcr.microsoft.com/mssql/server:2017-CU8-ubuntu
-#        env:
-#          ACCEPT_EULA: Y
-#          SA_PASSWORD: SuperP4ssw0rd!
-#        ports:
-#          - 1433:1433
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2017-CU8-ubuntu
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: SuperP4ssw0rd!
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
 
-    
     strategy:
       fail-fast: false # if one job fails, others will not be aborted
       matrix:
         db_uri: [
-#         'mssql://sa:SuperP4ssw0rd!@localhost:1433/dbname',
+          'mssql://sa:password@SuperP4ssw0rd!:1433/dbname',
 #         'postgres://postgres:postgres@localhost:5432/pgdb',
           'mysql://root:root@localhost:3306/db2',
           'mariadb://root:password@localhost:13306/db',
