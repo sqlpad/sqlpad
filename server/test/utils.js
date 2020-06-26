@@ -88,23 +88,18 @@ class TestUtils {
   async initDbs() {
     // Create DB if needed
     const backendDatabaseUri = this.config.get('backendDatabaseUri') || '';
-    console.log(`initDbs: backendDatabaseUri = ${backendDatabaseUri}`);
     const dbname = backendDatabaseUri.split('/').pop();
     if (backendDatabaseUri) {
       const serverUri = backendDatabaseUri.replace(`/${dbname}`, '');
       const sequelize = new Sequelize(serverUri, {
         logging: (message) => appLog.debug(message),
       });
-      console.log(`initDbs: Create DB`);
       try {
         await sequelize.query(`CREATE DATABASE ${dbname};`);
       } catch (e) {
         if (e.parent.message.includes('database exists')) {
           // ignore
         } else {
-          console.log('Exception ==> ');
-          console.log(e);
-          console.log('^^^done.');
           throw e;
         }
       }
@@ -114,8 +109,6 @@ class TestUtils {
           `CREATE TYPE [dbo].[JSON] FROM [NVARCHAR](MAX) NULL;`
         );
       }
-
-      console.log(`initDbs: Created DB OK`);
     }
 
     db.makeDb(this.config, this.instanceAlias);

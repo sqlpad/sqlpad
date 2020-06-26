@@ -193,8 +193,10 @@ describe('v4-to-v5', function () {
       assert.equal(connectionAccess.duration, original.duration);
 
       assert.equal(
-        new Date(connectionAccess.expiryDate).toISOString(),
-        new Date(original.expiryDate).toISOString(),
+        new Date(connectionAccess.expiryDate)
+          .toISOString()
+          .replace(/\.\d+Z/, ''),
+        new Date(original.expiryDate).toISOString().replace(/\.\d+Z/, ''),
         'expiryDate'
       );
       assert(connectionAccess.createdAt);
