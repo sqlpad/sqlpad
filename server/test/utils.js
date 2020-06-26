@@ -25,8 +25,8 @@ class TestUtils {
         // Eventually these will be moved to sqlite and we can be fully-in-memory
         dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
-        appLogLevel: 'silent',
-        webLogLevel: 'silent',
+        appLogLevel: 'error',
+        webLogLevel: 'error',
         authProxyEnabled: true,
         authProxyHeaders: 'email:X-WEBAUTH-EMAIL',
         ...args,
