@@ -33,6 +33,7 @@ async function getApp(req, res) {
       samlConfigured: Boolean(config.get('samlEntryPoint')),
       samlLinkHtml: config.get('samlLinkHtml'),
       smtpConfigured: config.smtpConfigured(),
+      ldapConfigured: config.get('enableLdapAuth'),
     },
     version: packageJson.version,
   });

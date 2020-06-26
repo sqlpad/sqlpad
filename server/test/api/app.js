@@ -25,6 +25,7 @@ const expectedConfigKeys = [
   'localAuthConfigured',
   'samlConfigured',
   'samlLinkHtml',
+  'ldapConfigured',
 ];
 
 describe('api/app', function () {

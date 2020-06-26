@@ -39,12 +39,20 @@ function SignIn() {
     return;
   }
 
+  function PlaceholderForUsername() {
+    if (config.ldapConfigured) {
+      return 'Username or e-mail address';
+    } else {
+      return 'e-mail address';
+    }
+  }
+
   const localForm = (
     <form onSubmit={signIn}>
       <Input
         name="email"
         type="email"
-        placeholder="LDAP User / Email"
+        placeholder={PlaceholderForUsername()}
         onChange={(e) => setEmail(e.target.value)}
         required
       />
