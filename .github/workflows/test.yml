@@ -44,7 +44,7 @@ jobs:
         db_uri: [
 #         'mssql://sa:SuperP4ssw0rd!@localhost:1433/dbname',
 #         'postgres://postgres:postgres@localhost:5432/pgdb',
-#         'mysql://user:password123@localhost:31001/db2',
+          'mysql://root:root@localhost:3306/db2',
           'mariadb://root:password@localhost:13306/db',
           ''
         ]
