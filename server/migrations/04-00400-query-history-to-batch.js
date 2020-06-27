@@ -79,6 +79,11 @@ async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
     await queryInterface.bulkInsert('statements', statementRows);
   }
 
+  let castType = 'INTEGER';
+  if (config.get('backendDatabaseUri').startsWith('mysql')) {
+    castType = 'UNSIGNED';
+  }
+
   await sequelizeDb.query(
     `
       CREATE VIEW vw_query_history AS 
@@ -86,7 +91,7 @@ async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
           SELECT 
             batch_id, 
             SUM(row_count) AS row_count, 
-            MAX(CAST(incomplete AS INTEGER)) AS incomplete
+            MAX(CAST(incomplete AS ${castType})) AS incomplete
           FROM 
             statements
           GROUP BY 

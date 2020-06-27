@@ -226,7 +226,8 @@ describe('v4-to-v5', function () {
           item.duration_ms === original.queryRunTime &&
           item.query_name === original.queryName &&
           item.query_text === original.queryText &&
-          item.row_count === original.rowCount
+          // numbers come back as strings for MySQL
+          parseInt(item.row_count, 10) === parseInt(original.rowCount, 10)
       );
 
       // query id could be string or null and null !== null
