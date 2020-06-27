@@ -67,6 +67,7 @@ jobs:
         run: |
           until  docker ps | fgrep "(healthy)" | grep  ${{ matrix.backendtype }} ; do
             docker ps
+            sleep 0.5
           done
 
       - name: Test
