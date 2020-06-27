@@ -56,7 +56,7 @@ describe('api/users', function () {
     assert.equal(body.name, 'test');
     assert.equal(body.passwordResetId, passwordResetId);
     assert.equal(body.data.test, true);
-    assert(new Date(body.updatedAt) > new Date(user.updatedAt));
+    assert(new Date(body.updatedAt) >= new Date(user.updatedAt));
   });
 
   it('Requires authentication', function () {

@@ -5,6 +5,7 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const request = require('supertest');
 const Config = require('../lib/config');
+const { Sequelize } = require('sequelize');
 const appLog = require('../lib/app-log');
 const db = require('../lib/db');
 const makeApp = require('../app');
@@ -19,6 +20,8 @@ before(function (done) {
 
 class TestUtils {
   constructor(args = {}) {
+    const salt = uuidv4().replace(/-/g, '');
+
     const config = new Config(
       {
         // Despite being in-memory, still need a file path for cache and session files
@@ -26,6 +29,9 @@ class TestUtils {
         dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
         appLogLevel: 'error',
+        backendDatabaseUri: process.env.SQLPAD_BACKEND_DB_URI
+          ? process.env.SQLPAD_BACKEND_DB_URI + salt
+          : '',
         webLogLevel: 'error',
         authProxyEnabled: true,
         authProxyHeaders: 'email:X-WEBAUTH-EMAIL',
@@ -80,6 +86,31 @@ class TestUtils {
   }
 
   async initDbs() {
+    // Create DB if needed
+    const backendDatabaseUri = this.config.get('backendDatabaseUri') || '';
+    const dbname = backendDatabaseUri.split('/').pop();
+    if (backendDatabaseUri) {
+      const serverUri = backendDatabaseUri.replace(`/${dbname}`, '');
+      const sequelize = new Sequelize(serverUri, {
+        logging: (message) => appLog.debug(message),
+      });
+      try {
+        await sequelize.query(`CREATE DATABASE ${dbname};`);
+      } catch (e) {
+        if (e.parent.message.includes('database exists')) {
+          // ignore
+        } else {
+          throw e;
+        }
+      }
+
+      if (backendDatabaseUri.startsWith('mssql:')) {
+        await sequelize.query(
+          `CREATE TYPE [dbo].[JSON] FROM [NVARCHAR](MAX) NULL;`
+        );
+      }
+    }
+
     db.makeDb(this.config, this.instanceAlias);
     const { models, nedb, sequelizeDb } = await db.getDb(this.instanceAlias);
     this.models = models;

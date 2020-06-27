@@ -4,16 +4,67 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+
+    services:
+#      postgres:
+#        image: postgres:10.8
+#        env:
+#          POSTGRES_USER: postgres
+#          POSTGRES_PASSWORD: postgres
+#          POSTGRES_DB: pgbd
+#        ports:
+#          - 5432:5432
+#        # needed because the postgres container does not provide a healthcheck
+#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+      mariadb:
+        image: mariadb:10.3
+        ports:
+          - 13306:3306
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+          MYSQL_DATABASE: db
+          MYSQL_ROOT_PASSWORD: password
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=5
+
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2017-CU8-ubuntu
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: SuperP4ssw0rd!
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+
     strategy:
+      fail-fast: false # if one job fails, others will not be aborted
       matrix:
+        db_uri: [
+          'mssql://sa:SuperP4ssw0rd!@localhost:1433/dbname',
+#         'postgres://postgres:postgres@localhost:5432/pgdb',
+          'mysql://root:root@localhost:3306/db2',
+          'mariadb://root:password@localhost:13306/db',
+          ''
+        ]
         node-version: [12.x]
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: scripts/build.sh
-      - run: npm run test --prefix server
+
+      - name: Build
+        run: scripts/build.sh
+
+      - name: Enable mysql server included in ubuntu-20.04 image
+        run: sudo systemctl start mysql.service
+
+      - name: Test
+        env: 
+          SQLPAD_BACKEND_DB_URI: ${{ matrix.db_uri }}
+        run: npm run test --prefix server

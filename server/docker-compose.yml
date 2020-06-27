@@ -1,0 +1,28 @@
+version: '3'
+services:
+  mssql:
+    image: 'mcr.microsoft.com/mssql/server:2017-latest'
+    hostname: 'mssql'
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=SuperP4ssw0rd!
+      - MSSQL_PID=Express
+  postgres:
+    image: postgres:9.6-alpine
+    environment:
+      POSTGRES_USER: sqlpad
+      POSTGRES_PASSWORD: sqlpad
+      POSTGRES_DB: sqlpad
+    ports:
+      - '5432:5432'
+  mysql:
+    image: mariadb:10.3
+    environment:
+      MYSQL_ROOT_PASSWORD: sqlpad
+      MYSQL_DATABASE: sqlpad
+      MYSQL_USER: sqlpad
+      MYSQL_PASSWORD: sqlpad
+    ports:
+      - '3306:3306'
