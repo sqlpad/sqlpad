@@ -105,8 +105,11 @@ class TestUtils {
       }
 
       if (backendDatabaseUri.startsWith('mssql:')) {
-        await sequelize.query(
-          `CREATE TYPE [dbo].[JSON] FROM [NVARCHAR](MAX) NULL;`
+        const sequelize2 = new Sequelize(backendDatabaseUri, {
+          logging: (message) => appLog.debug(message),
+        });
+        await sequelize2.query(
+          'CREATE TYPE [dbo].[JSON] FROM [NVARCHAR](MAX) NULL;'
         );
       }
     }
