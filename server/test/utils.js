@@ -103,11 +103,17 @@ class TestUtils {
           throw e;
         }
       }
+      await sequelize.close();
 
+      // If dealing with SQL Server, create a JSON data type in database just created
       if (backendDatabaseUri.startsWith('mssql:')) {
+        const sequelize = new Sequelize(backendDatabaseUri, {
+          logging: (message) => appLog.debug(message),
+        });
         await sequelize.query(
           `CREATE TYPE [dbo].[JSON] FROM [NVARCHAR](MAX) NULL;`
         );
+        await sequelize.close();
       }
     }
 
