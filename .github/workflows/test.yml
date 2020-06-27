@@ -6,6 +6,10 @@ jobs:
   build:
     runs-on: ubuntu-20.04
 
+    # We want to run on external PRs, but not on our own internal PRs as they'll be run
+    # by the push to the branch.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'rickbergfalk/sqlpad'
+
     strategy:
       matrix:
         node-version: [12.x]
