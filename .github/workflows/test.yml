@@ -1,6 +1,6 @@
 name: test
 
-on: [pull_request]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false # if one job fails, others will not be aborted
       matrix:
-        backendtype: ['', 'mssql', 'mysql', 'mariadb', 'postgres']
+        backendtype: [ '', 'mssql','mysql', 'mariadb', 'postgres' ]
         node-version: [12.x]
 
     steps:
