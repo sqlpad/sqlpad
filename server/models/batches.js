@@ -1,4 +1,5 @@
 const sqlLimiter = require('sql-limiter');
+const ensureJson = require('./ensure-json');
 
 class Batches {
   /**
@@ -16,12 +17,18 @@ class Batches {
       return;
     }
     batch = batch.toJSON();
+    batch.chart = ensureJson(batch.chart);
 
     const statements = await this.sequelizeDb.Statements.findAll({
       where: { batchId: id },
       order: [['sequence', 'ASC']],
     });
-    batch.statements = statements.map((s) => s.toJSON());
+    batch.statements = statements.map((s) => {
+      s = s.toJSON();
+      s.columns = ensureJson(s.columns);
+      s.error = ensureJson(s.error);
+      return s;
+    });
 
     return batch;
   }

@@ -1,3 +1,5 @@
+const ensureJson = require('./ensure-json');
+
 class SchemaInfo {
   /**
    * @param {import('../sequelize-db')}
@@ -21,7 +23,7 @@ class SchemaInfo {
       return;
     }
 
-    return doc.data;
+    return ensureJson(doc.data);
   }
 
   /**

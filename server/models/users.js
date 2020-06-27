@@ -1,4 +1,5 @@
 const passhash = require('../lib/passhash.js');
+const ensureJson = require('./ensure-json.js');
 
 class Users {
   /**
@@ -40,20 +41,28 @@ class Users {
     const user = await this.sequelizeDb.Users.findOne({
       where: { email: email.toLowerCase() },
     });
-    return user && user.toJSON();
+    if (user) {
+      let final = user.toJSON();
+      final.data = ensureJson(final.data);
+      return final;
+    }
   }
 
   async findOneById(id) {
     const user = await this.sequelizeDb.Users.findOne({ where: { id } });
-    return user && user.toJSON();
+    if (user) {
+      let final = user.toJSON();
+      final.data = ensureJson(final.data);
+      return final;
+    }
   }
 
   findOneByPasswordResetId(passwordResetId) {
     return this.sequelizeDb.Users.findOne({ where: { passwordResetId } });
   }
 
-  findAll() {
-    return this.sequelizeDb.Users.findAll({
+  async findAll() {
+    const users = await this.sequelizeDb.Users.findAll({
       attributes: [
         'id',
         'name',
@@ -65,6 +74,11 @@ class Users {
         'updatedAt',
       ],
       order: [['email']],
+    });
+
+    return users.map((user) => {
+      user.data = ensureJson(user.data);
+      return user;
     });
   }
 
