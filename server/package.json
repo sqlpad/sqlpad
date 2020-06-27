@@ -33,7 +33,7 @@
     "start": "node-dev server.js --config \"./config.dev.ini\" | pino-pretty",
     "test": "mocha test --timeout 10000 --recursive --exit --bail",
     "testmssql": "env SQLPAD_BACKEND_DB_URI='mssql://sa:SuperP4ssw0rd!@localhost:1433/dbname' npm run test",
-    "testmysql": "env SQLPAD_BACKEND_DB_URI='mysql://root:root@localhost:3306/db2' npm run test",
+    "testmysql": "env SQLPAD_BACKEND_DB_URI='mysql://root:root@localhost:23306/db2' npm run test",
     "testmariadb": "env SQLPAD_BACKEND_DB_URI='mariadb://root:password@localhost:13306/db?timezone=Etc%2FGMT0' npm run test",
     "testpostgres": "env SQLPAD_BACKEND_DB_URI='postgres://sqlpad:sqlpad@localhost:5432/sqlpad' npm run test",
     "fixlint": "eslint --fix \"**/*.js\"",
