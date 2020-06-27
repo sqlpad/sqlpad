@@ -254,15 +254,15 @@ describe('v4-to-v5', function () {
 
       if (original.signupDate) {
         assert.equal(
-          new Date(user.signupAt).toISOString(),
-          new Date(original.signupDate).toISOString(),
+          new Date(user.signupAt).toISOString().replace(/\.\d+Z/, ''),
+          new Date(original.signupDate).toISOString().replace(/\.\d+Z/, ''),
           'signupAt'
         );
       }
 
       assert.equal(
-        new Date(user.createdAt).toISOString(),
-        new Date(original.createdDate).toISOString(),
+        new Date(user.createdAt).toISOString().replace(/\.\d+Z/, ''),
+        new Date(original.createdDate).toISOString().replace(/\.\d+Z/, ''),
         'createdAt'
       );
     }
