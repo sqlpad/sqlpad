@@ -84,6 +84,9 @@ describe('v4-to-v5', function () {
       assert.equal(query.connectionId, original.connectionId, 'connectionId');
       assert.equal(query.queryText, original.queryText);
       if (original.chartConfiguration) {
+        if (typeof query.chart === 'string') {
+          query.chart = JSON.parse(query.chart);
+        }
         assert.deepEqual(query.chart, original.chartConfiguration);
       }
       assert.equal(query.createdBy, original.createdBy, 'createdBy');
