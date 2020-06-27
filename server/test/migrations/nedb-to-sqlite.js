@@ -221,8 +221,8 @@ describe('v4-to-v5', function () {
           item.user_id === original.userId &&
           item.user_email === original.userEmail &&
           item.connection_name === original.connectionName &&
-          new Date(item.start_time).toISOString() ===
-            new Date(original.startTime).toISOString() &&
+          new Date(item.start_time).toISOString().replace(/\.\d+Z/, '') ===
+            new Date(original.startTime).toISOString().replace(/\.\d+Z/, '') &&
           item.duration_ms === original.queryRunTime &&
           item.query_name === original.queryName &&
           item.query_text === original.queryText &&
