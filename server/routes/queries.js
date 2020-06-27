@@ -48,13 +48,8 @@ router.delete('/api/queries/:id', mustBeAuthenticated, wrap(deleteQuery));
 //     )
 //   )
 //   -- for tags
-//   AND id IN (
-//     SELECT query_id FROM query_tags WHERE tag = 'tag1'
-//     INTERSECT
-//     SELECT query_id FROM query_tags WHERE tag = 'tag2'
-//     INSERSECT
-//     SELECT query_id FROM query_tags WHERE tag = 'tag3'
-//   )
+//   AND id IN (SELECT query_id FROM query_tags WHERE tag = 'tag1')
+//   AND id IN (SELECT query_id FROM query_tags WHERE tag = 'tag2')
 //   -- for search
 //   AND (name LIKE '%search%' OR query_text LIKE '%search%')
 // ORDER BY
@@ -113,18 +108,17 @@ async function listQueries(req, res) {
   }
 
   if (tags) {
-    const tagSqls = [];
     tags.forEach((tag, index) => {
       let repKey = `tag_${index}`;
       const repValue = tag;
       params[repKey] = repValue;
-      tagSqls.push(`
+      whereSqls.push(`
+      queries.id IN ( 
         SELECT qt.query_id 
         FROM query_tags qt 
-        WHERE qt.tag = :${repKey}
-      `);
+        WHERE qt.tag = :${repKey} 
+      )`);
     });
-    whereSqls.push(`queries.id IN ( ${tagSqls.join(' INTERSECT ')} )`);
   }
 
   // If not admin restrict to ACL rules
