@@ -3,7 +3,32 @@ name: test
 on: [push, pull_request]
 
 jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Build
+        run: scripts/build.sh
+
+      - name: Store artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: built_node${{ matrix.node-version }}
+          path: server/public
+
   test:
+    needs: build
     runs-on: ubuntu-20.04
 
     services:
@@ -58,8 +83,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build
-        run: scripts/build.sh
+      - name: Install node modules
+        run: npm ci --prefix server
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: built_node${{ matrix.node-version }}
+          path: server/public
 
       - name: Enable mysql server included in ubuntu-20.04 image
         run: sudo systemctl start mysql.service
