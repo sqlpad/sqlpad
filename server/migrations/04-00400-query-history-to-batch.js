@@ -86,7 +86,7 @@ async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
           SELECT 
             batch_id, 
             SUM(row_count) AS row_count, 
-            MAX(incomplete) AS incomplete
+            MAX(CAST(incomplete AS INTEGER)) AS incomplete
           FROM 
             statements
           GROUP BY 
