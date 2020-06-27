@@ -106,6 +106,8 @@ describe('api/batches', function () {
     assert.equal(statement2.status, 'finished');
     assert.equal(statement2.rowCount, 2);
 
+    assert(Array.isArray(statement2.columns), 'statement.columns is an array');
+
     let column = statement2.columns[0];
     assert.equal(column.name, 'id');
     assert.equal(column.datatype, 'number');
