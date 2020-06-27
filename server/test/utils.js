@@ -20,8 +20,6 @@ before(function (done) {
 
 class TestUtils {
   constructor(args = {}) {
-    const salt = uuidv4().replace(/-/g, '');
-
     const config = new Config(
       {
         // Despite being in-memory, still need a file path for cache and session files
@@ -29,9 +27,9 @@ class TestUtils {
         dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
         appLogLevel: 'error',
-        backendDatabaseUri: process.env.SQLPAD_BACKEND_DB_URI
-          ? process.env.SQLPAD_BACKEND_DB_URI + salt
-          : '',
+        backendDatabaseUri: TestUtils.randomize_dbname(
+          process.env.SQLPAD_BACKEND_DB_URI
+        ),
         webLogLevel: 'error',
         authProxyEnabled: true,
         authProxyHeaders: 'email:X-WEBAUTH-EMAIL',
@@ -72,6 +70,14 @@ class TestUtils {
     };
   }
 
+  static randomize_dbname(uri) {
+    if (!uri) return '';
+    const salt = uuidv4().replace(/-/g, '');
+    const u = new URL(uri);
+    u.pathname += salt;
+    return u.href;
+  }
+
   prepDbDir() {
     const dbPath = this.config.get('dbPath');
     mkdirp.sync(dbPath);
@@ -88,8 +94,8 @@ class TestUtils {
   async initDbs() {
     // Create DB if needed
     const backendDatabaseUri = this.config.get('backendDatabaseUri') || '';
-    const dbname = backendDatabaseUri.split('/').pop();
     if (backendDatabaseUri) {
+      const dbname = new URL(backendDatabaseUri).pathname.replace('/', '');
       const serverUri = backendDatabaseUri.replace(`/${dbname}`, '');
       const sequelize = new Sequelize(serverUri, {
         logging: (message) => appLog.debug(message),
