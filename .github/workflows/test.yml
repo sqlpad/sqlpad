@@ -45,6 +45,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Start service for backend server
+        if: ${{ matrix.backendtype }}
+        run: docker-compose -f server/docker-compose.yml up -d ${{ matrix.backendtype }} &
+
       - name: Install node modules
         run: npm ci --prefix server
 
@@ -54,12 +58,12 @@ jobs:
           name: built_node${{ matrix.node-version }}
           path: server/public
 
-      - name: Enable backend server
+      - name: Verify backend DB service is healthy before starting
         if: ${{ matrix.backendtype }}
         run: |
-          docker-compose -f server/docker-compose.yml up -d ${{ matrix.backendtype }}
-          # Wait until container becomes healthy
-          docker-compose -f server/docker-compose.yml events | grep --max-count 1 'health_status: healthy'
+          until  docker ps | fgrep "(healthy)" | grep  ${{ matrix.backendtype }} ; do
+            docker ps
+          done
 
       - name: Test
         run: npm run test${{ matrix.backendtype }} --prefix server
