@@ -330,9 +330,10 @@ async function up(queryInterface, config, appLog, nedb) {
         },
         // This is problematic for mssql as password_reset_id is nullable
         // This is removed and replaced with a filtered unique index on non-null values
-        users_password_reset_id: {
-          fields: ['password_reset_id'],
-        },
+        // This needs to be commented out to allow migration check to pass for mssql
+        // users_password_reset_id: {
+        //   fields: ['password_reset_id'],
+        // },
       },
     }
   );
