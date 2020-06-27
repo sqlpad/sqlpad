@@ -10,7 +10,11 @@ const migrationUtils = require('../lib/migration-utils');
  */
 // eslint-disable-next-line no-unused-vars
 async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
-  await queryInterface.removeConstraint('users', 'users_password_reset_id');
+  try {
+    await queryInterface.removeConstraint('users', 'users_password_reset_id');
+  } catch (error) {
+    // ignore error. constraint may not exist depending on backend database
+  }
 
   await migrationUtils.addOrReplaceIndex(
     queryInterface,
