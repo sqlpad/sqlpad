@@ -42,7 +42,7 @@ jobs:
       fail-fast: false # if one job fails, others will not be aborted
       matrix:
         db_uri: [
-          'mssql://sa:password@SuperP4ssw0rd!:1433/dbname',
+          'mssql://sa:SuperP4ssw0rd!@localhost:1433/dbname',
 #         'postgres://postgres:postgres@localhost:5432/pgdb',
           'mysql://root:root@localhost:3306/db2',
           'mariadb://root:password@localhost:13306/db',
