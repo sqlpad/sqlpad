@@ -7,9 +7,10 @@
 // eslint-disable-next-line no-unused-vars
 async function up(queryInterface, config, appLog, nedb) {
   // Add unique constraint for (user_email, query_id) and (group_id, query_id)
-  await queryInterface.addConstraint('query_acl', ['user_email', 'query_id'], {
+  await queryInterface.addConstraint('query_acl', {
     type: 'unique',
     name: 'query_acl_user_email_query_id_key',
+    fields: ['user_email', 'query_id'],
   });
 }
 

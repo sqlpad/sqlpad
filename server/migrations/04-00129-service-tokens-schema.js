@@ -41,9 +41,10 @@ async function up(queryInterface, config, appLog, nedb) {
     },
   });
 
-  await queryInterface.addConstraint('service_tokens', ['name'], {
+  await queryInterface.addConstraint('service_tokens', {
     type: 'unique',
     name: 'service_tokens_name_key',
+    fields: ['name'],
   });
 }
 
