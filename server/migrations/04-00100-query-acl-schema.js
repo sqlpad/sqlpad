@@ -36,9 +36,10 @@ async function up(queryInterface, config, appLog, nedb) {
     },
   });
 
-  await queryInterface.addConstraint('query_acl', ['query_id', 'user_id'], {
+  await queryInterface.addConstraint('query_acl', {
     type: 'unique',
     name: 'query_acl_query_id_user_id_key',
+    fields: ['query_id', 'user_id'],
   });
 }
 
