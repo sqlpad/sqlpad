@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const { Op } = require('sequelize');
+const ensureJson = require('./ensure-json');
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
 const unlink = util.promisify(fs.unlink);
@@ -26,6 +27,8 @@ class Statements {
     if (!statement) {
       return;
     }
+    statement.columns = ensureJson(statement.columns);
+    statement.error = ensureJson(statement.error);
     return statement.toJSON();
   }
 
@@ -34,7 +37,12 @@ class Statements {
       where: { batchId },
       order: [['sequence', 'ASC']],
     });
-    items = items.map((item) => item.toJSON());
+    items = items.map((item) => {
+      const i = item.toJSON();
+      i.columns = ensureJson(i.columns);
+      i.error = ensureJson(i.error);
+      return i;
+    });
     return items;
   }
 

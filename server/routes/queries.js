@@ -48,13 +48,8 @@ router.delete('/api/queries/:id', mustBeAuthenticated, wrap(deleteQuery));
 //     )
 //   )
 //   -- for tags
-//   AND id IN (
-//     SELECT query_id FROM query_tags WHERE tag = 'tag1'
-//     INTERSECT
-//     SELECT query_id FROM query_tags WHERE tag = 'tag2'
-//     INSERSECT
-//     SELECT query_id FROM query_tags WHERE tag = 'tag3'
-//   )
+//   AND id IN (SELECT query_id FROM query_tags WHERE tag = 'tag1')
+//   AND id IN (SELECT query_id FROM query_tags WHERE tag = 'tag2')
 //   -- for search
 //   AND (name LIKE '%search%' OR query_text LIKE '%search%')
 // ORDER BY
@@ -66,7 +61,7 @@ router.delete('/api/queries/:id', mustBeAuthenticated, wrap(deleteQuery));
  * @param {Res} res
  */
 async function listQueries(req, res) {
-  const { models, user, query } = req;
+  const { models, user, query, config } = req;
   const {
     connectionId,
     tags,
@@ -113,18 +108,17 @@ async function listQueries(req, res) {
   }
 
   if (tags) {
-    const tagSqls = [];
     tags.forEach((tag, index) => {
       let repKey = `tag_${index}`;
       const repValue = tag;
       params[repKey] = repValue;
-      tagSqls.push(`
+      whereSqls.push(`
+      queries.id IN ( 
         SELECT qt.query_id 
         FROM query_tags qt 
-        WHERE qt.tag = :${repKey}
-      `);
+        WHERE qt.tag = :${repKey} 
+      )`);
     });
-    whereSqls.push(`queries.id IN ( ${tagSqls.join(' INTERSECT ')} )`);
   }
 
   // If not admin restrict to ACL rules
@@ -157,8 +151,8 @@ async function listQueries(req, res) {
   }
 
   // sortBy takes direction (+/-) and fieldname of either +name, or -updatedAt
-  let sortByDirection;
-  let sortByField;
+  let sortByDirection = 'ASC';
+  let sortByField = 'name';
   if (sortBy && sortBy.startsWith('+')) {
     sortByDirection = 'ASC';
     sortByField = sortBy.slice(1);
@@ -173,17 +167,29 @@ async function listQueries(req, res) {
   if (sortByField && !allowedSortByFields.includes(sortByField)) {
     return res.utils.error('sortBy field must be "name" or "updatedAt"');
   }
-  if (sortByField) {
-    // sortByField is validated, no concern for SQL injection here
-    sql += ` ORDER BY queries.${
-      sortByField === 'updatedAt' ? 'updated_at' : 'name'
-    } ${sortByDirection}`;
-  }
-  if (limit) {
-    sql += ` LIMIT ${parseInt(limit, 10)}`;
-  }
-  if (offset) {
-    sql += ` OFFSET ${parseInt(offset, 10)}`;
+
+  // sortByField is validated, no concern for SQL injection here
+  sql += ` ORDER BY queries.${
+    sortByField === 'updatedAt' ? 'updated_at' : 'name'
+  } ${sortByDirection}`;
+
+  const parsedOffset = parseInt(offset, 10) || 0;
+  const parsedLimit = parseInt(limit, 10);
+
+  if (config.get('backendDatabaseUri').startsWith('mssql')) {
+    if (limit) {
+      sql += `
+        OFFSET ${parsedOffset} ROWS
+        FETCH NEXT ${parsedLimit} ROWS ONLY
+      `;
+    }
+  } else {
+    if (limit) {
+      sql += ` LIMIT ${parsedLimit}`;
+    }
+    if (offset) {
+      sql += ` OFFSET ${parsedOffset}`;
+    }
   }
 
   let queries = await models.sequelizeDb.sequelize.query(sql, {
@@ -195,7 +201,7 @@ async function listQueries(req, res) {
     return {
       id: query.id,
       name: query.name,
-      chart: JSON.parse(query.chart),
+      chart: typeof query.chart === 'string' ? JSON.parse(query.chart) : null,
       queryText: query.query_text,
       createdBy: query.created_by,
       connection: {

@@ -7,8 +7,15 @@
  * @param {String} tableName
  * @param {String} indexName
  * @param {Array<String>} fields - array of field names
+ * @param {object} [options] - additional options to apply to addIndex
  */
-async function addOrReplaceIndex(queryInterface, tableName, indexName, fields) {
+async function addOrReplaceIndex(
+  queryInterface,
+  tableName,
+  indexName,
+  fields,
+  options = {}
+) {
   const indexes = await queryInterface.showIndex(tableName);
 
   const found = indexes.find((index) => index.name === indexName);
@@ -18,6 +25,7 @@ async function addOrReplaceIndex(queryInterface, tableName, indexName, fields) {
     return queryInterface.addIndex(tableName, {
       fields,
       name: indexName,
+      ...options,
     });
   }
 
@@ -45,6 +53,7 @@ async function addOrReplaceIndex(queryInterface, tableName, indexName, fields) {
     await queryInterface.addIndex(tableName, {
       fields,
       name: indexName,
+      ...options,
     });
   }
 }

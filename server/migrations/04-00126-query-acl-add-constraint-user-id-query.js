@@ -7,9 +7,10 @@
 // eslint-disable-next-line no-unused-vars
 async function up(queryInterface, config, appLog, nedb) {
   // Swap unique constraint around for (query_id, user_id) for index strategy, then add query_id index
-  await queryInterface.addConstraint('query_acl', ['user_id', 'query_id'], {
+  await queryInterface.addConstraint('query_acl', {
     type: 'unique',
     name: 'query_acl_user_id_query_id_key',
+    fields: ['user_id', 'query_id'],
   });
 }
 

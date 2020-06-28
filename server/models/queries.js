@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const ensureJson = require('./ensure-json');
 /*
 "chart": {
     "chartType": "line",
@@ -29,6 +30,7 @@ class Queries {
       return;
     }
     query = query.toJSON();
+    query.chart = ensureJson(query.chart);
     const tags = await this.sequelizeDb.QueryTags.findAll({
       attributes: ['tag'],
       where: { queryId: id },
@@ -59,6 +61,7 @@ class Queries {
       if (queryTags) {
         query.tags = queryTags.map((qt) => qt.tag);
       }
+      query.chart = ensureJson(query.chart);
       return query;
     });
     return queries;

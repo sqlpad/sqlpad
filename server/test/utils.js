@@ -5,6 +5,7 @@ const mkdirp = require('mkdirp');
 const path = require('path');
 const request = require('supertest');
 const Config = require('../lib/config');
+const { Sequelize } = require('sequelize');
 const appLog = require('../lib/app-log');
 const db = require('../lib/db');
 const makeApp = require('../app');
@@ -26,6 +27,9 @@ class TestUtils {
         dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
         appLogLevel: 'error',
+        backendDatabaseUri: TestUtils.randomize_dbname(
+          process.env.SQLPAD_BACKEND_DB_URI
+        ),
         webLogLevel: 'error',
         authProxyEnabled: true,
         authProxyHeaders: 'email:X-WEBAUTH-EMAIL',
@@ -66,6 +70,14 @@ class TestUtils {
     };
   }
 
+  static randomize_dbname(uri) {
+    if (!uri) return '';
+    const salt = uuidv4().replace(/-/g, '');
+    const u = new URL(uri);
+    u.pathname += salt;
+    return u.href;
+  }
+
   prepDbDir() {
     const dbPath = this.config.get('dbPath');
     mkdirp.sync(dbPath);
@@ -80,6 +92,34 @@ class TestUtils {
   }
 
   async initDbs() {
+    // Create DB if needed
+    const backendDatabaseUri = this.config.get('backendDatabaseUri') || '';
+    if (backendDatabaseUri) {
+      const dbname = new URL(backendDatabaseUri).pathname.replace('/', '');
+      const serverUri = backendDatabaseUri.replace(`/${dbname}`, '');
+      const sequelize = new Sequelize(serverUri, {
+        logging: (message) => appLog.debug(message),
+      });
+      try {
+        await sequelize.query(`CREATE DATABASE ${dbname};`);
+      } catch (e) {
+        if (e.parent.message.includes('database exists')) {
+          // ignore
+        } else {
+          throw e;
+        }
+      }
+
+      if (backendDatabaseUri.startsWith('mssql:')) {
+        const sequelize2 = new Sequelize(backendDatabaseUri, {
+          logging: (message) => appLog.debug(message),
+        });
+        await sequelize2.query(
+          'CREATE TYPE [dbo].[JSON] FROM [NVARCHAR](MAX) NULL;'
+        );
+      }
+    }
+
     db.makeDb(this.config, this.instanceAlias);
     const { models, nedb, sequelizeDb } = await db.getDb(this.instanceAlias);
     this.models = models;

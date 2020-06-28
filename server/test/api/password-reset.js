@@ -29,9 +29,9 @@ describe('api/password-reset', function () {
 
   it('Errors for wrong passwordResetId', async function () {
     await setReset();
-    const body = await utils.post(
+    await utils.post(
       'admin',
-      `/api/password-reset/123`,
+      `/api/password-reset/${uuidv4()}`,
       {
         email: 'admin@test.com',
         password: 'admin',
@@ -39,7 +39,6 @@ describe('api/password-reset', function () {
       },
       400
     );
-    assert.equal(body.title, 'Password reset permissions not found');
   });
 
   it('Errors for wrong email', async function () {

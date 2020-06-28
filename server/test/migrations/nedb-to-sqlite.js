@@ -84,18 +84,21 @@ describe('v4-to-v5', function () {
       assert.equal(query.connectionId, original.connectionId, 'connectionId');
       assert.equal(query.queryText, original.queryText);
       if (original.chartConfiguration) {
+        if (typeof query.chart === 'string') {
+          query.chart = JSON.parse(query.chart);
+        }
         assert.deepEqual(query.chart, original.chartConfiguration);
       }
       assert.equal(query.createdBy, original.createdBy, 'createdBy');
       assert.equal(query.updatedBy, original.modifiedBy, 'updatedBy');
       assert.equal(
-        new Date(query.updatedAt).toISOString(),
-        new Date(original.modifiedDate).toISOString(),
+        new Date(query.updatedAt).toISOString().replace(/\.\d+Z/, ''),
+        new Date(original.modifiedDate).toISOString().replace(/\.\d+Z/, ''),
         'updatedAt'
       );
       assert.equal(
-        new Date(query.createdAt).toISOString(),
-        new Date(original.createdDate).toISOString(),
+        new Date(query.createdAt).toISOString().replace(/\.\d+Z/, ''),
+        new Date(original.createdDate).toISOString().replace(/\.\d+Z/, ''),
         'createdAt'
       );
 
@@ -158,13 +161,13 @@ describe('v4-to-v5', function () {
       }
 
       assert.equal(
-        new Date(connection.updatedAt).toISOString(),
-        new Date(original.modifiedDate).toISOString(),
+        new Date(connection.updatedAt).toISOString().replace(/\.\d+Z/, ''),
+        new Date(original.modifiedDate).toISOString().replace(/\.\d+Z/, ''),
         'updatedAt'
       );
       assert.equal(
-        new Date(connection.createdAt).toISOString(),
-        new Date(original.createdDate).toISOString(),
+        new Date(connection.createdAt).toISOString().replace(/\.\d+Z/, ''),
+        new Date(original.createdDate).toISOString().replace(/\.\d+Z/, ''),
         'createdAt'
       );
     }
@@ -193,8 +196,10 @@ describe('v4-to-v5', function () {
       assert.equal(connectionAccess.duration, original.duration);
 
       assert.equal(
-        new Date(connectionAccess.expiryDate).toISOString(),
-        new Date(original.expiryDate).toISOString(),
+        new Date(connectionAccess.expiryDate)
+          .toISOString()
+          .replace(/\.\d+Z/, ''),
+        new Date(original.expiryDate).toISOString().replace(/\.\d+Z/, ''),
         'expiryDate'
       );
       assert(connectionAccess.createdAt);
@@ -219,12 +224,13 @@ describe('v4-to-v5', function () {
           item.user_id === original.userId &&
           item.user_email === original.userEmail &&
           item.connection_name === original.connectionName &&
-          new Date(item.start_time).toISOString() ===
-            new Date(original.startTime).toISOString() &&
+          new Date(item.start_time).toISOString().replace(/\.\d+Z/, '') ===
+            new Date(original.startTime).toISOString().replace(/\.\d+Z/, '') &&
           item.duration_ms === original.queryRunTime &&
           item.query_name === original.queryName &&
           item.query_text === original.queryText &&
-          item.row_count === original.rowCount
+          // numbers come back as strings for MySQL
+          parseInt(item.row_count, 10) === parseInt(original.rowCount, 10)
       );
 
       // query id could be string or null and null !== null
@@ -252,15 +258,15 @@ describe('v4-to-v5', function () {
 
       if (original.signupDate) {
         assert.equal(
-          new Date(user.signupAt).toISOString(),
-          new Date(original.signupDate).toISOString(),
+          new Date(user.signupAt).toISOString().replace(/\.\d+Z/, ''),
+          new Date(original.signupDate).toISOString().replace(/\.\d+Z/, ''),
           'signupAt'
         );
       }
 
       assert.equal(
-        new Date(user.createdAt).toISOString(),
-        new Date(original.createdDate).toISOString(),
+        new Date(user.createdAt).toISOString().replace(/\.\d+Z/, ''),
+        new Date(original.createdDate).toISOString().replace(/\.\d+Z/, ''),
         'createdAt'
       );
     }

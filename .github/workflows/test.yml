@@ -3,17 +3,72 @@ name: test
 on: [push, pull_request]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-20.04
+
+    # We want to run on external PRs, but not on our own internal PRs as they'll be run
+    # by the push to the branch.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != 'rickbergfalk/sqlpad'
+
     strategy:
       matrix:
         node-version: [12.x]
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: scripts/build.sh
-      - run: npm run test --prefix server
+
+      - name: Build for ${{ matrix.node-version }}
+        run: scripts/build.sh
+
+      - name: Store artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: built_node${{ matrix.node-version }}
+          path: server/public
+
+  test:
+    needs: build
+    runs-on: ubuntu-20.04
+
+    strategy:
+      fail-fast: false # if one job fails, others will not be aborted
+      matrix:
+        backendtype: [ '', 'mssql','mysql', 'mariadb', 'postgres' ]
+        node-version: [12.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Start service for backend server
+        if: ${{ matrix.backendtype }}
+        run: docker-compose -f server/docker-compose.yml up -d ${{ matrix.backendtype }} &
+
+      - name: Install node modules
+        run: npm ci --prefix server
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@v1
+        with:
+          name: built_node${{ matrix.node-version }}
+          path: server/public
+
+      - name: Verify backend DB service is healthy before starting
+        if: ${{ matrix.backendtype }}
+        run: |
+          until  docker ps | fgrep "(healthy)" | grep  ${{ matrix.backendtype }} ; do
+            docker ps
+            sleep 0.5
+          done
+
+      - name: Test
+        run: npm run test${{ matrix.backendtype }} --prefix server
