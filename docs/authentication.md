@@ -101,12 +101,30 @@ SQLPad users do not need to be added ahead of time, and may be created on the fl
 LDAP-based authentication can be enabled by setting the necessary environment variables:
 
 - `ENABLE_LDAP_AUTH`
-- `LDAP_URL`
+- `LDAP_URL` (support protocals: `ldap://` and `ldaps://`)
 - `LDAP_BASE_DN`
 - `LDAP_USERNAME`
 - `LDAP_PASSWORD`
+- `DISABLE_USERPASS_AUTH`=`false` (should enable local user logins)
 
-Users sign in to LDAP using a username (and not an e-mail address).
+or LDAP settings in INI format are as follows:
+
+```ini
+; Set to TRUE to disable built-in user authentication. Use to restrict auth to OAuth only.
+disableUserpassAuth="false"
+; Set to TRUE if Ldap disable, FALSE if ldap enable
+enableLdapAuth="true"
+; LDAP Url. ldap and ldaps protocals are supported.
+ldapUrl="ldap://localhost:389"
+; The base DN for LDAP setup.
+ldapBaseDN="dc=domain,dc=com"
+; The bind user will be used to lookup information about other LDAP users.
+ldapUsername="bind_user"
+; The pawword to bind with for the lookup user.
+ldapPassword="bind_password"
+```
+
+LDAP-based authentication can be enabled and used with local authencation together. LDAP-based users need to be added and set relavant role ahead of time. Until now, when LDAP-based authentication enabled, local user login/registration should not be disabled. Users can sign in to SQLPad with a LDAP username (should not an e-mail address) and LDAP password using LDAP-based authentication, and with an e-mail address and local password by local authencation.
 
 ## Allowed Domains for User Administration
 
