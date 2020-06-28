@@ -288,6 +288,6 @@ describe('api/batches', function () {
       exists = false;
     }
 
-    // TODO // assert(!exists);
+    assert(!exists);
   });
 });
