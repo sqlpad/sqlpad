@@ -280,6 +280,9 @@ describe('api/batches', function () {
     }
     assert(exists);
 
+    // Ensure at least full second has passed for MySQL test (lacks subsecond data)
+    await wait(1100);
+
     await utils.models.statements.removeOldEntries();
 
     try {
