@@ -8,7 +8,7 @@ const appLog = require('../lib/app-log');
 
 /**
  * An auth-proxy custom strategy
- * If enabled, iterate over headers and map the values to a user object
+ * Iterate over headers and map the values to a user object
  * Look up that user and perform usual auth validations
  * @param {Req} req
  * @param {function} done
@@ -50,6 +50,10 @@ async function authProxyStrategy(req, done) {
     // If existing user is found, see if there are changes and update it
     // Only perform update if actual changes though
     if (existingUser) {
+      if (existingUser.disabled) {
+        return done(null, false);
+      }
+
       const existingId = existingUser.id;
       // Get a subset of existing user to use for comparison
       const existingForCompare = {};
@@ -73,7 +77,9 @@ async function authProxyStrategy(req, done) {
       }
 
       // Auto create the user
-      const newUser = await models.users.create(headerUser);
+      const newUser = await models.users.create({
+        ...headerUser,
+      });
       return done(null, newUser);
     }
 

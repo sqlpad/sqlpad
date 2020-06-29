@@ -68,7 +68,7 @@ class Users {
         'name',
         'email',
         'role',
-        'data',
+        'disabled',
         'signupAt',
         'createdAt',
         'updatedAt',
@@ -77,8 +77,7 @@ class Users {
     });
 
     return users.map((user) => {
-      user.data = ensureJson(user.data);
-      return user;
+      return user.toJSON();
     });
   }
 

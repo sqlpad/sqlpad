@@ -154,7 +154,7 @@ describe('passport-proxy-auth', function () {
     await utils.init();
 
     const { body } = await request(utils.app)
-      .get('/api/users')
+      .get('/api/users/test001')
       .set('X-WEBAUTH-ID', 'test001')
       .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
       .set('X-WEBAUTH-NAME', 'Test user')
@@ -162,7 +162,7 @@ describe('passport-proxy-auth', function () {
       .set('X-WEBAUTH-CUSTOM-FIELD', 'custom data value')
       .expect(200);
 
-    const user = body[0];
+    const user = body;
     assert.equal(user.email, 'test@sqlpad.com');
     assert.equal(user.role, 'admin');
     assert.equal(user.name, 'Test user');
@@ -204,22 +204,26 @@ describe('passport-proxy-auth', function () {
     assert.equal(user.role, 'admin');
   });
 
-  it('Matches existing user via id', async function () {
+  it('Disabled user cannot log in (auth proxy)', async function () {
     const utils = new TestUtil({
       authProxyEnabled: true,
       authProxyHeaders: 'id:X-WEBAUTH-ID',
     });
     await utils.init(true);
 
-    const id = utils.users.admin.id;
+    const id = utils.users.editor.id;
 
-    const { body } = await request(utils.app)
-      .get('/api/users')
+    await request(utils.app)
+      .get('/api/app')
       .set('X-WEBAUTH-ID', id)
       .expect(200);
 
-    const user = body.find((user) => user.id === id);
-    assert.equal(user.role, 'admin');
+    await utils.models.users.update(id, { disabled: true });
+
+    await request(utils.app)
+      .get('/api/app')
+      .set('X-WEBAUTH-ID', id)
+      .expect(401);
   });
 
   it('Updates existing user if changes', async function () {

@@ -22,6 +22,9 @@ function enableLocal(config) {
           if (!user) {
             return done(null, false, { message: 'wrong email or password' });
           }
+          if (user.disabled) {
+            return done(null, false);
+          }
           const isMatch = await passhash.comparePassword(
             password,
             user.passhash
