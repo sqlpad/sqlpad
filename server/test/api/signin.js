@@ -134,6 +134,68 @@ describe('api/signin', function () {
     });
   });
 
+  it('disabled user cannot log in', async function () {
+    const utils = new TestUtil({
+      authProxyEnabled: false,
+    });
+
+    await utils.init();
+
+    // Add admin user via signup
+    await request(utils.app)
+      .post('/api/signup')
+      .send({
+        password: 'admin',
+        passwordConfirmation: 'admin',
+        email: 'admin@test.com',
+      })
+      .expect(200);
+
+    // Add user via API using admin
+    await request(utils.app)
+      .post('/api/users')
+      .auth('admin@test.com', 'admin')
+      .send({
+        email: 'user@test.com',
+        role: 'editor',
+      })
+      .expect(200);
+
+    await request(utils.app)
+      .post('/api/signup')
+      .send({
+        password: 'password',
+        passwordConfirmation: 'password',
+        email: 'user@test.com',
+      })
+      .expect(200);
+
+    // User can sign in
+    await request(utils.app)
+      .post('/api/signin')
+      .send({
+        email: 'user@test.com',
+        password: 'password',
+      })
+      .expect(200);
+
+    // Disabled user can't sign in
+    const user = await utils.models.users.findOneByEmail('user@test.com');
+    await request(utils.app)
+      .put(`/api/users/${user.id}`)
+      .auth('admin@test.com', 'admin')
+      .send({ disabled: true })
+      .expect(200);
+
+    await request(utils.app)
+      .post('/api/signin')
+      .send({
+        email: 'user@test.com',
+        password: 'password',
+      })
+      .expect(401);
+  });
+
   describe('auth proxy', function () {
     it('logs in with session', async function () {
       const utils = new TestUtil({

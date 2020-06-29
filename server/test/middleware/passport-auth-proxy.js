@@ -204,22 +204,26 @@ describe('passport-proxy-auth', function () {
     assert.equal(user.role, 'admin');
   });
 
-  it('Matches existing user via id', async function () {
+  it('Disabled user cannot log in (auth proxy)', async function () {
     const utils = new TestUtil({
       authProxyEnabled: true,
       authProxyHeaders: 'id:X-WEBAUTH-ID',
     });
     await utils.init(true);
 
-    const id = utils.users.admin.id;
+    const id = utils.users.editor.id;
 
-    const { body } = await request(utils.app)
-      .get('/api/users')
+    await request(utils.app)
+      .get('/api/app')
       .set('X-WEBAUTH-ID', id)
       .expect(200);
 
-    const user = body.find((user) => user.id === id);
-    assert.equal(user.role, 'admin');
+    await utils.models.users.update(id, { disabled: true });
+
+    await request(utils.app)
+      .get('/api/app')
+      .set('X-WEBAUTH-ID', id)
+      .expect(401);
   });
 
   it('Updates existing user if changes', async function () {
