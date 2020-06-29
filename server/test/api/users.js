@@ -34,6 +34,7 @@ describe('api/users', function () {
     assert.equal(user.disabled, null);
     assert(user.updatedAt);
     assert(user.createdAt);
+    assert(!user.hasOwnProperty('passhash'));
   });
 
   it('Gets list of users', async function () {
@@ -45,9 +46,20 @@ describe('api/users', function () {
     assert.equal(user.role, 'admin');
     assert(user.hasOwnProperty('name'));
     assert(user.hasOwnProperty('disabled'));
-    assert(user.hasOwnProperty('data'));
     assert.equal(typeof user.createdAt, 'string');
     assert.equal(typeof user.updatedAt, 'string');
+    // passhash and data are sensitive and should not exist
+    assert(!user.hasOwnProperty('passhash'));
+    assert(!user.hasOwnProperty('data'));
+  });
+
+  it('Gets single user', async function () {
+    const u = await utils.get('admin', `/api/users/${user.id}`);
+    assert.equal(u.email, user.email);
+    // passhash should *not* be present
+    assert(!u.hasOwnProperty('passhash'));
+    // Requires admin access
+    await utils.get('editor', `/api/users/${user.id}`, 403);
   });
 
   it('Updates user', async function () {
@@ -66,6 +78,7 @@ describe('api/users', function () {
     assert.equal(body.passwordResetId, passwordResetId);
     assert.equal(body.data.test, true);
     assert(new Date(body.updatedAt) >= new Date(user.updatedAt));
+    assert(!body.hasOwnProperty('passhash'));
   });
 
   it('Requires authentication', function () {

@@ -154,7 +154,7 @@ describe('passport-proxy-auth', function () {
     await utils.init();
 
     const { body } = await request(utils.app)
-      .get('/api/users')
+      .get('/api/users/test001')
       .set('X-WEBAUTH-ID', 'test001')
       .set('X-WEBAUTH-EMAIL', 'test@sqlpad.com')
       .set('X-WEBAUTH-NAME', 'Test user')
@@ -162,7 +162,7 @@ describe('passport-proxy-auth', function () {
       .set('X-WEBAUTH-CUSTOM-FIELD', 'custom data value')
       .expect(200);
 
-    const user = body[0];
+    const user = body;
     assert.equal(user.email, 'test@sqlpad.com');
     assert.equal(user.role, 'admin');
     assert.equal(user.name, 'Test user');
