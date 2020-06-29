@@ -21,6 +21,9 @@ function enableBasic(config) {
           if (!user) {
             return callback(null, false);
           }
+          if (user.disabled) {
+            return callback(null, false);
+          }
           const isMatch = await passhash.comparePassword(
             password,
             user.passhash

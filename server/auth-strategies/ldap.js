@@ -32,6 +32,9 @@ function enableLdap(config) {
               message: 'wrong LDAP username or password',
             });
           }
+          if (user.disabled) {
+            return done(null, false);
+          }
           return done(null, {
             id: user.id,
             role: user.role,

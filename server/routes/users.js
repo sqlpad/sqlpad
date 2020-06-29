@@ -75,6 +75,9 @@ async function updateUser(req, res) {
   if (body.data) {
     updateUser.data = body.data;
   }
+  if (body.hasOwnProperty('disabled')) {
+    updateUser.disabled = body.disabled;
+  }
 
   const updatedUser = await models.users.update(params.id, updateUser);
   return res.utils.data(updatedUser);

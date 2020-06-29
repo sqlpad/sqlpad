@@ -8,7 +8,6 @@ require('../typedefs');
 function getHeaderUser(req) {
   const { config } = req;
 
-  // If auth proxy is not enabled don't even try
   if (!config.get('authProxyEnabled')) {
     return null;
   }

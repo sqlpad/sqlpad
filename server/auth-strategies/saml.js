@@ -42,6 +42,9 @@ function enableSaml(config) {
           ]);
 
           if (user) {
+            if (user.disabled) {
+              return done(null, false);
+            }
             return done(null, {
               id: user.id,
               role: user.role,

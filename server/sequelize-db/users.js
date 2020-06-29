@@ -27,6 +27,9 @@ module.exports = function (sequelize) {
       name: {
         type: DataTypes.STRING,
       },
+      disabled: {
+        type: DataTypes.BOOLEAN,
+      },
       passhash: {
         type: DataTypes.STRING,
       },

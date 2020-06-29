@@ -26,6 +26,9 @@ async function passportGoogleStrategyHandler(
     ]);
 
     if (user) {
+      if (user.disabled) {
+        return done(null, false);
+      }
       user.signupAt = new Date();
       const newUser = await models.users.update(user.id, {
         signupAt: new Date(),

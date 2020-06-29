@@ -23,7 +23,7 @@ passport.deserializeUser(async function (req, id, done) {
   const { models } = req;
   try {
     const user = await models.users.findOneById(id);
-    if (user) {
+    if (user && !user.disabled) {
       return done(null, user);
     }
     done(null, false);
