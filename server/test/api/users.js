@@ -31,6 +31,7 @@ describe('api/users', function () {
     assert.equal(user.name, 'user1');
     assert.equal(user.role, 'editor');
     assert.equal(user.data.create, true);
+    assert.equal(user.disabled, null);
     assert(user.updatedAt);
     assert(user.createdAt);
   });
@@ -39,6 +40,14 @@ describe('api/users', function () {
     const body = await utils.get('admin', '/api/users');
     TestUtils.validateListSuccessBody(body);
     assert.equal(body.length, 4, '4 length');
+    const user = body.find((u) => u.email === 'admin@test.com');
+    assert.equal(typeof user.id, 'string');
+    assert.equal(user.role, 'admin');
+    assert(user.hasOwnProperty('name'));
+    assert(user.hasOwnProperty('disabled'));
+    assert(user.hasOwnProperty('data'));
+    assert.equal(typeof user.createdAt, 'string');
+    assert.equal(typeof user.updatedAt, 'string');
   });
 
   it('Updates user', async function () {
