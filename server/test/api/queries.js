@@ -47,6 +47,9 @@ describe('api/queries', function () {
     assert(query.canRead);
     assert(query.canWrite);
     assert(query.canDelete);
+    assert.equal(query.createdByUser.id, query.createdBy);
+    assert(query.createdByUser.hasOwnProperty('email'));
+    assert(query.createdByUser.hasOwnProperty('name'));
 
     assert.equal(body.length, 1, '1 length');
   });

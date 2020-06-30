@@ -79,13 +79,16 @@ async function listQueries(req, res) {
       queries.name,
       queries.chart,
       queries.query_text,
-      queries.created_by,
       queries.connection_id,
       connections.name AS connection_name,
-      connections.driver AS connection_driver
+      connections.driver AS connection_driver,
+      queries.created_by AS created_by_user_id,
+      users.name AS created_by_user_name,
+      users.email AS created_by_user_email
     FROM
       queries
       LEFT JOIN connections ON queries.connection_id = connections.id
+      LEFT JOIN users ON queries.created_by = users.id
   `;
   const whereSqls = [];
   const params = {};
@@ -201,11 +204,16 @@ async function listQueries(req, res) {
       name: query.name,
       chart: typeof query.chart === 'string' ? JSON.parse(query.chart) : null,
       queryText: query.query_text,
-      createdBy: query.created_by,
       connection: {
         id: query.connection_id,
         name: query.connection_name,
         driver: query.connection_driver,
+      },
+      createdBy: query.created_by_user_id,
+      createdByUser: {
+        id: query.created_by_user_id,
+        name: query.created_by_user_name,
+        email: query.created_by_user_email,
       },
     };
   });
