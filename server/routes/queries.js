@@ -308,7 +308,7 @@ async function createQuery(req, res) {
   const newQuery = await models.upsertQuery(query);
 
   // This is async, but save operation doesn't care about when/if finished
-  pushQueryToSlack(req.config, newQuery);
+  pushQueryToSlack(req.config, newQuery, user);
 
   return res.utils.data(decorateQueryUserAccess(newQuery, user));
 }
