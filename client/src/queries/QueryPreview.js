@@ -10,12 +10,19 @@ function QueryPreview({ query }) {
     return null;
   }
 
+  let userReference = query.createdBy;
+  if (query.createdByUser) {
+    userReference = query.createdByUser.name || query.createdByUser.email;
+  }
+
+  const connectionName = query.connection && query.connection.name;
+
   return (
     <div className={styles.preview}>
       <div>
         <div className={styles.previewQueryName}>{query.name}</div>
-        <div>Connection {query.connectionName}</div>
-        <div>By {query.createdBy}</div>
+        <div>Connection {connectionName}</div>
+        <div>By {userReference}</div>
         <div>
           {query.tags && query.tags.map((tag) => <Tag key={tag}>{tag}</Tag>)}
         </div>

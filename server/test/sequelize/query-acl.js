@@ -17,16 +17,6 @@ describe('QueryAcl', function () {
     assert.strictEqual(qa1.userId, 'test');
     assert.strictEqual(qa1.write, false);
 
-    const qa2 = await sdb.QueryAcl.create({
-      queryId,
-      userEmail: 'test@sqlpad.com',
-    });
-    assert.strictEqual(qa2.queryId, queryId);
-    assert(!qa2.userId);
-    assert.strictEqual(qa2.userEmail, 'test@sqlpad.com');
-    assert(!qa2.groupId);
-    assert.strictEqual(qa2.write, false);
-
     const qa3 = await sdb.QueryAcl.create({
       queryId,
       groupId: 'group',
@@ -51,17 +41,6 @@ describe('QueryAcl', function () {
       await utils.models.queryAcl.create({
         queryId: 'q1',
         userId: 'u1',
-      });
-    });
-
-    await assert.rejects(async () => {
-      await utils.models.queryAcl.create({
-        queryId: 'q1',
-        userEmail: 'e1',
-      });
-      await utils.models.queryAcl.create({
-        queryId: 'q1',
-        userEmail: 'e1',
       });
     });
 

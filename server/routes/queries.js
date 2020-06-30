@@ -79,13 +79,16 @@ async function listQueries(req, res) {
       queries.name,
       queries.chart,
       queries.query_text,
-      queries.created_by,
       queries.connection_id,
       connections.name AS connection_name,
-      connections.driver AS connection_driver
+      connections.driver AS connection_driver,
+      queries.created_by AS created_by_user_id,
+      users.name AS created_by_user_name,
+      users.email AS created_by_user_email
     FROM
       queries
       LEFT JOIN connections ON queries.connection_id = connections.id
+      LEFT JOIN users ON queries.created_by = users.id
   `;
   const whereSqls = [];
   const params = {};
@@ -100,11 +103,11 @@ async function listQueries(req, res) {
 
   if (typeof ownedByUser === 'string') {
     if (ownedByUser === 'true') {
-      whereSqls.push('queries.created_by = :userEmail');
+      whereSqls.push('queries.created_by = :userId');
     } else if (ownedByUser === 'false') {
-      whereSqls.push('queries.created_by != :userEmail');
+      whereSqls.push('queries.created_by != :userId');
     }
-    params.userEmail = user.email;
+    params.userId = user.id;
   }
 
   if (tags) {
@@ -125,17 +128,15 @@ async function listQueries(req, res) {
   // User can see queries they've created, or queries they have access to via ACL
   if (user.role !== 'admin') {
     whereSqls.push(`
-      queries.created_by = :userEmail
+      queries.created_by = :userId
       OR queries.id IN ( 
         SELECT qa.query_id 
         FROM query_acl qa 
         WHERE 
           qa.group_id = '__EVERYONE__' 
-          OR user_id = :userId 
-          OR user_email = :userEmail 
+          OR user_id = :userId
       )
     `);
-    params.userEmail = user.email;
     params.userId = user.id;
   }
 
@@ -203,11 +204,16 @@ async function listQueries(req, res) {
       name: query.name,
       chart: typeof query.chart === 'string' ? JSON.parse(query.chart) : null,
       queryText: query.query_text,
-      createdBy: query.created_by,
       connection: {
         id: query.connection_id,
         name: query.connection_name,
         driver: query.connection_driver,
+      },
+      createdBy: query.created_by_user_id,
+      createdByUser: {
+        id: query.created_by_user_id,
+        name: query.created_by_user_name,
+        email: query.created_by_user_email,
       },
     };
   });
@@ -295,7 +301,6 @@ router.get('/api/queries/:id', mustBeAuthenticated, wrap(getQuery));
 async function createQuery(req, res) {
   const { models, body, user } = req;
   const { name, tags, connectionId, queryText, chart, acl } = body;
-  const { email } = user;
 
   const query = {
     name: name || 'No Name Query',
@@ -303,15 +308,15 @@ async function createQuery(req, res) {
     connectionId,
     queryText,
     chart,
-    createdBy: email,
-    updatedBy: email,
+    createdBy: user.id,
+    updatedBy: user.id,
     acl,
   };
 
   const newQuery = await models.upsertQuery(query);
 
   // This is async, but save operation doesn't care about when/if finished
-  pushQueryToSlack(req.config, newQuery);
+  pushQueryToSlack(req.config, newQuery, user);
 
   return res.utils.data(decorateQueryUserAccess(newQuery, user));
 }
@@ -344,7 +349,7 @@ async function updateQuery(req, res) {
     connectionId,
     queryText,
     chart,
-    updatedBy: user.email,
+    updatedBy: user.id,
     acl,
   });
 

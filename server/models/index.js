@@ -72,6 +72,28 @@ class Models {
     }
     query.acl = await this.queryAcl.findAllByQueryId(id);
     query.acl = query.acl.map((acl) => acl.toJSON());
+
+    // TODO this method returns more info that regular users should have
+    // Should there be a smaller users find one?
+    // Maybe just select the fields needed now that an ORM is in place
+    // Not everything neatly maps to access patterns needed
+    const createdBy = await this.users.findOneById(query.createdBy);
+    const updatedBy = await this.users.findOneById(query.updatedBy);
+
+    query.createdByUser = {
+      id: createdBy.id,
+      name: createdBy.name,
+      email: createdBy.email,
+    };
+
+    if (updatedBy) {
+      query.updatedByUser = {
+        id: updatedBy.id,
+        name: createdBy.name,
+        email: createdBy.email,
+      };
+    }
+
     return query;
   }
 

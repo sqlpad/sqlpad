@@ -117,6 +117,7 @@ async function deleteUser(req, res) {
 
 router.get('/api/users', mustBeAuthenticated, wrap(listUsers));
 router.post('/api/users', mustBeAdmin, wrap(createUser));
+// TODO allow regular users to use getUser API, but restrict data returned
 router.get('/api/users/:id', mustBeAdmin, wrap(getUser));
 router.put('/api/users/:id', mustBeAdmin, wrap(updateUser));
 router.delete('/api/users/:id', mustBeAdmin, wrap(deleteUser));

@@ -1,7 +1,7 @@
 const appLog = require('./app-log');
 const request = require('request');
 
-function pushQueryToSlack(config, query) {
+function pushQueryToSlack(config, query, user) {
   const SLACK_WEBHOOK = config.get('slackWebhook');
   if (SLACK_WEBHOOK) {
     const PUBLIC_URL = config.get('publicUrl');
@@ -13,7 +13,7 @@ function pushQueryToSlack(config, query) {
         text: `New Query <${PUBLIC_URL}${BASE_URL}/queries/${query.id}|${
           query.name
         }> 
-saved by ${query.updatedBy || query.createdBy} on SQLPad 
+saved by ${user.name || user.email} on SQLPad 
 ${'```sql'}
 ${query.queryText}
 ${'```'}`,

@@ -39,14 +39,12 @@ module.exports = function (sequelize) {
           },
         },
       },
-      // createdBy is an email address
-      // (possibly weird, but user ids may not be known ahead of time
-      // email is human friendly too
+      // createdBy used to be email address, but now stores userId as of v5
       createdBy: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      // updatedBy is also an email address.
+      // updatedBy used to be email address, but now stores userId as of v5
       updatedBy: {
         type: DataTypes.STRING,
       },
