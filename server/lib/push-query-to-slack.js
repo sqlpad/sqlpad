@@ -7,6 +7,7 @@ function pushQueryToSlack(config, query) {
     const PUBLIC_URL = config.get('publicUrl');
     const BASE_URL = config.get('baseUrl');
 
+    // TODO FIXME XXX updatedBy and createdBy are now USER IDS
     const options = {
       method: 'post',
       body: {
