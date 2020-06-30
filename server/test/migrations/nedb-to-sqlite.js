@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const assert = require('assert');
 const path = require('path');
 const Sequelize = require('sequelize');
@@ -27,7 +28,7 @@ function copyDbFiles(source, destination) {
   });
 }
 
-describe('v4-to-v5', function () {
+describe('nedb-to-sqlite', function () {
   /**
    * @type {TestUtils}
    */
@@ -79,6 +80,11 @@ describe('v4-to-v5', function () {
     for (const original of originalQueries) {
       const query = queries.find((item) => item.id === original._id);
 
+      // createdBy and updatedBy were converted to userId instead of email
+      const createdUser = await utils.sequelizeDb.Users.findOne({
+        where: { email: original.createdBy },
+      });
+
       assert.equal(query.id, original._id);
       assert.equal(query.name, original.name);
       assert.equal(query.connectionId, original.connectionId, 'connectionId');
@@ -89,8 +95,7 @@ describe('v4-to-v5', function () {
         }
         assert.deepEqual(query.chart, original.chartConfiguration);
       }
-      assert.equal(query.createdBy, original.createdBy, 'createdBy');
-      assert.equal(query.updatedBy, original.modifiedBy, 'updatedBy');
+      assert.equal(query.createdBy, createdUser.id, 'createdBy');
       assert.equal(
         new Date(query.updatedAt).toISOString().replace(/\.\d+Z/, ''),
         new Date(original.modifiedDate).toISOString().replace(/\.\d+Z/, ''),

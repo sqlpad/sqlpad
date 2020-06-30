@@ -83,7 +83,6 @@ describe('api/queries', function () {
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
-        { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
       ],
     });
@@ -97,7 +96,6 @@ describe('api/queries', function () {
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
-        { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { userId: utils.users.editor2.id, write: false },
       ],
@@ -114,7 +112,6 @@ describe('api/queries', function () {
         ...createQueryBody,
         acl: [
           { userId: 'fakeUser', write: true },
-          { userEmail: 'fakeEmail', write: true },
           { groupId: 'fakeGroup', write: true },
           { groupId: '__EVERYONE__', write: false },
           { userId: utils.users.editor2.id, write: false },
@@ -129,7 +126,6 @@ describe('api/queries', function () {
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
-        { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { groupId: '__EVERYONE__', write: false },
         { userId: utils.users.editor2.id, write: true },
@@ -143,7 +139,6 @@ describe('api/queries', function () {
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
-        { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { groupId: '__EVERYONE__', write: false },
         { userId: utils.users.editor2.id, write: false },
@@ -162,7 +157,6 @@ describe('api/queries', function () {
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
-        { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { groupId: '__EVERYONE__', write: true },
         { userId: utils.users.editor2.id, write: false },
@@ -178,7 +172,6 @@ describe('api/queries', function () {
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
-        { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { userId: utils.users.editor2.id, write: false },
       ],
@@ -193,7 +186,6 @@ describe('api/queries', function () {
         ...createQueryBody,
         acl: [
           { userId: 'fakeUser', write: true },
-          { userEmail: 'fakeEmail', write: true },
           { groupId: 'fakeGroup', write: true },
           { groupId: '__EVERYONE__', write: false },
           { userId: utils.users.editor2.id, write: false },
@@ -208,7 +200,6 @@ describe('api/queries', function () {
       name: 'test query2',
       acl: [
         { userId: 'fakeUser', write: true },
-        { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { userId: utils.users.editor2.id, write: true },
       ],
@@ -219,7 +210,6 @@ describe('api/queries', function () {
       ...createQueryBody,
       acl: [
         { userId: 'fakeUser', write: true },
-        { userEmail: 'fakeEmail', write: true },
         { groupId: 'fakeGroup', write: true },
         { userId: utils.users.editor2.id, write: false },
       ],
@@ -245,10 +235,10 @@ describe('api/queries', function () {
     });
   });
 
-  it('ACL userEmail gives access like expected', async function () {
+  it('ACL userId gives access like expected', async function () {
     const body1 = await utils.put('editor', `/api/queries/${query.id}`, {
       ...createQueryBody,
-      acl: [{ userEmail: 'editor2@test.com', write: true }],
+      acl: [{ userId: utils.users.editor2.id, write: true }],
     });
     // can<Action> represents what user that made API call can do
     assert.strictEqual(body1.canRead, true);
@@ -263,7 +253,7 @@ describe('api/queries', function () {
 
     const body3 = await utils.put('editor2', `/api/queries/${query.id}`, {
       ...createQueryBody,
-      acl: [{ userEmail: 'editor2@test.com', write: false }],
+      acl: [{ userId: utils.users.editor2.id, write: false }],
     });
     assert.strictEqual(body3.canRead, true);
     assert.strictEqual(body3.canWrite, false);
@@ -422,7 +412,7 @@ describe('api/queries', function () {
 
     // createdBy
     params = queryString.stringify(
-      { createdBy: utils.users.editor2.email },
+      { createdBy: utils.users.editor2.id },
       { arrayFormat: 'bracket' }
     );
     body = await utils.get('editor', `/api/queries?${params}`);

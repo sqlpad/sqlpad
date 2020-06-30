@@ -20,11 +20,6 @@ module.exports = function (sequelize) {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      // Email address can also be specified if userId is not known
-      userEmail: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
       // The "Group" data model does not exist yet today but some day maybe will
       // It is intended to be a generic grouping mechanism
       // For now it'll contain special group values like "__EVERYONE__" found in consts.EVERYONE_ID

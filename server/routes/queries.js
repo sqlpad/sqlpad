@@ -100,11 +100,11 @@ async function listQueries(req, res) {
 
   if (typeof ownedByUser === 'string') {
     if (ownedByUser === 'true') {
-      whereSqls.push('queries.created_by = :userEmail');
+      whereSqls.push('queries.created_by = :userId');
     } else if (ownedByUser === 'false') {
-      whereSqls.push('queries.created_by != :userEmail');
+      whereSqls.push('queries.created_by != :userId');
     }
-    params.userEmail = user.email;
+    params.userId = user.id;
   }
 
   if (tags) {
@@ -125,17 +125,15 @@ async function listQueries(req, res) {
   // User can see queries they've created, or queries they have access to via ACL
   if (user.role !== 'admin') {
     whereSqls.push(`
-      queries.created_by = :userEmail
+      queries.created_by = :userId
       OR queries.id IN ( 
         SELECT qa.query_id 
         FROM query_acl qa 
         WHERE 
           qa.group_id = '__EVERYONE__' 
-          OR user_id = :userId 
-          OR user_email = :userEmail 
+          OR user_id = :userId
       )
     `);
-    params.userEmail = user.email;
     params.userId = user.id;
   }
 
@@ -295,7 +293,6 @@ router.get('/api/queries/:id', mustBeAuthenticated, wrap(getQuery));
 async function createQuery(req, res) {
   const { models, body, user } = req;
   const { name, tags, connectionId, queryText, chart, acl } = body;
-  const { email } = user;
 
   const query = {
     name: name || 'No Name Query',
@@ -303,8 +300,8 @@ async function createQuery(req, res) {
     connectionId,
     queryText,
     chart,
-    createdBy: email,
-    updatedBy: email,
+    createdBy: user.id,
+    updatedBy: user.id,
     acl,
   };
 
@@ -344,7 +341,7 @@ async function updateQuery(req, res) {
     connectionId,
     queryText,
     chart,
-    updatedBy: user.email,
+    updatedBy: user.id,
     acl,
   });
 
