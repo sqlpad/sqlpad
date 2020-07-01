@@ -158,7 +158,7 @@ class TestUtils {
     await this.loadSeedData();
     await ensureConnectionAccess(this.sequelizeDb, this.config);
 
-    this.app = makeApp(this.config, this.models);
+    this.app = await makeApp(this.config, this.models);
 
     assert.throws(() => {
       db.makeDb(this.config, this.instanceAlias);

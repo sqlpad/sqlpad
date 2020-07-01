@@ -2,7 +2,7 @@ const assert = require('assert');
 const request = require('supertest');
 const TestUtil = require('../utils');
 
-describe('passport-proxy-auth', function () {
+describe('auth/passport-proxy-auth', function () {
   it('auto sign up creates user w/default role', async function () {
     const utils = new TestUtil({
       authProxyEnabled: true,
