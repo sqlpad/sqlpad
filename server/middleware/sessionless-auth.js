@@ -42,15 +42,10 @@ function sessionlessAuth(req, res, next) {
     return next();
   }
 
-  // If auth is disabled, hardcode a user and continue on
+  // If auth is disabled, "authenticate" with the custom disable-auth strategy
+  // This will stub in a noauth user into the users table, and associate the session accordingly
   if (config.get('disableAuth')) {
-    req.user = {
-      id: 'noauth',
-      role:
-        config.get('disableAuthDefaultRole') === 'admin' ? 'admin' : 'editor',
-      email: 'test@example.com',
-    };
-    return next();
+    return passport.authenticate('disable-auth', handleAuth)(req, res, next);
   }
 
   // If authorization header is present, attempt to authenticate based on the type of auth header

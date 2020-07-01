@@ -29,7 +29,7 @@ BigInt.prototype.toJSON = function () {
  * Create an express app using config
  * @param {object} config
  */
-function makeApp(config, models) {
+async function makeApp(config, models) {
   if (typeof config.get !== 'function') {
     throw new Error('config is required to create app');
   }
@@ -111,7 +111,7 @@ function makeApp(config, models) {
 
   /*  Passport setup
   ============================================================================= */
-  authStrategies(config);
+  await authStrategies(config, models);
   app.use(passport.initialize());
   app.use(passport.session());
 

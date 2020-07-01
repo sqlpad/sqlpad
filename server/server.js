@@ -106,7 +106,7 @@ async function startServer() {
   }, CLEANING_MS);
 
   // Create expressjs app
-  const app = makeApp(config, models);
+  const app = await makeApp(config, models);
 
   // determine if key pair exists for certs
   if (keyPath && certPath) {

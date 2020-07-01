@@ -1,6 +1,7 @@
 const passport = require('passport');
 const authProxy = require('./auth-proxy');
 const basic = require('./basic');
+const disableAuth = require('./disable-auth');
 const google = require('./google');
 const jwtServiceToken = require('./jwt-service-token');
 const ldap = require('./ldap');
@@ -35,10 +36,12 @@ passport.deserializeUser(async function (req, id, done) {
 /**
  * Register auth strategies (if configured)
  * @param {object} config
+ * @param {object} models
  */
-function authStrategies(config) {
+async function authStrategies(config, models) {
   authProxy(config);
   basic(config);
+  await disableAuth(config, models);
   google(config);
   jwtServiceToken(config);
   ldap(config);
