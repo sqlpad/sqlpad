@@ -6,6 +6,36 @@ const id = 'bigquery';
 const name = 'BigQuery';
 
 /**
+ * Takes a function that returns a promise and handles retrying until some
+ * check condition is met.
+ */
+function retry(
+  fn,
+  options = {
+    delay: 1000,
+    // sig: (error: Error, retries: number) -> boolean
+    check: () => false,
+  },
+  retries = 0
+) {
+  return new Promise((resolve, reject) => {
+    fn()
+      .then(resolve)
+      .catch((error) => {
+        // If the check is satisfied, call reject to stop the retry cycle.
+        if (options.check && options.check(error, retries)) {
+          reject(error);
+        }
+
+        // Delay before the next retry.
+        setTimeout(() => {
+          retry(fn, options, retries + 1).then(resolve, reject);
+        }, options.delay);
+      });
+  });
+}
+
+/**
  * Return the query timeout in seconds from the app config.
  */
 let _timeoutSeconds;
@@ -74,7 +104,16 @@ function runQuery(queryString, connection = {}) {
       if (isMaxRowsSpecified) {
         options.maxResults = connection.maxRows + 1;
       }
-      return job.getQueryResults(options);
+      return retry(
+        // Function that returns a promise for getting query results.
+        () => job.getQueryResults(options),
+        {
+          // Delay between retries.
+          delay: 1000,
+          // If not a request timeout, raise the error.
+          check: (error) => error.type !== 'request-timeout',
+        }
+      );
     })
     .then(([rows]) => {
       if (rows.length === 0) {
