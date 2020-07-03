@@ -20,6 +20,7 @@ function enableLdap(config) {
           baseDN: config.get('ldapBaseDN'),
           username: config.get('ldapUsername'),
           password: config.get('ldapPassword'),
+          logging: { name: 'ldap', level: config.get('appLogLevel') },
         },
       },
       async function passportLdapStrategyHandler(req, profile, ad, done) {
