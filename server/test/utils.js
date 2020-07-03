@@ -9,7 +9,7 @@ const { Sequelize } = require('sequelize');
 const appLog = require('../lib/app-log');
 const db = require('../lib/db');
 const makeApp = require('../app');
-const migrate = require('../lib/migrate');
+const makeMigrator = require('../lib/make-migrator');
 const loadSeedData = require('../lib/load-seed-data');
 const ensureConnectionAccess = require('../lib/ensure-connection-access');
 
@@ -116,15 +116,17 @@ class TestUtils {
     this.models = models;
     this.nedb = nedb;
     this.sequelizeDb = sequelizeDb;
-  }
 
-  async migrate() {
-    await migrate(
+    this.migrator = makeMigrator(
       this.config,
       this.appLog,
       this.nedb,
       this.sequelizeDb.sequelize
     );
+  }
+
+  async migrate() {
+    await this.migrator.migrate();
   }
 
   static validateErrorBody(body) {

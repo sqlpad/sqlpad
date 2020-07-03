@@ -10,6 +10,11 @@ const configItems = [
     default: '',
   },
   {
+    key: 'migrate',
+    envVar: 'SQLPAD_MIGRATE',
+    default: '',
+  },
+  {
     key: 'cookieName',
     envVar: 'SQLPAD_COOKIE_NAME',
     default: 'sqlpad.sid',
@@ -53,6 +58,11 @@ const configItems = [
     key: 'dbPath',
     envVar: 'SQLPAD_DB_PATH',
     default: '',
+  },
+  {
+    key: 'dbAutomigrate',
+    envVar: 'SQLPAD_DB_AUTOMIGRATE',
+    default: true,
   },
   {
     key: 'baseUrl',
