@@ -102,7 +102,7 @@ LDAP-based authentication can be enabled by setting the necessary environment va
 
 - `ENABLE_LDAP_AUTH` - Set to TRUE if LDAP enable, FALSE if LDAP disable.
 - `LDAP_URL` - LDAP URL that supports protocols: `ldap://` and `ldaps://`, eg: `ldap://localhost:389`.
-- `LDAP_BASE_DN` - The base DN for LDAP setup, eg: `dc=domain,dc=com`.
+- `LDAP_BASE_DN` - Base LDAP DN to search for users in, eg: `dc=domain,dc=com`.
 - `LDAP_USERNAME` - The bind user will be used to lookup information about other LDAP users.
 - `LDAP_PASSWORD` - The password to bind with for the lookup user.
 - `DISABLE_USERPASS_AUTH`=`false` (need to enable local user logins)
