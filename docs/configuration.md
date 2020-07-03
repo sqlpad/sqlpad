@@ -76,6 +76,29 @@ Secret used to sign cookies
 - Env: `SQLPAD_COOKIE_SECRET`
 - Default: `secret-used-to-sign-cookies-please-set-and-make-strong`
 
+## migrate
+
+Run migrations on SQLPad process start, then exits. Use to control when migrations are run, particularly of use when running multiple instances of SQLPad.
+
+This option is most likely useful as a cli flag, but it can be specified via file as well.
+
+Example:
+
+```sh
+node server.js --config path/to/file.ext --migrate
+```
+
+- Key: `migrate`
+- Env: `SQLPAD_MIGRATE`
+
+## dbAutomigrate
+
+Enable/disable automigration on SQLPad process start. Disable by setting to `false`
+
+- Key: `dbAutomigrate`
+- Env: `SQLPAD_DB_AUTOMIGRATE`
+- Default: `true`
+
 ## dbPath
 
 Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.
