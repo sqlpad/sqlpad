@@ -1,8 +1,7 @@
 const path = require('path');
 const Umzug = require('umzug');
 
-function runMigrations(config, appLog, nedb, sequelizeInstance) {
-  appLog.info('Running migrations');
+function makeMigrator(config, appLog, nedb, sequelizeInstance) {
   const umzug = new Umzug({
     storage: 'sequelize',
     storageOptions: {
@@ -26,7 +25,16 @@ function runMigrations(config, appLog, nedb, sequelizeInstance) {
     },
   });
 
-  return umzug.up();
+  return {
+    migrate() {
+      return umzug.up();
+    },
+    async schemaUpToDate() {
+      const pending = await umzug.pending();
+      const upToDate = pending.length === 0;
+      return upToDate;
+    },
+  };
 }
 
-module.exports = runMigrations;
+module.exports = makeMigrator;

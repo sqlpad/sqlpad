@@ -9,16 +9,47 @@ const makeApp = require('./app');
 const appLog = require('./lib/app-log');
 const Config = require('./lib/config');
 const { makeDb, getDb } = require('./lib/db');
-const migrate = require('./lib/migrate');
+const makeMigrator = require('./lib/make-migrator');
 const loadSeedData = require('./lib/load-seed-data');
 const ensureAdmin = require('./lib/ensure-admin');
 const ensureConnectionAccess = require('./lib/ensure-connection-access');
-
-// Parse command line flags to see if anything special needs to happen
-require('./lib/cli-flow.js');
+const packageJson = require('./package.json');
 
 const argv = minimist(process.argv.slice(2));
+
+const helpText = `
+  SQLPad version ${packageJson.version}
+
+  # Print this help text
+  node server.js --help
+
+  # Apply database migrations then exit:
+  node server.js --migrate --config path/to/file.format
+
+  # Start SQLPad using config file:
+  node server.js --config path/to/file.format
+`;
+
+function cliHas(value) {
+  const lowered = argv._.map((v) => v.toLowerCase().trim());
+  return lowered.includes(value);
+}
+
+if (argv.version || cliHas('version')) {
+  // eslint-disable-next-line no-console
+  console.log('SQLPad version %s', packageJson.version);
+  process.exit(0);
+}
+
+if (argv.help || cliHas('help')) {
+  // eslint-disable-next-line no-console
+  console.log(helpText);
+  process.exit(0);
+}
+
 const config = new Config(argv, process.env);
+
+const migrateOnly = config.get('migrate') || cliHas('migrate');
 
 appLog.setLevel(config.get('appLogLevel'));
 appLog.debug(config.get(), 'Final config values');
@@ -88,8 +119,30 @@ let server;
 async function startServer() {
   const { models, nedb, sequelizeDb } = await getDb();
 
-  // Before application starts up migrate data models
-  await migrate(config, appLog, nedb, sequelizeDb.sequelize);
+  // Before application starts up apply any backend database migrations needed
+  // If --migrate / migrate was specified, the process exits afterwards
+  // Automatically running migrations may be disabled via config.
+  const migrator = makeMigrator(config, appLog, nedb, sequelizeDb.sequelize);
+  const isUpToDate = await migrator.schemaUpToDate();
+
+  const runMigrations = migrateOnly || config.get('dbAutomigrate');
+
+  if (!isUpToDate && !runMigrations) {
+    appLog.error(
+      'SQLPad schema not up to date. Turn on automigration or use --migrate'
+    );
+    process.exit(1);
+  }
+
+  if (runMigrations) {
+    appLog.info('Running migrations');
+    await migrator.migrate();
+    appLog.info('Migration finished');
+  }
+
+  if (migrateOnly) {
+    process.exit(0);
+  }
 
   // Load seed data after migrations
   await loadSeedData(appLog, config, models);
