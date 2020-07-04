@@ -148,6 +148,27 @@ A default connection selection can be set using the `defaultConnectionId` config
   </tbody>
 </table>
 
+## ClickHouse
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>data type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
+    <tr><td>driver</td><td>Must be <code>clickhouse</code></td><td>text</td></tr>
+    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
+    <tr><td>port</td><td>HTTP Port (optional)</td><td>text</td></tr>
+    <tr><td>username</td><td>Username (optional)</td><td>text</td></tr>
+    <tr><td>password</td><td>Password (optional)</td><td>text</td></tr>
+    <tr><td>database</td><td>Database Name (optional)</td><td>text</td></tr>
+  </tbody>
+</table>
+
 ## SAP Hana (hdb)
 
 <table>

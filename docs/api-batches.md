@@ -1,6 +1,6 @@
 # Batches & Statements API
 
-!> Batches and related APIs are new to `latest` and upcoming v5 release
+?> Batches and related APIs available as of v5.0.0
 
 ## Overview
 
