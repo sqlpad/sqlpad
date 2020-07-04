@@ -278,7 +278,7 @@ Auto create a user record if it does not exist when new user is detected via SAM
 
 ## samlDefaultRole
 
-Default role to assign user created when `samlAutoSignUp` is turned on. By default this is an empty-string and not used, expecting a role to be provided via header-mapping.
+Default role to assign user created when `samlAutoSignUp` is turned on. Accepted values are `editor` and `admin`. Default value is `editor`.
 
 - Key: `samlDefaultRole`
 - Env: `SQLPAD_SAML_DEFAULT_ROLE`
