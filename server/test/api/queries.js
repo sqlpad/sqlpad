@@ -422,7 +422,7 @@ describe('api/queries', function () {
     assert.equal(body.length, 1);
     assert.equal(body[0].id, query2.id);
 
-    // searches
+    // search
     params = queryString.stringify(
       { search: 'query2' },
       { arrayFormat: 'bracket' }
