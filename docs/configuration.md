@@ -465,7 +465,7 @@ LDAP server URL. Examples: `ldap://localhost:389`, `ldaps://ad.corporate.com:636
 
 ## ldapBaseDN
 
-LDAP Base DN
+Base LDAP DN to search for users in
 
 - Key: `ldapBaseDN`
 - Env: `LDAP_BASE_DN`
