@@ -2,7 +2,7 @@
 
 SQLPad logs json messages using [pino](https://github.com/pinojs/pino), a simple and fast logging library. Log messages are sent to stdout, leaving how to handle the messages up to you. The pino ecosystem supports a variety of transports http://getpino.io/#/docs/transports that should cover most logging setups.
 
-Two categories of messages are logged by SQLPad: "app" messages containing info messages, warnings, and errors relating to application code, and "web" messages relating to the actual http requests handled by SQLPad. The level at which these logs are logged can be configured separately, or even turned off, with the `appLogLevel` and `webLogLevel` settings. This level represents the minimum level to be logged. The value used should be one of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. Setting the level to `silent` will effectively disable the logger.
+Two categories of messages are logged by SQLPad: "app" messages containing info messages, warnings, and errors relating to application code, and "web" messages relating to the actual http requests handled by SQLPad. The level at which these logs are logged can be configured separately, or even turned off, with the `SQLPAD_APP_LOG_LEVEL` and `SQLPAD_WEB_LOG_LEVEL` settings. This level represents the minimum level to be logged. The value used should be one of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. Setting the level to `silent` will effectively disable the logger.
 
 In production, log messages will be a single json object per line:
 

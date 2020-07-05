@@ -27,7 +27,7 @@ To update SQLPad:
 
 SQLPad runs its own migrations at application start, ensuring the schema is up-to-date.
 
-Prior to updating, it is recommended to take a backup of SQLPad's database files. These are located under the path specified by configuration variable `dbPath` or environment variable `SQLPAD_DB_PATH`. In the past these files used to default to the users home directory under `~/sqlpad/db`. In the official docker image, this path is set to `/var/lib/sqlpad`.
+Prior to updating, it is recommended to take a backup of SQLPad's database files. These are located under the path specified by environment variable `SQLPAD_DB_PATH`. In the past these files used to default to the users home directory under `~/sqlpad/db`. In the official docker image, this path is set to `/var/lib/sqlpad`.
 
 ## Database Migrations
 
