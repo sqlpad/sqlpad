@@ -16,9 +16,9 @@ Local authentication can be disabled by setting `SQLPAD_DISABLE_USERPASS_AUTH=tr
 
 ?> Available as of `4.2.0`
 
-SQLPad can be configured to run without any authentication at all. This can be enabled by setting `DISABLE_AUTH` to `true`.
+SQLPad can be configured to run without any authentication at all. This can be enabled by setting `SQLPAD_AUTH_DISABLED` to `true`.
 
-If enabled, `SQLPAD_DISABLE_AUTH_DEFAULT_ROLE` is used to assign admin or editor role to users. Set to `editor` if you want to restrict SQLPad to connections defined via configuration.
+If enabled, `SQLPAD_AUTH_DISABLED_DEFAULT_ROLE` is used to assign admin or editor role to users. Set to `editor` if you want to restrict SQLPad to connections defined via configuration.
 
 ## Auth Proxy
 

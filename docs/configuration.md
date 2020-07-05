@@ -129,20 +129,20 @@ Default connection to select on SQLPad load if connection not previousy selected
 - key: `defaultConnectionId`
 - Env: `SQLPAD_DEFAULT_CONNECTION_ID`
 
-## disableAuth
+## authDisabled
 
 Set to TRUE to disable authentication altogether.
 
-- Key: `disableAuth`
-- Env: `DISABLE_AUTH`
+- Key: `authDisabled`
+- Env: `SQLPAD_AUTH_DISABLED`
 
-## disableAuthDefaultRole
+## authDisabledDefaultRole
 
-Specifies the role associated with users when disableAuth is set to true.
+Specifies the role associated with users when authDisabled is set to true.
 Acceptable values: `admin`, `editor`.
 
-- Key: `disableAuthDefaultRole`
-- Env: `SQLPAD_DISABLE_AUTH_DEFAULT_ROLE`
+- Key: `authDisabledDefaultRole`
+- Env: `SQLPAD_AUTH_DISABLED_DEFAULT_ROLE`
 
 ## disableUserpassAuth
 

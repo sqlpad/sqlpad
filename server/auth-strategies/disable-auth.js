@@ -6,7 +6,10 @@ const appLog = require('../lib/app-log');
 
 function getNoAuthUser(config) {
   const role =
-    config.get('disableAuthDefaultRole') === 'admin' ? 'admin' : 'editor';
+    (config.get('authDisabledDefaultRole') ||
+      config.get('disableAuthDefaultRole')) === 'admin'
+      ? 'admin'
+      : 'editor';
 
   return {
     id: 'noauth',
@@ -40,8 +43,8 @@ async function disableAuthStrategy(req, done) {
  * @param {import('../models')} models
  */
 async function enableDisableAuth(config, models) {
-  if (config.get('disableAuth')) {
-    appLog.info('Enabling disableAuth "authentication" strategy.');
+  if (config.get('authDisabled') || config.get('disableAuth')) {
+    appLog.info('Enabling authDisabled "authentication" strategy.');
 
     const noAuthUser = getNoAuthUser(config);
 
