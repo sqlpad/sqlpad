@@ -10,16 +10,25 @@ services:
       - MSSQL_SA_PASSWORD=SuperP4ssw0rd!
       - MSSQL_PID=Express
   sqlpad:
-    # Use Dockerfile at root of this project
-    build: ../../
+    # To use Dockerfile at root of this project, use build instead of image
+    # build: ../../
+    image: sqlpad/sqlpad:5
     hostname: 'sqlpad'
     ports:
       - '3000:3000'
     environment:
-      SQLPAD_CONFIG: /etc/sqlpad/config.json
+      SQLPAD_ADMIN: 'admin@sqlpad.com'
+      SQLPAD_ADMIN_PASSWORD: 'admin'
+      SQLPAD_APP_LOG_LEVEL: info
+      SQLPAD_WEB_LOG_LEVEL: warn
+      SQLPAD_CONNECTIONS__sqlserverdemo__name: SQL Server Demo
+      SQLPAD_CONNECTIONS__sqlserverdemo__driver: sqlserver
+      SQLPAD_CONNECTIONS__sqlserverdemo__host: mssql
+      SQLPAD_CONNECTIONS__sqlserverdemo__database: master
+      SQLPAD_CONNECTIONS__sqlserverdemo__username: sa
+      SQLPAD_CONNECTIONS__sqlserverdemo__password: SuperP4ssw0rd!
     volumes:
       - sqlpad-volume:/var/lib/sqlpad
-      - ./config.json:/etc/sqlpad/config.json
 
 volumes:
   sqlpad-volume:
