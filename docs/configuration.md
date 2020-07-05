@@ -9,7 +9,11 @@ For example:
 node server.js --config ~/sqlpad.ini
 ```
 
-For INI and JSON config file examples, see [config-example.ini](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.ini) and [config-example.json](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.json) in GitHub repository.
+Config file examples available in GitHub repository:
+
+- [config-example.env](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.env)
+- [config-example.ini](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.ini)
+- [config-example.json](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.json)
 
 ?> For examples below, **key** refers to key in INI/JSON file. **Env** for environment variable.
 
