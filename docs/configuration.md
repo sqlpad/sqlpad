@@ -233,42 +233,42 @@ By default query results are limited to 50,000 records.
 SAML authentication context URL. A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`.
 
 - Key: `samlAuthContext`
-- Env: `SAML_AUTH_CONTEXT`
+- Env: `SQLPAD_SAML_AUTH_CONTEXT`
 
 ## samlCallbackUrl
 
 SAML callback URL. It will generally be constructed from the deployment's internet address and the fixed route, for example: https://mysqlpad.com/login/callback
 
 - Key: `samlCallbackUrl`
-- Env: `SAML_CALLBACK_URL`
+- Env: `SQLPAD_SAML_CALLBACK_URL`
 
 ## samlCert
 
 SAML certificate in Base64
 
 - Key: `samlCert`
-- Env: `SAML_CERT`
+- Env: `SQLPAD_SAML_CERT`
 
 ## samlEntryPoint
 
 SAML Entry point URL
 
 - Key: `samlEntryPoint`
-- Env: `SAML_ENTRY_POINT`
+- Env: `SQLPAD_SAML_ENTRY_POINT`
 
 ## samlIssuer
 
 SAML Issuer
 
 - Key: `samlIssuer`
-- Env: `SAML_ISSUER`
+- Env: `SQLPAD_SAML_ISSUER`
 
 ## samlLinkHtml
 
 HTML code for the sign-in link used for starting SAML authentication. The default is `Sign in with SSO`
 
 - Key: `samlLinkHtml`
-- Env: `SAML_LINK_HTML`
+- Env: `SQLPAD_SAML_LINK_HTML`
 
 ## samlAutoSignUp
 

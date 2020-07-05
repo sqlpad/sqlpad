@@ -228,33 +228,69 @@ const configItems = [
   },
   {
     key: 'samlEntryPoint',
+    envVar: 'SQLPAD_SAML_ENTRY_POINT',
+    default: '',
+  },
+  {
+    key: 'samlEntryPoint_d',
     envVar: 'SAML_ENTRY_POINT',
     default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_SAML_ENTRY_POINT instead',
   },
   {
     key: 'samlIssuer',
+    envVar: 'SQLPAD_SAML_ISSUER',
+    default: '',
+  },
+  {
+    key: 'samlIssuer_d',
     envVar: 'SAML_ISSUER',
     default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_SAML_ISSUER instead',
   },
   {
     key: 'samlCallbackUrl',
+    envVar: 'SQLPAD_SAML_CALLBACK_URL',
+    default: '',
+  },
+  {
+    key: 'samlCallbackUrl_d',
     envVar: 'SAML_CALLBACK_URL',
     default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_SAML_CALLBACK_URL instead',
   },
   {
     key: 'samlCert',
+    envVar: 'SQLPAD_SAML_CERT',
+    default: '',
+  },
+  {
+    key: 'samlCert_d',
     envVar: 'SAML_CERT',
     default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_SAML_CERT instead',
   },
   {
     key: 'samlAuthContext',
-    envVar: 'SAML_AUTH_CONTEXT',
+    envVar: 'SQLPAD_SAML_AUTH_CONTEXT',
     default: '',
   },
   {
+    key: 'samlAuthContext_d',
+    envVar: 'SAML_AUTH_CONTEXT',
+    default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_SAML_AUTH_CONTEXT instead',
+  },
+  {
     key: 'samlLinkHtml',
+    envVar: 'SQLPAD_SAML_LINK_HTML',
+    default: '', // Change to 'Sign in with SSO' in v6 when removing samlLinkHtml_d
+  },
+  {
+    key: 'samlLinkHtml_d',
     envVar: 'SAML_LINK_HTML',
     default: 'Sign in with SSO',
+    deprecated: 'To be removed in v6. Use SQLPAD_SAML_LINK_HTML instead',
   },
   {
     key: 'samlAutoSignUp',
