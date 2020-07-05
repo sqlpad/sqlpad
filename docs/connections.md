@@ -43,70 +43,11 @@ SQLPAD_CONNECTIONS__prod123__host=localhost
 SQLPAD_CONNECTIONS__prod123__mysqlInsecureAuth=true
 ```
 
-### Via INI Config File
-
-Connections may be defined in the `INI` configuration file used to provide application configuration. This file is referenced by either providing the `--config = path/to/file.ini` flag when running the application, or setting environment variable `SQLPAD_CONFIG=path/to/file.ini`. See [configuration](https://rickbergfalk.github.io/sqlpad/#/configuration?id=configuration) for more information.
-
-When defining a connection in an INI file, use section header with the value `connections.<connectionId>`.
-
-Every connection defined should provide a `name` and `driver` value, with driver equaling the value specified in the `driver` rows below. `name` will be the label used in the UI to label the connection.
-
-Field names and values are case sensitive.
-
-The connection ID value used can be any alphanumeric value, and is case-sensitive. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
-
-Example INI config file with connection:
-
-```ini
-; The config file will have all your usual config
-admin = admin@sqlpad.com
-adminPassword = secret
-otherConfigKey = otherConfigValue
-
-; Plus additional sections for connections defined
-; Refer to tables below for specific keys that need populating for your database in use
-[connections.prod123]
-name = Production 123
-driver = mysql
-host = localhost
-mysqlInsecureAuth = true
-```
-
-### Via JSON Config File
-
-Connections may be defined in the `JSON` configuration file used to provide application configuration. This file is referenced by either providing the `--config = path/to/file.json` flag when running the application, or setting environment variable `SQLPAD_CONFIG=path/to/file.json`. See [configuration](https://rickbergfalk.github.io/sqlpad/#/configuration?id=configuration) for more information.
-
-When using JSON file, provide `<connectionId>` as a key under `connections`.
-
-Every connection defined should provide a `name` and `driver` value, with driver equaling the value specified in the `driver` rows below. `name` will be the label used in the UI to label the connection.
-
-Field names and values are case sensitive.
-
-The connection ID value used can be any alphanumeric value, and is case-sensitive. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
-
-Example JSON config file with connection:
-
-```json
-{
-  "admin": "admin@sqlpad.com",
-  "adminPassword": "secret",
-  "otherConfigKey": "otherConfigValue",
-  "connections": {
-    "prod123": {
-      "name": "Production 123",
-      "driver": "mysql",
-      "host": "localhost",
-      "mysqlInsecureAuth": true
-    }
-  }
-}
-```
-
 ## Connection selection
 
 ?> Available as of `4.5.0`
 
-A default connection selection can be set using the `defaultConnectionId` configuration item or `SQLPAD_DEFAULT_CONNECTION_ID`. It can also be specified as part of the query editor URL, i.e., `https://mysqlpad.example.com/queries/new?connectionName=connection1` or `https://mysqlpad.example.com/queries/new?connectionId=xxx-xxxxx-xxx-xxx`.
+A default connection selection can be set using environment variable `SQLPAD_DEFAULT_CONNECTION_ID`. It can also be specified as part of the query editor URL, i.e., `https://mysqlpad.example.com/queries/new?connectionName=connection1` or `https://mysqlpad.example.com/queries/new?connectionId=xxx-xxxxx-xxx-xxx`.
 
 ## CrateDB
 

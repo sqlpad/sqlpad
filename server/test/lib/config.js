@@ -83,6 +83,21 @@ describe('lib/config/fromFile', function () {
     assert(found, 'has error about old key');
   });
 
+  it('Deprecated warning for json/ini config file', function () {
+    const config = new Config(
+      { config: path.join(__dirname, '../fixtures/old-config.json') },
+      {}
+    );
+    const validations = config.getValidations();
+    assert(validations.warnings);
+    const found = validations.warnings.find(
+      (s) =>
+        s ===
+        'DEPRECATED CONFIG: .json and .ini file support deprecated. Use .env file or environment variables instead.'
+    );
+    assert(found, 'has warning about file deprecated');
+  });
+
   it('Errors for old cli flag', function () {
     const config = new Config({ debug: true }, {});
     const validations = config.getValidations();

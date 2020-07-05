@@ -1,7 +1,7 @@
 {
   "id": "seed-query-1",
   "name": "Seed query 1",
-  "connectionId": "pg-demo",
+  "connectionId": "pgdemo",
   "queryText": "SELECT * FROM some_table",
   "createdBy": "admin@sqlpad.com",
   "acl": [
