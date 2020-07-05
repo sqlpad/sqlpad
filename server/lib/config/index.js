@@ -70,6 +70,14 @@ class Config {
       errors.push(getOldConfigWarning());
     }
 
+    // If fileConfig has something in it, an INI or JSON file was read
+    // These file formats are deprecated, replaced by .env file and env vars
+    if (this.configFilePath && Object.keys(this.fileConfig).length > 0) {
+      warnings.push(
+        `DEPRECATED CONFIG: .json and .ini file support deprecated. Use .env file or environment variables instead.`
+      );
+    }
+
     // Check for any old environment variables in env.
     // This must be handled separately from other unknown checks,
     // as fromEnv() only gets config it knows about, so it will never have unknown values
