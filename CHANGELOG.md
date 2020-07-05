@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.1.0] - 2020-??-??
+
+- Add .env config file support
+- Deprecate INI and JSON config files support
+
 ## [5.0.0] - 2020-07-03
 
 Version 5 contains many infrastructure and API changes, as well as migrations that are not easy to roll back from. It is highly recommended take a backup of your database (`SQLPAD_DB_PATH` directory and/or your backend db in use).
