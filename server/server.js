@@ -5,6 +5,7 @@ const http = require('http');
 const https = require('https');
 const minimist = require('minimist');
 const detectPort = require('detect-port');
+const dotenv = require('dotenv');
 const makeApp = require('./app');
 const appLog = require('./lib/app-log');
 const Config = require('./lib/config');
@@ -45,6 +46,17 @@ if (argv.help || cliHas('help')) {
   // eslint-disable-next-line no-console
   console.log(helpText);
   process.exit(0);
+}
+
+// If an .env file was passed for config, call dotenv to apply it to process.env
+// .env files are not processed like .ini/.json files
+const configFilePath = argv.config || process.env.SQLPAD_CONFIG;
+if (configFilePath && configFilePath.includes('.env')) {
+  const result = dotenv.config({ path: configFilePath });
+  if (result.error) {
+    appLog.error(result.error, 'Error loading .env file');
+    process.exit(1);
+  }
 }
 
 const config = new Config(argv, process.env);
