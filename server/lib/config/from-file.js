@@ -1,7 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const ini = require('ini');
+const dotenv = require('dotenv');
 const appLog = require('../app-log');
+const fromEnv = require('./from-env');
 
 /**
  * Reads and parses config file.
@@ -27,7 +29,10 @@ function fromFile(configFilePath) {
   const extname = path.extname(configFilePath).toLowerCase();
 
   try {
-    if (extname === '.json') {
+    if (configFilePath.includes('.env')) {
+      const envFromFile = dotenv.parse(fileText);
+      parsedFile = fromEnv(envFromFile);
+    } else if (extname === '.json') {
       parsedFile = JSON.parse(fileText);
     } else if (extname === '.ini') {
       parsedFile = ini.parse(fileText);
