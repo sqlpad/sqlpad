@@ -64,6 +64,11 @@ describe('lib/config/fromFile', function () {
     assert.equal(Object.keys(config).length, 3, '3 items');
   });
 
+  it('fromFile ignores .env', function () {
+    const config = fromFile(path.join(__dirname, '../fixtures/config.env'));
+    assert.equal(Object.keys(config).length, 0, '0 items');
+  });
+
   it('Errors for old config file key', function () {
     const config = new Config(
       { config: path.join(__dirname, '../fixtures/old-config.json') },

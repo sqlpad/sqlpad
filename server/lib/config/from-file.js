@@ -27,7 +27,11 @@ function fromFile(configFilePath) {
   const extname = path.extname(configFilePath).toLowerCase();
 
   try {
-    if (extname === '.json') {
+    if (configFilePath.includes('.env')) {
+      // Return an empty object.
+      // .env is applied to process.env and therefore processed with environment variables
+      return {};
+    } else if (extname === '.json') {
       parsedFile = JSON.parse(fileText);
     } else if (extname === '.ini') {
       parsedFile = ini.parse(fileText);

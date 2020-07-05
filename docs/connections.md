@@ -20,7 +20,7 @@ Work is under way to add multi-statement transaction support to drivers that ben
 
 ?> As of 3.2.0 connections may be defined via application configuration.
 
-### Via Environment Variable
+### Via Environment Variable & .env File
 
 When defining connections via environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTIONS__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTIONS`, `<connectionId>`, and `<fieldName>`.
 
