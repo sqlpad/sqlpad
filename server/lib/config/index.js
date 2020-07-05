@@ -149,11 +149,11 @@ class Config {
 
   samlAuthConfigured() {
     return (
-      this.all.samlEntryPoint &&
-      this.all.samlIssuer &&
-      this.all.samlCallbackUrl &&
-      this.all.samlCert &&
-      this.all.samlAuthContext
+      (this.all.samlEntryPoint || this.all.samlEntryPoint_d) &&
+      (this.all.samlIssuer || this.all.samlIssuer_d) &&
+      (this.all.samlCallbackUrl || this.all.samlCallbackUrl_d) &&
+      (this.all.samlCert || this.all.samlCert_d) &&
+      (this.all.samlAuthContext || this.all.samlAuthContext_d)
     );
   }
 

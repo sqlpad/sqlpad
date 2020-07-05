@@ -30,8 +30,10 @@ async function getApp(req, res) {
       googleAuthConfigured: config.googleAuthConfigured(),
       localAuthConfigured: !config.get('disableUserpassAuth'),
       publicUrl: config.get('publicUrl'),
-      samlConfigured: Boolean(config.get('samlEntryPoint')),
-      samlLinkHtml: config.get('samlLinkHtml'),
+      samlConfigured: Boolean(
+        config.get('samlEntryPoint') || config.get('samlEntryPoint_d')
+      ),
+      samlLinkHtml: config.get('samlLinkHtml') || config.get('samlLinkHtml_d'),
       smtpConfigured: config.smtpConfigured(),
       ldapConfigured: config.get('enableLdapAuth'),
     },

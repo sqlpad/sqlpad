@@ -15,11 +15,14 @@ function enableSaml(config) {
         {
           passReqToCallback: true,
           path: '/login/callback',
-          entryPoint: config.get('samlEntryPoint'),
-          issuer: config.get('samlIssuer'),
-          callbackUrl: config.get('samlCallbackUrl'),
-          cert: config.get('samlCert'),
-          authnContext: config.get('samlAuthContext'),
+          entryPoint:
+            config.get('samlEntryPoint') || config.get('samlEntryPoint_d'),
+          issuer: config.get('samlIssuer') || config.get('samlIssuer_d'),
+          callbackUrl:
+            config.get('samlCallbackUrl') || config.get('samlCallbackUrl_d'),
+          cert: config.get('samlCert') || config.get('samlCert_d'),
+          authnContext:
+            config.get('samlAuthContext') || config.get('samlAuthContext_d'),
           identifierFormat: null,
         },
         async function (req, p, done) {
@@ -58,7 +61,8 @@ function enableSaml(config) {
               email,
               role: openAdminRegistration
                 ? 'admin'
-                : config.get('samlDefaultRole'),
+                : config.get('samlDefaultRole') ||
+                  config.get('samlDefaultRole_d'),
               signupAt: new Date(),
             });
 
