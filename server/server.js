@@ -156,11 +156,11 @@ async function startServer() {
     process.exit(0);
   }
 
-  // Load seed data after migrations
-  await loadSeedData(appLog, config, models);
-
   // Ensure admin is set if configured
   await ensureAdmin(models, config);
+
+  // Load seed data after migrations
+  await loadSeedData(appLog, config, models);
 
   // Create a connection accesses entry for everyone if set
   await ensureConnectionAccess(sequelizeDb, config);
