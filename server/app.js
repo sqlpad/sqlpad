@@ -124,6 +124,7 @@ async function makeApp(config, models) {
     require('./routes/signup.js'),
     require('./routes/signin.js'),
     require('./routes/google-auth.js'),
+    require('./routes/auth-oidc.js'),
     require('./routes/saml.js'),
   ];
 

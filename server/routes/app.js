@@ -36,6 +36,8 @@ async function getApp(req, res) {
       samlLinkHtml: config.get('samlLinkHtml') || config.get('samlLinkHtml_d'),
       smtpConfigured: config.smtpConfigured(),
       ldapConfigured: config.get('enableLdapAuth'),
+      oidcConfigured: config.oidcConfigured(),
+      oidcLinkHtml: config.get('oidcLinkHtml'),
     },
     version: packageJson.version,
   });

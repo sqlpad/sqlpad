@@ -366,6 +366,41 @@ const configItems = [
     envVar: 'SQLPAD_AUTH_PROXY_HEADERS',
     default: '',
   },
+  {
+    key: 'oidcClientId',
+    envVar: 'SQLPAD_OIDC_CLIENT_ID',
+    default: '',
+  },
+  {
+    key: 'oidcClientSecret',
+    envVar: 'SQLPAD_OIDC_CLIENT_SECRET',
+    default: '',
+  },
+  {
+    key: 'oidcIssuer',
+    envVar: 'SQLPAD_OIDC_ISSUER',
+    default: '',
+  },
+  {
+    key: 'oidcAuthorizationUrl',
+    envVar: 'SQLPAD_OIDC_AUTHORIZATION_URL',
+    default: '',
+  },
+  {
+    key: 'oidcTokenUrl',
+    envVar: 'SQLPAD_OIDC_TOKEN_URL',
+    default: '',
+  },
+  {
+    key: 'oidcUserInfoUrl',
+    envVar: 'SQLPAD_OIDC_USER_INFO_URL',
+    default: '',
+  },
+  {
+    key: 'oidcLinkHtml',
+    envVar: 'SQLPAD_OIDC_LINK_HTML',
+    default: 'Sign in with Open ID',
+  },
 ];
 
 module.exports = configItems;
