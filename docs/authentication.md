@@ -72,8 +72,8 @@ Next you'll need to set your JavaScript origins and redirect URIs. If you're tes
 Once the Google API config is set, configure the required settings in SQLPad.
 For OAuth to be useful this usually involves the following:
 
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
+- `SQLPAD_GOOGLE_CLIENT_ID`
+- `SQLPAD_GOOGLE_CLIENT_SECRET`
 - `PUBLIC_URL`=`http://localhost`
 - `DISABLE_USERPASS_AUTH`=`true` (optional - disables plain local user logins)
 

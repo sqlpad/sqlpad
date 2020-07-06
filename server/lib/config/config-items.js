@@ -111,13 +111,25 @@ const configItems = [
     default: '',
   },
   {
-    key: 'googleClientId',
+    key: 'googleClientId_d',
     envVar: 'GOOGLE_CLIENT_ID',
+    default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_GOOGLE_CLIENT_ID instead.',
+  },
+  {
+    key: 'googleClientId',
+    envVar: 'SQLPAD_GOOGLE_CLIENT_ID',
     default: '',
   },
   {
-    key: 'googleClientSecret',
+    key: 'googleClientSecret_d',
     envVar: 'GOOGLE_CLIENT_SECRET',
+    default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_GOOGLE_CLIENT_SECRET instead.',
+  },
+  {
+    key: 'googleClientSecret',
+    envVar: 'SQLPAD_GOOGLE_CLIENT_SECRET',
     default: '',
   },
   {
