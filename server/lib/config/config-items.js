@@ -154,23 +154,47 @@ const configItems = [
     default: false,
   },
   {
-    key: 'ldapUrl',
+    key: 'ldapUrl_d',
     envVar: 'LDAP_URL',
     default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_URL instead.',
+  },
+  {
+    key: 'ldapUrl',
+    envVar: 'SQLPAD_LDAP_URL',
+    default: '',
+  },
+  {
+    key: 'ldapBaseDN_d',
+    envVar: 'LDAP_BASE_DN',
+    default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_BASE_DN instead.',
   },
   {
     key: 'ldapBaseDN',
-    envVar: 'LDAP_BASE_DN',
+    envVar: 'SQLPAD_LDAP_BASE_DN',
     default: '',
+  },
+  {
+    key: 'ldapUsername_d',
+    envVar: 'LDAP_USERNAME',
+    default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_USERNAME instead.',
   },
   {
     key: 'ldapUsername',
-    envVar: 'LDAP_USERNAME',
+    envVar: 'SQLPAD_LDAP_USERNAME',
     default: '',
   },
   {
-    key: 'ldapPassword',
+    key: 'ldapPassword_d',
     envVar: 'LDAP_PASSWORD',
+    default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_PASSWORD instead.',
+  },
+  {
+    key: 'ldapPassword',
+    envVar: 'SQLPAD_LDAP_PASSWORD',
     default: '',
   },
   {
