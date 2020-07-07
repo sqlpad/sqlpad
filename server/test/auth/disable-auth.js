@@ -5,7 +5,7 @@ const TestUtil = require('../utils');
 describe('auth/disable-auth', function () {
   it('signs in with noauth user', async function () {
     const utils = new TestUtil({
-      disableAuth: true,
+      authDisabled: true,
     });
     await utils.init();
 
@@ -23,10 +23,10 @@ describe('auth/disable-auth', function () {
     assert.equal(user.email, 'noauth@example.com');
   });
 
-  it('disableAuthDefaultRole editor', async function () {
+  it('authDisabledDefaultRole editor', async function () {
     const utils = new TestUtil({
-      disableAuth: true,
-      disableAuthDefaultRole: 'editor',
+      authDisabled: true,
+      authDisabledDefaultRole: 'editor',
     });
     await utils.init();
 
@@ -38,10 +38,10 @@ describe('auth/disable-auth', function () {
     assert.equal(user.role, 'editor');
   });
 
-  it('disableAuthDefaultRole admin', async function () {
+  it('authDisabledDefaultRole admin', async function () {
     const utils = new TestUtil({
-      disableAuth: true,
-      disableAuthDefaultRole: 'admin',
+      authDisabled: true,
+      authDisabledDefaultRole: 'admin',
     });
     await utils.init();
 

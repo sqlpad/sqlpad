@@ -176,11 +176,24 @@ const configItems = [
     key: 'disableAuth',
     envVar: 'DISABLE_AUTH',
     default: false,
+    deprecated: 'To be deprecated in v6. Use AUTH_DISABLED instead.',
+  },
+  {
+    key: `authDisabled`,
+    envVar: 'SQLPAD_AUTH_DISABLED',
+    default: false,
   },
   {
     key: 'disableAuthDefaultRole',
     envVar: 'SQLPAD_DISABLE_AUTH_DEFAULT_ROLE',
     default: 'editor',
+    deprecated:
+      'To be deprecated in v6. Use SQLPAD_AUTH_DISABLED_DEFAULT_ROLE instead.',
+  },
+  {
+    key: 'authDisabledDefaultRole',
+    envVar: 'SQLPAD_AUTH_DISABLED_DEFAULT_ROLE',
+    default: '', // TODO change to 'editor' in v6, when removing SQLPAD_DISABLE_AUTH_DEFAULT_ROLE
   },
   {
     key: 'allowCsvDownload',

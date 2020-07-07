@@ -44,7 +44,7 @@ function sessionlessAuth(req, res, next) {
 
   // If auth is disabled, "authenticate" with the custom disable-auth strategy
   // This will stub in a noauth user into the users table, and associate the session accordingly
-  if (config.get('disableAuth')) {
+  if (config.get('authDisabled') || config.get('disableAuth')) {
     return passport.authenticate('disable-auth', handleAuth)(req, res, next);
   }
 
