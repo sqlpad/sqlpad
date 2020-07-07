@@ -133,7 +133,7 @@ SQLPad users do not need to be added ahead of time, and may be created on the fl
 
 LDAP-based authentication can be enabled by setting the necessary environment variables:
 
-- `ENABLE_LDAP_AUTH` - Set to TRUE if LDAP enable, FALSE if LDAP disable.
+- `SQLPAD_LDAP_AUTH_ENABLED` - Set to TRUE if LDAP enable, FALSE if LDAP disable.
 - `LDAP_URL` - LDAP URL that supports protocols: `ldap://` and `ldaps://`, eg: `ldap://localhost:389`.
 - `LDAP_BASE_DN` - Base LDAP DN to search for users in, eg: `dc=domain,dc=com`.
 - `LDAP_USERNAME` - The bind user will be used to lookup information about other LDAP users.

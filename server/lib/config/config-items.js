@@ -146,6 +146,12 @@ const configItems = [
     key: 'enableLdapAuth',
     envVar: 'ENABLE_LDAP_AUTH',
     default: false,
+    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_AUTH_ENABLED instead.',
+  },
+  {
+    key: 'ldapAuthEnabled',
+    envVar: 'SQLPAD_LDAP_AUTH_ENABLED',
+    default: false,
   },
   {
     key: 'ldapUrl',

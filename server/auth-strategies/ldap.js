@@ -3,7 +3,7 @@ const appLog = require('../lib/app-log');
 const ActiveDirectoryStrategy = require('passport-activedirectory');
 
 function enableLdap(config) {
-  if (!config.get('enableLdapAuth')) {
+  if (!(config.get('ldapAuthEnabled') || config.get('enableLdapAuth'))) {
     return;
   }
 

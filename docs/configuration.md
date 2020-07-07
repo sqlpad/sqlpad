@@ -451,12 +451,12 @@ When supplying both `id` and `email`, `id` will be used for user matching instea
 - Key: `authProxyHeaders`
 - Env: `SQLPAD_AUTH_PROXY_HEADERS`
 
-## enableLdapAuth
+## ldapAuthEnabled
 
 Set to `true` to enable LDAP authentication
 
-- Key: `enableLdapAuth`
-- Env: `ENABLE_LDAP_AUTH`
+- Key: `ldapAuthEnabled`
+- Env: `SQLPAD_LDAP_AUTH_ENABLED`
 
 ## ldapUrl
 
