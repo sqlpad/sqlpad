@@ -48,7 +48,12 @@ function handleSignin(req, res, next) {
     return passport.authenticate('ActiveDirectory', handleAuth)(req, res, next);
   }
 
-  if (body.email && body.password && !config.get('disableUserpassAuth')) {
+  if (
+    body.email &&
+    body.password &&
+    !config.get('userpassAuthDisabled') &&
+    !config.get('disableUserpassAuth')
+  ) {
     return passport.authenticate('local', handleAuth)(req, res, next);
   }
 

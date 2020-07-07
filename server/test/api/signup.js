@@ -5,7 +5,7 @@ const TestUtil = require('../utils');
 describe('api/signup', function () {
   it('only allowed if local auth enabled', async function () {
     const utils = new TestUtil({
-      disableUserpassAuth: 'true',
+      userpassAuthDisabled: 'true',
       authProxyEnabled: false,
     });
 
