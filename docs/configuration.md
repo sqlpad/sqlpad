@@ -485,3 +485,52 @@ Password for LDAP user used for LDAP lookup
 
 - Key: `ldapPassword`
 - Env: `LDAP_PASSWORD`
+
+## OpenID Connect
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>SQLPAD_OIDC_CLIENT_ID</code></td>
+      <td>Client ID</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>SQLPAD_OIDC_CLIENT_SECRET</code></td>
+      <td>Client secret</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>SQLPAD_OIDC_ISSUER</code></td>
+      <td>Issuer</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>SQLPAD_OIDC_AUTHORIZATION_URL</code></td>
+      <td>Authorization URL</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>SQLPAD_OIDC_TOKEN_URL</code></td>
+      <td>Token URL</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>SQLPAD_OIDC_USER_INFO_URL</code></td>
+      <td>User info URL</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><code>SQLPAD_OIDC_LINK_HTML</code></td>
+      <td>Inner HTML for OpenID sign in button customization</td>
+      <td>Sign in with OpenID</td>
+    </tr>
+  </tbody>
+</table>

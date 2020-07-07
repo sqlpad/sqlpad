@@ -26,6 +26,8 @@ const expectedConfigKeys = [
   'samlConfigured',
   'samlLinkHtml',
   'ldapConfigured',
+  'oidcConfigured',
+  'oidcLinkHtml',
 ];
 
 describe('api/app', function () {

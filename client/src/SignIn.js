@@ -8,6 +8,7 @@ import message from './common/message';
 import Spacer from './common/Spacer';
 import { api } from './utilities/fetch-json.js';
 import useAppContext from './utilities/use-app-context';
+import ButtonLink from './common/ButtonLink';
 
 function SignIn() {
   const [email, setEmail] = useState('');
@@ -115,12 +116,32 @@ function SignIn() {
     </div>
   );
 
+  const oidcForm = (
+    <div>
+      <Spacer />
+      <ButtonLink
+        variant="primary"
+        style={{
+          width: '100%',
+          textAlign: 'center',
+        }}
+        href={config.baseUrl + '/auth/oidc'}
+      >
+        <div
+          className="w-100"
+          dangerouslySetInnerHTML={{ __html: config.oidcLinkHtml }}
+        />
+      </ButtonLink>
+    </div>
+  );
+
   return (
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
       {config.localAuthConfigured && localForm}
       {config.googleAuthConfigured && googleForm}
       {config.samlConfigured && samlForm}
+      {config.oidcConfigured && oidcForm}
     </div>
   );
 }

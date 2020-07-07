@@ -165,6 +165,18 @@ class Config {
     );
   }
 
+  oidcConfigured() {
+    return Boolean(
+      this.all.publicUrl &&
+        this.all.oidcClientId &&
+        this.all.oidcClientSecret &&
+        this.all.oidcIssuer &&
+        this.all.oidcAuthorizationUrl &&
+        this.all.oidcTokenUrl &&
+        this.all.oidcUserInfoUrl
+    );
+  }
+
   /**
    * Get connections from config.
    * These are provided at runtime and not upserted
