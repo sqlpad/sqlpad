@@ -77,6 +77,41 @@ For OAuth to be useful this usually involves the following:
 - `PUBLIC_URL`=`http://localhost`
 - `DISABLE_USERPASS_AUTH`=`true` (optional - disables plain local user logins)
 
+## OpenID Connect
+
+OpenID Connect authentication can be enabled by setting the following required environment variables:
+
+```sh
+# localhost used in dev
+PUBLIC_URL = "http://localhost:3010"
+SQLPAD_OIDC_CLIENT_ID = "actual-client-id"
+SQLPAD_OIDC_CLIENT_SECRET = "actual-client-secret"
+# URLs will vary by provider
+SQLPAD_OIDC_ISSUER = "https://some.openidprovider.com/oauth2/default"
+SQLPAD_OIDC_AUTHORIZATION_URL = "https://some.openidprovider.com/oauth2/default/v1/authorize"
+SQLPAD_OIDC_TOKEN_URL = "https://some.openidprovider.com/oauth2/default/v1/token"
+SQLPAD_OIDC_USER_INFO_URL = "https://some.openidprovider.okta.com/oauth2/default/v1/userinfo"
+```
+
+The callback redirect URI used by SQLPad is `<baseurl>/auth/oidc/callback`.
+
+For the above configuration, assuming `SQLPAD_BASE_URL = "/sqlpad"`, the callback URI configured with the provider should be `http://localhost:3010/sqlpad/auth/oidc/callback`.
+
+The contents of the OpenID sign in button can be customized with the following
+
+```sh
+SQLPAD_OIDC_LINK_HTML = "text or inner html here"
+```
+
+Prior to authenticating via OpenID, users must still be added to SQLPad with their email address used to log in.
+
+This can be bypassed by using allowed domains to auto-add users for emails belonging to certain domains.
+
+```sh
+# space delimited list of domains to allow
+SQLPAD_ALLOWED_DOMAINS = "mycompany.com"
+```
+
 ## SAML
 
 SAML-based authentication can be enabled by setting the necessary environment variables:

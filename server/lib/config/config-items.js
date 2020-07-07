@@ -399,7 +399,7 @@ const configItems = [
   {
     key: 'oidcLinkHtml',
     envVar: 'SQLPAD_OIDC_LINK_HTML',
-    default: 'Sign in with Open ID',
+    default: 'Sign in with OpenID',
   },
 ];
 
