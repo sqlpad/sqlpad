@@ -163,14 +163,14 @@ Enable word wrapping in SQL editor.
 Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
 
 - Key: `googleClientId`
-- Env: `GOOGLE_CLIENT_ID`
+- Env: `SQLPAD_GOOGLE_CLIENT_ID`
 
 ## googleClientSecret
 
 Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
 
 - Key: `googleClientSecret`
-- Env: `GOOGLE_CLIENT_SECRET`
+- Env: `SQLPAD_GOOGLE_CLIENT_SECRET`
 
 ## httpsPort
 
