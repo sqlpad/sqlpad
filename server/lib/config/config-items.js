@@ -176,7 +176,7 @@ const configItems = [
     key: 'disableAuth',
     envVar: 'DISABLE_AUTH',
     default: false,
-    deprecated: 'To be deprecated in v6. Use AUTH_DISABLED instead.',
+    deprecated: 'To be removed in v6. Use AUTH_DISABLED instead.',
   },
   {
     key: `authDisabled`,
@@ -188,7 +188,7 @@ const configItems = [
     envVar: 'SQLPAD_DISABLE_AUTH_DEFAULT_ROLE',
     default: 'editor',
     deprecated:
-      'To be deprecated in v6. Use SQLPAD_AUTH_DISABLED_DEFAULT_ROLE instead.',
+      'To be removed in v6. Use SQLPAD_AUTH_DISABLED_DEFAULT_ROLE instead.',
   },
   {
     key: 'authDisabledDefaultRole',
