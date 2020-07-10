@@ -1,8 +1,6 @@
 # Changelog
 
-## [5.1.0] - under development
-
-### Enhancements
+## [5.1.0] - 2020-07-10
 
 - Add OpenID Connect authentication support
 - Add .env config file support
