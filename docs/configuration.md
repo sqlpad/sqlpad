@@ -46,24 +46,6 @@ Path to mount sqlpad app following domain. Example, if '/sqlpad' is provided que
 - Key: `baseUrl`
 - Env: `SQLPAD_BASE_URL`
 
-## certPassphrase
-
-!> Deprecated. To be removed in v6. [Use reverse proxy](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md)
-
-Passphrase for your SSL certification file
-
-- Key: `certPassphrase`
-- Env: `CERT_PASSPHRASE`
-
-## certPath
-
-!> Deprecated. To be removed in v6. [Use reverse proxy](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md)
-
-Absolute path to where SSL certificate is stored
-
-- Key: `certPath`
-- Env: `CERT_PATH`
-
 ## cookieName
 
 Name used for cookie. If running multiple SQLPads on same domain, set to different values.
@@ -181,15 +163,6 @@ IP address to bind to. By default SQLPad will listen from all available addresse
 - Key: `ip`
 - Env: `SQLPAD_IP`
 - Default: `0.0.0.0`
-
-## keyPath
-
-!> Deprecated. To be removed in v6. [Use reverse proxy](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md)
-
-Absolute path to where SSL certificate key is stored
-
-- Key: `keyPath`
-- Env: `KEY_PATH`
 
 ## passphrase
 
@@ -479,6 +452,14 @@ Password for LDAP user used for LDAP lookup
 
 - Key: `ldapPassword`
 - Env: `SQLPAD_LDAP_PASSWORD`
+
+## HTTPS
+
+HTTPS may be configured to be used by SQLPad directly. However if performance becomes an issue, consider [using a reverse proxy](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md).
+
+- `SQLPAD_HTTPS_CERT_PATH`: Absolute path to where SSL certificate is stored
+- `SQLPAD_HTTPS_KEY_PATH`: Absolute path to where SSL certificate key is stored
+- `SQLPAD_HTTPS_CERT_PASSPHRASE`: Passphrase for your SSL certification file
 
 ## OpenID Connect
 
