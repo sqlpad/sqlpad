@@ -50,11 +50,6 @@ const configItems = [
     default: false,
   },
   {
-    key: 'httpsPort',
-    envVar: 'SQLPAD_HTTPS_PORT',
-    default: 443,
-  },
-  {
     key: 'dbPath',
     envVar: 'SQLPAD_DB_PATH',
     default: '',

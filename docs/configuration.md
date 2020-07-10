@@ -172,14 +172,6 @@ Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is
 - Key: `googleClientSecret`
 - Env: `SQLPAD_GOOGLE_CLIENT_SECRET`
 
-## httpsPort
-
-Port for SQLPad to listen on.
-
-- Key: `httpsPort`
-- Env: `SQLPAD_HTTPS_PORT`
-- Default: `443`
-
 ## ip
 
 IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0).
@@ -207,11 +199,11 @@ A string of text used to encrypt connection user and password values when stored
 
 ## port
 
-Port for SQLPad to listen on.
+Port for SQLPad to listen on. Used for both HTTP and HTTPS.
 
 - Key: `port`
 - Env: `SQLPAD_PORT`
-- Default: `80`
+- Default: `80` in code / `3000` in Docker Hub image
 
 ## publicUrl
 
