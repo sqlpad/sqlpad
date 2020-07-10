@@ -80,9 +80,10 @@ makeDb(config);
 const baseUrl = config.get('baseUrl');
 const ip = config.get('ip');
 const port = config.get('port');
-const certPassphrase = config.get('certPassphrase');
-const keyPath = config.get('keyPath');
-const certPath = config.get('certPath');
+const certPassphrase =
+  config.get('certPassphrase') || config.get('certPassphrase_d');
+const keyPath = config.get('keyPath') || config.get('keyPath_d');
+const certPath = config.get('certPath') || config.get('certPath_d');
 const systemdSocket = config.get('systemdSocket');
 const timeoutSeconds = config.get('timeoutSeconds');
 

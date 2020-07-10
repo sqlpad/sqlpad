@@ -70,25 +70,38 @@ const configItems = [
     default: "At least the sensitive bits won't be plain text?",
   },
   {
-    key: 'certPassphrase',
+    key: 'certPassphrase_d',
     envVar: 'CERT_PASSPHRASE',
     default: '',
     deprecated:
-      'To be removed in v6. Delegate SSL to reverse proxy instead https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md',
+      'To be removed in v6. Use SQLPAD_HTTPS_CERT_PASSPHRASE instead.',
+  },
+  {
+    key: 'keyPath_d',
+    envVar: 'KEY_PATH',
+    default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_HTTPS_KEY_PATH instead.',
+  },
+  {
+    key: 'certPath_d',
+    envVar: 'CERT_PATH',
+    default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_HTTPS_CERT_PATH instead.',
+  },
+  {
+    key: 'certPassphrase',
+    envVar: 'SQLPAD_HTTPS_CERT_PASSPHRASE',
+    default: '',
   },
   {
     key: 'keyPath',
-    envVar: 'KEY_PATH',
+    envVar: 'SQLPAD_HTTPS_KEY_PATH',
     default: '',
-    deprecated:
-      'To be removed in v6. Delegate SSL to reverse proxy instead https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md',
   },
   {
     key: 'certPath',
-    envVar: 'CERT_PATH',
+    envVar: 'SQLPAD_HTTPS_CERT_PATH',
     default: '',
-    deprecated:
-      'To be removed in v6. Delegate SSL to reverse proxy instead https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md',
   },
   {
     key: 'admin',

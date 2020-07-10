@@ -120,13 +120,13 @@ describe('lib/config/fromFile', function () {
   });
 
   it('Warns for deprecated config', function () {
-    const config = new Config({ certPath: 'is going away' }, {});
+    const config = new Config({ whitelistedDomains: 'is going away' }, {});
 
     const validations = config.getValidations();
     assert(validations.warnings);
     const found = validations.warnings.find(
       (warning) =>
-        warning.includes('certPath') && warning.includes('DEPRECATED')
+        warning.includes('whitelistedDomains') && warning.includes('DEPRECATED')
     );
     assert(found, 'has deprecated key warning');
   });
