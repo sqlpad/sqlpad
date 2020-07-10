@@ -1,6 +1,6 @@
 # Configuration
 
-!> 5.1.0 deprecates JSON/INI config files and adds new environment variables
+!> 5.1.0 deprecates JSON/INI config files and adds new environment variables. See [CHANGELOG](https://github.com/rickbergfalk/sqlpad/blob/master/CHANGELOG.md) for mapping.
 
 ?> .env config file support added in 5.1.0
 
