@@ -1,6 +1,6 @@
 # Configuration
 
-!> 5.1.0 deprecates JSON/INI config files and renames environment variables. Previous config documentation for 5.0.0 or earlier [configuration-5.0.0.md](/configuration-5.0.0)
+!> 5.1.0 deprecates JSON/INI config files and adds new environment variables
 
 ?> .env config file support added in 5.1.0
 
