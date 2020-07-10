@@ -80,7 +80,6 @@ makeDb(config);
 const baseUrl = config.get('baseUrl');
 const ip = config.get('ip');
 const port = config.get('port');
-const httpsPort = config.get('port');
 const certPassphrase = config.get('certPassphrase');
 const keyPath = config.get('keyPath');
 const certPath = config.get('certPath');
@@ -176,15 +175,15 @@ async function startServer() {
   // determine if key pair exists for certs
   if (keyPath && certPath) {
     // https only
-    const _port = await detectPortOrSystemd(httpsPort);
-    if (!isFdObject(_port) && parseInt(httpsPort, 10) !== parseInt(_port, 10)) {
+    const _port = await detectPortOrSystemd(port);
+    if (!isFdObject(_port) && parseInt(port, 10) !== parseInt(_port, 10)) {
       appLog.info(
         'Port %d already occupied. Using port %d instead.',
-        httpsPort,
+        port,
         _port
       );
       // TODO FIXME XXX  Persist the new port to the in-memory store.
-      // config.set('httpsPort', _port)
+      // config.set('port', _port)
     }
 
     const privateKey = fs.readFileSync(keyPath, 'utf8');

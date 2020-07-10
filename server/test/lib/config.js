@@ -135,7 +135,7 @@ describe('lib/config/fromFile', function () {
 describe('lib/config', function () {
   it('.get() should get a value provided by default', function () {
     const config = new Config({}, {});
-    assert.equal(config.get('httpsPort'), 443, 'httpsPort=443');
+    assert.equal(config.get('ip'), '0.0.0.0');
   });
 
   it('.get() should only accept key in config items', function () {
