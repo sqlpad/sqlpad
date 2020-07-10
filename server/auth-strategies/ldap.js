@@ -3,7 +3,7 @@ const appLog = require('../lib/app-log');
 const ActiveDirectoryStrategy = require('passport-activedirectory');
 
 function enableLdap(config) {
-  if (!config.get('enableLdapAuth')) {
+  if (!(config.get('ldapAuthEnabled') || config.get('enableLdapAuth'))) {
     return;
   }
 
@@ -16,10 +16,10 @@ function enableLdap(config) {
         usernameField: 'email',
         passwordField: 'password',
         ldap: {
-          url: config.get('ldapUrl'),
-          baseDN: config.get('ldapBaseDN'),
-          username: config.get('ldapUsername'),
-          password: config.get('ldapPassword'),
+          url: config.get('ldapUrl') || config.get('ldapUrl_d'),
+          baseDN: config.get('ldapBaseDN') || config.get('ldapBaseDN_d'),
+          username: config.get('ldapUsername') || config.get('ldapUsername_d'),
+          password: config.get('ldapPassword') || config.get('ldapPassword_d'),
           logging: { name: 'ldap', level: config.get('appLogLevel') },
         },
       },

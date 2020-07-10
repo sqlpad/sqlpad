@@ -451,40 +451,40 @@ When supplying both `id` and `email`, `id` will be used for user matching instea
 - Key: `authProxyHeaders`
 - Env: `SQLPAD_AUTH_PROXY_HEADERS`
 
-## enableLdapAuth
+## ldapAuthEnabled
 
 Set to `true` to enable LDAP authentication
 
-- Key: `enableLdapAuth`
-- Env: `ENABLE_LDAP_AUTH`
+- Key: `ldapAuthEnabled`
+- Env: `SQLPAD_LDAP_AUTH_ENABLED`
 
 ## ldapUrl
 
 LDAP server URL. Examples: `ldap://localhost:389`, `ldaps://ad.corporate.com:636`
 
 - Key: `ldapUrl`
-- Env: `LDAP_URL`
+- Env: `SQLPAD_LDAP_URL`
 
 ## ldapBaseDN
 
 Base LDAP DN to search for users in
 
 - Key: `ldapBaseDN`
-- Env: `LDAP_BASE_DN`
+- Env: `SQLPAD_LDAP_BASE_DN`
 
 ## ldapUsername
 
 Username for LDAP lookup
 
 - Key: `ldapUsername`
-- Env: `LDAP_USERNAME`
+- Env: `SQLPAD_LDAP_USERNAME`
 
 ## ldapPassword
 
 Password for LDAP user used for LDAP lookup
 
 - Key: `ldapPassword`
-- Env: `LDAP_PASSWORD`
+- Env: `SQLPAD_LDAP_PASSWORD`
 
 ## OpenID Connect
 
