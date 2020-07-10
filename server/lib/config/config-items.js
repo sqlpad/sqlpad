@@ -214,8 +214,14 @@ const configItems = [
     default: '',
   },
   {
-    key: 'serviceTokenSecret',
+    key: 'serviceTokenSecret_d',
     envVar: 'SERVICE_TOKEN_SECRET',
+    default: '',
+    deprecated: 'To be removed in v6. Use SQLPAD_SERVICE_TOKEN_SECRET instead.',
+  },
+  {
+    key: 'serviceTokenSecret',
+    envVar: 'SQLPAD_SERVICE_TOKEN_SECRET',
     default: '',
   },
   {

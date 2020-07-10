@@ -257,7 +257,7 @@ Default role to assign user created when `samlAutoSignUp` is turned on. Accepted
 Secret to sign the generated Service Tokens
 
 - Key: `serviceTokenSecret`
-- Env: `SERVICE_TOKEN_SECRET`
+- Env: `SQLPAD_SERVICE_TOKEN_SECRET`
 
 ## sessionMinutes
 

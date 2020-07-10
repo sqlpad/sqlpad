@@ -15,7 +15,9 @@ class ServiceTokens {
   }
 
   async generate(data) {
-    const secret = this.config.get('serviceTokenSecret');
+    const secret =
+      this.config.get('serviceTokenSecret') ||
+      this.config.get('serviceTokenSecret_d');
     if (!secret) {
       return Promise.reject(
         'Service Token (JWT) Secret not defined in server config'
