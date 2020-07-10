@@ -10,7 +10,7 @@ Once an initial admin account has been created, all future users must be added b
 
 If for whatever reason you lose admin rights, and the last-admin-standing won't give you admin rights back, you can reinstate them to yourself by setting environment variable `SQLPAD_ADMIN=yourEmailAddress@domain.com`.
 
-Local authentication can be disabled by setting `SQLPAD_DISABLE_USERPASS_AUTH=true`.
+Local authentication can be disabled by setting `SQLPAD_USERPASS_AUTH_DISABLED=true`.
 
 ## No Authentication
 
@@ -75,7 +75,7 @@ For OAuth to be useful this usually involves the following:
 - `SQLPAD_GOOGLE_CLIENT_ID`
 - `SQLPAD_GOOGLE_CLIENT_SECRET`
 - `PUBLIC_URL`=`http://localhost`
-- `DISABLE_USERPASS_AUTH`=`true` (optional - disables plain local user logins)
+- `SQLPAD_USERPASS_AUTH_DISABLED`=`true` (optional - disables plain local user logins)
 
 ## OpenID Connect
 
@@ -125,7 +125,7 @@ SAML-based authentication can be enabled by setting the necessary environment va
 - `SQLPAD_SAML_AUTO_SIGN_UP`
 - `SQLPAD_SAML_DEFAULT_ROLE`
 - `PUBLIC_URL`
-- `DISABLE_USERPASS_AUTH`=`true` (optional - disables plain local user logins)
+- `SQLPAD_USERPASS_AUTH_DISABLED`=`true` (optional - disables plain local user logins)
 
 SQLPad users do not need to be added ahead of time, and may be created on the fly using `SQLPAD_SAML_AUTO_SIGN_UP`. Whenever a new user is detected (unable to match to existing user email), a user record will be added to SQLPad's user table and a user signed in. By default users are not auto-created and must otherwise be added ahead of time.
 
@@ -138,7 +138,7 @@ LDAP-based authentication can be enabled by setting the necessary environment va
 - `LDAP_BASE_DN` - Base LDAP DN to search for users in, eg: `dc=domain,dc=com`.
 - `LDAP_USERNAME` - The bind user will be used to lookup information about other LDAP users.
 - `LDAP_PASSWORD` - The password to bind with for the lookup user.
-- `DISABLE_USERPASS_AUTH`=`false` (need to enable local user logins)
+- `SQLPAD_USERPASS_AUTH_DISABLED`=`false` (need to enable local user logins)
 
 LDAP-based authentication can be enabled and used with local authencation together. LDAP-based users need to be added and set relavant roles ahead of time. When LDAP-based authentication enabled, local user login/registration must be enabled. Users can sign in to SQLPad with an LDAP username (not an e-mail address) and LDAP password using LDAP-based authentication, and with an e-mail address and local password by local authencation.
 

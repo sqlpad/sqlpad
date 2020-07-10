@@ -144,12 +144,12 @@ Acceptable values: `admin`, `editor`.
 - Key: `authDisabledDefaultRole`
 - Env: `SQLPAD_AUTH_DISABLED_DEFAULT_ROLE`
 
-## disableUserpassAuth
+## userpassAuthDisabled
 
 Set to TRUE to disable built-in user authentication. Probably desired when using other auths like OAuth or SAML.
 
-- Key: `disableUserpassAuth`
-- Env: `DISABLE_USERPASS_AUTH`
+- Key: `userpassAuthDisabled`
+- Env: `SQLPAD_USERPASS_AUTH_DISABLED`
 
 ## editorWordWrap
 

@@ -141,7 +141,15 @@ const configItems = [
     key: 'disableUserpassAuth',
     envVar: 'DISABLE_USERPASS_AUTH',
     default: false,
+    deprecated:
+      'To be removed in v6. Use SQLPAD_USERPASS_AUTH_DISABLED instead.',
   },
+  {
+    key: 'userpassAuthDisabled',
+    envVar: 'SQLPAD_USERPASS_AUTH_DISABLED',
+    default: false,
+  },
+
   {
     key: 'enableLdapAuth',
     envVar: 'ENABLE_LDAP_AUTH',
