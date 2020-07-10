@@ -1,21 +1,15 @@
-# Configuration
+# Configuration (5.0.0 & Ealier)
 
-!> 5.1.0 deprecates JSON/INI config files and renames environment variables. Previous config documentation for 5.0.0 or earlier [configuration-5.0.0.md](/configuration-5.0.0)
-
-?> .env config file support added in 5.1.0
-
-SQLPad may be configured via environment variables or an .env config file.
+!> As of 5.1.0 JSON/INI files have been deprecated, and variables have been renamed for better consistency. If possible update to 5.1.0 or later, and refer to latest configuration.
 
 Config file path may be specified passing command line option `--config` or environment variable `SQLPAD_CONFIG`.
 For example:
 
 ```sh
-node server.js --config path/to/.env
-# or
-env SQLPAD_CONFIG=path/to/.env node server.js
+node server.js --config ~/sqlpad.ini
 ```
 
-A [config file example](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.env) can be found in the GitHub repository.
+?> For examples below, **key** refers to key in INI/JSON file. **Env** for environment variable.
 
 ## admin
 
@@ -131,27 +125,27 @@ Default connection to select on SQLPad load if connection not previousy selected
 - key: `defaultConnectionId`
 - Env: `SQLPAD_DEFAULT_CONNECTION_ID`
 
-## authDisabled
+## disableAuth
 
 Set to TRUE to disable authentication altogether.
 
-- Key: `authDisabled`
-- Env: `SQLPAD_AUTH_DISABLED`
+- Key: `disableAuth`
+- Env: `DISABLE_AUTH`
 
-## authDisabledDefaultRole
+## disableAuthDefaultRole
 
-Specifies the role associated with users when authDisabled is set to true.
+Specifies the role associated with users when disableAuth is set to true.
 Acceptable values: `admin`, `editor`.
 
-- Key: `authDisabledDefaultRole`
-- Env: `SQLPAD_AUTH_DISABLED_DEFAULT_ROLE`
+- Key: `disableAuthDefaultRole`
+- Env: `SQLPAD_DISABLE_AUTH_DEFAULT_ROLE`
 
-## userpassAuthDisabled
+## disableUserpassAuth
 
 Set to TRUE to disable built-in user authentication. Probably desired when using other auths like OAuth or SAML.
 
-- Key: `userpassAuthDisabled`
-- Env: `SQLPAD_USERPASS_AUTH_DISABLED`
+- Key: `disableUserpassAuth`
+- Env: `DISABLE_USERPASS_AUTH`
 
 ## editorWordWrap
 
@@ -165,14 +159,14 @@ Enable word wrapping in SQL editor.
 Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
 
 - Key: `googleClientId`
-- Env: `SQLPAD_GOOGLE_CLIENT_ID`
+- Env: `GOOGLE_CLIENT_ID`
 
 ## googleClientSecret
 
 Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
 
 - Key: `googleClientSecret`
-- Env: `SQLPAD_GOOGLE_CLIENT_SECRET`
+- Env: `GOOGLE_CLIENT_SECRET`
 
 ## ip
 
@@ -201,11 +195,11 @@ A string of text used to encrypt connection user and password values when stored
 
 ## port
 
-Port for SQLPad to listen on. Used for both HTTP and HTTPS.
+Port for SQLPad to listen on.
 
 - Key: `port`
 - Env: `SQLPAD_PORT`
-- Default: `80` in code / `3000` in Docker Hub image
+- Default: `80`
 
 ## publicUrl
 
@@ -227,42 +221,42 @@ By default query results are limited to 50,000 records.
 SAML authentication context URL. A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`.
 
 - Key: `samlAuthContext`
-- Env: `SQLPAD_SAML_AUTH_CONTEXT`
+- Env: `SAML_AUTH_CONTEXT`
 
 ## samlCallbackUrl
 
 SAML callback URL. It will generally be constructed from the deployment's internet address and the fixed route, for example: https://mysqlpad.com/login/callback
 
 - Key: `samlCallbackUrl`
-- Env: `SQLPAD_SAML_CALLBACK_URL`
+- Env: `SAML_CALLBACK_URL`
 
 ## samlCert
 
 SAML certificate in Base64
 
 - Key: `samlCert`
-- Env: `SQLPAD_SAML_CERT`
+- Env: `SAML_CERT`
 
 ## samlEntryPoint
 
 SAML Entry point URL
 
 - Key: `samlEntryPoint`
-- Env: `SQLPAD_SAML_ENTRY_POINT`
+- Env: `SAML_ENTRY_POINT`
 
 ## samlIssuer
 
 SAML Issuer
 
 - Key: `samlIssuer`
-- Env: `SQLPAD_SAML_ISSUER`
+- Env: `SAML_ISSUER`
 
 ## samlLinkHtml
 
 HTML code for the sign-in link used for starting SAML authentication. The default is `Sign in with SSO`
 
 - Key: `samlLinkHtml`
-- Env: `SQLPAD_SAML_LINK_HTML`
+- Env: `SAML_LINK_HTML`
 
 ## samlAutoSignUp
 
@@ -274,7 +268,7 @@ Auto create a user record if it does not exist when new user is detected via SAM
 
 ## samlDefaultRole
 
-Default role to assign user created when `samlAutoSignUp` is turned on. Accepted values are `editor` and `admin`. Default value is `editor`.
+Default role to assign user created when `samlAutoSignUp` is turned on. By default this is an empty-string and not used, expecting a role to be provided via header-mapping.
 
 - Key: `samlDefaultRole`
 - Env: `SQLPAD_SAML_DEFAULT_ROLE`
@@ -445,86 +439,37 @@ When supplying both `id` and `email`, `id` will be used for user matching instea
 - Key: `authProxyHeaders`
 - Env: `SQLPAD_AUTH_PROXY_HEADERS`
 
-## ldapAuthEnabled
+## enableLdapAuth
 
 Set to `true` to enable LDAP authentication
 
-- Key: `ldapAuthEnabled`
-- Env: `SQLPAD_LDAP_AUTH_ENABLED`
+- Key: `enableLdapAuth`
+- Env: `ENABLE_LDAP_AUTH`
 
 ## ldapUrl
 
 LDAP server URL. Examples: `ldap://localhost:389`, `ldaps://ad.corporate.com:636`
 
 - Key: `ldapUrl`
-- Env: `SQLPAD_LDAP_URL`
+- Env: `LDAP_URL`
 
 ## ldapBaseDN
 
-Base LDAP DN to search for users in
+LDAP Base DN
 
 - Key: `ldapBaseDN`
-- Env: `SQLPAD_LDAP_BASE_DN`
+- Env: `LDAP_BASE_DN`
 
 ## ldapUsername
 
 Username for LDAP lookup
 
 - Key: `ldapUsername`
-- Env: `SQLPAD_LDAP_USERNAME`
+- Env: `LDAP_USERNAME`
 
 ## ldapPassword
 
 Password for LDAP user used for LDAP lookup
 
 - Key: `ldapPassword`
-- Env: `SQLPAD_LDAP_PASSWORD`
-
-## OpenID Connect
-
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>SQLPAD_OIDC_CLIENT_ID</code></td>
-      <td>Client ID</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_CLIENT_SECRET</code></td>
-      <td>Client secret</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_ISSUER</code></td>
-      <td>Issuer</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_AUTHORIZATION_URL</code></td>
-      <td>Authorization URL</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_TOKEN_URL</code></td>
-      <td>Token URL</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_USER_INFO_URL</code></td>
-      <td>User info URL</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_LINK_HTML</code></td>
-      <td>Inner HTML for OpenID sign in button customization</td>
-      <td>Sign in with OpenID</td>
-    </tr>
-  </tbody>
-</table>
+- Env: `LDAP_PASSWORD`
