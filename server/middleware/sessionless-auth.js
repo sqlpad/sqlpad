@@ -53,7 +53,9 @@ function sessionlessAuth(req, res, next) {
   if (authHeader) {
     // If authorization starts with Bearer and serviceTokenSecret is set,
     // we're going to guess it is a service token jwt
-    if (authHeader.startsWith('Bearer ') && config.get('serviceTokenSecret')) {
+    const serviceTokenSecret =
+      config.get('serviceTokenSecret') || config.get('serviceTokenSecret_d');
+    if (authHeader.startsWith('Bearer ') && serviceTokenSecret) {
       return passport.authenticate('jwt', handleAuth)(req, res, next);
     }
 

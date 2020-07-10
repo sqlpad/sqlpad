@@ -12,7 +12,10 @@ const appLog = require('../lib/app-log');
  * @param {object} config
  */
 function enableJwtServiceToken(config) {
-  if (config.get('serviceTokenSecret')) {
+  const serviceTokenSecret =
+    config.get('serviceTokenSecret') || config.get('serviceTokenSecret_d');
+
+  if (serviceTokenSecret) {
     appLog.info('Enabling JWT Service Token authentication strategy.');
 
     passport.use(
@@ -20,7 +23,7 @@ function enableJwtServiceToken(config) {
         {
           passReqToCallback: true,
           jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-          secretOrKey: config.get('serviceTokenSecret'),
+          secretOrKey: serviceTokenSecret,
         },
         async function (req, jwt_payload, done) {
           try {
