@@ -1,9 +1,24 @@
 # Changelog
 
-## [5.1.0] - 2020-??-??
+## [5.1.0] - under development
 
+### Enhancements
+
+- Add OpenID Connect authentication support
 - Add .env config file support
+- Fix disabled admin on initial SQLPad load when using seed queries
 - Deprecate INI and JSON config files support
+- Environment variables renamed for better consistency. Old name is deprecated:
+  - `GOOGLE_CLIENT_ID` ➡ `SQLPAD_GOOGLE_CLIENT_ID`
+  - `GOOGLE_CLIENT_SECRET` ➡ `SQLPAD_GOOGLE_CLIENT_SECRET`
+  - `DISABLE_AUTH` ➡ `SQLPAD_AUTH_DISABLED`
+  - `SQLPAD_DISABLE_AUTH_DEFAULT_ROLE` ➡ `SQLPAD_AUTH_DISABLED_DEFAULT_ROLE`
+  - `DISABLE_USERPASS_AUTH` ➡ `SQLPAD_USERPASS_AUTH_DISABLED`
+  - `ENABLE_LDAP_AUTH` ➡ `SQLPAD_LDAP_AUTH_ENABLED`
+  - `LDAP_URL` ➡ `SQLPAD_LDAP_URL`
+  - `LDAP_BASE_DN` ➡ `SQLPAD_LDAP_BASE_DN`
+  - `LDAP_USERNAME` ➡ `SQLPAD_LDAP_USERNAME`
+  - `LDAP_PASSWORD` ➡ `SQLPAD_LDAP_PASSWORD`
 
 ## [5.0.0] - 2020-07-03
 
