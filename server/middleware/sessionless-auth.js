@@ -59,7 +59,11 @@ function sessionlessAuth(req, res, next) {
 
     // If authoriztion starts with Basic and local auth isn't disabled,
     // try HTTP basic authentication
-    if (authHeader.startsWith('Basic ') && !config.get('disableUserpassAuth')) {
+    if (
+      authHeader.startsWith('Basic ') &&
+      !config.get('userpassAuthDisabled') &&
+      !config.get('disableUserpassAuth')
+    ) {
       return passport.authenticate('basic', handleAuth)(req, res, next);
     }
   }
