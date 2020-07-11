@@ -72,7 +72,7 @@ router.get(
  * @param {Res} res
  */
 async function createConnectionClient(req, res) {
-  const { models, body, user } = req;
+  const { models, body, user, appLog } = req;
 
   const { connectionId } = body;
   if (!connectionId) {
@@ -84,10 +84,18 @@ async function createConnectionClient(req, res) {
     return res.utils.error('connectionId invalid');
   }
 
-  const connectionClient = await models.connectionClients.createNew(
-    connection,
-    user
-  );
+  // Return connection client error as it may contain details as to why connection failed (potentially db config related)
+  // TODO - Use specific Error for SQL/connection to distinguish between database error and application error
+  let connectionClient;
+  try {
+    connectionClient = await models.connectionClients.createNew(
+      connection,
+      user
+    );
+  } catch (error) {
+    appLog.error(error, 'Error creating connection client');
+    return res.utils.error(error);
+  }
 
   return res.utils.data({
     id: connectionClient.id,
