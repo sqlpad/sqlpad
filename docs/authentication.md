@@ -145,3 +145,19 @@ LDAP-based authentication can be enabled and used with local authencation togeth
 ## Allowed Domains for User Administration
 
 An entire domain can be allowed for username administration by setting enviornment variable `SQLPAD_ALLOWED_DOMAINS`. This may be particularly useful in combination with OAuth.
+
+## Service Token
+
+The REST API may be called using generated service tokens scoped by role and some optional amount of time.
+
+To enable the creation of service tokens, a token secret must be supplied via `SQLPAD_SERVICE_TOKEN_SECRET`.
+
+To generate a service token, log into SQLPad as an `admin` user and click `Service Tokens`. A service token can be scoped to a certain role (admin or editor) and limited to a window of time.
+
+The generated Bearer token may be used by passing it via the Authorization header:
+
+```sh
+curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/sqlpad/api/users
+```
+
+For more information on APIs available see [API Overview](/api-overview).
