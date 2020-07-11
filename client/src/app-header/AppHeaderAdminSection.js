@@ -9,7 +9,7 @@ import useAppContext from '../utilities/use-app-context';
 import AppHeaderDivider from './AppHeaderDivider';
 
 function AppHeaderAdminSection() {
-  const { currentUser } = useAppContext();
+  const { config, currentUser } = useAppContext();
   const [showConnections, setShowConnections] = useState(false);
   const [showConnectionAccesses, setShowConnectionAccesses] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
@@ -23,6 +23,7 @@ function AppHeaderAdminSection() {
   if (currentUser.id === 'noauth') {
     hideUsersButton = true;
   }
+  const showServiceTokensButton = config.showServiceTokensUI;
 
   return [
     <AppHeaderDivider key="divider" />,
@@ -79,6 +80,7 @@ function AppHeaderAdminSection() {
       key="service-tokens-button"
       variant="ghost"
       onClick={() => setShowServiceTokens(true)}
+      hidden={!showServiceTokensButton}
     >
       Service Tokens
     </Button>,
