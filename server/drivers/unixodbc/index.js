@@ -116,7 +116,18 @@ class Client {
       cn = cn + ';Pwd=' + password;
     }
 
-    this.client = await odbc.connect(cn);
+    try {
+      this.client = await odbc.connect(cn);
+    } catch (error) {
+      // unixodb error has additional info about why the error occurred
+      // It has an array of objects with messages.
+      // If that exists send an error with the first message.
+      if (Array.isArray(error.odbcErrors)) {
+        const e = error.odbcErrors[0];
+        throw new Error(e.message);
+      }
+      throw error;
+    }
   }
 
   /**
