@@ -180,3 +180,15 @@ Response body:
 Pagination and links are not yet supported, but will be added at some point, using `Links` header (https://tools.ietf.org/html/rfc5988#page-6)
 
 Some "action" URLs exist, and behave more like RPC calls. One particular URL for example is to format a query. If you have a good RESTy idea we're open to using a REST approach for it (for now, an RPC call seems pragmatic).
+
+## Authentication to the API
+
+There are several options for authenticating to the REST API.
+
+1. Use GUI username and password with HTML Basic Authentication (unless `SQLPAD_USERPASS_AUTH_DISABLED` is set)
+
+       curl --user username:password http://sqlpad.example.com/sqlpad/api/users
+
+2. Use a Service Token generated from the GUI. Example:
+
+       curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer yourtoken" http://sqlpad.example.com/sqlpad/api/users
