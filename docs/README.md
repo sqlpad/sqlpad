@@ -2,7 +2,7 @@
 
 A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Presto, SAP HANA, Snowflake, BigQuery, SQLite, and many others via ODBC.
 
-![SQLPad](images/screenshots/v3-beta.png)
+<img class="screenshot" src="images/screenshots/v5.1.0.png" data-origin="images/screenshots/v5.1.0.png" alt="SQLPad screenshot" >
 
 ## Database Support
 
