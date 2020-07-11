@@ -1,3 +1,7 @@
+.screenshot {
+  box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.4);
+}
+
 .db-images {
   display: flex;
   flex-wrap: wrap;

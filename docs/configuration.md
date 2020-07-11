@@ -254,7 +254,17 @@ Default role to assign user created when `samlAutoSignUp` is turned on. Accepted
 
 ## serviceTokenSecret
 
-Secret to sign the generated Service Tokens
+Secret to sign the generated Service Tokens.
+
+To generate a service token, log into SQLPad as an `admin` user and click `Service Tokens`. A service token can be scoped to a certain role (admin or editor) and limited to a window of time.
+
+The generated Bearer token may be used by passing it via the Authorization header:
+
+```sh
+curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/sqlpad/api/users
+```
+
+For more information on APIs available see [API Overview](/api-overview).
 
 - Key: `serviceTokenSecret`
 - Env: `SQLPAD_SERVICE_TOKEN_SECRET`

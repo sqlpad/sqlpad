@@ -1,10 +1,8 @@
 # SQLPad
 
-[![Build Status](https://travis-ci.org/rickbergfalk/sqlpad.svg?branch=master)](https://travis-ci.org/rickbergfalk/sqlpad)
+A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Presto, SAP HANA, Cassandra, Snowflake, Google BigQuery, SQLite, and many more via [ODBC](https://github.com/rickbergfalk/sqlpad/wiki/ODBC).
 
-A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, Presto, SAP HANA, Cassandra, Snowflake, Google BigQuery, SQLite, and many more via [ODBC](https://github.com/rickbergfalk/sqlpad/wiki/ODBC).
-
-![SQLPad Query Editor](https://rickbergfalk.github.io/sqlpad/images/screenshots/v3-beta.png)
+![SQLPad Query Editor](https://rickbergfalk.github.io/sqlpad/images/screenshots/v5.1.0.png)
 
 ## Docker Image
 
