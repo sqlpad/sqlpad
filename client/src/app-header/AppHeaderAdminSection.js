@@ -19,9 +19,9 @@ function AppHeaderAdminSection() {
     return null;
   }
 
-  let hideButton = false;
+  let hideUsersButton = false;
   if (currentUser.id === 'noauth') {
-    hideButton = true;
+    hideUsersButton = true;
   }
 
   return [
@@ -59,7 +59,7 @@ function AppHeaderAdminSection() {
       key="user-button"
       variant="ghost"
       onClick={() => setShowUsers(true)}
-      hidden={hideButton}
+      hidden={hideUsersButton}
     >
       Users
     </Button>,
