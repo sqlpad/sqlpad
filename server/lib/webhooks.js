@@ -26,8 +26,9 @@ class Webhooks {
     try {
       const res = await fetch(url, {
         method: 'POST',
-        body,
+        body: JSON.stringify(body),
         headers: {
+          'Content-Type': 'application/json',
           'SQLPad-Secret': config.get('webhookSecret'),
           'SQLPad-URL': this.sqlpadUrl(),
         },
