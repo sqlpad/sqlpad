@@ -28,6 +28,7 @@ const expectedConfigKeys = [
   'ldapConfigured',
   'oidcConfigured',
   'oidcLinkHtml',
+  'showServiceTokensUI',
 ];
 
 describe('api/app', function () {

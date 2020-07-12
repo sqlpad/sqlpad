@@ -41,6 +41,9 @@ async function getApp(req, res) {
         config.get('ldapAuthEnabled') || config.get('enableLdapAuth'),
       oidcConfigured: config.oidcConfigured(),
       oidcLinkHtml: config.get('oidcLinkHtml'),
+      showServiceTokensUI: Boolean(
+        config.get('serviceTokenSecret') || config.get('serviceTokenSecret_d')
+      ),
     },
     version: packageJson.version,
   });
