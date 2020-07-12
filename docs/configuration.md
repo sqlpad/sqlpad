@@ -195,63 +195,6 @@ By default query results are limited to 50,000 records.
 - Env: `SQLPAD_QUERY_RESULT_MAX_ROWS`
 - Default: `50000`
 
-## samlAuthContext
-
-SAML authentication context URL. A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`.
-
-- Key: `samlAuthContext`
-- Env: `SQLPAD_SAML_AUTH_CONTEXT`
-
-## samlCallbackUrl
-
-SAML callback URL. It will generally be constructed from the deployment's internet address and the fixed route, for example: https://mysqlpad.com/login/callback
-
-- Key: `samlCallbackUrl`
-- Env: `SQLPAD_SAML_CALLBACK_URL`
-
-## samlCert
-
-SAML certificate in Base64
-
-- Key: `samlCert`
-- Env: `SQLPAD_SAML_CERT`
-
-## samlEntryPoint
-
-SAML Entry point URL
-
-- Key: `samlEntryPoint`
-- Env: `SQLPAD_SAML_ENTRY_POINT`
-
-## samlIssuer
-
-SAML Issuer
-
-- Key: `samlIssuer`
-- Env: `SQLPAD_SAML_ISSUER`
-
-## samlLinkHtml
-
-HTML code for the sign-in link used for starting SAML authentication. The default is `Sign in with SSO`
-
-- Key: `samlLinkHtml`
-- Env: `SQLPAD_SAML_LINK_HTML`
-
-## samlAutoSignUp
-
-Auto create a user record if it does not exist when new user is detected via SAML
-
-- Key: `samlAutoSignUp`
-- Env: `SQLPAD_SAML_AUTO_SIGN_UP`
-- Default: `false`
-
-## samlDefaultRole
-
-Default role to assign user created when `samlAutoSignUp` is turned on. Accepted values are `editor` and `admin`. Default value is `editor`.
-
-- Key: `samlDefaultRole`
-- Env: `SQLPAD_SAML_DEFAULT_ROLE`
-
 ## serviceTokenSecret
 
 Secret to sign the generated Service Tokens.
@@ -470,6 +413,127 @@ HTTPS may be configured to be used by SQLPad directly. However if performance be
 - `SQLPAD_HTTPS_CERT_PATH`: Absolute path to where SSL certificate is stored
 - `SQLPAD_HTTPS_KEY_PATH`: Absolute path to where SSL certificate key is stored
 - `SQLPAD_HTTPS_CERT_PASSPHRASE`: Passphrase for your SSL certification file
+
+## SAML
+
+```bash
+# SAML authentication context URL.
+# A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`
+SQLPAD_SAML_AUTH_CONTEXT = ""
+
+# SAML callback URL.
+# It will generally be constructed from the deployment's internet address and the fixed route.
+# For example: `https://mysqlpad.com/login/callback`.
+SQLPAD_SAML_CALLBACK_URL = ""
+
+# SAML certificate in Base64
+SQLPAD_SAML_CERT = ""
+
+# Entry point url
+SQLPAD_SAML_ENTRY_POINT = ""
+
+SQLPAD_SAML_ISSUER = ""
+
+# HTML code for the sign-in link used for starting SAML authentication.
+SQLPAD_SAML_LINK_HTML = "Sign in with SSO"
+
+# Auto create a user record if it does not exist when new user is detected via SAML.
+SQLPAD_SAML_AUTO_SIGN_UP = "false"
+
+# Default role to assign user created when SQLPAD_SAML_AUTO_SIGN_UP is turned on.
+# Accepted values are `editor` and `admin`.
+SQLPAD_SAML_DEFAULT_ROLE = "editor"
+```
+
+**SQLPAD_SAML_AUTH_CONTEXT**
+
+SAML authentication context URL. A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`.
+
+**SQLPAD_SAML_CALLBACK_URL**
+
+SAML callback URL. It will generally be constructed from the deployment's internet address and the fixed route, for example: `https://mysqlpad.com/login/callback`.
+
+**SQLPAD_SAML_CERT**
+
+SAML certificate in Base64
+
+**SQLPAD_SAML_ENTRY_POINT**
+
+SAML entry point URL
+
+**SQLPAD_SAML_ISSUER**
+
+SAML Issuer
+
+**SQLPAD_SAML_LINK_HTML**
+
+HTML code for the sign-in link used for starting SAML authentication.
+
+Default: `Sign in with SSO`
+
+**SQLPAD_SAML_AUTO_SIGN_UP**
+
+Auto create a user record if it does not exist when new user is detected via SAML.
+
+Default: `false`
+
+**SQLPAD_SAML_DEFAULT_ROLE**
+
+Default role to assign user created when SQLPAD_SAML_AUTO_SIGN_UP is turned on. Accepted values are `editor` and `admin`.
+
+Default: `editor`
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>description</th>
+      <th>default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>SQLPAD_SAML_AUTH_CONTEXT</td>
+      <td>SAML authentication context URL. A sensible value is: <code>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</code></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>SQLPAD_SAML_CALLBACK_URL</td>
+      <td>SAML callback URL. It will generally be constructed from the deployment's internet address and the fixed route, for example: <code>https://mysqlpad.com/login/callback</code></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>SQLPAD_SAML_CERT</td>
+      <td>SAML certificate in Base64</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>SQLPAD_SAML_ENTRY_POINT</td>
+      <td>SAML Entry point URL</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>SQLPAD_SAML_ISSUER</td>
+      <td>SAML Issuer</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>SQLPAD_SAML_LINK_HTML</td>
+      <td>HTML code for the sign-in link used for starting SAML authentication.</td>
+      <td>Sign in with SSO</td>
+    </tr>
+    <tr>
+      <td>SQLPAD_SAML_AUTO_SIGN_UP</td>
+      <td>Auto create a user record if it does not exist when new user is detected via SAML.</td>
+      <td>false</td>
+    </tr>
+    <tr>
+      <td>SQLPAD_SAML_DEFAULT_ROLE</td>
+      <td>Default role to assign user created when SQLPAD_SAML_AUTO_SIGN_UP is turned on. Accepted values are <code>editor</code> and <code>admin</code>.</td>
+      <td>editor</td>
+    </tr>
+  </tbody>
+</table>
 
 ## OpenID Connect
 
