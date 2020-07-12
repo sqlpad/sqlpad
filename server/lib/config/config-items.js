@@ -478,6 +478,14 @@ const configItems = [
     envVar: 'SQLPAD_OIDC_LINK_HTML',
     default: 'Sign in with OpenID',
   },
+  {
+    key: 'webhookSecret',
+    envVar: 'SQLPAD_WEBHOOK_SECRET',
+  },
+  {
+    key: 'webhookUserCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_USER_CREATED_URL',
+  },
 ];
 
 module.exports = configItems;
