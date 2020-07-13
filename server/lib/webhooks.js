@@ -55,7 +55,7 @@ class Webhooks {
   }
 
   userCreated(user) {
-    const url = this.config.get('webhookUserCreated');
+    const url = this.config.get('webhookUserCreatedUrl');
     if (url) {
       const body = {
         id: user.id,
@@ -69,7 +69,7 @@ class Webhooks {
   }
 
   queryCreated(query, connection) {
-    const url = this.config.get('webhookQueryCreated');
+    const url = this.config.get('webhookQueryCreatedUrl');
     if (url) {
       const {
         id,
