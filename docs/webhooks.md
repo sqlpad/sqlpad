@@ -8,14 +8,14 @@ To enable a specific webhook, provide a URL for the event you would like to subs
 
 To ensure a webhook call is valid, `SQLPAD_WEBHOOK_SECRET` may be configured, and validated on every webhook call.
 
-Each webhook will contain the following headers:
+Each webhook POST will contain the following headers:
 
 - `Content-Type`: `application/json`
 - `SQLPad-Secret`: `SQLPAD_WEBHOOK_SECRET value`
 - `SQLPad-URL`: `http://your-sqlpad-public-url:port/base-url`
 - `SQLPad-Hook-Name`: `hook_name`
 
-The payload sent to the URL varies by event.
+The request body sent to the URL varies by event.
 
 ## User Created
 
