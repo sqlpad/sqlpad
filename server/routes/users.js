@@ -44,7 +44,7 @@ async function createUser(req, res) {
     data: req.body.data,
   });
 
-  await webhooks.userCreated(user);
+  webhooks.userCreated(user);
 
   const email = makeEmail(req.config);
 

@@ -74,18 +74,19 @@ class TestUtils {
     };
   }
 
-  static async makeHookServer(name, lastResponse) {
+  static async makeHookServer(name) {
+    const responses = [];
     const port = await detectPort(4000);
     const app = express();
     app.use(bodyParser.json());
     app.post('/' + name, function (req, res) {
-      lastResponse[name] = {
+      responses.push({
         headers: {
           'sqlpad-secret': req.get('sqlpad-secret'),
           'sqlpad-url': req.get('sqlpad-url'),
         },
         body: req.body,
-      };
+      });
       res.json({});
     });
 
@@ -93,6 +94,7 @@ class TestUtils {
     return {
       server,
       url: `http://localhost:${port}/${name}`,
+      responses,
     };
   }
 

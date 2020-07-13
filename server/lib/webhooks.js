@@ -12,6 +12,10 @@ class Webhooks {
     const publicUrl = config.get('publicUrl') || '';
     const baseUrl = config.get('baseUrl');
 
+    if (!publicUrl) {
+      return '';
+    }
+
     const usingDefaultPort =
       (publicUrl.startsWith('https:') && port === 443) ||
       (publicUrl.startsWith('http:') && port === 80);
@@ -64,18 +68,31 @@ class Webhooks {
     }
   }
 
-  queryCreated(user, query) {
+  queryCreated(query, connection) {
     const url = this.config.get('webhookQueryCreatedUrl');
     if (url) {
+      const {
+        id,
+        name,
+        queryText,
+        tags,
+        chart,
+        createdByUser,
+        createdAt,
+      } = query;
+
       const body = {
-        id: query.id,
-        name: query.name,
-        queryText: query.queryText,
-        createdByUser: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
+        id,
+        name,
+        queryText,
+        tags,
+        chart,
+        createdByUser,
+        createdAt,
+        connection: connection && {
+          id: connection.id,
+          name: connection.name,
+          driver: connection.driver,
         },
       };
       return this.send(url, body);

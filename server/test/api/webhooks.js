@@ -1,35 +1,24 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 describe('api/webhooks', function () {
-  let hookServer = {};
-  let utils;
-  let user;
+  it('userCreated', async function () {
+    const hookServer = await TestUtils.makeHookServer('userCreated');
 
-  // Will be added to in format
-  // lastResponse.hookName.headers
-  // lastResponse.hookName.body
-  const lastResponse = {};
-
-  before(async function () {
-    hookServer = await TestUtils.makeHookServer('userCreated', lastResponse);
-
-    utils = new TestUtils({
+    const utils = new TestUtils({
       port: 9000,
       publicUrl: 'http://mysqlpad.com',
       baseUrl: '/sqlpad',
       webhookSecret: 'secret',
       webhookUserCreatedUrl: hookServer.url,
     });
-    return utils.init(true);
-  });
+    await utils.init(true);
 
-  after(function (done) {
-    hookServer.server.close(done);
-  });
-
-  it('userCreated', async function () {
-    user = await utils.post('admin', '/sqlpad/api/users', {
+    const user = await utils.post('admin', '/sqlpad/api/users', {
       email: 'user1@test.com',
       name: 'user1',
       role: 'editor',
@@ -38,23 +27,73 @@ describe('api/webhooks', function () {
       },
     });
 
-    assert.deepStrictEqual(lastResponse.userCreated.body, {
+    await sleep(200);
+
+    assert.deepStrictEqual(hookServer.responses[0].body, {
       id: user.id,
       name: user.name,
       role: user.role,
       email: user.email,
       createdAt: user.createdAt,
     });
-  });
 
-  // Only need to test this once
-  it('headers match', async function () {
-    assert.equal(lastResponse.userCreated.headers['sqlpad-secret'], 'secret');
+    // Only need to test this once
+    // Ensure headers are sent as expected
+    assert.equal(hookServer.responses[0].headers['sqlpad-secret'], 'secret');
     assert.equal(
-      lastResponse.userCreated.headers['sqlpad-url'],
+      hookServer.responses[0].headers['sqlpad-url'],
       'http://mysqlpad.com:9000/sqlpad'
     );
+
+    hookServer.server.close();
   });
 
-  // TODO add more webhook tests that test content here
+  it('queryCreated', async function () {
+    const hookServer = await TestUtils.makeHookServer('queryCreated');
+    const utils = new TestUtils({
+      webhookQueryCreatedUrl: hookServer.url,
+    });
+    await utils.init(true);
+
+    const connection = await utils.post('admin', '/api/connections', {
+      name: 'test connection',
+      driver: 'sqlite',
+      data: {
+        filename: './test/fixtures/sales.sqlite',
+      },
+    });
+
+    const queryWithoutCon = await utils.post('admin', '/api/queries', {
+      name: 'test query',
+      tags: ['one', 'two'],
+      queryText: 'SELECT * FROM some_table',
+    });
+
+    await utils.post('admin', '/api/queries', {
+      name: 'test query 2',
+      tags: ['one', 'two'],
+      connectionId: connection.id,
+      queryText: 'SELECT * FROM some_table',
+    });
+
+    await sleep(200);
+
+    // no secret or url headers this time
+    assert.equal(hookServer.responses[0].headers['sqlpad-secret'], '');
+    assert.equal(hookServer.responses[0].headers['sqlpad-url'], '');
+
+    const body1 = hookServer.responses[0].body;
+    assert.equal(body1.id, queryWithoutCon.id, 'query r1');
+    assert.equal(body1.name, queryWithoutCon.name);
+    assert.deepStrictEqual(body1.tags, queryWithoutCon.tags);
+    assert.equal(body1.queryText, queryWithoutCon.queryText);
+    assert.equal(body1.createdAt, queryWithoutCon.createdAt);
+    assert.deepEqual(body1.createdByUser, queryWithoutCon.createdByUser);
+    assert(!body1.connection);
+
+    const body2 = hookServer.responses[1].body;
+    assert.equal(body2.connection.id, connection.id, 'connection r2');
+    assert.equal(body2.connection.name, connection.name);
+    assert.equal(body2.connection.driver, connection.driver);
+  });
 });

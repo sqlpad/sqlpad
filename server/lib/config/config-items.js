@@ -481,10 +481,17 @@ const configItems = [
   {
     key: 'webhookSecret',
     envVar: 'SQLPAD_WEBHOOK_SECRET',
+    default: '',
   },
   {
     key: 'webhookUserCreatedUrl',
     envVar: 'SQLPAD_WEBHOOK_USER_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookQueryCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_QUERY_CREATED_URL',
+    default: '',
   },
 ];
 
