@@ -14,7 +14,7 @@ describe('api/webhooks', function () {
       publicUrl: 'http://mysqlpad.com',
       baseUrl: '/sqlpad',
       webhookSecret: 'secret',
-      webhookUserCreatedUrl: hookServer.url,
+      webhookUserCreated: hookServer.url,
     });
     await utils.init(true);
 
@@ -51,7 +51,7 @@ describe('api/webhooks', function () {
   it('queryCreated', async function () {
     const hookServer = await TestUtils.makeHookServer('queryCreated');
     const utils = new TestUtils({
-      webhookQueryCreatedUrl: hookServer.url,
+      webhookQueryCreated: hookServer.url,
     });
     await utils.init(true);
 
