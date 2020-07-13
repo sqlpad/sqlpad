@@ -44,6 +44,10 @@ describe('api/webhooks', function () {
       hookServer.responses[0].headers['sqlpad-url'],
       'http://mysqlpad.com:9000/sqlpad'
     );
+    assert.equal(
+      hookServer.responses[0].headers['sqlpad-hook-name'],
+      'user_created'
+    );
 
     hookServer.server.close();
   });
@@ -81,6 +85,10 @@ describe('api/webhooks', function () {
     // no secret or url headers this time
     assert.equal(hookServer.responses[0].headers['sqlpad-secret'], '');
     assert.equal(hookServer.responses[0].headers['sqlpad-url'], '');
+    assert.equal(
+      hookServer.responses[0].headers['sqlpad-hook-name'],
+      'query_created'
+    );
 
     const body1 = hookServer.responses[0].body;
     assert.equal(body1.id, queryWithoutCon.id, 'query r1');
@@ -95,5 +103,7 @@ describe('api/webhooks', function () {
     assert.equal(body2.connection.id, connection.id, 'connection r2');
     assert.equal(body2.connection.name, connection.name);
     assert.equal(body2.connection.driver, connection.driver);
+
+    hookServer.server.close();
   });
 });

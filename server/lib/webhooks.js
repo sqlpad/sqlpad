@@ -25,7 +25,7 @@ class Webhooks {
     return `${publicUrl}${urlPort}${baseUrl}`;
   }
 
-  async send(url, body) {
+  async send(hookName, url, body) {
     const { config, appLog } = this;
     try {
       const res = await fetch(url, {
@@ -35,6 +35,7 @@ class Webhooks {
           'Content-Type': 'application/json',
           'SQLPad-Secret': config.get('webhookSecret'),
           'SQLPad-URL': this.sqlpadUrl(),
+          'SQLPad-Hook-Name': hookName,
         },
       });
 
@@ -64,7 +65,7 @@ class Webhooks {
         role: user.role,
         createdAt: user.createdAt,
       };
-      return this.send(url, body);
+      return this.send('user_created', url, body);
     }
   }
 
@@ -95,7 +96,7 @@ class Webhooks {
           driver: connection.driver,
         },
       };
-      return this.send(url, body);
+      return this.send('query_created', url, body);
     }
   }
 

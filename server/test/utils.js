@@ -84,6 +84,7 @@ class TestUtils {
         headers: {
           'sqlpad-secret': req.get('sqlpad-secret'),
           'sqlpad-url': req.get('sqlpad-url'),
+          'sqlpad-hook-name': req.get('sqlpad-hook-name'),
         },
         body: req.body,
       });
