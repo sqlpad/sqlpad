@@ -7,7 +7,7 @@ function sleep(ms) {
 
 describe('api/webhooks', function () {
   it('userCreated', async function () {
-    const hookServer = await TestUtils.makeHookServer('userCreated');
+    const hookServer = await TestUtils.makeHookServer();
 
     const utils = new TestUtils({
       port: 9000,
@@ -49,7 +49,7 @@ describe('api/webhooks', function () {
   });
 
   it('queryCreated', async function () {
-    const hookServer = await TestUtils.makeHookServer('queryCreated');
+    const hookServer = await TestUtils.makeHookServer();
     const utils = new TestUtils({
       webhookQueryCreatedUrl: hookServer.url,
     });
