@@ -493,6 +493,26 @@ const configItems = [
     envVar: 'SQLPAD_WEBHOOK_QUERY_CREATED_URL',
     default: '',
   },
+  {
+    key: 'webhookBatchCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_BATCH_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookBatchFinishedUrl',
+    envVar: 'SQLPAD_WEBHOOK_BATCH_FINISHED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookStatementCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_STATEMENT_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookStatementFinishedUrl',
+    envVar: 'SQLPAD_WEBHOOK_STATEMENT_FINISHED_URL',
+    default: '',
+  },
 ];
 
 module.exports = configItems;
