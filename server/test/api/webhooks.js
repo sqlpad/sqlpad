@@ -7,6 +7,8 @@ function wait(ms) {
 }
 
 describe('api/webhooks', function () {
+  // TODO FIXME XXX Add webhooks enabled config
+
   it('userCreated', async function () {
     const hookServer = await TestUtils.makeHookServer();
 
