@@ -3,6 +3,7 @@ const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'crate';
 const name = 'Crate';
+const CRATE_DEFAULTPORT = '4200';
 
 // NOTE per crate docs: If a client using the HTTP or Transport protocol is used a default limit of 10000 is implicitly added.
 // node-crate uses the REST API, so it is assumed this is a limit
@@ -47,11 +48,8 @@ async function runQuery(query, connection) {
   const { maxRows } = connection;
   const limit = maxRows < CRATE_LIMIT ? maxRows : CRATE_LIMIT;
 
-  if (connection.port) {
-    crate.connect(connection.host, connection.port);
-  } else {
-    crate.connect(connection.host);
-  }
+  let connectionString = getConnectionString(connection);
+  crate.connect(connectionString);
 
   try {
     const res = await crate.execute(query);
@@ -67,6 +65,26 @@ async function runQuery(query, connection) {
   } catch (error) {
     throw new Error(error.message);
   }
+}
+
+/**
+ * Get connection string with options
+ * @param {*} connection
+ */
+function getConnectionString(connection) {
+  let connectionString = connection.ssl ? 'https://' : 'http://';
+  if (connection.username !== undefined && connection.username.length !== 0) {
+    connectionString += connection.username;
+    if (connection.password !== undefined && connection.password.length !== 0)
+      connectionString += ':' + connection.password;
+    connectionString += '@';
+  }
+  connectionString += connection.host + ':';
+  connectionString +=
+    connection.port === undefined || connection.port.length === 0
+      ? CRATE_DEFAULTPORT
+      : connection.port;
+  return connectionString;
 }
 
 /**
@@ -105,6 +123,21 @@ const fields = [
     key: 'port',
     formType: 'TEXT',
     label: 'Port (optional)',
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username',
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password',
+  },
+  {
+    key: 'ssl',
+    formType: 'CHECKBOX',
+    label: 'Use SSL',
   },
 ];
 
