@@ -6,9 +6,10 @@ const ConnectionClient = require('./connection-client');
  * Batch must already be created.
  * @param {Object} config
  * @param {import('../models/index')} models
+ * @param {import('./webhooks')} webhooks
  * @param {string} batchId
  */
-async function executeBatch(config, models, batchId) {
+async function executeBatch(config, models, webhooks, batchId) {
   const batch = await models.batches.findOneById(batchId);
   const user = await models.users.findOneById(batch.userId);
   const connection = await models.connections.findOneById(batch.connectionId);
@@ -34,6 +35,9 @@ async function executeBatch(config, models, batchId) {
       disconnectOnFinish = true;
     }
   }
+
+  // TODO FIXME XXX - fire hooks for statements.
+  // statement data access should probably live under models
 
   // run statements
   const batchStartTime = new Date();
@@ -65,22 +69,24 @@ async function executeBatch(config, models, batchId) {
         stopTime - statementStartTime
       );
 
-      await models.batches.update(batch.id, {
+      const updatedBatch = await models.batches.update(batch.id, {
         status: 'error',
         stopTime,
         durationMs: stopTime - batchStartTime,
       });
+      webhooks.batchFinished(user, connection, updatedBatch);
       break;
     }
   }
   stopTime = new Date();
 
   if (!statementError) {
-    await models.batches.update(batch.id, {
+    const updatedBatch = await models.batches.update(batch.id, {
       status: 'finished',
       stopTime,
       durationMs: stopTime - batchStartTime,
     });
+    webhooks.batchFinished(user, connection, updatedBatch);
   }
 
   if (disconnectOnFinish) {

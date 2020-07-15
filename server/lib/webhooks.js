@@ -1,5 +1,24 @@
 const fetch = require('node-fetch');
 
+function userSummary(user) {
+  if (!user) {
+    return;
+  }
+  const { id, name, email, role } = user;
+  return { id, name, email, role };
+}
+
+function connectionSummary(connection) {
+  if (!connection) {
+    return;
+  }
+  return {
+    id: connection.id,
+    name: connection.name,
+    driver: connection.driver,
+  };
+}
+
 class Webhooks {
   constructor(config, appLog) {
     this.config = config;
@@ -90,23 +109,35 @@ class Webhooks {
         chart,
         createdByUser,
         createdAt,
-        connection: connection && {
-          id: connection.id,
-          name: connection.name,
-          driver: connection.driver,
-        },
+        connection: connectionSummary(connection),
       };
       return this.send('query_created', url, body);
     }
   }
 
-  // batchCreated(user, query) {
+  batchCreated(user, connection, batch) {
+    const url = this.config.get('webhookBatchCreatedUrl');
+    if (!url) {
+      return;
+    }
+    const { ...body } = batch;
+    body.user = userSummary(user);
+    body.connection = connectionSummary(connection);
 
-  // }
+    return this.send('batch_created', url, body);
+  }
 
-  // queryResultsReceived(user, query, batch) {
+  batchFinished(user, connection, batch) {
+    const url = this.config.get('webhookBatchFinishedUrl');
+    if (!url) {
+      return;
+    }
+    const { ...body } = batch;
+    body.user = userSummary(user);
+    body.connection = connectionSummary(connection);
 
-  // }
+    return this.send('batch_finished', url, body);
+  }
 }
 
 module.exports = Webhooks;
