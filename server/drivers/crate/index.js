@@ -3,7 +3,6 @@ const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'crate';
 const name = 'Crate';
-const CRATE_DEFAULTPORT = '4200';
 
 // NOTE per crate docs: If a client using the HTTP or Transport protocol is used a default limit of 10000 is implicitly added.
 // node-crate uses the REST API, so it is assumed this is a limit
@@ -72,19 +71,30 @@ async function runQuery(query, connection) {
  * @param {*} connection
  */
 function getConnectionString(connection) {
-  let connectionString = connection.ssl ? 'https://' : 'http://';
-  if (connection.username !== undefined && connection.username.length !== 0) {
-    connectionString += connection.username;
-    if (connection.password !== undefined && connection.password.length !== 0)
-      connectionString += ':' + connection.password;
-    connectionString += '@';
+  let url;
+  try {
+    // if connection.host contains a valid url e.g. 'https://crate.io:4200'
+    url = new URL(connection.host);
+    // if connection.host doesn't contain protocol e.g. 'crate.io:4200'
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      let protocol = connection.ssl ? 'https:' : 'http:';
+      url = new URL(protocol + connection.host);
+    }
+  } catch (error) {
+    // if connection.host contains only hostname e.g. 'crate.io'
+    let protocol = connection.ssl ? 'https:' : 'http:';
+    url = new URL(protocol + connection.host);
   }
-  connectionString += connection.host + ':';
-  connectionString +=
-    connection.port === undefined || connection.port.length === 0
-      ? CRATE_DEFAULTPORT
-      : connection.port;
-  return connectionString;
+  if (connection.port) {
+    url.port = connection.port;
+  }
+  if (connection.username) {
+    url.username = connection.username;
+    if (connection.password) {
+      url.password = connection.password;
+    }
+  }
+  return url.href;
 }
 
 /**
