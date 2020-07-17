@@ -66,6 +66,9 @@ A default connection selection can be set using environment variable `SQLPAD_DEF
     <tr><td>driver</td><td>Must be <code>crate</code></td><td>text</td></tr>
     <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
     <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>ssl</td><td>Use SSL</td><td>boolean</td></tr>
   </tbody>
 </table>
 
