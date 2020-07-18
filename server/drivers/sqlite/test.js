@@ -31,12 +31,16 @@ describe('drivers/sqlite', function () {
     assert(schemaInfo.main);
     assert(schemaInfo.main.sqlpad_test, 'main.sqlpad_test');
     const columns = schemaInfo.main.sqlpad_test;
-    assert.equal(columns.length, 1, 'columns.length');
+    assert.equal(columns.length, 2, 'columns.length');
     assert.equal(columns[0].table_schema, 'main', 'table_schema');
     assert.equal(columns[0].table_name, 'sqlpad_test', 'table_name');
-    // column metadata not available in sqlite3
-    assert.equal(columns[0].column_name, 'unknown', 'column_name');
-    assert.equal(columns[0].data_type, 'unknown', 'data_type');
+    assert.equal(columns[0].column_name, 'id', 'column_name');
+    assert.equal(columns[0].data_type, 'INTEGER', 'data_type');
+
+    assert.equal(columns[1].table_schema, 'main', 'table_schema');
+    assert.equal(columns[1].table_name, 'sqlpad_test', 'table_name');
+    assert.equal(columns[1].column_name, 'name', 'column_name');
+    assert.equal(columns[1].data_type, 'TEXT', 'data_type');
   });
 
   it('runQuery under limit', async function () {
@@ -56,17 +60,6 @@ describe('drivers/sqlite', function () {
     );
     assert(results.incomplete, 'incomplete');
     assert.equal(results.rows.length, 2, 'row length');
-  });
-
-  it('Runs multiple statements', async function () {
-    const query = `
-      SELECT id FROM sqlpad_test;
-      SELECT name FROM sqlpad_test;
-      SELECT * FROM sqlpad_test WHERE id = 2
-    `;
-    const results = await sqlite3.runQuery(query, connection);
-    assert.strictEqual(results.incomplete, false);
-    assert.equal(results.rows.length, 7, 'row length');
   });
 
   it('Throws helpful error', async function () {
