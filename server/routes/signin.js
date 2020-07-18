@@ -5,7 +5,7 @@ require('../typedefs');
 
 /**
  * Try to determine the form of login, and authenticate the request
- * Requests calling this route directly will have a session created and a correpsonding cookie
+ * Requests calling this route directly will have a session created and a corresponding cookie
  * This is unlike the more passive sessionless authentication middleware,
  * which will authenticate without starting a session
  * @param {Req} req

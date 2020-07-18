@@ -126,7 +126,7 @@ Creating, updating, and fetching a single query returns the full query object
 
 ## Server Filtering and Pagination
 
-Queries may grow to a large number of entries. Use pagination and filtering to effeciently fetch intended queries.
+Queries may grow to a large number of entries. Use pagination and filtering to efficiently fetch intended queries.
 
 ### Example
 

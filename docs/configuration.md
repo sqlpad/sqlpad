@@ -101,7 +101,7 @@ If enabled, runs embedded database `nedb` in memory. In this case, the database 
 
 ## backendDatabaseUri
 
-(Experimental) You can specify an external database to be used instead of the local sqlite database, by specifing a [Sequelize](https://sequelize.org/v5/) connection string. Supported databases are: mysql, mariadb, sqlite3, mssql. Some options can be provided in the connection string. Example: `mariadb://username:password@host:port/databasename?ssl=true`
+(Experimental) You can specify an external database to be used instead of the local sqlite database, by specifying a [Sequelize](https://sequelize.org/v5/) connection string. Supported databases are: mysql, mariadb, sqlite3, mssql. Some options can be provided in the connection string. Example: `mariadb://username:password@host:port/databasename?ssl=true`
 
 - Key: `backendDatabaseUri`
 - Env: `SQLPAD_BACKEND_DB_URI`

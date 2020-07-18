@@ -8,7 +8,7 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
 
 The docker image runs on port 3000 and uses `/var/lib/sqlpad` for the embedded database directory.
 
-`latest` tag is continously built from latest commit in repo. Only use that if you want to live on the edge, otherwise use specific version tags to ensure stability.
+`latest` tag is continuously built from latest commit in repo. Only use that if you want to live on the edge, otherwise use specific version tags to ensure stability.
 
 See [docker-examples](https://github.com/rickbergfalk/sqlpad/tree/master/docker-examples) directory for example docker-compose setup with SQL Server.
 

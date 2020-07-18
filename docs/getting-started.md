@@ -14,7 +14,7 @@ The docker image runs on port 3000 by default and stores its local database file
 
 SQLPad tries to follow semantic versioning. As an application, this primarily means breaking HTTP API changes, breaking configuration changes, or major UI design changes will result in a major version bump. Minor and patch version bumps will consist of enhancements and fixes.
 
-The `latest` tag on Docker Hub is continously built from latest commit from the `master` branch in GitHub. Do not use it unless you are okay experiencing a work-in-progress. It should be functional, but may not be stable or final.
+The `latest` tag on Docker Hub is continuously built from latest commit from the `master` branch in GitHub. Do not use it unless you are okay experiencing a work-in-progress. It should be functional, but may not be stable or final.
 
 ## Updating SQLPad
 

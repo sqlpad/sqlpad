@@ -554,7 +554,7 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 - UI design updates _everywhere_
 - Query Listing:
   - preview query contents by hovering over query listing
-  - occassional search/filter weirdness has been fixed
+  - occasional search/filter weirdness has been fixed
 - Query Editor:
   - Schema sidebar no longer separates views and tables in hierarchy
   - New result grid
