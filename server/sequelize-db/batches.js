@@ -27,7 +27,7 @@ module.exports = function (sequelize) {
         type: DataTypes.STRING,
         validate: {
           // Potentially add 'cancelled'?
-          // We have no way of cancelling current statement but future could be
+          // We have no way of canceling current statement but future could be
           isIn: [['started', 'finished', 'error']],
         },
         defaultValue: 'started',

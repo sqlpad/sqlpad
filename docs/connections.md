@@ -10,7 +10,7 @@ Admins can create connections in the UI, but connections can also be created in 
 
 ?> Available as of `4.2.0`
 
-Multi-statement transaction support adds the ability for a user to use the same underlying connection across query executions. This allows things like opening a transaction, running queries, and rolling the transaction back or comitting the transaction across query runs. It also opens up the ability to create and use temp tables that are generally scoped per connection session.
+Multi-statement transaction support adds the ability for a user to use the same underlying connection across query executions. This allows things like opening a transaction, running queries, and rolling the transaction back or committing the transaction across query runs. It also opens up the ability to create and use temp tables that are generally scoped per connection session.
 
 Multi-statement transaction support is opt-in based on connection configuration. If a connection uses a driver and multi-statement transaction support is not enabled, the connection falls back to the legacy SQLPad behavior of opening a new connection for each query execution, then immediately closing it following the query.
 
