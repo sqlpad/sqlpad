@@ -8,14 +8,12 @@ To enable a specific webhook, set `SQLPAD_WEBHOOK_ENABLED` to `true`, and provid
 
 To ensure a webhook call is valid, `SQLPAD_WEBHOOK_SECRET` may be configured, and validated on every webhook call.
 
-Each webhook POST will contain the following headers:
+The webhook POST will contain the following headers:
 
 - `Content-Type`: `application/json`
 - `SQLPad-Secret`: `SQLPAD_WEBHOOK_SECRET value`
-- `SQLPad-URL`: `http://your-sqlpad-public-url:port/base-url`
-- `SQLPad-Hook-Name`: `hook_name`
 
-The request body sent to the URL varies by event.
+The request body sent to the URL varies by event. Every body will have an `action` field with the name of the action, as well as `sqlpadUrl`, which will contain the URL to the SQLPad instance that sent the action (if `PUBLIC_URL` is configured).
 
 ## User Created
 
@@ -23,17 +21,19 @@ The user created webhook is sent whenever a user is added via the users API/UI o
 
 **Env**: `SQLPAD_WEBHOOK_USER_CREATED_URL`
 
-**Hook Name**: `user_created`
-
 **Payload Body**:
 
-```js
+```json
 {
-  id: '7681aec0-b8c5-4267-b9cb-26f7ff3b3e48',
-  name: 'user1',
-  email: 'user1@test.com',
-  role: 'editor',
-  createdAt: '2020-07-13T19:12:48.020Z'
+  "action": "user_created",
+  "sqlpadUrl": "http://mysqlpad.com:9000/sqlpad",
+  "user": {
+    "id": "a57acb9e-859e-44b7-83a8-42c5cbb809ce",
+    "name": "user1",
+    "email": "user1@test.com",
+    "role": "editor",
+    "createdAt": "2020-07-19T18:54:18.858Z"
+  }
 }
 ```
 
@@ -43,30 +43,24 @@ Fires whenever a query is created (initial query save). This is not fired on que
 
 **Env**: `SQLPAD_WEBHOOK_QUERY_CREATED_URL`
 
-**Hook Name**: `query_created`
-
 **Payload Body**:
 
-```js
+```json
 {
-  id: '65791206-ae82-4075-acc4-638d0eddf38c',
-  name: 'test query',
-  queryText: 'SELECT * FROM some_table',
-  tags: [ 'tag-one', 'tag-two' ],
-  // Chart object populated if chart was created
-  chart: null,
-  createdByUser: {
-    id: 'd27b9673-f828-4e1f-8aa0-3cfa46708932',
-    // User may not have name. This previously was not captured
-    name: null,
-    email: 'admin@test.com'
-  },
-  createdAt: '2020-07-13T19:17:58.111Z',
-  // Connection object is optional and may not exist
-  connection: {
-    id: '71d4a1dd-f76c-4663-835b-8d70fee61118',
-    name: 'test connection',
-    driver: 'sqlite'
+  "action": "query_created",
+  "sqlpadUrl": "http://mysqlpad.com:9000/sqlpad",
+  "query": {
+    "id": "d0eb347e-864a-4058-bcb2-5456adf5474f",
+    "name": "test query",
+    "queryText": "SELECT * FROM some_table",
+    "tags": ["one", "two"],
+    "chart": null,
+    "createdByUser": {
+      "id": "92185834-42d3-4b63-b0d4-6d81e5e83dfd",
+      "name": null,
+      "email": "admin@test.com"
+    },
+    "createdAt": "2020-07-19T18:57:14.522Z"
   }
 }
 ```
@@ -77,54 +71,57 @@ Fires whenever a batch is created. A batch is one or more queries, and is the AP
 
 **Env**: `SQLPAD_WEBHOOK_BATCH_CREATED_URL`
 
-**Hook Name**: `batch_created`
-
 **Payload Body**:
 
-```js
+```json
 {
-  "id": "c523d422-d1f9-4f3b-8d6c-2c7e3bca8efc",
-  "queryId": "5adbd01b-10f9-43cd-8ab2-29d5eca3b6a3",
-  "name": null,
-  "connectionId": "74f9ba6a-1edb-4162-8cab-3b92ac6274d5",
-  "connectionClientId": null,
-  "status": "started",
-  "startTime": "2020-07-13T23:59:05.896Z",
-  "stopTime": null,
-  "durationMs": null,
-  "batchText": "SELECT 1 AS id, 'blue' AS color",
-  "selectedText": "SELECT 1 AS id, 'blue' AS color",
-  "chart": null,
-  "userId": "10b949a6-21e3-445c-8fbf-95c43e81825c",
-  "createdAt": "2020-07-13T23:59:05.897Z",
-  "updatedAt": "2020-07-13T23:59:05.897Z",
-  "statements": [
-    {
-      "id": "b7a29581-c67d-4a49-9211-c6e6672bc57f",
-      "batchId": "c523d422-d1f9-4f3b-8d6c-2c7e3bca8efc",
-      "sequence": 1,
-      "statementText": "SELECT 1 AS id, 'blue' AS color",
-      "status": "queued",
-      "startTime": null,
-      "stopTime": null,
-      "durationMs": null,
-      "columns": null,
-      "rowCount": null,
-      "resultsPath": null,
-      "incomplete": null,
-      "error": null,
-      "createdAt": "2020-07-13T23:59:05.899Z",
-      "updatedAt": "2020-07-13T23:59:05.899Z"
-    }
-  ],
+  "action": "batch_created",
+  "sqlpadUrl": "",
+  "batch": {
+    "id": "c169c7fc-0b9b-482a-8fe6-c9b3486d2f88",
+    "queryId": "2f3e9bb6-cadf-4d52-a0c0-43089353193f",
+    "name": null,
+    "connectionId": "6ffeeb1d-1142-4004-b9f8-91cef0d15850",
+    "connectionClientId": null,
+    "status": "started",
+    "startTime": "2020-07-19T19:01:09.980Z",
+    "stopTime": null,
+    "durationMs": null,
+    "batchText": "SELECT 1 AS id, 'blue' AS color",
+    "selectedText": "SELECT 1 AS id, 'blue' AS color",
+    "chart": null,
+    "userId": "50076232-f06f-4a80-8a4d-fc6b8b265830",
+    "createdAt": "2020-07-19T19:01:09.980Z",
+    "updatedAt": "2020-07-19T19:01:09.980Z",
+    "statements": [
+      {
+        "id": "9fc69c47-8fda-4d7d-90a7-8236733e4dbe",
+        "batchId": "c169c7fc-0b9b-482a-8fe6-c9b3486d2f88",
+        "sequence": 1,
+        "statementText": "SELECT 1 AS id, 'blue' AS color",
+        "status": "queued",
+        "startTime": null,
+        "stopTime": null,
+        "durationMs": null,
+        "columns": null,
+        "rowCount": null,
+        "resultsPath": null,
+        "incomplete": null,
+        "error": null,
+        "createdAt": "2020-07-19T19:01:09.981Z",
+        "updatedAt": "2020-07-19T19:01:09.981Z"
+      }
+    ]
+  },
   "user": {
-    "id": "10b949a6-21e3-445c-8fbf-95c43e81825c",
+    "id": "50076232-f06f-4a80-8a4d-fc6b8b265830",
     "name": null,
     "email": "admin@test.com",
-    "role": "admin"
+    "role": "admin",
+    "createdAt": "2020-07-19T19:01:09.594Z"
   },
   "connection": {
-    "id": "74f9ba6a-1edb-4162-8cab-3b92ac6274d5",
+    "id": "6ffeeb1d-1142-4004-b9f8-91cef0d15850",
     "name": "test connection",
     "driver": "sqlite"
   }
@@ -137,63 +134,72 @@ Fires whenever a batch finished running. Payload contains summary information fo
 
 **Env**: `SQLPAD_WEBHOOK_BATCH_FINISHED_URL`
 
-**Hook Name**: `batch_finished`
-
 **Payload Body**:
 
 ```js
 {
-  "id": "fc20f322-37c2-4e93-8006-3a0a4a8dd8a2",
-  "queryId": "4669eeb5-81d8-49c3-bb23-e567d7d999ee",
-  "name": null,
-  "connectionId": "0900ea67-8403-487b-bc42-788531d25262",
-  "connectionClientId": null,
-  "status": "finished",
-  "startTime": "2020-07-15T02:20:15.391Z",
-  "stopTime": "2020-07-15T02:20:15.539Z",
-  "durationMs": 14,
-  "batchText": "SELECT 1 AS id, 'blue' AS color",
-  "selectedText": "SELECT 1 AS id, 'blue' AS color",
-  "chart": null,
-  "userId": "bc9fec27-4044-4cae-b996-11315fd02e64",
-  "createdAt": "2020-07-15T02:20:15.391Z",
-  "updatedAt": "2020-07-15T02:20:15.540Z",
-  "statements": [
-    {
-      "id": "8c8d06ad-d7ea-46c0-94e1-f41251a551d1",
-      "batchId": "fc20f322-37c2-4e93-8006-3a0a4a8dd8a2",
-      "sequence": 1,
-      "statementText": "SELECT 1 AS id, 'blue' AS color",
-      "status": "finished",
-      "startTime": "2020-07-15T02:20:15.525Z",
-      "stopTime": "2020-07-15T02:20:15.531Z",
-      "durationMs": 6,
-      "columns": [
-        {
-          "datatype": "number",
-          "name": "id"
-        },
-        {
-          "datatype": "string",
-          "name": "color"
-        }
-      ],
-      "rowCount": 1,
-      "resultsPath": "results\\8c8\\8c8d06ad-d7ea-46c0-94e1-f41251a551d1.json",
-      "incomplete": false,
-      "error": null,
-      "createdAt": "2020-07-15T02:20:15.394Z",
-      "updatedAt": "2020-07-15T02:20:15.538Z"
-    }
-  ],
+  "action": "batch_finished",
+  "sqlpadUrl": "",
+  "batch": {
+    "id": "40cf0e10-2bd1-4a02-92f8-340a99775671",
+    "queryId": "026ca49e-491e-4520-9ead-76bcdb287d28",
+    "name": null,
+    "connectionId": "668489b8-6049-43a8-a7af-0f34abf1984c",
+    "connectionClientId": null,
+    "status": "finished",
+    "startTime": "2020-07-19T19:01:57.696Z",
+    "stopTime": "2020-07-19T19:01:57.830Z",
+    "durationMs": 15,
+    "batchText": "SELECT 1 AS id, 'blue' AS color",
+    "selectedText": "SELECT 1 AS id, 'blue' AS color",
+    "chart": null,
+    "userId": "d49295f7-29b8-4ba5-be10-218638d02af7",
+    "createdAt": "2020-07-19T19:01:57.696Z",
+    "updatedAt": "2020-07-19T19:01:57.830Z",
+    "statements": [
+      {
+        "id": "396e8043-c766-4fec-b441-82dbcdf16473",
+        "batchId": "40cf0e10-2bd1-4a02-92f8-340a99775671",
+        "sequence": 1,
+        "statementText": "SELECT 1 AS id, 'blue' AS color",
+        "status": "finished",
+        "startTime": "2020-07-19T19:01:57.815Z",
+        "stopTime": "2020-07-19T19:01:57.821Z",
+        "durationMs": 6,
+        "columns": [
+          {
+            "datatype": "number",
+            "max": 1,
+            "min": 1,
+            "maxValueLength": 0,
+            "name": "id"
+          },
+          {
+            "datatype": "string",
+            "max": null,
+            "min": null,
+            "maxValueLength": 4,
+            "name": "color"
+          }
+        ],
+        "rowCount": 1,
+        "resultsPath": "results\\396\\396e8043-c766-4fec-b441-82dbcdf16473.json",
+        "incomplete": false,
+        "error": null,
+        "createdAt": "2020-07-19T19:01:57.697Z",
+        "updatedAt": "2020-07-19T19:01:57.828Z"
+      }
+    ]
+  },
   "user": {
-    "id": "bc9fec27-4044-4cae-b996-11315fd02e64",
+    "id": "d49295f7-29b8-4ba5-be10-218638d02af7",
     "name": null,
     "email": "admin@test.com",
-    "role": "admin"
+    "role": "admin",
+    "createdAt": "2020-07-19T19:01:57.325Z"
   },
   "connection": {
-    "id": "0900ea67-8403-487b-bc42-788531d25262",
+    "id": "668489b8-6049-43a8-a7af-0f34abf1984c",
     "name": "test connection",
     "driver": "sqlite"
   }

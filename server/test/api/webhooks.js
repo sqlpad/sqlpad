@@ -2,6 +2,16 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
 
+function logBody(body) {
+  const fs = require('fs');
+  const path = require('path');
+  fs.writeFileSync(
+    path.join(__dirname, '/webhook.json'),
+    JSON.stringify(body, null, 2),
+    'utf8'
+  );
+}
+
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -49,33 +59,25 @@ describe('api/webhooks', function () {
       email: 'user1@test.com',
       name: 'user1',
       role: 'editor',
-      data: {
-        create: true,
-      },
     });
 
     await wait(200);
 
     assert.deepStrictEqual(hookServer.responses[0].body, {
-      id: user.id,
-      name: user.name,
-      role: user.role,
-      email: user.email,
-      createdAt: user.createdAt,
+      action: 'user_created',
+      sqlpadUrl: 'http://mysqlpad.com:9000/sqlpad',
+      user: {
+        id: user.id,
+        name: user.name,
+        role: user.role,
+        email: user.email,
+        createdAt: user.createdAt,
+      },
     });
 
     // Only need to test this once
     // Ensure headers are sent as expected
     assert.equal(hookServer.responses[0].headers['sqlpad-secret'], 'secret');
-    assert.equal(
-      hookServer.responses[0].headers['sqlpad-url'],
-      'http://mysqlpad.com:9000/sqlpad'
-    );
-    assert.equal(
-      hookServer.responses[0].headers['sqlpad-hook-name'],
-      'user_created'
-    );
-
     hookServer.server.close();
   });
 
@@ -114,19 +116,16 @@ describe('api/webhooks', function () {
 
     // no secret or url headers this time
     assert.equal(hookServer.responses[0].headers['sqlpad-secret'], '');
-    assert.equal(hookServer.responses[0].headers['sqlpad-url'], '');
-    assert.equal(
-      hookServer.responses[0].headers['sqlpad-hook-name'],
-      'query_created'
-    );
 
     const body1 = hookServer.responses[0].body;
-    assert.equal(body1.id, queryWithoutCon.id, 'query r1');
-    assert.equal(body1.name, queryWithoutCon.name);
-    assert.deepStrictEqual(body1.tags, queryWithoutCon.tags);
-    assert.equal(body1.queryText, queryWithoutCon.queryText);
-    assert.equal(body1.createdAt, queryWithoutCon.createdAt);
-    assert.deepEqual(body1.createdByUser, queryWithoutCon.createdByUser);
+    assert.equal(body1.action, 'query_created');
+    assert.equal(body1.sqlpadUrl, '');
+    assert.equal(body1.query.id, queryWithoutCon.id, 'query r1');
+    assert.equal(body1.query.name, queryWithoutCon.name);
+    assert.deepStrictEqual(body1.query.tags, queryWithoutCon.tags);
+    assert.equal(body1.query.queryText, queryWithoutCon.queryText);
+    assert.equal(body1.query.createdAt, queryWithoutCon.createdAt);
+    assert.deepEqual(body1.query.createdByUser, queryWithoutCon.createdByUser);
     assert(!body1.connection);
 
     const body2 = hookServer.responses[1].body;
@@ -172,7 +171,7 @@ describe('api/webhooks', function () {
     });
 
     batch = await utils.get('admin', `/api/batches/${batch.id}`);
-    while (batch.status !== 'finished' && batch.status !== 'errored') {
+    while (batch.status !== 'finished' && batch.status !== 'error') {
       await wait(50);
       batch = await utils.get('admin', `/api/batches/${batch.id}`);
     }
@@ -198,11 +197,13 @@ describe('api/webhooks', function () {
     // TODO FIXME XXX - test batch and statement bodies
 
     // const { body: batchCreatedBody } = hookServer.responses.find(
-    //   (r) => r.headers['sqlpad-hook-name'] === 'batch_created'
+    //   (r) => r.body.action === 'batch_created'
     // );
 
-    // const { body: batchFinishedBody } = hookServer.responses.find(
-    //   (r) => r.headers['sqlpad-hook-name'] === 'batch_finished'
-    // );
+    const { body: batchFinishedBody } = hookServer.responses.find(
+      (r) => r.body.action === 'batch_finished'
+    );
+
+    logBody(batchFinishedBody);
   });
 });

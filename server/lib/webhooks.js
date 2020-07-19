@@ -4,8 +4,8 @@ function userSummary(user) {
   if (!user) {
     return;
   }
-  const { id, name, email, role } = user;
-  return { id, name, email, role };
+  const { id, name, email, role, createdAt } = user;
+  return { id, name, email, role, createdAt };
 }
 
 function connectionSummary(connection) {
@@ -55,12 +55,14 @@ class Webhooks {
     try {
       const res = await fetch(url, {
         method: 'POST',
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          action: hookName,
+          sqlpadUrl: this.sqlpadUrl(),
+          ...body,
+        }),
         headers: {
           'Content-Type': 'application/json',
           'SQLPad-Secret': config.get('webhookSecret'),
-          'SQLPad-URL': this.sqlpadUrl(),
-          'SQLPad-Hook-Name': hookName,
         },
       });
 
@@ -84,11 +86,7 @@ class Webhooks {
     const url = this.hookEnabledUrl('webhookUserCreatedUrl');
     if (url) {
       const body = {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
+        user: userSummary(user),
       };
       return this.send('user_created', url, body);
     }
@@ -108,13 +106,15 @@ class Webhooks {
       } = query;
 
       const body = {
-        id,
-        name,
-        queryText,
-        tags,
-        chart,
-        createdByUser,
-        createdAt,
+        query: {
+          id,
+          name,
+          queryText,
+          tags,
+          chart,
+          createdByUser,
+          createdAt,
+        },
         connection: connectionSummary(connection),
       };
       return this.send('query_created', url, body);
@@ -126,9 +126,11 @@ class Webhooks {
     if (!url) {
       return;
     }
-    const { ...body } = batch;
-    body.user = userSummary(user);
-    body.connection = connectionSummary(connection);
+    const body = {
+      batch,
+      user: userSummary(user),
+      connection: connectionSummary(connection),
+    };
 
     return this.send('batch_created', url, body);
   }
@@ -138,9 +140,11 @@ class Webhooks {
     if (!url) {
       return;
     }
-    const { ...body } = batch;
-    body.user = userSummary(user);
-    body.connection = connectionSummary(connection);
+    const body = {
+      batch,
+      user: userSummary(user),
+      connection: connectionSummary(connection),
+    };
 
     return this.send('batch_finished', url, body);
   }
