@@ -37,7 +37,7 @@ function enableSaml(config) {
           }
           appLog.info('User attempts log in via SAML %s', email);
 
-          const { models } = req;
+          const { models, webhooks } = req;
 
           let [openAdminRegistration, user] = await Promise.all([
             models.users.adminRegistrationOpen(),
@@ -65,7 +65,7 @@ function enableSaml(config) {
                   config.get('samlDefaultRole_d'),
               signupAt: new Date(),
             });
-
+            webhooks.userCreated(newUser);
             return done(null, newUser);
           }
 

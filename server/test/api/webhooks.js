@@ -81,8 +81,6 @@ describe('api/webhooks', function () {
     hookServer.server.close();
   });
 
-  // TODO FIXME XXX consider auto-user creation
-
   it('queryCreated', async function () {
     const hookServer = await TestUtils.makeHookServer();
     const utils = new TestUtils({

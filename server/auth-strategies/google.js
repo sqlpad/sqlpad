@@ -10,7 +10,7 @@ async function passportGoogleStrategyHandler(
   profile,
   done
 ) {
-  const { models, config } = req;
+  const { models, config, webhooks } = req;
   const email = profile && profile._json && profile._json.email;
 
   if (!email) {
@@ -42,6 +42,7 @@ async function passportGoogleStrategyHandler(
         role: openAdminRegistration ? 'admin' : 'editor',
         signupAt: new Date(),
       });
+      webhooks.userCreated(newUser);
       return done(null, newUser);
     }
     // at this point we don't have an error, but authentication is invalid
