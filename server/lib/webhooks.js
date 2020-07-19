@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const appLog = require('./app-log');
 
 function userSummary(user) {
   if (!user) {
@@ -20,8 +21,15 @@ function connectionSummary(connection) {
 }
 
 class Webhooks {
-  constructor(config, appLog) {
+  /**
+   *
+   * @param {import('./config')} config
+   * @param {import('../models')} models
+   * @param {import('./app-log')} appLog
+   */
+  constructor(config, models, appLog) {
     this.config = config;
+    this.models = models;
     this.appLog = appLog;
   }
 
@@ -84,18 +92,35 @@ class Webhooks {
 
   userCreated(user) {
     const url = this.hookEnabledUrl('webhookUserCreatedUrl');
-    if (url) {
-      const body = {
-        user: userSummary(user),
-      };
-      return this.send('user_created', url, body);
+    if (!url) {
+      return;
     }
+
+    const body = {
+      user: userSummary(user),
+    };
+
+    return this.send('user_created', url, body);
   }
 
   queryCreated(query, connection) {
     const url = this.hookEnabledUrl('webhookQueryCreatedUrl');
-    if (url) {
-      const {
+    if (!url) {
+      return;
+    }
+
+    const {
+      id,
+      name,
+      queryText,
+      tags,
+      chart,
+      createdByUser,
+      createdAt,
+    } = query;
+
+    const body = {
+      query: {
         id,
         name,
         queryText,
@@ -103,22 +128,11 @@ class Webhooks {
         chart,
         createdByUser,
         createdAt,
-      } = query;
+      },
+      connection: connectionSummary(connection),
+    };
 
-      const body = {
-        query: {
-          id,
-          name,
-          queryText,
-          tags,
-          chart,
-          createdByUser,
-          createdAt,
-        },
-        connection: connectionSummary(connection),
-      };
-      return this.send('query_created', url, body);
-    }
+    return this.send('query_created', url, body);
   }
 
   batchCreated(user, connection, batch) {
@@ -126,6 +140,7 @@ class Webhooks {
     if (!url) {
       return;
     }
+
     const body = {
       batch,
       user: userSummary(user),
@@ -140,6 +155,7 @@ class Webhooks {
     if (!url) {
       return;
     }
+
     const body = {
       batch,
       user: userSummary(user),
@@ -147,6 +163,52 @@ class Webhooks {
     };
 
     return this.send('batch_finished', url, body);
+  }
+
+  async statementCreated(user, connection, batch, statement) {
+    const url = this.hookEnabledUrl('webhookStatementCreatedUrl');
+    if (!url) {
+      return;
+    }
+
+    const { statements, ...batchWithoutStatements } = batch;
+
+    const body = {
+      statement,
+      batch: batchWithoutStatements,
+      user: userSummary(user),
+      connection: connectionSummary(connection),
+    };
+
+    return this.send('statement_created', url, body);
+  }
+
+  async statementFinished(user, connection, batch, statementId) {
+    const url = this.hookEnabledUrl('webhookStatementFinishedUrl');
+    if (!url) {
+      return;
+    }
+
+    try {
+      const { statements, ...batchWithoutStatements } = batch;
+
+      const statement = await this.models.statements.findOneById(statementId);
+      const results = await this.models.statements.getStatementResults(
+        statementId
+      );
+
+      const body = {
+        statement,
+        batch: batchWithoutStatements,
+        user: userSummary(user),
+        connection: connectionSummary(connection),
+        results,
+      };
+
+      return this.send('statement_finished', url, body);
+    } catch (error) {
+      appLog.error(error, 'error sending statement created webhook');
+    }
   }
 }
 

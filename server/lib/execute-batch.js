@@ -56,6 +56,7 @@ async function executeBatch(config, models, webhooks, batchId) {
         stopTime,
         stopTime - statementStartTime
       );
+      webhooks.statementFinished(user, connection, batch, statement.id);
     } catch (error) {
       statementError = error;
       stopTime = new Date();
@@ -74,6 +75,7 @@ async function executeBatch(config, models, webhooks, batchId) {
         stopTime,
         durationMs: stopTime - batchStartTime,
       });
+      webhooks.statementFinished(user, connection, updatedBatch, statement.id);
       webhooks.batchFinished(user, connection, updatedBatch);
       break;
     }

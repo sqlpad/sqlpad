@@ -38,7 +38,7 @@ async function makeApp(config, models) {
     throw new Error('models is required to create app');
   }
 
-  const webhooks = new Webhooks(config, appLog);
+  const webhooks = new Webhooks(config, models, appLog);
 
   const expressPino = expressPinoLogger({
     level: config.get('webLogLevel'),

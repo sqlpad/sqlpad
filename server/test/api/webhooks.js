@@ -2,6 +2,11 @@
 const assert = require('assert');
 const TestUtils = require('../utils');
 
+/**
+ * Logs body to a JSON file. Useful for debug/generating JSON examples for documentation
+ * @param {object} body
+ */
+// eslint-disable-next-line no-unused-vars
 function logBody(body) {
   const fs = require('fs');
   const path = require('path');
@@ -153,7 +158,7 @@ describe('api/webhooks', function () {
       },
     });
 
-    const queryText = `SELECT 1 AS id, 'blue' AS color`;
+    const queryText = `SELECT 1 AS id, 'blue' AS color UNION ALL SELECT 2 AS id, 'red' AS color`;
     const query = await utils.post('admin', '/api/queries', {
       name: 'test query',
       tags: ['test'],
@@ -173,10 +178,6 @@ describe('api/webhooks', function () {
       await wait(50);
       batch = await utils.get('admin', `/api/batches/${batch.id}`);
     }
-    assert.equal(batch.status, 'finished');
-    assert(batch.startTime);
-    assert(batch.stopTime);
-    assert(batch.durationMs > 0);
 
     const statements = await utils.get(
       'admin',
@@ -186,22 +187,40 @@ describe('api/webhooks', function () {
 
     const statement1 = statements[0];
 
-    const result1 = await utils.get(
-      'admin',
-      `/api/statements/${statement1.id}/results`
+    const { body: batchCreatedBody } = hookServer.responses.find(
+      (r) => r.body.action === 'batch_created'
     );
-    assert.deepEqual(result1, [[1, 'blue']]);
-
-    // TODO FIXME XXX - test batch and statement bodies
-
-    // const { body: batchCreatedBody } = hookServer.responses.find(
-    //   (r) => r.body.action === 'batch_created'
-    // );
+    assert.equal(batchCreatedBody.batch.id, batch.id);
+    assert.equal(batchCreatedBody.user.id, utils.users.admin.id);
 
     const { body: batchFinishedBody } = hookServer.responses.find(
       (r) => r.body.action === 'batch_finished'
     );
+    assert.equal(batchFinishedBody.batch.id, batch.id);
+    assert.equal(batchFinishedBody.user.id, utils.users.admin.id);
 
-    logBody(batchFinishedBody);
+    const { body: statementCreatedBody } = hookServer.responses.find(
+      (r) => r.body.action === 'statement_created'
+    );
+    assert.equal(statementCreatedBody.statement.id, statement1.id);
+    assert.equal(statementCreatedBody.user.id, utils.users.admin.id);
+    assert.equal(statementCreatedBody.batch.id, batch.id);
+    assert.equal(statementCreatedBody.connection.id, connection.id);
+
+    const { body: statementFinishedBody } = hookServer.responses.find(
+      (r) => r.body.action === 'statement_finished'
+    );
+    assert.equal(statementFinishedBody.statement.id, statement1.id);
+    assert.deepEqual(statementFinishedBody.results, [
+      [1, 'blue'],
+      [2, 'red'],
+    ]);
+    assert.equal(statementFinishedBody.user.id, utils.users.admin.id);
+    assert.equal(statementFinishedBody.batch.id, batch.id);
+    assert.equal(statementFinishedBody.connection.id, connection.id);
+
+    // Ensure connection does not have sensitive data
+    assert(!statementFinishedBody.connection.data);
+    assert(!statementFinishedBody.connection.filename);
   });
 });

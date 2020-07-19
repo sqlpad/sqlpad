@@ -37,6 +37,9 @@ async function create(req, res) {
   const newBatch = await models.batches.create(batch);
 
   webhooks.batchCreated(user, connection, newBatch);
+  for (const statement of newBatch.statements) {
+    webhooks.statementCreated(user, connection, newBatch, statement);
+  }
 
   // Run batch, but don't wait for it to send response
   // Client will get status via polling or perhaps some future event mechanism
