@@ -4,7 +4,7 @@
 
 A variety of webhooks are available to extend the functionality of SQLPad.
 
-To enable a specific webhook, provide a URL for the event you would like to subscribe to. This URL will be sent an HTTP(S) POST with a payload of relevant information when the event occurs.
+To enable a specific webhook, set `SQLPAD_WEBHOOK_ENABLED` to `true`, and provide a URL for the event you would like to subscribe to. HTTP and HTTPS URLs are supported. This URL will be sent an HTTP POST with a payload of relevant information when the event occurs.
 
 To ensure a webhook call is valid, `SQLPAD_WEBHOOK_SECRET` may be configured, and validated on every webhook call.
 

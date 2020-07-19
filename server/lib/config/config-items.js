@@ -479,6 +479,11 @@ const configItems = [
     default: 'Sign in with OpenID',
   },
   {
+    key: 'webhookEnabled',
+    envVar: 'SQLPAD_WEBHOOK_ENABLED',
+    default: false,
+  },
+  {
     key: 'webhookSecret',
     envVar: 'SQLPAD_WEBHOOK_SECRET',
     default: '',

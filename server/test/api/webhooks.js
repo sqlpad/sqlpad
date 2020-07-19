@@ -7,7 +7,30 @@ function wait(ms) {
 }
 
 describe('api/webhooks', function () {
-  // TODO FIXME XXX Add webhooks enabled config
+  it('does not fire if not enabled', async function () {
+    const hookServer = await TestUtils.makeHookServer();
+
+    const utils = new TestUtils({
+      port: 9000,
+      publicUrl: 'http://mysqlpad.com',
+      baseUrl: '/sqlpad',
+      webhookSecret: 'secret',
+      webhookUserCreatedUrl: hookServer.url,
+    });
+    await utils.init(true);
+
+    await utils.post('admin', '/sqlpad/api/users', {
+      email: 'user1@test.com',
+      name: 'user1',
+      role: 'editor',
+      data: {
+        create: true,
+      },
+    });
+
+    await wait(200);
+    assert.equal(hookServer.responses.length, 0);
+  });
 
   it('userCreated', async function () {
     const hookServer = await TestUtils.makeHookServer();
@@ -16,6 +39,7 @@ describe('api/webhooks', function () {
       port: 9000,
       publicUrl: 'http://mysqlpad.com',
       baseUrl: '/sqlpad',
+      webhookEnabled: true,
       webhookSecret: 'secret',
       webhookUserCreatedUrl: hookServer.url,
     });
@@ -60,6 +84,7 @@ describe('api/webhooks', function () {
   it('queryCreated', async function () {
     const hookServer = await TestUtils.makeHookServer();
     const utils = new TestUtils({
+      webhookEnabled: true,
       webhookQueryCreatedUrl: hookServer.url,
     });
     await utils.init(true);
@@ -115,6 +140,7 @@ describe('api/webhooks', function () {
   it('batchCreated / batchFinished / statementCreated / statementFinished', async function () {
     const hookServer = await TestUtils.makeHookServer();
     const utils = new TestUtils({
+      webhookEnabled: true,
       webhookBatchCreatedUrl: hookServer.url,
       webhookBatchFinishedUrl: hookServer.url,
       webhookStatementCreatedUrl: hookServer.url,

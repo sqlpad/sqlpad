@@ -25,6 +25,12 @@ class Webhooks {
     this.appLog = appLog;
   }
 
+  hookEnabledUrl(hookConfigKeyName) {
+    return (
+      this.config.get('webhookEnabled') && this.config.get(hookConfigKeyName)
+    );
+  }
+
   sqlpadUrl() {
     const { config } = this;
     const port = parseInt(config.get('port'), 10);
@@ -75,7 +81,7 @@ class Webhooks {
   }
 
   userCreated(user) {
-    const url = this.config.get('webhookUserCreatedUrl');
+    const url = this.hookEnabledUrl('webhookUserCreatedUrl');
     if (url) {
       const body = {
         id: user.id,
@@ -89,7 +95,7 @@ class Webhooks {
   }
 
   queryCreated(query, connection) {
-    const url = this.config.get('webhookQueryCreatedUrl');
+    const url = this.hookEnabledUrl('webhookQueryCreatedUrl');
     if (url) {
       const {
         id,
@@ -116,7 +122,7 @@ class Webhooks {
   }
 
   batchCreated(user, connection, batch) {
-    const url = this.config.get('webhookBatchCreatedUrl');
+    const url = this.hookEnabledUrl('webhookBatchCreatedUrl');
     if (!url) {
       return;
     }
@@ -128,7 +134,7 @@ class Webhooks {
   }
 
   batchFinished(user, connection, batch) {
-    const url = this.config.get('webhookBatchFinishedUrl');
+    const url = this.hookEnabledUrl('webhookBatchFinishedUrl');
     if (!url) {
       return;
     }
