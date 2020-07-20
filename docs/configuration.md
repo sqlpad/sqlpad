@@ -17,185 +17,130 @@ env SQLPAD_CONFIG=path/to/.env node server.js
 
 A [config file example](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.env) can be found in the GitHub repository.
 
-## admin
+## Application Configuration (General)
 
-Email address to give admin permissions to.
+```bash
+# IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0).
+SQLPAD_IP = "0.0.0.0"
 
-- Key: `admin`
-- Env: `SQLPAD_ADMIN`
+# Port to listen on. Used for both HTTP and HTTPS
+# Defaults to 80 in code, 3000 in Docker Hub Image
+SQLPAD_PORT = 3000
 
-## adminPassword
+# Public URL used for various authentication setups. Protocol is expected.
+# This value will be sent with webhook payloads as well.
+# Example: https://mysqlpad.com
+PUBLIC_URL = ""
 
-Password to set for admin email address on application start. Requires `admin` setting to also be provided.
+# Path to mount SQLPad app following domain.
+# Example:
+# If SQLPAD_BASE_URL = "/sqlpad" and PUBLIC_URL = "https://mysqlpad.com",
+# the queries page would be `https://mysqlpad.com/sqlpad/queries`
+SQLPAD_BASE_URL = ""
 
-- Key: `adminPassword`
-- Env: `SQLPAD_ADMIN_PASSWORD`
+# Passphrase to encrypt sensitive connection information (like user & password) when stored on disk
+SQLPAD_PASSPHRASE = "At least the sensitive bits won't be plain text?"
 
-## allowCsvDownload
+# HTTP server timeout as number of seconds. Extend as necessary for long running queries.
+SQLPAD_TIMEOUT_SECONDS = 300
 
-Enable csv, json and xlsx downloads.
+# Minutes to keep a session active. Will extended by this amount each request.
+SQLPAD_SESSION_MINUTES = 60
 
-- Key: `allowCsvDownload`
-- Env: `SQLPAD_ALLOW_CSV_DOWNLOAD`
-- Default: `true`
+# Name used for cookie. If running multiple SQLPads on same domain, set to different values.
+SQLPAD_COOKIE_NAME = "sqlpad.sid"
 
-## baseUrl
+# Secret used to sign cookies
+SQLPAD_COOKIE_SECRET = "secret-used-to-sign-cookies-please-set-and-make-strong"
 
-Path to mount sqlpad app following domain. Example, if '/sqlpad' is provided queries page would be mydomain.com/sqlpad/queries
+# Acquire socket from systemd if available
+SQLPAD_SYSTEMD_SOCKET = ""
 
-- Key: `baseUrl`
-- Env: `SQLPAD_BASE_URL`
+# Allows pre-approval of email domains for variety of authentication mechanisms.
+# Delimit multiple domains by empty space.
+SQLPAD_ALLOWED_DOMAINS = ""
 
-## cookieName
+# Path to root of seed data directories. See Seed Data documentation.
+SQLPAD_SEED_DATA_PATH = ""
+```
 
-Name used for cookie. If running multiple SQLPads on same domain, set to different values.
+## Application Behavior
 
-- Key: `cookieName`
-- Env: `SQLPAD_COOKIE_NAME`
-- Default: `sqlpad.sid`
+```bash
+# Enable word wrapping in SQL editor
+SQLPAD_EDITOR_WORD_WRAP = "false"
 
-## cookieSecret
+# By default query results are limited to 50,000 records
+SQLPAD_QUERY_RESULT_MAX_ROWS = 50000
 
-Secret used to sign cookies
+# Enable csv, json and xlsx downloads
+SQLPAD_ALLOW_CSV_DOWNLOAD = "true"
 
-- Key: `cookieSecret`
-- Env: `SQLPAD_COOKIE_SECRET`
-- Default: `secret-used-to-sign-cookies-please-set-and-make-strong`
+# Allows access on every connection to every user.
+SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE = "true"
 
-## migrate
+# Query history entries created before the retention period will be deleted automatically.
+SQLPAD_QUERY_HISTORY_RETENTION_PERIOD_IN_DAYS = 30
 
-Run migrations on SQLPad process start, then exits. Use to control when migrations are run, particularly of use when running multiple instances of SQLPad.
+# By default query history results are limited to 1,000 records.
+SQLPAD_QUERY_HISTORY_RESULT_MAX_ROWS = 1000
 
-This option is most likely useful as a cli flag, but it can be specified via file as well.
+# Default connection to select on SQLPad load if connection not previously selected.
+# Once selected, connection selections are cached locally in the browser.
+SQLPAD_DEFAULT_CONNECTION_ID = ""
+```
+
+## Backend Database Management
+
+SQLPad may be configured to use SQLite, PostgreSQL, MySQL, MariaDB, or SQL Server as a backing database.
+
+To use SQLite, all that must be set is `SQLPAD_DB_PATH`, and a `sqlite` file will be created on application start.
+
+To use a different backend database, set `SQLPAD_BACKEND_DB_URI` to the desired target database.
+
+```bash
+# Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.
+SQLPAD_DB_PATH = ""
+
+# You can specify an external database to be used instead of the local sqlite database,
+# by specifying a [Sequelize](https://sequelize.org/v5/) connection string.
+# Supported databases are: mysql, mariadb, sqlite3, mssql.
+# Some options can be provided in the connection string.
+# Example: `mariadb://username:password@host:port/databasename?ssl=true`
+SQLPAD_BACKEND_DB_URI = ""
+
+# If enabled, runs SQLite in memory
+# In this case, the database contents will be lost when the application stops.
+# SQLPAD_DB_PATH is still required to be provided for cache and session support.
+# SQLPAD_DB_PATH will be made optional in future release.
+SQLPAD_DB_IN_MEMORY = "false"
+```
+
+## Database Migrations
+
+By default, migrations are run on service start up. This behavior can be disabled, and migrations can instead be run on demand. This is particularly of use when running multiple instances of SQLPad.
+
+When run on demand, the SQLPad process will exit after migrations complete.
+
+This option is most likely useful as a cli flag, but it can be specified via environment variable as well.
 
 Example:
 
-```sh
+```bash
 node server.js --config path/to/file.ext --migrate
+# or via environment variable
+env SQLPAD_MIGRATE = "true" node server.js --config path/to/file.env
 ```
 
-- Key: `migrate`
-- Env: `SQLPAD_MIGRATE`
+```bash
+# If set to true, SQLPad process will exit after database migration is performed
+SQLPAD_MIGRATE = "false"
 
-## dbAutomigrate
+# Enable/disable automigration on SQLPad process start. Disable by setting to `false`
+SQLPAD_DB_AUTOMIGRATE = "true"
+```
 
-Enable/disable automigration on SQLPad process start. Disable by setting to `false`
-
-- Key: `dbAutomigrate`
-- Env: `SQLPAD_DB_AUTOMIGRATE`
-- Default: `true`
-
-## dbPath
-
-Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.
-
-- Key: `dbPath`
-- Env: `SQLPAD_DB_PATH`
-
-## dbInMemory
-
-If enabled, runs embedded database `nedb` in memory. In this case, the database contents will be lost when the application stops. `dbPath` is still required to be provided for cache and session support. (`dbPath` will be made optional in future release)
-
-- Key: `dbInMemory`
-- Env: `SQLPAD_DB_IN_MEMORY`
-
-## backendDatabaseUri
-
-(Experimental) You can specify an external database to be used instead of the local sqlite database, by specifying a [Sequelize](https://sequelize.org/v5/) connection string. Supported databases are: mysql, mariadb, sqlite3, mssql. Some options can be provided in the connection string. Example: `mariadb://username:password@host:port/databasename?ssl=true`
-
-- Key: `backendDatabaseUri`
-- Env: `SQLPAD_BACKEND_DB_URI`
-
-## defaultConnectionId
-
-Default connection to select on SQLPad load if connection not previousy selected. Once selected, connection selections are cached locally in the browser.
-
-- key: `defaultConnectionId`
-- Env: `SQLPAD_DEFAULT_CONNECTION_ID`
-
-## authDisabled
-
-Set to TRUE to disable authentication altogether.
-
-- Key: `authDisabled`
-- Env: `SQLPAD_AUTH_DISABLED`
-
-## authDisabledDefaultRole
-
-Specifies the role associated with users when authDisabled is set to true.
-Acceptable values: `admin`, `editor`.
-
-- Key: `authDisabledDefaultRole`
-- Env: `SQLPAD_AUTH_DISABLED_DEFAULT_ROLE`
-
-## userpassAuthDisabled
-
-Set to TRUE to disable built-in user authentication. Probably desired when using other auths like OAuth or SAML.
-
-- Key: `userpassAuthDisabled`
-- Env: `SQLPAD_USERPASS_AUTH_DISABLED`
-
-## editorWordWrap
-
-Enable word wrapping in SQL editor.
-
-- Key: `editorWordWrap`
-- Env: `SQLPAD_EDITOR_WORD_WRAP`
-
-## googleClientId
-
-Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-
-- Key: `googleClientId`
-- Env: `SQLPAD_GOOGLE_CLIENT_ID`
-
-## googleClientSecret
-
-Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-
-- Key: `googleClientSecret`
-- Env: `SQLPAD_GOOGLE_CLIENT_SECRET`
-
-## ip
-
-IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0).
-
-- Key: `ip`
-- Env: `SQLPAD_IP`
-- Default: `0.0.0.0`
-
-## passphrase
-
-A string of text used to encrypt connection user and password values when stored on disk.
-
-- Key: `passphrase`
-- Env: `SQLPAD_PASSPHRASE`
-- Default: `At least the sensitive bits won't be plain text?`
-
-## port
-
-Port for SQLPad to listen on. Used for both HTTP and HTTPS.
-
-- Key: `port`
-- Env: `SQLPAD_PORT`
-- Default: `80` in code / `3000` in Docker Hub image
-
-## publicUrl
-
-Public URL used for OAuth setup and email links. Protocol expected. Example: https://mysqlpad.com
-
-- Key: `publicUrl`
-- Env: `PUBLIC_URL`
-
-## queryResultMaxRows
-
-By default query results are limited to 50,000 records.
-
-- Key: `queryResultMaxRows`
-- Env: `SQLPAD_QUERY_RESULT_MAX_ROWS`
-- Default: `50000`
-
-## serviceTokenSecret
+## Service Tokens
 
 Secret to sign the generated Service Tokens.
 
@@ -209,20 +154,14 @@ curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generate
 
 For more information on APIs available see [API Overview](/api-overview).
 
-- Key: `serviceTokenSecret`
-- Env: `SQLPAD_SERVICE_TOKEN_SECRET`
+```bash
+# Secret to sign the generated Service Tokens
+SQLPAD_SERVICE_TOKEN_SECRET = ""
+```
 
-## sessionMinutes
+## Slack Webhook
 
-Minutes to keep a session active. Will extended by this amount each request.
-
-- Key: `sessionMinutes`
-- Env: `SQLPAD_SESSION_MINUTES`
-- Default: `60`
-
-## slackWebhook
-
-!> Deprecated. To be removed in v6. Use webhooks and implement preferred communication instead.
+!> Deprecated. To be removed in v6. Use [webhooks](/webhooks) and implement preferred communication instead.
 
 ```bash
 # Supply incoming Slack webhook URL to post query when saved.
@@ -231,7 +170,7 @@ SQLPAD_SLACK_WEBHOOK = ""
 
 ## SMTP
 
-!> Deprecated. To be removed in v6. Use webhooks and implement preferred communication instead.
+!> Deprecated. To be removed in v6. Use [webhooks](/webhooks) and implement preferred communication instead.
 
 ```bash
 # From email address for SMTP. Required in order to send invitation emails.
@@ -249,149 +188,119 @@ SQLPAD_SMTP_SECURE = "true"
 SQLPAD_SMTP_USER = ""
 ```
 
-## systemdSocket
+## Logging
 
-Acquire socket from systemd if available
+Minimum level for logs. Should be one of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. App logs contain log messages taken by application (running queries, creating users, general errors, etc.) while web logs are used for logging web requests made and related information, like time taken to serve them.
 
-- Key: `systemdSocket`
-- Env: `SQLPAD_SYSTEMD_SOCKET`
-
-## timeoutSeconds
-
-HTTP server timeout as number of seconds. Extend as necessary for long running queries.
-
-- Key: `timeoutSeconds`
-- Env: `SQLPAD_TIMEOUT_SECONDS`
-- Default: `300`
-
-## allowedDomains
-
-Allows pre-approval of email domains. Delimit multiple domains by empty space.
-
-- Key: `allowedDomains`
-- Env: `SQLPAD_ALLOWED_DOMAINS`
-
-## allowConnectionAccessToEveryone
-
-Allows access on every connection to every user.
-
-- Key: `allowConnectionAccessToEveryone`
-- Env: `SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE`
-- Default: `true`
-
-## queryHistoryRetentionTimeInDays
-
-Query history entries created before the retention period will be deleted automatically.
-
-- Key: `queryHistoryRetentionTimeInDays`
-- Env: `SQLPAD_QUERY_HISTORY_RETENTION_PERIOD_IN_DAYS`
-- Default: `30`
-
-## queryHistoryResultMaxRows
-
-By default query history results are limited to 1,000 records.
-
-- Key: `queryHistoryResultMaxRows`
-- Env: `SQLPAD_QUERY_HISTORY_RESULT_MAX_ROWS`
-- Default: `1000`
-
-## appLogLevel
-
-Minimum level for app logs. Should be one of 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'.
-
-- Key: `appLogLevel`
-- Env: `SQLPAD_APP_LOG_LEVEL`
-- Default: `info`
-
-## webLogLevel
-
-Minimum level for web logs. Should be one of 'fatal', 'error', 'warn', 'info', 'debug', 'trace' or 'silent'.
-
-- Key: `webLogLevel`
-- Env: `SQLPAD_WEB_LOG_LEVEL`
-- Default: `info`
-
-## seedDataPath
-
-Path to root of seed data directories. See Seed Data documentation.
-
-- Key: `seedDataPath`
-- Env: `SQLPAD_SEED_DATA_PATH`
-
-## authProxyEnabled
-
-Enable auth proxy authentication support
-
-- Key: `authProxyEnabled`
-- Env: `SQLPAD_AUTH_PROXY_ENABLED`
-- Default: `false`
-
-## authProxyAutoSignUp
-
-Auto create a user record if it does not exist when new user is detected via auth proxy
-
-- Key: `authProxyAutoSignUp`
-- Env: `SQLPAD_AUTH_PROXY_AUTO_SIGN_UP`
-- Default: `false`
-
-## authProxyDefaultRole
-
-Default role to assign user created when `authProxyAutoSignUp` is turned on. By default this is an empty-string and not used, expecting a role to be provided via header-mapping.
-
-- Key: `authProxyDefaultRole`
-- Env: `SQLPAD_AUTH_PROXY_DEFAULT_ROLE`
-
-## authProxyHeaders
-
-Space-delimited field:header mappings to use to derive user information from HTTP headers. A mapping to `email` is required at a minimum assuming `authProxyDefaultRole` is set. Otherwise `role`, `id`, `name` and `data.<customField>` fields may be set.
-
-When supplying both `id` and `email`, `id` will be used for user matching instead of `email`, updating SQLPad user `email` fields when they change (assuming `id` is not changing).
-
-- Key: `authProxyHeaders`
-- Env: `SQLPAD_AUTH_PROXY_HEADERS`
-
-## ldapAuthEnabled
-
-Set to `true` to enable LDAP authentication
-
-- Key: `ldapAuthEnabled`
-- Env: `SQLPAD_LDAP_AUTH_ENABLED`
-
-## ldapUrl
-
-LDAP server URL. Examples: `ldap://localhost:389`, `ldaps://ad.corporate.com:636`
-
-- Key: `ldapUrl`
-- Env: `SQLPAD_LDAP_URL`
-
-## ldapBaseDN
-
-Base LDAP DN to search for users in
-
-- Key: `ldapBaseDN`
-- Env: `SQLPAD_LDAP_BASE_DN`
-
-## ldapUsername
-
-Username for LDAP lookup
-
-- Key: `ldapUsername`
-- Env: `SQLPAD_LDAP_USERNAME`
-
-## ldapPassword
-
-Password for LDAP user used for LDAP lookup
-
-- Key: `ldapPassword`
-- Env: `SQLPAD_LDAP_PASSWORD`
+```bash
+SQLPAD_APP_LOG_LEVEL = 'info'
+SQLPAD_WEB_LOG_LEVEL = 'info
+```
 
 ## HTTPS
 
 HTTPS may be configured to be used by SQLPad directly. However if performance becomes an issue, consider [using a reverse proxy](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md).
 
-- `SQLPAD_HTTPS_CERT_PATH`: Absolute path to where SSL certificate is stored
-- `SQLPAD_HTTPS_KEY_PATH`: Absolute path to where SSL certificate key is stored
-- `SQLPAD_HTTPS_CERT_PASSPHRASE`: Passphrase for your SSL certification file
+```bash
+# Absolute path to where SSL certificate is stored
+SQLPAD_HTTPS_CERT_PATH = ""
+# Absolute path to where SSL certificate key is stored
+SQLPAD_HTTPS_KEY_PATH = ""
+# Passphrase for your SSL certification file
+SQLPAD_HTTPS_CERT_PASSPHRASE = ""
+```
+
+## No Authentication
+
+Authentication may be disabled altogether, resulting in a single "user" being automatically added and used for any visit to SQLPad.
+
+```bash
+# Set to `true` to disable authentication altogether.
+SQLPAD_AUTH_DISABLED = "false"
+# Specifies the role associated with users when SQLPAD_AUTH_DISABLED is set to true.
+# Acceptable values: `admin`, `editor`.
+SQLPAD_AUTH_DISABLED_DEFAULT_ROLE = "editor"
+```
+
+## Local Email & Password Authentication
+
+Local authentication is enabled by default. The default admin email and password may be provided via configuration. This configuration can also be used to "reset" an admin's password if ever forgotten.
+
+```bash
+# Email address to give admin permissions to.
+SQLPAD_ADMIN = ""
+
+# Password to set for admin email address on application start. Requires SQLPAD_ADMIN setting to also be provided.
+SQLPAD_ADMIN_PASSWORD = ""
+
+# Set to `true` to disable built-in local email/password authentication.
+# Useful when using other auths like OAuth or SAML.
+SQLPAD_USERPASS_AUTH_DISABLED = "false"
+```
+
+## Authentication Proxy
+
+```bash
+# Enable auth proxy authentication support
+SQLPAD_AUTH_PROXY_ENABLED = "false"
+
+# Auto create a user record if it does not exist when new user is detected via auth proxy
+SQLPAD_AUTH_PROXY_AUTO_SIGN_UP = "false"
+
+# Default role to assign user created when `authProxyAutoSignUp` is turned on.
+# By default this is an empty-string and not used, expecting a role to be provided via header-mapping.
+SQLPAD_AUTH_PROXY_DEFAULT_ROLE = ""
+
+# Space-delimited field:header mappings to use to derive user information from HTTP headers.
+# A mapping to `email` is required at a minimum assuming `authProxyDefaultRole` is set.
+# Otherwise `role`, `id`, `name` and `data.<customField>` fields may be set.
+#
+# When supplying both `id` and `email`, `id` will be used for user matching instead of `email`,
+# updating SQLPad user `email` fields when they change (assuming `id` is not changing).
+SQLPAD_AUTH_PROXY_HEADERS = ""
+```
+
+## Google Authentication
+
+```bash
+# Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
+SQLPAD_GOOGLE_CLIENT_ID = ""
+
+# Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
+SQLPAD_GOOGLE_CLIENT_SECRET = ""
+```
+
+## LDAP
+
+```bash
+# Set to "true" to enable LDAP authentication
+SQLPAD_LDAP_AUTH_ENABLED = "false"
+
+# LDAP server URL. Examples: `ldap://localhost:389`, `ldaps://ad.corporate.com:636`
+SQLPAD_LDAP_URL = ""
+
+# Base LDAP DN to search for users in
+SQLPAD_LDAP_BASE_DN = ""
+
+# Username for LDAP lookup
+SQLPAD_LDAP_USERNAME = ""
+
+# Password for LDAP user used for LDAP lookup
+SQLPAD_LDAP_PASSWORD = ""
+```
+
+## OpenID Connect
+
+```bash
+SQLPAD_OIDC_CLIENT_ID = ""
+SQLPAD_OIDC_CLIENT_SECRET = ""
+SQLPAD_OIDC_ISSUER = ""
+SQLPAD_OIDC_AUTHORIZATION_URL = ""
+SQLPAD_OIDC_TOKEN_URL = ""
+SQLPAD_OIDC_USER_INFO_URL = ""
+# HTML code for the sign-in link used for starting SAML authentication.
+SQLPAD_OIDC_LINK_HTML = "Sign in with OpenID"
+```
 
 ## SAML
 
@@ -403,9 +312,10 @@ SQLPAD_SAML_AUTH_CONTEXT = ""
 # SAML callback URL.
 # It will generally be constructed from the deployment's internet address and the fixed route.
 # For example: `https://mysqlpad.com/login/callback`.
-SQLPAD_SAML_CALLBACK_URL = ""
 
+SQLPAD_SAML_CALLBACK_URL = ""
 # SAML certificate in Base64
+
 SQLPAD_SAML_CERT = ""
 
 # Entry point url
@@ -423,142 +333,3 @@ SQLPAD_SAML_AUTO_SIGN_UP = "false"
 # Accepted values are `editor` and `admin`.
 SQLPAD_SAML_DEFAULT_ROLE = "editor"
 ```
-
-**SQLPAD_SAML_AUTH_CONTEXT**
-
-SAML authentication context URL. A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`.
-
-**SQLPAD_SAML_CALLBACK_URL**
-
-SAML callback URL. It will generally be constructed from the deployment's internet address and the fixed route, for example: `https://mysqlpad.com/login/callback`.
-
-**SQLPAD_SAML_CERT**
-
-SAML certificate in Base64
-
-**SQLPAD_SAML_ENTRY_POINT**
-
-SAML entry point URL
-
-**SQLPAD_SAML_ISSUER**
-
-SAML Issuer
-
-**SQLPAD_SAML_LINK_HTML**
-
-HTML code for the sign-in link used for starting SAML authentication.
-
-Default: `Sign in with SSO`
-
-**SQLPAD_SAML_AUTO_SIGN_UP**
-
-Auto create a user record if it does not exist when new user is detected via SAML.
-
-Default: `false`
-
-**SQLPAD_SAML_DEFAULT_ROLE**
-
-Default role to assign user created when SQLPAD_SAML_AUTO_SIGN_UP is turned on. Accepted values are `editor` and `admin`.
-
-Default: `editor`
-
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>SQLPAD_SAML_AUTH_CONTEXT</td>
-      <td>SAML authentication context URL. A sensible value is: <code>urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport</code></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>SQLPAD_SAML_CALLBACK_URL</td>
-      <td>SAML callback URL. It will generally be constructed from the deployment's internet address and the fixed route, for example: <code>https://mysqlpad.com/login/callback</code></td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>SQLPAD_SAML_CERT</td>
-      <td>SAML certificate in Base64</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>SQLPAD_SAML_ENTRY_POINT</td>
-      <td>SAML Entry point URL</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>SQLPAD_SAML_ISSUER</td>
-      <td>SAML Issuer</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td>SQLPAD_SAML_LINK_HTML</td>
-      <td>HTML code for the sign-in link used for starting SAML authentication.</td>
-      <td>Sign in with SSO</td>
-    </tr>
-    <tr>
-      <td>SQLPAD_SAML_AUTO_SIGN_UP</td>
-      <td>Auto create a user record if it does not exist when new user is detected via SAML.</td>
-      <td>false</td>
-    </tr>
-    <tr>
-      <td>SQLPAD_SAML_DEFAULT_ROLE</td>
-      <td>Default role to assign user created when SQLPAD_SAML_AUTO_SIGN_UP is turned on. Accepted values are <code>editor</code> and <code>admin</code>.</td>
-      <td>editor</td>
-    </tr>
-  </tbody>
-</table>
-
-## OpenID Connect
-
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>default</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>SQLPAD_OIDC_CLIENT_ID</code></td>
-      <td>Client ID</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_CLIENT_SECRET</code></td>
-      <td>Client secret</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_ISSUER</code></td>
-      <td>Issuer</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_AUTHORIZATION_URL</code></td>
-      <td>Authorization URL</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_TOKEN_URL</code></td>
-      <td>Token URL</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_USER_INFO_URL</code></td>
-      <td>User info URL</td>
-      <td></td>
-    </tr>
-    <tr>
-      <td><code>SQLPAD_OIDC_LINK_HTML</code></td>
-      <td>Inner HTML for OpenID sign in button customization</td>
-      <td>Sign in with OpenID</td>
-    </tr>
-  </tbody>
-</table>
