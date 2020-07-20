@@ -11,7 +11,7 @@ const mustHaveConnectionAccess = require('../middleware/must-have-connection-acc
  * @param {Res} res
  */
 async function create(req, res) {
-  const { config, models, body, user, appLog } = req;
+  const { config, models, body, user, appLog, webhooks } = req;
   const {
     queryId,
     name,
@@ -33,12 +33,18 @@ async function create(req, res) {
     userId: user.id,
   };
 
+  const connection = await models.connections.findOneById(connectionId);
   const newBatch = await models.batches.create(batch);
+
+  webhooks.batchCreated(user, connection, newBatch);
+  for (const statement of newBatch.statements) {
+    webhooks.statementCreated(user, connection, newBatch, statement);
+  }
 
   // Run batch, but don't wait for it to send response
   // Client will get status via polling or perhaps some future event mechanism
   if (newBatch.status !== 'error') {
-    executeBatch(config, models, newBatch.id).catch((error) =>
+    executeBatch(config, models, webhooks, newBatch.id).catch((error) =>
       appLog.error(error)
     );
   }

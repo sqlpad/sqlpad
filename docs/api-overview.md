@@ -25,7 +25,7 @@ For `400` - `500` status codes, the body returned will be a JSON error object, w
 
 ## Example: List Items
 
-List APIs will return an array of objects. The objects in the list may be in summary form specifing only high-level information about the object.
+List APIs will return an array of objects. The objects in the list may be in summary form specifying only high-level information about the object.
 
 **200: Body with results**
 

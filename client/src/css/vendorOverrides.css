@@ -19,7 +19,7 @@
   transition: all 0.3s ease;
 }
 
-/* QueryResultDataTable react-window/react-draggable implementaion */
+/* QueryResultDataTable react-window/react-draggable implementation */
 .DragHandle {
   flex: 0 0 16px;
   z-index: 2;

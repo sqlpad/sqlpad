@@ -29,7 +29,7 @@ async function listUsers(req, res) {
  * @param {Res} res
  */
 async function createUser(req, res) {
-  const { models, appLog } = req;
+  const { models, appLog, webhooks } = req;
 
   let user = await models.users.findOneByEmail(req.body.email);
   if (user) {
@@ -43,6 +43,8 @@ async function createUser(req, res) {
     name: req.body.name,
     data: req.body.data,
   });
+
+  webhooks.userCreated(user);
 
   const email = makeEmail(req.config);
 

@@ -51,7 +51,7 @@ Queries are created or replaced matching on query id. At this time the query ACL
 
 The `acl` entries work in a similar way, but are explicit about field names. If providing the email address of a user that has access to the query, use `userEmail`. Reference the SQLPad userId in the `userId` field.
 
-Example seed query JSON file (comments only added for documentaion purposes):
+Example seed query JSON file (comments only added for documentation purposes):
 
 ```js
 {

@@ -266,36 +266,50 @@ const configItems = [
     key: 'slackWebhook',
     envVar: 'SQLPAD_SLACK_WEBHOOK',
     default: '',
+    deprecated:
+      'To be removed in v6. Use webhooks and implement preferred communication instead.',
   },
   {
     key: 'smtpFrom',
     envVar: 'SQLPAD_SMTP_FROM',
     default: '',
+    deprecated:
+      'To be removed in v6. Use webhooks and implement preferred communication instead.',
   },
   {
     key: 'smtpHost',
     envVar: 'SQLPAD_SMTP_HOST',
     default: '',
+    deprecated:
+      'To be removed in v6. Use webhooks and implement preferred communication instead.',
   },
   {
     key: 'smtpPort',
     envVar: 'SQLPAD_SMTP_PORT',
     default: '',
+    deprecated:
+      'To be removed in v6. Use webhooks and implement preferred communication instead.',
   },
   {
     key: 'smtpSecure',
     envVar: 'SQLPAD_SMTP_SECURE',
     default: true,
+    deprecated:
+      'To be removed in v6. Use webhooks and implement preferred communication instead.',
   },
   {
     key: 'smtpUser',
     envVar: 'SQLPAD_SMTP_USER',
     default: '',
+    deprecated:
+      'To be removed in v6. Use webhooks and implement preferred communication instead.',
   },
   {
     key: 'smtpPassword',
     envVar: 'SQLPAD_SMTP_PASSWORD',
     default: '',
+    deprecated:
+      'To be removed in v6. Use webhooks and implement preferred communication instead.',
   },
   {
     key: 'whitelistedDomains',
@@ -477,6 +491,46 @@ const configItems = [
     key: 'oidcLinkHtml',
     envVar: 'SQLPAD_OIDC_LINK_HTML',
     default: 'Sign in with OpenID',
+  },
+  {
+    key: 'webhookEnabled',
+    envVar: 'SQLPAD_WEBHOOK_ENABLED',
+    default: false,
+  },
+  {
+    key: 'webhookSecret',
+    envVar: 'SQLPAD_WEBHOOK_SECRET',
+    default: '',
+  },
+  {
+    key: 'webhookUserCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_USER_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookQueryCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_QUERY_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookBatchCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_BATCH_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookBatchFinishedUrl',
+    envVar: 'SQLPAD_WEBHOOK_BATCH_FINISHED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookStatementCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_STATEMENT_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookStatementFinishedUrl',
+    envVar: 'SQLPAD_WEBHOOK_STATEMENT_FINISHED_URL',
+    default: '',
   },
 ];
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## [5.2.0] - 2020-07-20
+
+This release introduces new generic webhooks for a variety of events, while deprecating specific communication implementations (SMTP email and Slack). With webhooks, it is up to you to implement communication to your SQLPad users.
+
+The webhooks added support a larger number of events than previously handled, such as queries being run and results/error received from those queries.
+
+- Add webhooks [documentation](http://rickbergfalk.github.io/sqlpad/#/webhooks)
+- Deprecate SMTP email and Slack webhook, both to be removed in v6.
+- Capture database error message on ODBC driver connection error
+- Show service token UI only if enabled via config (#787)
+- CrateDB - provide separate user, password, and SSL fields (#793)
+- Fix multiline string support in `sql-limiter`
+- Fix regular expression constraint in `sql-limiter`
+
 ## [5.1.0] - 2020-07-10
 
 - Add OpenID Connect authentication support
@@ -554,7 +568,7 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 - UI design updates _everywhere_
 - Query Listing:
   - preview query contents by hovering over query listing
-  - occassional search/filter weirdness has been fixed
+  - occasional search/filter weirdness has been fixed
 - Query Editor:
   - Schema sidebar no longer separates views and tables in hierarchy
   - New result grid

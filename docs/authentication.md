@@ -144,7 +144,7 @@ LDAP-based authentication can be enabled and used with local authencation togeth
 
 ## Allowed Domains for User Administration
 
-An entire domain can be allowed for username administration by setting enviornment variable `SQLPAD_ALLOWED_DOMAINS`. This may be particularly useful in combination with OAuth.
+An entire domain can be allowed for username administration by setting environment variable `SQLPAD_ALLOWED_DOMAINS`. This may be particularly useful in combination with OAuth.
 
 ## Service Token
 

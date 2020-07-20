@@ -10,7 +10,7 @@ Admins can create connections in the UI, but connections can also be created in 
 
 ?> Available as of `4.2.0`
 
-Multi-statement transaction support adds the ability for a user to use the same underlying connection across query executions. This allows things like opening a transaction, running queries, and rolling the transaction back or comitting the transaction across query runs. It also opens up the ability to create and use temp tables that are generally scoped per connection session.
+Multi-statement transaction support adds the ability for a user to use the same underlying connection across query executions. This allows things like opening a transaction, running queries, and rolling the transaction back or committing the transaction across query runs. It also opens up the ability to create and use temp tables that are generally scoped per connection session.
 
 Multi-statement transaction support is opt-in based on connection configuration. If a connection uses a driver and multi-statement transaction support is not enabled, the connection falls back to the legacy SQLPad behavior of opening a new connection for each query execution, then immediately closing it following the query.
 
@@ -66,6 +66,9 @@ A default connection selection can be set using environment variable `SQLPAD_DEF
     <tr><td>driver</td><td>Must be <code>crate</code></td><td>text</td></tr>
     <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
     <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
+    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
+    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
+    <tr><td>ssl</td><td>Use SSL</td><td>boolean</td></tr>
   </tbody>
 </table>
 

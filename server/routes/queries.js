@@ -299,7 +299,7 @@ router.get('/api/queries/:id', mustBeAuthenticated, wrap(getQuery));
  * @param {Res} res
  */
 async function createQuery(req, res) {
-  const { models, body, user } = req;
+  const { models, body, user, webhooks } = req;
   const { name, tags, connectionId, queryText, chart, acl } = body;
 
   const query = {
@@ -314,6 +314,13 @@ async function createQuery(req, res) {
   };
 
   const newQuery = await models.upsertQuery(query);
+
+  let connection;
+  if (connectionId) {
+    connection = await models.connections.findOneById(connectionId);
+  }
+
+  webhooks.queryCreated(newQuery, connection);
 
   // This is async, but save operation doesn't care about when/if finished
   pushQueryToSlack(req.config, newQuery, user);

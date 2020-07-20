@@ -6,6 +6,7 @@ const pino = require('pino');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const appLog = require('./lib/app-log');
+const Webhooks = require('./lib/webhooks.js');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const passport = require('passport');
@@ -36,6 +37,8 @@ async function makeApp(config, models) {
   if (!models) {
     throw new Error('models is required to create app');
   }
+
+  const webhooks = new Webhooks(config, models, appLog);
 
   const expressPino = expressPinoLogger({
     level: config.get('webLogLevel'),
@@ -72,6 +75,7 @@ async function makeApp(config, models) {
     req.config = config;
     req.models = models;
     req.appLog = appLog;
+    req.webhooks = webhooks;
 
     res.utils = new ResponseUtils(res, next);
 
@@ -79,7 +83,14 @@ async function makeApp(config, models) {
   });
 
   app.use(expressPino);
-  app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
+
+  // Use favicon middleware if favicon exists
+  // Thist just loads it and serves from memory
+  const icoPath = path.join(__dirname, '/public/favicon.ico');
+  if (fs.existsSync(icoPath)) {
+    app.use(favicon(icoPath));
+  }
+
   app.use(bodyParser.json());
   app.use(
     bodyParser.urlencoded({
@@ -200,8 +211,12 @@ async function makeApp(config, models) {
       .replace(/="\/static/g, `="${baseUrl}/static`);
     app.use((req, res) => res.send(baseUrlHtml));
   } else {
-    appLog.warn('NO FRONT END TEMPLATE DETECTED');
-    appLog.warn('If not running in dev mode please report this issue.');
+    const msg = `No UI template detected. Build client/ and copy files to server/public/`;
+    appLog.warn(msg);
+    app.use((req, res) => {
+      appLog.warn(msg);
+      res.status(404).send(msg);
+    });
   }
 
   return app;
