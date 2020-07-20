@@ -23,7 +23,7 @@ A [config file example](https://github.com/rickbergfalk/sqlpad/blob/master/confi
 # IP address to bind to. By default SQLPad will listen from all available addresses (0.0.0.0).
 SQLPAD_IP = "0.0.0.0"
 
-# Port to listen on. Used for both HTTP and HTTPS
+# Port to listen on. Used for both HTTP and HTTPS.
 # Defaults to 80 in code, 3000 in Docker Hub Image
 SQLPAD_PORT = 3000
 
@@ -38,13 +38,13 @@ PUBLIC_URL = ""
 # the queries page would be `https://mysqlpad.com/sqlpad/queries`
 SQLPAD_BASE_URL = ""
 
-# Passphrase to encrypt sensitive connection information (like user & password) when stored on disk
+# Passphrase to encrypt sensitive connection information (like user & password) when stored in backing database.
 SQLPAD_PASSPHRASE = "At least the sensitive bits won't be plain text?"
 
-# HTTP server timeout as number of seconds. Extend as necessary for long running queries.
+# HTTP server timeout as number of seconds.
 SQLPAD_TIMEOUT_SECONDS = 300
 
-# Minutes to keep a session active. Will extended by this amount each request.
+# Minutes to keep a session active. Session will be extended by this amount each request.
 SQLPAD_SESSION_MINUTES = 60
 
 # Name used for cookie. If running multiple SQLPads on same domain, set to different values.
