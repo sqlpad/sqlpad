@@ -12,7 +12,7 @@ async function passportOidcStrategyHandler(
   refreshToken,
   done
 ) {
-  const { models, config, appLog } = req;
+  const { models, config, appLog, webhooks } = req;
   const _json = profile._json || {};
 
   // _json.sub appears to be an id. Is it? Should .sub be used for SQLPad user id?
@@ -55,6 +55,7 @@ async function passportOidcStrategyHandler(
         role: openAdminRegistration ? 'admin' : 'editor',
         signupAt: new Date(),
       });
+      webhooks.userCreated(newUser);
       appLog.debug(`OIDC User ${email} created`);
       return done(null, newUser);
     }

@@ -6,6 +6,7 @@ const pino = require('pino');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const appLog = require('./lib/app-log');
+const Webhooks = require('./lib/webhooks.js');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const passport = require('passport');
@@ -36,6 +37,8 @@ async function makeApp(config, models) {
   if (!models) {
     throw new Error('models is required to create app');
   }
+
+  const webhooks = new Webhooks(config, models, appLog);
 
   const expressPino = expressPinoLogger({
     level: config.get('webLogLevel'),
@@ -72,6 +75,7 @@ async function makeApp(config, models) {
     req.config = config;
     req.models = models;
     req.appLog = appLog;
+    req.webhooks = webhooks;
 
     res.utils = new ResponseUtils(res, next);
 

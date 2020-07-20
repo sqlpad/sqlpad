@@ -15,7 +15,7 @@ const appLog = require('../lib/app-log');
  */
 async function authProxyStrategy(req, done) {
   try {
-    const { config, models } = req;
+    const { config, models, webhooks } = req;
 
     const headerUser = getHeaderUser(req);
 
@@ -80,6 +80,7 @@ async function authProxyStrategy(req, done) {
       const newUser = await models.users.create({
         ...headerUser,
       });
+      webhooks.userCreated(newUser);
       return done(null, newUser);
     }
 

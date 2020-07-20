@@ -4,6 +4,10 @@ const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 const path = require('path');
 const request = require('supertest');
+const detectPort = require('detect-port');
+const bodyParser = require('body-parser');
+const express = require('express');
+const http = require('http');
 const Config = require('../lib/config');
 const { Sequelize } = require('sequelize');
 const appLog = require('../lib/app-log');
@@ -67,6 +71,31 @@ class TestUtils {
         email: 'editor2@test.com',
         role: 'editor',
       },
+    };
+  }
+
+  static async makeHookServer() {
+    const responses = [];
+    const port = await detectPort(4000);
+    const app = express();
+    app.use(bodyParser.json());
+    app.post('/', function (req, res) {
+      responses.push({
+        headers: {
+          'sqlpad-secret': req.get('sqlpad-secret'),
+          'sqlpad-url': req.get('sqlpad-url'),
+          'sqlpad-hook-name': req.get('sqlpad-hook-name'),
+        },
+        body: req.body,
+      });
+      res.json({});
+    });
+
+    const server = http.createServer(app).listen(port);
+    return {
+      server,
+      url: `http://localhost:${port}/`,
+      responses,
     };
   }
 

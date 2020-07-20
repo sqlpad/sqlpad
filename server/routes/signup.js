@@ -10,7 +10,7 @@ const wrap = require('../lib/wrap');
  * @param {Function} next
  */
 async function handleSignup(req, res, next) {
-  const { models, config } = req;
+  const { models, config, webhooks } = req;
 
   if (config.get('userpassAuthDisabled') || config.get('disableUserpassAuth')) {
     return res.utils.forbidden();
@@ -51,6 +51,7 @@ async function handleSignup(req, res, next) {
       role: adminRegistrationOpen ? 'admin' : 'editor',
       signupAt: new Date(),
     });
+    webhooks.userCreated(user);
     return next();
   } else {
     return res.utils.forbidden();

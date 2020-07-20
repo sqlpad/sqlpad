@@ -478,6 +478,46 @@ const configItems = [
     envVar: 'SQLPAD_OIDC_LINK_HTML',
     default: 'Sign in with OpenID',
   },
+  {
+    key: 'webhookEnabled',
+    envVar: 'SQLPAD_WEBHOOK_ENABLED',
+    default: false,
+  },
+  {
+    key: 'webhookSecret',
+    envVar: 'SQLPAD_WEBHOOK_SECRET',
+    default: '',
+  },
+  {
+    key: 'webhookUserCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_USER_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookQueryCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_QUERY_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookBatchCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_BATCH_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookBatchFinishedUrl',
+    envVar: 'SQLPAD_WEBHOOK_BATCH_FINISHED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookStatementCreatedUrl',
+    envVar: 'SQLPAD_WEBHOOK_STATEMENT_CREATED_URL',
+    default: '',
+  },
+  {
+    key: 'webhookStatementFinishedUrl',
+    envVar: 'SQLPAD_WEBHOOK_STATEMENT_FINISHED_URL',
+    default: '',
+  },
 ];
 
 module.exports = configItems;
