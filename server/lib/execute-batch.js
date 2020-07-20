@@ -36,9 +36,6 @@ async function executeBatch(config, models, webhooks, batchId) {
     }
   }
 
-  // TODO FIXME XXX - fire hooks for statements.
-  // statement data access should probably live under models
-
   // run statements
   const batchStartTime = new Date();
   let stopTime;
