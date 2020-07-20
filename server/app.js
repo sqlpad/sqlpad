@@ -83,7 +83,14 @@ async function makeApp(config, models) {
   });
 
   app.use(expressPino);
-  app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
+
+  // Use favicon middleware if favicon exists
+  // Thist just loads it and serves from memory
+  const icoPath = path.join(__dirname, '/public/favicon.ico');
+  if (fs.existsSync(icoPath)) {
+    app.use(favicon(icoPath));
+  }
+
   app.use(bodyParser.json());
   app.use(
     bodyParser.urlencoded({
@@ -204,8 +211,12 @@ async function makeApp(config, models) {
       .replace(/="\/static/g, `="${baseUrl}/static`);
     app.use((req, res) => res.send(baseUrlHtml));
   } else {
-    appLog.warn('NO FRONT END TEMPLATE DETECTED');
-    appLog.warn('If not running in dev mode please report this issue.');
+    const msg = `No UI template detected. Build client/ and copy files to server/public/`;
+    appLog.warn(msg);
+    app.use((req, res) => {
+      appLog.warn(msg);
+      res.status(404).send(msg);
+    });
   }
 
   return app;
