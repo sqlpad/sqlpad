@@ -187,6 +187,8 @@ describe('api/webhooks', function () {
 
     const statement1 = statements[0];
 
+    await wait(500);
+
     const { body: batchCreatedBody } = hookServer.responses.find(
       (r) => r.body.action === 'batch_created'
     );
