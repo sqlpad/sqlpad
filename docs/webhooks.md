@@ -136,7 +136,7 @@ Fires whenever a batch finished running. Payload contains summary information fo
 
 **Payload Body**:
 
-```js
+```json
 {
   "action": "batch_finished",
   "sqlpadUrl": "",
