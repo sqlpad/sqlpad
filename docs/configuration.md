@@ -279,53 +279,32 @@ Minutes to keep a session active. Will extended by this amount each request.
 
 ## slackWebhook
 
-Supply incoming Slack webhook URL to post query when saved.
+!> Deprecated. To be removed in v6. Use webhooks and implement preferred communication instead.
 
-- Key: `slackWebhook`
-- Env: `SQLPAD_SLACK_WEBHOOK`
+```bash
+# Supply incoming Slack webhook URL to post query when saved.
+SQLPAD_SLACK_WEBHOOK = ""
+```
 
-## smtpFrom
+## SMTP
 
-From email address for SMTP. Required in order to send invitation emails.
+!> Deprecated. To be removed in v6. Use webhooks and implement preferred communication instead.
 
-- Key: `smtpFrom`
-- Env: `SQLPAD_SMTP_FROM`
-
-## smtpHost
-
-Host address for SMTP. Required in order to send invitation emails.
-
-- Key: `smtpHost`
-- Env: `SQLPAD_SMTP_HOST`
-
-## smtpPassword
-
-Password for SMTP.
-
-- Key: `smtpPassword`
-- Env: `SQLPAD_SMTP_PASSWORD`
-
-## smtpPort
-
-Port for SMTP. Required in order to send invitation emails.
-
-- Key: `smtpPort`
-- Env: `SQLPAD_SMTP_PORT`
-
-## smtpSecure
-
-Toggle to use secure connection when using SMTP.
-
-- Key: `smtpSecure`
-- Env: `SQLPAD_SMTP_SECURE`
-- Default: `true`
-
-## smtpUser
-
-Username for SMTP. Required in order to send invitation emails.
-
-- Key: `smtpUser`
-- Env: `SQLPAD_SMTP_USER`
+```bash
+# From email address for SMTP. Required in order to send invitation emails.
+SQLPAD_SMTP_FROM = ""
+# Host address for SMTP. Required in order to send invitation emails.
+SQLPAD_SMTP_HOST = ""
+# Password for SMTP.
+SQLPAD_SMTP_PASSWORD = ""
+# Port for SMTP. Required in order to send invitation emails.
+SQLPAD_SMTP_PORT = ""
+# Toggle to use secure connection when using SMTP.
+# Defaults to true
+SQLPAD_SMTP_SECURE = "true"
+# Username for SMTP. Required in order to send invitation emails.
+SQLPAD_SMTP_USER = ""
+```
 
 ## systemdSocket
 

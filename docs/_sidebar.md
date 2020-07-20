@@ -6,6 +6,7 @@
   - [Seed Data](/seed-data.md)
   - [Connection Templates](/connection-templates.md)
   - [Logging](/logging.md)
+  - [Webhooks](/webhooks.md)
 - API
   - [Overview](/api-overview.md)
   - [Batches & Statements](/api-batches.md)

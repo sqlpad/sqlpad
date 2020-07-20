@@ -1,6 +1,10 @@
 const nodemailer = require('nodemailer');
 const appLog = require('./app-log');
 
+/**
+ * TODO: Deprecated. Remove in v6. Replaced with webhooks
+ * @param {*} config
+ */
 function makeEmail(config) {
   /**
    * Get full sqlpad url
