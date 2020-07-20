@@ -1,6 +1,12 @@
 const appLog = require('./app-log');
 const request = require('request');
 
+/**
+ * TODO: Deprecated. Remove in v6. Replaced with webhooks
+ * @param {*} config
+ * @param {*} query
+ * @param {*} user
+ */
 function pushQueryToSlack(config, query, user) {
   const SLACK_WEBHOOK = config.get('slackWebhook');
   if (SLACK_WEBHOOK) {
