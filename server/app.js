@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const pino = require('pino');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const MemoryStore = require('memorystore')(session);
 const appLog = require('./lib/app-log');
 const Webhooks = require('./lib/webhooks.js');
 const bodyParser = require('body-parser');
@@ -99,14 +100,33 @@ async function makeApp(config, models) {
   );
 
   const cookieMaxAgeMs = parseInt(config.get('sessionMinutes'), 10) * 60 * 1000;
-  const sessionPath = path.join(config.get('dbPath'), '/sessions');
+  let store;
+
+  const sessionStore = config.get('sessionStore').toLowerCase();
+
+  switch (sessionStore) {
+    case 'filesystem': {
+      const sessionPath = path.join(config.get('dbPath'), '/sessions');
+      store = new FileStore({
+        path: sessionPath,
+        logFn: () => {},
+      });
+      break;
+    }
+    case 'memory': {
+      store = new MemoryStore({
+        checkPeriod: cookieMaxAgeMs,
+      });
+      break;
+    }
+    default: {
+      throw new Error(`Invalid session store ${sessionStore}`);
+    }
+  }
 
   app.use(
     session({
-      store: new FileStore({
-        path: sessionPath,
-        logFn: () => {},
-      }),
+      store,
       saveUninitialized: false,
       resave: true,
       rolling: true,

@@ -47,6 +47,14 @@ SQLPAD_TIMEOUT_SECONDS = 300
 # Minutes to keep a session active. Session will be extended by this amount each request.
 SQLPAD_SESSION_MINUTES = 60
 
+# Store to use for user session
+# Valid values are `filesystem` (default), `database`, `redis`, `memory`
+# `filesystem` uses files in the sessions directory under SQLPAD_DB_PATH
+# `memory` may be used for single sqlpad instances, and works well for no-auth setups
+# `redis` offers best performance and is most commonly used
+# `database` will use whatever backend database is used (or SQLite if SQLPAD_DB_PATH is set)
+SQLPAD_SESSION_STORE = "filesystem"
+
 # Name used for cookie. If running multiple SQLPads on same domain, set to different values.
 SQLPAD_COOKIE_NAME = "sqlpad.sid"
 
