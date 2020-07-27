@@ -14,7 +14,7 @@ Multi-statement transaction support adds the ability for a user to use the same 
 
 Multi-statement transaction support is opt-in based on connection configuration. If a connection uses a driver and multi-statement transaction support is not enabled, the connection falls back to the legacy SQLPad behavior of opening a new connection for each query execution, then immediately closing it following the query.
 
-Work is under way to add multi-statement transaction support to drivers that benefit from the addition. At this time SQLite, Postgres, and ODBC drivers support this approach.
+Work is under way to add multi-statement transaction support to drivers that benefit from the addition. At this time MySQL, SQLite, Postgres, and ODBC drivers support this approach.
 
 ## Defining Connections via Configuration
 
@@ -150,6 +150,7 @@ A default connection selection can be set using environment variable `SQLPAD_DEF
   <tbody>
     <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
     <tr><td>driver</td><td>Must be <code>mysql</code></td><td>text</td></tr>
+    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
     <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
     <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
     <tr><td>database</td><td>Database</td><td>text</td></tr>
