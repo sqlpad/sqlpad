@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.2.1] - 2020-07-27
+
+- Fix MySQL2 transaction support
+- Fix old query results potentially overwriting new query results when using multi-statement transactions
+
 ## [5.2.0] - 2020-07-20
 
 This release introduces new generic webhooks for a variety of events, while deprecating specific communication implementations (SMTP email and Slack). With webhooks, it is up to you to implement communication to your SQLPad users.
