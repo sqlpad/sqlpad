@@ -1,4 +1,5 @@
 import { mutate } from 'swr';
+import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
 import { api } from '../utilities/fetch-json.js';
 import {
@@ -66,6 +67,8 @@ export const loadQuery = async (state, queryId) => {
   }
 
   return {
+    runQueryInstanceId: null,
+    isRunning: false,
     query: data,
     queryError: undefined,
     queryResult: undefined,
@@ -77,7 +80,11 @@ export const loadQuery = async (state, queryId) => {
 export const runQuery = (store) => async (state) => {
   const { query, selectedText, selectedConnectionId, connectionClient } = state;
 
+  // multiple queries could be running and we only want to keep the "current" or latest query run
+  const runQueryInstanceId = uuidv4();
+
   store.setState({
+    runQueryInstanceId,
     isRunning: true,
     runQueryStartTime: new Date(),
   });
@@ -91,11 +98,17 @@ export const runQuery = (store) => async (state) => {
     chart: query.chart,
   };
   const { data, error } = await runQueryViaBatch(postData);
-  store.setState({
-    isRunning: false,
-    queryError: error,
-    queryResult: data,
-  });
+
+  // Get latest state and check runQueryInstanceId to ensure it matches
+  // If it matches another query has not been run and we can keep the result.
+  // Not matching implies another query has been executed and we can ignore this result.
+  if (store.getState().runQueryInstanceId === runQueryInstanceId) {
+    store.setState({
+      isRunning: false,
+      queryError: error,
+      queryResult: data,
+    });
+  }
 };
 
 export const saveQuery = (store) => async (state) => {
@@ -161,6 +174,8 @@ export const handleCloneClick = (state) => {
 
 export const resetNewQuery = (state) => {
   return {
+    runQueryInstanceId: null,
+    isRunning: false,
     query: Object.assign({}, NEW_QUERY),
     queryError: undefined,
     queryResult: undefined,
