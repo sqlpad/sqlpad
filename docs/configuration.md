@@ -51,7 +51,7 @@ SQLPAD_SESSION_MINUTES = 60
 # Valid values are `filesystem` (default), `database`, `redis`, `memory`
 # `filesystem` uses files in the sessions directory under SQLPAD_DB_PATH
 # `memory` may be used for single sqlpad instances, and works well for no-auth setups
-# `redis` offers best performance and is most commonly used
+# `redis` offers best performance and is most commonly used. SQLPAD_REDIS_URI must also be set.
 # `database` will use whatever backend database is used (or SQLite if SQLPAD_DB_PATH is set)
 SQLPAD_SESSION_STORE = "filesystem"
 
@@ -96,6 +96,17 @@ SQLPAD_QUERY_HISTORY_RESULT_MAX_ROWS = 1000
 # Default connection to select on SQLPad load if connection not previously selected.
 # Once selected, connection selections are cached locally in the browser.
 SQLPAD_DEFAULT_CONNECTION_ID = ""
+```
+
+## Redis
+
+Redis may be used for session storage as of `5.3.0`.
+
+```bash
+# URI for redis instance to use for user sessions if configured
+# Format should be [redis[s]:]//[[user][:password@]][host][:port][/db-number][?db=db-number[&password=bar[&option=value]]]
+# More info at http://www.iana.org/assignments/uri-schemes/prov/redis
+SQLPAD_REDIS_URI = ""
 ```
 
 ## Backend Database Management

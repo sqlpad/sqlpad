@@ -434,6 +434,11 @@ const configItems = [
     default: '',
   },
   {
+    key: 'redisUri',
+    envVar: 'SQLPAD_REDIS_URI',
+    default: '',
+  },
+  {
     key: 'seedDataPath',
     envVar: 'SQLPAD_SEED_DATA_PATH',
     default: '',
