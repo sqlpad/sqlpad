@@ -113,7 +113,7 @@ class Client {
 
     // TODO - use fields from driver to return columns
     // eslint-disable-next-line no-unused-vars
-    const [rows, fields] = await this.client.execute(limitedQuery);
+    const [rows, fields] = await this.client.query(limitedQuery);
 
     if (rows.length >= maxRowsPlusOne) {
       return { rows: rows.slice(0, maxRows), incomplete: true };
