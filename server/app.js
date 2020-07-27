@@ -6,6 +6,7 @@ const pino = require('pino');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const MemoryStore = require('memorystore')(session);
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const appLog = require('./lib/app-log');
 const Webhooks = require('./lib/webhooks.js');
 const bodyParser = require('body-parser');
@@ -100,23 +101,42 @@ async function makeApp(config, models) {
   );
 
   const cookieMaxAgeMs = parseInt(config.get('sessionMinutes'), 10) * 60 * 1000;
-  let store;
 
+  const sessionOptions = {
+    saveUninitialized: false,
+    resave: true,
+    rolling: true,
+    cookie: { maxAge: cookieMaxAgeMs },
+    secret: config.get('cookieSecret'),
+    name: config.get('cookieName'),
+  };
   const sessionStore = config.get('sessionStore').toLowerCase();
 
   switch (sessionStore) {
     case 'filesystem': {
       const sessionPath = path.join(config.get('dbPath'), '/sessions');
-      store = new FileStore({
+      sessionOptions.store = new FileStore({
         path: sessionPath,
         logFn: () => {},
       });
       break;
     }
     case 'memory': {
-      store = new MemoryStore({
+      sessionOptions.store = new MemoryStore({
         checkPeriod: cookieMaxAgeMs,
       });
+      break;
+    }
+    case 'database': {
+      sessionOptions.store = new SequelizeStore({
+        db: models.sequelizeDb.sequelize,
+        table: 'Sessions',
+      });
+      // SequelizeStore supports the touch method so per the express-session docs this should be set to false
+      sessionOptions.resave = false;
+      // SequelizeStore docs mention setting this to true if SSL is done outside of Node
+      // Not sure we have any way of knowing based on current config
+      // sessionOptions.proxy = true;
       break;
     }
     default: {
@@ -124,17 +144,7 @@ async function makeApp(config, models) {
     }
   }
 
-  app.use(
-    session({
-      store,
-      saveUninitialized: false,
-      resave: true,
-      rolling: true,
-      cookie: { maxAge: cookieMaxAgeMs },
-      secret: config.get('cookieSecret'),
-      name: config.get('cookieName'),
-    })
-  );
+  app.use(session(sessionOptions));
 
   const baseUrl = config.get('baseUrl');
 
