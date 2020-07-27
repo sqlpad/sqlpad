@@ -72,4 +72,13 @@ describe('drivers/mysql', function () {
         assert(error.toString().indexOf('missing_table') > -1);
       });
   });
+
+  it('Client handles client interface', async function () {
+    const client = new mysql.Client(connection);
+    await client.connect();
+    await client.runQuery('START TRANSACTION');
+    await client.runQuery('SELECT 1 AS val');
+    await client.runQuery('ROLLBACK');
+    await client.disconnect();
+  });
 });
