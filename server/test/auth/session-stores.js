@@ -27,8 +27,8 @@ async function testSessionStore(sessionStore, additionalOpts = {}) {
 }
 
 describe('auth/session-stores', function () {
-  it('filesystem', async function () {
-    return testSessionStore('filesystem');
+  it('file', async function () {
+    return testSessionStore('file');
   });
 
   it('memory', async function () {

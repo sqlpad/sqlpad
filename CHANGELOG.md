@@ -47,7 +47,7 @@ Version 5 contains many infrastructure and API changes, as well as migrations th
 
 This release finishes the migration from an embedded JSON database to an ORM and SQLite (used by default). For new instances of SQLPad, the following alternative backend databases may be used: SQL Server, MySQL, MariaDB, or PostgreSQL via `SQLPAD_BACKEND_DB_URI`.
 
-Providing a value for `SQLPAD_DB_PATH`/`dbPath` is still required, as the filesystem is still used for sessions and storage of query results. This requirement will be removed in a later 5.x release.
+Providing a value for `SQLPAD_DB_PATH`/`dbPath` is still required, as the file system is still used for sessions and storage of query results. This requirement will be removed in a later 5.x release.
 
 Migrations will be run on SQLPad start up. To disable this behavior, set `SQLPAD_DB_AUTOMIGRATE` to `false`. Migrations may be run manually via `node server.js --config path/to/file.ext --migrate`. When using `--migrate` the process will exit after applying migrations.
 
@@ -205,12 +205,12 @@ Special thanks to @eladeyal-intel, @bruth, @yorek, @dengc367, @murphyke, and @Wi
 - Add GitHub Release builds via build pipeline (#550)
 - Add `dbInMemory` setting (#553)
 
-  `dbInMemory` will run the embedded SQLPad db in memory without logging to disk. Enabling this does not remove the need for `dbPath` at this time, as filesystem access is still required for result caches and express session support. (`dbPath` to become optional in future release)
+  `dbInMemory` will run the embedded SQLPad db in memory without logging to disk. Enabling this does not remove the need for `dbPath` at this time, as file system access is still required for result caches and express session support. (`dbPath` to become optional in future release)
 
 ### Fixes
 
 - Fix TypeError: Do not know how to serialize a BigInt (#522)
-- Fix tests for non-utc timezones (#524)
+- Fix tests for non-utc time zones (#524)
 
 ### Maintenance
 

@@ -10,7 +10,7 @@ Prior to v5, queries were run in SQLPad with an HTTP `POST`, with the query resu
 
 While nice and simple, it has some downsides:
 
-- long queries require long HTTP timeout configurations (not ideal, requires additional configuration to load balancers, proxy, etc)
+- long queries require long HTTP timeout configurations (not ideal, requires additional configuration to load balancers, proxy, etc.)
 - An execution with multiple statements/queries would require all queries to finish before results are sent back. Results would have to be in single response (might be too big)
 
 As of v5 new restful APIs have replaced the existing query-result API.
@@ -21,9 +21,9 @@ These newly created objects are returned as soon as they are created, each conta
 
 Immediately following creation, the batch is executed, each statement sequentially, under the same connection if the database driver supports it. On error, further statements in the batch are stopped, and the statement and batch in question is marked as status `error`.
 
-On success, the batch and statement are marked with status `finished`. Query results are written to the filesystem as a JSON file under the `results` directory inside the directory specified by the `dbPath` configuration variabled.
+On success, the batch and statement are marked with status `finished`. Query results are written to the file system as a JSON file under the `results` directory inside the directory specified by the `dbPath` configuration variable.
 
-These results on the filesystem are kept according to the `queryHistoryRetentionTimeInDays` setting, which defaults to 30 days.
+These results on the file system are kept according to the `queryHistoryRetentionTimeInDays` setting, which defaults to 30 days.
 
 ## Creating a Batch
 

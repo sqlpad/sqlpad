@@ -115,7 +115,7 @@ async function makeApp(config, models) {
   const sessionStore = config.get('sessionStore').toLowerCase();
 
   switch (sessionStore) {
-    case 'filesystem': {
+    case 'file': {
       const sessionPath = path.join(config.get('dbPath'), '/sessions');
       sessionOptions.store = new FileStore({
         path: sessionPath,
