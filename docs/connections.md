@@ -53,349 +53,225 @@ A default connection selection can be set using environment variable `SQLPAD_DEF
 
 ## CrateDB
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>crate</code></td><td>text</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
-    <tr><td>ssl</td><td>Use SSL</td><td>boolean</td></tr>
-  </tbody>
-</table>
+
+ key       | description                  | data type
+-----------|------------------------------|:---------:
+`name`     | Name of connection           | text
+`driver`   | Must be `crate`              | text
+`host`     | Host/Server/IP Address       | text
+`port`     | Port (optional)              | text
+`username` | Database Username            | text
+`password` | Database Password            | text
+`ssl`      | Use SSL                      | boolean
 
 ## Apache Drill
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>drill</code></td><td>text</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
-    <tr><td>drillDefaultSchema</td><td>Default Schema</td><td>text</td></tr>
-    <tr><td>ssl</td><td>Use SSL to connect to Drill</td><td>boolean</td></tr>
-  </tbody>
-</table>
+key                  | description                  | data type
+---------------------|------------------------------|:---------:
+`name`               | Name of connection           | text
+`driver`             | Must be `drill`              | text
+`host`               | Host/Server/IP Address       | text
+`port`               | Port (optional)              | text
+`username`           | Database Username            | text
+`password`           | Database Password            | text
+`drillDefaultSchema` | Default Schema               | text
+`ssl`                | Use SSL to connect to Drill  | boolean
 
 ## ClickHouse
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>clickhouse</code></td><td>text</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>HTTP Port (optional)</td><td>text</td></tr>
-    <tr><td>username</td><td>Username (optional)</td><td>text</td></tr>
-    <tr><td>password</td><td>Password (optional)</td><td>text</td></tr>
-    <tr><td>database</td><td>Database Name (optional)</td><td>text</td></tr>
-  </tbody>
-</table>
+key        | description                      | data type
+-----------|----------------------------------|:---------:
+`name`     | Name of connection               | text
+`driver`   | Must be `clickhouse`             | text
+`host`     | Host/Server/IP Address           | text
+`port`     | HTTP Port (optional)             | text
+`username` | Username (optional)              | text
+`password` | Password (optional)              | text
+`database` | Database Name (optional)         | text
 
 ## SAP Hana (hdb)
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>hdb</code></td><td>text</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>hanaport</td><td>Port (e.g. 39015)</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
-    <tr><td>hanadatabase</td><td>Tenant</td><td>text</td></tr>
-    <tr><td>hanaSchema</td><td>Schema (optional)</td><td>text</td></tr>
-  </tbody>
-</table>
+key            | description               | data type
+---------------|---------------------------|:---------:
+`name`         | Name of connection        | text
+`driver`       | Must be `hdb`             | text
+`host`         | Host/Server/IP Address    | text
+`hanaport`     | Port (e.g. 39015)         | text
+`username`     | Database Username         | text
+`password`     | Database Password         | text
+`hanadatabase` | Tenant                    | text
+`hanaSchema`   | Schema (optional)         | text
 
 ## MySQL
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>mysql</code></td><td>text</td></tr>
-    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
-    <tr><td>database</td><td>Database</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
-    <tr><td>mysqlSsl</td><td>Use SSL</td><td>boolean</td></tr>
-    <tr><td>mysqlInsecureAuth</td><td>Use old/insecure pre 4.1 Auth System</td><td>boolean</td></tr>
-  </tbody>
-</table>
+key                                | description                                  | data type
+-----------------------------------|----------------------------------------------|:---------:
+`name`                             | Name of connection                           | text
+`driver`                           | Must be `mysql`                              | text
+`multiStatementTransactionEnabled` | Reuse db connection across query executions  | boolean
+`host`                             | Host/Server/IP Address                       | text
+`port`                             | Port (optional)                              | text
+`database`                         | Database                                     | text
+`username`                         | Database Username                            | text
+`password`                         | Database Password                            | text
+`mysqlSsl`                         | Use SSL                                      | boolean
+`mysqlInsecureAuth`                | Use old/insecure pre 4.1 Auth System         | boolean
+
 
 ## MySQL2
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>mysql2</code></td><td>text</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
-    <tr><td>database</td><td>Database</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
-    <tr><td>mysqlInsecureAuth</td><td>Use old/insecure pre 4.1 Auth System</td><td>boolean</td></tr>
-    <tr><td>minTlsVersion</td><td>Minimum TLS version to allow. One of: <code>TLSv1.3</code>, <code>TLSv1.2</code>, <code>TLSv1.1</code>, or <code>TLSv1</code></td><td>text</td></tr>
-    <tr><td>maxTlsVersion</td><td>Maximum TLS version to allow. see above for options</td><td>text</td></tr>
-    <tr><td>mysqlSkipValidateServerCert</td><td>Do not validate servier certificate. (Don't use this for production)</td><td>boolean</td></tr>
-  </tbody>
-</table>
+key                           | description                                                                         | data type
+------------------------------|-------------------------------------------------------------------------------------|:---------:
+`name`                        | Name of connection                                                                  | text
+`driver`                      | Must be `mysql2`                                                                    | text
+`host`                        | Host/Server/IP Address                                                              | text
+`port`                        | Port (optional)                                                                     | text
+`database`                    | Database                                                                            | text
+`username`                    | Database Username                                                                   | text
+`password`                    | Database Password                                                                   | text
+`mysqlInsecureAuth`           | Use old/insecure pre 4.1 Auth System                                                | boolean
+`minTlsVersion`               | Minimum TLS version to allow. One of: `TLSv1.3`, `TLSv1.2`, `TLSv1.1`, or `TLSv1`.  | text
+`maxTlsVersion`               | Maximum TLS version to allow. see above for options                                 | text
+`mysqlSkipValidateServerCert` | Do not validate servier certificate. (Don't use this for production)                | boolean
+
 
 ## PostgreSQL (postgres)
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>postgres</code></td><td>text</td></tr>
-    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
-    <tr><td>idleTimeoutSeconds</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
-    <tr><td>database</td><td>Database</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
-    <tr><td>postgresSsl</td><td>Use SSL</td><td>boolean</td></tr>
-    <tr><td>postgresCert</td><td>Database Certificate Path</td><td>text</td></tr>
-    <tr><td>postgresKey</td><td>Database Key Path</td><td>text</td></tr>
-    <tr><td>postgresCA</td><td>Database CA Path</td><td>text</td></tr>
-    <tr><td>useSocks</td><td>Connect through SOCKS proxy</td><td>boolean</td></tr>
-    <tr><td>socksHost</td><td>Proxy hostname</td><td>text</td></tr>
-    <tr><td>socksPort</td><td>Proxy port</td><td>text</td></tr>
-    <tr><td>socksUsername</td><td>Username for socks proxy</td><td>text</td></tr>
-    <tr><td>socksPassword</td><td>Password for socks proxy</td><td>text</td></tr>
-  </tbody>
-</table>
+key                                | description                                            | data type
+-----------------------------------|--------------------------------------------------------|:---------:
+`name`                             | Name of connection                                     | text
+`driver`                           | Must be `postgres`                                     | text
+`multiStatementTransactionEnabled` | Reuse db connection across query executions            | boolean
+`idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing  | number
+`host`                             | Host/Server/IP Address                                 | text
+`port`                             | Port (optional)                                        | text
+`database`                         | Database                                               | text
+`username`                         | Database Username                                      | text
+`password`                         | Database Password                                      | text
+`postgresSsl`                      | Use SSL                                                | boolean
+`postgresCert`                     | Database Certificate Path                              | text
+`postgresKey`                      | Database Key Path                                      | text
+`postgresCA`                       | Database CA Path                                       | text
+`useSocks`                         | Connect through SOCKS proxy                            | boolean
+`socksHost`                        | Proxy hostname                                         | text
+`socksPort`                        | Proxy port                                             | text
+`socksUsername`                    | Username for socks proxy                               | text
+`socksPassword`                    | Password for socks proxy                               | text
+
 
 ## PrestoDB
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>presto</code></td><td>text</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>prestoCatalog</td><td>Catalog</td><td>text</td></tr>
-    <tr><td>prestoSchema</td><td>Schema</td><td>text</td></tr>
-  </tbody>
-</table>
+key             | description                  | data type
+----------------|------------------------------|:---------:
+`name`          | Name of connection           | text
+`driver`        | Must be `presto`             | text
+`host`          | Host/Server/IP Address       | text
+`port`          | Port (optional)              | text
+`username`      | Database Username            | text
+`prestoCatalog` | Catalog                      | text
+`prestoSchema`  | Schema                       | text
+
 
 ## Redshift
 
 Redshift uses the Postgres driver, using a different query for pulling schema.
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>redshift</code></td><td>text</td></tr>
-    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
-    <tr><td>idleTimeoutSeconds</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
-    <tr><td>database</td><td>Database</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
-    <tr><td>ssl</td><td>Use SSL</td><td>boolean</td></tr>
-    <tr><td>certPath</td><td>Database Certificate Path</td><td>text</td></tr>
-    <tr><td>keyPath</td><td>Database Key Path</td><td>text</td></tr>
-    <tr><td>caPath</td><td>Database CA Path</td><td>text</td></tr>
-  </tbody>
-</table>
+key                                | description                                            | data type
+-----------------------------------|--------------------------------------------------------|:---------:
+`name`                             | Name of connection                                     | text
+`driver`                           | Must be `redshift`                                     | text
+`multiStatementTransactionEnabled` | Reuse db connection across query executions            | boolean
+`idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing  | number
+`host`                             | Host/Server/IP Address                                 | text
+`port`                             | Port (optional)                                        | text
+`database`                         | Database                                               | text
+`username`                         | Database Username                                      | text
+`password`                         | Database Password                                      | text
+`ssl`                              | Use SSL                                                | boolean
+`certPath`                         | Database Certificate Path                              | text
+`keyPath`                          | Database Key Path                                      | text
+`caPath`                           | Database CA Path                                       | text
+
 
 ## SQL Server
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>sqlserver</code></td><td>text</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
-    <tr><td>database</td><td>Database</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
-    <tr><td>domain</td><td>Domain</td><td>text</td></tr>
-    <tr><td>sqlserverEncrypt</td><td>Encrypt (necessary for Azure)</td><td>boolean</td></tr>
-    <tr><td>sqlserverMultiSubnetFailover</td><td>MultiSubnetFailover</td><td>boolean</td></tr>
-    <tr><td>readOnlyIntent</td><td>ReadOnly Application Intent</td><td>boolean</td></tr>
-  </tbody>
-</table>
+key                            | description                     | data type
+-------------------------------|---------------------------------|:---------:
+`name`                         | Name of connection              | text
+`driver`                       | Must be `sqlserver`             | text
+`host`                         | Host/Server/IP Address          | text
+`port`                         | Port (optional)                 | text
+`database`                     | Database                        | text
+`username`                     | Database Username               | text
+`password`                     | Database Password               | text
+`domain`                       | Domain                          | text
+`sqlserverEncrypt`             | Encrypt (necessary for Azure)   | boolean
+`sqlserverMultiSubnetFailover` | MultiSubnetFailover             | boolean
+`readOnlyIntent`               | ReadOnly Application Intent     | boolean
+
 
 ## Vertica
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>vertica</code></td><td>text</td></tr>
-    <tr><td>host</td><td>Host/Server/IP Address</td><td>text</td></tr>
-    <tr><td>port</td><td>Port (optional)</td><td>text</td></tr>
-    <tr><td>database</td><td>Database</td><td>text</td></tr>
-    <tr><td>username</td><td>Database Username</td><td>text</td></tr>
-    <tr><td>password</td><td>Database Password</td><td>text</td></tr>
-  </tbody>
-</table>
+key        | description                  | data type
+-----------|------------------------------|:---------:
+`name`     | Name of connection           | text
+`driver`   | Must be `vertica`            | text
+`host`     | Host/Server/IP Address       | text
+`port`     | Port (optional)              | text
+`database` | Database                     | text
+`username` | Database Username            | text
+`password` | Database Password            | text
+
 
 ## Cassandra
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>cassandra</code></td><td>text</td></tr>
-    <tr><td>contactPoints</td><td>Contact points (comma delimited)</td><td>text</td></tr>
-    <tr><td>localDataCenter</td><td>Local data center</td><td>text</td></tr>
-    <tr><td>keyspace</td><td>Keyspace</td><td>text</td></tr>
-  </tbody>
-</table>
+key                | description                        | data type
+-------------------|------------------------------------|:---------:
+`name`             | Name of connection                 | text
+`driver`           | Must be `cassandra`                | text
+`contactPoints`    | Contact points (comma delimited)   | text
+`localDataCenter`  | Local data center                  | text
+`keyspace`         | Keyspace                           | text
+
 
 ## Snowflake
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>snowflake</code></td><td>text</td></tr>
-    <tr><td>account</td><td>Account</td><td>text</td></tr>
-    <tr><td>username</td><td>User name</td><td>text</td></tr>
-    <tr><td>password</td><td>Password</td><td>text</td></tr>
-    <tr><td>warehouse</td><td>Warehouse</td><td>text</td></tr>
-    <tr><td>database</td><td>Database</td><td>text</td></tr>
-    <tr><td>schema</td><td>Schema</td><td>text</td></tr>
-    <tr><td>role</td><td>Role</td><td>text</td></tr>
-    <tr><td>preQueryStatements</td><td>Pre-query statements</td><td>text</td></tr>
-  </tbody>
-</table>
+key                  | description                       | data type
+---------------------|-----------------------------------|:---------:
+`name`               | Name of connection                | text
+`driver`             | Must be `snowflake`               | text
+`account`            | Account                           | text
+`username`           | User name                         | text
+`password`           | Password                          | text
+`warehouse`          | Warehouse                         | text
+`database`           | Database                          | text
+`schema`             | Schema                            | text
+`role`               | Role                              | text
+`preQueryStatements` | Pre-query statements              | text
+`
+`# BigQuery
 
-## BigQuery
+key                | description                       | data type
+-------------------|-----------------------------------|:---------:
+`name`             | Name of connection                | text
+`driver`           | Must be `bigquery`                | text
+`projectId`        | Project ID                        | text
+`keyFile`          | JSON keyfile for service account  | text
+`datasetName`      | Dataset to use                    | text
+`datasetLocation`  | Location for this dataset         | text
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>bigquery</code></td><td>text</td></tr>
-    <tr><td>projectId</td><td>Project ID</td><td>text</td></tr>
-    <tr><td>keyFile</td><td>JSON keyfile for service account</td><td>text</td></tr>
-    <tr><td>datasetName</td><td>Dataset to use</td><td>text</td></tr>
-    <tr><td>datasetLocation</td><td>Location for this dataset</td><td>text</td></tr>
-  </tbody>
-</table>
 
 ## SQLite
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>sqlite</code></td><td>text</td></tr>
-    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
-    <tr><td>idleTimeoutSeconds</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
-    <tr><td>filename</td><td>Path to file</td><td>text</td></tr>
-    <tr><td>readonly</td><td>Open file in read only mode</td><td>boolean</td></tr>
-  </tbody>
-</table>
+key                                | description                                           | data type
+-----------------------------------|-------------------------------------------------------|:---------:
+`name`                             | Name of connection                                    | text
+`driver`                           | Must be `sqlite`                                      | text
+`multiStatementTransactionEnabled` | Reuse db connection across query executions           | boolean
+`idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing | number
+`filename`                         | Path to file                                          | text
+`readonly`                         | Open file in read only mode                           | boolean
+
 
 ## ODBC (unixodbc)
 
@@ -423,31 +299,14 @@ ORDER BY
   c.ordinal_position
 ```
 
-<table>
-  <thead>
-    <tr>
-      <th>key</th>
-      <th>description</th>
-      <th>data type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>name</td><td>Name of connection</td><td>text</td></tr>
-    <tr><td>driver</td><td>Must be <code>unixodbc</code></td><td>text</td></tr>
-    <tr><td>multiStatementTransactionEnabled</td><td>Reuse db connection across query executions</td><td>boolean</td></tr>
-    <tr><td>idleTimeoutSeconds</td><td>Seconds to allow connection to be idle before closing</td><td>number</td></tr>
-    <tr><td>connection_string</td><td>ODBC connection string</td><td>text</td></tr>
-    <tr><td>schema_sql</td><td>Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)</td><td>text</td></tr>
-    <tr><td>username</td><td>Username (optional). Will be added to connect_string as <code>Uid</code> key</td><td>text</td></tr>
-    <tr><td>password</td><td>Password (optional). Will be added to connect_string as <code>Pwd</docd> key</td><td>text</td></tr>
-    <tr>
-      <td>limit_strategies</td>
-      <td>Comma separated list of limit strategies used to restrict queries. 
-      These strategies will be used to enforce and inject LIMIT and FETCH FIRST use in SELECT queries.
-      Allowed strategies are <code>limit</code>, <code>fetch</code>, and <code>first</code>.
-      <br/><br/>
-      Example: <code>limit, fetch</code></td>
-      <td>text</td>
-    </tr>
-  </tbody>
-</table>
+ key                               | description                                                                                 | data type
+-----------------------------------|---------------------------------------------------------------------------------------------|:--------:
+`name`                             | Name of connection                                                                          | text
+`driver`                           | Must be `unixodbc`                                                                          | text
+`multiStatementTransactionEnabled` | Reuse db connection across query executions                                                 | boolean
+`idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing                                       | number
+`connection_string`                | ODBC connection string                                                                      | text
+`schema_sql`                       | Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA) | text
+`username`                         | Username (optional). Will be added to connect_string as `Uid` key                           | text
+`password`                         | Password (optional). Will be added to connect_string as `Pwd` key                           | text
+`limit_strategies`                 | Comma separated list of limit strategies used to restrict queries. These strategies will be used to enforce and inject LIMIT and FETCH FIRST use in SELECT queries. Allowed strategies are `limit`, `fetch`, and `first`. <br/><br/> Example: `limit, fetch` | text
