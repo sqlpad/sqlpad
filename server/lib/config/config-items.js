@@ -30,6 +30,11 @@ const configItems = [
     default: 60,
   },
   {
+    key: 'sessionStore',
+    envVar: 'SQLPAD_SESSION_STORE',
+    default: 'file', // database, redis, memory
+  },
+  {
     key: 'timeoutSeconds',
     envVar: 'SQLPAD_TIMEOUT_SECONDS',
     default: 300,
@@ -426,6 +431,11 @@ const configItems = [
   {
     key: 'backendDatabaseUri',
     envVar: 'SQLPAD_BACKEND_DB_URI',
+    default: '',
+  },
+  {
+    key: 'redisUri',
+    envVar: 'SQLPAD_REDIS_URI',
     default: '',
   },
   {

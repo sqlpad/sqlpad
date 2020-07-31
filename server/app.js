@@ -3,8 +3,12 @@ const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const pino = require('pino');
+const redis = require('redis');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const MemoryStore = require('memorystore')(session);
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const RedisStore = require('connect-redis')(session);
 const appLog = require('./lib/app-log');
 const Webhooks = require('./lib/webhooks.js');
 const bodyParser = require('body-parser');
@@ -99,22 +103,62 @@ async function makeApp(config, models) {
   );
 
   const cookieMaxAgeMs = parseInt(config.get('sessionMinutes'), 10) * 60 * 1000;
-  const sessionPath = path.join(config.get('dbPath'), '/sessions');
 
-  app.use(
-    session({
-      store: new FileStore({
+  const sessionOptions = {
+    saveUninitialized: false,
+    resave: true,
+    rolling: true,
+    cookie: { maxAge: cookieMaxAgeMs },
+    secret: config.get('cookieSecret'),
+    name: config.get('cookieName'),
+  };
+  const sessionStore = config.get('sessionStore').toLowerCase();
+
+  switch (sessionStore) {
+    case 'file': {
+      const sessionPath = path.join(config.get('dbPath'), '/sessions');
+      sessionOptions.store = new FileStore({
         path: sessionPath,
         logFn: () => {},
-      }),
-      saveUninitialized: false,
-      resave: true,
-      rolling: true,
-      cookie: { maxAge: cookieMaxAgeMs },
-      secret: config.get('cookieSecret'),
-      name: config.get('cookieName'),
-    })
-  );
+      });
+      break;
+    }
+    case 'memory': {
+      sessionOptions.store = new MemoryStore({
+        checkPeriod: cookieMaxAgeMs,
+      });
+      break;
+    }
+    case 'database': {
+      sessionOptions.store = new SequelizeStore({
+        db: models.sequelizeDb.sequelize,
+        table: 'Sessions',
+      });
+      // SequelizeStore supports the touch method so per the express-session docs this should be set to false
+      sessionOptions.resave = false;
+      // SequelizeStore docs mention setting this to true if SSL is done outside of Node
+      // Not sure we have any way of knowing based on current config
+      // sessionOptions.proxy = true;
+      break;
+    }
+    case 'redis': {
+      const redisUri = config.get('redisUri');
+      if (!redisUri) {
+        throw new Error(
+          `Redis session store requires SQLPAD_REDIS_URI to be set`
+        );
+      }
+      const redisClient = redis.createClient(redisUri);
+      sessionOptions.store = new RedisStore({ client: redisClient });
+      sessionOptions.resave = false;
+      break;
+    }
+    default: {
+      throw new Error(`Invalid session store ${sessionStore}`);
+    }
+  }
+
+  app.use(session(sessionOptions));
 
   const baseUrl = config.get('baseUrl');
 

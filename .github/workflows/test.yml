@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false # if one job fails, others will not be aborted
       matrix:
-        backendtype: [ '', 'mssql','mysql', 'mariadb', 'postgres' ]
+        backendtype: ['', 'mssql', 'mysql', 'mariadb', 'postgres']
         node-version: [12.x]
 
     steps:
@@ -48,6 +48,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: Start redis
+        run: docker-compose -f server/docker-compose.yml up -d redis &
 
       - name: Start service for backend server
         if: ${{ matrix.backendtype }}

@@ -30,6 +30,7 @@ class TestUtils {
         // Eventually these will be moved to sqlite and we can be fully-in-memory
         dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
+        sessionStore: 'memory',
         appLogLevel: 'error',
         backendDatabaseUri: TestUtils.randomize_dbname(
           process.env.SQLPAD_BACKEND_DB_URI
