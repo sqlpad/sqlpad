@@ -41,6 +41,7 @@ const headerCellStyle = {
   justifyContent: 'space-between',
   borderBottom: '1px solid #CCC',
   display: 'flex',
+  fontWeight: 'bold',
   paddingLeft: '.5rem',
   paddingRight: '.5rem',
 };
