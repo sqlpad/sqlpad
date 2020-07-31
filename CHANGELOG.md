@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.3.0] - 2020-07-31
+
+- Embolden result column headers
+- Add configurable session store (memory, database, and redis now an option). See `SQLPAD_SESSION_STORE` under [configuration](https://rickbergfalk.github.io/sqlpad/#/configuration) docs.
+- Update server dependencies
+
 ## [5.2.1] - 2020-07-27
 
 - Fix MySQL2 transaction support
