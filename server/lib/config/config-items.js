@@ -268,6 +268,11 @@ const configItems = [
     default: 50000,
   },
   {
+    key: 'queryResultStore',
+    envVar: 'SQLPAD_QUERY_RESULT_STORE',
+    default: 'file', // allowed values file, memory, database
+  },
+  {
     key: 'slackWebhook',
     envVar: 'SQLPAD_SLACK_WEBHOOK',
     default: '',

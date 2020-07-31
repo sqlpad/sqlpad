@@ -55,6 +55,10 @@ SQLPAD_SESSION_MINUTES = 60
 # `database` will use whatever backend database is used (or SQLite if SQLPAD_DB_PATH is set)
 SQLPAD_SESSION_STORE = "file"
 
+# Similar to session storage, query result storage may also be configured.
+# Valid values are `file` (default), `database`, `redis`, `memory`
+SQLPAD_QUERY_RESULT_STORE = "file"
+
 # Name used for cookie. If running multiple SQLPads on same domain, set to different values.
 SQLPAD_COOKIE_NAME = "sqlpad.sid"
 
