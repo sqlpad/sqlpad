@@ -142,13 +142,7 @@ async function makeApp(config, models) {
       break;
     }
     case 'redis': {
-      const redisUri = config.get('redisUri');
-      if (!redisUri) {
-        throw new Error(
-          `Redis session store requires SQLPAD_REDIS_URI to be set`
-        );
-      }
-      const redisClient = redis.createClient(redisUri);
+      const redisClient = redis.createClient(config.get('redisUri'));
       sessionOptions.store = new RedisStore({ client: redisClient });
       sessionOptions.resave = false;
       break;

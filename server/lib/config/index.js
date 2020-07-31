@@ -70,6 +70,16 @@ class Config {
       errors.push(getOldConfigWarning());
     }
 
+    if (this.all.queryResultStore === 'redis' && !this.all.redisUri) {
+      errors.push(
+        `Redis query result store requires SQLPAD_REDIS_URI to be set`
+      );
+    }
+
+    if (this.all.sessionStore === 'redis' && !this.all.redisUri) {
+      errors.push(`Redis session store requires SQLPAD_REDIS_URI to be set`);
+    }
+
     // If fileConfig has something in it, an INI or JSON file was read
     // These file formats are deprecated, replaced by .env file and env vars
     if (this.configFilePath && Object.keys(this.fileConfig).length > 0) {
