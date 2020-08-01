@@ -52,6 +52,7 @@ class Client {
       insecureAuth: connection.mysqlInsecureAuth,
       timezone: 'Z',
       supportBigNumbers: true,
+      flags: '+INTERACTIVE',
     };
     if (connection.mysqlSsl) {
       myConfig.ssl = {};

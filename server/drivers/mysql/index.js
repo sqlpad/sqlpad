@@ -59,6 +59,7 @@ class Client {
       supportBigNumbers: true,
       ssl: connection.mysqlSsl,
       preQueryStatements: connection.preQueryStatements,
+      flags: '+INTERACTIVE',
     };
 
     // TODO cache key/cert values
