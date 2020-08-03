@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
 const { promisify } = require('util');
+const LRU = require('lru-cache');
 const redis = require('redis');
 const { Op } = require('sequelize');
 const ensureJson = require('./ensure-json');
@@ -32,6 +33,10 @@ class Statements {
       this.redisGetAsync = promisify(client.get).bind(client);
       this.redisSetexAsync = promisify(client.setex).bind(client);
       this.redisDelAsync = promisify(client.del).bind(client);
+    }
+
+    if (this.queryResultStore === 'memory') {
+      this.memoryCache = new LRU({ max: 1000, maxAge: 1000 * 60 * 60 });
     }
   }
 
@@ -101,6 +106,10 @@ class Statements {
       await this.redisDelAsync(redisKey(id));
     }
 
+    if (this.isMemoryStore()) {
+      this.memoryCache.del(id);
+    }
+
     return this.sequelizeDb.Statements.destroy({ where: { id } });
   }
 
@@ -136,7 +145,6 @@ class Statements {
       const arrOfArr = queryResult.rows.map((row) => {
         return queryResult.columns.map((col) => row[col.name]);
       });
-      const arrJson = JSON.stringify(arrOfArr);
 
       if (this.isFileStore()) {
         const dir = id.slice(0, 3);
@@ -154,7 +162,11 @@ class Statements {
         if (!seconds || seconds <= 0) {
           seconds = 60 * 60;
         }
-        await this.redisSetexAsync(redisKey(id), seconds, arrJson);
+        await this.redisSetexAsync(
+          redisKey(id),
+          seconds,
+          JSON.stringify(arrOfArr)
+        );
       }
 
       if (this.isDatabaseStore()) {
@@ -162,7 +174,7 @@ class Statements {
       }
 
       if (this.isMemoryStore()) {
-        // TODO
+        this.memoryCache.set(id, arrOfArr);
       }
     }
 
@@ -229,7 +241,11 @@ class Statements {
     }
 
     if (this.isMemoryStore()) {
-      // TODO
+      const result = this.memoryCache.get(statement.id);
+      if (Array.isArray(result)) {
+        return result;
+      }
+      return [];
     }
   }
 
