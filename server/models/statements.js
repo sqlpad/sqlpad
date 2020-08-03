@@ -13,8 +13,8 @@ const readFile = util.promisify(fs.readFile);
 const unlink = util.promisify(fs.unlink);
 const access = util.promisify(fs.access);
 
-function redisKey(id) {
-  return `StatementQueryResult/${id}`;
+function redisDbKey(id) {
+  return `statement-result/${id}`;
 }
 
 class Statements {
@@ -82,6 +82,10 @@ class Statements {
     return items;
   }
 
+  /**
+   * Remove statement by id
+   * @param {string} id - statement id
+   */
   async removeById(id) {
     const statement = await this.findOneById(id);
     const { resultsPath } = statement;
@@ -103,11 +107,15 @@ class Statements {
     }
 
     if (this.isRedisStore()) {
-      await this.redisDelAsync(redisKey(id));
+      await this.redisDelAsync(redisDbKey(id));
     }
 
     if (this.isMemoryStore()) {
       this.memoryCache.del(id);
+    }
+
+    if (this.isDatabaseStore()) {
+      await this.sequelizeDb.Cache.destroy({ where: { id: redisDbKey(id) } });
     }
 
     return this.sequelizeDb.Statements.destroy({ where: { id } });
@@ -163,14 +171,23 @@ class Statements {
           seconds = 60 * 60;
         }
         await this.redisSetexAsync(
-          redisKey(id),
+          redisDbKey(id),
           seconds,
           JSON.stringify(arrOfArr)
         );
       }
 
       if (this.isDatabaseStore()) {
-        // TODO
+        const ONE_DAY = 1000 * 60 * 60 * 24;
+        const daysMs =
+          parseInt(config.get('queryHistoryRetentionTimeInDays'), 10) * ONE_DAY;
+        const expiryDate = new Date(Date.now() + daysMs);
+        await this.sequelizeDb.Cache.create({
+          id: redisDbKey(id),
+          data: arrOfArr,
+          expiryDate,
+          name: 'statement results',
+        });
       }
 
       if (this.isMemoryStore()) {
@@ -226,7 +243,7 @@ class Statements {
     }
 
     if (this.isRedisStore()) {
-      const json = await this.redisGetAsync(redisKey(statement.id));
+      const json = await this.redisGetAsync(redisDbKey(statement.id));
       if (json) {
         const parsed = JSON.parse(json);
         if (Array.isArray(parsed)) {
@@ -237,7 +254,16 @@ class Statements {
     }
 
     if (this.isDatabaseStore()) {
-      // TODO
+      const doc = await this.sequelizeDb.Cache.findOne({
+        where: { id: redisDbKey(statement.id) },
+      });
+      if (doc) {
+        const result = ensureJson(doc.data);
+        if (Array.isArray(result)) {
+          return result;
+        }
+      }
+      return [];
     }
 
     if (this.isMemoryStore()) {
