@@ -3,12 +3,18 @@ const util = require('util');
 const path = require('path');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
+const { promisify } = require('util');
+const redis = require('redis');
 const { Op } = require('sequelize');
 const ensureJson = require('./ensure-json');
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
 const unlink = util.promisify(fs.unlink);
 const access = util.promisify(fs.access);
+
+function redisKey(id) {
+  return `StatementQueryResult/${id}`;
+}
 
 class Statements {
   /**
@@ -18,6 +24,31 @@ class Statements {
   constructor(sequelizeDb, config) {
     this.sequelizeDb = sequelizeDb;
     this.config = config;
+    this.queryResultStore = config.get('queryResultStore');
+
+    if (this.queryResultStore === 'redis') {
+      const client = redis.createClient(config.get('redisUri'));
+      this.redisClient = client;
+      this.redisGetAsync = promisify(client.get).bind(client);
+      this.redisSetexAsync = promisify(client.setex).bind(client);
+      this.redisDelAsync = promisify(client.del).bind(client);
+    }
+  }
+
+  isFileStore() {
+    return this.queryResultStore === 'file';
+  }
+
+  isDatabaseStore() {
+    return this.queryResultStore === 'database';
+  }
+
+  isRedisStore() {
+    return this.queryResultStore === 'redis';
+  }
+
+  isMemoryStore() {
+    return this.queryResultStore === 'memory';
   }
 
   async findOneById(id) {
@@ -50,7 +81,7 @@ class Statements {
     const statement = await this.findOneById(id);
     const { resultsPath } = statement;
 
-    if (resultsPath) {
+    if (this.isFileStore() && resultsPath) {
       const dbPath = this.config.get('dbPath');
       const fullPath = path.join(dbPath, resultsPath);
 
@@ -64,6 +95,10 @@ class Statements {
       if (exists) {
         await unlink(fullPath);
       }
+    }
+
+    if (this.isRedisStore()) {
+      await this.redisDelAsync(redisKey(id));
     }
 
     return this.sequelizeDb.Statements.destroy({ where: { id } });
@@ -90,21 +125,45 @@ class Statements {
   }
 
   async updateFinished(id, queryResult, stopTime, durationMs) {
-    const dbPath = this.config.get('dbPath');
+    const { config } = this;
+    const dbPath = config.get('dbPath');
     const rowCount = queryResult.rows.length;
 
     let resultsPath;
 
     // If rows returned write results csv
     if (rowCount > 0) {
-      const dir = id.slice(0, 3);
-      await mkdirp(path.join(dbPath, 'results', dir));
-      resultsPath = path.join('results', dir, `${id}.json`);
-      const fullPath = path.join(dbPath, resultsPath);
       const arrOfArr = queryResult.rows.map((row) => {
         return queryResult.columns.map((col) => row[col.name]);
       });
-      await writeFile(fullPath, JSON.stringify(arrOfArr));
+      const arrJson = JSON.stringify(arrOfArr);
+
+      if (this.isFileStore()) {
+        const dir = id.slice(0, 3);
+        await mkdirp(path.join(dbPath, 'results', dir));
+        resultsPath = path.join('results', dir, `${id}.json`);
+        const fullPath = path.join(dbPath, resultsPath);
+        await writeFile(fullPath, JSON.stringify(arrOfArr));
+      }
+
+      if (this.isRedisStore()) {
+        // Redis results can be removed by redis itself
+        // In the event seconds does not exist or is zero, default to 1 hour
+        let seconds =
+          parseInt(config.get('queryHistoryRetentionTimeInDays'), 10) * 86400;
+        if (!seconds || seconds <= 0) {
+          seconds = 60 * 60;
+        }
+        await this.redisSetexAsync(redisKey(id), seconds, arrJson);
+      }
+
+      if (this.isDatabaseStore()) {
+        // TODO
+      }
+
+      if (this.isMemoryStore()) {
+        // TODO
+      }
     }
 
     const update = {
@@ -125,29 +184,53 @@ class Statements {
     if (!statement) {
       throw new Error('Statement not found');
     }
-    const { resultsPath } = statement;
 
-    // If no result path the query had no rows.
-    // Return empty array
-    if (!resultsPath) {
+    const { config } = this;
+
+    if (this.isFileStore()) {
+      const { resultsPath } = statement;
+
+      // If no result path the query had no rows.
+      // Return empty array
+      if (!resultsPath) {
+        return [];
+      }
+
+      const fullPath = path.join(config.get('dbPath'), resultsPath);
+
+      let exists = true;
+      try {
+        await access(fullPath);
+      } catch (error) {
+        exists = false;
+      }
+
+      if (exists) {
+        const fileData = await readFile(fullPath, 'utf8');
+        return JSON.parse(fileData);
+      }
+
       return [];
     }
 
-    const fullPath = path.join(this.config.get('dbPath'), resultsPath);
-
-    let exists = true;
-    try {
-      await access(fullPath);
-    } catch (error) {
-      exists = false;
+    if (this.isRedisStore()) {
+      const json = await this.redisGetAsync(redisKey(statement.id));
+      if (json) {
+        const parsed = JSON.parse(json);
+        if (Array.isArray(parsed)) {
+          return parsed;
+        }
+      }
+      return [];
     }
 
-    if (exists) {
-      const fileData = await readFile(fullPath, 'utf8');
-      return JSON.parse(fileData);
+    if (this.isDatabaseStore()) {
+      // TODO
     }
 
-    return [];
+    if (this.isMemoryStore()) {
+      // TODO
+    }
   }
 
   async removeOldEntries() {
