@@ -31,6 +31,7 @@ class TestUtils {
         dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
         sessionStore: 'memory',
+        queryResultStore: 'memory',
         appLogLevel: 'error',
         backendDatabaseUri: TestUtils.randomize_dbname(
           process.env.SQLPAD_BACKEND_DB_URI
