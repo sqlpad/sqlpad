@@ -57,6 +57,8 @@ SQLPAD_SESSION_STORE = "file"
 
 # Similar to session storage, query result storage may also be configured.
 # Valid values are `file` (default), `database`, `redis`, `memory`
+# If set to memory, store is limited to 1000 entries with a max age of 1 hour
+# Other storage mechanisms fall back to SQLPAD_QUERY_HISTORY_RETENTION_PERIOD_IN_DAYS
 SQLPAD_QUERY_RESULT_STORE = "file"
 
 # Name used for cookie. If running multiple SQLPads on same domain, set to different values.
