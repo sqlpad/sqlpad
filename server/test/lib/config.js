@@ -6,6 +6,14 @@ const fromCli = require('../../lib/config/from-cli');
 const fromFile = require('../../lib/config/from-file');
 const Config = require('../../lib/config');
 
+function configHasError(args, errorFindFunction) {
+  const config = new Config(args, {});
+  const validations = config.getValidations();
+  assert(validations.errors);
+  const found = validations.errors.find(errorFindFunction);
+  assert(found);
+}
+
 describe('lib/config/from-default', function () {
   it('provides expected values', function () {
     const conf = fromDefault();
@@ -70,17 +78,34 @@ describe('lib/config/fromFile', function () {
   });
 
   it('Errors for old config file key', function () {
-    const config = new Config(
+    configHasError(
       { config: path.join(__dirname, '../fixtures/old-config.json') },
-      {}
-    );
-    const validations = config.getValidations();
-    assert(validations.errors);
-    const found = validations.errors.find(
       (error) =>
         error.includes('cert-passphrase') && error.includes('NOT RECOGNIZED')
     );
-    assert(found, 'has error about old key');
+  });
+
+  it('Error: Unknown session store', function () {
+    configHasError({ sessionStore: 'not-real-store' }, (error) =>
+      error.includes('SQLPAD_SESSION_STORE must be one of')
+    );
+  });
+
+  it('Error: Unknown query result store', function () {
+    configHasError({ queryResultStore: 'not-real-store' }, (error) =>
+      error.includes('SQLPAD_QUERY_RESULT_STORE must be one of')
+    );
+  });
+
+  it('Error: redis store requires redis URI', function () {
+    configHasError({ sessionStore: 'redis' }, (error) =>
+      error.includes('Redis session store requires SQLPAD_REDIS_URI to be set')
+    );
+    configHasError({ queryResultStore: 'redis' }, (error) =>
+      error.includes(
+        'Redis query result store requires SQLPAD_REDIS_URI to be set'
+      )
+    );
   });
 
   it('Deprecated warning for json/ini config file', function () {

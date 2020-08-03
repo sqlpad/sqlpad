@@ -3,6 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const rimraf = require('rimraf');
 const mkdirp = require('mkdirp');
 const path = require('path');
+const redis = require('redis');
 const request = require('supertest');
 const detectPort = require('detect-port');
 const bodyParser = require('body-parser');
@@ -31,6 +32,7 @@ class TestUtils {
         dbPath: path.join(__dirname, '/artifacts/defaultdb'),
         dbInMemory: true,
         sessionStore: 'memory',
+        queryResultStore: 'memory',
         appLogLevel: 'error',
         backendDatabaseUri: TestUtils.randomize_dbname(
           process.env.SQLPAD_BACKEND_DB_URI
@@ -73,6 +75,20 @@ class TestUtils {
         role: 'editor',
       },
     };
+  }
+
+  static redisAvailable(redisUri) {
+    return new Promise((resolve) => {
+      const client = redis.createClient(redisUri);
+      client.on('error', () => {
+        resolve(false);
+        client.end(true);
+      });
+      client.on('connect', () => {
+        resolve(true);
+        client.end(true);
+      });
+    });
   }
 
   static async makeHookServer() {

@@ -1,9 +1,9 @@
 const assert = require('assert');
 const request = require('supertest');
-const TestUtil = require('../utils');
+const TestUtils = require('../utils');
 
 async function testSessionStore(sessionStore, additionalOpts = {}) {
-  const utils = new TestUtil({
+  const utils = new TestUtils({
     authProxyEnabled: true,
     authProxyAutoSignUp: true,
     authProxyDefaultRole: 'admin',
@@ -40,14 +40,10 @@ describe('auth/session-stores', function () {
   });
 
   it('redis', async function () {
+    const available = await TestUtils.redisAvailable('redis://localhost:6379');
+    if (!available) {
+      return this.skip();
+    }
     return testSessionStore('redis', { redisUri: 'redis://localhost:6379' });
-  });
-
-  it('redis - Error throws if no URI', async function () {
-    assert.rejects(() => testSessionStore('redis'));
-  });
-
-  it('throws for unknown sessionStore', async function () {
-    assert.rejects(() => testSessionStore('not-real-option'));
   });
 });

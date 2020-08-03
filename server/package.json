@@ -59,6 +59,7 @@
     "ini": "^1.3.5",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.19",
+    "lru-cache": "^6.0.0",
     "mariadb": "^2.4.2",
     "memorystore": "^1.6.2",
     "minimist": "^1.2.5",

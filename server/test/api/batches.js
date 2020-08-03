@@ -39,6 +39,7 @@ describe('api/batches', function () {
     utils = new TestUtils({
       queryResultMaxRows: 3,
       queryHistoryRetentionTimeInDays: 0,
+      queryResultStore: 'file',
     });
     await utils.init(true);
 
