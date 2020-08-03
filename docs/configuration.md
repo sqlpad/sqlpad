@@ -57,8 +57,9 @@ SQLPAD_SESSION_STORE = "file"
 
 # Similar to session storage, query result storage may also be configured.
 # Valid values are `file` (default), `database`, `redis`, `memory`
-# If set to memory, store is limited to 1000 entries with a max age of 1 hour
+# If set to `memory`, store is limited to 1000 entries with a max age of 1 hour
 # Other storage mechanisms fall back to SQLPAD_QUERY_HISTORY_RETENTION_PERIOD_IN_DAYS
+# If `redis` is used, SQLPAD_REDIS_URI must also be set.
 SQLPAD_QUERY_RESULT_STORE = "file"
 
 # Name used for cookie. If running multiple SQLPads on same domain, set to different values.
@@ -106,10 +107,10 @@ SQLPAD_DEFAULT_CONNECTION_ID = ""
 
 ## Redis
 
-Redis may be used for session storage as of `5.3.0`.
+Redis may be used for session storage as of `5.3.0`, and query result storage as of `5.4.0`.
 
 ```bash
-# URI for redis instance to use for user sessions if configured
+# URI for redis instance to use when SQLPAD_SESSION_STORE or SQLPAD_QUERY_RESULT_STORE are set to `redis`
 # Format should be [redis[s]:]//[[user][:password@]][host][:port][/db-number][?db=db-number[&password=bar[&option=value]]]
 # More info at http://www.iana.org/assignments/uri-schemes/prov/redis
 SQLPAD_REDIS_URI = ""

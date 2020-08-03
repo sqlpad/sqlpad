@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.4.0] - 2020-08-03
+
+- Add configurable query result store (memory, database, and redis now an option). See `SQLPAD_QUERY_RESULT_STORE` under [configuration](https://rickbergfalk.github.io/sqlpad/#/configuration) docs.
+- Update MySQL connections to use INTERACTIVE flag to prevent early connection close.
+
 ## [5.3.0] - 2020-07-31
 
 - Embolden result column headers
