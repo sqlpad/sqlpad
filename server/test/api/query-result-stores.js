@@ -53,6 +53,10 @@ describe('api/query-result-stores', function () {
   });
 
   it('redis', async function () {
+    const available = await TestUtils.redisAvailable('redis://localhost:6379');
+    if (!available) {
+      return this.skip();
+    }
     return testBatchToCompletion({
       queryResultStore: 'redis',
       redisUri: 'redis://localhost:6379',
