@@ -42,12 +42,4 @@ describe('auth/session-stores', function () {
   it('redis', async function () {
     return testSessionStore('redis', { redisUri: 'redis://localhost:6379' });
   });
-
-  it('redis - Error throws if no URI', async function () {
-    assert.rejects(() => testSessionStore('redis'));
-  });
-
-  it('throws for unknown sessionStore', async function () {
-    assert.rejects(() => testSessionStore('not-real-option'));
-  });
 });

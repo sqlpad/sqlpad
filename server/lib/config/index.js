@@ -70,6 +70,19 @@ class Config {
       errors.push(getOldConfigWarning());
     }
 
+    const allowedStores = ['redis', 'database', 'file', 'memory'];
+    if (!allowedStores.includes(this.all.sessionStore)) {
+      errors.push(
+        `SQLPAD_SESSION_STORE must be one of ${allowedStores.join(', ')}`
+      );
+    }
+
+    if (!allowedStores.includes(this.all.queryResultStore)) {
+      errors.push(
+        `SQLPAD_QUERY_RESULT_STORE must be one of ${allowedStores.join(', ')}`
+      );
+    }
+
     if (this.all.queryResultStore === 'redis' && !this.all.redisUri) {
       errors.push(
         `Redis query result store requires SQLPAD_REDIS_URI to be set`
