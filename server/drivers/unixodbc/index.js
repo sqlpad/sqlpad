@@ -32,7 +32,7 @@ const SCHEMA_SQL_INFORMATION_SCHEMA = `
  * @param {String} limitStrategies - comma delimited list of limit strategies
  */
 function cleanAndValidateLimitStrategies(limitStrategies) {
-  const allowed = ['limit', 'fetch', 'first'];
+  const allowed = ['limit', 'fetch', 'first', 'top'];
   const strategies = (limitStrategies || '')
     .split(',')
     .map((s) => s.trim().toLowerCase())
@@ -241,7 +241,7 @@ const fields = [
     description: `
       Comma separated list of limit strategies used to restrict queries. 
       These strategies will be used to enforce and inject LIMIT and FETCH FIRST use in SELECT queries.
-      Allowed strategies are <code>limit</code>, <code>fetch</code>, and <code>first</code>.
+      Allowed strategies are <code>limit</code>, <code>fetch</code>, <code>first</code>, and <code>top</code>.
       <br/><br/>
       Example: <code>limit, fetch</code>`,
   },
