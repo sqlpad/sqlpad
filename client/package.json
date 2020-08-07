@@ -20,7 +20,7 @@
     "prop-types": "^15.7.2",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
-    "react-ace": "^9.1.1",
+    "react-ace": "9.0.0",
     "react-dom": "^16.13.1",
     "react-draggable": "^4.4.3",
     "react-measure": "^2.3.0",
