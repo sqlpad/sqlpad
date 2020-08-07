@@ -309,4 +309,4 @@ ORDER BY
 `schema_sql`                       | Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA) | text
 `username`                         | Username (optional). Will be added to connect_string as `Uid` key                           | text
 `password`                         | Password (optional). Will be added to connect_string as `Pwd` key                           | text
-`limit_strategies`                 | Comma separated list of limit strategies used to restrict queries. These strategies will be used to enforce and inject LIMIT and FETCH FIRST use in SELECT queries. Allowed strategies are `limit`, `fetch`, and `first`. <br/><br/> Example: `limit, fetch` | text
+`limit_strategies`                 | Comma separated list of limit strategies used to restrict queries. These strategies will be used to enforce and inject LIMIT and FETCH FIRST use in SELECT queries. Allowed strategies are `limit`, `fetch`, `first`, and `top`. <br/><br/> Example: `limit, fetch` | text

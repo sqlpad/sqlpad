@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.5.0] - 2020-08-07
+
+- Add `top` limit strategy for ODBC connections
+- Fix SQL editor not clearing on new query
+- Update dependencies
+
 ## [5.4.0] - 2020-08-03
 
 - Add configurable query result store (memory, database, and redis now an option). See `SQLPAD_QUERY_RESULT_STORE` under [configuration](https://rickbergfalk.github.io/sqlpad/#/configuration) docs.
