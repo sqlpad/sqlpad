@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.5.1] - 2020-08-07
+
+- Fix missing `top` strategy addition in 5.5.0
+
 ## [5.5.0] - 2020-08-07
 
 - Add `top` limit strategy for ODBC connections
