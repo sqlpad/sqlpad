@@ -5,7 +5,14 @@ import initApp from './stores/initApp';
 import useAppContext from './utilities/use-app-context';
 import useSWR from 'swr';
 
-function Authenticated({ children, initApp, initialized }) {
+export interface Props {
+  children: any;
+  initApp: (config: Object, connections?: Array<Object>) => {};
+  initialized?: boolean;
+}
+
+const Authenticated = (props: Props) => {
+  const { children, initApp, initialized } = props;
   const { config, currentUser } = useAppContext();
 
   let { data: connections } = useSWR('/api/connections');
@@ -29,8 +36,8 @@ function Authenticated({ children, initApp, initialized }) {
   }
 
   return children;
-}
+};
 
-export default connect(['initialized'], {
+export default connect<any, any, any, any>(['initialized'], {
   initApp,
 })(Authenticated);
