@@ -13,7 +13,7 @@ import PasswordResetRequested from './PasswordResetRequested.js';
 import QueryChartOnly from './QueryChartOnly.js';
 import QueryEditor from './queryEditor/QueryEditor.js';
 import QueryTableOnly from './QueryTableOnly.js';
-import SignIn from './SignIn.js';
+import SignIn from './SignIn.tsx';
 import SignUp from './SignUp.js';
 import useAppContext from './utilities/use-app-context';
 

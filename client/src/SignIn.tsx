@@ -21,7 +21,7 @@ function SignIn() {
     document.title = 'SQLPad - Sign In';
   }, []);
 
-  const signIn = async (e) => {
+  const signIn = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const json = await api.post('/api/signin', { email, password });
@@ -54,7 +54,9 @@ function SignIn() {
         name="email"
         type="email"
         placeholder={PlaceholderForUsername()}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setEmail(e.target.value)
+        }
         required
       />
       <Spacer />
@@ -62,7 +64,9 @@ function SignIn() {
         name="password"
         type="password"
         placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setPassword(e.target.value)
+        }
         required
       />
       <Spacer size={2} />
