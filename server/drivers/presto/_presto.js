@@ -51,7 +51,7 @@ function handleStatementAndGetMore(results, statement, config) {
   if (statement.error) {
     // A lot of other error data available,
     // but error.message contains the detail on syntax issue
-    return Promise.reject(statement.error.message);
+    return Promise.reject(new Error(statement.error.message));
   }
   results = updateResults(results, statement);
   if (!statement.nextUri) {
