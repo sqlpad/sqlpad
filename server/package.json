@@ -44,7 +44,7 @@
     "@hapi/joi": "^17.1.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
-    "cassandra-driver": "^4.5.2",
+    "cassandra-driver": "^4.6.0",
     "connect-redis": "^5.0.0",
     "connect-session-sequelize": "^7.0.1",
     "cryptr": "^6.0.2",
