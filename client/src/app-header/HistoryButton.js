@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '../common/Button';
+import Button from '../common/Button.tsx';
 import QueryHistoryModal from '../queryHistory/QueryHistoryModal';
 import useAppContext from '../utilities/use-app-context';
 

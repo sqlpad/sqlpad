@@ -4,7 +4,7 @@ import IconButton from '../../common/IconButton';
 import Modal from '../../common/Modal';
 import ChartInputsContainer from '../ChartInputsContainer';
 import ChartTypeSelect from '../ChartTypeSelect';
-import Button from '../../common/Button';
+import Button from '../../common/Button.tsx';
 import Spacer from '../../common/Spacer';
 
 function ChartButton() {

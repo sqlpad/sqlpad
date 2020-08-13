@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Button from '../common/Button';
+import Button from '../common/Button.tsx';
 import FormExplain from '../common/FormExplain.js';
 import Input from '../common/Input';
 import message from '../common/message';

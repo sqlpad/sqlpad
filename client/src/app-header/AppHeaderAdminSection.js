@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '../common/Button';
+import Button from '../common/Button.tsx';
 import Drawer from '../common/Drawer';
 import ConnectionAccessListDrawer from '../connectionAccesses/ConnectionAccessListDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';

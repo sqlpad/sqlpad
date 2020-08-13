@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import Button from '../common/Button';
+import Button from '../common/Button.tsx';
 import QueryResultContainer from '../common/QueryResultContainer';
 import QueryHistoryFilterItem from './QueryHistoryFilterItem';
 

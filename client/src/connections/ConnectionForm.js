@@ -2,7 +2,7 @@ import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
 import React, { useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import Button from '../common/Button';
+import Button from '../common/Button.tsx';
 import ErrorBlock from '../common/ErrorBlock.js';
 import FormExplain from '../common/FormExplain';
 import HorizontalFormItem from '../common/HorizontalFormItem.js';

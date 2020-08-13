@@ -1,4 +1,4 @@
-import Button from '../common/Button';
+import Button from '../common/Button.tsx';
 import React, { useState } from 'react';
 import QueryListDrawer from '../queries/QueryListDrawer';
 

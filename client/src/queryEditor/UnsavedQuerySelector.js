@@ -7,7 +7,7 @@ import {
 } from '../utilities/localQueryText';
 import Modal from '../common/Modal';
 import SqlDiff from '../common/SqlDiff';
-import Button from '../common/Button';
+import Button from '../common/Button.tsx';
 
 function UnsavedQuerySelector({ queryId, queryText, setQueryState }) {
   const [showModal, setShowModal] = useState(false);

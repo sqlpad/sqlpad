@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
-import Button from '../../common/Button';
+import Button from '../../common/Button.tsx';
 import { connectConnectionClient } from '../../stores/connections';
 import { runQuery } from '../../stores/queries';
 

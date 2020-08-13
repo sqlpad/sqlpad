@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import Button from './common/Button';
+import Button from './common/Button.tsx';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';

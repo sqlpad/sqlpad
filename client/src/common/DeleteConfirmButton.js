@@ -1,7 +1,7 @@
 import { Dialog } from '@reach/dialog';
 import DeleteIcon from 'mdi-react/DeleteIcon';
 import React, { useRef, useState } from 'react';
-import Button from './Button';
+import Button from './Button.tsx';
 import styles from './DeleteConfirmButton.module.css';
 import IconButton from './IconButton';
 
