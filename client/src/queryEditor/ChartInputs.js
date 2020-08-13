@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Input from '../common/Input';
+import Input from '../common/Input.tsx';
 import Select from '../common/Select';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 

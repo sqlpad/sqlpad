@@ -6,7 +6,7 @@ import Button from '../common/Button.tsx';
 import ErrorBlock from '../common/ErrorBlock.js';
 import FormExplain from '../common/FormExplain';
 import HorizontalFormItem from '../common/HorizontalFormItem.js';
-import Input from '../common/Input';
+import Input from '../common/Input.tsx';
 import message from '../common/message';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube.js';

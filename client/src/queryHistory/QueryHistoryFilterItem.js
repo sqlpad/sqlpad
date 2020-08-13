@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from '../common/Select';
-import Input from '../common/Input';
+import Input from '../common/Input.tsx';
 import Button from '../common/Button.tsx';
 
 const QueryHistoryFilterItem = ({

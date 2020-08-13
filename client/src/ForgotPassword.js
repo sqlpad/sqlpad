@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Button from './common/Button.tsx';
-import Input from './common/Input';
+import Input from './common/Input.tsx';
 import message from './common/message';
 import Spacer from './common/Spacer';
 import { api } from './utilities/fetch-json.js';

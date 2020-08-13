@@ -12,7 +12,7 @@ import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Drawer from '../common/Drawer';
 import ErrorBlock from '../common/ErrorBlock';
 import InfoBlock from '../common/InfoBlock';
-import Input from '../common/Input';
+import Input from '../common/Input.tsx';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import MultiSelect from '../common/MultiSelect';

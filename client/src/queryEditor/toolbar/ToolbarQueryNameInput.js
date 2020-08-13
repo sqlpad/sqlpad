@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'unistore/react';
-import Input from '../../common/Input';
+import Input from '../../common/Input.tsx';
 import { setQueryState } from '../../stores/queries';
 
 function mapStateToProps(state) {
