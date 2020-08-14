@@ -2,6 +2,10 @@
 
 See individual directories for specific examples. Want to expand on these examples or add your own for a specific database? Pull requests welcome!
 
+__Important!__ All the examples are tested with the Kubernetes distribution included in Docker Desktop (on Win 10 with WSL2 integration).
+
+You can use Minikube too (https://kubernetes.io/docs/setup/learning-environment/minikube/) for local develpment on Windows/Mac/Linux.
+
 ## Important note about data 
 
 The examples don't care about data storage, so if you want your data to be non-volatile it's up to you ;-)
