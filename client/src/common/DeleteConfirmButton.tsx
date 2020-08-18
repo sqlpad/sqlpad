@@ -1,12 +1,31 @@
 import { Dialog } from '@reach/dialog';
 import DeleteIcon from 'mdi-react/DeleteIcon';
 import React, { useRef, useState } from 'react';
-import Button from './Button.tsx';
+import Button from './Button';
 import styles from './DeleteConfirmButton.module.css';
-import IconButton from './IconButton.tsx';
+import IconButton from './IconButton';
 
-const DeleteConfirmButton = React.forwardRef(
-  ({ children, confirmMessage, onConfirm, className, icon, ...rest }, ref) => {
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  onConfirm: () => {};
+  confirmMessage: string;
+  icon?: boolean;
+}
+
+export type Ref = HTMLButtonElement;
+
+const DeleteConfirmButton = React.forwardRef<Ref, ButtonProps>(
+  (
+    {
+      children,
+      confirmMessage,
+      onConfirm,
+      className,
+      icon,
+      ...rest
+    }: ButtonProps,
+    ref
+  ) => {
     const [visible, setVisible] = useState(false);
     const cancelEl = useRef(null);
 

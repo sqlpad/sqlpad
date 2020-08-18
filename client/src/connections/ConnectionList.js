@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import useSWR from 'swr';
 import { connect } from 'unistore/react';
 import Button from '../common/Button.tsx';
-import DeleteConfirmButton from '../common/DeleteConfirmButton';
+import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';

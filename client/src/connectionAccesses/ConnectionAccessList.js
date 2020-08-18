@@ -2,7 +2,7 @@ import humanizeDuration from 'humanize-duration';
 import React, { useState } from 'react';
 import useSWR from 'swr';
 import Button from '../common/Button.tsx';
-import DeleteConfirmButton from '../common/DeleteConfirmButton';
+import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';

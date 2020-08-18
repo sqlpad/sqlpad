@@ -8,7 +8,7 @@ import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
-import DeleteConfirmButton from '../common/DeleteConfirmButton';
+import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
 import Drawer from '../common/Drawer.tsx';
 import ErrorBlock from '../common/ErrorBlock';
 import InfoBlock from '../common/InfoBlock';
