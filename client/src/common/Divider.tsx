@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Divider = ({ style, ...rest }) => {
+const Divider = ({ style, ...rest }: React.HTMLAttributes<HTMLElement>) => {
   const s = Object.assign(
     {
       height: 16,

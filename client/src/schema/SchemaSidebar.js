@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
-import Divider from '../common/Divider';
+import Divider from '../common/Divider.tsx';
 import IconButton from '../common/IconButton';
 import Input from '../common/Input.tsx';
 import Sidebar from '../common/Sidebar';

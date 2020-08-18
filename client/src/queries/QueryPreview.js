@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Divider from '../common/Divider';
+import Divider from '../common/Divider.tsx';
 import SqlEditor from '../common/SqlEditor';
 import Tag from '../common/Tag';
 import styles from './QueryPreview.module.css';
