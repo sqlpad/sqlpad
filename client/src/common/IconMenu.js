@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, MenuButton, MenuList } from '@reach/menu-button';
-import Tooltip from './Tooltip';
+import Tooltip from './Tooltip.tsx';
 import iconButtonStyles from './IconButton.module.css';
 
 const ICON_SIZE = 18;

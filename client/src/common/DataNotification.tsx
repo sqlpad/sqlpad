@@ -5,7 +5,7 @@ import Tooltip from './Tooltip';
 import styles from './DataNotification.module.css';
 
 export interface Props extends React.HTMLAttributes<HTMLElement> {
-  tooltip?: string;
+  tooltip: string;
 }
 
 function DataNotification({ tooltip, children }: Props) {

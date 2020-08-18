@@ -16,7 +16,7 @@ import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
 import ErrorBlock from '../common/ErrorBlock';
-import Tooltip from '../common/Tooltip';
+import Tooltip from '../common/Tooltip.tsx';
 
 const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
