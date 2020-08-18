@@ -3,7 +3,7 @@ import SaveIcon from 'mdi-react/ContentSaveIcon';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'unistore/react';
-import IconButton from '../../common/IconButton';
+import IconButton from '../../common/IconButton.tsx';
 import { saveQuery } from '../../stores/queries';
 
 function mapStateToProps(state) {

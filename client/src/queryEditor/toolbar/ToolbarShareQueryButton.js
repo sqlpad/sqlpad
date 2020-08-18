@@ -2,7 +2,7 @@ import SharedIcon from 'mdi-react/AccountMultipleIcon';
 import PrivateIcon from 'mdi-react/AccountIcon';
 import React from 'react';
 import { connect } from 'unistore/react';
-import IconButton from '../../common/IconButton';
+import IconButton from '../../common/IconButton.tsx';
 import { setQueryState } from '../../stores/queries';
 
 function mapStateToProps(state) {

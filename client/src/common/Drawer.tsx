@@ -4,8 +4,23 @@ import React from 'react';
 import styles from './Drawer.module.css';
 import IconButton from './IconButton';
 
-function Drawer({ title, visible, onClose, width, placement, children }) {
-  const style = {
+export interface Props extends React.HTMLAttributes<HTMLElement> {
+  title: string;
+  visible?: boolean;
+  placement: 'right' | 'left';
+  width: number | string;
+  onClose: () => {};
+}
+
+function Drawer({
+  title,
+  visible,
+  onClose,
+  width,
+  placement,
+  children,
+}: Props) {
+  const style: React.CSSProperties = {
     width,
   };
 

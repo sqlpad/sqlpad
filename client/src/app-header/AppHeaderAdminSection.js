@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../common/Button.tsx';
-import Drawer from '../common/Drawer';
+import Drawer from '../common/Drawer.tsx';
 import ConnectionAccessListDrawer from '../connectionAccesses/ConnectionAccessListDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
 import ServiceTokenListDrawer from '../serviceTokens/ServiceTokenListDrawer';

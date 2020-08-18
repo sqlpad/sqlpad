@@ -1,7 +1,7 @@
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
 import React from 'react';
 import { connect } from 'unistore/react';
-import IconButton from '../../common/IconButton';
+import IconButton from '../../common/IconButton.tsx';
 import { formatQuery } from '../../stores/queries';
 
 function mapStateToProps(state) {

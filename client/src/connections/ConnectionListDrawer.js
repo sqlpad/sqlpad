@@ -1,5 +1,5 @@
 import React from 'react';
-import Drawer from '../common/Drawer';
+import Drawer from '../common/Drawer.tsx';
 import ConnectionList from './ConnectionList';
 
 function ConnectionListDrawer({ visible, onClose }) {

@@ -9,7 +9,7 @@ import InfiniteLoader from 'react-window-infinite-loader';
 import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
-import Drawer from '../common/Drawer';
+import Drawer from '../common/Drawer.tsx';
 import ErrorBlock from '../common/ErrorBlock';
 import InfoBlock from '../common/InfoBlock';
 import Input from '../common/Input.tsx';

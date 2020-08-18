@@ -1,7 +1,7 @@
 import CopyIcon from 'mdi-react/ContentCopyIcon';
 import React from 'react';
 import { connect } from 'unistore/react';
-import IconButton from '../../common/IconButton';
+import IconButton from '../../common/IconButton.tsx';
 import { handleCloneClick } from '../../stores/queries';
 
 function mapStateToProps(state) {

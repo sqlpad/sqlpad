@@ -3,7 +3,7 @@ import DisconnectedIcon from 'mdi-react/ServerNetworkOffIcon';
 import React, { useState } from 'react';
 import useSWR from 'swr';
 import { connect } from 'unistore/react';
-import IconButton from '../../common/IconButton';
+import IconButton from '../../common/IconButton.tsx';
 import {
   connectConnectionClient,
   disconnectConnectionClient,

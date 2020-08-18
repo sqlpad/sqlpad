@@ -2,7 +2,7 @@ import DownloadIcon from 'mdi-react/DownloadIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
 import { connect } from 'unistore/react';
-import IconButton from '../common/IconButton';
+import IconButton from '../common/IconButton.tsx';
 import { exportPng } from '../common/tauChartRef';
 
 function mapStateToProps(state) {

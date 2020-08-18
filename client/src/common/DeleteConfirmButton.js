@@ -3,7 +3,7 @@ import DeleteIcon from 'mdi-react/DeleteIcon';
 import React, { useRef, useState } from 'react';
 import Button from './Button.tsx';
 import styles from './DeleteConfirmButton.module.css';
-import IconButton from './IconButton';
+import IconButton from './IconButton.tsx';
 
 const DeleteConfirmButton = React.forwardRef(
   ({ children, confirmMessage, onConfirm, className, icon, ...rest }, ref) => {

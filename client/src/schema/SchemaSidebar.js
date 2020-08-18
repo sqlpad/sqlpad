@@ -6,7 +6,7 @@ import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
 import { connect } from 'unistore/react';
 import Divider from '../common/Divider.tsx';
-import IconButton from '../common/IconButton';
+import IconButton from '../common/IconButton.tsx';
 import Input from '../common/Input.tsx';
 import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';

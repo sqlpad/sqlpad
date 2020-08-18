@@ -1,6 +1,6 @@
 import TagsIcon from 'mdi-react/TagMultipleIcon';
 import React, { useState } from 'react';
-import IconButton from '../../common/IconButton';
+import IconButton from '../../common/IconButton.tsx';
 import QueryTagsModal from './QueryTagsModal';
 
 function ToolbarTagsButton() {

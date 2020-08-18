@@ -2,7 +2,7 @@ import { Dialog } from '@reach/dialog';
 import CloseIcon from 'mdi-react/CloseIcon';
 import React from 'react';
 import styles from './Modal.module.css';
-import IconButton from './IconButton';
+import IconButton from './IconButton.tsx';
 
 function Modal({ title, visible, onClose, width, children }) {
   if (visible) {

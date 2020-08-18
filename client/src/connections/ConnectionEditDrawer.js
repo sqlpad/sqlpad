@@ -1,5 +1,5 @@
 import React from 'react';
-import Drawer from '../common/Drawer';
+import Drawer from '../common/Drawer.tsx';
 import ConnectionForm from './ConnectionForm';
 
 function ConnectionEditDrawer({
