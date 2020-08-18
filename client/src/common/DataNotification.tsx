@@ -4,7 +4,11 @@ import Text from './Text';
 import Tooltip from './Tooltip';
 import styles from './DataNotification.module.css';
 
-function DataNotification({ tooltip, children }) {
+export interface Props extends React.HTMLAttributes<HTMLElement> {
+  tooltip?: string;
+}
+
+function DataNotification({ tooltip, children }: Props) {
   return (
     <Tooltip label={tooltip}>
       {/* span use in place of wrapping Text with forwardRef needed by Tooltip */}
