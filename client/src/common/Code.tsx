@@ -1,7 +1,11 @@
 import React from 'react';
 import styles from './Code.module.css';
 
-const Code = ({ children, className, type, ...rest }) => {
+export interface Props extends React.HTMLAttributes<HTMLElement> {
+  type?: string;
+}
+
+const Code = ({ children, className, type, ...rest }: Props) => {
   const cs = [];
 
   if (className) {

@@ -1,6 +1,6 @@
 import React from 'react';
 import Text from '../common/Text';
-import Code from '../common/Code';
+import Code from '../common/Code.tsx';
 
 function ServiceTokenDetails({ serviceToken }) {
   const getBaseUrl = () => {
