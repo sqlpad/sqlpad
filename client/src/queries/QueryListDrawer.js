@@ -10,7 +10,7 @@ import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
 import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
 import Drawer from '../common/Drawer.tsx';
-import ErrorBlock from '../common/ErrorBlock';
+import ErrorBlock from '../common/ErrorBlock.tsx';
 import InfoBlock from '../common/InfoBlock';
 import Input from '../common/Input.tsx';
 import ListItem from '../common/ListItem';

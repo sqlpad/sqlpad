@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ErrorBlock({ children }) {
+function ErrorBlock({ children }: React.HTMLAttributes<HTMLElement>) {
   return <div className="sp-error-block">{children}</div>;
 }
 

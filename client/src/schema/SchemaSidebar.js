@@ -15,7 +15,7 @@ import useSchemaState from '../stores/use-schema-state';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
-import ErrorBlock from '../common/ErrorBlock';
+import ErrorBlock from '../common/ErrorBlock.tsx';
 import Tooltip from '../common/Tooltip.tsx';
 
 const ICON_SIZE = 22;

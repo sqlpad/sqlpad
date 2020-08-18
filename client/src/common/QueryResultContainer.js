@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorBlock from './ErrorBlock';
+import ErrorBlock from './ErrorBlock.tsx';
 import InfoBlock from './InfoBlock';
 import QueryResultDataTable from './QueryResultDataTable';
 import QueryResultRunning from './QueryResultRunning';

@@ -3,7 +3,7 @@ import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
 import React, { useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import Button from '../common/Button.tsx';
-import ErrorBlock from '../common/ErrorBlock.js';
+import ErrorBlock from '../common/ErrorBlock.tsx';
 import FormExplain from '../common/FormExplain';
 import HorizontalFormItem from '../common/HorizontalFormItem.js';
 import Input from '../common/Input.tsx';
