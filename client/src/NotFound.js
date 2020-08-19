@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import FullscreenMessage from './common/FullscreenMessage.js';
+import FullscreenMessage from './common/FullscreenMessage.tsx';
 import useAppContext from './utilities/use-app-context.js';
 
 function NotFound() {

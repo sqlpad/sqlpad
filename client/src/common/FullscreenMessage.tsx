@@ -1,6 +1,8 @@
 import React from 'react';
 
-export default function FullscreenMessage({ children }) {
+export default function FullscreenMessage({
+  children,
+}: React.HTMLAttributes<HTMLElement>) {
   return (
     <div
       style={{
