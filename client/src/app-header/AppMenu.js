@@ -2,7 +2,7 @@ import { MenuItem } from '@reach/menu-button';
 import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
-import IconMenu from '../common/IconMenu';
+import IconMenu from '../common/IconMenu.tsx';
 import { api } from '../utilities/fetch-json.js';
 import useAppContext from '../utilities/use-app-context';
 import AboutModal from './AboutModal';

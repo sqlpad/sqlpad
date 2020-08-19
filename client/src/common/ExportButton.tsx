@@ -6,11 +6,29 @@ import { Link } from 'react-router-dom';
 import useAppContext from '../utilities/use-app-context';
 import IconMenu from './IconMenu';
 
-const NavigationLink = React.forwardRef((props, ref) => {
+type Ref = HTMLAnchorElement;
+
+interface Props extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  to: string;
+}
+
+const NavigationLink = React.forwardRef<Ref, Props>((props, ref) => {
   return <Link {...props} innerRef={ref} />;
 });
 
-function ExportButton({ links, onSaveImageClick }) {
+interface Links {
+  json: string;
+  csv: string;
+  xlsx: string;
+}
+
+function ExportButton({
+  links,
+  onSaveImageClick,
+}: {
+  links: Links;
+  onSaveImageClick: () => {};
+}) {
   const { config } = useAppContext();
 
   if (!config || !links) {

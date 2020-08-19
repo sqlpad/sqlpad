@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
-import ExportButton from './common/ExportButton.js';
+import ExportButton from './common/ExportButton.tsx';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import QueryResultRunning from './common/QueryResultRunning';
 import SqlpadTauChart from './common/SqlpadTauChart.js';

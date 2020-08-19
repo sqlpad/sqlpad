@@ -1,11 +1,17 @@
 import React from 'react';
 import { Menu, MenuButton, MenuList } from '@reach/menu-button';
-import Tooltip from './Tooltip.tsx';
+import Tooltip from './Tooltip';
 import iconButtonStyles from './IconButton.module.css';
 
 const ICON_SIZE = 18;
 
-const IconMenu = ({ children, icon, tooltip, variant, ...rest }) => {
+export interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  icon?: any;
+  variant?: string;
+  tooltip?: string;
+}
+
+const IconMenu = ({ children, icon, tooltip, variant, ...rest }: Props) => {
   const className =
     variant === 'ghost'
       ? `${iconButtonStyles.btn} ${iconButtonStyles.ghost}`
