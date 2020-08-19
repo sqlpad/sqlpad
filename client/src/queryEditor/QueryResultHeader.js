@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'unistore/react';
-import IncompleteDataNotification from '../common/IncompleteDataNotification';
+import IncompleteDataNotification from '../common/IncompleteDataNotification.tsx';
 import SecondsTimer from '../common/SecondsTimer.js';
 import styles from './QueryResultHeader.module.css';
 import useAppContext from '../utilities/use-app-context';

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import IncompleteDataNotification from '../common/IncompleteDataNotification';
+import IncompleteDataNotification from '../common/IncompleteDataNotification.tsx';
 import SecondsTimer from '../common/SecondsTimer.js';
 import styles from './QueryHistoryResultHeader.module.css';
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import ExportButton from './common/ExportButton.tsx';
-import IncompleteDataNotification from './common/IncompleteDataNotification';
+import IncompleteDataNotification from './common/IncompleteDataNotification.tsx';
 import QueryResultRunning from './common/QueryResultRunning';
 import SqlpadTauChart from './common/SqlpadTauChart.js';
 import { exportPng } from './common/tauChartRef';

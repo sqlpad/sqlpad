@@ -1,5 +1,5 @@
 import React from 'react';
-import DataNotification from './DataNotification.tsx';
+import DataNotification from './DataNotification';
 
 function IncompleteDataNotification() {
   return (
