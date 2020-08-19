@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Button from '../common/Button.tsx';
-import HorizontalFormItem from '../common/HorizontalFormItem.js';
+import HorizontalFormItem from '../common/HorizontalFormItem.tsx';
 import Input from '../common/Input.tsx';
 import message from '../common/message.tsx';
 import Select from '../common/Select';

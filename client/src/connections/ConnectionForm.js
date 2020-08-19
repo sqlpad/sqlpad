@@ -5,7 +5,7 @@ import useSWR, { mutate } from 'swr';
 import Button from '../common/Button.tsx';
 import ErrorBlock from '../common/ErrorBlock.tsx';
 import FormExplain from '../common/FormExplain.tsx';
-import HorizontalFormItem from '../common/HorizontalFormItem.js';
+import HorizontalFormItem from '../common/HorizontalFormItem.tsx';
 import Input from '../common/Input.tsx';
 import message from '../common/message.tsx';
 import Select from '../common/Select';
