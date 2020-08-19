@@ -13,7 +13,7 @@ import Drawer from '../common/Drawer.tsx';
 import ErrorBlock from '../common/ErrorBlock.tsx';
 import InfoBlock from '../common/InfoBlock.tsx';
 import Input from '../common/Input.tsx';
-import ListItem from '../common/ListItem';
+import ListItem from '../common/ListItem.tsx';
 import message from '../common/message.tsx';
 import MultiSelect from '../common/MultiSelect';
 import Select from '../common/Select';

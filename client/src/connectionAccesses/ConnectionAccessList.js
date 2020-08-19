@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import useSWR from 'swr';
 import Button from '../common/Button.tsx';
 import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
-import ListItem from '../common/ListItem';
+import ListItem from '../common/ListItem.tsx';
 import message from '../common/message.tsx';
 import Text from '../common/Text';
 import { api } from '../utilities/fetch-json';
