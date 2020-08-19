@@ -2,9 +2,16 @@ import { Dialog } from '@reach/dialog';
 import CloseIcon from 'mdi-react/CloseIcon';
 import React from 'react';
 import styles from './Modal.module.css';
-import IconButton from './IconButton.tsx';
+import IconButton from './IconButton';
 
-function Modal({ title, visible, onClose, width, children }) {
+export interface Props extends React.HTMLAttributes<HTMLElement> {
+  title: 'string';
+  visible?: boolean;
+  onClose?: () => {};
+  width: string | number;
+}
+
+function Modal({ title, visible, onClose, width, children }: Props) {
   if (visible) {
     return (
       <Dialog

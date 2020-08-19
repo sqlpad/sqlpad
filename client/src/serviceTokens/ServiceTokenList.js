@@ -4,7 +4,7 @@ import Button from '../common/Button.tsx';
 import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
 import ListItem from '../common/ListItem.tsx';
 import message from '../common/message.tsx';
-import Modal from '../common/Modal';
+import Modal from '../common/Modal.tsx';
 import { api } from '../utilities/fetch-json';
 import ServiceTokenDetails from './ServiceTokenDetails';
 import ServiceTokenForm from './ServiceTokenForm';

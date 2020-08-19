@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from '../common/Modal';
+import Modal from '../common/Modal.tsx';
 import useAppContext from '../utilities/use-app-context';
 import AboutContent from './AboutContent';
 

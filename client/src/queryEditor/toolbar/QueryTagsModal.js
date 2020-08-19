@@ -1,7 +1,7 @@
 import React from 'react';
 import useSWR from 'swr';
 import { connect } from 'unistore/react';
-import Modal from '../../common/Modal';
+import Modal from '../../common/Modal.tsx';
 import MultiSelect from '../../common/MultiSelect';
 import { setQueryState } from '../../stores/queries';
 

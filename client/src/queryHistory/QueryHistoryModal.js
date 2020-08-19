@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal from '../common/Modal';
+import Modal from '../common/Modal.tsx';
 import QueryHistoryContent from './QueryHistoryContent';
 
 function QueryHistoryModal({ visible, onClose }) {

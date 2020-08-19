@@ -1,7 +1,7 @@
 import ChartIcon from 'mdi-react/ChartBarIcon';
 import React, { useState } from 'react';
 import IconButton from '../../common/IconButton.tsx';
-import Modal from '../../common/Modal';
+import Modal from '../../common/Modal.tsx';
 import ChartInputsContainer from '../ChartInputsContainer';
 import ChartTypeSelect from '../ChartTypeSelect';
 import Button from '../../common/Button.tsx';

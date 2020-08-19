@@ -5,7 +5,7 @@ import {
   getLocalQueryText,
   removeLocalQueryText,
 } from '../utilities/localQueryText';
-import Modal from '../common/Modal';
+import Modal from '../common/Modal.tsx';
 import SqlDiff from '../common/SqlDiff';
 import Button from '../common/Button.tsx';
 
