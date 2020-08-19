@@ -4,11 +4,21 @@ import mitt from 'mitt';
 
 const emitter = mitt();
 
-export function MessageDisplayer() {
-  const [messages, setMessages] = useState([]);
+interface Message {
+  message: string;
+  type: 'success' | 'error';
+}
 
-  function onMessage(message) {
-    setMessages((messages) => [...messages, message]);
+export function MessageDisplayer() {
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  function onMessage(message: Message | undefined) {
+    setMessages((messages) => {
+      if (message) {
+        return [...messages, message];
+      }
+      return messages;
+    });
     setTimeout(() => setMessages((messages) => messages.slice(1)), 3000);
   }
 
@@ -30,10 +40,10 @@ export function MessageDisplayer() {
 }
 
 export default {
-  error: function (message) {
+  error: function (message: string) {
     emitter.emit('message', { type: 'error', message });
   },
-  success: function (message) {
+  success: function (message: string) {
     emitter.emit('message', { type: 'success', message });
   },
 };

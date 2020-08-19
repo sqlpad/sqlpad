@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../common/Button.tsx';
 import FormExplain from '../common/FormExplain.tsx';
-import message from '../common/message';
+import message from '../common/message.tsx';
 import Select from '../common/Select';
 import Spacer from '../common/Spacer';
 import { api } from '../utilities/fetch-json.js';

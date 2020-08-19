@@ -14,7 +14,7 @@ import ErrorBlock from '../common/ErrorBlock.tsx';
 import InfoBlock from '../common/InfoBlock.tsx';
 import Input from '../common/Input.tsx';
 import ListItem from '../common/ListItem';
-import message from '../common/message';
+import message from '../common/message.tsx';
 import MultiSelect from '../common/MultiSelect';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube.js';

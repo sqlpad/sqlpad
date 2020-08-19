@@ -1,6 +1,6 @@
 import { mutate } from 'swr';
 import { v4 as uuidv4 } from 'uuid';
-import message from '../common/message';
+import message from '../common/message.tsx';
 import { api } from '../utilities/fetch-json.js';
 import {
   removeLocalQueryText,

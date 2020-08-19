@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import Button from '../common/Button.tsx';
 import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
 import ListItem from '../common/ListItem';
-import message from '../common/message';
+import message from '../common/message.tsx';
 import Modal from '../common/Modal';
 import Text from '../common/Text';
 import { api } from '../utilities/fetch-json.js';

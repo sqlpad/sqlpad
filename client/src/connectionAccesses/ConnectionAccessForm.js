@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import Button from '../common/Button.tsx';
 import HorizontalFormItem from '../common/HorizontalFormItem.js';
 import Input from '../common/Input.tsx';
-import message from '../common/message';
+import message from '../common/message.tsx';
 import Select from '../common/Select';
 import { api } from '../utilities/fetch-json.js';
 

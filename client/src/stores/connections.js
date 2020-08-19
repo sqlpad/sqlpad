@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import message from '../common/message';
+import message from '../common/message.tsx';
 import { api } from '../utilities/fetch-json.js';
 
 export const initialState = {

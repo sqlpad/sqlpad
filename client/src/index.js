@@ -5,7 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { SWRConfig } from 'swr';
 import { Provider } from 'unistore/react';
-import { MessageDisplayer } from './common/message';
+import { MessageDisplayer } from './common/message.tsx';
 import './css/index.css';
 import './css/react-split-pane.css';
 import './css/vendorOverrides.css';

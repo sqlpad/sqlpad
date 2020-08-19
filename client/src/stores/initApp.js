@@ -1,5 +1,5 @@
 import localforage from 'localforage';
-import message from '../common/message';
+import message from '../common/message.tsx';
 const queryString = require('query-string');
 
 window.localforage = localforage;

@@ -7,7 +7,7 @@ import ErrorBlock from '../common/ErrorBlock.tsx';
 import FormExplain from '../common/FormExplain.tsx';
 import HorizontalFormItem from '../common/HorizontalFormItem.js';
 import Input from '../common/Input.tsx';
-import message from '../common/message';
+import message from '../common/message.tsx';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube.js';
 import TextArea from '../common/TextArea';

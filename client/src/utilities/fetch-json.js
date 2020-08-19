@@ -1,6 +1,6 @@
 import 'whatwg-fetch';
 import parseLinkHeader from 'parse-link-header';
-import message from '../common/message';
+import message from '../common/message.tsx';
 
 export default async function fetchJson(method, url, body) {
   const BASE_URL = window.BASE_URL || '';

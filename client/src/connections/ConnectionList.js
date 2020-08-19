@@ -4,7 +4,7 @@ import { connect } from 'unistore/react';
 import Button from '../common/Button.tsx';
 import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
 import ListItem from '../common/ListItem';
-import message from '../common/message';
+import message from '../common/message.tsx';
 import Text from '../common/Text';
 import { selectConnectionId } from '../stores/connections';
 import { api } from '../utilities/fetch-json';

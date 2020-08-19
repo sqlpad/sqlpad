@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import message from '../common/message';
+import message from '../common/message.tsx';
 import { api } from '../utilities/fetch-json.js';
 import updateCompletions from '../utilities/updateCompletions.js';
 import { useKeyState } from './key-state';
