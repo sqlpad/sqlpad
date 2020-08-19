@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../common/Button.tsx';
-import FormExplain from '../common/FormExplain';
+import FormExplain from '../common/FormExplain.tsx';
 import message from '../common/message';
 import Select from '../common/Select';
 import Spacer from '../common/Spacer';
