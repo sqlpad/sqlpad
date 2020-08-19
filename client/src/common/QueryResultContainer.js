@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorBlock from './ErrorBlock.tsx';
-import InfoBlock from './InfoBlock';
+import InfoBlock from './InfoBlock.tsx';
 import QueryResultDataTable from './QueryResultDataTable';
 import QueryResultRunning from './QueryResultRunning';
 
