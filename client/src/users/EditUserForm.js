@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Button from '../common/Button.tsx';
 import FormExplain from '../common/FormExplain.tsx';
 import message from '../common/message.tsx';
-import Select from '../common/Select';
+import Select from '../common/Select.tsx';
 import Spacer from '../common/Spacer';
 import { api } from '../utilities/fetch-json.js';
 import useSWR, { mutate } from 'swr';

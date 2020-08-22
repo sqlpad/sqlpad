@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Input from '../common/Input.tsx';
-import Select from '../common/Select';
+import Select from '../common/Select.tsx';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 
 function cleanBoolean(value) {

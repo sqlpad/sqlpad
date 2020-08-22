@@ -1,7 +1,11 @@
 import React from 'react';
 import styles from './Select.module.css';
 
-export default function Select({ children, error, className, ...rest }) {
+export interface Props extends React.HTMLProps<HTMLSelectElement> {
+  error?: boolean;
+}
+
+export default function Select({ children, error, className, ...rest }: Props) {
   const classNames = [styles.select];
 
   if (className) {

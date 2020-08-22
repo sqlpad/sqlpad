@@ -4,7 +4,7 @@ import Button from '../common/Button.tsx';
 import HorizontalFormItem from '../common/HorizontalFormItem.tsx';
 import Input from '../common/Input.tsx';
 import message from '../common/message.tsx';
-import Select from '../common/Select';
+import Select from '../common/Select.tsx';
 import { api } from '../utilities/fetch-json.js';
 
 function ConnectionAccessForm({ onConnectionAccessSaved }) {

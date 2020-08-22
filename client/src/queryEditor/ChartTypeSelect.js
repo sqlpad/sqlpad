@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'unistore/react';
 import { handleChartTypeChange } from '../stores/queries';
-import Select from '../common/Select';
+import Select from '../common/Select.tsx';
 import chartDefinitions from '../utilities/chartDefinitions.js';
 
 function mapStateToProps(state) {

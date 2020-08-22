@@ -1,5 +1,5 @@
 import React from 'react';
-import Select from '../common/Select';
+import Select from '../common/Select.tsx';
 import Input from '../common/Input.tsx';
 import Button from '../common/Button.tsx';
 
