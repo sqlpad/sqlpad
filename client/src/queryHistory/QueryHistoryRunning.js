@@ -1,7 +1,7 @@
 import React from 'react';
 import SpinKitCube from './SpinKitCube.js';
 
-function QueryResultRunning() {
+function QueryHistoryRunning() {
   return (
     <div className="h-100 flex-center">
       <SpinKitCube />
@@ -9,4 +9,4 @@ function QueryResultRunning() {
   );
 }
 
-export default QueryResultRunning;
+export default QueryHistoryRunning;

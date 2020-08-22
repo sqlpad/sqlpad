@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import ExportButton from './common/ExportButton.tsx';
 import IncompleteDataNotification from './common/IncompleteDataNotification.tsx';
-import QueryResultRunning from './common/QueryResultRunning';
+import QueryResultRunning from './common/QueryResultRunning.tsx';
 import SqlpadTauChart from './common/SqlpadTauChart.js';
 import { exportPng } from './common/tauChartRef';
 import useQueryResultById from './utilities/useQueryResultById';

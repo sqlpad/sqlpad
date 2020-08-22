@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import ExportButton from './common/ExportButton.tsx';
 import IncompleteDataNotification from './common/IncompleteDataNotification.tsx';
 import QueryResultContainer from './common/QueryResultContainer.tsx';
-import QueryResultRunning from './common/QueryResultRunning';
+import QueryResultRunning from './common/QueryResultRunning.tsx';
 import useQueryResultById from './utilities/useQueryResultById';
 
 function QueryTableOnly({ queryId }) {
