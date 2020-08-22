@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 import Button from './common/Button.tsx';
 import Input from './common/Input.tsx';
 import message from './common/message.tsx';
-import Spacer from './common/Spacer';
+import Spacer from './common/Spacer.tsx';
 import { api } from './utilities/fetch-json.js';
 
 function PasswordReset({ passwordResetId }) {

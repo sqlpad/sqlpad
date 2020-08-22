@@ -5,7 +5,7 @@ import Button from '../common/Button.tsx';
 import FormExplain from '../common/FormExplain.tsx';
 import message from '../common/message.tsx';
 import Select from '../common/Select.tsx';
-import Spacer from '../common/Spacer';
+import Spacer from '../common/Spacer.tsx';
 import { api } from '../utilities/fetch-json.js';
 import useSWR, { mutate } from 'swr';
 

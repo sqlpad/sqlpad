@@ -5,7 +5,7 @@ import Modal from '../../common/Modal.tsx';
 import ChartInputsContainer from '../ChartInputsContainer';
 import ChartTypeSelect from '../ChartTypeSelect';
 import Button from '../../common/Button.tsx';
-import Spacer from '../../common/Spacer';
+import Spacer from '../../common/Spacer.tsx';
 
 function ChartButton() {
   const [visible, setVisible] = useState(false);

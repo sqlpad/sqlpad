@@ -5,7 +5,7 @@ import FormExplain from '../common/FormExplain.tsx';
 import Input from '../common/Input.tsx';
 import message from '../common/message.tsx';
 import Select from '../common/Select.tsx';
-import Spacer from '../common/Spacer.js';
+import Spacer from '../common/Spacer.tsx';
 import { api } from '../utilities/fetch-json.js';
 
 function InviteUserForm({ onInvited }) {
