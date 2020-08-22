@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
-function SecondsTimer({ startTime }) {
-  const [runSeconds, setRunSeconds] = useState(0);
+export interface Props {
+  startTime: Date;
+}
+
+function SecondsTimer({ startTime }: Props) {
+  const [runSeconds, setRunSeconds] = useState('0');
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       const now = new Date();
-      setRunSeconds(((now - startTime) / 1000).toFixed(0));
+      setRunSeconds(((now.valueOf() - startTime.valueOf()) / 1000).toFixed(0));
     }, 33);
     return () => clearInterval(intervalId);
   }, [startTime]);

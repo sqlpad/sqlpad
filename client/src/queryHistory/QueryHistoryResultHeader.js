@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import IncompleteDataNotification from '../common/IncompleteDataNotification.tsx';
-import SecondsTimer from '../common/SecondsTimer.js';
+import SecondsTimer from '../common/SecondsTimer.tsx';
 import styles from './QueryHistoryResultHeader.module.css';
 
 function QueryHistoryResultHeader({
