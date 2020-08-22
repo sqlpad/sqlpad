@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Divider from '../common/Divider.tsx';
 import SqlEditor from '../common/SqlEditor';
-import Tag from '../common/Tag';
+import Tag from '../common/Tag.tsx';
 import styles from './QueryPreview.module.css';
 
 function QueryPreview({ query }) {

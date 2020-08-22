@@ -2,7 +2,11 @@ import React from 'react';
 import styles from './Tag.module.css';
 import CloseIcon from 'mdi-react/CloseIcon';
 
-function Tag({ children, onClose }) {
+export interface Props extends React.HTMLProps<HTMLDivElement> {
+  onClose: () => void;
+}
+
+function Tag({ children, onClose }: Props) {
   return (
     <div className={styles.tagContainer}>
       <span>{children}</span>
