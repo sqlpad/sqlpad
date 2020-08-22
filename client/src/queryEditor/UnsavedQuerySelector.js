@@ -6,7 +6,7 @@ import {
   removeLocalQueryText,
 } from '../utilities/localQueryText';
 import Modal from '../common/Modal.tsx';
-import SqlDiff from '../common/SqlDiff';
+import SqlDiff from '../common/SqlDiff.tsx';
 import Button from '../common/Button.tsx';
 
 function UnsavedQuerySelector({ queryId, queryText, setQueryState }) {

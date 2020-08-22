@@ -5,7 +5,11 @@ import { diff as DiffEditor } from 'react-ace';
 require(`ace-builds/src-noconflict/mode-sql`);
 require(`ace-builds/src-noconflict/theme-sqlserver`);
 
-function SqlDiff({ value }) {
+export interface Props {
+  value?: string[];
+}
+
+function SqlDiff({ value }: Props) {
   const [dimensions, setDimensions] = useState({ width: -1, height: -1 });
   const { width, height } = dimensions;
 
@@ -16,7 +20,11 @@ function SqlDiff({ value }) {
   return (
     <Measure
       bounds
-      onResize={(contentRect) => setDimensions(contentRect.bounds)}
+      onResize={(contentRect) => {
+        if (contentRect && contentRect.bounds) {
+          setDimensions(contentRect.bounds);
+        }
+      }}
     >
       {({ measureRef }) => (
         <div ref={measureRef} className="h-100 w-100">
