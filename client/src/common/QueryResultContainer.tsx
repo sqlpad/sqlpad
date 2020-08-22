@@ -1,10 +1,19 @@
 import React from 'react';
-import ErrorBlock from './ErrorBlock.tsx';
-import InfoBlock from './InfoBlock.tsx';
+import ErrorBlock from './ErrorBlock';
+import InfoBlock from './InfoBlock';
 import QueryResultDataTable from './QueryResultDataTable';
 import QueryResultRunning from './QueryResultRunning';
 
-function QueryResultContainer({ isRunning, queryError, queryResult }) {
+export interface Props {
+  isRunning?: boolean;
+  queryError?: string;
+  queryResult?: {
+    status: string;
+    rows?: any[];
+  };
+}
+
+function QueryResultContainer({ isRunning, queryError, queryResult }: Props) {
   if (isRunning) {
     return <QueryResultRunning />;
   }

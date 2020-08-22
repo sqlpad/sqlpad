@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import ExportButton from './common/ExportButton.tsx';
 import IncompleteDataNotification from './common/IncompleteDataNotification.tsx';
-import QueryResultContainer from './common/QueryResultContainer.js';
+import QueryResultContainer from './common/QueryResultContainer.tsx';
 import QueryResultRunning from './common/QueryResultRunning';
 import useQueryResultById from './utilities/useQueryResultById';
 
