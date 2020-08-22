@@ -1,7 +1,16 @@
 import React from 'react';
 import styles from './TextArea.module.css';
 
-export default function TextArea({ children, error, className, ...rest }) {
+export interface Props extends React.HTMLProps<HTMLTextAreaElement> {
+  error?: boolean;
+}
+
+export default function TextArea({
+  children,
+  error,
+  className,
+  ...rest
+}: Props) {
   const classNames = [styles.textarea];
 
   if (error) {
