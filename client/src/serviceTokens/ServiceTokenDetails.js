@@ -1,5 +1,5 @@
 import React from 'react';
-import Text from '../common/Text';
+import Text from '../common/Text.tsx';
 import Code from '../common/Code.tsx';
 
 function ServiceTokenDetails({ serviceToken }) {

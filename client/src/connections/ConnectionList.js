@@ -5,7 +5,7 @@ import Button from '../common/Button.tsx';
 import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
 import ListItem from '../common/ListItem.tsx';
 import message from '../common/message.tsx';
-import Text from '../common/Text';
+import Text from '../common/Text.tsx';
 import { selectConnectionId } from '../stores/connections';
 import { api } from '../utilities/fetch-json';
 import useAppContext from '../utilities/use-app-context';

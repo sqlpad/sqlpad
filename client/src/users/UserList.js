@@ -5,7 +5,7 @@ import DeleteConfirmButton from '../common/DeleteConfirmButton.tsx';
 import ListItem from '../common/ListItem.tsx';
 import message from '../common/message.tsx';
 import Modal from '../common/Modal.tsx';
-import Text from '../common/Text';
+import Text from '../common/Text.tsx';
 import { api } from '../utilities/fetch-json.js';
 import useAppContext from '../utilities/use-app-context';
 import EditUserForm from './EditUserForm';

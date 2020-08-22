@@ -1,7 +1,11 @@
 import React from 'react';
 import styles from './Text.module.css';
 
-const Text = ({ children, className, type, ...rest }) => {
+export interface Props extends React.HTMLProps<HTMLSpanElement> {
+  type?: string;
+}
+
+const Text = ({ children, className, type, ...rest }: Props) => {
   const cs = [];
 
   if (className) {
