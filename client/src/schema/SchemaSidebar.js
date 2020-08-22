@@ -8,7 +8,7 @@ import { connect } from 'unistore/react';
 import Divider from '../common/Divider.tsx';
 import IconButton from '../common/IconButton.tsx';
 import Input from '../common/Input.tsx';
-import Sidebar from '../common/Sidebar';
+import Sidebar from '../common/Sidebar.tsx';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
 import useSchemaState from '../stores/use-schema-state';

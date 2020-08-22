@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Sidebar({ children }) {
+export default function Sidebar({ children }: React.HTMLProps<HTMLDivElement>) {
   return (
     <div
       style={{
