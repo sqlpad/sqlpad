@@ -8,6 +8,7 @@
     "@reach/menu-button": "^0.10.5",
     "@reach/tooltip": "^0.10.5",
     "@types/jest": "^26.0.9",
+    "@types/match-sorter": "^4.0.0",
     "@types/node": "^14.0.27",
     "@types/react": "^16.9.46",
     "@types/react-dom": "^16.9.8",

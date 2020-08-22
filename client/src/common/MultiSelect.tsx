@@ -4,6 +4,19 @@ import styles from './MultiSelect.module.css';
 import { getItems, Item, Menu } from './MultiSelectHelpers';
 import Tag from './Tag';
 
+interface Item {
+  name?: string;
+  id: string;
+  component?: any;
+}
+
+export interface Props {
+  selectedItems: Item[];
+  options: Item[];
+  onChange: (items: Item[]) => {};
+  placeholder: string;
+}
+
 /**
  * This component was quickly hacked together using the Downshift multiselect example
  * A lot of that example was changed and reduced down to what this is here.
@@ -11,12 +24,17 @@ import Tag from './Tag';
  * options should consist of `{ id, name, component }`.
  * name is used for matching, component optional for what to render
  */
-function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
-  const input = useRef();
+function MultiSelect({
+  selectedItems = [],
+  options,
+  onChange,
+  placeholder,
+}: Props) {
+  const input = useRef<HTMLInputElement>(null);
 
-  const itemToString = (item) => (item ? item.name : '');
+  const itemToString = (item: Item | null) => (item ? item.name || '' : '');
 
-  const stateReducer = (state, changes) => {
+  const stateReducer = (state: any, changes: any) => {
     switch (changes.type) {
       case Downshift.stateChangeTypes.keyDownArrowUp:
         return {
@@ -36,23 +54,27 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
     }
   };
 
-  const removeItem = (item) => {
+  const removeItem = (item: Item) => {
     onChange(selectedItems.filter((i) => i !== item));
   };
 
-  const handleSelection = (selectedItem) => {
+  const addSelectedItem = (item: Item, cb: () => void) => {
+    onChange([...selectedItems, item]);
+  };
+
+  const handleSelection = (selectedItem: Item | null) => {
     const callOnChange = () => {
       onChange(selectedItems);
     };
+    if (!selectedItem) {
+      return;
+    }
     if (selectedItems.includes(selectedItem)) {
-      removeItem(selectedItem, callOnChange);
+      // removeItem(selectedItem, callOnChange);
+      removeItem(selectedItem);
     } else {
       addSelectedItem(selectedItem, callOnChange);
     }
-  };
-
-  const addSelectedItem = (item, cb) => {
-    onChange([...selectedItems, item]);
   };
 
   return (
@@ -60,7 +82,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
       itemToString={itemToString}
       stateReducer={stateReducer}
       onChange={handleSelection}
-      selectedItem={null}
+      selectedItem={undefined}
     >
       {({
         getInputProps,
@@ -82,11 +104,13 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                     borderBottomRightRadius: 0,
                     borderBottomLeftRadius: 0,
                   }
-                : null
+                : undefined
             }
             onClick={() => {
               toggleMenu();
-              !isOpen && input.current.focus();
+              if (!isOpen && input && input.current) {
+                input.current.focus();
+              }
             }}
           >
             {selectedItems.length > 0
@@ -104,6 +128,7 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                 onKeyDown(event) {
                   if (
                     event.key === 'Enter' &&
+                    inputValue &&
                     inputValue.trim() &&
                     highlightedIndex === null
                   ) {
@@ -121,8 +146,8 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                         inputValue
                       );
                       const found = items.find(
-                        (item) =>
-                          item.name.toLowerCase() ===
+                        (item: Item) =>
+                          item?.name?.toLowerCase() ===
                             inputValue.toLowerCase() ||
                           item.id.toLowerCase() === inputValue.toLowerCase()
                       );
@@ -146,13 +171,15 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                     removeItem(selectedItems[selectedItems.length - 1]);
                   }
                   if (event.key === 'Escape' && !isOpen) {
-                    event.nativeEvent.preventDownshiftDefault = true;
+                    // https://github.com/downshift-js/downshift/issues/734
+                    // event.nativeEvent.preventDownshiftDefault = true;
+                    (event.nativeEvent as any).preventDownshiftDefault = true;
                   }
                 },
               })}
             />
           </div>
-          <Menu {...getMenuProps({ isOpen })}>
+          <Menu isOpen={isOpen} {...getMenuProps()}>
             {isOpen
               ? getItems(options, selectedItems, inputValue).map(
                   (item, index) => (
@@ -161,9 +188,9 @@ function MultiSelect({ selectedItems = [], options, onChange, placeholder }) {
                       {...getItemProps({
                         item,
                         index,
-                        isActive: highlightedIndex === index,
                         isSelected: selectedItems.includes(item),
                       })}
+                      isActive={highlightedIndex === index}
                     >
                       {item.component || item.name}
                     </Item>
