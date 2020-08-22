@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { Chart } from 'taucharts';
-import SpinKitCube from './SpinKitCube.js';
+import SpinKitCube from './SpinKitCube.tsx';
 import ErrorBlock from './ErrorBlock.tsx';
 import getTauChartConfig from './getTauChartConfig';
 import { setFakeChartRef, delFakeChartRef } from './tauChartRef';

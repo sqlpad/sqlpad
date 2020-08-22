@@ -17,7 +17,7 @@ import ListItem from '../common/ListItem.tsx';
 import message from '../common/message.tsx';
 import MultiSelect from '../common/MultiSelect.tsx';
 import Select from '../common/Select.tsx';
-import SpinKitCube from '../common/SpinKitCube.js';
+import SpinKitCube from '../common/SpinKitCube.tsx';
 import Text from '../common/Text';
 import { api } from '../utilities/fetch-json';
 import styles from './QueryList.module.css';

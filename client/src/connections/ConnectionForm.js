@@ -9,7 +9,7 @@ import HorizontalFormItem from '../common/HorizontalFormItem.tsx';
 import Input from '../common/Input.tsx';
 import message from '../common/message.tsx';
 import Select from '../common/Select.tsx';
-import SpinKitCube from '../common/SpinKitCube.js';
+import SpinKitCube from '../common/SpinKitCube.tsx';
 import TextArea from '../common/TextArea';
 import { api } from '../utilities/fetch-json.js';
 

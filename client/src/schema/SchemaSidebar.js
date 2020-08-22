@@ -9,7 +9,7 @@ import Divider from '../common/Divider.tsx';
 import IconButton from '../common/IconButton.tsx';
 import Input from '../common/Input.tsx';
 import Sidebar from '../common/Sidebar.tsx';
-import SpinKitCube from '../common/SpinKitCube';
+import SpinKitCube from '../common/SpinKitCube.tsx';
 import Text from '../common/Text';
 import useSchemaState from '../stores/use-schema-state';
 import getSchemaList from './getSchemaList';

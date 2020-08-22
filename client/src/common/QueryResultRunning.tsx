@@ -1,5 +1,5 @@
 import React from 'react';
-import SpinKitCube from './SpinKitCube.js';
+import SpinKitCube from './SpinKitCube';
 
 function QueryResultRunning() {
   return (
