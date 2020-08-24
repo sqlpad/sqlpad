@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { connect } from 'unistore/react';
 import { setQueryState, handleQuerySelectionChange } from '../stores/queries';
-import SqlEditor from '../common/SqlEditor';
+import SqlEditor from '../common/SqlEditor.tsx';
 
 function mapStateToProps(state, props) {
   return {

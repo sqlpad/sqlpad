@@ -9,10 +9,17 @@ require(`ace-builds/src-noconflict/theme-sqlserver`);
 
 const noop = () => {};
 
-function SqlEditor({ onChange, readOnly, value, onSelectionChange }) {
+export interface Props {
+  onChange: () => {};
+  readOnly: boolean;
+  value: string;
+  onSelectionChange: (value: string) => {};
+}
+
+function SqlEditor({ onChange, readOnly, value, onSelectionChange }: Props) {
   const { config } = useAppContext();
   const [dimensions, setDimensions] = useState({ width: -1, height: -1 });
-  const [editor, setEditor] = useState(null);
+  const [editor, setEditor] = useState<any>(null);
 
   useEffect(() => {
     if (editor && onChange) {
@@ -20,7 +27,7 @@ function SqlEditor({ onChange, readOnly, value, onSelectionChange }) {
       // built-in behavior only starts autocomplete when at least 1 character has been typed
       // In ace the . resets the prefix token and clears the completer
       // In order to get completions for 'sometable.' we need to fire the completer manually
-      editor.commands.on('afterExec', (e) => {
+      editor.commands.on('afterExec', (e: any) => {
         if (e.command.name === 'insertstring' && /^[\w.]$/.test(e.args)) {
           if (e.args === '.') {
             editor.execCommand('startAutocomplete');
@@ -32,7 +39,7 @@ function SqlEditor({ onChange, readOnly, value, onSelectionChange }) {
     }
   }, [editor, onChange, config]);
 
-  const handleSelection = (selection) => {
+  const handleSelection = (selection: any) => {
     if (editor && editor.session) {
       const selectedText = editor.session.getTextRange(selection.getRange());
       onSelectionChange(selectedText);
@@ -53,7 +60,7 @@ function SqlEditor({ onChange, readOnly, value, onSelectionChange }) {
   return (
     <Measure
       bounds
-      onResize={(contentRect) => setDimensions(contentRect.bounds)}
+      onResize={(contentRect: any) => setDimensions(contentRect.bounds)}
     >
       {({ measureRef }) => (
         <div ref={measureRef} className="h-100 w-100">
