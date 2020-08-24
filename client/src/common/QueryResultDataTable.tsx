@@ -1,11 +1,14 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { VariableSizeGrid } from 'react-window';
 import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
 import Measure from 'react-measure';
 
-const renderValue = (input, fieldMeta) => {
+interface FieldMeta {
+  datatype: string;
+}
+
+const renderValue = (input: any, fieldMeta: FieldMeta) => {
   if (input === null || input === undefined) {
     return <em>null</em>;
   } else if (input === true || input === false) {
@@ -30,7 +33,7 @@ const renderValue = (input, fieldMeta) => {
 };
 
 // Hide the overflow so the scroll bar never shows in the header grid
-const headerStyle = {
+const headerStyle: React.CSSProperties = {
   overflowX: 'hidden',
   overflowY: 'hidden',
 };
@@ -54,11 +57,33 @@ const cellStyle = {
   display: 'relative',
 };
 
+interface QueryResultDataTableProps {
+  queryResult: any;
+}
+
+interface QueryResultDataTableState {
+  dimensions: {
+    width: number;
+    height: number;
+  };
+  columnWidths: {
+    [key: string]: number;
+  };
+}
+
+interface Column {
+  name: string;
+  maxValueLength: number;
+}
+
 // NOTE: PureComponent's shallow compare works for this component
 // because the isRunning prop will toggle with each query execution
 // It would otherwise not rerender on change of prop.queryResult alone
-class QueryResultDataTable extends React.PureComponent {
-  state = {
+class QueryResultDataTable extends React.PureComponent<
+  QueryResultDataTableProps,
+  QueryResultDataTableState
+> {
+  state: QueryResultDataTableState = {
     dimensions: {
       width: -1,
       height: -1,
@@ -66,12 +91,15 @@ class QueryResultDataTable extends React.PureComponent {
     columnWidths: {},
   };
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(
+    nextProps: QueryResultDataTableProps,
+    prevState: QueryResultDataTableState
+  ) {
     const { queryResult } = nextProps;
     const { columnWidths } = prevState;
 
     if (queryResult && queryResult.columns) {
-      queryResult.columns.forEach((column) => {
+      queryResult.columns.forEach((column: Column) => {
         const { name, maxValueLength } = column;
         if (!columnWidths[name]) {
           // (This length is number of characters -- it later gets assigned ~ 20px per char)
@@ -98,10 +126,10 @@ class QueryResultDataTable extends React.PureComponent {
   // An empty dummy column is added to the grid for visual purposes
   // If dataKey was found this is a real column of data from the query result
   // If not, it's the dummy column at the end, and it should fill the rest of the grid width
-  getColumnWidth = (index) => {
+  getColumnWidth = (index: number) => {
     const { columnWidths } = this.state;
     const { queryResult } = this.props;
-    const column = queryResult.columns[index];
+    const column: Column = queryResult.columns[index];
     const { width } = this.state.dimensions;
 
     if (column) {
@@ -109,17 +137,25 @@ class QueryResultDataTable extends React.PureComponent {
     }
 
     const totalWidthFilled = queryResult.columns
-      .map((col) => columnWidths[col.name])
-      .reduce((prev, curr) => prev + curr, 0);
+      .map((col: Column) => columnWidths[col.name])
+      .reduce((prev: number, curr: number) => prev + curr, 0);
 
     const fakeColumnWidth = width - totalWidthFilled;
     return fakeColumnWidth < 10 ? 10 : fakeColumnWidth;
   };
 
-  headerGrid = React.createRef();
-  bodyGrid = React.createRef();
+  headerGrid = React.createRef<VariableSizeGrid>();
+  bodyGrid = React.createRef<VariableSizeGrid>();
 
-  resizeColumn = ({ dataKey, deltaX, columnIndex }) => {
+  resizeColumn = ({
+    dataKey,
+    deltaX,
+    columnIndex,
+  }: {
+    dataKey: string;
+    deltaX: number;
+    columnIndex: number;
+  }) => {
     this.setState(
       (prevState) => {
         const prevWidths = prevState.columnWidths;
@@ -138,13 +174,21 @@ class QueryResultDataTable extends React.PureComponent {
   };
 
   recalc = throttle((columnIndex) => {
-    if (this.headerGrid.current.resetAfterColumnIndex) {
+    if (this.headerGrid?.current?.resetAfterColumnIndex) {
       this.headerGrid.current.resetAfterColumnIndex(columnIndex);
-      this.bodyGrid.current.resetAfterColumnIndex(columnIndex);
+      this.bodyGrid?.current?.resetAfterColumnIndex(columnIndex);
     }
   }, 100);
 
-  HeaderCell = ({ columnIndex, rowIndex, style }) => {
+  HeaderCell = ({
+    columnIndex,
+    rowIndex,
+    style,
+  }: {
+    columnIndex: number;
+    rowIndex: number;
+    style: React.CSSProperties;
+  }) => {
     const { queryResult } = this.props;
     const column = queryResult.columns[columnIndex];
 
@@ -160,8 +204,8 @@ class QueryResultDataTable extends React.PureComponent {
             onDrag={(event, { deltaX }) => {
               this.resizeColumn({ dataKey: column.name, deltaX, columnIndex });
             }}
-            position={{ x: 0 }}
-            zIndex={999}
+            position={{ x: 0, y: 0 }}
+            // zIndex={999}
           >
             <span className="DragHandleIcon">⋮</span>
           </Draggable>
@@ -173,7 +217,15 @@ class QueryResultDataTable extends React.PureComponent {
     return <div style={Object.assign({}, style, headerCellStyle)} />;
   };
 
-  Cell = ({ columnIndex, rowIndex, style }) => {
+  Cell = ({
+    columnIndex,
+    rowIndex,
+    style,
+  }: {
+    columnIndex: number;
+    rowIndex: number;
+    style: React.CSSProperties;
+  }) => {
     const { queryResult } = this.props;
     const column = queryResult.columns[columnIndex];
     const finalStyle = Object.assign({}, style, cellStyle);
@@ -206,11 +258,12 @@ class QueryResultDataTable extends React.PureComponent {
 
   // When a scroll occurs in the body grid,
   // synchronize the scroll position of the header grid
-  handleGridScroll = ({ scrollLeft }) => {
-    this.headerGrid.current.scrollTo({ scrollLeft });
+  handleGridScroll = ({ scrollLeft }: { scrollLeft: number }) => {
+    // scrollTop previously was not supplied
+    this.headerGrid?.current?.scrollTo({ scrollLeft, scrollTop: 0 });
   };
 
-  handleContainerResize = (contentRect) => {
+  handleContainerResize = (contentRect: any) => {
     this.setState({ dimensions: contentRect.bounds });
   };
 
@@ -260,9 +313,5 @@ class QueryResultDataTable extends React.PureComponent {
     return null;
   }
 }
-
-QueryResultDataTable.propTypes = {
-  queryResult: PropTypes.object,
-};
 
 export default QueryResultDataTable;
