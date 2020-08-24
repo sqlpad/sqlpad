@@ -4,7 +4,7 @@ import ExportButton from './common/ExportButton.tsx';
 import IncompleteDataNotification from './common/IncompleteDataNotification.tsx';
 import QueryResultRunning from './common/QueryResultRunning.tsx';
 import SqlpadTauChart from './common/SqlpadTauChart.tsx';
-import { exportPng } from './common/tauChartRef';
+import { exportPng } from './common/tauChartRef.ts';
 import useQueryResultById from './utilities/useQueryResultById';
 
 function QueryChartOnly({ queryId }) {

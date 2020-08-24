@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
 import AppHeader from '../app-header/AppHeader';
-import { resizeChart } from '../common/tauChartRef';
+import { resizeChart } from '../common/tauChartRef.ts';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar.js';
 import { connectConnectionClient } from '../stores/connections';
