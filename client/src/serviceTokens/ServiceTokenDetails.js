@@ -1,11 +1,12 @@
 import React from 'react';
 import Text from '../common/Text.tsx';
 import Code from '../common/Code.tsx';
+import baseUrl from '../utilities/baseUrl';
 
 function ServiceTokenDetails({ serviceToken }) {
   const getBaseUrl = () => {
     const getUrl = window.location;
-    return getUrl.protocol + '//' + getUrl.host + window.BASE_URL;
+    return getUrl.protocol + '//' + getUrl.host + baseUrl();
   };
 
   return (

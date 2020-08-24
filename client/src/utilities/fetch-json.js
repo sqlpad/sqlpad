@@ -1,9 +1,10 @@
 import 'whatwg-fetch';
 import parseLinkHeader from 'parse-link-header';
 import message from '../common/message.tsx';
+import baseUrl from './baseUrl.ts';
 
 export default async function fetchJson(method, url, body) {
-  const BASE_URL = window.BASE_URL || '';
+  const BASE_URL = baseUrl();
   const opts = {
     method: method.toUpperCase(),
     credentials: 'same-origin',

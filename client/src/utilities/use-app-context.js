@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import baseUrl from './baseUrl.ts';
 
 function useAppContext() {
   let { data } = useSWR('api/app', { dedupingInterval: 60000 });
@@ -9,10 +10,7 @@ function useAppContext() {
     return {};
   }
 
-  // Assign config.baseUrl to global
-  // It doesn't change and is needed for fetch requests
-  // This allows us to simplify the fetch() call
-  window.BASE_URL = config.baseUrl;
+  baseUrl(config.baseUrl);
 
   return { config, currentUser, adminRegistrationOpen, version };
 }

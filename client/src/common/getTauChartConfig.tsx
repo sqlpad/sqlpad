@@ -4,15 +4,47 @@ import legend from 'taucharts/dist/plugins/legend';
 import quickFilter from 'taucharts/dist/plugins/quick-filter';
 import tooltip from 'taucharts/dist/plugins/tooltip';
 import tcTrendline from 'taucharts/dist/plugins/trendline';
+import baseUrl from '../utilities/baseUrl';
 
-const getUnmetFields = (chartType, selectedFieldMap) => {
+/**
+ * Caution this uses any type for a few things
+ *
+ * The chart config is a large object and flexible.
+ * TauCharts does not have types defined and likely never will.
+ * Additionally data rows are object maps of string keys with any data value.
+ * */
+
+interface StringMap {
+  [key: string]: string;
+}
+
+interface Field {
+  fieldId: string;
+  required: boolean;
+  label: string;
+  inputType: string;
+}
+
+interface Column {
+  name: string;
+  datatype: string;
+}
+
+interface DataRow {
+  /**
+   * Data values for data row are not typed and actually could be any value
+   */
+  [key: string]: any;
+}
+
+const getUnmetFields = (chartType: string, selectedFieldMap: StringMap) => {
   const chartDefinition = chartDefinitions.find(
     (def) => def.chartType === chartType
   );
   if (!chartDefinition) {
     throw new Error(`Unknown chartType ${chartType}`);
   }
-  const unmetRequiredFields = [];
+  const unmetRequiredFields: Field[] = [];
 
   chartDefinition.fields.forEach((field) => {
     if (field.required && !selectedFieldMap[field.fieldId]) {
@@ -23,7 +55,15 @@ const getUnmetFields = (chartType, selectedFieldMap) => {
   return unmetRequiredFields;
 };
 
-export default function getTauChartConfig(chartConfiguration, queryResult) {
+interface ChartConfiguration {
+  chartType: string;
+  fields: StringMap;
+}
+
+export default function getTauChartConfig(
+  chartConfiguration: ChartConfiguration,
+  queryResult: any
+) {
   if (!chartConfiguration) {
     return null;
   }
@@ -44,7 +84,7 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
     return null;
   }
 
-  const chartConfig = {
+  const chartConfig: any = {
     type: chartDefinition.tauChartsType,
     plugins: [
       tooltip(),
@@ -53,7 +93,7 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
         cssPaths: [
           // NOTE: We must ref the file in vendor dir for export images to work
           // (we don't know what the webpack bundle css path will be)
-          window.BASE_URL + '/javascripts/vendor/tauCharts/tauCharts.min.css',
+          baseUrl() + '/javascripts/vendor/tauCharts/tauCharts.min.css',
         ],
       }),
     ],
@@ -67,9 +107,9 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
   };
 
   // loop through data rows and convert types as needed
-  dataRows = dataRows.map((row) => {
-    const newRow = {};
-    columns.forEach((col) => {
+  dataRows = dataRows.map((row: DataRow) => {
+    const newRow: DataRow = {};
+    columns.forEach((col: Column) => {
       const { datatype, name } = col;
       if (datatype === 'date' || datatype === 'datetime') {
         newRow[name] = new Date(row[name]);
@@ -90,7 +130,9 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
     );
     forceDimensionFields.forEach((fieldDefinition) => {
       const columnName = selectedFields[fieldDefinition.fieldId];
-      const column = columns.find((column) => column.name === columnName);
+      const column = columns.find(
+        (column: Column) => column.name === columnName
+      );
       const colDatatype = column ? column.datatype : null;
       if (columnName && colDatatype === 'number' && newRow[columnName]) {
         newRow[columnName] = newRow[columnName].toString();
@@ -104,7 +146,7 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
   // Unless they aren't column mapping fields (like trendline, quickfilter)
   const cleanedChartConfigurationFields = Object.keys(
     chartConfiguration.fields
-  ).reduce((fieldsMap, fieldColName) => {
+  ).reduce((fieldsMap: StringMap, fieldColName) => {
     const fieldDefinition = chartDefinition.fields.find(
       (f) => f.fieldId === fieldColName
     );
@@ -112,7 +154,7 @@ export default function getTauChartConfig(chartConfiguration, queryResult) {
 
     if (fieldDefinition && fieldDefinition.inputType !== 'field-dropdown') {
       fieldsMap[fieldColName] = columnName;
-    } else if (columns.find((c) => c.name === columnName)) {
+    } else if (columns.find((c: Column) => c.name === columnName)) {
       fieldsMap[fieldColName] = columnName;
     }
     return fieldsMap;

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Chart } from 'taucharts';
 import SpinKitCube from './SpinKitCube.tsx';
 import ErrorBlock from './ErrorBlock.tsx';
-import getTauChartConfig from './getTauChartConfig';
+import getTauChartConfig from './getTauChartConfig.tsx';
 import { setFakeChartRef, delFakeChartRef } from './tauChartRef';
 
 function SqlpadTauChart({

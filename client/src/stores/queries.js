@@ -2,6 +2,7 @@ import { mutate } from 'swr';
 import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message.tsx';
 import { api } from '../utilities/fetch-json.js';
+import baseUrl from '../utilities/baseUrl.ts';
 import {
   removeLocalQueryText,
   setLocalQueryText,
@@ -151,7 +152,7 @@ export const saveQuery = (store) => async (state) => {
       window.history.replaceState(
         {},
         data.name,
-        `${window.BASE_URL}/queries/${data.id}`
+        `${baseUrl()}/queries/${data.id}`
       );
       message.success('Query Saved');
       removeLocalQueryText(data.id);
@@ -168,7 +169,7 @@ export const handleCloneClick = (state) => {
   const { query } = state;
   delete query.id;
   const name = 'Copy of ' + query.name;
-  window.history.replaceState({}, name, `${window.BASE_URL}/queries/new`);
+  window.history.replaceState({}, name, `${baseUrl()}/queries/new`);
   return { query: { ...query, name }, unsavedChanges: true };
 };
 
