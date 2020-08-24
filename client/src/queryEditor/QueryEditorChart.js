@@ -1,5 +1,5 @@
 import { connect } from 'unistore/react';
-import SqlpadTauChart from '../common/SqlpadTauChart';
+import SqlpadTauChart from '../common/SqlpadTauChart.tsx';
 
 function mapStateToProps(state) {
   return {

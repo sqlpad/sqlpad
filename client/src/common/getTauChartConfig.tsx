@@ -30,6 +30,11 @@ interface Column {
   datatype: string;
 }
 
+interface ChartConfiguration {
+  chartType: string;
+  fields: StringMap;
+}
+
 interface DataRow {
   /**
    * Data values for data row are not typed and actually could be any value
@@ -54,11 +59,6 @@ const getUnmetFields = (chartType: string, selectedFieldMap: StringMap) => {
 
   return unmetRequiredFields;
 };
-
-interface ChartConfiguration {
-  chartType: string;
-  fields: StringMap;
-}
 
 export default function getTauChartConfig(
   chartConfiguration: ChartConfiguration,
