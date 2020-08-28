@@ -27,7 +27,7 @@ function ExportButton({
   onSaveImageClick,
 }: {
   links: Links;
-  onSaveImageClick: () => {};
+  onSaveImageClick?: () => void;
 }) {
   const { config } = useAppContext();
 

@@ -52,8 +52,8 @@
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test --env=jsdom",
-    "fixlint": "eslint --fix \"**/*.js\"",
-    "lint": "eslint \"**/*.js\""
+    "fixlint": "eslint --fix \"**/*.{js,jsx,ts,tsx}\"",
+    "lint": "eslint \"**/*.{js,jsx,ts,tsx}\""
   },
   "browserslist": [
     ">0.2%",
@@ -64,6 +64,7 @@
   "devDependencies": {
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "source-map-explorer": "^2.4.2"
+    "source-map-explorer": "^2.4.2",
+    "ts-migrate": "^0.1.1"
   }
 }

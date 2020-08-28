@@ -10,7 +10,7 @@ require(`ace-builds/src-noconflict/theme-sqlserver`);
 const noop = () => {};
 
 export interface Props {
-  onChange: () => {};
+  onChange?: () => {};
   readOnly: boolean;
   value: string;
   onSelectionChange: (value: string) => {};

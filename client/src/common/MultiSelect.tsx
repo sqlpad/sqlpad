@@ -13,8 +13,8 @@ interface Item {
 export interface Props {
   selectedItems: Item[];
   options: Item[];
-  onChange: (items: Item[]) => {};
-  placeholder: string;
+  onChange: (items: Item[]) => void;
+  placeholder?: string;
 }
 
 /**

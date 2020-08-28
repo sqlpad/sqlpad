@@ -3,7 +3,7 @@ import styles from './Tag.module.css';
 import CloseIcon from 'mdi-react/CloseIcon';
 
 export interface Props extends React.HTMLProps<HTMLDivElement> {
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 function Tag({ children, onClose }: Props) {

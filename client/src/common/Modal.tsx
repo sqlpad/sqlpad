@@ -5,7 +5,7 @@ import styles from './Modal.module.css';
 import IconButton from './IconButton';
 
 export interface Props extends React.HTMLAttributes<HTMLElement> {
-  title: 'string';
+  title: string;
   visible?: boolean;
   onClose?: () => {};
   width: string | number;

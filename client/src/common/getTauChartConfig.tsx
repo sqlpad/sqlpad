@@ -1,4 +1,4 @@
-import chartDefinitions from '../utilities/chartDefinitions.js';
+import chartDefinitions from '../utilities/chartDefinitions';
 import exportTo from 'taucharts/dist/plugins/export-to';
 import legend from 'taucharts/dist/plugins/legend';
 import quickFilter from 'taucharts/dist/plugins/quick-filter';

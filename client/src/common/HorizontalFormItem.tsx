@@ -1,9 +1,9 @@
 import React from 'react';
 
 export interface Props extends React.HTMLAttributes<HTMLElement> {
-  leftWidth: string | number;
-  rightWidth: string | number;
-  label: string;
+  leftWidth?: string | number;
+  rightWidth?: string | number;
+  label?: string;
 }
 
 export default function HorizontalFormItem({

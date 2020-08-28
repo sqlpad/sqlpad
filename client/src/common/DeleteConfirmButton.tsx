@@ -7,7 +7,7 @@ import IconButton from './IconButton';
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  onConfirm: () => {};
+  onConfirm: () => void;
   confirmMessage: string;
   icon?: boolean;
 }

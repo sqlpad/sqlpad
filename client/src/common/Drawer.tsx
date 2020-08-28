@@ -9,7 +9,7 @@ export interface Props extends React.HTMLAttributes<HTMLElement> {
   visible?: boolean;
   placement: 'right' | 'left';
   width: number | string;
-  onClose: () => {};
+  onClose: () => void;
 }
 
 function Drawer({
