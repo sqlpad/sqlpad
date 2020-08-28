@@ -36,7 +36,9 @@ function send(config, query) {
       headers: getHeaders(config),
     }
   )
-    .then((response) => response.json())
+    .then((response) =>
+      response.ok ? response.json() : { error: response.text() }
+    )
     .then((statement) => handleStatementAndGetMore(results, statement, config));
 }
 
@@ -50,11 +52,11 @@ function updateResults(results, statement) {
   return results;
 }
 
-function handleStatementAndGetMore(results, statement, config) {
+async function handleStatementAndGetMore(results, statement, config) {
   if (statement.error) {
     // A lot of other error data available,
     // but error.message contains the detail on syntax issue
-    return Promise.reject(statement.error.message);
+    return Promise.reject(new Error(await statement.error));
   }
   results = updateResults(results, statement);
   if (!statement.nextUri) {
