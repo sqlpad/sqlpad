@@ -2,8 +2,7 @@ import { mutate } from 'swr';
 // @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/uuid` if it exists or add ... Remove this comment to see the full error message
 import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
-// @ts-expect-error ts-migrate(2691) FIXME: An import path cannot end with a '.ts' extension. ... Remove this comment to see the full error message
-import baseUrl from '../utilities/baseUrl.ts';
+import baseUrl from '../utilities/baseUrl';
 import { api } from '../utilities/fetch-json';
 import {
   removeLocalQueryText,

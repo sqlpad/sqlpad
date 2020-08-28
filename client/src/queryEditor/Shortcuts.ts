@@ -1,4 +1,3 @@
-// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/keymaster` if it exists or... Remove this comment to see the full error message
 import keymaster from 'keymaster';
 import { useEffect } from 'react';
 import { connect } from 'unistore/react';

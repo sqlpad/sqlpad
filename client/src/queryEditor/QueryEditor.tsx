@@ -3,8 +3,7 @@ import React, { useEffect } from 'react';
 import SplitPane from 'react-split-pane';
 import { connect } from 'unistore/react';
 import AppHeader from '../app-header/AppHeader';
-// @ts-expect-error ts-migrate(2691) FIXME: An import path cannot end with a '.ts' extension. ... Remove this comment to see the full error message
-import { resizeChart } from '../common/tauChartRef.ts';
+import { resizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar';
 import { connectConnectionClient } from '../stores/connections';

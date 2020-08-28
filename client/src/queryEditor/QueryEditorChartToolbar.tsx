@@ -3,8 +3,7 @@ import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
 import { connect } from 'unistore/react';
 import IconButton from '../common/IconButton';
-// @ts-expect-error ts-migrate(2691) FIXME: An import path cannot end with a '.ts' extension. ... Remove this comment to see the full error message
-import { exportPng } from '../common/tauChartRef.ts';
+import { exportPng } from '../common/tauChartRef';
 
 function mapStateToProps(state: any) {
   return {

@@ -1,4 +1,3 @@
-// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/humanize-duration` if it e... Remove this comment to see the full error message
 import humanizeDuration from 'humanize-duration';
 import React, { useState } from 'react';
 import useSWR from 'swr';
@@ -33,9 +32,9 @@ function ConnectionAccessList() {
   };
 
   const expireConnectionAccess = async (connectionAccessId: any) => {
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
     const json = await api.put(
-      `/api/connection-accesses/${connectionAccessId}/expire`
+      `/api/connection-accesses/${connectionAccessId}/expire`,
+      {}
     );
     const updated = showInactives
       ? connectionAccesses.map((item: any) => {

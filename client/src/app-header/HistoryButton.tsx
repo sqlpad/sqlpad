@@ -12,7 +12,7 @@ function HistoryButton() {
   }
 
   // If an editor has no identity (e.g., logged in without authentication), query history is not available because it can not be distinguished from others'.
-  if (currentUser.id === 'noauth' && currentUser.role === 'editor') return;
+  if (currentUser.id === 'noauth' && currentUser.role === 'editor') return null;
 
   return (
     <div>
@@ -27,5 +27,4 @@ function HistoryButton() {
   );
 }
 
-// @ts-expect-error ts-migrate(2769) FIXME: Type 'undefined' is not assignable to type 'ReactE... Remove this comment to see the full error message
 export default React.memo(HistoryButton);

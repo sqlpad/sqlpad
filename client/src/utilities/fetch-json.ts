@@ -2,8 +2,7 @@
 import parseLinkHeader from 'parse-link-header';
 import 'whatwg-fetch';
 import message from '../common/message';
-// @ts-expect-error ts-migrate(2691) FIXME: An import path cannot end with a '.ts' extension. ... Remove this comment to see the full error message
-import baseUrl from './baseUrl.ts';
+import baseUrl from './baseUrl';
 
 export default async function fetchJson(method: any, url: any, body: any) {
   const BASE_URL = baseUrl();

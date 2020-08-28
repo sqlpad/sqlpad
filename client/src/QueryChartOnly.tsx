@@ -3,8 +3,7 @@ import ExportButton from './common/ExportButton';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import QueryResultRunning from './common/QueryResultRunning';
 import SqlpadTauChart from './common/SqlpadTauChart';
-// @ts-expect-error ts-migrate(2691) FIXME: An import path cannot end with a '.ts' extension. ... Remove this comment to see the full error message
-import { exportPng } from './common/tauChartRef.ts';
+import { exportPng } from './common/tauChartRef';
 import useQueryResultById from './utilities/useQueryResultById';
 
 type Props = {
