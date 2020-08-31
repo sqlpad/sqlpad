@@ -16,7 +16,7 @@ docker run -p 3000:3000 sqlpad/sqlpad:latest
 
 # volume and env vars being set and run in background
 # directory `~/docker-volumes` must be shared with docker to work
-docker run --name sqlpad --env SQLPAD_DEBUG=TRUE -p 127.0.0.1:3000:3000 --volume ~/docker-volumes/sqlpad-postgres:/var/lib/sqlpad --detach sqlpad/sqlpad:latest
+docker run --name sqlpad -p 127.0.0.1:3000:3000 --volume ~/docker-volumes/sqlpad-postgres:/var/lib/sqlpad --detach sqlpad/sqlpad:latest
 
 # To list running docker images
 docker ps
