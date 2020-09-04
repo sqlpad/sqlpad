@@ -7,6 +7,17 @@
     "@reach/dialog": "^0.10.5",
     "@reach/menu-button": "^0.10.5",
     "@reach/tooltip": "^0.10.5",
+    "@types/humanize-duration": "^3.18.1",
+    "@types/jest": "^26.0.9",
+    "@types/keymaster": "^1.6.28",
+    "@types/lodash": "^4.14.160",
+    "@types/match-sorter": "^4.0.0",
+    "@types/node": "^14.0.27",
+    "@types/react": "^16.9.46",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-measure": "^2.0.6",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/react-window": "^1.8.2",
     "d3": "^5.16.0",
     "downshift": "^6.0.3",
     "humanize-duration": "^3.23.1",
@@ -31,6 +42,7 @@
     "react-window-infinite-loader": "^1.0.5",
     "swr": "^0.3.0",
     "taucharts": "^2.8.0",
+    "typescript": "^3.9.7",
     "unistore": "^3.5.2",
     "use-debounce": "^3.4.3",
     "uuid": "^8.3.0",
@@ -42,8 +54,8 @@
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test --env=jsdom",
-    "fixlint": "eslint --fix \"**/*.js\"",
-    "lint": "eslint \"**/*.js\""
+    "fixlint": "eslint --fix \"**/*.{js,jsx,ts,tsx}\"",
+    "lint": "eslint \"**/*.{js,jsx,ts,tsx}\""
   },
   "browserslist": [
     ">0.2%",
@@ -54,6 +66,7 @@
   "devDependencies": {
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "source-map-explorer": "^2.4.2"
+    "source-map-explorer": "^2.4.2",
+    "ts-migrate": "^0.1.1"
   }
 }
