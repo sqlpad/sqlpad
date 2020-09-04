@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.6.0] - 2020-09-04
+
+- Fix Presto/ClickHouse error display
+- Show line numbers in SQL editor
+- Update dependencies
+
 ## [5.5.1] - 2020-08-07
 
 - Fix missing `top` strategy addition in 5.5.0
