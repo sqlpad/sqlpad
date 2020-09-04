@@ -76,7 +76,7 @@ function SqlEditor({ onChange, readOnly, value, onSelectionChange }: Props) {
             onSelectionChange={handleSelection}
             readOnly={readOnly}
             setOptions={setOptions}
-            showGutter={false}
+            showGutter={true}
             showPrintMargin={false}
             theme="sqlserver"
             value={value}

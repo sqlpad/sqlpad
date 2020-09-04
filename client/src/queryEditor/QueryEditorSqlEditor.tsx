@@ -19,7 +19,7 @@ function QueryEditorSqlEditor({
   ]);
 
   return (
-    <div style={{ padding: 4, height: '100%', width: '100%' }}>
+    <div style={{ height: '100%', width: '100%' }}>
       <SqlEditor
         value={value || ''}
         // @ts-expect-error
