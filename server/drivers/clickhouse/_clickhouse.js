@@ -62,8 +62,8 @@ async function handleStatementAndGetMore(results, statement, config) {
     statement = JSON.parse(statement);
   } catch (e) {
     // Queries like 'insert/create table/drop table' SQLs have empty response body,
-    // so it return the success message.
-    return Promise.reject(new Error(statement || 'Successfully Executed.'));
+    // so it return the original body.
+    return statement;
   }
   results = updateResults(results, statement);
   if (!statement.nextUri) {
