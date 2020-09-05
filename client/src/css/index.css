@@ -139,6 +139,7 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: scroll;
 
   font-size: 1.3rem;
   padding: 24px;
