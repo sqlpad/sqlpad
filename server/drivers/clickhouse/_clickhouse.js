@@ -37,7 +37,7 @@ function send(config, query) {
     }
   )
     .then((response) =>
-      response.ok ? response.json() : { error: response.text() }
+      response.ok ? response.text() : { error: response.text() }
     )
     .then((statement) => handleStatementAndGetMore(results, statement, config));
 }
@@ -57,6 +57,16 @@ async function handleStatementAndGetMore(results, statement, config) {
     // A lot of other error data available,
     // but error.message contains the detail on syntax issue
     return Promise.reject(new Error(await statement.error));
+  }
+  try {
+    statement = JSON.parse(statement);
+  } catch (e) {
+    // Queries like 'insert/create table/drop table' SQLs have empty response body,
+    // so it return the original body.
+    return {
+      data: [{ result: statement || 'SUCCESS' }],
+      columns: [{ name: 'result', type: 'String' }],
+    };
   }
   results = updateResults(results, statement);
   if (!statement.nextUri) {
