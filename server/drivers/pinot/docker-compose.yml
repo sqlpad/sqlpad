@@ -1,0 +1,7 @@
+version: '3'
+services:
+  pinot:
+    image: apachepinot/pinot:latest
+    command: QuickStart -type batch
+    ports:
+      - '9000:9000'
