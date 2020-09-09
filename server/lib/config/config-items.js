@@ -223,19 +223,11 @@ const configItems = [
     key: 'ldapPassword_d',
     envVar: 'LDAP_PASSWORD',
     default: '',
-    deprecated:
-      'To be removed in v6. Use SQLPAD_LDAP_BIND_CREDENTIALS instead.',
+    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_PASSWORD instead.',
   },
   {
     key: 'ldapPassword',
     envVar: 'SQLPAD_LDAP_PASSWORD',
-    default: '',
-    deprecated:
-      'To be removed in v6. Use SQLPAD_LDAP_BIND_CREDENTIALS instead.',
-  },
-  {
-    key: 'ldapBindCredentials',
-    envVar: 'SQLPAD_LDAP_BIND_CREDENTIALS',
     default: '',
   },
   {

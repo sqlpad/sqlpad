@@ -312,9 +312,9 @@ SQLPAD_LDAP_SEARCH_BASE = ""
 SQLPAD_LDAP_BIND_DN = ""
 
 # Password for LDAP user used for LDAP lookup
-SQLPAD_LDAP_BIND_CREDETIALS = ""
+SQLPAD_LDAP_PASSWORD = ""
 
-# LDAP search filter
+# LDAP search filter. e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory
 SQLPAD_LDAP_SEARCH_FILTER = ""
 ```
 

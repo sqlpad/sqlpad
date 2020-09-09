@@ -26,9 +26,7 @@ function enableLdap(config) {
             config.get('ldapUsername') ||
             config.get('ldapUsername_d'),
           bindCredentials:
-            config.get('ldapBindCredentials') ||
-            config.get('ldapPassword') ||
-            config.get('ldapPassword_d'),
+            config.get('ldapPassword') || config.get('ldapPassword_d'),
           searchFilter: config.get('ldapSearchFilter'),
         },
       },
