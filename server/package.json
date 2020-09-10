@@ -76,7 +76,7 @@
     "nodemailer": "^6.4.11",
     "papaparse": "^5.3.0",
     "passport": "^0.4.1",
-    "passport-activedirectory": "^1.0.4",
+    "passport-ldapauth": "^2.1.4",
     "passport-custom": "^1.1.1",
     "passport-google-oauth20": "^2.0.0",
     "passport-http": "^0.3.0",

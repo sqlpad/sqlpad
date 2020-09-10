@@ -306,13 +306,16 @@ SQLPAD_LDAP_AUTH_ENABLED = "false"
 SQLPAD_LDAP_URL = ""
 
 # Base LDAP DN to search for users in
-SQLPAD_LDAP_BASE_DN = ""
+SQLPAD_LDAP_SEARCH_BASE = ""
 
 # Username for LDAP lookup
-SQLPAD_LDAP_USERNAME = ""
+SQLPAD_LDAP_BIND_DN = ""
 
 # Password for LDAP user used for LDAP lookup
 SQLPAD_LDAP_PASSWORD = ""
+
+# LDAP search filter. e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory
+SQLPAD_LDAP_SEARCH_FILTER = ""
 ```
 
 ## OpenID Connect

@@ -135,9 +135,10 @@ LDAP-based authentication can be enabled by setting the necessary environment va
 
 - `SQLPAD_LDAP_AUTH_ENABLED` - Set to TRUE if LDAP enable, FALSE if LDAP disable.
 - `SQLPAD_LDAP_URL` - LDAP URL that supports protocols: `ldap://` and `ldaps://`, eg: `ldap://localhost:389`.
-- `SQLPAD_LDAP_BASE_DN` - Base LDAP DN to search for users in, eg: `dc=domain,dc=com`.
-- `SQLPAD_LDAP_USERNAME` - The bind user will be used to lookup information about other LDAP users.
+- `SQLPAD_LDAP_SEARCH_BASE` - Base LDAP DN to search for users in, eg: `dc=domain,dc=com`.
+- `SQLPAD_LDAP_BIND_DN` - The bind user will be used to lookup information about other LDAP users.
 - `SQLPAD_LDAP_PASSWORD` - The password to bind with for the lookup user.
+- `SQLPAD_LDAP_SEARCH_FILTER` - LDAP search filter, e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory.  Use literal {{username}} to have the given username used in the search.
 - `SQLPAD_USERPASS_AUTH_DISABLED`=`false` (need to enable local user logins)
 
 LDAP-based authentication can be enabled and used with local authencation together. LDAP-based users need to be added and set relavant roles ahead of time. When LDAP-based authentication enabled, local user login/registration must be enabled. Users can sign in to SQLPad with an LDAP username (not an e-mail address) and LDAP password using LDAP-based authentication, and with an e-mail address and local password by local authencation.

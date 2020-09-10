@@ -45,7 +45,7 @@ function handleSignin(req, res, next) {
     (config.get('ldapAuthEnabled') || config.get('enableLdapAuth')) &&
     body.email.indexOf('@') < 0
   ) {
-    return passport.authenticate('ActiveDirectory', handleAuth)(req, res, next);
+    return passport.authenticate('ldapauth', handleAuth)(req, res, next);
   }
 
   if (
