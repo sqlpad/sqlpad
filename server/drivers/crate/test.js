@@ -1,4 +1,5 @@
 const assert = require('assert');
+const testUtils = require('../test-utils.js');
 const crate = require('./index.js');
 
 const connection = {
@@ -31,14 +32,8 @@ describe('drivers/crate', function () {
 
   it('getSchema()', function () {
     return crate.getSchema(connection).then((schemaInfo) => {
-      assert(schemaInfo.doc, 'doc');
-      assert(schemaInfo.doc.test, 'doc.test');
-      const columns = schemaInfo.doc.test;
-      assert.equal(columns.length, 1, 'columns.length');
-      assert.equal(columns[0].table_schema, 'doc', 'table_schema');
-      assert.equal(columns[0].table_name, 'test', 'table_name');
-      assert.equal(columns[0].column_name, 'id', 'column_name');
-      assert(columns[0].hasOwnProperty('data_type'), 'data_type');
+      const column = testUtils.getColumn(schemaInfo, 'doc', 'test', 'id');
+      assert(column.hasOwnProperty('dataType'));
     });
   });
 

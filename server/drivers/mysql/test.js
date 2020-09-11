@@ -1,4 +1,5 @@
 const assert = require('assert');
+const testUtils = require('../test-utils.js');
 const mysql = require('./index.js');
 
 const connection = {
@@ -30,14 +31,8 @@ describe('drivers/mysql', function () {
 
   it('getSchema()', function () {
     return mysql.getSchema(connection).then((schemaInfo) => {
-      assert(schemaInfo.sqlpad, 'sqlpad');
-      assert(schemaInfo.sqlpad.test, 'sqlpad.test');
-      const columns = schemaInfo.sqlpad.test;
-      assert.equal(columns.length, 1, 'columns.length');
-      assert.equal(columns[0].table_schema, 'sqlpad', 'table_schema');
-      assert.equal(columns[0].table_name, 'test', 'table_name');
-      assert.equal(columns[0].column_name, 'id', 'column_name');
-      assert(columns[0].hasOwnProperty('data_type'), 'data_type');
+      const column = testUtils.getColumn(schemaInfo, 'sqlpad', 'test', 'id');
+      assert(column.hasOwnProperty('dataType'));
     });
   });
 

@@ -295,7 +295,11 @@ class ConnectionClient {
    * so we don't want to cache this on (connectionId, userId) pairing.
    * Instead we'll use a hash of connection after template rendering
    */
-  getSchemaCacheId() {
+  getSchemaCacheId(formatVersion) {
+    const identifier = formatVersion
+      ? `schemacache${formatVersion}:`
+      : 'schemacache:';
+
     const keyValuesString = Object.keys(this.connection)
       .sort()
       .map((key) => {
@@ -304,7 +308,7 @@ class ConnectionClient {
       .join('::');
 
     return (
-      'schemacache:' + uuidv5(keyValuesString, consts.CONNECTION_HASH_NAMESPACE)
+      identifier + uuidv5(keyValuesString, consts.CONNECTION_HASH_NAMESPACE)
     );
   }
 }

@@ -1,5 +1,6 @@
 const assert = require('assert');
 const bigquery = require('./index.js');
+const testUtils = require('../test-utils.js');
 
 const connection = {
   name: 'test bigquery',
@@ -52,17 +53,13 @@ describe('drivers/bigquery', function () {
 
   it('implements getSchema', function () {
     return bigquery.getSchema(connection).then((schemaInfo) => {
-      const schema = schemaInfo[connection.datasetName];
-      const MSG = 'schema query returns expected results';
-
-      assert(schema, MSG);
-      assert(schema.hasOwnProperty(testTable), MSG);
-      const columns = schema[testTable];
-      assert.equal(columns.length, 1, MSG);
-      assert.equal(columns[0].table_schema, connection.datasetName, MSG);
-      assert.equal(columns[0].table_name, testTable, MSG);
-      assert.equal(columns[0].column_name, 'id', MSG);
-      assert.equal(columns[0].data_type, 'INTEGER', MSG);
+      testUtils.hasColumnDataType(
+        schemaInfo,
+        connection.datasetName,
+        testTable,
+        'id',
+        'INTEGER'
+      );
     });
   });
 

@@ -1,4 +1,5 @@
 const assert = require('assert');
+const testUtils = require('../test-utils.js');
 const pinot = require('./index.js');
 
 const connection = {
@@ -17,15 +18,13 @@ describe('drivers/pinot', function () {
 
   it('getSchema()', async function () {
     const schemaInfo = await pinot.getSchema(connection);
-    assert(schemaInfo);
-    assert(schemaInfo.main, 'main');
-    assert(schemaInfo.main.baseballStats, 'main.baseballStats');
-    const columns = schemaInfo.main.baseballStats;
-    assert.equal(columns.length, 25, 'columns.length');
-    assert.equal(columns[0].table_schema, 'main', 'table_schema');
-    assert.equal(columns[0].table_name, 'baseballStats', 'table_name');
-    assert.equal(columns[0].column_name, 'playerID', 'column_name');
-    assert(columns[0].hasOwnProperty('data_type'), 'data_type');
+    const column = testUtils.getColumn(
+      schemaInfo,
+      'main',
+      'baseballStats',
+      'playerID'
+    );
+    assert(column.hasOwnProperty('dataType'));
   });
 
   it('runQuery under limit', async function () {

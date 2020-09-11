@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 const assert = require('assert');
 const cassandra = require('./index.js');
+const testUtils = require('../test-utils.js');
 
 const connection = {
   name: 'test cassandra',
@@ -31,15 +32,8 @@ describe('drivers/cassandra', function () {
 
   it('getSchema()', async function () {
     const schemaInfo = await cassandra.getSchema(connection);
-    assert(schemaInfo);
-    assert(schemaInfo.test, 'test');
-    assert(schemaInfo.test.test, 'test.test');
-    const columns = schemaInfo.test.test;
-    assert.equal(columns.length, 2, 'columns.length');
-    assert.equal(columns[0].table_schema, 'test', 'table_schema');
-    assert.equal(columns[0].table_name, 'test', 'table_name');
-    assert.equal(columns[0].column_name, 'id', 'column_name');
-    assert(columns[0].hasOwnProperty('data_type'), 'data_type');
+    const column = testUtils.getColumn(schemaInfo, 'test', 'test', 'id');
+    assert(column.hasOwnProperty('dataType'));
   });
 
   it('runQuery under limit', async function () {

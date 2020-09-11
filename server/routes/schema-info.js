@@ -36,10 +36,49 @@ async function getSchemaInfo(req, res) {
     return res.utils.error(error);
   }
 
-  if (Object.keys(schemaInfo).length) {
-    await models.schemaInfo.saveSchemaInfo(schemaCacheId, schemaInfo);
+  // schemaInfo format returned from connectionClient changed since this route was originally implemented
+  // It needs to change from this:
+  // { schemas: [{ name, description, tables: [{ name, description, columns: [{ name, description, dataType }] }] }] }
+  // to the following:
+  /*
+    {
+      "schema-name": {
+        "table-name": [
+          {
+            column_name: "the column name",
+            data_type: "string"
+            column_description: "an optional description"
+          }
+        ]
+      }
+    }
+  */
+
+  const oldFormat = {};
+  if (schemaInfo.schemas) {
+    schemaInfo.schemas.forEach((schema) => {
+      oldFormat[schema.name] = {};
+      if (schema.tables) {
+        schema.tables.forEach((table) => {
+          oldFormat[schema.name][table.name] = [];
+          if (table.columns) {
+            table.columns.forEach((column) => {
+              oldFormat[schema.name][table.name].push({
+                column_name: column.name,
+                data_type: column.dataType,
+                column_description: column.description,
+              });
+            });
+          }
+        });
+      }
+    });
   }
-  return res.utils.data(schemaInfo);
+
+  if (Object.keys(oldFormat).length) {
+    await models.schemaInfo.saveSchemaInfo(schemaCacheId, oldFormat);
+  }
+  return res.utils.data(oldFormat);
 }
 
 router.get(

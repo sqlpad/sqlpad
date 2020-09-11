@@ -1,4 +1,5 @@
 const assert = require('assert');
+const testUtils = require('../test-utils.js');
 const sqlserver = require('./index.js');
 
 const masterConnection = {
@@ -52,14 +53,7 @@ describe('drivers/sqlserver', function () {
 
   it('getSchema()', function () {
     return sqlserver.getSchema(connection).then((schemaInfo) => {
-      assert(schemaInfo.dbo, 'dbo');
-      assert(schemaInfo.dbo.test, 'dbo.test');
-      const columns = schemaInfo.dbo.test;
-      assert.equal(columns.length, 1, 'columns.length');
-      assert.equal(columns[0].table_schema, 'dbo', 'table_schema');
-      assert.equal(columns[0].table_name, 'test', 'table_name');
-      assert.equal(columns[0].column_name, 'id', 'column_name');
-      assert.equal(columns[0].data_type, 'int', 'data_type');
+      testUtils.hasColumnDataType(schemaInfo, 'dbo', 'test', 'id', 'int');
     });
   });
 

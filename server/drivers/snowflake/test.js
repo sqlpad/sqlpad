@@ -1,4 +1,5 @@
 const assert = require('assert');
+const testUtils = require('../test-utils.js');
 const snowflake = require('./index.js');
 
 const connection = {
@@ -33,14 +34,8 @@ describe('drivers/snowflake', function () {
   it('getSchema()', function () {
     this.timeout(60000);
     return snowflake.getSchema(connection).then((schemaInfo) => {
-      assert(schemaInfo.SQLPAD, 'SQLPAD');
-      assert(schemaInfo.SQLPAD.TEST, 'SQLPAD.TEST');
-      const columns = schemaInfo.SQLPAD.TEST;
-      assert.equal(columns.length, 1, 'columns.length');
-      assert.equal(columns[0].table_schema, 'SQLPAD', 'TABLE_SCHEMA');
-      assert.equal(columns[0].table_name, 'TEST', 'TABLE_NAME');
-      assert.equal(columns[0].column_name, 'ID', 'COLUMN_NAME');
-      assert(columns[0].hasOwnProperty('data_type'), 'DATA_TYPE');
+      const column = testUtils.getColumn(schemaInfo, 'SQLPAD', 'TEST', 'ID');
+      assert(column.hasOwnProperty('dataType'));
     });
   });
 

@@ -1,4 +1,5 @@
 const assert = require('assert');
+const testUtils = require('../test-utils.js');
 const hdb = require('./index.js');
 
 const connection = {
@@ -38,14 +39,8 @@ describe('drivers/hdb', function () {
 
   it('getSchema()', function () {
     return hdb.getSchema(connection).then((schemaInfo) => {
-      assert(schemaInfo.SYSTEM, 'SYSTEM');
-      assert(schemaInfo.SYSTEM.TEST, 'SYSTEM.TEST');
-      const columns = schemaInfo.SYSTEM.TEST;
-      assert.equal(columns.length, 1, 'columns.length');
-      assert.equal(columns[0].table_schema, 'SYSTEM', 'table_schema');
-      assert.equal(columns[0].table_name, 'TEST', 'table_name');
-      assert.equal(columns[0].column_name, 'ID', 'column_name');
-      assert(columns[0].hasOwnProperty('data_type'), 'data_type');
+      const column = testUtils.getColumn(schemaInfo, 'SYSTEM', 'TEST', 'ID');
+      assert(column.hasOwnProperty('dataType'));
     });
   });
 

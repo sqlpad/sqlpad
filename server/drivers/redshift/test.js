@@ -1,4 +1,5 @@
 const assert = require('assert');
+const testUtils = require('../test-utils.js');
 const redshift = require('./index.js');
 
 const connection = {
@@ -28,13 +29,13 @@ describe('drivers/fake-redshift', function () {
 
   it.skip('getSchema()', function () {
     return redshift.getSchema(connection).then((schemaInfo) => {
-      const { sqlpad_test } = schemaInfo.public;
-      assert(sqlpad_test);
-      assert.strictEqual(sqlpad_test[0].table_schema, 'public');
-      assert.strictEqual(sqlpad_test[0].table_name, 'sqlpad_test');
-      assert.strictEqual(sqlpad_test[0].column_name, 'id');
-      assert.strictEqual(sqlpad_test[0].data_type, 'int4');
-      assert.strictEqual(sqlpad_test[0].column_description, null);
+      testUtils.hasColumnDataType(
+        schemaInfo,
+        'public',
+        'sqlpad_test',
+        'id',
+        'int4'
+      );
     });
   });
 
