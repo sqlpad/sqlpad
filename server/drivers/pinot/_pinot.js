@@ -133,9 +133,8 @@ async function getJson(url) {
 //   "minConsumingFreshnessTimeMs": 0
 // }
 async function postSql(controllerUrl, sql) {
-  // TODO: verify API paths
-  // if using broker (typically port :8099) the path is `/query/sql`
-  // if using controller (typically port :9000) the path is `/sql`
+  // If using broker (typically port :8099) the path is `/query/sql`
+  // If using controller (typically port :9000) the path is `/sql`
   return postJson(`${controllerUrl}/sql`, {
     sql,
     trace: false,
