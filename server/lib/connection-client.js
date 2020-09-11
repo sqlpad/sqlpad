@@ -277,7 +277,7 @@ class ConnectionClient {
    * This data is used by client to build schema tree in editor sidebar
    * @returns {Promise}
    */
-  getSchema() {
+  getSchema(formatVersion) {
     // Increase the max rows without modifiying original connection
     const connectionMaxed = {
       ...this.connection,
@@ -285,7 +285,7 @@ class ConnectionClient {
       // Schema probably needs to be broken up into getting tables (and their schemas), and then batching column reads
       maxRows: 1000000,
     };
-    return this.driver.getSchema(connectionMaxed);
+    return this.driver.getSchema(connectionMaxed, formatVersion);
   }
 
   /**
@@ -295,7 +295,11 @@ class ConnectionClient {
    * so we don't want to cache this on (connectionId, userId) pairing.
    * Instead we'll use a hash of connection after template rendering
    */
-  getSchemaCacheId() {
+  getSchemaCacheId(formatVersion) {
+    const identifier = formatVersion
+      ? `schemacache${formatVersion}:`
+      : 'schemacache:';
+
     const keyValuesString = Object.keys(this.connection)
       .sort()
       .map((key) => {
@@ -304,7 +308,7 @@ class ConnectionClient {
       .join('::');
 
     return (
-      'schemacache:' + uuidv5(keyValuesString, consts.CONNECTION_HASH_NAMESPACE)
+      identifier + uuidv5(keyValuesString, consts.CONNECTION_HASH_NAMESPACE)
     );
   }
 }

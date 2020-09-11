@@ -112,14 +112,15 @@ function testConnection(connection) {
  * In the event v1 query does not work, try v0
  * If that errors out as well, then let that error bubble up
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-async function getSchema(connection) {
+async function getSchema(connection, formatVersion) {
   try {
     const queryResult = await runQuery(SCHEMA_SQL_V1, connection);
-    return formatSchemaQueryResults(queryResult);
+    return formatSchemaQueryResults(queryResult, formatVersion);
   } catch (error) {
     const queryResult = await runQuery(SCHEMA_SQL_V0, connection);
-    return formatSchemaQueryResults(queryResult);
+    return formatSchemaQueryResults(queryResult, formatVersion);
   }
 }
 

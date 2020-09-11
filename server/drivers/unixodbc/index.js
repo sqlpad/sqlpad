@@ -83,13 +83,14 @@ function testConnection(connection) {
 /**
  * Get schema for connection
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-function getSchema(connection) {
+function getSchema(connection, formatVersion) {
   const schema_sql = connection.schema_sql
     ? connection.schema_sql
     : SCHEMA_SQL_INFORMATION_SCHEMA;
   return runQuery(schema_sql, connection).then((queryResult) =>
-    formatSchemaQueryResults(queryResult)
+    formatSchemaQueryResults(queryResult, formatVersion)
   );
 }
 

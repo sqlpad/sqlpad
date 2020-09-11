@@ -144,8 +144,9 @@ function testConnection(connection) {
 /**
  * Get schema for connection
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-async function getSchema(connection) {
+async function getSchema(connection, formatVersion) {
   const db = new Client(connection);
   await db.connect();
   try {
@@ -183,7 +184,7 @@ async function getSchema(connection) {
     queryResult.rows = columnRows;
 
     await db.disconnect();
-    return formatSchemaQueryResults(queryResult);
+    return formatSchemaQueryResults(queryResult, formatVersion);
   } catch (error) {
     await db.disconnect();
     throw error;

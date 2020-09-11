@@ -148,8 +148,9 @@ function testConnection(connection) {
 /**
  * Get schema for connection
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-function getSchema(connection) {
+function getSchema(connection, formatVersion) {
   const bigquery = newBigQuery(connection);
 
   const queries = splitDatasets(connection.datasetName).map(
@@ -195,7 +196,7 @@ function getSchema(connection) {
           });
         }
       }
-      return formatSchemaQueryResults(tableSchema);
+      return formatSchemaQueryResults(tableSchema, formatVersion);
     });
 }
 

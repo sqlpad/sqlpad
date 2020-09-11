@@ -82,11 +82,12 @@ function testConnection(connection) {
  * Get schema for connection
  * Cassandra driver doesn't accept MAX_SAFE_INTEGER as a fetch limit so we default to one million
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-async function getSchema(connection) {
+async function getSchema(connection, formatVersion) {
   connection.maxRows = 1000000;
   const queryResult = await runQuery(SCHEMA_SQL, connection);
-  return formatSchemaQueryResults(queryResult);
+  return formatSchemaQueryResults(queryResult, formatVersion);
 }
 
 const fields = [

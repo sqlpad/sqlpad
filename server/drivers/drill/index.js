@@ -81,14 +81,15 @@ function testConnection(connection) {
 /**
  * Get schema for connection
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-function getSchema(connection) {
+function getSchema(connection, formatVersion) {
   const schemaSql = getDrillSchemaSql(
     connection.drillCatalog
     // connection.drillSchema
   );
   return runQuery(schemaSql, connection).then((queryResult) =>
-    formatSchemaQueryResults(queryResult)
+    formatSchemaQueryResults(queryResult, formatVersion)
   );
 }
 

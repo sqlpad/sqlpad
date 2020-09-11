@@ -76,8 +76,9 @@ function testConnection(connection) {
  * TODO FIXME: PInot does not have a concept of schema, but SQLPad requires it at this time
  * SQLPad needs to be updated to support optional table_schema
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-async function getSchema(connection) {
+async function getSchema(connection, formatVersion) {
   const columnRows = [];
 
   const { tables } = await pinot.getTables(connection.controllerUrl);
@@ -105,7 +106,7 @@ async function getSchema(connection) {
     }
   }
 
-  return formatSchemaQueryResults({ rows: columnRows });
+  return formatSchemaQueryResults({ rows: columnRows }, formatVersion);
 }
 
 module.exports = {

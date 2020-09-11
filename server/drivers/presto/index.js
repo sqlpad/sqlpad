@@ -73,14 +73,15 @@ function testConnection(connection) {
 /**
  * Get schema for connection
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-function getSchema(connection) {
+function getSchema(connection, formatVersion) {
   const schemaSql = getPrestoSchemaSql(
     connection.prestoCatalog,
     connection.prestoSchema
   );
   return runQuery(schemaSql, connection).then((queryResult) =>
-    formatSchemaQueryResults(queryResult)
+    formatSchemaQueryResults(queryResult, formatVersion)
   );
 }
 

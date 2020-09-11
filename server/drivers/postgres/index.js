@@ -175,10 +175,11 @@ function testConnection(connection) {
 /**
  * Get schema for connection
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-async function getSchema(connection) {
+async function getSchema(connection, formatVersion) {
   const queryResult = await runQuery(SCHEMA_SQL, connection);
-  return formatSchemaQueryResults(queryResult);
+  return formatSchemaQueryResults(queryResult, formatVersion);
 }
 
 const fields = [

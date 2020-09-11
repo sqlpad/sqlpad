@@ -194,6 +194,7 @@ async function makeApp(config, models) {
     require('./routes/connections.js'),
     require('./routes/connection-accesses.js'),
     require('./routes/connection-clients.js'),
+    require('./routes/connection-schema.js'),
     require('./routes/test-connection.js'),
     require('./routes/query-history.js'),
     require('./routes/schema-info.js'),

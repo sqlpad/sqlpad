@@ -102,10 +102,11 @@ function testConnection(connection) {
 /**
  * Get schema for connection
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-function getSchema(connection) {
+function getSchema(connection, formatVersion) {
   return runQuery(SCHEMA_SQL, connection).then((queryResult) =>
-    formatSchemaQueryResults(queryResult)
+    formatSchemaQueryResults(queryResult, formatVersion)
   );
 }
 

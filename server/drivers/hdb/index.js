@@ -106,11 +106,12 @@ function testConnection(connection) {
 /**
  * Get schema for connection
  * @param {*} connection
+ * @param {number} [formatVersion]
  */
-async function getSchema(connection) {
+async function getSchema(connection, formatVersion) {
   const schemaSql = getSchemaSql(connection.hanaSchema);
   const queryResult = await runQuery(schemaSql, connection);
-  return formatSchemaQueryResults(queryResult);
+  return formatSchemaQueryResults(queryResult, formatVersion);
 }
 
 const fields = [
