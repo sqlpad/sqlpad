@@ -53,225 +53,222 @@ A default connection selection can be set using environment variable `SQLPAD_DEF
 
 ## CrateDB
 
-
- key       | description                  | data type
------------|------------------------------|:---------:
-`name`     | Name of connection           | text
-`driver`   | Must be `crate`              | text
-`host`     | Host/Server/IP Address       | text
-`port`     | Port (optional)              | text
-`username` | Database Username            | text
-`password` | Database Password            | text
-`ssl`      | Use SSL                      | boolean
+| key        | description            | data type |
+| ---------- | ---------------------- | :-------: |
+| `name`     | Name of connection     |   text    |
+| `driver`   | Must be `crate`        |   text    |
+| `host`     | Host/Server/IP Address |   text    |
+| `port`     | Port (optional)        |   text    |
+| `username` | Database Username      |   text    |
+| `password` | Database Password      |   text    |
+| `ssl`      | Use SSL                |  boolean  |
 
 ## Apache Drill
 
-key                  | description                  | data type
----------------------|------------------------------|:---------:
-`name`               | Name of connection           | text
-`driver`             | Must be `drill`              | text
-`host`               | Host/Server/IP Address       | text
-`port`               | Port (optional)              | text
-`username`           | Database Username            | text
-`password`           | Database Password            | text
-`drillDefaultSchema` | Default Schema               | text
-`ssl`                | Use SSL to connect to Drill  | boolean
+| key                  | description                 | data type |
+| -------------------- | --------------------------- | :-------: |
+| `name`               | Name of connection          |   text    |
+| `driver`             | Must be `drill`             |   text    |
+| `host`               | Host/Server/IP Address      |   text    |
+| `port`               | Port (optional)             |   text    |
+| `username`           | Database Username           |   text    |
+| `password`           | Database Password           |   text    |
+| `drillDefaultSchema` | Default Schema              |   text    |
+| `ssl`                | Use SSL to connect to Drill |  boolean  |
+
+## Apache Pinot
+
+| key             | description                                                | data type |
+| --------------- | ---------------------------------------------------------- | :-------: |
+| `name`          | Name of connection                                         |   text    |
+| `driver`        | Must be `pinot`                                            |   text    |
+| `controllerUrl` | URL containing protocol, host, and port of Pinot contoller |   text    |
 
 ## ClickHouse
 
-key        | description                      | data type
------------|----------------------------------|:---------:
-`name`     | Name of connection               | text
-`driver`   | Must be `clickhouse`             | text
-`host`     | Host/Server/IP Address           | text
-`port`     | HTTP Port (optional)             | text
-`username` | Username (optional)              | text
-`password` | Password (optional)              | text
-`database` | Database Name (optional)         | text
+| key        | description              | data type |
+| ---------- | ------------------------ | :-------: |
+| `name`     | Name of connection       |   text    |
+| `driver`   | Must be `clickhouse`     |   text    |
+| `host`     | Host/Server/IP Address   |   text    |
+| `port`     | HTTP Port (optional)     |   text    |
+| `username` | Username (optional)      |   text    |
+| `password` | Password (optional)      |   text    |
+| `database` | Database Name (optional) |   text    |
 
 ## SAP Hana (hdb)
 
-key            | description               | data type
----------------|---------------------------|:---------:
-`name`         | Name of connection        | text
-`driver`       | Must be `hdb`             | text
-`host`         | Host/Server/IP Address    | text
-`hanaport`     | Port (e.g. 39015)         | text
-`username`     | Database Username         | text
-`password`     | Database Password         | text
-`hanadatabase` | Tenant                    | text
-`hanaSchema`   | Schema (optional)         | text
+| key            | description            | data type |
+| -------------- | ---------------------- | :-------: |
+| `name`         | Name of connection     |   text    |
+| `driver`       | Must be `hdb`          |   text    |
+| `host`         | Host/Server/IP Address |   text    |
+| `hanaport`     | Port (e.g. 39015)      |   text    |
+| `username`     | Database Username      |   text    |
+| `password`     | Database Password      |   text    |
+| `hanadatabase` | Tenant                 |   text    |
+| `hanaSchema`   | Schema (optional)      |   text    |
 
 ## MySQL
 
-key                                | description                                  | data type
------------------------------------|----------------------------------------------|:---------:
-`name`                             | Name of connection                           | text
-`driver`                           | Must be `mysql`                              | text
-`multiStatementTransactionEnabled` | Reuse db connection across query executions  | boolean
-`host`                             | Host/Server/IP Address                       | text
-`port`                             | Port (optional)                              | text
-`database`                         | Database                                     | text
-`username`                         | Database Username                            | text
-`password`                         | Database Password                            | text
-`mysqlSsl`                         | Use SSL                                      | boolean
-`mysqlInsecureAuth`                | Use old/insecure pre 4.1 Auth System         | boolean
-
+| key                                | description                                 | data type |
+| ---------------------------------- | ------------------------------------------- | :-------: |
+| `name`                             | Name of connection                          |   text    |
+| `driver`                           | Must be `mysql`                             |   text    |
+| `multiStatementTransactionEnabled` | Reuse db connection across query executions |  boolean  |
+| `host`                             | Host/Server/IP Address                      |   text    |
+| `port`                             | Port (optional)                             |   text    |
+| `database`                         | Database                                    |   text    |
+| `username`                         | Database Username                           |   text    |
+| `password`                         | Database Password                           |   text    |
+| `mysqlSsl`                         | Use SSL                                     |  boolean  |
+| `mysqlInsecureAuth`                | Use old/insecure pre 4.1 Auth System        |  boolean  |
 
 ## MySQL2
 
-key                           | description                                                                         | data type
-------------------------------|-------------------------------------------------------------------------------------|:---------:
-`name`                        | Name of connection                                                                  | text
-`driver`                      | Must be `mysql2`                                                                    | text
-`host`                        | Host/Server/IP Address                                                              | text
-`port`                        | Port (optional)                                                                     | text
-`database`                    | Database                                                                            | text
-`username`                    | Database Username                                                                   | text
-`password`                    | Database Password                                                                   | text
-`mysqlInsecureAuth`           | Use old/insecure pre 4.1 Auth System                                                | boolean
-`minTlsVersion`               | Minimum TLS version to allow. One of: `TLSv1.3`, `TLSv1.2`, `TLSv1.1`, or `TLSv1`.  | text
-`maxTlsVersion`               | Maximum TLS version to allow. see above for options                                 | text
-`mysqlSkipValidateServerCert` | Do not validate servier certificate. (Don't use this for production)                | boolean
-
+| key                           | description                                                                        | data type |
+| ----------------------------- | ---------------------------------------------------------------------------------- | :-------: |
+| `name`                        | Name of connection                                                                 |   text    |
+| `driver`                      | Must be `mysql2`                                                                   |   text    |
+| `host`                        | Host/Server/IP Address                                                             |   text    |
+| `port`                        | Port (optional)                                                                    |   text    |
+| `database`                    | Database                                                                           |   text    |
+| `username`                    | Database Username                                                                  |   text    |
+| `password`                    | Database Password                                                                  |   text    |
+| `mysqlInsecureAuth`           | Use old/insecure pre 4.1 Auth System                                               |  boolean  |
+| `minTlsVersion`               | Minimum TLS version to allow. One of: `TLSv1.3`, `TLSv1.2`, `TLSv1.1`, or `TLSv1`. |   text    |
+| `maxTlsVersion`               | Maximum TLS version to allow. see above for options                                |   text    |
+| `mysqlSkipValidateServerCert` | Do not validate servier certificate. (Don't use this for production)               |  boolean  |
 
 ## PostgreSQL (postgres)
 
-key                                | description                                            | data type
------------------------------------|--------------------------------------------------------|:---------:
-`name`                             | Name of connection                                     | text
-`driver`                           | Must be `postgres`                                     | text
-`multiStatementTransactionEnabled` | Reuse db connection across query executions            | boolean
-`idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing  | number
-`host`                             | Host/Server/IP Address                                 | text
-`port`                             | Port (optional)                                        | text
-`database`                         | Database                                               | text
-`username`                         | Database Username                                      | text
-`password`                         | Database Password                                      | text
-`postgresSsl`                      | Use SSL                                                | boolean
-`postgresCert`                     | Database Certificate Path                              | text
-`postgresKey`                      | Database Key Path                                      | text
-`postgresCA`                       | Database CA Path                                       | text
-`useSocks`                         | Connect through SOCKS proxy                            | boolean
-`socksHost`                        | Proxy hostname                                         | text
-`socksPort`                        | Proxy port                                             | text
-`socksUsername`                    | Username for socks proxy                               | text
-`socksPassword`                    | Password for socks proxy                               | text
-
+| key                                | description                                           | data type |
+| ---------------------------------- | ----------------------------------------------------- | :-------: |
+| `name`                             | Name of connection                                    |   text    |
+| `driver`                           | Must be `postgres`                                    |   text    |
+| `multiStatementTransactionEnabled` | Reuse db connection across query executions           |  boolean  |
+| `idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing |  number   |
+| `host`                             | Host/Server/IP Address                                |   text    |
+| `port`                             | Port (optional)                                       |   text    |
+| `database`                         | Database                                              |   text    |
+| `username`                         | Database Username                                     |   text    |
+| `password`                         | Database Password                                     |   text    |
+| `postgresSsl`                      | Use SSL                                               |  boolean  |
+| `postgresCert`                     | Database Certificate Path                             |   text    |
+| `postgresKey`                      | Database Key Path                                     |   text    |
+| `postgresCA`                       | Database CA Path                                      |   text    |
+| `useSocks`                         | Connect through SOCKS proxy                           |  boolean  |
+| `socksHost`                        | Proxy hostname                                        |   text    |
+| `socksPort`                        | Proxy port                                            |   text    |
+| `socksUsername`                    | Username for socks proxy                              |   text    |
+| `socksPassword`                    | Password for socks proxy                              |   text    |
 
 ## PrestoDB
 
-key             | description                  | data type
-----------------|------------------------------|:---------:
-`name`          | Name of connection           | text
-`driver`        | Must be `presto`             | text
-`host`          | Host/Server/IP Address       | text
-`port`          | Port (optional)              | text
-`username`      | Database Username            | text
-`prestoCatalog` | Catalog                      | text
-`prestoSchema`  | Schema                       | text
-
+| key             | description            | data type |
+| --------------- | ---------------------- | :-------: |
+| `name`          | Name of connection     |   text    |
+| `driver`        | Must be `presto`       |   text    |
+| `host`          | Host/Server/IP Address |   text    |
+| `port`          | Port (optional)        |   text    |
+| `username`      | Database Username      |   text    |
+| `prestoCatalog` | Catalog                |   text    |
+| `prestoSchema`  | Schema                 |   text    |
 
 ## Redshift
 
 Redshift uses the Postgres driver, using a different query for pulling schema.
 
-key                                | description                                            | data type
------------------------------------|--------------------------------------------------------|:---------:
-`name`                             | Name of connection                                     | text
-`driver`                           | Must be `redshift`                                     | text
-`multiStatementTransactionEnabled` | Reuse db connection across query executions            | boolean
-`idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing  | number
-`host`                             | Host/Server/IP Address                                 | text
-`port`                             | Port (optional)                                        | text
-`database`                         | Database                                               | text
-`username`                         | Database Username                                      | text
-`password`                         | Database Password                                      | text
-`ssl`                              | Use SSL                                                | boolean
-`certPath`                         | Database Certificate Path                              | text
-`keyPath`                          | Database Key Path                                      | text
-`caPath`                           | Database CA Path                                       | text
-
+| key                                | description                                           | data type |
+| ---------------------------------- | ----------------------------------------------------- | :-------: |
+| `name`                             | Name of connection                                    |   text    |
+| `driver`                           | Must be `redshift`                                    |   text    |
+| `multiStatementTransactionEnabled` | Reuse db connection across query executions           |  boolean  |
+| `idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing |  number   |
+| `host`                             | Host/Server/IP Address                                |   text    |
+| `port`                             | Port (optional)                                       |   text    |
+| `database`                         | Database                                              |   text    |
+| `username`                         | Database Username                                     |   text    |
+| `password`                         | Database Password                                     |   text    |
+| `ssl`                              | Use SSL                                               |  boolean  |
+| `certPath`                         | Database Certificate Path                             |   text    |
+| `keyPath`                          | Database Key Path                                     |   text    |
+| `caPath`                           | Database CA Path                                      |   text    |
 
 ## SQL Server
 
-key                            | description                     | data type
--------------------------------|---------------------------------|:---------:
-`name`                         | Name of connection              | text
-`driver`                       | Must be `sqlserver`             | text
-`host`                         | Host/Server/IP Address          | text
-`port`                         | Port (optional)                 | text
-`database`                     | Database                        | text
-`username`                     | Database Username               | text
-`password`                     | Database Password               | text
-`domain`                       | Domain                          | text
-`sqlserverEncrypt`             | Encrypt (necessary for Azure)   | boolean
-`sqlserverMultiSubnetFailover` | MultiSubnetFailover             | boolean
-`readOnlyIntent`               | ReadOnly Application Intent     | boolean
-
+| key                            | description                   | data type |
+| ------------------------------ | ----------------------------- | :-------: |
+| `name`                         | Name of connection            |   text    |
+| `driver`                       | Must be `sqlserver`           |   text    |
+| `host`                         | Host/Server/IP Address        |   text    |
+| `port`                         | Port (optional)               |   text    |
+| `database`                     | Database                      |   text    |
+| `username`                     | Database Username             |   text    |
+| `password`                     | Database Password             |   text    |
+| `domain`                       | Domain                        |   text    |
+| `sqlserverEncrypt`             | Encrypt (necessary for Azure) |  boolean  |
+| `sqlserverMultiSubnetFailover` | MultiSubnetFailover           |  boolean  |
+| `readOnlyIntent`               | ReadOnly Application Intent   |  boolean  |
 
 ## Vertica
 
-key        | description                  | data type
------------|------------------------------|:---------:
-`name`     | Name of connection           | text
-`driver`   | Must be `vertica`            | text
-`host`     | Host/Server/IP Address       | text
-`port`     | Port (optional)              | text
-`database` | Database                     | text
-`username` | Database Username            | text
-`password` | Database Password            | text
-
+| key        | description            | data type |
+| ---------- | ---------------------- | :-------: |
+| `name`     | Name of connection     |   text    |
+| `driver`   | Must be `vertica`      |   text    |
+| `host`     | Host/Server/IP Address |   text    |
+| `port`     | Port (optional)        |   text    |
+| `database` | Database               |   text    |
+| `username` | Database Username      |   text    |
+| `password` | Database Password      |   text    |
 
 ## Cassandra
 
-key                | description                        | data type
--------------------|------------------------------------|:---------:
-`name`             | Name of connection                 | text
-`driver`           | Must be `cassandra`                | text
-`contactPoints`    | Contact points (comma delimited)   | text
-`localDataCenter`  | Local data center                  | text
-`keyspace`         | Keyspace                           | text
-
+| key               | description                      | data type |
+| ----------------- | -------------------------------- | :-------: |
+| `name`            | Name of connection               |   text    |
+| `driver`          | Must be `cassandra`              |   text    |
+| `contactPoints`   | Contact points (comma delimited) |   text    |
+| `localDataCenter` | Local data center                |   text    |
+| `keyspace`        | Keyspace                         |   text    |
 
 ## Snowflake
 
-key                  | description                       | data type
----------------------|-----------------------------------|:---------:
-`name`               | Name of connection                | text
-`driver`             | Must be `snowflake`               | text
-`account`            | Account                           | text
-`username`           | User name                         | text
-`password`           | Password                          | text
-`warehouse`          | Warehouse                         | text
-`database`           | Database                          | text
-`schema`             | Schema                            | text
-`role`               | Role                              | text
-`preQueryStatements` | Pre-query statements              | text
-`
-`# BigQuery
+| key                  | description          | data type |
+| -------------------- | -------------------- | :-------: |
+| `name`               | Name of connection   |   text    |
+| `driver`             | Must be `snowflake`  |   text    |
+| `account`            | Account              |   text    |
+| `username`           | User name            |   text    |
+| `password`           | Password             |   text    |
+| `warehouse`          | Warehouse            |   text    |
+| `database`           | Database             |   text    |
+| `schema`             | Schema               |   text    |
+| `role`               | Role                 |   text    |
+| `preQueryStatements` | Pre-query statements |   text    |
 
-key                | description                       | data type
--------------------|-----------------------------------|:---------:
-`name`             | Name of connection                | text
-`driver`           | Must be `bigquery`                | text
-`projectId`        | Project ID                        | text
-`keyFile`          | JSON keyfile for service account  | text
-`datasetName`      | Dataset to use                    | text
-`datasetLocation`  | Location for this dataset         | text
+` `# BigQuery
 
+| key               | description                      | data type |
+| ----------------- | -------------------------------- | :-------: |
+| `name`            | Name of connection               |   text    |
+| `driver`          | Must be `bigquery`               |   text    |
+| `projectId`       | Project ID                       |   text    |
+| `keyFile`         | JSON keyfile for service account |   text    |
+| `datasetName`     | Dataset to use                   |   text    |
+| `datasetLocation` | Location for this dataset        |   text    |
 
 ## SQLite
 
-key                                | description                                           | data type
------------------------------------|-------------------------------------------------------|:---------:
-`name`                             | Name of connection                                    | text
-`driver`                           | Must be `sqlite`                                      | text
-`multiStatementTransactionEnabled` | Reuse db connection across query executions           | boolean
-`idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing | number
-`filename`                         | Path to file                                          | text
-`readonly`                         | Open file in read only mode                           | boolean
-
+| key                                | description                                           | data type |
+| ---------------------------------- | ----------------------------------------------------- | :-------: |
+| `name`                             | Name of connection                                    |   text    |
+| `driver`                           | Must be `sqlite`                                      |   text    |
+| `multiStatementTransactionEnabled` | Reuse db connection across query executions           |  boolean  |
+| `idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing |  number   |
+| `filename`                         | Path to file                                          |   text    |
+| `readonly`                         | Open file in read only mode                           |  boolean  |
 
 ## ODBC (unixodbc)
 
@@ -299,14 +296,14 @@ ORDER BY
   c.ordinal_position
 ```
 
- key                               | description                                                                                 | data type
------------------------------------|---------------------------------------------------------------------------------------------|:--------:
-`name`                             | Name of connection                                                                          | text
-`driver`                           | Must be `unixodbc`                                                                          | text
-`multiStatementTransactionEnabled` | Reuse db connection across query executions                                                 | boolean
-`idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing                                       | number
-`connection_string`                | ODBC connection string                                                                      | text
-`schema_sql`                       | Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA) | text
-`username`                         | Username (optional). Will be added to connect_string as `Uid` key                           | text
-`password`                         | Password (optional). Will be added to connect_string as `Pwd` key                           | text
-`limit_strategies`                 | Comma separated list of limit strategies used to restrict queries. These strategies will be used to enforce and inject LIMIT and FETCH FIRST use in SELECT queries. Allowed strategies are `limit`, `fetch`, `first`, and `top`. <br/><br/> Example: `limit, fetch` | text
+| key                                | description                                                                                                                                                                                                                                                         | data type |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------: |
+| `name`                             | Name of connection                                                                                                                                                                                                                                                  |   text    |
+| `driver`                           | Must be `unixodbc`                                                                                                                                                                                                                                                  |   text    |
+| `multiStatementTransactionEnabled` | Reuse db connection across query executions                                                                                                                                                                                                                         |  boolean  |
+| `idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing                                                                                                                                                                                                               |  number   |
+| `connection_string`                | ODBC connection string                                                                                                                                                                                                                                              |   text    |
+| `schema_sql`                       | Database SQL to lookup schema (optional, if omitted default to checking INFORMATION_SCHEMA)                                                                                                                                                                         |   text    |
+| `username`                         | Username (optional). Will be added to connect_string as `Uid` key                                                                                                                                                                                                   |   text    |
+| `password`                         | Password (optional). Will be added to connect_string as `Pwd` key                                                                                                                                                                                                   |   text    |
+| `limit_strategies`                 | Comma separated list of limit strategies used to restrict queries. These strategies will be used to enforce and inject LIMIT and FETCH FIRST use in SELECT queries. Allowed strategies are `limit`, `fetch`, `first`, and `top`. <br/><br/> Example: `limit, fetch` |   text    |
