@@ -236,6 +236,16 @@ const configItems = [
     default: '',
   },
   {
+    key: 'ldapAutoSignUp',
+    envVar: 'SQLPAD_LDAP_AUTO_SIGN_UP',
+    default: '',
+  },
+  {
+    key: 'ldapDefaultRole',
+    envVar: 'SQLPAD_LDAP_DEFAULT_ROLE',
+    default: 'editor',
+  },
+  {
     key: 'serviceTokenSecret_d',
     envVar: 'SERVICE_TOKEN_SECRET',
     default: '',
