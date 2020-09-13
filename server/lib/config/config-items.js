@@ -245,7 +245,7 @@ const configItems = [
     envVar: 'SQLPAD_LDAP_DEFAULT_ROLE',
     default: 'editor',
   },
- {
+  {
     key: 'sqlpadLadpAdminGroupDn',
     envVar: 'SQLPAD_LDAP_ADMIN_GROUP_DN',
     default: '',
@@ -255,7 +255,7 @@ const configItems = [
     envVar: 'SQLPAD_LDAP_EDITOR_GROUP_DN',
     default: '',
   },
- {
+  {
     key: 'sqlpadLdapGroupAttr',
     envVar: 'SQLPAD_LDAP_GROUP_ATTR',
     default: 'memberOf',
