@@ -143,11 +143,11 @@ LDAP-based authentication can be enabled by setting the necessary environment va
 - `SQLPAD_LDAP_AUTO_SIGN_UP`=`true` (auto sign up ldap users)
 - `SQLPAD_LDAP_DEFAULT_ROLE`=`editor` (default ldap role)
 
-LDAP-RBAC , two groups are needed, for editors and admins, for example sqlpad-admins , sqlpad-editors, the vars are repetitive, but given the ldap module limations, this the best approach to limit users and searches
+LDAP-RBAC , two groups are needed, editors and admins, for example sqlpad-admins , sqlpad-editors, the vars are repetitive, but given the ldap module limations, this is probably best approach to limit users and searches
 
-- `SQLPAD_LDAP_SEARCH_FILTER`=`(&(|(memberOf=cn=sqlpad-editors,dc=example,dc=com)(memberOf=cn=sqlpad-admins,dc=example,dc=com))(uid={{username}}))`
-- `SQLPAD_LDAP_ADMIN_GROUP_DN`=`cn=sqlpad-editors,dc=example,dc=com`
-- `SQLPAD_LDAP_EDITOR_GROUP_DN`=`cn=sqlpad-admins,dc=example,dc=com`
+- `SQLPAD_LDAP_SEARCH_FILTER`=`'(&(|(memberOf=cn=sqlpad-editors,dc=example,dc=com)(memberOf=cn=sqlpad-admins,dc=example,dc=com))(uid={{username}}))'`
+- `SQLPAD_LDAP_ADMIN_GROUP_DN`=`'cn=sqlpad-editors,dc=example,dc=com'`
+- `SQLPAD_LDAP_EDITOR_GROUP_DN`=`'cn=sqlpad-admins,dc=example,dc=com'`
 - `SQLPAD_LDAP_GROUP_ATTR`=`memberOf`
 
 * Modify memberOf attribute based on the LDAP
