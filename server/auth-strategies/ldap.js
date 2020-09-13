@@ -49,8 +49,6 @@ function enableLdap(config) {
           } else if (groups.includes(editor_group)) {
            appLog.debug(`${uid} successfully logged in with role editor`);
            global.role = 'editor';
-         } else {
-           appLog.error(`${uid} does not belong to any of the specified ldap groups`);
          }
 
           let [openAdminRegistration, user] = await Promise.all([
@@ -59,25 +57,24 @@ function enableLdap(config) {
           ]);
          
          // not quite sure if uid is retruned for ActiveDirectory
-          if (!uid) {
+         if (!uid) {
             return done(null, false, {
               message: 'wrong LDAP username or password',
             });
           }
+          if (user) {
           if (user.disabled) {
             return done(null, false);
           }
-          // always update role
            const newUser = await models.users.update(user.id, {
            role: global.role,
           });
-
-          return done(null, {
-            id: user.id,
-            role: user.role,
-            email: user.email,
-          });
-
+             return done(null, {
+              id: user.id,
+              role: user.role,
+              email: user.email,
+            });
+         }
         // if SQLPAD_LDAP_AUTO_SIGN_UP=true
           if (openAdminRegistration ||config.get('ldapAutoSignUp')) {
           appLog.debug(`adding user ${uid} to role ${global.role}`);
