@@ -28,9 +28,6 @@ function enableLdap(config) {
           bindCredentials:
             config.get('ldapPassword') || config.get('ldapPassword_d'),
           searchFilter: config.get('ldapSearchFilter'),
-         // Enable Group Search, very  limited RBAC
-         // searchfilter should include the group
-         // SQLPAD_LDAP_SEARCH_FILTER='(&(uid={{username}})(memberOf=<GROUP_DN>))'
           groupSearchBase: config.get('ldapBaseDN'),
           groupSearchFilter: '(cn={{dn}})',
         },
@@ -39,12 +36,30 @@ function enableLdap(config) {
         try {
           const { models } = req;
           const email = profile.mail.toLowerCase();
-          const user = await models.users.findOneByEmail(mail);
+          const uid   = profile.uid.toLowerCase();
+          const admin_group = config.get('sqlpadLadpAdminGroupDn');
+          const editor_group = config.get('sqlpadLadpEditorGroupDn');
+
+          //get all groups that user belongs to, not sure how to substitue memberOf from env var
+          const groups = profile.memberOf;
+         // match the groups which are predefined, refer to configuration
+         if (groups.includes(admin_group)) {
+            appLog.debug(`${uid} successfully logged in with role admin`);
+            global.role = 'admin';
+          } else if (groups.includes(editor_group)) {
+           appLog.debug(`${uid} successfully logged in with role editor`);
+           global.role = 'editor';
+         } else {
+           appLog.error('No LDAP groups are defined')
+         }
+
           let [openAdminRegistration, user] = await Promise.all([
             models.users.adminRegistrationOpen(),
             models.users.findOneByEmail(email),
           ]);
-          if (email!) {
+         
+         //Not quite sure if uid is retruned for ActiveDirectory
+          if (!uid) {
             return done(null, false, {
               message: 'wrong LDAP username or password',
             });
@@ -52,6 +67,11 @@ function enableLdap(config) {
           if (user.disabled) {
             return done(null, false);
           }
+          // Always update role
+           const newUser = await models.users.update(user.id, {
+           role: global.role,
+          });
+
           return done(null, {
             id: user.id,
             role: user.role,
@@ -59,10 +79,12 @@ function enableLdap(config) {
           });
 
         //If SQLPAD_LDAP_AUTO_SIGN_UP=true
+
           if (openAdminRegistration ||config.get('ldapAutoSignUp')) {
+          appLog.debug(`adding user ${uid} to role ${global.role}`);
           const newUser = await models.users.create({
            email,
-           role: config.get('ldapDefaultRole'),
+           role: global.role,
            signupAt: new Date(),
            });
            return done(null, newUser);
