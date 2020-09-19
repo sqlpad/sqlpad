@@ -24,6 +24,8 @@ By default this API returns cached schema response. A fresh schema may be calcul
 
 ### Response
 
+_Note: Column `dataType` will contain value as sent back from database driver._
+
 ```json
 {
   "schemas": [
@@ -38,7 +40,6 @@ By default this API returns cached schema response. A fresh schema may be calcul
             {
               "name": "column_1_name",
               "description": "",
-              // data type will be whatever is sent back from database driver
               "dataType": "INT"
             },
             {
@@ -66,7 +67,6 @@ Some databases do not support a schema concept. In those cases, the top-level fi
         {
           "name": "column_1_name",
           "description": "",
-          // data type will be whatever is sent back from database driver
           "dataType": "INT"
         },
         {
@@ -99,6 +99,8 @@ The schema result is cached by default. A fresh schema may be forced by providin
 - `reload`: string set to `true` to force schema refresh
 
 ### Response
+
+_Note: Column `data_type` will contain value as sent back from database driver._
 
 ```json
 {
