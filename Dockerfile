@@ -1,4 +1,4 @@
-FROM node:12.16.1-alpine AS build
+FROM node:12.18.4-alpine AS build
 
 RUN apk add --update --no-cache \
     python \
@@ -46,7 +46,7 @@ RUN npm prune --production
 
 # Start another stage with a fresh node
 # Copy the server directory that has all the necessary node modules + front end build
-FROM node:12.16.1-alpine
+FROM node:12.18.4-alpine
 
 WORKDIR /usr/app
 
