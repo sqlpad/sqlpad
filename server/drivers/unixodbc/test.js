@@ -1,4 +1,5 @@
 const assert = require('assert');
+const testUtils = require('../test-utils.js');
 const unixodbc = require('./index.js');
 
 // Using Windows? You may need to change your db path to something like
@@ -50,18 +51,13 @@ describe('drivers/unixodbc', function () {
 
   it('getSchema()', function () {
     return unixodbc.getSchema(connection).then((schemaInfo) => {
-      assert(schemaInfo[test_schema_name], test_schema_name);
-      assert(
-        schemaInfo[test_schema_name].sqlpad_test,
-        test_schema_name + '.sqlpad_test'
+      testUtils.hasColumnDataType(
+        schemaInfo,
+        test_schema_name,
+        'sqlpad_test',
+        'unknown',
+        'unknown'
       );
-      const columns = schemaInfo[test_schema_name].sqlpad_test;
-      assert.equal(columns.length, 1, 'columns.length');
-      assert.equal(columns[0].table_schema, test_schema_name, 'table_schema');
-      assert.equal(columns[0].table_name, 'sqlpad_test', 'table_name');
-      // column metadata not available in sqlite3
-      assert.equal(columns[0].column_name, 'unknown', 'column_name');
-      assert.equal(columns[0].data_type, 'unknown', 'data_type');
     });
   });
 

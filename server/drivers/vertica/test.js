@@ -1,4 +1,5 @@
 const assert = require('assert');
+const testUtils = require('../test-utils.js');
 const vertica = require('./index.js');
 
 const connection = {
@@ -34,14 +35,8 @@ describe('drivers/vertica', function () {
 
   it('getSchema()', function () {
     return vertica.getSchema(connection).then((schemaInfo) => {
-      assert(schemaInfo.public, 'public');
-      assert(schemaInfo.public.test, 'public.test');
-      const columns = schemaInfo.public.test;
-      assert.equal(columns.length, 1, 'columns.length');
-      assert.equal(columns[0].table_schema, 'public', 'table_schema');
-      assert.equal(columns[0].table_name, 'test', 'table_name');
-      assert.equal(columns[0].column_name, 'id', 'column_name');
-      assert(columns[0].hasOwnProperty('data_type'), 'data_type');
+      const column = testUtils.getColumn(schemaInfo, 'public', 'test', 'id');
+      assert(column.hasOwnProperty('dataType'));
     });
   });
 

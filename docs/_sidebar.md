@@ -10,3 +10,4 @@
 - API
   - [Overview](/api-overview.md)
   - [Batches & Statements](/api-batches.md)
+  - [Connection Schema](/api-connection-schema.md)

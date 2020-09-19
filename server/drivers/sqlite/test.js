@@ -1,5 +1,6 @@
 const assert = require('assert');
 const sqlite3 = require('./index.js');
+const testUtils = require('../test-utils.js');
 
 const connection = {
   filename: './sqlpad_test_sqlite.db',
@@ -27,20 +28,20 @@ describe('drivers/sqlite', function () {
 
   it('getSchema()', async function () {
     const schemaInfo = await sqlite3.getSchema(connection);
-
-    assert(schemaInfo.main);
-    assert(schemaInfo.main.sqlpad_test, 'main.sqlpad_test');
-    const columns = schemaInfo.main.sqlpad_test;
-    assert.equal(columns.length, 2, 'columns.length');
-    assert.equal(columns[0].table_schema, 'main', 'table_schema');
-    assert.equal(columns[0].table_name, 'sqlpad_test', 'table_name');
-    assert.equal(columns[0].column_name, 'id', 'column_name');
-    assert.equal(columns[0].data_type, 'INTEGER', 'data_type');
-
-    assert.equal(columns[1].table_schema, 'main', 'table_schema');
-    assert.equal(columns[1].table_name, 'sqlpad_test', 'table_name');
-    assert.equal(columns[1].column_name, 'name', 'column_name');
-    assert.equal(columns[1].data_type, 'TEXT', 'data_type');
+    testUtils.hasColumnDataType(
+      schemaInfo,
+      'main',
+      'sqlpad_test',
+      'id',
+      'INTEGER'
+    );
+    testUtils.hasColumnDataType(
+      schemaInfo,
+      'main',
+      'sqlpad_test',
+      'name',
+      'TEXT'
+    );
   });
 
   it('runQuery under limit', async function () {
