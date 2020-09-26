@@ -1,21 +1,13 @@
 import React from 'react';
 import useSWR from 'swr';
-import { connect } from 'unistore/react';
 import Modal from '../../common/Modal';
 import MultiSelect from '../../common/MultiSelect';
-import { setQueryState } from '../../stores/queries';
+import { setQueryState } from '../../stores/editor-actions';
+import { useEditorStore } from '../../stores/editor-store';
 
-function mapStateToProps(state: any) {
-  return {
-    tags: (state.query && state.query.tags) || [],
-  };
-}
+function QueryTagsModal({ visible, onClose }: any) {
+  const tags = useEditorStore((s) => s?.query?.tags || []);
 
-const ConnectedQueryTagsModal = connect(mapStateToProps, { setQueryState })(
-  React.memo(QueryTagsModal)
-);
-
-function QueryTagsModal({ tags, visible, onClose, setQueryState }: any) {
   const { data: tagsData } = useSWR(visible ? '/api/tags' : null);
   const options = (tagsData || []).map((tag: any) => ({
     name: tag,
@@ -49,4 +41,4 @@ function QueryTagsModal({ tags, visible, onClose, setQueryState }: any) {
   );
 }
 
-export default ConnectedQueryTagsModal;
+export default React.memo(QueryTagsModal);

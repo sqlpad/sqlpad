@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import { connect } from 'unistore/react';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';
-import { selectConnectionId } from '../stores/connections';
+import { selectConnectionId } from '../stores/editor-actions';
 import { api } from '../utilities/fetch-json';
 import useAppContext from '../utilities/use-app-context';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 
-function ConnectionList({ selectConnectionId }: any) {
+function ConnectionList() {
   const { data: connectionsData, mutate } = useSWR('/api/connections');
   let connections = connectionsData || [];
 
@@ -121,6 +120,4 @@ function ConnectionList({ selectConnectionId }: any) {
   );
 }
 
-export default connect([], (store) => ({
-  selectConnectionId,
-}))(ConnectionList);
+export default ConnectionList;

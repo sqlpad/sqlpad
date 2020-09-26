@@ -2,20 +2,20 @@ import ConnectedIcon from 'mdi-react/ServerNetworkIcon';
 import DisconnectedIcon from 'mdi-react/ServerNetworkOffIcon';
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import { connect } from 'unistore/react';
 import IconButton from '../../common/IconButton';
 import {
   connectConnectionClient,
   disconnectConnectionClient,
-} from '../../stores/connections';
+} from '../../stores/editor-actions';
+import {
+  useConnectionClient,
+  useSelectedConnectionId,
+} from '../../stores/editor-store';
 
-function ToolbarConnectionClientButton({
-  connectionClient,
-  selectedConnectionId,
-  connectConnectionClient,
-  disconnectConnectionClient,
-}: any) {
+function ToolbarConnectionClientButton() {
   const [fetching, setFetching] = useState(false);
+  const connectionClient = useConnectionClient();
+  const selectedConnectionId = useSelectedConnectionId();
 
   let { data: connectionsData } = useSWR('/api/connections');
   const connections = connectionsData || [];
@@ -61,10 +61,4 @@ function ToolbarConnectionClientButton({
   );
 }
 
-export default connect(
-  ['connectionClient', 'selectedConnectionId'],
-  (store) => ({
-    connectConnectionClient: connectConnectionClient(store),
-    disconnectConnectionClient,
-  })
-)(ToolbarConnectionClientButton);
+export default ToolbarConnectionClientButton;

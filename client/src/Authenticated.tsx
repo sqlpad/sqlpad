@@ -1,19 +1,18 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import { connect } from 'unistore/react';
-import initApp from './stores/initApp';
-import useAppContext from './utilities/use-app-context';
 import useSWR from 'swr';
+import { useEditorStore } from './stores/editor-store';
+import { initApp } from './stores/editor-actions';
+import useAppContext from './utilities/use-app-context';
 
 export interface Props {
   children: any;
-  initApp: (config: Object, connections?: Array<Object>) => {};
-  initialized?: boolean;
 }
 
 const Authenticated = (props: Props) => {
-  const { children, initApp, initialized } = props;
+  const { children } = props;
   const { config, currentUser } = useAppContext();
+  const initialized = useEditorStore((s) => s.initialized);
 
   let { data: connections } = useSWR('/api/connections');
 
@@ -21,7 +20,7 @@ const Authenticated = (props: Props) => {
     if (config && !initialized && connections) {
       initApp(config, connections);
     }
-  }, [initApp, config, connections, initialized]);
+  }, [config, connections, initialized]);
 
   if (!config) {
     return null;
@@ -38,6 +37,4 @@ const Authenticated = (props: Props) => {
   return children;
 };
 
-export default connect<any, any, any, any>(['initialized'], {
-  initApp,
-})(Authenticated);
+export default Authenticated;

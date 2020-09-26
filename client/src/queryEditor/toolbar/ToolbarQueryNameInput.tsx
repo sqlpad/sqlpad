@@ -1,24 +1,11 @@
 import React from 'react';
-import { connect } from 'unistore/react';
 import Input from '../../common/Input';
-import { setQueryState } from '../../stores/queries';
+import { setQueryState } from '../../stores/editor-actions';
+import { useEditorStore } from '../../stores/editor-store';
 
-function mapStateToProps(state: any) {
-  return {
-    queryName: state.query && state.query.name,
-    showValidation: state.showValidation,
-  };
-}
-
-const ConnectedToolbarQueryNameInput = connect(mapStateToProps, (store) => ({
-  setQueryState,
-}))(React.memo(ToolbarQueryNameInput));
-
-function ToolbarQueryNameInput({
-  queryName,
-  setQueryState,
-  showValidation,
-}: any) {
+function ToolbarQueryNameInput() {
+  const queryName = useEditorStore((s) => s?.query?.name);
+  const showValidation = useEditorStore((s) => s.showValidation);
   const error = showValidation && !queryName.length;
 
   return (
@@ -32,4 +19,4 @@ function ToolbarQueryNameInput({
   );
 }
 
-export default ConnectedToolbarQueryNameInput;
+export default React.memo(ToolbarQueryNameInput);

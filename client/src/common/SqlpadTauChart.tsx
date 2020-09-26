@@ -15,7 +15,7 @@ interface ChartConfiguration {
 
 export interface Props {
   isRunning: boolean;
-  queryError: string;
+  queryError?: string;
   queryResult: any;
   chartConfiguration: ChartConfiguration;
   queryId: string;
