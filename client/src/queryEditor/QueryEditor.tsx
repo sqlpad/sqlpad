@@ -6,7 +6,7 @@ import AppHeader from '../app-header/AppHeader';
 import { resizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar';
-import { connectConnectionClient } from '../stores/connections';
+import { connectConnectionClient } from '../stores/connections-store';
 import { loadQuery, resetNewQuery } from '../stores/queries';
 import { useShowSchema } from '../stores/schema-store';
 import DocumentTitle from './DocumentTitle';
@@ -29,14 +29,7 @@ type Props = {
 };
 
 function QueryEditor(props: Props) {
-  const {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'connectConnectionClient' does not exist ... Remove this comment to see the full error message
-    connectConnectionClient,
-    loadQuery,
-    queryId,
-    resetNewQuery,
-    showVis,
-  } = props;
+  const { loadQuery, queryId, resetNewQuery, showVis } = props;
 
   // Once initialized reset or load query on changes accordingly
   useEffect(() => {
@@ -46,7 +39,7 @@ function QueryEditor(props: Props) {
     } else {
       loadQuery(queryId).then(() => connectConnectionClient());
     }
-  }, [connectConnectionClient, queryId, resetNewQuery, loadQuery]);
+  }, [queryId, resetNewQuery, loadQuery]);
 
   function handleVisPaneResize() {
     deboucedResearchChart(queryId);
@@ -144,7 +137,6 @@ function mapStateToProps(state: any, props: any) {
 }
 
 export default connect(mapStateToProps, (store) => ({
-  connectConnectionClient: connectConnectionClient(store),
   loadQuery,
   resetNewQuery,
 }))(QueryEditor);

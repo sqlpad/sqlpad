@@ -1,19 +1,36 @@
-import localforage from 'localforage';
+import create from 'zustand';
 import message from '../common/message';
 import { api } from '../utilities/fetch-json';
+import localforage from 'localforage';
 
-export const initialState = {
+type State = {
+  selectedConnectionId: string;
+  connectionClient: any;
+  connectionClientInterval: any;
+};
+
+const useConnectionsStore = create<State>((set, get) => ({
   selectedConnectionId: '',
   connectionClient: null,
   connectionClientInterval: null,
-};
+}));
+
+export function useSelectedConnectionId(): string {
+  return useConnectionsStore((s) => s.selectedConnectionId);
+}
+
+export function useConnectionClient(): any {
+  return useConnectionsStore((s) => s.connectionClient);
+}
 
 /**
  * Open a connection client for the currently selected connection if supported
- * @param {*} state
  */
-export const connectConnectionClient = (store: any) => async (state: any) => {
-  const { connectionClient, selectedConnectionId } = state;
+export async function connectConnectionClient() {
+  const {
+    connectionClient,
+    selectedConnectionId,
+  } = useConnectionsStore.getState();
 
   // If a connectionClient is already open or selected connection id doesn't exist, do nothing
   if (connectionClient || !selectedConnectionId) {
@@ -45,8 +62,10 @@ export const connectConnectionClient = (store: any) => async (state: any) => {
 
   // Poll connection-clients api to keep it alive
   const connectionClientInterval = setInterval(async () => {
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
-    const updateJson = await api.put(`/api/connection-clients/${json.data.id}`);
+    const updateJson = await api.put(
+      `/api/connection-clients/${json.data.id}`,
+      {}
+    );
 
     // Not sure if this should message user here
     // In the event of an error this could get really noisy
@@ -58,29 +77,36 @@ export const connectConnectionClient = (store: any) => async (state: any) => {
     // the connectionClient has been disconnected
     if (!updateJson.data && connectionClientInterval) {
       clearInterval(connectionClientInterval);
-      store.setState({
+      useConnectionsStore.setState({
         connectionClientInterval: null,
         connectionClient: null,
       });
     } else {
-      store.setState({
+      useConnectionsStore.setState({
         connectionClient: updateJson.data,
       });
     }
   }, 10000);
 
-  return { connectionClient: json.data, connectionClientInterval };
-};
+  useConnectionsStore.setState({
+    connectionClient: json.data,
+    connectionClientInterval,
+  });
+}
 
 /**
  * Disconnect the current connection client if one exists
- * @param {*} state
  */
-export const disconnectConnectionClient = async (state: any) => {
-  const { connectionClient, connectionClientInterval } = state;
+export async function disconnectConnectionClient() {
+  const {
+    connectionClient,
+    connectionClientInterval,
+  } = useConnectionsStore.getState();
+
   if (connectionClientInterval) {
     clearInterval(connectionClientInterval);
   }
+
   if (connectionClient) {
     api
       .delete(`/api/connection-clients/${connectionClient.id}`)
@@ -90,16 +116,23 @@ export const disconnectConnectionClient = async (state: any) => {
         }
       });
   }
-  return { connectionClient: null, connectionClientInterval: null };
-};
+
+  useConnectionsStore.setState({
+    connectionClient: null,
+    connectionClientInterval: null,
+  });
+}
 
 /**
  * Select connection and disconnect connectionClient if it exists
- * @param {*} state
- * @param {*} selectedConnectionId
+ * @param selectedConnectionId
  */
-export const selectConnectionId = (state: any, selectedConnectionId: any) => {
-  const { connectionClient, connectionClientInterval } = state;
+export function selectConnectionId(selectedConnectionId: string) {
+  const {
+    connectionClient,
+    connectionClientInterval,
+  } = useConnectionsStore.getState();
+
   localforage
     .setItem('selectedConnectionId', selectedConnectionId)
     .catch((error) => message.error(error));
@@ -118,14 +151,9 @@ export const selectConnectionId = (state: any, selectedConnectionId: any) => {
     clearInterval(connectionClientInterval);
   }
 
-  return {
+  useConnectionsStore.setState({
     selectedConnectionId,
     connectionClient: null,
     connectionClientInterval: null,
-  };
-};
-
-export default {
-  initialState,
-  selectConnectionId,
-};
+  });
+}
