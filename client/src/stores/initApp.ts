@@ -4,7 +4,7 @@ import { useConnectionsStore } from './connections-store';
 
 const queryString = require('query-string');
 
-// @ts-expect-error ts-migrate(2551) FIXME: Property 'localforage' does not exist on type 'Win... Remove this comment to see the full error message
+// @ts-expect-error
 window.localforage = localforage;
 
 const initApp = async (config: any, connections: any) => {
@@ -13,12 +13,11 @@ const initApp = async (config: any, connections: any) => {
       localforage.getItem('selectedConnectionId'),
     ]);
 
-    const update = {
+    const update: { initialized: boolean; selectedConnectionId?: string } = {
       initialized: true,
     };
 
     if (connections.length === 1) {
-      // @ts-expect-error ts-migrate(2339) FIXME: Property 'selectedConnectionId' does not exist on ... Remove this comment to see the full error message
       update.selectedConnectionId = connections[0].id;
     } else {
       const { defaultConnectionId } = config || {};
@@ -27,7 +26,6 @@ const initApp = async (config: any, connections: any) => {
           (c: any) => c.id === defaultConnectionId
         );
         if (Boolean(foundDefault)) {
-          // @ts-expect-error ts-migrate(2339) FIXME: Property 'selectedConnectionId' does not exist on ... Remove this comment to see the full error message
           update.selectedConnectionId = defaultConnectionId;
         }
       }
@@ -37,7 +35,6 @@ const initApp = async (config: any, connections: any) => {
           (c: any) => c.id === selectedConnectionId
         );
         if (Boolean(selectedConnection)) {
-          // @ts-expect-error ts-migrate(2339) FIXME: Property 'selectedConnectionId' does not exist on ... Remove this comment to see the full error message
           update.selectedConnectionId = selectedConnectionId;
         }
       }
@@ -49,7 +46,6 @@ const initApp = async (config: any, connections: any) => {
           (c: any) => c.name === qsConnectionName
         );
         if (Boolean(selectedConnection))
-          // @ts-expect-error ts-migrate(2339) FIXME: Property 'selectedConnectionId' does not exist on ... Remove this comment to see the full error message
           update.selectedConnectionId = selectedConnection.id;
       }
 
@@ -59,7 +55,6 @@ const initApp = async (config: any, connections: any) => {
           (c: any) => c.id === qsConnectionId
         );
         if (Boolean(selectedConnection))
-          // @ts-expect-error ts-migrate(2339) FIXME: Property 'selectedConnectionId' does not exist on ... Remove this comment to see the full error message
           update.selectedConnectionId = selectedConnection.id;
       }
     }
