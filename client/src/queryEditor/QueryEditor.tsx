@@ -11,7 +11,7 @@ import {
   resetNewQuery,
 } from '../stores/queries-actions';
 import { useQueriesStore } from '../stores/queries-store';
-import { useShowSchema } from '../stores/schema-store';
+import { useShowSchema } from '../stores/queries-actions';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';

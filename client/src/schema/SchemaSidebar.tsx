@@ -17,7 +17,7 @@ import {
   loadSchemaInfo,
   toggleSchemaItem,
   useSchema,
-} from '../stores/schema-store';
+} from '../stores/queries-actions';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';

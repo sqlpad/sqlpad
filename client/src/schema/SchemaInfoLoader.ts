@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useSelectedConnectionId } from '../stores/queries-actions';
-import { loadSchemaInfo } from '../stores/schema-store';
+import { loadSchemaInfo } from '../stores/queries-actions';
 
 /**
  * Instead of loading schema on selection,

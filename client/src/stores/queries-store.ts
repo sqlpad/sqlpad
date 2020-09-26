@@ -16,6 +16,8 @@ export const NEW_QUERY = {
 };
 
 type State = {
+  showSchema: boolean;
+  schema: any;
   initialized: boolean;
   selectedConnectionId: string;
   connectionClient: any;
@@ -33,6 +35,8 @@ type State = {
 };
 
 export const useQueriesStore = create<State>((set, get) => ({
+  showSchema: true,
+  schema: {},
   initialized: false,
   selectedConnectionId: '',
   connectionClient: null,
