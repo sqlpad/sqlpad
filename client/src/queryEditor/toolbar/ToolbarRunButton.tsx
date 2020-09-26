@@ -1,27 +1,12 @@
 import React from 'react';
-import { connect } from 'unistore/react';
 import Button from '../../common/Button';
 import { connectConnectionClient } from '../../stores/connections-store';
-import { runQuery } from '../../stores/queries';
+import { runQuery } from '../../stores/queries-actions';
+import { useQueriesStore } from '../../stores/queries-store';
 
-function mapStateToProps(state: any) {
-  const { isRunning } = state;
-  return {
-    isRunning,
-  };
-}
+function ToolbarRunButton() {
+  const isRunning = useQueriesStore((s) => s.isRunning);
 
-const ConnectedToolbarRunButton = connect(mapStateToProps, (store) => ({
-  runQuery: runQuery(store),
-  // @ts-expect-error ts-migrate(2345) FIXME: Property 'runQuery' is missing in type '{ isRunnin... Remove this comment to see the full error message
-}))(React.memo(ToolbarRunButton));
-
-type Props = {
-  isRunning: boolean;
-  runQuery: (...args: any[]) => any;
-};
-
-function ToolbarRunButton({ isRunning, runQuery }: Props) {
   return (
     <Button
       variant="primary"
@@ -36,4 +21,4 @@ function ToolbarRunButton({ isRunning, runQuery }: Props) {
   );
 }
 
-export default ConnectedToolbarRunButton;
+export default React.memo(ToolbarRunButton);

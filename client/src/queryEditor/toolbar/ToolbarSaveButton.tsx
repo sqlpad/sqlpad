@@ -1,29 +1,14 @@
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
 import React from 'react';
-import { connect } from 'unistore/react';
 import IconButton from '../../common/IconButton';
-import { saveQuery } from '../../stores/queries';
+import { saveQuery } from '../../stores/queries-actions';
+import { useQueriesStore } from '../../stores/queries-store';
 
-function mapStateToProps(state: any) {
-  return {
-    isSaving: state.isSaving,
-    unsavedChanges: state.unsavedChanges,
-  };
-}
+function ToolbarSaveButton() {
+  const isSaving = useQueriesStore((s) => s.isSaving);
+  const unsavedChanges = useQueriesStore((s) => s.unsavedChanges);
 
-const ConnectedToolbarSaveButton = connect(mapStateToProps, (store) => ({
-  saveQuery: saveQuery(store),
-  // @ts-expect-error ts-migrate(2345) FIXME: Property 'saveQuery' is missing in type '{ isSavin... Remove this comment to see the full error message
-}))(React.memo(ToolbarSaveButton));
-
-type Props = {
-  isSaving: boolean;
-  saveQuery: (...args: any[]) => any;
-  unsavedChanges: boolean;
-};
-
-function ToolbarSaveButton({ isSaving, saveQuery, unsavedChanges }: Props) {
   return (
     <IconButton tooltip="Save" onClick={() => saveQuery()} disabled={isSaving}>
       {unsavedChanges ? <UnsavedIcon /> : <SaveIcon />}
@@ -31,4 +16,4 @@ function ToolbarSaveButton({ isSaving, saveQuery, unsavedChanges }: Props) {
   );
 }
 
-export default ConnectedToolbarSaveButton;
+export default React.memo(ToolbarSaveButton);

@@ -1,28 +1,23 @@
 import { useEffect } from 'react';
-import { connect } from 'unistore/react';
+import { useSelectedConnectionId } from '../stores/connections-store';
 import { loadSchemaInfo } from '../stores/schema-store';
-
-function mapStateToProps(state: any, props: any) {
-  return {
-    connectionId: state.selectedConnectionId,
-  };
-}
 
 /**
  * Instead of loading schema on selection,
  * this is acts as a listener-as-a-component for schema changes.
  * This is not in the schema sidebar,
  * because sidebar could be hidden and this is an application-level need
- * @param {*} props
  */
-function SchemaInfoLoader({ connectionId }: any) {
+function SchemaInfoLoader() {
+  const selectedConnectionId = useSelectedConnectionId();
+
   useEffect(() => {
-    if (connectionId) {
-      loadSchemaInfo(connectionId);
+    if (selectedConnectionId) {
+      loadSchemaInfo(selectedConnectionId);
     }
-  }, [connectionId]);
+  }, [selectedConnectionId]);
 
   return null;
 }
 
-export default connect(mapStateToProps)(SchemaInfoLoader);
+export default SchemaInfoLoader;

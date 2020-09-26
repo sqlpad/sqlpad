@@ -1,13 +1,13 @@
 import debounce from 'lodash/debounce';
 import React, { useEffect } from 'react';
 import SplitPane from 'react-split-pane';
-import { connect } from 'unistore/react';
 import AppHeader from '../app-header/AppHeader';
 import { resizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar';
 import { connectConnectionClient } from '../stores/connections-store';
-import { loadQuery, resetNewQuery } from '../stores/queries';
+import { loadQuery, resetNewQuery } from '../stores/queries-actions';
+import { useQueriesStore } from '../stores/queries-store';
 import { useShowSchema } from '../stores/schema-store';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
@@ -22,14 +22,12 @@ import UnsavedQuerySelector from './UnsavedQuerySelector';
 const deboucedResearchChart = debounce(resizeChart, 700);
 
 type Props = {
-  loadQuery: (...args: any[]) => any;
   queryId: string;
-  resetNewQuery: (...args: any[]) => any;
-  showVis?: boolean;
 };
 
 function QueryEditor(props: Props) {
-  const { loadQuery, queryId, resetNewQuery, showVis } = props;
+  const { queryId } = props;
+  const showVis = useQueriesStore((s) => Boolean(s?.query?.chart?.chartType));
 
   // Once initialized reset or load query on changes accordingly
   useEffect(() => {
@@ -39,7 +37,7 @@ function QueryEditor(props: Props) {
     } else {
       loadQuery(queryId).then(() => connectConnectionClient());
     }
-  }, [queryId, resetNewQuery, loadQuery]);
+  }, [queryId]);
 
   function handleVisPaneResize() {
     deboucedResearchChart(queryId);
@@ -127,16 +125,4 @@ function QueryEditor(props: Props) {
   );
 }
 
-function mapStateToProps(state: any, props: any) {
-  const showVis =
-    state.query && state.query.chart && Boolean(state.query.chart.chartType);
-
-  return {
-    showVis,
-  };
-}
-
-export default connect(mapStateToProps, (store) => ({
-  loadQuery,
-  resetNewQuery,
-}))(QueryEditor);
+export default QueryEditor;

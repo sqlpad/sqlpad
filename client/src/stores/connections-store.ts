@@ -4,12 +4,14 @@ import { api } from '../utilities/fetch-json';
 import localforage from 'localforage';
 
 type State = {
+  initialized: boolean;
   selectedConnectionId: string;
   connectionClient: any;
   connectionClientInterval: any;
 };
 
-const useConnectionsStore = create<State>((set, get) => ({
+export const useConnectionsStore = create<State>((set, get) => ({
+  initialized: false,
   selectedConnectionId: '',
   connectionClient: null,
   connectionClientInterval: null,

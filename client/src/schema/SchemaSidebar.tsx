@@ -4,7 +4,6 @@ import RefreshIcon from 'mdi-react/RefreshIcon';
 import React, { useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
-import { connect } from 'unistore/react';
 import Divider from '../common/Divider';
 import ErrorBlock from '../common/ErrorBlock';
 import IconButton from '../common/IconButton';
@@ -13,6 +12,7 @@ import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
 import Tooltip from '../common/Tooltip';
+import { useSelectedConnectionId } from '../stores/connections-store';
 import {
   loadSchemaInfo,
   toggleSchemaItem,
@@ -25,13 +25,8 @@ import searchSchemaInfo from './searchSchemaInfo';
 const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
 
-function mapStateToProps(state: any, props: any) {
-  return {
-    connectionId: state.selectedConnectionId,
-  };
-}
-
-function SchemaSidebar({ connectionId }: any) {
+function SchemaSidebar() {
+  const connectionId = useSelectedConnectionId();
   const [search, setSearch] = useState('');
   const [dimensions, setDimensions] = useState({
     width: -1,
@@ -203,4 +198,4 @@ function SchemaSidebar({ connectionId }: any) {
   );
 }
 
-export default connect(mapStateToProps)(React.memo(SchemaSidebar));
+export default React.memo(SchemaSidebar);

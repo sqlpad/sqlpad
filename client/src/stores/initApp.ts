@@ -1,14 +1,13 @@
 import localforage from 'localforage';
 import message from '../common/message';
+import { useConnectionsStore } from './connections-store';
 
 const queryString = require('query-string');
 
 // @ts-expect-error ts-migrate(2551) FIXME: Property 'localforage' does not exist on type 'Win... Remove this comment to see the full error message
 window.localforage = localforage;
 
-// TODO FIXME XXX this is making assumption everything is in 1 store
-// IT NO LONGER IS
-const initApp = async (state: any, config: any, connections: any) => {
+const initApp = async (config: any, connections: any) => {
   try {
     let [selectedConnectionId] = await Promise.all([
       localforage.getItem('selectedConnectionId'),
@@ -64,7 +63,8 @@ const initApp = async (state: any, config: any, connections: any) => {
           update.selectedConnectionId = selectedConnection.id;
       }
     }
-    return update;
+
+    useConnectionsStore.setState(update);
   } catch (error) {
     console.error(error);
     message.error('Error initializing application');

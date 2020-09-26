@@ -1,30 +1,13 @@
 import React from 'react';
-import { connect } from 'unistore/react';
-import {
-  handleChartConfigurationFieldsChange,
-  handleChartTypeChange,
-} from '../stores/queries';
+import { handleChartConfigurationFieldsChange } from '../stores/queries-actions';
+import { useQueriesStore } from '../stores/queries-store';
 import ChartInputs from './ChartInputs';
 
-function mapStateToProps(state: any) {
-  return {
-    queryResult: state.queryResult,
-    chartType: state.query && state.query.chart && state.query.chart.chartType,
-    fields: state.query && state.query.chart && state.query.chart.fields,
-  };
-}
+function ChartInputsContainer() {
+  const queryResult = useQueriesStore((s) => s.queryResult);
+  const chartType = useQueriesStore((s) => s?.query?.chart?.chartType);
+  const fields = useQueriesStore((s) => s?.query?.chart?.fields);
 
-const Connected = connect(mapStateToProps, {
-  handleChartConfigurationFieldsChange,
-  handleChartTypeChange,
-})(React.memo(ChartInputsContainer));
-
-function ChartInputsContainer({
-  chartType,
-  fields,
-  queryResult,
-  handleChartConfigurationFieldsChange,
-}: any) {
   return (
     <ChartInputs
       chartType={chartType}
@@ -35,4 +18,4 @@ function ChartInputsContainer({
   );
 }
 
-export default Connected;
+export default React.memo(ChartInputsContainer);

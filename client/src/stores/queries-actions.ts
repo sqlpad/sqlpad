@@ -9,36 +9,11 @@ import {
   setLocalQueryText,
 } from '../utilities/localQueryText';
 import runQueryViaBatch from '../utilities/runQueryViaBatch';
+import { NEW_QUERY, useQueriesStore } from './queries-store';
+import { useConnectionsStore } from './connections-store';
 
-export const NEW_QUERY = {
-  id: '',
-  name: '',
-  tags: [],
-  connectionId: '',
-  queryText: '',
-  chart: {
-    chartType: '',
-    fields: {}, // key value for chart
-  },
-  canRead: true,
-  canWrite: true,
-  canDelete: true,
-};
-
-export const initialState = {
-  isRunning: false,
-  isSaving: false,
-  query: Object.assign({}, NEW_QUERY),
-  queryError: undefined,
-  queryResult: undefined,
-  runQueryStartTime: undefined,
-  selectedText: '',
-  showValidation: false,
-  unsavedChanges: false,
-};
-
-export const formatQuery = async (state: any) => {
-  const { query } = state;
+export const formatQuery = async () => {
+  const { query } = useQueriesStore.getState();
 
   const json = await api.post('/api/format-sql', {
     query: query.queryText,
@@ -56,40 +31,48 @@ export const formatQuery = async (state: any) => {
 
   setLocalQueryText(query.id, json.data.query);
 
-  return {
+  useQueriesStore.setState({
     query: { ...query, queryText: json.data.query },
     unsavedChanges: true,
-  };
+  });
 };
 
-export const loadQuery = async (state: any, queryId: any) => {
+export const loadQuery = async (queryId: string) => {
   const { error, data } = await api.get(`/api/queries/${queryId}`);
   if (error) {
     return message.error('Query not found');
   }
 
-  return {
+  useConnectionsStore.setState({
+    selectedConnectionId: data.connectionId,
+  });
+
+  useQueriesStore.setState({
     runQueryInstanceId: null,
     isRunning: false,
     query: data,
     queryError: undefined,
     queryResult: undefined,
-    selectedConnectionId: data.connectionId,
     unsavedChanges: false,
-  };
+  });
 };
 
-export const runQuery = (store: any) => async (state: any) => {
-  const { query, selectedText, selectedConnectionId, connectionClient } = state;
+export const runQuery = async () => {
+  const { query, selectedText } = useQueriesStore.getState();
+  const {
+    selectedConnectionId,
+    connectionClient,
+  } = useConnectionsStore.getState();
 
   // multiple queries could be running and we only want to keep the "current" or latest query run
   const runQueryInstanceId = uuidv4();
 
-  store.setState({
+  useQueriesStore.setState({
     runQueryInstanceId,
     isRunning: true,
     runQueryStartTime: new Date(),
   });
+
   const postData = {
     connectionId: selectedConnectionId,
     connectionClientId: connectionClient && connectionClient.id,
@@ -99,13 +82,14 @@ export const runQuery = (store: any) => async (state: any) => {
     selectedText,
     chart: query.chart,
   };
+
   const { data, error } = await runQueryViaBatch(postData);
 
   // Get latest state and check runQueryInstanceId to ensure it matches
   // If it matches another query has not been run and we can keep the result.
   // Not matching implies another query has been executed and we can ignore this result.
-  if (store.getState().runQueryInstanceId === runQueryInstanceId) {
-    store.setState({
+  if (useQueriesStore.getState().runQueryInstanceId === runQueryInstanceId) {
+    useQueriesStore.setState({
       isRunning: false,
       queryError: error,
       queryResult: data,
@@ -113,29 +97,33 @@ export const runQuery = (store: any) => async (state: any) => {
   }
 };
 
-export const saveQuery = (store: any) => async (state: any) => {
-  const { query, selectedConnectionId } = state;
+export const saveQuery = async () => {
+  const { query } = useQueriesStore.getState();
+  const { selectedConnectionId } = useConnectionsStore.getState();
+
   if (!query.name) {
     message.error('Query name required');
-    store.setState({ showValidation: true });
+    useQueriesStore.setState({ showValidation: true });
     return;
   }
-  store.setState({ isSaving: true });
+
+  useQueriesStore.setState({ isSaving: true });
   const queryData = Object.assign({}, query, {
     connectionId: selectedConnectionId,
   });
+
   if (query.id) {
     api.put(`/api/queries/${query.id}`, queryData).then((json) => {
       const { error, data } = json;
       if (error) {
         message.error(error);
-        store.setState({ isSaving: false });
+        useQueriesStore.setState({ isSaving: false });
         return;
       }
       mutate('/api/queries');
       message.success('Query Saved');
       removeLocalQueryText(data.id);
-      store.setState({
+      useQueriesStore.setState({
         isSaving: false,
         unsavedChanges: false,
         query: data,
@@ -146,7 +134,7 @@ export const saveQuery = (store: any) => async (state: any) => {
       const { error, data } = json;
       if (error) {
         message.error(error);
-        store.setState({ isSaving: false });
+        useQueriesStore.setState({ isSaving: false });
         return;
       }
       mutate('/api/queries');
@@ -157,7 +145,7 @@ export const saveQuery = (store: any) => async (state: any) => {
       );
       message.success('Query Saved');
       removeLocalQueryText(data.id);
-      store.setState({
+      useQueriesStore.setState({
         isSaving: false,
         unsavedChanges: false,
         query: data,
@@ -166,41 +154,43 @@ export const saveQuery = (store: any) => async (state: any) => {
   }
 };
 
-export const handleCloneClick = (state: any) => {
-  const { query } = state;
+export const handleCloneClick = () => {
+  const { query } = useQueriesStore.getState();
   delete query.id;
   const name = 'Copy of ' + query.name;
   window.history.replaceState({}, name, `${baseUrl()}/queries/new`);
-  return { query: { ...query, name }, unsavedChanges: true };
+  useQueriesStore.setState({ query: { ...query, name }, unsavedChanges: true });
 };
 
-export const resetNewQuery = (state: any) => {
-  return {
+export const resetNewQuery = () => {
+  useQueriesStore.setState({
     runQueryInstanceId: null,
     isRunning: false,
     query: Object.assign({}, NEW_QUERY),
     queryError: undefined,
     queryResult: undefined,
     unsavedChanges: false,
-  };
+  });
 };
 
-export const setQueryState = (state: any, field: any, value: any) => {
-  const { query } = state;
+export const setQueryState = (field: any, value: any) => {
+  const { query } = useQueriesStore.getState();
   if (field === 'queryText') {
     setLocalQueryText(query.id, value);
   }
-  return { query: { ...query, [field]: value }, unsavedChanges: true };
+  useQueriesStore.setState({
+    query: { ...query, [field]: value },
+    unsavedChanges: true,
+  });
 };
 
 export const handleChartConfigurationFieldsChange = (
-  state: any,
   chartFieldId: any,
   queryResultField: any
 ) => {
-  const { query } = state;
+  const { query } = useQueriesStore.getState();
   const { fields } = query.chart;
-  return {
+  useQueriesStore.setState({
     query: {
       ...query,
       chart: {
@@ -209,34 +199,20 @@ export const handleChartConfigurationFieldsChange = (
       },
     },
     unsavedChanges: true,
-  };
+  });
 };
 
-export const handleChartTypeChange = (state: any, chartType: any) => {
-  const { query } = state;
-  return {
+export const handleChartTypeChange = (chartType: any) => {
+  const { query } = useQueriesStore.getState();
+  useQueriesStore.setState({
     query: {
       ...query,
       chart: { ...query.chart, chartType },
     },
     unsavedChanges: true,
-  };
+  });
 };
 
-export const handleQuerySelectionChange = (state: any, selectedText: any) => {
-  return { selectedText };
-};
-
-export default {
-  formatQuery,
-  handleChartConfigurationFieldsChange,
-  handleChartTypeChange,
-  handleCloneClick,
-  handleQuerySelectionChange,
-  initialState,
-  loadQuery,
-  resetNewQuery,
-  runQuery,
-  saveQuery,
-  setQueryState,
+export const handleQuerySelectionChange = (selectedText: any) => {
+  useQueriesStore.setState({ selectedText });
 };

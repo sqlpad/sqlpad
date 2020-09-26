@@ -1,10 +1,10 @@
 import keymaster from 'keymaster';
 import { useEffect } from 'react';
-import { connect } from 'unistore/react';
 import { connectConnectionClient } from '../stores/connections-store';
-import { formatQuery, runQuery, saveQuery } from '../stores/queries';
+import { formatQuery, runQuery, saveQuery } from '../stores/queries-actions';
 
-function Shortcuts({ formatQuery, runQuery, saveQuery }: any) {
+// TODO make this a custom hook. It is only a component because it is old ways
+function Shortcuts() {
   useEffect(() => {
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts,
@@ -28,13 +28,9 @@ function Shortcuts({ formatQuery, runQuery, saveQuery }: any) {
       keymaster.unbind('ctrl+s, command+s');
       keymaster.unbind('shift+return');
     };
-  }, [saveQuery, runQuery, formatQuery]);
+  }, []);
 
   return null;
 }
 
-export default connect([], (store) => ({
-  formatQuery,
-  runQuery: runQuery(store),
-  saveQuery: saveQuery(store),
-}))(Shortcuts);
+export default Shortcuts;
