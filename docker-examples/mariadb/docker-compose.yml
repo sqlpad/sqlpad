@@ -1,0 +1,44 @@
+version: '3'
+services:
+  mariadb:
+    image: mariadb:10.5.5
+    restart: always
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: db
+      MYSQL_ROOT_PASSWORD: password
+
+  sqlpad:
+    # To use Dockerfile at root of this project, use build instead of image
+    # build: ../../
+    image: sqlpad/sqlpad:5.6.0
+    hostname: 'sqlpad'
+    depends_on:
+      - 'mariadb'
+    ports:
+      - '3000:3000'
+    environment:
+      SQLPAD_ADMIN: 'admin@sqlpad.com'
+      SQLPAD_ADMIN_PASSWORD: 'admin'
+      SQLPAD_APP_LOG_LEVEL: debug
+      SQLPAD_WEB_LOG_LEVEL: warn
+      SQLPAD_SEED_DATA_PATH: /etc/sqlpad/seed-data
+      SQLPAD_BACKEND_DB_URI: mariadb://root:password@mariadb:3306/db?timezone=Etc%2FGMT0
+      SQLPAD_SESSION_STORE: 'database'
+      SQLPAD_DB_PATH: '/var/lib/sqlpad'
+      SQLPAD_DB_IN_MEMORY: 'false'
+      SQLPAD_QUERY_RESULT_STORE: 'database'
+      # This adds a pre-configured connection to point to the database
+      # used as the backend for SQLPad itself
+      SQLPAD_CONNECTIONS__mariad__name: 'MariaDB Demo'
+      SQLPAD_CONNECTIONS__mariad__driver: mysql
+      SQLPAD_CONNECTIONS__mariad__host: mariadb
+      SQLPAD_CONNECTIONS__mariad__port: 3306
+      SQLPAD_CONNECTIONS__mariad__database: db
+      SQLPAD_CONNECTIONS__mariad__username: root
+      SQLPAD_CONNECTIONS__mariad__password: password
+      # SQLPAD_CONNECTIONS__mariad__multiStatementTransactionEnabled: 'true'
+      # SQLPAD_CONNECTIONS__mariad__idleTimeoutSeconds: 86400
+    volumes:
+      - ./seed-data:/etc/sqlpad/seed-data
