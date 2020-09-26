@@ -10,8 +10,7 @@ import {
   loadQuery,
   resetNewQuery,
 } from '../stores/editor-actions';
-import { useEditorStore } from '../stores/editor-store';
-import { useShowSchema } from '../stores/editor-actions';
+import { useEditorStore, useShowSchema } from '../stores/editor-store';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';

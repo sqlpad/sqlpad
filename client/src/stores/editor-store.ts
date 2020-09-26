@@ -52,3 +52,19 @@ export const useEditorStore = create<State>((set, get) => ({
   showValidation: false,
   unsavedChanges: false,
 }));
+
+export function useSelectedConnectionId(): string {
+  return useEditorStore((s) => s.selectedConnectionId);
+}
+
+export function useConnectionClient(): any {
+  return useEditorStore((s) => s.connectionClient);
+}
+
+export function useShowSchema(): boolean {
+  return useEditorStore((s) => s.showSchema);
+}
+
+export function useSchema() {
+  return useEditorStore((s) => s.schema);
+}

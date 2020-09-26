@@ -6,8 +6,8 @@ import ConnectionListDrawer from '../connections/ConnectionListDrawer';
 import {
   connectConnectionClient,
   selectConnectionId,
-  useSelectedConnectionId,
 } from '../stores/editor-actions';
+import { useSelectedConnectionId } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './ConnectionDropdown.module.css';
 

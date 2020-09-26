@@ -6,9 +6,11 @@ import IconButton from '../../common/IconButton';
 import {
   connectConnectionClient,
   disconnectConnectionClient,
+} from '../../stores/editor-actions';
+import {
   useConnectionClient,
   useSelectedConnectionId,
-} from '../../stores/editor-actions';
+} from '../../stores/editor-store';
 
 function ToolbarConnectionClientButton() {
   const [fetching, setFetching] = useState(false);

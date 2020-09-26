@@ -13,14 +13,6 @@ import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
 import { NEW_QUERY, useEditorStore } from './editor-store';
 
-export function useSelectedConnectionId(): string {
-  return useEditorStore((s) => s.selectedConnectionId);
-}
-
-export function useConnectionClient(): any {
-  return useEditorStore((s) => s.connectionClient);
-}
-
 export const initApp = async (config: any, connections: any) => {
   try {
     let [selectedConnectionId] = await Promise.all([
@@ -414,17 +406,9 @@ export const handleQuerySelectionChange = (selectedText: any) => {
   useEditorStore.setState({ selectedText });
 };
 
-export function useShowSchema(): boolean {
-  return useEditorStore((s) => s.showSchema);
-}
-
 export function toggleSchema() {
   const { showSchema } = useEditorStore.getState();
   useEditorStore.setState({ showSchema: !showSchema });
-}
-
-export function useSchema() {
-  return useEditorStore((s) => s.schema);
 }
 
 export function setSchema(schema: any) {
