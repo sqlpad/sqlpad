@@ -1,7 +1,6 @@
 import React from 'react';
 import Button from '../../common/Button';
-import { connectConnectionClient } from '../../stores/editor-actions';
-import { runQuery } from '../../stores/editor-actions';
+import { connectConnectionClient, runQuery } from '../../stores/editor-actions';
 import { useEditorStore } from '../../stores/editor-store';
 
 function ToolbarRunButton() {
