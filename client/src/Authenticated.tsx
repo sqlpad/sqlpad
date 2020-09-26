@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import useSWR from 'swr';
 import { useQueriesStore } from './stores/queries-store';
-import initApp from './stores/initApp';
+import { initApp } from './stores/queries-actions';
 import useAppContext from './utilities/use-app-context';
 
 export interface Props {
