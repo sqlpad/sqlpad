@@ -13,7 +13,11 @@ import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
 import Tooltip from '../common/Tooltip';
-import useSchemaState from '../stores/use-schema-state';
+import {
+  loadSchemaInfo,
+  toggleSchemaItem,
+  useSchema,
+} from '../stores/schema-store';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
@@ -34,6 +38,8 @@ function SchemaSidebar({ connectionId }: any) {
     height: -1,
   });
 
+  const schema = useSchema();
+
   const handleRefreshClick = (e: any) => {
     e.preventDefault();
     if (connectionId) {
@@ -41,7 +47,6 @@ function SchemaSidebar({ connectionId }: any) {
     }
   };
 
-  const { toggleSchemaItem, loadSchemaInfo, schema } = useSchemaState();
   const { loading, schemaInfo, expanded, error } =
     (schema && schema[connectionId]) || {};
 
