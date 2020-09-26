@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelectedConnectionId } from '../stores/connections-store';
+import { useSelectedConnectionId } from '../stores/queries-actions';
 import { loadSchemaInfo } from '../stores/schema-store';
 
 /**

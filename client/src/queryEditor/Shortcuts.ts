@@ -1,6 +1,6 @@
 import keymaster from 'keymaster';
 import { useEffect } from 'react';
-import { connectConnectionClient } from '../stores/connections-store';
+import { connectConnectionClient } from '../stores/queries-actions';
 import { formatQuery, runQuery, saveQuery } from '../stores/queries-actions';
 
 // TODO make this a custom hook. It is only a component because it is old ways

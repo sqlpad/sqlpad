@@ -5,8 +5,11 @@ import AppHeader from '../app-header/AppHeader';
 import { resizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar';
-import { connectConnectionClient } from '../stores/connections-store';
-import { loadQuery, resetNewQuery } from '../stores/queries-actions';
+import {
+  connectConnectionClient,
+  loadQuery,
+  resetNewQuery,
+} from '../stores/queries-actions';
 import { useQueriesStore } from '../stores/queries-store';
 import { useShowSchema } from '../stores/schema-store';
 import DocumentTitle from './DocumentTitle';

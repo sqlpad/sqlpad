@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../../common/Button';
-import { connectConnectionClient } from '../../stores/connections-store';
+import { connectConnectionClient } from '../../stores/queries-actions';
 import { runQuery } from '../../stores/queries-actions';
 import { useQueriesStore } from '../../stores/queries-store';
 

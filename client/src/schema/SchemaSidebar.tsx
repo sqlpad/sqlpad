@@ -12,7 +12,7 @@ import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
 import Tooltip from '../common/Tooltip';
-import { useSelectedConnectionId } from '../stores/connections-store';
+import { useSelectedConnectionId } from '../stores/queries-actions';
 import {
   loadSchemaInfo,
   toggleSchemaItem,

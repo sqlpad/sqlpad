@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import useSWR from 'swr';
-import { useConnectionsStore } from './stores/connections-store';
+import { useQueriesStore } from './stores/queries-store';
 import initApp from './stores/initApp';
 import useAppContext from './utilities/use-app-context';
 
@@ -12,7 +12,7 @@ export interface Props {
 const Authenticated = (props: Props) => {
   const { children } = props;
   const { config, currentUser } = useAppContext();
-  const initialized = useConnectionsStore((s) => s.initialized);
+  const initialized = useQueriesStore((s) => s.initialized);
 
   let { data: connections } = useSWR('/api/connections');
 

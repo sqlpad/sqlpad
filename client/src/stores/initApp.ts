@@ -1,8 +1,7 @@
 import localforage from 'localforage';
 import message from '../common/message';
-import { useConnectionsStore } from './connections-store';
-
-const queryString = require('query-string');
+import { useQueriesStore } from './queries-store';
+import queryString from 'query-string';
 
 // @ts-expect-error
 window.localforage = localforage;
@@ -59,7 +58,7 @@ const initApp = async (config: any, connections: any) => {
       }
     }
 
-    useConnectionsStore.setState(update);
+    useQueriesStore.setState(update);
   } catch (error) {
     console.error(error);
     message.error('Error initializing application');

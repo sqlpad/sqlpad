@@ -9,7 +9,147 @@ import {
 } from '../utilities/localQueryText';
 import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import { NEW_QUERY, useQueriesStore } from './queries-store';
-import { useConnectionsStore } from './connections-store';
+import localforage from 'localforage';
+
+export function useSelectedConnectionId(): string {
+  return useQueriesStore((s) => s.selectedConnectionId);
+}
+
+export function useConnectionClient(): any {
+  return useQueriesStore((s) => s.connectionClient);
+}
+
+/**
+ * Open a connection client for the currently selected connection if supported
+ */
+export async function connectConnectionClient() {
+  const { connectionClient, selectedConnectionId } = useQueriesStore.getState();
+
+  // If a connectionClient is already open or selected connection id doesn't exist, do nothing
+  if (connectionClient || !selectedConnectionId) {
+    return;
+  }
+
+  // Regular users are not allowed to get connections by id, but they can get list of connections
+  // May want to store selected connection instead of just id
+  const { data: connections } = await api.get(`/api/connections`);
+  const connection = (connections || []).find(
+    (connection: any) => connection.id === selectedConnectionId
+  );
+
+  const supportedAndEnabled =
+    connection &&
+    connection.supportsConnectionClient &&
+    connection.multiStatementTransactionEnabled;
+
+  if (!supportedAndEnabled) {
+    return;
+  }
+
+  const json = await api.post('/api/connection-clients', {
+    connectionId: selectedConnectionId,
+  });
+  if (json.error) {
+    return message.error('Problem connecting to database');
+  }
+
+  // Poll connection-clients api to keep it alive
+  const connectionClientInterval = setInterval(async () => {
+    const updateJson = await api.put(
+      `/api/connection-clients/${json.data.id}`,
+      {}
+    );
+
+    // Not sure if this should message user here
+    // In the event of an error this could get really noisy
+    if (updateJson.error) {
+      message.error(updateJson.error);
+    }
+
+    // If the PUT didn't return a connectionClient object,
+    // the connectionClient has been disconnected
+    if (!updateJson.data && connectionClientInterval) {
+      clearInterval(connectionClientInterval);
+      useQueriesStore.setState({
+        connectionClientInterval: null,
+        connectionClient: null,
+      });
+    } else {
+      useQueriesStore.setState({
+        connectionClient: updateJson.data,
+      });
+    }
+  }, 10000);
+
+  useQueriesStore.setState({
+    connectionClient: json.data,
+    connectionClientInterval,
+  });
+}
+
+/**
+ * Disconnect the current connection client if one exists
+ */
+export async function disconnectConnectionClient() {
+  const {
+    connectionClient,
+    connectionClientInterval,
+  } = useQueriesStore.getState();
+
+  if (connectionClientInterval) {
+    clearInterval(connectionClientInterval);
+  }
+
+  if (connectionClient) {
+    api
+      .delete(`/api/connection-clients/${connectionClient.id}`)
+      .then((json) => {
+        if (json.error) {
+          message.error(json.error);
+        }
+      });
+  }
+
+  useQueriesStore.setState({
+    connectionClient: null,
+    connectionClientInterval: null,
+  });
+}
+
+/**
+ * Select connection and disconnect connectionClient if it exists
+ * @param selectedConnectionId
+ */
+export function selectConnectionId(selectedConnectionId: string) {
+  const {
+    connectionClient,
+    connectionClientInterval,
+  } = useQueriesStore.getState();
+
+  localforage
+    .setItem('selectedConnectionId', selectedConnectionId)
+    .catch((error) => message.error(error));
+
+  if (connectionClient) {
+    api
+      .delete(`/api/connection-clients/${connectionClient.id}`)
+      .then((json) => {
+        if (json.error) {
+          message.error(json.error);
+        }
+      });
+  }
+
+  if (connectionClientInterval) {
+    clearInterval(connectionClientInterval);
+  }
+
+  useQueriesStore.setState({
+    selectedConnectionId,
+    connectionClient: null,
+    connectionClientInterval: null,
+  });
+}
 
 export const formatQuery = async () => {
   const { query } = useQueriesStore.getState();
@@ -42,7 +182,7 @@ export const loadQuery = async (queryId: string) => {
     return message.error('Query not found');
   }
 
-  useConnectionsStore.setState({
+  useQueriesStore.setState({
     selectedConnectionId: data.connectionId,
   });
 
@@ -58,10 +198,7 @@ export const loadQuery = async (queryId: string) => {
 
 export const runQuery = async () => {
   const { query, selectedText } = useQueriesStore.getState();
-  const {
-    selectedConnectionId,
-    connectionClient,
-  } = useConnectionsStore.getState();
+  const { selectedConnectionId, connectionClient } = useQueriesStore.getState();
 
   // multiple queries could be running and we only want to keep the "current" or latest query run
   const runQueryInstanceId = uuidv4();
@@ -98,7 +235,7 @@ export const runQuery = async () => {
 
 export const saveQuery = async () => {
   const { query } = useQueriesStore.getState();
-  const { selectedConnectionId } = useConnectionsStore.getState();
+  const { selectedConnectionId } = useQueriesStore.getState();
 
   if (!query.name) {
     message.error('Query name required');

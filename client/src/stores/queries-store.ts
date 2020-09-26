@@ -16,6 +16,10 @@ export const NEW_QUERY = {
 };
 
 type State = {
+  initialized: boolean;
+  selectedConnectionId: string;
+  connectionClient: any;
+  connectionClientInterval: any;
   runQueryInstanceId: any;
   isRunning: boolean;
   isSaving: boolean;
@@ -29,6 +33,10 @@ type State = {
 };
 
 export const useQueriesStore = create<State>((set, get) => ({
+  initialized: false,
+  selectedConnectionId: '',
+  connectionClient: null,
+  connectionClientInterval: null,
   runQueryInstanceId: null,
   isRunning: false,
   isSaving: false,

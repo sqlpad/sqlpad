@@ -7,7 +7,7 @@ import {
   connectConnectionClient,
   selectConnectionId,
   useSelectedConnectionId,
-} from '../stores/connections-store';
+} from '../stores/queries-actions';
 import useAppContext from '../utilities/use-app-context';
 import styles from './ConnectionDropdown.module.css';
 

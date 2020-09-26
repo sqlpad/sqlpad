@@ -5,7 +5,7 @@ import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';
-import { selectConnectionId } from '../stores/connections-store';
+import { selectConnectionId } from '../stores/queries-actions';
 import { api } from '../utilities/fetch-json';
 import useAppContext from '../utilities/use-app-context';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
