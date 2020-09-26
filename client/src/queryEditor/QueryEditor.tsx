@@ -9,9 +9,9 @@ import {
   connectConnectionClient,
   loadQuery,
   resetNewQuery,
-} from '../stores/queries-actions';
-import { useQueriesStore } from '../stores/queries-store';
-import { useShowSchema } from '../stores/queries-actions';
+} from '../stores/editor-actions';
+import { useEditorStore } from '../stores/editor-store';
+import { useShowSchema } from '../stores/editor-actions';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
@@ -30,7 +30,7 @@ type Props = {
 
 function QueryEditor(props: Props) {
   const { queryId } = props;
-  const showVis = useQueriesStore((s) => Boolean(s?.query?.chart?.chartType));
+  const showVis = useEditorStore((s) => Boolean(s?.query?.chart?.chartType));
 
   // Once initialized reset or load query on changes accordingly
   useEffect(() => {

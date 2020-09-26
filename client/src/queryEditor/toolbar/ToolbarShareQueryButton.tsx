@@ -2,11 +2,11 @@ import PrivateIcon from 'mdi-react/AccountIcon';
 import SharedIcon from 'mdi-react/AccountMultipleIcon';
 import React from 'react';
 import IconButton from '../../common/IconButton';
-import { setQueryState } from '../../stores/queries-actions';
-import { useQueriesStore } from '../../stores/queries-store';
+import { setQueryState } from '../../stores/editor-actions';
+import { useEditorStore } from '../../stores/editor-store';
 
 function ToolbarShareQueryButton() {
-  const shared = useQueriesStore((s) => {
+  const shared = useEditorStore((s) => {
     const acl = s?.query?.acl || [];
     return acl.length > 0;
   });

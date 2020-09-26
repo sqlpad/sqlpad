@@ -3,8 +3,8 @@ import SqlEditor from '../common/SqlEditor';
 import {
   handleQuerySelectionChange,
   setQueryState,
-} from '../stores/queries-actions';
-import { useQueriesStore } from '../stores/queries-store';
+} from '../stores/editor-actions';
+import { useEditorStore } from '../stores/editor-store';
 
 function QueryEditorSqlEditor() {
   const onChange = useCallback(
@@ -12,7 +12,7 @@ function QueryEditorSqlEditor() {
     []
   );
 
-  const value = useQueriesStore((s) => s?.query?.queryText);
+  const value = useEditorStore((s) => s?.query?.queryText);
 
   return (
     <div style={{ height: '100%', width: '100%' }}>

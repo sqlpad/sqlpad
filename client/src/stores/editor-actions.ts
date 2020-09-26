@@ -11,17 +11,17 @@ import {
 } from '../utilities/localQueryText';
 import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
-import { NEW_QUERY, useQueriesStore } from './queries-store';
+import { NEW_QUERY, useEditorStore } from './editor-store';
 
 // @ts-expect-error
 window.localforage = localforage;
 
 export function useSelectedConnectionId(): string {
-  return useQueriesStore((s) => s.selectedConnectionId);
+  return useEditorStore((s) => s.selectedConnectionId);
 }
 
 export function useConnectionClient(): any {
-  return useQueriesStore((s) => s.connectionClient);
+  return useEditorStore((s) => s.connectionClient);
 }
 
 export const initApp = async (config: any, connections: any) => {
@@ -76,7 +76,7 @@ export const initApp = async (config: any, connections: any) => {
       }
     }
 
-    useQueriesStore.setState(update);
+    useEditorStore.setState(update);
   } catch (error) {
     console.error(error);
     message.error('Error initializing application');
@@ -87,7 +87,7 @@ export const initApp = async (config: any, connections: any) => {
  * Open a connection client for the currently selected connection if supported
  */
 export async function connectConnectionClient() {
-  const { connectionClient, selectedConnectionId } = useQueriesStore.getState();
+  const { connectionClient, selectedConnectionId } = useEditorStore.getState();
 
   // If a connectionClient is already open or selected connection id doesn't exist, do nothing
   if (connectionClient || !selectedConnectionId) {
@@ -134,18 +134,18 @@ export async function connectConnectionClient() {
     // the connectionClient has been disconnected
     if (!updateJson.data && connectionClientInterval) {
       clearInterval(connectionClientInterval);
-      useQueriesStore.setState({
+      useEditorStore.setState({
         connectionClientInterval: null,
         connectionClient: null,
       });
     } else {
-      useQueriesStore.setState({
+      useEditorStore.setState({
         connectionClient: updateJson.data,
       });
     }
   }, 10000);
 
-  useQueriesStore.setState({
+  useEditorStore.setState({
     connectionClient: json.data,
     connectionClientInterval,
   });
@@ -158,7 +158,7 @@ export async function disconnectConnectionClient() {
   const {
     connectionClient,
     connectionClientInterval,
-  } = useQueriesStore.getState();
+  } = useEditorStore.getState();
 
   if (connectionClientInterval) {
     clearInterval(connectionClientInterval);
@@ -174,7 +174,7 @@ export async function disconnectConnectionClient() {
       });
   }
 
-  useQueriesStore.setState({
+  useEditorStore.setState({
     connectionClient: null,
     connectionClientInterval: null,
   });
@@ -188,7 +188,7 @@ export function selectConnectionId(selectedConnectionId: string) {
   const {
     connectionClient,
     connectionClientInterval,
-  } = useQueriesStore.getState();
+  } = useEditorStore.getState();
 
   localforage
     .setItem('selectedConnectionId', selectedConnectionId)
@@ -208,7 +208,7 @@ export function selectConnectionId(selectedConnectionId: string) {
     clearInterval(connectionClientInterval);
   }
 
-  useQueriesStore.setState({
+  useEditorStore.setState({
     selectedConnectionId,
     connectionClient: null,
     connectionClientInterval: null,
@@ -216,7 +216,7 @@ export function selectConnectionId(selectedConnectionId: string) {
 }
 
 export const formatQuery = async () => {
-  const { query } = useQueriesStore.getState();
+  const { query } = useEditorStore.getState();
 
   const json = await api.post('/api/format-sql', {
     query: query.queryText,
@@ -234,7 +234,7 @@ export const formatQuery = async () => {
 
   setLocalQueryText(query.id, json.data.query);
 
-  useQueriesStore.setState({
+  useEditorStore.setState({
     query: { ...query, queryText: json.data.query },
     unsavedChanges: true,
   });
@@ -246,11 +246,11 @@ export const loadQuery = async (queryId: string) => {
     return message.error('Query not found');
   }
 
-  useQueriesStore.setState({
+  useEditorStore.setState({
     selectedConnectionId: data.connectionId,
   });
 
-  useQueriesStore.setState({
+  useEditorStore.setState({
     runQueryInstanceId: null,
     isRunning: false,
     query: data,
@@ -261,13 +261,13 @@ export const loadQuery = async (queryId: string) => {
 };
 
 export const runQuery = async () => {
-  const { query, selectedText } = useQueriesStore.getState();
-  const { selectedConnectionId, connectionClient } = useQueriesStore.getState();
+  const { query, selectedText } = useEditorStore.getState();
+  const { selectedConnectionId, connectionClient } = useEditorStore.getState();
 
   // multiple queries could be running and we only want to keep the "current" or latest query run
   const runQueryInstanceId = uuidv4();
 
-  useQueriesStore.setState({
+  useEditorStore.setState({
     runQueryInstanceId,
     isRunning: true,
     runQueryStartTime: new Date(),
@@ -288,8 +288,8 @@ export const runQuery = async () => {
   // Get latest state and check runQueryInstanceId to ensure it matches
   // If it matches another query has not been run and we can keep the result.
   // Not matching implies another query has been executed and we can ignore this result.
-  if (useQueriesStore.getState().runQueryInstanceId === runQueryInstanceId) {
-    useQueriesStore.setState({
+  if (useEditorStore.getState().runQueryInstanceId === runQueryInstanceId) {
+    useEditorStore.setState({
       isRunning: false,
       queryError: error,
       queryResult: data,
@@ -298,16 +298,16 @@ export const runQuery = async () => {
 };
 
 export const saveQuery = async () => {
-  const { query } = useQueriesStore.getState();
-  const { selectedConnectionId } = useQueriesStore.getState();
+  const { query } = useEditorStore.getState();
+  const { selectedConnectionId } = useEditorStore.getState();
 
   if (!query.name) {
     message.error('Query name required');
-    useQueriesStore.setState({ showValidation: true });
+    useEditorStore.setState({ showValidation: true });
     return;
   }
 
-  useQueriesStore.setState({ isSaving: true });
+  useEditorStore.setState({ isSaving: true });
   const queryData = Object.assign({}, query, {
     connectionId: selectedConnectionId,
   });
@@ -317,13 +317,13 @@ export const saveQuery = async () => {
       const { error, data } = json;
       if (error) {
         message.error(error);
-        useQueriesStore.setState({ isSaving: false });
+        useEditorStore.setState({ isSaving: false });
         return;
       }
       mutate('/api/queries');
       message.success('Query Saved');
       removeLocalQueryText(data.id);
-      useQueriesStore.setState({
+      useEditorStore.setState({
         isSaving: false,
         unsavedChanges: false,
         query: data,
@@ -334,7 +334,7 @@ export const saveQuery = async () => {
       const { error, data } = json;
       if (error) {
         message.error(error);
-        useQueriesStore.setState({ isSaving: false });
+        useEditorStore.setState({ isSaving: false });
         return;
       }
       mutate('/api/queries');
@@ -345,7 +345,7 @@ export const saveQuery = async () => {
       );
       message.success('Query Saved');
       removeLocalQueryText(data.id);
-      useQueriesStore.setState({
+      useEditorStore.setState({
         isSaving: false,
         unsavedChanges: false,
         query: data,
@@ -355,15 +355,15 @@ export const saveQuery = async () => {
 };
 
 export const handleCloneClick = () => {
-  const { query } = useQueriesStore.getState();
+  const { query } = useEditorStore.getState();
   delete query.id;
   const name = 'Copy of ' + query.name;
   window.history.replaceState({}, name, `${baseUrl()}/queries/new`);
-  useQueriesStore.setState({ query: { ...query, name }, unsavedChanges: true });
+  useEditorStore.setState({ query: { ...query, name }, unsavedChanges: true });
 };
 
 export const resetNewQuery = () => {
-  useQueriesStore.setState({
+  useEditorStore.setState({
     runQueryInstanceId: null,
     isRunning: false,
     query: Object.assign({}, NEW_QUERY),
@@ -374,11 +374,11 @@ export const resetNewQuery = () => {
 };
 
 export const setQueryState = (field: any, value: any) => {
-  const { query } = useQueriesStore.getState();
+  const { query } = useEditorStore.getState();
   if (field === 'queryText') {
     setLocalQueryText(query.id, value);
   }
-  useQueriesStore.setState({
+  useEditorStore.setState({
     query: { ...query, [field]: value },
     unsavedChanges: true,
   });
@@ -388,9 +388,9 @@ export const handleChartConfigurationFieldsChange = (
   chartFieldId: any,
   queryResultField: any
 ) => {
-  const { query } = useQueriesStore.getState();
+  const { query } = useEditorStore.getState();
   const { fields } = query.chart;
-  useQueriesStore.setState({
+  useEditorStore.setState({
     query: {
       ...query,
       chart: {
@@ -403,8 +403,8 @@ export const handleChartConfigurationFieldsChange = (
 };
 
 export const handleChartTypeChange = (chartType: any) => {
-  const { query } = useQueriesStore.getState();
-  useQueriesStore.setState({
+  const { query } = useEditorStore.getState();
+  useEditorStore.setState({
     query: {
       ...query,
       chart: { ...query.chart, chartType },
@@ -414,28 +414,28 @@ export const handleChartTypeChange = (chartType: any) => {
 };
 
 export const handleQuerySelectionChange = (selectedText: any) => {
-  useQueriesStore.setState({ selectedText });
+  useEditorStore.setState({ selectedText });
 };
 
 export function useShowSchema(): boolean {
-  return useQueriesStore((s) => s.showSchema);
+  return useEditorStore((s) => s.showSchema);
 }
 
 export function toggleSchema() {
-  const { showSchema } = useQueriesStore.getState();
-  useQueriesStore.setState({ showSchema: !showSchema });
+  const { showSchema } = useEditorStore.getState();
+  useEditorStore.setState({ showSchema: !showSchema });
 }
 
 export function useSchema() {
-  return useQueriesStore((s) => s.schema);
+  return useEditorStore((s) => s.schema);
 }
 
 export function setSchema(schema: any) {
-  useQueriesStore.setState({ schema });
+  useEditorStore.setState({ schema });
 }
 
 export async function loadSchemaInfo(connectionId: string, reload?: boolean) {
-  const { showSchema, schema } = useQueriesStore.getState();
+  const { showSchema, schema } = useEditorStore.getState();
 
   if (!schema[connectionId] || reload) {
     setSchema({
@@ -487,7 +487,7 @@ export async function loadSchemaInfo(connectionId: string, reload?: boolean) {
 }
 
 export function toggleSchemaItem(connectionId: string, item: { id: string }) {
-  const { schema } = useQueriesStore.getState();
+  const { schema } = useEditorStore.getState();
   const connectionSchema = schema[connectionId];
   const open = !connectionSchema.expanded[item.id];
   setSchema({

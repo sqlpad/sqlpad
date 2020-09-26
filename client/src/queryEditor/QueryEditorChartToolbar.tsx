@@ -3,12 +3,12 @@ import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
 import IconButton from '../common/IconButton';
 import { exportPng } from '../common/tauChartRef';
-import { useQueriesStore } from '../stores/queries-store';
+import { useEditorStore } from '../stores/editor-store';
 
 function QueryEditorChartToolbar({ children }: any) {
-  const queryId = useQueriesStore((s) => s?.query?.id || 'new');
-  const queryName = useQueriesStore((s) => s?.query?.name || 'New query');
-  const queryResult = useQueriesStore((s) => s.queryResult);
+  const queryId = useEditorStore((s) => s?.query?.id || 'new');
+  const queryName = useEditorStore((s) => s?.query?.name || 'New query');
+  const queryResult = useEditorStore((s) => s.queryResult);
 
   const downloadEnabled =
     queryResult && queryResult.rows && queryResult.rows.length;

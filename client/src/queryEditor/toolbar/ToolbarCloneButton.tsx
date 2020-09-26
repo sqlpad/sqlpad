@@ -1,11 +1,11 @@
 import CopyIcon from 'mdi-react/ContentCopyIcon';
 import React from 'react';
 import IconButton from '../../common/IconButton';
-import { handleCloneClick } from '../../stores/queries-actions';
-import { useQueriesStore } from '../../stores/queries-store';
+import { handleCloneClick } from '../../stores/editor-actions';
+import { useEditorStore } from '../../stores/editor-store';
 
 function ToolbarCloneButton() {
-  const queryId = useQueriesStore((s) => s?.query?.id);
+  const queryId = useEditorStore((s) => s?.query?.id);
   const cloneDisabled = !queryId;
 
   return (

@@ -12,12 +12,12 @@ import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
 import Tooltip from '../common/Tooltip';
-import { useSelectedConnectionId } from '../stores/queries-actions';
+import { useSelectedConnectionId } from '../stores/editor-actions';
 import {
   loadSchemaInfo,
   toggleSchemaItem,
   useSchema,
-} from '../stores/queries-actions';
+} from '../stores/editor-actions';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';

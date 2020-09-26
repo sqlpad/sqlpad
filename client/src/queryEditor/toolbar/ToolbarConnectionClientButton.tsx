@@ -8,7 +8,7 @@ import {
   disconnectConnectionClient,
   useConnectionClient,
   useSelectedConnectionId,
-} from '../../stores/queries-actions';
+} from '../../stores/editor-actions';
 
 function ToolbarConnectionClientButton() {
   const [fetching, setFetching] = useState(false);

@@ -1,7 +1,7 @@
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
 import React from 'react';
 import IconButton from '../../common/IconButton';
-import { formatQuery } from '../../stores/queries-actions';
+import { formatQuery } from '../../stores/editor-actions';
 
 function ToolbarFormatQueryButton() {
   return (

@@ -1,12 +1,12 @@
 import React, { FunctionComponent } from 'react';
 import SqlpadTauChart from '../common/SqlpadTauChart';
-import { useQueriesStore } from '../stores/queries-store';
+import { useEditorStore } from '../stores/editor-store';
 
 const ConnectedChart: FunctionComponent = (props) => {
-  const queryId = useQueriesStore((s) => s?.query?.id || 'new');
-  const isRunning = useQueriesStore((s) => s.isRunning);
-  const queryResult = useQueriesStore((s) => s.queryResult);
-  const chartConfiguration = useQueriesStore((s) => s?.query?.chart);
+  const queryId = useEditorStore((s) => s?.query?.id || 'new');
+  const isRunning = useEditorStore((s) => s.isRunning);
+  const queryResult = useEditorStore((s) => s.queryResult);
+  const chartConfiguration = useEditorStore((s) => s?.query?.chart);
 
   return (
     <SqlpadTauChart

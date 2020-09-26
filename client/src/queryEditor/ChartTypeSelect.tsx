@@ -1,11 +1,11 @@
 import React from 'react';
 import Select from '../common/Select';
-import { handleChartTypeChange } from '../stores/queries-actions';
-import { useQueriesStore } from '../stores/queries-store';
+import { handleChartTypeChange } from '../stores/editor-actions';
+import { useEditorStore } from '../stores/editor-store';
 import chartDefinitions from '../utilities/chartDefinitions';
 
 function ChartTypeSelect({ className, style }: any) {
-  const chartType = useQueriesStore((s) => s?.query?.chart?.chartType);
+  const chartType = useEditorStore((s) => s?.query?.chart?.chartType);
 
   const chartOptions = chartDefinitions.map((d) => {
     return (

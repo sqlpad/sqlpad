@@ -1,11 +1,11 @@
 import React from 'react';
 import Button from '../../common/Button';
-import { connectConnectionClient } from '../../stores/queries-actions';
-import { runQuery } from '../../stores/queries-actions';
-import { useQueriesStore } from '../../stores/queries-store';
+import { connectConnectionClient } from '../../stores/editor-actions';
+import { runQuery } from '../../stores/editor-actions';
+import { useEditorStore } from '../../stores/editor-store';
 
 function ToolbarRunButton() {
-  const isRunning = useQueriesStore((s) => s.isRunning);
+  const isRunning = useEditorStore((s) => s.isRunning);
 
   return (
     <Button

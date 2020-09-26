@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../common/Button';
-import { resetNewQuery } from '../stores/queries-actions';
+import { resetNewQuery } from '../stores/editor-actions';
 
 function ToolbarNewQueryButton() {
   return (

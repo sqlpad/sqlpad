@@ -34,7 +34,7 @@ type State = {
   unsavedChanges: boolean;
 };
 
-export const useQueriesStore = create<State>((set, get) => ({
+export const useEditorStore = create<State>((set, get) => ({
   showSchema: true,
   schema: {},
   initialized: false,

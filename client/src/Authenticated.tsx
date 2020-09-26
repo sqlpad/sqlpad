@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import useSWR from 'swr';
-import { useQueriesStore } from './stores/queries-store';
-import { initApp } from './stores/queries-actions';
+import { useEditorStore } from './stores/editor-store';
+import { initApp } from './stores/editor-actions';
 import useAppContext from './utilities/use-app-context';
 
 export interface Props {
@@ -12,7 +12,7 @@ export interface Props {
 const Authenticated = (props: Props) => {
   const { children } = props;
   const { config, currentUser } = useAppContext();
-  const initialized = useQueriesStore((s) => s.initialized);
+  const initialized = useEditorStore((s) => s.initialized);
 
   let { data: connections } = useSWR('/api/connections');
 
