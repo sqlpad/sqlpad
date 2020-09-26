@@ -8,10 +8,6 @@ type State = {
   schema: any;
 };
 
-// Auth is currently run against mocked API endpoints
-// These APIs return a set token, and the existence of this token was used to indicate user was logged in
-// Previously redux was used to store this token and persist to  local storage
-// This is a quick replacement for that
 const useSchemaStore = create<State>((set, get) => ({
   showSchema: true,
   schema: {},
@@ -67,10 +63,9 @@ export async function loadSchemaInfo(connectionId: string, reload?: boolean) {
     updateCompletions(data);
 
     // Pre-expand schemas
-    const expanded = {};
+    const expanded: { [key: string]: boolean } = {};
     if (data) {
       Object.keys(data).forEach((schemaName) => {
-        // @ts-expect-error ts-migrate(7053) FIXME: No index signature with a parameter of type 'strin... Remove this comment to see the full error message
         expanded[schemaName] = true;
       });
     }
