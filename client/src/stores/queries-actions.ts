@@ -1,5 +1,4 @@
 import { mutate } from 'swr';
-// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/uuid` if it exists or add ... Remove this comment to see the full error message
 import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
 import baseUrl from '../utilities/baseUrl';

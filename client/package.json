@@ -18,6 +18,7 @@
     "@types/react-measure": "^2.0.6",
     "@types/react-router-dom": "^5.1.5",
     "@types/react-window": "^1.8.2",
+    "@types/uuid": "^8.3.0",
     "d3": "^5.16.0",
     "downshift": "^6.0.6",
     "humanize-duration": "^3.23.1",
