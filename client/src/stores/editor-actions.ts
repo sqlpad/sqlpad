@@ -13,9 +13,6 @@ import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
 import { NEW_QUERY, useEditorStore } from './editor-store';
 
-// @ts-expect-error
-window.localforage = localforage;
-
 export function useSelectedConnectionId(): string {
   return useEditorStore((s) => s.selectedConnectionId);
 }

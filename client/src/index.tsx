@@ -1,3 +1,4 @@
+import localforage from 'localforage';
 import './css/reset.css';
 import '@reach/dialog/styles.css';
 import '@reach/menu-button/styles.css';
@@ -10,6 +11,9 @@ import './css/react-split-pane.css';
 import './css/vendorOverrides.css';
 import Routes from './Routes';
 import swrFetcher from './utilities/swr-fetcher';
+
+// @ts-expect-error - make localforage available for debugging if needed
+window.localforage = localforage;
 
 ReactDOM.render(
   <SWRConfig
