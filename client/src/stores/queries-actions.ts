@@ -1,3 +1,5 @@
+import localforage from 'localforage';
+import queryString from 'query-string';
 import { mutate } from 'swr';
 import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
@@ -9,8 +11,6 @@ import {
 } from '../utilities/localQueryText';
 import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import { NEW_QUERY, useQueriesStore } from './queries-store';
-import localforage from 'localforage';
-import queryString from 'query-string';
 
 // @ts-expect-error
 window.localforage = localforage;
