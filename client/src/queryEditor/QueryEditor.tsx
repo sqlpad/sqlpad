@@ -8,7 +8,7 @@ import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar';
 import { connectConnectionClient } from '../stores/connections';
 import { loadQuery, resetNewQuery } from '../stores/queries';
-import useSchemaState from '../stores/use-schema-state';
+import { useShowSchema } from '../stores/schema-store';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
@@ -52,7 +52,7 @@ function QueryEditor(props: Props) {
     deboucedResearchChart(queryId);
   }
 
-  const { showSchema } = useSchemaState();
+  const showSchema = useShowSchema();
 
   const editorAndVis = showVis ? (
     <SplitPane

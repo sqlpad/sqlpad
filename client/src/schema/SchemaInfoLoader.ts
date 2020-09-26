@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { connect } from 'unistore/react';
-import useSchemaState from '../stores/use-schema-state';
+import { loadSchemaInfo } from '../stores/schema-store';
 
 function mapStateToProps(state: any, props: any) {
   return {
@@ -16,14 +16,11 @@ function mapStateToProps(state: any, props: any) {
  * @param {*} props
  */
 function SchemaInfoLoader({ connectionId }: any) {
-  const { loadSchemaInfo } = useSchemaState();
-
   useEffect(() => {
     if (connectionId) {
-      // @ts-expect-error ts-migrate(2554) FIXME: Expected 2 arguments, but got 1.
       loadSchemaInfo(connectionId);
     }
-  }, [connectionId, loadSchemaInfo]);
+  }, [connectionId]);
 
   return null;
 }
