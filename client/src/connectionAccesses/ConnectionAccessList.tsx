@@ -79,8 +79,7 @@ function ConnectionAccessList() {
       </div>
       {connectionAccesses.map((item: any) => {
         const actions = [];
-        // @ts-expect-error ts-migrate(2362) FIXME: The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
-        const timeToExpire = new Date(item.expiryDate) - new Date();
+        const timeToExpire = new Date(item.expiryDate).valueOf() - Date.now();
         const expired = timeToExpire < 0;
 
         if (currentUser.role === 'admin' && !expired) {
