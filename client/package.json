@@ -45,7 +45,7 @@
     "react-window-infinite-loader": "^1.0.5",
     "swr": "^0.3.5",
     "taucharts": "^2.8.0",
-    "typescript": "^4.0.3",
+    "typescript": "^3.9.7",
     "use-debounce": "^5.0.0",
     "uuid": "^8.3.0",
     "whatwg-fetch": "^3.4.1",
