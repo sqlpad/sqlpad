@@ -135,7 +135,6 @@ function UserList() {
         title="Add user"
         visible={showAddUser}
         width={'500px'}
-        // @ts-expect-error
         onClose={() => setShowAddUser(false)}
       >
         <InviteUserForm onInvited={handleOnInvited} />
@@ -146,7 +145,6 @@ function UserList() {
         title={editUser && editUser.email}
         visible={Boolean(editUser)}
         width={'500px'}
-        // @ts-expect-error
         onClose={() => {
           mutate();
           setEditUser(null);

@@ -106,7 +106,6 @@ function ServiceTokenList() {
         title="Generate Service Token"
         visible={showServiceTokenForm}
         width={'500px'}
-        // @ts-expect-error
         onClose={handleGenerateFormClose}
       >
         <ServiceTokenForm
@@ -118,7 +117,6 @@ function ServiceTokenList() {
         title="Service Token generated"
         visible={showGeneratedServiceToken}
         width={'500px'}
-        // @ts-expect-error
         onClose={handleShowGeneratedTokenClose}
       >
         <ServiceTokenDetails serviceToken={generatedServiceToken} />
