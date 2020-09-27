@@ -7,8 +7,14 @@ import message from '../common/message';
 import Select from '../common/Select';
 import { api } from '../utilities/fetch-json';
 
+type Edits = {
+  name?: string;
+  role?: string;
+  duration?: string;
+};
+
 function ServiceTokenForm({ onServiceTokenGenerated }: any) {
-  const [serviceTokenEdits, setServiceTokenEdits] = useState({});
+  const [serviceTokenEdits, setServiceTokenEdits] = useState<Edits>({});
   const [generating, setGenerating] = useState(false);
 
   const setServiceTokenValue = (key: any, value: any) => {
@@ -29,7 +35,6 @@ function ServiceTokenForm({ onServiceTokenGenerated }: any) {
     return onServiceTokenGenerated(json.data);
   };
 
-  // @ts-expect-error ts-migrate(2339) FIXME: Property 'name' does not exist on type '{}'.
   const { name = '', role = '', duration = '' } = serviceTokenEdits;
 
   return (

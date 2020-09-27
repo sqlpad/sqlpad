@@ -74,8 +74,7 @@ function ServiceTokenList() {
           <DeleteConfirmButton
             key="delete"
             confirmMessage="Delete service token?"
-            // @ts-expect-error
-            onConfirm={(e: any) => deleteServiceToken(item.id)}
+            onConfirm={() => deleteServiceToken(item.id)}
             style={{ marginLeft: 8 }}
           >
             Delete

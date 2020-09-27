@@ -11,7 +11,7 @@ import { api } from '../utilities/fetch-json';
 function InviteUserForm({ onInvited }: any) {
   const [email, setEmail] = useState(null);
   const [role, setRole] = useState(null);
-  const [isInviting, setIsInviting] = useState(null);
+  const [isInviting, setIsInviting] = useState<boolean>(false);
 
   const onInviteClick = async (event: any) => {
     event.preventDefault();
@@ -20,10 +20,8 @@ function InviteUserForm({ onInvited }: any) {
       email,
       role,
     };
-    // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'true' is not assignable to param... Remove this comment to see the full error message
     setIsInviting(true);
     const json = await api.post('/api/users', user);
-    // @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'false' is not assignable to para... Remove this comment to see the full error message
     setIsInviting(false);
     if (json.error) {
       message.error('Add user failed: ' + json.error);
@@ -78,7 +76,6 @@ function InviteUserForm({ onInvited }: any) {
             className="w-100"
             variant="primary"
             onClick={onInviteClick}
-            // @ts-expect-error
             disabled={isInviting}
           >
             Add user

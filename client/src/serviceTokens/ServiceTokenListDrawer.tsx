@@ -11,8 +11,7 @@ function ServiceTokenListDrawer({ visible, onClose }: any) {
       onClose={onClose}
       placement="left"
     >
-      {/* @ts-expect-error ts-migrate(2322) FIXME: Property 'onClose' does not exist on type 'Intrins... Remove this comment to see the full error message */}
-      <ServiceTokenList onClose={onClose} />
+      <ServiceTokenList />
     </Drawer>
   );
 }

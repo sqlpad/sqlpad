@@ -46,8 +46,7 @@ function SchemaSidebar() {
 
   // For windowed list rendering, we need to determine what is visible due to expanded parent
   // Show item if every parent is expanded (or doesn't have a parent)
-  // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'row' implicitly has an 'any' type.
-  const visibleItems = schemaList.filter((row) =>
+  const visibleItems = schemaList.filter((row: any) =>
     row.parentIds.every((id: any) => expanded[id])
   );
 
@@ -148,8 +147,9 @@ function SchemaSidebar() {
     <Measure
       bounds
       onResize={(contentRect) => {
-        // @ts-expect-error ts-migrate(2345) FIXME: Type 'undefined' is not assignable to type 'SetSta... Remove this comment to see the full error message
-        setDimensions(contentRect.bounds);
+        if (contentRect.bounds) {
+          setDimensions(contentRect.bounds);
+        }
       }}
     >
       {({ measureRef }) => (

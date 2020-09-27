@@ -1,11 +1,10 @@
 function searchTables(tableMap: any, searchRegEx: any) {
-  const res = {};
+  const res: { [key: string]: string } = {};
   Object.keys(tableMap).forEach((tableName) => {
     if (
       searchRegEx.test(tableName) ||
       tableMap[tableName].some((col: any) => searchRegEx.test(col.column_name))
     ) {
-      // @ts-expect-error ts-migrate(7053) FIXME: No index signature with a parameter of type 'strin... Remove this comment to see the full error message
       res[tableName] = tableMap[tableName];
     }
   });
@@ -18,7 +17,7 @@ function searchTables(tableMap: any, searchRegEx: any) {
  * @param {string} search
  */
 export default function searchSchemaInfo(schemaInfo: any, search: any) {
-  const filteredSchemaInfo = {};
+  const filteredSchemaInfo: { [key: string]: any } = {};
   const searchRegEx = new RegExp(search, 'i');
 
   if (schemaInfo) {
@@ -27,7 +26,6 @@ export default function searchSchemaInfo(schemaInfo: any, search: any) {
         schemaInfo[schemaName],
         searchRegEx
       );
-      // @ts-expect-error ts-migrate(7053) FIXME: No index signature with a parameter of type 'strin... Remove this comment to see the full error message
       filteredSchemaInfo[schemaName] = filteredTableMap;
     });
   }
