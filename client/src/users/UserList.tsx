@@ -11,10 +11,15 @@ import useAppContext from '../utilities/use-app-context';
 import EditUserForm from './EditUserForm';
 import InviteUserForm from './InviteUserForm';
 
+type User = {
+  id: string;
+  email: string;
+};
+
 function UserList() {
   const { currentUser } = useAppContext();
   const [showAddUser, setShowAddUser] = useState(false);
-  const [editUser, setEditUser] = useState(null);
+  const [editUser, setEditUser] = useState<User | null>(null);
   const [toggling, setToggling] = useState(false);
 
   const { data: usersData, error, mutate } = useSWR('/api/users');
@@ -99,8 +104,7 @@ function UserList() {
             <DeleteConfirmButton
               key="delete"
               confirmMessage={`Delete ${user.email}?`}
-              // @ts-expect-error
-              onConfirm={(e: any) => handleDelete(user)}
+              onConfirm={() => handleDelete(user)}
               style={{ marginLeft: 8 }}
             >
               Delete
@@ -108,12 +112,10 @@ function UserList() {
           );
         }
 
-        let additionalUserInfo = '';
+        let additionalUserInfo = <em> </em>;
         if (user.disabled) {
-          // @ts-expect-error ts-migrate(2322) FIXME: Type 'Element' is not assignable to type 'string'.
           additionalUserInfo = <em> - disabled</em>;
         } else if (!user.signupAt) {
-          // @ts-expect-error ts-migrate(2322) FIXME: Type 'Element' is not assignable to type 'string'.
           additionalUserInfo = <em> - not signed up yet</em>;
         }
 
@@ -141,8 +143,7 @@ function UserList() {
       </Modal>
 
       <Modal
-        // @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'.
-        title={editUser && editUser.email}
+        title={editUser?.email || ''}
         visible={Boolean(editUser)}
         width={'500px'}
         onClose={() => {
@@ -150,8 +151,7 @@ function UserList() {
           setEditUser(null);
         }}
       >
-        {/* @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'. */}
-        <EditUserForm userId={editUser && editUser.id} />
+        <EditUserForm userId={editUser?.id} />
       </Modal>
     </>
   );
