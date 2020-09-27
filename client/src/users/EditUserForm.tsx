@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useSWR, { mutate } from 'swr';
-// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/uuid` if it exists or add ... Remove this comment to see the full error message
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../common/Button';
 import FormExplain from '../common/FormExplain';

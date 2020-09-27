@@ -1,20 +1,11 @@
 import CopyIcon from 'mdi-react/ContentCopyIcon';
 import React from 'react';
-import { connect } from 'unistore/react';
 import IconButton from '../../common/IconButton';
-import { handleCloneClick } from '../../stores/queries';
+import { handleCloneClick } from '../../stores/editor-actions';
+import { useEditorStore } from '../../stores/editor-store';
 
-function mapStateToProps(state: any) {
-  return {
-    queryId: state.query && state.query.id,
-  };
-}
-
-const ConnectedToolbarCloneButton = connect(mapStateToProps, (store) => ({
-  handleCloneClick,
-}))(React.memo(ToolbarCloneButton));
-
-function ToolbarCloneButton({ handleCloneClick, queryId }: any) {
+function ToolbarCloneButton() {
+  const queryId = useEditorStore((s) => s?.query?.id);
   const cloneDisabled = !queryId;
 
   return (
@@ -28,4 +19,4 @@ function ToolbarCloneButton({ handleCloneClick, queryId }: any) {
   );
 }
 
-export default ConnectedToolbarCloneButton;
+export default React.memo(ToolbarCloneButton);

@@ -1,7 +1,7 @@
 import DatabaseIcon from 'mdi-react/DatabaseIcon';
 import React from 'react';
 import IconButton from '../../common/IconButton';
-import { toggleSchema } from '../../stores/schema-store';
+import { toggleSchema } from '../../stores/editor-actions';
 
 function ToolbarToggleSchemaButton() {
   return (

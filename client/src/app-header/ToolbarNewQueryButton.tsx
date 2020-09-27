@@ -1,17 +1,8 @@
 import React from 'react';
-import { connect } from 'unistore/react';
 import Button from '../common/Button';
-import { resetNewQuery } from '../stores/queries';
+import { resetNewQuery } from '../stores/editor-actions';
 
-function mapStateToProps(state: any) {
-  return {};
-}
-
-const ConnectedToolbarNewQueryButton = connect(mapStateToProps, (store) => ({
-  resetNewQuery,
-}))(React.memo(ToolbarNewQueryButton));
-
-function ToolbarNewQueryButton({ resetNewQuery }: any) {
+function ToolbarNewQueryButton() {
   return (
     <Button
       variant="ghost"
@@ -25,4 +16,4 @@ function ToolbarNewQueryButton({ resetNewQuery }: any) {
   );
 }
 
-export default ConnectedToolbarNewQueryButton;
+export default React.memo(ToolbarNewQueryButton);

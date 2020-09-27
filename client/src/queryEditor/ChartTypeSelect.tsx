@@ -1,25 +1,12 @@
 import React from 'react';
-import { connect } from 'unistore/react';
 import Select from '../common/Select';
-import { handleChartTypeChange } from '../stores/queries';
+import { handleChartTypeChange } from '../stores/editor-actions';
+import { useEditorStore } from '../stores/editor-store';
 import chartDefinitions from '../utilities/chartDefinitions';
 
-function mapStateToProps(state: any) {
-  return {
-    chartType: state.query && state.query.chart && state.query.chart.chartType,
-  };
-}
+function ChartTypeSelect({ className, style }: any) {
+  const chartType = useEditorStore((s) => s?.query?.chart?.chartType);
 
-const ConnectedVisSidebar = connect(mapStateToProps, { handleChartTypeChange })(
-  React.memo(ChartTypeSelect)
-);
-
-function ChartTypeSelect({
-  chartType,
-  handleChartTypeChange,
-  className,
-  style,
-}: any) {
   const chartOptions = chartDefinitions.map((d) => {
     return (
       <option key={d.chartType} value={d.chartType}>
@@ -41,4 +28,4 @@ function ChartTypeSelect({
   );
 }
 
-export default ConnectedVisSidebar;
+export default React.memo(ChartTypeSelect);

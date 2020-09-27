@@ -1,22 +1,19 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import { connect } from 'unistore/react';
 import Select from '../common/Select';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
 import {
   connectConnectionClient,
   selectConnectionId,
-} from '../stores/connections';
+} from '../stores/editor-actions';
+import { useSelectedConnectionId } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './ConnectionDropdown.module.css';
 
-function ConnectionDropdown({
-  connectConnectionClient,
-  selectConnectionId,
-  selectedConnectionId,
-}: any) {
+function ConnectionDropdown() {
   const { currentUser } = useAppContext();
+  const selectedConnectionId = useSelectedConnectionId();
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
 
@@ -91,7 +88,4 @@ function ConnectionDropdown({
   );
 }
 
-export default connect(['selectedConnectionId'], (store) => ({
-  connectConnectionClient: connectConnectionClient(store),
-  selectConnectionId,
-}))(ConnectionDropdown);
+export default ConnectionDropdown;

@@ -11,8 +11,6 @@ function ToolbarTagsButton() {
       <IconButton tooltip="Tags" onClick={() => setShowTags(true)}>
         <TagsIcon />
       </IconButton>
-
-      {/* @ts-expect-error ts-migrate(2322) FIXME: Property 'visible' does not exist on type 'Intrins... Remove this comment to see the full error message */}
       <QueryTagsModal visible={showTags} onClose={() => setShowTags(false)} />
     </div>
   );

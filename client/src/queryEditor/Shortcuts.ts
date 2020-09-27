@@ -1,15 +1,14 @@
 import keymaster from 'keymaster';
 import { useEffect } from 'react';
-import { connect } from 'unistore/react';
-import { connectConnectionClient } from '../stores/connections';
-import { formatQuery, runQuery, saveQuery } from '../stores/queries';
-
-function Shortcuts({
+import {
   connectConnectionClient,
   formatQuery,
   runQuery,
   saveQuery,
-}: any) {
+} from '../stores/editor-actions';
+
+// TODO make this a custom hook. It is only a component because it is old ways
+function Shortcuts() {
   useEffect(() => {
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts,
@@ -33,15 +32,9 @@ function Shortcuts({
       keymaster.unbind('ctrl+s, command+s');
       keymaster.unbind('shift+return');
     };
-  }, [saveQuery, runQuery, connectConnectionClient, formatQuery]);
+  }, []);
 
   return null;
 }
 
-// @ts-expect-error ts-migrate(2345) FIXME: Argument of type 'null' is not assignable to param... Remove this comment to see the full error message
-export default connect(null, (store) => ({
-  connectConnectionClient: connectConnectionClient(store),
-  formatQuery,
-  runQuery: runQuery(store),
-  saveQuery: saveQuery(store),
-}))(Shortcuts);
+export default Shortcuts;
