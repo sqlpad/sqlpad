@@ -15,6 +15,8 @@ export interface ButtonProps
 export interface LinkProps extends React.HTMLAttributes<HTMLElement> {
   variant?: string;
   to?: string;
+  target?: string;
+  rel?: string;
 }
 
 export type Ref = HTMLButtonElement;

@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Measure from 'react-measure';
 import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
-// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/react-window-infinite-load... Remove this comment to see the full error message
 import InfiniteLoader from 'react-window-infinite-loader';
 import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
@@ -53,7 +52,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
 
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [next, setNext] = useState(null);
+  const [next, setNext] = useState<string | null>(null);
   const [error, setError] = useState(null);
 
   let params = {
@@ -99,7 +98,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
       setLoading(true);
       // This cannot use SWR at this time
       // as we need to use links and manage state
-      api.get(url).then((response) => {
+      return api.get(url).then((response) => {
         const { data, links, error } = response;
         setLoading(false);
         setError(error);
@@ -214,10 +213,11 @@ function QueryListDrawer({ onClose, visible }: Props) {
     );
   };
 
-  const loadMore = () => {
+  const loadMore = (startIndex: number, stopIndex: number) => {
     if (!loading && next) {
-      getQueries(next);
+      return getQueries(next);
     }
+    return Promise.resolve();
   };
 
   return (

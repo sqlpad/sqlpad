@@ -29,7 +29,6 @@ function QueryEditorChartToolbar({ children }: any) {
         <IconButton
           disabled={queryId === 'new'}
           to={`/query-chart/${queryId}`}
-          // @ts-expect-error
           target="_blank"
           rel="noopener noreferrer"
           tooltip="Open chart in new window"
