@@ -6,9 +6,16 @@ import Input from '../common/Input';
 import message from '../common/message';
 import Select from '../common/Select';
 import { api } from '../utilities/fetch-json';
+import sortBy from 'lodash/sortBy';
+
+type Edits = {
+  connectionId?: string;
+  userId?: string;
+  duration?: string;
+};
 
 function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
-  const [connectionAccessEdits, setConnectionAccessEdits] = useState({});
+  const [connectionAccessEdits, setConnectionAccessEdits] = useState<Edits>({});
   const [creating, setCreating] = useState(false);
 
   let { data: apiConnections } = useSWR('/api/connections');
@@ -49,11 +56,8 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
   };
 
   const {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'connectionId' does not exist on type '{}... Remove this comment to see the full error message
     connectionId = '',
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'userId' does not exist on type '{}'.
     userId = '',
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'duration' does not exist on type '{}'.
     duration = '',
   } = connectionAccessEdits;
 
@@ -66,16 +70,13 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
       </option>
     );
   } else {
-    connections
-      // @ts-expect-error ts-migrate(2345) FIXME: Type 'boolean' is not assignable to type 'number'.
-      .sort((a, b) => a.name > b.name)
-      .forEach((connection) =>
-        connectionSelectOptions.push(
-          <option key={connection.id} value={connection.id}>
-            {connection.name}
-          </option>
-        )
-      );
+    sortBy(connections, ['name']).forEach((connection) =>
+      connectionSelectOptions.push(
+        <option key={connection.id} value={connection.id}>
+          {connection.name}
+        </option>
+      )
+    );
   }
 
   const userSelectOptions = [<option key="none" value="" />];
@@ -87,16 +88,13 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
       </option>
     );
   } else {
-    users
-      // @ts-expect-error ts-migrate(2345) FIXME: Type 'boolean' is not assignable to type 'number'.
-      .sort((a, b) => a.name > b.name)
-      .forEach((user) =>
-        userSelectOptions.push(
-          <option key={user.id} value={user.id}>
-            {user.email}
-          </option>
-        )
-      );
+    sortBy(users, ['email']).forEach((user) =>
+      userSelectOptions.push(
+        <option key={user.id} value={user.id}>
+          {user.email}
+        </option>
+      )
+    );
   }
 
   return (
