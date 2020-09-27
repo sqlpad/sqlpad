@@ -13,6 +13,7 @@
     "@types/lodash": "^4.14.161",
     "@types/match-sorter": "^4.0.0",
     "@types/node": "^14.11.2",
+    "@types/parse-link-header": "^1.0.0",
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "@types/react-measure": "^2.0.6",
