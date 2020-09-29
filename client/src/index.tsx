@@ -12,7 +12,12 @@ import './css/vendorOverrides.css';
 import Routes from './Routes';
 import swrFetcher from './utilities/swr-fetcher';
 
-// @ts-expect-error - make localforage available for debugging if needed
+declare global {
+  interface Window {
+    localforage: LocalForage;
+  }
+}
+
 window.localforage = localforage;
 
 ReactDOM.render(

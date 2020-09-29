@@ -84,9 +84,8 @@ export default async function runQueryViaBatch(opt: any) {
   const { columns } = statement;
 
   const rows = res.data.map((row: any) => {
-    const obj = {};
-    columns.forEach((c: any, index: any) => {
-      // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+    const obj: { [key: string]: any } = {};
+    columns.forEach((c: { name: string }, index: any) => {
       obj[c.name] = row[index];
     });
     return obj;
@@ -96,18 +95,17 @@ export default async function runQueryViaBatch(opt: any) {
     csv: `/statement-results/${statement.id}.csv`,
     json: `/statement-results/${statement.id}.json`,
     xlsx: `/statement-results/${statement.id}.xlsx`,
+    table: '',
+    chart: '',
   };
 
   if (opt.queryId) {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'table' does not exist on type '{ csv: st... Remove this comment to see the full error message
     links.table = `/query-table/${opt.queryId}`;
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'chart' does not exist on type '{ csv: st... Remove this comment to see the full error message
+
     links.chart = `/query-chart/${opt.queryId}`;
     if (opt.connectionClientId) {
       const params = `?connectionClientId=${opt.connectionClientId}`;
-      // @ts-expect-error ts-migrate(2339) FIXME: Property 'table' does not exist on type '{ csv: st... Remove this comment to see the full error message
       links.table += params;
-      // @ts-expect-error ts-migrate(2339) FIXME: Property 'chart' does not exist on type '{ csv: st... Remove this comment to see the full error message
       links.chart += params;
     }
   }

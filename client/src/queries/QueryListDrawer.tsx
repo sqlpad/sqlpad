@@ -4,7 +4,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Measure from 'react-measure';
 import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
-// @ts-expect-error ts-migrate(7016) FIXME: Try `npm install @types/react-window-infinite-load... Remove this comment to see the full error message
 import InfiniteLoader from 'react-window-infinite-loader';
 import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
@@ -33,13 +32,36 @@ interface Item {
   component?: any;
 }
 
+interface Params {
+  limit: number;
+  sortBy?: string;
+  ownedByUser?: boolean;
+  search?: string;
+  connectionId?: string;
+  tags?: string[];
+}
+
+// Query type is incomplete
+// TODO Move to common models with rest of API interfaces
+interface Query {
+  id: string;
+  name: string;
+  chart?: {
+    chartType?: string;
+  };
+  connection: {
+    name: string;
+  };
+  canDelete: boolean;
+}
+
 type Props = {
   visible?: boolean;
-  onClose?: (...args: any[]) => any;
+  onClose: (...args: any[]) => any;
 };
 
 function QueryListDrawer({ onClose, visible }: Props) {
-  const [preview, setPreview] = useState(null);
+  const [preview, setPreview] = useState<Query | null>(null);
   const [search, setSearch] = useState('');
   const [searchTags, setSearchTags] = useState<Array<any>>([]);
   const [creatorSearch, setCreatorSearch] = useState(ALL);
@@ -51,43 +73,36 @@ function QueryListDrawer({ onClose, visible }: Props) {
   });
   const [debouncedSearch] = useDebounce(search, 400);
 
-  const [queries, setQueries] = useState([]);
+  const [queries, setQueries] = useState<Query[]>([]);
   const [loading, setLoading] = useState(false);
-  const [next, setNext] = useState(null);
+  const [next, setNext] = useState<string | null>(null);
   const [error, setError] = useState(null);
 
-  let params = {
+  let params: Params = {
     limit: 20,
   };
 
   if (sort === 'SAVE_DATE') {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'sortBy' does not exist on type '{ limit:... Remove this comment to see the full error message
     params.sortBy = '-updatedAt';
   } else {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'sortBy' does not exist on type '{ limit:... Remove this comment to see the full error message
     params.sortBy = '+name';
   }
 
   if (creatorSearch === MY_QUERIES) {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ownedByUser' does not exist on type '{ l... Remove this comment to see the full error message
     params.ownedByUser = true;
   } else if (creatorSearch === SHARED) {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'ownedByUser' does not exist on type '{ l... Remove this comment to see the full error message
     params.ownedByUser = false;
   }
 
   if (debouncedSearch) {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'search' does not exist on type '{ limit:... Remove this comment to see the full error message
     params.search = debouncedSearch;
   }
 
   if (connectionId) {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'connectionId' does not exist on type '{ ... Remove this comment to see the full error message
     params.connectionId = connectionId;
   }
 
   if (searchTags && searchTags.length > 0) {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'tags' does not exist on type '{ limit: n... Remove this comment to see the full error message
     params.tags = searchTags.map((tag) => tag.id).sort();
   }
 
@@ -99,7 +114,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
       setLoading(true);
       // This cannot use SWR at this time
       // as we need to use links and manage state
-      api.get(url).then((response) => {
+      return api.get(url).then((response) => {
         const { data, links, error } = response;
         setLoading(false);
         setError(error);
@@ -137,32 +152,26 @@ function QueryListDrawer({ onClose, visible }: Props) {
     if (error) {
       return message.error(error);
     }
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'id' does not exist on type 'never'.
+
     setQueries((queries) => queries.filter((q) => q.id !== queryId));
     setPreview(null);
   };
 
   function handleClose() {
     setPreview(null);
-    // @ts-expect-error ts-migrate(2722) FIXME: Cannot invoke an object which is possibly 'undefin... Remove this comment to see the full error message
     onClose();
   }
 
   const Row = ({ index, style }: any) => {
     const query = queries[index];
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'id' does not exist on type 'never'.
     const tableUrl = `/query-table/${query.id}`;
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'id' does not exist on type 'never'.
     const chartUrl = `/query-chart/${query.id}`;
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'id' does not exist on type 'never'.
     const queryUrl = `/queries/${query.id}`;
 
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'chart' does not exist on type 'never'.
     const hasChart = query && query.chart && query.chart.chartType;
 
     return (
       <ListItem
-        // @ts-expect-error ts-migrate(2339) FIXME: Property 'id' does not exist on type 'never'.
         key={query.id}
         className={styles.ListItem}
         onMouseEnter={() => setPreview(query)}
@@ -170,10 +179,8 @@ function QueryListDrawer({ onClose, visible }: Props) {
         style={style}
       >
         <Link className={styles.queryLink} to={queryUrl} onClick={handleClose}>
-          {/* @ts-expect-error ts-migrate(2339) FIXME: Property 'name' does not exist on type 'never'. */}
           {query.name}
           <br />
-          {/* @ts-expect-error ts-migrate(2339) FIXME: Property 'connection' does not exist on type 'neve... Remove this comment to see the full error message */}
           <Text type="secondary">{query.connection.name}</Text>
         </Link>
         <div className={styles.listItemActions}>
@@ -186,25 +193,37 @@ function QueryListDrawer({ onClose, visible }: Props) {
             table <OpenInNewIcon size={16} />
           </Link>
           <div style={{ width: 8 }} />
-          <Link
-            className={styles.newWindowLink}
-            to={chartUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            // @ts-expect-error ts-migrate(2322) FIXME: Property 'disabled' does not exist on type 'Intrin... Remove this comment to see the full error message
-            disabled={!Boolean(hasChart)}
-          >
-            chart <OpenInNewIcon size={16} />
-          </Link>
+          {Boolean(hasChart) ? (
+            <Link
+              className={styles.newWindowLink}
+              to={chartUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              chart <OpenInNewIcon size={16} />
+            </Link>
+          ) : (
+            // this is a "disabled" link
+            <span
+              style={{
+                color: 'rgba(0, 0, 0, 0.25)',
+                cursor: 'not-allowed',
+                pointerEvents: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+              }}
+            >
+              chart <OpenInNewIcon size={16} />
+            </span>
+          )}
           <div style={{ width: 4 }} />
           <DeleteConfirmButton
             icon
             key="del"
-            // @ts-expect-error ts-migrate(2339) FIXME: Property 'name' does not exist on type 'never'.
             confirmMessage={`Delete ${query.name}`}
-            // @ts-expect-error ts-migrate(2339) FIXME: Property 'id' does not exist on type 'never'.
-            onConfirm={(e: any) => deleteQuery(query.id)}
-            // @ts-expect-error ts-migrate(2339) FIXME: Property 'canDelete' does not exist on type 'never... Remove this comment to see the full error message
+            onConfirm={() => {
+              deleteQuery(query.id);
+            }}
             disabled={!query.canDelete}
           >
             Delete
@@ -214,10 +233,11 @@ function QueryListDrawer({ onClose, visible }: Props) {
     );
   };
 
-  const loadMore = () => {
+  const loadMore = (startIndex: number, stopIndex: number) => {
     if (!loading && next) {
-      getQueries(next);
+      return getQueries(next);
     }
+    return Promise.resolve();
   };
 
   return (
@@ -291,8 +311,9 @@ function QueryListDrawer({ onClose, visible }: Props) {
         <Measure
           bounds
           onResize={(contentRect) => {
-            // @ts-expect-error ts-migrate(2345) FIXME: Type 'undefined' is not assignable to type 'SetSta... Remove this comment to see the full error message
-            setDimensions(contentRect.bounds);
+            if (contentRect?.bounds) {
+              setDimensions(contentRect.bounds);
+            }
           }}
         >
           {({ measureRef }) => (
@@ -343,7 +364,6 @@ function QueryListDrawer({ onClose, visible }: Props) {
           )}
         </Measure>
 
-        {/* @ts-expect-error ts-migrate(2531) FIXME: Object is possibly 'null'. */}
         <QueryPreview key={preview && preview.id} query={preview} />
       </div>
     </Drawer>

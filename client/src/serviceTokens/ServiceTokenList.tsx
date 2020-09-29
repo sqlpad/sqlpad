@@ -74,8 +74,7 @@ function ServiceTokenList() {
           <DeleteConfirmButton
             key="delete"
             confirmMessage="Delete service token?"
-            // @ts-expect-error
-            onConfirm={(e: any) => deleteServiceToken(item.id)}
+            onConfirm={() => deleteServiceToken(item.id)}
             style={{ marginLeft: 8 }}
           >
             Delete
@@ -106,7 +105,6 @@ function ServiceTokenList() {
         title="Generate Service Token"
         visible={showServiceTokenForm}
         width={'500px'}
-        // @ts-expect-error
         onClose={handleGenerateFormClose}
       >
         <ServiceTokenForm
@@ -118,7 +116,6 @@ function ServiceTokenList() {
         title="Service Token generated"
         visible={showGeneratedServiceToken}
         width={'500px'}
-        // @ts-expect-error
         onClose={handleShowGeneratedTokenClose}
       >
         <ServiceTokenDetails serviceToken={generatedServiceToken} />

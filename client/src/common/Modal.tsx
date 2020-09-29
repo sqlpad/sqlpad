@@ -7,7 +7,7 @@ import IconButton from './IconButton';
 export interface Props extends React.HTMLAttributes<HTMLElement> {
   title: string;
   visible?: boolean;
-  onClose?: () => {};
+  onClose?: () => void;
   width: string | number;
 }
 

@@ -22,7 +22,6 @@ function ChartButton() {
         width={500}
         title="Configure visualization"
         visible={visible}
-        // @ts-expect-error
         onClose={() => setVisible(false)}
       >
         <ChartTypeSelect />

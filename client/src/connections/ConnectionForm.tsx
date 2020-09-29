@@ -18,8 +18,20 @@ const PASSWORD = 'PASSWORD';
 const CHECKBOX = 'CHECKBOX';
 const TEXTAREA = 'TEXTAREA';
 
+interface ValueMap {
+  [key: string]: string | number | boolean | null | undefined | ValueMap;
+}
+
+interface Edits extends ValueMap {
+  name?: string;
+  driver?: string;
+  idleTimeoutMinutes?: string;
+  multiStatementTransactionEnabled?: boolean;
+  data?: ValueMap;
+}
+
 function ConnectionForm({ connectionId, onConnectionSaved }: any) {
-  const [connectionEdits, setConnectionEdits] = useState({});
+  const [connectionEdits, setConnectionEdits] = useState<Edits>({});
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [tested, setTested] = useState(false);
@@ -58,7 +70,6 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
 
   const setConnectionDataValue = (key: any, value: any) => {
     setConnectionEdits((prev) => {
-      // @ts-expect-error ts-migrate(2339) FIXME: Property 'data' does not exist on type '{}'.
       const data = prev.data || {};
       return {
         ...prev,
@@ -69,7 +80,6 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
 
   const testConnection = async () => {
     setTesting(true);
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'data' does not exist on type '{}'.
     const data = connectionEdits.data || {};
     const json = await api.post('/api/test-connection', {
       ...connectionEdits,
@@ -91,21 +101,18 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
     setSaving(true);
 
     // connectionEdits.idleTimeoutMinutes needs to be converted to seconds
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'idleTimeoutMinutes' does not exist on ty... Remove this comment to see the full error message
-    const idleTimeoutMinutes = parseInt(connectionEdits.idleTimeoutMinutes, 10);
+    const idleTimeoutMinutes = parseInt(
+      connectionEdits.idleTimeoutMinutes || '0',
+      10
+    );
     if (idleTimeoutMinutes) {
-      // @ts-expect-error ts-migrate(2339) FIXME: Property 'idleTimeoutSeconds' does not exist on ty... Remove this comment to see the full error message
       connectionEdits.idleTimeoutSeconds = idleTimeoutMinutes * 60;
     }
 
     let json;
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'id' does not exist on type '{}'.
     if (connectionEdits.id) {
       json = await api.put(
-        `/api/connections/${
-          // @ts-expect-error ts-migrate(2339) FIXME: Property 'id' does not exist on type '{}'.
-          connectionEdits.id
-        }`,
+        `/api/connections/${connectionEdits.id}`,
         connectionEdits
       );
     } else {
@@ -121,16 +128,13 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
   };
 
   const renderDriverFields = () => {
-    // @ts-expect-error ts-migrate(2339) FIXME: Property 'driver' does not exist on type '{}'.
     if (connectionEdits.driver && drivers.length) {
       // NOTE connection.driver is driverId
       const driver = drivers.find(
-        // @ts-expect-error ts-migrate(2339) FIXME: Property 'driver' does not exist on type '{}'.
         (driver: any) => driver.id === connectionEdits.driver
       );
 
       if (!driver) {
-        // @ts-expect-error ts-migrate(2339) FIXME: Property 'driver' does not exist on type '{}'.
         console.error(`Driver ${connectionEdits.driver} not found`);
         return null;
       }
@@ -143,7 +147,6 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
             <input
               type="checkbox"
               checked={
-                // @ts-expect-error ts-migrate(2339) FIXME: Property 'multiStatementTransactionEnabled' does n... Remove this comment to see the full error message
                 connectionEdits.multiStatementTransactionEnabled || false
               }
               id={mstKey}
@@ -171,7 +174,6 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
             <Input
               name="idleTimeoutMinutes"
               type="number"
-              // @ts-expect-error ts-migrate(2339) FIXME: Property 'idleTimeoutMinutes' does not exist on ty... Remove this comment to see the full error message
               value={connectionEdits.idleTimeoutMinutes || ''}
               onChange={(e: any) =>
                 setConnectionValue(e.target.name, e.target.value)
@@ -185,7 +187,6 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
       }
 
       const { fields } = driver;
-      // @ts-expect-error ts-migrate(2339) FIXME: Property 'data' does not exist on type '{}'.
       const connectionEditsData = connectionEdits.data || {};
       const driverInputs = fields.map((field: any) => {
         if (field.formType === TEXT) {
@@ -194,7 +195,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
             <HorizontalFormItem key={field.key} label={field.label}>
               <Input
                 name={field.key}
-                value={value}
+                value={value as string}
                 onChange={(e: any) =>
                   setConnectionDataValue(e.target.name, e.target.value)
                 }
@@ -218,7 +219,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
                 type="password"
                 autoComplete="new-password"
                 name={field.key}
-                value={value}
+                value={value as string}
                 onChange={(e: any) =>
                   setConnectionDataValue(e.target.name, e.target.value)
                 }
@@ -233,7 +234,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
             </HorizontalFormItem>
           );
         } else if (field.formType === CHECKBOX) {
-          const checked = connectionEditsData[field.key] || false;
+          const checked = Boolean(connectionEditsData[field.key]) || false;
           return (
             <HorizontalFormItem key={field.key}>
               <input
@@ -263,7 +264,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
             <HorizontalFormItem key={field.key} label={field.label}>
               <TextArea
                 name={field.key}
-                value={value}
+                value={value as string}
                 cols={45}
                 placeholder={field.placeholder}
                 onChange={(e: any) =>
@@ -287,7 +288,6 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
     }
   };
 
-  // @ts-expect-error ts-migrate(2339) FIXME: Property 'name' does not exist on type '{}'.
   const { name = '', driver = '' } = connectionEdits;
 
   const driverSelectOptions = [<option key="none" value="" />];

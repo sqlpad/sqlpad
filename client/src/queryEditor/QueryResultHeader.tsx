@@ -34,6 +34,9 @@ function QueryResultHeader() {
   const incomplete = Boolean(queryResult.incomplete);
   const hasRows = rows.length > 0;
 
+  const showLink =
+    typeof queryId === 'string' && queryId !== 'new' && queryId !== '';
+
   return (
     <div className={styles.toolbar}>
       <div className={styles.toolbarItem}>{serverSec} seconds</div>
@@ -74,20 +77,21 @@ function QueryResultHeader() {
           </span>
         )}
       </div>
-      <div className={styles.toolbarItem}>
-        <span className={styles.iconLinkWrapper}>
-          <Link
-            className={styles.iconLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            to={links.table}
-            // @ts-expect-error ts-migrate(2322) FIXME: Property 'disabled' does not exist on type 'Intrin... Remove this comment to see the full error message
-            disabled={!Boolean(queryId) || queryId === 'new'}
-          >
-            table <OpenInNewIcon style={{ marginLeft: 4 }} size={16} />
-          </Link>
-        </span>
-      </div>
+      {/* TODO: links.table will not appear if query is saved after run */}
+      {showLink && links.table && (
+        <div className={styles.toolbarItem}>
+          <span className={styles.iconLinkWrapper}>
+            <Link
+              className={styles.iconLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              to={links.table}
+            >
+              table <OpenInNewIcon style={{ marginLeft: 4 }} size={16} />
+            </Link>
+          </span>
+        </div>
+      )}
       {incomplete && <IncompleteDataNotification />}
     </div>
   );

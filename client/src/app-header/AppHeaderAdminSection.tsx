@@ -25,73 +25,52 @@ function AppHeaderAdminSection() {
   }
   const showServiceTokensButton = config.showServiceTokensUI;
 
-  return [
-    <AppHeaderDivider key="divider" />,
-
-    <Button
-      key="connection-button"
-      variant="ghost"
-      onClick={() => setShowConnections(true)}
-    >
-      Connections
-    </Button>,
-
-    <ConnectionListDrawer
-      key="connection-drawer"
-      visible={showConnections}
-      onClose={() => setShowConnections(false)}
-    />,
-
-    <Button
-      key="connection-access-button"
-      variant="ghost"
-      onClick={() => setShowConnectionAccesses(true)}
-    >
-      Access
-    </Button>,
-
-    <ConnectionAccessListDrawer
-      key="connection-access-drawer"
-      visible={showConnectionAccesses}
-      onClose={() => setShowConnectionAccesses(false)}
-    />,
-
-    <Button
-      key="user-button"
-      variant="ghost"
-      onClick={() => setShowUsers(true)}
-      hidden={hideUsersButton}
-    >
-      Users
-    </Button>,
-
-    <Drawer
-      key="users-drawer"
-      title="Users"
-      visible={showUsers}
-      width={600}
-      onClose={() => setShowUsers(false)}
-      placement="left"
-    >
-      <UserList />
-    </Drawer>,
-
-    <Button
-      key="service-tokens-button"
-      variant="ghost"
-      onClick={() => setShowServiceTokens(true)}
-      hidden={!showServiceTokensButton}
-    >
-      Service Tokens
-    </Button>,
-
-    <ServiceTokenListDrawer
-      key="service-tokens-drawer"
-      visible={showServiceTokens}
-      onClose={() => setShowServiceTokens(false)}
-    />,
-  ];
+  return (
+    <>
+      <AppHeaderDivider />
+      <Button variant="ghost" onClick={() => setShowConnections(true)}>
+        Connections
+      </Button>
+      <ConnectionListDrawer
+        visible={showConnections}
+        onClose={() => setShowConnections(false)}
+      />
+      <Button variant="ghost" onClick={() => setShowConnectionAccesses(true)}>
+        Access
+      </Button>
+      <ConnectionAccessListDrawer
+        visible={showConnectionAccesses}
+        onClose={() => setShowConnectionAccesses(false)}
+      />
+      <Button
+        variant="ghost"
+        onClick={() => setShowUsers(true)}
+        hidden={hideUsersButton}
+      >
+        Users
+      </Button>
+      <Drawer
+        title="Users"
+        visible={showUsers}
+        width={600}
+        onClose={() => setShowUsers(false)}
+        placement="left"
+      >
+        <UserList />
+      </Drawer>
+      <Button
+        variant="ghost"
+        onClick={() => setShowServiceTokens(true)}
+        hidden={!showServiceTokensButton}
+      >
+        Service Tokens
+      </Button>
+      <ServiceTokenListDrawer
+        visible={showServiceTokens}
+        onClose={() => setShowServiceTokens(false)}
+      />
+    </>
+  );
 }
 
-// @ts-expect-error ts-migrate(2769) FIXME: Type 'Element[]' is not assignable to type 'ReactE... Remove this comment to see the full error message
 export default React.memo(AppHeaderAdminSection);

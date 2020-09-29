@@ -8,6 +8,7 @@ import {
   selectConnectionId,
 } from '../stores/editor-actions';
 import { useSelectedConnectionId } from '../stores/editor-store';
+import { Connection } from '../types';
 import useAppContext from '../utilities/use-app-context';
 import styles from './ConnectionDropdown.module.css';
 
@@ -17,7 +18,9 @@ function ConnectionDropdown() {
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
 
-  let { data: connectionsData, mutate } = useSWR('/api/connections');
+  let { data: connectionsData, mutate } = useSWR<Connection[]>(
+    '/api/connections'
+  );
   const connections = connectionsData || [];
 
   const handleChange = (event: any) => {
@@ -58,10 +61,9 @@ function ConnectionDropdown() {
         onChange={handleChange}
       >
         <option value="">... choose connection</option>
-        {connections.map((conn: any) => {
+        {connections.map((conn) => {
           return (
-            // @ts-expect-error ts-migrate(2322) FIXME: Property 'name' does not exist on type 'DetailedHT... Remove this comment to see the full error message
-            <option key={conn.id} value={conn.id} name={conn.name}>
+            <option key={conn.id} value={conn.id}>
               {conn.name}
             </option>
           );

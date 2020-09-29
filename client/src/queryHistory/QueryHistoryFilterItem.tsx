@@ -3,6 +3,16 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import Select from '../common/Select';
 
+type FieldKey =
+  | 'userEmail'
+  | 'connectionName'
+  | 'startTime'
+  | 'durationMs'
+  | 'queryId'
+  | 'queryName'
+  | 'queryText'
+  | 'rowCount';
+
 const QueryHistoryFilterItem = ({
   index,
   filter,
@@ -78,18 +88,19 @@ const QueryHistoryFilterItem = ({
         style={{ width: '200px', marginRight: 8 }}
         name="field"
         value={filter.field}
-        onChange={(e: any) =>
-          onChange(index, {
-            field: e.target.value,
-            // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
-            operator: fields[e.target.value].operators[0].key,
-          })
-        }
+        onChange={(e: any) => {
+          const value = e.target.value as FieldKey;
+          if (fields[value]) {
+            onChange(index, {
+              field: value,
+              operator: fields[value].operators[0].key,
+            });
+          }
+        }}
       >
-        {Object.keys(fields).map((f) => (
+        {Object.entries(fields).map(([f, value]) => (
           <option key={f} value={f}>
-            {/* @ts-expect-error ts-migrate(7053) FIXME: No index signature with a parameter of type 'strin... Remove this comment to see the full error message */}
-            {fields[f].label}
+            {value.label}
           </option>
         ))}
       </Select>
@@ -100,8 +111,7 @@ const QueryHistoryFilterItem = ({
         value={filter.operator}
         onChange={(e: any) => onChange(index, { operator: e.target.value })}
       >
-        {/* @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message */}
-        {fields[filter.field].operators.map((o: any) => (
+        {fields[filter.field as FieldKey].operators.map((o: any) => (
           <option key={o.key} value={o.key}>
             {o.label}
           </option>
