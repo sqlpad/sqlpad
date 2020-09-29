@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import Input from '../common/Input';
 import Select from '../common/Select';
 import chartDefinitions from '../utilities/chartDefinitions';
@@ -14,7 +14,7 @@ function cleanBoolean(value: any) {
   return value;
 }
 
-const inputStyle = {
+const inputStyle: CSSProperties = {
   marginBottom: 16,
   boxSizing: 'border-box',
   width: `calc(1/2*100% - 8px)`,
@@ -43,14 +43,13 @@ function ChartInputs({
   };
 
   const renderFormGroup = (inputDefinitionFields: any) => {
-    let resultColumnNames: any = [];
+    let resultColumnNames: string[] = [];
     if (queryResult && queryResult.columns) {
       resultColumnNames = queryResult.columns.map((c: any) => c.name);
     }
 
     return inputDefinitionFields.map((field: any) => {
       if (field.inputType === 'field-dropdown') {
-        // @ts-expect-error ts-migrate(7006) FIXME: Parameter 'qrfield' implicitly has an 'any' type.
         const optionNodes = resultColumnNames.map((qrfield) => {
           return (
             <option key={qrfield} value={qrfield}>
@@ -74,7 +73,6 @@ function ChartInputs({
           );
         }
         return (
-          // @ts-expect-error ts-migrate(2322) FIXME: Type 'string' is not assignable to type '"border-b... Remove this comment to see the full error message
           <div style={inputStyle} key={field.fieldId}>
             <label>{field.label}</label>
             <Select
@@ -93,7 +91,6 @@ function ChartInputs({
         const checked =
           cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
         return (
-          // @ts-expect-error ts-migrate(2322) FIXME: Type '{ marginBottom: number; boxSizing: string; w... Remove this comment to see the full error message
           <div style={inputStyle} key={field.fieldId}>
             <input
               type="checkbox"
@@ -112,7 +109,6 @@ function ChartInputs({
       } else if (field.inputType === 'textbox') {
         const value = queryChartConfigurationFields[field.fieldId] || '';
         return (
-          // @ts-expect-error ts-migrate(2322) FIXME: Type '{ marginBottom: number; boxSizing: string; w... Remove this comment to see the full error message
           <div style={inputStyle} key={field.fieldId}>
             <label>{field.label}</label>
             <Input
