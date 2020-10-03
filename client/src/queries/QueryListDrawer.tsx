@@ -32,14 +32,10 @@ interface Item {
   component?: any;
 }
 
-interface Params {
-  limit: number;
-  sortBy?: string;
-  ownedByUser?: boolean;
-  search?: string;
-  connectionId?: string;
-  tags?: string[];
-}
+type Params = Record<
+  string,
+  string | number | boolean | string[] | null | undefined
+>;
 
 // Query type is incomplete
 // TODO Move to common models with rest of API interfaces
