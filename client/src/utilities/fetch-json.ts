@@ -1,9 +1,19 @@
 import parseLinkHeader from 'parse-link-header';
 import 'whatwg-fetch';
 import message from '../common/message';
+import { Query } from '../types';
 import baseUrl from './baseUrl';
 
-export default async function fetchJson(method: any, url: any, body?: any) {
+interface FetchResponse<DataT> {
+  data?: DataT;
+  error?: string;
+  links?: parseLinkHeader.Links;
+}
+export default async function fetchJson<DataT = any>(
+  method: any,
+  url: any,
+  body?: any
+): Promise<FetchResponse<DataT>> {
   const BASE_URL = baseUrl();
   const opts: RequestInit = {
     method: method.toUpperCase(),
@@ -50,7 +60,8 @@ export default async function fetchJson(method: any, url: any, body?: any) {
     // Which is what depends on status code. 2xx is data, 4xx or 5xx is error
     // If 200-299 the body is data
     if (response.ok) {
-      return { data: json, links };
+      const data: DataT = json;
+      return { data, links: links ? links : undefined };
     }
 
     // The body is an error object with a .title at a minimum, possibly .detail and other props
@@ -67,6 +78,10 @@ export default async function fetchJson(method: any, url: any, body?: any) {
   }
 }
 
+type ErrorResponse = {
+  error: string;
+};
+
 export const api = {
   put(url: any, body: any) {
     return fetchJson('PUT', url, body);
@@ -77,7 +92,10 @@ export const api = {
   post(url: any, body: any) {
     return fetchJson('POST', url, body);
   },
-  get(url: any) {
-    return fetchJson('GET', url);
+  get<DataT = any>(url: any) {
+    return fetchJson<DataT>('GET', url);
+  },
+  async getQueries() {
+    return this.get<Query[]>('/queries');
   },
 };

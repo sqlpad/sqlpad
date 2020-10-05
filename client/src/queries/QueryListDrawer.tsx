@@ -72,7 +72,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
   const [queries, setQueries] = useState<Query[]>([]);
   const [loading, setLoading] = useState(false);
   const [next, setNext] = useState<string | null>(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | undefined | null>(null);
 
   let params: Params = {
     limit: 20,

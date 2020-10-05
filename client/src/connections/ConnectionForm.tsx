@@ -35,7 +35,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [tested, setTested] = useState(false);
-  const [testError, setTestError] = useState(null);
+  const [testError, setTestError] = useState<string | undefined | null>(null);
   const [loading, setLoading] = useState(false);
 
   let { data: drivers } = useSWR('/api/drivers');
