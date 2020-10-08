@@ -1,6 +1,6 @@
 import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock';
 import FormExplain from '../common/FormExplain';
@@ -37,8 +37,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
   const [testError, setTestError] = useState<string | undefined | null>(null);
   const [loading, setLoading] = useState(false);
 
-  let { data: drivers } = api.useDrivers();
-  drivers = drivers || [];
+  const { data: drivers } = api.useDrivers();
 
   async function getConnection(connectionId: string) {
     if (connectionId) {
@@ -127,7 +126,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
   };
 
   const renderDriverFields = () => {
-    if (connectionEdits.driver && drivers.length) {
+    if (connectionEdits.driver && drivers?.length) {
       // NOTE connection.driver is driverId
       const driver = drivers.find(
         (driver: any) => driver.id === connectionEdits.driver
@@ -138,7 +137,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
         return null;
       }
 
-      const fieldsJsx = [];
+      const fieldsJsx: ReactNode[] = [];
       if (driver.supportsConnectionClient) {
         const mstKey = 'multiStatementTransactionEnabled';
         fieldsJsx.push(
@@ -291,7 +290,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
 
   const driverSelectOptions = [<option key="none" value="" />];
 
-  if (!drivers.length) {
+  if (!drivers?.length) {
     driverSelectOptions.push(
       <option key="loading" value="">
         Loading...
@@ -299,7 +298,14 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
     );
   } else {
     drivers
-      .sort((a: any, b: any) => a.name > b.name)
+      .sort((a, b) => {
+        if (a.name > b.name) {
+          return 1;
+        } else if (a.name < b.name) {
+          return -1;
+        }
+        return 0;
+      })
       .forEach((driver: any) =>
         driverSelectOptions.push(
           <option key={driver.id} value={driver.id}>

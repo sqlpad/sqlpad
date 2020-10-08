@@ -139,3 +139,17 @@ export interface ServiceToken {
   role: string;
   updatedAt: string | Date;
 }
+
+export interface DriverField {
+  description: string;
+  formType: string;
+  key: string;
+  label: string;
+}
+
+export interface Driver {
+  id: string;
+  name: string;
+  supportsConnectionClient: boolean;
+  fields: DriverField[];
+}

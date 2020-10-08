@@ -5,6 +5,7 @@ import message from '../common/message';
 import {
   Connection,
   ConnectionAccess,
+  Driver,
   Query,
   ServiceToken,
   User,
@@ -132,7 +133,7 @@ export const api = {
   },
 
   useDrivers() {
-    return useSWR('/api/drivers');
+    return useSWR<Driver[]>('/api/drivers');
   },
 
   /**
