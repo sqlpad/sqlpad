@@ -157,7 +157,11 @@ export const api = {
     return useSWR<User>(`/api/users/${id}`);
   },
 
-  userUpdated(userId?: string) {
+  /**
+   * Send signal to SWR to reload user fetches
+   * @param userId user updated
+   */
+  reloadUsers(userId?: string) {
     mutate('api/users');
     if (userId) {
       mutate(`/api/users/${userId}`);

@@ -32,7 +32,7 @@ function EditUserForm({ userId }: any) {
     if (json.error) {
       return message.error('Update failed: ' + json.error);
     }
-    api.userUpdated(user?.id);
+    api.reloadUsers(user?.id);
   };
 
   const generatePasswordResetLink = async () => {
@@ -44,7 +44,7 @@ function EditUserForm({ userId }: any) {
       return message.error('Update failed: ' + json.error);
     }
     setPasswordResetId(passwordResetId);
-    api.userUpdated(user?.id);
+    api.reloadUsers(user?.id);
   };
 
   const removePasswordResetLink = async () => {
