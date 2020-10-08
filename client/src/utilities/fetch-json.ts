@@ -1,7 +1,14 @@
 import parseLinkHeader from 'parse-link-header';
+import useSWR, { mutate } from 'swr';
 import 'whatwg-fetch';
 import message from '../common/message';
-import { Query } from '../types';
+import {
+  Connection,
+  ConnectionAccess,
+  Query,
+  ServiceToken,
+  User,
+} from '../types';
 import baseUrl from './baseUrl';
 
 interface FetchResponse<DataT> {
@@ -86,16 +93,91 @@ export const api = {
   put(url: any, body: any) {
     return fetchJson('PUT', url, body);
   },
+
   delete(url: any) {
     return fetchJson('DELETE', url);
   },
+
   post(url: any, body: any) {
     return fetchJson('POST', url, body);
   },
+
   get<DataT = any>(url: any) {
     return fetchJson<DataT>('GET', url);
   },
+
   async getQueries() {
     return this.get<Query[]>('/queries');
+  },
+
+  reloadQueries() {
+    return mutate('/api/queries');
+  },
+
+  useConnections() {
+    return useSWR<Connection[]>('/api/connections');
+  },
+
+  reloadConnections() {
+    return mutate('/api/connections');
+  },
+
+  useUsers() {
+    return useSWR<User[]>('/api/users');
+  },
+
+  useConnectionAccesses(includeInactives?: boolean) {
+    let url = `/api/connection-accesses`;
+    if (includeInactives) {
+      url = url + '?includeInactives=true';
+    }
+    return useSWR<ConnectionAccess[]>(url);
+  },
+
+  useDrivers() {
+    return useSWR('/api/drivers');
+  },
+
+  /**
+   * Tags are conditionally fetched.
+   * Since hooks can not be used conditionally,
+   * a null must be passed to useSWR to signal not to fetch.
+   * This feels strange and inconsistent.
+   * Should all api.use* follow same pattern?
+   * @param shouldFetch
+   */
+  useTags(shouldFetch?: boolean) {
+    return useSWR<string[]>(shouldFetch ? '/api/tags' : null);
+  },
+
+  useServiceTokens() {
+    return useSWR<ServiceToken[]>('/api/service-tokens');
+  },
+
+  useUser(id: string) {
+    return useSWR<User>(`/api/users/${id}`);
+  },
+
+  userUpdated(userId?: string) {
+    mutate('api/users');
+    if (userId) {
+      mutate(`/api/users/${userId}`);
+    }
+  },
+
+  useAppInfo() {
+    return useSWR('api/app', { dedupingInterval: 60000 });
+  },
+
+  reloadAppInfo() {
+    return mutate('api/app');
+  },
+
+  /**
+   *
+   * @param filter comma delimited list of filter strings in format field|operator|value
+   */
+  useQueryHistory(filter?: string) {
+    return useSWR(`/api/query-history?filter=${filter}`);
   },
 };

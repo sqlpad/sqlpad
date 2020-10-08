@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import useSWR from 'swr';
 import Button from '../common/Button';
 import QueryResultContainer from '../common/QueryResultContainer';
+import { api } from '../utilities/fetch-json';
 import QueryHistoryFilterItem from './QueryHistoryFilterItem';
 
 function getQueryResult(rows: any) {
@@ -48,14 +48,12 @@ function QueryHistoryContent() {
     return urlFilters.join(',');
   }
 
-  const url = `/api/query-history?filter=${filterUrl}`;
-
   const {
     data: historyData,
     isValidating: isRunning,
     error: queryError,
     mutate,
-  } = useSWR(url);
+  } = api.useQueryHistory(filterUrl);
 
   const queryHistory = getQueryResult(historyData || []) || {};
 

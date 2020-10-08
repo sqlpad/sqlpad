@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import useSWR from 'swr';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
@@ -22,8 +21,8 @@ function UserList() {
   const [editUser, setEditUser] = useState<User | null>(null);
   const [toggling, setToggling] = useState(false);
 
-  const { data: usersData, error, mutate } = useSWR('/api/users');
-  const users = (usersData || []).map((user: any) => ({
+  const { data: usersData, error, mutate } = api.useUsers();
+  const users = (usersData || []).map((user) => ({
     ...user,
     key: user.id,
   }));

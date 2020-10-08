@@ -1,6 +1,5 @@
 import localforage from 'localforage';
 import queryString from 'query-string';
-import { mutate } from 'swr';
 import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
 import baseUrl from '../utilities/baseUrl';
@@ -309,7 +308,7 @@ export const saveQuery = async () => {
         useEditorStore.setState({ isSaving: false });
         return;
       }
-      mutate('/api/queries');
+      api.reloadQueries();
       message.success('Query Saved');
       removeLocalQueryText(data.id);
       useEditorStore.setState({
@@ -326,7 +325,7 @@ export const saveQuery = async () => {
         useEditorStore.setState({ isSaving: false });
         return;
       }
-      mutate('/api/queries');
+      api.reloadQueries();
       window.history.replaceState(
         {},
         data.name,

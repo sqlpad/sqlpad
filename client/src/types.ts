@@ -104,3 +104,38 @@ export interface Query {
   canWrite: boolean;
   canDelete: boolean;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  disabled: boolean;
+  signupAt: string | Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  passwordResetId?: string;
+}
+
+export interface ConnectionAccess {
+  connectionId: string;
+  connectionName: string;
+  createdAt: string | Date;
+  duration: number;
+  expiryDate: string | Date;
+  id: number;
+  updatedAt: string | Date;
+  userEmail: string;
+  userId: string;
+}
+
+export interface ServiceToken {
+  createdAt: string;
+  duration: number;
+  expiryDate: string | Date;
+  id: number;
+  maskedToken: string;
+  name: string;
+  role: string;
+  updatedAt: string | Date;
+}

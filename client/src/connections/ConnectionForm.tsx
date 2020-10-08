@@ -1,7 +1,6 @@
 import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
 import React, { useEffect, useState } from 'react';
-import useSWR, { mutate } from 'swr';
 import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock';
 import FormExplain from '../common/FormExplain';
@@ -38,10 +37,10 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
   const [testError, setTestError] = useState<string | undefined | null>(null);
   const [loading, setLoading] = useState(false);
 
-  let { data: drivers } = useSWR('/api/drivers');
+  let { data: drivers } = api.useDrivers();
   drivers = drivers || [];
 
-  async function getConnection(connectionId: any) {
+  async function getConnection(connectionId: string) {
     if (connectionId) {
       setLoading(true);
       const json = await api.get(`/api/connections/${connectionId}`);
@@ -123,7 +122,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
       setSaving(false);
       return message.error(json.error);
     }
-    mutate('/api/connections');
+    api.reloadConnections();
     return onConnectionSaved(json.data);
   };
 

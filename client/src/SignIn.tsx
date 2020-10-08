@@ -1,14 +1,13 @@
 import GoogleIcon from 'mdi-react/GoogleIcon';
 import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { mutate } from 'swr';
 import Button from './common/Button';
+import ButtonLink from './common/ButtonLink';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
 import { api } from './utilities/fetch-json';
 import useAppContext from './utilities/use-app-context';
-import ButtonLink from './common/ButtonLink';
 
 function SignIn() {
   const [email, setEmail] = useState('');
@@ -28,7 +27,7 @@ function SignIn() {
     if (json.error) {
       return message.error('Username or password incorrect');
     }
-    await mutate('api/app');
+    await api.reloadAppInfo();
     setRedirect(true);
   };
 

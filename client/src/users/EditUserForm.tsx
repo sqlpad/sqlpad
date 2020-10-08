@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import useSWR, { mutate } from 'swr';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../common/Button';
 import FormExplain from '../common/FormExplain';
@@ -10,55 +9,52 @@ import Spacer from '../common/Spacer';
 import { api } from '../utilities/fetch-json';
 
 function EditUserForm({ userId }: any) {
-  let { data } = useSWR(`/api/users/${userId}`);
-  const user = data || {};
+  let { data: user } = api.useUser(userId);
 
-  const [role, setRole] = useState(user.role);
-  const [passwordResetId, setPasswordResetId] = useState(user.passwordResetId);
+  const [role, setRole] = useState(user?.role);
+  const [passwordResetId, setPasswordResetId] = useState(user?.passwordResetId);
 
   useEffect(() => {
-    setRole(user.role);
-    setPasswordResetId(user.passwordResetId);
-  }, [user.role, user.passwordResetId]);
+    setRole(user?.role);
+    setPasswordResetId(user?.passwordResetId);
+  }, [user]);
 
   // If still loading hide form
-  if (!data) {
+  if (!user) {
     return null;
   }
 
   const handleRoleChange = async (event: any) => {
     setRole(event.target.value);
-    const json = await api.put(`/api/users/${user.id}`, {
+    const json = await api.put(`/api/users/${user?.id}`, {
       role: event.target.value,
     });
     if (json.error) {
       return message.error('Update failed: ' + json.error);
     }
-    mutate('api/users');
-    mutate(`/api/users/${user.id}`);
+    api.userUpdated(user?.id);
   };
 
   const generatePasswordResetLink = async () => {
     const passwordResetId = uuidv4();
-    const json = await api.put('/api/users/' + user.id, {
+    const json = await api.put('/api/users/' + user?.id, {
       passwordResetId,
     });
     if (json.error) {
       return message.error('Update failed: ' + json.error);
     }
     setPasswordResetId(passwordResetId);
-    mutate('api/users');
-    mutate(`/api/users/${user.id}`);
+    api.userUpdated(user?.id);
   };
 
   const removePasswordResetLink = async () => {
-    const json = await api.put(`/api/users/${user.id}`, {
+    const json = await api.put(`/api/users/${user?.id}`, {
       passwordResetId: '',
     });
     if (json.error) {
       return message.error('Remove reset failed: ' + json.error);
     }
-    setPasswordResetId(null);
+    setPasswordResetId(undefined);
   };
 
   const renderReset = () => {

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import useSWR from 'swr';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
@@ -11,7 +10,7 @@ import useAppContext from '../utilities/use-app-context';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 
 function ConnectionList() {
-  const { data: connectionsData, mutate } = useSWR('/api/connections');
+  const { data: connectionsData, mutate } = api.useConnections();
   let connections = connectionsData || [];
 
   const deleteConnection = async (connectionId: any) => {

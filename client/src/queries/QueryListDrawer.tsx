@@ -5,7 +5,6 @@ import Measure from 'react-measure';
 import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Drawer from '../common/Drawer';
@@ -18,6 +17,7 @@ import MultiSelect from '../common/MultiSelect';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
+import { Query } from '../types';
 import { api } from '../utilities/fetch-json';
 import styles from './QueryList.module.css';
 import QueryPreview from './QueryPreview';
@@ -36,20 +36,6 @@ type Params = Record<
   string,
   string | number | boolean | string[] | null | undefined
 >;
-
-// Query type is incomplete
-// TODO Move to common models with rest of API interfaces
-interface Query {
-  id: string;
-  name: string;
-  chart?: {
-    chartType?: string;
-  };
-  connection: {
-    name: string;
-  };
-  canDelete: boolean;
-}
 
 type Props = {
   visible?: boolean;
@@ -137,13 +123,13 @@ function QueryListDrawer({ onClose, visible }: Props) {
     }
   }, [visible, initialUrl, getQueries]);
 
-  let { data: tagData } = useSWR('/api/tags');
+  let { data: tagData } = api.useTags();
   const tags = tagData || [];
 
-  let { data: connectionsData } = useSWR('/api/connections');
+  let { data: connectionsData } = api.useConnections();
   const connections = connectionsData || [];
 
-  const deleteQuery = async (queryId: any) => {
+  const deleteQuery = async (queryId: string) => {
     const { error } = await api.delete(`/api/queries/${queryId}`);
     if (error) {
       return message.error(error);

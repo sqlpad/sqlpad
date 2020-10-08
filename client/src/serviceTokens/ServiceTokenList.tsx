@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import useSWR from 'swr';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
@@ -16,9 +15,7 @@ function ServiceTokenList() {
     false
   );
 
-  const { data: serviceTokensData, error, mutate } = useSWR(
-    '/api/service-tokens'
-  );
+  const { data: serviceTokensData, error, mutate } = api.useServiceTokens();
   const serviceTokens = serviceTokensData || [];
 
   useEffect(() => {

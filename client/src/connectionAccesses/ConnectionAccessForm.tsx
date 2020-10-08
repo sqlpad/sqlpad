@@ -1,12 +1,11 @@
+import sortBy from 'lodash/sortBy';
 import React, { useState } from 'react';
-import useSWR from 'swr';
 import Button from '../common/Button';
 import HorizontalFormItem from '../common/HorizontalFormItem';
 import Input from '../common/Input';
 import message from '../common/message';
 import Select from '../common/Select';
 import { api } from '../utilities/fetch-json';
-import sortBy from 'lodash/sortBy';
 
 type Edits = {
   connectionId?: string;
@@ -18,7 +17,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
   const [connectionAccessEdits, setConnectionAccessEdits] = useState<Edits>({});
   const [creating, setCreating] = useState(false);
 
-  let { data: apiConnections } = useSWR('/api/connections');
+  let { data: apiConnections } = api.useConnections();
   const connections = [
     {
       id: '__EVERY_CONNECTION__',
@@ -26,7 +25,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
     },
   ].concat(apiConnections || []);
 
-  let { data: apiUsers } = useSWR('/api/users');
+  let { data: apiUsers } = api.useUsers();
   const users = [
     {
       id: '__EVERYONE__',
