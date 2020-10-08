@@ -16,6 +16,7 @@ interface FetchResponse<DataT> {
   error?: string;
   links?: parseLinkHeader.Links;
 }
+
 export default async function fetchJson<DataT = any>(
   method: any,
   url: any,
@@ -84,10 +85,6 @@ export default async function fetchJson<DataT = any>(
     };
   }
 }
-
-type ErrorResponse = {
-  error: string;
-};
 
 export const api = {
   put(url: any, body: any) {
