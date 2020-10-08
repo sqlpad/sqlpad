@@ -40,7 +40,7 @@ function ConnectionDropdown() {
   };
 
   // Only show the connection menu if there's more than one option to select.
-  if (currentUser.role === 'editor' && connections.length === 1) {
+  if (currentUser?.role === 'editor' && connections.length === 1) {
     return null;
   }
 
@@ -67,10 +67,10 @@ function ConnectionDropdown() {
           );
         })}
 
-        {currentUser.role === 'admin' && (
+        {currentUser?.role === 'admin' && (
           <option value="new">... New connection</option>
         )}
-        {currentUser.role === 'admin' && (
+        {currentUser?.role === 'admin' && (
           <option value="manage">... Manage connections</option>
         )}
       </Select>

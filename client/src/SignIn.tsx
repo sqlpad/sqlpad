@@ -40,7 +40,7 @@ function SignIn() {
   }
 
   function PlaceholderForUsername() {
-    if (config.ldapConfigured) {
+    if (config?.ldapConfigured) {
       return 'Username or e-mail address';
     } else {
       return 'e-mail address';
@@ -108,7 +108,7 @@ function SignIn() {
   );
 
   function createMarkupForSamlLink() {
-    return { __html: config.samlLinkHtml };
+    return { __html: config?.samlLinkHtml || '' };
   }
 
   const samlForm = (

@@ -54,7 +54,7 @@ function ConnectionList() {
   const listItems = connections.map((item: any) => {
     const actions = [];
 
-    if (currentUser.role === 'admin' && item.editable) {
+    if (currentUser?.role === 'admin' && item.editable) {
       actions.push(
         <Button
           key="edit"

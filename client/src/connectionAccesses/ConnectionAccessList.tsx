@@ -77,7 +77,7 @@ function ConnectionAccessList() {
         const timeToExpire = new Date(item.expiryDate).valueOf() - Date.now();
         const expired = timeToExpire < 0;
 
-        if (currentUser.role === 'admin' && !expired) {
+        if (currentUser?.role === 'admin' && !expired) {
           actions.push(
             <DeleteConfirmButton
               key="expire"

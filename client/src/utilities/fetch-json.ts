@@ -3,6 +3,7 @@ import useSWR, { mutate } from 'swr';
 import 'whatwg-fetch';
 import message from '../common/message';
 import {
+  AppInfo,
   Connection,
   ConnectionAccess,
   Driver,
@@ -164,7 +165,7 @@ export const api = {
   },
 
   useAppInfo() {
-    return useSWR('api/app', { dedupingInterval: 60000 });
+    return useSWR<AppInfo>('api/app', { dedupingInterval: 60000 });
   },
 
   reloadAppInfo() {
