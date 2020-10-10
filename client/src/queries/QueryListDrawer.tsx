@@ -88,6 +88,10 @@ function QueryListDrawer({ onClose, visible }: Props) {
     params.tags = searchTags.map((tag) => tag.id).sort();
   }
 
+  // NOTE - this is left as raw api.get fetch and url creation here instead of api
+  // because of this gradual load-more appoach
+  // The api util does not have support for this complexity yet
+  // This will have to follow a different pattern
   const initialUrl =
     '/api/queries?' + queryString.stringify(params, { arrayFormat: 'bracket' });
 

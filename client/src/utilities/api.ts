@@ -9,6 +9,7 @@ import {
   ConnectionDetail,
   Driver,
   Query,
+  QueryDetail,
   ServiceToken,
   User,
 } from '../types';
@@ -111,7 +112,11 @@ export const api = {
   },
 
   async getQueries() {
-    return this.get<Query[]>('/queries');
+    return this.get<Query[]>('/api/queries');
+  },
+
+  getQuery(queryId: string) {
+    return this.get<QueryDetail>(`/api/queries/${queryId}`);
   },
 
   reloadQueries() {
@@ -132,6 +137,10 @@ export const api = {
 
   getConnection(connectionId: string) {
     return this.get<ConnectionDetail>(`/api/connections/${connectionId}`);
+  },
+
+  getConnections() {
+    return this.get<Connection[]>('/api/connections');
   },
 
   deleteConnection(connectionId: string) {

@@ -11,8 +11,12 @@ import {
 import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
 import { NEW_QUERY, useEditorStore } from './editor-store';
+import { AppInfo, Connection } from '../types';
 
-export const initApp = async (config: any, connections: any) => {
+export const initApp = async (
+  config: AppInfo['config'],
+  connections: Connection[]
+) => {
   try {
     let [selectedConnectionId] = await Promise.all([
       localforage.getItem('selectedConnectionId'),
@@ -28,7 +32,7 @@ export const initApp = async (config: any, connections: any) => {
       const { defaultConnectionId } = config || {};
       if (defaultConnectionId) {
         const foundDefault = connections.find(
-          (c: any) => c.id === defaultConnectionId
+          (c) => c.id === defaultConnectionId
         );
         if (Boolean(foundDefault)) {
           update.selectedConnectionId = defaultConnectionId;
@@ -37,7 +41,7 @@ export const initApp = async (config: any, connections: any) => {
 
       if (typeof selectedConnectionId === 'string') {
         const selectedConnection = connections.find(
-          (c: any) => c.id === selectedConnectionId
+          (c) => c.id === selectedConnectionId
         );
         if (Boolean(selectedConnection)) {
           update.selectedConnectionId = selectedConnectionId;
@@ -48,19 +52,21 @@ export const initApp = async (config: any, connections: any) => {
       const qsConnectionName = qs.connectionName;
       if (qsConnectionName) {
         const selectedConnection = connections.find(
-          (c: any) => c.name === qsConnectionName
+          (c) => c.name === qsConnectionName
         );
-        if (Boolean(selectedConnection))
-          update.selectedConnectionId = selectedConnection.id;
+        if (Boolean(selectedConnection)) {
+          update.selectedConnectionId = selectedConnection?.id;
+        }
       }
 
       const qsConnectionId = qs.connectionId;
       if (qsConnectionId) {
         const selectedConnection = connections.find(
-          (c: any) => c.id === qsConnectionId
+          (c) => c.id === qsConnectionId
         );
-        if (Boolean(selectedConnection))
-          update.selectedConnectionId = selectedConnection.id;
+        if (Boolean(selectedConnection)) {
+          update.selectedConnectionId = selectedConnection?.id;
+        }
       }
     }
 
@@ -84,9 +90,9 @@ export async function connectConnectionClient() {
 
   // Regular users are not allowed to get connections by id, but they can get list of connections
   // May want to store selected connection instead of just id
-  const { data: connections } = await api.get(`/api/connections`);
+  const { data: connections } = await api.getConnections();
   const connection = (connections || []).find(
-    (connection: any) => connection.id === selectedConnectionId
+    (connection) => connection.id === selectedConnectionId
   );
 
   const supportedAndEnabled =
@@ -229,8 +235,8 @@ export const formatQuery = async () => {
 };
 
 export const loadQuery = async (queryId: string) => {
-  const { error, data } = await api.get(`/api/queries/${queryId}`);
-  if (error) {
+  const { error, data } = await api.getQuery(queryId);
+  if (error || !data) {
     return message.error('Query not found');
   }
 

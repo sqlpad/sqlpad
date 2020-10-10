@@ -106,6 +106,36 @@ export interface Query {
   canDelete: boolean;
 }
 
+export interface QueryDetail {
+  id: string;
+  name: string;
+  chart?: {
+    fields?: ChartFields;
+    chartType?: string;
+  };
+  queryText: string;
+  connectionId: string;
+  // Query detail is missing connection for some reason
+  // TODO: expose this on query get too
+  // connection: {
+  //   id: string;
+  //   name: string;
+  //   driver: string;
+  // };
+  // id of user
+  createdBy: string;
+  createdByUser: {
+    id: string;
+    name?: string | null;
+    email: string;
+  };
+  acl: ACLRecord[];
+  tags: string[];
+  canRead: boolean;
+  canWrite: boolean;
+  canDelete: boolean;
+}
+
 export interface User {
   id: string;
   email: string;
