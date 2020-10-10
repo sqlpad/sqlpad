@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import useSWR from 'swr';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Modal from '../common/Modal';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import ServiceTokenDetails from './ServiceTokenDetails';
 import ServiceTokenForm from './ServiceTokenForm';
 
@@ -16,9 +15,7 @@ function ServiceTokenList() {
     false
   );
 
-  const { data: serviceTokensData, error, mutate } = useSWR(
-    '/api/service-tokens'
-  );
+  const { data: serviceTokensData, error, mutate } = api.useServiceTokens();
   const serviceTokens = serviceTokensData || [];
 
   useEffect(() => {
@@ -31,8 +28,8 @@ function ServiceTokenList() {
     setShowServiceTokenForm(true);
   };
 
-  const deleteServiceToken = async (serviceTokenId: any) => {
-    const json = await api.delete(`/api/service-tokens/${serviceTokenId}`);
+  const deleteServiceToken = async (serviceTokenId: string) => {
+    const json = await api.deleteServiceToken(serviceTokenId);
     if (json.error) {
       return message.error('Delete failed: ' + json.error);
     }

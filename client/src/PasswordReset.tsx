@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import Button from './common/Button';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
-import { api } from './utilities/fetch-json';
+import { api } from './utilities/api';
 
-function PasswordReset({ passwordResetId }: any) {
+function PasswordReset({ passwordResetId }: { passwordResetId: string }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [redirect, setRedirect] = useState(false);
 
-  const resetPassword = async (e: any) => {
+  const resetPassword = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const body = { email, password, passwordConfirmation };
     const json = await api.post(`/api/password-reset/${passwordResetId}`, body);
@@ -38,7 +38,9 @@ function PasswordReset({ passwordResetId }: any) {
           name="email"
           type="email"
           placeholder="Email address"
-          onChange={(e: any) => setEmail(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
           required
         />
         <Spacer />
@@ -46,7 +48,9 @@ function PasswordReset({ passwordResetId }: any) {
           name="password"
           type="password"
           placeholder="Password"
-          onChange={(e: any) => setPassword(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setPassword(e.target.value)
+          }
           required
         />
         <Spacer />
@@ -54,7 +58,9 @@ function PasswordReset({ passwordResetId }: any) {
           name="passwordConfirmation"
           type="password"
           placeholder="Confirm Password"
-          onChange={(e: any) => setPasswordConfirmation(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setPasswordConfirmation(e.target.value)
+          }
           required
         />
         <Spacer size={2} />

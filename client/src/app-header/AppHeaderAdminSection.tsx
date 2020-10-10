@@ -23,7 +23,7 @@ function AppHeaderAdminSection() {
   if (currentUser.id === 'noauth') {
     hideUsersButton = true;
   }
-  const showServiceTokensButton = config.showServiceTokensUI;
+  const showServiceTokensButton = config?.showServiceTokensUI;
 
   return (
     <>

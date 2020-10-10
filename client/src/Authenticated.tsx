@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
-import useSWR from 'swr';
-import { useEditorStore } from './stores/editor-store';
 import { initApp } from './stores/editor-actions';
+import { useEditorStore } from './stores/editor-store';
+import { api } from './utilities/api';
 import useAppContext from './utilities/use-app-context';
 
 export interface Props {
+  // TS doesn't like this set as ReactNode
   children: any;
 }
 
@@ -14,7 +15,7 @@ const Authenticated = (props: Props) => {
   const { config, currentUser } = useAppContext();
   const initialized = useEditorStore((s) => s.initialized);
 
-  let { data: connections } = useSWR('/api/connections');
+  let { data: connections } = api.useConnections();
 
   useEffect(() => {
     if (config && !initialized && connections) {

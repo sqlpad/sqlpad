@@ -35,7 +35,7 @@ function SqlEditor({ onChange, readOnly, value, onSelectionChange }: Props) {
         }
       });
 
-      editor.session.setUseWrapMode(Boolean(config.editorWordWrap));
+      editor.session.setUseWrapMode(Boolean(config?.editorWordWrap));
     }
   }, [editor, onChange, config]);
 

@@ -3,7 +3,12 @@ import Modal from '../common/Modal';
 import useAppContext from '../utilities/use-app-context';
 import AboutContent from './AboutContent';
 
-function AboutModal({ visible, onClose }: any) {
+interface Props {
+  visible: boolean;
+  onClose: () => void;
+}
+
+function AboutModal({ visible, onClose }: Props) {
   const { version } = useAppContext();
   return (
     <>

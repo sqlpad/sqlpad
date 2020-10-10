@@ -1,22 +1,29 @@
 import { useEffect, useState } from 'react';
 import runQueryViaBatch from './runQueryViaBatch';
-import { api } from './fetch-json';
+import { api } from './api';
 
-function useQueryResultById(queryId: any) {
+function useQueryResultById(queryId: string) {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [queryResult, setQueryResult] = useState<any>(null);
   const [queryError, setQueryError] = useState<string>('');
 
   useEffect(() => {
-    const runQuery = async (queryId: any) => {
+    const runQuery = async (queryId: string) => {
       setIsRunning(true);
 
-      const queryJson = await api.get(`/api/queries/${queryId}`);
+      const queryJson = await api.getQuery(queryId);
       if (queryJson.error) {
         setIsRunning(false);
         setQueryError(queryJson.error);
         return;
       }
+
+      if (!queryJson.data) {
+        setIsRunning(false);
+        setQueryError('Query not found');
+        return;
+      }
+
       const query = queryJson.data;
 
       const resultJson = await runQueryViaBatch({

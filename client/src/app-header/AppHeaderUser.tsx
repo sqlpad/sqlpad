@@ -8,7 +8,10 @@ function UserButton() {
     return null;
   }
   return (
-    <div className={styles.style}> {currentUser.name || currentUser.email}</div>
+    <div className={styles.style}>
+      {' '}
+      {currentUser?.name || currentUser.email}
+    </div>
   );
 }
 

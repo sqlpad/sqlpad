@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import useSWR from 'swr';
+import sortBy from 'lodash/sortBy';
+import React, { ChangeEvent, useState } from 'react';
 import Button from '../common/Button';
 import HorizontalFormItem from '../common/HorizontalFormItem';
 import Input from '../common/Input';
 import message from '../common/message';
 import Select from '../common/Select';
-import { api } from '../utilities/fetch-json';
-import sortBy from 'lodash/sortBy';
+import { ConnectionAccess } from '../types';
+import { api } from '../utilities/api';
 
 type Edits = {
   connectionId?: string;
@@ -14,11 +14,15 @@ type Edits = {
   duration?: string;
 };
 
-function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
+interface Props {
+  onConnectionAccessSaved: (connectionAccess: ConnectionAccess) => void;
+}
+
+function ConnectionAccessForm({ onConnectionAccessSaved }: Props) {
   const [connectionAccessEdits, setConnectionAccessEdits] = useState<Edits>({});
   const [creating, setCreating] = useState(false);
 
-  let { data: apiConnections } = useSWR('/api/connections');
+  let { data: apiConnections } = api.useConnections();
   const connections = [
     {
       id: '__EVERY_CONNECTION__',
@@ -26,7 +30,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
     },
   ].concat(apiConnections || []);
 
-  let { data: apiUsers } = useSWR('/api/users');
+  let { data: apiUsers } = api.useUsers();
   const users = [
     {
       id: '__EVERYONE__',
@@ -34,7 +38,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
     },
   ].concat(apiUsers || []);
 
-  const setConnectionAccessValue = (key: any, value: any) => {
+  const setConnectionAccessValue = (key: keyof Edits, value: string) => {
     setConnectionAccessEdits((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -113,7 +117,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
             name="connectionId"
             value={connectionId}
             error={!connectionId}
-            onChange={(event: any) =>
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               setConnectionAccessValue('connectionId', event.target.value)
             }
           >
@@ -125,7 +129,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
             name="userId"
             value={userId}
             error={!userId}
-            onChange={(event: any) =>
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               setConnectionAccessValue('userId', event.target.value)
             }
           >
@@ -136,8 +140,8 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: any) {
           <Input
             name="duration"
             value={duration}
-            onChange={(e: any) =>
-              setConnectionAccessValue(e.target.name, e.target.value)
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setConnectionAccessValue('duration', e.target.value)
             }
           />
         </HorizontalFormItem>

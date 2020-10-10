@@ -1,19 +1,19 @@
 import React from 'react';
-import useSWR from 'swr';
 import Modal from '../../common/Modal';
 import MultiSelect from '../../common/MultiSelect';
 import { setQueryState } from '../../stores/editor-actions';
 import { useEditorStore } from '../../stores/editor-store';
+import { api } from '../../utilities/api';
 
 function QueryTagsModal({ visible, onClose }: any) {
-  const tags = useEditorStore((s) => s?.query?.tags || []);
+  const tags = useEditorStore<string[]>((s) => s?.query?.tags || []);
 
-  const { data: tagsData } = useSWR(visible ? '/api/tags' : null);
-  const options = (tagsData || []).map((tag: any) => ({
+  const { data: tagsData } = api.useTags(visible);
+  const options = (tagsData || []).map((tag) => ({
     name: tag,
     id: tag,
   }));
-  const selectedItems = tags.map((tag: any) => ({
+  const selectedItems = tags.map((tag) => ({
     name: tag,
     id: tag,
   }));

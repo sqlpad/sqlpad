@@ -1,12 +1,12 @@
 import humanizeDuration from 'humanize-duration';
 import React, { useState } from 'react';
-import useSWR from 'swr';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';
-import { api } from '../utilities/fetch-json';
+import { ConnectionAccess } from '../types';
+import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import ConnectionAccessCreateDrawer from './ConnectionAccessCreateDrawer';
 
@@ -15,12 +15,7 @@ function ConnectionAccessList() {
   const [showInactives, setShowInactives] = useState(false);
   const [showAccessCreate, setShowAccessCreate] = useState(false);
 
-  let url = `/api/connection-accesses`;
-  if (showInactives) {
-    url = url + '?includeInactives=true';
-  }
-
-  let { data: caData, mutate } = useSWR(url);
+  let { data: caData, mutate } = api.useConnectionAccesses(showInactives);
   const connectionAccesses = caData || [];
 
   const toggleShowInactives = () => {
@@ -57,7 +52,7 @@ function ConnectionAccessList() {
     setShowAccessCreate(false);
   };
 
-  const handleConnectionAccessSaved = (connectionAccess: any) => {
+  const handleConnectionAccessSaved = (connectionAccess: ConnectionAccess) => {
     const updated = [connectionAccess].concat(connectionAccesses);
     mutate(updated);
     setShowAccessCreate(false);
@@ -77,12 +72,12 @@ function ConnectionAccessList() {
           Create Access
         </Button>
       </div>
-      {connectionAccesses.map((item: any) => {
+      {connectionAccesses.map((item) => {
         const actions = [];
         const timeToExpire = new Date(item.expiryDate).valueOf() - Date.now();
         const expired = timeToExpire < 0;
 
-        if (currentUser.role === 'admin' && !expired) {
+        if (currentUser?.role === 'admin' && !expired) {
           actions.push(
             <DeleteConfirmButton
               key="expire"

@@ -5,7 +5,6 @@ import Measure from 'react-measure';
 import { Link } from 'react-router-dom';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
-import useSWR from 'swr';
 import { useDebounce } from 'use-debounce';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import Drawer from '../common/Drawer';
@@ -18,7 +17,8 @@ import MultiSelect from '../common/MultiSelect';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
-import { api } from '../utilities/fetch-json';
+import { Query } from '../types';
+import { api } from '../utilities/api';
 import styles from './QueryList.module.css';
 import QueryPreview from './QueryPreview';
 
@@ -36,20 +36,6 @@ type Params = Record<
   string,
   string | number | boolean | string[] | null | undefined
 >;
-
-// Query type is incomplete
-// TODO Move to common models with rest of API interfaces
-interface Query {
-  id: string;
-  name: string;
-  chart?: {
-    chartType?: string;
-  };
-  connection: {
-    name: string;
-  };
-  canDelete: boolean;
-}
 
 type Props = {
   visible?: boolean;
@@ -72,7 +58,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
   const [queries, setQueries] = useState<Query[]>([]);
   const [loading, setLoading] = useState(false);
   const [next, setNext] = useState<string | null>(null);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | undefined | null>(null);
 
   let params: Params = {
     limit: 20,
@@ -102,6 +88,10 @@ function QueryListDrawer({ onClose, visible }: Props) {
     params.tags = searchTags.map((tag) => tag.id).sort();
   }
 
+  // NOTE - this is left as raw api.get fetch and url creation here instead of api
+  // because of this gradual load-more appoach
+  // The api util does not have support for this complexity yet
+  // This will have to follow a different pattern
   const initialUrl =
     '/api/queries?' + queryString.stringify(params, { arrayFormat: 'bracket' });
 
@@ -137,14 +127,14 @@ function QueryListDrawer({ onClose, visible }: Props) {
     }
   }, [visible, initialUrl, getQueries]);
 
-  let { data: tagData } = useSWR('/api/tags');
+  let { data: tagData } = api.useTags();
   const tags = tagData || [];
 
-  let { data: connectionsData } = useSWR('/api/connections');
+  let { data: connectionsData } = api.useConnections();
   const connections = connectionsData || [];
 
-  const deleteQuery = async (queryId: any) => {
-    const { error } = await api.delete(`/api/queries/${queryId}`);
+  const deleteQuery = async (queryId: string) => {
+    const { error } = await api.deleteQuery(queryId);
     if (error) {
       return message.error(error);
     }

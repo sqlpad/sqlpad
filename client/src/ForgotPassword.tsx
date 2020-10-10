@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FormEvent, ChangeEvent } from 'react';
 import { Redirect } from 'react-router-dom';
 import Button from './common/Button';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
-import { api } from './utilities/fetch-json';
+import { api } from './utilities/api';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -14,7 +14,7 @@ function ForgotPassword() {
     document.title = 'SQLPad - Forgot Password';
   }, []);
 
-  const resetPassword = async (e: any) => {
+  const resetPassword = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const json = await api.post('/api/forgot-password', { email });
     if (json.error) {
@@ -35,7 +35,9 @@ function ForgotPassword() {
           name="email"
           type="email"
           placeholder="Email address"
-          onChange={(e: any) => setEmail(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setEmail(e.target.value)
+          }
           required
         />
         <Spacer size={2} />

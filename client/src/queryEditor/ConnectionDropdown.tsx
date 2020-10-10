@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import useSWR from 'swr';
 import Select from '../common/Select';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
@@ -9,6 +8,7 @@ import {
 } from '../stores/editor-actions';
 import { useSelectedConnectionId } from '../stores/editor-store';
 import { Connection } from '../types';
+import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import styles from './ConnectionDropdown.module.css';
 
@@ -18,9 +18,7 @@ function ConnectionDropdown() {
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
 
-  let { data: connectionsData, mutate } = useSWR<Connection[]>(
-    '/api/connections'
-  );
+  let { data: connectionsData, mutate } = api.useConnections();
   const connections = connectionsData || [];
 
   const handleChange = (event: any) => {
@@ -34,7 +32,7 @@ function ConnectionDropdown() {
     connectConnectionClient();
   };
 
-  const handleConnectionSaved = (connection: any) => {
+  const handleConnectionSaved = (connection: Connection) => {
     mutate();
     selectConnectionId(connection.id);
     setShowEdit(false);
@@ -42,7 +40,7 @@ function ConnectionDropdown() {
   };
 
   // Only show the connection menu if there's more than one option to select.
-  if (currentUser.role === 'editor' && connections.length === 1) {
+  if (currentUser?.role === 'editor' && connections.length === 1) {
     return null;
   }
 
@@ -69,10 +67,10 @@ function ConnectionDropdown() {
           );
         })}
 
-        {currentUser.role === 'admin' && (
+        {currentUser?.role === 'admin' && (
           <option value="new">... New connection</option>
         )}
-        {currentUser.role === 'admin' && (
+        {currentUser?.role === 'admin' && (
           <option value="manage">... Manage connections</option>
         )}
       </Select>

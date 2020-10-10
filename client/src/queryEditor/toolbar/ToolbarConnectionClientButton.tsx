@@ -1,7 +1,6 @@
 import ConnectedIcon from 'mdi-react/ServerNetworkIcon';
 import DisconnectedIcon from 'mdi-react/ServerNetworkOffIcon';
 import React, { useState } from 'react';
-import useSWR from 'swr';
 import IconButton from '../../common/IconButton';
 import {
   connectConnectionClient,
@@ -11,13 +10,14 @@ import {
   useConnectionClient,
   useSelectedConnectionId,
 } from '../../stores/editor-store';
+import { api } from '../../utilities/api';
 
 function ToolbarConnectionClientButton() {
   const [fetching, setFetching] = useState(false);
   const connectionClient = useConnectionClient();
   const selectedConnectionId = useSelectedConnectionId();
 
-  let { data: connectionsData } = useSWR('/api/connections');
+  let { data: connectionsData } = api.useConnections();
   const connections = connectionsData || [];
 
   async function handleClick() {
@@ -36,7 +36,7 @@ function ToolbarConnectionClientButton() {
   }
 
   const connection = connections.find(
-    (connection: any) => connection.id === selectedConnectionId
+    (connection) => connection.id === selectedConnectionId
   );
 
   const supportedAndEnabled =

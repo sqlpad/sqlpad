@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
-import useSWR from 'swr';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';
 import { selectConnectionId } from '../stores/editor-actions';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 
 function ConnectionList() {
-  const { data: connectionsData, mutate } = useSWR('/api/connections');
+  const { data: connectionsData, mutate } = api.useConnections();
   let connections = connectionsData || [];
 
-  const deleteConnection = async (connectionId: any) => {
-    const json = await api.delete(`/api/connections/${connectionId}`);
+  const deleteConnection = async (connectionId: string) => {
+    const json = await api.deleteConnection(connectionId);
     mutate();
     if (json.error) {
       return message.error('Delete failed');
@@ -55,7 +54,7 @@ function ConnectionList() {
   const listItems = connections.map((item: any) => {
     const actions = [];
 
-    if (currentUser.role === 'admin' && item.editable) {
+    if (currentUser?.role === 'admin' && item.editable) {
       actions.push(
         <Button
           key="edit"

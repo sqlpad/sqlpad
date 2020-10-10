@@ -1,8 +1,8 @@
-import useSWR from 'swr';
 import baseUrl from './baseUrl';
+import { api } from './api';
 
 function useAppContext() {
-  let { data } = useSWR('api/app', { dedupingInterval: 60000 });
+  let { data } = api.useAppInfo();
 
   const { config, currentUser, adminRegistrationOpen, version } = data || {};
 

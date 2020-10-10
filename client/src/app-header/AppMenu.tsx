@@ -3,7 +3,7 @@ import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import IconMenu from '../common/IconMenu';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import AboutModal from './AboutModal';
 
@@ -27,7 +27,7 @@ function AppMenu() {
         <MenuItem onSelect={() => setShowAbout(true)}>About</MenuItem>
         <MenuItem
           onSelect={async () => {
-            await api.get('/api/signout');
+            await api.signout();
             setRedirectToSignIn(true);
           }}
           hidden={hideSignOut}

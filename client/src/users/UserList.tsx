@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import useSWR from 'swr';
 import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Modal from '../common/Modal';
 import Text from '../common/Text';
-import { api } from '../utilities/fetch-json';
+import { User } from '../types';
+import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import EditUserForm from './EditUserForm';
 import InviteUserForm from './InviteUserForm';
-
-type User = {
-  id: string;
-  email: string;
-};
 
 function UserList() {
   const { currentUser } = useAppContext();
@@ -22,8 +17,8 @@ function UserList() {
   const [editUser, setEditUser] = useState<User | null>(null);
   const [toggling, setToggling] = useState(false);
 
-  const { data: usersData, error, mutate } = useSWR('/api/users');
-  const users = (usersData || []).map((user: any) => ({
+  const { data: usersData, error, mutate } = api.useUsers();
+  const users = (usersData || []).map((user) => ({
     ...user,
     key: user.id,
   }));
@@ -52,12 +47,12 @@ function UserList() {
     mutate(mutatedUsers);
   };
 
-  const handleDelete = async (user: any) => {
-    const json = await api.delete(`/api/users/${user.id}`);
+  const handleDelete = async (user: User) => {
+    const json = await api.deleteUser(user.id);
     if (json.error) {
       return message.error('Delete Failed: ' + json.error);
     }
-    mutate(users.filter((u: any) => u.id !== user.id));
+    mutate(users.filter((u) => u.id !== user.id));
   };
 
   const handleOnInvited = () => {

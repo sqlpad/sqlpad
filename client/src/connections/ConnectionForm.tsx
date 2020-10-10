@@ -1,7 +1,6 @@
 import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
-import React, { useEffect, useState } from 'react';
-import useSWR, { mutate } from 'swr';
+import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock';
 import FormExplain from '../common/FormExplain';
@@ -11,7 +10,7 @@ import message from '../common/message';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube';
 import TextArea from '../common/TextArea';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';
@@ -35,28 +34,34 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [tested, setTested] = useState(false);
-  const [testError, setTestError] = useState(null);
+  const [testError, setTestError] = useState<string | undefined | null>(null);
   const [loading, setLoading] = useState(false);
 
-  let { data: drivers } = useSWR('/api/drivers');
-  drivers = drivers || [];
+  const { data: drivers } = api.useDrivers();
 
-  async function getConnection(connectionId: any) {
+  async function getConnection(connectionId: string) {
     if (connectionId) {
       setLoading(true);
-      const json = await api.get(`/api/connections/${connectionId}`);
+      const json = await api.getConnection(connectionId);
       setLoading(false);
+
       if (json.error) {
-        message.error(json.error);
-      } else {
-        // Convert seconds to minutes for a more user-friendly experience
-        const idleTimeoutSeconds =
-          json.data && parseInt(json.data.idleTimeoutSeconds, 10);
-        if (idleTimeoutSeconds) {
-          json.data.idleTimeoutMinutes = Math.round(idleTimeoutSeconds / 60);
-        }
-        setConnectionEdits(json.data);
+        return message.error(json.error);
       }
+
+      const conn = json.data;
+      // Convert seconds to minutes for a more user-friendly experience
+      const idleTimeoutSeconds = conn?.idleTimeoutSeconds;
+      setConnectionEdits({
+        name: conn?.name,
+        driver: conn?.driver,
+        idleTimeoutMinutes: idleTimeoutSeconds
+          ? Math.round(idleTimeoutSeconds / 60).toString()
+          : '',
+        multiStatementTransactionEnabled:
+          conn?.multiStatementTransactionEnabled,
+        data: conn?.data,
+      });
     }
   }
 
@@ -123,12 +128,12 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
       setSaving(false);
       return message.error(json.error);
     }
-    mutate('/api/connections');
+    api.reloadConnections();
     return onConnectionSaved(json.data);
   };
 
   const renderDriverFields = () => {
-    if (connectionEdits.driver && drivers.length) {
+    if (connectionEdits.driver && drivers?.length) {
       // NOTE connection.driver is driverId
       const driver = drivers.find(
         (driver: any) => driver.id === connectionEdits.driver
@@ -139,7 +144,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
         return null;
       }
 
-      const fieldsJsx = [];
+      const fieldsJsx: ReactNode[] = [];
       if (driver.supportsConnectionClient) {
         const mstKey = 'multiStatementTransactionEnabled';
         fieldsJsx.push(
@@ -175,7 +180,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
               name="idleTimeoutMinutes"
               type="number"
               value={connectionEdits.idleTimeoutMinutes || ''}
-              onChange={(e: any) =>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setConnectionValue(e.target.name, e.target.value)
               }
             />
@@ -196,7 +201,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
               <Input
                 name={field.key}
                 value={value as string}
-                onChange={(e: any) =>
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setConnectionDataValue(e.target.name, e.target.value)
                 }
               />
@@ -220,7 +225,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
                 autoComplete="new-password"
                 name={field.key}
                 value={value as string}
-                onChange={(e: any) =>
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setConnectionDataValue(e.target.name, e.target.value)
                 }
               />
@@ -267,7 +272,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
                 value={value as string}
                 cols={45}
                 placeholder={field.placeholder}
-                onChange={(e: any) =>
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                   setConnectionDataValue(e.target.name, e.target.value)
                 }
               />
@@ -292,7 +297,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
 
   const driverSelectOptions = [<option key="none" value="" />];
 
-  if (!drivers.length) {
+  if (!drivers?.length) {
     driverSelectOptions.push(
       <option key="loading" value="">
         Loading...
@@ -300,8 +305,15 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
     );
   } else {
     drivers
-      .sort((a: any, b: any) => a.name > b.name)
-      .forEach((driver: any) =>
+      .sort((a, b) => {
+        if (a.name > b.name) {
+          return 1;
+        } else if (a.name < b.name) {
+          return -1;
+        }
+        return 0;
+      })
+      .forEach((driver) =>
         driverSelectOptions.push(
           <option key={driver.id} value={driver.id}>
             {driver.name}
@@ -334,7 +346,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
             name="name"
             value={name}
             error={!name}
-            onChange={(e: any) =>
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setConnectionValue(e.target.name, e.target.value)
             }
           />
@@ -344,7 +356,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
             name="driver"
             value={driver}
             error={!driver}
-            onChange={(event: any) =>
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               setConnectionValue('driver', event.target.value)
             }
           >

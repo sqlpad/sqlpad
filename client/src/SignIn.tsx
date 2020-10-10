@@ -1,14 +1,13 @@
 import GoogleIcon from 'mdi-react/GoogleIcon';
 import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
-import { mutate } from 'swr';
 import Button from './common/Button';
+import ButtonLink from './common/ButtonLink';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
-import { api } from './utilities/fetch-json';
+import { api } from './utilities/api';
 import useAppContext from './utilities/use-app-context';
-import ButtonLink from './common/ButtonLink';
 
 function SignIn() {
   const [email, setEmail] = useState('');
@@ -28,7 +27,7 @@ function SignIn() {
     if (json.error) {
       return message.error('Username or password incorrect');
     }
-    await mutate('api/app');
+    await api.reloadAppInfo();
     setRedirect(true);
   };
 
@@ -41,7 +40,7 @@ function SignIn() {
   }
 
   function PlaceholderForUsername() {
-    if (config.ldapConfigured) {
+    if (config?.ldapConfigured) {
       return 'Username or e-mail address';
     } else {
       return 'e-mail address';
@@ -109,7 +108,7 @@ function SignIn() {
   );
 
   function createMarkupForSamlLink() {
-    return { __html: config.samlLinkHtml };
+    return { __html: config?.samlLinkHtml || '' };
   }
 
   const samlForm = (
