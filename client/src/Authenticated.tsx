@@ -6,6 +6,7 @@ import { api } from './utilities/fetch-json';
 import useAppContext from './utilities/use-app-context';
 
 export interface Props {
+  // TS doesn't like this set as ReactNode
   children: any;
 }
 

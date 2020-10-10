@@ -43,7 +43,7 @@ function QueryResultHeader() {
       <div className={styles.toolbarItem}>{rowCount} rows</div>
 
       <div className={styles.toolbarItem}>
-        {config.allowCsvDownload && hasRows && (
+        {config?.allowCsvDownload && hasRows && (
           <span className={styles.iconLinkWrapper}>
             <Link
               className={styles.iconLink}

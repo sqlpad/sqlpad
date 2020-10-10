@@ -62,6 +62,7 @@ export interface AppInfo {
     id: string;
     email: string;
     role: string;
+    name?: string;
   };
   version: string;
 }
