@@ -8,7 +8,7 @@ import {
 } from '../stores/editor-actions';
 import { useSelectedConnectionId } from '../stores/editor-store';
 import { Connection } from '../types';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import styles from './ConnectionDropdown.module.css';
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Button from '../common/Button';
 import QueryResultContainer from '../common/QueryResultContainer';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import QueryHistoryFilterItem from './QueryHistoryFilterItem';
 
 function getQueryResult(rows: any) {

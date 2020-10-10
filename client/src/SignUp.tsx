@@ -4,7 +4,7 @@ import Button from './common/Button';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
-import { api } from './utilities/fetch-json';
+import { api } from './utilities/api';
 import useAppContext from './utilities/use-app-context';
 
 function SignUp() {

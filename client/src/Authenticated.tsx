@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { initApp } from './stores/editor-actions';
 import { useEditorStore } from './stores/editor-store';
-import { api } from './utilities/fetch-json';
+import { api } from './utilities/api';
 import useAppContext from './utilities/use-app-context';
 
 export interface Props {

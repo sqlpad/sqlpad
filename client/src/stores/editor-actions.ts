@@ -3,7 +3,7 @@ import queryString from 'query-string';
 import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
 import baseUrl from '../utilities/baseUrl';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import {
   removeLocalQueryText,
   setLocalQueryText,

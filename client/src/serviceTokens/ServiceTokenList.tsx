@@ -4,7 +4,7 @@ import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Modal from '../common/Modal';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import ServiceTokenDetails from './ServiceTokenDetails';
 import ServiceTokenForm from './ServiceTokenForm';
 

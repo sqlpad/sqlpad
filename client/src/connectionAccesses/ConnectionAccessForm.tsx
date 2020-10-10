@@ -5,7 +5,7 @@ import HorizontalFormItem from '../common/HorizontalFormItem';
 import Input from '../common/Input';
 import message from '../common/message';
 import Select from '../common/Select';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 
 type Edits = {
   connectionId?: string;

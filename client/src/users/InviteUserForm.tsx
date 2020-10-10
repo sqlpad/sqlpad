@@ -6,7 +6,7 @@ import Input from '../common/Input';
 import message from '../common/message';
 import Select from '../common/Select';
 import Spacer from '../common/Spacer';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 
 function InviteUserForm({ onInvited }: any) {
   const [email, setEmail] = useState(null);

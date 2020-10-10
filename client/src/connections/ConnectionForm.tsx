@@ -10,7 +10,7 @@ import message from '../common/message';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube';
 import TextArea from '../common/TextArea';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';

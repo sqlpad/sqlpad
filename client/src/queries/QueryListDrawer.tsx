@@ -18,7 +18,7 @@ import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
 import { Query } from '../types';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import styles from './QueryList.module.css';
 import QueryPreview from './QueryPreview';
 

@@ -6,7 +6,7 @@ import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';
 import { ConnectionAccess } from '../types';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import ConnectionAccessCreateDrawer from './ConnectionAccessCreateDrawer';
 

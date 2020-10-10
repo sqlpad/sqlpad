@@ -6,7 +6,7 @@ import FormExplain from '../common/FormExplain';
 import message from '../common/message';
 import Select from '../common/Select';
 import Spacer from '../common/Spacer';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 
 function EditUserForm({ userId }: any) {
   let { data: user } = api.useUser(userId);

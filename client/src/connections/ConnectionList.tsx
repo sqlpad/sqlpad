@@ -5,7 +5,7 @@ import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';
 import { selectConnectionId } from '../stores/editor-actions';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
 

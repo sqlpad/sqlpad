@@ -10,7 +10,7 @@ import {
   useConnectionClient,
   useSelectedConnectionId,
 } from '../../stores/editor-store';
-import { api } from '../../utilities/fetch-json';
+import { api } from '../../utilities/api';
 
 function ToolbarConnectionClientButton() {
   const [fetching, setFetching] = useState(false);

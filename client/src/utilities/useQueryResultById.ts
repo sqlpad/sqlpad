@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import runQueryViaBatch from './runQueryViaBatch';
-import { api } from './fetch-json';
+import { api } from './api';
 
 function useQueryResultById(queryId: any) {
   const [isRunning, setIsRunning] = useState<boolean>(false);

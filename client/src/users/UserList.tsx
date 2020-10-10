@@ -5,7 +5,7 @@ import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Modal from '../common/Modal';
 import Text from '../common/Text';
-import { api } from '../utilities/fetch-json';
+import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import EditUserForm from './EditUserForm';
 import InviteUserForm from './InviteUserForm';
