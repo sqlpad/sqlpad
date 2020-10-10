@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, FormEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../common/Button';
 import FormExplain from '../common/FormExplain';
@@ -8,12 +8,16 @@ import Select from '../common/Select';
 import Spacer from '../common/Spacer';
 import { api } from '../utilities/api';
 
-function InviteUserForm({ onInvited }: any) {
-  const [email, setEmail] = useState(null);
-  const [role, setRole] = useState(null);
+interface Props {
+  onInvited: () => void;
+}
+
+function InviteUserForm({ onInvited }: Props) {
+  const [email, setEmail] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const [isInviting, setIsInviting] = useState<boolean>(false);
 
-  const onInviteClick = async (event: any) => {
+  const onInviteClick = async (event: FormEvent) => {
     event.preventDefault();
     event.stopPropagation();
     const user = {
@@ -47,7 +51,9 @@ function InviteUserForm({ onInvited }: any) {
             type="email"
             value={email || ''}
             error={!email}
-            onChange={(e: any) => setEmail(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
           />
         </label>
         <Spacer size={2} />
@@ -57,7 +63,9 @@ function InviteUserForm({ onInvited }: any) {
           <Select
             name="role"
             value={role || ''}
-            onChange={(event: any) => setRole(event.target.value)}
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+              setRole(event.target.value)
+            }
             error={!role}
           >
             <option value="" />

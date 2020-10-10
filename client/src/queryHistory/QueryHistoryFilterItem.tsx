@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import Select from '../common/Select';
@@ -88,7 +88,7 @@ const QueryHistoryFilterItem = ({
         style={{ width: '200px', marginRight: 8 }}
         name="field"
         value={filter.field}
-        onChange={(e: any) => {
+        onChange={(e: ChangeEvent<HTMLSelectElement>) => {
           const value = e.target.value as FieldKey;
           if (fields[value]) {
             onChange(index, {
@@ -109,7 +109,9 @@ const QueryHistoryFilterItem = ({
         style={{ width: '150px', marginRight: 8 }}
         name="operator"
         value={filter.operator}
-        onChange={(e: any) => onChange(index, { operator: e.target.value })}
+        onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+          onChange(index, { operator: e.target.value })
+        }
       >
         {fields[filter.field as FieldKey].operators.map((o: any) => (
           <option key={o.key} value={o.key}>
@@ -121,7 +123,9 @@ const QueryHistoryFilterItem = ({
         style={{ width: '300px', marginRight: 8 }}
         name="value"
         value={filter.value}
-        onChange={(e: any) => onChange(index, { value: e.target.value })}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          onChange(index, { value: e.target.value })
+        }
       />
       {buttons}
     </div>

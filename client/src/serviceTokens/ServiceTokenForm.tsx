@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../common/Button';
 import HorizontalFormItem from '../common/HorizontalFormItem';
@@ -17,7 +17,7 @@ function ServiceTokenForm({ onServiceTokenGenerated }: any) {
   const [serviceTokenEdits, setServiceTokenEdits] = useState<Edits>({});
   const [generating, setGenerating] = useState(false);
 
-  const setServiceTokenValue = (key: any, value: any) => {
+  const setServiceTokenValue = (key: keyof Edits, value: string) => {
     setServiceTokenEdits((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -64,8 +64,8 @@ function ServiceTokenForm({ onServiceTokenGenerated }: any) {
             name="name"
             value={name || ''}
             error={!name}
-            onChange={(event: any) =>
-              setServiceTokenValue(event.target.name, event.target.value)
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setServiceTokenValue('name', event.target.value)
             }
           />
         </HorizontalFormItem>
@@ -74,8 +74,8 @@ function ServiceTokenForm({ onServiceTokenGenerated }: any) {
             name="role"
             value={role}
             error={!role}
-            onChange={(event: any) =>
-              setServiceTokenValue(event.target.name, event.target.value)
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+              setServiceTokenValue('role', event.target.value)
             }
           >
             <option value="" />
@@ -87,8 +87,8 @@ function ServiceTokenForm({ onServiceTokenGenerated }: any) {
           <Input
             name="duration"
             value={duration}
-            onChange={(event: any) =>
-              setServiceTokenValue(event.target.name, event.target.value)
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setServiceTokenValue('duration', event.target.value)
             }
           />
         </HorizontalFormItem>

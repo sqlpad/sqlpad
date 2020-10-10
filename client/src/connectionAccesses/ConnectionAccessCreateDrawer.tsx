@@ -17,10 +17,7 @@ function ConnectionAccessCreateDrawer({
       onClose={onClose}
       placement={placement || 'right'}
     >
-      <ConnectionAccessForm
-        connectionId={connectionId}
-        onConnectionAccessSaved={onConnectionAccessSaved}
-      />
+      <ConnectionAccessForm onConnectionAccessSaved={onConnectionAccessSaved} />
     </Drawer>
   );
 }

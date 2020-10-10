@@ -1,6 +1,6 @@
 import SuccessIcon from 'mdi-react/CheckboxMarkedCircleOutlineIcon';
 import CloseCircleOutlineIcon from 'mdi-react/CloseCircleOutlineIcon';
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock';
 import FormExplain from '../common/FormExplain';
@@ -180,7 +180,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
               name="idleTimeoutMinutes"
               type="number"
               value={connectionEdits.idleTimeoutMinutes || ''}
-              onChange={(e: any) =>
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setConnectionValue(e.target.name, e.target.value)
               }
             />
@@ -201,7 +201,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
               <Input
                 name={field.key}
                 value={value as string}
-                onChange={(e: any) =>
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setConnectionDataValue(e.target.name, e.target.value)
                 }
               />
@@ -225,7 +225,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
                 autoComplete="new-password"
                 name={field.key}
                 value={value as string}
-                onChange={(e: any) =>
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setConnectionDataValue(e.target.name, e.target.value)
                 }
               />
@@ -272,7 +272,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
                 value={value as string}
                 cols={45}
                 placeholder={field.placeholder}
-                onChange={(e: any) =>
+                onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                   setConnectionDataValue(e.target.name, e.target.value)
                 }
               />
@@ -313,7 +313,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
         }
         return 0;
       })
-      .forEach((driver: any) =>
+      .forEach((driver) =>
         driverSelectOptions.push(
           <option key={driver.id} value={driver.id}>
             {driver.name}
@@ -346,7 +346,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
             name="name"
             value={name}
             error={!name}
-            onChange={(e: any) =>
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setConnectionValue(e.target.name, e.target.value)
             }
           />
@@ -356,7 +356,7 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
             name="driver"
             value={driver}
             error={!driver}
-            onChange={(event: any) =>
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               setConnectionValue('driver', event.target.value)
             }
           >
