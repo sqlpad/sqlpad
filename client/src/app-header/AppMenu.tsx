@@ -27,7 +27,7 @@ function AppMenu() {
         <MenuItem onSelect={() => setShowAbout(true)}>About</MenuItem>
         <MenuItem
           onSelect={async () => {
-            await api.get('/api/signout');
+            await api.signout();
             setRedirectToSignIn(true);
           }}
           hidden={hideSignOut}

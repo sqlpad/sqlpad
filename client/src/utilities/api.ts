@@ -6,6 +6,7 @@ import {
   AppInfo,
   Connection,
   ConnectionAccess,
+  ConnectionDetail,
   Driver,
   Query,
   ServiceToken,
@@ -105,6 +106,10 @@ export const api = {
     return fetchJson<DataT>('GET', url);
   },
 
+  signout() {
+    return this.get('/api/signout');
+  },
+
   async getQueries() {
     return this.get<Query[]>('/queries');
   },
@@ -113,12 +118,24 @@ export const api = {
     return mutate('/api/queries');
   },
 
+  deleteQuery(queryId: string) {
+    return api.delete(`/api/queries/${queryId}`);
+  },
+
   useConnections() {
     return useSWR<Connection[]>('/api/connections');
   },
 
   reloadConnections() {
     return mutate('/api/connections');
+  },
+
+  getConnection(connectionId: string) {
+    return this.get<ConnectionDetail>(`/api/connections/${connectionId}`);
+  },
+
+  deleteConnection(connectionId: string) {
+    return api.delete(`/api/connections/${connectionId}`);
   },
 
   useUsers() {
@@ -153,8 +170,16 @@ export const api = {
     return useSWR<ServiceToken[]>('/api/service-tokens');
   },
 
+  deleteServiceToken(serviceTokenId: string) {
+    return this.delete(`/api/service-tokens/${serviceTokenId}`);
+  },
+
   useUser(id: string) {
     return useSWR<User>(`/api/users/${id}`);
+  },
+
+  deleteUser(userId: string) {
+    return this.delete(`/api/users/${userId}`);
   },
 
   /**

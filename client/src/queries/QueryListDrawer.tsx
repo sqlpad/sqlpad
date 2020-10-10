@@ -130,7 +130,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
   const connections = connectionsData || [];
 
   const deleteQuery = async (queryId: string) => {
-    const { error } = await api.delete(`/api/queries/${queryId}`);
+    const { error } = await api.deleteQuery(queryId);
     if (error) {
       return message.error(error);
     }

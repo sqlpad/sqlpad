@@ -42,19 +42,26 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
   async function getConnection(connectionId: string) {
     if (connectionId) {
       setLoading(true);
-      const json = await api.get(`/api/connections/${connectionId}`);
+      const json = await api.getConnection(connectionId);
       setLoading(false);
+
       if (json.error) {
-        message.error(json.error);
-      } else {
-        // Convert seconds to minutes for a more user-friendly experience
-        const idleTimeoutSeconds =
-          json.data && parseInt(json.data.idleTimeoutSeconds, 10);
-        if (idleTimeoutSeconds) {
-          json.data.idleTimeoutMinutes = Math.round(idleTimeoutSeconds / 60);
-        }
-        setConnectionEdits(json.data);
+        return message.error(json.error);
       }
+
+      const conn = json.data;
+      // Convert seconds to minutes for a more user-friendly experience
+      const idleTimeoutSeconds = conn?.idleTimeoutSeconds;
+      setConnectionEdits({
+        name: conn?.name,
+        driver: conn?.driver,
+        idleTimeoutMinutes: idleTimeoutSeconds
+          ? Math.round(idleTimeoutSeconds / 60).toString()
+          : '',
+        multiStatementTransactionEnabled:
+          conn?.multiStatementTransactionEnabled,
+        data: conn?.data,
+      });
     }
   }
 

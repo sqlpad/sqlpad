@@ -28,8 +28,8 @@ function ServiceTokenList() {
     setShowServiceTokenForm(true);
   };
 
-  const deleteServiceToken = async (serviceTokenId: any) => {
-    const json = await api.delete(`/api/service-tokens/${serviceTokenId}`);
+  const deleteServiceToken = async (serviceTokenId: string) => {
+    const json = await api.deleteServiceToken(serviceTokenId);
     if (json.error) {
       return message.error('Delete failed: ' + json.error);
     }

@@ -5,15 +5,11 @@ import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Modal from '../common/Modal';
 import Text from '../common/Text';
+import { User } from '../types';
 import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import EditUserForm from './EditUserForm';
 import InviteUserForm from './InviteUserForm';
-
-type User = {
-  id: string;
-  email: string;
-};
 
 function UserList() {
   const { currentUser } = useAppContext();
@@ -51,12 +47,12 @@ function UserList() {
     mutate(mutatedUsers);
   };
 
-  const handleDelete = async (user: any) => {
-    const json = await api.delete(`/api/users/${user.id}`);
+  const handleDelete = async (user: User) => {
+    const json = await api.deleteUser(user.id);
     if (json.error) {
       return message.error('Delete Failed: ' + json.error);
     }
-    mutate(users.filter((u: any) => u.id !== user.id));
+    mutate(users.filter((u) => u.id !== user.id));
   };
 
   const handleOnInvited = () => {
