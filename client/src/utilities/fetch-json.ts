@@ -19,7 +19,7 @@ interface FetchResponse<DataT> {
   links?: parseLinkHeader.Links;
 }
 
-export default async function fetchJson<DataT = any>(
+async function fetchJson<DataT = any>(
   method: any,
   url: any,
   body?: any
