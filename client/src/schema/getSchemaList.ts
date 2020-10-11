@@ -6,10 +6,7 @@ interface SchemaListItem {
   description?: string;
   id: string;
   parentIds: string[];
-  // If a table or column item
-  schemaName?: string;
   // If a column item
-  tableName?: string;
   dataType?: string;
 }
 
@@ -38,7 +35,6 @@ export default function getSchemaList(connectionSchema: ConnectionSchema) {
           type: 'table',
           name: table.name,
           description: table.description,
-          schemaName: schema.name,
           id: tableId,
           parentIds: [schemaId],
         });
@@ -49,11 +45,31 @@ export default function getSchemaList(connectionSchema: ConnectionSchema) {
             name: column.name,
             description: column.description,
             dataType: column.dataType,
-            tableName: table.name,
-            schemaName: schema.name,
             id: columnId,
             parentIds: [schemaId, tableId],
           });
+        });
+      });
+    });
+  } else if (connectionSchema.tables) {
+    connectionSchema.tables.forEach((table) => {
+      const tableId = table.name;
+      schemaList.push({
+        type: 'table',
+        name: table.name,
+        description: table.description,
+        id: tableId,
+        parentIds: [],
+      });
+      table.columns.forEach((column) => {
+        const columnId = `${table.name}.${column.name}`;
+        schemaList.push({
+          type: 'column',
+          name: column.name,
+          description: column.description,
+          dataType: column.dataType,
+          id: columnId,
+          parentIds: [tableId],
         });
       });
     });

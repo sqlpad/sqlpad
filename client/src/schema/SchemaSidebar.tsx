@@ -66,7 +66,7 @@ function SchemaSidebar() {
     if (row.type === 'schema') {
       return (
         <li
-          key={row.name}
+          key={row.id}
           className={styles.schema}
           style={style}
           onClick={() => toggleSchemaItem(connectionId, row)}
@@ -79,7 +79,7 @@ function SchemaSidebar() {
     if (row.type === 'table') {
       return (
         <li
-          key={`${row.schemaName}.${row.name}`}
+          key={row.id}
           className={styles.table}
           style={style}
           onClick={() => toggleSchemaItem(connectionId, row)}
@@ -109,11 +109,7 @@ function SchemaSidebar() {
       }
 
       return (
-        <li
-          key={`${row.schemaName}.${row.tableName}.${row.name}`}
-          className={styles.column}
-          style={style}
-        >
+        <li key={row.id} className={styles.column} style={style}>
           {row.name}
           <Text type="secondary">{secondary}</Text>
         </li>
