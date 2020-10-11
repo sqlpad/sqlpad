@@ -7,6 +7,7 @@ import {
   Connection,
   ConnectionAccess,
   ConnectionDetail,
+  ConnectionSchema,
   Driver,
   Query,
   QueryDetail,
@@ -145,6 +146,20 @@ export const api = {
 
   deleteConnection(connectionId: string) {
     return api.delete(`/api/connections/${connectionId}`);
+  },
+
+  getConnectionSchema(connectionId: string, reload?: boolean) {
+    const qs = reload ? '?reload=true' : '';
+    return api.get<ConnectionSchema>(
+      `/api/connections/${connectionId}/schema${qs}`
+    );
+  },
+
+  useConnectionSchema(connectionId: string, reload?: boolean) {
+    const qs = reload ? '?reload=true' : '';
+    return useSWR<ConnectionSchema>(
+      `/api/connections/${connectionId}/schema${qs}`
+    );
   },
 
   useUsers() {

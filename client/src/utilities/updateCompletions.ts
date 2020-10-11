@@ -1,5 +1,6 @@
 import * as ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-min-noconflict/ext-language_tools';
+import { ConnectionSchema } from '../types';
 
 export default updateCompletions;
 
@@ -11,18 +12,6 @@ const DEBUG_ON = false;
 function debug(...args: any) {
   if (DEBUG_ON) console.log.apply(null, args);
 }
-
-type SchemaInfo = {
-  [schemaName: string]: {
-    [tableName: string]: [
-      {
-        column_name: string;
-        column_description: string;
-        data_type: string;
-      }
-    ];
-  };
-};
 
 type Completion = {
   name: string;
@@ -58,7 +47,7 @@ type DottedMatchMap = {
  * @todo scoped to an editor instance instead of all instances
  * @param {schemaInfoObject} schemaInfo
  */
-function updateCompletions(schemaInfo: SchemaInfo) {
+function updateCompletions(schemaInfo: ConnectionSchema) {
   debug('updating completions');
   debug(schemaInfo);
 
@@ -93,20 +82,20 @@ function updateCompletions(schemaInfo: SchemaInfo) {
     schemaTable: {},
   };
 
-  Object.keys(schemaInfo).forEach((schema) => {
+  schemaInfo?.schemas?.forEach((schema) => {
     schemaCompletions.push({
-      name: schema,
-      value: schema,
+      name: schema.name,
+      value: schema.name,
       score: 0,
       meta: 'schema',
     });
-    const SCHEMA = schema.toUpperCase();
+    const SCHEMA = schema.name.toUpperCase();
 
     if (!matchMaps.schema[SCHEMA]) matchMaps.schema[SCHEMA] = [];
 
-    Object.keys(schemaInfo[schema]).forEach((table) => {
-      const SCHEMA_TABLE = SCHEMA + '.' + table.toUpperCase();
-      const TABLE = table.toUpperCase();
+    schema.tables.forEach((table) => {
+      const SCHEMA_TABLE = SCHEMA + '.' + table.name.toUpperCase();
+      const TABLE = table.name.toUpperCase();
 
       if (!matchMaps.table[TABLE]) matchMaps.table[TABLE] = [];
 
@@ -114,24 +103,23 @@ function updateCompletions(schemaInfo: SchemaInfo) {
         matchMaps.schemaTable[SCHEMA_TABLE] = [];
       }
       const tableCompletion = {
-        name: table,
-        value: table,
+        name: table.name,
+        value: table.name,
         score: 0,
         meta: 'table',
-        schema,
+        schema: schema.name,
       };
       tableCompletions.push(tableCompletion);
       matchMaps.schema[SCHEMA].push(tableCompletion);
 
-      const columns = schemaInfo[schema][table];
-      columns.forEach((column: any) => {
+      table.columns.forEach((column) => {
         const columnCompletion = {
-          name: schema + table + column.column_name,
-          value: column.column_name,
+          name: schema.name + table.name + column.name,
+          value: column.name,
           score: 0,
           meta: 'column',
-          schema,
-          table,
+          schema: schema.name,
+          table: table.name,
         };
         matchMaps.table[TABLE].push(columnCompletion);
         matchMaps.schemaTable[SCHEMA_TABLE].push(columnCompletion);

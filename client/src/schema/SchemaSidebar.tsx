@@ -41,7 +41,7 @@ function SchemaSidebar() {
   const { loading, schemaInfo, expanded, error } =
     (schema && schema[connectionId]) || {};
 
-  const filteredSchemaInfo = searchSchemaInfo(schemaInfo, search);
+  const filteredSchemaInfo = searchSchemaInfo(schemaInfo || {}, search);
   const schemaList = getSchemaList(filteredSchemaInfo);
 
   // For windowed list rendering, we need to determine what is visible due to expanded parent
@@ -56,9 +56,11 @@ function SchemaSidebar() {
   }> = ({ index, style }) => {
     const row = visibleItems[index];
     const Icon = expanded[row.id] ? OpenIcon : ClosedIcon;
+
     if (!row) {
       return null;
     }
+
     if (row.type === 'schema') {
       return (
         <li
@@ -71,6 +73,7 @@ function SchemaSidebar() {
         </li>
       );
     }
+
     if (row.type === 'table') {
       return (
         <li
@@ -83,6 +86,7 @@ function SchemaSidebar() {
         </li>
       );
     }
+
     if (row.type === 'column') {
       const secondary = [<span key="colType"> {row.dataType}</span>];
 
@@ -101,6 +105,7 @@ function SchemaSidebar() {
         );
         secondary.push(description);
       }
+
       return (
         <li
           key={`${row.schemaName}.${row.tableName}.${row.name}`}
@@ -112,6 +117,7 @@ function SchemaSidebar() {
         </li>
       );
     }
+
     return null;
   };
 

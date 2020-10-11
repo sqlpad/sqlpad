@@ -1,4 +1,5 @@
 import create from 'zustand';
+import { ConnectionSchema } from '../types';
 
 export const NEW_QUERY = {
   id: '',
@@ -15,9 +16,16 @@ export const NEW_QUERY = {
   canDelete: true,
 };
 
+interface SchemaState {
+  loading: boolean;
+  schemaInfo?: ConnectionSchema;
+  error?: string;
+  expanded: { [key: string]: boolean };
+}
+
 type State = {
   showSchema: boolean;
-  schema: any;
+  schema: { [conectionId: string]: SchemaState };
   initialized: boolean;
   selectedConnectionId: string;
   connectionClient: any;

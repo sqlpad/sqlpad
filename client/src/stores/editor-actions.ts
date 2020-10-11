@@ -432,8 +432,7 @@ export async function loadSchemaInfo(connectionId: string, reload?: boolean) {
       },
     });
 
-    const qs = reload ? '?reload=true' : '';
-    const json = await api.get(`/api/schema-info/${connectionId}${qs}`);
+    const json = await api.getConnectionSchema(connectionId, reload);
     const { error, data } = json;
     if (error) {
       setSchema({
@@ -450,13 +449,17 @@ export async function loadSchemaInfo(connectionId: string, reload?: boolean) {
       }
       return;
     }
-    updateCompletions(data);
+    if (data?.schemas || data?.tables) {
+      updateCompletions(data);
+    } else {
+      updateCompletions({ schemas: [] });
+    }
 
     // Pre-expand schemas
     const expanded: { [key: string]: boolean } = {};
-    if (data) {
-      Object.keys(data).forEach((schemaName) => {
-        expanded[schemaName] = true;
+    if (data?.schemas) {
+      data.schemas.forEach((schema) => {
+        expanded[schema.name] = true;
       });
     }
 
