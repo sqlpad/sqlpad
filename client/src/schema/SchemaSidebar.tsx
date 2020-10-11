@@ -44,13 +44,7 @@ function SchemaSidebar() {
   };
 
   const filteredSchemaInfo = searchSchemaInfo(connectionSchema || {}, search);
-  const schemaList = getSchemaList(filteredSchemaInfo);
-
-  // For windowed list rendering, we need to determine what is visible due to expanded parent
-  // Show item if every parent is expanded (or doesn't have a parent)
-  const visibleItems = schemaList.filter((row) =>
-    row.parentIds.every((id) => expanded[id])
-  );
+  const visibleItems = getSchemaList(filteredSchemaInfo, expanded);
 
   const Row: React.FunctionComponent<{
     index: number;

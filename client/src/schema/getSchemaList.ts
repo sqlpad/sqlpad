@@ -1,3 +1,4 @@
+import { SchemaState } from '../stores/editor-store';
 import { ConnectionSchema } from '../types';
 
 interface SchemaListItem {
@@ -5,7 +6,6 @@ interface SchemaListItem {
   name: string;
   description?: string;
   id: string;
-  parentIds: string[];
   // If a column item
   dataType?: string;
 }
@@ -16,7 +16,10 @@ interface SchemaListItem {
  *
  * @param connectionSchema
  */
-export default function getSchemaList(connectionSchema: ConnectionSchema) {
+export default function getSchemaList(
+  connectionSchema: ConnectionSchema,
+  expanded: SchemaState['expanded']
+) {
   const schemaList: SchemaListItem[] = [];
 
   if (connectionSchema?.schemas) {
@@ -27,29 +30,30 @@ export default function getSchemaList(connectionSchema: ConnectionSchema) {
         name: schema.name,
         description: schema.description,
         id: schemaId,
-        parentIds: [],
       });
-      schema.tables.forEach((table) => {
-        const tableId = `${schema.name}.${table.name}`;
-        schemaList.push({
-          type: 'table',
-          name: table.name,
-          description: table.description,
-          id: tableId,
-          parentIds: [schemaId],
-        });
-        table.columns.forEach((column) => {
-          const columnId = `${schema.name}.${table.name}.${column.name}`;
+      if (expanded[schemaId]) {
+        schema.tables.forEach((table) => {
+          const tableId = `${schema.name}.${table.name}`;
           schemaList.push({
-            type: 'column',
-            name: column.name,
-            description: column.description,
-            dataType: column.dataType,
-            id: columnId,
-            parentIds: [schemaId, tableId],
+            type: 'table',
+            name: table.name,
+            description: table.description,
+            id: tableId,
           });
+          if (expanded[tableId]) {
+            table.columns.forEach((column) => {
+              const columnId = `${schema.name}.${table.name}.${column.name}`;
+              schemaList.push({
+                type: 'column',
+                name: column.name,
+                description: column.description,
+                dataType: column.dataType,
+                id: columnId,
+              });
+            });
+          }
         });
-      });
+      }
     });
   } else if (connectionSchema.tables) {
     connectionSchema.tables.forEach((table) => {
@@ -59,19 +63,19 @@ export default function getSchemaList(connectionSchema: ConnectionSchema) {
         name: table.name,
         description: table.description,
         id: tableId,
-        parentIds: [],
       });
-      table.columns.forEach((column) => {
-        const columnId = `${table.name}.${column.name}`;
-        schemaList.push({
-          type: 'column',
-          name: column.name,
-          description: column.description,
-          dataType: column.dataType,
-          id: columnId,
-          parentIds: [tableId],
+      if (expanded[tableId]) {
+        table.columns.forEach((column) => {
+          const columnId = `${table.name}.${column.name}`;
+          schemaList.push({
+            type: 'column',
+            name: column.name,
+            description: column.description,
+            dataType: column.dataType,
+            id: columnId,
+          });
         });
-      });
+      }
     });
   }
 
