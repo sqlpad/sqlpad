@@ -8,13 +8,15 @@ interface SchemaListItem {
   id: string;
   // If a column item
   dataType?: string;
+  level: number;
 }
 
 /**
- * To render this schema tree with react-window we'll convert this to a normalized list of sorts
- * Because a tree is basically an indented list.
+ * To render this schema tree with react-window
+ * we need to convert this tree structure into an indented list
  *
  * @param connectionSchema
+ * @param expanded - id -> bool map of items that are expanded
  */
 export default function getSchemaList(
   connectionSchema: ConnectionSchema,
@@ -30,6 +32,7 @@ export default function getSchemaList(
         name: schema.name,
         description: schema.description,
         id: schemaId,
+        level: 0,
       });
       if (expanded[schemaId]) {
         schema.tables.forEach((table) => {
@@ -39,6 +42,7 @@ export default function getSchemaList(
             name: table.name,
             description: table.description,
             id: tableId,
+            level: 1,
           });
           if (expanded[tableId]) {
             table.columns.forEach((column) => {
@@ -49,6 +53,7 @@ export default function getSchemaList(
                 description: column.description,
                 dataType: column.dataType,
                 id: columnId,
+                level: 2,
               });
             });
           }
@@ -63,6 +68,7 @@ export default function getSchemaList(
         name: table.name,
         description: table.description,
         id: tableId,
+        level: 0,
       });
       if (expanded[tableId]) {
         table.columns.forEach((column) => {
@@ -73,6 +79,7 @@ export default function getSchemaList(
             description: column.description,
             dataType: column.dataType,
             id: columnId,
+            level: 1,
           });
         });
       }
