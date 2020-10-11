@@ -45,13 +45,13 @@ type DottedMatchMap = {
  * @todo make more reacty
  * @todo make less naive/more intelligent (use a sql parser?)
  * @todo scoped to an editor instance instead of all instances
- * @param {schemaInfoObject} schemaInfo
+ * @param {schemaInfoObject} connectionSchema
  */
-function updateCompletions(schemaInfo: ConnectionSchema) {
+function updateCompletions(connectionSchema: ConnectionSchema) {
   debug('updating completions');
-  debug(schemaInfo);
+  debug(connectionSchema);
 
-  if (schemaInfo === null || schemaInfo === undefined) {
+  if (connectionSchema === null || connectionSchema === undefined) {
     return;
   }
 
@@ -82,7 +82,7 @@ function updateCompletions(schemaInfo: ConnectionSchema) {
     schemaTable: {},
   };
 
-  schemaInfo?.schemas?.forEach((schema) => {
+  connectionSchema?.schemas?.forEach((schema) => {
     schemaCompletions.push({
       name: schema.name,
       value: schema.name,

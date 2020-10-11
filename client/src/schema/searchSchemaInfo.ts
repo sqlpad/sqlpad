@@ -14,19 +14,19 @@ function searchTables(tables: SchemaTable[], searchRegEx: RegExp) {
 }
 
 /**
- * Search schemaInfo (the hierarchy object storage of schema data) for the search string passed in
- * @param schemaInfo
+ * Search connectionSchema (the hierarchy object storage of schema data) for the search string passed in
+ * @param connectionSchema
  * @param  search
  */
 export default function searchSchemaInfo(
-  schemaInfo: ConnectionSchema,
+  connectionSchema: ConnectionSchema,
   search: string
 ) {
   const filteredSchemas: Schema[] = [];
   const searchRegEx = new RegExp(search, 'i');
 
-  if (schemaInfo?.schemas) {
-    schemaInfo.schemas.forEach((schema) => {
+  if (connectionSchema?.schemas) {
+    connectionSchema.schemas.forEach((schema) => {
       const filteredTables = searchTables(schema.tables, searchRegEx);
       const filteredSchema = { ...schema, tables: filteredTables };
       filteredSchemas.push(filteredSchema);

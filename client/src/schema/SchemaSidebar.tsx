@@ -1,7 +1,7 @@
 import OpenIcon from 'mdi-react/MenuDownIcon';
 import ClosedIcon from 'mdi-react/MenuRightIcon';
 import RefreshIcon from 'mdi-react/RefreshIcon';
-import React, { useState } from 'react';
+import React, { ChangeEvent, ReactNode, useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
 import Divider from '../common/Divider';
@@ -12,8 +12,11 @@ import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
 import Tooltip from '../common/Tooltip';
-import { loadSchemaInfo, toggleSchemaItem } from '../stores/editor-actions';
-import { useSchema, useSelectedConnectionId } from '../stores/editor-store';
+import { loadSchema, toggleSchemaItem } from '../stores/editor-actions';
+import {
+  useSchemaState,
+  useSelectedConnectionId,
+} from '../stores/editor-store';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
@@ -29,25 +32,24 @@ function SchemaSidebar() {
     height: -1,
   });
 
-  const schema = useSchema();
+  const { loading, connectionSchema, expanded, error } = useSchemaState(
+    connectionId
+  );
 
-  const handleRefreshClick = (e: any) => {
+  const handleRefreshClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (connectionId) {
-      loadSchemaInfo(connectionId, true);
+      loadSchema(connectionId, true);
     }
   };
 
-  const { loading, schemaInfo, expanded, error } =
-    (schema && schema[connectionId]) || {};
-
-  const filteredSchemaInfo = searchSchemaInfo(schemaInfo || {}, search);
+  const filteredSchemaInfo = searchSchemaInfo(connectionSchema || {}, search);
   const schemaList = getSchemaList(filteredSchemaInfo);
 
   // For windowed list rendering, we need to determine what is visible due to expanded parent
   // Show item if every parent is expanded (or doesn't have a parent)
-  const visibleItems = schemaList.filter((row: any) =>
-    row.parentIds.every((id: any) => expanded[id])
+  const visibleItems = schemaList.filter((row) =>
+    row.parentIds.every((id) => expanded[id])
   );
 
   const Row: React.FunctionComponent<{
@@ -121,7 +123,7 @@ function SchemaSidebar() {
     return null;
   };
 
-  let content: any = null;
+  let content: ReactNode = null;
   if (error) {
     content = <ErrorBlock>{error}</ErrorBlock>;
   } else if (loading) {
@@ -164,7 +166,9 @@ function SchemaSidebar() {
             <Input
               value={search}
               placeholder="Search schema"
-              onChange={(event: any) => setSearch(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setSearch(event.target.value)
+              }
             />
             <IconButton
               tooltip="Refresh schema"

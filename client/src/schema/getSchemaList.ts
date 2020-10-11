@@ -17,13 +17,13 @@ interface SchemaListItem {
  * To render this schema tree with react-window we'll convert this to a normalized list of sorts
  * Because a tree is basically an indented list.
  *
- * @param schemaInfo
+ * @param connectionSchema
  */
-export default function getSchemaList(schemaInfo: ConnectionSchema) {
+export default function getSchemaList(connectionSchema: ConnectionSchema) {
   const schemaList: SchemaListItem[] = [];
 
-  if (schemaInfo?.schemas) {
-    schemaInfo.schemas.forEach((schema) => {
+  if (connectionSchema?.schemas) {
+    connectionSchema.schemas.forEach((schema) => {
       const schemaId = schema.name;
       schemaList.push({
         type: 'schema',

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { loadSchemaInfo } from '../stores/editor-actions';
+import { loadSchema } from '../stores/editor-actions';
 import { useSelectedConnectionId } from '../stores/editor-store';
 
 /**
@@ -13,7 +13,7 @@ function SchemaInfoLoader() {
 
   useEffect(() => {
     if (selectedConnectionId) {
-      loadSchemaInfo(selectedConnectionId);
+      loadSchema(selectedConnectionId);
     }
   }, [selectedConnectionId]);
 
