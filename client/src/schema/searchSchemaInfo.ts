@@ -25,14 +25,19 @@ export default function searchSchemaInfo(
   const filteredSchemas: Schema[] = [];
   const searchRegEx = new RegExp(search, 'i');
 
-  if (connectionSchema?.schemas) {
+  if (connectionSchema.schemas) {
     connectionSchema.schemas.forEach((schema) => {
       const filteredTables = searchTables(schema.tables, searchRegEx);
       const filteredSchema = { ...schema, tables: filteredTables };
       filteredSchemas.push(filteredSchema);
     });
+    return { schemas: filteredSchemas } as ConnectionSchema;
   }
-  // TODO what if only tables
 
-  return { schemas: filteredSchemas } as ConnectionSchema;
+  if (connectionSchema.tables) {
+    const filteredTables = searchTables(connectionSchema.tables, searchRegEx);
+    return { tables: filteredTables } as ConnectionSchema;
+  }
+
+  return connectionSchema;
 }

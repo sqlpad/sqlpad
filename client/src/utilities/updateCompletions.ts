@@ -1,6 +1,6 @@
 import * as ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-min-noconflict/ext-language_tools';
-import { ConnectionSchema } from '../types';
+import { ConnectionSchema, Schema, SchemaTable } from '../types';
 
 export default updateCompletions;
 
@@ -82,50 +82,70 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
     schemaTable: {},
   };
 
-  connectionSchema?.schemas?.forEach((schema) => {
-    schemaCompletions.push({
-      name: schema.name,
-      value: schema.name,
+  function addTableCompletions(table: SchemaTable, schema?: Schema) {
+    const SCHEMA = schema?.name.toUpperCase();
+    const SCHEMA_TABLE = SCHEMA
+      ? SCHEMA + '.' + table.name.toUpperCase()
+      : undefined;
+    const TABLE = table.name.toUpperCase();
+
+    if (!matchMaps.table[TABLE]) {
+      matchMaps.table[TABLE] = [];
+    }
+
+    if (SCHEMA_TABLE && !matchMaps.schemaTable[SCHEMA_TABLE]) {
+      matchMaps.schemaTable[SCHEMA_TABLE] = [];
+    }
+
+    const tableCompletion = {
+      name: table.name,
+      value: table.name,
       score: 0,
-      meta: 'schema',
-    });
-    const SCHEMA = schema.name.toUpperCase();
-
-    if (!matchMaps.schema[SCHEMA]) matchMaps.schema[SCHEMA] = [];
-
-    schema.tables.forEach((table) => {
-      const SCHEMA_TABLE = SCHEMA + '.' + table.name.toUpperCase();
-      const TABLE = table.name.toUpperCase();
-
-      if (!matchMaps.table[TABLE]) matchMaps.table[TABLE] = [];
-
-      if (!matchMaps.schemaTable[SCHEMA_TABLE]) {
-        matchMaps.schemaTable[SCHEMA_TABLE] = [];
-      }
-      const tableCompletion = {
-        name: table.name,
-        value: table.name,
-        score: 0,
-        meta: 'table',
-        schema: schema.name,
-      };
-      tableCompletions.push(tableCompletion);
+      meta: 'table',
+      schema: schema?.name,
+    };
+    tableCompletions.push(tableCompletion);
+    if (SCHEMA) {
       matchMaps.schema[SCHEMA].push(tableCompletion);
+    }
 
-      table.columns.forEach((column) => {
-        const columnCompletion = {
-          name: schema.name + table.name + column.name,
-          value: column.name,
-          score: 0,
-          meta: 'column',
-          schema: schema.name,
-          table: table.name,
-        };
-        matchMaps.table[TABLE].push(columnCompletion);
+    table.columns.forEach((column) => {
+      const columnCompletion = {
+        name: schema
+          ? schema.name + table.name + column.name
+          : table.name + column.name,
+        value: column.name,
+        score: 0,
+        meta: 'column',
+        schema: schema?.name,
+        table: table.name,
+      };
+      matchMaps.table[TABLE].push(columnCompletion);
+      if (SCHEMA_TABLE) {
         matchMaps.schemaTable[SCHEMA_TABLE].push(columnCompletion);
-      });
+      }
     });
-  });
+  }
+
+  if (connectionSchema.schemas) {
+    connectionSchema.schemas.forEach((schema) => {
+      schemaCompletions.push({
+        name: schema.name,
+        value: schema.name,
+        score: 0,
+        meta: 'schema',
+      });
+      const SCHEMA = schema.name.toUpperCase();
+
+      if (!matchMaps.schema[SCHEMA]) {
+        matchMaps.schema[SCHEMA] = [];
+      }
+
+      schema.tables.forEach((table) => addTableCompletions(table, schema));
+    });
+  } else if (connectionSchema.tables) {
+    connectionSchema.tables.forEach((table) => addTableCompletions(table));
+  }
 
   const tableWantedCompletions = schemaCompletions.concat(tableCompletions);
 
@@ -137,6 +157,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       prefix: any,
       callback: any
     ) {
+      debug('getCompletions() -----------');
       // figure out if there are any schemas/tables referenced in query
       const allTokens: string[] = session
         .getValue()
