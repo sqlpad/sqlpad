@@ -176,6 +176,68 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       callback: any
     ) {
       debug('getCompletions() -----------');
+
+      // get tokens leading up to the cursor to figure out context
+      // depending on where we are we either want tables or we want columns
+      const tableWantedKeywords = ['from', 'join'];
+      const columnWantedKeywords = ['select', 'where', 'group', 'having', 'on'];
+
+      // find out what is wanted
+      // first look at the current line before cursor, then rest of lines beforehand
+      let wanted = '';
+      const currentRow = pos.row;
+      for (let r = currentRow; r >= 0; r--) {
+        let line = session.getDocument().getLine(r);
+        let lineTokens;
+        // if dealing with current row only use stuff before cursor
+        if (r === currentRow) {
+          line = line.slice(0, pos.column);
+        }
+        lineTokens = line.split(/\s+/).map((t: any) => t.toLowerCase());
+
+        for (let i = lineTokens.length - 1; i >= 0; i--) {
+          const token = lineTokens[i];
+          if (columnWantedKeywords.indexOf(token) >= 0) {
+            debug('Want column because found: ', token);
+            wanted = 'COLUMN';
+            r = 0;
+            break;
+          }
+          if (tableWantedKeywords.indexOf(token) >= 0) {
+            debug('Want table because found: ', token);
+            wanted = 'TABLE';
+            r = 0;
+            break;
+          }
+        }
+      }
+      debug('Wanted: ', wanted);
+
+      const currentLine = session.getDocument().getLine(pos.row);
+      const currentTokens: string[] = currentLine
+        .slice(0, pos.column)
+        .split(/\s+/)
+        .map((t: string) => t.toLowerCase());
+      const precedingToken = currentTokens[currentTokens.length - 1];
+
+      // If precedingToken contains a dot, derive the dottedIdentifier to use to look up matches
+      // precedingToken will have trailing dot ie `schema.table.`
+      // dottedIdenfier is converted to `schema.table`
+      let dottedIdentifier;
+      if (precedingToken.indexOf('.') >= 0) {
+        dottedIdentifier = precedingToken.substring(
+          0,
+          precedingToken.length - 1
+        );
+      }
+
+      // If could not derive what is wanted do not send suggestions
+      if (wanted === '') {
+        return callback(null, null);
+      }
+
+      // The suggestions below require knowing what tables are referenced in the query
+      // Try and derive based on basic matching
       // figure out if there are any schemas/tables referenced in query
       const allTokens: string[] = session
         .getValue()
@@ -257,93 +319,37 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
         ].concat(columnMatches);
       });
 
-      // get tokens leading up to the cursor to figure out context
-      // depending on where we are we either want tables or we want columns
-      const tableWantedKeywords = ['from', 'join'];
-      const columnWantedKeywords = ['select', 'where', 'group', 'having', 'on'];
-
-      // find out what is wanted
-      // first look at the current line before cursor, then rest of lines beforehand
-      let wanted = '';
-      const currentRow = pos.row;
-      for (let r = currentRow; r >= 0; r--) {
-        let line = session.getDocument().getLine(r);
-        let lineTokens;
-        // if dealing with current row only use stuff before cursor
-        if (r === currentRow) {
-          line = line.slice(0, pos.column);
-        }
-        lineTokens = line.split(/\s+/).map((t: any) => t.toLowerCase());
-
-        for (let i = lineTokens.length - 1; i >= 0; i--) {
-          const token = lineTokens[i];
-          if (columnWantedKeywords.indexOf(token) >= 0) {
-            debug('WANT COLUMN BECAUSE FOUND: ', token);
-            wanted = 'COLUMN';
-            r = 0;
-            break;
-          }
-          if (tableWantedKeywords.indexOf(token) >= 0) {
-            debug('WANT TABLE BECAUSE FOUND: ', token);
-            wanted = 'TABLE';
-            r = 0;
-            break;
-          }
-        }
-      }
-      debug('WANTED: ', wanted);
-
-      const currentLine = session.getDocument().getLine(pos.row);
-      const currentTokens: string[] = currentLine
-        .slice(0, pos.column)
-        .split(/\s+/)
-        .map((t: string) => t.toLowerCase());
-      const precedingCharacter = currentLine.slice(pos.column - 1, pos.column);
-      const precedingToken = currentTokens[currentTokens.length - 1];
-
-      // if preceding token has a . try to provide completions based on that object
-      debug('PREFIX: "%s"', prefix);
-      debug('PRECEDING CHAR: "%s"', precedingCharacter);
-      debug('PRECEDING TOKEN: "%s"', precedingToken);
-
-      let dottedIdentifier;
-      if (precedingToken.indexOf('.') >= 0) {
-        // precedingToken will have trailing dot ie `schema.table.`
-        // dotted idenfier is converted to `schema.table`
-        dottedIdentifier = precedingToken.substring(
-          0,
-          precedingToken.length - 1
-        );
-      }
-
-      if (wanted === 'TABLE' && dottedIdentifier) {
-        // At this point the only thing we can suggest on would be tables for a schema.
-        // Column suggestions are not wanted.
+      // If dottedIdenfier and want a table, show suggestions for a schema
+      // At this point the only thing we can suggest on would be tables for a schema.
+      // Column suggestions are not wanted.
+      if (dottedIdentifier && wanted === 'TABLE') {
         return callback(null, tablesBySchema[dottedIdentifier]);
       }
 
-      if (wanted === 'COLUMN' && dottedIdentifier) {
-        // This could be `schema.` and we need a table
-        // This could be `tablename.` and we need a column
-        // This could be `schema.tablename.` and we need a column
+      // If dottedIdenfier and wanting a column, show suggestions for the following completions
+      // This could be `schema.` and we need a table
+      // This could be `tablename.` and we need a column
+      // This could be `schema.tablename.` and we need a column
+      if (dottedIdentifier && wanted === 'COLUMN') {
         return callback(null, columnWantedDotMatches[dottedIdentifier]);
       }
 
-      // if we are not dealing with a . match show all relevant objects
-      if (wanted === 'TABLE') {
+      // If no dottedIdenfier and want table show all tables and schemas
+      if (!dottedIdentifier && wanted === 'TABLE') {
         return callback(null, initialTableWantedSuggestions);
       }
 
-      if (wanted === 'COLUMN') {
-        // TODO also include alias?
+      // If no dottedIdenfier and want column show all suggestions for tables referenced in editor
+      // TODO also include alias?
+      if (!dottedIdentifier && wanted === 'COLUMN') {
         const acCompletions = Object.values(schemasById)
           .concat(Object.values(tablesById))
           .concat(Object.values(columnsById));
         return callback(null, acCompletions);
       }
 
-      // No keywords found? User probably wants some keywords
-      callback(null, null);
+      // This should not be reached but just in case
+      return callback(null, null);
     },
   };
 
