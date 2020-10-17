@@ -1,7 +1,7 @@
 import OpenIcon from 'mdi-react/MenuDownIcon';
 import ClosedIcon from 'mdi-react/MenuRightIcon';
 import RefreshIcon from 'mdi-react/RefreshIcon';
-import React, { useState } from 'react';
+import React, { ChangeEvent, ReactNode, useState } from 'react';
 import Measure from 'react-measure';
 import { FixedSizeList as List } from 'react-window';
 import Divider from '../common/Divider';
@@ -12,14 +12,17 @@ import Sidebar from '../common/Sidebar';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
 import Tooltip from '../common/Tooltip';
-import { loadSchemaInfo, toggleSchemaItem } from '../stores/editor-actions';
-import { useSchema, useSelectedConnectionId } from '../stores/editor-store';
+import { loadSchema, toggleSchemaItem } from '../stores/editor-actions';
+import {
+  useSchemaState,
+  useSelectedConnectionId,
+} from '../stores/editor-store';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
 import searchSchemaInfo from './searchSchemaInfo';
 
 const ICON_SIZE = 22;
-const ICON_STYLE = { marginBottom: -6, marginRight: -6, marginLeft: -4 };
+const ICON_STYLE = { marginBottom: -6, marginRight: 0, marginLeft: -6 };
 
 function SchemaSidebar() {
   const connectionId = useSelectedConnectionId();
@@ -29,93 +32,101 @@ function SchemaSidebar() {
     height: -1,
   });
 
-  const schema = useSchema();
+  const { loading, connectionSchema, expanded, error } = useSchemaState(
+    connectionId
+  );
 
-  const handleRefreshClick = (e: any) => {
+  const handleRefreshClick = (e: React.MouseEvent) => {
     e.preventDefault();
     if (connectionId) {
-      loadSchemaInfo(connectionId, true);
+      loadSchema(connectionId, true);
     }
   };
 
-  const { loading, schemaInfo, expanded, error } =
-    (schema && schema[connectionId]) || {};
-
-  const filteredSchemaInfo = searchSchemaInfo(schemaInfo, search);
-  const schemaList = getSchemaList(filteredSchemaInfo);
-
-  // For windowed list rendering, we need to determine what is visible due to expanded parent
-  // Show item if every parent is expanded (or doesn't have a parent)
-  const visibleItems = schemaList.filter((row: any) =>
-    row.parentIds.every((id: any) => expanded[id])
-  );
+  const filteredSchemaInfo = searchSchemaInfo(connectionSchema || {}, search);
+  const visibleItems = getSchemaList(filteredSchemaInfo, expanded);
 
   const Row: React.FunctionComponent<{
     index: number;
     style: React.CSSProperties;
   }> = ({ index, style }) => {
     const row = visibleItems[index];
-    const Icon = expanded[row.id] ? OpenIcon : ClosedIcon;
+
     if (!row) {
       return null;
     }
-    if (row.type === 'schema') {
-      return (
-        <li
-          key={row.name}
-          className={styles.schema}
-          style={style}
-          onClick={() => toggleSchemaItem(connectionId, row)}
-        >
-          <Icon size={ICON_SIZE} style={ICON_STYLE} /> {row.name}
-        </li>
-      );
-    }
-    if (row.type === 'table') {
-      return (
-        <li
-          key={`${row.schemaName}.${row.name}`}
-          className={styles.table}
-          style={style}
-          onClick={() => toggleSchemaItem(connectionId, row)}
-        >
-          <Icon size={ICON_SIZE} style={ICON_STYLE} /> {row.name}
-        </li>
-      );
-    }
-    if (row.type === 'column') {
-      const secondary = [<span key="colType"> {row.dataType}</span>];
 
-      if (row.description) {
-        const description = (
-          <Tooltip
-            key="colDesc"
-            label={row.description}
-            style={{
-              maxWidth: '300px',
-              whiteSpace: 'normal',
-            }}
-          >
-            <span className={styles.description}> - {row.description}</span>
-          </Tooltip>
-        );
-        secondary.push(description);
-      }
-      return (
-        <li
-          key={`${row.schemaName}.${row.tableName}.${row.name}`}
-          className={styles.column}
-          style={style}
-        >
-          {row.name}
-          <Text type="secondary">{secondary}</Text>
-        </li>
+    const classNames = [styles.schemaItem];
+
+    let icon = null;
+
+    const expandable = row.type === 'schema' || row.type === 'table';
+    if (expandable) {
+      classNames.push(styles.expandable);
+      icon = expanded[row.id] ? (
+        <OpenIcon size={ICON_SIZE} style={ICON_STYLE} />
+      ) : (
+        <ClosedIcon size={ICON_SIZE} style={ICON_STYLE} />
       );
     }
-    return null;
+
+    const indentationPadding = row.level * 20 + (!expandable ? 10 : 0);
+
+    const onClick = expandable
+      ? () => toggleSchemaItem(connectionId, row)
+      : undefined;
+
+    const description = row.description ? (
+      <Tooltip
+        key="colDesc"
+        label={row.description}
+        style={{
+          maxWidth: '300px',
+          whiteSpace: 'normal',
+        }}
+      >
+        <span>{row.description}</span>
+      </Tooltip>
+    ) : null;
+
+    const dataType = row.dataType ? <span>{row.dataType}</span> : null;
+
+    let secondary = null;
+    if (dataType && description) {
+      secondary = (
+        <Text type="secondary" style={{ paddingLeft: 8 }}>
+          {dataType} - {description}
+        </Text>
+      );
+    } else if (dataType) {
+      secondary = (
+        <Text type="secondary" style={{ paddingLeft: 8 }}>
+          {dataType}
+        </Text>
+      );
+    } else if (description) {
+      secondary = (
+        <Text type="secondary" style={{ paddingLeft: 8 }}>
+          {description}
+        </Text>
+      );
+    }
+
+    return (
+      <li
+        key={row.id}
+        className={classNames.join(' ')}
+        style={{ ...style, paddingLeft: indentationPadding }}
+        onClick={onClick}
+      >
+        {icon}
+        {row.name}
+        {secondary}
+      </li>
+    );
   };
 
-  let content: any = null;
+  let content: ReactNode = null;
   if (error) {
     content = <ErrorBlock>{error}</ErrorBlock>;
   } else if (loading) {
@@ -158,7 +169,9 @@ function SchemaSidebar() {
             <Input
               value={search}
               placeholder="Search schema"
-              onChange={(event: any) => setSearch(event.target.value)}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setSearch(event.target.value)
+              }
             />
             <IconButton
               tooltip="Refresh schema"

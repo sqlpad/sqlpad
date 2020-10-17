@@ -184,3 +184,26 @@ export interface Driver {
   supportsConnectionClient: boolean;
   fields: DriverField[];
 }
+
+export interface TableColumn {
+  name: string;
+  description: string;
+  dataType: string;
+}
+
+export interface SchemaTable {
+  name: string;
+  description: string;
+  columns: TableColumn[];
+}
+
+export interface Schema {
+  name: string;
+  description: string;
+  tables: SchemaTable[];
+}
+
+export interface ConnectionSchema {
+  schemas?: Schema[];
+  tables?: SchemaTable[];
+}

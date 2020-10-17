@@ -10,7 +10,7 @@ import {
 } from '../utilities/localQueryText';
 import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
-import { NEW_QUERY, useEditorStore } from './editor-store';
+import { NEW_QUERY, SchemaState, useEditorStore } from './editor-store';
 import { AppInfo, Connection } from '../types';
 
 export const initApp = async (
@@ -416,32 +416,37 @@ export function toggleSchema() {
   useEditorStore.setState({ showSchema: !showSchema });
 }
 
-export function setSchema(schema: any) {
-  useEditorStore.setState({ schema });
+export function setSchemaState(connectionId: string, schemaState: SchemaState) {
+  const { schemaStates } = useEditorStore.getState();
+  const update = {
+    ...schemaStates,
+    [connectionId]: schemaState,
+  };
+  useEditorStore.setState({ schemaStates: update });
 }
 
-export async function loadSchemaInfo(connectionId: string, reload?: boolean) {
-  const { showSchema, schema } = useEditorStore.getState();
+/**
+ * Get schema via API and store into editor store
+ * @param connectionId - connection id to get schema for
+ * @param reload - force cache refresh for schema
+ */
+export async function loadSchema(connectionId: string, reload?: boolean) {
+  const { showSchema, schemaStates } = useEditorStore.getState();
 
-  if (!schema[connectionId] || reload) {
-    setSchema({
-      ...schema,
-      [connectionId]: {
-        loading: true,
-        expanded: {},
-      },
+  if (!schemaStates[connectionId] || reload) {
+    setSchemaState(connectionId, {
+      loading: true,
+      expanded: {},
     });
 
-    const qs = reload ? '?reload=true' : '';
-    const json = await api.get(`/api/schema-info/${connectionId}${qs}`);
+    const json = await api.getConnectionSchema(connectionId, reload);
     const { error, data } = json;
+
     if (error) {
-      setSchema({
-        ...schema,
-        [connectionId]: {
-          loading: false,
-          error,
-        },
+      setSchemaState(connectionId, {
+        loading: false,
+        error,
+        expanded: {},
       });
       // If sidebar is not shown, send error notification
       // It is otherwise shown in sidebar where schema would be
@@ -450,37 +455,36 @@ export async function loadSchemaInfo(connectionId: string, reload?: boolean) {
       }
       return;
     }
-    updateCompletions(data);
+
+    if (data?.schemas || data?.tables) {
+      updateCompletions(data);
+    } else {
+      updateCompletions({ schemas: [] });
+    }
 
     // Pre-expand schemas
     const expanded: { [key: string]: boolean } = {};
-    if (data) {
-      Object.keys(data).forEach((schemaName) => {
-        expanded[schemaName] = true;
+    if (data?.schemas) {
+      data.schemas.forEach((schema) => {
+        expanded[schema.name] = true;
       });
     }
 
-    setSchema({
-      ...schema,
-      [connectionId]: {
-        loading: false,
-        schemaInfo: data,
-        error: null,
-        expanded,
-      },
+    setSchemaState(connectionId, {
+      loading: false,
+      connectionSchema: data,
+      error: undefined,
+      expanded,
     });
   }
 }
 
 export function toggleSchemaItem(connectionId: string, item: { id: string }) {
-  const { schema } = useEditorStore.getState();
-  const connectionSchema = schema[connectionId];
+  const { schemaStates } = useEditorStore.getState();
+  const connectionSchema = schemaStates[connectionId];
   const open = !connectionSchema.expanded[item.id];
-  setSchema({
-    ...schema,
-    [connectionId]: {
-      ...connectionSchema,
-      expanded: { ...connectionSchema.expanded, [item.id]: open },
-    },
+  setSchemaState(connectionId, {
+    ...connectionSchema,
+    expanded: { ...connectionSchema.expanded, [item.id]: open },
   });
 }

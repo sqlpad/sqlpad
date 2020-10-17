@@ -1,40 +1,20 @@
-.schema {
-  cursor: default;
+.schemaItem {
   font-size: 12px;
   line-height: 22px;
   font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
     monospace;
-  user-select: none;
-}
-
-.table {
-  padding-left: 20px;
   cursor: default;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 12px;
-  line-height: 22px;
-  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
-    monospace;
+}
+
+.expandable {
   user-select: none;
 }
 
-.schema:hover,
-.table:hover {
+.expandable:hover {
   background-color: #f4f4f4;
-}
-
-.column {
-  padding-left: 54px;
-  cursor: default;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 12px;
-  line-height: 22px;
-  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
-    monospace;
 }
 
 .schemaSpinner {

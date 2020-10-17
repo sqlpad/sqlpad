@@ -1,4 +1,5 @@
 import create from 'zustand';
+import { ConnectionSchema } from '../types';
 
 export const NEW_QUERY = {
   id: '',
@@ -15,9 +16,16 @@ export const NEW_QUERY = {
   canDelete: true,
 };
 
+export interface SchemaState {
+  loading: boolean;
+  connectionSchema?: ConnectionSchema;
+  error?: string;
+  expanded: { [key: string]: boolean };
+}
+
 type State = {
   showSchema: boolean;
-  schema: any;
+  schemaStates: { [conectionId: string]: SchemaState };
   initialized: boolean;
   selectedConnectionId: string;
   connectionClient: any;
@@ -36,7 +44,7 @@ type State = {
 
 export const useEditorStore = create<State>((set, get) => ({
   showSchema: true,
-  schema: {},
+  schemaStates: {},
   initialized: false,
   selectedConnectionId: '',
   connectionClient: null,
@@ -65,6 +73,12 @@ export function useShowSchema(): boolean {
   return useEditorStore((s) => s.showSchema);
 }
 
-export function useSchema() {
-  return useEditorStore((s) => s.schema);
+export function useSchemaState(connectionId?: string) {
+  return useEditorStore((s) => {
+    if (!connectionId || !s.schemaStates[connectionId]) {
+      const emptySchemaState: SchemaState = { loading: false, expanded: {} };
+      return emptySchemaState;
+    }
+    return s.schemaStates[connectionId];
+  });
 }

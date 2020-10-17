@@ -1,5 +1,6 @@
 import * as ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-min-noconflict/ext-language_tools';
+import { ConnectionSchema, Schema, SchemaTable } from '../types';
 
 export default updateCompletions;
 
@@ -11,18 +12,6 @@ const DEBUG_ON = false;
 function debug(...args: any) {
   if (DEBUG_ON) console.log.apply(null, args);
 }
-
-type SchemaInfo = {
-  [schemaName: string]: {
-    [tableName: string]: [
-      {
-        column_name: string;
-        column_description: string;
-        data_type: string;
-      }
-    ];
-  };
-};
 
 type Completion = {
   name: string;
@@ -56,13 +45,13 @@ type DottedMatchMap = {
  * @todo make more reacty
  * @todo make less naive/more intelligent (use a sql parser?)
  * @todo scoped to an editor instance instead of all instances
- * @param {schemaInfoObject} schemaInfo
+ * @param  connectionSchema
  */
-function updateCompletions(schemaInfo: SchemaInfo) {
+function updateCompletions(connectionSchema: ConnectionSchema) {
   debug('updating completions');
-  debug(schemaInfo);
+  debug(connectionSchema);
 
-  if (schemaInfo === null || schemaInfo === undefined) {
+  if (connectionSchema === null || connectionSchema === undefined) {
     return;
   }
 
@@ -93,51 +82,70 @@ function updateCompletions(schemaInfo: SchemaInfo) {
     schemaTable: {},
   };
 
-  Object.keys(schemaInfo).forEach((schema) => {
-    schemaCompletions.push({
-      name: schema,
-      value: schema,
+  function addTableCompletions(table: SchemaTable, schema?: Schema) {
+    const SCHEMA = schema?.name.toUpperCase();
+    const SCHEMA_TABLE = SCHEMA
+      ? SCHEMA + '.' + table.name.toUpperCase()
+      : undefined;
+    const TABLE = table.name.toUpperCase();
+
+    if (!matchMaps.table[TABLE]) {
+      matchMaps.table[TABLE] = [];
+    }
+
+    if (SCHEMA_TABLE && !matchMaps.schemaTable[SCHEMA_TABLE]) {
+      matchMaps.schemaTable[SCHEMA_TABLE] = [];
+    }
+
+    const tableCompletion = {
+      name: table.name,
+      value: table.name,
       score: 0,
-      meta: 'schema',
-    });
-    const SCHEMA = schema.toUpperCase();
-
-    if (!matchMaps.schema[SCHEMA]) matchMaps.schema[SCHEMA] = [];
-
-    Object.keys(schemaInfo[schema]).forEach((table) => {
-      const SCHEMA_TABLE = SCHEMA + '.' + table.toUpperCase();
-      const TABLE = table.toUpperCase();
-
-      if (!matchMaps.table[TABLE]) matchMaps.table[TABLE] = [];
-
-      if (!matchMaps.schemaTable[SCHEMA_TABLE]) {
-        matchMaps.schemaTable[SCHEMA_TABLE] = [];
-      }
-      const tableCompletion = {
-        name: table,
-        value: table,
-        score: 0,
-        meta: 'table',
-        schema,
-      };
-      tableCompletions.push(tableCompletion);
+      meta: 'table',
+      schema: schema?.name,
+    };
+    tableCompletions.push(tableCompletion);
+    if (SCHEMA) {
       matchMaps.schema[SCHEMA].push(tableCompletion);
+    }
 
-      const columns = schemaInfo[schema][table];
-      columns.forEach((column: any) => {
-        const columnCompletion = {
-          name: schema + table + column.column_name,
-          value: column.column_name,
-          score: 0,
-          meta: 'column',
-          schema,
-          table,
-        };
-        matchMaps.table[TABLE].push(columnCompletion);
+    table.columns.forEach((column) => {
+      const columnCompletion = {
+        name: schema
+          ? schema.name + table.name + column.name
+          : table.name + column.name,
+        value: column.name,
+        score: 0,
+        meta: 'column',
+        schema: schema?.name,
+        table: table.name,
+      };
+      matchMaps.table[TABLE].push(columnCompletion);
+      if (SCHEMA_TABLE) {
         matchMaps.schemaTable[SCHEMA_TABLE].push(columnCompletion);
-      });
+      }
     });
-  });
+  }
+
+  if (connectionSchema.schemas) {
+    connectionSchema.schemas.forEach((schema) => {
+      schemaCompletions.push({
+        name: schema.name,
+        value: schema.name,
+        score: 0,
+        meta: 'schema',
+      });
+      const SCHEMA = schema.name.toUpperCase();
+
+      if (!matchMaps.schema[SCHEMA]) {
+        matchMaps.schema[SCHEMA] = [];
+      }
+
+      schema.tables.forEach((table) => addTableCompletions(table, schema));
+    });
+  } else if (connectionSchema.tables) {
+    connectionSchema.tables.forEach((table) => addTableCompletions(table));
+  }
 
   const tableWantedCompletions = schemaCompletions.concat(tableCompletions);
 
@@ -149,17 +157,23 @@ function updateCompletions(schemaInfo: SchemaInfo) {
       prefix: any,
       callback: any
     ) {
+      debug('getCompletions() -----------');
       // figure out if there are any schemas/tables referenced in query
       const allTokens: string[] = session
         .getValue()
         .split(/\s+/)
         .map((t: string) => t.toUpperCase());
       const relevantDottedMatches: DottedMatchMap = {};
+
+      // Find any references of SCHEMANAME.TABLENAME in tokens
+      // If a match is found, the match values are added to relevant dotted match for that SCHEMANAME.TABLENAME value
+      // Relevant matches are also added for table
+      // This solution is a bit hacky in that it dips down into the first column value to grab table name
       Object.keys(matchMaps.schemaTable).forEach((schemaTable) => {
         if (allTokens.indexOf(schemaTable) >= 0) {
           relevantDottedMatches[schemaTable] =
             matchMaps.schemaTable[schemaTable];
-          // HACK - also add relevant matches for table only
+          // Also add relevant matches for table only by grabbing table from first column
           const firstMatch = matchMaps.schemaTable[schemaTable][0];
           if (firstMatch.table) {
             const table = firstMatch.table.toUpperCase();
@@ -167,6 +181,11 @@ function updateCompletions(schemaInfo: SchemaInfo) {
           }
         }
       });
+
+      // Find any references of TABLENAME in tokens
+      // If a match is found, add it to relevant matches
+      // Also add matches for SCHEMANAME.TABLENAME
+      // To do so requires looking to first column value to grab schema and table from there
       Object.keys(matchMaps.table).forEach((table) => {
         if (allTokens.indexOf(table) >= 0) {
           relevantDottedMatches[table] = matchMaps.table[table];
@@ -184,15 +203,17 @@ function updateCompletions(schemaInfo: SchemaInfo) {
       });
       debug('matched found: ', Object.keys(relevantDottedMatches));
 
-      // complete for schema and tables already referenced, plus their columns
-      let matches: Array<Completion> = [];
+      // Complete for schema and tables already referenced, plus their columns
 
-      Object.keys(relevantDottedMatches).forEach((key) => {
-        matches = matches.concat(relevantDottedMatches[key]);
+      // Flatten map of completion arrays into 1 array
+      let matches: Array<Completion> = [];
+      Object.values(relevantDottedMatches).forEach((completions) => {
+        matches = matches.concat(completions);
       });
+
+      // Index schemas and tables so that 1 completion is added for each
       const schemas: { [key: string]: string } = {};
       const tables: { [key: string]: string } = {};
-      const wantedColumnCompletions: Array<Completion> = [];
 
       matches.forEach((match) => {
         if (match.schema) {
@@ -202,6 +223,10 @@ function updateCompletions(schemaInfo: SchemaInfo) {
           tables[match.table] = match.schema;
         }
       });
+
+      // Iterate over the indexed tables and schemas and add column completions
+      // When wanting a column value, schema and tables are also appropriate for autocomplete
+      const wantedColumnCompletions: Array<Completion> = [];
       Object.keys(schemas).forEach((schema) => {
         wantedColumnCompletions.push({
           name: schema,
@@ -219,7 +244,9 @@ function updateCompletions(schemaInfo: SchemaInfo) {
         };
         wantedColumnCompletions.push(tableCompletion);
         const SCHEMA = tables[table].toUpperCase();
-        if (!relevantDottedMatches[SCHEMA]) relevantDottedMatches[SCHEMA] = [];
+        if (!relevantDottedMatches[SCHEMA]) {
+          relevantDottedMatches[SCHEMA] = [];
+        }
         relevantDottedMatches[SCHEMA].push(tableCompletion);
       });
 
