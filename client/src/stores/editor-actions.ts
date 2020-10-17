@@ -454,6 +454,7 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
       }
       return;
     }
+
     if (data?.schemas || data?.tables) {
       updateCompletions(data);
     } else {
