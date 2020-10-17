@@ -441,6 +441,7 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
 
     const json = await api.getConnectionSchema(connectionId, reload);
     const { error, data } = json;
+
     if (error) {
       setSchemaState(connectionId, {
         loading: false,

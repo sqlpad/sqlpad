@@ -45,7 +45,7 @@ type DottedMatchMap = {
  * @todo make more reacty
  * @todo make less naive/more intelligent (use a sql parser?)
  * @todo scoped to an editor instance instead of all instances
- * @param {schemaInfoObject} connectionSchema
+ * @param  connectionSchema
  */
 function updateCompletions(connectionSchema: ConnectionSchema) {
   debug('updating completions');
