@@ -101,12 +101,7 @@ class TableIndex {
 }
 
 /**
- * Updates global completions for all ace editors in use.
- * First pass and kind of hacked together.
- *
- * @todo make more reacty
- * @todo make less naive/more intelligent (use a sql parser?)
- * @todo scoped to an editor instance instead of all instances
+ * Updates global completions for ace editors in use.
  * @param  connectionSchema
  */
 function updateCompletions(connectionSchema: ConnectionSchema) {
@@ -175,8 +170,6 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       prefix: any,
       callback: any
     ) {
-      debug('getCompletions() -----------');
-
       // get tokens leading up to the cursor to figure out context
       // depending on where we are we either want tables or we want columns
       const tableWantedKeywords = ['from', 'join'];
