@@ -1,42 +1,104 @@
 import * as ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-min-noconflict/ext-language_tools';
-import { ConnectionSchema, Schema, SchemaTable } from '../types';
+import { ConnectionSchema, TableColumn } from '../types';
 
 export default updateCompletions;
 
 // There's stuff below that logs to console a lot
 // documentation on this autocompletion is light
 // and you may find it helpful to print some vars out during dev
-const DEBUG_ON = false;
+const DEBUG_ON = true;
 
 function debug(...args: any) {
   if (DEBUG_ON) console.log.apply(null, args);
 }
 
-type Completion = {
+// Notes about following implementation:
+//
+// In ace, a . resets the prefix var passed to completer
+// SQLPad fires autocomplete on every keypress instead of using live autocomplete
+//
+// General autocomplete strategy
+//
+// For any kind of suggestion, we'll either want a table, or a column
+//
+// If table is wanted, autocomlete should suggest schemas and tables
+// Preferred ranking would be
+//   1) Schemas and tables alrleady in the editor
+//   2) Any schema/table available
+//
+// If column is wanted, autocomplete should suggest schema, table, and columns
+// Preferred ranking would be
+//   1) Columns of tables already in the editor should be high scoring suggestions
+//   2) Schemas/tables of tables already in the editor
+//   3) schemas/tables that user can use to "navigate down" to a specific column (maybe user is only in SELECT and hasn't gotten to FROM yet)
+//   4) Any column (might not want to show - could be noisy)
+//
+// In addition to wanting either a table or a column, suggestions will either be:
+// 1) A dotted-suggestion (eg `schema.table.` or `tablename.` for columns)
+// 2) An initial suggestion (user only has entered some keys, and preceding token has no dot)
+
+/**
+ * AceCompletion is the object format expected by Ace editor
+ */
+type AceCompletion = {
   name: string;
   value: string;
   score: number;
   meta: string;
+};
+
+/**
+ * Table represents a central object for tryingn to figure out relevant completions when a column is ultimately wanted.
+ * To suggest a column, we must first try and figure out which columns have been referenced in the query.
+ * Once found tables are idenfied, completion maps are created to suggest completions based on the identifiers
+ */
+class Table {
+  // full path of table, schema.table
+  id: string;
   schema?: string;
-  table?: string;
-};
+  name: string;
+  columns: TableColumn[];
 
-type MatchMap = {
-  schema: {
-    [schemaName: string]: Completion[];
-  };
-  table: {
-    [tableName: string]: Completion[];
-  };
-  schemaTable: {
-    [schemaDotTableName: string]: Completion[];
-  };
-};
+  constructor(name: string, columns: TableColumn[], schema?: string) {
+    this.id = schema ? `${schema}.${name}`.toLowerCase() : name.toLowerCase();
+    this.name = name;
+    this.columns = columns;
+    this.schema = schema;
+  }
+}
 
-type DottedMatchMap = {
-  [key: string]: Array<Completion>;
-};
+class TableIndex {
+  byIdentifier: Record<string, Table[]>;
+
+  constructor() {
+    this.byIdentifier = {};
+  }
+
+  getTablesForIdentifier(idOrName: string) {
+    return this.byIdentifier[idOrName.toLowerCase()] || [];
+  }
+
+  addTable(table: Table) {
+    const lowerName = table.name.toLowerCase();
+    if (!this.byIdentifier[table.id]) {
+      this.byIdentifier[table.id] = [];
+    }
+    if (!this.byIdentifier[lowerName]) {
+      this.byIdentifier[lowerName] = [];
+    }
+
+    let exists = this.byIdentifier[table.id].find((t) => t.id === table.id);
+    if (!exists) {
+      this.byIdentifier[table.id].push(table);
+    }
+
+    exists = this.byIdentifier[lowerName].find((t) => t.id === table.id);
+    if (!exists) {
+      this.byIdentifier[lowerName].push(table);
+    }
+  }
+}
 
 /**
  * Updates global completions for all ace editors in use.
@@ -55,99 +117,55 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
     return;
   }
 
-  // TODO make this more efficient and less confusing
-  // It'll likely take some restructuring the way schema data is stored.
-  // for example, if <table> is referenced, later on relevant dot matchs should also include the schema of <table>
-  // right now that's hacked in. a formal sqlparser might help here
-
-  // In ace, a . resets the prefix var passed to completer
-  // we'll need autocomplete on each thing by itself when user uses .
-  // look up previous chain to figure out what hierarchy we're dealing with
-  // and change autocomplete deal with that
-  // for now we pre-assemble entire buckets of all schemas/tables/columns
-  // these handle autocompletes with no dot
-  // NOTE sqlpad is also firing autocomplete on every keypress instead of using live autocomplete
-  const schemaCompletions: Completion[] = [];
-  const tableCompletions: Completion[] = [];
-
-  // we also should create an index of dotted autocompletes.
-  // given a precedingtoken as "sometable." or "someschema.table." we should be able to look up relevant completions
-  // combos to support are...
-  // SCHEMA
-  // TABLE
-  // SCHEMA.TABLE
-  const matchMaps: MatchMap = {
-    schema: {}, // will contain tables
-    table: {},
-    schemaTable: {},
-  };
-
-  function addTableCompletions(table: SchemaTable, schema?: Schema) {
-    const SCHEMA = schema?.name.toUpperCase();
-    const SCHEMA_TABLE = SCHEMA
-      ? SCHEMA + '.' + table.name.toUpperCase()
-      : undefined;
-    const TABLE = table.name.toUpperCase();
-
-    if (!matchMaps.table[TABLE]) {
-      matchMaps.table[TABLE] = [];
-    }
-
-    if (SCHEMA_TABLE && !matchMaps.schemaTable[SCHEMA_TABLE]) {
-      matchMaps.schemaTable[SCHEMA_TABLE] = [];
-    }
-
-    const tableCompletion = {
-      name: table.name,
-      value: table.name,
-      score: 0,
-      meta: 'table',
-      schema: schema?.name,
-    };
-    tableCompletions.push(tableCompletion);
-    if (SCHEMA) {
-      matchMaps.schema[SCHEMA].push(tableCompletion);
-    }
-
-    table.columns.forEach((column) => {
-      const columnCompletion = {
-        name: schema
-          ? schema.name + table.name + column.name
-          : table.name + column.name,
-        value: column.name,
-        score: 0,
-        meta: 'column',
-        schema: schema?.name,
-        table: table.name,
-      };
-      matchMaps.table[TABLE].push(columnCompletion);
-      if (SCHEMA_TABLE) {
-        matchMaps.schemaTable[SCHEMA_TABLE].push(columnCompletion);
-      }
-    });
-  }
+  const tableIndex = new TableIndex();
+  const initialTableWantedSuggestions: AceCompletion[] = [];
+  const tablesBySchema: Record<string, AceCompletion[]> = {};
 
   if (connectionSchema.schemas) {
     connectionSchema.schemas.forEach((schema) => {
-      schemaCompletions.push({
-        name: schema.name,
+      initialTableWantedSuggestions.push({
         value: schema.name,
+        name: schema.name,
         score: 0,
         meta: 'schema',
       });
-      const SCHEMA = schema.name.toUpperCase();
 
-      if (!matchMaps.schema[SCHEMA]) {
-        matchMaps.schema[SCHEMA] = [];
-      }
+      schema.tables.forEach((table) => {
+        const t = new Table(table.name, table.columns, schema.name);
+        tableIndex.addTable(t);
 
-      schema.tables.forEach((table) => addTableCompletions(table, schema));
+        initialTableWantedSuggestions.push({
+          value: table.name,
+          name: table.name,
+          score: 0,
+          meta: 'table',
+        });
+        if (!tablesBySchema[schema.name.toLowerCase()]) {
+          tablesBySchema[schema.name.toLowerCase()] = [];
+        }
+        tablesBySchema[schema.name.toLowerCase()].push({
+          value: table.name,
+          name: table.name,
+          score: 0,
+          meta: 'table',
+        });
+      });
     });
   } else if (connectionSchema.tables) {
-    connectionSchema.tables.forEach((table) => addTableCompletions(table));
-  }
+    connectionSchema.tables.forEach((table) => {
+      const t = new Table(table.name, table.columns);
+      tableIndex.addTable(t);
 
-  const tableWantedCompletions = schemaCompletions.concat(tableCompletions);
+      table.columns.forEach((column) => {
+        initialTableWantedSuggestions.push({
+          value: table.name,
+          name: table.name,
+          score: 0,
+          meta: 'table',
+        });
+      });
+    });
+  }
 
   const myCompleter = {
     getCompletions: function (
@@ -162,98 +180,87 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       const allTokens: string[] = session
         .getValue()
         .split(/\s+/)
-        .map((t: string) => t.toUpperCase());
-      const relevantDottedMatches: DottedMatchMap = {};
+        .map((t: string) => t.toLowerCase());
 
-      // Find any references of SCHEMANAME.TABLENAME in tokens
-      // If a match is found, the match values are added to relevant dotted match for that SCHEMANAME.TABLENAME value
-      // Relevant matches are also added for table
-      // This solution is a bit hacky in that it dips down into the first column value to grab table name
-      Object.keys(matchMaps.schemaTable).forEach((schemaTable) => {
-        if (allTokens.indexOf(schemaTable) >= 0) {
-          relevantDottedMatches[schemaTable] =
-            matchMaps.schemaTable[schemaTable];
-          // Also add relevant matches for table only by grabbing table from first column
-          const firstMatch = matchMaps.schemaTable[schemaTable][0];
-          if (firstMatch.table) {
-            const table = firstMatch.table.toUpperCase();
-            relevantDottedMatches[table] = matchMaps.table[table];
-          }
-        }
-      });
+      // First find any references of schemas or tables in tokens
+      // Anything matched will be added to relevant completions
+      let foundTables: Table[] = [];
 
-      // Find any references of TABLENAME in tokens
-      // If a match is found, add it to relevant matches
-      // Also add matches for SCHEMANAME.TABLENAME
-      // To do so requires looking to first column value to grab schema and table from there
-      Object.keys(matchMaps.table).forEach((table) => {
-        if (allTokens.indexOf(table) >= 0) {
-          relevantDottedMatches[table] = matchMaps.table[table];
-          // HACK add schemaTable match for this table
-          // we store schema at column match item, so look at first one and use that
-          const firstMatch = matchMaps.table[table][0];
-          if (firstMatch.schema && firstMatch.table) {
-            const schemaTable =
-              firstMatch.schema.toUpperCase() +
-              '.' +
-              firstMatch.table.toUpperCase();
-            relevantDottedMatches[schemaTable] = matchMaps.table[table];
-          }
-        }
-      });
-      debug('matched found: ', Object.keys(relevantDottedMatches));
-
-      // Complete for schema and tables already referenced, plus their columns
-
-      // Flatten map of completion arrays into 1 array
-      let matches: Array<Completion> = [];
-      Object.values(relevantDottedMatches).forEach((completions) => {
-        matches = matches.concat(completions);
-      });
-
-      // Index schemas and tables so that 1 completion is added for each
-      const schemas: { [key: string]: string } = {};
-      const tables: { [key: string]: string } = {};
-
-      matches.forEach((match) => {
-        if (match.schema) {
-          schemas[match.schema] = match.schema;
-        }
-        if (match.table && match.schema) {
-          tables[match.table] = match.schema;
-        }
+      allTokens.forEach((token) => {
+        const tables = tableIndex.getTablesForIdentifier(token);
+        foundTables = foundTables.concat(tables);
       });
 
       // Iterate over the indexed tables and schemas and add column completions
       // When wanting a column value, schema and tables are also appropriate for autocomplete
-      const wantedColumnCompletions: Array<Completion> = [];
-      Object.keys(schemas).forEach((schema) => {
-        wantedColumnCompletions.push({
-          name: schema,
-          value: schema,
-          score: 0,
-          meta: 'schema',
-        });
-      });
-      Object.keys(tables).forEach((table) => {
-        const tableCompletion = {
-          name: table,
-          value: table,
-          score: 0,
-          meta: 'table',
-        };
-        wantedColumnCompletions.push(tableCompletion);
-        const SCHEMA = tables[table].toUpperCase();
-        if (!relevantDottedMatches[SCHEMA]) {
-          relevantDottedMatches[SCHEMA] = [];
+      const schemasById: Record<string, AceCompletion> = {};
+      const tablesById: Record<string, AceCompletion> = {};
+      const columnsById: Record<string, AceCompletion> = {};
+
+      const columnWantedDotMatches: Record<string, AceCompletion[]> = {};
+
+      foundTables.forEach((table) => {
+        if (table.schema) {
+          const ac = {
+            name: table.schema,
+            value: table.schema,
+            meta: 'schema',
+            score: 0,
+          };
+          schemasById[table.schema] = ac;
         }
-        relevantDottedMatches[SCHEMA].push(tableCompletion);
+
+        const tableCompletion = {
+          name: table.name,
+          value: table.name,
+          meta: 'table',
+          score: 0,
+        };
+        tablesById[table.id] = tableCompletion;
+
+        table.columns.forEach((column) => {
+          const id = `${table.id}.${column.name}`;
+          columnsById[id] = {
+            name: column.name,
+            value: column.name,
+            meta: 'column',
+            score: 0,
+          };
+        });
+
+        const columnMatches = Object.values(columnsById);
+
+        // Add table entry for schema
+        if (table.schema) {
+          if (!columnWantedDotMatches[table.schema.toLowerCase()]) {
+            columnWantedDotMatches[table.schema.toLowerCase()] = [];
+          }
+          columnWantedDotMatches[table.schema.toLowerCase()].push(
+            tableCompletion
+          );
+
+          const schemaTable = `${table.schema.toLowerCase()}.${table.name.toLowerCase()}`;
+          if (!columnWantedDotMatches[schemaTable]) {
+            columnWantedDotMatches[schemaTable] = [];
+          }
+          columnWantedDotMatches[schemaTable] = columnWantedDotMatches[
+            schemaTable
+          ].concat(columnMatches);
+        }
+
+        const tablename = table.name.toLowerCase();
+        if (!columnWantedDotMatches[tablename]) {
+          columnWantedDotMatches[tablename] = [];
+        }
+        columnWantedDotMatches[tablename] = columnWantedDotMatches[
+          tablename
+        ].concat(columnMatches);
       });
 
       // get tokens leading up to the cursor to figure out context
       // depending on where we are we either want tables or we want columns
-      const tableWantedKeywords = ['FROM', 'JOIN'];
-      const columnWantedKeywords = ['SELECT', 'WHERE', 'GROUP', 'HAVING', 'ON'];
+      const tableWantedKeywords = ['from', 'join'];
+      const columnWantedKeywords = ['select', 'where', 'group', 'having', 'on'];
 
       // find out what is wanted
       // first look at the current line before cursor, then rest of lines beforehand
@@ -266,7 +273,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
         if (r === currentRow) {
           line = line.slice(0, pos.column);
         }
-        lineTokens = line.split(/\s+/).map((t: any) => t.toUpperCase());
+        lineTokens = line.split(/\s+/).map((t: any) => t.toLowerCase());
 
         for (let i = lineTokens.length - 1; i >= 0; i--) {
           const token = lineTokens[i];
@@ -287,10 +294,10 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       debug('WANTED: ', wanted);
 
       const currentLine = session.getDocument().getLine(pos.row);
-      const currentTokens = currentLine
+      const currentTokens: string[] = currentLine
         .slice(0, pos.column)
         .split(/\s+/)
-        .map((t: any) => t.toUpperCase());
+        .map((t: string) => t.toLowerCase());
       const precedingCharacter = currentLine.slice(pos.column - 1, pos.column);
       const precedingToken = currentTokens[currentTokens.length - 1];
 
@@ -298,33 +305,43 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       debug('PREFIX: "%s"', prefix);
       debug('PRECEDING CHAR: "%s"', precedingCharacter);
       debug('PRECEDING TOKEN: "%s"', precedingToken);
+
+      let dottedIdentifier;
       if (precedingToken.indexOf('.') >= 0) {
-        let dotTokens = precedingToken.split('.');
-        dotTokens.pop();
-        const DOT_MATCH = dotTokens.join('.').toUpperCase();
-        debug(
-          'Completing for "%s" even though we got "%s"',
-          DOT_MATCH,
-          precedingToken
+        // precedingToken will have trailing dot ie `schema.table.`
+        // dotted idenfier is converted to `schema.table`
+        dottedIdentifier = precedingToken.substring(
+          0,
+          precedingToken.length - 1
         );
-        if (wanted === 'TABLE') {
-          // if we're in a table place, a completion should only be for tables, not columns
-          return callback(null, matchMaps.schema[DOT_MATCH]);
-        }
-        if (wanted === 'COLUMN') {
-          // here we should see show matches for only the tables mentioned in query
-          return callback(null, relevantDottedMatches[DOT_MATCH]);
-        }
+      }
+
+      if (wanted === 'TABLE' && dottedIdentifier) {
+        // At this point the only thing we can suggest on would be tables for a schema.
+        // Column suggestions are not wanted.
+        return callback(null, tablesBySchema[dottedIdentifier]);
+      }
+
+      if (wanted === 'COLUMN' && dottedIdentifier) {
+        // This could be `schema.` and we need a table
+        // This could be `tablename.` and we need a column
+        // This could be `schema.tablename.` and we need a column
+        return callback(null, columnWantedDotMatches[dottedIdentifier]);
       }
 
       // if we are not dealing with a . match show all relevant objects
       if (wanted === 'TABLE') {
-        return callback(null, tableWantedCompletions);
+        return callback(null, initialTableWantedSuggestions);
       }
+
       if (wanted === 'COLUMN') {
         // TODO also include alias?
-        return callback(null, matches.concat(wantedColumnCompletions));
+        const acCompletions = Object.values(schemasById)
+          .concat(Object.values(tablesById))
+          .concat(Object.values(columnsById));
+        return callback(null, acCompletions);
       }
+
       // No keywords found? User probably wants some keywords
       callback(null, null);
     },
