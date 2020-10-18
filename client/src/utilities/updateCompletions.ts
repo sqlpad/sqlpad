@@ -7,7 +7,7 @@ export default updateCompletions;
 // There's stuff below that logs to console a lot
 // documentation on this autocompletion is light
 // and you may find it helpful to print some vars out during dev
-const DEBUG_ON = true;
+const DEBUG_ON = false;
 
 function debug(...args: any) {
   if (DEBUG_ON) console.log.apply(null, args);
