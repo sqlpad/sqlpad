@@ -168,6 +168,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       // depending on where we are we either want tables or we want columns
       const tableWantedKeywords = ['from', 'join'];
       const columnWantedKeywords = ['select', 'where', 'group', 'having', 'on'];
+      let priorKeyword = '';
 
       // find out what is wanted
       // first look at the current line before cursor, then rest of lines beforehand
@@ -185,20 +186,20 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
         for (let i = lineTokens.length - 1; i >= 0; i--) {
           const token = lineTokens[i];
           if (columnWantedKeywords.indexOf(token) >= 0) {
-            debug('Want column because found: ', token);
+            priorKeyword = token;
             wanted = 'COLUMN';
             r = 0;
             break;
           }
           if (tableWantedKeywords.indexOf(token) >= 0) {
-            debug('Want table because found: ', token);
+            priorKeyword = token;
             wanted = 'TABLE';
             r = 0;
             break;
           }
         }
       }
-      debug('Wanted: ', wanted);
+      debug(`Want ${wanted} because keyword: ${priorKeyword}`);
 
       const currentLine = session.getDocument().getLine(pos.row);
       const currentTokens: string[] = currentLine
@@ -229,7 +230,13 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       const allTokens: string[] = session
         .getValue()
         .split(/\s+/)
-        .map((t: string) => t.toLowerCase());
+        .map((t: string) => {
+          const [p1, p2] = t.toLowerCase().split('.');
+          if (p2) {
+            return `${p1}.${p2}`;
+          }
+          return p1;
+        });
 
       // First find any references of schemas or tables in tokens
       // Anything matched will be added to relevant completions
@@ -302,7 +309,21 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       // This could be `tablename.` and we need a column
       // This could be `schema.tablename.` and we need a column
       if (dottedIdentifier && wanted === 'COLUMN') {
-        return callback(null, columnDotMatches[dottedIdentifier]);
+        let acCompletions = (columnDotMatches[dottedIdentifier] || []).map(
+          (c) => {
+            return { ...c, score: 1 };
+          }
+        );
+
+        // user might be trying for a table prior to using it in SELECT
+        // eg `SELECT schemaname.` should get tables
+        if (priorKeyword === 'select') {
+          acCompletions = acCompletions.concat(
+            tablesBySchema[dottedIdentifier]
+          );
+        }
+
+        return callback(null, acCompletions);
       }
 
       // If no dottedIdenfier and want table show all tables and schemas
@@ -311,11 +332,21 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       }
 
       // If no dottedIdenfier and want column show all suggestions for tables referenced in editor
-      // TODO also include alias?
       if (!dottedIdentifier && wanted === 'COLUMN') {
-        const acCompletions = Object.values(schemasById)
+        let acCompletions = Object.values(schemasById)
           .concat(Object.values(foundTablesById))
-          .concat(Object.values(columnsById));
+          .concat(Object.values(columnsById))
+          .map((c) => {
+            return { ...c, score: 1 };
+          });
+
+        // Add schemas and tables not for found tables
+        // user might be trying for a table prior to using it in SELECT
+        // eg `SELECT schemaname` or `SELECT tablename` should be assisted
+        if (priorKeyword === 'select') {
+          acCompletions = acCompletions.concat(initialTableWantedSuggestions);
+        }
+
         return callback(null, acCompletions);
       }
 
