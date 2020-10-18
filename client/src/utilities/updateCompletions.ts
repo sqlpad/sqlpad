@@ -1,6 +1,6 @@
 import * as ace from 'ace-builds/src-noconflict/ace';
 import 'ace-builds/src-min-noconflict/ext-language_tools';
-import { ConnectionSchema, TableColumn } from '../types';
+import { ConnectionSchema } from '../types';
 
 export default updateCompletions;
 
@@ -38,67 +38,30 @@ function debug(...args: any) {
 // 1) A dotted-suggestion (eg `schema.table.` or `tablename.` for columns)
 // 2) An initial suggestion (user only has entered some keys, and preceding token has no dot)
 
+type CompletionType = 'schema' | 'table' | 'column';
+
 /**
  * AceCompletion is the object format expected by Ace editor
  */
 type AceCompletion = {
-  name: string;
-  value: string;
-  score: number;
-  meta: string;
-};
-
-/**
- * Table represents a central object for tryingn to figure out relevant completions when a column is ultimately wanted.
- * To suggest a column, we must first try and figure out which columns have been referenced in the query.
- * Once found tables are idenfied, completion maps are created to suggest completions based on the identifiers
- */
-class Table {
-  // full path of table, schema.table
+  // Unique identifier for the completion as full-path
   id: string;
-  schema?: string;
+  // Type of entry
+  type: CompletionType;
+  // Lowercase name of item
   name: string;
-  columns: TableColumn[];
-
-  constructor(name: string, columns: TableColumn[], schema?: string) {
-    this.id = schema ? `${schema}.${name}`.toLowerCase() : name.toLowerCase();
-    this.name = name;
-    this.columns = columns;
-    this.schema = schema;
-  }
-}
-
-class TableIndex {
-  byIdentifier: Record<string, Table[]>;
-
-  constructor() {
-    this.byIdentifier = {};
-  }
-
-  getTablesForIdentifier(idOrName: string) {
-    return this.byIdentifier[idOrName.toLowerCase()] || [];
-  }
-
-  addTable(table: Table) {
-    const lowerName = table.name.toLowerCase();
-    if (!this.byIdentifier[table.id]) {
-      this.byIdentifier[table.id] = [];
-    }
-    if (!this.byIdentifier[lowerName]) {
-      this.byIdentifier[lowerName] = [];
-    }
-
-    let exists = this.byIdentifier[table.id].find((t) => t.id === table.id);
-    if (!exists) {
-      this.byIdentifier[table.id].push(table);
-    }
-
-    exists = this.byIdentifier[lowerName].find((t) => t.id === table.id);
-    if (!exists) {
-      this.byIdentifier[lowerName].push(table);
-    }
-  }
-}
+  // Original value to complete. Used by Ace.
+  value: string;
+  // Higher the score the more relevant. Used by Ace
+  score: number;
+  // Greyed out text to show in prompt. Used by Ace
+  meta: string;
+  // pointers to parent objects if applicable
+  schemaId?: string;
+  tableId?: string;
+  schemaCompletion?: AceCompletion;
+  columnCompletions?: AceCompletion[];
+};
 
 /**
  * Updates global completions for ace editors in use.
@@ -112,53 +75,84 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
     return;
   }
 
-  const tableIndex = new TableIndex();
   const initialTableWantedSuggestions: AceCompletion[] = [];
   const tablesBySchema: Record<string, AceCompletion[]> = {};
 
+  const tablesById: Record<string, AceCompletion> = {};
+  // last one wins since names can be duplicated across schemas
+  const tablesByName: Record<string, AceCompletion> = {};
+
   if (connectionSchema.schemas) {
     connectionSchema.schemas.forEach((schema) => {
-      initialTableWantedSuggestions.push({
+      const schemaCompletion: AceCompletion = {
+        id: schema.name.toLowerCase(),
+        name: schema.name.toLowerCase(),
+        type: 'schema',
         value: schema.name,
-        name: schema.name,
         score: 0,
         meta: 'schema',
-      });
+      };
+      initialTableWantedSuggestions.push(schemaCompletion);
 
       schema.tables.forEach((table) => {
-        const t = new Table(table.name, table.columns, schema.name);
-        tableIndex.addTable(t);
+        const columnCompletions: AceCompletion[] = table.columns.map(
+          (column) => {
+            return {
+              id: `${schema.name}.${table.name}.${column.name}`.toLowerCase(),
+              name: column.name.toLowerCase(),
+              type: 'column',
+              value: column.name,
+              score: 0,
+              meta: 'column',
+            };
+          }
+        );
 
-        initialTableWantedSuggestions.push({
+        const tableCompletion: AceCompletion = {
+          id: `${schema.name}.${table.name}`.toLowerCase(),
+          name: table.name.toLowerCase(),
+          type: 'table',
           value: table.name,
-          name: table.name,
           score: 0,
           meta: 'table',
-        });
-        if (!tablesBySchema[schema.name.toLowerCase()]) {
-          tablesBySchema[schema.name.toLowerCase()] = [];
+          schemaCompletion: schemaCompletion,
+          columnCompletions,
+        };
+
+        initialTableWantedSuggestions.push(tableCompletion);
+        if (!tablesBySchema[schemaCompletion.name]) {
+          tablesBySchema[schemaCompletion.name] = [];
         }
-        tablesBySchema[schema.name.toLowerCase()].push({
-          value: table.name,
-          name: table.name,
-          score: 0,
-          meta: 'table',
-        });
+        tablesBySchema[schemaCompletion.name].push(tableCompletion);
+        tablesByName[tableCompletion.name] = tableCompletion;
+        tablesById[tableCompletion.id] = tableCompletion;
       });
     });
   } else if (connectionSchema.tables) {
     connectionSchema.tables.forEach((table) => {
-      const t = new Table(table.name, table.columns);
-      tableIndex.addTable(t);
-
-      table.columns.forEach((column) => {
-        initialTableWantedSuggestions.push({
-          value: table.name,
-          name: table.name,
+      const columnCompletions: AceCompletion[] = table.columns.map((column) => {
+        return {
+          id: `${table.name}.${column.name}`.toLowerCase(),
+          name: column.name.toLowerCase(),
+          type: 'column',
+          value: column.name,
           score: 0,
-          meta: 'table',
-        });
+          meta: 'column',
+        };
       });
+
+      const tableCompletion: AceCompletion = {
+        id: table.name.toLowerCase(),
+        name: table.name.toLowerCase(),
+        type: 'table',
+        value: table.name,
+        score: 0,
+        meta: 'table',
+        columnCompletions,
+      };
+      initialTableWantedSuggestions.push(tableCompletion);
+      tablesByName[tableCompletion.name] = tableCompletion;
+      tablesById[tableCompletion.id] = tableCompletion;
     });
   }
 
@@ -239,77 +233,61 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
 
       // First find any references of schemas or tables in tokens
       // Anything matched will be added to relevant completions
-      let foundTables: Table[] = [];
+      let foundTablesById: Record<string, AceCompletion> = {};
 
       allTokens.forEach((token) => {
-        const tables = tableIndex.getTablesForIdentifier(token);
-        foundTables = foundTables.concat(tables);
+        const tableById = tablesById[token];
+        const tableByName = tablesByName[token];
+        if (tableById && tableByName && tableById.id === tableByName.id) {
+          foundTablesById[tableById.id] = tableById;
+        } else {
+          if (tableById) {
+            foundTablesById[tableById.id] = tableById;
+          }
+          if (tableByName) {
+            foundTablesById[tableByName.id] = tableByName;
+          }
+        }
       });
 
       // Iterate over the indexed tables and schemas and add column completions
       // When wanting a column value, schema and tables are also appropriate for autocomplete
       const schemasById: Record<string, AceCompletion> = {};
-      const tablesById: Record<string, AceCompletion> = {};
       const columnsById: Record<string, AceCompletion> = {};
 
-      const columnWantedDotMatches: Record<string, AceCompletion[]> = {};
+      const columnDotMatches: Record<string, AceCompletion[]> = {};
 
-      foundTables.forEach((table) => {
-        if (table.schema) {
-          const ac = {
-            name: table.schema,
-            value: table.schema,
-            meta: 'schema',
-            score: 0,
-          };
-          schemasById[table.schema] = ac;
+      Object.values(foundTablesById).forEach((table) => {
+        if (table.schemaCompletion) {
+          schemasById[table.schemaCompletion.id] = table.schemaCompletion;
         }
-
-        const tableCompletion = {
-          name: table.name,
-          value: table.name,
-          meta: 'table',
-          score: 0,
-        };
-        tablesById[table.id] = tableCompletion;
-
-        table.columns.forEach((column) => {
-          const id = `${table.id}.${column.name}`;
-          columnsById[id] = {
-            name: column.name,
-            value: column.name,
-            meta: 'column',
-            score: 0,
-          };
+        table.columnCompletions?.forEach((columnCompletion) => {
+          columnsById[columnCompletion.id] = columnCompletion;
         });
 
-        const columnMatches = Object.values(columnsById);
-
         // Add table entry for schema
-        if (table.schema) {
-          if (!columnWantedDotMatches[table.schema.toLowerCase()]) {
-            columnWantedDotMatches[table.schema.toLowerCase()] = [];
+        if (table.schemaCompletion) {
+          if (!columnDotMatches[table.schemaCompletion.id]) {
+            columnDotMatches[table.schemaCompletion.id] = [];
           }
-          columnWantedDotMatches[table.schema.toLowerCase()].push(
-            tableCompletion
+          columnDotMatches[table.schemaCompletion.id].push(table);
+
+          if (!columnDotMatches[table.id]) {
+            columnDotMatches[table.id] = [];
+          }
+          if (table.columnCompletions) {
+            columnDotMatches[table.id] = table.columnCompletions;
+          }
+        }
+
+        if (!columnDotMatches[table.name]) {
+          columnDotMatches[table.name] = [];
+        }
+        if (table.columnCompletions) {
+          columnDotMatches[table.name] = columnDotMatches[table.name].concat(
+            table.columnCompletions
           );
-
-          const schemaTable = `${table.schema.toLowerCase()}.${table.name.toLowerCase()}`;
-          if (!columnWantedDotMatches[schemaTable]) {
-            columnWantedDotMatches[schemaTable] = [];
-          }
-          columnWantedDotMatches[schemaTable] = columnWantedDotMatches[
-            schemaTable
-          ].concat(columnMatches);
         }
-
-        const tablename = table.name.toLowerCase();
-        if (!columnWantedDotMatches[tablename]) {
-          columnWantedDotMatches[tablename] = [];
-        }
-        columnWantedDotMatches[tablename] = columnWantedDotMatches[
-          tablename
-        ].concat(columnMatches);
       });
 
       // If dottedIdenfier and want a table, show suggestions for a schema
@@ -324,7 +302,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       // This could be `tablename.` and we need a column
       // This could be `schema.tablename.` and we need a column
       if (dottedIdentifier && wanted === 'COLUMN') {
-        return callback(null, columnWantedDotMatches[dottedIdentifier]);
+        return callback(null, columnDotMatches[dottedIdentifier]);
       }
 
       // If no dottedIdenfier and want table show all tables and schemas
@@ -336,7 +314,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       // TODO also include alias?
       if (!dottedIdentifier && wanted === 'COLUMN') {
         const acCompletions = Object.values(schemasById)
-          .concat(Object.values(tablesById))
+          .concat(Object.values(foundTablesById))
           .concat(Object.values(columnsById));
         return callback(null, acCompletions);
       }
