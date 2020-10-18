@@ -103,7 +103,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
               type: 'column',
               value: column.name,
               score: 0,
-              meta: 'column',
+              meta: `${column.dataType} ${column.description || ''}`.trim(),
             };
           }
         );
@@ -114,7 +114,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
           type: 'table',
           value: table.name,
           score: 0,
-          meta: 'table',
+          meta: `table ${table.description || ''}`.trim(),
           schemaCompletion: schemaCompletion,
           columnCompletions,
         };
@@ -137,7 +137,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
           type: 'column',
           value: column.name,
           score: 0,
-          meta: 'column',
+          meta: `${column.dataType} ${column.description || ''}`.trim(),
         };
       });
 
@@ -147,7 +147,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
         type: 'table',
         value: table.name,
         score: 0,
-        meta: 'table',
+        meta: `table ${table.description || ''}`.trim(),
         columnCompletions,
       };
       initialTableWantedSuggestions.push(tableCompletion);
