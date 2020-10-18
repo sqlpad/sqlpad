@@ -168,6 +168,17 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
   // Create a big regex for table patterns to find tables
   const tableRegex = new RegExp(tablePatterns.join('|'), 'gi');
 
+  const keywordsRegex = /\bfrom|join|select|where|group|having|on\b/gi;
+
+  const tableWantedKeywords = new Set(['from', 'join']);
+  const columnWantedKeywords = new Set([
+    'select',
+    'where',
+    'group',
+    'having',
+    'on',
+  ]);
+
   const myCompleter = {
     getCompletions: function (
       editor: any,
@@ -178,8 +189,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
     ) {
       // get tokens leading up to the cursor to figure out context
       // depending on where we are we either want tables or we want columns
-      const tableWantedKeywords = ['from', 'join'];
-      const columnWantedKeywords = ['select', 'where', 'group', 'having', 'on'];
+
       let priorKeyword = '';
 
       // find out what is wanted
@@ -187,38 +197,36 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       let wanted = '';
       const currentRow = pos.row;
       for (let r = currentRow; r >= 0; r--) {
-        let line = session.getDocument().getLine(r);
-        let lineTokens;
+        let line: string = session.getDocument().getLine(r).toLowerCase();
+
         // if dealing with current row only use stuff before cursor
         if (r === currentRow) {
           line = line.slice(0, pos.column);
         }
-        lineTokens = line.split(/\s+/).map((t: string) => t.toLowerCase());
-        // TODO things around tokens lose token like parens, brackets, quotes etc.
-        console.log(lineTokens);
-        for (let i = lineTokens.length - 1; i >= 0; i--) {
-          const token = lineTokens[i];
-          if (columnWantedKeywords.indexOf(token) >= 0) {
-            priorKeyword = token;
+
+        // Find keywords in line, and get last one
+        const mostRecentKeyword = line.match(keywordsRegex)?.pop();
+
+        if (mostRecentKeyword) {
+          if (columnWantedKeywords.has(mostRecentKeyword)) {
+            priorKeyword = mostRecentKeyword;
             wanted = 'COLUMN';
-            r = 0;
-            break;
           }
-          if (tableWantedKeywords.indexOf(token) >= 0) {
-            priorKeyword = token;
+          if (tableWantedKeywords.has(mostRecentKeyword)) {
+            priorKeyword = mostRecentKeyword;
             wanted = 'TABLE';
-            r = 0;
-            break;
           }
+          r = 0;
+          break;
         }
       }
       debug(`Want ${wanted} because keyword: ${priorKeyword}`);
 
-      const currentLine = session.getDocument().getLine(pos.row);
-      const currentTokens: string[] = currentLine
+      const currentLine: string = session.getDocument().getLine(pos.row);
+      const currentTokens = currentLine
         .slice(0, pos.column)
         .split(/\s+/)
-        .map((t: string) => t.toLowerCase());
+        .map((t) => t.toLowerCase());
       const precedingToken = currentTokens[currentTokens.length - 1];
 
       // If precedingToken contains a dot, derive the dottedIdentifier to use to look up matches
@@ -234,7 +242,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
 
       // If could not derive what is wanted do not send suggestions
       if (wanted === '') {
-        return callback(null, null);
+        return;
       }
 
       // The suggestions below require knowing what tables are referenced in the query
