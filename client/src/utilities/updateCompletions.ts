@@ -311,7 +311,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       if (dottedIdentifier && wanted === 'COLUMN') {
         let acCompletions = (columnDotMatches[dottedIdentifier] || []).map(
           (c) => {
-            return { ...c, score: 1 };
+            return { value: c.value, meta: c.meta, score: 1 };
           }
         );
 
@@ -319,7 +319,9 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
         // eg `SELECT schemaname.` should get tables
         if (priorKeyword === 'select') {
           acCompletions = acCompletions.concat(
-            tablesBySchema[dottedIdentifier]
+            (tablesBySchema[dottedIdentifier] || []).map((c) => {
+              return { value: c.value, meta: c.meta, score: 0 };
+            })
           );
         }
 
@@ -337,14 +339,26 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
           .concat(Object.values(foundTablesById))
           .concat(Object.values(columnsById))
           .map((c) => {
-            return { ...c, score: 1 };
+            return {
+              value: c.value,
+              meta: c.meta,
+              score: 1,
+            };
           });
 
         // Add schemas and tables not for found tables
         // user might be trying for a table prior to using it in SELECT
         // eg `SELECT schemaname` or `SELECT tablename` should be assisted
         if (priorKeyword === 'select') {
-          acCompletions = acCompletions.concat(initialTableWantedSuggestions);
+          acCompletions = acCompletions.concat(
+            initialTableWantedSuggestions.map((c) => {
+              return {
+                value: c.value,
+                meta: c.meta,
+                score: 0,
+              };
+            })
+          );
         }
 
         return callback(null, acCompletions);
