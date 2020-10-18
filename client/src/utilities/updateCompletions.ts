@@ -82,6 +82,10 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
   // last one wins since names can be duplicated across schemas
   const tablesByName: Record<string, AceCompletion> = {};
 
+  // An array of patterns to use to find tables in the user's SQL
+  // This will be populated as the schema is traversed
+  const tablePatterns: string[] = [];
+
   if (connectionSchema.schemas) {
     connectionSchema.schemas.forEach((schema) => {
       const schemaCompletion: AceCompletion = {
@@ -119,6 +123,9 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
           columnCompletions,
         };
 
+        tablePatterns.push(table.name);
+        tablePatterns.push(`${schema.name}\\.${table.name}`);
+
         initialTableWantedSuggestions.push(tableCompletion);
         if (!tablesBySchema[schemaCompletion.name]) {
           tablesBySchema[schemaCompletion.name] = [];
@@ -141,6 +148,8 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
         };
       });
 
+      tablePatterns.push(table.name);
+
       const tableCompletion: AceCompletion = {
         id: table.name.toLowerCase(),
         name: table.name.toLowerCase(),
@@ -155,6 +164,9 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       tablesById[tableCompletion.id] = tableCompletion;
     });
   }
+
+  // Create a big regex for table patterns to find tables
+  const tableRegex = new RegExp(tablePatterns.join('|'), 'gi');
 
   const myCompleter = {
     getCompletions: function (
@@ -181,8 +193,9 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
         if (r === currentRow) {
           line = line.slice(0, pos.column);
         }
-        lineTokens = line.split(/\s+/).map((t: any) => t.toLowerCase());
-
+        lineTokens = line.split(/\s+/).map((t: string) => t.toLowerCase());
+        // TODO things around tokens lose token like parens, brackets, quotes etc.
+        console.log(lineTokens);
         for (let i = lineTokens.length - 1; i >= 0; i--) {
           const token = lineTokens[i];
           if (columnWantedKeywords.indexOf(token) >= 0) {
@@ -227,16 +240,9 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       // The suggestions below require knowing what tables are referenced in the query
       // Try and derive based on basic matching
       // figure out if there are any schemas/tables referenced in query
-      const allTokens: string[] = session
-        .getValue()
-        .split(/\s+/)
-        .map((t: string) => {
-          const [p1, p2] = t.toLowerCase().split('.');
-          if (p2) {
-            return `${p1}.${p2}`;
-          }
-          return p1;
-        });
+      const allTokens: Set<string> = new Set(
+        session.getValue().match(tableRegex)
+      );
 
       // First find any references of schemas or tables in tokens
       // Anything matched will be added to relevant completions
