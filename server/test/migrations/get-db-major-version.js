@@ -29,6 +29,8 @@ describe('migrations/get-db-major-version', function () {
     utils = new TestUtils({
       dbPath: path.join(__dirname, '../artifacts/v4-to-v5'),
       dbInMemory: false,
+      // Force this test to only run with SQLite
+      backendDatabaseUri: '',
     });
 
     const destination = utils.config.get('dbPath');
