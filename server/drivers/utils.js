@@ -1,39 +1,20 @@
-const _ = require('lodash');
-
 /**
- * Get an array of table objects from column rows for given schema
- * @param {Object[]} schemaTableColumnRows - rows of column-level data for tables of a given schema
- * @param {string} schemaTableColumnRows[].table_name - field containing table_name
- * @param {string} schemaTableColumnRows[].column_name - field containing column name
- * @param {string} schemaTableColumnRows[].data_type - field containing data type of column
- * @param {string} schemaTableColumnRows[].column_description - field containing description of column
- */
-function getTables(schemaTableColumnRows) {
-  const tables = [];
-  const byTableName = _.groupBy(schemaTableColumnRows, 'table_name');
-  for (const tableName in byTableName) {
-    if (byTableName.hasOwnProperty(tableName)) {
-      const tableObj = {
-        name: tableName,
-        // TODO populate table description?
-        description: '',
-        columns: byTableName[tableName].map((row) => {
-          return {
-            name: row.column_name,
-            description: row.column_description,
-            dataType: row.data_type,
-          };
-        }),
-      };
-      tables.push(tableObj);
-    }
-  }
-  return tables;
-}
-
-/**
- * Formats schema query results into
- * a nested map of objects representing schema tree
+ * Formats flat schema query results into a hierarchy
+ *
+ * Expected input is
+ * {
+ *   rows: [
+ *     {
+ *       schema_name: '',          // or table_schema. optional. name of schema if DB uses schemas
+ *       schema_description: '',   // description of schema. optional.
+ *       table_name: '',           // name of table.
+ *       table_description: '',    // description of table. optional.
+ *       column_name: '',          // name of column.
+ *       column_description: '',   // description of column. optional.
+ *       data_type: '',            // data type of column
+ *     }
+ *   ]
+ * }
  *
  * Returned format is
  * {
@@ -66,40 +47,89 @@ function formatSchemaQueryResults(queryResult) {
     return {};
   }
 
-  // queryResult row casing may not always be consistent with what is specified in query
-  // HANA is always uppercase despire aliasing as lower case for example
-  // To account for this loop through rows and normalize the case
-  const rows = queryResult.rows.map((row) => {
+  // IDs will be full paths of objects
+  // `schemaname`, `schemaname.tablename`
+  let hasSchema = false;
+  const schemasById = {};
+  const tablesById = {};
+
+  for (const row of queryResult.rows) {
+    // queryResult row casing may not always be consistent with what is specified in query
+    // HANA is always uppercase despire aliasing as lower case for example
+    // For example a row from HANA might be { TABLE_SCHEMA: 'name' } instead of { table_schema: 'name' } expected
+    // To account for this loop through rows and normalize the case
     const cleanRow = {};
     Object.keys(row).forEach((key) => {
       cleanRow[key.toLowerCase()] = row[key];
     });
-    return cleanRow;
-  });
 
-  const hasSchema = rows[0].hasOwnProperty('table_schema');
+    // Originally information schemas returned a field "table_schema" for schema name
+    // "schema_name" fits better and is more consistent
+    // This supports both fields, preferring schema_name if set;
+    const schemaName = cleanRow.schema_name || cleanRow.table_schema;
+    const schemaDescription = cleanRow.schema_description;
+    const tableName = cleanRow.table_name;
+    const tableDescription = cleanRow.table_description;
+    const columnName = cleanRow.column_name;
+    const dataType = cleanRow.data_type;
+    const columnDescription = cleanRow.column_description;
 
-  if (hasSchema) {
-    const tree = {
-      schemas: [],
-    };
-    const bySchema = _.groupBy(rows, 'table_schema');
-    for (const schema in bySchema) {
-      if (bySchema.hasOwnProperty(schema)) {
-        const schemaObj = {
-          name: schema,
-          // TODO populate schema description?
-          description: '',
-          tables: getTables(bySchema[schema]),
-        };
-        tree.schemas.push(schemaObj);
+    const schemaId = schemaName;
+    const tableId = schemaName ? `${schemaName}.${tableName}` : undefined;
+
+    // If schema exists and hasn't been added to index yet, add it
+    if (schemaId && !schemasById[schemaId]) {
+      hasSchema = true;
+      schemasById[schemaId] = {
+        name: schemaName,
+        description: schemaDescription,
+        tables: [],
+        // temporary index to make it efficient to add tables
+        tablesById: {},
+      };
+    }
+
+    // If table hasn't been captured in index yet, add it
+    if (!tablesById[tableId]) {
+      const table = {
+        name: tableName,
+        description: tableDescription,
+        columns: [],
+      };
+      tablesById[tableId] = table;
+
+      // If schema exists and table is not yet there, add it to schema
+      // Its pushed to tables array for final product, and added to tablesById map
+      // so final operation can remove tablesById map and not have to iterate the list again
+      if (schemaId && !schemasById[schemaId].tablesById[tableId]) {
+        schemasById[schemaId].tables.push(table);
+        schemasById[schemaId].tablesById[tableId] = table;
       }
     }
-    return tree;
+
+    const column = {
+      name: columnName,
+      description: columnDescription,
+      dataType,
+    };
+
+    tablesById[tableId].columns.push(column);
   }
 
+  // If schema is present, loop over values and remove the tablesById
+  // The resulting array will be in the format needed
+  if (hasSchema) {
+    return {
+      schemas: Object.values(schemasById).map((schema) => {
+        delete schema.tablesById;
+        return schema;
+      }),
+    };
+  }
+
+  // If there was no schema, tablesById has everything needed
   return {
-    tables: getTables(rows),
+    tables: Object.values(tablesById),
   };
 }
 

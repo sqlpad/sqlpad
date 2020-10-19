@@ -73,8 +73,6 @@ function testConnection(connection) {
 
 /**
  * Get schema for connection
- * TODO FIXME: PInot does not have a concept of schema, but SQLPad requires it at this time
- * SQLPad needs to be updated to support optional table_schema
  * @param {*} connection
  */
 async function getSchema(connection) {
@@ -87,7 +85,6 @@ async function getSchema(connection) {
     const schema = await pinot.getTableSchema(connection.controllerUrl, table);
     for (const dimension of schema.dimensionFieldSpecs) {
       columnRows.push({
-        table_schema: 'main',
         table_name: table,
         column_name: dimension.name,
         data_type: dimension.dataType,
@@ -96,7 +93,6 @@ async function getSchema(connection) {
     }
     for (const metric of schema.metricFieldSpecs) {
       columnRows.push({
-        table_schema: 'main',
         table_name: table,
         column_name: metric.name,
         data_type: metric.dataType,
