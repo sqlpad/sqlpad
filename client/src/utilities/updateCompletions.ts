@@ -57,8 +57,6 @@ type AceCompletion = {
   // Greyed out text to show in prompt. Used by Ace
   meta: string;
   // pointers to parent objects if applicable
-  schemaId?: string;
-  tableId?: string;
   schemaCompletion?: AceCompletion;
   columnCompletions?: AceCompletion[];
 };
@@ -166,9 +164,11 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
   }
 
   // Create a big regex for table patterns to find tables
-  const tableRegex = new RegExp(tablePatterns.join('|'), 'gi');
+  // This regex is /\b(table1|schema.table1|table2|schema.table2)\b/
+  // \b indicates a boundary, the parens and pipes mean "one of these values"
+  const tableRegex = new RegExp(`\\b(${tablePatterns.join('|')})\\b`, 'gi');
 
-  const keywordsRegex = /\bfrom|join|select|where|group|having|on\b/gi;
+  const keywordsRegex = /\b(from|join|select|where|group|having|on)\b/gi;
 
   const tableWantedKeywords = new Set(['from', 'join']);
   const columnWantedKeywords = new Set([
@@ -249,7 +249,7 @@ function updateCompletions(connectionSchema: ConnectionSchema) {
       // Try and derive based on basic matching
       // figure out if there are any schemas/tables referenced in query
       const allTokens: Set<string> = new Set(
-        session.getValue().match(tableRegex)
+        session.getValue().toLowerCase().match(tableRegex)
       );
 
       // First find any references of schemas or tables in tokens
