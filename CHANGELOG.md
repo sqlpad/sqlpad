@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.7.0] - 2020-10-19
+
+- Add Apache Pinot support
+- Enhance SQL editor autocomplete
+
 ## [5.6.0] - 2020-09-04
 
 - Fix Presto/ClickHouse error display
