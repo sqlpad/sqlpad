@@ -39,20 +39,45 @@ function SignIn() {
     return null;
   }
 
-  function PlaceholderForUsername() {
-    if (config?.ldapConfigured) {
-      return 'Username or e-mail address';
-    } else {
-      return 'e-mail address';
-    }
-  }
+  const ldapForm = (
+    <form onSubmit={signIn}>
+      <Input
+        name="email"
+        type="text"
+        placeholder="Username"
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setEmail(e.target.value)
+        }
+        required
+      />
+      <Spacer />
+      <Input
+        name="password"
+        type="password"
+        placeholder="Password"
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setPassword(e.target.value)
+        }
+        required
+      />
+      <Spacer size={2} />
+      <Button
+        style={{ width: '100%' }}
+        onClick={signIn}
+        htmlType="submit"
+        variant="primary"
+      >
+        Sign in
+      </Button>
+    </form>
+  );
 
   const localForm = (
     <form onSubmit={signIn}>
       <Input
         name="email"
         type="email"
-        placeholder={PlaceholderForUsername()}
+        placeholder="e-mail address"
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setEmail(e.target.value)
         }
@@ -142,6 +167,7 @@ function SignIn() {
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
       {config.localAuthConfigured && localForm}
+      {config.ldapConfigured && ldapForm}
       {config.googleAuthConfigured && googleForm}
       {config.samlConfigured && samlForm}
       {config.oidcConfigured && oidcForm}
