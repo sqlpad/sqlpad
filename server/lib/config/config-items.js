@@ -236,6 +236,31 @@ const configItems = [
     default: '',
   },
   {
+    key: 'ldapAutoSignUp',
+    envVar: 'SQLPAD_LDAP_AUTO_SIGN_UP',
+    default: '',
+  },
+  {
+    key: 'ldapDefaultRole',
+    envVar: 'SQLPAD_LDAP_DEFAULT_ROLE',
+    default: 'editor',
+  },
+  {
+    key: 'sqlpadLadpAdminGroupDn',
+    envVar: 'SQLPAD_LDAP_ADMIN_GROUP_DN',
+    default: '',
+  },
+  {
+    key: 'sqlpadLadpEditorGroupDn',
+    envVar: 'SQLPAD_LDAP_EDITOR_GROUP_DN',
+    default: '',
+  },
+  {
+    key: 'sqlpadLdapGroupAttr',
+    envVar: 'SQLPAD_LDAP_GROUP_ATTR',
+    default: 'memberOf',
+  },
+  {
     key: 'serviceTokenSecret_d',
     envVar: 'SERVICE_TOKEN_SECRET',
     default: '',
