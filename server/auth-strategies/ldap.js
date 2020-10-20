@@ -35,48 +35,80 @@ function enableLdap(config) {
       async function passportLdapStrategyHandler(req, profile, done) {
         try {
           const { models } = req;
-          const email = profile.mail.toLowerCase();
-          const uid = profile.uid.toLowerCase();
-          const admin_group = config.get('sqlpadLadpAdminGroupDn');
-          const editor_group = config.get('sqlpadLadpEditorGroupDn');
 
-          // get all groups that user belongs to, not sure how to substitue memberOf from env var
-          const groups = profile.memberOf;
+          const uid = profile.uid.toLowerCase();
+          const adminGroup = config.get('sqlpadLadpAdminGroupDn');
+          const editorGroup = config.get('sqlpadLadpEditorGroupDn');
+          const ldapGroupAttr = config.get('sqlpadLdapGroupAttr');
+
+          // If all rbac configs are set,
+          // update role later on if user is found and current role doesn't match
+          const rbacByProfile = adminGroup && editorGroup && ldapGroupAttr;
+
+          // Email could be multi-valued
+          // For now first is used, but might need to check both in future?
+          let email = Array.isArray(profile.mail)
+            ? profile.mail[0]
+            : profile.mail;
+
+          email = email.toLowerCase();
+
+          let role = config.get('ldapDefaultRole');
+
+          // Get all groups that user belongs to
+          // NOTE default is memberOf, which isn't available on all LDAP implementation
+          const groups = profile[ldapGroupAttr];
+
           // match the groups which are predefined, refer to configuration
-          if (groups.includes(admin_group)) {
+          // Matching attribute is allowed to be equal if single valued, or containing the designated value if a list
+          if (
+            groups &&
+            (groups === adminGroup || groups.includes(adminGroup))
+          ) {
             appLog.debug(`${uid} successfully logged in with role admin`);
-            global.role = 'admin';
-          } else if (groups.includes(editor_group)) {
+            role = 'admin';
+          } else if (
+            groups &&
+            (groups === editorGroup || groups.includes(editorGroup))
+          ) {
             appLog.debug(`${uid} successfully logged in with role editor`);
-            global.role = 'editor';
+            role = 'editor';
           }
+
           let [openAdminRegistration, user] = await Promise.all([
             models.users.adminRegistrationOpen(),
             models.users.findOneByEmail(email),
           ]);
-          // not quite sure if uid is retruned for ActiveDirectory
+
+          // not quite sure if uid is returned for ActiveDirectory
           if (!uid) {
             return done(null, false, {
               message: 'wrong LDAP username or password',
             });
           }
+
           if (user) {
             if (user.disabled) {
               return done(null, false);
             }
-            const newUser = await models.users.update(user.id, {
-              role: global.role,
-            });
-            return done(null, newUser);
+
+            // If user already exists but role doesn't match, update it
+            if (user.role !== role && rbacByProfile) {
+              const newUser = await models.users.update(user.id, {
+                role,
+              });
+              return done(null, newUser);
+            }
+
+            // Otherwise return found user
+            return done(null, user);
           }
 
-          // if SQLPAD_LDAP_AUTO_SIGN_UP=true
-
           if (openAdminRegistration || config.get('ldapAutoSignUp')) {
-            appLog.debug(`adding user ${uid} to role ${global.role}`);
+            appLog.debug(`adding user ${uid} to role ${role}`);
             const newUser = await models.users.create({
               email,
-              role: global.role,
+              role,
               signupAt: new Date(),
             });
             return done(null, newUser);
