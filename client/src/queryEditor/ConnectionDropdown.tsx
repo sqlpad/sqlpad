@@ -58,7 +58,9 @@ function ConnectionDropdown() {
         value={selectedConnectionId || undefined}
         onChange={handleChange}
       >
-        <option value="">... choose connection</option>
+        <option value="" hidden>
+          ... choose connection
+        </option>
         {connections.map((conn) => {
           return (
             <option key={conn.id} value={conn.id}>
