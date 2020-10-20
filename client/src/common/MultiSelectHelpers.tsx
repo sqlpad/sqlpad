@@ -1,5 +1,5 @@
 import React from 'react';
-import matchSorter from 'match-sorter';
+import { matchSorter } from 'match-sorter';
 import styles from './MultiSelect.module.css';
 
 export interface ItemProps extends React.HTMLProps<HTMLLIElement> {
