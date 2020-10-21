@@ -138,21 +138,23 @@ LDAP-based authentication can be enabled by setting the necessary environment va
 - `SQLPAD_LDAP_SEARCH_BASE` - Base LDAP DN to search for users in, eg: `dc=domain,dc=com`.
 - `SQLPAD_LDAP_BIND_DN` - The bind user will be used to lookup information about other LDAP users.
 - `SQLPAD_LDAP_PASSWORD` - The password to bind with for the lookup user.
-- `SQLPAD_LDAP_SEARCH_FILTER` - LDAP search filter, e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory.  Use literal {{username}} to have the given username used in the search.
+- `SQLPAD_LDAP_SEARCH_FILTER` - LDAP search filter, e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory. Use literal {{username}} to have the given username used in the search.
 - `SQLPAD_USERPASS_AUTH_DISABLED`=`false` (need to enable local user logins)
 - `SQLPAD_LDAP_AUTO_SIGN_UP`=`true` (auto sign up ldap users)
 - `SQLPAD_LDAP_DEFAULT_ROLE`=`editor` (default ldap role)
 
-LDAP-RBAC , two groups are needed, editors and admins, for example sqlpad-admins , sqlpad-editors, the vars are repetitive, but given the ldap module limations, this is probably best approach to limit users and searches
+To assign roles via LDAP-RBAC, you may specify a profile attribute and value to look to for a particular role.
+
+For example, if your LDAP implementation supports `memberOf`, you may decide to use group DN values. In this case two groups are needed, one for editors and one for admins.
 
 - `SQLPAD_LDAP_SEARCH_FILTER`=`'(&(|(memberOf=cn=sqlpad-editors,dc=example,dc=com)(memberOf=cn=sqlpad-admins,dc=example,dc=com))(uid={{username}}))'`
-- `SQLPAD_LDAP_ADMIN_GROUP_DN`=`'cn=sqlpad-editors,dc=example,dc=com'`
-- `SQLPAD_LDAP_EDITOR_GROUP_DN`=`'cn=sqlpad-admins,dc=example,dc=com'`
-- `SQLPAD_LDAP_GROUP_ATTR`=`memberOf`
+- `SQLPAD_LDAP_ROLE_ADMIN_VALUE`=`'cn=sqlpad-editors,dc=example,dc=com'`
+- `SQLPAD_LDAP_ROLE_EDITOR_VALUE`=`'cn=sqlpad-admins,dc=example,dc=com'`
+- `SQLPAD_LDAP_ROLE_ATTRIBUTE`=`memberOf`
 
-* Modify memberOf attribute based on the LDAP
+At this time any top-level profile attribute is available. The attribute may contain a single value, or multiple values. If multiple, the admin/editor value must exist in the list (do not provide all listed values).
 
-LDAP-based authentication can be enabled and used with local authencation together. LDAP-based users need to be added and set relavant roles ahead of time. When LDAP-based authentication enabled, local user login/registration must be enabled. Users can sign in to SQLPad with an LDAP username (not an e-mail address) and LDAP password using LDAP-based authentication, and with an e-mail address and local password by local authencation.
+LDAP-based authentication can be enabled and used with local authencation together. When both LDAP and local authentication are enabled, LDAP users can sign in using their LDAP username (not an email address) and password, while local users may sign in using their email address and local password.
 
 ## Allowed Domains for User Administration
 

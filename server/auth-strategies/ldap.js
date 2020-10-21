@@ -37,9 +37,9 @@ function enableLdap(config) {
           const { models } = req;
 
           const uid = profile.uid.toLowerCase();
-          const adminGroup = config.get('sqlpadLadpAdminGroupDn');
-          const editorGroup = config.get('sqlpadLadpEditorGroupDn');
-          const ldapGroupAttr = config.get('sqlpadLdapGroupAttr');
+          const adminGroup = config.get('ldapRoleAdminValue');
+          const editorGroup = config.get('ldapRoleEditorValue');
+          const ldapGroupAttr = config.get('ldapRoleAttribute');
 
           // If all rbac configs are set,
           // update role later on if user is found and current role doesn't match

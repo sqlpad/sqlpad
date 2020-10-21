@@ -246,19 +246,19 @@ const configItems = [
     default: 'editor',
   },
   {
-    key: 'sqlpadLadpAdminGroupDn',
-    envVar: 'SQLPAD_LDAP_ADMIN_GROUP_DN',
+    key: 'ldapRoleAdminValue',
+    envVar: 'SQLPAD_LDAP_ROLE_ADMIN_VALUE',
     default: '',
   },
   {
-    key: 'sqlpadLadpEditorGroupDn',
-    envVar: 'SQLPAD_LDAP_EDITOR_GROUP_DN',
+    key: 'ldapRoleEditorValue',
+    envVar: 'SQLPAD_LDAP_ROLE_EDITOR_VALUE',
     default: '',
   },
   {
-    key: 'sqlpadLdapGroupAttr',
-    envVar: 'SQLPAD_LDAP_GROUP_ATTR',
-    default: 'memberOf',
+    key: 'ldapRoleAttribute',
+    envVar: 'SQLPAD_LDAP_ROLE_ATTRIBUTE',
+    default: '',
   },
   {
     key: 'serviceTokenSecret_d',
