@@ -39,45 +39,21 @@ function SignIn() {
     return null;
   }
 
-  const ldapForm = (
-    <form onSubmit={signIn}>
-      <Input
-        name="email"
-        type="text"
-        placeholder="Username"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setEmail(e.target.value)
-        }
-        required
-      />
-      <Spacer />
-      <Input
-        name="password"
-        type="password"
-        placeholder="Password"
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setPassword(e.target.value)
-        }
-        required
-      />
-      <Spacer size={2} />
-      <Button
-        style={{ width: '100%' }}
-        onClick={signIn}
-        htmlType="submit"
-        variant="primary"
-      >
-        Sign in
-      </Button>
-    </form>
-  );
+  let placeholderText = '';
+  if (config.ldapConfigured && config.localAuthConfigured) {
+    placeholderText = 'username or e-mail address';
+  } else if (config.ldapConfigured) {
+    placeholderText = 'username';
+  } else if (config.localAuthConfigured) {
+    placeholderText = 'e-mail address';
+  }
 
-  const localForm = (
+  const localLdapForm = (
     <form onSubmit={signIn}>
       <Input
         name="email"
         type="email"
-        placeholder="e-mail address"
+        placeholder={placeholderText}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setEmail(e.target.value)
         }
@@ -103,18 +79,21 @@ function SignIn() {
         Sign in
       </Button>
       <Spacer />
-      <Link
-        style={{
-          display: 'inline-block',
-          width: '100%',
-          textAlign: 'center',
-        }}
-        to="/signup"
-      >
-        Sign Up
-      </Link>
 
-      {config.smtpConfigured ? (
+      {config.localAuthConfigured && (
+        <Link
+          style={{
+            display: 'inline-block',
+            width: '100%',
+            textAlign: 'center',
+          }}
+          to="/signup"
+        >
+          Sign Up
+        </Link>
+      )}
+
+      {config.localAuthConfigured && config.smtpConfigured ? (
         <Link to="/forgot-password">Forgot Password</Link>
       ) : null}
     </form>
@@ -166,8 +145,7 @@ function SignIn() {
   return (
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
-      {config.localAuthConfigured && localForm}
-      {config.ldapConfigured && ldapForm}
+      {(config.localAuthConfigured || config.ldapConfigured) && localLdapForm}
       {config.googleAuthConfigured && googleForm}
       {config.samlConfigured && samlForm}
       {config.oidcConfigured && oidcForm}
