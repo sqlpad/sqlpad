@@ -41,11 +41,11 @@ function SignIn() {
 
   let placeholderText = '';
   if (config.ldapConfigured && config.localAuthConfigured) {
-    placeholderText = 'username or e-mail address';
+    placeholderText = 'username or email address';
   } else if (config.ldapConfigured) {
     placeholderText = 'username';
   } else if (config.localAuthConfigured) {
-    placeholderText = 'e-mail address';
+    placeholderText = 'email address';
   }
 
   const localLdapForm = (
