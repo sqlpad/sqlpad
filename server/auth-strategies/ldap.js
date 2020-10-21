@@ -13,6 +13,7 @@ function enableLdap(config) {
       {
         passReqToCallback: true,
         integrated: false,
+        // email field from local auth is used for username when using LDAP
         usernameField: 'email',
         passwordField: 'password',
         server: {
@@ -37,13 +38,14 @@ function enableLdap(config) {
           const { models } = req;
 
           const uid = profile.uid.toLowerCase();
-          const adminGroup = config.get('ldapRoleAdminValue');
-          const editorGroup = config.get('ldapRoleEditorValue');
-          const ldapGroupAttr = config.get('ldapRoleAttribute');
+          const adminRoleValue = config.get('ldapRoleAdminValue');
+          const editorRoleValue = config.get('ldapRoleEditorValue');
+          const roleAttribute = config.get('ldapRoleAttribute');
 
           // If all rbac configs are set,
           // update role later on if user is found and current role doesn't match
-          const rbacByProfile = adminGroup && editorGroup && ldapGroupAttr;
+          const rbacByProfile =
+            adminRoleValue && editorRoleValue && roleAttribute;
 
           // Email could be multi-valued
           // For now first is used, but might need to check both in future?
@@ -57,19 +59,23 @@ function enableLdap(config) {
 
           // Get all groups that user belongs to
           // NOTE default is memberOf, which isn't available on all LDAP implementation
-          const groups = profile[ldapGroupAttr];
+          const attributeValue = profile[roleAttribute];
 
           // match the groups which are predefined, refer to configuration
           // Matching attribute is allowed to be equal if single valued, or containing the designated value if a list
           if (
-            groups &&
-            (groups === adminGroup || groups.includes(adminGroup))
+            attributeValue &&
+            (attributeValue === adminRoleValue ||
+              (Array.isArray(attributeValue) &&
+                attributeValue.includes(adminRoleValue)))
           ) {
             appLog.debug(`${uid} successfully logged in with role admin`);
             role = 'admin';
           } else if (
-            groups &&
-            (groups === editorGroup || groups.includes(editorGroup))
+            attributeValue &&
+            (attributeValue === editorRoleValue ||
+              (Array.isArray(attributeValue) &&
+                attributeValue.includes(editorRoleValue)))
           ) {
             appLog.debug(`${uid} successfully logged in with role editor`);
             role = 'editor';
