@@ -3,6 +3,12 @@ const ldap = require('ldapjs');
 const appLog = require('../lib/app-log');
 const LdapStrategy = require('passport-ldapauth');
 
+/**
+ * Convenience wrapper to promisify client.bind() function
+ * @param {*} client
+ * @param {string} bindDN
+ * @param {string} ldapPassword
+ */
 function bindClient(client, bindDN, ldapPassword) {
   return new Promise((resolve, reject) => {
     client.bind(bindDN, ldapPassword, function (err) {
