@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.8.0] - 2020-10-22
+
+- Add LDAP auto sign-up and dynamic role assignment based on LDAP search
+- Fix: Allow LDAP auth without local/userpass auth enabled
+- Update dependencies
+
 ## [5.7.0] - 2020-10-19
 
 - Add Apache Pinot support
