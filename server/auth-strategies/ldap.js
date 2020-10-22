@@ -72,6 +72,9 @@ function enableLdap(config) {
     config.get('ldapBaseDN') ||
     config.get('ldapBaseDN_d');
 
+  const adminRoleFilter = config.get('ldapRoleAdminFilter');
+  const editorRoleFilter = config.get('ldapRoleEditorFilter');
+
   appLog.info('Enabling ldap authentication strategy.');
   passport.use(
     new LdapStrategy(
@@ -95,17 +98,24 @@ function enableLdap(config) {
         try {
           const { models } = req;
 
-          const profileUsername = profile.uid || profile.sAMAccountName;
-          const adminRoleFilter = config.get('ldapRoleAdminFilter');
-          const editorRoleFilter = config.get('ldapRoleEditorFilter');
+          if (!profile) {
+            return done(null, false, {
+              message: 'wrong LDAP username or password',
+            });
+          }
 
           // At least with test setup, jpegPhoto is gnarly output
           // Remove prior to logging
           delete profile.jpegPhoto;
-          appLog.debug(profile, 'Found user');
+          appLog.debug(profile, 'Found LDAP profile');
 
-          // not quite sure if uid is returned for ActiveDirectory
+          const profileUsername = profile.uid || profile.sAMAccountName;
+
           if (!profileUsername) {
+            appLog.warn(
+              profile,
+              `Found LDAP profile, but uid or sAMAccountName fields are missing. SQLPad's LDAP auth implementation requires enhancements to support your environment.`
+            );
             return done(null, false, {
               message: 'wrong LDAP username or password',
             });
