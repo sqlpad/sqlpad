@@ -44,7 +44,7 @@ export interface EditorSession {
   unsavedChanges: boolean;
 }
 
-type State = {
+export type EditorStoreState = {
   initialized: boolean;
   focusedSessionId: string;
   editorSessions: Record<string, EditorSession>;
@@ -54,7 +54,7 @@ type State = {
 
 const INITIAL_SESSION_ID = 'initial';
 
-export const useEditorStore = create<State>((set, get) => ({
+export const useEditorStore = create<EditorStoreState>((set, get) => ({
   initialized: false,
   focusedSessionId: INITIAL_SESSION_ID,
   editorSessions: {

@@ -2,16 +2,16 @@ import localforage from 'localforage';
 import queryString from 'query-string';
 import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
-import baseUrl from '../utilities/baseUrl';
+import { ACLRecord, AppInfo, ChartFields, Connection } from '../types';
 import { api } from '../utilities/api';
+import baseUrl from '../utilities/baseUrl';
 import {
   removeLocalQueryText,
   setLocalQueryText,
 } from '../utilities/localQueryText';
 import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
-import { SchemaState, useEditorStore, EditorSession } from './editor-store';
-import { AppInfo, Connection, ChartFields, ACLRecord } from '../types';
+import { EditorSession, SchemaState, useEditorStore } from './editor-store';
 
 export const initApp = async (
   config: AppInfo['config'],
@@ -22,12 +22,10 @@ export const initApp = async (
       localforage.getItem('selectedConnectionId'),
     ]);
 
-    const update: { initialized: boolean; selectedConnectionId?: string } = {
-      initialized: true,
-    };
+    let initialConnectionId = '';
 
     if (connections.length === 1) {
-      update.selectedConnectionId = connections[0].id;
+      selectedConnectionId = connections[0].id;
     } else {
       const { defaultConnectionId } = config || {};
       if (defaultConnectionId) {
@@ -35,7 +33,7 @@ export const initApp = async (
           (c) => c.id === defaultConnectionId
         );
         if (Boolean(foundDefault)) {
-          update.selectedConnectionId = defaultConnectionId;
+          initialConnectionId = defaultConnectionId;
         }
       }
 
@@ -44,7 +42,7 @@ export const initApp = async (
           (c) => c.id === selectedConnectionId
         );
         if (Boolean(selectedConnection)) {
-          update.selectedConnectionId = selectedConnectionId;
+          initialConnectionId = selectedConnectionId;
         }
       }
 
@@ -54,8 +52,8 @@ export const initApp = async (
         const selectedConnection = connections.find(
           (c) => c.name === qsConnectionName
         );
-        if (Boolean(selectedConnection)) {
-          update.selectedConnectionId = selectedConnection?.id;
+        if (selectedConnection?.id) {
+          initialConnectionId = selectedConnection?.id;
         }
       }
 
@@ -64,13 +62,14 @@ export const initApp = async (
         const selectedConnection = connections.find(
           (c) => c.id === qsConnectionId
         );
-        if (Boolean(selectedConnection)) {
-          update.selectedConnectionId = selectedConnection?.id;
+        if (selectedConnection?.id) {
+          initialConnectionId = selectedConnection?.id;
         }
       }
     }
 
-    useEditorStore.setState(update);
+    setFocusedSession({ connectionId: initialConnectionId });
+    useEditorStore.setState({ initialized: true });
   } catch (error) {
     console.error(error);
     message.error('Error initializing application');
@@ -423,6 +422,8 @@ export const handleCloneClick = () => {
 };
 
 export const resetNewQuery = () => {
+  // NOTE connectionId IS NOT set here on purpose
+  // The new query should have the same connection as previously
   setFocusedSession({
     runQueryInstanceId: undefined,
     isRunning: false,
@@ -430,7 +431,6 @@ export const resetNewQuery = () => {
     queryName: '',
     tags: [],
     acl: [],
-    connectionId: '',
     queryText: '',
     chartType: '',
     chartFields: {},
