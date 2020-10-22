@@ -37,7 +37,7 @@ function enableLdap(config) {
         try {
           const { models } = req;
 
-          const uid = profile.uid.toLowerCase();
+          const uid = (profile.uid || profile.sAMAccountName).toLowerCase();
           const adminRoleValue = config.get('ldapRoleAdminValue');
           const editorRoleValue = config.get('ldapRoleEditorValue');
           const roleAttribute = config.get('ldapRoleAttribute');
