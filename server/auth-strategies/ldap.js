@@ -1,11 +1,70 @@
 const passport = require('passport');
+const ldap = require('ldapjs');
 const appLog = require('../lib/app-log');
 const LdapStrategy = require('passport-ldapauth');
+
+function bindClient(client, bindDN, ldapPassword) {
+  return new Promise((resolve, reject) => {
+    client.bind(bindDN, ldapPassword, function (err) {
+      if (err) {
+        return reject(err);
+      }
+      return resolve();
+    });
+  });
+}
+
+/**
+ * Convenience wrapper to query ldap and get an array of results
+ * If nothing found empty array is returned
+ * @param {*} client
+ * @param {string} searchBase
+ * @param {string} scope - base or sub
+ * @param {string} filter - ldap query string
+ */
+function queryLdap(client, searchBase, scope, filter) {
+  const opts = {
+    scope,
+    filter,
+  };
+  return new Promise((resolve, reject) => {
+    client.search(searchBase, opts, (err, res) => {
+      const results = [];
+      if (err) {
+        return reject(err);
+      }
+
+      // eslint-disable-next-line no-unused-vars
+      res.on('searchEntry', function (entry) {
+        results.push(entry.object);
+      });
+      res.on('error', function (err) {
+        reject(err);
+      });
+      res.on('end', function () {
+        resolve(results);
+      });
+    });
+  });
+}
 
 function enableLdap(config) {
   if (!(config.get('ldapAuthEnabled') || config.get('enableLdapAuth'))) {
     return;
   }
+
+  const bindDN =
+    config.get('ldapBindDN') ||
+    config.get('ldapUsername') ||
+    config.get('ldapUsername_d');
+
+  const bindCredentials =
+    config.get('ldapPassword') || config.get('ldapPassword_d');
+
+  const searchBase =
+    config.get('ldapSearchBase') ||
+    config.get('ldapBaseDN') ||
+    config.get('ldapBaseDN_d');
 
   appLog.info('Enabling ldap authentication strategy.');
   passport.use(
@@ -18,16 +77,9 @@ function enableLdap(config) {
         passwordField: 'password',
         server: {
           url: config.get('ldapUrl') || config.get('ldapUrl_d'),
-          searchBase:
-            config.get('ldapSearchBase') ||
-            config.get('ldapBaseDN') ||
-            config.get('ldapBaseDN_d'),
-          bindDN:
-            config.get('ldapBindDN') ||
-            config.get('ldapUsername') ||
-            config.get('ldapUsername_d'),
-          bindCredentials:
-            config.get('ldapPassword') || config.get('ldapPassword_d'),
+          searchBase,
+          bindDN,
+          bindCredentials,
           searchFilter: config.get('ldapSearchFilter'),
           groupSearchBase: config.get('ldapBaseDN'),
           groupSearchFilter: '(cn={{dn}})',
@@ -37,15 +89,27 @@ function enableLdap(config) {
         try {
           const { models } = req;
 
-          const uid = (profile.uid || profile.sAMAccountName).toLowerCase();
-          const adminRoleValue = config.get('ldapRoleAdminValue');
-          const editorRoleValue = config.get('ldapRoleEditorValue');
-          const roleAttribute = config.get('ldapRoleAttribute');
+          const profileUsername = profile.uid || profile.sAMAccountName;
+          const adminRoleFilter = config.get('ldapRoleAdminFilter');
+          const editorRoleFilter = config.get('ldapRoleEditorFilter');
 
-          // If all rbac configs are set,
-          // update role later on if user is found and current role doesn't match
-          const rbacByProfile =
-            adminRoleValue && editorRoleValue && roleAttribute;
+          delete profile.jpegPhoto;
+          appLog.debug(profile, 'Found user');
+
+          // not quite sure if uid is returned for ActiveDirectory
+          if (!profileUsername) {
+            return done(null, false, {
+              message: 'wrong LDAP username or password',
+            });
+          }
+
+          // Derive a userId fiter based on profile that is found
+          let userIdFilter = '';
+          if (profile.sAMAccountName) {
+            userIdFilter = `(sAMAccountName=${profile.sAMAccountName})`;
+          } else if (profile.uid) {
+            userIdFilter = `(uid=${profile.uid})`;
+          }
 
           // Email could be multi-valued
           // For now first is used, but might need to check both in future?
@@ -55,43 +119,75 @@ function enableLdap(config) {
 
           email = email.toLowerCase();
 
-          let role = config.get('ldapDefaultRole');
+          let role = '';
 
-          // Get all groups that user belongs to
-          // NOTE default is memberOf, which isn't available on all LDAP implementation
-          const attributeValue = profile[roleAttribute];
+          // If all rbac configs are set,
+          // update role later on if user is found and current role doesn't match
+          let rbacByProfile = false;
 
-          // match the groups which are predefined, refer to configuration
-          // Matching attribute is allowed to be equal if single valued, or containing the designated value if a list
-          if (
-            attributeValue &&
-            (attributeValue === adminRoleValue ||
-              (Array.isArray(attributeValue) &&
-                attributeValue.includes(adminRoleValue)))
-          ) {
-            appLog.debug(`${uid} successfully logged in with role admin`);
-            role = 'admin';
-          } else if (
-            attributeValue &&
-            (attributeValue === editorRoleValue ||
-              (Array.isArray(attributeValue) &&
-                attributeValue.includes(editorRoleValue)))
-          ) {
-            appLog.debug(`${uid} successfully logged in with role editor`);
-            role = 'editor';
+          // If admin or editor role filters are specified, open a connection to LDAP server and run additional queries
+          // Try to find a role by running searches with a restriction on user that was found
+          // Searches should start with most priveleged, then progress onward
+          // If a row is returned, the user can be assigned that role and no other queries are needed
+          if (adminRoleFilter || editorRoleFilter) {
+            // Establish LDAP client to make additional queries
+            const client = ldap.createClient({
+              url: config.get('ldapUrl'),
+            });
+            await bindClient(client, bindDN, bindCredentials);
+
+            try {
+              rbacByProfile = true;
+
+              if (adminRoleFilter) {
+                const results = await queryLdap(
+                  client,
+                  searchBase,
+                  'sub',
+                  `(&${userIdFilter}${adminRoleFilter})`
+                );
+                if (results.length > 0) {
+                  appLog.debug(
+                    `${profileUsername} successfully logged in with role admin`
+                  );
+                  role = 'admin';
+                }
+              }
+
+              // If role wasn't found for admin, try running editor search
+              if (!role && editorRoleFilter) {
+                const results = await queryLdap(
+                  client,
+                  searchBase,
+                  'sub',
+                  `(&${userIdFilter}${adminRoleFilter})`
+                );
+                if (results.length > 0) {
+                  appLog.debug(
+                    `${profileUsername} successfully logged in with role editor`
+                  );
+                  role = 'editor';
+                }
+              }
+
+              // Close connection to LDAP server
+              client.unbind();
+            } catch (error) {
+              // If an error happened, make sure LDAP connection is closed then rethrow error
+              client.unbind();
+              throw error;
+            }
+          }
+
+          // If role wasn't set by RBAC, use default
+          if (!role) {
+            role = config.get('ldapDefaultRole');
           }
 
           let [openAdminRegistration, user] = await Promise.all([
             models.users.adminRegistrationOpen(),
             models.users.findOneByEmail(email),
           ]);
-
-          // not quite sure if uid is returned for ActiveDirectory
-          if (!uid) {
-            return done(null, false, {
-              message: 'wrong LDAP username or password',
-            });
-          }
 
           if (user) {
             if (user.disabled) {
@@ -111,7 +207,7 @@ function enableLdap(config) {
           }
 
           if (openAdminRegistration || config.get('ldapAutoSignUp')) {
-            appLog.debug(`adding user ${uid} to role ${role}`);
+            appLog.debug(`adding user ${profileUsername} to role ${role}`);
             const newUser = await models.users.create({
               email,
               role,

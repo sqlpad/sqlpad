@@ -147,12 +147,13 @@ To assign roles via LDAP-RBAC, you may specify a profile attribute and value to 
 
 For example, if your LDAP implementation supports `memberOf`, you may decide to use group DN values. In this case two groups are needed, one for editors and one for admins.
 
-- `SQLPAD_LDAP_SEARCH_FILTER`=`'(&(|(memberOf=cn=sqlpad-editors,dc=example,dc=com)(memberOf=cn=sqlpad-admins,dc=example,dc=com))(uid={{username}}))'`
-- `SQLPAD_LDAP_ROLE_ADMIN_VALUE`=`'cn=sqlpad-editors,dc=example,dc=com'`
-- `SQLPAD_LDAP_ROLE_EDITOR_VALUE`=`'cn=sqlpad-admins,dc=example,dc=com'`
-- `SQLPAD_LDAP_ROLE_ATTRIBUTE`=`memberOf`
+```sh
+SQLPAD_LDAP_SEARCH_FILTER = "(&(|(memberOf=cn=sqlpad-editors,dc=example,dc=com)(memberOf=cn=sqlpad-admins,dc=example,dc=com))(uid={{username}}))"
+SQLPAD_LDAP_ROLE_ADMIN_FILTER = "(memberOf=cn=sqlpad-admins,dc=example,dc=com)"
+SQLPAD_LDAP_ROLE_EDITOR_FILTER = "(memberOf=cn=sqlpad-editors,dc=example,dc=com)"
+```
 
-At this time any top-level profile attribute is available. The attribute may contain a single value, or multiple values. If multiple, the admin/editor value must exist in the list (do not provide all listed values).
+The role filters will be combined with the `uid`/`sAMAccountName` filter depending on the profile returned. For example, the `SQLPAD_LDAP_ROLE_ADMIN_FILTER` above would become `(&(memberOf=cn=sqlpad-admins,dc=example,dc=com)(uid=username))` for OpenLDAP or `(&(memberOf=cn=sqlpad-admins,dc=example,dc=com)(sAMAccountName=username))` for ActiveDirectory.
 
 LDAP-based authentication can be enabled and used with local authencation together. When both LDAP and local authentication are enabled, LDAP users can sign in using their LDAP username (not an email address) and password, while local users may sign in using their email address and local password.
 
