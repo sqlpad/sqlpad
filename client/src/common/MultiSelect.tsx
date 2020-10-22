@@ -4,16 +4,16 @@ import styles from './MultiSelect.module.css';
 import { getItems, Item, Menu } from './MultiSelectHelpers';
 import Tag from './Tag';
 
-interface Item {
+export interface MultiSelectItem {
   name?: string;
   id: string;
   component?: any;
 }
 
 export interface Props {
-  selectedItems: Item[];
-  options: Item[];
-  onChange: (items: Item[]) => void;
+  selectedItems: MultiSelectItem[];
+  options: MultiSelectItem[];
+  onChange: (items: MultiSelectItem[]) => void;
   placeholder?: string;
 }
 
@@ -32,7 +32,8 @@ function MultiSelect({
 }: Props) {
   const input = useRef<HTMLInputElement>(null);
 
-  const itemToString = (item: Item | null) => (item ? item.name || '' : '');
+  const itemToString = (item: MultiSelectItem | null) =>
+    item ? item.name || '' : '';
 
   const stateReducer = (state: any, changes: any) => {
     switch (changes.type) {
@@ -54,15 +55,15 @@ function MultiSelect({
     }
   };
 
-  const removeItem = (item: Item) => {
+  const removeItem = (item: MultiSelectItem) => {
     onChange(selectedItems.filter((i) => i !== item));
   };
 
-  const addSelectedItem = (item: Item, cb: () => void) => {
+  const addSelectedItem = (item: MultiSelectItem, cb: () => void) => {
     onChange([...selectedItems, item]);
   };
 
-  const handleSelection = (selectedItem: Item | null) => {
+  const handleSelection = (selectedItem: MultiSelectItem | null) => {
     const callOnChange = () => {
       onChange(selectedItems);
     };
@@ -146,7 +147,7 @@ function MultiSelect({
                         inputValue
                       );
                       const found = items.find(
-                        (item: Item) =>
+                        (item: MultiSelectItem) =>
                           item?.name?.toLowerCase() ===
                             inputValue.toLowerCase() ||
                           item.id.toLowerCase() === inputValue.toLowerCase()

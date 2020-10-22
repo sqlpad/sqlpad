@@ -4,15 +4,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer';
-import { useEditorStore } from '../stores/editor-store';
+import {
+  useIsRunning,
+  useQueryId,
+  useQueryResult,
+  useRunQueryStartTime,
+} from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
 
 function QueryResultHeader() {
-  const isRunning = useEditorStore((s) => s.isRunning);
-  const queryId = useEditorStore((s) => s?.query?.id);
-  const queryResult = useEditorStore((s) => s.queryResult);
-  const runQueryStartTime = useEditorStore((s) => s.runQueryStartTime);
+  const isRunning = useIsRunning();
+  const queryId = useQueryId();
+  const queryResult = useQueryResult();
+  const runQueryStartTime = useRunQueryStartTime();
 
   const { config } = useAppContext();
   if (isRunning || !queryResult) {

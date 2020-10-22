@@ -1,5 +1,5 @@
-import { SchemaState } from '../stores/editor-store';
 import { ConnectionSchema } from '../types';
+import { ExpandedMap } from '../stores/editor-store';
 
 interface SchemaListItem {
   type: 'schema' | 'table' | 'column';
@@ -20,7 +20,7 @@ interface SchemaListItem {
  */
 export default function getSchemaList(
   connectionSchema: ConnectionSchema,
-  expanded: SchemaState['expanded']
+  expanded: ExpandedMap
 ) {
   const schemaList: SchemaListItem[] = [];
 

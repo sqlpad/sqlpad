@@ -16,6 +16,7 @@ import { loadSchema, toggleSchemaItem } from '../stores/editor-actions';
 import {
   useSchemaState,
   useSelectedConnectionId,
+  useSchemaExpanded,
 } from '../stores/editor-store';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
@@ -32,9 +33,8 @@ function SchemaSidebar() {
     height: -1,
   });
 
-  const { loading, connectionSchema, expanded, error } = useSchemaState(
-    connectionId
-  );
+  const expanded = useSchemaExpanded(connectionId);
+  const { loading, connectionSchema, error } = useSchemaState(connectionId);
 
   const handleRefreshClick = (e: React.MouseEvent) => {
     e.preventDefault();

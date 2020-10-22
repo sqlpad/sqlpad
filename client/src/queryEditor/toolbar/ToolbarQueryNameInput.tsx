@@ -1,11 +1,11 @@
 import React from 'react';
 import Input from '../../common/Input';
-import { setQueryState } from '../../stores/editor-actions';
-import { useEditorStore } from '../../stores/editor-store';
+import { setQueryName } from '../../stores/editor-actions';
+import { useQueryName, useShowValidation } from '../../stores/editor-store';
 
 function ToolbarQueryNameInput() {
-  const queryName = useEditorStore((s) => s?.query?.name);
-  const showValidation = useEditorStore((s) => s.showValidation);
+  const queryName = useQueryName();
+  const showValidation = useShowValidation();
   const error = showValidation && !queryName.length;
 
   return (
@@ -14,7 +14,7 @@ function ToolbarQueryNameInput() {
       style={{ width: 260 }}
       placeholder="Query name"
       value={queryName}
-      onChange={(e: any) => setQueryState('name', e.target.value)}
+      onChange={(e: any) => setQueryName(e.target.value)}
     />
   );
 }

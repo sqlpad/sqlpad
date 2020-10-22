@@ -1,17 +1,21 @@
 import React from 'react';
 import { handleChartConfigurationFieldsChange } from '../stores/editor-actions';
-import { useEditorStore } from '../stores/editor-store';
+import {
+  useQueryResult,
+  useChartType,
+  useChartFields,
+} from '../stores/editor-store';
 import ChartInputs from './ChartInputs';
 
 function ChartInputsContainer() {
-  const queryResult = useEditorStore((s) => s.queryResult);
-  const chartType = useEditorStore((s) => s?.query?.chart?.chartType);
-  const fields = useEditorStore((s) => s?.query?.chart?.fields);
+  const queryResult = useQueryResult();
+  const chartType = useChartType();
+  const chartFields = useChartFields();
 
   return (
     <ChartInputs
       chartType={chartType}
-      queryChartConfigurationFields={fields}
+      queryChartConfigurationFields={chartFields}
       onChartConfigurationFieldsChange={handleChartConfigurationFieldsChange}
       queryResult={queryResult}
     />
