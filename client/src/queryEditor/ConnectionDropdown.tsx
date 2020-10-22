@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import Select from '../common/Select';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
@@ -21,7 +21,7 @@ function ConnectionDropdown() {
   let { data: connectionsData, mutate } = api.useConnections();
   const connections = connectionsData || [];
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value === 'new') {
       return setShowEdit(true);
     }
@@ -55,7 +55,7 @@ function ConnectionDropdown() {
       <Select
         style={style}
         className={className}
-        value={selectedConnectionId || undefined}
+        value={selectedConnectionId || ''}
         onChange={handleChange}
       >
         <option value="" hidden>
