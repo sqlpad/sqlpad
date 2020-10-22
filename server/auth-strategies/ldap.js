@@ -40,7 +40,6 @@ function queryLdap(client, searchBase, scope, filter) {
         return reject(err);
       }
 
-      // eslint-disable-next-line no-unused-vars
       res.on('searchEntry', function (entry) {
         results.push(entry.object);
       });
