@@ -12,7 +12,7 @@
     "@types/keymaster": "^1.6.28",
     "@types/lodash": "^4.14.162",
     "@types/match-sorter": "^5.0.0",
-    "@types/node": "^14.14.0",
+    "@types/node": "^14.14.2",
     "@types/parse-link-header": "^1.0.0",
     "@types/react": "^16.9.53",
     "@types/react-dom": "^16.9.8",
@@ -39,7 +39,7 @@
     "react-draggable": "^4.4.3",
     "react-measure": "^2.5.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^3.4.3",
+    "react-scripts": "^3.4.4",
     "react-split-pane": "^0.1.92",
     "react-window": "^1.8.5",
     "react-window-infinite-loader": "^1.0.5",
@@ -67,7 +67,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "eslint-config-prettier": "^6.13.0",
+    "eslint-config-prettier": "^6.14.0",
     "eslint-plugin-prettier": "^3.1.4",
     "source-map-explorer": "^2.5.0"
   }
