@@ -139,9 +139,9 @@ function enableLdap(config) {
 
           let role = '';
 
-          // If all rbac configs are set,
-          // update role later on if user is found and current role doesn't match
-          let rbacByProfile = false;
+          // Create a variable to keep track if role is set by RBAC
+          // If it is, update role later on if user is found and current role doesn't match
+          let roleSetByRBAC = false;
 
           // If admin or editor role filters are specified, open a connection to LDAP server and run additional queries
           // Try to find a role by running searches with a restriction on user that was found
@@ -155,7 +155,7 @@ function enableLdap(config) {
             await bindClient(client, bindDN, bindCredentials);
 
             try {
-              rbacByProfile = true;
+              roleSetByRBAC = true;
 
               if (adminRoleFilter) {
                 const results = await queryLdap(
@@ -213,7 +213,7 @@ function enableLdap(config) {
             }
 
             // If user already exists but role doesn't match, update it
-            if (user.role !== role && rbacByProfile) {
+            if (user.role !== role && roleSetByRBAC) {
               const newUser = await models.users.update(user.id, {
                 role,
               });
