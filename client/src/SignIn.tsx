@@ -39,20 +39,21 @@ function SignIn() {
     return null;
   }
 
-  function PlaceholderForUsername() {
-    if (config?.ldapConfigured) {
-      return 'Username or e-mail address';
-    } else {
-      return 'e-mail address';
-    }
+  let placeholderText = '';
+  if (config.ldapConfigured && config.localAuthConfigured) {
+    placeholderText = 'username or email address';
+  } else if (config.ldapConfigured) {
+    placeholderText = 'username';
+  } else if (config.localAuthConfigured) {
+    placeholderText = 'email address';
   }
 
-  const localForm = (
+  const localLdapForm = (
     <form onSubmit={signIn}>
       <Input
         name="email"
         type="email"
-        placeholder={PlaceholderForUsername()}
+        placeholder={placeholderText}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setEmail(e.target.value)
         }
@@ -78,18 +79,21 @@ function SignIn() {
         Sign in
       </Button>
       <Spacer />
-      <Link
-        style={{
-          display: 'inline-block',
-          width: '100%',
-          textAlign: 'center',
-        }}
-        to="/signup"
-      >
-        Sign Up
-      </Link>
 
-      {config.smtpConfigured ? (
+      {config.localAuthConfigured && (
+        <Link
+          style={{
+            display: 'inline-block',
+            width: '100%',
+            textAlign: 'center',
+          }}
+          to="/signup"
+        >
+          Sign Up
+        </Link>
+      )}
+
+      {config.localAuthConfigured && config.smtpConfigured ? (
         <Link to="/forgot-password">Forgot Password</Link>
       ) : null}
     </form>
@@ -141,7 +145,7 @@ function SignIn() {
   return (
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
-      {config.localAuthConfigured && localForm}
+      {(config.localAuthConfigured || config.ldapConfigured) && localLdapForm}
       {config.googleAuthConfigured && googleForm}
       {config.samlConfigured && samlForm}
       {config.oidcConfigured && oidcForm}

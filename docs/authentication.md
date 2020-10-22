@@ -138,10 +138,24 @@ LDAP-based authentication can be enabled by setting the necessary environment va
 - `SQLPAD_LDAP_SEARCH_BASE` - Base LDAP DN to search for users in, eg: `dc=domain,dc=com`.
 - `SQLPAD_LDAP_BIND_DN` - The bind user will be used to lookup information about other LDAP users.
 - `SQLPAD_LDAP_PASSWORD` - The password to bind with for the lookup user.
-- `SQLPAD_LDAP_SEARCH_FILTER` - LDAP search filter, e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory.  Use literal {{username}} to have the given username used in the search.
+- `SQLPAD_LDAP_SEARCH_FILTER` - LDAP search filter, e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory. Use literal {{username}} to have the given username used in the search.
 - `SQLPAD_USERPASS_AUTH_DISABLED`=`false` (need to enable local user logins)
+- `SQLPAD_LDAP_AUTO_SIGN_UP`=`true` (auto sign up ldap users)
+- `SQLPAD_LDAP_DEFAULT_ROLE`=`editor` (default ldap role)
 
-LDAP-based authentication can be enabled and used with local authencation together. LDAP-based users need to be added and set relavant roles ahead of time. When LDAP-based authentication enabled, local user login/registration must be enabled. Users can sign in to SQLPad with an LDAP username (not an e-mail address) and LDAP password using LDAP-based authentication, and with an e-mail address and local password by local authencation.
+To assign roles via LDAP-RBAC, you may specify a profile attribute and value to look to for a particular role.
+
+For example, if your LDAP implementation supports `memberOf`, you may decide to use group DN values. In this case two groups are needed, one for editors and one for admins.
+
+```sh
+SQLPAD_LDAP_SEARCH_FILTER = "(&(|(memberOf=cn=sqlpad-editors,dc=example,dc=com)(memberOf=cn=sqlpad-admins,dc=example,dc=com))(uid={{username}}))"
+SQLPAD_LDAP_ROLE_ADMIN_FILTER = "(memberOf=cn=sqlpad-admins,dc=example,dc=com)"
+SQLPAD_LDAP_ROLE_EDITOR_FILTER = "(memberOf=cn=sqlpad-editors,dc=example,dc=com)"
+```
+
+The role filters will be combined with the `uid`/`sAMAccountName` filter depending on the profile returned. For example, the `SQLPAD_LDAP_ROLE_ADMIN_FILTER` above would become `(&(memberOf=cn=sqlpad-admins,dc=example,dc=com)(uid=username))` for OpenLDAP or `(&(memberOf=cn=sqlpad-admins,dc=example,dc=com)(sAMAccountName=username))` for ActiveDirectory.
+
+LDAP-based authentication can be enabled and used with local authencation together. When both LDAP and local authentication are enabled, LDAP users can sign in using their LDAP username (not an email address) and password, while local users may sign in using their email address and local password.
 
 ## Allowed Domains for User Administration
 

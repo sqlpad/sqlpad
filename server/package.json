@@ -58,6 +58,7 @@
     "helmet": "^4.1.1",
     "ini": "^1.3.5",
     "jsonwebtoken": "^8.5.1",
+    "ldapjs": "^2.2.0",
     "lodash": "^4.17.20",
     "lru-cache": "^6.0.0",
     "mariadb": "^2.5.0",
