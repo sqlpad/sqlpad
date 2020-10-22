@@ -93,6 +93,8 @@ function enableLdap(config) {
           const adminRoleFilter = config.get('ldapRoleAdminFilter');
           const editorRoleFilter = config.get('ldapRoleEditorFilter');
 
+          // At least with test setup, jpegPhoto is gnarly output
+          // Remove prior to logging
           delete profile.jpegPhoto;
           appLog.debug(profile, 'Found user');
 
@@ -104,6 +106,7 @@ function enableLdap(config) {
           }
 
           // Derive a userId fiter based on profile that is found
+          // ActiveDirectory will have sAMAccountName, while OpenLDAP will have uid
           let userIdFilter = '';
           if (profile.sAMAccountName) {
             userIdFilter = `(sAMAccountName=${profile.sAMAccountName})`;
@@ -215,6 +218,10 @@ function enableLdap(config) {
             });
             return done(null, newUser);
           }
+
+          // If no user was found, and config does not allow initial log in or auto-creating users,
+          // Return not authorized
+          return done(null, false);
         } catch (error) {
           done(error);
         }
