@@ -108,6 +108,7 @@ function enableLdap(config) {
           const { models } = req;
 
           if (!profile) {
+            appLog.debug(`No LDAP profile found for user ${req.body.email}`);
             return done(null, false, {
               message: 'wrong LDAP username or password',
             });
@@ -168,11 +169,13 @@ function enableLdap(config) {
 
             try {
               if (adminRoleFilter) {
+                const filter = `(&${userIdFilter}${adminRoleFilter})`;
+                appLog.debug(`Running LDAP search ${filter}`);
                 const results = await queryLdap(
                   client,
                   searchBase,
                   'sub',
-                  `(&${userIdFilter}${adminRoleFilter})`
+                  filter
                 );
                 if (results.length > 0) {
                   appLog.debug(
@@ -184,11 +187,13 @@ function enableLdap(config) {
 
               // If role wasn't found for admin, try running editor search
               if (!role && editorRoleFilter) {
+                const filter = `(&${userIdFilter}${editorRoleFilter})`;
+                appLog.debug(`Running LDAP search ${filter}`);
                 const results = await queryLdap(
                   client,
                   searchBase,
                   'sub',
-                  `(&${userIdFilter}${adminRoleFilter})`
+                  filter
                 );
                 if (results.length > 0) {
                   appLog.debug(
