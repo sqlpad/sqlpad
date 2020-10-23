@@ -48,14 +48,14 @@ const renderValue = (input: any, fieldMeta: FieldMeta) => {
 // Hide the overflow so the scroll bar never shows in the header grid
 const headerStyle: React.CSSProperties = {
   overflowX: 'hidden',
-  overflowY: 'scroll',
+  overflowY: 'hidden',
 };
 
 const bodyStyle: React.CSSProperties = {
   overflow: 'scroll',
 };
 
-const headerCellStyle = {
+const headerCellStyle: React.CSSProperties = {
   lineHeight: '30px',
   backgroundColor: '#f4f4f4',
   justifyContent: 'space-between',
@@ -66,7 +66,7 @@ const headerCellStyle = {
   paddingRight: '.5rem',
 };
 
-const cellStyle = {
+const cellStyle: React.CSSProperties = {
   lineHeight: '30px',
   paddingLeft: '.5rem',
   paddingRight: '.5rem',
@@ -303,13 +303,29 @@ class QueryResultDataTable extends React.PureComponent<
         <Measure bounds onResize={this.handleContainerResize}>
           {({ measureRef }) => (
             <div ref={measureRef} className="h-100 w-100">
+              {/* 
+                Visual hack - On Windows, scrollbar always showing in grid takes up some amount of room on side of content.
+                To account for this, the header width is reduced by scrollbar width.
+                This creates a small space in upper right corner that is unstyled.
+                Visually, we want this to look like a continuation of the header row, so we render a div out of flow, behind the actual header
+              */}
+              <div
+                style={{
+                  ...headerCellStyle,
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 30,
+                }}
+              />
               <VariableSizeGrid
                 columnCount={columnCount}
                 rowCount={1}
                 columnWidth={this.getColumnWidth}
                 rowHeight={this.getRowHeight}
                 height={30}
-                width={width}
+                width={width - this.state.scrollbarWidth}
                 ref={this.headerGrid}
                 style={headerStyle}
               >
