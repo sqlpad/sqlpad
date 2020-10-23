@@ -21,7 +21,11 @@
 
 /* QueryResultDataTable react-window/react-draggable implementation */
 .DragHandle {
-  flex: 0 0 16px;
+  width: 8px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
   z-index: 2;
   cursor: col-resize;
   color: rgba(0, 0, 0, 0.2);
@@ -42,6 +46,20 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  /* 
+    Translate needs to be overridden to make this work like it originally did. 
+    The element being dragged is positioned with transform as user drags, 
+    and it is not reset until drag is stopped.
+
+    This is problematic because while the user drags and the element is being translated, 
+    the grid is resizing the column, causing the handle to drag twice as fast in the direction the user is dragging.
+
+    To address this a couple options to explore: 
+    * The implementation may need to switch to use DraggableCore, 
+    * Only resize on drag stop
+    * Lift drag handle out of column being resized
+  */
+  transform: translate(0px, 0px) !important;
 }
 
 /* Missing Ace diff editor style for highlighting code changes */
