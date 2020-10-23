@@ -74,6 +74,16 @@ function enableLdap(config) {
   const adminRoleFilter = config.get('ldapRoleAdminFilter');
   const editorRoleFilter = config.get('ldapRoleEditorFilter');
 
+  // Derive what the ldapDefaultRole should be from config
+  // Value in config could be `editor`, `admin`, `denied` or empty string
+  // Only `editor` and `admin` are valid roles - anything else is effectively disabling setting a default role
+  let ldapDefaultRole = config.get('ldapDefaultRole').toLowerCase().trim();
+
+  const validRoles = new Set(['editor', 'admin']);
+  if (!validRoles.has(ldapDefaultRole)) {
+    ldapDefaultRole = '';
+  }
+
   appLog.info('Enabling ldap authentication strategy.');
   passport.use(
     new LdapStrategy(
@@ -148,6 +158,8 @@ function enableLdap(config) {
           // Searches should start with most priveleged, then progress onward
           // If a row is returned, the user can be assigned that role and no other queries are needed
           if (adminRoleFilter || editorRoleFilter) {
+            roleSetByRBAC = true;
+
             // Establish LDAP client to make additional queries
             const client = ldap.createClient({
               url: config.get('ldapUrl'),
@@ -155,8 +167,6 @@ function enableLdap(config) {
             await bindClient(client, bindDN, bindCredentials);
 
             try {
-              roleSetByRBAC = true;
-
               if (adminRoleFilter) {
                 const results = await queryLdap(
                   client,
@@ -197,11 +207,6 @@ function enableLdap(config) {
             }
           }
 
-          // If role wasn't set by RBAC, use default
-          if (!role) {
-            role = config.get('ldapDefaultRole');
-          }
-
           let [openAdminRegistration, user] = await Promise.all([
             models.users.adminRegistrationOpen(),
             models.users.findOneByEmail(email),
@@ -212,8 +217,8 @@ function enableLdap(config) {
               return done(null, false);
             }
 
-            // If user already exists but role doesn't match, update it
-            if (user.role !== role && roleSetByRBAC) {
+            // If a role was set by RBAC and user already exists, but role doesn't match, update it
+            if (roleSetByRBAC && role && user.role !== role) {
               const newUser = await models.users.update(user.id, {
                 role,
               });
@@ -224,7 +229,21 @@ function enableLdap(config) {
             return done(null, user);
           }
 
-          if (openAdminRegistration || config.get('ldapAutoSignUp')) {
+          // At this point user was not found, and a decision needs to be made to either create or reject the user
+
+          // If openAdminRegistration is enabled, this is the initial user
+          // The users role should be admin
+          if (openAdminRegistration) {
+            role = 'admin';
+          }
+
+          // If role is still not set, and default is provided, use that
+          if (!role) {
+            role = ldapDefaultRole;
+          }
+
+          // Finally, if role is set, and open admin registration or ldap auto sign up, create user
+          if (role && (openAdminRegistration || config.get('ldapAutoSignUp'))) {
             appLog.debug(`adding user ${profileUsername} to role ${role}`);
             const newUser = await models.users.create({
               email,

@@ -243,7 +243,7 @@ const configItems = [
   {
     key: 'ldapDefaultRole',
     envVar: 'SQLPAD_LDAP_DEFAULT_ROLE',
-    default: 'editor',
+    default: '',
   },
   {
     key: 'ldapRoleAdminFilter',
