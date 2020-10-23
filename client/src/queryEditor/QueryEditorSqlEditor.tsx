@@ -4,11 +4,11 @@ import {
   handleQuerySelectionChange,
   setQueryText,
 } from '../stores/editor-actions';
-import { useQueryText } from '../stores/editor-store';
+import { useSessionQueryText } from '../stores/editor-store';
 
 function QueryEditorSqlEditor() {
   const onChange = useCallback((value: string) => setQueryText(value), []);
-  const value = useQueryText();
+  const value = useSessionQueryText();
 
   return (
     <div style={{ height: '100%', width: '100%' }}>

@@ -17,7 +17,7 @@ const { getState, setState } = useEditorStore;
 
 function setSession(update: Partial<EditorSession>) {
   const { focusedSessionId, editorSessions } = getState();
-  const focusedSession = getState().getFocusedSession();
+  const focusedSession = getState().getSession();
   setState({
     editorSessions: {
       ...editorSessions,
@@ -93,7 +93,7 @@ export const initApp = async (
  * Open a connection client for the currently selected connection if supported
  */
 export async function connectConnectionClient() {
-  const { connectionClient, connectionId } = getState().getFocusedSession();
+  const { connectionClient, connectionId } = getState().getSession();
 
   // If a connectionClient is already open or selected connection id doesn't exist, do nothing
   if (connectionClient || !connectionId) {
@@ -164,7 +164,7 @@ export async function disconnectConnectionClient() {
   const {
     connectionClient,
     connectionClientInterval,
-  } = getState().getFocusedSession();
+  } = getState().getSession();
 
   if (connectionClientInterval) {
     clearInterval(connectionClientInterval);
@@ -194,7 +194,7 @@ export function selectConnectionId(connectionId: string) {
   const {
     connectionClient,
     connectionClientInterval,
-  } = getState().getFocusedSession();
+  } = getState().getSession();
 
   localforage
     .setItem('selectedConnectionId', connectionId)
@@ -222,7 +222,7 @@ export function selectConnectionId(connectionId: string) {
 }
 
 export const formatQuery = async () => {
-  const { queryText, queryId } = getState().getFocusedSession();
+  const { queryText, queryId } = getState().getSession();
 
   const json = await api.post('/api/format-sql', {
     query: queryText,
@@ -282,7 +282,7 @@ export const runQuery = async () => {
     connectionId,
     connectionClient,
     selectedText,
-  } = getState().getFocusedSession();
+  } = getState().getSession();
 
   // multiple queries could be running and we only want to keep the "current" or latest query run
   const runQueryInstanceId = uuidv4();
@@ -311,9 +311,7 @@ export const runQuery = async () => {
   // Get latest state and check runQueryInstanceId to ensure it matches
   // If it matches another query has not been run and we can keep the result.
   // Not matching implies another query has been executed and we can ignore this result.
-  if (
-    getState().getFocusedSession().runQueryInstanceId === runQueryInstanceId
-  ) {
+  if (getState().getSession().runQueryInstanceId === runQueryInstanceId) {
     setSession({
       isRunning: false,
       queryError: error,
@@ -332,7 +330,7 @@ export const saveQuery = async () => {
     chartType,
     tags,
     acl,
-  } = getState().getFocusedSession();
+  } = getState().getSession();
 
   if (!queryName) {
     message.error('Query name required');
@@ -413,7 +411,7 @@ export const saveQuery = async () => {
 };
 
 export const handleCloneClick = () => {
-  const { queryName } = getState().getFocusedSession();
+  const { queryName } = getState().getSession();
   const newName = `Copy of ${queryName}`;
   window.history.replaceState({}, newName, `${baseUrl()}/queries/new`);
   setSession({ queryId: '', queryName: newName, unsavedChanges: true });
@@ -442,7 +440,7 @@ export const resetNewQuery = () => {
 };
 
 export const setQueryText = (queryText: string) => {
-  const { queryId } = getState().getFocusedSession();
+  const { queryId } = getState().getSession();
   setLocalQueryText(queryId, queryText);
   setSession({ queryText, unsavedChanges: true });
 };
@@ -471,7 +469,7 @@ export const handleChartConfigurationFieldsChange = (
   chartFieldId: string,
   queryResultField: any
 ) => {
-  const { chartFields } = getState().getFocusedSession();
+  const { chartFields } = getState().getSession();
 
   setSession({
     chartFields: { ...chartFields, [chartFieldId]: queryResultField },
@@ -488,7 +486,7 @@ export const handleQuerySelectionChange = (selectedText: string) => {
 };
 
 export function toggleSchema() {
-  const { showSchema } = getState().getFocusedSession();
+  const { showSchema } = getState().getSession();
   setSession({ showSchema: !showSchema });
 }
 
@@ -508,7 +506,7 @@ export function setSchemaState(connectionId: string, schemaState: SchemaState) {
  */
 export async function loadSchema(connectionId: string, reload?: boolean) {
   const { schemaStates } = getState();
-  const { showSchema } = getState().getFocusedSession();
+  const { showSchema } = getState().getSession();
 
   if (!schemaStates[connectionId] || reload) {
     setSchemaState(connectionId, {
@@ -556,7 +554,7 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
 }
 
 export function toggleSchemaItem(connectionId: string, item: { id: string }) {
-  const { schemaExpansions } = getState().getFocusedSession();
+  const { schemaExpansions } = getState().getSession();
 
   const expanded = { ...schemaExpansions[connectionId] };
   expanded[item.id] = !expanded[item.id];

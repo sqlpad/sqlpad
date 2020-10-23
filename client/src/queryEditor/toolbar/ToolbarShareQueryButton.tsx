@@ -3,10 +3,10 @@ import SharedIcon from 'mdi-react/AccountMultipleIcon';
 import React from 'react';
 import IconButton from '../../common/IconButton';
 import { setAcl } from '../../stores/editor-actions';
-import { useQueryShared } from '../../stores/editor-store';
+import { useSessionQueryShared } from '../../stores/editor-store';
 
 function ToolbarShareQueryButton() {
-  const shared = useQueryShared();
+  const shared = useSessionQueryShared();
 
   function handleClick() {
     setAcl(shared ? [] : [{ groupId: '__EVERYONE__', write: true }]);

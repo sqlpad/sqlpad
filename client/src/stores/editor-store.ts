@@ -49,7 +49,7 @@ export type EditorStoreState = {
   focusedSessionId: string;
   editorSessions: Record<string, EditorSession>;
   schemaStates: { [conectionId: string]: SchemaState };
-  getFocusedSession: () => EditorSession;
+  getSession: () => EditorSession;
 };
 
 const INITIAL_SESSION_ID = 'initial';
@@ -87,7 +87,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
     },
   },
   schemaStates: {},
-  getFocusedSession: () => {
+  getSession: () => {
     const { focusedSessionId, editorSessions } = get();
     if (!editorSessions[focusedSessionId]) {
       throw new Error('Editor session not found');
@@ -96,80 +96,84 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
   },
 }));
 
-export function useQueryShared() {
+export function useInitialized() {
+  return useEditorStore((s) => s.initialized);
+}
+
+export function useSessionQueryShared() {
   return useEditorStore((s) => {
-    const { acl } = s.getFocusedSession();
+    const { acl } = s.getSession();
     return (acl || []).length > 0;
   });
 }
 
-export function useTags() {
-  return useEditorStore((s) => s.getFocusedSession().tags);
+export function useSessionTags() {
+  return useEditorStore((s) => s.getSession().tags);
 }
 
-export function useQueryId() {
-  return useEditorStore((s) => s.getFocusedSession().queryId);
+export function useSessionQueryId() {
+  return useEditorStore((s) => s.getSession().queryId);
 }
 
-export function useQueryName() {
-  return useEditorStore((s) => s.getFocusedSession().queryName);
+export function useSessionQueryName() {
+  return useEditorStore((s) => s.getSession().queryName);
 }
 
-export function useQueryText() {
-  return useEditorStore((s) => s.getFocusedSession().queryText);
+export function useSessionQueryText() {
+  return useEditorStore((s) => s.getSession().queryText);
 }
 
-export function useShowValidation() {
-  return useEditorStore((s) => s.getFocusedSession().showValidation);
+export function useSessionShowValidation() {
+  return useEditorStore((s) => s.getSession().showValidation);
 }
 
-export function useIsRunning() {
-  return useEditorStore((s) => s.getFocusedSession().isRunning);
+export function useSessionIsRunning() {
+  return useEditorStore((s) => s.getSession().isRunning);
 }
 
-export function useIsSaving() {
-  return useEditorStore((s) => s.getFocusedSession().isSaving);
+export function useSessionIsSaving() {
+  return useEditorStore((s) => s.getSession().isSaving);
 }
 
-export function useUnsavedChanges() {
-  return useEditorStore((s) => s.getFocusedSession().unsavedChanges);
+export function useSessionUnsavedChanges() {
+  return useEditorStore((s) => s.getSession().unsavedChanges);
 }
 
-export function useSelectedConnectionId(): string {
-  return useEditorStore((s) => s.getFocusedSession().connectionId);
+export function useSessionConnectionId(): string {
+  return useEditorStore((s) => s.getSession().connectionId);
 }
 
-export function useConnectionClient(): any {
-  return useEditorStore((s) => s.getFocusedSession().connectionClient);
+export function useSessionConnectionClient() {
+  return useEditorStore((s) => s.getSession().connectionClient);
 }
 
-export function useShowSchema(): boolean {
-  return useEditorStore((s) => s.getFocusedSession().showSchema);
+export function useSessionShowSchema(): boolean {
+  return useEditorStore((s) => s.getSession().showSchema);
 }
 
-export function useChartType() {
-  return useEditorStore((s) => s.getFocusedSession().chartType);
+export function useSessionChartType() {
+  return useEditorStore((s) => s.getSession().chartType);
 }
 
-export function useChartFields() {
-  return useEditorStore((s) => s.getFocusedSession().chartFields);
+export function useSessionChartFields() {
+  return useEditorStore((s) => s.getSession().chartFields);
 }
 
-export function useQueryResult() {
-  return useEditorStore((s) => s.getFocusedSession().queryResult);
+export function useSessionQueryResult() {
+  return useEditorStore((s) => s.getSession().queryResult);
 }
 
-export function useQueryError() {
-  return useEditorStore((s) => s.getFocusedSession().queryError);
+export function useSessionQueryError() {
+  return useEditorStore((s) => s.getSession().queryError);
 }
 
-export function useRunQueryStartTime() {
-  return useEditorStore((s) => s.getFocusedSession().runQueryStartTime);
+export function useSessionRunQueryStartTime() {
+  return useEditorStore((s) => s.getSession().runQueryStartTime);
 }
 
-export function useSchemaExpanded(connectionId?: string) {
+export function useSessionSchemaExpanded(connectionId?: string) {
   return useEditorStore((s) => {
-    const { schemaExpansions } = s.getFocusedSession();
+    const { schemaExpansions } = s.getSession();
     if (!connectionId || !schemaExpansions[connectionId]) {
       return {};
     }

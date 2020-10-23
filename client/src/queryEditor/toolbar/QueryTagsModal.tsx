@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from '../../common/Modal';
 import MultiSelect, { MultiSelectItem } from '../../common/MultiSelect';
 import { setTags } from '../../stores/editor-actions';
-import { useTags } from '../../stores/editor-store';
+import { useSessionTags } from '../../stores/editor-store';
 import { api } from '../../utilities/api';
 
 interface Props {
@@ -11,7 +11,7 @@ interface Props {
 }
 
 function QueryTagsModal({ visible, onClose }: Props) {
-  const tags = useTags();
+  const tags = useSessionTags();
 
   const { data: tagsData } = api.useTags(visible);
   const options = (tagsData || []).map((tag) => ({

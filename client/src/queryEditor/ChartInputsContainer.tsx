@@ -1,16 +1,16 @@
 import React from 'react';
 import { handleChartConfigurationFieldsChange } from '../stores/editor-actions';
 import {
-  useQueryResult,
-  useChartType,
-  useChartFields,
+  useSessionQueryResult,
+  useSessionChartType,
+  useSessionChartFields,
 } from '../stores/editor-store';
 import ChartInputs from './ChartInputs';
 
 function ChartInputsContainer() {
-  const queryResult = useQueryResult();
-  const chartType = useChartType();
-  const chartFields = useChartFields();
+  const queryResult = useSessionQueryResult();
+  const chartType = useSessionChartType();
+  const chartFields = useSessionChartFields();
 
   return (
     <ChartInputs

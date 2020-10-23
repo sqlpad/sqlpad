@@ -3,14 +3,14 @@ import Button from '../common/Button';
 import Modal from '../common/Modal';
 import SqlDiff from '../common/SqlDiff';
 import { setQueryText } from '../stores/editor-actions';
-import { useQueryText } from '../stores/editor-store';
+import { useSessionQueryText } from '../stores/editor-store';
 import {
   getLocalQueryText,
   removeLocalQueryText,
 } from '../utilities/localQueryText';
 
 function UnsavedQuerySelector({ queryId }: any) {
-  const queryText = useQueryText();
+  const queryText = useSessionQueryText();
   const [showModal, setShowModal] = useState(false);
   const [unsavedQueryText, setUnsavedQueryText] = useState('');
 

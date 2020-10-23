@@ -4,15 +4,15 @@ import React from 'react';
 import IconButton from '../common/IconButton';
 import { exportPng } from '../common/tauChartRef';
 import {
-  useQueryId,
-  useQueryName,
-  useQueryResult,
+  useSessionQueryId,
+  useSessionQueryName,
+  useSessionQueryResult,
 } from '../stores/editor-store';
 
 function QueryEditorChartToolbar({ children }: any) {
-  const queryId = useQueryId() || 'new';
-  const queryName = useQueryName() || 'New query';
-  const queryResult = useQueryResult();
+  const queryId = useSessionQueryId() || 'new';
+  const queryName = useSessionQueryName() || 'New query';
+  const queryResult = useSessionQueryResult();
 
   const downloadEnabled =
     queryResult && queryResult.rows && queryResult.rows.length;

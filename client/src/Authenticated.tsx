@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { initApp } from './stores/editor-actions';
-import { useEditorStore } from './stores/editor-store';
+import { useInitialized } from './stores/editor-store';
 import { api } from './utilities/api';
 import useAppContext from './utilities/use-app-context';
 
@@ -13,7 +13,7 @@ export interface Props {
 const Authenticated = (props: Props) => {
   const { children } = props;
   const { config, currentUser } = useAppContext();
-  const initialized = useEditorStore((s) => s.initialized);
+  const initialized = useInitialized();
 
   let { data: connections } = api.useConnections();
 

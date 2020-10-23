@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { loadSchema } from '../stores/editor-actions';
-import { useSelectedConnectionId } from '../stores/editor-store';
+import { useSessionConnectionId } from '../stores/editor-store';
 
 /**
  * Instead of loading schema on selection,
@@ -9,7 +9,7 @@ import { useSelectedConnectionId } from '../stores/editor-store';
  * because sidebar could be hidden and this is an application-level need
  */
 function SchemaInfoLoader() {
-  const selectedConnectionId = useSelectedConnectionId();
+  const selectedConnectionId = useSessionConnectionId();
 
   useEffect(() => {
     if (selectedConnectionId) {

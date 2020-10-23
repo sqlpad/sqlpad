@@ -3,11 +3,14 @@ import SaveIcon from 'mdi-react/ContentSaveIcon';
 import React from 'react';
 import IconButton from '../../common/IconButton';
 import { saveQuery } from '../../stores/editor-actions';
-import { useIsSaving, useUnsavedChanges } from '../../stores/editor-store';
+import {
+  useSessionIsSaving,
+  useSessionUnsavedChanges,
+} from '../../stores/editor-store';
 
 function ToolbarSaveButton() {
-  const isSaving = useIsSaving();
-  const unsavedChanges = useUnsavedChanges();
+  const isSaving = useSessionIsSaving();
+  const unsavedChanges = useSessionUnsavedChanges();
 
   return (
     <IconButton tooltip="Save" onClick={() => saveQuery()} disabled={isSaving}>

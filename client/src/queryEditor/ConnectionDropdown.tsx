@@ -6,7 +6,7 @@ import {
   connectConnectionClient,
   selectConnectionId,
 } from '../stores/editor-actions';
-import { useSelectedConnectionId } from '../stores/editor-store';
+import { useSessionConnectionId } from '../stores/editor-store';
 import { Connection } from '../types';
 import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
@@ -14,7 +14,7 @@ import styles from './ConnectionDropdown.module.css';
 
 function ConnectionDropdown() {
   const { currentUser } = useAppContext();
-  const selectedConnectionId = useSelectedConnectionId();
+  const selectedConnectionId = useSessionConnectionId();
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
 

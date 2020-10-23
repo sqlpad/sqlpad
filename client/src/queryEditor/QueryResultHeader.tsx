@@ -5,19 +5,19 @@ import { Link } from 'react-router-dom';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer';
 import {
-  useIsRunning,
-  useQueryId,
-  useQueryResult,
-  useRunQueryStartTime,
+  useSessionIsRunning,
+  useSessionQueryId,
+  useSessionQueryResult,
+  useSessionRunQueryStartTime,
 } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
 
 function QueryResultHeader() {
-  const isRunning = useIsRunning();
-  const queryId = useQueryId();
-  const queryResult = useQueryResult();
-  const runQueryStartTime = useRunQueryStartTime();
+  const isRunning = useSessionIsRunning();
+  const queryId = useSessionQueryId();
+  const queryResult = useSessionQueryResult();
+  const runQueryStartTime = useSessionRunQueryStartTime();
 
   const { config } = useAppContext();
   if (isRunning || !queryResult) {

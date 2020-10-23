@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useQueryName } from '../stores/editor-store';
+import { useSessionQueryName } from '../stores/editor-store';
 
 /**
  * This component isolates the work of updating the document title on query name changes.
@@ -8,7 +8,7 @@ import { useQueryName } from '../stores/editor-store';
  * @param {object} props
  */
 function DocumentTitle({ queryId }: { queryId: string }) {
-  const queryName = useQueryName();
+  const queryName = useSessionQueryName();
   const title = queryId === 'new' ? 'New query' : queryName;
 
   useEffect(() => {

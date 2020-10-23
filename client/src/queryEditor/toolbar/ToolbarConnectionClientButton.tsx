@@ -7,15 +7,15 @@ import {
   disconnectConnectionClient,
 } from '../../stores/editor-actions';
 import {
-  useConnectionClient,
-  useSelectedConnectionId,
+  useSessionConnectionClient,
+  useSessionConnectionId,
 } from '../../stores/editor-store';
 import { api } from '../../utilities/api';
 
 function ToolbarConnectionClientButton() {
   const [fetching, setFetching] = useState(false);
-  const connectionClient = useConnectionClient();
-  const selectedConnectionId = useSelectedConnectionId();
+  const connectionClient = useSessionConnectionClient();
+  const selectedConnectionId = useSessionConnectionId();
 
   let { data: connectionsData } = api.useConnections();
   const connections = connectionsData || [];

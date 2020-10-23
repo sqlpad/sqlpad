@@ -2,10 +2,10 @@ import CopyIcon from 'mdi-react/ContentCopyIcon';
 import React from 'react';
 import IconButton from '../../common/IconButton';
 import { handleCloneClick } from '../../stores/editor-actions';
-import { useQueryId } from '../../stores/editor-store';
+import { useSessionQueryId } from '../../stores/editor-store';
 
 function ToolbarCloneButton() {
-  const queryId = useQueryId();
+  const queryId = useSessionQueryId();
   const cloneDisabled = !queryId;
 
   return (

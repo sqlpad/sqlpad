@@ -1,11 +1,14 @@
 import React from 'react';
 import Input from '../../common/Input';
 import { setQueryName } from '../../stores/editor-actions';
-import { useQueryName, useShowValidation } from '../../stores/editor-store';
+import {
+  useSessionQueryName,
+  useSessionShowValidation,
+} from '../../stores/editor-store';
 
 function ToolbarQueryNameInput() {
-  const queryName = useQueryName();
-  const showValidation = useShowValidation();
+  const queryName = useSessionQueryName();
+  const showValidation = useSessionShowValidation();
   const error = showValidation && !queryName.length;
 
   return (

@@ -1,10 +1,10 @@
 import React from 'react';
 import Button from '../../common/Button';
 import { connectConnectionClient, runQuery } from '../../stores/editor-actions';
-import { useIsRunning } from '../../stores/editor-store';
+import { useSessionIsRunning } from '../../stores/editor-store';
 
 function ToolbarRunButton() {
-  const isRunning = useIsRunning();
+  const isRunning = useSessionIsRunning();
 
   return (
     <Button

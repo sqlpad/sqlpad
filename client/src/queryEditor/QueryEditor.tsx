@@ -10,7 +10,10 @@ import {
   loadQuery,
   resetNewQuery,
 } from '../stores/editor-actions';
-import { useChartType, useShowSchema } from '../stores/editor-store';
+import {
+  useSessionChartType,
+  useSessionShowSchema,
+} from '../stores/editor-store';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
@@ -29,7 +32,7 @@ type Props = {
 
 function QueryEditor(props: Props) {
   const { queryId } = props;
-  const chartType = useChartType();
+  const chartType = useSessionChartType();
   const showVis = Boolean(chartType);
 
   // Once initialized reset or load query on changes accordingly
@@ -46,7 +49,7 @@ function QueryEditor(props: Props) {
     deboucedResearchChart(queryId);
   }
 
-  const showSchema = useShowSchema();
+  const showSchema = useSessionShowSchema();
 
   const editorAndVis = showVis ? (
     <SplitPane
