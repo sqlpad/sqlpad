@@ -1,5 +1,10 @@
 # Changelog
 
+## [5.8.1] - 2020-10-23
+
+- Fix LDAP editor role search filter
+- Allow empty/`denied` value for `SQLPAD_LDAP_DEFAULT_ROLE` to deny users that do not match LDAP role filters. See [LDAP documentation](http://rickbergfalk.github.io/sqlpad/#/authentication?id=ldap-experimental) for more info.
+
 ## [5.8.0] - 2020-10-22
 
 - Add LDAP auto sign-up and dynamic role assignment based on LDAP search
