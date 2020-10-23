@@ -1,11 +1,15 @@
 import React, { FunctionComponent } from 'react';
 import QueryResultDataTable from '../common/QueryResultContainer';
-import { useEditorStore } from '../stores/editor-store';
+import {
+  useSessionIsRunning,
+  useSessionQueryError,
+  useSessionQueryResult,
+} from '../stores/editor-store';
 
 const ConnectedQueryEditorResult: FunctionComponent = (props) => {
-  const isRunning = useEditorStore((s) => s.isRunning);
-  const queryResult = useEditorStore((s) => s.queryResult);
-  const queryError = useEditorStore((s) => s.queryError);
+  const isRunning = useSessionIsRunning();
+  const queryResult = useSessionQueryResult();
+  const queryError = useSessionQueryError();
 
   return (
     <QueryResultDataTable

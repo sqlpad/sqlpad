@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent } from 'react';
 import Select from '../common/Select';
 import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
@@ -6,7 +6,7 @@ import {
   connectConnectionClient,
   selectConnectionId,
 } from '../stores/editor-actions';
-import { useSelectedConnectionId } from '../stores/editor-store';
+import { useSessionConnectionId } from '../stores/editor-store';
 import { Connection } from '../types';
 import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
@@ -14,14 +14,14 @@ import styles from './ConnectionDropdown.module.css';
 
 function ConnectionDropdown() {
   const { currentUser } = useAppContext();
-  const selectedConnectionId = useSelectedConnectionId();
+  const selectedConnectionId = useSessionConnectionId();
   const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
 
   let { data: connectionsData, mutate } = api.useConnections();
   const connections = connectionsData || [];
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     if (event.target.value === 'new') {
       return setShowEdit(true);
     }
@@ -55,7 +55,7 @@ function ConnectionDropdown() {
       <Select
         style={style}
         className={className}
-        value={selectedConnectionId || undefined}
+        value={selectedConnectionId || ''}
         onChange={handleChange}
       >
         <option value="" hidden>

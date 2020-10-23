@@ -1,12 +1,26 @@
-import React, { FunctionComponent } from 'react';
+import React, { FunctionComponent, useMemo } from 'react';
 import SqlpadTauChart from '../common/SqlpadTauChart';
-import { useEditorStore } from '../stores/editor-store';
+import {
+  useSessionChartFields,
+  useSessionChartType,
+  useSessionIsRunning,
+  useSessionQueryId,
+  useSessionQueryResult,
+} from '../stores/editor-store';
 
 const ConnectedChart: FunctionComponent = (props) => {
-  const queryId = useEditorStore((s) => s?.query?.id || 'new');
-  const isRunning = useEditorStore((s) => s.isRunning);
-  const queryResult = useEditorStore((s) => s.queryResult);
-  const chartConfiguration = useEditorStore((s) => s?.query?.chart);
+  const queryId = useSessionQueryId() || 'new';
+  const isRunning = useSessionIsRunning();
+  const queryResult = useSessionQueryResult();
+  const chartType = useSessionChartType();
+  const chartFields = useSessionChartFields();
+
+  const chartConfiguration = useMemo(() => {
+    return {
+      chartType,
+      fields: chartFields,
+    };
+  }, [chartType, chartFields]);
 
   return (
     <SqlpadTauChart

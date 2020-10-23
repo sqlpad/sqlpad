@@ -2,16 +2,29 @@ import localforage from 'localforage';
 import queryString from 'query-string';
 import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
-import baseUrl from '../utilities/baseUrl';
+import { ACLRecord, AppInfo, ChartFields, Connection } from '../types';
 import { api } from '../utilities/api';
+import baseUrl from '../utilities/baseUrl';
 import {
   removeLocalQueryText,
   setLocalQueryText,
 } from '../utilities/localQueryText';
 import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
-import { NEW_QUERY, SchemaState, useEditorStore } from './editor-store';
-import { AppInfo, Connection } from '../types';
+import { EditorSession, SchemaState, useEditorStore } from './editor-store';
+
+const { getState, setState } = useEditorStore;
+
+function setSession(update: Partial<EditorSession>) {
+  const { focusedSessionId, editorSessions } = getState();
+  const focusedSession = getState().getSession();
+  setState({
+    editorSessions: {
+      ...editorSessions,
+      [focusedSessionId]: { ...focusedSession, ...update },
+    },
+  });
+}
 
 export const initApp = async (
   config: AppInfo['config'],
@@ -22,12 +35,10 @@ export const initApp = async (
       localforage.getItem('selectedConnectionId'),
     ]);
 
-    const update: { initialized: boolean; selectedConnectionId?: string } = {
-      initialized: true,
-    };
+    let initialConnectionId = '';
 
     if (connections.length === 1) {
-      update.selectedConnectionId = connections[0].id;
+      selectedConnectionId = connections[0].id;
     } else {
       const { defaultConnectionId } = config || {};
       if (defaultConnectionId) {
@@ -35,7 +46,7 @@ export const initApp = async (
           (c) => c.id === defaultConnectionId
         );
         if (Boolean(foundDefault)) {
-          update.selectedConnectionId = defaultConnectionId;
+          initialConnectionId = defaultConnectionId;
         }
       }
 
@@ -44,7 +55,7 @@ export const initApp = async (
           (c) => c.id === selectedConnectionId
         );
         if (Boolean(selectedConnection)) {
-          update.selectedConnectionId = selectedConnectionId;
+          initialConnectionId = selectedConnectionId;
         }
       }
 
@@ -54,8 +65,8 @@ export const initApp = async (
         const selectedConnection = connections.find(
           (c) => c.name === qsConnectionName
         );
-        if (Boolean(selectedConnection)) {
-          update.selectedConnectionId = selectedConnection?.id;
+        if (selectedConnection?.id) {
+          initialConnectionId = selectedConnection?.id;
         }
       }
 
@@ -64,13 +75,14 @@ export const initApp = async (
         const selectedConnection = connections.find(
           (c) => c.id === qsConnectionId
         );
-        if (Boolean(selectedConnection)) {
-          update.selectedConnectionId = selectedConnection?.id;
+        if (selectedConnection?.id) {
+          initialConnectionId = selectedConnection?.id;
         }
       }
     }
 
-    useEditorStore.setState(update);
+    setSession({ connectionId: initialConnectionId });
+    setState({ initialized: true });
   } catch (error) {
     console.error(error);
     message.error('Error initializing application');
@@ -81,10 +93,10 @@ export const initApp = async (
  * Open a connection client for the currently selected connection if supported
  */
 export async function connectConnectionClient() {
-  const { connectionClient, selectedConnectionId } = useEditorStore.getState();
+  const { connectionClient, connectionId } = getState().getSession();
 
   // If a connectionClient is already open or selected connection id doesn't exist, do nothing
-  if (connectionClient || !selectedConnectionId) {
+  if (connectionClient || !connectionId) {
     return;
   }
 
@@ -92,7 +104,7 @@ export async function connectConnectionClient() {
   // May want to store selected connection instead of just id
   const { data: connections } = await api.getConnections();
   const connection = (connections || []).find(
-    (connection) => connection.id === selectedConnectionId
+    (connection) => connection.id === connectionId
   );
 
   const supportedAndEnabled =
@@ -105,7 +117,7 @@ export async function connectConnectionClient() {
   }
 
   const json = await api.post('/api/connection-clients', {
-    connectionId: selectedConnectionId,
+    connectionId,
   });
   if (json.error) {
     return message.error('Problem connecting to database');
@@ -128,18 +140,18 @@ export async function connectConnectionClient() {
     // the connectionClient has been disconnected
     if (!updateJson.data && connectionClientInterval) {
       clearInterval(connectionClientInterval);
-      useEditorStore.setState({
-        connectionClientInterval: null,
-        connectionClient: null,
+      setSession({
+        connectionClientInterval: undefined,
+        connectionClient: undefined,
       });
     } else {
-      useEditorStore.setState({
+      setSession({
         connectionClient: updateJson.data,
       });
     }
   }, 10000);
 
-  useEditorStore.setState({
+  setSession({
     connectionClient: json.data,
     connectionClientInterval,
   });
@@ -152,7 +164,7 @@ export async function disconnectConnectionClient() {
   const {
     connectionClient,
     connectionClientInterval,
-  } = useEditorStore.getState();
+  } = getState().getSession();
 
   if (connectionClientInterval) {
     clearInterval(connectionClientInterval);
@@ -168,24 +180,24 @@ export async function disconnectConnectionClient() {
       });
   }
 
-  useEditorStore.setState({
-    connectionClient: null,
-    connectionClientInterval: null,
+  setSession({
+    connectionClient: undefined,
+    connectionClientInterval: undefined,
   });
 }
 
 /**
  * Select connection and disconnect connectionClient if it exists
- * @param selectedConnectionId
+ * @param connectionId
  */
-export function selectConnectionId(selectedConnectionId: string) {
+export function selectConnectionId(connectionId: string) {
   const {
     connectionClient,
     connectionClientInterval,
-  } = useEditorStore.getState();
+  } = getState().getSession();
 
   localforage
-    .setItem('selectedConnectionId', selectedConnectionId)
+    .setItem('selectedConnectionId', connectionId)
     .catch((error) => message.error(error));
 
   if (connectionClient) {
@@ -202,18 +214,18 @@ export function selectConnectionId(selectedConnectionId: string) {
     clearInterval(connectionClientInterval);
   }
 
-  useEditorStore.setState({
-    selectedConnectionId,
-    connectionClient: null,
-    connectionClientInterval: null,
+  setSession({
+    connectionId,
+    connectionClient: undefined,
+    connectionClientInterval: undefined,
   });
 }
 
 export const formatQuery = async () => {
-  const { query } = useEditorStore.getState();
+  const { queryText, queryId } = getState().getSession();
 
   const json = await api.post('/api/format-sql', {
-    query: query.queryText,
+    query: queryText,
   });
 
   if (json.error) {
@@ -226,12 +238,10 @@ export const formatQuery = async () => {
     return;
   }
 
-  setLocalQueryText(query.id, json.data.query);
-
-  useEditorStore.setState({
-    query: { ...query, queryText: json.data.query },
-    unsavedChanges: true,
-  });
+  setLocalQueryText(queryId, json.data.query);
+  // TODO - once there more than 1 session user could toggle tabs before response comes back
+  // setFocusedSession shortcut should go away for explicit session updates
+  setSession({ queryText: json.data.query, unsavedChanges: true });
 };
 
 export const loadQuery = async (queryId: string) => {
@@ -240,14 +250,22 @@ export const loadQuery = async (queryId: string) => {
     return message.error('Query not found');
   }
 
-  useEditorStore.setState({
-    selectedConnectionId: data.connectionId,
-  });
-
-  useEditorStore.setState({
-    runQueryInstanceId: null,
+  setSession({
+    // Map query object to flattened editor session data
+    queryId,
+    connectionId: data.connectionId,
+    queryText: data.queryText,
+    queryName: data.name,
+    tags: data.tags,
+    acl: data.acl,
+    chartType: data?.chart?.chartType,
+    chartFields: data?.chart?.fields,
+    canDelete: data.canDelete,
+    canRead: data.canRead,
+    canWrite: data.canWrite,
+    // Reset result/error/unsaved/running states
+    runQueryInstanceId: undefined,
     isRunning: false,
-    query: data,
     queryError: undefined,
     queryResult: undefined,
     unsavedChanges: false,
@@ -255,26 +273,37 @@ export const loadQuery = async (queryId: string) => {
 };
 
 export const runQuery = async () => {
-  const { query, selectedText } = useEditorStore.getState();
-  const { selectedConnectionId, connectionClient } = useEditorStore.getState();
+  const {
+    queryId,
+    queryName,
+    queryText,
+    chartType,
+    chartFields,
+    connectionId,
+    connectionClient,
+    selectedText,
+  } = getState().getSession();
 
   // multiple queries could be running and we only want to keep the "current" or latest query run
   const runQueryInstanceId = uuidv4();
 
-  useEditorStore.setState({
+  setSession({
     runQueryInstanceId,
     isRunning: true,
     runQueryStartTime: new Date(),
   });
 
   const postData = {
-    connectionId: selectedConnectionId,
+    connectionId,
     connectionClientId: connectionClient && connectionClient.id,
-    queryId: query.id,
-    name: query.name,
-    batchText: query.queryText,
+    queryId,
+    name: queryName,
+    batchText: queryText,
     selectedText,
-    chart: query.chart,
+    chart: {
+      chartType,
+      fields: chartFields,
+    },
   };
 
   const { data, error } = await runQueryViaBatch(postData);
@@ -282,8 +311,8 @@ export const runQuery = async () => {
   // Get latest state and check runQueryInstanceId to ensure it matches
   // If it matches another query has not been run and we can keep the result.
   // Not matching implies another query has been executed and we can ignore this result.
-  if (useEditorStore.getState().runQueryInstanceId === runQueryInstanceId) {
-    useEditorStore.setState({
+  if (getState().getSession().runQueryInstanceId === runQueryInstanceId) {
+    setSession({
       isRunning: false,
       queryError: error,
       queryResult: data,
@@ -292,35 +321,59 @@ export const runQuery = async () => {
 };
 
 export const saveQuery = async () => {
-  const { query } = useEditorStore.getState();
-  const { selectedConnectionId } = useEditorStore.getState();
+  const {
+    queryId,
+    connectionId,
+    queryName,
+    queryText,
+    chartFields,
+    chartType,
+    tags,
+    acl,
+  } = getState().getSession();
 
-  if (!query.name) {
+  if (!queryName) {
     message.error('Query name required');
-    useEditorStore.setState({ showValidation: true });
+    setSession({ showValidation: true });
     return;
   }
 
-  useEditorStore.setState({ isSaving: true });
-  const queryData = Object.assign({}, query, {
-    connectionId: selectedConnectionId,
-  });
+  setSession({ isSaving: true });
+  const queryData = {
+    connectionId,
+    name: queryName,
+    queryText,
+    acl,
+    chart: {
+      chartType,
+      fields: chartFields,
+    },
+    tags,
+  };
 
-  if (query.id) {
-    api.put(`/api/queries/${query.id}`, queryData).then((json) => {
+  if (queryId) {
+    api.put(`/api/queries/${queryId}`, queryData).then((json) => {
       const { error, data } = json;
       if (error) {
         message.error(error);
-        useEditorStore.setState({ isSaving: false });
+        setSession({ isSaving: false });
         return;
       }
       api.reloadQueries();
-      message.success('Query Saved');
       removeLocalQueryText(data.id);
-      useEditorStore.setState({
+      setSession({
         isSaving: false,
         unsavedChanges: false,
-        query: data,
+        connectionId: data.connectionId,
+        queryText: data.queryText,
+        queryName: data.name,
+        tags: data.tags,
+        acl: data.acl,
+        chartType: data?.chart?.chartType,
+        chartFields: data?.chart?.fields,
+        canDelete: data.canDelete,
+        canRead: data.canRead,
+        canWrite: data.canWrite,
       });
     });
   } else {
@@ -328,7 +381,7 @@ export const saveQuery = async () => {
       const { error, data } = json;
       if (error) {
         message.error(error);
-        useEditorStore.setState({ isSaving: false });
+        setSession({ isSaving: false });
         return;
       }
       api.reloadQueries();
@@ -339,90 +392,111 @@ export const saveQuery = async () => {
       );
       message.success('Query Saved');
       removeLocalQueryText(data.id);
-      useEditorStore.setState({
+      setSession({
         isSaving: false,
         unsavedChanges: false,
-        query: data,
+        connectionId: data.connectionId,
+        queryText: data.queryText,
+        queryName: data.name,
+        tags: data.tags,
+        acl: data.acl,
+        chartType: data?.chart?.chartType,
+        chartFields: data?.chart?.fields,
+        canDelete: data.canDelete,
+        canRead: data.canRead,
+        canWrite: data.canWrite,
       });
     });
   }
 };
 
 export const handleCloneClick = () => {
-  const { query } = useEditorStore.getState();
-  delete query.id;
-  const name = 'Copy of ' + query.name;
-  window.history.replaceState({}, name, `${baseUrl()}/queries/new`);
-  useEditorStore.setState({ query: { ...query, name }, unsavedChanges: true });
+  const { queryName } = getState().getSession();
+  const newName = `Copy of ${queryName}`;
+  window.history.replaceState({}, newName, `${baseUrl()}/queries/new`);
+  setSession({ queryId: '', queryName: newName, unsavedChanges: true });
 };
 
 export const resetNewQuery = () => {
-  useEditorStore.setState({
-    runQueryInstanceId: null,
+  // NOTE connectionId IS NOT set here on purpose
+  // The new query should have the same connection as previously
+  setSession({
+    runQueryInstanceId: undefined,
     isRunning: false,
-    query: Object.assign({}, NEW_QUERY),
+    queryId: '',
+    queryName: '',
+    tags: [],
+    acl: [],
+    queryText: '',
+    chartType: '',
+    chartFields: {},
+    canRead: true,
+    canWrite: true,
+    canDelete: true,
     queryError: undefined,
     queryResult: undefined,
     unsavedChanges: false,
   });
 };
 
-export const setQueryState = (field: any, value: any) => {
-  const { query } = useEditorStore.getState();
-  if (field === 'queryText') {
-    setLocalQueryText(query.id, value);
-  }
-  useEditorStore.setState({
-    query: { ...query, [field]: value },
-    unsavedChanges: true,
-  });
+export const setQueryText = (queryText: string) => {
+  const { queryId } = getState().getSession();
+  setLocalQueryText(queryId, queryText);
+  setSession({ queryText, unsavedChanges: true });
+};
+
+export const setQueryName = (queryName: string) => {
+  setSession({ queryName, unsavedChanges: true });
+};
+
+export const setTags = (tags: string[]) => {
+  setSession({ tags, unsavedChanges: true });
+};
+
+export const setAcl = (acl: Partial<ACLRecord>[]) => {
+  setSession({ acl, unsavedChanges: true });
+};
+
+export const setChartType = (chartType: string) => {
+  setSession({ chartType, unsavedChanges: true });
+};
+
+export const setChartFields = (chartFields: ChartFields) => {
+  setSession({ chartFields, unsavedChanges: true });
 };
 
 export const handleChartConfigurationFieldsChange = (
-  chartFieldId: any,
+  chartFieldId: string,
   queryResultField: any
 ) => {
-  const { query } = useEditorStore.getState();
-  const { fields } = query.chart;
-  useEditorStore.setState({
-    query: {
-      ...query,
-      chart: {
-        ...query.chart,
-        fields: { ...fields, [chartFieldId]: queryResultField },
-      },
-    },
+  const { chartFields } = getState().getSession();
+
+  setSession({
+    chartFields: { ...chartFields, [chartFieldId]: queryResultField },
     unsavedChanges: true,
   });
 };
 
-export const handleChartTypeChange = (chartType: any) => {
-  const { query } = useEditorStore.getState();
-  useEditorStore.setState({
-    query: {
-      ...query,
-      chart: { ...query.chart, chartType },
-    },
-    unsavedChanges: true,
-  });
+export const handleChartTypeChange = (chartType: string) => {
+  setSession({ chartType, unsavedChanges: true });
 };
 
-export const handleQuerySelectionChange = (selectedText: any) => {
-  useEditorStore.setState({ selectedText });
+export const handleQuerySelectionChange = (selectedText: string) => {
+  setSession({ selectedText });
 };
 
 export function toggleSchema() {
-  const { showSchema } = useEditorStore.getState();
-  useEditorStore.setState({ showSchema: !showSchema });
+  const { showSchema } = getState().getSession();
+  setSession({ showSchema: !showSchema });
 }
 
 export function setSchemaState(connectionId: string, schemaState: SchemaState) {
-  const { schemaStates } = useEditorStore.getState();
+  const { schemaStates } = getState();
   const update = {
     ...schemaStates,
     [connectionId]: schemaState,
   };
-  useEditorStore.setState({ schemaStates: update });
+  setState({ schemaStates: update });
 }
 
 /**
@@ -431,12 +505,12 @@ export function setSchemaState(connectionId: string, schemaState: SchemaState) {
  * @param reload - force cache refresh for schema
  */
 export async function loadSchema(connectionId: string, reload?: boolean) {
-  const { showSchema, schemaStates } = useEditorStore.getState();
+  const { schemaStates } = getState();
+  const { showSchema } = getState().getSession();
 
   if (!schemaStates[connectionId] || reload) {
     setSchemaState(connectionId, {
       loading: true,
-      expanded: {},
     });
 
     const json = await api.getConnectionSchema(connectionId, reload);
@@ -446,7 +520,6 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
       setSchemaState(connectionId, {
         loading: false,
         error,
-        expanded: {},
       });
       // If sidebar is not shown, send error notification
       // It is otherwise shown in sidebar where schema would be
@@ -474,17 +547,17 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
       loading: false,
       connectionSchema: data,
       error: undefined,
-      expanded,
     });
+
+    setSession({ schemaExpansions: { [connectionId]: expanded } });
   }
 }
 
 export function toggleSchemaItem(connectionId: string, item: { id: string }) {
-  const { schemaStates } = useEditorStore.getState();
-  const connectionSchema = schemaStates[connectionId];
-  const open = !connectionSchema.expanded[item.id];
-  setSchemaState(connectionId, {
-    ...connectionSchema,
-    expanded: { ...connectionSchema.expanded, [item.id]: open },
-  });
+  const { schemaExpansions } = getState().getSession();
+
+  const expanded = { ...schemaExpansions[connectionId] };
+  expanded[item.id] = !expanded[item.id];
+
+  setSession({ schemaExpansions: { [connectionId]: expanded } });
 }

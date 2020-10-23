@@ -1,82 +1,190 @@
 import create from 'zustand';
-import { ConnectionSchema } from '../types';
+import {
+  ConnectionSchema,
+  ConnectionClient,
+  ChartFields,
+  ACLRecord,
+} from '../types';
 
-export const NEW_QUERY = {
-  id: '',
-  name: '',
-  tags: [],
-  connectionId: '',
-  queryText: '',
-  chart: {
-    chartType: '',
-    fields: {}, // key value for chart
-  },
-  canRead: true,
-  canWrite: true,
-  canDelete: true,
-};
+export type ExpandedMap = { [itemPath: string]: boolean };
 
 export interface SchemaState {
   loading: boolean;
   connectionSchema?: ConnectionSchema;
   error?: string;
-  expanded: { [key: string]: boolean };
 }
 
-type State = {
+export interface EditorSession {
+  id: string;
   showSchema: boolean;
-  schemaStates: { [conectionId: string]: SchemaState };
-  initialized: boolean;
-  selectedConnectionId: string;
-  connectionClient: any;
-  connectionClientInterval: any;
-  runQueryInstanceId: any;
+  schemaExpansions: { [conectionId: string]: ExpandedMap };
+  connectionId: string;
+  connectionClient?: ConnectionClient;
+  connectionClientInterval?: any;
+  runQueryInstanceId?: string;
   isRunning: boolean;
   isSaving: boolean;
-  query: any;
-  queryError: any;
-  queryResult: any;
-  runQueryStartTime: any;
+  // Editor session takes Query model fields and flattens
+  queryId?: string;
+  queryName: string;
+  queryText: string;
+  tags: string[];
+  acl: Partial<ACLRecord>[];
+  chartType: string;
+  chartFields: ChartFields;
+  canRead: boolean;
+  canWrite: boolean;
+  canDelete: boolean;
+  // Additional data for editor states
   selectedText: string;
+  queryError?: any;
+  queryResult?: any;
+  runQueryStartTime?: any;
   showValidation: boolean;
   unsavedChanges: boolean;
+}
+
+export type EditorStoreState = {
+  initialized: boolean;
+  focusedSessionId: string;
+  editorSessions: Record<string, EditorSession>;
+  schemaStates: { [conectionId: string]: SchemaState };
+  getSession: () => EditorSession;
 };
 
-export const useEditorStore = create<State>((set, get) => ({
-  showSchema: true,
-  schemaStates: {},
+const INITIAL_SESSION_ID = 'initial';
+
+export const useEditorStore = create<EditorStoreState>((set, get) => ({
   initialized: false,
-  selectedConnectionId: '',
-  connectionClient: null,
-  connectionClientInterval: null,
-  runQueryInstanceId: null,
-  isRunning: false,
-  isSaving: false,
-  query: Object.assign({}, NEW_QUERY),
-  queryError: undefined,
-  queryResult: undefined,
-  runQueryStartTime: undefined,
-  selectedText: '',
-  showValidation: false,
-  unsavedChanges: false,
+  focusedSessionId: INITIAL_SESSION_ID,
+  editorSessions: {
+    [INITIAL_SESSION_ID]: {
+      id: INITIAL_SESSION_ID,
+      showSchema: true,
+      schemaExpansions: {},
+      connectionId: '',
+      connectionClient: undefined,
+      connectionClientInterval: undefined,
+      runQueryInstanceId: undefined,
+      isRunning: false,
+      isSaving: false,
+      queryId: undefined,
+      queryName: '',
+      queryText: '',
+      tags: [],
+      acl: [],
+      chartType: '',
+      chartFields: {},
+      canRead: true,
+      canWrite: true,
+      canDelete: true,
+      queryError: undefined,
+      queryResult: undefined,
+      runQueryStartTime: undefined,
+      selectedText: '',
+      showValidation: false,
+      unsavedChanges: false,
+    },
+  },
+  schemaStates: {},
+  getSession: () => {
+    const { focusedSessionId, editorSessions } = get();
+    if (!editorSessions[focusedSessionId]) {
+      throw new Error('Editor session not found');
+    }
+    return editorSessions[focusedSessionId];
+  },
 }));
 
-export function useSelectedConnectionId(): string {
-  return useEditorStore((s) => s.selectedConnectionId);
+export function useInitialized() {
+  return useEditorStore((s) => s.initialized);
 }
 
-export function useConnectionClient(): any {
-  return useEditorStore((s) => s.connectionClient);
+export function useSessionQueryShared() {
+  return useEditorStore((s) => {
+    const { acl } = s.getSession();
+    return (acl || []).length > 0;
+  });
 }
 
-export function useShowSchema(): boolean {
-  return useEditorStore((s) => s.showSchema);
+export function useSessionTags() {
+  return useEditorStore((s) => s.getSession().tags);
+}
+
+export function useSessionQueryId() {
+  return useEditorStore((s) => s.getSession().queryId);
+}
+
+export function useSessionQueryName() {
+  return useEditorStore((s) => s.getSession().queryName);
+}
+
+export function useSessionQueryText() {
+  return useEditorStore((s) => s.getSession().queryText);
+}
+
+export function useSessionShowValidation() {
+  return useEditorStore((s) => s.getSession().showValidation);
+}
+
+export function useSessionIsRunning() {
+  return useEditorStore((s) => s.getSession().isRunning);
+}
+
+export function useSessionIsSaving() {
+  return useEditorStore((s) => s.getSession().isSaving);
+}
+
+export function useSessionUnsavedChanges() {
+  return useEditorStore((s) => s.getSession().unsavedChanges);
+}
+
+export function useSessionConnectionId(): string {
+  return useEditorStore((s) => s.getSession().connectionId);
+}
+
+export function useSessionConnectionClient() {
+  return useEditorStore((s) => s.getSession().connectionClient);
+}
+
+export function useSessionShowSchema(): boolean {
+  return useEditorStore((s) => s.getSession().showSchema);
+}
+
+export function useSessionChartType() {
+  return useEditorStore((s) => s.getSession().chartType);
+}
+
+export function useSessionChartFields() {
+  return useEditorStore((s) => s.getSession().chartFields);
+}
+
+export function useSessionQueryResult() {
+  return useEditorStore((s) => s.getSession().queryResult);
+}
+
+export function useSessionQueryError() {
+  return useEditorStore((s) => s.getSession().queryError);
+}
+
+export function useSessionRunQueryStartTime() {
+  return useEditorStore((s) => s.getSession().runQueryStartTime);
+}
+
+export function useSessionSchemaExpanded(connectionId?: string) {
+  return useEditorStore((s) => {
+    const { schemaExpansions } = s.getSession();
+    if (!connectionId || !schemaExpansions[connectionId]) {
+      return {};
+    }
+    return schemaExpansions[connectionId];
+  });
 }
 
 export function useSchemaState(connectionId?: string) {
   return useEditorStore((s) => {
     if (!connectionId || !s.schemaStates[connectionId]) {
-      const emptySchemaState: SchemaState = { loading: false, expanded: {} };
+      const emptySchemaState: SchemaState = { loading: false };
       return emptySchemaState;
     }
     return s.schemaStates[connectionId];

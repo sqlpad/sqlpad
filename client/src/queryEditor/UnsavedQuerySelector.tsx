@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import Button from '../common/Button';
 import Modal from '../common/Modal';
 import SqlDiff from '../common/SqlDiff';
-import { setQueryState } from '../stores/editor-actions';
-import { useEditorStore } from '../stores/editor-store';
+import { setQueryText } from '../stores/editor-actions';
+import { useSessionQueryText } from '../stores/editor-store';
 import {
   getLocalQueryText,
   removeLocalQueryText,
 } from '../utilities/localQueryText';
 
 function UnsavedQuerySelector({ queryId }: any) {
-  const queryText = useEditorStore((s) => s?.query?.queryText);
+  const queryText = useSessionQueryText();
   const [showModal, setShowModal] = useState(false);
   const [unsavedQueryText, setUnsavedQueryText] = useState('');
 
@@ -40,7 +40,7 @@ function UnsavedQuerySelector({ queryId }: any) {
           onClick={() => {
             setShowModal(false);
             removeLocalQueryText(queryId);
-            setQueryState('queryText', unsavedQueryText);
+            setQueryText(unsavedQueryText);
           }}
         >
           Use unsaved

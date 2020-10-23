@@ -1,12 +1,17 @@
 import React from 'react';
 import Modal from '../../common/Modal';
-import MultiSelect from '../../common/MultiSelect';
-import { setQueryState } from '../../stores/editor-actions';
-import { useEditorStore } from '../../stores/editor-store';
+import MultiSelect, { MultiSelectItem } from '../../common/MultiSelect';
+import { setTags } from '../../stores/editor-actions';
+import { useSessionTags } from '../../stores/editor-store';
 import { api } from '../../utilities/api';
 
-function QueryTagsModal({ visible, onClose }: any) {
-  const tags = useEditorStore<string[]>((s) => s?.query?.tags || []);
+interface Props {
+  visible: boolean;
+  onClose: () => void;
+}
+
+function QueryTagsModal({ visible, onClose }: Props) {
+  const tags = useSessionTags();
 
   const { data: tagsData } = api.useTags(visible);
   const options = (tagsData || []).map((tag) => ({
@@ -18,11 +23,13 @@ function QueryTagsModal({ visible, onClose }: any) {
     id: tag,
   }));
 
-  const handleChange = (selectedItems: any) => {
-    setQueryState(
-      'tags',
-      selectedItems.map((item: any) => item.name)
-    );
+  const handleChange = (selectedItems: MultiSelectItem[]) => {
+    const tags = selectedItems
+      .map((item) => item.name || '')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== '');
+
+    setTags(tags);
   };
 
   return (

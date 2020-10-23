@@ -15,7 +15,8 @@ import Tooltip from '../common/Tooltip';
 import { loadSchema, toggleSchemaItem } from '../stores/editor-actions';
 import {
   useSchemaState,
-  useSelectedConnectionId,
+  useSessionConnectionId,
+  useSessionSchemaExpanded,
 } from '../stores/editor-store';
 import getSchemaList from './getSchemaList';
 import styles from './SchemaSidebar.module.css';
@@ -25,16 +26,15 @@ const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: 0, marginLeft: -6 };
 
 function SchemaSidebar() {
-  const connectionId = useSelectedConnectionId();
+  const connectionId = useSessionConnectionId();
   const [search, setSearch] = useState('');
   const [dimensions, setDimensions] = useState({
     width: -1,
     height: -1,
   });
 
-  const { loading, connectionSchema, expanded, error } = useSchemaState(
-    connectionId
-  );
+  const expanded = useSessionSchemaExpanded(connectionId);
+  const { loading, connectionSchema, error } = useSchemaState(connectionId);
 
   const handleRefreshClick = (e: React.MouseEvent) => {
     e.preventDefault();

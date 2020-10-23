@@ -8,6 +8,19 @@ interface FieldMeta {
   datatype: string;
 }
 
+// https://davidwalsh.name/detect-scrollbar-width
+const scrollbarWidth = () => {
+  const scrollDiv = document.createElement('div');
+  scrollDiv.setAttribute(
+    'style',
+    'width: 100px; height: 100px; overflow: scroll; position:absolute; top:-9999px;'
+  );
+  document.body.appendChild(scrollDiv);
+  const scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+  document.body.removeChild(scrollDiv);
+  return scrollbarWidth;
+};
+
 const renderValue = (input: any, fieldMeta: FieldMeta) => {
   if (input === null || input === undefined) {
     return <em>null</em>;
@@ -38,7 +51,11 @@ const headerStyle: React.CSSProperties = {
   overflowY: 'hidden',
 };
 
-const headerCellStyle = {
+const bodyStyle: React.CSSProperties = {
+  overflow: 'scroll',
+};
+
+const headerCellStyle: React.CSSProperties = {
   lineHeight: '30px',
   backgroundColor: '#f4f4f4',
   justifyContent: 'space-between',
@@ -49,7 +66,7 @@ const headerCellStyle = {
   paddingRight: '.5rem',
 };
 
-const cellStyle = {
+const cellStyle: React.CSSProperties = {
   lineHeight: '30px',
   paddingLeft: '.5rem',
   paddingRight: '.5rem',
@@ -69,6 +86,7 @@ interface QueryResultDataTableState {
   columnWidths: {
     [key: string]: number;
   };
+  scrollbarWidth: number;
 }
 
 interface Column {
@@ -89,6 +107,11 @@ class QueryResultDataTable extends React.PureComponent<
       height: -1,
     },
     columnWidths: {},
+    scrollbarWidth: 0,
+  };
+
+  componentDidMount = () => {
+    this.setState({ scrollbarWidth: scrollbarWidth() });
   };
 
   static getDerivedStateFromProps(
@@ -127,10 +150,10 @@ class QueryResultDataTable extends React.PureComponent<
   // If dataKey was found this is a real column of data from the query result
   // If not, it's the dummy column at the end, and it should fill the rest of the grid width
   getColumnWidth = (index: number) => {
-    const { columnWidths } = this.state;
+    const { columnWidths, scrollbarWidth, dimensions } = this.state;
     const { queryResult } = this.props;
     const column: Column = queryResult.columns[index];
-    const { width } = this.state.dimensions;
+    const { width } = dimensions;
 
     if (column) {
       return columnWidths[column.name];
@@ -140,7 +163,7 @@ class QueryResultDataTable extends React.PureComponent<
       .map((col: Column) => columnWidths[col.name])
       .reduce((prev: number, curr: number) => prev + curr, 0);
 
-    const fakeColumnWidth = width - totalWidthFilled;
+    const fakeColumnWidth = width - totalWidthFilled - scrollbarWidth;
     return fakeColumnWidth < 10 ? 10 : fakeColumnWidth;
   };
 
@@ -280,19 +303,36 @@ class QueryResultDataTable extends React.PureComponent<
         <Measure bounds onResize={this.handleContainerResize}>
           {({ measureRef }) => (
             <div ref={measureRef} className="h-100 w-100">
+              {/* 
+                Visual hack - On Windows, scrollbar always showing in grid takes up some amount of room on side of content.
+                To account for this, the header width is reduced by scrollbar width.
+                This creates a small space in upper right corner that is unstyled.
+                Visually, we want this to look like a continuation of the header row, so we render a div out of flow, behind the actual header
+              */}
+              <div
+                style={{
+                  ...headerCellStyle,
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: 30,
+                }}
+              />
               <VariableSizeGrid
                 columnCount={columnCount}
                 rowCount={1}
                 columnWidth={this.getColumnWidth}
                 rowHeight={this.getRowHeight}
                 height={30}
-                width={width}
+                width={width - this.state.scrollbarWidth}
                 ref={this.headerGrid}
                 style={headerStyle}
               >
                 {this.HeaderCell}
               </VariableSizeGrid>
               <VariableSizeGrid
+                style={bodyStyle}
                 columnCount={columnCount}
                 rowCount={rowCount}
                 columnWidth={this.getColumnWidth}
