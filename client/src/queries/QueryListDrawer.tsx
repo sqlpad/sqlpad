@@ -127,7 +127,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
     }
   }, [visible, initialUrl, getQueries]);
 
-  let { data: tagData } = api.useTags();
+  let { data: tagData } = api.useTags(true);
   const tags = tagData || [];
 
   let { data: connectionsData } = api.useConnections();
