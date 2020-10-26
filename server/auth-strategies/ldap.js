@@ -212,10 +212,7 @@ function enableLdap(config) {
             }
           }
 
-          let [openAdminRegistration, user] = await Promise.all([
-            models.users.adminRegistrationOpen(),
-            models.users.findOneByEmail(email),
-          ]);
+          let user = await models.users.findOneByEmail(email);
 
           if (user) {
             if (user.disabled) {
@@ -234,21 +231,16 @@ function enableLdap(config) {
             return done(null, user);
           }
 
-          // At this point user was not found, and a decision needs to be made to either create or reject the user
-
-          // If openAdminRegistration is enabled, this is the initial user
-          // The users role should be admin
-          if (openAdminRegistration) {
-            role = 'admin';
-          }
+          // At this point user was not found
+          // A decision needs to be made to either create or reject the user
 
           // If role is still not set, and default is provided, use that
           if (!role) {
             role = ldapDefaultRole;
           }
 
-          // Finally, if role is set, and open admin registration or ldap auto sign up, create user
-          if (role && (openAdminRegistration || config.get('ldapAutoSignUp'))) {
+          // If role is set and ldap auto sign up is turned on, create user
+          if (role && config.get('ldapAutoSignUp')) {
             appLog.debug(`adding user ${profileUsername} to role ${role}`);
             const newUser = await models.users.create({
               email,
