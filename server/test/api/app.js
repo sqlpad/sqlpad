@@ -26,6 +26,7 @@ const expectedConfigKeys = [
   'samlConfigured',
   'samlLinkHtml',
   'ldapConfigured',
+  'ldapRolesConfigured',
   'oidcConfigured',
   'oidcLinkHtml',
   'showServiceTokensUI',

@@ -39,6 +39,9 @@ async function getApp(req, res) {
       smtpConfigured: config.smtpConfigured(),
       ldapConfigured:
         config.get('ldapAuthEnabled') || config.get('enableLdapAuth'),
+      ldapRolesConfigured: Boolean(
+        config.get('ldapRoleAdminFilter') || config.get('ldapRoleEditorFilter')
+      ),
       oidcConfigured: config.oidcConfigured(),
       oidcLinkHtml: config.get('oidcLinkHtml'),
       showServiceTokensUI: Boolean(
