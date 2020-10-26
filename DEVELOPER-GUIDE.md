@@ -123,8 +123,14 @@ Tests are located under `server/test` directory, and use `mocha` as a test runne
 cd server
 # if dependencies have not yet been installed (build.sh will do this)
 npm ci
+
 # If test fixture has not yet been generated (build.sh will do this)
 node generate-test-db-fixture.js
+
+# Start backend services if desired. (-d runs in background)
+docker-compose up -d redis
+docker-compose up -d ldap
+
 # Run tests
 npm test
 

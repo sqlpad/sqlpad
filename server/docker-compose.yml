@@ -5,6 +5,12 @@ services:
     ports:
       - 6379:6379
 
+  ldap:
+    image: rroemhild/test-openldap
+    ports:
+      - 389:389
+    privileged: true
+
   mssql:
     image: 'mcr.microsoft.com/mssql/server:2017-latest'
     hostname: 'mssql'

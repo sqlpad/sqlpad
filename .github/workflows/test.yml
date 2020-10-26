@@ -52,6 +52,9 @@ jobs:
       - name: Start redis
         run: docker-compose -f server/docker-compose.yml up -d redis &
 
+      - name: Start ldap
+        run: docker-compose -f server/docker-compose.yml up -d ldap &
+
       - name: Start service for backend server
         if: ${{ matrix.backendtype }}
         run: docker-compose -f server/docker-compose.yml up -d ${{ matrix.backendtype }} &
