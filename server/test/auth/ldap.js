@@ -33,7 +33,7 @@ describe('auth/ldap', function () {
     assert.equal(r2.body.currentUser.role, 'editor');
   });
 
-  it('auto sign up creates user w/default role admin', async function () {
+  it('Auto sign up creates user w/default role admin', async function () {
     const utils = new TestUtil({
       ldapAuthEnabled: true,
       ldapAutoSignUp: true,
@@ -280,7 +280,7 @@ describe('auth/ldap', function () {
     assert.equal(r2.body.currentUser.role, 'editor');
   });
 
-  it('User not updated if no changes', async function () {
+  it('Role filter: user not updated if no changes', async function () {
     const utils = new TestUtil({
       admin: 'hermes@planetexpress.com',
       ldapAuthEnabled: true,
