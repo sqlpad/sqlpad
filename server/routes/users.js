@@ -42,6 +42,7 @@ async function createUser(req, res) {
     role: req.body.role,
     name: req.body.name,
     data: req.body.data,
+    syncAuthRole: Boolean(req.body.syncAuthRole),
   });
 
   webhooks.userCreated(user);
@@ -98,6 +99,9 @@ async function updateUser(req, res) {
   }
   if (body.hasOwnProperty('disabled')) {
     updateUser.disabled = body.disabled;
+  }
+  if (body.hasOwnProperty('syncAuthRole')) {
+    updateUser.syncAuthRole = body.syncAuthRole;
   }
 
   const updatedUser = await models.users.update(params.id, updateUser);

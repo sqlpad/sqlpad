@@ -220,7 +220,12 @@ function enableLdap(config) {
             }
 
             // If a role was set by RBAC and user already exists, but role doesn't match, update it
-            if (roleSetByRBAC && role && user.role !== role) {
+            if (
+              roleSetByRBAC &&
+              role &&
+              user.syncAuthRole &&
+              user.role !== role
+            ) {
               const newUser = await models.users.update(user.id, {
                 role,
               });
@@ -245,6 +250,7 @@ function enableLdap(config) {
             const newUser = await models.users.create({
               email,
               role,
+              syncAuthRole: true,
               signupAt: new Date(),
             });
             return done(null, newUser);

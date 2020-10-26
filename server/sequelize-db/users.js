@@ -24,6 +24,9 @@ module.exports = function (sequelize) {
           isIn: [['admin', 'editor', 'viewer']],
         },
       },
+      syncAuthRole: {
+        type: DataTypes.BOOLEAN,
+      },
       name: {
         type: DataTypes.STRING,
       },
