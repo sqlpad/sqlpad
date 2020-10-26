@@ -48,6 +48,7 @@ export interface AppInfo {
     editorWordWrap: boolean;
     googleAuthConfigured: string;
     ldapConfigured: boolean;
+    ldapRolesConfigured: boolean;
     localAuthConfigured: boolean;
     oidcConfigured: boolean;
     oidcLinkHtml: string;
@@ -141,6 +142,7 @@ export interface User {
   email: string;
   name: string;
   role: string;
+  syncAuthRole?: boolean | null;
   disabled: boolean;
   signupAt: string | Date;
   createdAt: string | Date;

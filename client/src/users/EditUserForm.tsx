@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Button from '../common/Button';
@@ -7,16 +7,22 @@ import message from '../common/message';
 import Select from '../common/Select';
 import Spacer from '../common/Spacer';
 import { api } from '../utilities/api';
+import useAppContext from '../utilities/use-app-context';
 
 function EditUserForm({ userId }: any) {
   let { data: user } = api.useUser(userId);
+  const { config } = useAppContext();
 
   const [role, setRole] = useState(user?.role);
   const [passwordResetId, setPasswordResetId] = useState(user?.passwordResetId);
+  const [syncAuthRole, setSyncAuthRole] = useState<boolean | undefined | null>(
+    user?.syncAuthRole
+  );
 
   useEffect(() => {
     setRole(user?.role);
     setPasswordResetId(user?.passwordResetId);
+    setSyncAuthRole(user?.syncAuthRole);
   }, [user]);
 
   // If still loading hide form
@@ -28,6 +34,17 @@ function EditUserForm({ userId }: any) {
     setRole(event.target.value);
     const json = await api.put(`/api/users/${user?.id}`, {
       role: event.target.value,
+    });
+    if (json.error) {
+      return message.error('Update failed: ' + json.error);
+    }
+    api.reloadUsers(user?.id);
+  };
+
+  const handleSyncAuthChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    setSyncAuthRole(event.target.checked);
+    const json = await api.put(`/api/users/${user?.id}`, {
+      syncAuthRole: event.target.checked,
     });
     if (json.error) {
       return message.error('Update failed: ' + json.error);
@@ -95,6 +112,26 @@ function EditUserForm({ userId }: any) {
       <FormExplain>
         Admins can manage database connections and users
       </FormExplain>
+      {config?.ldapConfigured && config?.ldapRolesConfigured && (
+        <>
+          <Spacer size={2} />
+          <input
+            type="checkbox"
+            checked={Boolean(syncAuthRole)}
+            id="syncAuthRole"
+            name="syncAuthRole"
+            onChange={handleSyncAuthChange}
+          />
+          <label htmlFor="syncAuthRole" style={{ marginLeft: 8 }}>
+            Sync role with LDAP auth
+          </label>
+          <FormExplain>
+            If LDAP Role filters are enabled, role assignment will be kept in
+            sync as users log in if checked. Users created by LDAP auto-sign-up
+            will have this turned on by default.
+          </FormExplain>
+        </>
+      )}
       <Spacer size={3} />
       {renderReset()}
     </div>

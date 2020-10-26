@@ -240,7 +240,7 @@ describe('auth/ldap', function () {
     assert.equal(response.body.currentUser.role, 'admin');
   });
 
-  it('Role Filter: updates existing role', async function () {
+  it('Role Filter: does not sync roles if not set', async function () {
     // In this test fry is initialized as admin,
     // but converts to editor because of the role filter
     const utils = new TestUtil({
@@ -264,6 +264,48 @@ describe('auth/ldap', function () {
       'fry@planetexpress.com'
     );
     assert.equal(existingUser.role, 'admin');
+
+    const agent = request.agent(utils.app);
+
+    await agent
+      .post('/api/signin')
+      .send({
+        password: 'fry',
+        email: 'fry',
+      })
+      .expect(200);
+
+    const r2 = await agent.get('/api/app');
+    assert.equal(r2.body.currentUser.email, 'fry@planetexpress.com');
+    assert.equal(r2.body.currentUser.role, 'admin');
+  });
+
+  it('Role Filter: Syncs roles if set', async function () {
+    // In this test fry is initialized as admin,
+    // but converts to editor because of the role filter
+    const utils = new TestUtil({
+      admin: 'fry@planetexpress.com',
+      ldapAuthEnabled: true,
+      ldapAutoSignUp: true,
+      ldapDefaultRole: 'editor',
+      ldapUrl: 'ldap://localhost:389',
+      ldapBindDN: 'cn=admin,dc=planetexpress,dc=com',
+      ldapPassword: 'GoodNewsEveryone',
+      ldapSearchFilter: '(uid={{username}})',
+      ldapSearchBase: 'dc=planetexpress,dc=com',
+      ldapRoleAdminFilter:
+        '(memberOf=cn=admin_staff,ou=people,dc=planetexpress,dc=com)',
+      ldapRoleEditorFilter:
+        '(memberOf=cn=ship_crew,ou=people,dc=planetexpress,dc=com)',
+    });
+    await utils.init();
+
+    const existingUser = await utils.models.users.findOneByEmail(
+      'fry@planetexpress.com'
+    );
+    assert.equal(existingUser.role, 'admin');
+
+    await utils.models.users.update(existingUser.id, { syncAuthRole: true });
 
     const agent = request.agent(utils.app);
 

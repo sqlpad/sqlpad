@@ -151,7 +151,7 @@ LDAP-based authentication can be enabled by setting the necessary environment va
 
 To assign roles via LDAP-RBAC, you may specify additional LDAP user filters to ensure the user fits a particular role or group.
 
-?> Roles assigned via LDAP will sync on every login.
+?> Roles assigned via LDAP will sync on every login if user was created by auto sign up. This can be changed per-user in user add/edit UI forms.
 
 For example, if your LDAP implementation supports `memberOf`, you may decide to use group DN values. In this case two groups are needed, one for editors and one for admins.
 
