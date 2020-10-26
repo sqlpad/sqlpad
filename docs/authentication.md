@@ -131,6 +131,10 @@ SQLPad users do not need to be added ahead of time, and may be created on the fl
 
 ## LDAP (Experimental)
 
+?> Available as of 5.8.0
+
+!> LDAP does not honor "open admin registration" for initial log in. Use `SQLPAD_ADMIN` to set initial admin email address if necessary
+
 LDAP-based authentication can be enabled by setting the necessary environment variables:
 
 - `SQLPAD_LDAP_AUTH_ENABLED` - Set to TRUE if LDAP enable, FALSE if LDAP disable.
@@ -145,7 +149,9 @@ LDAP-based authentication can be enabled by setting the necessary environment va
 - `SQLPAD_LDAP_ROLE_EDITOR_FILTER` - LDAP filter used to determine if a user should be assigned SQLPad editor role
 - `SQLPAD_LDAP_DEFAULT_ROLE`- Default role for users that do not match LDAP role filters. May be either `admin`, `editor`, `denied`, or empty. If `denied` or empty, a user _must_ match an LDAP role filter to be admitted into SQLPad, unless they are previously created as a SQLPad user in advanced.
 
-To assign roles via LDAP-RBAC, you may specify a profile attribute and value to look to for a particular role.
+To assign roles via LDAP-RBAC, you may specify additional LDAP user filters to ensure the user fits a particular role or group.
+
+?> Roles assigned via LDAP will sync on every login.
 
 For example, if your LDAP implementation supports `memberOf`, you may decide to use group DN values. In this case two groups are needed, one for editors and one for admins.
 
