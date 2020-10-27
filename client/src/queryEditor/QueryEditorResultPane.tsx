@@ -4,14 +4,17 @@ import {
   useLastStatementId,
   useSessionBatch,
   useSessionSelectedStatementId,
+  useSessionIsRunning,
 } from '../stores/editor-store';
 import QueryResultBatchHeader from './QueryResultBatchHeader';
 import QueryResultStatementHeader from './QueryResultStatementHeader';
 import StatementsTable from './StatementsTable';
+import QueryResultRunning from '../common/QueryResultRunning';
 
 function QueryEditorResultPane() {
   const selectedStatementId = useSessionSelectedStatementId();
   const lastStatementId = useLastStatementId();
+  const isRunning = useSessionIsRunning();
 
   const batch = useSessionBatch();
   console.log(batch);
@@ -27,6 +30,11 @@ function QueryEditorResultPane() {
     );
   } else if (batch?.statements) {
     paneContent = <StatementsTable statements={batch?.statements || []} />;
+  } else if (isRunning) {
+    // If a statementId isn't set yet, and there aren't statements,
+    // but a query is running, that means the initial batch creation hasn't happened yet
+    // For this case show a spinner, so there isn't an awkward delay
+    paneContent = <QueryResultRunning />;
   }
 
   return (
