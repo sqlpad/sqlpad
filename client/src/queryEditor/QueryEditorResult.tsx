@@ -1,24 +1,23 @@
 import React, { FunctionComponent } from 'react';
-import QueryResultDataTable from '../common/QueryResultContainer';
+import QueryResultContainer from '../common/QueryResultContainer';
 import {
+  useLastStatementId,
   useSessionIsRunning,
   useSessionQueryError,
-  useSessionQueryResult,
 } from '../stores/editor-store';
 
-const ConnectedQueryEditorResult: FunctionComponent = (props) => {
+const QueryEditorResult: FunctionComponent = () => {
   const isRunning = useSessionIsRunning();
-  const queryResult = useSessionQueryResult();
   const queryError = useSessionQueryError();
+  const statementId = useLastStatementId();
 
   return (
-    <QueryResultDataTable
-      {...props}
+    <QueryResultContainer
       isRunning={isRunning}
-      queryResult={queryResult}
       queryError={queryError}
+      statementId={statementId}
     />
   );
 };
 
-export default ConnectedQueryEditorResult;
+export default QueryEditorResult;

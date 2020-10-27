@@ -1,23 +1,50 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import ExportButton from './common/ExportButton';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import QueryResultRunning from './common/QueryResultRunning';
 import SqlpadTauChart from './common/SqlpadTauChart';
 import { exportPng } from './common/tauChartRef';
 import useQueryResultById from './utilities/useQueryResultById';
+import {
+  useLastStatementId,
+  useSessionChartFields,
+  useSessionChartType,
+  useSessionQueryError,
+  useSessionQueryName,
+  useStatementColumns,
+  useStatementIncomplete,
+  useStatementRowCount,
+} from './stores/editor-store';
+import { api } from './utilities/api';
 
 type Props = {
   queryId: string;
 };
 
 function QueryChartOnly({ queryId }: Props) {
-  const [queryError, queryResult, isRunning] = useQueryResultById(queryId);
+  const [isRunning] = useQueryResultById(queryId);
+  const statementId = useLastStatementId();
+  const queryError = useSessionQueryError();
+  const rowCount = useStatementRowCount(statementId);
+  const name = useSessionQueryName();
+  const incomplete = useStatementIncomplete(statementId);
+  const chartFields = useSessionChartFields();
+  const chartType = useSessionChartType();
+  const columns = useStatementColumns(statementId);
+  const { data: rows } = api.useStatementResults(statementId);
 
   useEffect(() => {
     document.title = 'SQLPad';
   }, []);
 
-  if (isRunning || !queryResult) {
+  const chart = useMemo(() => {
+    return {
+      chartType,
+      fields: chartFields,
+    };
+  }, [chartType, chartFields]);
+
+  if (isRunning || rowCount === undefined) {
     return (
       <div
         style={{
@@ -32,10 +59,16 @@ function QueryChartOnly({ queryId }: Props) {
     );
   }
 
-  const { name, chart, links, incomplete } = queryResult;
-
   const onSaveImageClick = () => {
     exportPng(queryId, name || '');
+  };
+
+  const links = {
+    csv: `/statement-results/${statementId}.csv`,
+    json: `/statement-results/${statementId}.json`,
+    xlsx: `/statement-results/${statementId}.xlsx`,
+    table: '',
+    chart: '',
   };
 
   return (
@@ -59,7 +92,8 @@ function QueryChartOnly({ queryId }: Props) {
         <SqlpadTauChart
           queryId={queryId}
           chartConfiguration={chart}
-          queryResult={queryResult}
+          columns={columns}
+          rows={rows}
           queryError={queryError}
           isRunning={isRunning}
         />

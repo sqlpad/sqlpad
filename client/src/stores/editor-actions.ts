@@ -1,17 +1,19 @@
 import localforage from 'localforage';
 import queryString from 'query-string';
-import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
-import { ACLRecord, AppInfo, ChartFields, Connection } from '../types';
+import { ACLRecord, AppInfo, Batch, ChartFields, Connection } from '../types';
 import { api } from '../utilities/api';
 import baseUrl from '../utilities/baseUrl';
 import {
   removeLocalQueryText,
   setLocalQueryText,
 } from '../utilities/localQueryText';
-import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
 import { EditorSession, SchemaState, useEditorStore } from './editor-store';
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 const { getState, setState } = useEditorStore;
 
@@ -22,6 +24,16 @@ function setSession(update: Partial<EditorSession>) {
     editorSessions: {
       ...editorSessions,
       [focusedSessionId]: { ...focusedSession, ...update },
+    },
+  });
+}
+
+function setBatch(batchId: string, batch: Batch) {
+  const { batches } = getState();
+  setState({
+    batches: {
+      ...batches,
+      [batchId]: batch,
     },
   });
 }
@@ -284,11 +296,20 @@ export const runQuery = async () => {
     selectedText,
   } = getState().getSession();
 
-  // multiple queries could be running and we only want to keep the "current" or latest query run
-  const runQueryInstanceId = uuidv4();
+  if (!connectionId) {
+    return setSession({
+      queryError: 'Connection required',
+    });
+  }
+
+  if (!queryText) {
+    return setSession({
+      queryError: 'SQL text required',
+    });
+  }
 
   setSession({
-    runQueryInstanceId,
+    batchId: undefined,
     isRunning: true,
     runQueryStartTime: new Date(),
   });
@@ -306,18 +327,55 @@ export const runQuery = async () => {
     },
   };
 
-  const { data, error } = await runQueryViaBatch(postData);
+  let res = await api.createBatch(postData);
+  let error = res.error;
+  let batch = res.data;
 
-  // Get latest state and check runQueryInstanceId to ensure it matches
-  // If it matches another query has not been run and we can keep the result.
-  // Not matching implies another query has been executed and we can ignore this result.
-  if (getState().getSession().runQueryInstanceId === runQueryInstanceId) {
-    setSession({
-      isRunning: false,
+  if (error) {
+    return setSession({
       queryError: error,
-      queryResult: data,
     });
   }
+
+  if (!batch) {
+    return setSession({
+      queryError: 'error creating batch',
+    });
+  }
+
+  while (
+    batch?.id &&
+    !((batch?.status === 'finished' || batch?.status === 'error') && !error)
+  ) {
+    await sleep(500);
+    res = await api.getBatch(batch.id);
+    error = res.error;
+    batch = res.data;
+
+    setSession({
+      batchId: batch?.id,
+      queryError: error,
+    });
+
+    if (batch) {
+      setBatch(batch.id, batch);
+    }
+  }
+
+  if (batch?.statements) {
+    const { statements } = getState();
+    const updatedStatements = {
+      ...statements,
+    };
+    for (const statement of batch.statements) {
+      updatedStatements[statement.id] = statement;
+    }
+    setState({ statements: updatedStatements });
+  }
+
+  setSession({
+    isRunning: false,
+  });
 };
 
 export const saveQuery = async () => {

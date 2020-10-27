@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { Chart } from 'taucharts';
-import SpinKitCube from './SpinKitCube';
+import { StatementColumn, StatementResults } from '../types';
 import ErrorBlock from './ErrorBlock';
 import getTauChartConfig from './getTauChartConfig';
-import { setFakeChartRef, delFakeChartRef } from './tauChartRef';
+import SpinKitCube from './SpinKitCube';
+import { delFakeChartRef, setFakeChartRef } from './tauChartRef';
 
 interface ChartConfiguration {
   chartType: string;
@@ -16,22 +17,38 @@ interface ChartConfiguration {
 export interface Props {
   isRunning: boolean;
   queryError?: string;
-  queryResult: any;
+  columns?: StatementColumn[];
+  rows?: StatementResults;
   chartConfiguration: ChartConfiguration;
   queryId: string;
+}
+
+function getObjectRows(columns: any, rows: any) {
+  return rows.map((row: any) => {
+    const obj: { [key: string]: any } = {};
+    columns.forEach((c: { name: string }, index: any) => {
+      obj[c.name] = row[index];
+    });
+    return obj;
+  });
 }
 
 function SqlpadTauChart({
   isRunning,
   queryError,
-  queryResult,
+  columns,
+  rows,
   chartConfiguration,
   queryId,
 }: Props) {
   useEffect(() => {
     let chart: any;
 
-    if (!isRunning && !queryError && chartConfiguration && queryResult) {
+    if (!isRunning && !queryError && chartConfiguration && columns && rows) {
+      const queryResult = {
+        columns,
+        rows: getObjectRows(columns, rows),
+      };
       const chartConfig = getTauChartConfig(chartConfiguration, queryResult);
       if (chartConfig) {
         chart = new Chart(chartConfig);
@@ -48,7 +65,7 @@ function SqlpadTauChart({
       }
       delFakeChartRef(queryId);
     };
-  }, [isRunning, queryError, queryResult, chartConfiguration, queryId]);
+  }, [isRunning, queryError, columns, rows, chartConfiguration, queryId]);
 
   if (isRunning) {
     return (

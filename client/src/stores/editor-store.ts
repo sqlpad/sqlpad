@@ -4,6 +4,9 @@ import {
   ConnectionClient,
   ChartFields,
   ACLRecord,
+  Batch,
+  Statement,
+  StatementColumn,
 } from '../types';
 
 export type ExpandedMap = { [itemPath: string]: boolean };
@@ -22,6 +25,7 @@ export interface EditorSession {
   connectionClient?: ConnectionClient;
   connectionClientInterval?: any;
   runQueryInstanceId?: string;
+  batchId?: string;
   isRunning: boolean;
   isSaving: boolean;
   // Editor session takes Query model fields and flattens
@@ -48,6 +52,8 @@ export type EditorStoreState = {
   initialized: boolean;
   focusedSessionId: string;
   editorSessions: Record<string, EditorSession>;
+  batches: Record<string, Batch>;
+  statements: Record<string, Statement>;
   schemaStates: { [conectionId: string]: SchemaState };
   getSession: () => EditorSession;
 };
@@ -66,6 +72,7 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
       connectionClient: undefined,
       connectionClientInterval: undefined,
       runQueryInstanceId: undefined,
+      batchId: undefined,
       isRunning: false,
       isSaving: false,
       queryId: undefined,
@@ -86,6 +93,8 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
       unsavedChanges: false,
     },
   },
+  batches: {},
+  statements: {},
   schemaStates: {},
   getSession: () => {
     const { focusedSessionId, editorSessions } = get();
@@ -147,6 +156,10 @@ export function useSessionConnectionClient() {
   return useEditorStore((s) => s.getSession().connectionClient);
 }
 
+export function useSessionConnectionClientId() {
+  return useEditorStore((s) => s.getSession().connectionClient?.id);
+}
+
 export function useSessionShowSchema(): boolean {
   return useEditorStore((s) => s.getSession().showSchema);
 }
@@ -188,5 +201,58 @@ export function useSchemaState(connectionId?: string) {
       return emptySchemaState;
     }
     return s.schemaStates[connectionId];
+  });
+}
+
+export function useLastStatementId() {
+  return useEditorStore((s) => {
+    const { batchId } = s.getSession();
+    if (batchId) {
+      const batch = s.batches[batchId];
+      if (batch && batch.statements) {
+        const lastStatement = batch.statements[batch.statements.length - 1];
+        if (lastStatement) {
+          return lastStatement.id;
+        }
+      }
+    }
+    return '';
+  });
+}
+
+export function useStatementRowCount(statementId?: string) {
+  return useEditorStore((s) => {
+    if (!statementId) {
+      return undefined;
+    }
+    return s.statements[statementId]?.rowCount;
+  });
+}
+
+export function useStatementIncomplete(statementId: string) {
+  return useEditorStore((s) => Boolean(s.statements[statementId]?.incomplete));
+}
+
+export function useStatementDurationMs(statementId: string) {
+  return useEditorStore((s) => s.statements[statementId]?.durationMs);
+}
+
+const NO_COLUMNS: StatementColumn[] = [];
+
+export function useStatementColumns(statementId?: string) {
+  return useEditorStore((s) => {
+    if (!statementId) {
+      return NO_COLUMNS;
+    }
+    return s.statements[statementId]?.columns;
+  });
+}
+
+export function useStatementStatus(statementId?: string) {
+  return useEditorStore((s) => {
+    if (!statementId) {
+      return '';
+    }
+    return s.statements[statementId]?.status;
   });
 }

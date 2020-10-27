@@ -3,6 +3,13 @@ import ExportButton from './common/ExportButton';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import QueryResultContainer from './common/QueryResultContainer';
 import QueryResultRunning from './common/QueryResultRunning';
+import {
+  useLastStatementId,
+  useSessionQueryError,
+  useSessionQueryName,
+  useStatementIncomplete,
+  useStatementRowCount,
+} from './stores/editor-store';
 import useQueryResultById from './utilities/useQueryResultById';
 
 type Props = {
@@ -10,13 +17,18 @@ type Props = {
 };
 
 function QueryTableOnly({ queryId }: Props) {
-  const [queryError, queryResult, isRunning] = useQueryResultById(queryId);
+  const [isRunning] = useQueryResultById(queryId);
+  const statementId = useLastStatementId();
+  const queryError = useSessionQueryError();
+  const rowCount = useStatementRowCount(statementId);
+  const name = useSessionQueryName();
+  const incomplete = useStatementIncomplete(statementId);
 
   useEffect(() => {
     document.title = 'SQLPad';
   }, []);
 
-  if (isRunning || !queryResult) {
+  if (isRunning || rowCount === undefined) {
     return (
       <div
         style={{
@@ -31,7 +43,13 @@ function QueryTableOnly({ queryId }: Props) {
     );
   }
 
-  const { name, links, incomplete } = queryResult;
+  const links = {
+    csv: `/statement-results/${statementId}.csv`,
+    json: `/statement-results/${statementId}.json`,
+    xlsx: `/statement-results/${statementId}.xlsx`,
+    table: '',
+    chart: '',
+  };
 
   return (
     <div
@@ -61,7 +79,7 @@ function QueryTableOnly({ queryId }: Props) {
         >
           <QueryResultContainer
             isRunning={isRunning}
-            queryResult={queryResult}
+            statementId={statementId}
             queryError={queryError}
           />
         </div>

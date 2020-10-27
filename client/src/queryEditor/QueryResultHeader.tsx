@@ -5,10 +5,14 @@ import { Link } from 'react-router-dom';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer';
 import {
+  useLastStatementId,
   useSessionIsRunning,
   useSessionQueryId,
-  useSessionQueryResult,
   useSessionRunQueryStartTime,
+  useStatementIncomplete,
+  useStatementRowCount,
+  useStatementDurationMs,
+  useSessionConnectionClientId,
 } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
@@ -16,11 +20,18 @@ import styles from './QueryResultHeader.module.css';
 function QueryResultHeader() {
   const isRunning = useSessionIsRunning();
   const queryId = useSessionQueryId();
-  const queryResult = useSessionQueryResult();
   const runQueryStartTime = useSessionRunQueryStartTime();
+  const lastStatementId = useLastStatementId();
+
+  const rowCount = useStatementRowCount(lastStatementId);
+  const hasRows = rowCount !== undefined && rowCount > 0;
+  const incomplete = useStatementIncomplete(lastStatementId);
+  const durationMs = useStatementDurationMs(lastStatementId);
+  const connectionClientId = useSessionConnectionClientId();
 
   const { config } = useAppContext();
-  if (isRunning || !queryResult) {
+
+  if (isRunning) {
     return (
       <div className={styles.toolbar}>
         {isRunning ? (
@@ -32,20 +43,37 @@ function QueryResultHeader() {
     );
   }
 
-  const rows = queryResult.rows || [];
-  const links = queryResult.links || {};
-  const serverSec = queryResult.durationMs / 1000;
-  const rowCount = rows.length;
-  const incomplete = Boolean(queryResult.incomplete);
-  const hasRows = rows.length > 0;
+  const links = {
+    csv: `/statement-results/${lastStatementId}.csv`,
+    json: `/statement-results/${lastStatementId}.json`,
+    xlsx: `/statement-results/${lastStatementId}.xlsx`,
+    table: '',
+    chart: '',
+  };
+
+  if (queryId) {
+    links.table = `/query-table/${queryId}`;
+    links.chart = `/query-chart/${queryId}`;
+    if (connectionClientId) {
+      const params = `?connectionClientId=${connectionClientId}`;
+      links.table += params;
+      links.chart += params;
+    }
+  }
+
+  const serverSec = durationMs !== undefined ? durationMs / 1000 : 0;
 
   const showLink =
     typeof queryId === 'string' && queryId !== 'new' && queryId !== '';
 
   return (
     <div className={styles.toolbar}>
-      <div className={styles.toolbarItem}>{serverSec} seconds</div>
-      <div className={styles.toolbarItem}>{rowCount} rows</div>
+      {lastStatementId && (
+        <div className={styles.toolbarItem}>{serverSec} seconds</div>
+      )}
+      {lastStatementId && (
+        <div className={styles.toolbarItem}>{rowCount} rows</div>
+      )}
 
       <div className={styles.toolbarItem}>
         {config?.allowCsvDownload && hasRows && (
@@ -82,7 +110,6 @@ function QueryResultHeader() {
           </span>
         )}
       </div>
-      {/* TODO: links.table will not appear if query is saved after run */}
       {showLink && links.table && (
         <div className={styles.toolbarItem}>
           <span className={styles.iconLinkWrapper}>
