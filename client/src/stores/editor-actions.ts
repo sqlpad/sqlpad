@@ -102,6 +102,17 @@ export const initApp = async (
 };
 
 /**
+ * Reset state (on signout for example)
+ * TODO: This needs to either do more, cancel timeouts, polling, etc OR navigate to a new page in browser (not client-side routed)
+ */
+export async function resetState() {
+  setState({
+    batches: {},
+    statements: {},
+  });
+}
+
+/**
  * Open a connection client for the currently selected connection if supported
  */
 export async function connectConnectionClient() {
