@@ -2,7 +2,6 @@ import debounce from 'lodash/debounce';
 import React, { useEffect } from 'react';
 import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
-import QueryResultContainer from '../common/QueryResultContainer';
 import { resizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar';
@@ -12,15 +11,14 @@ import {
   resetNewQuery,
 } from '../stores/editor-actions';
 import {
-  useLastStatementId,
   useSessionChartType,
   useSessionShowSchema,
 } from '../stores/editor-store';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
+import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
-import QueryResultHeader from './QueryResultHeader';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
@@ -51,7 +49,6 @@ function QueryEditor(props: Props) {
   }
 
   const showSchema = useSessionShowSchema();
-  const statementId = useLastStatementId();
 
   const editorAndVis = showVis ? (
     <SplitPane
@@ -81,20 +78,7 @@ function QueryEditor(props: Props) {
       onChange={handleVisPaneResize}
     >
       {editorAndVis}
-      <div>
-        <QueryResultHeader />
-        <div
-          style={{
-            position: 'absolute',
-            top: 30,
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          <QueryResultContainer statementId={statementId} />
-        </div>
-      </div>
+      <QueryEditorResultPane />
     </SplitPane>
   );
 

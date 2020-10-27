@@ -48,4 +48,4 @@ function QueryResultContainer({ statementId }: Props) {
   return <QueryResultDataTable columns={columns} rows={data} />;
 }
 
-export default QueryResultContainer;
+export default React.memo(QueryResultContainer);
