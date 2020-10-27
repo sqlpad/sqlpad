@@ -3,26 +3,31 @@ import ExportButton from './common/ExportButton';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import QueryResultContainer from './common/QueryResultContainer';
 import QueryResultRunning from './common/QueryResultRunning';
+import { loadQuery, runQuery } from './stores/editor-actions';
 import {
   useLastStatementId,
+  useSessionIsRunning,
   useSessionQueryError,
   useSessionQueryName,
   useStatementIncomplete,
   useStatementRowCount,
 } from './stores/editor-store';
-import useQueryResultById from './utilities/useQueryResultById';
 
 type Props = {
   queryId: string;
 };
 
 function QueryTableOnly({ queryId }: Props) {
-  const [isRunning] = useQueryResultById(queryId);
+  const isRunning = useSessionIsRunning();
   const statementId = useLastStatementId();
   const queryError = useSessionQueryError();
   const rowCount = useStatementRowCount(statementId);
   const name = useSessionQueryName();
   const incomplete = useStatementIncomplete(statementId);
+
+  useEffect(() => {
+    loadQuery(queryId).then(() => runQuery());
+  }, [queryId]);
 
   useEffect(() => {
     document.title = 'SQLPad';

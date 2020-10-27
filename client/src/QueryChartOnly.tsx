@@ -4,11 +4,12 @@ import IncompleteDataNotification from './common/IncompleteDataNotification';
 import QueryResultRunning from './common/QueryResultRunning';
 import SqlpadTauChart from './common/SqlpadTauChart';
 import { exportPng } from './common/tauChartRef';
-import useQueryResultById from './utilities/useQueryResultById';
+import { loadQuery, runQuery } from './stores/editor-actions';
 import {
   useLastStatementId,
   useSessionChartFields,
   useSessionChartType,
+  useSessionIsRunning,
   useSessionQueryError,
   useSessionQueryName,
   useStatementColumns,
@@ -22,7 +23,7 @@ type Props = {
 };
 
 function QueryChartOnly({ queryId }: Props) {
-  const [isRunning] = useQueryResultById(queryId);
+  const isRunning = useSessionIsRunning();
   const statementId = useLastStatementId();
   const queryError = useSessionQueryError();
   const rowCount = useStatementRowCount(statementId);
@@ -32,6 +33,10 @@ function QueryChartOnly({ queryId }: Props) {
   const chartType = useSessionChartType();
   const columns = useStatementColumns(statementId);
   const { data: rows } = api.useStatementResults(statementId);
+
+  useEffect(() => {
+    loadQuery(queryId).then(() => runQuery());
+  }, [queryId]);
 
   useEffect(() => {
     document.title = 'SQLPad';
