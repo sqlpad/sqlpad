@@ -3,6 +3,7 @@ import HSpacer from '../common/HSpacer';
 import SecondsTimer from '../common/SecondsTimer';
 import {
   useLastStatementId,
+  useSessionBatch,
   useSessionIsRunning,
   useSessionRunQueryStartTime,
   useStatementDurationMs,
@@ -14,6 +15,9 @@ function QueryResultBatchHeader() {
   const runQueryStartTime = useSessionRunQueryStartTime();
   const lastStatementId = useLastStatementId();
   const durationMs = useStatementDurationMs(lastStatementId);
+
+  const batch = useSessionBatch();
+  const numOfStatements = batch?.statements.length || 0;
 
   let timerContent = null;
   if (isRunning) {
@@ -29,9 +33,11 @@ function QueryResultBatchHeader() {
 
   return (
     <div className={styles.toolbar}>
+      <HSpacer />
+      {numOfStatements > 0 && <div>{numOfStatements} statements</div>}
       <HSpacer grow />
       {timerContent}
-      <HSpacer size={2} />
+      <HSpacer size={1} />
     </div>
   );
 }

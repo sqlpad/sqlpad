@@ -6,8 +6,10 @@ import HSpacer from '../common/HSpacer';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer';
 import Tooltip from '../common/Tooltip';
+import { selectStatementId } from '../stores/editor-actions';
 import {
   useLastStatementId,
+  useSessionBatch,
   useSessionConnectionClientId,
   useSessionIsRunning,
   useSessionQueryId,
@@ -30,6 +32,9 @@ function QueryResultStatementHeader() {
   const incomplete = useStatementIncomplete(lastStatementId);
   const durationMs = useStatementDurationMs(lastStatementId);
   const connectionClientId = useSessionConnectionClientId();
+
+  const batch = useSessionBatch();
+  const numOfStatements = batch?.statements.length || 0;
 
   const { config } = useAppContext();
 
@@ -70,6 +75,15 @@ function QueryResultStatementHeader() {
 
   return (
     <div className={styles.toolbar}>
+      {numOfStatements > 1 ? (
+        <button
+          onClick={() => {
+            selectStatementId('');
+          }}
+        >
+          Go back
+        </button>
+      ) : null}
       <HSpacer size={1} grow />
 
       {lastStatementId && (
@@ -114,7 +128,7 @@ function QueryResultStatementHeader() {
       )}
 
       {lastStatementId && <div>{serverSec} seconds</div>}
-      <HSpacer size={2} />
+      <HSpacer size={1} />
     </div>
   );
 }

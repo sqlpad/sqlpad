@@ -1,0 +1,55 @@
+.statements-table {
+  /* 
+    This is needed to make text truncation to work
+    Otherwise cell will grow to however large it things to show large queries
+  */
+  table-layout: fixed;
+}
+
+.statements-table tr {
+  height: 30px;
+}
+
+.statements-table th,
+td {
+  border-bottom: var(--border);
+  padding: 6px 8px;
+}
+
+.statement-text-col {
+  width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statement-text-col > button {
+  /* code font family because this button will show code */
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+  display: block;
+  background-color: transparent;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-image: none;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  text-align: left;
+  padding: 0;
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.statement-text-col button:hover,
+.statement-text-col button:focus {
+  color: var(--primary-dark-color);
+}
+
+.statement-text-col button:active {
+  color: var(--primary-dark-color);
+}

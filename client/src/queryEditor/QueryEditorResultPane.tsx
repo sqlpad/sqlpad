@@ -5,8 +5,9 @@ import {
   useSessionBatch,
   useSessionSelectedStatementId,
 } from '../stores/editor-store';
-import QueryResultStatementHeader from './QueryResultStatementHeader';
 import QueryResultBatchHeader from './QueryResultBatchHeader';
+import QueryResultStatementHeader from './QueryResultStatementHeader';
+import StatementsTable from './StatementsTable';
 
 function QueryEditorResultPane() {
   const selectedStatementId = useSessionSelectedStatementId();
@@ -14,6 +15,19 @@ function QueryEditorResultPane() {
 
   const batch = useSessionBatch();
   console.log(batch);
+
+  const statementId = selectedStatementId;
+
+  let paneContent = null;
+  if (statementId) {
+    paneContent = (
+      <QueryResultContainer
+        statementId={selectedStatementId || lastStatementId}
+      />
+    );
+  } else if (batch?.statements) {
+    paneContent = <StatementsTable statements={batch?.statements || []} />;
+  }
 
   return (
     <div>
@@ -28,9 +42,7 @@ function QueryEditorResultPane() {
           right: 0,
         }}
       >
-        <QueryResultContainer
-          statementId={selectedStatementId || lastStatementId}
-        />
+        {paneContent}
       </div>
     </div>
   );

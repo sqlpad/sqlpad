@@ -7,9 +7,12 @@ export interface Props {
 
 function HSpacer({ size = 1, grow = false }: Props) {
   const sizes = [8, 16, 32, 64];
-  let style: CSSProperties = {
-    width: sizes[size],
+  const width = sizes[size - 1] || 64;
+
+  const style: CSSProperties = {
+    width,
   };
+
   if (grow) {
     style.flexGrow = 1;
   }
