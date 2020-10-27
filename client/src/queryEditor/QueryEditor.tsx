@@ -2,6 +2,7 @@ import debounce from 'lodash/debounce';
 import React, { useEffect } from 'react';
 import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
+import QueryResultContainer from '../common/QueryResultContainer';
 import { resizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar';
@@ -11,13 +12,13 @@ import {
   resetNewQuery,
 } from '../stores/editor-actions';
 import {
+  useLastStatementId,
   useSessionChartType,
   useSessionShowSchema,
 } from '../stores/editor-store';
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
-import QueryEditorResult from './QueryEditorResult';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QueryResultHeader from './QueryResultHeader';
 import Shortcuts from './Shortcuts';
@@ -50,6 +51,7 @@ function QueryEditor(props: Props) {
   }
 
   const showSchema = useSessionShowSchema();
+  const statementId = useLastStatementId();
 
   const editorAndVis = showVis ? (
     <SplitPane
@@ -90,7 +92,7 @@ function QueryEditor(props: Props) {
             right: 0,
           }}
         >
-          <QueryEditorResult />
+          <QueryResultContainer statementId={statementId} />
         </div>
       </div>
     </SplitPane>

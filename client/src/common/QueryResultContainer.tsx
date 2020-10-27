@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+  useSessionIsRunning,
+  useSessionQueryError,
   useStatementColumns,
   useStatementRowCount,
   useStatementStatus,
@@ -11,18 +13,18 @@ import QueryResultDataTable from './QueryResultDataTable';
 import QueryResultRunning from './QueryResultRunning';
 
 export interface Props {
-  isRunning?: boolean;
-  queryError?: string;
   statementId?: string;
 }
 
-function QueryResultContainer({ isRunning, queryError, statementId }: Props) {
+function QueryResultContainer({ statementId }: Props) {
   const columns = useStatementColumns(statementId) || [];
   const { data, error } = api.useStatementResults(statementId);
   const rowCount = useStatementRowCount(statementId);
   const status = useStatementStatus(statementId);
+  const isRunning = useSessionIsRunning();
+  const queryError = useSessionQueryError();
 
-  if (isRunning) {
+  if (isRunning || (status === 'finished' && !data)) {
     return <QueryResultRunning />;
   }
   if (queryError) {

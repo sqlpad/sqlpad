@@ -7,7 +7,6 @@ import { loadQuery, runQuery } from './stores/editor-actions';
 import {
   useLastStatementId,
   useSessionIsRunning,
-  useSessionQueryError,
   useSessionQueryName,
   useStatementIncomplete,
   useStatementRowCount,
@@ -20,7 +19,6 @@ type Props = {
 function QueryTableOnly({ queryId }: Props) {
   const isRunning = useSessionIsRunning();
   const statementId = useLastStatementId();
-  const queryError = useSessionQueryError();
   const rowCount = useStatementRowCount(statementId);
   const name = useSessionQueryName();
   const incomplete = useStatementIncomplete(statementId);
@@ -82,11 +80,7 @@ function QueryTableOnly({ queryId }: Props) {
             border: '1px solid #CCC',
           }}
         >
-          <QueryResultContainer
-            isRunning={isRunning}
-            statementId={statementId}
-            queryError={queryError}
-          />
+          <QueryResultContainer statementId={statementId} />
         </div>
       </div>
     </div>
