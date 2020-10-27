@@ -287,7 +287,6 @@ export const loadQuery = async (queryId: string) => {
     canRead: data.canRead,
     canWrite: data.canWrite,
     // Reset result/error/unsaved/running states
-    runQueryInstanceId: undefined,
     isRunning: false,
     queryError: undefined,
     queryResult: undefined,
@@ -490,7 +489,6 @@ export const resetNewQuery = () => {
   // NOTE connectionId IS NOT set here on purpose
   // The new query should have the same connection as previously
   setSession({
-    runQueryInstanceId: undefined,
     isRunning: false,
     queryId: '',
     queryName: '',

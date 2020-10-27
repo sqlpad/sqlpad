@@ -24,7 +24,6 @@ export interface EditorSession {
   connectionId: string;
   connectionClient?: ConnectionClient;
   connectionClientInterval?: any;
-  runQueryInstanceId?: string;
   batchId?: string;
   isRunning: boolean;
   isSaving: boolean;
@@ -67,7 +66,6 @@ export const INITIAL_SESSION: EditorSession = {
   connectionId: '',
   connectionClient: undefined,
   connectionClientInterval: undefined,
-  runQueryInstanceId: undefined,
   batchId: undefined,
   isRunning: false,
   isSaving: false,
