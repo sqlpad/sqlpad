@@ -1,14 +1,24 @@
 import React from 'react';
 import QueryResultContainer from '../common/QueryResultContainer';
-import { useLastStatementId } from '../stores/editor-store';
-import QueryResultHeader from './QueryResultHeader';
+import {
+  useLastStatementId,
+  useSessionBatch,
+  useSessionSelectedStatementId,
+} from '../stores/editor-store';
+import QueryResultStatementHeader from './QueryResultStatementHeader';
+import QueryResultBatchHeader from './QueryResultBatchHeader';
 
 function QueryEditorResultPane() {
-  const statementId = useLastStatementId();
+  const selectedStatementId = useSessionSelectedStatementId();
+  const lastStatementId = useLastStatementId();
+
+  const batch = useSessionBatch();
+  console.log(batch);
 
   return (
     <div>
-      <QueryResultHeader />
+      {selectedStatementId && <QueryResultStatementHeader />}
+      {!selectedStatementId && <QueryResultBatchHeader />}
       <div
         style={{
           position: 'absolute',
@@ -18,7 +28,9 @@ function QueryEditorResultPane() {
           right: 0,
         }}
       >
-        <QueryResultContainer statementId={statementId} />
+        <QueryResultContainer
+          statementId={selectedStatementId || lastStatementId}
+        />
       </div>
     </div>
   );

@@ -40,6 +40,7 @@ export interface EditorSession {
   canDelete: boolean;
   // Additional data for editor states
   selectedText: string;
+  selectedStatementId: string;
   queryError?: any;
   queryResult?: any;
   runQueryStartTime?: any;
@@ -83,6 +84,7 @@ export const INITIAL_SESSION: EditorSession = {
   queryResult: undefined,
   runQueryStartTime: undefined,
   selectedText: '',
+  selectedStatementId: '',
   showValidation: false,
   unsavedChanges: false,
 };
@@ -184,6 +186,10 @@ export function useSessionRunQueryStartTime() {
   return useEditorStore((s) => s.getSession().runQueryStartTime);
 }
 
+export function useSessionSelectedStatementId() {
+  return useEditorStore((s) => s.getSession().selectedStatementId);
+}
+
 export function useSessionSchemaExpanded(connectionId?: string) {
   return useEditorStore((s) => {
     const { schemaExpansions } = s.getSession();
@@ -201,6 +207,21 @@ export function useSchemaState(connectionId?: string) {
       return emptySchemaState;
     }
     return s.schemaStates[connectionId];
+  });
+}
+
+/**
+ * Get current batch for the session
+ */
+export function useSessionBatch() {
+  return useEditorStore((s) => {
+    const { batchId } = s.getSession();
+    if (batchId) {
+      const batch = s.batches[batchId];
+      if (batch) {
+        return batch;
+      }
+    }
   });
 }
 

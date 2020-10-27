@@ -1,23 +1,25 @@
-import DownloadIcon from 'mdi-react/DownloadIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ExportButton from '../common/ExportButton';
+import HSpacer from '../common/HSpacer';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer';
+import Tooltip from '../common/Tooltip';
 import {
   useLastStatementId,
+  useSessionConnectionClientId,
   useSessionIsRunning,
   useSessionQueryId,
   useSessionRunQueryStartTime,
+  useStatementDurationMs,
   useStatementIncomplete,
   useStatementRowCount,
-  useStatementDurationMs,
-  useSessionConnectionClientId,
 } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
 
-function QueryResultHeader() {
+function QueryResultStatementHeader() {
   const isRunning = useSessionIsRunning();
   const queryId = useSessionQueryId();
   const runQueryStartTime = useSessionRunQueryStartTime();
@@ -34,11 +36,11 @@ function QueryResultHeader() {
   if (isRunning) {
     return (
       <div className={styles.toolbar}>
-        {isRunning ? (
-          <span className={styles.toolbarItem}>
-            Query time: <SecondsTimer startTime={runQueryStartTime} />
-          </span>
-        ) : null}
+        <HSpacer size={1} grow />
+        <div>
+          <SecondsTimer startTime={runQueryStartTime} /> seconds
+        </div>
+        <HSpacer size={2} />
       </div>
     );
   }
@@ -68,65 +70,53 @@ function QueryResultHeader() {
 
   return (
     <div className={styles.toolbar}>
+      <HSpacer size={1} grow />
+
       {lastStatementId && (
-        <div className={styles.toolbarItem}>{serverSec} seconds</div>
+        <>
+          <div>{rowCount} rows</div>
+          <HSpacer />
+        </>
       )}
-      {lastStatementId && (
-        <div className={styles.toolbarItem}>{rowCount} rows</div>
+
+      {config?.allowCsvDownload && hasRows && (
+        <>
+          <ExportButton links={links} />
+          <HSpacer />
+        </>
       )}
 
-      <div className={styles.toolbarItem}>
-        {config?.allowCsvDownload && hasRows && (
-          <span className={styles.iconLinkWrapper}>
-            <Link
-              className={styles.iconLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              to={links.csv}
-            >
-              <DownloadIcon style={{ marginRight: 4 }} size={16} />
-              .csv
-            </Link>
-
-            <Link
-              className={styles.iconLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              to={links.xlsx}
-            >
-              <DownloadIcon style={{ marginRight: 4 }} size={16} />
-              .xlsx
-            </Link>
-
-            <Link
-              className={styles.iconLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              to={links.json}
-            >
-              <DownloadIcon style={{ marginRight: 4 }} size={16} />
-              .json
-            </Link>
-          </span>
-        )}
-      </div>
       {showLink && links.table && (
-        <div className={styles.toolbarItem}>
-          <span className={styles.iconLinkWrapper}>
+        <>
+          <Tooltip label="Open table in new window">
             <Link
-              className={styles.iconLink}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                lineHeight: 1,
+              }}
               target="_blank"
               rel="noopener noreferrer"
               to={links.table}
             >
-              table <OpenInNewIcon style={{ marginLeft: 4 }} size={16} />
+              <OpenInNewIcon size={16} />
             </Link>
-          </span>
-        </div>
+          </Tooltip>
+          <HSpacer />
+        </>
       )}
-      {incomplete && <IncompleteDataNotification />}
+
+      {incomplete && (
+        <>
+          <IncompleteDataNotification />
+          <HSpacer />
+        </>
+      )}
+
+      {lastStatementId && <div>{serverSec} seconds</div>}
+      <HSpacer size={2} />
     </div>
   );
 }
 
-export default React.memo(QueryResultHeader);
+export default React.memo(QueryResultStatementHeader);

@@ -29,8 +29,27 @@ function setSession(update: Partial<EditorSession>) {
 }
 
 function setBatch(batchId: string, batch: Batch) {
-  const { batches } = getState();
+  const { batches, statements } = getState();
+  const { selectedStatementId } = getState().getSession();
+
+  const updatedStatements = {
+    ...statements,
+  };
+
+  if (batch?.statements) {
+    for (const statement of batch.statements) {
+      updatedStatements[statement.id] = statement;
+    }
+    if (batch.statements.length === 1) {
+      const onlyStatementId = batch.statements[0].id;
+      if (selectedStatementId !== onlyStatementId) {
+        setSession({ selectedStatementId: onlyStatementId });
+      }
+    }
+  }
+
   setState({
+    statements: updatedStatements,
     batches: {
       ...batches,
       [batchId]: batch,
@@ -309,12 +328,14 @@ export const runQuery = async () => {
   if (!connectionId) {
     return setSession({
       queryError: 'Connection required',
+      selectedStatementId: '',
     });
   }
 
   if (!queryText) {
     return setSession({
       queryError: 'SQL text required',
+      selectedStatementId: '',
     });
   }
 
@@ -322,6 +343,7 @@ export const runQuery = async () => {
     batchId: undefined,
     isRunning: true,
     runQueryStartTime: new Date(),
+    selectedStatementId: '',
   });
 
   const postData = {
@@ -353,6 +375,8 @@ export const runQuery = async () => {
     });
   }
 
+  setBatch(batch.id, batch);
+
   while (
     batch?.id &&
     !((batch?.status === 'finished' || batch?.status === 'error') && !error)
@@ -370,17 +394,6 @@ export const runQuery = async () => {
     if (batch) {
       setBatch(batch.id, batch);
     }
-  }
-
-  if (batch?.statements) {
-    const { statements } = getState();
-    const updatedStatements = {
-      ...statements,
-    };
-    for (const statement of batch.statements) {
-      updatedStatements[statement.id] = statement;
-    }
-    setState({ statements: updatedStatements });
   }
 
   setSession({
@@ -504,6 +517,10 @@ export const resetNewQuery = () => {
     queryResult: undefined,
     unsavedChanges: false,
   });
+};
+
+export const selectStatementId = (selectedStatementId: string) => {
+  setSession({ selectedStatementId });
 };
 
 export const setQueryText = (queryText: string) => {
