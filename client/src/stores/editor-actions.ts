@@ -125,7 +125,7 @@ export const initApp = async (
  * TODO: This needs to either do more, cancel timeouts, polling, etc OR navigate to a new page in browser (not client-side routed)
  */
 export async function resetState() {
-  setSession({ selectedStatementId: '' });
+  setSession({ selectedStatementId: '', batchId: '' });
   setState({
     batches: {},
     statements: {},
@@ -500,26 +500,33 @@ export const handleCloneClick = () => {
   setSession({ queryId: '', queryName: newName, unsavedChanges: true });
 };
 
+// NOTE connectionId, connectionClient, etc ARE NOT set here on purpose
+// Some things should be carried over when creating a new session
+const newQuerySession: Partial<EditorSession> = {
+  isRunning: false,
+  queryId: '',
+  queryName: '',
+  tags: [],
+  acl: [],
+  queryText: '',
+  chartType: '',
+  chartFields: {},
+  canRead: true,
+  canWrite: true,
+  canDelete: true,
+  queryError: undefined,
+  queryResult: undefined,
+  unsavedChanges: false,
+  selectedStatementId: '',
+  batchId: undefined,
+  isSaving: false,
+  runQueryStartTime: undefined,
+  selectedText: '',
+  showValidation: false,
+};
+
 export const resetNewQuery = () => {
-  // NOTE connectionId IS NOT set here on purpose
-  // The new query should have the same connection as previously
-  setSession({
-    isRunning: false,
-    queryId: '',
-    queryName: '',
-    tags: [],
-    acl: [],
-    queryText: '',
-    chartType: '',
-    chartFields: {},
-    canRead: true,
-    canWrite: true,
-    canDelete: true,
-    queryError: undefined,
-    queryResult: undefined,
-    unsavedChanges: false,
-    selectedStatementId: '',
-  });
+  setSession(newQuerySession);
 };
 
 export const selectStatementId = (selectedStatementId: string) => {
