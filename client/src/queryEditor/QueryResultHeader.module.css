@@ -5,3 +5,16 @@
   display: flex;
   align-items: center;
 }
+
+/* 
+  Need to handle Button component behavior where padding needs to be adjusted on hover 
+  This is not great, and should be addressed in Button component
+  The padding is greatly reduced here because the icon used has quite a bit of padding already
+*/
+.returnToStatementsBtn {
+  padding-left: 2px;
+}
+
+.returnToStatementsBtn:hover {
+  padding-left: 1px;
+}

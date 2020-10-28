@@ -1,3 +1,4 @@
+import MenuLeftIcon from 'mdi-react/MenuLeftIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
 import { Link } from 'react-router-dom';
@@ -8,33 +9,39 @@ import SecondsTimer from '../common/SecondsTimer';
 import Tooltip from '../common/Tooltip';
 import { selectStatementId } from '../stores/editor-actions';
 import {
-  useLastStatementId,
   useSessionBatch,
   useSessionConnectionClientId,
   useSessionIsRunning,
   useSessionQueryId,
   useSessionRunQueryStartTime,
+  useSessionSelectedStatementId,
   useStatementDurationMs,
   useStatementIncomplete,
   useStatementRowCount,
+  useStatementText,
+  useStatementSequence,
 } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
+import Button from '../common/Button';
 
 function QueryResultStatementHeader() {
   const isRunning = useSessionIsRunning();
   const queryId = useSessionQueryId();
   const runQueryStartTime = useSessionRunQueryStartTime();
-  const lastStatementId = useLastStatementId();
+  const statementId = useSessionSelectedStatementId();
 
-  const rowCount = useStatementRowCount(lastStatementId);
+  const rowCount = useStatementRowCount(statementId);
   const hasRows = rowCount !== undefined && rowCount > 0;
-  const incomplete = useStatementIncomplete(lastStatementId);
-  const durationMs = useStatementDurationMs(lastStatementId);
+  const incomplete = useStatementIncomplete(statementId);
+  const durationMs = useStatementDurationMs(statementId);
   const connectionClientId = useSessionConnectionClientId();
 
   const batch = useSessionBatch();
   const numOfStatements = batch?.statements.length || 0;
+
+  const statementText = useStatementText(statementId);
+  const statementSequence = useStatementSequence(statementId);
 
   const { config } = useAppContext();
 
@@ -51,9 +58,9 @@ function QueryResultStatementHeader() {
   }
 
   const links = {
-    csv: `/statement-results/${lastStatementId}.csv`,
-    json: `/statement-results/${lastStatementId}.json`,
-    xlsx: `/statement-results/${lastStatementId}.xlsx`,
+    csv: `/statement-results/${statementId}.csv`,
+    json: `/statement-results/${statementId}.json`,
+    xlsx: `/statement-results/${statementId}.xlsx`,
     table: '',
     chart: '',
   };
@@ -76,19 +83,26 @@ function QueryResultStatementHeader() {
   return (
     <div className={styles.toolbar}>
       {numOfStatements > 1 ? (
-        <button
+        <Button
+          className={styles.returnToStatementsBtn}
+          variant="primary-ghost"
           onClick={() => {
             selectStatementId('');
           }}
         >
-          Go back
-        </button>
+          <MenuLeftIcon /> Return to statements
+        </Button>
       ) : null}
+
+      <HSpacer size={1} grow />
+      <div className="statement-header-statement-text">
+        {statementSequence ? `${statementSequence}. ${statementText}` : ''}
+      </div>
       <HSpacer size={1} grow />
 
-      {lastStatementId && (
+      {statementId && (
         <>
-          <div>{rowCount} rows</div>
+          <div style={{ whiteSpace: 'nowrap' }}>{rowCount} rows</div>
           <HSpacer />
         </>
       )}
@@ -127,7 +141,9 @@ function QueryResultStatementHeader() {
         </>
       )}
 
-      {lastStatementId && <div>{serverSec} seconds</div>}
+      {statementId && (
+        <div style={{ whiteSpace: 'nowrap' }}>{serverSec} seconds</div>
+      )}
       <HSpacer size={1} />
     </div>
   );

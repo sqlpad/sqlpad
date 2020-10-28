@@ -1,8 +1,8 @@
+/* 
+  This is needed to make text truncation to work
+  Otherwise cell will grow to however large it things to show large queries
+*/
 .statements-table {
-  /* 
-    This is needed to make text truncation to work
-    Otherwise cell will grow to however large it things to show large queries
-  */
   table-layout: fixed;
 }
 
@@ -16,40 +16,38 @@ td {
   padding: 6px 8px;
 }
 
-.statement-text-col {
+.statements-table th.statement-text-col-header {
+  padding-left: 8px;
   width: 50%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.statement-text-col > button {
-  /* code font family because this button will show code */
-  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
-  display: block;
-  background-color: transparent;
-  width: 100%;
+.statements-table td.statement-text-col {
+  width: 50%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  background-image: none;
-  cursor: pointer;
-  user-select: none;
-  touch-action: manipulation;
+  padding: 0px;
+}
+
+/* Overrides to make the ghost button look right */
+.statement-text-col > button {
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+  white-space: nowrap;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: block;
   text-align: left;
-  padding: 0;
-  background-color: transparent;
-  box-shadow: none;
-  border: none;
-  color: var(--primary-color);
-  text-decoration: underline;
 }
 
-.statement-text-col button:hover,
-.statement-text-col button:focus {
-  color: var(--primary-dark-color);
-}
-
-.statement-text-col button:active {
-  color: var(--primary-dark-color);
+.statement-header-statement-text {
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 0 32px;
+  color: rgba(0, 0, 0, 0.45);
 }

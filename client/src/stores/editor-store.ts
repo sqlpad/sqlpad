@@ -277,3 +277,21 @@ export function useStatementStatus(statementId?: string) {
     return s.statements[statementId]?.status;
   });
 }
+
+export function useStatementSequence(statementId?: string) {
+  return useEditorStore((s) => {
+    if (!statementId) {
+      return undefined;
+    }
+    return s.statements[statementId]?.sequence;
+  });
+}
+
+export function useStatementText(statementId?: string) {
+  return useEditorStore((s) => {
+    if (!statementId) {
+      return '';
+    }
+    return s.statements[statementId]?.statementText;
+  });
+}
