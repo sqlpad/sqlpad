@@ -7,7 +7,7 @@ import ExportButton from '../common/ExportButton';
 
 function StatementsTable({ statements }: { statements: Statement[] }) {
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
       <table className={styles.table}>
         <thead>
           <tr>
@@ -44,7 +44,7 @@ function StatementsTable({ statements }: { statements: Statement[] }) {
                     ? `${statement.durationMs / 1000}`
                     : ''}
                 </td>
-                <td style={{ width: 45, textAlign: 'right' }}>
+                <td style={{ width: 45, textAlign: 'right', padding: 0 }}>
                   <ExportButton statementId={statement.id} />
                 </td>
               </tr>

@@ -1,18 +1,32 @@
-/* 
-  This is needed to make text truncation to work
-  Otherwise cell will grow to however large it things to show large queries
-*/
 .table {
+  /* 
+    This is needed to make text truncation to work
+    Otherwise cell will grow to however large it things to show large queries
+  */
   table-layout: fixed;
   width: 100%;
+  max-height: 100%;
+  overflow-x: auto;
+  /* allows for header border to show correctly */
+  border-collapse: separate;
+  border-spacing: 0;
 }
 
 .table tr {
   height: 30px;
 }
 
-.table th,
-td {
+.table th {
+  border-bottom: var(--border);
+  padding: 6px 8px;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  /* make sure header sits above content */
+  z-index: 2;
+}
+
+.table td {
   border-bottom: var(--border);
   padding: 6px 8px;
 }
@@ -30,7 +44,8 @@ td {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding: 0px;
+  /* specificity in .table td overrides this. Unsure if I want to go all css-module or css on this, so for now !important */
+  padding: 0px !important;
 }
 
 /* Overrides to make the ghost button look right */
