@@ -19,14 +19,14 @@ td {
 
 .statementTextColHeader {
   padding-left: 8px;
-  width: 50%;
+  width: 60%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .statementTextCol {
-  width: 50%;
+  width: 60%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

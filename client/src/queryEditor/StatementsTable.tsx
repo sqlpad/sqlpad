@@ -3,6 +3,7 @@ import { selectStatementId } from '../stores/editor-actions';
 import { Statement } from '../types';
 import styles from './StatementsTable.module.css';
 import Button from '../common/Button';
+import ExportButton from '../common/ExportButton';
 
 function StatementsTable({ statements }: { statements: Statement[] }) {
   return (
@@ -13,7 +14,12 @@ function StatementsTable({ statements }: { statements: Statement[] }) {
             <th className={styles.statementTextColHeader}>Statement</th>
             <th>Status</th>
             <th style={{ textAlign: 'right' }}>Rows</th>
-            <th style={{ textAlign: 'right' }}>Duration (sec)</th>
+            <th style={{ textAlign: 'right' }}>Seconds</th>
+            {/* 
+              TODO - Add table link
+              TODO - Update table only page to take sequence parameter. Default to last if not set
+            */}
+            <th style={{ width: 45, textAlign: 'right' }}></th>
           </tr>
         </thead>
         <tbody>
@@ -37,6 +43,9 @@ function StatementsTable({ statements }: { statements: Statement[] }) {
                   {typeof statement.durationMs === 'number'
                     ? `${statement.durationMs / 1000}`
                     : ''}
+                </td>
+                <td style={{ width: 45, textAlign: 'right' }}>
+                  <ExportButton statementId={statement.id} />
                 </td>
               </tr>
             );
