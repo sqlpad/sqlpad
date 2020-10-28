@@ -241,6 +241,60 @@ export function useLastStatementId() {
   });
 }
 
+export function useSessionTableLink(sequence?: number) {
+  return useEditorStore((s) => {
+    const { queryId, connectionClient } = s.getSession();
+    const connectionClientId = connectionClient?.id;
+
+    let tableLink = '';
+
+    if (queryId && queryId !== 'new') {
+      tableLink = `/query-table/${queryId}`;
+
+      const searchParams = new URLSearchParams();
+
+      if (connectionClientId) {
+        searchParams.append('connectionClientId', connectionClientId);
+      }
+      if (sequence) {
+        searchParams.append('sequence', sequence.toString());
+      }
+
+      tableLink += `?${searchParams.toString()}`;
+    }
+
+    return tableLink;
+  });
+}
+
+/**
+ * Get statement by sequence number for current session
+ * If sequence is not provided, the last statement will be returned
+ * @param sequence
+ */
+export function useSessionStatementIdBySequence(sequence?: number) {
+  return useEditorStore((s) => {
+    const { batchId } = s.getSession();
+    if (batchId) {
+      const batch = s.batches[batchId];
+      if (batch && batch.statements) {
+        const statementBySequence = batch.statements.find(
+          (s) => s.sequence === sequence
+        );
+        if (statementBySequence) {
+          return statementBySequence.id;
+        }
+
+        const lastStatement = batch.statements[batch.statements.length - 1];
+        if (lastStatement) {
+          return lastStatement.id;
+        }
+      }
+    }
+    return '';
+  });
+}
+
 export function useStatementRowCount(statementId?: string) {
   return useEditorStore((s) => {
     if (!statementId) {

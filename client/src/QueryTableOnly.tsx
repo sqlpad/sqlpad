@@ -1,3 +1,4 @@
+import queryString from 'query-string';
 import React, { useEffect } from 'react';
 import ExportButton from './common/ExportButton';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
@@ -5,9 +6,9 @@ import QueryResultContainer from './common/QueryResultContainer';
 import QueryResultRunning from './common/QueryResultRunning';
 import { loadQuery, runQuery } from './stores/editor-actions';
 import {
-  useLastStatementId,
   useSessionIsRunning,
   useSessionQueryName,
+  useSessionStatementIdBySequence,
   useStatementIncomplete,
   useStatementRowCount,
 } from './stores/editor-store';
@@ -16,9 +17,18 @@ type Props = {
   queryId: string;
 };
 
+interface ParsedQueryString {
+  sequence?: string;
+  connectionClientId?: string;
+}
+
 function QueryTableOnly({ queryId }: Props) {
+  const qs: ParsedQueryString = queryString.parse(window.location.search);
+  const sequence = qs.sequence ? parseInt(qs.sequence) : undefined;
+
+  const statementId = useSessionStatementIdBySequence(sequence);
+
   const isRunning = useSessionIsRunning();
-  const statementId = useLastStatementId();
   const rowCount = useStatementRowCount(statementId);
   const name = useSessionQueryName();
   const incomplete = useStatementIncomplete(statementId);
@@ -46,6 +56,11 @@ function QueryTableOnly({ queryId }: Props) {
     );
   }
 
+  let title = name || '';
+  if (sequence) {
+    title += ` (query #${sequence})`;
+  }
+
   return (
     <div
       style={{
@@ -57,7 +72,7 @@ function QueryTableOnly({ queryId }: Props) {
       }}
     >
       <div style={{ height: '50px' }}>
-        <span style={{ fontSize: '1.5rem' }}>{name || ''}</span>
+        <span style={{ fontSize: '1.5rem' }}>{title}</span>
         <div style={{ float: 'right' }}>
           {incomplete && <IncompleteDataNotification />}
           <ExportButton statementId={statementId} />

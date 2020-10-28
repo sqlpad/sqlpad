@@ -11,11 +11,10 @@ import Tooltip from '../common/Tooltip';
 import { selectStatementId } from '../stores/editor-actions';
 import {
   useSessionBatch,
-  useSessionConnectionClientId,
   useSessionIsRunning,
-  useSessionQueryId,
   useSessionRunQueryStartTime,
   useSessionSelectedStatementId,
+  useSessionTableLink,
   useStatementDurationMs,
   useStatementIncomplete,
   useStatementRowCount,
@@ -27,7 +26,6 @@ import styles from './QueryResultHeader.module.css';
 
 function QueryResultStatementHeader() {
   const isRunning = useSessionIsRunning();
-  const queryId = useSessionQueryId();
   const runQueryStartTime = useSessionRunQueryStartTime();
   const statementId = useSessionSelectedStatementId();
 
@@ -35,7 +33,6 @@ function QueryResultStatementHeader() {
   const hasRows = rowCount !== undefined && rowCount > 0;
   const incomplete = useStatementIncomplete(statementId);
   const durationMs = useStatementDurationMs(statementId);
-  const connectionClientId = useSessionConnectionClientId();
 
   const batch = useSessionBatch();
   const numOfStatements = batch?.statements.length || 0;
@@ -44,6 +41,9 @@ function QueryResultStatementHeader() {
   const statementSequence = useStatementSequence(statementId);
 
   const { config } = useAppContext();
+
+  const tableLink = useSessionTableLink(statementSequence);
+  const showLink = Boolean(tableLink);
 
   if (isRunning) {
     return (
@@ -57,19 +57,7 @@ function QueryResultStatementHeader() {
     );
   }
 
-  let tableLink = '';
-
-  if (queryId) {
-    tableLink = `/query-table/${queryId}`;
-    if (connectionClientId) {
-      tableLink += `?connectionClientId=${connectionClientId}`;
-    }
-  }
-
   const serverSec = durationMs !== undefined ? durationMs / 1000 : 0;
-
-  const showLink =
-    typeof queryId === 'string' && queryId !== 'new' && queryId !== '';
 
   return (
     <div className={styles.toolbar}>
