@@ -58,7 +58,7 @@ function QueryTableOnly({ queryId }: Props) {
 
   let title = name || '';
   if (sequence) {
-    title += ` (query #${sequence})`;
+    title += ` (statement #${sequence})`;
   }
 
   return (

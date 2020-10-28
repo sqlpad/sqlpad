@@ -1,7 +1,7 @@
 .toolbar {
-  height: 30px;
+  height: 34px;
   border-bottom: 1px solid #ccc;
-  background-color: #f4f4f4;
+  background-color: var(--toolbar-bg-color);
   display: flex;
   align-items: center;
 }

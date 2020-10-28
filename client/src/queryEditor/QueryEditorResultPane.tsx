@@ -14,9 +14,9 @@ function QueryEditorResultPane() {
   const selectedStatementId = useSessionSelectedStatementId();
   const isRunning = useSessionIsRunning();
 
+  // Batch reference will change frequently during load
+  // This component should be cheap to render though so this should be okay
   const batch = useSessionBatch();
-  console.log(batch);
-
   const statementId = selectedStatementId;
 
   let paneContent = null;
@@ -38,7 +38,7 @@ function QueryEditorResultPane() {
       <div
         style={{
           position: 'absolute',
-          top: 30,
+          top: 34,
           bottom: 0,
           left: 0,
           right: 0,

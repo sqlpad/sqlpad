@@ -16,12 +16,16 @@
   height: 30px;
 }
 
+.table tr:nth-child(odd) {
+  background-color: var(--table-alt-row-bg-color);
+}
+
 .table th {
   border-bottom: var(--border);
   padding: 6px 8px;
   position: sticky;
   top: 0;
-  background-color: #fff;
+  background-color: var(--toolbar-bg-color);
   /* make sure header sits above content */
   z-index: 2;
 }
