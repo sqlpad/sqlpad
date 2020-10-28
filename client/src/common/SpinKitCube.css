@@ -74,12 +74,10 @@
     -webkit-transform: scale3D(1, 1, 1);
     transform: scale3D(1, 1, 1);
     background-color: rgb(0, 183, 255);
-    box-shadow: rgba(247, 7, 247, 0.5) 2px 2px 20px 2px;
   }
   35% {
     -webkit-transform: scale3D(0, 0, 1);
     transform: scale3D(0, 0, 1);
     background-color: magenta;
-    box-shadow: rgba(64, 169, 255, 0.5) 2px 2px 20px 2px;
   }
 }
