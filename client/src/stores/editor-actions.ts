@@ -125,6 +125,7 @@ export const initApp = async (
  * TODO: This needs to either do more, cancel timeouts, polling, etc OR navigate to a new page in browser (not client-side routed)
  */
 export async function resetState() {
+  setSession({ selectedStatementId: '' });
   setState({
     batches: {},
     statements: {},
@@ -306,6 +307,7 @@ export const loadQuery = async (queryId: string) => {
     canRead: data.canRead,
     canWrite: data.canWrite,
     // Reset result/error/unsaved/running states
+    selectedStatementId: '',
     isRunning: false,
     queryError: undefined,
     queryResult: undefined,
@@ -516,6 +518,7 @@ export const resetNewQuery = () => {
     queryError: undefined,
     queryResult: undefined,
     unsavedChanges: false,
+    selectedStatementId: '',
   });
 };
 
