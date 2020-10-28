@@ -9,11 +9,22 @@ import { Statement } from '../types';
 import useAppContext from '../utilities/use-app-context';
 import styles from './StatementsTable.module.css';
 import SpinKitRow from '../common/SpinKitRow';
+import Text from '../common/Text';
+import ErrorBlock from '../common/ErrorBlock';
 
 function StatementTableRow({ statement }: { statement: Statement }) {
   const tableLink = useSessionTableLink(statement.sequence);
   const { config } = useAppContext();
   const hasRows = statement.rowCount !== undefined && statement.rowCount > 0;
+
+  let statusContent = null;
+  if (statement.status === 'started') {
+    statusContent = <SpinKitRow />;
+  } else if (statement.status === 'error') {
+    statusContent = <Text type="danger">{statement.status}</Text>;
+  } else {
+    statusContent = statement.status;
+  }
 
   return (
     <tr>
@@ -28,9 +39,7 @@ function StatementTableRow({ statement }: { statement: Statement }) {
           {statement.sequence}. {statement.statementText.trim()}
         </Button>
       </td>
-      <td>
-        {statement.status === 'started' ? <SpinKitRow /> : statement.status}
-      </td>
+      <td>{statusContent}</td>
       <td style={{ textAlign: 'right' }}>{statement.rowCount}</td>
       <td style={{ textAlign: 'right' }}>
         {typeof statement.durationMs === 'number'
@@ -58,6 +67,26 @@ function StatementTableRow({ statement }: { statement: Statement }) {
 }
 
 function StatementsTable({ statements }: { statements: Statement[] }) {
+  // If there is a status === error statement, remove remaining statements
+  // Then append a row of the error text
+
+  let errorRow = null;
+  let filteredStatements = statements;
+  const errorIndex = statements.findIndex(
+    (statement) => statement.status === 'error'
+  );
+  if (errorIndex > -1) {
+    filteredStatements = statements.slice(0, errorIndex + 1);
+    const erroredStatement = statements[errorIndex];
+    errorRow = (
+      <tr>
+        <td colSpan={5}>
+          <ErrorBlock>{erroredStatement.error?.title}</ErrorBlock>
+        </td>
+      </tr>
+    );
+  }
+
   return (
     <div style={{ width: '100%', height: '100%', overflowY: 'auto' }}>
       <table className={styles.table}>
@@ -71,11 +100,12 @@ function StatementsTable({ statements }: { statements: Statement[] }) {
           </tr>
         </thead>
         <tbody>
-          {statements.map((statement) => {
+          {filteredStatements.map((statement) => {
             return (
               <StatementTableRow key={statement.id} statement={statement} />
             );
           })}
+          {errorRow}
         </tbody>
       </table>
     </div>

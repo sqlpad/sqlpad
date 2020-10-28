@@ -179,7 +179,40 @@ export function useSessionQueryResult() {
 }
 
 export function useSessionQueryError() {
-  return useEditorStore((s) => s.getSession().queryError);
+  return useEditorStore((s) => {
+    const { queryError, selectedStatementId } = s.getSession();
+    if (queryError) {
+      return queryError;
+    }
+    if (selectedStatementId) {
+      const statementError = s.statements[selectedStatementId]?.error?.title;
+      if (statementError) {
+        return statementError;
+      }
+    }
+    return;
+  });
+}
+
+export function useBatchError() {
+  return useEditorStore((s) => {
+    const { queryError, batchId } = s.getSession();
+    if (queryError) {
+      return queryError;
+    }
+    if (batchId) {
+      const batch = s.batches[batchId];
+      if (batch?.statements) {
+        const errored = batch.statements.find(
+          (statement) => statement.status === 'error'
+        );
+        if (errored) {
+          return errored.error?.title;
+        }
+      }
+    }
+    return;
+  });
 }
 
 export function useSessionRunQueryStartTime() {
