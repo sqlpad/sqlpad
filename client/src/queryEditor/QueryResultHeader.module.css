@@ -15,7 +15,8 @@
   padding-left: 2px;
 }
 
-.returnToStatementsBtn:hover {
+.returnToStatementsBtn:hover,
+.returnToStatementsBtn:focus {
   padding-left: 1px;
 }
 
