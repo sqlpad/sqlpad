@@ -8,6 +8,7 @@ import { useSessionTableLink } from '../stores/editor-store';
 import { Statement } from '../types';
 import useAppContext from '../utilities/use-app-context';
 import styles from './StatementsTable.module.css';
+import SpinKitRow from '../common/SpinKitRow';
 
 function StatementTableRow({ statement }: { statement: Statement }) {
   const tableLink = useSessionTableLink(statement.sequence);
@@ -27,7 +28,9 @@ function StatementTableRow({ statement }: { statement: Statement }) {
           {statement.sequence}. {statement.statementText.trim()}
         </Button>
       </td>
-      <td>{statement.status}</td>
+      <td>
+        {statement.status === 'started' ? <SpinKitRow /> : statement.status}
+      </td>
       <td style={{ textAlign: 'right' }}>{statement.rowCount}</td>
       <td style={{ textAlign: 'right' }}>
         {typeof statement.durationMs === 'number'
@@ -47,7 +50,7 @@ function StatementTableRow({ statement }: { statement: Statement }) {
               <OpenInNewIcon />
             </IconButton>
           )}
-          <ExportButton statementId={statement.id} />
+          {hasRows && <ExportButton statementId={statement.id} />}
         </div>
       </td>
     </tr>
@@ -64,10 +67,6 @@ function StatementsTable({ statements }: { statements: Statement[] }) {
             <th>Status</th>
             <th style={{ textAlign: 'right' }}>Rows</th>
             <th style={{ textAlign: 'right' }}>Seconds</th>
-            {/* 
-              TODO - Add table link
-              TODO - Update table only page to take sequence parameter. Default to last if not set
-            */}
             <th style={{ textAlign: 'right' }}></th>
           </tr>
         </thead>
