@@ -2,6 +2,7 @@ import MenuLeftIcon from 'mdi-react/MenuLeftIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Button from '../common/Button';
 import ExportButton from '../common/ExportButton';
 import HSpacer from '../common/HSpacer';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
@@ -18,12 +19,11 @@ import {
   useStatementDurationMs,
   useStatementIncomplete,
   useStatementRowCount,
-  useStatementText,
   useStatementSequence,
+  useStatementText,
 } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
-import Button from '../common/Button';
 
 function QueryResultStatementHeader() {
   const isRunning = useSessionIsRunning();
@@ -57,21 +57,12 @@ function QueryResultStatementHeader() {
     );
   }
 
-  const links = {
-    csv: `/statement-results/${statementId}.csv`,
-    json: `/statement-results/${statementId}.json`,
-    xlsx: `/statement-results/${statementId}.xlsx`,
-    table: '',
-    chart: '',
-  };
+  let tableLink = '';
 
   if (queryId) {
-    links.table = `/query-table/${queryId}`;
-    links.chart = `/query-chart/${queryId}`;
+    tableLink = `/query-table/${queryId}`;
     if (connectionClientId) {
-      const params = `?connectionClientId=${connectionClientId}`;
-      links.table += params;
-      links.chart += params;
+      tableLink += `?connectionClientId=${connectionClientId}`;
     }
   }
 
@@ -111,12 +102,12 @@ function QueryResultStatementHeader() {
 
       {config?.allowCsvDownload && hasRows && (
         <>
-          <ExportButton links={links} />
+          <ExportButton statementId={statementId} />
           <HSpacer />
         </>
       )}
 
-      {showLink && links.table && (
+      {showLink && tableLink && (
         <>
           <Tooltip label="Open table in new window">
             <Link
@@ -127,7 +118,7 @@ function QueryResultStatementHeader() {
               }}
               target="_blank"
               rel="noopener noreferrer"
-              to={links.table}
+              to={tableLink}
             >
               <OpenInNewIcon size={16} />
             </Link>

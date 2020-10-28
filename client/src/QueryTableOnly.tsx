@@ -46,14 +46,6 @@ function QueryTableOnly({ queryId }: Props) {
     );
   }
 
-  const links = {
-    csv: `/statement-results/${statementId}.csv`,
-    json: `/statement-results/${statementId}.json`,
-    xlsx: `/statement-results/${statementId}.xlsx`,
-    table: '',
-    chart: '',
-  };
-
   return (
     <div
       style={{
@@ -68,7 +60,7 @@ function QueryTableOnly({ queryId }: Props) {
         <span style={{ fontSize: '1.5rem' }}>{name || ''}</span>
         <div style={{ float: 'right' }}>
           {incomplete && <IncompleteDataNotification />}
-          <ExportButton links={links} />
+          <ExportButton statementId={statementId} />
         </div>
       </div>
       <div style={{ display: 'flex', flexGrow: 1, height: '100%' }}>

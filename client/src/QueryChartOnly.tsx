@@ -68,14 +68,6 @@ function QueryChartOnly({ queryId }: Props) {
     exportPng(queryId, name || '');
   };
 
-  const links = {
-    csv: `/statement-results/${statementId}.csv`,
-    json: `/statement-results/${statementId}.json`,
-    xlsx: `/statement-results/${statementId}.xlsx`,
-    table: '',
-    chart: '',
-  };
-
   return (
     <div
       style={{
@@ -90,7 +82,10 @@ function QueryChartOnly({ queryId }: Props) {
         <span style={{ fontSize: '1.5rem' }}>{name || ''}</span>
         <div style={{ float: 'right' }}>
           {incomplete && <IncompleteDataNotification />}
-          <ExportButton links={links} onSaveImageClick={onSaveImageClick} />
+          <ExportButton
+            statementId={statementId}
+            onSaveImageClick={onSaveImageClick}
+          />
         </div>
       </div>
       <div style={{ height: '100%', display: 'flex' }}>
