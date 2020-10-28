@@ -2,21 +2,22 @@
   This is needed to make text truncation to work
   Otherwise cell will grow to however large it things to show large queries
 */
-.statements-table {
+.table {
   table-layout: fixed;
+  width: 100%;
 }
 
-.statements-table tr {
+.table tr {
   height: 30px;
 }
 
-.statements-table th,
+.table th,
 td {
   border-bottom: var(--border);
   padding: 6px 8px;
 }
 
-.statements-table th.statement-text-col-header {
+.statementTextColHeader {
   padding-left: 8px;
   width: 50%;
   white-space: nowrap;
@@ -24,7 +25,7 @@ td {
   text-overflow: ellipsis;
 }
 
-.statements-table td.statement-text-col {
+.statementTextCol {
   width: 50%;
   white-space: nowrap;
   overflow: hidden;
@@ -33,7 +34,7 @@ td {
 }
 
 /* Overrides to make the ghost button look right */
-.statement-text-col > button {
+.statementButton {
   font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
   white-space: nowrap;
   width: 100%;
@@ -41,13 +42,4 @@ td {
   overflow: hidden;
   display: block;
   text-align: left;
-}
-
-.statement-header-statement-text {
-  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  margin: 0 32px;
-  color: rgba(0, 0, 0, 0.45);
 }

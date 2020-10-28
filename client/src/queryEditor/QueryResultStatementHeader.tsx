@@ -95,7 +95,7 @@ function QueryResultStatementHeader() {
       ) : null}
 
       <HSpacer size={1} grow />
-      <div className="statement-header-statement-text">
+      <div className={styles.statementHeaderStatementText}>
         {statementSequence ? `${statementSequence}. ${statementText}` : ''}
       </div>
       <HSpacer size={1} grow />

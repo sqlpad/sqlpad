@@ -1,16 +1,16 @@
 import React from 'react';
 import { selectStatementId } from '../stores/editor-actions';
 import { Statement } from '../types';
-import './StatementsTable.css';
+import styles from './StatementsTable.module.css';
 import Button from '../common/Button';
 
 function StatementsTable({ statements }: { statements: Statement[] }) {
   return (
     <div style={{ width: '100%' }}>
-      <table className="statements-table" style={{ width: '100%' }}>
+      <table className={styles.table}>
         <thead>
           <tr>
-            <th className="statement-text-col-header">Statement</th>
+            <th className={styles.statementTextColHeader}>Statement</th>
             <th>Status</th>
             <th style={{ textAlign: 'right' }}>Rows</th>
             <th style={{ textAlign: 'right' }}>Duration (sec)</th>
@@ -20,8 +20,9 @@ function StatementsTable({ statements }: { statements: Statement[] }) {
           {statements.map((statement) => {
             return (
               <tr key={statement.id}>
-                <td className="statement-text-col">
+                <td className={styles.statementTextCol}>
                   <Button
+                    className={styles.statementButton}
                     variant="primary-ghost"
                     onClick={() => {
                       selectStatementId(statement.id);

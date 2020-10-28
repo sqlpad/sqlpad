@@ -6,7 +6,6 @@ import {
   useSessionBatch,
   useSessionIsRunning,
   useSessionRunQueryStartTime,
-  useStatementDurationMs,
 } from '../stores/editor-store';
 import styles from './QueryResultHeader.module.css';
 
@@ -14,7 +13,6 @@ function QueryResultBatchHeader() {
   const isRunning = useSessionIsRunning();
   const runQueryStartTime = useSessionRunQueryStartTime();
   const lastStatementId = useLastStatementId();
-  const durationMs = useStatementDurationMs(lastStatementId);
 
   const batch = useSessionBatch();
   const numOfStatements = batch?.statements.length || 0;
@@ -26,8 +24,8 @@ function QueryResultBatchHeader() {
         <SecondsTimer startTime={runQueryStartTime} /> seconds
       </div>
     );
-  } else if (lastStatementId && durationMs !== undefined) {
-    const serverSec = durationMs / 1000;
+  } else if (lastStatementId && batch?.durationMs !== undefined) {
+    const serverSec = batch?.durationMs / 1000;
     timerContent = <div>{serverSec} seconds</div>;
   }
 

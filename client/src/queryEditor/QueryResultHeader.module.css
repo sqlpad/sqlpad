@@ -18,3 +18,12 @@
 .returnToStatementsBtn:hover {
   padding-left: 1px;
 }
+
+.statementHeaderStatementText {
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 0 32px;
+  color: rgba(0, 0, 0, 0.45);
+}
