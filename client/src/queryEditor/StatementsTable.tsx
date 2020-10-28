@@ -1,15 +1,18 @@
+import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
-import { selectStatementId } from '../stores/editor-actions';
-import { Statement } from '../types';
-import styles from './StatementsTable.module.css';
 import Button from '../common/Button';
 import ExportButton from '../common/ExportButton';
 import IconButton from '../common/IconButton';
-import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
+import { selectStatementId } from '../stores/editor-actions';
 import { useSessionTableLink } from '../stores/editor-store';
+import { Statement } from '../types';
+import useAppContext from '../utilities/use-app-context';
+import styles from './StatementsTable.module.css';
 
 function StatementTableRow({ statement }: { statement: Statement }) {
   const tableLink = useSessionTableLink(statement.sequence);
+  const { config } = useAppContext();
+  const hasRows = statement.rowCount !== undefined && statement.rowCount > 0;
 
   return (
     <tr>
@@ -33,15 +36,17 @@ function StatementTableRow({ statement }: { statement: Statement }) {
       </td>
       <td style={{ width: 120, textAlign: 'right', padding: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <IconButton
-            disabled={!Boolean(tableLink)}
-            to={tableLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            tooltip="Open table in new window"
-          >
-            <OpenInNewIcon />
-          </IconButton>
+          {config?.allowCsvDownload && hasRows && (
+            <IconButton
+              disabled={!Boolean(tableLink)}
+              to={tableLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              tooltip="Open table in new window"
+            >
+              <OpenInNewIcon />
+            </IconButton>
+          )}
           <ExportButton statementId={statement.id} />
         </div>
       </td>

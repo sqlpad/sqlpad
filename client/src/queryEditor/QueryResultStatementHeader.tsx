@@ -1,13 +1,12 @@
 import MenuLeftIcon from 'mdi-react/MenuLeftIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Button from '../common/Button';
 import ExportButton from '../common/ExportButton';
 import HSpacer from '../common/HSpacer';
+import IconButton from '../common/IconButton';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer';
-import Tooltip from '../common/Tooltip';
 import { selectStatementId } from '../stores/editor-actions';
 import {
   useSessionBatch,
@@ -88,29 +87,24 @@ function QueryResultStatementHeader() {
         </>
       )}
 
-      {config?.allowCsvDownload && hasRows && (
+      {showLink && tableLink && (
         <>
-          <ExportButton statementId={statementId} />
+          <IconButton
+            disabled={!Boolean(tableLink)}
+            to={tableLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            tooltip="Open table in new window"
+          >
+            <OpenInNewIcon size={16} />
+          </IconButton>
           <HSpacer />
         </>
       )}
 
-      {showLink && tableLink && (
+      {config?.allowCsvDownload && hasRows && (
         <>
-          <Tooltip label="Open table in new window">
-            <Link
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                lineHeight: 1,
-              }}
-              target="_blank"
-              rel="noopener noreferrer"
-              to={tableLink}
-            >
-              <OpenInNewIcon size={16} />
-            </Link>
-          </Tooltip>
+          <ExportButton statementId={statementId} />
           <HSpacer />
         </>
       )}
