@@ -4,6 +4,7 @@ import 'whatwg-fetch';
 import message from '../common/message';
 import {
   AppInfo,
+  Batch,
   Connection,
   ConnectionAccess,
   ConnectionDetail,
@@ -12,6 +13,7 @@ import {
   Query,
   QueryDetail,
   ServiceToken,
+  StatementResults,
   User,
 } from '../types';
 import baseUrl from './baseUrl';
@@ -92,16 +94,16 @@ async function fetchJson<DataT = any>(
 }
 
 export const api = {
-  put(url: any, body: any) {
-    return fetchJson('PUT', url, body);
+  put<DataT = any>(url: any, body: any) {
+    return fetchJson<DataT>('PUT', url, body);
   },
 
   delete(url: any) {
     return fetchJson('DELETE', url);
   },
 
-  post(url: any, body: any) {
-    return fetchJson('POST', url, body);
+  post<DataT = any>(url: any, body: any) {
+    return fetchJson<DataT>('POST', url, body);
   },
 
   get<DataT = any>(url: any) {
@@ -112,7 +114,29 @@ export const api = {
     return this.get('/api/signout');
   },
 
-  async getQueries() {
+  createBatch(data: Partial<Batch>) {
+    return this.post<Batch>('/api/batches', data);
+  },
+
+  getBatch(batchId: string) {
+    return this.get<Batch>(`/api/batches/${batchId}`);
+  },
+
+  useBatch(batchId: string) {
+    return useSWR<Batch>(`/api/batches/${batchId}`);
+  },
+
+  getStatementResults(statementId: string) {
+    return this.get<StatementResults>(`/api/statements/${statementId}/results`);
+  },
+
+  useStatementResults(statementId?: string) {
+    return useSWR<StatementResults>(
+      statementId ? `/api/statements/${statementId}/results` : null
+    );
+  },
+
+  getQueries() {
     return this.get<Query[]>('/api/queries');
   },
 

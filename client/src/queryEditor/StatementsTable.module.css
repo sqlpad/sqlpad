@@ -1,0 +1,64 @@
+.table {
+  /* 
+    This is needed to make text truncation to work
+    Otherwise cell will grow to however large it things to show large queries
+  */
+  table-layout: fixed;
+  width: 100%;
+  max-height: 100%;
+  overflow-x: auto;
+  /* allows for header border to show correctly */
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table tr {
+  height: 30px;
+}
+
+.table tr:nth-child(odd) {
+  background-color: var(--table-alt-row-bg-color);
+}
+
+.table th {
+  border-bottom: var(--border);
+  padding: 6px 8px;
+  position: sticky;
+  top: 0;
+  background-color: var(--toolbar-bg-color);
+  /* make sure header sits above content */
+  z-index: 2;
+}
+
+.table td {
+  border-bottom: var(--border);
+  padding: 6px 8px;
+}
+
+.statementTextColHeader {
+  padding-left: 8px;
+  width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.statementTextCol {
+  width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  /* specificity in .table td overrides this. Unsure if I want to go all css-module or css on this, so for now !important */
+  padding: 0px !important;
+}
+
+/* Overrides to make the ghost button look right */
+.statementButton {
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+  white-space: nowrap;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: block;
+  text-align: left;
+}

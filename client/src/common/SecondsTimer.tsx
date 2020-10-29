@@ -10,7 +10,7 @@ function SecondsTimer({ startTime }: Props) {
   useEffect(() => {
     const intervalId = setInterval(() => {
       const now = new Date();
-      setRunSeconds(((now.valueOf() - startTime.valueOf()) / 1000).toFixed(0));
+      setRunSeconds(((now.valueOf() - startTime.valueOf()) / 1000).toFixed(3));
     }, 33);
     return () => clearInterval(intervalId);
   }, [startTime]);

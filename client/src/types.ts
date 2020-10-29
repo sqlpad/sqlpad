@@ -12,6 +12,56 @@ export interface Connection {
   updatedAt: string | Date;
 }
 
+export type StatementResults = Array<Array<any>>;
+
+export interface StatementColumn {
+  datatype: string;
+  max?: number | string | Date | boolean;
+  min?: number | string | Date | boolean;
+  maxValueLength?: number;
+  name: string;
+}
+
+export interface StatementError {
+  title: string;
+  // TODO there might be more here
+}
+
+export interface Statement {
+  id: string;
+  batchId: string;
+  sequence: number;
+  statementText: string;
+  status: 'queued' | 'started' | 'finished' | 'error';
+  startTime?: string | Date;
+  stopTime?: string | Date;
+  durationMs?: number;
+  columns?: StatementColumn[];
+  rowCount?: number;
+  resultsPath?: string;
+  incomplete?: boolean;
+  error?: StatementError;
+}
+
+export interface Batch {
+  id: string;
+  queryId?: string;
+  name?: string;
+  connectionId: string;
+  connectionClientId: string;
+  status: 'started' | 'finished' | 'error';
+  startTime: string | Date;
+  stopTime: string | Date;
+  durationMs: number;
+  batchText: string;
+  selectedText: string;
+  chart?: QueryChart;
+  statements: Statement[];
+  userId: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+}
+
 export type ConnectionFields = Record<string, any>;
 
 export interface ConnectionDetail extends ConnectionFields {
@@ -80,13 +130,15 @@ export interface ACLRecord {
   write: boolean;
 }
 
+export interface QueryChart {
+  fields?: ChartFields;
+  chartType?: string;
+}
+
 export interface Query {
   id: string;
   name: string;
-  chart?: {
-    fields?: ChartFields;
-    chartType?: string;
-  };
+  chart?: QueryChart;
   queryText: string;
   connection: {
     id: string;

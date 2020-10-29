@@ -35,6 +35,8 @@ const Button = React.forwardRef<Ref, Props>(
       classNames.push(styles.danger);
     } else if (variant === 'ghost') {
       classNames.push(styles.ghost);
+    } else if (variant === 'primary-ghost') {
+      classNames.push(styles.primaryGhost);
     }
 
     if (className) {

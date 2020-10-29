@@ -1,22 +1,47 @@
+import queryString from 'query-string';
 import React, { useEffect } from 'react';
 import ExportButton from './common/ExportButton';
 import IncompleteDataNotification from './common/IncompleteDataNotification';
 import QueryResultContainer from './common/QueryResultContainer';
 import QueryResultRunning from './common/QueryResultRunning';
-import useQueryResultById from './utilities/useQueryResultById';
+import { loadQuery, runQuery } from './stores/editor-actions';
+import {
+  useSessionIsRunning,
+  useSessionQueryName,
+  useSessionStatementIdBySequence,
+  useStatementIncomplete,
+  useStatementRowCount,
+} from './stores/editor-store';
 
 type Props = {
   queryId: string;
 };
 
+interface ParsedQueryString {
+  sequence?: string;
+  connectionClientId?: string;
+}
+
 function QueryTableOnly({ queryId }: Props) {
-  const [queryError, queryResult, isRunning] = useQueryResultById(queryId);
+  const qs: ParsedQueryString = queryString.parse(window.location.search);
+  const sequence = qs.sequence ? parseInt(qs.sequence) : undefined;
+
+  const statementId = useSessionStatementIdBySequence(sequence);
+
+  const isRunning = useSessionIsRunning();
+  const rowCount = useStatementRowCount(statementId);
+  const name = useSessionQueryName();
+  const incomplete = useStatementIncomplete(statementId);
+
+  useEffect(() => {
+    loadQuery(queryId).then(() => runQuery());
+  }, [queryId]);
 
   useEffect(() => {
     document.title = 'SQLPad';
   }, []);
 
-  if (isRunning || !queryResult) {
+  if (isRunning || rowCount === undefined) {
     return (
       <div
         style={{
@@ -31,7 +56,10 @@ function QueryTableOnly({ queryId }: Props) {
     );
   }
 
-  const { name, links, incomplete } = queryResult;
+  let title = name || '';
+  if (sequence) {
+    title += ` (statement #${sequence})`;
+  }
 
   return (
     <div
@@ -44,10 +72,10 @@ function QueryTableOnly({ queryId }: Props) {
       }}
     >
       <div style={{ height: '50px' }}>
-        <span style={{ fontSize: '1.5rem' }}>{name || ''}</span>
+        <span style={{ fontSize: '1.5rem' }}>{title}</span>
         <div style={{ float: 'right' }}>
           {incomplete && <IncompleteDataNotification />}
-          <ExportButton links={links} />
+          <ExportButton statementId={statementId} />
         </div>
       </div>
       <div style={{ display: 'flex', flexGrow: 1, height: '100%' }}>
@@ -59,11 +87,7 @@ function QueryTableOnly({ queryId }: Props) {
             border: '1px solid #CCC',
           }}
         >
-          <QueryResultContainer
-            isRunning={isRunning}
-            queryResult={queryResult}
-            queryError={queryError}
-          />
+          <QueryResultContainer statementId={statementId} />
         </div>
       </div>
     </div>
