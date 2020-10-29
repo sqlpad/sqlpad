@@ -20,7 +20,6 @@ export interface EditorSession {
   schemaExpansions: { [conectionId: string]: ExpandedMap };
   connectionId: string;
   connectionClient?: ConnectionClient;
-  connectionClientInterval?: any;
   runQueryInstanceId?: string;
   isRunning: boolean;
   isSaving: boolean;
@@ -64,7 +63,6 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
       schemaExpansions: {},
       connectionId: '',
       connectionClient: undefined,
-      connectionClientInterval: undefined,
       runQueryInstanceId: undefined,
       isRunning: false,
       isSaving: false,
