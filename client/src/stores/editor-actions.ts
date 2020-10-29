@@ -26,6 +26,39 @@ function setSession(update: Partial<EditorSession>) {
   });
 }
 
+// Schedule connectionClient Heartbeat
+// This only does work if data exists to do the work on
+// Assumption here is that the API call will finish in the 10 seconds this is scheduled for
+setInterval(async () => {
+  const { connectionClient } = getState().getSession();
+
+  if (connectionClient) {
+    const updateJson = await api.put(
+      `/api/connection-clients/${connectionClient.id}`,
+      {}
+    );
+
+    const currentConnectionClient = getState().getSession().connectionClient;
+
+    // If the connectionClient changed since hearbeat, do nothing
+    if (currentConnectionClient?.id !== connectionClient?.id) {
+      return;
+    }
+
+    // If the PUT didn't return a connectionClient object or has an error,
+    // the connectionClient has been disconnected
+    if (updateJson.error || !updateJson.data) {
+      setSession({
+        connectionClient: undefined,
+      });
+    } else {
+      setSession({
+        connectionClient: updateJson.data,
+      });
+    }
+  }
+}, 10000);
+
 export const initApp = async (
   config: AppInfo['config'],
   connections: Connection[]
@@ -123,37 +156,8 @@ export async function connectConnectionClient() {
     return message.error('Problem connecting to database');
   }
 
-  // Poll connection-clients api to keep it alive
-  const connectionClientInterval = setInterval(async () => {
-    const updateJson = await api.put(
-      `/api/connection-clients/${json.data.id}`,
-      {}
-    );
-
-    // Not sure if this should message user here
-    // In the event of an error this could get really noisy
-    if (updateJson.error) {
-      message.error(updateJson.error);
-    }
-
-    // If the PUT didn't return a connectionClient object,
-    // the connectionClient has been disconnected
-    if (!updateJson.data && connectionClientInterval) {
-      clearInterval(connectionClientInterval);
-      setSession({
-        connectionClientInterval: undefined,
-        connectionClient: undefined,
-      });
-    } else {
-      setSession({
-        connectionClient: updateJson.data,
-      });
-    }
-  }, 10000);
-
   setSession({
     connectionClient: json.data,
-    connectionClientInterval,
   });
 }
 
@@ -161,14 +165,7 @@ export async function connectConnectionClient() {
  * Disconnect the current connection client if one exists
  */
 export async function disconnectConnectionClient() {
-  const {
-    connectionClient,
-    connectionClientInterval,
-  } = getState().getSession();
-
-  if (connectionClientInterval) {
-    clearInterval(connectionClientInterval);
-  }
+  const { connectionClient } = getState().getSession();
 
   if (connectionClient) {
     api
@@ -182,7 +179,6 @@ export async function disconnectConnectionClient() {
 
   setSession({
     connectionClient: undefined,
-    connectionClientInterval: undefined,
   });
 }
 
@@ -191,10 +187,7 @@ export async function disconnectConnectionClient() {
  * @param connectionId
  */
 export function selectConnectionId(connectionId: string) {
-  const {
-    connectionClient,
-    connectionClientInterval,
-  } = getState().getSession();
+  const { connectionClient } = getState().getSession();
 
   localforage
     .setItem('selectedConnectionId', connectionId)
@@ -210,14 +203,9 @@ export function selectConnectionId(connectionId: string) {
       });
   }
 
-  if (connectionClientInterval) {
-    clearInterval(connectionClientInterval);
-  }
-
   setSession({
     connectionId,
     connectionClient: undefined,
-    connectionClientInterval: undefined,
   });
 }
 
@@ -250,10 +238,7 @@ export const loadQuery = async (queryId: string) => {
     return message.error('Query not found');
   }
 
-  const {
-    connectionClient,
-    connectionClientInterval,
-  } = getState().getSession();
+  const { connectionClient } = getState().getSession();
 
   if (connectionClient) {
     api
@@ -265,16 +250,11 @@ export const loadQuery = async (queryId: string) => {
       });
   }
 
-  if (connectionClientInterval) {
-    clearInterval(connectionClientInterval);
-  }
-
   setSession({
     // Map query object to flattened editor session data
     queryId,
     connectionId: data.connectionId,
     connectionClient: undefined,
-    connectionClientInterval: undefined,
     queryText: data.queryText,
     queryName: data.name,
     tags: data.tags,
