@@ -586,5 +586,7 @@ export function toggleSchemaItem(connectionId: string, item: { id: string }) {
   const expanded = { ...schemaExpansions[connectionId] };
   expanded[item.id] = !expanded[item.id];
 
-  setSession({ schemaExpansions: { [connectionId]: expanded } });
+  setSession({
+    schemaExpansions: { ...schemaExpansions, [connectionId]: expanded },
+  });
 }
