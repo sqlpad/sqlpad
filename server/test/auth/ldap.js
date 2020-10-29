@@ -3,6 +3,12 @@ const request = require('supertest');
 const TestUtil = require('../utils');
 
 describe('auth/ldap', function () {
+  before(function () {
+    if (process.env.SKIP_INTEGRATION === 'true') {
+      return this.skip();
+    }
+  });
+
   it('Auto sign up creates user w/default role editor', async function () {
     const utils = new TestUtil({
       ldapAuthEnabled: true,

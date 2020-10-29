@@ -41,7 +41,7 @@ describe('auth/session-stores', function () {
 
   it('redis', async function () {
     const available = await TestUtils.redisAvailable('redis://localhost:6379');
-    if (!available) {
+    if (!available || process.env.SKIP_INTEGRATION === 'true') {
       return this.skip();
     }
     return testSessionStore('redis', { redisUri: 'redis://localhost:6379' });
