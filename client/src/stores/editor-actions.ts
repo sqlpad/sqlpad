@@ -250,10 +250,31 @@ export const loadQuery = async (queryId: string) => {
     return message.error('Query not found');
   }
 
+  const {
+    connectionClient,
+    connectionClientInterval,
+  } = getState().getSession();
+
+  if (connectionClient) {
+    api
+      .delete(`/api/connection-clients/${connectionClient.id}`)
+      .then((json) => {
+        if (json.error) {
+          message.error(json.error);
+        }
+      });
+  }
+
+  if (connectionClientInterval) {
+    clearInterval(connectionClientInterval);
+  }
+
   setSession({
     // Map query object to flattened editor session data
     queryId,
     connectionId: data.connectionId,
+    connectionClient: undefined,
+    connectionClientInterval: undefined,
     queryText: data.queryText,
     queryName: data.name,
     tags: data.tags,
@@ -506,7 +527,7 @@ export function setSchemaState(connectionId: string, schemaState: SchemaState) {
  */
 export async function loadSchema(connectionId: string, reload?: boolean) {
   const { schemaStates } = getState();
-  const { showSchema } = getState().getSession();
+  const { showSchema, schemaExpansions } = getState().getSession();
 
   if (!schemaStates[connectionId] || reload) {
     setSchemaState(connectionId, {
@@ -529,12 +550,6 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
       return;
     }
 
-    if (data?.schemas || data?.tables) {
-      updateCompletions(data);
-    } else {
-      updateCompletions({ schemas: [] });
-    }
-
     // Pre-expand schemas
     const expanded: { [key: string]: boolean } = {};
     if (data?.schemas) {
@@ -549,7 +564,19 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
       error: undefined,
     });
 
-    setSession({ schemaExpansions: { [connectionId]: expanded } });
+    setSession({
+      schemaExpansions: { ...schemaExpansions, [connectionId]: expanded },
+    });
+  }
+
+  // Refresh completions
+  const connectionSchema = getState().schemaStates[connectionId]
+    ?.connectionSchema;
+
+  if (connectionSchema?.schemas || connectionSchema?.tables) {
+    updateCompletions(connectionSchema);
+  } else {
+    updateCompletions({ schemas: [] });
   }
 }
 
