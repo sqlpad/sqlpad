@@ -1,7 +1,14 @@
 import localforage from 'localforage';
 import queryString from 'query-string';
 import message from '../common/message';
-import { ACLRecord, AppInfo, Batch, ChartFields, Connection } from '../types';
+import {
+  ACLRecord,
+  AppInfo,
+  Batch,
+  ChartFields,
+  Connection,
+  ConnectionClient,
+} from '../types';
 import { api } from '../utilities/api';
 import baseUrl from '../utilities/baseUrl';
 import {
@@ -229,6 +236,26 @@ export async function disconnectConnectionClient() {
   });
 }
 
+function cleanupConnectionClient(
+  connectionClient?: ConnectionClient,
+  connectionClientInterval?: number
+) {
+  // Close connection client but do not wait for this to complete
+  if (connectionClient) {
+    api
+      .delete(`/api/connection-clients/${connectionClient.id}`)
+      .then((json) => {
+        if (json.error) {
+          message.error(json.error);
+        }
+      });
+  }
+
+  if (connectionClientInterval) {
+    clearInterval(connectionClientInterval);
+  }
+}
+
 /**
  * Select connection and disconnect connectionClient if it exists
  * @param connectionId
@@ -243,19 +270,7 @@ export function selectConnectionId(connectionId: string) {
     .setItem('selectedConnectionId', connectionId)
     .catch((error) => message.error(error));
 
-  if (connectionClient) {
-    api
-      .delete(`/api/connection-clients/${connectionClient.id}`)
-      .then((json) => {
-        if (json.error) {
-          message.error(json.error);
-        }
-      });
-  }
-
-  if (connectionClientInterval) {
-    clearInterval(connectionClientInterval);
-  }
+  cleanupConnectionClient(connectionClient, connectionClientInterval);
 
   setSession({
     connectionId,
@@ -282,8 +297,6 @@ export const formatQuery = async () => {
   }
 
   setLocalQueryText(queryId, json.data.query);
-  // TODO - once there more than 1 session user could toggle tabs before response comes back
-  // setFocusedSession shortcut should go away for explicit session updates
   setSession({ queryText: json.data.query, unsavedChanges: true });
 };
 
@@ -293,10 +306,24 @@ export const loadQuery = async (queryId: string) => {
     return message.error('Query not found');
   }
 
+  const {
+    connectionClient,
+    connectionClientInterval,
+  } = getState().getSession();
+
+  // Cleanup existing connection
+  // Even if the connection isn't changing, the client should be refreshed
+  // This is to prevent accidental state from carrying over
+  // For example, if there is an open transaction,
+  // we don't want that impacting the new query if same connectionId is used)
+  cleanupConnectionClient(connectionClient, connectionClientInterval);
+
   setSession({
     // Map query object to flattened editor session data
     queryId,
     connectionId: data.connectionId,
+    connectionClient: undefined,
+    connectionClientInterval: undefined,
     queryText: data.queryText,
     queryName: data.name,
     tags: data.tags,
@@ -307,6 +334,7 @@ export const loadQuery = async (queryId: string) => {
     canRead: data.canRead,
     canWrite: data.canWrite,
     // Reset result/error/unsaved/running states
+    batchId: '',
     selectedStatementId: '',
     isRunning: false,
     queryError: undefined,
