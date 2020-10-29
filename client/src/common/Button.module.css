@@ -122,3 +122,27 @@
   border: none;
   color: rgba(255, 255, 255, 0.55);
 }
+
+.primaryGhost {
+  color: var(--primary-color);
+  box-shadow: 0 1px 0 transparent;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.primaryGhost:hover,
+.primaryGhost:focus {
+  color: var(--primary-dark-color);
+  background-color: transparent;
+}
+
+.primaryGhost:active {
+  color: var(--primary-dark-color);
+  background-color: transparent;
+}
+
+.primaryGhost:disabled,
+.primaryGhost[disabled] {
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+}

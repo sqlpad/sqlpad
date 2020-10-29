@@ -17,9 +17,8 @@ import {
 import DocumentTitle from './DocumentTitle';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
-import QueryEditorResult from './QueryEditorResult';
+import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
-import QueryResultHeader from './QueryResultHeader';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
@@ -79,20 +78,7 @@ function QueryEditor(props: Props) {
       onChange={handleVisPaneResize}
     >
       {editorAndVis}
-      <div>
-        <QueryResultHeader />
-        <div
-          style={{
-            position: 'absolute',
-            top: 30,
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          <QueryEditorResult />
-        </div>
-      </div>
+      <QueryEditorResultPane />
     </SplitPane>
   );
 

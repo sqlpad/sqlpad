@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Button from '../common/Button';
-import QueryResultContainer from '../common/QueryResultContainer';
+import ErrorBlock from '../common/ErrorBlock';
+import QueryResultDataTable from '../common/QueryResultDataTable';
+import QueryResultRunning from '../common/QueryResultRunning';
 import { api } from '../utilities/api';
 import QueryHistoryFilterItem from './QueryHistoryFilterItem';
 
@@ -182,11 +184,17 @@ function QueryHistoryContent() {
             border: '1px solid #CCC',
           }}
         >
-          <QueryResultContainer
-            isRunning={isRunning}
-            queryResult={queryHistory}
-            queryError={queryError}
-          />
+          {isRunning && <QueryResultRunning />}
+          {queryError && <ErrorBlock>{queryError}</ErrorBlock>}
+          {!isRunning &&
+            !queryError &&
+            queryHistory.columns &&
+            queryHistory.rows && (
+              <QueryResultDataTable
+                columns={queryHistory.columns}
+                rows={queryHistory.rows}
+              />
+            )}
         </div>
       </div>
     </>

@@ -3,6 +3,7 @@ import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 import React, { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import IconMenu from '../common/IconMenu';
+import { resetState } from '../stores/editor-actions';
 import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import AboutModal from './AboutModal';
@@ -28,6 +29,7 @@ function AppMenu() {
         <MenuItem
           onSelect={async () => {
             await api.signout();
+            resetState();
             setRedirectToSignIn(true);
           }}
           hidden={hideSignOut}

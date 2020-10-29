@@ -1,17 +1,26 @@
 import localforage from 'localforage';
 import queryString from 'query-string';
-import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
-import { ACLRecord, AppInfo, ChartFields, Connection } from '../types';
+import {
+  ACLRecord,
+  AppInfo,
+  Batch,
+  ChartFields,
+  Connection,
+  ConnectionClient,
+} from '../types';
 import { api } from '../utilities/api';
 import baseUrl from '../utilities/baseUrl';
 import {
   removeLocalQueryText,
   setLocalQueryText,
 } from '../utilities/localQueryText';
-import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
 import { EditorSession, SchemaState, useEditorStore } from './editor-store';
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 const { getState, setState } = useEditorStore;
 
@@ -58,6 +67,35 @@ setInterval(async () => {
     }
   }
 }, 10000);
+
+function setBatch(batchId: string, batch: Batch) {
+  const { batches, statements } = getState();
+  const { selectedStatementId } = getState().getSession();
+
+  const updatedStatements = {
+    ...statements,
+  };
+
+  if (batch?.statements) {
+    for (const statement of batch.statements) {
+      updatedStatements[statement.id] = statement;
+    }
+    if (batch.statements.length === 1) {
+      const onlyStatementId = batch.statements[0].id;
+      if (selectedStatementId !== onlyStatementId) {
+        setSession({ selectedStatementId: onlyStatementId });
+      }
+    }
+  }
+
+  setState({
+    statements: updatedStatements,
+    batches: {
+      ...batches,
+      [batchId]: batch,
+    },
+  });
+}
 
 export const initApp = async (
   config: AppInfo['config'],
@@ -123,6 +161,18 @@ export const initApp = async (
 };
 
 /**
+ * Reset state (on signout for example)
+ * TODO: This needs to either do more, cancel timeouts, polling, etc OR navigate to a new page in browser (not client-side routed)
+ */
+export async function resetState() {
+  setSession({ selectedStatementId: '', batchId: '' });
+  setState({
+    batches: {},
+    statements: {},
+  });
+}
+
+/**
  * Open a connection client for the currently selected connection if supported
  */
 export async function connectConnectionClient() {
@@ -182,6 +232,19 @@ export async function disconnectConnectionClient() {
   });
 }
 
+function cleanupConnectionClient(connectionClient?: ConnectionClient) {
+  // Close connection client but do not wait for this to complete
+  if (connectionClient) {
+    api
+      .delete(`/api/connection-clients/${connectionClient.id}`)
+      .then((json) => {
+        if (json.error) {
+          message.error(json.error);
+        }
+      });
+  }
+}
+
 /**
  * Select connection and disconnect connectionClient if it exists
  * @param connectionId
@@ -193,15 +256,7 @@ export function selectConnectionId(connectionId: string) {
     .setItem('selectedConnectionId', connectionId)
     .catch((error) => message.error(error));
 
-  if (connectionClient) {
-    api
-      .delete(`/api/connection-clients/${connectionClient.id}`)
-      .then((json) => {
-        if (json.error) {
-          message.error(json.error);
-        }
-      });
-  }
+  cleanupConnectionClient(connectionClient);
 
   setSession({
     connectionId,
@@ -227,8 +282,6 @@ export const formatQuery = async () => {
   }
 
   setLocalQueryText(queryId, json.data.query);
-  // TODO - once there more than 1 session user could toggle tabs before response comes back
-  // setFocusedSession shortcut should go away for explicit session updates
   setSession({ queryText: json.data.query, unsavedChanges: true });
 };
 
@@ -240,15 +293,12 @@ export const loadQuery = async (queryId: string) => {
 
   const { connectionClient } = getState().getSession();
 
-  if (connectionClient) {
-    api
-      .delete(`/api/connection-clients/${connectionClient.id}`)
-      .then((json) => {
-        if (json.error) {
-          message.error(json.error);
-        }
-      });
-  }
+  // Cleanup existing connection
+  // Even if the connection isn't changing, the client should be refreshed
+  // This is to prevent accidental state from carrying over
+  // For example, if there is an open transaction,
+  // we don't want that impacting the new query if same connectionId is used)
+  cleanupConnectionClient(connectionClient);
 
   setSession({
     // Map query object to flattened editor session data
@@ -265,7 +315,8 @@ export const loadQuery = async (queryId: string) => {
     canRead: data.canRead,
     canWrite: data.canWrite,
     // Reset result/error/unsaved/running states
-    runQueryInstanceId: undefined,
+    batchId: '',
+    selectedStatementId: '',
     isRunning: false,
     queryError: undefined,
     queryResult: undefined,
@@ -285,13 +336,25 @@ export const runQuery = async () => {
     selectedText,
   } = getState().getSession();
 
-  // multiple queries could be running and we only want to keep the "current" or latest query run
-  const runQueryInstanceId = uuidv4();
+  if (!connectionId) {
+    return setSession({
+      queryError: 'Connection required',
+      selectedStatementId: '',
+    });
+  }
+
+  if (!queryText) {
+    return setSession({
+      queryError: 'SQL text required',
+      selectedStatementId: '',
+    });
+  }
 
   setSession({
-    runQueryInstanceId,
+    batchId: undefined,
     isRunning: true,
     runQueryStartTime: new Date(),
+    selectedStatementId: '',
   });
 
   const postData = {
@@ -307,18 +370,46 @@ export const runQuery = async () => {
     },
   };
 
-  const { data, error } = await runQueryViaBatch(postData);
+  let res = await api.createBatch(postData);
+  let error = res.error;
+  let batch = res.data;
 
-  // Get latest state and check runQueryInstanceId to ensure it matches
-  // If it matches another query has not been run and we can keep the result.
-  // Not matching implies another query has been executed and we can ignore this result.
-  if (getState().getSession().runQueryInstanceId === runQueryInstanceId) {
-    setSession({
-      isRunning: false,
+  if (error) {
+    return setSession({
       queryError: error,
-      queryResult: data,
     });
   }
+
+  if (!batch) {
+    return setSession({
+      queryError: 'error creating batch',
+    });
+  }
+
+  setBatch(batch.id, batch);
+
+  while (
+    batch?.id &&
+    !((batch?.status === 'finished' || batch?.status === 'error') && !error)
+  ) {
+    await sleep(500);
+    res = await api.getBatch(batch.id);
+    error = res.error;
+    batch = res.data;
+
+    setSession({
+      batchId: batch?.id,
+      queryError: error,
+    });
+
+    if (batch) {
+      setBatch(batch.id, batch);
+    }
+  }
+
+  setSession({
+    isRunning: false,
+  });
 };
 
 export const saveQuery = async () => {
@@ -418,26 +509,37 @@ export const handleCloneClick = () => {
   setSession({ queryId: '', queryName: newName, unsavedChanges: true });
 };
 
+// NOTE connectionId, connectionClient, etc ARE NOT set here on purpose
+// Some things should be carried over when creating a new session
+const newQuerySession: Partial<EditorSession> = {
+  isRunning: false,
+  queryId: '',
+  queryName: '',
+  tags: [],
+  acl: [],
+  queryText: '',
+  chartType: '',
+  chartFields: {},
+  canRead: true,
+  canWrite: true,
+  canDelete: true,
+  queryError: undefined,
+  queryResult: undefined,
+  unsavedChanges: false,
+  selectedStatementId: '',
+  batchId: undefined,
+  isSaving: false,
+  runQueryStartTime: undefined,
+  selectedText: '',
+  showValidation: false,
+};
+
 export const resetNewQuery = () => {
-  // NOTE connectionId IS NOT set here on purpose
-  // The new query should have the same connection as previously
-  setSession({
-    runQueryInstanceId: undefined,
-    isRunning: false,
-    queryId: '',
-    queryName: '',
-    tags: [],
-    acl: [],
-    queryText: '',
-    chartType: '',
-    chartFields: {},
-    canRead: true,
-    canWrite: true,
-    canDelete: true,
-    queryError: undefined,
-    queryResult: undefined,
-    unsavedChanges: false,
-  });
+  setSession(newQuerySession);
+};
+
+export const selectStatementId = (selectedStatementId: string) => {
+  setSession({ selectedStatementId });
 };
 
 export const setQueryText = (queryText: string) => {
