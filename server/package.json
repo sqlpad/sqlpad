@@ -23,10 +23,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/rickbergfalk/sqlpad"
+    "url": "git://github.com/sqlpad/sqlpad"
   },
   "bugs": {
-    "url": "https://github.com/rickbergfalk/sqlpad/issues"
+    "url": "https://github.com/sqlpad/sqlpad/issues"
   },
   "scripts": {
     "prepublishOnly": "cd .. && ./scripts/build.sh",

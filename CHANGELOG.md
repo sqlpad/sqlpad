@@ -347,14 +347,14 @@ SQLPad v3 is a UI redesign/refresh along with a large file structure change and 
 - SAML authentication support
 - Remember selected connection id / schema toggle
 - Configurable session time and secret
-- Support for JSON and INI config file added. File should config using `key` fields found in [configItems.js](https://github.com/rickbergfalk/sqlpad/blob/master/server/lib/config/config-items.js). Config file path default is `$HOME/.sqlpadrc` and may otherwise be specified using `--config` via command line or `SQLPAD_CONFIG` environment variable.
+- Support for JSON and INI config file added. File should config using `key` fields found in [configItems.js](https://github.com/sqlpad/sqlpad/blob/master/server/lib/config/config-items.js). Config file path default is `$HOME/.sqlpadrc` and may otherwise be specified using `--config` via command line or `SQLPAD_CONFIG` environment variable.
 
 ### Breaking changes
 
 - CLI flags have been changed to use config item key (#460)
 - Default db path is no longer used if db path is not provided in config. Previous default was `$HOME/sqlpad/db`.
 - Default config file path no longer used. Previous default was `$HOME/.sqlpadrc`.
-- Configuration UI has been removed. See https://github.com/rickbergfalk/sqlpad/issues/447.
+- Configuration UI has been removed. See https://github.com/sqlpad/sqlpad/issues/447.
 - cli-flags in saved .sqlpadrc JSON are no longer used for config values. These configuration keys should instead be switched the the `key` found in `configItems.js`. For example, instead of `dir` or `db`, use `dbPath`. Instead of `cert-passphrase` use `certPassphrase`, etc.
 - `--save` and `--forget` cli flags no longer supported
 
@@ -409,7 +409,7 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 
 ## [2.7.0] - 2018-07-01
 
-- Add optional odbc support. See [ODBC wiki page](https://github.com/rickbergfalk/sqlpad/wiki/ODBC) for more detais
+- Add optional odbc support. See [ODBC wiki page](https://github.com/sqlpad/sqlpad/wiki/ODBC) for more detais
 
 ## [2.6.1] - 2018-06-17
 

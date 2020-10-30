@@ -99,7 +99,7 @@ function isFdObject(ob) {
 //
 // More info
 //
-// https://github.com/rickbergfalk/sqlpad/pull/185
+// https://github.com/sqlpad/sqlpad/pull/185
 // https://www.freedesktop.org/software/systemd/man/systemd.socket.html
 // https://www.freedesktop.org/software/systemd/man/sd_listen_fds.html
 function detectPortOrSystemd(port) {
