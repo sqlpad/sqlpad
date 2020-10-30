@@ -22,8 +22,7 @@ function cleanBoolean(value: any) {
 
 const inputStyle: CSSProperties = {
   marginBottom: 16,
-  boxSizing: 'border-box',
-  width: `calc(1/2*100% - 8px)`,
+  width: '100%',
 };
 
 function ChartInputs() {
