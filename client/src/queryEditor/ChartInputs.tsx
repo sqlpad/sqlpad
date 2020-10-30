@@ -22,8 +22,7 @@ function cleanBoolean(value: string | boolean) {
     }
   }
 
-  // This shouldn't happen, but if it does return false
-  console.warn('Unexpected value ', value);
+  // If unexpected value return false
   return false;
 }
 
@@ -34,7 +33,7 @@ const inputStyle: CSSProperties = {
 
 function ChartInputs() {
   const chartType = useSessionChartType();
-  const queryChartConfigurationFields = useSessionChartFields();
+  const chartFields = useSessionChartFields();
   const lastStatementId = useLastStatementId();
   const columns = useStatementColumns(lastStatementId);
 
@@ -45,10 +44,7 @@ function ChartInputs() {
     handleChartConfigurationFieldsChange(chartFieldId, queryResultField);
   };
 
-  let resultColumnNames: string[] = [];
-  if (columns) {
-    resultColumnNames = columns.map((c) => c.name);
-  }
+  const columnNames = (columns || []).map((c) => c.name);
 
   const chartDefinition = chartDefinitions.find(
     (def) => def.chartType === chartType
@@ -60,18 +56,17 @@ function ChartInputs() {
 
   const content = chartDefinition.fields.map((field) => {
     if (field.inputType === 'field-dropdown') {
-      const optionNodes = resultColumnNames.map((qrfield) => {
+      const optionNodes = columnNames.map((qrfield) => {
         return (
           <option key={qrfield} value={qrfield}>
             {qrfield}
           </option>
         );
       });
-      const selectedQueryResultField =
-        queryChartConfigurationFields[field.fieldId];
+      const selectedQueryResultField = chartFields[field.fieldId];
       if (
         selectedQueryResultField &&
-        resultColumnNames.indexOf(selectedQueryResultField) === -1
+        columnNames.indexOf(selectedQueryResultField) === -1
       ) {
         optionNodes.push(
           <option
@@ -98,8 +93,7 @@ function ChartInputs() {
         </div>
       );
     } else if (field.inputType === 'checkbox') {
-      const checked =
-        cleanBoolean(queryChartConfigurationFields[field.fieldId]) || false;
+      const checked = cleanBoolean(chartFields[field.fieldId]);
       return (
         <div style={inputStyle} key={field.fieldId}>
           <input
@@ -117,7 +111,7 @@ function ChartInputs() {
         </div>
       );
     } else if (field.inputType === 'textbox') {
-      const value = queryChartConfigurationFields[field.fieldId] || '';
+      const value = chartFields[field.fieldId] || '';
       return (
         <div style={inputStyle} key={field.fieldId}>
           <label>{field.label}</label>
