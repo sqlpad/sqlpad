@@ -570,7 +570,7 @@ export const setChartFields = (chartFields: ChartFields) => {
 
 export const handleChartConfigurationFieldsChange = (
   chartFieldId: string,
-  queryResultField: any
+  queryResultField: string | boolean | number
 ) => {
   const { chartFields } = getState().getSession();
 

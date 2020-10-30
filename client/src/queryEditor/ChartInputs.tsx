@@ -3,9 +3,10 @@ import Input from '../common/Input';
 import Select from '../common/Select';
 import { handleChartConfigurationFieldsChange } from '../stores/editor-actions';
 import {
+  useLastStatementId,
   useSessionChartFields,
   useSessionChartType,
-  useSessionQueryResult,
+  useStatementColumns,
 } from '../stores/editor-store';
 import chartDefinitions from '../utilities/chartDefinitions';
 
@@ -26,21 +27,22 @@ const inputStyle: CSSProperties = {
 };
 
 function ChartInputs() {
-  const queryResult = useSessionQueryResult();
   const chartType = useSessionChartType();
   const queryChartConfigurationFields = useSessionChartFields();
+  const lastStatementId = useLastStatementId();
+  const columns = useStatementColumns(lastStatementId);
 
   const changeChartConfigurationField = (
-    chartFieldId: any,
-    queryResultField: any
+    chartFieldId: string,
+    queryResultField: string | boolean | number
   ) => {
     handleChartConfigurationFieldsChange(chartFieldId, queryResultField);
   };
 
   const renderFormGroup = (inputDefinitionFields: any) => {
     let resultColumnNames: string[] = [];
-    if (queryResult && queryResult.columns) {
-      resultColumnNames = queryResult.columns.map((c: any) => c.name);
+    if (columns) {
+      resultColumnNames = columns.map((c) => c.name);
     }
 
     return inputDefinitionFields.map((field: any) => {
