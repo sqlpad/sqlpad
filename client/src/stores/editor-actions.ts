@@ -593,6 +593,11 @@ export function toggleSchema() {
   setSession({ showSchema: !showSchema });
 }
 
+export function toggleVisProperties() {
+  const { showVisProperties } = getState().getSession();
+  setSession({ showVisProperties: !showVisProperties });
+}
+
 export function setSchemaState(connectionId: string, schemaState: SchemaState) {
   const { schemaStates } = getState();
   const update = {

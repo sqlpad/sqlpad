@@ -20,6 +20,7 @@ export interface SchemaState {
 export interface EditorSession {
   id: string;
   showSchema: boolean;
+  showVisProperties: boolean;
   schemaExpansions: { [conectionId: string]: ExpandedMap };
   connectionId: string;
   connectionClient?: ConnectionClient;
@@ -62,6 +63,7 @@ export const INITIAL_SESSION_ID = 'initial';
 export const INITIAL_SESSION: EditorSession = {
   id: INITIAL_SESSION_ID,
   showSchema: true,
+  showVisProperties: false,
   schemaExpansions: {},
   connectionId: '',
   connectionClient: undefined,
@@ -160,8 +162,12 @@ export function useSessionConnectionClientId() {
   return useEditorStore((s) => s.getSession().connectionClient?.id);
 }
 
-export function useSessionShowSchema(): boolean {
+export function useSessionShowSchema() {
   return useEditorStore((s) => s.getSession().showSchema);
+}
+
+export function useSessionShowVisProperties() {
+  return useEditorStore((s) => s.getSession().showVisProperties);
 }
 
 export function useSessionChartType() {
