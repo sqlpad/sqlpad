@@ -1,5 +1,5 @@
 import debounce from 'lodash/debounce';
-import React, { useEffect, FunctionComponent, ReactElement } from 'react';
+import React, { FunctionComponent, ReactElement, useEffect } from 'react';
 import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
 import { resizeChart } from '../common/tauChartRef';
@@ -10,13 +10,9 @@ import {
   loadQuery,
   resetNewQuery,
 } from '../stores/editor-actions';
-import {
-  useSessionChartType,
-  useSessionShowSchema,
-} from '../stores/editor-store';
+import { useSessionShowSchema } from '../stores/editor-store';
 import DocumentTitle from './DocumentTitle';
-import QueryEditorChart from './QueryEditorChart';
-import QueryEditorChartToolbar from './QueryEditorChartToolbar';
+import EditorPaneVis from './EditorPaneVis';
 import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import Shortcuts from './Shortcuts';
@@ -54,44 +50,6 @@ const SchemaSidebarContainer: FunctionComponent<SchemaSidebarContainerProps> = (
     >
       <SchemaSidebar />
       {children}
-    </SplitPane>
-  );
-};
-
-interface VisContainerProps {
-  queryId: string;
-  children: ReactElement;
-}
-
-const VisContainer: FunctionComponent<VisContainerProps> = ({
-  children,
-  queryId,
-}: VisContainerProps) => {
-  const chartType = useSessionChartType();
-  const showVis = Boolean(chartType);
-
-  if (!showVis) {
-    return children;
-  }
-
-  function handleVisPaneResize() {
-    deboucedResearchChart(queryId);
-  }
-
-  return (
-    <SplitPane
-      key="editorAndVis"
-      split="vertical"
-      defaultSize={'50%'}
-      maxSize={-200}
-      onChange={handleVisPaneResize}
-    >
-      {children}
-      <div style={{ position: 'absolute' }} className="h-100 w-100">
-        <QueryEditorChartToolbar>
-          <QueryEditorChart />
-        </QueryEditorChartToolbar>
-      </div>
     </SplitPane>
   );
 };
@@ -137,9 +95,9 @@ function QueryEditor(props: QueryEditorProps) {
             maxSize={-100}
             onChange={handleVisPaneResize}
           >
-            <VisContainer queryId={queryId}>
+            <EditorPaneVis queryId={queryId}>
               <QueryEditorSqlEditor />
-            </VisContainer>
+            </EditorPaneVis>
             <QueryEditorResultPane />
           </SplitPane>
         </SchemaSidebarContainer>
