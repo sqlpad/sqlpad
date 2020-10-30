@@ -1,12 +1,9 @@
-import debounce from 'lodash/debounce';
 import React, { FunctionComponent, ReactElement } from 'react';
 import SplitPane from 'react-split-pane';
-import { resizeChart } from '../common/tauChartRef';
+import { debouncedResizeChart } from '../common/tauChartRef';
 import { useSessionChartType } from '../stores/editor-store';
 import QueryEditorChart from './QueryEditorChart';
 import QueryEditorChartToolbar from './QueryEditorChartToolbar';
-
-const deboucedResearchChart = debounce(resizeChart, 700);
 
 interface EditorPaneVisProps {
   queryId: string;
@@ -24,17 +21,13 @@ const EditorPaneVis: FunctionComponent<EditorPaneVisProps> = ({
     return children;
   }
 
-  function handleVisPaneResize() {
-    deboucedResearchChart(queryId);
-  }
-
   return (
     <SplitPane
       key="editorAndVis"
       split="vertical"
       defaultSize={'50%'}
       maxSize={-200}
-      onChange={handleVisPaneResize}
+      onChange={() => debouncedResizeChart(queryId)}
     >
       {children}
       <div style={{ position: 'absolute' }} className="h-100 w-100">

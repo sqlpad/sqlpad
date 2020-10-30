@@ -1,8 +1,7 @@
-import debounce from 'lodash/debounce';
 import React, { FunctionComponent, ReactElement, useEffect } from 'react';
 import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
-import { resizeChart } from '../common/tauChartRef';
+import { debouncedResizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import SchemaSidebar from '../schema/SchemaSidebar';
 import {
@@ -19,8 +18,6 @@ import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 
-const deboucedResearchChart = debounce(resizeChart, 700);
-
 interface SchemaSidebarContainerProps {
   queryId: string;
   children: ReactElement;
@@ -36,17 +33,13 @@ const SchemaSidebarContainer: FunctionComponent<SchemaSidebarContainerProps> = (
     return children;
   }
 
-  function handleVisPaneResize() {
-    deboucedResearchChart(queryId);
-  }
-
   return (
     <SplitPane
       split="vertical"
       minSize={150}
       defaultSize={280}
       maxSize={-100}
-      onChange={handleVisPaneResize}
+      onChange={() => debouncedResizeChart(queryId)}
     >
       <SchemaSidebar />
       {children}
@@ -71,10 +64,6 @@ function QueryEditor(props: QueryEditorProps) {
     }
   }, [queryId]);
 
-  function handleVisPaneResize() {
-    deboucedResearchChart(queryId);
-  }
-
   return (
     <div
       style={{
@@ -93,7 +82,7 @@ function QueryEditor(props: QueryEditorProps) {
             minSize={100}
             defaultSize={'60%'}
             maxSize={-100}
-            onChange={handleVisPaneResize}
+            onChange={() => debouncedResizeChart(queryId)}
           >
             <EditorPaneVis queryId={queryId}>
               <QueryEditorSqlEditor />

@@ -1,3 +1,5 @@
+import debounce from 'lodash/debounce';
+
 const chartRefs: { [key: string]: any } = {};
 
 export function setFakeChartRef(queryId: string, chart: any) {
@@ -21,3 +23,5 @@ export function resizeChart(queryId: string) {
     chart.resize();
   }
 }
+
+export const debouncedResizeChart = debounce(resizeChart, 700);
