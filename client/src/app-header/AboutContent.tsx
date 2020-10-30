@@ -25,7 +25,7 @@ function AboutContent({ version }: Props) {
         }}
       >
         <a
-          href="http://rickbergfalk.github.io/sqlpad/"
+          href="http://sqlpad.github.io/sqlpad/"
           target="_blank"
           rel="noopener noreferrer"
           style={LINK_STYLE}

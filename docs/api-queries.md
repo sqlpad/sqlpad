@@ -4,7 +4,7 @@
 
 The `queries` API is used for saving and updating saved queries. Queries contain a block of SQL text (may be multiple statements), a name, a connection used to run the query against, and an optional chart configuration JSON object.
 
-The `queries` API follows the general patterns described in [API Overview](http://rickbergfalk.github.io/sqlpad/#/api-overview) with an addition in that the queries list API allows for server-side filtering and pagination.
+The `queries` API follows the general patterns described in [API Overview](http://sqlpad.github.io/sqlpad/#/api-overview) with an addition in that the queries list API allows for server-side filtering and pagination.
 
 ## Single Query GET, POST, and PUT
 

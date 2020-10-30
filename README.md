@@ -2,7 +2,7 @@
 
 A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Presto, SAP HANA, Cassandra, Snowflake, Google BigQuery, SQLite, and many more via [ODBC](https://github.com/sqlpad/sqlpad/wiki/ODBC).
 
-![SQLPad Query Editor](https://rickbergfalk.github.io/sqlpad/images/screenshots/v5.1.0.png)
+![SQLPad Query Editor](https://sqlpad.github.io/sqlpad/images/screenshots/v5.1.0.png)
 
 ## Docker Image
 
@@ -18,22 +18,22 @@ For instructions on installing/running SQLPad from git repo see [developer guide
 
 ## Configuration
 
-- [project page - configuration](https://rickbergfalk.github.io/sqlpad/#/configuration)
+- [project page - configuration](https://sqlpad.github.io/sqlpad/#/configuration)
 - [docs/configuration.md](https://github.com/sqlpad/sqlpad/blob/master/docs/configuration.md)
 
 ### Connection configuration
 
-- [project page - connections](https://rickbergfalk.github.io/sqlpad/#/connections)
+- [project page - connections](https://sqlpad.github.io/sqlpad/#/connections)
 - [docs/connections.md](https://github.com/sqlpad/sqlpad/blob/master/docs/connections.md)
 
 ## Seed Data (experimental)
 
-- [project page - seed data](https://rickbergfalk.github.io/sqlpad/#/seed-data)
+- [project page - seed data](https://sqlpad.github.io/sqlpad/#/seed-data)
 - [docs/seed-data.md](https://github.com/sqlpad/sqlpad/blob/master/docs/seed-data.md)
 
 ## Logging
 
-- [project page - logging](https://rickbergfalk.github.io/sqlpad/#/logging)
+- [project page - logging](https://sqlpad.github.io/sqlpad/#/logging)
 - [docs/logging.md](https://github.com/sqlpad/sqlpad/blob/master/docs/logging.md)
 
 ## License
