@@ -1,6 +1,6 @@
 # Configuration
 
-!> 5.1.0 deprecates JSON/INI config files and adds new environment variables. See [CHANGELOG](https://github.com/rickbergfalk/sqlpad/blob/master/CHANGELOG.md) for mapping.
+!> 5.1.0 deprecates JSON/INI config files and adds new environment variables. See [CHANGELOG](https://github.com/sqlpad/sqlpad/blob/master/CHANGELOG.md) for mapping.
 
 ?> .env config file support added in 5.1.0
 
@@ -15,7 +15,7 @@ node server.js --config path/to/.env
 env SQLPAD_CONFIG=path/to/.env node server.js
 ```
 
-A [config file example](https://github.com/rickbergfalk/sqlpad/blob/master/config-example.env) can be found in the GitHub repository.
+A [config file example](https://github.com/sqlpad/sqlpad/blob/master/config-example.env) can be found in the GitHub repository.
 
 ## Application Configuration (General)
 

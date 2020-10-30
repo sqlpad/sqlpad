@@ -33,7 +33,7 @@ function AboutContent({ version }: Props) {
           Project page <OpenInNewIcon size={18} />
         </a>
         <a
-          href="https://github.com/rickbergfalk/sqlpad/issues"
+          href="https://github.com/sqlpad/sqlpad/issues"
           target="_blank"
           rel="noopener noreferrer"
           style={LINK_STYLE}
@@ -41,7 +41,7 @@ function AboutContent({ version }: Props) {
           Submit an Issue <OpenInNewIcon size={18} />
         </a>
         <a
-          href="https://github.com/rickbergfalk/sqlpad/blob/master/CHANGELOG.md"
+          href="https://github.com/sqlpad/sqlpad/blob/master/CHANGELOG.md"
           target="_blank"
           rel="noopener noreferrer"
           style={LINK_STYLE}
@@ -49,7 +49,7 @@ function AboutContent({ version }: Props) {
           Changelog <OpenInNewIcon size={18} />
         </a>
         <a
-          href="https://github.com/rickbergfalk/sqlpad"
+          href="https://github.com/sqlpad/sqlpad"
           target="_blank"
           rel="noopener noreferrer"
           style={LINK_STYLE}
