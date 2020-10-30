@@ -1,51 +1,21 @@
-import React, { FunctionComponent, ReactElement, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
 import { debouncedResizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
-import SchemaSidebar from '../schema/SchemaSidebar';
 import {
   connectConnectionClient,
   loadQuery,
   resetNewQuery,
 } from '../stores/editor-actions';
-import { useSessionShowSchema } from '../stores/editor-store';
 import DocumentTitle from './DocumentTitle';
+import EditorPaneSchemaSidebar from './EditorPaneSchemaSidebar';
 import EditorPaneVis from './EditorPaneVis';
 import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
-
-interface SchemaSidebarContainerProps {
-  queryId: string;
-  children: ReactElement;
-}
-
-const SchemaSidebarContainer: FunctionComponent<SchemaSidebarContainerProps> = ({
-  children,
-  queryId,
-}: SchemaSidebarContainerProps) => {
-  const showSchema = useSessionShowSchema();
-
-  if (!showSchema) {
-    return children;
-  }
-
-  return (
-    <SplitPane
-      split="vertical"
-      minSize={150}
-      defaultSize={280}
-      maxSize={-100}
-      onChange={() => debouncedResizeChart(queryId)}
-    >
-      <SchemaSidebar />
-      {children}
-    </SplitPane>
-  );
-};
 
 type QueryEditorProps = {
   queryId: string;
@@ -76,7 +46,7 @@ function QueryEditor(props: QueryEditorProps) {
       <AppHeader />
       <Toolbar />
       <div style={{ position: 'relative', flexGrow: 1 }}>
-        <SchemaSidebarContainer queryId={queryId}>
+        <EditorPaneSchemaSidebar queryId={queryId}>
           <SplitPane
             split="horizontal"
             minSize={100}
@@ -89,7 +59,7 @@ function QueryEditor(props: QueryEditorProps) {
             </EditorPaneVis>
             <QueryEditorResultPane />
           </SplitPane>
-        </SchemaSidebarContainer>
+        </EditorPaneSchemaSidebar>
       </div>
       <UnsavedQuerySelector queryId={queryId} />
       <DocumentTitle queryId={queryId} />
