@@ -1,6 +1,12 @@
 import React, { CSSProperties } from 'react';
 import Input from '../common/Input';
 import Select from '../common/Select';
+import { handleChartConfigurationFieldsChange } from '../stores/editor-actions';
+import {
+  useSessionChartFields,
+  useSessionChartType,
+  useSessionQueryResult,
+} from '../stores/editor-store';
 import chartDefinitions from '../utilities/chartDefinitions';
 
 function cleanBoolean(value: any) {
@@ -20,26 +26,16 @@ const inputStyle: CSSProperties = {
   width: `calc(1/2*100% - 8px)`,
 };
 
-type OwnProps = {
-  chartType?: string;
-  onChartConfigurationFieldsChange: (...args: any[]) => any;
-  queryChartConfigurationFields?: any;
-  queryResult?: any;
-};
+function ChartInputs() {
+  const queryResult = useSessionQueryResult();
+  const chartType = useSessionChartType();
+  const queryChartConfigurationFields = useSessionChartFields();
 
-type Props = OwnProps & typeof ChartInputs.defaultProps;
-
-function ChartInputs({
-  onChartConfigurationFieldsChange,
-  queryChartConfigurationFields,
-  queryResult,
-  chartType,
-}: Props) {
   const changeChartConfigurationField = (
     chartFieldId: any,
     queryResultField: any
   ) => {
-    onChartConfigurationFieldsChange(chartFieldId, queryResultField);
+    handleChartConfigurationFieldsChange(chartFieldId, queryResultField);
   };
 
   const renderFormGroup = (inputDefinitionFields: any) => {

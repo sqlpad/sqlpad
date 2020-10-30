@@ -3,7 +3,7 @@ import SplitPane from 'react-split-pane';
 import Spacer from '../common/Spacer';
 import { debouncedResizeChart } from '../common/tauChartRef';
 import { useSessionShowVisProperties } from '../stores/editor-store';
-import ChartInputsContainer from './ChartInputsContainer';
+import ChartInputs from './ChartInputs';
 import ChartTypeSelect from './ChartTypeSelect';
 
 interface EditorPaneVisPropertiesProps {
@@ -34,7 +34,7 @@ const EditorPaneVisProperties: FunctionComponent<EditorPaneVisPropertiesProps> =
       <div style={{ position: 'absolute', padding: 8 }} className="h-100 w-100">
         <ChartTypeSelect />
         <Spacer size={2} />
-        <ChartInputsContainer />
+        <ChartInputs />
       </div>
     </SplitPane>
   );
