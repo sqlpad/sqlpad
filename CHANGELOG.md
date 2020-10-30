@@ -1,5 +1,11 @@
 # Changelog
 
+## [5.8.2] - 2020-10-30
+
+- Fix LDAP role sync. If LDAP role filters are set up, role syncing may be toggled per user on user forms. By default auto-created users will have roles synced. Manually added users will not.
+- Update dependencies
+- Fix connection client heartbeat race condition (UI)
+
 ## [5.8.1] - 2020-10-23
 
 - Fix LDAP editor role search filter
