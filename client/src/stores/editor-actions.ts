@@ -570,7 +570,7 @@ export const setChartFields = (chartFields: ChartFields) => {
 
 export const handleChartConfigurationFieldsChange = (
   chartFieldId: string,
-  queryResultField: any
+  queryResultField: string | boolean | number
 ) => {
   const { chartFields } = getState().getSession();
 
@@ -591,6 +591,11 @@ export const handleQuerySelectionChange = (selectedText: string) => {
 export function toggleSchema() {
   const { showSchema } = getState().getSession();
   setSession({ showSchema: !showSchema });
+}
+
+export function toggleVisProperties() {
+  const { showVisProperties } = getState().getSession();
+  setSession({ showVisProperties: !showVisProperties });
 }
 
 export function setSchemaState(connectionId: string, schemaState: SchemaState) {

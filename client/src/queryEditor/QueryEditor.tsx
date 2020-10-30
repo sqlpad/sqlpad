@@ -1,38 +1,29 @@
-import debounce from 'lodash/debounce';
 import React, { useEffect } from 'react';
 import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
-import { resizeChart } from '../common/tauChartRef';
+import { debouncedResizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
-import SchemaSidebar from '../schema/SchemaSidebar';
 import {
   connectConnectionClient,
   loadQuery,
   resetNewQuery,
 } from '../stores/editor-actions';
-import {
-  useSessionChartType,
-  useSessionShowSchema,
-} from '../stores/editor-store';
 import DocumentTitle from './DocumentTitle';
-import QueryEditorChart from './QueryEditorChart';
-import QueryEditorChartToolbar from './QueryEditorChartToolbar';
+import EditorPaneSchemaSidebar from './EditorPaneSchemaSidebar';
+import EditorPaneVis from './EditorPaneVis';
 import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
+import EditorPaneVisProperties from './EditorPaneVisProperties';
 
-const deboucedResearchChart = debounce(resizeChart, 700);
-
-type Props = {
+type QueryEditorProps = {
   queryId: string;
 };
 
-function QueryEditor(props: Props) {
+function QueryEditor(props: QueryEditorProps) {
   const { queryId } = props;
-  const chartType = useSessionChartType();
-  const showVis = Boolean(chartType);
 
   // Once initialized reset or load query on changes accordingly
   useEffect(() => {
@@ -43,59 +34,6 @@ function QueryEditor(props: Props) {
       loadQuery(queryId).then(() => connectConnectionClient());
     }
   }, [queryId]);
-
-  function handleVisPaneResize() {
-    deboucedResearchChart(queryId);
-  }
-
-  const showSchema = useSessionShowSchema();
-
-  const editorAndVis = showVis ? (
-    <SplitPane
-      key="editorAndVis"
-      split="vertical"
-      defaultSize={'50%'}
-      maxSize={-200}
-      onChange={handleVisPaneResize}
-    >
-      <QueryEditorSqlEditor />
-      <div style={{ position: 'absolute' }} className="h-100 w-100">
-        <QueryEditorChartToolbar>
-          <QueryEditorChart />
-        </QueryEditorChartToolbar>
-      </div>
-    </SplitPane>
-  ) : (
-    <QueryEditorSqlEditor />
-  );
-
-  const editorResultPane = (
-    <SplitPane
-      split="horizontal"
-      minSize={100}
-      defaultSize={'60%'}
-      maxSize={-100}
-      onChange={handleVisPaneResize}
-    >
-      {editorAndVis}
-      <QueryEditorResultPane />
-    </SplitPane>
-  );
-
-  const sqlTabPane = showSchema ? (
-    <SplitPane
-      split="vertical"
-      minSize={150}
-      defaultSize={280}
-      maxSize={-100}
-      onChange={handleVisPaneResize}
-    >
-      <SchemaSidebar />
-      {editorResultPane}
-    </SplitPane>
-  ) : (
-    editorResultPane
-  );
 
   return (
     <div
@@ -108,7 +46,24 @@ function QueryEditor(props: Props) {
     >
       <AppHeader />
       <Toolbar />
-      <div style={{ position: 'relative', flexGrow: 1 }}>{sqlTabPane}</div>
+      <div style={{ position: 'relative', flexGrow: 1 }}>
+        <EditorPaneVisProperties queryId={queryId}>
+          <EditorPaneSchemaSidebar queryId={queryId}>
+            <SplitPane
+              split="horizontal"
+              minSize={100}
+              defaultSize={'60%'}
+              maxSize={-100}
+              onChange={() => debouncedResizeChart(queryId)}
+            >
+              <EditorPaneVis queryId={queryId}>
+                <QueryEditorSqlEditor />
+              </EditorPaneVis>
+              <QueryEditorResultPane />
+            </SplitPane>
+          </EditorPaneSchemaSidebar>
+        </EditorPaneVisProperties>
+      </div>
       <UnsavedQuerySelector queryId={queryId} />
       <DocumentTitle queryId={queryId} />
       <Shortcuts />
