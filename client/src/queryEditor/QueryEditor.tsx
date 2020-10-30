@@ -16,6 +16,7 @@ import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
+import EditorPaneVisProperties from './EditorPaneVisProperties';
 
 type QueryEditorProps = {
   queryId: string;
@@ -46,20 +47,22 @@ function QueryEditor(props: QueryEditorProps) {
       <AppHeader />
       <Toolbar />
       <div style={{ position: 'relative', flexGrow: 1 }}>
-        <EditorPaneSchemaSidebar queryId={queryId}>
-          <SplitPane
-            split="horizontal"
-            minSize={100}
-            defaultSize={'60%'}
-            maxSize={-100}
-            onChange={() => debouncedResizeChart(queryId)}
-          >
-            <EditorPaneVis queryId={queryId}>
-              <QueryEditorSqlEditor />
-            </EditorPaneVis>
-            <QueryEditorResultPane />
-          </SplitPane>
-        </EditorPaneSchemaSidebar>
+        <EditorPaneVisProperties queryId={queryId}>
+          <EditorPaneSchemaSidebar queryId={queryId}>
+            <SplitPane
+              split="horizontal"
+              minSize={100}
+              defaultSize={'60%'}
+              maxSize={-100}
+              onChange={() => debouncedResizeChart(queryId)}
+            >
+              <EditorPaneVis queryId={queryId}>
+                <QueryEditorSqlEditor />
+              </EditorPaneVis>
+              <QueryEditorResultPane />
+            </SplitPane>
+          </EditorPaneSchemaSidebar>
+        </EditorPaneVisProperties>
       </div>
       <UnsavedQuerySelector queryId={queryId} />
       <DocumentTitle queryId={queryId} />
