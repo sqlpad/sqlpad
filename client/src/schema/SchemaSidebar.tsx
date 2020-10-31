@@ -1,3 +1,10 @@
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  MenuPopover,
+} from '@reach/menu-button';
 import OpenIcon from 'mdi-react/MenuDownIcon';
 import ClosedIcon from 'mdi-react/MenuRightIcon';
 import RefreshIcon from 'mdi-react/RefreshIcon';
@@ -25,6 +32,16 @@ import searchSchemaInfo from './searchSchemaInfo';
 const ICON_SIZE = 22;
 const ICON_STYLE = { marginBottom: -6, marginRight: 0, marginLeft: -6 };
 
+function formatIdentifiers(s: string, quoteChars: string = '') {
+  const leftQuote = quoteChars[0] || '';
+  const rightQuote = quoteChars[1] || quoteChars[0] || '';
+
+  return s
+    .split('.')
+    .map((s) => `${leftQuote}${s}${rightQuote}`)
+    .join('.');
+}
+
 function SchemaSidebar() {
   const connectionId = useSessionConnectionId();
   const [search, setSearch] = useState('');
@@ -32,6 +49,10 @@ function SchemaSidebar() {
     width: -1,
     height: -1,
   });
+
+  const [top, setTop] = useState(0);
+  const [left, setLeft] = useState(0);
+  const [id, setId] = useState('');
 
   const expanded = useSessionSchemaExpanded(connectionId);
   const { loading, connectionSchema, error } = useSchemaState(connectionId);
@@ -72,10 +93,6 @@ function SchemaSidebar() {
 
     const indentationPadding = row.level * 20 + (!expandable ? 10 : 0);
 
-    const onClick = expandable
-      ? () => toggleSchemaItem(connectionId, row)
-      : undefined;
-
     const description = row.description ? (
       <Tooltip
         key="colDesc"
@@ -112,12 +129,20 @@ function SchemaSidebar() {
       );
     }
 
+    function handleClick() {
+      if (expandable) {
+        toggleSchemaItem(connectionId, row);
+      }
+    }
+
+    // TODO either switch to button or improve aria for clicking on li
     return (
       <li
+        id={row.id}
         key={row.id}
         className={classNames.join(' ')}
         style={{ ...style, paddingLeft: indentationPadding }}
-        onClick={onClick}
+        onClick={handleClick}
       >
         {icon}
         {row.name}
@@ -154,6 +179,25 @@ function SchemaSidebar() {
     );
   }
 
+  function handleContextMenu(event: React.MouseEvent) {
+    event.preventDefault();
+    console.log(event.clientX, event.clientY);
+
+    const target = event.target as HTMLDivElement;
+    const id = target.id;
+
+    setId(id);
+    setTop(event.clientY);
+    setLeft(event.clientX);
+
+    if (id) {
+      const el = document.getElementById('context-menu');
+      const clickEvent = document.createEvent('MouseEvents');
+      clickEvent.initEvent('mousedown', true, true);
+      el?.dispatchEvent(clickEvent);
+    }
+  }
+
   return (
     <Measure
       bounds
@@ -185,6 +229,60 @@ function SchemaSidebar() {
 
           <Divider style={{ margin: '4px 0' }} />
 
+          {/* 
+            This menu is hidden and moves around based on where context-menu click happens 
+            This is hacky but works! reach-ui does not expose the menu components 
+            in a way that allows them to be used for context menu
+          */}
+          <Menu>
+            <MenuButton
+              id="context-menu"
+              style={{
+                visibility: 'hidden',
+                position: 'absolute',
+                height: 1,
+                left,
+                top: top - 90,
+              }}
+            >
+              Hidden context menu
+            </MenuButton>
+            <MenuPopover style={{ zIndex: 999999 }}>
+              <MenuItems>
+                <MenuItem
+                  onSelect={() =>
+                    navigator.clipboard.writeText(formatIdentifiers(id))
+                  }
+                >
+                  Copy{' '}
+                  <span className="monospace-font">
+                    {formatIdentifiers(id)}
+                  </span>
+                </MenuItem>
+                <MenuItem
+                  onSelect={() =>
+                    navigator.clipboard.writeText(formatIdentifiers(id, '"'))
+                  }
+                >
+                  Copy{' '}
+                  <span className="monospace-font">
+                    {formatIdentifiers(id, '"')}
+                  </span>
+                </MenuItem>
+                <MenuItem
+                  onSelect={() =>
+                    navigator.clipboard.writeText(formatIdentifiers(id, '[]'))
+                  }
+                >
+                  Copy{' '}
+                  <span className="monospace-font">
+                    {formatIdentifiers(id, '[]')}
+                  </span>
+                </MenuItem>
+              </MenuItems>
+            </MenuPopover>
+          </Menu>
+
           <div
             style={{
               display: 'flex',
@@ -193,6 +291,7 @@ function SchemaSidebar() {
           >
             <div
               ref={measureRef}
+              onContextMenu={handleContextMenu}
               style={{
                 display: 'flex',
                 width: '100%',

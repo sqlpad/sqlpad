@@ -108,6 +108,10 @@ input {
 
 /*  Utilities
 ============================================================================ */
+.monospace-font {
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+}
+
 .truncate {
   white-space: nowrap;
   overflow: hidden;
