@@ -9,6 +9,7 @@ import {
   resetNewQuery,
 } from '../stores/editor-actions';
 import DocumentTitle from './DocumentTitle';
+import EditorPaneRightSidebar from './EditorPaneRightSidebar';
 import EditorPaneSchemaSidebar from './EditorPaneSchemaSidebar';
 import EditorPaneVis from './EditorPaneVis';
 import QueryEditorResultPane from './QueryEditorResultPane';
@@ -16,7 +17,6 @@ import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
-import EditorPaneVisProperties from './EditorPaneVisProperties';
 
 type QueryEditorProps = {
   queryId: string;
@@ -47,7 +47,7 @@ function QueryEditor(props: QueryEditorProps) {
       <AppHeader />
       <Toolbar />
       <div style={{ position: 'relative', flexGrow: 1 }}>
-        <EditorPaneVisProperties queryId={queryId}>
+        <EditorPaneRightSidebar queryId={queryId}>
           <EditorPaneSchemaSidebar queryId={queryId}>
             <SplitPane
               split="horizontal"
@@ -62,7 +62,7 @@ function QueryEditor(props: QueryEditorProps) {
               <QueryEditorResultPane />
             </SplitPane>
           </EditorPaneSchemaSidebar>
-        </EditorPaneVisProperties>
+        </EditorPaneRightSidebar>
       </div>
       <UnsavedQuerySelector queryId={queryId} />
       <DocumentTitle queryId={queryId} />

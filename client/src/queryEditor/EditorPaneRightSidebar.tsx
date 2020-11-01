@@ -6,18 +6,30 @@ import { useSessionShowVisProperties } from '../stores/editor-store';
 import ChartInputs from './ChartInputs';
 import ChartTypeSelect from './ChartTypeSelect';
 
-interface EditorPaneVisPropertiesProps {
+interface EditorPaneRightSidebarProps {
   queryId: string;
   children: ReactElement;
 }
 
-const EditorPaneVisProperties: FunctionComponent<EditorPaneVisPropertiesProps> = ({
+const EditorPaneRightSidebar: FunctionComponent<EditorPaneRightSidebarProps> = ({
   children,
   queryId,
-}: EditorPaneVisPropertiesProps) => {
+}: EditorPaneRightSidebarProps) => {
   const showVisProperties = useSessionShowVisProperties();
 
-  if (!showVisProperties) {
+  let sidebarContent = null;
+
+  if (showVisProperties) {
+    sidebarContent = (
+      <div style={{ position: 'absolute', padding: 8 }} className="h-100 w-100">
+        <ChartTypeSelect />
+        <Spacer size={2} />
+        <ChartInputs />
+      </div>
+    );
+  }
+
+  if (!sidebarContent) {
     return children;
   }
 
@@ -31,13 +43,9 @@ const EditorPaneVisProperties: FunctionComponent<EditorPaneVisPropertiesProps> =
       onChange={() => debouncedResizeChart(queryId)}
     >
       {children}
-      <div style={{ position: 'absolute', padding: 8 }} className="h-100 w-100">
-        <ChartTypeSelect />
-        <Spacer size={2} />
-        <ChartInputs />
-      </div>
+      {sidebarContent}
     </SplitPane>
   );
 };
 
-export default EditorPaneVisProperties;
+export default EditorPaneRightSidebar;
