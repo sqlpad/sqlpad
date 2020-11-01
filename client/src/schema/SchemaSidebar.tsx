@@ -50,9 +50,9 @@ function SchemaSidebar() {
     height: -1,
   });
 
-  const [top, setTop] = useState(0);
-  const [left, setLeft] = useState(0);
-  const [id, setId] = useState('');
+  const [contextTop, setContextTop] = useState(0);
+  const [contextLeft, setContextLeft] = useState(0);
+  const [schemaItemId, setSchemaItemId] = useState('');
 
   const expanded = useSessionSchemaExpanded(connectionId);
   const { loading, connectionSchema, error } = useSchemaState(connectionId);
@@ -179,16 +179,22 @@ function SchemaSidebar() {
     );
   }
 
+  // On right-click we'd like to show a context menu related to item clicked
+  // For now this will be options to copy the full path of the item
+  // The way this works is kind of hacky:
+  // * We take note of location clicked
+  // * Move hidden menu button to location
+  // * Fire a click event on that hidden menu button
   function handleContextMenu(event: React.MouseEvent) {
     event.preventDefault();
-    console.log(event.clientX, event.clientY);
 
+    // target needs casting as no way of knowing what it is
     const target = event.target as HTMLDivElement;
-    const id = target.id;
+    const id = target?.id;
 
-    setId(id);
-    setTop(event.clientY);
-    setLeft(event.clientX);
+    setSchemaItemId(id);
+    setContextTop(event.clientY);
+    setContextLeft(event.clientX);
 
     if (id) {
       const el = document.getElementById('context-menu');
@@ -241,8 +247,8 @@ function SchemaSidebar() {
                 visibility: 'hidden',
                 position: 'absolute',
                 height: 1,
-                left,
-                top: top - 90,
+                left: contextLeft,
+                top: contextTop - 90,
               }}
             >
               Hidden context menu
@@ -251,32 +257,38 @@ function SchemaSidebar() {
               <MenuItems>
                 <MenuItem
                   onSelect={() =>
-                    navigator.clipboard.writeText(formatIdentifiers(id))
+                    navigator.clipboard.writeText(
+                      formatIdentifiers(schemaItemId)
+                    )
                   }
                 >
                   Copy{' '}
                   <span className="monospace-font">
-                    {formatIdentifiers(id)}
+                    {formatIdentifiers(schemaItemId)}
                   </span>
                 </MenuItem>
                 <MenuItem
                   onSelect={() =>
-                    navigator.clipboard.writeText(formatIdentifiers(id, '"'))
+                    navigator.clipboard.writeText(
+                      formatIdentifiers(schemaItemId, '"')
+                    )
                   }
                 >
                   Copy{' '}
                   <span className="monospace-font">
-                    {formatIdentifiers(id, '"')}
+                    {formatIdentifiers(schemaItemId, '"')}
                   </span>
                 </MenuItem>
                 <MenuItem
                   onSelect={() =>
-                    navigator.clipboard.writeText(formatIdentifiers(id, '[]'))
+                    navigator.clipboard.writeText(
+                      formatIdentifiers(schemaItemId, '[]')
+                    )
                   }
                 >
                   Copy{' '}
                   <span className="monospace-font">
-                    {formatIdentifiers(id, '[]')}
+                    {formatIdentifiers(schemaItemId, '[]')}
                   </span>
                 </MenuItem>
               </MenuItems>
