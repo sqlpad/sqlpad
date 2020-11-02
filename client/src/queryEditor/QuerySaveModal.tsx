@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useRef } from 'react';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import Modal from '../common/Modal';
@@ -33,6 +33,7 @@ function QuerySaveModal() {
   const queryName = useSessionQueryName();
   const showValidation = useSessionShowValidation();
   const isSaving = useSessionIsSaving();
+  const initialRef = useRef(null);
 
   const error = showValidation && !queryName.length;
 
@@ -57,8 +58,6 @@ function QuerySaveModal() {
 
   function handleSharedChange(event: ChangeEvent<HTMLInputElement>) {
     const { value } = event.target;
-    console.log(event.target.value);
-    console.log(event.target.checked);
     if (value === 'shared') {
       setAcl([{ groupId: '__EVERYONE__', write: true }]);
     } else if (value === 'private') {
@@ -72,10 +71,12 @@ function QuerySaveModal() {
       width={'500px'}
       visible={showSave}
       onClose={toggleShowSave}
+      initialFocusRef={initialRef}
     >
       <label>
         Query name
         <Input
+          ref={initialRef}
           error={error}
           placeholder=""
           value={queryName}

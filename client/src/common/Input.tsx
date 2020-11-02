@@ -10,7 +10,10 @@ export interface Props extends React.HTMLProps<HTMLInputElement> {
   required?: boolean;
 }
 
-export default function Input({ children, error, className, ...rest }: Props) {
+export type Ref = HTMLInputElement | null;
+
+const Input = React.forwardRef<Ref, Props>((props, ref) => {
+  const { children, error, className, ...rest } = props;
   const classNames = [styles.input];
 
   if (error) {
@@ -22,8 +25,10 @@ export default function Input({ children, error, className, ...rest }: Props) {
   }
 
   return (
-    <input className={classNames.join(' ')} {...rest}>
+    <input ref={ref} className={classNames.join(' ')} {...rest}>
       {children}
     </input>
   );
-}
+});
+
+export default Input;
