@@ -1,6 +1,6 @@
 import React from 'react';
-import ConnectionDropDown from '../ConnectionDropdown';
-import ChartButton from './ChartButton';
+import ConnectionDropDown from './ConnectionDropdown';
+import ToolbarChartButton from './ToolbarChartButton';
 import ToolbarConnectionClientButton from './ToolbarConnectionClientButton';
 import ToolbarQueryName from './ToolbarQueryName';
 import ToolbarRunButton from './ToolbarRunButton';
@@ -36,7 +36,7 @@ function Toolbar() {
 
         <ToolbarSpacer />
 
-        <ChartButton />
+        <ToolbarChartButton />
       </div>
     </div>
   );

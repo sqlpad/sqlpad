@@ -15,7 +15,7 @@ import EditorPaneVis from './EditorPaneVis';
 import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import Shortcuts from './Shortcuts';
-import Toolbar from './toolbar/Toolbar';
+import Toolbar from './Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 import QuerySaveModal from './QuerySaveModal';
 

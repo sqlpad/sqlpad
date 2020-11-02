@@ -4,20 +4,20 @@ import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
 import React, { CSSProperties } from 'react';
-import Button from '../../common/Button';
+import Button from '../common/Button';
 import {
   connectConnectionClient,
   formatQuery,
   handleCloneClick,
   runQuery,
   toggleShowSave,
-} from '../../stores/editor-actions';
+} from '../stores/editor-actions';
 import {
   useSessionIsRunning,
   useSessionIsSaving,
   useSessionQueryId,
   useSessionUnsavedChanges,
-} from '../../stores/editor-store';
+} from '../stores/editor-store';
 
 const menuItemStyle: CSSProperties = {
   display: 'flex',

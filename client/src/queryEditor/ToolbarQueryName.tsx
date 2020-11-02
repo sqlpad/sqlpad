@@ -1,13 +1,13 @@
 import React from 'react';
-import Button from '../../common/Button';
-import { toggleShowSave } from '../../stores/editor-actions';
+import Button from '../common/Button';
+import { toggleShowSave } from '../stores/editor-actions';
 import {
   useSessionQueryName,
   useSessionQueryShared,
   useSessionUnsavedChanges,
-} from '../../stores/editor-store';
+} from '../stores/editor-store';
 import SharedIcon from 'mdi-react/AccountMultipleIcon';
-import Tooltip from '../../common/Tooltip';
+import Tooltip from '../common/Tooltip';
 
 // Shared icon is nudged a bit to align bottom of icon to text baseline
 const sharedIconStyle = {
