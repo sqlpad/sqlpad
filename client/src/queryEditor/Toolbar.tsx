@@ -19,23 +19,14 @@ function Toolbar() {
     >
       <div style={{ display: 'flex' }}>
         <ToolbarToggleSchemaButton />
-
         <ConnectionDropDown />
-
         <ToolbarSpacer />
-
         <ToolbarConnectionClientButton />
-
         <ToolbarSpacer grow />
-
         <ToolbarQueryName />
-
         <ToolbarSpacer grow />
-
         <ToolbarRunButton />
-
         <ToolbarSpacer />
-
         <ToolbarChartButton />
       </div>
     </div>
