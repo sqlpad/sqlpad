@@ -20,11 +20,6 @@ function ToolbarQueryName() {
   const shared = useSessionQueryShared();
   const unsavedChanges = useSessionUnsavedChanges();
 
-  let cleanedQueryName = queryName;
-  if (queryName && unsavedChanges) {
-    cleanedQueryName += '*';
-  }
-
   // Even though tooltip is on Button it is needed to be wrapped
   // Might have something to do with fragment use
   return (
@@ -34,10 +29,13 @@ function ToolbarQueryName() {
       <Button
         className="truncate"
         variant="primary-ghost"
-        style={{ display: 'block', fontSize: 18, maxWidth: 600 }}
+        style={{ fontSize: 18 }}
         onClick={toggleShowSave}
       >
-        {cleanedQueryName || 'New unsaved query'}
+        <div className="truncate" style={{ maxWidth: 500 }}>
+          {queryName || 'New unsaved query'}
+        </div>
+        {unsavedChanges && '*'}
         {shared && <SharedIcon size={18} style={sharedIconStyle} />}
       </Button>
     </Tooltip>
