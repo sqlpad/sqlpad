@@ -21,6 +21,11 @@ import {
 } from '../stores/editor-store';
 import { api } from '../utilities/api';
 
+// TODO: Add option between updating existing query, or saving new query (maybe)
+// TODO: If save error occurs, display it in modal
+// TODO: Enhance share options
+// TODO: Make modal state temporary until saved. Edits should be able to be cancelled.
+
 function QuerySaveModal() {
   const showSave = useShowSave();
   const shared = useSessionQueryShared();
