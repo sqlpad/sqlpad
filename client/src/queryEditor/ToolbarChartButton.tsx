@@ -1,9 +1,9 @@
 import ChartIcon from 'mdi-react/ChartBarIcon';
 import React from 'react';
-import IconButton from '../../common/IconButton';
-import { toggleVisProperties } from '../../stores/editor-actions';
+import IconButton from '../common/IconButton';
+import { toggleVisProperties } from '../stores/editor-actions';
 
-function ChartButton() {
+function ToolbarChartButton() {
   return (
     <IconButton
       tooltip="Configure visualization"
@@ -14,4 +14,4 @@ function ChartButton() {
   );
 }
 
-export default React.memo(ChartButton);
+export default React.memo(ToolbarChartButton);

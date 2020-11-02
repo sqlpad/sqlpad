@@ -50,6 +50,7 @@ export interface EditorSession {
 
 export type EditorStoreState = {
   initialized: boolean;
+  showSave: boolean;
   focusedSessionId: string;
   editorSessions: Record<string, EditorSession>;
   batches: Record<string, Batch>;
@@ -91,6 +92,7 @@ export const INITIAL_SESSION: EditorSession = {
 
 export const useEditorStore = create<EditorStoreState>((set, get) => ({
   initialized: false,
+  showSave: false,
   focusedSessionId: INITIAL_SESSION_ID,
   editorSessions: {
     [INITIAL_SESSION_ID]: INITIAL_SESSION,
@@ -109,6 +111,10 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
 
 export function useInitialized() {
   return useEditorStore((s) => s.initialized);
+}
+
+export function useShowSave() {
+  return useEditorStore((s) => s.showSave);
 }
 
 export function useSessionQueryShared() {

@@ -146,3 +146,26 @@
   border: none;
   color: rgba(255, 255, 255, 0.55);
 }
+
+.leftWithMenu {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-right: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.menuButton {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  padding: 0 4px;
+}
+
+.menuButton:hover,
+.menuButton:focus {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  padding: 0 3px;
+}
+
+.menuButton:disabled {
+  padding: 0 4px;
+}

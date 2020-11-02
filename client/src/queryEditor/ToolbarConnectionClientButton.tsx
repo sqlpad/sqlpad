@@ -1,16 +1,16 @@
 import ConnectedIcon from 'mdi-react/ServerNetworkIcon';
 import DisconnectedIcon from 'mdi-react/ServerNetworkOffIcon';
 import React, { useState } from 'react';
-import IconButton from '../../common/IconButton';
+import IconButton from '../common/IconButton';
 import {
   connectConnectionClient,
   disconnectConnectionClient,
-} from '../../stores/editor-actions';
+} from '../stores/editor-actions';
 import {
   useSessionConnectionClient,
   useSessionConnectionId,
-} from '../../stores/editor-store';
-import { api } from '../../utilities/api';
+} from '../stores/editor-store';
+import { api } from '../utilities/api';
 
 function ToolbarConnectionClientButton() {
   const [fetching, setFetching] = useState(false);
