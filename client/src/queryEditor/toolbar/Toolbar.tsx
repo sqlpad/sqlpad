@@ -2,11 +2,9 @@ import React from 'react';
 import ConnectionDropDown from '../ConnectionDropdown';
 import ChartButton from './ChartButton';
 import ToolbarConnectionClientButton from './ToolbarConnectionClientButton';
-import ToolbarQueryNameInput from './ToolbarQueryNameInput';
+import ToolbarQueryName from './ToolbarQueryName';
 import ToolbarRunButton from './ToolbarRunButton';
-import ToolbarShareQueryButton from './ToolbarShareQueryButton';
 import ToolbarSpacer from './ToolbarSpacer';
-import ToolbarTagsButton from './ToolbarTagsButton';
 import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
 
 function Toolbar() {
@@ -21,22 +19,19 @@ function Toolbar() {
     >
       <div style={{ display: 'flex' }}>
         <ToolbarToggleSchemaButton />
+
         <ConnectionDropDown />
+
         <ToolbarSpacer />
+
         <ToolbarConnectionClientButton />
 
         <ToolbarSpacer grow />
 
-        <ToolbarQueryNameInput />
-
-        <ToolbarSpacer />
-
-        <ToolbarTagsButton />
-        <ToolbarShareQueryButton />
+        <ToolbarQueryName />
 
         <ToolbarSpacer grow />
 
-        <ToolbarSpacer />
         <ToolbarRunButton />
 
         <ToolbarSpacer />

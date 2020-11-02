@@ -17,10 +17,14 @@ import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import Shortcuts from './Shortcuts';
 import Toolbar from './toolbar/Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
+import QuerySaveModal from './QuerySaveModal';
 
 type QueryEditorProps = {
   queryId: string;
 };
+
+// TODO FIXME XXX - On 404 query not found, prompt user to start new or open existing query
+// In both cases load new, but latter opens queries list
 
 function QueryEditor(props: QueryEditorProps) {
   const { queryId } = props;
@@ -68,6 +72,7 @@ function QueryEditor(props: QueryEditorProps) {
       <DocumentTitle queryId={queryId} />
       <Shortcuts />
       <SchemaInfoLoader />
+      <QuerySaveModal />
     </div>
   );
 }

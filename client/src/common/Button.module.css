@@ -165,3 +165,7 @@
   border-bottom-left-radius: 0px;
   padding: 0 3px;
 }
+
+.menuButton:disabled {
+  padding: 0 4px;
+}

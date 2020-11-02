@@ -160,6 +160,11 @@ export const initApp = async (
   }
 };
 
+export function toggleShowSave() {
+  const { showSave } = getState();
+  setState({ showSave: !showSave });
+}
+
 /**
  * Reset state (on signout for example)
  * TODO: This needs to either do more, cancel timeouts, polling, etc OR navigate to a new page in browser (not client-side routed)
@@ -425,8 +430,8 @@ export const saveQuery = async () => {
   } = getState().getSession();
 
   if (!queryName) {
-    message.error('Query name required');
     setSession({ showValidation: true });
+    setState({ showSave: true });
     return;
   }
 
@@ -467,6 +472,7 @@ export const saveQuery = async () => {
         canRead: data.canRead,
         canWrite: data.canWrite,
       });
+      setState({ showSave: false });
     });
   } else {
     api.post(`/api/queries`, queryData).then((json) => {
@@ -482,7 +488,6 @@ export const saveQuery = async () => {
         data.name,
         `${baseUrl()}/queries/${data.id}`
       );
-      message.success('Query Saved');
       removeLocalQueryText(data.id);
       setSession({
         isSaving: false,
@@ -498,6 +503,7 @@ export const saveQuery = async () => {
         canRead: data.canRead,
         canWrite: data.canWrite,
       });
+      setState({ showSave: false });
     });
   }
 };

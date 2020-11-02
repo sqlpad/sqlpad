@@ -69,7 +69,10 @@ const Button = React.forwardRef<Ref, Props>(
         </button>
         {menuItems && menuItems.length > 0 && (
           <Menu>
-            <MenuButton className={rightClassNames.join(' ')}>
+            <MenuButton
+              disabled={disabled}
+              className={rightClassNames.join(' ')}
+            >
               <ChevronDownIcon size={14} style={{ marginTop: 2 }} />
             </MenuButton>
             <MenuList>{menuItems}</MenuList>

@@ -10,7 +10,7 @@ import {
   formatQuery,
   handleCloneClick,
   runQuery,
-  saveQuery,
+  toggleShowSave,
 } from '../../stores/editor-actions';
 import {
   useSessionIsRunning,
@@ -50,7 +50,7 @@ function ToolbarRunButton() {
           <MenuItem
             key="save"
             disabled={isSaving}
-            onSelect={() => saveQuery()}
+            onSelect={() => toggleShowSave()}
             style={menuItemStyle}
           >
             {saveIcon}
@@ -62,7 +62,7 @@ function ToolbarRunButton() {
             style={menuItemStyle}
           >
             <FormatIcon size={16} />
-            <div style={{ marginLeft: 4 }}>Format SQL</div>
+            <div style={{ marginLeft: 4 }}>Format</div>
           </MenuItem>,
           <MenuItem
             key="clone"
