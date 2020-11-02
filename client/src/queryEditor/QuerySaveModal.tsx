@@ -41,7 +41,7 @@ function QuerySaveModal() {
     id: tag,
   }));
 
-  const handleChange = (selectedItems: MultiSelectItem[]) => {
+  const handleTagsChange = (selectedItems: MultiSelectItem[]) => {
     const tags = selectedItems
       .map((item) => item.name || '')
       .map((tag) => tag.trim())
@@ -86,7 +86,7 @@ function QuerySaveModal() {
         <MultiSelect
           selectedItems={selectedItems}
           options={options}
-          onChange={handleChange}
+          onChange={handleTagsChange}
         />
       </label>
 
