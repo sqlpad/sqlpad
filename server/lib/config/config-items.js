@@ -175,21 +175,9 @@ const configItems = [
     default: '',
   },
   {
-    key: 'serviceTokenSecret_d',
-    envVar: 'SERVICE_TOKEN_SECRET',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_SERVICE_TOKEN_SECRET instead.',
-  },
-  {
     key: 'serviceTokenSecret',
     envVar: 'SQLPAD_SERVICE_TOKEN_SECRET',
     default: '',
-  },
-  {
-    key: 'disableAuth',
-    envVar: 'DISABLE_AUTH',
-    default: false,
-    deprecated: 'To be removed in v6. Use AUTH_DISABLED instead.',
   },
   {
     key: `authDisabled`,
@@ -197,16 +185,9 @@ const configItems = [
     default: false,
   },
   {
-    key: 'disableAuthDefaultRole',
-    envVar: 'SQLPAD_DISABLE_AUTH_DEFAULT_ROLE',
-    default: 'editor',
-    deprecated:
-      'To be removed in v6. Use SQLPAD_AUTH_DISABLED_DEFAULT_ROLE instead.',
-  },
-  {
     key: 'authDisabledDefaultRole',
     envVar: 'SQLPAD_AUTH_DISABLED_DEFAULT_ROLE',
-    default: '', // TODO change to 'editor' in v6, when removing SQLPAD_DISABLE_AUTH_DEFAULT_ROLE
+    default: 'editor',
   },
   {
     key: 'allowCsvDownload',

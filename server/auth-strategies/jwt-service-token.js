@@ -12,8 +12,7 @@ const appLog = require('../lib/app-log');
  * @param {object} config
  */
 function enableJwtServiceToken(config) {
-  const serviceTokenSecret =
-    config.get('serviceTokenSecret') || config.get('serviceTokenSecret_d');
+  const serviceTokenSecret = config.get('serviceTokenSecret');
 
   if (serviceTokenSecret) {
     appLog.info('Enabling JWT Service Token authentication strategy.');

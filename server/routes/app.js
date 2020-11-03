@@ -39,9 +39,7 @@ async function getApp(req, res) {
       ),
       oidcConfigured: config.oidcConfigured(),
       oidcLinkHtml: config.get('oidcLinkHtml'),
-      showServiceTokensUI: Boolean(
-        config.get('serviceTokenSecret') || config.get('serviceTokenSecret_d')
-      ),
+      showServiceTokensUI: Boolean(config.get('serviceTokenSecret')),
     },
     version: packageJson.version,
   });
