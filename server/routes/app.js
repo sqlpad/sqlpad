@@ -33,10 +33,8 @@ async function getApp(req, res) {
         config.get('userpassAuthDisabled') || config.get('disableUserpassAuth')
       ),
       publicUrl: config.get('publicUrl'),
-      samlConfigured: Boolean(
-        config.get('samlEntryPoint') || config.get('samlEntryPoint_d')
-      ),
-      samlLinkHtml: config.get('samlLinkHtml') || config.get('samlLinkHtml_d'),
+      samlConfigured: Boolean(config.get('samlEntryPoint')),
+      samlLinkHtml: config.get('samlLinkHtml'),
       ldapConfigured:
         config.get('ldapAuthEnabled') || config.get('enableLdapAuth'),
       ldapRolesConfigured: Boolean(
