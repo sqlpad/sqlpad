@@ -7,7 +7,7 @@ Two categories of messages are logged by SQLPad: "app" messages containing info 
 In production, log messages will be a single json object per line:
 
 ```
-> node-dev server.js --dbPath ../db --port 3010 --baseUrl /sqlpad --config './config.dev.ini'
+> node-dev server.js --dbPath ../db --port 3010 --baseUrl /sqlpad --config './config.dev.env'
 
 {"level":30,"time":1581974034149,"pid":7226,"hostname":"hostname.local","name":"sqlpad-app","msg":"Loading users","v":1}
 {"level":30,"time":1581974034150,"pid":7226,"hostname":"hostname.local","name":"sqlpad-app","msg":"Loading connections","v":1}
@@ -24,7 +24,7 @@ In production, log messages will be a single json object per line:
 During development, the logs can be piped to `pino-pretty`, which is used when running `npm start` by default, producing a more human friendly format:
 
 ```
-> node-dev server.js --dbPath ../db --port 3010 --baseUrl /sqlpad --config './config.dev.ini' | pino-pretty
+> node-dev server.js --dbPath ../db --port 3010 --baseUrl /sqlpad --config './config.dev.env' | pino-pretty
 
 [1581974767500] INFO  (sqlpad-app/7387 on hostname.local): Loading users
 [1581974767501] INFO  (sqlpad-app/7387 on hostname.local): Loading connections

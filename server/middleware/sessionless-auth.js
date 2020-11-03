@@ -44,7 +44,7 @@ function sessionlessAuth(req, res, next) {
 
   // If auth is disabled, "authenticate" with the custom disable-auth strategy
   // This will stub in a noauth user into the users table, and associate the session accordingly
-  if (config.get('authDisabled') || config.get('disableAuth')) {
+  if (config.get('authDisabled')) {
     return passport.authenticate('disable-auth', handleAuth)(req, res, next);
   }
 
@@ -53,8 +53,7 @@ function sessionlessAuth(req, res, next) {
   if (authHeader) {
     // If authorization starts with Bearer and serviceTokenSecret is set,
     // we're going to guess it is a service token jwt
-    const serviceTokenSecret =
-      config.get('serviceTokenSecret') || config.get('serviceTokenSecret_d');
+    const serviceTokenSecret = config.get('serviceTokenSecret');
     if (authHeader.startsWith('Bearer ') && serviceTokenSecret) {
       return passport.authenticate('jwt', handleAuth)(req, res, next);
     }
@@ -63,8 +62,7 @@ function sessionlessAuth(req, res, next) {
     // try HTTP basic authentication
     if (
       authHeader.startsWith('Basic ') &&
-      !config.get('userpassAuthDisabled') &&
-      !config.get('disableUserpassAuth')
+      !config.get('userpassAuthDisabled')
     ) {
       return passport.authenticate('basic', handleAuth)(req, res, next);
     }

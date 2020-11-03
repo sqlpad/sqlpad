@@ -29,24 +29,17 @@ async function getApp(req, res) {
       defaultConnectionId: config.get('defaultConnectionId'),
       editorWordWrap: config.get('editorWordWrap'),
       googleAuthConfigured: config.googleAuthConfigured(),
-      localAuthConfigured: !(
-        config.get('userpassAuthDisabled') || config.get('disableUserpassAuth')
-      ),
+      localAuthConfigured: !config.get('userpassAuthDisabled'),
       publicUrl: config.get('publicUrl'),
-      samlConfigured: Boolean(
-        config.get('samlEntryPoint') || config.get('samlEntryPoint_d')
-      ),
-      samlLinkHtml: config.get('samlLinkHtml') || config.get('samlLinkHtml_d'),
-      ldapConfigured:
-        config.get('ldapAuthEnabled') || config.get('enableLdapAuth'),
+      samlConfigured: Boolean(config.get('samlEntryPoint')),
+      samlLinkHtml: config.get('samlLinkHtml'),
+      ldapConfigured: config.get('ldapAuthEnabled'),
       ldapRolesConfigured: Boolean(
         config.get('ldapRoleAdminFilter') || config.get('ldapRoleEditorFilter')
       ),
       oidcConfigured: config.oidcConfigured(),
       oidcLinkHtml: config.get('oidcLinkHtml'),
-      showServiceTokensUI: Boolean(
-        config.get('serviceTokenSecret') || config.get('serviceTokenSecret_d')
-      ),
+      showServiceTokensUI: Boolean(config.get('serviceTokenSecret')),
     },
     version: packageJson.version,
   });

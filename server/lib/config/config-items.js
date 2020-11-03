@@ -75,25 +75,6 @@ const configItems = [
     default: "At least the sensitive bits won't be plain text?",
   },
   {
-    key: 'certPassphrase_d',
-    envVar: 'CERT_PASSPHRASE',
-    default: '',
-    deprecated:
-      'To be removed in v6. Use SQLPAD_HTTPS_CERT_PASSPHRASE instead.',
-  },
-  {
-    key: 'keyPath_d',
-    envVar: 'KEY_PATH',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_HTTPS_KEY_PATH instead.',
-  },
-  {
-    key: 'certPath_d',
-    envVar: 'CERT_PATH',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_HTTPS_CERT_PATH instead.',
-  },
-  {
     key: 'certPassphrase',
     envVar: 'SQLPAD_HTTPS_CERT_PASSPHRASE',
     default: '',
@@ -124,21 +105,9 @@ const configItems = [
     default: '',
   },
   {
-    key: 'googleClientId_d',
-    envVar: 'GOOGLE_CLIENT_ID',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_GOOGLE_CLIENT_ID instead.',
-  },
-  {
     key: 'googleClientId',
     envVar: 'SQLPAD_GOOGLE_CLIENT_ID',
     default: '',
-  },
-  {
-    key: 'googleClientSecret_d',
-    envVar: 'GOOGLE_CLIENT_SECRET',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_GOOGLE_CLIENT_SECRET instead.',
   },
   {
     key: 'googleClientSecret',
@@ -151,23 +120,9 @@ const configItems = [
     default: '',
   },
   {
-    key: 'disableUserpassAuth',
-    envVar: 'DISABLE_USERPASS_AUTH',
-    default: false,
-    deprecated:
-      'To be removed in v6. Use SQLPAD_USERPASS_AUTH_DISABLED instead.',
-  },
-  {
     key: 'userpassAuthDisabled',
     envVar: 'SQLPAD_USERPASS_AUTH_DISABLED',
     default: false,
-  },
-
-  {
-    key: 'enableLdapAuth',
-    envVar: 'ENABLE_LDAP_AUTH',
-    default: false,
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_AUTH_ENABLED instead.',
   },
   {
     key: 'ldapAuthEnabled',
@@ -175,27 +130,9 @@ const configItems = [
     default: false,
   },
   {
-    key: 'ldapUrl_d',
-    envVar: 'LDAP_URL',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_URL instead.',
-  },
-  {
     key: 'ldapUrl',
     envVar: 'SQLPAD_LDAP_URL',
     default: '',
-  },
-  {
-    key: 'ldapBaseDN_d',
-    envVar: 'LDAP_BASE_DN',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_SEARCH_BASE instead.',
-  },
-  {
-    key: 'ldapBaseDN',
-    envVar: 'SQLPAD_LDAP_BASE_DN',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_SEARCH_BASE instead.',
   },
   {
     key: 'ldapSearchBase',
@@ -203,27 +140,9 @@ const configItems = [
     default: '',
   },
   {
-    key: 'ldapUsername_d',
-    envVar: 'LDAP_USERNAME',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_BIND_DN instead.',
-  },
-  {
-    key: 'ldapUsername',
-    envVar: 'SQLPAD_LDAP_USERNAME',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_BIND_DN instead.',
-  },
-  {
     key: 'ldapBindDN',
     envVar: 'SQLPAD_LDAP_BIND_DN',
     default: '',
-  },
-  {
-    key: 'ldapPassword_d',
-    envVar: 'LDAP_PASSWORD',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_PASSWORD instead.',
   },
   {
     key: 'ldapPassword',
@@ -256,21 +175,9 @@ const configItems = [
     default: '',
   },
   {
-    key: 'serviceTokenSecret_d',
-    envVar: 'SERVICE_TOKEN_SECRET',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_SERVICE_TOKEN_SECRET instead.',
-  },
-  {
     key: 'serviceTokenSecret',
     envVar: 'SQLPAD_SERVICE_TOKEN_SECRET',
     default: '',
-  },
-  {
-    key: 'disableAuth',
-    envVar: 'DISABLE_AUTH',
-    default: false,
-    deprecated: 'To be removed in v6. Use AUTH_DISABLED instead.',
   },
   {
     key: `authDisabled`,
@@ -278,16 +185,9 @@ const configItems = [
     default: false,
   },
   {
-    key: 'disableAuthDefaultRole',
-    envVar: 'SQLPAD_DISABLE_AUTH_DEFAULT_ROLE',
-    default: 'editor',
-    deprecated:
-      'To be removed in v6. Use SQLPAD_AUTH_DISABLED_DEFAULT_ROLE instead.',
-  },
-  {
     key: 'authDisabledDefaultRole',
     envVar: 'SQLPAD_AUTH_DISABLED_DEFAULT_ROLE',
-    default: '', // TODO change to 'editor' in v6, when removing SQLPAD_DISABLE_AUTH_DEFAULT_ROLE
+    default: 'editor',
   },
   {
     key: 'allowCsvDownload',
@@ -310,21 +210,9 @@ const configItems = [
     default: 'file', // allowed values file, memory, database
   },
   {
-    key: 'whitelistedDomains',
-    envVar: 'WHITELISTED_DOMAINS',
-    default: '',
-    deprecated: 'To be removed in v6. Use allowedDomains instead',
-  },
-  {
     key: 'samlEntryPoint',
     envVar: 'SQLPAD_SAML_ENTRY_POINT',
     default: '',
-  },
-  {
-    key: 'samlEntryPoint_d',
-    envVar: 'SAML_ENTRY_POINT',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_SAML_ENTRY_POINT instead',
   },
   {
     key: 'samlIssuer',
@@ -332,21 +220,9 @@ const configItems = [
     default: '',
   },
   {
-    key: 'samlIssuer_d',
-    envVar: 'SAML_ISSUER',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_SAML_ISSUER instead',
-  },
-  {
     key: 'samlCallbackUrl',
     envVar: 'SQLPAD_SAML_CALLBACK_URL',
     default: '',
-  },
-  {
-    key: 'samlCallbackUrl_d',
-    envVar: 'SAML_CALLBACK_URL',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_SAML_CALLBACK_URL instead',
   },
   {
     key: 'samlCert',
@@ -354,32 +230,14 @@ const configItems = [
     default: '',
   },
   {
-    key: 'samlCert_d',
-    envVar: 'SAML_CERT',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_SAML_CERT instead',
-  },
-  {
     key: 'samlAuthContext',
     envVar: 'SQLPAD_SAML_AUTH_CONTEXT',
     default: '',
   },
   {
-    key: 'samlAuthContext_d',
-    envVar: 'SAML_AUTH_CONTEXT',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_SAML_AUTH_CONTEXT instead',
-  },
-  {
     key: 'samlLinkHtml',
     envVar: 'SQLPAD_SAML_LINK_HTML',
-    default: '', // Change to 'Sign in with SSO' in v6 when removing samlLinkHtml_d
-  },
-  {
-    key: 'samlLinkHtml_d',
-    envVar: 'SAML_LINK_HTML',
     default: 'Sign in with SSO',
-    deprecated: 'To be removed in v6. Use SQLPAD_SAML_LINK_HTML instead',
   },
   {
     key: 'samlAutoSignUp',
@@ -534,6 +392,12 @@ const configItems = [
     key: 'webhookStatementFinishedUrl',
     envVar: 'SQLPAD_WEBHOOK_STATEMENT_FINISHED_URL',
     default: '',
+  },
+  {
+    key: 'deprecatedTestConfig',
+    envVar: 'SQLPAD_DEPRECATED_TEST_CONFIG',
+    default: '',
+    deprecated: 'Deprecated config identified with this key and message',
   },
 ];
 

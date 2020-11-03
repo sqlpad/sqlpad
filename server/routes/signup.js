@@ -12,7 +12,7 @@ const wrap = require('../lib/wrap');
 async function handleSignup(req, res, next) {
   const { models, config, webhooks } = req;
 
-  if (config.get('userpassAuthDisabled') || config.get('disableUserpassAuth')) {
+  if (config.get('userpassAuthDisabled')) {
     return res.utils.forbidden();
   }
 
