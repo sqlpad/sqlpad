@@ -417,7 +417,9 @@ export const runQuery = async () => {
   });
 };
 
-export const saveQuery = async () => {
+export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
+  const mergedSession = { ...getState().getSession(), ...additionalUpdates };
+
   const {
     queryId,
     connectionId,
@@ -427,7 +429,7 @@ export const saveQuery = async () => {
     chartType,
     tags,
     acl,
-  } = getState().getSession();
+  } = mergedSession;
 
   if (!queryName) {
     setSession({ showValidation: true });
