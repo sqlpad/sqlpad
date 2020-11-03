@@ -185,15 +185,6 @@ For more information on APIs available see [API Overview](/api-overview).
 SQLPAD_SERVICE_TOKEN_SECRET = ""
 ```
 
-## Slack Webhook
-
-!> Deprecated. To be removed in v6. Use [webhooks](/webhooks) and implement preferred communication instead.
-
-```bash
-# Supply incoming Slack webhook URL to post query when saved.
-SQLPAD_SLACK_WEBHOOK = ""
-```
-
 ## Logging
 
 Minimum level for logs. Should be one of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. App logs contain log messages taken by application (running queries, creating users, general errors, etc.) while web logs are used for logging web requests made and related information, like time taken to serve them.

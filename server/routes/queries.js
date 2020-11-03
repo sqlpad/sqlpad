@@ -5,7 +5,6 @@ const formatLinkHeader = require('format-link-header');
 const queryString = require('query-string');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const pushQueryToSlack = require('../lib/push-query-to-slack');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 const wrap = require('../lib/wrap');
 
@@ -321,9 +320,6 @@ async function createQuery(req, res) {
   }
 
   webhooks.queryCreated(newQuery, connection);
-
-  // This is async, but save operation doesn't care about when/if finished
-  pushQueryToSlack(req.config, newQuery, user);
 
   return res.utils.data(decorateQueryUserAccess(newQuery, user));
 }
