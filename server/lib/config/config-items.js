@@ -310,13 +310,6 @@ const configItems = [
     default: 'file', // allowed values file, memory, database
   },
   {
-    key: 'slackWebhook',
-    envVar: 'SQLPAD_SLACK_WEBHOOK',
-    default: '',
-    deprecated:
-      'To be removed in v6. Use webhooks and implement preferred communication instead.',
-  },
-  {
     key: 'whitelistedDomains',
     envVar: 'WHITELISTED_DOMAINS',
     default: '',
