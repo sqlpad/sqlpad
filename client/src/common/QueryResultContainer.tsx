@@ -18,11 +18,11 @@ export interface Props {
 
 function QueryResultContainer({ statementId }: Props) {
   const columns = useStatementColumns(statementId) || [];
-  const { data, error } = api.useStatementResults(statementId);
   const rowCount = useStatementRowCount(statementId);
   const status = useStatementStatus(statementId);
   const isRunning = useSessionIsRunning();
   const queryError = useSessionQueryError();
+  const { data, error } = api.useStatementResults(statementId, status);
 
   if (isRunning || (status === 'finished' && !data)) {
     return <QueryResultRunning />;

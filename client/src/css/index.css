@@ -149,7 +149,7 @@ input {
   overflow: auto;
 
   font-size: 1.3rem;
-  padding: 24px;
+  padding: 16px;
   text-align: center;
   color: hsl(323, 100%, 42%);
 }

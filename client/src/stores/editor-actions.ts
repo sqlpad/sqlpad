@@ -417,7 +417,9 @@ export const runQuery = async () => {
   });
 };
 
-export const saveQuery = async () => {
+export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
+  const mergedSession = { ...getState().getSession(), ...additionalUpdates };
+
   const {
     queryId,
     connectionId,
@@ -427,7 +429,7 @@ export const saveQuery = async () => {
     chartType,
     tags,
     acl,
-  } = getState().getSession();
+  } = mergedSession;
 
   if (!queryName) {
     setSession({ showValidation: true });
@@ -435,7 +437,7 @@ export const saveQuery = async () => {
     return;
   }
 
-  setSession({ isSaving: true });
+  setSession({ isSaving: true, saveError: undefined });
   const queryData = {
     connectionId,
     name: queryName,
@@ -452,8 +454,11 @@ export const saveQuery = async () => {
     api.put(`/api/queries/${queryId}`, queryData).then((json) => {
       const { error, data } = json;
       if (error) {
-        message.error(error);
-        setSession({ isSaving: false });
+        // If there was an error, show the save dialog.
+        // It might be closed and it is where the error is placed.
+        // This should be rare, and not sure what might trigger it at this point, but just in case
+        setSession({ isSaving: false, saveError: error });
+        setState({ showSave: true });
         return;
       }
       api.reloadQueries();
@@ -478,8 +483,11 @@ export const saveQuery = async () => {
     api.post(`/api/queries`, queryData).then((json) => {
       const { error, data } = json;
       if (error) {
-        message.error(error);
-        setSession({ isSaving: false });
+        // If there was an error, show the save dialog.
+        // It might be closed and it is where the error is placed.
+        // This should be rare, and not sure what might trigger it at this point, but just in case
+        setSession({ isSaving: false, saveError: error });
+        setState({ showSave: true });
         return;
       }
       api.reloadQueries();

@@ -7,6 +7,7 @@ import {
   useSessionIsRunning,
   useSessionQueryId,
   useStatementColumns,
+  useStatementStatus,
 } from '../stores/editor-store';
 import { api } from '../utilities/api';
 
@@ -17,7 +18,8 @@ const ConnectedChart: FunctionComponent = (props) => {
   const chartFields = useSessionChartFields();
   const statementId = useLastStatementId();
   const columns = useStatementColumns(statementId);
-  const { data } = api.useStatementResults(statementId);
+  const status = useStatementStatus(statementId);
+  const { data } = api.useStatementResults(statementId, status);
 
   const chartConfiguration = useMemo(() => {
     return {

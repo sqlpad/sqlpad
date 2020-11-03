@@ -15,6 +15,7 @@ import {
   useStatementColumns,
   useStatementIncomplete,
   useStatementRowCount,
+  useStatementStatus,
 } from './stores/editor-store';
 import { api } from './utilities/api';
 
@@ -32,7 +33,8 @@ function QueryChartOnly({ queryId }: Props) {
   const chartFields = useSessionChartFields();
   const chartType = useSessionChartType();
   const columns = useStatementColumns(statementId);
-  const { data: rows } = api.useStatementResults(statementId);
+  const status = useStatementStatus(statementId);
+  const { data: rows } = api.useStatementResults(statementId, status);
 
   useEffect(() => {
     loadQuery(queryId).then(() => runQuery());
