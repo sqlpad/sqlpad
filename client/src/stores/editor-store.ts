@@ -27,6 +27,7 @@ export interface EditorSession {
   batchId?: string;
   isRunning: boolean;
   isSaving: boolean;
+  saveError?: string;
   // Editor session takes Query model fields and flattens
   queryId?: string;
   queryName: string;
@@ -71,6 +72,7 @@ export const INITIAL_SESSION: EditorSession = {
   batchId: undefined,
   isRunning: false,
   isSaving: false,
+  saveError: undefined,
   queryId: undefined,
   queryName: '',
   queryText: '',
@@ -122,6 +124,10 @@ export function useSessionQueryShared() {
     const { acl } = s.getSession();
     return (acl || []).length > 0;
   });
+}
+
+export function useSessionSaveError() {
+  return useEditorStore((s) => s.getSession().saveError);
 }
 
 export function useSessionTags() {

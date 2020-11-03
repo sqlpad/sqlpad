@@ -1,21 +1,23 @@
-import React, { ChangeEvent, useRef, useState, useEffect } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Button from '../common/Button';
+import ErrorBlock from '../common/ErrorBlock';
+import HSpacer from '../common/HSpacer';
 import Input from '../common/Input';
 import Modal from '../common/Modal';
 import MultiSelect, { MultiSelectItem } from '../common/MultiSelect';
 import Spacer from '../common/Spacer';
 import { saveQuery, toggleShowSave } from '../stores/editor-actions';
 import {
+  EditorSession,
   useSessionIsSaving,
   useSessionQueryName,
   useSessionQueryShared,
+  useSessionSaveError,
   useSessionShowValidation,
   useSessionTags,
   useShowSave,
-  EditorSession,
 } from '../stores/editor-store';
 import { api } from '../utilities/api';
-import HSpacer from '../common/HSpacer';
 
 // TODO: Add option between updating existing query, or saving new query (maybe)
 // TODO: If save error occurs, display it in modal
@@ -37,6 +39,7 @@ function QuerySaveModal() {
   const originalName = useSessionQueryName();
   const showValidation = useSessionShowValidation();
   const isSaving = useSessionIsSaving();
+  const saveError = useSessionSaveError();
   const initialRef = useRef(null);
 
   const [viewModel, setViewModel] = useState<ViewModel>({
@@ -184,12 +187,14 @@ function QuerySaveModal() {
         </label>
 
         {/* 
-        TODO expand on sharing options. 
-        Can be shared with specific users.
-        Everyone can be read or write.
-      */}
+          TODO expand on sharing options. 
+          Can be shared with specific users.
+          Everyone can be read or write.
+        */}
 
         <Spacer />
+
+        {saveError && <ErrorBlock>{saveError}</ErrorBlock>}
 
         <div
           style={{
