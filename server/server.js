@@ -49,7 +49,6 @@ if (argv.help || cliHas('help')) {
 }
 
 // If an .env file was passed for config, call dotenv to apply it to process.env
-// .env files are not processed like .ini/.json files
 const configFilePath = argv.config || process.env.SQLPAD_CONFIG;
 if (configFilePath && configFilePath.includes('.env')) {
   const result = dotenv.config({ path: configFilePath });

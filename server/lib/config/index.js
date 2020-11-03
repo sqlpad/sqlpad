@@ -1,4 +1,4 @@
-const _ = require('lodash');
+/* eslint-disable class-methods-use-this */
 const appLog = require('../app-log');
 const configItems = require('./config-items');
 const validateConnection = require('../validate-connection');
@@ -6,7 +6,6 @@ const removedEnv = require('./removed-env');
 const fromDefault = require('./from-default');
 const fromEnv = require('./from-env');
 const fromCli = require('./from-cli');
-const fromFile = require('./from-file');
 const getOldConfigWarning = require('./get-old-config-warning');
 
 class Config {
@@ -18,16 +17,9 @@ class Config {
 
     const defaultConfig = fromDefault();
     const envConfig = fromEnv(env);
-    const fileConfig = fromFile(configFilePath);
     const cliConfig = fromCli(argv);
 
-    const all = { ...defaultConfig, ...envConfig, ...fileConfig, ...cliConfig };
-
-    // TODO Remove in v6
-    // If whitelistedDomains was provided, and allowedDomains was not, use that as allowedDomains
-    if (all.whitelistedDomains && !all.allowedDomains) {
-      all.allowedDomains = all.whitelistedDomains;
-    }
+    const all = { ...defaultConfig, ...envConfig, ...cliConfig };
 
     // Clean string boolean values
     Object.keys(all).forEach((key) => {
@@ -43,7 +35,6 @@ class Config {
 
     this.configFilePath = configFilePath;
     this.envConfig = envConfig;
-    this.fileConfig = fileConfig;
     this.cliConfig = cliConfig;
     this.all = all;
   }
@@ -93,14 +84,6 @@ class Config {
       errors.push(`Redis session store requires SQLPAD_REDIS_URI to be set`);
     }
 
-    // If fileConfig has something in it, an INI or JSON file was read
-    // These file formats are deprecated, replaced by .env file and env vars
-    if (this.configFilePath && Object.keys(this.fileConfig).length > 0) {
-      warnings.push(
-        `DEPRECATED CONFIG: .json and .ini file support deprecated. Use .env file or environment variables instead.`
-      );
-    }
-
     // Check for any old environment variables in env.
     // This must be handled separately from other unknown checks,
     // as fromEnv() only gets config it knows about, so it will never have unknown values
@@ -125,22 +108,9 @@ class Config {
       }
     });
 
-    // Check fileConfig for unknown keys
-    // Connections key is filtered out from consideration here because it is not driven by config-items
-    // If key is not found in config items, raise error message to prevent application startup
-    Object.keys(this.fileConfig)
-      .filter((key) => key !== 'connections')
-      .filter((key) => !configItems.find((item) => item.key === key))
-      .forEach((key) => {
-        errors.push(
-          `CONFIG NOT RECOGNIZED: Key "${key}" in file ${this.configFilePath}.`
-        );
-      });
-
     // Check for deprecated keys provided in config
     const userProvidedConfigs = {
       ...this.envConfig,
-      ...this.fileConfig,
       ...this.cliConfig,
     };
     Object.keys(userProvidedConfigs)
@@ -236,12 +206,9 @@ class Config {
         return connectionsMap;
       }, {});
 
-    // Get copy of connections from config file
-    const { connections } = _.cloneDeep(this.fileConfig);
-
     // connections key from file matches format that is constructed from env
     // merge the 2 together then create an array out of them
-    const connectionsMap = { ...connectionsMapFromEnv, ...connections };
+    const connectionsMap = { ...connectionsMapFromEnv };
 
     const connectionsFromConfig = [];
     Object.keys(connectionsMap).forEach((id) => {
