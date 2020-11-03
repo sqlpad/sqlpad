@@ -20,7 +20,6 @@ import {
 import { api } from '../utilities/api';
 
 // TODO: Add option between updating existing query, or saving new query (maybe)
-// TODO: If save error occurs, display it in modal
 // TODO: Enhance share options
 
 // Instead of modelling the data as it is in the editor session
