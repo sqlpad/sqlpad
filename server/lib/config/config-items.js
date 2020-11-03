@@ -75,25 +75,6 @@ const configItems = [
     default: "At least the sensitive bits won't be plain text?",
   },
   {
-    key: 'certPassphrase_d',
-    envVar: 'CERT_PASSPHRASE',
-    default: '',
-    deprecated:
-      'To be removed in v6. Use SQLPAD_HTTPS_CERT_PASSPHRASE instead.',
-  },
-  {
-    key: 'keyPath_d',
-    envVar: 'KEY_PATH',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_HTTPS_KEY_PATH instead.',
-  },
-  {
-    key: 'certPath_d',
-    envVar: 'CERT_PATH',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_HTTPS_CERT_PATH instead.',
-  },
-  {
     key: 'certPassphrase',
     envVar: 'SQLPAD_HTTPS_CERT_PASSPHRASE',
     default: '',
