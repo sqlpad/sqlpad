@@ -198,7 +198,6 @@ function QuerySaveModal() {
         <div
           style={{
             display: 'flex',
-            borderTop: '1px solid #ddd',
             marginTop: 16,
           }}
         >
