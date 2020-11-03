@@ -135,7 +135,7 @@ async function startServer() {
   const migrator = makeMigrator(config, appLog, sequelizeDb.sequelize);
 
   // Check to ensure SQLPad is either v0 (not yet initialized) or v5 or later
-  // As of v6, the embedded db migrations from 3 -> 4 are no longer included.
+  // As of v6, the embedded db migrations needed to move off of v3/v4 are no longer included.
   const dbMajorVersion = await migrator.getDbMajorVersion();
   const incompatibleDbVersion = dbMajorVersion >= 1 && dbMajorVersion <= 4;
 
