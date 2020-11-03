@@ -393,6 +393,12 @@ const configItems = [
     envVar: 'SQLPAD_WEBHOOK_STATEMENT_FINISHED_URL',
     default: '',
   },
+  {
+    key: 'deprecatedTestConfig',
+    envVar: 'SQLPAD_DEPRECATED_TEST_CONFIG',
+    default: '',
+    deprecated: 'Deprecated config identified with this key and message',
+  },
 ];
 
 module.exports = configItems;

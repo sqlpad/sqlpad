@@ -85,14 +85,14 @@ describe('lib/config', function () {
     assert(found, 'has error about old key');
   });
 
-  it.skip('Warns for deprecated config', function () {
-    const config = new Config({ whitelistedDomains: 'is going away' }, {});
-
+  it('Warns for deprecated config', function () {
+    const config = new Config({ deprecatedTestConfig: 'just a test' }, {});
     const validations = config.getValidations();
     assert(validations.warnings);
     const found = validations.warnings.find(
       (warning) =>
-        warning.includes('whitelistedDomains') && warning.includes('DEPRECATED')
+        warning.includes('deprecatedTestConfig') &&
+        warning.includes('DEPRECATED')
     );
     assert(found, 'has deprecated key warning');
   });
