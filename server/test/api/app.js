@@ -20,7 +20,6 @@ const expectedConfigKeys = [
   'allowCsvDownload',
   'editorWordWrap',
   'publicUrl',
-  'smtpConfigured',
   'googleAuthConfigured',
   'localAuthConfigured',
   'samlConfigured',

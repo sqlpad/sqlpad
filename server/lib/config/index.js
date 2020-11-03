@@ -160,16 +160,6 @@ class Config {
     };
   }
 
-  smtpConfigured() {
-    return (
-      this.all.smtpHost &&
-      this.all.smtpUser &&
-      this.all.smtpFrom &&
-      this.all.smtpPort &&
-      this.all.publicUrl
-    );
-  }
-
   googleAuthConfigured() {
     return (
       this.all.publicUrl &&

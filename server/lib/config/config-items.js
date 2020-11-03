@@ -317,48 +317,6 @@ const configItems = [
       'To be removed in v6. Use webhooks and implement preferred communication instead.',
   },
   {
-    key: 'smtpFrom',
-    envVar: 'SQLPAD_SMTP_FROM',
-    default: '',
-    deprecated:
-      'To be removed in v6. Use webhooks and implement preferred communication instead.',
-  },
-  {
-    key: 'smtpHost',
-    envVar: 'SQLPAD_SMTP_HOST',
-    default: '',
-    deprecated:
-      'To be removed in v6. Use webhooks and implement preferred communication instead.',
-  },
-  {
-    key: 'smtpPort',
-    envVar: 'SQLPAD_SMTP_PORT',
-    default: '',
-    deprecated:
-      'To be removed in v6. Use webhooks and implement preferred communication instead.',
-  },
-  {
-    key: 'smtpSecure',
-    envVar: 'SQLPAD_SMTP_SECURE',
-    default: true,
-    deprecated:
-      'To be removed in v6. Use webhooks and implement preferred communication instead.',
-  },
-  {
-    key: 'smtpUser',
-    envVar: 'SQLPAD_SMTP_USER',
-    default: '',
-    deprecated:
-      'To be removed in v6. Use webhooks and implement preferred communication instead.',
-  },
-  {
-    key: 'smtpPassword',
-    envVar: 'SQLPAD_SMTP_PASSWORD',
-    default: '',
-    deprecated:
-      'To be removed in v6. Use webhooks and implement preferred communication instead.',
-  },
-  {
     key: 'whitelistedDomains',
     envVar: 'WHITELISTED_DOMAINS',
     default: '',

@@ -92,10 +92,6 @@ function SignIn() {
           Sign Up
         </Link>
       )}
-
-      {config.localAuthConfigured && config.smtpConfigured ? (
-        <Link to="/forgot-password">Forgot Password</Link>
-      ) : null}
     </form>
   );
 
