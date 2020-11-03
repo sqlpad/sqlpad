@@ -36,6 +36,11 @@ function makeMigrator(config, appLog, nedb, sequelizeInstance) {
       return upToDate;
     },
 
+    /**
+     * Returns promise containing major version of the database
+     * If migrations have not yet run, 0 is returned.
+     * If the version cannot be determined, -1 is returned
+     */
     async getDbMajorVersion() {
       const executed = await umzug.executed();
       if (executed.length === 0) {
@@ -74,10 +79,6 @@ function makeMigrator(config, appLog, nedb, sequelizeInstance) {
       const major = parseInt(majorString, 10);
       const minor = parseInt(minorString, 10);
 
-      if (major === 5) {
-        return 5;
-      }
-
       if (major === 4) {
         if (minor >= 200) {
           return 5;
@@ -85,7 +86,8 @@ function makeMigrator(config, appLog, nedb, sequelizeInstance) {
         return 4;
       }
 
-      return -1;
+      // Otherwise returns major as is (it'll be 5 or later)
+      return major;
     },
   };
 }
