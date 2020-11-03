@@ -67,8 +67,6 @@
     "mssql": "^6.2.3",
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
-    "nedb": "^1.8.0",
-    "nedb-promise": "^2.0.1",
     "node-crate": "^2.0.6",
     "node-fetch": "^2.6.1",
     "node-xlsx": "^0.15.0",

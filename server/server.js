@@ -127,12 +127,25 @@ function detectPortOrSystemd(port) {
 let server;
 
 async function startServer() {
-  const { models, nedb, sequelizeDb } = await getDb();
+  const { models, sequelizeDb } = await getDb();
 
   // Before application starts up apply any backend database migrations needed
   // If --migrate / migrate was specified, the process exits afterwards
   // Automatically running migrations may be disabled via config.
-  const migrator = makeMigrator(config, appLog, nedb, sequelizeDb.sequelize);
+  const migrator = makeMigrator(config, appLog, sequelizeDb.sequelize);
+
+  // Check to ensure SQLPad is either v0 (not yet initialized) or v5 or later
+  // As of v6, the embedded db migrations needed to move off of v3/v4 are no longer included.
+  const dbMajorVersion = await migrator.getDbMajorVersion();
+  const incompatibleDbVersion = dbMajorVersion >= 1 && dbMajorVersion <= 4;
+
+  if (incompatibleDbVersion) {
+    appLog.error(
+      'SQLPad database not compatible with this version of SQLPad. Migrate to version 5 prior to running version 6 or later.'
+    );
+    process.exit(1);
+  }
+
   const isUpToDate = await migrator.schemaUpToDate();
 
   const runMigrations = migrateOnly || config.get('dbAutomigrate');
