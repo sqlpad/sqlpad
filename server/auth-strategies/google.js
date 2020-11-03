@@ -62,10 +62,8 @@ async function passportGoogleStrategyHandler(
  */
 function enableGoogle(config) {
   const baseUrl = config.get('baseUrl');
-  const googleClientId =
-    config.get('googleClientId') || config.get('googleClientId_d');
-  const googleClientSecret =
-    config.get('googleClientSecret') || config.get('googleClientSecret_d');
+  const googleClientId = config.get('googleClientId');
+  const googleClientSecret = config.get('googleClientSecret');
   const publicUrl = config.get('publicUrl');
 
   if (config.googleAuthConfigured()) {

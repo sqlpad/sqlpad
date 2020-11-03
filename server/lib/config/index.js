@@ -133,8 +133,8 @@ class Config {
   googleAuthConfigured() {
     return (
       this.all.publicUrl &&
-      (this.all.googleClientId || this.all.googleClientId_d) &&
-      (this.all.googleClientSecret || this.all.googleClientSecret_d)
+      this.all.googleClientId &&
+      this.all.googleClientSecret
     );
   }
 
