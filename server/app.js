@@ -167,7 +167,6 @@ async function makeApp(config, models) {
   /*  Routes
   ============================================================================= */
   const preAuthRouters = [
-    require('./routes/forgot-password.js'),
     require('./routes/password-reset.js'),
     require('./routes/signout.js'),
     require('./routes/signup.js'),

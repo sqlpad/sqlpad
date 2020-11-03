@@ -6,7 +6,6 @@ import {
   Switch,
 } from 'react-router-dom';
 import Authenticated from './Authenticated';
-import ForgotPassword from './ForgotPassword';
 import NotFound from './NotFound';
 import PasswordReset from './PasswordReset';
 import PasswordResetRequested from './PasswordResetRequested';
@@ -61,11 +60,6 @@ function Routes() {
         />
         <Route exact path="/signin" render={() => <SignIn />} />
         <Route exact path="/signup" render={() => <SignUp />} />
-        <Route
-          exact
-          path="/forgot-password"
-          render={() => <ForgotPassword />}
-        />
         <Route
           exact
           path="/password-reset/:passwordResetId"

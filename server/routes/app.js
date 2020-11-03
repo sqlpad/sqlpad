@@ -37,7 +37,6 @@ async function getApp(req, res) {
         config.get('samlEntryPoint') || config.get('samlEntryPoint_d')
       ),
       samlLinkHtml: config.get('samlLinkHtml') || config.get('samlLinkHtml_d'),
-      smtpConfigured: config.smtpConfigured(),
       ldapConfigured:
         config.get('ldapAuthEnabled') || config.get('enableLdapAuth'),
       ldapRolesConfigured: Boolean(

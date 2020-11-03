@@ -1,6 +1,5 @@
 require('../typedefs');
 const router = require('express').Router();
-const makeEmail = require('../lib/email');
 const mustBeAdmin = require('../middleware/must-be-admin.js');
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const wrap = require('../lib/wrap');
@@ -37,7 +36,7 @@ async function listUsers(req, res) {
  * @param {Res} res
  */
 async function createUser(req, res) {
-  const { models, appLog, webhooks } = req;
+  const { models, webhooks } = req;
 
   let user = await models.users.findOneByEmail(req.body.email);
   if (user) {
@@ -55,11 +54,6 @@ async function createUser(req, res) {
 
   webhooks.userCreated(user);
 
-  const email = makeEmail(req.config);
-
-  if (req.config.smtpConfigured()) {
-    email.sendInvite(req.body.email).catch((error) => appLog.error(error));
-  }
   return res.utils.data(cleanUser(req, user));
 }
 

@@ -194,26 +194,6 @@ SQLPAD_SERVICE_TOKEN_SECRET = ""
 SQLPAD_SLACK_WEBHOOK = ""
 ```
 
-## SMTP
-
-!> Deprecated. To be removed in v6. Use [webhooks](/webhooks) and implement preferred communication instead.
-
-```bash
-# From email address for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_FROM = ""
-# Host address for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_HOST = ""
-# Password for SMTP.
-SQLPAD_SMTP_PASSWORD = ""
-# Port for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_PORT = ""
-# Toggle to use secure connection when using SMTP.
-# Defaults to true
-SQLPAD_SMTP_SECURE = "true"
-# Username for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_USER = ""
-```
-
 ## Logging
 
 Minimum level for logs. Should be one of `fatal`, `error`, `warn`, `info`, `debug`, `trace` or `silent`. App logs contain log messages taken by application (running queries, creating users, general errors, etc.) while web logs are used for logging web requests made and related information, like time taken to serve them.

@@ -106,7 +106,6 @@ export interface AppInfo {
     samlConfigured: boolean;
     samlLinkHtml: string;
     showServiceTokensUI: boolean;
-    smtpConfigured: string;
   };
   // brief user info if user is logged in
   currentUser?: {
