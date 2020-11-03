@@ -127,12 +127,12 @@ function detectPortOrSystemd(port) {
 let server;
 
 async function startServer() {
-  const { models, nedb, sequelizeDb } = await getDb();
+  const { models, sequelizeDb } = await getDb();
 
   // Before application starts up apply any backend database migrations needed
   // If --migrate / migrate was specified, the process exits afterwards
   // Automatically running migrations may be disabled via config.
-  const migrator = makeMigrator(config, appLog, nedb, sequelizeDb.sequelize);
+  const migrator = makeMigrator(config, appLog, sequelizeDb.sequelize);
 
   // Check to ensure SQLPad is either v0 (not yet initialized) or v5 or later
   // As of v6, the embedded db migrations from 3 -> 4 are no longer included.

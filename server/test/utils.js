@@ -57,7 +57,6 @@ class TestUtils {
     this.sequelizeDb = undefined;
     this.app = undefined;
     this.models = undefined;
-    this.nedb = undefined;
 
     this.users = {
       admin: {
@@ -159,15 +158,13 @@ class TestUtils {
     }
 
     db.makeDb(this.config, this.instanceAlias);
-    const { models, nedb, sequelizeDb } = await db.getDb(this.instanceAlias);
+    const { models, sequelizeDb } = await db.getDb(this.instanceAlias);
     this.models = models;
-    this.nedb = nedb;
     this.sequelizeDb = sequelizeDb;
 
     this.migrator = makeMigrator(
       this.config,
       this.appLog,
-      this.nedb,
       this.sequelizeDb.sequelize
     );
   }
@@ -212,7 +209,7 @@ class TestUtils {
 
     assert.throws(() => {
       db.makeDb(this.config, this.instanceAlias);
-    }, 'ensure nedb can be made once');
+    }, 'ensure db can be made once');
 
     if (withUsers) {
       for (const key of Object.keys(this.users)) {
