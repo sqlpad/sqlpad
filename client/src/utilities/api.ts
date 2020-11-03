@@ -130,9 +130,17 @@ export const api = {
     return this.get<StatementResults>(`/api/statements/${statementId}/results`);
   },
 
-  useStatementResults(statementId?: string) {
+  /**
+   * Get statement results, but only if statement is finished
+   * This is important because these gets are deduped/cached
+   * @param statementId
+   * @param status
+   */
+  useStatementResults(statementId?: string, status?: string) {
     return useSWR<StatementResults>(
-      statementId ? `/api/statements/${statementId}/results` : null
+      statementId && status === 'finished'
+        ? `/api/statements/${statementId}/results`
+        : null
     );
   },
 
