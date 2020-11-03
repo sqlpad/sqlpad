@@ -310,12 +310,6 @@ const configItems = [
     default: 'file', // allowed values file, memory, database
   },
   {
-    key: 'whitelistedDomains',
-    envVar: 'WHITELISTED_DOMAINS',
-    default: '',
-    deprecated: 'To be removed in v6. Use allowedDomains instead',
-  },
-  {
     key: 'samlEntryPoint',
     envVar: 'SQLPAD_SAML_ENTRY_POINT',
     default: '',
