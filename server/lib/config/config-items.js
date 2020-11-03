@@ -125,21 +125,9 @@ const configItems = [
     default: false,
   },
   {
-    key: 'enableLdapAuth',
-    envVar: 'ENABLE_LDAP_AUTH',
-    default: false,
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_AUTH_ENABLED instead.',
-  },
-  {
     key: 'ldapAuthEnabled',
     envVar: 'SQLPAD_LDAP_AUTH_ENABLED',
     default: false,
-  },
-  {
-    key: 'ldapUrl_d',
-    envVar: 'LDAP_URL',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_URL instead.',
   },
   {
     key: 'ldapUrl',
@@ -147,44 +135,14 @@ const configItems = [
     default: '',
   },
   {
-    key: 'ldapBaseDN_d',
-    envVar: 'LDAP_BASE_DN',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_SEARCH_BASE instead.',
-  },
-  {
-    key: 'ldapBaseDN',
-    envVar: 'SQLPAD_LDAP_BASE_DN',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_SEARCH_BASE instead.',
-  },
-  {
     key: 'ldapSearchBase',
     envVar: 'SQLPAD_LDAP_SEARCH_BASE',
     default: '',
   },
   {
-    key: 'ldapUsername_d',
-    envVar: 'LDAP_USERNAME',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_BIND_DN instead.',
-  },
-  {
-    key: 'ldapUsername',
-    envVar: 'SQLPAD_LDAP_USERNAME',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_BIND_DN instead.',
-  },
-  {
     key: 'ldapBindDN',
     envVar: 'SQLPAD_LDAP_BIND_DN',
     default: '',
-  },
-  {
-    key: 'ldapPassword_d',
-    envVar: 'LDAP_PASSWORD',
-    default: '',
-    deprecated: 'To be removed in v6. Use SQLPAD_LDAP_PASSWORD instead.',
   },
   {
     key: 'ldapPassword',

@@ -33,8 +33,7 @@ async function getApp(req, res) {
       publicUrl: config.get('publicUrl'),
       samlConfigured: Boolean(config.get('samlEntryPoint')),
       samlLinkHtml: config.get('samlLinkHtml'),
-      ldapConfigured:
-        config.get('ldapAuthEnabled') || config.get('enableLdapAuth'),
+      ldapConfigured: config.get('ldapAuthEnabled'),
       ldapRolesConfigured: Boolean(
         config.get('ldapRoleAdminFilter') || config.get('ldapRoleEditorFilter')
       ),
