@@ -202,6 +202,12 @@ export interface User {
   passwordResetId?: string;
 }
 
+export interface UserSelfUpdate {
+  email: string;
+  name: string;
+  password?: string;
+}
+
 export interface ConnectionAccess {
   connectionId: string;
   connectionName: string;

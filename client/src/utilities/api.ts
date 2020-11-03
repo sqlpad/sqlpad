@@ -15,6 +15,7 @@ import {
   ServiceToken,
   StatementResults,
   User,
+  UserSelfUpdate,
 } from '../types';
 import baseUrl from './baseUrl';
 
@@ -228,6 +229,14 @@ export const api = {
 
   deleteServiceToken(serviceTokenId: string) {
     return this.delete(`/api/service-tokens/${serviceTokenId}`);
+  },
+
+  async updateUser(id: string, body: UserSelfUpdate) {
+    const response = await this.put<User>(`/api/users/${id}`, body);
+    mutate(`/api/users/${id}`);
+    // This API is used for self-updates so reload app-context
+    mutate('api/app');
+    return response;
   },
 
   useUser(id: string) {
