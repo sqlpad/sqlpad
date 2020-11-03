@@ -48,12 +48,7 @@ function handleSignin(req, res, next) {
     return passport.authenticate('ldapauth', handleAuth)(req, res, next);
   }
 
-  if (
-    body.email &&
-    body.password &&
-    !config.get('userpassAuthDisabled') &&
-    !config.get('disableUserpassAuth')
-  ) {
+  if (body.email && body.password && !config.get('userpassAuthDisabled')) {
     return passport.authenticate('local', handleAuth)(req, res, next);
   }
 
