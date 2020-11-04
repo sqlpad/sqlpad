@@ -32,7 +32,7 @@ The SQLPad `user` object now has a generic `data` JSON object property, that can
 }
 ```
 
-Today the only options available to populate the `user.data` property is to use [Auth Proxy authentication](https://rickbergfalk.github.io/sqlpad/#/authentication?id=auth-proxy) and map the data to that field, or use the REST API and a Service Token to do so. (The API will be undergoing some changes for v5, and will be documented after those changes are made.)
+Today the only options available to populate the `user.data` property is to use [Auth Proxy authentication](https://sqlpad.github.io/sqlpad/#/authentication?id=auth-proxy) and map the data to that field, or use the REST API and a Service Token to do so. (The API will be undergoing some changes for v5, and will be documented after those changes are made.)
 
 Once the `dbUser` data is persisted to the user, it may be referenced in a connection using a mustache or handlebars like templating syntax using double curly braces `{{user.data.dbUser}}`. All properties under `user` may be used (email, name, etc).
 

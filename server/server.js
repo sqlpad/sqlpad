@@ -78,7 +78,7 @@ makeDb(config);
 
 const baseUrl = config.get('baseUrl');
 const ip = config.get('ip');
-const port = config.get('port');
+const port = parseInt(config.get('port'), 10);
 const certPassphrase = config.get('certPassphrase');
 const keyPath = config.get('keyPath');
 const certPath = config.get('certPath');
