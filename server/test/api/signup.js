@@ -7,6 +7,7 @@ describe('api/signup', function () {
     const utils = new TestUtil({
       userpassAuthDisabled: 'true',
       authProxyEnabled: false,
+      admin: 'admin@test.com',
     });
 
     await utils.init();
@@ -24,6 +25,7 @@ describe('api/signup', function () {
   it('allows new user signup', async function () {
     const utils = new TestUtil({
       authProxyEnabled: false,
+      admin: 'admin@test.com',
     });
     await utils.init();
 
@@ -54,6 +56,7 @@ describe('api/signup', function () {
   it('prevents duplicate signups', async function () {
     const utils = new TestUtil({
       authProxyEnabled: false,
+      admin: 'admin@test.com',
     });
     await utils.init();
 
