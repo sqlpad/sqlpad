@@ -81,18 +81,6 @@ class Users {
     });
   }
 
-  /**
-   * Returns boolean regarding whether admin registration should be open or not
-   * @returns {Promise<boolean>} administrationOpen
-   */
-  async adminRegistrationOpen() {
-    const doc = await this.sequelizeDb.Users.findOne({
-      attributes: ['id'],
-      where: { role: 'admin' },
-    });
-    return !doc;
-  }
-
   removeById(id) {
     return this.sequelizeDb.Users.destroy({ where: { id } });
   }

@@ -7,18 +7,11 @@ describe('api/signin', function () {
     it('allows new user sign in', async function () {
       const utils = new TestUtil({
         authProxyEnabled: false,
+        admin: 'admin@test.com',
+        adminPassword: 'admin',
       });
 
       await utils.init();
-
-      await request(utils.app)
-        .post('/api/signup')
-        .send({
-          password: 'admin',
-          passwordConfirmation: 'admin',
-          email: 'admin@test.com',
-        })
-        .expect(200);
 
       const agent = request.agent(utils.app);
       await agent
@@ -37,18 +30,11 @@ describe('api/signin', function () {
     it('unauthorized for bad signin', async function () {
       const utils = new TestUtil({
         authProxyEnabled: false,
+        admin: 'admin@test.com',
+        adminPassword: 'admin',
       });
 
       await utils.init();
-
-      await request(utils.app)
-        .post('/api/signup')
-        .send({
-          email: 'admin@test.com',
-          password: 'admin',
-          passwordConfirmation: 'admin',
-        })
-        .expect(200);
 
       await request(utils.app)
         .post('/api/signin')
@@ -62,19 +48,11 @@ describe('api/signin', function () {
     it('supports case insensitive login', async function () {
       const utils = new TestUtil({
         authProxyEnabled: false,
+        admin: 'admin@test.com',
+        adminPassword: 'admin',
       });
 
       await utils.init();
-
-      // Add admin user via signup
-      await request(utils.app)
-        .post('/api/signup')
-        .send({
-          password: 'admin',
-          passwordConfirmation: 'admin',
-          email: 'admin@test.com',
-        })
-        .expect(200);
 
       // Add user via API using admin
       await request(utils.app)
@@ -99,19 +77,11 @@ describe('api/signin', function () {
     it('allows emails containing +', async function () {
       const utils = new TestUtil({
         authProxyEnabled: false,
+        admin: 'admin@test.com',
+        adminPassword: 'admin',
       });
 
       await utils.init();
-
-      // Add admin user via signup
-      await request(utils.app)
-        .post('/api/signup')
-        .send({
-          password: 'admin',
-          passwordConfirmation: 'admin',
-          email: 'admin@test.com',
-        })
-        .expect(200);
 
       // Add user via API using admin
       await request(utils.app)
@@ -137,19 +107,11 @@ describe('api/signin', function () {
   it('disabled user cannot log in', async function () {
     const utils = new TestUtil({
       authProxyEnabled: false,
+      admin: 'admin@test.com',
+      adminPassword: 'admin',
     });
 
     await utils.init();
-
-    // Add admin user via signup
-    await request(utils.app)
-      .post('/api/signup')
-      .send({
-        password: 'admin',
-        passwordConfirmation: 'admin',
-        email: 'admin@test.com',
-      })
-      .expect(200);
 
     // Add user via API using admin
     await request(utils.app)

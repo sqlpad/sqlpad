@@ -36,10 +36,7 @@ function enableSaml(config) {
 
           const { models, webhooks } = req;
 
-          let [openAdminRegistration, user] = await Promise.all([
-            models.users.adminRegistrationOpen(),
-            models.users.findOneByEmail(email),
-          ]);
+          let user = await models.users.findOneByEmail(email);
 
           if (user) {
             if (user.disabled) {
@@ -53,13 +50,10 @@ function enableSaml(config) {
           }
 
           // If auto sign up is turned on create user
-          if (openAdminRegistration || config.get('samlAutoSignUp')) {
+          if (config.get('samlAutoSignUp')) {
             const newUser = await models.users.create({
               email,
-              role: openAdminRegistration
-                ? 'admin'
-                : config.get('samlDefaultRole') ||
-                  config.get('samlDefaultRole_d'),
+              role: config.get('samlDefaultRole'),
               signupAt: new Date(),
             });
             webhooks.userCreated(newUser);
