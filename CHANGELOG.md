@@ -1,8 +1,12 @@
 # Changelog
 
-## [5.8.3] - 2020-11-04
+## [5.8.4] - 2020-11-04
 
 - Ensure port config value handled as number
+
+## [5.8.3] - 2020-11-04
+
+_accidentally tagged without changes_
 
 ## [5.8.2] - 2020-10-30
 
