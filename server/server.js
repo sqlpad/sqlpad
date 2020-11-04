@@ -79,7 +79,7 @@ makeDb(config);
 
 const baseUrl = config.get('baseUrl');
 const ip = config.get('ip');
-const port = config.get('port');
+const port = parseInt(config.get('port'), 10);
 const certPassphrase =
   config.get('certPassphrase') || config.get('certPassphrase_d');
 const keyPath = config.get('keyPath') || config.get('keyPath_d');
