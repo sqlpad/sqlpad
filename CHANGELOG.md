@@ -1,5 +1,9 @@
 # Changelog
 
+## [5.8.3] - 2020-11-04
+
+- Ensure port config value handled as number
+
 ## [5.8.2] - 2020-10-30
 
 - Fix LDAP role sync. If LDAP role filters are set up, role syncing may be toggled per user on user forms. By default auto-created users will have roles synced. Manually added users will not.
