@@ -8,8 +8,7 @@ const wrap = require('../lib/wrap');
  * @param {Res} res
  */
 async function getApp(req, res) {
-  const { config, models } = req;
-  const adminRegistrationOpen = await models.users.adminRegistrationOpen();
+  const { config } = req;
   const currentUser =
     req.isAuthenticated() && req.user
       ? {
@@ -21,7 +20,6 @@ async function getApp(req, res) {
       : undefined;
 
   return res.utils.data({
-    adminRegistrationOpen,
     currentUser,
     config: {
       allowCsvDownload: config.get('allowCsvDownload'),

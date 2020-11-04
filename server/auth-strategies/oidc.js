@@ -29,10 +29,7 @@ async function passportOidcStrategyHandler(
   }
 
   try {
-    let [openAdminRegistration, user] = await Promise.all([
-      models.users.adminRegistrationOpen(),
-      models.users.findOneByEmail(email),
-    ]);
+    let user = await models.users.findOneByEmail(email);
 
     if (user) {
       if (user.disabled) {
@@ -48,11 +45,11 @@ async function passportOidcStrategyHandler(
       return done(null, newUser);
     }
     const allowedDomains = config.get('allowedDomains');
-    if (openAdminRegistration || checkAllowedDomains(allowedDomains, email)) {
+    if (checkAllowedDomains(allowedDomains, email)) {
       const newUser = await models.users.create({
         name,
         email,
-        role: openAdminRegistration ? 'admin' : 'editor',
+        role: 'editor',
         signupAt: new Date(),
       });
       webhooks.userCreated(newUser);

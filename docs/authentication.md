@@ -4,11 +4,13 @@
 
 By default, SQLPad supports local authentication with email and password. Passwords are stored in SQLPad's embedded database using bcrypt hashing.
 
-Once SQLPad is running, you may create an initial admin account by navigating to [http://localhost/signup](http://localhost/signup).
+To create an initial user, set `SQLPAD_ADMIN` to the email address of the initial admin user. Once SQLPad is running, you may create an initial admin account by navigating to [http://localhost/signup](http://localhost/signup).
 
-Once an initial admin account has been created, all future users must be added by an admin within the users page. Other users may also be given admin rights, allowing them to add/edit database connections and add/modify/remove SQLPad users.
+Instead of using the sign up form, a password may be set by setting `SQLPAD_ADMIN_PASSWORD` environment variable.
 
-If for whatever reason you lose admin rights, and the last-admin-standing won't give you admin rights back, you can reinstate them to yourself by setting environment variable `SQLPAD_ADMIN=yourEmailAddress@domain.com`.
+These environment variables may also be used in the future to reinstate admin access or set the admin password if the password is lost.
+
+All other local auth users must be added by an admin within the users page. Other users may also be given admin rights, allowing them to add/edit database connections and add/modify/remove SQLPad users.
 
 Local authentication can be disabled by setting `SQLPAD_USERPASS_AUTH_DISABLED=true`.
 
@@ -132,8 +134,6 @@ SQLPad users do not need to be added ahead of time, and may be created on the fl
 ## LDAP (Experimental)
 
 ?> Available as of 5.8.0
-
-!> LDAP does not honor "open admin registration" for initial log in. Use `SQLPAD_ADMIN` to set initial admin email address if necessary
 
 LDAP-based authentication can be enabled by setting the necessary environment variables:
 

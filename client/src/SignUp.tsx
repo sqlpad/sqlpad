@@ -5,10 +5,8 @@ import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
 import { api } from './utilities/api';
-import useAppContext from './utilities/use-app-context';
 
 function SignUp() {
-  const { adminRegistrationOpen } = useAppContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
@@ -36,17 +34,6 @@ function SignUp() {
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <form onSubmit={signUp}>
         <h1>SQLPad</h1>
-        {adminRegistrationOpen && (
-          <div>
-            <h2>Admin registration open</h2>
-            <p>
-              Welcome to SQLPad! Since there are no admins currently registered,
-              signup is open to anyone. By signing up, you will be granted admin
-              rights, and signup will be restricted to added email addresses and
-              allowed domains
-            </p>
-          </div>
-        )}
         <Input
           name="email"
           type="email"

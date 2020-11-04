@@ -89,7 +89,6 @@ export interface ConnectionClient {
 }
 
 export interface AppInfo {
-  adminRegistrationOpen: boolean;
   config: {
     allowCsvDownload: boolean;
     // baseUrl app is mounted in. ie "/sqlpad"
