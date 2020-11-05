@@ -8,7 +8,6 @@ function ToolbarNewQueryButton() {
       variant="ghost"
       // TODO FIXME XXX: This was meant to be a buttonLink
       // to="/queries/new"
-      tooltip="New query"
       onClick={() => resetNewQuery()}
     >
       New

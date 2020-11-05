@@ -20,8 +20,6 @@ function ToolbarQueryName() {
   const shared = useSessionQueryShared();
   const unsavedChanges = useSessionUnsavedChanges();
 
-  // Even though tooltip is on Button it is needed to be wrapped
-  // Might have something to do with fragment use
   return (
     <Tooltip
       label={`${unsavedChanges ? 'Unsaved changes. ' : ''}Edit and save query`}

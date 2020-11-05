@@ -2,7 +2,6 @@ import { Menu, MenuButton, MenuList } from '@reach/menu-button';
 import ChevronDownIcon from 'mdi-react/ChevronDownIcon';
 import React, { ReactNode } from 'react';
 import styles from './Button.module.css';
-import Tooltip from './Tooltip';
 
 const ICON_SIZE = 18;
 
@@ -10,7 +9,6 @@ export interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: any;
   variant?: string;
   htmlType?: 'button' | 'submit' | 'reset' | undefined;
-  tooltip?: string;
   menuItems?: ReactNode[];
 }
 
@@ -23,7 +21,6 @@ const Button = React.forwardRef<Ref, Props>(
       icon,
       variant,
       htmlType,
-      tooltip,
       disabled,
       className,
       menuItems,
@@ -54,7 +51,7 @@ const Button = React.forwardRef<Ref, Props>(
       leftClassNames.push(styles.leftWithMenu);
     }
 
-    const b = (
+    return (
       <>
         <button
           ref={ref}
@@ -80,13 +77,6 @@ const Button = React.forwardRef<Ref, Props>(
         )}
       </>
     );
-
-    // If the button is disabled the tooltip gets weird on hover
-    if (!tooltip || disabled) {
-      return b;
-    }
-
-    return <Tooltip label={tooltip}>{b}</Tooltip>;
   }
 );
 
