@@ -9,6 +9,7 @@ import Spacer from '../common/Spacer';
 import { saveQuery, toggleShowSave } from '../stores/editor-actions';
 import {
   EditorSession,
+  useSessionACL,
   useSessionIsSaving,
   useSessionQueryName,
   useSessionQueryShared,
@@ -17,7 +18,9 @@ import {
   useSessionTags,
   useShowSave,
 } from '../stores/editor-store';
+import { ACLRecord } from '../types';
 import { api } from '../utilities/api';
+import ACLInput from './ACLInput';
 
 // TODO: Add option between updating existing query, or saving new query (maybe)
 // TODO: Enhance share options
@@ -29,10 +32,12 @@ interface ViewModel {
   name: string;
   shared: 'shared' | 'private';
   tags: string[];
+  acl: Partial<ACLRecord>[];
 }
 
 function QuerySaveModal() {
   const showSave = useShowSave();
+  const originalAcl = useSessionACL();
   const originalShared = useSessionQueryShared();
   const originalTags = useSessionTags();
   const originalName = useSessionQueryName();
@@ -45,6 +50,7 @@ function QuerySaveModal() {
     name: originalName,
     shared: originalShared ? 'shared' : 'private',
     tags: originalTags || [],
+    acl: originalAcl || [],
   });
 
   function resetViewModel() {
@@ -52,6 +58,7 @@ function QuerySaveModal() {
       name: originalName,
       shared: originalShared ? 'shared' : 'private',
       tags: originalTags || [],
+      acl: originalAcl || [],
     });
   }
 
@@ -72,6 +79,13 @@ function QuerySaveModal() {
       tags: originalTags || [],
     }));
   }, [originalTags]);
+
+  useEffect(() => {
+    setViewModel((vm) => ({
+      ...vm,
+      acl: originalAcl || [],
+    }));
+  }, [originalAcl]);
 
   const error = showValidation && !viewModel.name.length;
 
@@ -192,6 +206,13 @@ function QuerySaveModal() {
         */}
 
         <Spacer />
+        <ACLInput
+          acl={viewModel.acl}
+          onChange={(acl) => {
+            console.log(acl);
+            setViewModel((vm) => ({ ...vm, acl }));
+          }}
+        />
 
         {saveError && <ErrorBlock>{saveError}</ErrorBlock>}
 
