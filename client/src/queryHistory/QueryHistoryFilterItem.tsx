@@ -3,7 +3,7 @@ import Button from '../common/Button';
 import Input from '../common/Input';
 import Select from '../common/Select';
 
-type FieldKey =
+export type FieldKey =
   | 'userEmail'
   | 'connectionName'
   | 'startTime'
@@ -13,13 +13,27 @@ type FieldKey =
   | 'queryText'
   | 'rowCount';
 
+export interface Filter {
+  field?: FieldKey;
+  operator?: string;
+  value?: string;
+}
+
+interface Props {
+  index: number;
+  filter: Filter;
+  onChange: (index: number, filter: Filter) => void;
+  onAddFilter?: () => void;
+  onRemoveFilter: (index: number) => void;
+}
+
 const QueryHistoryFilterItem = ({
   index,
   filter,
   onChange,
   onAddFilter,
   onRemoveFilter,
-}: any) => {
+}: Props) => {
   const operators = {
     greaterThan: { key: 'gt', label: 'Greater than' },
     lowerThan: { key: 'lt', label: 'Lower than' },
@@ -63,7 +77,7 @@ const QueryHistoryFilterItem = ({
         key="removeFilter"
         htmlType="button"
         style={{ width: '20px' }}
-        onClick={(e: any) => onRemoveFilter(index)}
+        onClick={() => onRemoveFilter(index)}
       >
         -
       </Button>
@@ -113,7 +127,7 @@ const QueryHistoryFilterItem = ({
           onChange(index, { operator: e.target.value })
         }
       >
-        {fields[filter.field as FieldKey].operators.map((o: any) => (
+        {fields[filter.field as FieldKey].operators.map((o) => (
           <option key={o.key} value={o.key}>
             {o.label}
           </option>

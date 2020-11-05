@@ -1,10 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock';
 import QueryResultDataTable from '../common/QueryResultDataTable';
 import QueryResultRunning from '../common/QueryResultRunning';
 import { api } from '../utilities/api';
-import QueryHistoryFilterItem from './QueryHistoryFilterItem';
+import QueryHistoryFilterItem, { Filter } from './QueryHistoryFilterItem';
 
 const COLUMNS = [
   { name: 'userEmail', datatype: 'string' },
@@ -20,21 +20,17 @@ const COLUMNS = [
   { name: 'createdAt', datatype: 'datetime' },
 ];
 
-interface Filter {
-  field: string;
-  operator: string;
-  value: string;
-}
-
 function QueryHistoryContent() {
   const [filters, setFilters] = useState<Filter[]>([]);
   const [filterUrl, setFilterUrl] = useState('');
 
   function buildFilterUrlParameter() {
     const urlFilters = filters.map((f) => {
-      if (['before', 'after'].includes(f.operator)) {
+      if (['before', 'after'].includes(f.operator || '')) {
         try {
-          f.value = new Date(f.value).toISOString();
+          if (f.value) {
+            f.value = new Date(f.value).toISOString();
+          }
         } catch (error) {
           f.value = error.message;
         }
@@ -61,7 +57,7 @@ function QueryHistoryContent() {
     mutate();
   };
 
-  const setFilterValue = (index: any, filterItem: any) => {
+  const setFilterValue = (index: number, filterItem: any) => {
     const newFilter = [...filters];
     if ('field' in filterItem) {
       newFilter[index].field = filterItem.field;
@@ -82,13 +78,13 @@ function QueryHistoryContent() {
     setFilters(newFilters);
   };
 
-  const handleRemoveFilter = (index: any) => {
+  const handleRemoveFilter = (index: number) => {
     const newFilters = [...filters];
     newFilters.splice(index, 1);
     setFilters(newFilters);
   };
 
-  const handleApplyFilter = (e: any) => {
+  const handleApplyFilter = () => {
     setFilterUrl(buildFilterUrlParameter());
   };
 
@@ -135,7 +131,7 @@ function QueryHistoryContent() {
               filter={filterItem}
               onChange={setFilterValue}
               onAddFilter={
-                index === filters.length - 1 ? handleAddFilter : null
+                index === filters.length - 1 ? handleAddFilter : undefined
               }
               onRemoveFilter={handleRemoveFilter}
             />
