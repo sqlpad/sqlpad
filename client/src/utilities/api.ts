@@ -12,6 +12,7 @@ import {
   Driver,
   Query,
   QueryDetail,
+  QueryHistoryResponse,
   ServiceToken,
   StatementResults,
   User,
@@ -271,6 +272,6 @@ export const api = {
    * @param filter comma delimited list of filter strings in format field|operator|value
    */
   useQueryHistory(filter?: string) {
-    return useSWR(`/api/query-history?filter=${filter}`);
+    return useSWR<QueryHistoryResponse>(`/api/query-history?filter=${filter}`);
   },
 };

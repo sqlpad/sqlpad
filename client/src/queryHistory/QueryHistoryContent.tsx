@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock';
 import QueryResultDataTable from '../common/QueryResultDataTable';
@@ -6,25 +6,19 @@ import QueryResultRunning from '../common/QueryResultRunning';
 import { api } from '../utilities/api';
 import QueryHistoryFilterItem from './QueryHistoryFilterItem';
 
-function getQueryResult(rows: any) {
-  return {
-    rows,
-    columns: [
-      { name: 'userEmail', datatype: 'string' },
-      { name: 'connectionName', datatype: 'string' },
-      { name: 'startTime', datatype: 'datetime' },
-      { name: 'stopTime', datatype: 'datetime' },
-      { name: 'durationMs', datatype: 'number' },
-      { name: 'queryId', datatype: 'string' },
-      { name: 'queryName', datatype: 'string' },
-      { name: 'queryText', datatype: 'string' },
-      { name: 'incomplete', datatype: 'boolean' },
-      { name: 'rowCount', datatype: 'number' },
-      { name: 'createdAt', datatype: 'datetime' },
-    ],
-    status: 'finished',
-  };
-}
+const COLUMNS = [
+  { name: 'userEmail', datatype: 'string' },
+  { name: 'connectionName', datatype: 'string' },
+  { name: 'startTime', datatype: 'datetime' },
+  { name: 'stopTime', datatype: 'datetime' },
+  { name: 'durationMs', datatype: 'number' },
+  { name: 'queryId', datatype: 'string' },
+  { name: 'queryName', datatype: 'string' },
+  { name: 'queryText', datatype: 'string' },
+  { name: 'incomplete', datatype: 'boolean' },
+  { name: 'rowCount', datatype: 'number' },
+  { name: 'createdAt', datatype: 'datetime' },
+];
 
 interface Filter {
   field: string;
@@ -57,7 +51,11 @@ function QueryHistoryContent() {
     mutate,
   } = api.useQueryHistory(filterUrl);
 
-  const queryHistory = getQueryResult(historyData || []) || {};
+  const arrayRows = useMemo(() => {
+    return (historyData || []).map((row) => {
+      return COLUMNS.map((column) => row[column.name]);
+    });
+  }, [historyData]);
 
   const handleRefresh = () => {
     mutate();
@@ -158,8 +156,8 @@ function QueryHistoryContent() {
   }
 
   let rowCount = null;
-  if (queryHistory && queryHistory.rows) {
-    rowCount = <div>{queryHistory.rows.length} rows</div>;
+  if (historyData) {
+    rowCount = <div>{historyData.length} rows</div>;
   }
 
   // TODO - setting a fixed height for now until display issue is sorted out for large number of results
@@ -186,15 +184,9 @@ function QueryHistoryContent() {
         >
           {isRunning && <QueryResultRunning />}
           {queryError && <ErrorBlock>{queryError}</ErrorBlock>}
-          {!isRunning &&
-            !queryError &&
-            queryHistory.columns &&
-            queryHistory.rows && (
-              <QueryResultDataTable
-                columns={queryHistory.columns}
-                rows={queryHistory.rows}
-              />
-            )}
+          {!isRunning && !queryError && historyData && (
+            <QueryResultDataTable columns={COLUMNS} rows={arrayRows} />
+          )}
         </div>
       </div>
     </>

@@ -265,3 +265,5 @@ export interface ConnectionSchema {
   schemas?: Schema[];
   tables?: SchemaTable[];
 }
+
+export type QueryHistoryResponse = Array<Record<string, any>>;
