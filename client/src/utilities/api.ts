@@ -150,12 +150,25 @@ export const api = {
     return this.get<Query[]>('/api/queries');
   },
 
+  useQuery(queryId?: string) {
+    return useSWR<QueryDetail>(queryId ? `/api/queries/${queryId}` : null);
+  },
+
   getQuery(queryId: string) {
     return this.get<QueryDetail>(`/api/queries/${queryId}`);
   },
 
-  reloadQueries() {
-    return mutate('/api/queries');
+  async createQuery(body: any) {
+    const query = await this.post<QueryDetail>(`/api/queries`, body);
+    mutate('/api/queries');
+    return query;
+  },
+
+  async updateQuery(queryId: string, body: any) {
+    const query = await this.put<QueryDetail>(`/api/queries/${queryId}`, body);
+    mutate(`/api/queries`);
+    mutate(`/api/queries/${queryId}`);
+    return query;
   },
 
   deleteQuery(queryId: string) {
