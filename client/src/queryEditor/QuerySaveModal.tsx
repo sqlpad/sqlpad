@@ -12,7 +12,6 @@ import {
   useSessionACL,
   useSessionIsSaving,
   useSessionQueryName,
-  useSessionQueryShared,
   useSessionSaveError,
   useSessionShowValidation,
   useSessionTags,
@@ -30,7 +29,6 @@ import ACLInput from './ACLInput';
 // Session data converts to it, and on save it gets transformed back to expected format
 interface ViewModel {
   name: string;
-  shared: 'shared' | 'private';
   tags: string[];
   acl: Partial<ACLRecord>[];
 }
@@ -38,7 +36,6 @@ interface ViewModel {
 function QuerySaveModal() {
   const showSave = useShowSave();
   const originalAcl = useSessionACL();
-  const originalShared = useSessionQueryShared();
   const originalTags = useSessionTags();
   const originalName = useSessionQueryName();
   const showValidation = useSessionShowValidation();
@@ -48,7 +45,6 @@ function QuerySaveModal() {
 
   const [viewModel, setViewModel] = useState<ViewModel>({
     name: originalName,
-    shared: originalShared ? 'shared' : 'private',
     tags: originalTags || [],
     acl: originalAcl || [],
   });
@@ -56,7 +52,6 @@ function QuerySaveModal() {
   function resetViewModel() {
     setViewModel({
       name: originalName,
-      shared: originalShared ? 'shared' : 'private',
       tags: originalTags || [],
       acl: originalAcl || [],
     });
@@ -65,13 +60,6 @@ function QuerySaveModal() {
   useEffect(() => {
     setViewModel((vm) => ({ ...vm, name: originalName }));
   }, [originalName]);
-
-  useEffect(() => {
-    setViewModel((vm) => ({
-      ...vm,
-      shared: originalShared ? 'shared' : 'private',
-    }));
-  }, [originalShared]);
 
   useEffect(() => {
     setViewModel((vm) => ({
@@ -107,23 +95,12 @@ function QuerySaveModal() {
     setViewModel((vm) => ({ ...vm, tags }));
   };
 
-  function handleSharedChange(event: ChangeEvent<HTMLInputElement>) {
-    const { value } = event.target;
-    if (value === 'shared' || value === 'private') {
-      return setViewModel((vm) => ({ ...vm, shared: value }));
-    }
-    throw new Error('Unknown value ' + value);
-  }
-
   function handleSaveRequest() {
     const updates: Partial<EditorSession> = {
       tags: viewModel.tags,
       queryName: viewModel.name,
-      acl: [],
+      acl: viewModel.acl,
     };
-    if (viewModel.shared === 'shared') {
-      updates.acl = [{ groupId: '__EVERYONE__', write: true }];
-    }
 
     saveQuery(updates);
   }
@@ -171,41 +148,6 @@ function QuerySaveModal() {
         <Spacer />
         <Spacer />
 
-        <label>Sharing</label>
-        <Spacer />
-
-        <label htmlFor="private" style={{ display: 'block', width: '100%' }}>
-          <input
-            style={{ marginRight: 8 }}
-            id="private"
-            type="radio"
-            checked={viewModel.shared === 'private'}
-            value="private"
-            onChange={handleSharedChange}
-          />
-          Private
-        </label>
-        <Spacer />
-
-        <label htmlFor="shared" style={{ display: 'block', width: '100%' }}>
-          <input
-            style={{ marginRight: 8 }}
-            id="shared"
-            type="radio"
-            value="shared"
-            checked={viewModel.shared === 'shared'}
-            onChange={handleSharedChange}
-          />
-          Shared
-        </label>
-
-        {/* 
-          TODO expand on sharing options. 
-          Can be shared with specific users.
-          Everyone can be read or write.
-        */}
-
-        <Spacer />
         <ACLInput
           acl={viewModel.acl}
           onChange={(acl) => {
@@ -213,6 +155,9 @@ function QuerySaveModal() {
             setViewModel((vm) => ({ ...vm, acl }));
           }}
         />
+
+        <Spacer />
+        <Spacer />
 
         {saveError && <ErrorBlock>{saveError}</ErrorBlock>}
 
