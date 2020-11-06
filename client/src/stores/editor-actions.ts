@@ -528,7 +528,14 @@ export const handleCloneClick = () => {
   const { queryName } = getState().getSession();
   const newName = `Copy of ${queryName}`;
   window.history.replaceState({}, newName, `${baseUrl()}/queries/new`);
-  setSession({ queryId: '', queryName: newName, unsavedChanges: true });
+  setSession({
+    queryId: '',
+    queryName: newName,
+    unsavedChanges: true,
+    canDelete: true,
+    canWrite: true,
+    canRead: true,
+  });
 };
 
 // NOTE connectionId, connectionClient, etc ARE NOT set here on purpose
