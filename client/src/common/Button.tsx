@@ -56,7 +56,7 @@ const Button = React.forwardRef<Ref, Props>(
         <button
           ref={ref}
           className={leftClassNames.join(' ')}
-          type={htmlType}
+          type={htmlType || 'button'}
           disabled={disabled}
           {...rest}
         >

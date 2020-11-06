@@ -451,7 +451,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
   };
 
   if (queryId) {
-    api.put(`/api/queries/${queryId}`, queryData).then((json) => {
+    api.updateQuery(queryId, queryData).then((json) => {
       const { error, data } = json;
       if (error) {
         // If there was an error, show the save dialog.
@@ -461,7 +461,11 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         setState({ showSave: true });
         return;
       }
-      api.reloadQueries();
+      // TODO - need to figure out how to express either { error } or { data }
+      // This would never happen but TypeScript doesn't know
+      if (!data) {
+        return;
+      }
       removeLocalQueryText(data.id);
       setSession({
         isSaving: false,
@@ -480,7 +484,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
       setState({ showSave: false });
     });
   } else {
-    api.post(`/api/queries`, queryData).then((json) => {
+    api.createQuery(queryData).then((json) => {
       const { error, data } = json;
       if (error) {
         // If there was an error, show the save dialog.
@@ -490,7 +494,11 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         setState({ showSave: true });
         return;
       }
-      api.reloadQueries();
+      // TODO - need to figure out how to express either { error } or { data }
+      // This would never happen but TypeScript doesn't know
+      if (!data) {
+        return;
+      }
       window.history.replaceState(
         {},
         data.name,

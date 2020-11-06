@@ -9,31 +9,30 @@ import Spacer from '../common/Spacer';
 import { saveQuery, toggleShowSave } from '../stores/editor-actions';
 import {
   EditorSession,
+  useSessionACL,
   useSessionIsSaving,
   useSessionQueryName,
-  useSessionQueryShared,
   useSessionSaveError,
   useSessionShowValidation,
   useSessionTags,
   useShowSave,
 } from '../stores/editor-store';
+import { ACLRecord } from '../types';
 import { api } from '../utilities/api';
-
-// TODO: Add option between updating existing query, or saving new query (maybe)
-// TODO: Enhance share options
+import ACLInput from './ACLInput';
 
 // Instead of modelling the data as it is in the editor session
 // a separate view model is used to track state
 // Session data converts to it, and on save it gets transformed back to expected format
 interface ViewModel {
   name: string;
-  shared: 'shared' | 'private';
   tags: string[];
+  acl: Partial<ACLRecord>[];
 }
 
 function QuerySaveModal() {
   const showSave = useShowSave();
-  const originalShared = useSessionQueryShared();
+  const originalAcl = useSessionACL();
   const originalTags = useSessionTags();
   const originalName = useSessionQueryName();
   const showValidation = useSessionShowValidation();
@@ -43,15 +42,15 @@ function QuerySaveModal() {
 
   const [viewModel, setViewModel] = useState<ViewModel>({
     name: originalName,
-    shared: originalShared ? 'shared' : 'private',
     tags: originalTags || [],
+    acl: originalAcl || [],
   });
 
   function resetViewModel() {
     setViewModel({
       name: originalName,
-      shared: originalShared ? 'shared' : 'private',
       tags: originalTags || [],
+      acl: originalAcl || [],
     });
   }
 
@@ -62,16 +61,16 @@ function QuerySaveModal() {
   useEffect(() => {
     setViewModel((vm) => ({
       ...vm,
-      shared: originalShared ? 'shared' : 'private',
+      tags: originalTags || [],
     }));
-  }, [originalShared]);
+  }, [originalTags]);
 
   useEffect(() => {
     setViewModel((vm) => ({
       ...vm,
-      tags: originalTags || [],
+      acl: originalAcl || [],
     }));
-  }, [originalTags]);
+  }, [originalAcl]);
 
   const error = showValidation && !viewModel.name.length;
 
@@ -93,23 +92,12 @@ function QuerySaveModal() {
     setViewModel((vm) => ({ ...vm, tags }));
   };
 
-  function handleSharedChange(event: ChangeEvent<HTMLInputElement>) {
-    const { value } = event.target;
-    if (value === 'shared' || value === 'private') {
-      return setViewModel((vm) => ({ ...vm, shared: value }));
-    }
-    throw new Error('Unknown value ' + value);
-  }
-
   function handleSaveRequest() {
     const updates: Partial<EditorSession> = {
       tags: viewModel.tags,
       queryName: viewModel.name,
-      acl: [],
+      acl: viewModel.acl,
     };
-    if (viewModel.shared === 'shared') {
-      updates.acl = [{ groupId: '__EVERYONE__', write: true }];
-    }
 
     saveQuery(updates);
   }
@@ -157,40 +145,14 @@ function QuerySaveModal() {
         <Spacer />
         <Spacer />
 
-        <label>Sharing</label>
+        <ACLInput
+          acl={viewModel.acl}
+          onChange={(acl) => {
+            setViewModel((vm) => ({ ...vm, acl }));
+          }}
+        />
+
         <Spacer />
-
-        <label htmlFor="private" style={{ display: 'block', width: '100%' }}>
-          <input
-            style={{ marginRight: 8 }}
-            id="private"
-            type="radio"
-            checked={viewModel.shared === 'private'}
-            value="private"
-            onChange={handleSharedChange}
-          />
-          Private
-        </label>
-        <Spacer />
-
-        <label htmlFor="shared" style={{ display: 'block', width: '100%' }}>
-          <input
-            style={{ marginRight: 8 }}
-            id="shared"
-            type="radio"
-            value="shared"
-            checked={viewModel.shared === 'shared'}
-            onChange={handleSharedChange}
-          />
-          Shared
-        </label>
-
-        {/* 
-          TODO expand on sharing options. 
-          Can be shared with specific users.
-          Everyone can be read or write.
-        */}
-
         <Spacer />
 
         {saveError && <ErrorBlock>{saveError}</ErrorBlock>}
@@ -206,7 +168,6 @@ function QuerySaveModal() {
             style={{ width: '50%' }}
             variant="primary"
             disabled={isSaving || Boolean(error)}
-            onClick={() => handleSaveRequest()}
           >
             Save
           </Button>

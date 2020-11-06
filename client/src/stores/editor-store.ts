@@ -146,6 +146,10 @@ export function useSessionQueryText() {
   return useEditorStore((s) => s.getSession().queryText);
 }
 
+export function useSessionACL() {
+  return useEditorStore((s) => s.getSession().acl);
+}
+
 export function useSessionShowValidation() {
   return useEditorStore((s) => s.getSession().showValidation);
 }
