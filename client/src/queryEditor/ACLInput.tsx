@@ -8,6 +8,7 @@ import Text from '../common/Text';
 import { useSessionQueryId } from '../stores/editor-store';
 import { ACLRecord } from '../types';
 import { api } from '../utilities/api';
+import useAppContext from '../utilities/use-app-context';
 
 interface Props {
   acl: Partial<ACLRecord>[];
@@ -20,16 +21,18 @@ function ACLInput({ acl, onChange }: Props) {
   const { data: users } = api.useUsers();
   const queryId = useSessionQueryId();
   const { data: query } = api.useQuery(queryId);
+  const { currentUser } = useAppContext();
 
-  if (!users || !query) {
+  if (!users) {
     return null;
   }
 
   // __EVERYONE__ is a groupId, otherwise everything else are user ids
   // The author of the query should be excluded from list option
+  const queryAuthorId = query?.createdBy || currentUser?.id;
   const options = [{ value: EVERYONE_GROUP_ID, label: 'Everyone' }].concat(
     users
-      .filter((user) => user.id !== query?.createdBy)
+      .filter((user) => user.id !== queryAuthorId)
       .map((user) => {
         return { value: user.id, label: user.name || user.email };
       })
