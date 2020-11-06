@@ -151,7 +151,6 @@ function QuerySaveModal() {
         <ACLInput
           acl={viewModel.acl}
           onChange={(acl) => {
-            console.log(acl);
             setViewModel((vm) => ({ ...vm, acl }));
           }}
         />
@@ -172,7 +171,6 @@ function QuerySaveModal() {
             style={{ width: '50%' }}
             variant="primary"
             disabled={isSaving || Boolean(error)}
-            onClick={() => handleSaveRequest()}
           >
             Save
           </Button>

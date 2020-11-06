@@ -14,6 +14,8 @@ interface Props {
   onChange: (value: Partial<ACLRecord>[]) => void;
 }
 
+const EVERYONE_GROUP_ID = '__EVERYONE__';
+
 function ACLInput({ acl, onChange }: Props) {
   const { data: users } = api.useUsers();
   const queryId = useSessionQueryId();
@@ -23,18 +25,9 @@ function ACLInput({ acl, onChange }: Props) {
     return null;
   }
 
-  function handleNewSelectChange(event: ChangeEvent<HTMLSelectElement>) {
-    const { value } = event.target;
-    if (value === '__EVERYONE__') {
-      onChange(acl.concat([{ groupId: '__EVERYONE__' }]));
-    } else if (value) {
-      onChange(acl.concat([{ userId: value }]));
-    }
-  }
-
   // __EVERYONE__ is a groupId, otherwise everything else are user ids
   // The author of the query can be excluded from list option
-  const options = [{ value: '__EVERYONE__', label: 'Everyone' }].concat(
+  const options = [{ value: EVERYONE_GROUP_ID, label: 'Everyone' }].concat(
     users
       .filter((user) => user.id !== query?.createdBy)
       .map((user) => {
@@ -111,7 +104,7 @@ function ACLInput({ acl, onChange }: Props) {
               onChange={(event: ChangeEvent<HTMLSelectElement>) => {
                 const aclCopy = [...acl];
                 const { value } = event.target;
-                if (value === '__EVERYONE__') {
+                if (value === EVERYONE_GROUP_ID) {
                   aclCopy[index] = { groupId: value, write };
                 } else if (value) {
                   aclCopy[index] = { userId: value, write };
