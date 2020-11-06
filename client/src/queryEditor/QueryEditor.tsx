@@ -18,10 +18,15 @@ import Shortcuts from './Shortcuts';
 import Toolbar from './Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 import QuerySaveModal from './QuerySaveModal';
+import queryString from 'query-string';
 
 type QueryEditorProps = {
   queryId: string;
 };
+
+interface ParsedQueryString {
+  clone?: string;
+}
 
 // TODO FIXME XXX - On 404 query not found, prompt user to start new or open existing query
 // In both cases load new, but latter opens queries list
@@ -29,15 +34,21 @@ type QueryEditorProps = {
 function QueryEditor(props: QueryEditorProps) {
   const { queryId } = props;
 
+  const qs: ParsedQueryString = queryString.parse(window.location.search);
+  const { clone } = qs;
+
   // Once initialized reset or load query on changes accordingly
+  // When cloning, do not reset the editor state as it will be managed by the clone button
+  // The clone could include changes made locally but not yet saved.
+  // This feels confusing and I wonder if others are confused as well
   useEffect(() => {
-    if (queryId === '') {
+    if (queryId === '' && !clone) {
       resetNewQuery();
       connectConnectionClient();
-    } else {
+    } else if (queryId) {
       loadQuery(queryId).then(() => connectConnectionClient());
     }
-  }, [queryId]);
+  }, [queryId, clone]);
 
   return (
     <div

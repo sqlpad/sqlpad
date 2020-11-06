@@ -1,17 +1,22 @@
 import React from 'react';
-import Button from '../common/Button';
+import ButtonLink from '../common/ButtonLink';
 import { resetNewQuery } from '../stores/editor-actions';
 
+/**
+ * This component needs to reset the query on click because using the URL alone is not enough.
+ * The query needs to reset on /queries/new -> /queries/new, and the onClick ensures that
+ */
 function ToolbarNewQueryButton() {
   return (
-    <Button
+    <ButtonLink
       variant="ghost"
-      // TODO FIXME XXX: This was meant to be a buttonLink
-      // to="/queries/new"
-      onClick={() => resetNewQuery()}
+      to="/queries/new"
+      onClick={() => {
+        resetNewQuery();
+      }}
     >
       New
-    </Button>
+    </ButtonLink>
   );
 }
 

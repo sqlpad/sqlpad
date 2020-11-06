@@ -533,18 +533,17 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
 };
 
 export const handleCloneClick = () => {
-  const { queryName } = getState().getSession();
-  const newName = `Copy of ${queryName}`;
+  const { queryName, queryId } = getState().getSession();
   const history = getHistory();
-  history?.push(`/queries/new`);
   setSession({
     queryId: '',
-    queryName: newName,
+    queryName: `Copy of ${queryName}`,
     unsavedChanges: true,
     canDelete: true,
     canWrite: true,
     canRead: true,
   });
+  history?.push(`/queries/new?clone=${queryId}`);
 };
 
 // NOTE connectionId, connectionClient, etc ARE NOT set here on purpose
