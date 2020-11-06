@@ -21,9 +21,6 @@ import { ACLRecord } from '../types';
 import { api } from '../utilities/api';
 import ACLInput from './ACLInput';
 
-// TODO: Add option between updating existing query, or saving new query (maybe)
-// TODO: Enhance share options
-
 // Instead of modelling the data as it is in the editor session
 // a separate view model is used to track state
 // Session data converts to it, and on save it gets transformed back to expected format

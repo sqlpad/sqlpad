@@ -26,7 +26,7 @@ function ACLInput({ acl, onChange }: Props) {
   }
 
   // __EVERYONE__ is a groupId, otherwise everything else are user ids
-  // The author of the query can be excluded from list option
+  // The author of the query should be excluded from list option
   const options = [{ value: EVERYONE_GROUP_ID, label: 'Everyone' }].concat(
     users
       .filter((user) => user.id !== query?.createdBy)
@@ -45,9 +45,7 @@ function ACLInput({ acl, onChange }: Props) {
     }
   });
 
-  // Options to show must include
-  // * selected value
-  // * all unselected values
+  // Options to show must include selected value + all unselected value
   function getSelectOptions(selectedValue: string) {
     return options
       .filter(
@@ -63,6 +61,7 @@ function ACLInput({ acl, onChange }: Props) {
       });
   }
 
+  // An empty row always added for adding additional groups/users
   const aclPlusEmpty = acl.concat([{ groupId: '', userId: '', write: false }]);
 
   return (
