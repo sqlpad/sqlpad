@@ -1,4 +1,10 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock';
 import HSpacer from '../common/HSpacer';
@@ -6,10 +12,12 @@ import Input from '../common/Input';
 import Modal from '../common/Modal';
 import MultiSelect, { MultiSelectItem } from '../common/MultiSelect';
 import Spacer from '../common/Spacer';
+import Tag from '../common/Tag';
 import { saveQuery, toggleShowSave } from '../stores/editor-actions';
 import {
   EditorSession,
   useSessionACL,
+  useSessionCanWrite,
   useSessionIsSaving,
   useSessionQueryName,
   useSessionSaveError,
@@ -39,6 +47,7 @@ function QuerySaveModal() {
   const isSaving = useSessionIsSaving();
   const saveError = useSessionSaveError();
   const initialRef = useRef(null);
+  const canWrite = useSessionCanWrite();
 
   const [viewModel, setViewModel] = useState<ViewModel>({
     name: originalName,
@@ -92,7 +101,9 @@ function QuerySaveModal() {
     setViewModel((vm) => ({ ...vm, tags }));
   };
 
-  function handleSaveRequest() {
+  function handleSaveRequest(event: FormEvent) {
+    event.preventDefault();
+
     const updates: Partial<EditorSession> = {
       tags: viewModel.tags,
       queryName: viewModel.name,
@@ -109,7 +120,7 @@ function QuerySaveModal() {
 
   return (
     <Modal
-      title="Save query"
+      title={canWrite ? 'Save query' : 'Query info'}
       width={'500px'}
       visible={showSave}
       onClose={handleCancel}
@@ -117,11 +128,12 @@ function QuerySaveModal() {
     >
       <form onSubmit={handleSaveRequest}>
         <label>
-          Query name
+          Name
           <Input
             ref={initialRef}
             error={error}
             placeholder=""
+            disabled={!canWrite}
             value={viewModel.name}
             onChange={(e: ChangeEvent<HTMLInputElement>) => {
               const name = e.target.value;
@@ -133,19 +145,31 @@ function QuerySaveModal() {
         <Spacer />
         <Spacer />
 
-        <label>
-          Tags
-          <MultiSelect
-            selectedItems={selectedItems}
-            options={options}
-            onChange={handleTagsChange}
-          />
-        </label>
+        {canWrite ? (
+          <label>
+            Tags
+            <MultiSelect
+              selectedItems={selectedItems}
+              options={options}
+              onChange={handleTagsChange}
+            />
+          </label>
+        ) : (
+          <>
+            <label>Tags</label>
+            <div>
+              {(tagsData || []).map((tag) => (
+                <Tag key={tag}>{tag}</Tag>
+              ))}
+            </div>
+          </>
+        )}
 
         <Spacer />
         <Spacer />
 
         <ACLInput
+          disabled={!canWrite}
           acl={viewModel.acl}
           onChange={(acl) => {
             setViewModel((vm) => ({ ...vm, acl }));
@@ -157,25 +181,39 @@ function QuerySaveModal() {
 
         {saveError && <ErrorBlock>{saveError}</ErrorBlock>}
 
-        <div
-          style={{
-            display: 'flex',
-            marginTop: 16,
-          }}
-        >
-          <Button
-            type="submit"
-            style={{ width: '50%' }}
-            variant="primary"
-            disabled={isSaving || Boolean(error)}
+        {!canWrite && (
+          <div
+            style={{
+              display: 'flex',
+              marginTop: 16,
+            }}
           >
-            Save
-          </Button>
-          <HSpacer />
-          <Button style={{ width: '50%' }} onClick={handleCancel}>
-            Cancel
-          </Button>
-        </div>
+            <Button style={{ width: '100%' }} onClick={handleCancel}>
+              Close
+            </Button>
+          </div>
+        )}
+        {canWrite && (
+          <div
+            style={{
+              display: 'flex',
+              marginTop: 16,
+            }}
+          >
+            <Button
+              type="submit"
+              style={{ width: '50%' }}
+              variant="primary"
+              disabled={isSaving || Boolean(error)}
+            >
+              Save
+            </Button>
+            <HSpacer />
+            <Button style={{ width: '50%' }} onClick={handleCancel}>
+              Cancel
+            </Button>
+          </div>
+        )}
       </form>
     </Modal>
   );

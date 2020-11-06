@@ -13,6 +13,7 @@ import {
   toggleShowSave,
 } from '../stores/editor-actions';
 import {
+  useSessionCanWrite,
   useSessionIsRunning,
   useSessionIsSaving,
   useSessionQueryId,
@@ -28,6 +29,7 @@ function ToolbarRunButton() {
   const isRunning = useSessionIsRunning();
   const queryId = useSessionQueryId();
   const isSaving = useSessionIsSaving();
+  const canWrite = useSessionCanWrite();
   const unsavedChanges = useSessionUnsavedChanges();
   const cloneDisabled = !queryId;
 
@@ -49,7 +51,7 @@ function ToolbarRunButton() {
         menuItems={[
           <MenuItem
             key="save"
-            disabled={isSaving}
+            disabled={isSaving || !canWrite}
             onSelect={() => toggleShowSave()}
             style={menuItemStyle}
           >

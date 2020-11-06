@@ -8,28 +8,32 @@ import Text from '../common/Text';
 import { useSessionQueryId } from '../stores/editor-store';
 import { ACLRecord } from '../types';
 import { api } from '../utilities/api';
+import useAppContext from '../utilities/use-app-context';
 
 interface Props {
+  disabled?: boolean;
   acl: Partial<ACLRecord>[];
   onChange: (value: Partial<ACLRecord>[]) => void;
 }
 
 const EVERYONE_GROUP_ID = '__EVERYONE__';
 
-function ACLInput({ acl, onChange }: Props) {
+function ACLInput({ acl, onChange, disabled }: Props) {
   const { data: users } = api.useUsers();
   const queryId = useSessionQueryId();
   const { data: query } = api.useQuery(queryId);
+  const { currentUser } = useAppContext();
 
-  if (!users || !query) {
+  if (!users) {
     return null;
   }
 
   // __EVERYONE__ is a groupId, otherwise everything else are user ids
   // The author of the query should be excluded from list option
+  const queryAuthorId = query?.createdBy || currentUser?.id;
   const options = [{ value: EVERYONE_GROUP_ID, label: 'Everyone' }].concat(
     users
-      .filter((user) => user.id !== query?.createdBy)
+      .filter((user) => user.id !== queryAuthorId)
       .map((user) => {
         return { value: user.id, label: user.name || user.email };
       })
@@ -66,7 +70,7 @@ function ACLInput({ acl, onChange }: Props) {
 
   return (
     <div>
-      <label>Sharing</label>
+      <label>Access</label>
       {acl.length === 0 ? (
         <div
           style={{
@@ -96,10 +100,17 @@ function ACLInput({ acl, onChange }: Props) {
           return null;
         }
 
+        // If disabled and this is last item don't show it
+        // The last item is always used for new entries
+        if (isLastItem && disabled) {
+          return null;
+        }
+
         return (
           <div key={index} style={{ display: 'flex', marginBottom: 8 }}>
             <Select
               value={value}
+              disabled={disabled}
               onChange={(event: ChangeEvent<HTMLSelectElement>) => {
                 const aclCopy = [...acl];
                 const { value } = event.target;
@@ -118,7 +129,7 @@ function ACLInput({ acl, onChange }: Props) {
             </Select>
             <HSpacer />
             <Select
-              disabled={isLastItem}
+              disabled={isLastItem || disabled}
               value={readWrite}
               onChange={(event: ChangeEvent<HTMLSelectElement>) => {
                 const { value } = event.target;
@@ -135,7 +146,7 @@ function ACLInput({ acl, onChange }: Props) {
             </Select>
             <HSpacer />
             <IconButton
-              disabled={isLastItem}
+              disabled={isLastItem || disabled}
               onClick={() => {
                 const first = acl.slice(0, index);
                 const second = acl.slice(index + 1);
@@ -148,18 +159,20 @@ function ACLInput({ acl, onChange }: Props) {
         );
       })}
 
-      <FormExplain>
-        <p>
-          When a query is shared with view/execute access, the user may alter
-          the query prior to execution, but will not be able to save those
-          changes.
-        </p>
-        <p>
-          To execute a shared query, the user must also have access to the
-          underlying connection. This is managed separately and requires admin
-          permissions.
-        </p>
-      </FormExplain>
+      {!disabled && (
+        <FormExplain>
+          <p>
+            When a query is shared with view/execute access, the user may alter
+            the query prior to execution, but will not be able to save those
+            changes.
+          </p>
+          <p>
+            To execute a shared query, the user must also have access to the
+            underlying connection. This is managed separately and requires admin
+            permissions.
+          </p>
+        </FormExplain>
+      )}
     </div>
   );
 }
