@@ -166,6 +166,10 @@ export function useSessionUnsavedChanges() {
   return useEditorStore((s) => s.getSession().unsavedChanges);
 }
 
+export function useSessionCanWrite() {
+  return useEditorStore((s) => s.getSession().canWrite);
+}
+
 export function useSessionConnectionId(): string {
   return useEditorStore((s) => s.getSession().connectionId);
 }
