@@ -151,9 +151,9 @@ function ACLInput({ acl, onChange }: Props) {
           changes.
         </p>
         <p>
-          In order to execute a shared query, the user must also have access to
-          the underlying connection. This is managed separately, and may only be
-          managed by an administrator.
+          To execute a shared query, the user must also have access to the
+          underlying connection. This is managed separately and requires admin
+          permissions.
         </p>
       </FormExplain>
     </div>
