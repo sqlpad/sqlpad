@@ -94,6 +94,8 @@ export const INITIAL_SESSION: EditorSession = {
 
 export const useEditorStore = create<EditorStoreState>((set, get) => ({
   initialized: false,
+  // TODO rename to showQueryModal.
+  // Save is only allowed if can save, otherwise modal is used to show additional info
   showSave: false,
   focusedSessionId: INITIAL_SESSION_ID,
   editorSessions: {

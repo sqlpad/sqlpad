@@ -418,6 +418,15 @@ export const runQuery = async () => {
 };
 
 export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
+  const session = getState().getSession();
+
+  // If can't write, bail early
+  if (!session.canWrite) {
+    setSession({ showValidation: false });
+    setState({ showSave: false });
+    return;
+  }
+
   const mergedSession = { ...getState().getSession(), ...additionalUpdates };
 
   const {
