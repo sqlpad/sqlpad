@@ -23,6 +23,7 @@
     "@types/uuid": "^8.3.0",
     "d3": "^5.16.0",
     "downshift": "^6.0.6",
+    "history": "^4.10.1",
     "humanize-duration": "^3.24.0",
     "keymaster": "^1.6.2",
     "localforage": "^1.9.0",

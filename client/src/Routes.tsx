@@ -14,6 +14,7 @@ import QueryEditor from './queryEditor/QueryEditor';
 import QueryTableOnly from './QueryTableOnly';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import { RegisterHistory } from './utilities/history';
 import useAppContext from './utilities/use-app-context';
 
 function Routes() {
@@ -35,6 +36,15 @@ function Routes() {
       <Switch>
         <Route exact path="/" render={redirectToNew} />
         <Route exact path="/queries" render={redirectToNew} />
+        <Route
+          exact
+          path="/queries/new"
+          render={({ match }) => (
+            <Authenticated>
+              <QueryEditor queryId={''} />
+            </Authenticated>
+          )}
+        />
         <Route
           exact
           path="/queries/:queryId"
@@ -74,6 +84,7 @@ function Routes() {
         />
         <Route render={() => <NotFound />} />
       </Switch>
+      <RegisterHistory />
     </Router>
   );
 }

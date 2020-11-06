@@ -31,7 +31,7 @@ function QueryEditor(props: QueryEditorProps) {
 
   // Once initialized reset or load query on changes accordingly
   useEffect(() => {
-    if (queryId === 'new') {
+    if (queryId === '') {
       resetNewQuery();
       connectConnectionClient();
     } else {

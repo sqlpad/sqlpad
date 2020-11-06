@@ -9,7 +9,7 @@ import { useSessionQueryName } from '../stores/editor-store';
  */
 function DocumentTitle({ queryId }: { queryId: string }) {
   const queryName = useSessionQueryName();
-  const title = queryId === 'new' ? 'New query' : queryName;
+  const title = queryId === '' ? 'New query' : queryName;
 
   useEffect(() => {
     document.title = title;

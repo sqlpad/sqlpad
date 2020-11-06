@@ -10,7 +10,7 @@ import {
   ConnectionClient,
 } from '../types';
 import { api } from '../utilities/api';
-import baseUrl from '../utilities/baseUrl';
+import { getHistory } from '../utilities/history';
 import {
   removeLocalQueryText,
   setLocalQueryText,
@@ -509,12 +509,8 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
       if (!data) {
         return;
       }
-      // TODO FIXME XXX this is not handled by react-router history
-      window.history.pushState(
-        {},
-        data.name,
-        `${baseUrl()}/queries/${data.id}`
-      );
+      const history = getHistory();
+      history?.push(`/queries/${data.id}`);
       removeLocalQueryText(data.id);
       setSession({
         isSaving: false,
@@ -539,8 +535,8 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
 export const handleCloneClick = () => {
   const { queryName } = getState().getSession();
   const newName = `Copy of ${queryName}`;
-  // TODO FIXME XXX this is not handled by react-router history
-  window.history.pushState({}, newName, `${baseUrl()}/queries/new`);
+  const history = getHistory();
+  history?.push(`/queries/new`);
   setSession({
     queryId: '',
     queryName: newName,
