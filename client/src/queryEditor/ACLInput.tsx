@@ -124,35 +124,34 @@ function ACLInput({ acl, onChange }: Props) {
               </option>
               {options}
             </Select>
-
-            {!isLastItem && (
-              <>
-                <HSpacer />
-                <Select
-                  value={readWrite}
-                  onChange={(event: ChangeEvent<HTMLSelectElement>) => {
-                    const { value } = event.target;
-                    const aclCopy = [...acl];
-                    const newWrite = value === 'write';
-                    aclCopy[index] = { groupId, userId, write: newWrite };
-                    onChange(aclCopy);
-                  }}
-                >
-                  <option value="readonly">View and execute</option>
-                  <option value="write">View, execute, and save</option>
-                </Select>
-                <HSpacer />
-                <IconButton
-                  onClick={() => {
-                    const first = acl.slice(0, index);
-                    const second = acl.slice(index + 1);
-                    onChange([...first, ...second]);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </>
-            )}
+            <HSpacer />
+            <Select
+              disabled={isLastItem}
+              value={readWrite}
+              onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+                const { value } = event.target;
+                const aclCopy = [...acl];
+                const newWrite = value === 'write';
+                aclCopy[index] = { groupId, userId, write: newWrite };
+                onChange(aclCopy);
+              }}
+            >
+              <option value="readonly">
+                {isLastItem ? '' : 'View and execute'}
+              </option>
+              <option value="write">View, execute, and save</option>
+            </Select>
+            <HSpacer />
+            <IconButton
+              disabled={isLastItem}
+              onClick={() => {
+                const first = acl.slice(0, index);
+                const second = acl.slice(index + 1);
+                onChange([...first, ...second]);
+              }}
+            >
+              <DeleteIcon />
+            </IconButton>
           </div>
         );
       })}
