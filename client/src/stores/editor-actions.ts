@@ -480,6 +480,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         isSaving: false,
         unsavedChanges: false,
         connectionId: data.connectionId,
+        queryId: data.id,
         queryText: data.queryText,
         queryName: data.name,
         tags: data.tags,
@@ -508,7 +509,8 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
       if (!data) {
         return;
       }
-      window.history.replaceState(
+      // TODO FIXME XXX this is not handled by react-router history
+      window.history.pushState(
         {},
         data.name,
         `${baseUrl()}/queries/${data.id}`
@@ -518,6 +520,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         isSaving: false,
         unsavedChanges: false,
         connectionId: data.connectionId,
+        queryId: data.id,
         queryText: data.queryText,
         queryName: data.name,
         tags: data.tags,
@@ -536,7 +539,8 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
 export const handleCloneClick = () => {
   const { queryName } = getState().getSession();
   const newName = `Copy of ${queryName}`;
-  window.history.replaceState({}, newName, `${baseUrl()}/queries/new`);
+  // TODO FIXME XXX this is not handled by react-router history
+  window.history.pushState({}, newName, `${baseUrl()}/queries/new`);
   setSession({
     queryId: '',
     queryName: newName,
