@@ -34,6 +34,21 @@
   padding-right: 10px;
 }
 
+.input:disabled,
+.input[aria-disabled='true'] {
+  color: graytext;
+  border-color: #aaa;
+  background-color: #eee;
+}
+
+.input:disabled:hover,
+.input[aria-disabled='true'] {
+  border: 1px solid #aaa;
+  /* override hover padding changes */
+  padding-left: 11px;
+  padding-right: 11px;
+}
+
 .danger {
   border-color: var(--secondary-color);
   box-shadow: inset 0 1px 1px var(--secondary-color-30);
