@@ -39,7 +39,7 @@ function Routes() {
         <Route
           exact
           path="/queries/new"
-          render={({ match }) => (
+          render={() => (
             <Authenticated>
               <QueryEditor queryId={''} />
             </Authenticated>
