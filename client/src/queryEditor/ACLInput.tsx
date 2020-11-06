@@ -70,6 +70,8 @@ function ACLInput({ acl, onChange }: Props) {
       });
   }
 
+  const aclPlusEmpty = acl.concat([{ groupId: '', userId: '', write: false }]);
+
   return (
     <div>
       <label>Sharing</label>
@@ -77,6 +79,8 @@ function ACLInput({ acl, onChange }: Props) {
         <div
           style={{
             padding: 16,
+            marginTop: 16,
+            marginBottom: 16,
             textAlign: 'center',
             backgroundColor: '#fafafa',
             border: '1px dotted #ddd',
@@ -87,14 +91,22 @@ function ACLInput({ acl, onChange }: Props) {
           </Text>
         </div>
       ) : null}
-      {acl.map((aclItem, index) => {
+      {aclPlusEmpty.map((aclItem, index) => {
         const { write, groupId, userId } = aclItem;
         const readWrite = write ? 'write' : 'readOnly';
         const value = groupId || userId;
+
+        const isLastItem = index + 1 === aclPlusEmpty.length;
+
+        // If there are no  options left, don't render a row
+        const options = getSelectOptions(value || '');
+        if (options.length === 0) {
+          return null;
+        }
+
         return (
-          <div key={value} style={{ display: 'flex', marginBottom: 8 }}>
+          <div key={index} style={{ display: 'flex', marginBottom: 8 }}>
             <Select
-              key={value}
               value={value}
               onChange={(event: ChangeEvent<HTMLSelectElement>) => {
                 const aclCopy = [...acl];
@@ -107,43 +119,44 @@ function ACLInput({ acl, onChange }: Props) {
                 onChange(aclCopy);
               }}
             >
-              {getSelectOptions(value || '')}
+              <option value="" disabled hidden>
+                Add access...
+              </option>
+              {options}
             </Select>
-            <HSpacer />
-            <Select
-              value={readWrite}
-              onChange={(event: ChangeEvent<HTMLSelectElement>) => {
-                const { value } = event.target;
-                const aclCopy = [...acl];
-                const newWrite = value === 'write';
-                aclCopy[index] = { groupId, userId, write: newWrite };
-                onChange(aclCopy);
-              }}
-            >
-              <option value="readonly">View and execute</option>
-              <option value="write">View, execute, and save</option>
-            </Select>
-            <HSpacer />
-            <IconButton
-              onClick={() => {
-                const first = acl.slice(0, index);
-                const second = acl.slice(index + 1);
-                onChange([...first, ...second]);
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
+
+            {!isLastItem && (
+              <>
+                <HSpacer />
+                <Select
+                  value={readWrite}
+                  onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+                    const { value } = event.target;
+                    const aclCopy = [...acl];
+                    const newWrite = value === 'write';
+                    aclCopy[index] = { groupId, userId, write: newWrite };
+                    onChange(aclCopy);
+                  }}
+                >
+                  <option value="readonly">View and execute</option>
+                  <option value="write">View, execute, and save</option>
+                </Select>
+                <HSpacer />
+                <IconButton
+                  onClick={() => {
+                    const first = acl.slice(0, index);
+                    const second = acl.slice(index + 1);
+                    onChange([...first, ...second]);
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </>
+            )}
           </div>
         );
       })}
 
-      <label>
-        Add access
-        <Select placeholder="test" value={''} onChange={handleNewSelectChange}>
-          <option value=""></option>
-          {getSelectOptions('')}
-        </Select>
-      </label>
       <FormExplain>
         <p>
           When a query is shared with view/execute access, the user may alter
