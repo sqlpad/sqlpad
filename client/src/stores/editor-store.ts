@@ -57,7 +57,7 @@ export type EditorStoreState = {
   batches: Record<string, Batch>;
   statements: Record<string, Statement>;
   schemaStates: { [conectionId: string]: SchemaState };
-  getSession: () => EditorSession;
+  getSession: (sessionId?: string) => EditorSession;
 };
 
 export const INITIAL_SESSION_ID = 'initial';
@@ -104,12 +104,10 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
   batches: {},
   statements: {},
   schemaStates: {},
-  getSession: () => {
+  getSession: (sessionId) => {
     const { focusedSessionId, editorSessions } = get();
-    if (!editorSessions[focusedSessionId]) {
-      throw new Error('Editor session not found');
-    }
-    return editorSessions[focusedSessionId];
+    const id = sessionId || focusedSessionId;
+    return editorSessions[id];
   },
 }));
 

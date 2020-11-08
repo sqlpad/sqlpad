@@ -24,13 +24,13 @@ function sleep(ms: number) {
 
 const { getState, setState } = useEditorStore;
 
-function setSession(update: Partial<EditorSession>) {
-  const { focusedSessionId, editorSessions } = getState();
-  const focusedSession = getState().getSession();
+function setSession(sessionId: string, update: Partial<EditorSession>) {
+  const { editorSessions } = getState();
+  const focusedSession = getState().getSession(sessionId);
   setState({
     editorSessions: {
       ...editorSessions,
-      [focusedSessionId]: { ...focusedSession, ...update },
+      [sessionId]: { ...focusedSession, ...update },
     },
   });
 }
@@ -39,37 +39,44 @@ function setSession(update: Partial<EditorSession>) {
 // This only does work if data exists to do the work on
 // Assumption here is that the API call will finish in the 10 seconds this is scheduled for
 setInterval(async () => {
-  const { connectionClient } = getState().getSession();
+  const { editorSessions } = getState();
+  for (const sessionId of Object.keys(editorSessions)) {
+    const { connectionClient } = getState().getSession(sessionId);
 
-  if (connectionClient) {
-    const updateJson = await api.put(
-      `/api/connection-clients/${connectionClient.id}`,
-      {}
-    );
+    if (connectionClient) {
+      const updateJson = await api.put(
+        `/api/connection-clients/${connectionClient.id}`,
+        {}
+      );
 
-    const currentConnectionClient = getState().getSession().connectionClient;
+      const currentConnectionClient = getState().getSession(sessionId)
+        ?.connectionClient;
 
-    // If the connectionClient changed since hearbeat, do nothing
-    if (currentConnectionClient?.id !== connectionClient?.id) {
-      return;
-    }
+      // If the connectionClient changed since hearbeat, do nothing
+      if (
+        !currentConnectionClient ||
+        currentConnectionClient.id !== connectionClient?.id
+      ) {
+        return;
+      }
 
-    // If the PUT didn't return a connectionClient object or has an error,
-    // the connectionClient has been disconnected
-    if (updateJson.error || !updateJson.data) {
-      setSession({
-        connectionClient: undefined,
-      });
-    } else {
-      setSession({
-        connectionClient: updateJson.data,
-      });
+      // If the PUT didn't return a connectionClient object or has an error,
+      // the connectionClient has been disconnected
+      if (updateJson.error || !updateJson.data) {
+        setSession(sessionId, {
+          connectionClient: undefined,
+        });
+      } else {
+        setSession(sessionId, {
+          connectionClient: updateJson.data,
+        });
+      }
     }
   }
 }, 10000);
 
 function setBatch(batchId: string, batch: Batch) {
-  const { batches, statements } = getState();
+  const { batches, statements, focusedSessionId } = getState();
   const { selectedStatementId } = getState().getSession();
 
   const updatedStatements = {
@@ -83,7 +90,7 @@ function setBatch(batchId: string, batch: Batch) {
     if (batch.statements.length === 1) {
       const onlyStatementId = batch.statements[0].id;
       if (selectedStatementId !== onlyStatementId) {
-        setSession({ selectedStatementId: onlyStatementId });
+        setSession(focusedSessionId, { selectedStatementId: onlyStatementId });
       }
     }
   }
@@ -152,7 +159,8 @@ export const initApp = async (
       }
     }
 
-    setSession({ connectionId: initialConnectionId });
+    const { focusedSessionId } = getState();
+    setSession(focusedSessionId, { connectionId: initialConnectionId });
     setState({ initialized: true });
   } catch (error) {
     console.error(error);
@@ -170,7 +178,8 @@ export function toggleShowSave() {
  * TODO: This needs to either do more, cancel timeouts, polling, etc OR navigate to a new page in browser (not client-side routed)
  */
 export async function resetState() {
-  setSession({ selectedStatementId: '', batchId: '' });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { selectedStatementId: '', batchId: '' });
   setState({
     batches: {},
     statements: {},
@@ -181,6 +190,7 @@ export async function resetState() {
  * Open a connection client for the currently selected connection if supported
  */
 export async function connectConnectionClient() {
+  const { focusedSessionId } = getState();
   const { connectionClient, connectionId } = getState().getSession();
 
   // If a connectionClient is already open or selected connection id doesn't exist, do nothing
@@ -211,7 +221,7 @@ export async function connectConnectionClient() {
     return message.error('Problem connecting to database');
   }
 
-  setSession({
+  setSession(focusedSessionId, {
     connectionClient: json.data,
   });
 }
@@ -220,6 +230,7 @@ export async function connectConnectionClient() {
  * Disconnect the current connection client if one exists
  */
 export async function disconnectConnectionClient() {
+  const { focusedSessionId } = getState();
   const { connectionClient } = getState().getSession();
 
   if (connectionClient) {
@@ -232,7 +243,7 @@ export async function disconnectConnectionClient() {
       });
   }
 
-  setSession({
+  setSession(focusedSessionId, {
     connectionClient: undefined,
   });
 }
@@ -255,6 +266,7 @@ function cleanupConnectionClient(connectionClient?: ConnectionClient) {
  * @param connectionId
  */
 export function selectConnectionId(connectionId: string) {
+  const { focusedSessionId } = getState();
   const { connectionClient } = getState().getSession();
 
   localforage
@@ -263,13 +275,14 @@ export function selectConnectionId(connectionId: string) {
 
   cleanupConnectionClient(connectionClient);
 
-  setSession({
+  setSession(focusedSessionId, {
     connectionId,
     connectionClient: undefined,
   });
 }
 
 export const formatQuery = async () => {
+  const { focusedSessionId } = getState();
   const { queryText, queryId } = getState().getSession();
 
   const json = await api.post('/api/format-sql', {
@@ -287,10 +300,15 @@ export const formatQuery = async () => {
   }
 
   setLocalQueryText(queryId, json.data.query);
-  setSession({ queryText: json.data.query, unsavedChanges: true });
+  setSession(focusedSessionId, {
+    queryText: json.data.query,
+    unsavedChanges: true,
+  });
 };
 
 export const loadQuery = async (queryId: string) => {
+  const { focusedSessionId } = getState();
+
   const { error, data } = await api.getQuery(queryId);
   if (error || !data) {
     return message.error('Query not found');
@@ -305,7 +323,7 @@ export const loadQuery = async (queryId: string) => {
   // we don't want that impacting the new query if same connectionId is used)
   cleanupConnectionClient(connectionClient);
 
-  setSession({
+  setSession(focusedSessionId, {
     // Map query object to flattened editor session data
     queryId,
     connectionId: data.connectionId,
@@ -330,6 +348,7 @@ export const loadQuery = async (queryId: string) => {
 };
 
 export const runQuery = async () => {
+  const { focusedSessionId } = getState();
   const {
     queryId,
     queryName,
@@ -342,20 +361,20 @@ export const runQuery = async () => {
   } = getState().getSession();
 
   if (!connectionId) {
-    return setSession({
+    return setSession(focusedSessionId, {
       queryError: 'Connection required',
       selectedStatementId: '',
     });
   }
 
   if (!queryText) {
-    return setSession({
+    return setSession(focusedSessionId, {
       queryError: 'SQL text required',
       selectedStatementId: '',
     });
   }
 
-  setSession({
+  setSession(focusedSessionId, {
     batchId: undefined,
     isRunning: true,
     runQueryStartTime: new Date(),
@@ -380,13 +399,13 @@ export const runQuery = async () => {
   let batch = res.data;
 
   if (error) {
-    return setSession({
+    return setSession(focusedSessionId, {
       queryError: error,
     });
   }
 
   if (!batch) {
-    return setSession({
+    return setSession(focusedSessionId, {
       queryError: 'error creating batch',
     });
   }
@@ -402,7 +421,7 @@ export const runQuery = async () => {
     error = res.error;
     batch = res.data;
 
-    setSession({
+    setSession(focusedSessionId, {
       batchId: batch?.id,
       queryError: error,
     });
@@ -412,22 +431,23 @@ export const runQuery = async () => {
     }
   }
 
-  setSession({
+  setSession(focusedSessionId, {
     isRunning: false,
   });
 };
 
 export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
+  const { focusedSessionId } = getState();
   const session = getState().getSession();
 
   // If can't write, bail early
   if (!session.canWrite) {
-    setSession({ showValidation: false });
+    setSession(focusedSessionId, { showValidation: false });
     setState({ showSave: false });
     return;
   }
 
-  const mergedSession = { ...getState().getSession(), ...additionalUpdates };
+  const mergedSession = { ...session, ...additionalUpdates };
 
   const {
     queryId,
@@ -441,12 +461,12 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
   } = mergedSession;
 
   if (!queryName) {
-    setSession({ showValidation: true });
+    setSession(focusedSessionId, { showValidation: true });
     setState({ showSave: true });
     return;
   }
 
-  setSession({ isSaving: true, saveError: undefined });
+  setSession(focusedSessionId, { isSaving: true, saveError: undefined });
   const queryData = {
     connectionId,
     name: queryName,
@@ -466,7 +486,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         // If there was an error, show the save dialog.
         // It might be closed and it is where the error is placed.
         // This should be rare, and not sure what might trigger it at this point, but just in case
-        setSession({ isSaving: false, saveError: error });
+        setSession(focusedSessionId, { isSaving: false, saveError: error });
         setState({ showSave: true });
         return;
       }
@@ -476,7 +496,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         return;
       }
       removeLocalQueryText(data.id);
-      setSession({
+      setSession(focusedSessionId, {
         isSaving: false,
         unsavedChanges: false,
         connectionId: data.connectionId,
@@ -500,7 +520,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         // If there was an error, show the save dialog.
         // It might be closed and it is where the error is placed.
         // This should be rare, and not sure what might trigger it at this point, but just in case
-        setSession({ isSaving: false, saveError: error });
+        setSession(focusedSessionId, { isSaving: false, saveError: error });
         setState({ showSave: true });
         return;
       }
@@ -512,7 +532,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
       const history = getHistory();
       history?.push(`/queries/${data.id}`);
       removeLocalQueryText(data.id);
-      setSession({
+      setSession(focusedSessionId, {
         isSaving: false,
         unsavedChanges: false,
         connectionId: data.connectionId,
@@ -533,9 +553,10 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
 };
 
 export const handleCloneClick = () => {
+  const { focusedSessionId } = getState();
   const { queryName, queryId } = getState().getSession();
   const history = getHistory();
-  setSession({
+  setSession(focusedSessionId, {
     queryId: '',
     queryName: `Copy of ${queryName}`,
     unsavedChanges: true,
@@ -572,67 +593,80 @@ const newQuerySession: Partial<EditorSession> = {
 };
 
 export const resetNewQuery = () => {
-  setSession(newQuerySession);
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, newQuerySession);
 };
 
 export const selectStatementId = (selectedStatementId: string) => {
-  setSession({ selectedStatementId });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { selectedStatementId });
 };
 
 export const setQueryText = (queryText: string) => {
+  const { focusedSessionId } = getState();
   const { queryId } = getState().getSession();
   setLocalQueryText(queryId, queryText);
-  setSession({ queryText, unsavedChanges: true });
+  setSession(focusedSessionId, { queryText, unsavedChanges: true });
 };
 
 export const setQueryName = (queryName: string) => {
-  setSession({ queryName, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { queryName, unsavedChanges: true });
 };
 
 export const setTags = (tags: string[]) => {
-  setSession({ tags, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { tags, unsavedChanges: true });
 };
 
 export const setAcl = (acl: Partial<ACLRecord>[]) => {
-  setSession({ acl, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { acl, unsavedChanges: true });
 };
 
 export const setChartType = (chartType: string) => {
-  setSession({ chartType, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { chartType, unsavedChanges: true });
 };
 
 export const setChartFields = (chartFields: ChartFields) => {
-  setSession({ chartFields, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { chartFields, unsavedChanges: true });
 };
 
 export const handleChartConfigurationFieldsChange = (
   chartFieldId: string,
   queryResultField: string | boolean | number
 ) => {
+  const { focusedSessionId } = getState();
   const { chartFields } = getState().getSession();
 
-  setSession({
+  setSession(focusedSessionId, {
     chartFields: { ...chartFields, [chartFieldId]: queryResultField },
     unsavedChanges: true,
   });
 };
 
 export const handleChartTypeChange = (chartType: string) => {
-  setSession({ chartType, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { chartType, unsavedChanges: true });
 };
 
 export const handleQuerySelectionChange = (selectedText: string) => {
-  setSession({ selectedText });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { selectedText });
 };
 
 export function toggleSchema() {
+  const { focusedSessionId } = getState();
   const { showSchema } = getState().getSession();
-  setSession({ showSchema: !showSchema });
+  setSession(focusedSessionId, { showSchema: !showSchema });
 }
 
 export function toggleVisProperties() {
+  const { focusedSessionId } = getState();
   const { showVisProperties } = getState().getSession();
-  setSession({ showVisProperties: !showVisProperties });
+  setSession(focusedSessionId, { showVisProperties: !showVisProperties });
 }
 
 export function setSchemaState(connectionId: string, schemaState: SchemaState) {
@@ -650,7 +684,7 @@ export function setSchemaState(connectionId: string, schemaState: SchemaState) {
  * @param reload - force cache refresh for schema
  */
 export async function loadSchema(connectionId: string, reload?: boolean) {
-  const { schemaStates } = getState();
+  const { schemaStates, focusedSessionId } = getState();
   const { showSchema, schemaExpansions } = getState().getSession();
 
   if (!schemaStates[connectionId] || reload) {
@@ -688,7 +722,7 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
       error: undefined,
     });
 
-    setSession({
+    setSession(focusedSessionId, {
       schemaExpansions: { ...schemaExpansions, [connectionId]: expanded },
     });
   }
@@ -705,12 +739,13 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
 }
 
 export function toggleSchemaItem(connectionId: string, item: { id: string }) {
+  const { focusedSessionId } = getState();
   const { schemaExpansions } = getState().getSession();
 
   const expanded = { ...schemaExpansions[connectionId] };
   expanded[item.id] = !expanded[item.id];
 
-  setSession({
+  setSession(focusedSessionId, {
     schemaExpansions: { ...schemaExpansions, [connectionId]: expanded },
   });
 }
