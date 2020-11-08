@@ -16,7 +16,12 @@ import {
   setLocalQueryText,
 } from '../utilities/localQueryText';
 import updateCompletions from '../utilities/updateCompletions';
-import { EditorSession, SchemaState, useEditorStore } from './editor-store';
+import {
+  EditorSession,
+  INITIAL_SESSION,
+  SchemaState,
+  useEditorStore,
+} from './editor-store';
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -306,15 +311,13 @@ export const formatQuery = async () => {
   });
 };
 
-export const loadQuery = async (queryId: string) => {
-  const { focusedSessionId } = getState();
-
+export const loadQuery = async (queryId: string, sessionId: string) => {
   const { error, data } = await api.getQuery(queryId);
   if (error || !data) {
     return message.error('Query not found');
   }
 
-  const { connectionClient } = getState().getSession();
+  const { connectionClient, ...restOfCurrentSession } = getState().getSession();
 
   // Cleanup existing connection
   // Even if the connection isn't changing, the client should be refreshed
@@ -323,7 +326,8 @@ export const loadQuery = async (queryId: string) => {
   // we don't want that impacting the new query if same connectionId is used)
   cleanupConnectionClient(connectionClient);
 
-  setSession(focusedSessionId, {
+  setSession(sessionId, {
+    ...restOfCurrentSession,
     // Map query object to flattened editor session data
     queryId,
     connectionId: data.connectionId,
@@ -345,6 +349,7 @@ export const loadQuery = async (queryId: string) => {
     queryResult: undefined,
     unsavedChanges: false,
   });
+  setState({ focusedSessionId: sessionId });
 };
 
 export const runQuery = async () => {
@@ -552,9 +557,11 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
   }
 };
 
+// Clone works by updating existing session, then navigating to URL with `/queries/new/sessions/:sessionId`
+// The session doesn't change, so the new should not get applied
 export const handleCloneClick = () => {
   const { focusedSessionId } = getState();
-  const { queryName, queryId } = getState().getSession();
+  const { queryName } = getState().getSession();
   const history = getHistory();
   setSession(focusedSessionId, {
     queryId: '',
@@ -564,37 +571,38 @@ export const handleCloneClick = () => {
     canWrite: true,
     canRead: true,
   });
-  history?.push(`/queries/new?clone=${queryId}`);
+  history?.push(`/queries/new/sessions/${focusedSessionId}`);
 };
 
 // NOTE connectionId, connectionClient, etc ARE NOT set here on purpose
 // Some things should be carried over when creating a new session
-const newQuerySession: Partial<EditorSession> = {
-  isRunning: false,
-  queryId: '',
-  queryName: '',
-  tags: [],
-  acl: [],
-  queryText: '',
-  chartType: '',
-  chartFields: {},
-  canRead: true,
-  canWrite: true,
-  canDelete: true,
-  queryError: undefined,
-  queryResult: undefined,
-  unsavedChanges: false,
-  selectedStatementId: '',
-  batchId: undefined,
-  isSaving: false,
-  runQueryStartTime: undefined,
-  selectedText: '',
-  showValidation: false,
-};
-
-export const resetNewQuery = () => {
+export const resetNewQuery = (sessionId: string) => {
   const { focusedSessionId } = getState();
-  setSession(focusedSessionId, newQuerySession);
+
+  // Only change if sessionid is different from what is already loaded
+  if (focusedSessionId === sessionId) {
+    return;
+  }
+
+  const {
+    showSchema,
+    showVisProperties,
+    schemaExpansions,
+    connectionId,
+    connectionClient,
+  } = getState().getSession();
+
+  const session = {
+    ...INITIAL_SESSION,
+    id: sessionId,
+    showSchema,
+    showVisProperties,
+    schemaExpansions,
+    connectionId,
+    connectionClient,
+  };
+  setSession(sessionId, session);
+  setState({ focusedSessionId: sessionId });
 };
 
 export const selectStatementId = (selectedStatementId: string) => {

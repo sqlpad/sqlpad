@@ -18,7 +18,6 @@ import Shortcuts from './Shortcuts';
 import Toolbar from './Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 import QuerySaveModal from './QuerySaveModal';
-import queryString from 'query-string';
 import { useParams } from 'react-router-dom';
 
 interface ParsedQueryString {
@@ -27,29 +26,24 @@ interface ParsedQueryString {
 
 interface Params {
   queryId?: string;
+  sessionId: string;
 }
 
 // TODO FIXME XXX - On 404 query not found, prompt user to start new or open existing query
 // In both cases load new, but latter opens queries list
 
 function QueryEditor() {
-  const { queryId = '' } = useParams<Params>();
-
-  const qs: ParsedQueryString = queryString.parse(window.location.search);
-  const { clone } = qs;
+  const { queryId = '', sessionId } = useParams<Params>();
 
   // Once initialized reset or load query on changes accordingly
-  // When cloning, do not reset the editor state as it will be managed by the clone button
-  // The clone could include changes made locally but not yet saved.
-  // This feels confusing and I wonder if others are confused as well
   useEffect(() => {
-    if (queryId === '' && !clone) {
-      resetNewQuery();
+    if (queryId === '') {
+      resetNewQuery(sessionId);
       connectConnectionClient();
     } else if (queryId) {
-      loadQuery(queryId).then(() => connectConnectionClient());
+      loadQuery(queryId, sessionId).then(() => connectConnectionClient());
     }
-  }, [queryId, clone]);
+  }, [queryId, sessionId]);
 
   return (
     <div

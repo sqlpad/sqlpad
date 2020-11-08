@@ -1,10 +1,10 @@
 import create from 'zustand';
 import {
-  ConnectionSchema,
-  ConnectionClient,
-  ChartFields,
   ACLRecord,
   Batch,
+  ChartFields,
+  ConnectionClient,
+  ConnectionSchema,
   Statement,
   StatementColumn,
 } from '../types';
@@ -250,7 +250,7 @@ export function useSessionSelectedStatementId() {
 export function useSessionSchemaExpanded(connectionId?: string) {
   return useEditorStore((s) => {
     const { schemaExpansions } = s.getSession();
-    if (!connectionId || !schemaExpansions[connectionId]) {
+    if (!connectionId || !schemaExpansions || !schemaExpansions[connectionId]) {
       return {};
     }
     return schemaExpansions[connectionId];

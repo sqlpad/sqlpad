@@ -5,6 +5,7 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import Authenticated from './Authenticated';
 import NotFound from './NotFound';
 import PasswordReset from './PasswordReset';
@@ -36,13 +37,28 @@ function Routes() {
       <Switch>
         <Route exact path="/" render={redirectToNew} />
         <Route exact path="/queries" render={redirectToNew} />
+        <Route
+          exact
+          path="/queries/:queryId"
+          render={({ match }) => {
+            if (!currentUser) {
+              return <Redirect to={'/signin'} />;
+            }
+            const sessionId = uuidv4();
+            return (
+              <Redirect
+                to={`/queries/${match.params.queryId}/sessions/${sessionId}`}
+              />
+            );
+          }}
+        />
 
-        <Route exact path="/queries/new">
+        <Route exact path="/queries/new/sessions/:sessionId">
           <Authenticated>
             <QueryEditor />
           </Authenticated>
         </Route>
-        <Route exact path="/queries/:queryId">
+        <Route exact path="/queries/:queryId/sessions/:sessionId">
           <Authenticated>
             <QueryEditor />
           </Authenticated>
