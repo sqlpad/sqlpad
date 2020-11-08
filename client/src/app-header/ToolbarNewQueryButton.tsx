@@ -4,7 +4,8 @@ import { resetNewQuery } from '../stores/editor-actions';
 
 /**
  * This component needs to reset the query on click because using the URL alone is not enough.
- * The query needs to reset on /queries/new -> /queries/new, and the onClick ensures that
+ * The query needs to reset on /queries/new -> /queries/new, and the onClick ensures that.
+ * TODO: Actually make it /queries/:queryId/session/:sessionId
  */
 function ToolbarNewQueryButton() {
   return (

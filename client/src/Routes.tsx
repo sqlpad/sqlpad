@@ -36,24 +36,18 @@ function Routes() {
       <Switch>
         <Route exact path="/" render={redirectToNew} />
         <Route exact path="/queries" render={redirectToNew} />
-        <Route
-          exact
-          path="/queries/new"
-          render={() => (
-            <Authenticated>
-              <QueryEditor queryId={''} />
-            </Authenticated>
-          )}
-        />
-        <Route
-          exact
-          path="/queries/:queryId"
-          render={({ match }) => (
-            <Authenticated>
-              <QueryEditor queryId={match.params.queryId} />
-            </Authenticated>
-          )}
-        />
+
+        <Route exact path="/queries/new">
+          <Authenticated>
+            <QueryEditor />
+          </Authenticated>
+        </Route>
+        <Route exact path="/queries/:queryId">
+          <Authenticated>
+            <QueryEditor />
+          </Authenticated>
+        </Route>
+
         <Route
           exact
           path="/query-table/:queryId"

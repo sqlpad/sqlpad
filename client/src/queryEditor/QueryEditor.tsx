@@ -19,20 +19,21 @@ import Toolbar from './Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 import QuerySaveModal from './QuerySaveModal';
 import queryString from 'query-string';
-
-type QueryEditorProps = {
-  queryId: string;
-};
+import { useParams } from 'react-router-dom';
 
 interface ParsedQueryString {
   clone?: string;
 }
 
+interface Params {
+  queryId?: string;
+}
+
 // TODO FIXME XXX - On 404 query not found, prompt user to start new or open existing query
 // In both cases load new, but latter opens queries list
 
-function QueryEditor(props: QueryEditorProps) {
-  const { queryId } = props;
+function QueryEditor() {
+  const { queryId = '' } = useParams<Params>();
 
   const qs: ParsedQueryString = queryString.parse(window.location.search);
   const { clone } = qs;
