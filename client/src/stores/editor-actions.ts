@@ -29,10 +29,7 @@ function sleep(ms: number) {
 
 const { getState, setState } = useEditorStore;
 
-function setSession(
-  sessionId: string,
-  update: Partial<EditorSession> | EditorSession
-) {
+function setSession(sessionId: string, update: Partial<EditorSession>) {
   const { editorSessions } = getState();
   const session = getState().getSession(sessionId);
   if (!session) {
