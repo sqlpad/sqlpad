@@ -574,16 +574,15 @@ export const handleCloneClick = () => {
   history?.push(`/queries/new/sessions/${focusedSessionId}`);
 };
 
-// NOTE connectionId, connectionClient, etc ARE NOT set here on purpose
-// Some things should be carried over when creating a new session
-export const resetNewQuery = (sessionId: string) => {
+export const resetNewQuery = (newSessionId: string) => {
   const { focusedSessionId } = getState();
 
-  // Only change if sessionid is different from what is already loaded
-  if (focusedSessionId === sessionId) {
+  // Only proceed if newSessionId is different from what is already loaded
+  if (focusedSessionId === newSessionId) {
     return;
   }
 
+  // Get some editor state from current session and carry that on to new session
   const {
     showSchema,
     showVisProperties,
@@ -594,15 +593,15 @@ export const resetNewQuery = (sessionId: string) => {
 
   const session = {
     ...INITIAL_SESSION,
-    id: sessionId,
+    id: newSessionId,
     showSchema,
     showVisProperties,
     schemaExpansions,
     connectionId,
     connectionClient,
   };
-  setSession(sessionId, session);
-  setState({ focusedSessionId: sessionId });
+  setSession(newSessionId, session);
+  setState({ focusedSessionId: newSessionId });
 };
 
 export const selectStatementId = (selectedStatementId: string) => {

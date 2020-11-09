@@ -20,10 +20,6 @@ import UnsavedQuerySelector from './UnsavedQuerySelector';
 import QuerySaveModal from './QuerySaveModal';
 import { useParams } from 'react-router-dom';
 
-interface ParsedQueryString {
-  clone?: string;
-}
-
 interface Params {
   queryId?: string;
   sessionId: string;
