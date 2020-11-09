@@ -91,9 +91,9 @@ setInterval(async () => {
   }
 }, 10000);
 
-function setBatch(batchId: string, batch: Batch) {
-  const { batches, statements, focusedSessionId } = getState();
-  const { selectedStatementId } = getState().getFocusedSession();
+function setBatch(sessionId: string, batchId: string, batch: Batch) {
+  const { batches, statements } = getState();
+  const { selectedStatementId } = getState().getSession(sessionId) || {};
 
   const updatedStatements = {
     ...statements,
@@ -106,7 +106,7 @@ function setBatch(batchId: string, batch: Batch) {
     if (batch.statements.length === 1) {
       const onlyStatementId = batch.statements[0].id;
       if (selectedStatementId !== onlyStatementId) {
-        setSession(focusedSessionId, { selectedStatementId: onlyStatementId });
+        setSession(sessionId, { selectedStatementId: onlyStatementId });
       }
     }
   }
@@ -429,7 +429,7 @@ export const runQuery = async () => {
     });
   }
 
-  setBatch(batch.id, batch);
+  setBatch(focusedSessionId, batch.id, batch);
 
   while (
     batch?.id &&
@@ -446,7 +446,7 @@ export const runQuery = async () => {
     });
 
     if (batch) {
-      setBatch(batch.id, batch);
+      setBatch(focusedSessionId, batch.id, batch);
     }
   }
 
