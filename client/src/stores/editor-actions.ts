@@ -31,11 +31,11 @@ const { getState, setState } = useEditorStore;
 
 function setSession(sessionId: string, update: Partial<EditorSession>) {
   const { editorSessions } = getState();
-  const focusedSession = getState().getSession(sessionId);
+  const session = getState().getSession(sessionId);
   setState({
     editorSessions: {
       ...editorSessions,
-      [sessionId]: { ...focusedSession, ...update },
+      [sessionId]: { ...session, ...update },
     },
   });
 }
