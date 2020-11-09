@@ -7,8 +7,7 @@ import {
   saveQuery,
 } from '../stores/editor-actions';
 
-// TODO make this a custom hook. It is only a component because it is old ways
-function Shortcuts() {
+function useShortcuts() {
   useEffect(() => {
     // keymaster doesn't fire on input/textarea events by default
     // since we are only using command/ctrl shortcuts,
@@ -33,8 +32,6 @@ function Shortcuts() {
       keymaster.unbind('shift+return');
     };
   }, []);
-
-  return null;
 }
 
-export default Shortcuts;
+export default useShortcuts;

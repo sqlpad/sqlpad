@@ -14,7 +14,7 @@ import EditorPaneSchemaSidebar from './EditorPaneSchemaSidebar';
 import EditorPaneVis from './EditorPaneVis';
 import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
-import Shortcuts from './Shortcuts';
+import useShortcuts from '../utilities/use-shortcuts';
 import Toolbar from './Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 import QuerySaveModal from './QuerySaveModal';
@@ -30,6 +30,7 @@ interface Params {
 
 function QueryEditor() {
   const { queryId = '', sessionId } = useParams<Params>();
+  useShortcuts();
 
   // Once initialized reset or load query on changes accordingly
   useEffect(() => {
@@ -72,7 +73,6 @@ function QueryEditor() {
       </div>
       <UnsavedQuerySelector queryId={queryId} />
       <DocumentTitle queryId={queryId} />
-      <Shortcuts />
       <SchemaInfoLoader />
       <QuerySaveModal />
     </div>
