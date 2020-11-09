@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import Button from './common/Button';
 import ButtonLink from './common/ButtonLink';
+import HSpacer from './common/HSpacer';
 import Input from './common/Input';
 import message from './common/message';
 import Spacer from './common/Spacer';
@@ -95,15 +96,23 @@ function SignIn() {
     </form>
   );
 
-  // TODO FIXME XXX Button inside anchor is bad
   const googleForm = (
     <div>
-      <a href={config.baseUrl + '/auth/google'}>
-        <Button variant="primary">
-          <GoogleIcon />
-          Sign in with Google
-        </Button>
-      </a>
+      <Spacer />
+      <ButtonLink
+        style={{
+          display: 'flex',
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        href={config.baseUrl + '/auth/google'}
+        variant="primary"
+      >
+        <GoogleIcon />
+        <HSpacer />
+        Sign in with Google
+      </ButtonLink>
     </div>
   );
 
@@ -113,6 +122,7 @@ function SignIn() {
 
   const samlForm = (
     <div>
+      <Spacer />
       <a href={config.baseUrl + '/auth/saml'}>
         <span dangerouslySetInnerHTML={createMarkupForSamlLink()} />
       </a>
