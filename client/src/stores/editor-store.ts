@@ -1,10 +1,10 @@
 import create from 'zustand';
 import {
-  ConnectionSchema,
-  ConnectionClient,
-  ChartFields,
   ACLRecord,
   Batch,
+  ChartFields,
+  ConnectionClient,
+  ConnectionSchema,
   Statement,
   StatementColumn,
 } from '../types';
@@ -57,7 +57,8 @@ export type EditorStoreState = {
   batches: Record<string, Batch>;
   statements: Record<string, Statement>;
   schemaStates: { [conectionId: string]: SchemaState };
-  getSession: () => EditorSession;
+  getFocusedSession: () => EditorSession;
+  getSession: (sessionId: string) => EditorSession | undefined;
 };
 
 export const INITIAL_SESSION_ID = 'initial';
@@ -104,12 +105,17 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
   batches: {},
   statements: {},
   schemaStates: {},
-  getSession: () => {
+  getFocusedSession: () => {
     const { focusedSessionId, editorSessions } = get();
-    if (!editorSessions[focusedSessionId]) {
-      throw new Error('Editor session not found');
-    }
     return editorSessions[focusedSessionId];
+  },
+  getSession: (sessionId) => {
+    const { editorSessions } = get();
+    const session = editorSessions[sessionId];
+    if (!session) {
+      return;
+    }
+    return session;
   },
 }));
 
@@ -123,90 +129,90 @@ export function useShowSave() {
 
 export function useSessionQueryShared() {
   return useEditorStore((s) => {
-    const { acl } = s.getSession();
+    const { acl } = s.getFocusedSession();
     return (acl || []).length > 0;
   });
 }
 
 export function useSessionSaveError() {
-  return useEditorStore((s) => s.getSession().saveError);
+  return useEditorStore((s) => s.getFocusedSession().saveError);
 }
 
 export function useSessionTags() {
-  return useEditorStore((s) => s.getSession().tags);
+  return useEditorStore((s) => s.getFocusedSession().tags);
 }
 
 export function useSessionQueryId() {
-  return useEditorStore((s) => s.getSession().queryId);
+  return useEditorStore((s) => s.getFocusedSession().queryId);
 }
 
 export function useSessionQueryName() {
-  return useEditorStore((s) => s.getSession().queryName);
+  return useEditorStore((s) => s.getFocusedSession().queryName);
 }
 
 export function useSessionQueryText() {
-  return useEditorStore((s) => s.getSession().queryText);
+  return useEditorStore((s) => s.getFocusedSession().queryText);
 }
 
 export function useSessionACL() {
-  return useEditorStore((s) => s.getSession().acl);
+  return useEditorStore((s) => s.getFocusedSession().acl);
 }
 
 export function useSessionShowValidation() {
-  return useEditorStore((s) => s.getSession().showValidation);
+  return useEditorStore((s) => s.getFocusedSession().showValidation);
 }
 
 export function useSessionIsRunning() {
-  return useEditorStore((s) => s.getSession().isRunning);
+  return useEditorStore((s) => s.getFocusedSession().isRunning);
 }
 
 export function useSessionIsSaving() {
-  return useEditorStore((s) => s.getSession().isSaving);
+  return useEditorStore((s) => s.getFocusedSession().isSaving);
 }
 
 export function useSessionUnsavedChanges() {
-  return useEditorStore((s) => s.getSession().unsavedChanges);
+  return useEditorStore((s) => s.getFocusedSession().unsavedChanges);
 }
 
 export function useSessionCanWrite() {
-  return useEditorStore((s) => s.getSession().canWrite);
+  return useEditorStore((s) => s.getFocusedSession().canWrite);
 }
 
 export function useSessionConnectionId(): string {
-  return useEditorStore((s) => s.getSession().connectionId);
+  return useEditorStore((s) => s.getFocusedSession().connectionId);
 }
 
 export function useSessionConnectionClient() {
-  return useEditorStore((s) => s.getSession().connectionClient);
+  return useEditorStore((s) => s.getFocusedSession().connectionClient);
 }
 
 export function useSessionConnectionClientId() {
-  return useEditorStore((s) => s.getSession().connectionClient?.id);
+  return useEditorStore((s) => s.getFocusedSession().connectionClient?.id);
 }
 
 export function useSessionShowSchema() {
-  return useEditorStore((s) => s.getSession().showSchema);
+  return useEditorStore((s) => s.getFocusedSession().showSchema);
 }
 
 export function useSessionShowVisProperties() {
-  return useEditorStore((s) => s.getSession().showVisProperties);
+  return useEditorStore((s) => s.getFocusedSession().showVisProperties);
 }
 
 export function useSessionChartType() {
-  return useEditorStore((s) => s.getSession().chartType);
+  return useEditorStore((s) => s.getFocusedSession().chartType);
 }
 
 export function useSessionChartFields() {
-  return useEditorStore((s) => s.getSession().chartFields);
+  return useEditorStore((s) => s.getFocusedSession().chartFields);
 }
 
 export function useSessionQueryResult() {
-  return useEditorStore((s) => s.getSession().queryResult);
+  return useEditorStore((s) => s.getFocusedSession().queryResult);
 }
 
 export function useSessionQueryError() {
   return useEditorStore((s) => {
-    const { queryError, selectedStatementId } = s.getSession();
+    const { queryError, selectedStatementId } = s.getFocusedSession();
     if (queryError) {
       return queryError;
     }
@@ -222,7 +228,7 @@ export function useSessionQueryError() {
 
 export function useBatchError() {
   return useEditorStore((s) => {
-    const { queryError, batchId } = s.getSession();
+    const { queryError, batchId } = s.getFocusedSession();
     if (queryError) {
       return queryError;
     }
@@ -242,17 +248,17 @@ export function useBatchError() {
 }
 
 export function useSessionRunQueryStartTime() {
-  return useEditorStore((s) => s.getSession().runQueryStartTime);
+  return useEditorStore((s) => s.getFocusedSession().runQueryStartTime);
 }
 
 export function useSessionSelectedStatementId() {
-  return useEditorStore((s) => s.getSession().selectedStatementId);
+  return useEditorStore((s) => s.getFocusedSession().selectedStatementId);
 }
 
 export function useSessionSchemaExpanded(connectionId?: string) {
   return useEditorStore((s) => {
-    const { schemaExpansions } = s.getSession();
-    if (!connectionId || !schemaExpansions[connectionId]) {
+    const { schemaExpansions } = s.getFocusedSession();
+    if (!connectionId || !schemaExpansions || !schemaExpansions[connectionId]) {
       return {};
     }
     return schemaExpansions[connectionId];
@@ -274,7 +280,7 @@ export function useSchemaState(connectionId?: string) {
  */
 export function useSessionBatch() {
   return useEditorStore((s) => {
-    const { batchId } = s.getSession();
+    const { batchId } = s.getFocusedSession();
     if (batchId) {
       const batch = s.batches[batchId];
       if (batch) {
@@ -286,7 +292,7 @@ export function useSessionBatch() {
 
 export function useLastStatementId() {
   return useEditorStore((s) => {
-    const { batchId } = s.getSession();
+    const { batchId } = s.getFocusedSession();
     if (batchId) {
       const batch = s.batches[batchId];
       if (batch && batch.statements) {
@@ -302,7 +308,7 @@ export function useLastStatementId() {
 
 export function useSessionTableLink(sequence?: number) {
   return useEditorStore((s) => {
-    const { queryId, connectionClient } = s.getSession();
+    const { queryId, connectionClient } = s.getFocusedSession();
     const connectionClientId = connectionClient?.id;
 
     let tableLink = '';
@@ -333,7 +339,7 @@ export function useSessionTableLink(sequence?: number) {
  */
 export function useSessionStatementIdBySequence(sequence?: number) {
   return useEditorStore((s) => {
-    const { batchId } = s.getSession();
+    const { batchId } = s.getFocusedSession();
     if (batchId) {
       const batch = s.batches[batchId];
       if (batch && batch.statements) {

@@ -18,26 +18,28 @@ import Shortcuts from './Shortcuts';
 import Toolbar from './Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 import QuerySaveModal from './QuerySaveModal';
+import { useParams } from 'react-router-dom';
 
-type QueryEditorProps = {
-  queryId: string;
-};
+interface Params {
+  queryId?: string;
+  sessionId: string;
+}
 
 // TODO FIXME XXX - On 404 query not found, prompt user to start new or open existing query
 // In both cases load new, but latter opens queries list
 
-function QueryEditor(props: QueryEditorProps) {
-  const { queryId } = props;
+function QueryEditor() {
+  const { queryId = '', sessionId } = useParams<Params>();
 
   // Once initialized reset or load query on changes accordingly
   useEffect(() => {
-    if (queryId === 'new') {
-      resetNewQuery();
+    if (queryId === '') {
+      resetNewQuery(sessionId);
       connectConnectionClient();
-    } else {
-      loadQuery(queryId).then(() => connectConnectionClient());
+    } else if (queryId) {
+      loadQuery(queryId, sessionId).then(() => connectConnectionClient());
     }
-  }, [queryId]);
+  }, [queryId, sessionId]);
 
   return (
     <div

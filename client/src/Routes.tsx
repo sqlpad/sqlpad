@@ -5,6 +5,7 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import Authenticated from './Authenticated';
 import NotFound from './NotFound';
 import PasswordReset from './PasswordReset';
@@ -14,6 +15,7 @@ import QueryEditor from './queryEditor/QueryEditor';
 import QueryTableOnly from './QueryTableOnly';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import { RegisterHistory } from './utilities/history';
 import useAppContext from './utilities/use-app-context';
 
 function Routes() {
@@ -38,12 +40,30 @@ function Routes() {
         <Route
           exact
           path="/queries/:queryId"
-          render={({ match }) => (
-            <Authenticated>
-              <QueryEditor queryId={match.params.queryId} />
-            </Authenticated>
-          )}
+          render={({ match }) => {
+            if (!currentUser) {
+              return <Redirect to={'/signin'} />;
+            }
+            const sessionId = uuidv4();
+            return (
+              <Redirect
+                to={`/queries/${match.params.queryId}/sessions/${sessionId}`}
+              />
+            );
+          }}
         />
+
+        <Route exact path="/queries/new/sessions/:sessionId">
+          <Authenticated>
+            <QueryEditor />
+          </Authenticated>
+        </Route>
+        <Route exact path="/queries/:queryId/sessions/:sessionId">
+          <Authenticated>
+            <QueryEditor />
+          </Authenticated>
+        </Route>
+
         <Route
           exact
           path="/query-table/:queryId"
@@ -74,6 +94,7 @@ function Routes() {
         />
         <Route render={() => <NotFound />} />
       </Switch>
+      <RegisterHistory />
     </Router>
   );
 }
