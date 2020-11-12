@@ -1,21 +1,20 @@
 import GoogleIcon from 'mdi-react/GoogleIcon';
 import React, { useEffect, useState } from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import Button from './common/Button';
-import ButtonLink from './common/ButtonLink';
-import HSpacer from './common/HSpacer';
-import Input from './common/Input';
-import message from './common/message';
-import Spacer from './common/Spacer';
-import { api } from './utilities/api';
-import useAppContext from './utilities/use-app-context';
+import { Link, useHistory } from 'react-router-dom';
+import Button from '../common/Button';
+import ButtonLink from '../common/ButtonLink';
+import HSpacer from '../common/HSpacer';
+import Input from '../common/Input';
+import message from '../common/message';
+import Spacer from '../common/Spacer';
+import { api } from '../utilities/api';
+import useAppContext from '../utilities/use-app-context';
 
 function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [redirect, setRedirect] = useState(false);
-
-  const { config, currentUser } = useAppContext();
+  const history = useHistory();
+  const { config } = useAppContext();
 
   useEffect(() => {
     document.title = 'SQLPad - Sign In';
@@ -29,12 +28,8 @@ function SignIn() {
       return message.error('Username or password incorrect');
     }
     await api.reloadAppInfo();
-    setRedirect(true);
+    history.push('/');
   };
-
-  if (redirect && currentUser) {
-    return <Redirect push to="/" />;
-  }
 
   if (!config) {
     return null;

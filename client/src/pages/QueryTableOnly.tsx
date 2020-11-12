@@ -1,17 +1,17 @@
 import queryString from 'query-string';
 import React, { useEffect } from 'react';
-import ExportButton from './common/ExportButton';
-import IncompleteDataNotification from './common/IncompleteDataNotification';
-import QueryResultContainer from './common/QueryResultContainer';
-import QueryResultRunning from './common/QueryResultRunning';
-import { loadQuery, runQuery } from './stores/editor-actions';
+import ExportButton from '../common/ExportButton';
+import IncompleteDataNotification from '../common/IncompleteDataNotification';
+import QueryResultContainer from '../common/QueryResultContainer';
+import QueryResultRunning from '../common/QueryResultRunning';
+import { loadQuery, runQuery } from '../stores/editor-actions';
 import {
   useSessionIsRunning,
   useSessionQueryName,
   useSessionStatementIdBySequence,
   useStatementIncomplete,
   useStatementRowCount,
-} from './stores/editor-store';
+} from '../stores/editor-store';
 
 type Props = {
   queryId: string;

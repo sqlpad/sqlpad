@@ -8,16 +8,16 @@ import {
   loadQuery,
   resetNewQuery,
 } from '../stores/editor-actions';
-import DocumentTitle from './DocumentTitle';
-import EditorPaneRightSidebar from './EditorPaneRightSidebar';
-import EditorPaneSchemaSidebar from './EditorPaneSchemaSidebar';
-import EditorPaneVis from './EditorPaneVis';
-import QueryEditorResultPane from './QueryEditorResultPane';
-import QueryEditorSqlEditor from './QueryEditorSqlEditor';
+import DocumentTitle from '../queryEditor/DocumentTitle';
+import EditorPaneRightSidebar from '../queryEditor/EditorPaneRightSidebar';
+import EditorPaneSchemaSidebar from '../queryEditor/EditorPaneSchemaSidebar';
+import EditorPaneVis from '../queryEditor/EditorPaneVis';
+import QueryEditorResultPane from '../queryEditor/QueryEditorResultPane';
+import QueryEditorSqlEditor from '../queryEditor/QueryEditorSqlEditor';
 import useShortcuts from '../utilities/use-shortcuts';
-import Toolbar from './Toolbar';
-import UnsavedQuerySelector from './UnsavedQuerySelector';
-import QuerySaveModal from './QuerySaveModal';
+import Toolbar from '../queryEditor/Toolbar';
+import UnsavedQuerySelector from '../queryEditor/UnsavedQuerySelector';
+import QuerySaveModal from '../queryEditor/QuerySaveModal';
 import { useParams } from 'react-router-dom';
 
 interface Params {

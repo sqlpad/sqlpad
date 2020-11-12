@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useEffect } from 'react';
 import { initApp } from './stores/editor-actions';
 import { useInitialized } from './stores/editor-store';
 import { api } from './utilities/api';
@@ -12,7 +11,7 @@ export interface Props {
 
 const Authenticated = (props: Props) => {
   const { children } = props;
-  const { config, currentUser } = useAppContext();
+  const { config } = useAppContext();
   const initialized = useInitialized();
 
   let { data: connections } = api.useConnections();
@@ -25,10 +24,6 @@ const Authenticated = (props: Props) => {
 
   if (!config) {
     return null;
-  }
-
-  if (config && !currentUser) {
-    return <Redirect to={{ pathname: '/signin' }} />;
   }
 
   if (!initialized) {
