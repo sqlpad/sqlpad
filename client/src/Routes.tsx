@@ -7,7 +7,6 @@ import {
 } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import Authenticated from './Authenticated';
-import NotFound from './NotFound';
 import PasswordReset from './pages/PasswordReset';
 import PasswordResetRequested from './pages/PasswordResetRequested';
 import QueryChartOnly from './pages/QueryChartOnly';
@@ -104,11 +103,6 @@ function Routes() {
             <QueryChartOnly queryId={match.params.queryId} />
           )}
         />
-
-        {/* Just for testing */}
-        <Route exact path="/404">
-          <NotFound />
-        </Route>
 
         {/* If nothing matches redirect to new query */}
         <Route>
