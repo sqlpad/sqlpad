@@ -117,7 +117,7 @@ function setBatch(sessionId: string, batchId: string, batch: Batch) {
   });
 }
 
-export const initApp = async (
+export const initEditor = async (
   config: AppInfo['config'],
   connections: Connection[]
 ) => {

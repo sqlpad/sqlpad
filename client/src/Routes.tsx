@@ -6,14 +6,13 @@ import {
   Switch,
 } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import Authenticated from './Authenticated';
 import PasswordReset from './pages/PasswordReset';
 import PasswordResetRequested from './pages/PasswordResetRequested';
 import QueryChartOnly from './pages/QueryChartOnly';
-import QueryEditor from './pages/QueryEditor';
 import QueryTableOnly from './pages/QueryTableOnly';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
+import QueryEditorWrapper from './pages/QueryEditorWrapper';
 import { RegisterHistory } from './utilities/history';
 import useAppContext from './utilities/use-app-context';
 
@@ -77,15 +76,11 @@ function Routes() {
 
         {/* For /queries/new/... prevent a queryId from being captured via params */}
         <Route exact path="/queries/new/sessions/:sessionId">
-          <Authenticated>
-            <QueryEditor />
-          </Authenticated>
+          <QueryEditorWrapper />
         </Route>
 
         <Route exact path="/queries/:queryId/sessions/:sessionId">
-          <Authenticated>
-            <QueryEditor />
-          </Authenticated>
+          <QueryEditorWrapper />
         </Route>
 
         <Route
