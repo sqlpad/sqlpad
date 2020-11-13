@@ -24,7 +24,6 @@ export interface StatementColumn {
 
 export interface StatementError {
   title: string;
-  // TODO there might be more here
 }
 
 export interface Statement {
