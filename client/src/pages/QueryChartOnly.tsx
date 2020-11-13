@@ -37,7 +37,7 @@ function QueryChartOnly({ queryId }: Props) {
   const { data: rows } = api.useStatementResults(statementId, status);
 
   useEffect(() => {
-    loadQuery(queryId, 'chart').then(() => runQuery());
+    loadQuery(queryId).then(() => runQuery());
   }, [queryId]);
 
   useEffect(() => {

@@ -319,12 +319,13 @@ export const formatQuery = async () => {
   });
 };
 
-export const loadQuery = async (queryId: string, sessionId: string) => {
+export const loadQuery = async (queryId: string) => {
   const { error, data } = await api.getQuery(queryId);
   if (error || !data) {
     return message.error('Query not found');
   }
 
+  const { focusedSessionId } = getState();
   const {
     connectionClient,
     ...restOfCurrentSession
@@ -337,7 +338,7 @@ export const loadQuery = async (queryId: string, sessionId: string) => {
   // we don't want that impacting the new query if same connectionId is used)
   cleanupConnectionClient(connectionClient);
 
-  setSession(sessionId, {
+  setSession(focusedSessionId, {
     ...restOfCurrentSession,
     // Map query object to flattened editor session data
     queryId,
@@ -360,7 +361,6 @@ export const loadQuery = async (queryId: string, sessionId: string) => {
     queryResult: undefined,
     unsavedChanges: false,
   });
-  setState({ focusedSessionId: sessionId });
 };
 
 export const runQuery = async () => {
@@ -568,7 +568,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
   }
 };
 
-// Clone works by updating existing session, then navigating to URL with `/queries/new/sessions/:sessionId`
+// Clone works by updating existing session, then navigating to URL with `/queries/new`
 // The session doesn't change, so the new should not get applied
 export const handleCloneClick = () => {
   const { focusedSessionId } = getState();
@@ -582,16 +582,11 @@ export const handleCloneClick = () => {
     canWrite: true,
     canRead: true,
   });
-  history?.push(`/queries/new/sessions/${focusedSessionId}`);
+  history?.push(`/queries/new`);
 };
 
-export const resetNewQuery = (newSessionId: string) => {
+export const resetNewQuery = () => {
   const { focusedSessionId } = getState();
-
-  // Only proceed if newSessionId is different from what is already loaded
-  if (focusedSessionId === newSessionId) {
-    return;
-  }
 
   // Get some editor state from current session and carry that on to new session
   const {
@@ -604,15 +599,13 @@ export const resetNewQuery = (newSessionId: string) => {
 
   const session = {
     ...INITIAL_SESSION,
-    id: newSessionId,
     showSchema,
     showVisProperties,
     schemaExpansions,
     connectionId,
     connectionClient,
   };
-  setSession(newSessionId, session);
-  setState({ focusedSessionId: newSessionId });
+  setSession(focusedSessionId, session);
 };
 
 export const selectStatementId = (selectedStatementId: string) => {

@@ -5,14 +5,13 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid';
 import PasswordReset from './pages/PasswordReset';
 import PasswordResetRequested from './pages/PasswordResetRequested';
 import QueryChartOnly from './pages/QueryChartOnly';
+import QueryEditorWrapper from './pages/QueryEditorWrapper';
 import QueryTableOnly from './pages/QueryTableOnly';
 import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
-import QueryEditorWrapper from './pages/QueryEditorWrapper';
 import { RegisterHistory } from './utilities/history';
 import useAppContext from './utilities/use-app-context';
 
@@ -57,29 +56,12 @@ function Routes() {
   return (
     <Router basename={config.baseUrl}>
       <Switch>
-        {/* 
-          For queries URLs without sessions, generate a sessionId and redirect to it 
-          The session will be initialized within a useEffect
-        */}
-        <Route
-          exact
-          path="/queries/:queryIdOrNew"
-          render={({ match }) => {
-            const sessionId = uuidv4();
-            return (
-              <Redirect
-                to={`/queries/${match.params.queryIdOrNew}/sessions/${sessionId}`}
-              />
-            );
-          }}
-        />
-
-        {/* For /queries/new/... prevent a queryId from being captured via params */}
-        <Route exact path="/queries/new/sessions/:sessionId">
+        {/* For /queries/new prevent a queryId from being captured via params */}
+        <Route exact path="/queries/new">
           <QueryEditorWrapper />
         </Route>
 
-        <Route exact path="/queries/:queryId/sessions/:sessionId">
+        <Route exact path="/queries/:queryId">
           <QueryEditorWrapper />
         </Route>
 
