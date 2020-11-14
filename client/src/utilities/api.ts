@@ -112,8 +112,9 @@ export const api = {
     return fetchJson<DataT>('GET', url);
   },
 
-  signout() {
-    return this.get('/api/signout');
+  async signout() {
+    await this.get('/api/signout');
+    return mutate('api/app');
   },
 
   createBatch(data: Partial<Batch>) {
@@ -176,7 +177,9 @@ export const api = {
   },
 
   useConnections() {
-    return useSWR<Connection[]>('/api/connections');
+    return useSWR<Connection[]>('/api/connections', {
+      dedupingInterval: 60000,
+    });
   },
 
   reloadConnections() {

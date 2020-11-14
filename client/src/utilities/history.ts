@@ -12,8 +12,6 @@ export function getHistory() {
  */
 export function RegisterHistory() {
   const history = useHistory();
-  if (!_history) {
-    _history = history;
-  }
+  _history = history;
   return null;
 }

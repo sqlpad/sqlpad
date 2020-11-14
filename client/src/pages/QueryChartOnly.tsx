@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
-import ExportButton from './common/ExportButton';
-import IncompleteDataNotification from './common/IncompleteDataNotification';
-import QueryResultRunning from './common/QueryResultRunning';
-import SqlpadTauChart from './common/SqlpadTauChart';
-import { exportPng } from './common/tauChartRef';
-import { loadQuery, runQuery } from './stores/editor-actions';
+import ExportButton from '../common/ExportButton';
+import IncompleteDataNotification from '../common/IncompleteDataNotification';
+import QueryResultRunning from '../common/QueryResultRunning';
+import SqlpadTauChart from '../common/SqlpadTauChart';
+import { exportPng } from '../common/tauChartRef';
+import { loadQuery, runQuery } from '../stores/editor-actions';
 import {
   useLastStatementId,
   useSessionChartFields,
@@ -16,8 +16,8 @@ import {
   useStatementIncomplete,
   useStatementRowCount,
   useStatementStatus,
-} from './stores/editor-store';
-import { api } from './utilities/api';
+} from '../stores/editor-store';
+import { api } from '../utilities/api';
 
 type Props = {
   queryId: string;

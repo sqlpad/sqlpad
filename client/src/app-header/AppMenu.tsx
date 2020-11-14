@@ -1,7 +1,7 @@
 import { MenuItem } from '@reach/menu-button';
 import DotsVerticalIcon from 'mdi-react/DotsVerticalIcon';
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import IconMenu from '../common/IconMenu';
 import { resetState } from '../stores/editor-actions';
 import UserProfileModal from '../users/UserProfileModal';
@@ -11,13 +11,9 @@ import AboutModal from './AboutModal';
 
 function AppMenu() {
   const { currentUser } = useAppContext();
-  const [redirectToSignIn, setRedirectToSignIn] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-
-  if (redirectToSignIn) {
-    return <Redirect push to="/signin" />;
-  }
+  const history = useHistory();
 
   let hideSignOut = false;
   if (!currentUser || currentUser.id === 'noauth') {
@@ -33,7 +29,7 @@ function AppMenu() {
           onSelect={async () => {
             await api.signout();
             resetState();
-            setRedirectToSignIn(true);
+            history.push(`/signin`);
           }}
           hidden={hideSignOut}
         >
