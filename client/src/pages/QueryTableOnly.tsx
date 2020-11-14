@@ -34,7 +34,7 @@ function QueryTableOnly({ queryId }: Props) {
   const incomplete = useStatementIncomplete(statementId);
 
   useEffect(() => {
-    loadQuery(queryId, 'table').then(() => runQuery());
+    loadQuery(queryId).then(() => runQuery());
   }, [queryId]);
 
   useEffect(() => {

@@ -1,46 +1,43 @@
 import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
 import { debouncedResizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
-import {
-  connectConnectionClient,
-  loadQuery,
-  resetNewQuery,
-} from '../stores/editor-actions';
+import { connectConnectionClient, loadQuery } from '../stores/editor-actions';
+import useShortcuts from '../utilities/use-shortcuts';
 import DocumentTitle from './DocumentTitle';
 import EditorPaneRightSidebar from './EditorPaneRightSidebar';
 import EditorPaneSchemaSidebar from './EditorPaneSchemaSidebar';
 import EditorPaneVis from './EditorPaneVis';
 import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
-import useShortcuts from '../utilities/use-shortcuts';
+import QuerySaveModal from './QuerySaveModal';
 import Toolbar from './Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
-import QuerySaveModal from './QuerySaveModal';
-import { useParams } from 'react-router-dom';
 
 interface Params {
   queryId?: string;
-  sessionId: string;
 }
 
 // TODO FIXME XXX - On 404 query not found, prompt user to start new or open existing query
 // In both cases load new, but latter opens queries list
 
 function QueryEditor() {
-  const { queryId = '', sessionId } = useParams<Params>();
+  const { queryId = '' } = useParams<Params>();
   useShortcuts();
 
   // Once initialized reset or load query on changes accordingly
   useEffect(() => {
     if (queryId === '') {
-      resetNewQuery(sessionId);
+      // Calling resetNewQuery is not necessary here as it will either be initialized that way on load,
+      // or handled by the new query click in toolbar
+      // We should however ensure the connection client is established if needed
       connectConnectionClient();
     } else if (queryId) {
-      loadQuery(queryId, sessionId).then(() => connectConnectionClient());
+      loadQuery(queryId).then(() => connectConnectionClient());
     }
-  }, [queryId, sessionId]);
+  }, [queryId]);
 
   return (
     <div
