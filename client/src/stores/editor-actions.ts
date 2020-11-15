@@ -314,10 +314,18 @@ export const formatQuery = async () => {
   });
 };
 
+/**
+ * Loads query and stores in editor session state.
+ * Returns a promise of API result to allow context-dependent behavior,
+ * like showing not found modal in query editor.
+ * @param queryId
+ */
 export const loadQuery = async (queryId: string) => {
-  const { error, data } = await api.getQuery(queryId);
+  const response = await api.getQuery(queryId);
+
+  const { error, data } = response;
   if (error || !data) {
-    return message.error('Query not found');
+    return response;
   }
 
   const { focusedSessionId } = getState();
@@ -356,6 +364,8 @@ export const loadQuery = async (queryId: string) => {
     queryResult: undefined,
     unsavedChanges: false,
   });
+
+  return response;
 };
 
 export const runQuery = async () => {
