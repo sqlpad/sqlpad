@@ -152,6 +152,7 @@ function QuerySaveModal() {
               selectedItems={selectedItems}
               options={options}
               onChange={handleTagsChange}
+              allowNew
             />
           </label>
         ) : (
