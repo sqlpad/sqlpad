@@ -61,10 +61,6 @@ function getMatchSorterItems(
   selectedItems: MultiSelectItem[],
   inputValue: string
 ) {
-  if (!inputValue) {
-    return [];
-  }
-
   const selectedById: { [key: string]: MultiSelectItem } = {};
   selectedItems.forEach((item) => (selectedById[item.id] = item));
 
@@ -218,13 +214,9 @@ function MultiSelect(props: Props) {
           className={styles.input}
           placeholder={placeholder}
           {...getInputProps({
-            onKeyDown(event: any) {
-              if (event.key === 'Escape' && !isOpen) {
-                // https://github.com/downshift-js/downshift/issues/734
-                // event.nativeEvent.preventDownshiftDefault = true;
-                (event.nativeEvent as any).preventDownshiftDefault = true;
-              }
-
+            onKeyDown(event) {
+              // Don't propagate the escape key press - it could close modals or drawers
+              // We just want it to close the suggestion box
               if (event.key === 'Escape' && isOpen) {
                 event.stopPropagation();
               }
@@ -232,6 +224,12 @@ function MultiSelect(props: Props) {
             ...getDropdownProps({
               preventKeyAction: isOpen,
             }),
+            // For some reason the input blur state change doesn't happen consistently in the onStateChange function
+            // This could be something I am doing messing with other things
+            // To ensure input is cleared of any unselected partial value on blur, clear input here as well
+            onBlur() {
+              setInputValue('');
+            },
           })}
         />
       </div>
