@@ -28,8 +28,8 @@ function AppMenu() {
         <MenuItem
           onSelect={async () => {
             await api.signout();
-            resetState();
             history.push(`/signin`);
+            resetState();
           }}
           hidden={hideSignOut}
         >

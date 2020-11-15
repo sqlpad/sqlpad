@@ -156,9 +156,10 @@ function QueryHistoryContent() {
     rowCount = <div>{historyData.length} rows</div>;
   }
 
-  // TODO - setting a fixed height for now until display issue is sorted out for large number of results
-  // The flex based layout wasn't working for some reason
-  // (seems fine if grid is not rendered -- is it an issue with react-measure?)
+  // Result grid height is fixed for now. To use dynamic flex sizing Modal CSS
+  // would need to be reworked and the complexity is not worth the changes.
+  // If dynamic height is needed, a simpler solution might be to measure screen height and grid position.
+  // Unknown if more height is necessary, so leaving this as is.
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -169,21 +170,19 @@ function QueryHistoryContent() {
       </div>
       <br />
       {rowCount}
-      <div style={{ display: 'flex', flexGrow: 1, height: '100%' }}>
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            height: 300,
-            border: '1px solid #CCC',
-          }}
-        >
-          {isRunning && <QueryResultRunning />}
-          {queryError && <ErrorBlock>{queryError}</ErrorBlock>}
-          {!isRunning && !queryError && historyData && (
-            <QueryResultDataTable columns={COLUMNS} rows={arrayRows} />
-          )}
-        </div>
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: 360,
+          border: '1px solid #CCC',
+        }}
+      >
+        {isRunning && <QueryResultRunning />}
+        {queryError && <ErrorBlock>{queryError}</ErrorBlock>}
+        {!isRunning && !queryError && historyData && (
+          <QueryResultDataTable columns={COLUMNS} rows={arrayRows} />
+        )}
       </div>
     </>
   );

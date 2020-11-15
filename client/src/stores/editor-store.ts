@@ -51,7 +51,7 @@ export interface EditorSession {
 
 export type EditorStoreState = {
   initialized: boolean;
-  showSave: boolean;
+  showQueryModal: boolean;
   focusedSessionId: string;
   editorSessions: Record<string, EditorSession>;
   batches: Record<string, Batch>;
@@ -93,11 +93,9 @@ export const INITIAL_SESSION: EditorSession = {
   unsavedChanges: false,
 };
 
-export const useEditorStore = create<EditorStoreState>((set, get) => ({
+export const INITIAL_STATE = {
   initialized: false,
-  // TODO rename to showQueryModal.
-  // Save is only allowed if can save, otherwise modal is used to show additional info
-  showSave: false,
+  showQueryModal: false,
   focusedSessionId: INITIAL_SESSION_ID,
   editorSessions: {
     [INITIAL_SESSION_ID]: INITIAL_SESSION,
@@ -105,6 +103,10 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
   batches: {},
   statements: {},
   schemaStates: {},
+};
+
+export const useEditorStore = create<EditorStoreState>((set, get) => ({
+  ...INITIAL_STATE,
   getFocusedSession: () => {
     const { focusedSessionId, editorSessions } = get();
     return editorSessions[focusedSessionId];
@@ -123,8 +125,8 @@ export function useInitialized() {
   return useEditorStore((s) => s.initialized);
 }
 
-export function useShowSave() {
-  return useEditorStore((s) => s.showSave);
+export function useShowQueryModal() {
+  return useEditorStore((s) => s.showQueryModal);
 }
 
 export function useSessionQueryShared() {

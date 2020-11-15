@@ -14,8 +14,6 @@ interface Props {
 }
 
 /**
- * TODO - if user edits a query they cannot save this shows a dialog and probably shouldn't
- * Or should it clear on selection?
  * @param Props
  */
 function UnsavedQuerySelector({ queryId }: Props) {
@@ -46,6 +44,7 @@ function UnsavedQuerySelector({ queryId }: Props) {
         <Button
           onClick={() => {
             setShowModal(false);
+            removeLocalQueryText(queryId);
           }}
         >
           Use saved
