@@ -19,6 +19,7 @@ import updateCompletions from '../utilities/updateCompletions';
 import {
   EditorSession,
   INITIAL_SESSION,
+  INITIAL_STATE,
   SchemaState,
   useEditorStore,
 } from './editor-store';
@@ -188,15 +189,9 @@ export function toggleShowQueryModal() {
 
 /**
  * Reset state (on signout for example)
- * TODO: This needs to either do more, cancel timeouts, polling, etc OR navigate to a new page in browser (not client-side routed)
  */
 export async function resetState() {
-  const { focusedSessionId } = getState();
-  setSession(focusedSessionId, { selectedStatementId: '', batchId: '' });
-  setState({
-    batches: {},
-    statements: {},
-  });
+  setState({ ...INITIAL_STATE });
 }
 
 /**

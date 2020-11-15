@@ -93,7 +93,7 @@ export const INITIAL_SESSION: EditorSession = {
   unsavedChanges: false,
 };
 
-export const useEditorStore = create<EditorStoreState>((set, get) => ({
+export const INITIAL_STATE = {
   initialized: false,
   showQueryModal: false,
   focusedSessionId: INITIAL_SESSION_ID,
@@ -103,6 +103,10 @@ export const useEditorStore = create<EditorStoreState>((set, get) => ({
   batches: {},
   statements: {},
   schemaStates: {},
+};
+
+export const useEditorStore = create<EditorStoreState>((set, get) => ({
+  ...INITIAL_STATE,
   getFocusedSession: () => {
     const { focusedSessionId, editorSessions } = get();
     return editorSessions[focusedSessionId];
