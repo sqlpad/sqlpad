@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
@@ -10,6 +10,7 @@ import DocumentTitle from './DocumentTitle';
 import EditorPaneRightSidebar from './EditorPaneRightSidebar';
 import EditorPaneSchemaSidebar from './EditorPaneSchemaSidebar';
 import EditorPaneVis from './EditorPaneVis';
+import NotFoundModal from './NotFoundModal';
 import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
 import QuerySaveModal from './QuerySaveModal';
@@ -20,22 +21,29 @@ interface Params {
   queryId?: string;
 }
 
-// TODO FIXME XXX - On 404 query not found, prompt user to start new or open existing query
-// In both cases load new, but latter opens queries list
-
 function QueryEditor() {
+  const [showNotFound, setShowNotFound] = useState(false);
   const { queryId = '' } = useParams<Params>();
   useShortcuts();
 
-  // Once initialized reset or load query on changes accordingly
+  // On queryId change from URL string, load query as needed.
+  // If queryId does not exist, it is because the route is hitting `/queries/new` which avoids sending a queryId param
+  // In the case of new query, the state is already set.
+  // Either user landed here fresh (new query is set by default)
+  // or they clicked new query button, which resets state on click.
+  // Calling resetNewQuery here should not be necessary.
+  // If query is not found, show the not found modal to inform user and prompt to start new query.
   useEffect(() => {
+    setShowNotFound(false);
     if (queryId === '') {
-      // Calling resetNewQuery is not necessary here as it will either be initialized that way on load,
-      // or handled by the new query click in toolbar
-      // We should however ensure the connection client is established if needed
       connectConnectionClient();
     } else if (queryId) {
-      loadQuery(queryId).then(() => connectConnectionClient());
+      loadQuery(queryId).then(({ error, data }) => {
+        if (error || !data) {
+          return setShowNotFound(true);
+        }
+        connectConnectionClient();
+      });
     }
   }, [queryId]);
 
@@ -72,6 +80,7 @@ function QueryEditor() {
       <DocumentTitle queryId={queryId} />
       <SchemaInfoLoader />
       <QuerySaveModal />
+      <NotFoundModal visible={showNotFound} queryId={queryId} />
     </div>
   );
 }
