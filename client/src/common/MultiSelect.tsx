@@ -23,6 +23,7 @@ export interface Props {
  * If anyone out there more familiar with downshift wants to clean this up by all means feel free
  * options should consist of `{ id, name, component }`.
  * name is used for matching, component optional for what to render
+ * TODO fix or replace with https://github.com/i-like-robots/react-tags
  */
 function MultiSelect({
   selectedItems = [],
