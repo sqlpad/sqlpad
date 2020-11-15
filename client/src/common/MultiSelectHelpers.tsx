@@ -41,11 +41,15 @@ interface ItemT {
   component?: any;
 }
 
-function getItems(
+function getMatchSorterItems(
   allItems: ItemT[],
   selectedItems: ItemT[],
   inputValue: string | null
 ) {
+  if (!inputValue) {
+    return [];
+  }
+
   const selectedById: { [key: string]: ItemT } = {};
   selectedItems.forEach((item) => (selectedById[item.id] = item));
 
@@ -58,4 +62,4 @@ function getItems(
     : unselectedItems;
 }
 
-export { Menu, Item, getItems };
+export { Menu, Item, getMatchSorterItems };

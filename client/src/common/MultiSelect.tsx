@@ -1,14 +1,12 @@
-import Downshift from 'downshift';
-import React, { useRef, useState } from 'react';
-import styles from './MultiSelect.module.css';
-import { getItems, Item, Menu } from './MultiSelectHelpers';
-import Tag from './Tag';
 import { useCombobox, useMultipleSelection } from 'downshift';
+import React, { useState } from 'react';
+import styles from './MultiSelect.module.css';
+import { Item, Menu, getMatchSorterItems } from './MultiSelectHelpers';
+import Tag from './Tag';
 
 export interface MultiSelectItem {
   name?: string;
   id: string;
-  component?: any;
 }
 
 export interface Props {
@@ -19,12 +17,9 @@ export interface Props {
 }
 
 /**
- * This component was quickly hacked together using the Downshift multiselect example
- * A lot of that example was changed and reduced down to what this is here.
  * If anyone out there more familiar with downshift wants to clean this up by all means feel free
  * options should consist of `{ id, name, component }`.
  * name is used for matching, component optional for what to render
- * TODO fix or replace with https://github.com/i-like-robots/react-tags
  */
 function MultiSelect(props: Props) {
   // const { selectedItems = [], options, onChange, placeholder } = props;
@@ -38,25 +33,49 @@ function MultiSelect(props: Props) {
     addSelectedItem,
     removeSelectedItem,
     selectedItems,
-  } = useMultipleSelection({ initialSelectedItems: props.selectedItems });
+  } = useMultipleSelection({
+    initialSelectedItems: props.selectedItems,
+    onSelectedItemsChange: (changes) => {
+      if (changes.selectedItems) {
+        onChange(changes.selectedItems);
+      } else {
+        onChange([]);
+      }
+    },
+  });
 
-  const getFilteredItems = () =>
-    options.filter(
-      (item) =>
-        selectedItems.indexOf(item) < 0 &&
-        item?.name?.toLowerCase().startsWith(inputValue.toLowerCase())
+  const getFilteredItems = () => {
+    const filteredItems = getMatchSorterItems(
+      options,
+      props.selectedItems,
+      inputValue
     );
+
+    // If input isn't in options or selected items, add it as an item
+    const existingOption = options.find(
+      (option) =>
+        option.name?.trim().toLowerCase() === inputValue.trim().toLowerCase()
+    );
+    const existingSelection = props.selectedItems.find(
+      (item) =>
+        item.name?.trim().toLowerCase() === inputValue.trim().toLowerCase()
+    );
+
+    if (!existingOption && !existingSelection && inputValue.trim() !== '') {
+      const userOption: MultiSelectItem = { id: inputValue, name: inputValue };
+      return [userOption].concat(filteredItems);
+    }
+
+    return filteredItems;
+  };
 
   const {
     isOpen,
-    getToggleButtonProps,
-    getLabelProps,
     getMenuProps,
     getInputProps,
     getComboboxProps,
     highlightedIndex,
     getItemProps,
-    selectItem,
   } = useCombobox({
     inputValue,
     defaultHighlightedIndex: 0, // after selection, highlight the first item.
@@ -74,7 +93,7 @@ function MultiSelect(props: Props) {
       }
       return changes;
     },
-    onStateChange: ({ inputValue, type, selectedItem }) => {
+    onStateChange: ({ inputValue, type, selectedItem, ...rest }) => {
       switch (type) {
         case useCombobox.stateChangeTypes.InputChange:
           setInputValue(inputValue || '');
@@ -83,9 +102,9 @@ function MultiSelect(props: Props) {
         case useCombobox.stateChangeTypes.ItemClick:
         case useCombobox.stateChangeTypes.InputBlur:
           if (selectedItem) {
-            setInputValue('');
             addSelectedItem(selectedItem);
           }
+          setInputValue('');
           break;
         default:
           break;
@@ -113,7 +132,7 @@ function MultiSelect(props: Props) {
             key={`selected-item-${index}`}
             onClose={() => removeSelectedItem(selectedItem)}
           >
-            {selectedItem.component || selectedItem.name}
+            {selectedItem.name}
           </Tag>
         ))}
 
@@ -122,42 +141,10 @@ function MultiSelect(props: Props) {
           placeholder={placeholder}
           {...getInputProps({
             onKeyDown(event: any) {
-              if (
-                event.key === 'Enter'
-                // &&
-                // inputValue &&
-                // inputValue.trim() &&
-                // highlightedIndex === null
-              ) {
-                console.log('on enter');
-                console.log(inputValue);
-                console.log(highlightedIndex);
-                console.log(isOpen);
-                const existingItem = selectedItems.find(
-                  (i) => i.name === inputValue.toLowerCase()
-                );
-
-                // If there isn't an existing item selected already
-                // try to find the item in the list that would be presented to user
-                // If we can find it there, select that, otherwise add a new item
-                if (!existingItem) {
-                  console.log('no existing item');
-                  const items = getItems(options, selectedItems, inputValue);
-                  const found = items.find(
-                    (item: MultiSelectItem) =>
-                      item?.name?.toLowerCase() === inputValue.toLowerCase() ||
-                      item.id.toLowerCase() === inputValue.toLowerCase()
-                  );
-
-                  if (found) {
-                    selectItem(found);
-                  } else {
-                    selectItem({
-                      id: inputValue,
-                      name: inputValue,
-                    });
-                  }
-                }
+              if (event.key === 'Escape' && !isOpen) {
+                // https://github.com/downshift-js/downshift/issues/734
+                // event.nativeEvent.preventDownshiftDefault = true;
+                (event.nativeEvent as any).preventDownshiftDefault = true;
               }
 
               if (event.key === 'Escape' && isOpen) {
