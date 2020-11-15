@@ -9,39 +9,57 @@ export interface MultiSelectItem {
   name: string;
 }
 
-export interface ItemProps extends React.HTMLProps<HTMLLIElement> {
-  isActive?: boolean;
-}
-
-const Item = function Item({ isActive, ...rest }: ItemProps) {
-  const classNames = [styles.item];
-  if (isActive) {
-    classNames.push(styles.itemActive);
-  }
-  return <li className={classNames.join(' ')} {...rest} />;
-};
-
-export interface MenuProps extends React.HTMLProps<HTMLUListElement> {
+/**
+ * Menu - a ul element to contain the options when open
+ */
+interface MenuProps extends React.HTMLProps<HTMLUListElement> {
   isOpen?: boolean;
 }
 
-export type Ref = HTMLUListElement;
+type MenuRef = HTMLUListElement;
 
-const Menu = React.forwardRef<Ref, MenuProps>(({ isOpen, ...rest }, ref) => {
-  const classNames = [styles.menu];
-  const style: React.CSSProperties = {};
-  if (!isOpen) {
-    style.border = 'none';
+const Menu = React.forwardRef<MenuRef, MenuProps>(
+  ({ isOpen, ...rest }, ref) => {
+    const classNames = [styles.menu];
+    const style: React.CSSProperties = {};
+    if (!isOpen) {
+      style.border = 'none';
+    }
+    return (
+      <ul ref={ref} className={classNames.join(' ')} style={style} {...rest} />
+    );
   }
-  return (
-    <ul ref={ref} className={classNames.join(' ')} style={style} {...rest} />
-  );
-});
+);
 
+/**
+ * MenuItem - an li element for a specific option
+ */
+interface MenuItemProps extends React.HTMLProps<HTMLLIElement> {
+  isActive?: boolean;
+}
+
+type MenuItemRef = HTMLLIElement;
+
+const MenuItem = React.forwardRef<MenuItemRef, MenuItemProps>(
+  ({ isActive, ...rest }, ref) => {
+    const classNames = [styles.item];
+    if (isActive) {
+      classNames.push(styles.itemActive);
+    }
+    return <li ref={ref} className={classNames.join(' ')} {...rest} />;
+  }
+);
+
+/**
+ * helper function to get items using matchSorter library
+ * @param allItems
+ * @param selectedItems
+ * @param inputValue
+ */
 function getMatchSorterItems(
   allItems: MultiSelectItem[],
   selectedItems: MultiSelectItem[],
-  inputValue: string | null
+  inputValue: string
 ) {
   if (!inputValue) {
     return [];
@@ -209,13 +227,13 @@ function MultiSelect(props: Props) {
       <Menu {...getMenuProps()} style={{}}>
         {isOpen &&
           getFilteredItems().map((item, index) => (
-            <Item
+            <MenuItem
               isActive={highlightedIndex === index}
               key={`${item.name}${index}`}
               {...getItemProps({ item, index })}
             >
               {item.name}
-            </Item>
+            </MenuItem>
           ))}
       </Menu>
     </div>
