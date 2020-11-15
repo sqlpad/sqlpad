@@ -91,7 +91,13 @@ export interface Props {
  */
 function MultiSelect(props: Props) {
   // const { selectedItems = [], options, onChange, placeholder } = props;
-  const { options, onChange, placeholder, allowNew } = props;
+  const {
+    options,
+    onChange,
+    placeholder,
+    allowNew,
+    selectedItems: propSelectedItems,
+  } = props;
 
   const [inputValue, setInputValue] = useState('');
 
@@ -102,7 +108,7 @@ function MultiSelect(props: Props) {
     removeSelectedItem,
     selectedItems,
   } = useMultipleSelection({
-    initialSelectedItems: props.selectedItems,
+    initialSelectedItems: propSelectedItems,
     onSelectedItemsChange: (changes) => {
       if (changes.selectedItems) {
         onChange(changes.selectedItems);
@@ -115,7 +121,7 @@ function MultiSelect(props: Props) {
   const getFilteredItems = () => {
     const filteredItems = getMatchSorterItems(
       options,
-      props.selectedItems,
+      propSelectedItems,
       inputValue
     );
 
@@ -124,7 +130,7 @@ function MultiSelect(props: Props) {
       (option) =>
         option.name?.trim().toLowerCase() === inputValue.trim().toLowerCase()
     );
-    const existingSelection = props.selectedItems.find(
+    const existingSelection = propSelectedItems.find(
       (item) =>
         item.name?.trim().toLowerCase() === inputValue.trim().toLowerCase()
     );
