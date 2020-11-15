@@ -90,7 +90,6 @@ export interface Props {
  * options should consist of `{ id, name }`.
  */
 function MultiSelect(props: Props) {
-  // const { selectedItems = [], options, onChange, placeholder } = props;
   const {
     options,
     onChange,
