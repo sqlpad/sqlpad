@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '../common/Button';
-import { toggleShowSave } from '../stores/editor-actions';
+import { toggleShowQueryModal } from '../stores/editor-actions';
 import {
   useSessionCanWrite,
   useSessionQueryName,
@@ -37,7 +37,7 @@ function ToolbarQueryName() {
         className="truncate"
         variant="primary-ghost"
         style={{ fontSize: 18 }}
-        onClick={toggleShowSave}
+        onClick={toggleShowQueryModal}
       >
         <div className="truncate" style={{ maxWidth: 500 }}>
           {queryName || 'New unsaved query'}

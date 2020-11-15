@@ -10,7 +10,7 @@ import {
   formatQuery,
   handleCloneClick,
   runQuery,
-  toggleShowSave,
+  toggleShowQueryModal,
 } from '../stores/editor-actions';
 import {
   useSessionCanWrite,
@@ -52,7 +52,7 @@ function ToolbarRunButton() {
           <MenuItem
             key="save"
             disabled={isSaving || !canWrite}
-            onSelect={() => toggleShowSave()}
+            onSelect={() => toggleShowQueryModal()}
             style={menuItemStyle}
           >
             {saveIcon}

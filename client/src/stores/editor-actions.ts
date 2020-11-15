@@ -181,9 +181,9 @@ export const initEditor = async (
   }
 };
 
-export function toggleShowSave() {
-  const { showSave } = getState();
-  setState({ showSave: !showSave });
+export function toggleShowQueryModal() {
+  const { showQueryModal } = getState();
+  setState({ showQueryModal: !showQueryModal });
 }
 
 /**
@@ -459,7 +459,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
   // If can't write, bail early
   if (!session.canWrite) {
     setSession(focusedSessionId, { showValidation: false });
-    setState({ showSave: false });
+    setState({ showQueryModal: false });
     return;
   }
 
@@ -478,7 +478,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
 
   if (!queryName) {
     setSession(focusedSessionId, { showValidation: true });
-    setState({ showSave: true });
+    setState({ showQueryModal: true });
     return;
   }
 
@@ -503,7 +503,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         // It might be closed and it is where the error is placed.
         // This should be rare, and not sure what might trigger it at this point, but just in case
         setSession(focusedSessionId, { isSaving: false, saveError: error });
-        setState({ showSave: true });
+        setState({ showQueryModal: true });
         return;
       }
       // TODO - need to figure out how to express either { error } or { data }
@@ -527,7 +527,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         canRead: data.canRead,
         canWrite: data.canWrite,
       });
-      setState({ showSave: false });
+      setState({ showQueryModal: false });
     });
   } else {
     api.createQuery(queryData).then((json) => {
@@ -537,7 +537,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         // It might be closed and it is where the error is placed.
         // This should be rare, and not sure what might trigger it at this point, but just in case
         setSession(focusedSessionId, { isSaving: false, saveError: error });
-        setState({ showSave: true });
+        setState({ showQueryModal: true });
         return;
       }
       // TODO - need to figure out how to express either { error } or { data }
@@ -563,7 +563,7 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         canRead: data.canRead,
         canWrite: data.canWrite,
       });
-      setState({ showSave: false });
+      setState({ showQueryModal: false });
     });
   }
 };

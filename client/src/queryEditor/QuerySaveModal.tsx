@@ -13,7 +13,7 @@ import Modal from '../common/Modal';
 import MultiSelect, { MultiSelectItem } from '../common/MultiSelect';
 import Spacer from '../common/Spacer';
 import Tag from '../common/Tag';
-import { saveQuery, toggleShowSave } from '../stores/editor-actions';
+import { saveQuery, toggleShowQueryModal } from '../stores/editor-actions';
 import {
   EditorSession,
   useSessionACL,
@@ -23,7 +23,7 @@ import {
   useSessionSaveError,
   useSessionShowValidation,
   useSessionTags,
-  useShowSave,
+  useShowQueryModal,
 } from '../stores/editor-store';
 import { ACLRecord } from '../types';
 import { api } from '../utilities/api';
@@ -39,7 +39,7 @@ interface ViewModel {
 }
 
 function QuerySaveModal() {
-  const showSave = useShowSave();
+  const showQueryModal = useShowQueryModal();
   const originalAcl = useSessionACL();
   const originalTags = useSessionTags();
   const originalName = useSessionQueryName();
@@ -83,7 +83,7 @@ function QuerySaveModal() {
 
   const error = showValidation && !viewModel.name.length;
 
-  const { data: tagsData } = api.useTags(showSave);
+  const { data: tagsData } = api.useTags(showQueryModal);
   const options = (tagsData || []).map((tag) => ({
     name: tag,
     id: tag,
@@ -114,7 +114,7 @@ function QuerySaveModal() {
   }
 
   function handleCancel() {
-    toggleShowSave();
+    toggleShowQueryModal();
     resetViewModel();
   }
 
@@ -122,7 +122,7 @@ function QuerySaveModal() {
     <Modal
       title={canWrite ? 'Save query' : 'Query info'}
       width={'500px'}
-      visible={showSave}
+      visible={showQueryModal}
       onClose={handleCancel}
       initialFocusRef={initialRef}
     >
