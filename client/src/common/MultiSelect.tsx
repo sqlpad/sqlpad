@@ -1,12 +1,62 @@
 import { useCombobox, useMultipleSelection } from 'downshift';
 import React, { useState } from 'react';
 import styles from './MultiSelect.module.css';
-import { Item, Menu, getMatchSorterItems } from './MultiSelectHelpers';
 import Tag from './Tag';
+import { matchSorter } from 'match-sorter';
 
 export interface MultiSelectItem {
   id: string;
   name: string;
+}
+
+export interface ItemProps extends React.HTMLProps<HTMLLIElement> {
+  isActive?: boolean;
+}
+
+const Item = function Item({ isActive, ...rest }: ItemProps) {
+  const classNames = [styles.item];
+  if (isActive) {
+    classNames.push(styles.itemActive);
+  }
+  return <li className={classNames.join(' ')} {...rest} />;
+};
+
+export interface MenuProps extends React.HTMLProps<HTMLUListElement> {
+  isOpen?: boolean;
+}
+
+export type Ref = HTMLUListElement;
+
+const Menu = React.forwardRef<Ref, MenuProps>(({ isOpen, ...rest }, ref) => {
+  const classNames = [styles.menu];
+  const style: React.CSSProperties = {};
+  if (!isOpen) {
+    style.border = 'none';
+  }
+  return (
+    <ul ref={ref} className={classNames.join(' ')} style={style} {...rest} />
+  );
+});
+
+function getMatchSorterItems(
+  allItems: MultiSelectItem[],
+  selectedItems: MultiSelectItem[],
+  inputValue: string | null
+) {
+  if (!inputValue) {
+    return [];
+  }
+
+  const selectedById: { [key: string]: MultiSelectItem } = {};
+  selectedItems.forEach((item) => (selectedById[item.id] = item));
+
+  const unselectedItems = allItems.filter((item) => !selectedById[item.id]);
+
+  return inputValue
+    ? matchSorter(unselectedItems, inputValue, {
+        keys: ['name'],
+      })
+    : unselectedItems;
 }
 
 export interface Props {

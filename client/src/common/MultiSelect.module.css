@@ -77,11 +77,6 @@
   color: white;
 }
 
-.itemSelected {
-  color: rgba(0, 0, 0, 0.95);
-  font-weight: 700;
-}
-
 .menu {
   padding: 0px;
   margin-top: 0px;
