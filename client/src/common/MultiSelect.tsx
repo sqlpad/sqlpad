@@ -1,8 +1,9 @@
 import Downshift from 'downshift';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './MultiSelect.module.css';
 import { getItems, Item, Menu } from './MultiSelectHelpers';
 import Tag from './Tag';
+import { useCombobox, useMultipleSelection } from 'downshift';
 
 export interface MultiSelectItem {
   name?: string;
@@ -25,184 +26,163 @@ export interface Props {
  * name is used for matching, component optional for what to render
  * TODO fix or replace with https://github.com/i-like-robots/react-tags
  */
-function MultiSelect({
-  selectedItems = [],
-  options,
-  onChange,
-  placeholder,
-}: Props) {
-  const input = useRef<HTMLInputElement>(null);
+function MultiSelect(props: Props) {
+  // const { selectedItems = [], options, onChange, placeholder } = props;
+  const { options, onChange, placeholder } = props;
 
-  const itemToString = (item: MultiSelectItem | null) =>
-    item ? item.name || '' : '';
+  const [inputValue, setInputValue] = useState('');
 
-  const stateReducer = (state: any, changes: any) => {
-    switch (changes.type) {
-      case Downshift.stateChangeTypes.keyDownArrowUp:
-        return {
-          ...changes,
-          isOpen: state.highlightedIndex === 0 ? false : state.isOpen,
-        };
-      case Downshift.stateChangeTypes.keyDownEnter:
-      case Downshift.stateChangeTypes.clickItem:
-        return {
-          ...changes,
-          highlightedIndex: 0,
-          isOpen: false,
-          inputValue: '',
-        };
-      default:
-        return changes;
-    }
-  };
+  const {
+    getSelectedItemProps,
+    getDropdownProps,
+    addSelectedItem,
+    removeSelectedItem,
+    selectedItems,
+  } = useMultipleSelection({ initialSelectedItems: props.selectedItems });
 
-  const removeItem = (item: MultiSelectItem) => {
-    onChange(selectedItems.filter((i) => i !== item));
-  };
+  const getFilteredItems = () =>
+    options.filter(
+      (item) =>
+        selectedItems.indexOf(item) < 0 &&
+        item?.name?.toLowerCase().startsWith(inputValue.toLowerCase())
+    );
 
-  const addSelectedItem = (item: MultiSelectItem, cb: () => void) => {
-    onChange([...selectedItems, item]);
-  };
-
-  const handleSelection = (selectedItem: MultiSelectItem | null) => {
-    const callOnChange = () => {
-      onChange(selectedItems);
-    };
-    if (!selectedItem) {
-      return;
-    }
-    if (selectedItems.includes(selectedItem)) {
-      // removeItem(selectedItem, callOnChange);
-      removeItem(selectedItem);
-    } else {
-      addSelectedItem(selectedItem, callOnChange);
-    }
-  };
+  const {
+    isOpen,
+    getToggleButtonProps,
+    getLabelProps,
+    getMenuProps,
+    getInputProps,
+    getComboboxProps,
+    highlightedIndex,
+    getItemProps,
+    selectItem,
+  } = useCombobox({
+    inputValue,
+    defaultHighlightedIndex: 0, // after selection, highlight the first item.
+    selectedItem: null,
+    items: getFilteredItems(),
+    stateReducer: (state, actionAndChanges) => {
+      const { changes, type } = actionAndChanges;
+      switch (type) {
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+        case useCombobox.stateChangeTypes.ItemClick:
+          return {
+            ...changes,
+            isOpen: false, // close the menu open after selection.
+          };
+      }
+      return changes;
+    },
+    onStateChange: ({ inputValue, type, selectedItem }) => {
+      switch (type) {
+        case useCombobox.stateChangeTypes.InputChange:
+          setInputValue(inputValue || '');
+          break;
+        case useCombobox.stateChangeTypes.InputKeyDownEnter:
+        case useCombobox.stateChangeTypes.ItemClick:
+        case useCombobox.stateChangeTypes.InputBlur:
+          if (selectedItem) {
+            setInputValue('');
+            addSelectedItem(selectedItem);
+          }
+          break;
+        default:
+          break;
+      }
+    },
+  });
 
   return (
-    <Downshift
-      itemToString={itemToString}
-      stateReducer={stateReducer}
-      onChange={handleSelection}
-      selectedItem={undefined}
-    >
-      {({
-        getInputProps,
-        getMenuProps,
-        setState,
-        selectItem,
-        isOpen,
-        inputValue,
-        getItemProps,
-        highlightedIndex,
-        toggleMenu,
-      }) => (
-        <div style={{ position: 'relative' }}>
-          <div
-            className={styles.container}
-            style={
-              isOpen
-                ? {
-                    borderBottomRightRadius: 0,
-                    borderBottomLeftRadius: 0,
-                  }
-                : undefined
-            }
-            onClick={() => {
-              toggleMenu();
-              if (!isOpen && input && input.current) {
-                input.current.focus();
+    <div style={{ position: 'relative' }}>
+      <div
+        className={styles.container}
+        style={
+          isOpen
+            ? {
+                borderBottomRightRadius: 0,
+                borderBottomLeftRadius: 0,
               }
-            }}
+            : undefined
+        }
+        {...getComboboxProps()}
+      >
+        {selectedItems.map((selectedItem, index) => (
+          <Tag
+            {...getSelectedItemProps({ selectedItem, index })}
+            key={`selected-item-${index}`}
+            onClose={() => removeSelectedItem(selectedItem)}
           >
-            {selectedItems.length > 0
-              ? selectedItems.map((item) => (
-                  <Tag key={item.id} onClose={() => removeItem(item)}>
-                    {item.component || item.name}
-                  </Tag>
-                ))
-              : null}
-            <input
-              className={styles.input}
-              placeholder={placeholder}
-              {...getInputProps({
-                ref: input,
-                onKeyDown(event) {
-                  if (
-                    event.key === 'Enter' &&
-                    inputValue &&
-                    inputValue.trim() &&
-                    highlightedIndex === null
-                  ) {
-                    const existingItem = selectedItems.find(
-                      (i) => i.name === inputValue.toLowerCase()
-                    );
+            {selectedItem.component || selectedItem.name}
+          </Tag>
+        ))}
 
-                    // If there isn't an existing item selected already
-                    // try to find the item in the list that would be presented to user
-                    // If we can find it there, select that, otherwise add a new item
-                    if (!existingItem) {
-                      const items = getItems(
-                        options,
-                        selectedItems,
-                        inputValue
-                      );
-                      const found = items.find(
-                        (item: MultiSelectItem) =>
-                          item?.name?.toLowerCase() ===
-                            inputValue.toLowerCase() ||
-                          item.id.toLowerCase() === inputValue.toLowerCase()
-                      );
+        <input
+          className={styles.input}
+          placeholder={placeholder}
+          {...getInputProps({
+            onKeyDown(event: any) {
+              if (
+                event.key === 'Enter'
+                // &&
+                // inputValue &&
+                // inputValue.trim() &&
+                // highlightedIndex === null
+              ) {
+                console.log('on enter');
+                console.log(inputValue);
+                console.log(highlightedIndex);
+                console.log(isOpen);
+                const existingItem = selectedItems.find(
+                  (i) => i.name === inputValue.toLowerCase()
+                );
 
-                      if (found) {
-                        selectItem(found);
-                      } else {
-                        selectItem({
-                          id: inputValue,
-                          name: inputValue,
-                        });
-                      }
-                    }
+                // If there isn't an existing item selected already
+                // try to find the item in the list that would be presented to user
+                // If we can find it there, select that, otherwise add a new item
+                if (!existingItem) {
+                  console.log('no existing item');
+                  const items = getItems(options, selectedItems, inputValue);
+                  const found = items.find(
+                    (item: MultiSelectItem) =>
+                      item?.name?.toLowerCase() === inputValue.toLowerCase() ||
+                      item.id.toLowerCase() === inputValue.toLowerCase()
+                  );
 
-                    setState({
-                      inputValue: '',
-                      isOpen: false,
+                  if (found) {
+                    selectItem(found);
+                  } else {
+                    selectItem({
+                      id: inputValue,
+                      name: inputValue,
                     });
                   }
-                  if (event.key === 'Backspace' && !inputValue) {
-                    removeItem(selectedItems[selectedItems.length - 1]);
-                  }
-                  if (event.key === 'Escape' && !isOpen) {
-                    // https://github.com/downshift-js/downshift/issues/734
-                    // event.nativeEvent.preventDownshiftDefault = true;
-                    (event.nativeEvent as any).preventDownshiftDefault = true;
-                  }
-                },
-              })}
-            />
-          </div>
-          <Menu isOpen={isOpen} {...getMenuProps()}>
-            {isOpen
-              ? getItems(options, selectedItems, inputValue).map(
-                  (item, index) => (
-                    <Item
-                      key={item.id}
-                      {...getItemProps({
-                        item,
-                        index,
-                        isSelected: selectedItems.includes(item),
-                      })}
-                      isActive={highlightedIndex === index}
-                    >
-                      {item.component || item.name}
-                    </Item>
-                  )
-                )
-              : null}
-          </Menu>
-        </div>
-      )}
-    </Downshift>
+                }
+              }
+
+              if (event.key === 'Escape' && isOpen) {
+                event.stopPropagation();
+              }
+            },
+            ...getDropdownProps({
+              preventKeyAction: isOpen,
+            }),
+          })}
+        />
+      </div>
+      <Menu {...getMenuProps()} style={{}}>
+        {isOpen &&
+          getFilteredItems().map((item, index) => (
+            <Item
+              isActive={highlightedIndex === index}
+              key={`${item.name}${index}`}
+              {...getItemProps({ item, index })}
+            >
+              {item.name}
+            </Item>
+          ))}
+      </Menu>
+    </div>
   );
 }
 
