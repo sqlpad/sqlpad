@@ -511,28 +511,26 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         setState({ showQueryModal: true });
         return;
       }
-      // TODO - need to figure out how to express either { error } or { data }
-      // This would never happen but TypeScript doesn't know
-      if (!data) {
-        return;
+      // TypeScript doesn't know that if error did not exist we are dealing with data
+      if (data) {
+        removeLocalQueryText(data.id);
+        setSession(focusedSessionId, {
+          isSaving: false,
+          unsavedChanges: false,
+          connectionId: data.connectionId,
+          queryId: data.id,
+          queryText: data.queryText,
+          queryName: data.name,
+          tags: data.tags,
+          acl: data.acl,
+          chartType: data?.chart?.chartType,
+          chartFields: data?.chart?.fields,
+          canDelete: data.canDelete,
+          canRead: data.canRead,
+          canWrite: data.canWrite,
+        });
+        setState({ showQueryModal: false });
       }
-      removeLocalQueryText(data.id);
-      setSession(focusedSessionId, {
-        isSaving: false,
-        unsavedChanges: false,
-        connectionId: data.connectionId,
-        queryId: data.id,
-        queryText: data.queryText,
-        queryName: data.name,
-        tags: data.tags,
-        acl: data.acl,
-        chartType: data?.chart?.chartType,
-        chartFields: data?.chart?.fields,
-        canDelete: data.canDelete,
-        canRead: data.canRead,
-        canWrite: data.canWrite,
-      });
-      setState({ showQueryModal: false });
     });
   } else {
     api.createQuery(queryData).then((json) => {
@@ -545,30 +543,28 @@ export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
         setState({ showQueryModal: true });
         return;
       }
-      // TODO - need to figure out how to express either { error } or { data }
-      // This would never happen but TypeScript doesn't know
-      if (!data) {
-        return;
+      // TypeScript doesn't know that if error did not exist we are dealing with data
+      if (data) {
+        const history = getHistory();
+        history?.push(`/queries/${data.id}`);
+        removeLocalQueryText(data.id);
+        setSession(focusedSessionId, {
+          isSaving: false,
+          unsavedChanges: false,
+          connectionId: data.connectionId,
+          queryId: data.id,
+          queryText: data.queryText,
+          queryName: data.name,
+          tags: data.tags,
+          acl: data.acl,
+          chartType: data?.chart?.chartType,
+          chartFields: data?.chart?.fields,
+          canDelete: data.canDelete,
+          canRead: data.canRead,
+          canWrite: data.canWrite,
+        });
+        setState({ showQueryModal: false });
       }
-      const history = getHistory();
-      history?.push(`/queries/${data.id}`);
-      removeLocalQueryText(data.id);
-      setSession(focusedSessionId, {
-        isSaving: false,
-        unsavedChanges: false,
-        connectionId: data.connectionId,
-        queryId: data.id,
-        queryText: data.queryText,
-        queryName: data.name,
-        tags: data.tags,
-        acl: data.acl,
-        chartType: data?.chart?.chartType,
-        chartFields: data?.chart?.fields,
-        canDelete: data.canDelete,
-        canRead: data.canRead,
-        canWrite: data.canWrite,
-      });
-      setState({ showQueryModal: false });
     });
   }
 };
