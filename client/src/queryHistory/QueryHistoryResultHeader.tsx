@@ -6,7 +6,7 @@ import styles from './QueryHistoryResultHeader.module.css';
 type OwnProps = {
   isRunning?: boolean;
   queryResult?: any;
-  runQueryStartTime?: any; // TODO: PropTypes.instanceOf(Date)
+  runQueryStartTime?: Date;
 };
 
 type Props = OwnProps & typeof QueryHistoryResultHeader.defaultProps;
@@ -19,7 +19,7 @@ function QueryHistoryResultHeader({
   if (isRunning || !queryResult) {
     return (
       <div className={styles.toolbar}>
-        {isRunning ? (
+        {isRunning && runQueryStartTime ? (
           <span className={styles.toolbarItem}>
             Query time: <SecondsTimer startTime={runQueryStartTime} />
           </span>
