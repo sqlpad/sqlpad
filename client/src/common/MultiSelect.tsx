@@ -82,6 +82,7 @@ export interface Props {
   options: MultiSelectItem[];
   onChange: (items: MultiSelectItem[]) => void;
   placeholder?: string;
+  allowNew?: boolean;
 }
 
 /**
@@ -90,7 +91,7 @@ export interface Props {
  */
 function MultiSelect(props: Props) {
   // const { selectedItems = [], options, onChange, placeholder } = props;
-  const { options, onChange, placeholder } = props;
+  const { options, onChange, placeholder, allowNew } = props;
 
   const [inputValue, setInputValue] = useState('');
 
@@ -128,7 +129,12 @@ function MultiSelect(props: Props) {
         item.name?.trim().toLowerCase() === inputValue.trim().toLowerCase()
     );
 
-    if (!existingOption && !existingSelection && inputValue.trim() !== '') {
+    if (
+      allowNew &&
+      !existingOption &&
+      !existingSelection &&
+      inputValue.trim() !== ''
+    ) {
       const userOption: MultiSelectItem = { id: inputValue, name: inputValue };
       return [userOption].concat(filteredItems);
     }
