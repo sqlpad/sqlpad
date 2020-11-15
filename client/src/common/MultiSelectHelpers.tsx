@@ -37,8 +37,7 @@ const Menu = React.forwardRef<Ref, MenuProps>(({ isOpen, ...rest }, ref) => {
 
 interface ItemT {
   id: string;
-  name?: string;
-  component?: any;
+  name: string;
 }
 
 function getMatchSorterItems(

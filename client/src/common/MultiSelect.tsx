@@ -5,8 +5,8 @@ import { Item, Menu, getMatchSorterItems } from './MultiSelectHelpers';
 import Tag from './Tag';
 
 export interface MultiSelectItem {
-  name?: string;
   id: string;
+  name: string;
 }
 
 export interface Props {
@@ -18,8 +18,7 @@ export interface Props {
 
 /**
  * If anyone out there more familiar with downshift wants to clean this up by all means feel free
- * options should consist of `{ id, name, component }`.
- * name is used for matching, component optional for what to render
+ * options should consist of `{ id, name }`.
  */
 function MultiSelect(props: Props) {
   // const { selectedItems = [], options, onChange, placeholder } = props;

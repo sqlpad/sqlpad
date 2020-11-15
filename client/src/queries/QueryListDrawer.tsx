@@ -13,7 +13,7 @@ import InfoBlock from '../common/InfoBlock';
 import Input from '../common/Input';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
-import MultiSelect from '../common/MultiSelect';
+import MultiSelect, { MultiSelectItem } from '../common/MultiSelect';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube';
 import Text from '../common/Text';
@@ -25,12 +25,6 @@ import QueryPreview from './QueryPreview';
 const SHARED = 'SHARED';
 const MY_QUERIES = 'MY_QUERIES';
 const ALL = 'ALL';
-
-interface Item {
-  name?: string;
-  id: string;
-  component?: any;
-}
 
 type Params = Record<
   string,
@@ -287,7 +281,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
                   id: t,
                   name: t,
                 }))}
-                onChange={(items: Item[]) => setSearchTags(items)}
+                onChange={(items: MultiSelectItem[]) => setSearchTags(items)}
                 placeholder="tags"
               />
             </div>
