@@ -33,8 +33,10 @@
 }
 
 .queryLink {
-  width: 100%;
-  padding: 8px;
+  height: 46px;
+  line-height: 46px;
+  width: 500px;
+  padding-left: 4px;
 }
 
 .newWindowLink {
