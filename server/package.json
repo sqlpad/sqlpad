@@ -40,7 +40,7 @@
     "lint": "eslint \"**/*.js\""
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^5.4.0",
+    "@google-cloud/bigquery": "^5.5.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cassandra-driver": "^4.6.0",
@@ -56,7 +56,7 @@
     "hdb": "^0.18.1",
     "helmet": "^4.2.0",
     "jsonwebtoken": "^8.5.1",
-    "ldapjs": "^2.2.0",
+    "ldapjs": "^2.2.1",
     "lodash": "^4.17.20",
     "lru-cache": "^6.0.0",
     "mariadb": "^2.5.1",
@@ -76,14 +76,14 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
-    "passport-ldapauth": "^2.1.4",
+    "passport-ldapauth": "^3.0.1",
     "passport-local": "^1.0.0",
     "passport-openidconnect": "0.0.2",
-    "passport-saml": "^1.5.0",
-    "pg": "^8.4.2",
+    "passport-saml": "^2.0.2",
+    "pg": "^8.5.1",
     "pino": "^6.7.0",
     "prettier": "^2.1.2",
-    "query-string": "^6.13.6",
+    "query-string": "^6.13.7",
     "redis": "^3.0.2",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
@@ -108,8 +108,8 @@
     "odbc": "^2.2.2"
   },
   "devDependencies": {
-    "eslint": "^7.12.1",
-    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint": "^7.13.0",
+    "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-prettier": "^3.1.4",
@@ -118,6 +118,6 @@
     "node-dev": "^6.2.0",
     "parse-link-header": "^1.0.1",
     "pino-pretty": "^4.3.0",
-    "supertest": "^5.0.0"
+    "supertest": "^6.0.1"
   }
 }
