@@ -8,8 +8,7 @@ import {
   useStatementStatus,
 } from '../stores/editor-store';
 import { api } from '../utilities/api';
-import QueryResultBatchHeader from './QueryResultBatchHeader';
-import QueryResultStatementHeader from './QueryResultStatementHeader';
+import QueryResultHeader from './QueryResultHeader';
 import StatementsTable from './StatementsTable';
 
 function QueryEditorResultPane() {
@@ -27,11 +26,14 @@ function QueryEditorResultPane() {
 
   let paneContent = null;
   // In order to prevent jitter on loading/runnig indicator all loading state needs to be figured at this level
-  // If running for a single statement, or multiple with a statement selected, show running animation until query results are loaded.
-  // If isRunning and selected statement, user ran a single query or ran multiple but selected a particular query to view
-  // If a statement is selected, and it is finished but no data yet, we're still loading the data
   if (
-    (isRunning && selectedStatementId) ||
+    // User started run and haven't gotten initial batch data back yet
+    (isRunning && !batch) ||
+    // user ran single query and it is still running
+    (isRunning && batch?.statements.length === 1) ||
+    // selected statement is still running or queued
+    (selectedStatementId && (status === 'queued' || status === 'started')) ||
+    // selected statement's data is loading from fetch
     (selectedStatementId && status === 'finished' && !data)
   ) {
     paneContent = <QueryResultRunning />;
@@ -43,8 +45,7 @@ function QueryEditorResultPane() {
 
   return (
     <div>
-      {selectedStatementId && <QueryResultStatementHeader />}
-      {!selectedStatementId && <QueryResultBatchHeader />}
+      <QueryResultHeader />
       <div
         style={{
           position: 'absolute',
