@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  useSessionIsRunning,
   useSessionQueryError,
   useStatementColumns,
   useStatementRowCount,
@@ -20,11 +19,14 @@ function QueryResultContainer({ statementId }: Props) {
   const columns = useStatementColumns(statementId) || [];
   const rowCount = useStatementRowCount(statementId);
   const status = useStatementStatus(statementId);
-  const isRunning = useSessionIsRunning();
   const queryError = useSessionQueryError();
   const { data, error } = api.useStatementResults(statementId, status);
 
-  if (isRunning || (status === 'finished' && !data)) {
+  if (
+    status === 'queued' ||
+    status === 'started' ||
+    (status === 'finished' && !data)
+  ) {
     return <QueryResultRunning />;
   }
   if (queryError) {

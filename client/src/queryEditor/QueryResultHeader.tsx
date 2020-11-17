@@ -18,12 +18,13 @@ import {
   useStatementIncomplete,
   useStatementRowCount,
   useStatementSequence,
+  useStatementStatus,
   useStatementText,
 } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
 
-function QueryResultStatementHeader() {
+function QueryResultHeader() {
   const isRunning = useSessionIsRunning();
   const runQueryStartTime = useSessionRunQueryStartTime();
   const statementId = useSessionSelectedStatementId();
@@ -31,7 +32,8 @@ function QueryResultStatementHeader() {
   const rowCount = useStatementRowCount(statementId);
   const hasRows = rowCount !== undefined && rowCount > 0;
   const incomplete = useStatementIncomplete(statementId);
-  const durationMs = useStatementDurationMs(statementId);
+  const statementDurationMs = useStatementDurationMs(statementId);
+  const status = useStatementStatus(statementId);
 
   const batch = useSessionBatch();
   const numOfStatements = batch?.statements.length || 0;
@@ -44,23 +46,30 @@ function QueryResultStatementHeader() {
   const tableLink = useSessionTableLink(statementSequence);
   const showLink = Boolean(tableLink);
 
-  if (isRunning) {
-    return (
-      <div className={styles.toolbar}>
-        <HSpacer size={1} grow />
-        <div>
-          <SecondsTimer startTime={runQueryStartTime} /> seconds
-        </div>
-        <HSpacer size={2} />
+  const isStatementFinished = status === 'finished';
+  const isStatementRunning = status === 'queued' || status === 'started';
+
+  let timerContent = null;
+  if ((statementId && isStatementRunning) || (!statementId && isRunning)) {
+    timerContent = (
+      <div style={{ whiteSpace: 'nowrap' }}>
+        <SecondsTimer startTime={runQueryStartTime} /> seconds
       </div>
     );
+  } else if (statementId && isStatementFinished) {
+    const serverSec =
+      statementDurationMs !== undefined ? statementDurationMs / 1000 : 0;
+    timerContent = (
+      <div style={{ whiteSpace: 'nowrap' }}>{serverSec} seconds</div>
+    );
+  } else if (!statementId && batch?.durationMs !== undefined) {
+    const serverSec = batch?.durationMs / 1000;
+    timerContent = <div>{serverSec} seconds</div>;
   }
-
-  const serverSec = durationMs !== undefined ? durationMs / 1000 : 0;
 
   return (
     <div className={styles.toolbar}>
-      {numOfStatements > 1 ? (
+      {statementId && numOfStatements > 1 ? (
         <Button
           className={styles.returnToStatementsBtn}
           variant="primary-ghost"
@@ -73,21 +82,24 @@ function QueryResultStatementHeader() {
       ) : null}
 
       <HSpacer size={1} grow />
-      <div className={styles.statementHeaderStatementText}>
-        {statementSequence && numOfStatements > 1
-          ? `${statementSequence}. ${statementText}`
-          : ''}
-      </div>
-      <HSpacer size={1} grow />
 
-      {statementId && (
+      {statementId && statementSequence && numOfStatements > 1 && (
+        <>
+          <div className={styles.statementHeaderStatementText}>
+            {`${statementSequence}. ${statementText}`}
+          </div>
+          <HSpacer size={1} grow />
+        </>
+      )}
+
+      {statementId && isStatementFinished && (
         <>
           <div style={{ whiteSpace: 'nowrap' }}>{rowCount} rows</div>
           <HSpacer />
         </>
       )}
 
-      {showLink && tableLink && (
+      {statementId && isStatementFinished && showLink && (
         <>
           <IconButton
             disabled={!Boolean(tableLink)}
@@ -102,26 +114,27 @@ function QueryResultStatementHeader() {
         </>
       )}
 
-      {config?.allowCsvDownload && hasRows && (
-        <>
-          <ExportButton statementId={statementId} />
-          <HSpacer />
-        </>
-      )}
+      {statementId &&
+        isStatementFinished &&
+        config?.allowCsvDownload &&
+        hasRows && (
+          <>
+            <ExportButton statementId={statementId} />
+            <HSpacer />
+          </>
+        )}
 
-      {incomplete && (
+      {statementId && isStatementFinished && incomplete && (
         <>
           <IncompleteDataNotification />
           <HSpacer />
         </>
       )}
 
-      {statementId && (
-        <div style={{ whiteSpace: 'nowrap' }}>{serverSec} seconds</div>
-      )}
+      {timerContent}
       <HSpacer size={1} />
     </div>
   );
 }
 
-export default React.memo(QueryResultStatementHeader);
+export default React.memo(QueryResultHeader);

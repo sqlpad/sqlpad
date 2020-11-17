@@ -5,36 +5,47 @@ import {
   useSessionBatch,
   useSessionIsRunning,
   useSessionSelectedStatementId,
+  useStatementStatus,
 } from '../stores/editor-store';
-import QueryResultBatchHeader from './QueryResultBatchHeader';
-import QueryResultStatementHeader from './QueryResultStatementHeader';
+import { api } from '../utilities/api';
+import QueryResultHeader from './QueryResultHeader';
 import StatementsTable from './StatementsTable';
 
 function QueryEditorResultPane() {
   const selectedStatementId = useSessionSelectedStatementId();
   const isRunning = useSessionIsRunning();
+  const status = useStatementStatus(selectedStatementId);
 
   // Batch reference will change frequently during load
   // This component should be cheap to render though so this should be okay
   const batch = useSessionBatch();
-  const statementId = selectedStatementId;
+
+  // This API call is also made in QueryResultContainer
+  // Calls will be shared. This is here to access loading status
+  const { data } = api.useStatementResults(selectedStatementId, status);
 
   let paneContent = null;
-  if (statementId) {
+  // In order to prevent jitter on loading/runnig indicator all loading state needs to be figured at this level
+  if (
+    // User started run and haven't gotten initial batch data back yet
+    (isRunning && !batch) ||
+    // user ran single query and it is still running
+    (isRunning && batch?.statements.length === 1) ||
+    // selected statement is still running or queued
+    (selectedStatementId && (status === 'queued' || status === 'started')) ||
+    // selected statement's data is loading from fetch
+    (selectedStatementId && status === 'finished' && !data)
+  ) {
+    paneContent = <QueryResultRunning />;
+  } else if (selectedStatementId) {
     paneContent = <QueryResultContainer statementId={selectedStatementId} />;
   } else if (batch?.statements) {
     paneContent = <StatementsTable statements={batch?.statements || []} />;
-  } else if (isRunning) {
-    // If a statementId isn't set yet, and there aren't statements,
-    // but a query is running, that means the initial batch creation hasn't happened yet
-    // For this case show a spinner, so there isn't an awkward delay
-    paneContent = <QueryResultRunning />;
   }
 
   return (
     <div>
-      {selectedStatementId && <QueryResultStatementHeader />}
-      {!selectedStatementId && <QueryResultBatchHeader />}
+      <QueryResultHeader />
       <div
         style={{
           position: 'absolute',
