@@ -140,11 +140,13 @@ export const api = {
    * @param status
    */
   useStatementResults(statementId?: string, status?: string) {
-    return useSWR<StatementResults>(
+    const url =
       statementId && status === 'finished'
         ? `/api/statements/${statementId}/results`
-        : null
-    );
+        : null;
+    return useSWR<StatementResults>(url, {
+      dedupingInterval: 60000,
+    });
   },
 
   getQueries() {
