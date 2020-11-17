@@ -48,9 +48,8 @@ function StatementTableRow({ statement }: { statement: Statement }) {
       </td>
       <td style={{ width: 120, textAlign: 'right', padding: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          {config?.allowCsvDownload && hasRows && (
+          {config?.allowCsvDownload && hasRows && Boolean(tableLink) && (
             <IconButton
-              disabled={!Boolean(tableLink)}
               to={tableLink}
               target="_blank"
               rel="noopener noreferrer"
