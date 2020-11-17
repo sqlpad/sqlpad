@@ -51,7 +51,7 @@ function QueryResultStatementHeader() {
         <div>
           <SecondsTimer startTime={runQueryStartTime} /> seconds
         </div>
-        <HSpacer size={2} />
+        <HSpacer size={1} />
       </div>
     );
   }
