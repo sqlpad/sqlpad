@@ -1,7 +1,7 @@
 import React from 'react';
 import FullscreenMessage from '../common/FullscreenMessage';
 
-export default () => {
+const PasswordResetRequested = () => {
   document.title = 'SQLPad - Password Reset';
   return (
     <FullscreenMessage>
@@ -10,3 +10,5 @@ export default () => {
     </FullscreenMessage>
   );
 };
+
+export default PasswordResetRequested;
