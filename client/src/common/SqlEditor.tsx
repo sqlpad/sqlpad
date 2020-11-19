@@ -68,6 +68,7 @@ function SqlEditor({ onChange, readOnly, value, onSelectionChange }: Props) {
             editorProps={{ $blockScrolling: Infinity }}
             focus={!readOnly}
             height={height + 'px'}
+            fontSize={14}
             highlightActiveLine={false}
             mode="sql"
             name="query-ace-editor"
