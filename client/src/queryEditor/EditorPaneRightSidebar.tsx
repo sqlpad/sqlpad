@@ -4,6 +4,7 @@ import Spacer from '../common/Spacer';
 import { debouncedResizeChart } from '../common/tauChartRef';
 import { useSessionShowVisProperties } from '../stores/editor-store';
 import ChartInputs from './ChartInputs';
+import ChartStatementDisclaimer from './ChartStatementDisclaimer';
 import ChartTypeSelect from './ChartTypeSelect';
 
 interface EditorPaneRightSidebarProps {
@@ -22,6 +23,7 @@ const EditorPaneRightSidebar: FunctionComponent<EditorPaneRightSidebarProps> = (
   if (showVisProperties) {
     sidebarContent = (
       <div style={{ position: 'absolute', padding: 8 }} className="h-100 w-100">
+        <ChartStatementDisclaimer />
         <ChartTypeSelect />
         <Spacer size={2} />
         <ChartInputs />
