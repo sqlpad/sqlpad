@@ -63,17 +63,25 @@
   box-shadow: 0 1px 0 rgb(9, 100, 185, 0.5);
 }
 
-.primary:hover,
 .primary:focus {
   color: #fff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-focus);
+  z-index: 99999;
+}
+
+.primary:hover {
+  color: #fff;
   background-color: var(--primary-light-color);
-  border-color: var(--secondary-color);
+  border-color: var(--primary-light-color);
+  z-index: 99999;
 }
 
 .primary:active {
   color: #fff;
   background-color: var(--primary-dark-color);
-  border-color: var(--secondary-dark-color);
+  border-color: var(--primary-dark-color);
 }
 
 .ghost {

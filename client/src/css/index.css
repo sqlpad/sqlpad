@@ -17,6 +17,7 @@
   --primary-dark-color: hsl(209, 100%, 42%);
   --primary-light-color: hsl(209, 100%, 63%);
   --primary-darkest-color: hsl(209, 50%, 25%);
+  --primary-focus: hsl(215, 100%, 25%);
 
   --primary-color-30: rgba(24, 143, 255, 0.3);
   --primary-color-90: rgba(24, 144, 255, 0.9);
