@@ -2,10 +2,6 @@ const definitions = require('./config-items');
 const path = require('path');
 const fs = require('fs');
 
-// This tracks environment variables that used to be supported but no longer are
-// This is to assist erroring for old config no longer supported
-const removedEnv = ['SQLPAD_DEBUG', 'SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH'];
-
 const userHome =
   process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME;
 const oldConfigFilePath = path.join(userHome, '.sqlpadrc');
@@ -76,10 +72,44 @@ function getFromCli(argv) {
   }, {});
 }
 
+function isConnectionEnv(key = '') {
+  return key.startsWith('SQLPAD_CONNECTION__');
+}
+
+/**
+ * Parse connection env keys into key-value objects
+ * Values contain only that defined in environment variables
+ * This does not validate or clean the data in any way
+ * @param {object} env
+ */
+function parseConnectionsFromEnv(env) {
+  const connectionsMap = Object.keys(env)
+    .filter((key) => key.startsWith('SQLPAD_CONNECTIONS__'))
+    .reduce((connectionsMap, envVar) => {
+      // eslint-disable-next-line no-unused-vars
+      const [prefix, id, field] = envVar.split('__');
+      if (!connectionsMap[id]) {
+        connectionsMap[id] = {};
+      }
+      connectionsMap[id][field] = env[envVar];
+      return connectionsMap;
+    }, {});
+
+  const connectionsFromConfig = Object.entries(connectionsMap).map(
+    ([id, connection]) => {
+      connection.id = id;
+      return connection;
+    }
+  );
+
+  return connectionsFromConfig;
+}
+
 module.exports = {
   getFromEnv,
   getFromDefault,
   getOldConfigWarning,
   getFromCli,
-  removedEnv,
+  isConnectionEnv,
+  parseConnectionsFromEnv,
 };
