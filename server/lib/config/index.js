@@ -142,6 +142,20 @@ class Config {
               );
             }
           });
+
+          // parsedConnections are also run through a validateConnections function on read in .getConnections()
+          // Run parsedConnection through that function now as well to catch any missed checks here
+          // This connection loading/checking should be cleaned up in future to reduce duplicate checks
+          // TODO - perform validation checks in constructor, getValidations() gets these values
+          try {
+            validateConnection(parsedConnection);
+          } catch (error) {
+            errors.push(
+              `Environment connection configuration failed for ${
+                parsedConnection.id
+              }. ${error.toString()}`
+            );
+          }
         }
       }
     });
@@ -216,8 +230,7 @@ class Config {
    * These are provided at runtime and not upserted
    * This allows supporting cases where connections can be defined then later removed via config changes alone
    *
-   * For environment variables:
-   * connection env vars must follow the format:
+   * Connection environment variables must follow the format:
    * SQLPAD_CONNECTIONS__<connectionId>__<connectionFieldName>
    *
    * <connectionId> can be any value to associate a grouping a fields to a connection instance
