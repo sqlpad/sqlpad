@@ -1,7 +1,9 @@
 const assert = require('assert');
-const fromDefault = require('../../lib/config/from-default');
-const fromEnv = require('../../lib/config/from-env');
-const fromCli = require('../../lib/config/from-cli');
+const {
+  getFromCli,
+  getFromDefault,
+  getFromEnv,
+} = require('../../lib/config/config-utils');
 const Config = require('../../lib/config');
 
 function configHasError(args, errorFindFunction) {
@@ -14,7 +16,7 @@ function configHasError(args, errorFindFunction) {
 
 describe('lib/config/from-default', function () {
   it('provides expected values', function () {
-    const conf = fromDefault();
+    const conf = getFromDefault();
     assert.equal(conf.port, 80, 'default port');
     assert(conf.dbPath !== '$HOME/sqlpad/db', 'dbPath should change');
   });
@@ -22,14 +24,14 @@ describe('lib/config/from-default', function () {
 
 describe('lib/config/from-env', function () {
   it('provides expected values', function () {
-    const conf = fromEnv({ SQLPAD_PORT: 8000 });
+    const conf = getFromEnv({ SQLPAD_PORT: 8000 });
     assert.equal(conf.port, 8000, 'conf.port');
   });
 });
 
 describe('lib/config/from-cli', function () {
   it('provides expected values', function () {
-    const conf = fromCli({
+    const conf = getFromCli({
       keyPath: 'key/path',
       certPath: 'cert/path',
       admin: 'admin@email.com',

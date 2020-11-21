@@ -2,11 +2,13 @@
 const appLog = require('../app-log');
 const configItems = require('./config-items');
 const validateConnection = require('../validate-connection');
-const removedEnv = require('./removed-env');
-const fromDefault = require('./from-default');
-const fromEnv = require('./from-env');
-const fromCli = require('./from-cli');
-const getOldConfigWarning = require('./get-old-config-warning');
+const {
+  removedEnv,
+  getFromCli,
+  getFromDefault,
+  getFromEnv,
+  getOldConfigWarning,
+} = require('./config-utils');
 
 class Config {
   constructor(argv, env) {
@@ -15,9 +17,9 @@ class Config {
 
     const configFilePath = argv.config || env.SQLPAD_CONFIG;
 
-    const defaultConfig = fromDefault();
-    const envConfig = fromEnv(env);
-    const cliConfig = fromCli(argv);
+    const defaultConfig = getFromDefault();
+    const envConfig = getFromEnv(env);
+    const cliConfig = getFromCli(argv);
 
     const all = { ...defaultConfig, ...envConfig, ...cliConfig };
 
