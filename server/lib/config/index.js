@@ -2,11 +2,15 @@
 const appLog = require('../app-log');
 const configItems = require('./config-items');
 const validateConnection = require('../validate-connection');
-const removedEnv = require('./removed-env');
-const fromDefault = require('./from-default');
-const fromEnv = require('./from-env');
-const fromCli = require('./from-cli');
-const getOldConfigWarning = require('./get-old-config-warning');
+const {
+  getFromCli,
+  getFromDefault,
+  getFromEnv,
+  getOldConfigWarning,
+  parseConnectionsFromEnv,
+  isConnectionEnv,
+} = require('./config-utils');
+const drivers = require('../../drivers');
 
 class Config {
   constructor(argv, env) {
@@ -15,9 +19,9 @@ class Config {
 
     const configFilePath = argv.config || env.SQLPAD_CONFIG;
 
-    const defaultConfig = fromDefault();
-    const envConfig = fromEnv(env);
-    const cliConfig = fromCli(argv);
+    const defaultConfig = getFromDefault();
+    const envConfig = getFromEnv(env);
+    const cliConfig = getFromCli(argv);
 
     const all = { ...defaultConfig, ...envConfig, ...cliConfig };
 
@@ -85,13 +89,74 @@ class Config {
     }
 
     // Check for any old environment variables in env.
-    // This must be handled separately from other unknown checks,
-    // as fromEnv() only gets config it knows about, so it will never have unknown values
-    removedEnv.forEach((key) => {
-      if (this.env.hasOwnProperty(key)) {
+    // Any key that starts with SQLPAD_ that isn't known should raise a message.
+    // An exception is SQLPAD_CONNECTIONS__ variables as they are dynamic and depend on database defined
+    Object.keys(this.env).forEach((key) => {
+      if (key.startsWith('SQLPAD_') && !isConnectionEnv(key)) {
+        const foundDefinition = configItems.find((item) => item.envVar === key);
+        if (!foundDefinition) {
+          errors.push(
+            `CONFIG NOT RECOGNIZED: Environment variable "${key}" no longer supported.`
+          );
+        }
+      }
+    });
+
+    // Parse connections from env and error for anything invalid
+    // This is easy to mess up and being strict will help avoid confusion
+    const parsedConnections = parseConnectionsFromEnv(this.env);
+    parsedConnections.forEach((parsedConnection) => {
+      const {
+        id,
+        name,
+        description,
+        driver,
+        multiStatementTransactionEnabled,
+        idleTimeoutSeconds,
+        ...driverSpecificFields
+      } = parsedConnection;
+      if (!name) {
         errors.push(
-          `CONFIG NOT RECOGNIZED: Environment variable "${key}" no longer supported.`
+          `Environment config SQLPAD_CONNECTIONS__${id}__name missing`
         );
+      }
+      if (!driver) {
+        errors.push(
+          `Environment config SQLPAD_CONNECTIONS__${id}__driver missing`
+        );
+      } else {
+        const driverImplementation = drivers[driver];
+        if (!driverImplementation) {
+          errors.push(
+            `Environment config SQLPAD_CONNECTIONS__${id}__driver invalid. "${driver}" not a supported driver.`
+          );
+        } else {
+          const validDriverFieldMap = {};
+          driverImplementation.fields.forEach((fieldConfig) => {
+            validDriverFieldMap[fieldConfig.key] = true;
+          });
+          Object.keys(driverSpecificFields).forEach((driverField) => {
+            if (!validDriverFieldMap[driverField]) {
+              errors.push(
+                `Environment config SQLPAD_CONNECTIONS__${id}__${driverField} invalid. "${driverField}" not a known field for ${driver}.`
+              );
+            }
+          });
+
+          // parsedConnections are also run through a validateConnections function on read in .getConnections()
+          // Run parsedConnection through that function now as well to catch any missed checks here
+          // This connection loading/checking should be cleaned up in future to reduce duplicate checks
+          // TODO - perform validation checks in constructor, getValidations() gets these values
+          try {
+            validateConnection(parsedConnection);
+          } catch (error) {
+            errors.push(
+              `Environment connection configuration failed for ${
+                parsedConnection.id
+              }. ${error.toString()}`
+            );
+          }
+        }
       }
     });
 
@@ -162,72 +227,33 @@ class Config {
 
   /**
    * Get connections from config.
-   * These are provided at runtime and not upserted
-   * This allows supporting cases where connections can be defined then later removed via config changes alone
+   * These are provided at runtime and not upserted into the backing database.
+   * This allows supporting cases where connections can be defined then later removed via config changes alone.
    *
-   * For environment variables:
-   * connection env vars must follow the format:
-   * SQLPAD_CONNECTIONS__<connectionId>__<connectionFieldName>
-   *
-   * <connectionId> can be any value to associate a grouping a fields to a connection instance
-   * If supplying a connection that was previously defined in the embedded database,
-   * this would map internally to connection.id object.
-   *
-   * <connectionFieldName> should be a field name identified in drivers.
-   *
-   * To define connections via envvars, `driver` field should be supplied.
-   * id field is not required, as it is defined in second env var fragment.
-   *
-   * Example: SQLPAD_CONNECTIONS__ab123__sqlserverEncrypt=""
-   *
-   * From file, resulting parsed configuration from file is expected to follow format `connections.<id>.<fieldname>`
-   * {
-   *   connections: {
-   *     ab123: {
-   *       sqlserverEncrypt: true
-   *     }
-   *   }
-   * }
+   * Connections derived from config will be decorated with `editable` = false.
    *
    * @param {object} [env] - optional environment override for testing
-   * @returns {array<object>} arrayOfConnections
+   * @returns {array<object>} array of Connections
    */
   getConnections(env = process.env) {
-    // Create a map of connections from parsing environment variable
-    const connectionsMapFromEnv = Object.keys(env)
-      .filter((key) => key.startsWith('SQLPAD_CONNECTIONS__'))
-      .reduce((connectionsMap, envVar) => {
-        // eslint-disable-next-line no-unused-vars
-        const [prefix, id, field] = envVar.split('__');
-        if (!connectionsMap[id]) {
-          connectionsMap[id] = {};
-        }
-        connectionsMap[id][field] = env[envVar];
-        return connectionsMap;
-      }, {});
+    const parsedConnections = parseConnectionsFromEnv(env);
 
-    // connections key from file matches format that is constructed from env
-    // merge the 2 together then create an array out of them
-    const connectionsMap = { ...connectionsMapFromEnv };
-
-    const connectionsFromConfig = [];
-    Object.keys(connectionsMap).forEach((id) => {
+    const cleanedConnections = [];
+    parsedConnections.forEach((connection) => {
       try {
-        let connection = connectionsMap[id];
-        connection.id = id;
         connection = validateConnection(connection);
         connection.editable = false;
-        connectionsFromConfig.push(connection);
+        cleanedConnections.push(connection);
       } catch (error) {
         appLog.error(
           error,
           'Environment connection configuration failed for %s',
-          id
+          connection.id
         );
       }
     });
 
-    return connectionsFromConfig;
+    return cleanedConnections;
   }
 }
 

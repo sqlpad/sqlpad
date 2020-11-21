@@ -1,7 +1,9 @@
 const assert = require('assert');
-const fromDefault = require('../../lib/config/from-default');
-const fromEnv = require('../../lib/config/from-env');
-const fromCli = require('../../lib/config/from-cli');
+const {
+  getFromCli,
+  getFromDefault,
+  getFromEnv,
+} = require('../../lib/config/config-utils');
 const Config = require('../../lib/config');
 
 function configHasError(args, errorFindFunction) {
@@ -14,7 +16,7 @@ function configHasError(args, errorFindFunction) {
 
 describe('lib/config/from-default', function () {
   it('provides expected values', function () {
-    const conf = fromDefault();
+    const conf = getFromDefault();
     assert.equal(conf.port, 80, 'default port');
     assert(conf.dbPath !== '$HOME/sqlpad/db', 'dbPath should change');
   });
@@ -22,14 +24,14 @@ describe('lib/config/from-default', function () {
 
 describe('lib/config/from-env', function () {
   it('provides expected values', function () {
-    const conf = fromEnv({ SQLPAD_PORT: 8000 });
+    const conf = getFromEnv({ SQLPAD_PORT: 8000 });
     assert.equal(conf.port, 8000, 'conf.port');
   });
 });
 
 describe('lib/config/from-cli', function () {
   it('provides expected values', function () {
-    const conf = fromCli({
+    const conf = getFromCli({
       keyPath: 'key/path',
       certPath: 'cert/path',
       admin: 'admin@email.com',
@@ -83,6 +85,69 @@ describe('lib/config', function () {
         error.includes('SQLPAD_DEBUG') && error.includes('NOT RECOGNIZED')
     );
     assert(found, 'has error about old key');
+  });
+
+  it('Errors env connection missing name', function () {
+    const config = new Config(
+      {},
+      { SQLPAD_CONNECTIONS__test__driver: 'postgres' }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes('SQLPAD_CONNECTIONS__test__name missing')
+    );
+    assert(found, 'has error');
+  });
+
+  it('Errors env connection missing driver', function () {
+    const config = new Config(
+      {},
+      { SQLPAD_CONNECTIONS__test__name: 'My test' }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes('SQLPAD_CONNECTIONS__test__driver missing')
+    );
+    assert(found, 'has error');
+  });
+
+  it('Errors env connection invalid driver', function () {
+    const config = new Config(
+      {},
+      {
+        SQLPAD_CONNECTIONS__test__name: 'My test',
+        SQLPAD_CONNECTIONS__test__driver: 'foo',
+      }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes(
+        'Environment config SQLPAD_CONNECTIONS__test__driver invalid. "foo" not a supported driver.'
+      )
+    );
+    assert(found, 'has error');
+  });
+
+  it('Errors env connection invalid driver field', function () {
+    const config = new Config(
+      {},
+      {
+        SQLPAD_CONNECTIONS__test__name: 'My test',
+        SQLPAD_CONNECTIONS__test__driver: 'postgres',
+        SQLPAD_CONNECTIONS__test__wrongField: 'localhost',
+      }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes(
+        'Environment config SQLPAD_CONNECTIONS__test__wrongField invalid. "wrongField" not a known field for postgres.'
+      )
+    );
+    assert(found, 'has error');
   });
 
   it('Warns for deprecated config', function () {
