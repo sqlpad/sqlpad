@@ -80,6 +80,12 @@ function isConnectionEnv(key = '') {
  * Parse connection env keys into key-value objects
  * Values contain only that defined in environment variables
  * This does not validate or clean the data in any way
+ *
+ * Connection environment variables follow the format:
+ * SQLPAD_CONNECTIONS__<connectionId>__<connectionFieldName>
+ *
+ * Example: SQLPAD_CONNECTIONS__ab123__sqlserverEncrypt=""
+ *
  * @param {object} env
  */
 function parseConnectionsFromEnv(env) {

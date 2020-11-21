@@ -227,28 +227,15 @@ class Config {
 
   /**
    * Get connections from config.
-   * These are provided at runtime and not upserted
-   * This allows supporting cases where connections can be defined then later removed via config changes alone
+   * These are provided at runtime and not upserted into the backing database.
+   * This allows supporting cases where connections can be defined then later removed via config changes alone.
    *
-   * Connection environment variables must follow the format:
-   * SQLPAD_CONNECTIONS__<connectionId>__<connectionFieldName>
-   *
-   * <connectionId> can be any value to associate a grouping a fields to a connection instance
-   * If supplying a connection that was previously defined in the embedded database,
-   * this would map internally to connection.id object.
-   *
-   * <connectionFieldName> should be a field name identified in drivers.
-   *
-   * To define connections via envvars, `driver` field should be supplied.
-   * id field is not required, as it is defined in second env var fragment.
-   *
-   * Example: SQLPAD_CONNECTIONS__ab123__sqlserverEncrypt=""
+   * Connections derived from config will be decorated with `editable` = false.
    *
    * @param {object} [env] - optional environment override for testing
-   * @returns {array<object>} arrayOfConnections
+   * @returns {array<object>} array of Connections
    */
   getConnections(env = process.env) {
-    // Create a map of connections from parsing environment variable
     const parsedConnections = parseConnectionsFromEnv(env);
 
     const cleanedConnections = [];
