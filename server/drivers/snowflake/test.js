@@ -11,7 +11,7 @@ const connection = {
   warehouse: process.env.SNOWFLAKE_WAREHOUSE,
   database: process.env.SNOWFLAKE_DATABASE,
   schema: process.env.SNOWFLAKE_SCHEMA,
-  maxRows: 50000,
+  maxRows: 10000,
 };
 
 const dropTable = 'DROP TABLE IF EXISTS test;';

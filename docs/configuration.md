@@ -85,8 +85,8 @@ SQLPAD_SEED_DATA_PATH = ""
 # Enable word wrapping in SQL editor
 SQLPAD_EDITOR_WORD_WRAP = "false"
 
-# By default query results are limited to 50,000 records
-SQLPAD_QUERY_RESULT_MAX_ROWS = 50000
+# By default query results are limited to 10,000 records
+SQLPAD_QUERY_RESULT_MAX_ROWS = 10000
 
 # Enable csv, json and xlsx downloads
 SQLPAD_ALLOW_CSV_DOWNLOAD = "true"

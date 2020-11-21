@@ -202,7 +202,7 @@ const configItems = [
   {
     key: 'queryResultMaxRows',
     envVar: 'SQLPAD_QUERY_RESULT_MAX_ROWS',
-    default: 50000,
+    default: 10000,
   },
   {
     key: 'queryResultStore',
