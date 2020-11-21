@@ -73,7 +73,7 @@ function getFromCli(argv) {
 }
 
 function isConnectionEnv(key = '') {
-  return key.startsWith('SQLPAD_CONNECTION__');
+  return key.startsWith('SQLPAD_CONNECTIONS__');
 }
 
 /**

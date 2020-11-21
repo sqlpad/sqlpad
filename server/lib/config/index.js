@@ -10,6 +10,7 @@ const {
   parseConnectionsFromEnv,
   isConnectionEnv,
 } = require('./config-utils');
+const drivers = require('../../drivers');
 
 class Config {
   constructor(argv, env) {
@@ -89,7 +90,7 @@ class Config {
 
     // Check for any old environment variables in env.
     // Any key that starts with SQLPAD_ that isn't known should raise a message.
-    // An exception is SQLPAD_CONNECTION__ variables as they are dynamic and depend on database defined
+    // An exception is SQLPAD_CONNECTIONS__ variables as they are dynamic and depend on database defined
     Object.keys(this.env).forEach((key) => {
       if (key.startsWith('SQLPAD_') && !isConnectionEnv(key)) {
         const foundDefinition = configItems.find((item) => item.envVar === key);
@@ -97,6 +98,50 @@ class Config {
           errors.push(
             `CONFIG NOT RECOGNIZED: Environment variable "${key}" no longer supported.`
           );
+        }
+      }
+    });
+
+    // Parse connections from env and error for anything invalid
+    // This is easy to mess up and being strict will help avoid confusion
+    const parsedConnections = parseConnectionsFromEnv(this.env);
+    parsedConnections.forEach((parsedConnection) => {
+      const {
+        id,
+        name,
+        description,
+        driver,
+        multiStatementTransactionEnabled,
+        idleTimeoutSeconds,
+        ...driverSpecificFields
+      } = parsedConnection;
+      if (!name) {
+        errors.push(
+          `Environment config SQLPAD_CONNECTIONS__${id}__name missing`
+        );
+      }
+      if (!driver) {
+        errors.push(
+          `Environment config SQLPAD_CONNECTIONS__${id}__driver missing`
+        );
+      } else {
+        const driverImplementation = drivers[driver];
+        if (!driverImplementation) {
+          errors.push(
+            `Environment config SQLPAD_CONNECTIONS__${id}__driver invalid. "${driver}" not a supported driver.`
+          );
+        } else {
+          const validDriverFieldMap = {};
+          driverImplementation.fields.forEach((fieldConfig) => {
+            validDriverFieldMap[fieldConfig.key] = true;
+          });
+          Object.keys(driverSpecificFields).forEach((driverField) => {
+            if (!validDriverFieldMap[driverField]) {
+              errors.push(
+                `Environment config SQLPAD_CONNECTIONS__${id}__${driverField} invalid. "${driverField}" not a known field for ${driver}.`
+              );
+            }
+          });
         }
       }
     });

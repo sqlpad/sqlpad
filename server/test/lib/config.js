@@ -87,6 +87,69 @@ describe('lib/config', function () {
     assert(found, 'has error about old key');
   });
 
+  it('Errors env connection missing name', function () {
+    const config = new Config(
+      {},
+      { SQLPAD_CONNECTIONS__test__driver: 'postgres' }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes('SQLPAD_CONNECTIONS__test__name missing')
+    );
+    assert(found, 'has error');
+  });
+
+  it('Errors env connection missing driver', function () {
+    const config = new Config(
+      {},
+      { SQLPAD_CONNECTIONS__test__name: 'My test' }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes('SQLPAD_CONNECTIONS__test__driver missing')
+    );
+    assert(found, 'has error');
+  });
+
+  it('Errors env connection invalid driver', function () {
+    const config = new Config(
+      {},
+      {
+        SQLPAD_CONNECTIONS__test__name: 'My test',
+        SQLPAD_CONNECTIONS__test__driver: 'foo',
+      }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes(
+        'Environment config SQLPAD_CONNECTIONS__test__driver invalid. "foo" not a supported driver.'
+      )
+    );
+    assert(found, 'has error');
+  });
+
+  it('Errors env connection invalid driver field', function () {
+    const config = new Config(
+      {},
+      {
+        SQLPAD_CONNECTIONS__test__name: 'My test',
+        SQLPAD_CONNECTIONS__test__driver: 'postgres',
+        SQLPAD_CONNECTIONS__test__wrongField: 'localhost',
+      }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes(
+        'Environment config SQLPAD_CONNECTIONS__test__wrongField invalid. "wrongField" not a known field for postgres.'
+      )
+    );
+    assert(found, 'has error');
+  });
+
   it('Warns for deprecated config', function () {
     const config = new Config({ deprecatedTestConfig: 'just a test' }, {});
     const validations = config.getValidations();
