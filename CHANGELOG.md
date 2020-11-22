@@ -1,5 +1,62 @@
 # Changelog
 
+## [6.0.0] - 2020-11-22
+
+This release removes deprecated functionality and changes some default behaviors, requiring a major version bump. There are some notable enhancements as well however.
+
+### Updating to 6.0.0
+
+Upgrading to version 6 requires existing SQLPad instances be running on a 5.x.x release. If version 4 or earlier is detected, startup and migration will be aborted.
+
+To upgrade, install and run via your preferred method. Version 6 has no data migrations other than a dummy migration to serve as a version marker. If you'd like to roll back to 5.x.x, you _should_ be able to run 5.8.4 on a 6.0.0 database.
+
+Database backups are encouraged however. Please follow good practices if your SQLPad use warrants it.
+
+### Multiple Result Sets
+
+Multiple result set support has been added to the UI. When executing multiple SQL statements at once, a summary table will show with the status of each SQL statement. Executing single statements works as it did before.
+
+Note that query visualization is locked to the last SQL statement in a batch.
+
+### Visualization Configuration Sidebar
+
+Visualization configuration has moved into a sidebar on the right. The existing chart button toggles its visibility.
+
+### Schema Context Menu
+
+A context menu has been added to the schema sidebar. When right-clicking schemas, tables, and columns, a menu will display with values that can be copied to the clipboard.
+
+### Query Dialog & Sharing Enhancments
+
+Query name, tags, and sharing have been moved to a dialog, appearing on initial save or click on query name in the toolbar. Query sharing has been enhanced, allowing queries to be shared with individual users as well as limit their ability to save changes to the query.
+
+### User Profile Dialog
+
+Users may now provide a name and change their email as well as password if local authentication is enabled.
+
+### Strict Configuration Checking
+
+Any environment variables set starting with `SQLPAD_` that are not known by SQLPad will raise an error and prevent SQLPad from starting up. This should help catch config issues early.
+
+### Breaking Changes
+
+- Removes password reset UI emails. Password reset URLs can still be generated in UI via an admin account
+- Removes Slack webhook. Use generic webhooks to build your own.
+- Removes deprecated configuration variables
+- Removes .json and .ini configuration file support
+- Removes open admin registration. `SQLPAD_ADMIN` should be used for initial account, or auto sign-up should be enabled when using compatible auth strategy.
+- Reduces default query result row limit to 10,000 (previously 50,000)
+- Server process exits on configuration error or unknown configuration key
+
+### Maintenance, Fixes, and UX
+
+- Updates dependencies
+- Fixes tag input leaving unselected value in input
+- Fixes clone/new URL not changing as expected
+- Fixes query-not-found experience, prompting user to start new query.
+- Simplifies query list (if too much open issue)
+- Increases SQL editor font size to 14
+
 ## [5.8.4] - 2020-11-04
 
 - Ensure port config value handled as number
