@@ -14,6 +14,18 @@ All other local auth users must be added by an admin within the users page. Othe
 
 Local authentication can be disabled by setting `SQLPAD_USERPASS_AUTH_DISABLED=true`.
 
+```bash
+# Email address to give admin permissions to.
+SQLPAD_ADMIN = ""
+
+# Password to set for admin email address on application start. Requires SQLPAD_ADMIN setting to also be provided.
+SQLPAD_ADMIN_PASSWORD = ""
+
+# Set to `true` to disable built-in local email/password authentication.
+# Useful when using other auths like OAuth or SAML.
+SQLPAD_USERPASS_AUTH_DISABLED = "false"
+```
+
 ## No Authentication
 
 ?> Available as of `4.2.0`
@@ -22,11 +34,19 @@ SQLPad can be configured to run without any authentication at all. This can be e
 
 If enabled, `SQLPAD_AUTH_DISABLED_DEFAULT_ROLE` is used to assign admin or editor role to users. Set to `editor` if you want to restrict SQLPad to connections defined via configuration.
 
+```bash
+# Set to `true` to disable authentication altogether.
+SQLPAD_AUTH_DISABLED = "false"
+# Specifies the role associated with users when SQLPAD_AUTH_DISABLED is set to true.
+# Acceptable values: `admin`, `editor`.
+SQLPAD_AUTH_DISABLED_DEFAULT_ROLE = "editor"
+```
+
 ## Auth Proxy
 
 ?> Available as of `4.2.0`
 
-!> When using this feature be sure to restrict access to SQLPad by listening to a restricted IP using `ip`/`SQLPAD_IP` configuration or other method
+!> When using this feature be sure to restrict access to SQLPad by listening to a restricted IP using `SQLPAD_IP` configuration or other method
 
 An HTTP reverse proxy may be used to handle authentication as of SQLPad `4.2.0` or later.
 
@@ -48,16 +68,28 @@ User fields available to map are:
 
 Auth proxy settings are as follows:
 
-```sh
-# Enable auth proxy authentication
-SQLPAD_AUTH_PROXY_ENABLED = true
-# Auto create user record if it does not exist
-SQLPAD_AUTH_PROXY_AUTO_SIGN_UP = true
-# default role to use if not provided by header
+```bash
+# Enable auth proxy authentication support
+SQLPAD_AUTH_PROXY_ENABLED = false
+
+# Auto create a user record if it does not exist when new user is detected via auth proxy
+SQLPAD_AUTH_PROXY_AUTO_SIGN_UP = false
+
+# Default role to assign user created when `authProxyAutoSignUp` is turned on.
+# By default this is an empty-string and not used, expecting a role to be provided via header-mapping.
 SQLPAD_AUTH_PROXY_DEFAULT_ROLE = editor
-# header mappings space-delimited.
-# convention is <user-field-to-map-to>:<header-name-to-use-for-value>
-SQLPAD_AUTH_PROXY_HEADERS = "id:X-WEBAUTH-ID email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME role:X-WEBAUTH-ROLE data.customField:X-WEBAUTH-CUSTOM-FIELD"
+
+# Space-delimited HTTP header mappings to use to derive user information.
+# Convention is <user-field-to-map-to>:<header-name-to-use-for-value>.
+#
+# A mapping to `email` is required at a minimum assuming `authProxyDefaultRole` is set.
+# Otherwise `role`, `id`, `name` and `data.<customField>` fields may be set.
+#
+# When supplying both `id` and `email`, `id` will be used for user matching instead of `email`,
+# updating SQLPad user `email` fields when they change (assuming `id` is not changing).
+#
+# Example value: "id:X-WEBAUTH-ID email:X-WEBAUTH-EMAIL name:X-WEBAUTH-NAME role:X-WEBAUTH-ROLE data.customField:X-WEBAUTH-CUSTOM-FIELD"
+SQLPAD_AUTH_PROXY_HEADERS = ""
 ```
 
 ## Google OAuth
@@ -74,18 +106,28 @@ Next you'll need to set your JavaScript origins and redirect URIs. If you're tes
 Once the Google API config is set, configure the required settings in SQLPad.
 For OAuth to be useful this usually involves the following:
 
-- `SQLPAD_GOOGLE_CLIENT_ID`
-- `SQLPAD_GOOGLE_CLIENT_SECRET`
-- `PUBLIC_URL`=`http://localhost`
-- `SQLPAD_USERPASS_AUTH_DISABLED`=`true` (optional - disables plain local user logins)
+```bash
+# Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
+SQLPAD_GOOGLE_CLIENT_ID = ""
+
+# Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
+SQLPAD_GOOGLE_CLIENT_SECRET = ""
+
+# Public URL required
+PUBLIC_URL = "http://localhost"
+
+# Optional. Disables local email/password login
+SQLPAD_USERPASS_AUTH_DISABLED = true
+```
 
 ## OpenID Connect
 
 OpenID Connect authentication can be enabled by setting the following required environment variables:
 
-```sh
+```bash
 # localhost used in dev
 PUBLIC_URL = "http://localhost:3010"
+
 SQLPAD_OIDC_CLIENT_ID = "actual-client-id"
 SQLPAD_OIDC_CLIENT_SECRET = "actual-client-secret"
 # URLs will vary by provider
@@ -93,6 +135,9 @@ SQLPAD_OIDC_ISSUER = "https://some.openidprovider.com/oauth2/default"
 SQLPAD_OIDC_AUTHORIZATION_URL = "https://some.openidprovider.com/oauth2/default/v1/authorize"
 SQLPAD_OIDC_TOKEN_URL = "https://some.openidprovider.com/oauth2/default/v1/token"
 SQLPAD_OIDC_USER_INFO_URL = "https://some.openidprovider.okta.com/oauth2/default/v1/userinfo"
+
+# HTML code for the sign-in link used for starting Open ID authentication.
+SQLPAD_OIDC_LINK_HTML = "Sign in with OpenID"
 ```
 
 The callback redirect URI used by SQLPad is `<baseurl>/auth/oidc/callback`.
@@ -101,7 +146,7 @@ For the above configuration, assuming `SQLPAD_BASE_URL = "/sqlpad"`, the callbac
 
 The contents of the OpenID sign in button can be customized with the following
 
-```sh
+```bash
 SQLPAD_OIDC_LINK_HTML = "text or inner html here"
 ```
 
@@ -109,7 +154,7 @@ Prior to authenticating via OpenID, users must still be added to SQLPad with the
 
 This can be bypassed by using allowed domains to auto-add users for emails belonging to certain domains.
 
-```sh
+```bash
 # space delimited list of domains to allow
 SQLPAD_ALLOWED_DOMAINS = "mycompany.com"
 ```
@@ -118,44 +163,96 @@ SQLPAD_ALLOWED_DOMAINS = "mycompany.com"
 
 SAML-based authentication can be enabled by setting the necessary environment variables:
 
-- `SQLPAD_SAML_LINK_HTML`
-- `SQLPAD_SAML_AUTH_CONTEXT`
-- `SQLPAD_SAML_CALLBACK_URL`
-- `SQLPAD_SAML_CERT`
-- `SQLPAD_SAML_ENTRY_POINT`
-- `SQLPAD_SAML_ISSUER`
-- `SQLPAD_SAML_AUTO_SIGN_UP`
-- `SQLPAD_SAML_DEFAULT_ROLE`
-- `PUBLIC_URL`
-- `SQLPAD_USERPASS_AUTH_DISABLED`=`true` (optional - disables plain local user logins)
+```bash
+# SAML authentication context URL.
+# A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`
+SQLPAD_SAML_AUTH_CONTEXT = ""
+
+# SAML callback URL.
+# It will generally be constructed from the deployment's internet address and the fixed route.
+# For example: `https://mysqlpad.com/login/callback`.
+SQLPAD_SAML_CALLBACK_URL = ""
+
+# SAML certificate in Base64
+SQLPAD_SAML_CERT = ""
+
+# Entry point url
+SQLPAD_SAML_ENTRY_POINT = ""
+
+SQLPAD_SAML_ISSUER = ""
+
+# HTML code for the sign-in link used for starting SAML authentication.
+SQLPAD_SAML_LINK_HTML = "Sign in with SSO"
+
+# Auto create a user record if it does not exist when new user is detected via SAML.
+SQLPAD_SAML_AUTO_SIGN_UP = "false"
+
+# Default role to assign user created when SQLPAD_SAML_AUTO_SIGN_UP is turned on.
+# Accepted values are `editor` and `admin`.
+SQLPAD_SAML_DEFAULT_ROLE = "editor"
+
+# Public URL required
+PUBLIC_URL = "http://localhost"
+
+# Optional. Disables local email/password login
+SQLPAD_USERPASS_AUTH_DISABLED = true
+```
 
 SQLPad users do not need to be added ahead of time, and may be created on the fly using `SQLPAD_SAML_AUTO_SIGN_UP`. Whenever a new user is detected (unable to match to existing user email), a user record will be added to SQLPad's user table and a user signed in. By default users are not auto-created and must otherwise be added ahead of time.
 
-## LDAP (Experimental)
+## LDAP
 
 ?> Available as of 5.8.0
 
 LDAP-based authentication can be enabled by setting the necessary environment variables:
 
-- `SQLPAD_LDAP_AUTH_ENABLED` - Set to TRUE if LDAP enable, FALSE if LDAP disable.
-- `SQLPAD_LDAP_URL` - LDAP URL that supports protocols: `ldap://` and `ldaps://`, eg: `ldap://localhost:389`.
-- `SQLPAD_LDAP_SEARCH_BASE` - Base LDAP DN to search for users in, eg: `dc=domain,dc=com`.
-- `SQLPAD_LDAP_BIND_DN` - The bind user will be used to lookup information about other LDAP users.
-- `SQLPAD_LDAP_PASSWORD` - The password to bind with for the lookup user.
-- `SQLPAD_LDAP_SEARCH_FILTER` - LDAP search filter, e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory. Use literal {{username}} to have the given username used in the search.
-- `SQLPAD_USERPASS_AUTH_DISABLED`=`false` (need to enable local user logins)
-- `SQLPAD_LDAP_AUTO_SIGN_UP`=`true` (auto sign up ldap users)
-- `SQLPAD_LDAP_ROLE_ADMIN_FILTER` - LDAP filter used to determine if a user should be assigned SQLPad admin role
-- `SQLPAD_LDAP_ROLE_EDITOR_FILTER` - LDAP filter used to determine if a user should be assigned SQLPad editor role
-- `SQLPAD_LDAP_DEFAULT_ROLE`- Default role for users that do not match LDAP role filters. May be either `admin`, `editor`, `denied`, or empty. If `denied` or empty, a user _must_ match an LDAP role filter to be admitted into SQLPad, unless they are previously created as a SQLPad user in advanced.
+```bash
+# Set to "true" to enable LDAP authentication
+SQLPAD_LDAP_AUTH_ENABLED = "false"
+
+# LDAP URL that supports protocols: `ldap://` and `ldaps://`
+# Examples: `ldap://localhost:389`, `ldaps://ad.corporate.com:636`
+SQLPAD_LDAP_URL = ""
+
+# Base LDAP DN to search for users in, eg: `dc=domain,dc=com`.
+SQLPAD_LDAP_SEARCH_BASE = ""
+
+# Username for LDAP lookup
+# The bind user will be used to lookup information about other LDAP users.
+SQLPAD_LDAP_BIND_DN = ""
+
+# Password for LDAP user used for LDAP lookup
+SQLPAD_LDAP_PASSWORD = ""
+
+# LDAP search filter, e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory. Use literal {{username}} to have the given username used in the search.
+SQLPAD_LDAP_SEARCH_FILTER = ""
+
+# Disable local auth if preferred
+SQLPAD_USERPASS_AUTH_DISABLED = false
+
+# Auto sign up LDAP users
+SQLPAD_LDAP_AUTO_SIGN_UP = true
+
+# LDAP filter used to determine if a user should be assigned SQLPad admin role
+SQLPAD_LDAP_ROLE_ADMIN_FILTER = ""
+
+# LDAP filter used to determine if a user should be assigned SQLPad editor role
+SQLPAD_LDAP_ROLE_EDITOR_FILTER = ""
+
+# Default role for users that do not match LDAP role filters. May be either `admin`, `editor`, `denied`, or empty.
+# If `denied` or empty, a user _must_ match an LDAP role filter to be admitted into SQLPad, unless they are previously created as a SQLPad user in advanced.
+SQLPAD_LDAP_DEFAULT_ROLE = ""
+```
+
+### Role-based LDAP
 
 To assign roles via LDAP-RBAC, you may specify additional LDAP user filters to ensure the user fits a particular role or group.
 
-?> Roles assigned via LDAP will sync on every login if user was created by auto sign up. This can be changed per-user in user add/edit UI forms.
+Roles assigned via LDAP will sync on every login if user was created by auto sign up. This can be changed per-user in user add/edit UI forms.
 
 For example, if your LDAP implementation supports `memberOf`, you may decide to use group DN values. In this case two groups are needed, one for editors and one for admins.
 
-```sh
+```bash
 SQLPAD_LDAP_SEARCH_FILTER = "(&(|(memberOf=cn=sqlpad-editors,dc=example,dc=com)(memberOf=cn=sqlpad-admins,dc=example,dc=com))(uid={{username}}))"
 SQLPAD_LDAP_ROLE_ADMIN_FILTER = "(memberOf=cn=sqlpad-admins,dc=example,dc=com)"
 SQLPAD_LDAP_ROLE_EDITOR_FILTER = "(memberOf=cn=sqlpad-editors,dc=example,dc=com)"
@@ -163,14 +260,16 @@ SQLPAD_LDAP_ROLE_EDITOR_FILTER = "(memberOf=cn=sqlpad-editors,dc=example,dc=com)
 
 The role filters will be combined with the `uid`/`sAMAccountName` filter depending on the profile returned. For example, the `SQLPAD_LDAP_ROLE_ADMIN_FILTER` above would become `(&(memberOf=cn=sqlpad-admins,dc=example,dc=com)(uid=username))` for OpenLDAP or `(&(memberOf=cn=sqlpad-admins,dc=example,dc=com)(sAMAccountName=username))` for ActiveDirectory.
 
-The above example could be simplified, as users that do not match a role filter will not be allowed in unless `SQLPAD_LDAP_DEFAULT_ROLE` is also set.
+The above example could be simplified to the following, as users that do not match a role filter will not be allowed in unless `SQLPAD_LDAP_DEFAULT_ROLE` is also set:
 
-```sh
+```bash
 # Initial search filter authenticates anyone found in LDAP
 SQLPAD_LDAP_SEARCH_FILTER = "(uid={{username}})"
+
 # User must then match one of these filters
 SQLPAD_LDAP_ROLE_ADMIN_FILTER = "(memberOf=cn=sqlpad-admins,dc=example,dc=com)"
 SQLPAD_LDAP_ROLE_EDITOR_FILTER = "(memberOf=cn=sqlpad-editors,dc=example,dc=com)"
+
 # If a match is not found by role filter, default role will be used if set.
 # If not set, or set to "denied", the user will not be allowed in unless previously added manually in SQLPad UI
 SQLPAD_LDAP_DEFAULT_ROLE = "denied"
@@ -192,7 +291,7 @@ To generate a service token, log into SQLPad as an `admin` user and click `Servi
 
 The generated Bearer token may be used by passing it via the Authorization header:
 
-```sh
+```bash
 curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/sqlpad/api/users
 ```
 

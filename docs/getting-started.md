@@ -4,15 +4,13 @@
 
 There are 2 options to run SQLPad: Install [Node.js](https://nodejs.org/) and [build and run SQLPad from the git repository](https://github.com/sqlpad/sqlpad/blob/master/DEVELOPER-GUIDE.md), or use the [docker images on Docker Hub](https://hub.docker.com/r/sqlpad/sqlpad/).
 
-SQLPad does not require any additional servers other than its own self. By default it uses SQLite and the file system for storing queries, query results, and web sessions. SQLite may be replaced with an external database using the `SQLPAD_BACKEND_DB_URI` environment variable as of v5.
-
-The `SQLPAD_DB_PATH` must still be provided however, as it is used for sessions and query result storage. This requirement will be removed in a later 5.x release.
+SQLPad does not require any additional servers other than its own self. By default it uses SQLite and the file system for storing queries, query results, and web sessions. SQLite may be replaced with an external database using the `SQLPAD_BACKEND_DB_URI` environment variable as of v5. See [backend database configuration](/configuration?id=backend-database-management) for more info.
 
 The docker image runs on port 3000 by default and stores its local database files at `/var/lib/sqlpad`. See [docker-examples](https://github.com/sqlpad/sqlpad/tree/master/docker-examples) directory for example docker-compose setup with SQL Server and others.
 
 ## Releases & Versioning
 
-SQLPad tries to follow semantic versioning. As an application, this primarily means breaking HTTP API changes, breaking configuration changes, or major UI design changes will result in a major version bump. Minor and patch version bumps will consist of enhancements and fixes.
+SQLPad version strategy is inspired by [semantic versioning](https://semver.org/). Major version bumps will occur when there are breaking HTTP API changes, breaking configuration changes, removal of functionality, or major UI design changes. Minor and patch version bumps will consist of enhancements and fixes.
 
 The `latest` tag on Docker Hub is continuously built from latest commit from the `master` branch in GitHub. Do not use it unless you are okay experiencing a work-in-progress. It should be functional, but may not be stable or final.
 
@@ -22,20 +20,25 @@ To update SQLPad:
 
 1. Pull in the latest code or Docker image
 1. Shut down existing SQLPad instance(s)
-1. Take a backup,
+1. Take a backup of [backing database](/configuration?id=backend-database-management)
 1. Run the updated code/image.
 
 SQLPad runs its own migrations at application start, ensuring the schema is up-to-date.
 
-Prior to updating, it is recommended to take a backup of SQLPad's database files. These are located under the path specified by environment variable `SQLPAD_DB_PATH`. In the past these files used to default to the users home directory under `~/sqlpad/db`. In the official docker image, this path is set to `/var/lib/sqlpad`.
-
 ## Database Migrations
+
+!> When running multiple instances of SQLPad against a single backing database, auto migrate could cause race conditions
 
 Migrations are run at application start by default, ensuring your SQLPad database schema is always up-to-date with the required version.
 
 This can be disabled and migrations can instead be run as needed if preferred. To disable automigration, set `SQLPAD_DB_AUTOMIGRATE` to `false`. To run migrations manually, provide cli flag `--migrate` when running `server.js` or set `SQLPAD_MIGRATE` to `true`. When flagged, the process will run migrations and exit on completion.
 
 If automigration is disabled and SQLPad detects migrations that have not run, SQLPad will exit with a non-zero exit code on start up.
+
+If running multiple instances of SQLPad against a single backing database, be sure to adjust migration strategy accordingly. Multiple instances of SQLPad starting at once will likely cause a race condition at migration time. A few approaches to avoid this:
+
+- Start one instance of SQLPad, and delay starting others until the first accepts HTTP connections
+- Run migrations using `SQLPAD_MIGRATE` or `--migrate`, and start SQLPad instances once finished
 
 ## Terminology
 

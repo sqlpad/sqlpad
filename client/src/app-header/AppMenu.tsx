@@ -15,23 +15,25 @@ function AppMenu() {
   const [showProfile, setShowProfile] = useState(false);
   const history = useHistory();
 
-  let hideSignOut = false;
+  let hideUserItems = false;
   if (!currentUser || currentUser.id === 'noauth') {
-    hideSignOut = true;
+    hideUserItems = true;
   }
 
   return (
     <div>
       <IconMenu variant="ghost" icon={<DotsVerticalIcon aria-label="menu" />}>
-        <MenuItem onSelect={() => setShowProfile(true)}>Profile</MenuItem>
+        <MenuItem hidden={hideUserItems} onSelect={() => setShowProfile(true)}>
+          Profile
+        </MenuItem>
         <MenuItem onSelect={() => setShowAbout(true)}>About</MenuItem>
         <MenuItem
+          hidden={hideUserItems}
           onSelect={async () => {
             await api.signout();
             history.push(`/signin`);
             resetState();
           }}
-          hidden={hideSignOut}
         >
           Sign out
         </MenuItem>
