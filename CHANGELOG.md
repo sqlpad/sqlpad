@@ -40,7 +40,7 @@ Query name, tags, and sharing have been moved to a dialog, appearing on initial 
 
 A context menu has been added to the schema sidebar. When right-clicking schemas, tables, and columns, a menu will display with values that can be copied to the clipboard.
 
-<img src="https://user-images.githubusercontent.com/303966/97794218-07e6b700-1bc5-11eb-894a-36611851af75.png" width="300" alt="schema context menu">
+<img src="https://user-images.githubusercontent.com/303966/99920524-cb047080-2ce9-11eb-8833-7e60bfe9f7c3.png" width="300" alt="schema context menu">
 
 ### User Profile Dialog
 
