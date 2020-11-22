@@ -46,7 +46,7 @@ SQLPAD_AUTH_DISABLED_DEFAULT_ROLE = "editor"
 
 ?> Available as of `4.2.0`
 
-!> When using this feature be sure to restrict access to SQLPad by listening to a restricted IP using `ip`/`SQLPAD_IP` configuration or other method
+!> When using this feature be sure to restrict access to SQLPad by listening to a restricted IP using `SQLPAD_IP` configuration or other method
 
 An HTTP reverse proxy may be used to handle authentication as of SQLPad `4.2.0` or later.
 
