@@ -195,6 +195,8 @@ SQLPAD_APP_LOG_LEVEL = 'info'
 SQLPAD_WEB_LOG_LEVEL = 'info
 ```
 
+See [logging](/logging) for log examples.
+
 ## HTTPS
 
 HTTPS may be configured to be used by SQLPad directly. However if performance becomes an issue, consider [using a reverse proxy](https://github.com/goldbergyoni/nodebestpractices/blob/master/sections/production/delegatetoproxy.md).
@@ -208,129 +210,6 @@ SQLPAD_HTTPS_KEY_PATH = ""
 SQLPAD_HTTPS_CERT_PASSPHRASE = ""
 ```
 
-## No Authentication
+## Authentication
 
-Authentication may be disabled altogether, resulting in a single "user" being automatically added and used for any visit to SQLPad.
-
-```bash
-# Set to `true` to disable authentication altogether.
-SQLPAD_AUTH_DISABLED = "false"
-# Specifies the role associated with users when SQLPAD_AUTH_DISABLED is set to true.
-# Acceptable values: `admin`, `editor`.
-SQLPAD_AUTH_DISABLED_DEFAULT_ROLE = "editor"
-```
-
-## Local Email & Password Authentication
-
-Local authentication is enabled by default. The default admin email and password may be provided via configuration. This configuration can also be used to "reset" an admin's password if ever forgotten.
-
-```bash
-# Email address to give admin permissions to.
-SQLPAD_ADMIN = ""
-
-# Password to set for admin email address on application start. Requires SQLPAD_ADMIN setting to also be provided.
-SQLPAD_ADMIN_PASSWORD = ""
-
-# Set to `true` to disable built-in local email/password authentication.
-# Useful when using other auths like OAuth or SAML.
-SQLPAD_USERPASS_AUTH_DISABLED = "false"
-```
-
-## Authentication Proxy
-
-```bash
-# Enable auth proxy authentication support
-SQLPAD_AUTH_PROXY_ENABLED = "false"
-
-# Auto create a user record if it does not exist when new user is detected via auth proxy
-SQLPAD_AUTH_PROXY_AUTO_SIGN_UP = "false"
-
-# Default role to assign user created when `authProxyAutoSignUp` is turned on.
-# By default this is an empty-string and not used, expecting a role to be provided via header-mapping.
-SQLPAD_AUTH_PROXY_DEFAULT_ROLE = ""
-
-# Space-delimited field:header mappings to use to derive user information from HTTP headers.
-# A mapping to `email` is required at a minimum assuming `authProxyDefaultRole` is set.
-# Otherwise `role`, `id`, `name` and `data.<customField>` fields may be set.
-#
-# When supplying both `id` and `email`, `id` will be used for user matching instead of `email`,
-# updating SQLPad user `email` fields when they change (assuming `id` is not changing).
-SQLPAD_AUTH_PROXY_HEADERS = ""
-```
-
-## Google Authentication
-
-```bash
-# Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-SQLPAD_GOOGLE_CLIENT_ID = ""
-
-# Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-SQLPAD_GOOGLE_CLIENT_SECRET = ""
-```
-
-## LDAP
-
-```bash
-# Set to "true" to enable LDAP authentication
-SQLPAD_LDAP_AUTH_ENABLED = "false"
-
-# LDAP server URL. Examples: `ldap://localhost:389`, `ldaps://ad.corporate.com:636`
-SQLPAD_LDAP_URL = ""
-
-# Base LDAP DN to search for users in
-SQLPAD_LDAP_SEARCH_BASE = ""
-
-# Username for LDAP lookup
-SQLPAD_LDAP_BIND_DN = ""
-
-# Password for LDAP user used for LDAP lookup
-SQLPAD_LDAP_PASSWORD = ""
-
-# LDAP search filter. e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory
-SQLPAD_LDAP_SEARCH_FILTER = ""
-```
-
-## OpenID Connect
-
-```bash
-SQLPAD_OIDC_CLIENT_ID = ""
-SQLPAD_OIDC_CLIENT_SECRET = ""
-SQLPAD_OIDC_ISSUER = ""
-SQLPAD_OIDC_AUTHORIZATION_URL = ""
-SQLPAD_OIDC_TOKEN_URL = ""
-SQLPAD_OIDC_USER_INFO_URL = ""
-# HTML code for the sign-in link used for starting SAML authentication.
-SQLPAD_OIDC_LINK_HTML = "Sign in with OpenID"
-```
-
-## SAML
-
-```bash
-# SAML authentication context URL.
-# A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`
-SQLPAD_SAML_AUTH_CONTEXT = ""
-
-# SAML callback URL.
-# It will generally be constructed from the deployment's internet address and the fixed route.
-# For example: `https://mysqlpad.com/login/callback`.
-
-SQLPAD_SAML_CALLBACK_URL = ""
-# SAML certificate in Base64
-
-SQLPAD_SAML_CERT = ""
-
-# Entry point url
-SQLPAD_SAML_ENTRY_POINT = ""
-
-SQLPAD_SAML_ISSUER = ""
-
-# HTML code for the sign-in link used for starting SAML authentication.
-SQLPAD_SAML_LINK_HTML = "Sign in with SSO"
-
-# Auto create a user record if it does not exist when new user is detected via SAML.
-SQLPAD_SAML_AUTO_SIGN_UP = "false"
-
-# Default role to assign user created when SQLPAD_SAML_AUTO_SIGN_UP is turned on.
-# Accepted values are `editor` and `admin`.
-SQLPAD_SAML_DEFAULT_ROLE = "editor"
-```
+See [Authentication page](/authentication) for information on configuring authentication mechanisms.
