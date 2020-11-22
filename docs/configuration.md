@@ -120,12 +120,13 @@ SQLPAD_REDIS_URI = ""
 
 SQLPad may be configured to use SQLite, PostgreSQL, MySQL, MariaDB, or SQL Server as a backing database.
 
-To use SQLite, all that must be set is `SQLPAD_DB_PATH`, and a `sqlite` file will be created on application start.
+To use SQLite, all that must be set is `SQLPAD_DB_PATH`, and a `sqlite` file will be created on application start. In the official docker image, this path is set to `/var/lib/sqlpad`.
 
 To use a different backend database, set `SQLPAD_BACKEND_DB_URI` to the desired target database.
 
 ```bash
 # Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.
+# In the official docker image, this path is set to `/var/lib/sqlpad`.
 SQLPAD_DB_PATH = ""
 
 # You can specify an external database to be used instead of the local sqlite database,
