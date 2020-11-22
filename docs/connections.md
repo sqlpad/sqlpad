@@ -36,7 +36,7 @@ Every connection defined should provide a `name` and `driver` value, with driver
 
 Example for a MySQL connection with id `prod123`.
 
-```sh
+```bash
 SQLPAD_CONNECTIONS__prod123__name="Production 123"
 SQLPAD_CONNECTIONS__prod123__driver=mysql
 SQLPAD_CONNECTIONS__prod123__host=localhost

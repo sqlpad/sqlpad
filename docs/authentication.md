@@ -48,7 +48,7 @@ User fields available to map are:
 
 Auth proxy settings are as follows:
 
-```sh
+```bash
 # Enable auth proxy authentication
 SQLPAD_AUTH_PROXY_ENABLED = true
 # Auto create user record if it does not exist
@@ -83,7 +83,7 @@ For OAuth to be useful this usually involves the following:
 
 OpenID Connect authentication can be enabled by setting the following required environment variables:
 
-```sh
+```bash
 # localhost used in dev
 PUBLIC_URL = "http://localhost:3010"
 SQLPAD_OIDC_CLIENT_ID = "actual-client-id"
@@ -101,7 +101,7 @@ For the above configuration, assuming `SQLPAD_BASE_URL = "/sqlpad"`, the callbac
 
 The contents of the OpenID sign in button can be customized with the following
 
-```sh
+```bash
 SQLPAD_OIDC_LINK_HTML = "text or inner html here"
 ```
 
@@ -109,7 +109,7 @@ Prior to authenticating via OpenID, users must still be added to SQLPad with the
 
 This can be bypassed by using allowed domains to auto-add users for emails belonging to certain domains.
 
-```sh
+```bash
 # space delimited list of domains to allow
 SQLPAD_ALLOWED_DOMAINS = "mycompany.com"
 ```
@@ -155,7 +155,7 @@ To assign roles via LDAP-RBAC, you may specify additional LDAP user filters to e
 
 For example, if your LDAP implementation supports `memberOf`, you may decide to use group DN values. In this case two groups are needed, one for editors and one for admins.
 
-```sh
+```bash
 SQLPAD_LDAP_SEARCH_FILTER = "(&(|(memberOf=cn=sqlpad-editors,dc=example,dc=com)(memberOf=cn=sqlpad-admins,dc=example,dc=com))(uid={{username}}))"
 SQLPAD_LDAP_ROLE_ADMIN_FILTER = "(memberOf=cn=sqlpad-admins,dc=example,dc=com)"
 SQLPAD_LDAP_ROLE_EDITOR_FILTER = "(memberOf=cn=sqlpad-editors,dc=example,dc=com)"
@@ -165,7 +165,7 @@ The role filters will be combined with the `uid`/`sAMAccountName` filter dependi
 
 The above example could be simplified, as users that do not match a role filter will not be allowed in unless `SQLPAD_LDAP_DEFAULT_ROLE` is also set.
 
-```sh
+```bash
 # Initial search filter authenticates anyone found in LDAP
 SQLPAD_LDAP_SEARCH_FILTER = "(uid={{username}})"
 # User must then match one of these filters
@@ -192,7 +192,7 @@ To generate a service token, log into SQLPad as an `admin` user and click `Servi
 
 The generated Bearer token may be used by passing it via the Authorization header:
 
-```sh
+```bash
 curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/sqlpad/api/users
 ```
 

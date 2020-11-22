@@ -9,7 +9,7 @@ SQLPad may be configured via environment variables or an .env config file.
 Config file path may be specified passing command line option `--config` or environment variable `SQLPAD_CONFIG`.
 For example:
 
-```sh
+```bash
 node server.js --config path/to/.env
 # or
 env SQLPAD_CONFIG=path/to/.env node server.js
@@ -175,7 +175,7 @@ To generate a service token, log into SQLPad as an `admin` user and click `Servi
 
 The generated Bearer token may be used by passing it via the Authorization header:
 
-```sh
+```bash
 curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/sqlpad/api/users
 ```
 
