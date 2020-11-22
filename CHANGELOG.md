@@ -12,27 +12,41 @@ To upgrade, install and run via your preferred method. Version 6 has no data mig
 
 Database backups are encouraged however. Please follow good practices if your SQLPad use warrants it.
 
+### Visualization Configuration Sidebar
+
+Visualization configuration has moved into a sidebar on the right. The existing chart button toggles its visibility.
+
+<img src="https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png" width="1000" alt="visualization sidebar">
+
 ### Multiple Result Sets
 
 Multiple result set support has been added to the UI. When executing multiple SQL statements at once, a summary table will show with the status of each SQL statement. Executing single statements works as it did before.
 
 Note that query visualization is locked to the last SQL statement in a batch.
 
-### Visualization Configuration Sidebar
+<img src="https://user-images.githubusercontent.com/303966/99915844-ca5ce180-2ccb-11eb-8277-08f8b33c6eea.png" alt="multiple results running">
 
-Visualization configuration has moved into a sidebar on the right. The existing chart button toggles its visibility.
+<img src="https://user-images.githubusercontent.com/303966/99915855-e1033880-2ccb-11eb-8169-52590bec6957.png" alt="multiple results error">
 
-### Schema Context Menu
-
-A context menu has been added to the schema sidebar. When right-clicking schemas, tables, and columns, a menu will display with values that can be copied to the clipboard.
+<img src="https://user-images.githubusercontent.com/303966/99917088-aef5d480-2cd3-11eb-8d90-32bddf3f927e.png" alt="multiple results statement drill down">
 
 ### Query Dialog & Sharing Enhancments
 
 Query name, tags, and sharing have been moved to a dialog, appearing on initial save or click on query name in the toolbar. Query sharing has been enhanced, allowing queries to be shared with individual users as well as limit their ability to save changes to the query.
 
+<img src="https://user-images.githubusercontent.com/303966/99915798-6cc89500-2ccb-11eb-9fec-d2b50c5c1fd2.png" width="400" alt="query dialog and sharing enhancements">
+
+### Schema Context Menu
+
+A context menu has been added to the schema sidebar. When right-clicking schemas, tables, and columns, a menu will display with values that can be copied to the clipboard.
+
+<img src="https://user-images.githubusercontent.com/303966/97794218-07e6b700-1bc5-11eb-894a-36611851af75.png" width="300" alt="schema context menu">
+
 ### User Profile Dialog
 
 Users may now provide a name and change their email as well as password if local authentication is enabled.
+
+<img src="https://user-images.githubusercontent.com/303966/99915807-7e11a180-2ccb-11eb-98ce-0db2a0e61ee7.png" width="400" alt="user profile dialog">
 
 ### Strict Configuration Checking
 
@@ -50,13 +64,13 @@ Any environment variables set starting with `SQLPAD_` that are not known by SQLP
 
 ### Maintenance, Fixes, and UX
 
-- Updates dependencies
-- Fixes tag input leaving unselected value in input
-- Fixes clone/new URL not changing as expected
-- Fixes query-not-found experience, prompting user to start new query.
-- Fixes reusing connection clients on query change (See issue #806)
+- Adds query-not-found dialog, prompting user to start new query.
 - Simplifies query list (if too much open issue)
 - Increases SQL editor font size to 14
+- Fixes tag input leaving unselected value in input
+- Fixes clone/new URL not changing as expected
+- Fixes reusing connection clients on query change (See issue #806)
+- Updates dependencies
 
 ## [5.8.4] - 2020-11-04
 
