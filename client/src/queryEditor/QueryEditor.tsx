@@ -1,115 +1,51 @@
-import debounce from 'lodash/debounce';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
-import { resizeChart } from '../common/tauChartRef';
+import { debouncedResizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
-import SchemaSidebar from '../schema/SchemaSidebar';
-import {
-  connectConnectionClient,
-  loadQuery,
-  resetNewQuery,
-} from '../stores/editor-actions';
-import {
-  useSessionChartType,
-  useSessionShowSchema,
-} from '../stores/editor-store';
+import { connectConnectionClient, loadQuery } from '../stores/editor-actions';
+import useShortcuts from '../utilities/use-shortcuts';
 import DocumentTitle from './DocumentTitle';
-import QueryEditorChart from './QueryEditorChart';
-import QueryEditorChartToolbar from './QueryEditorChartToolbar';
-import QueryEditorResult from './QueryEditorResult';
+import EditorPaneRightSidebar from './EditorPaneRightSidebar';
+import EditorPaneSchemaSidebar from './EditorPaneSchemaSidebar';
+import EditorPaneVis from './EditorPaneVis';
+import NotFoundModal from './NotFoundModal';
+import QueryEditorResultPane from './QueryEditorResultPane';
 import QueryEditorSqlEditor from './QueryEditorSqlEditor';
-import QueryResultHeader from './QueryResultHeader';
-import Shortcuts from './Shortcuts';
-import Toolbar from './toolbar/Toolbar';
+import QuerySaveModal from './QuerySaveModal';
+import Toolbar from './Toolbar';
 import UnsavedQuerySelector from './UnsavedQuerySelector';
 
-const deboucedResearchChart = debounce(resizeChart, 700);
+interface Params {
+  queryId?: string;
+}
 
-type Props = {
-  queryId: string;
-};
+function QueryEditor() {
+  const [showNotFound, setShowNotFound] = useState(false);
+  const { queryId = '' } = useParams<Params>();
+  useShortcuts();
 
-function QueryEditor(props: Props) {
-  const { queryId } = props;
-  const chartType = useSessionChartType();
-  const showVis = Boolean(chartType);
-
-  // Once initialized reset or load query on changes accordingly
+  // On queryId change from URL string, load query as needed.
+  // If queryId does not exist, it is because the route is hitting `/queries/new` which avoids sending a queryId param
+  // In the case of new query, the state is already set.
+  // Either user landed here fresh (new query is set by default)
+  // or they clicked new query button, which resets state on click.
+  // Calling resetNewQuery here should not be necessary.
+  // If query is not found, show the not found modal to inform user and prompt to start new query.
   useEffect(() => {
-    if (queryId === 'new') {
-      resetNewQuery();
+    setShowNotFound(false);
+    if (queryId === '') {
       connectConnectionClient();
-    } else {
-      loadQuery(queryId).then(() => connectConnectionClient());
+    } else if (queryId) {
+      loadQuery(queryId).then(({ error, data }) => {
+        if (error || !data) {
+          return setShowNotFound(true);
+        }
+        connectConnectionClient();
+      });
     }
   }, [queryId]);
-
-  function handleVisPaneResize() {
-    deboucedResearchChart(queryId);
-  }
-
-  const showSchema = useSessionShowSchema();
-
-  const editorAndVis = showVis ? (
-    <SplitPane
-      key="editorAndVis"
-      split="vertical"
-      defaultSize={'50%'}
-      maxSize={-200}
-      onChange={handleVisPaneResize}
-    >
-      <QueryEditorSqlEditor />
-      <div style={{ position: 'absolute' }} className="h-100 w-100">
-        <QueryEditorChartToolbar>
-          <QueryEditorChart />
-        </QueryEditorChartToolbar>
-      </div>
-    </SplitPane>
-  ) : (
-    <QueryEditorSqlEditor />
-  );
-
-  const editorResultPane = (
-    <SplitPane
-      split="horizontal"
-      minSize={100}
-      defaultSize={'60%'}
-      maxSize={-100}
-      onChange={handleVisPaneResize}
-    >
-      {editorAndVis}
-      <div>
-        <QueryResultHeader />
-        <div
-          style={{
-            position: 'absolute',
-            top: 30,
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          <QueryEditorResult />
-        </div>
-      </div>
-    </SplitPane>
-  );
-
-  const sqlTabPane = showSchema ? (
-    <SplitPane
-      split="vertical"
-      minSize={150}
-      defaultSize={280}
-      maxSize={-100}
-      onChange={handleVisPaneResize}
-    >
-      <SchemaSidebar />
-      {editorResultPane}
-    </SplitPane>
-  ) : (
-    editorResultPane
-  );
 
   return (
     <div
@@ -122,11 +58,29 @@ function QueryEditor(props: Props) {
     >
       <AppHeader />
       <Toolbar />
-      <div style={{ position: 'relative', flexGrow: 1 }}>{sqlTabPane}</div>
+      <div style={{ position: 'relative', flexGrow: 1 }}>
+        <EditorPaneRightSidebar queryId={queryId}>
+          <EditorPaneSchemaSidebar queryId={queryId}>
+            <SplitPane
+              split="horizontal"
+              minSize={100}
+              defaultSize={'60%'}
+              maxSize={-100}
+              onChange={() => debouncedResizeChart(queryId)}
+            >
+              <EditorPaneVis queryId={queryId}>
+                <QueryEditorSqlEditor />
+              </EditorPaneVis>
+              <QueryEditorResultPane />
+            </SplitPane>
+          </EditorPaneSchemaSidebar>
+        </EditorPaneRightSidebar>
+      </div>
       <UnsavedQuerySelector queryId={queryId} />
       <DocumentTitle queryId={queryId} />
-      <Shortcuts />
       <SchemaInfoLoader />
+      <QuerySaveModal />
+      <NotFoundModal visible={showNotFound} queryId={queryId} />
     </div>
   );
 }

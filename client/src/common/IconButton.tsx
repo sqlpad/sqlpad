@@ -23,7 +23,17 @@ export type Ref = HTMLButtonElement;
 
 const IconButton = React.forwardRef<Ref, ButtonProps & LinkProps>(
   (
-    { children, variant, to, tooltip, disabled, className, onClick, ...rest },
+    {
+      children,
+      variant,
+      to,
+      tooltip,
+      disabled,
+      className,
+      onClick,
+      type,
+      ...rest
+    },
     ref
   ) => {
     const classNames = [styles.btn];
@@ -62,6 +72,7 @@ const IconButton = React.forwardRef<Ref, ButtonProps & LinkProps>(
     } else {
       button = (
         <button
+          type={type || 'button'}
           ref={ref}
           className={classNames.join(' ')}
           disabled={disabled}

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import styles from './message.module.css';
 import mitt from 'mitt';
+import React, { useEffect, useState } from 'react';
+import styles from './message.module.css';
 
 const emitter = mitt();
 
@@ -39,7 +39,7 @@ export function MessageDisplayer() {
   return null;
 }
 
-export default {
+const message = {
   error: function (message: string) {
     emitter.emit('message', { type: 'error', message });
   },
@@ -47,3 +47,5 @@ export default {
     emitter.emit('message', { type: 'success', message });
   },
 };
+
+export default message;

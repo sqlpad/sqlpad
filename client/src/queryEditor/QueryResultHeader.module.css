@@ -1,28 +1,31 @@
 .toolbar {
-  height: 30px;
+  height: 34px;
   border-bottom: 1px solid #ccc;
-  background-color: #f4f4f4;
-  /* line-height: 30px; */
-  padding-left: 4px;
+  background-color: var(--toolbar-bg-color);
   display: flex;
   align-items: center;
 }
 
-.toolbarItem {
-  padding-right: 48px;
-  padding-left: 4px;
+/* 
+  Because we are adjusting header on actual button, 
+  we need to handle Button component behavior where padding needs to be adjusted on hover 
+  This is not great, and should be addressed in Button component
+  The padding is greatly reduced here because the icon used has quite a bit of padding already
+*/
+.returnToStatementsBtn {
+  padding-left: 2px;
 }
 
-.iconLinkWrapper {
-  height: 30px;
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
+.returnToStatementsBtn:hover,
+.returnToStatementsBtn:focus {
+  padding-left: 1px;
 }
 
-.iconLink {
-  margin-left: 16px;
-  display: inline-flex;
-  align-items: center;
-  line-height: 1;
+.statementHeaderStatementText {
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin: 0 32px;
+  color: rgba(0, 0, 0, 0.45);
 }

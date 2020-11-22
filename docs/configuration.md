@@ -1,6 +1,6 @@
 # Configuration
 
-!> 5.1.0 deprecates JSON/INI config files and adds new environment variables. See [CHANGELOG](https://github.com/sqlpad/sqlpad/blob/master/CHANGELOG.md) for mapping.
+!> 6.0.0 removes JSON/INI config file support. See [CHANGELOG](https://github.com/sqlpad/sqlpad/blob/master/CHANGELOG.md) for more info.
 
 ?> .env config file support added in 5.1.0
 
@@ -9,7 +9,7 @@ SQLPad may be configured via environment variables or an .env config file.
 Config file path may be specified passing command line option `--config` or environment variable `SQLPAD_CONFIG`.
 For example:
 
-```sh
+```bash
 node server.js --config path/to/.env
 # or
 env SQLPAD_CONFIG=path/to/.env node server.js
@@ -85,8 +85,8 @@ SQLPAD_SEED_DATA_PATH = ""
 # Enable word wrapping in SQL editor
 SQLPAD_EDITOR_WORD_WRAP = "false"
 
-# By default query results are limited to 50,000 records
-SQLPAD_QUERY_RESULT_MAX_ROWS = 50000
+# By default query results are limited to 10,000 records
+SQLPAD_QUERY_RESULT_MAX_ROWS = 10000
 
 # Enable csv, json and xlsx downloads
 SQLPAD_ALLOW_CSV_DOWNLOAD = "true"
@@ -120,12 +120,14 @@ SQLPAD_REDIS_URI = ""
 
 SQLPad may be configured to use SQLite, PostgreSQL, MySQL, MariaDB, or SQL Server as a backing database.
 
-To use SQLite, all that must be set is `SQLPAD_DB_PATH`, and a `sqlite` file will be created on application start.
+To use SQLite, all that must be set is `SQLPAD_DB_PATH`, and a `sqlite` file will be created on application start. In the official docker image, this path is set to `/var/lib/sqlpad`.
 
 To use a different backend database, set `SQLPAD_BACKEND_DB_URI` to the desired target database.
 
 ```bash
-# Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.
+# Directory to store SQLPad disk-backed resources.
+# Depending on configuration this could include SQLite file, query result cache files, and session storage.
+# In the official docker image, this path is set to `/var/lib/sqlpad`.
 SQLPAD_DB_PATH = ""
 
 # You can specify an external database to be used instead of the local sqlite database,
@@ -137,8 +139,7 @@ SQLPAD_BACKEND_DB_URI = ""
 
 # If enabled, runs SQLite in memory
 # In this case, the database contents will be lost when the application stops.
-# SQLPAD_DB_PATH is still required to be provided for cache and session support.
-# SQLPAD_DB_PATH will be made optional in future release.
+# SQLPAD_DB_PATH is still required if SQLPAD_SESSION_STORE or SQLPAD_QUERY_RESULT_STORE are set to file.
 SQLPAD_DB_IN_MEMORY = "false"
 ```
 
@@ -174,8 +175,8 @@ To generate a service token, log into SQLPad as an `admin` user and click `Servi
 
 The generated Bearer token may be used by passing it via the Authorization header:
 
-```sh
-curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/sqlpad/api/users
+```bash
+curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/api/users
 ```
 
 For more information on APIs available see [API Overview](/api-overview).
@@ -183,35 +184,6 @@ For more information on APIs available see [API Overview](/api-overview).
 ```bash
 # Secret to sign the generated Service Tokens
 SQLPAD_SERVICE_TOKEN_SECRET = ""
-```
-
-## Slack Webhook
-
-!> Deprecated. To be removed in v6. Use [webhooks](/webhooks) and implement preferred communication instead.
-
-```bash
-# Supply incoming Slack webhook URL to post query when saved.
-SQLPAD_SLACK_WEBHOOK = ""
-```
-
-## SMTP
-
-!> Deprecated. To be removed in v6. Use [webhooks](/webhooks) and implement preferred communication instead.
-
-```bash
-# From email address for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_FROM = ""
-# Host address for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_HOST = ""
-# Password for SMTP.
-SQLPAD_SMTP_PASSWORD = ""
-# Port for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_PORT = ""
-# Toggle to use secure connection when using SMTP.
-# Defaults to true
-SQLPAD_SMTP_SECURE = "true"
-# Username for SMTP. Required in order to send invitation emails.
-SQLPAD_SMTP_USER = ""
 ```
 
 ## Logging
@@ -222,6 +194,8 @@ Minimum level for logs. Should be one of `fatal`, `error`, `warn`, `info`, `debu
 SQLPAD_APP_LOG_LEVEL = 'info'
 SQLPAD_WEB_LOG_LEVEL = 'info
 ```
+
+See [logging](/logging) for log examples.
 
 ## HTTPS
 
@@ -236,129 +210,6 @@ SQLPAD_HTTPS_KEY_PATH = ""
 SQLPAD_HTTPS_CERT_PASSPHRASE = ""
 ```
 
-## No Authentication
+## Authentication
 
-Authentication may be disabled altogether, resulting in a single "user" being automatically added and used for any visit to SQLPad.
-
-```bash
-# Set to `true` to disable authentication altogether.
-SQLPAD_AUTH_DISABLED = "false"
-# Specifies the role associated with users when SQLPAD_AUTH_DISABLED is set to true.
-# Acceptable values: `admin`, `editor`.
-SQLPAD_AUTH_DISABLED_DEFAULT_ROLE = "editor"
-```
-
-## Local Email & Password Authentication
-
-Local authentication is enabled by default. The default admin email and password may be provided via configuration. This configuration can also be used to "reset" an admin's password if ever forgotten.
-
-```bash
-# Email address to give admin permissions to.
-SQLPAD_ADMIN = ""
-
-# Password to set for admin email address on application start. Requires SQLPAD_ADMIN setting to also be provided.
-SQLPAD_ADMIN_PASSWORD = ""
-
-# Set to `true` to disable built-in local email/password authentication.
-# Useful when using other auths like OAuth or SAML.
-SQLPAD_USERPASS_AUTH_DISABLED = "false"
-```
-
-## Authentication Proxy
-
-```bash
-# Enable auth proxy authentication support
-SQLPAD_AUTH_PROXY_ENABLED = "false"
-
-# Auto create a user record if it does not exist when new user is detected via auth proxy
-SQLPAD_AUTH_PROXY_AUTO_SIGN_UP = "false"
-
-# Default role to assign user created when `authProxyAutoSignUp` is turned on.
-# By default this is an empty-string and not used, expecting a role to be provided via header-mapping.
-SQLPAD_AUTH_PROXY_DEFAULT_ROLE = ""
-
-# Space-delimited field:header mappings to use to derive user information from HTTP headers.
-# A mapping to `email` is required at a minimum assuming `authProxyDefaultRole` is set.
-# Otherwise `role`, `id`, `name` and `data.<customField>` fields may be set.
-#
-# When supplying both `id` and `email`, `id` will be used for user matching instead of `email`,
-# updating SQLPad user `email` fields when they change (assuming `id` is not changing).
-SQLPAD_AUTH_PROXY_HEADERS = ""
-```
-
-## Google Authentication
-
-```bash
-# Google Client ID used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-SQLPAD_GOOGLE_CLIENT_ID = ""
-
-# Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
-SQLPAD_GOOGLE_CLIENT_SECRET = ""
-```
-
-## LDAP
-
-```bash
-# Set to "true" to enable LDAP authentication
-SQLPAD_LDAP_AUTH_ENABLED = "false"
-
-# LDAP server URL. Examples: `ldap://localhost:389`, `ldaps://ad.corporate.com:636`
-SQLPAD_LDAP_URL = ""
-
-# Base LDAP DN to search for users in
-SQLPAD_LDAP_SEARCH_BASE = ""
-
-# Username for LDAP lookup
-SQLPAD_LDAP_BIND_DN = ""
-
-# Password for LDAP user used for LDAP lookup
-SQLPAD_LDAP_PASSWORD = ""
-
-# LDAP search filter. e.g. `(uid={{username}})` in OpenLDAP or `(sAMAccountName={{username}})` in ActiveDirectory
-SQLPAD_LDAP_SEARCH_FILTER = ""
-```
-
-## OpenID Connect
-
-```bash
-SQLPAD_OIDC_CLIENT_ID = ""
-SQLPAD_OIDC_CLIENT_SECRET = ""
-SQLPAD_OIDC_ISSUER = ""
-SQLPAD_OIDC_AUTHORIZATION_URL = ""
-SQLPAD_OIDC_TOKEN_URL = ""
-SQLPAD_OIDC_USER_INFO_URL = ""
-# HTML code for the sign-in link used for starting SAML authentication.
-SQLPAD_OIDC_LINK_HTML = "Sign in with OpenID"
-```
-
-## SAML
-
-```bash
-# SAML authentication context URL.
-# A sensible value is: `urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport`
-SQLPAD_SAML_AUTH_CONTEXT = ""
-
-# SAML callback URL.
-# It will generally be constructed from the deployment's internet address and the fixed route.
-# For example: `https://mysqlpad.com/login/callback`.
-
-SQLPAD_SAML_CALLBACK_URL = ""
-# SAML certificate in Base64
-
-SQLPAD_SAML_CERT = ""
-
-# Entry point url
-SQLPAD_SAML_ENTRY_POINT = ""
-
-SQLPAD_SAML_ISSUER = ""
-
-# HTML code for the sign-in link used for starting SAML authentication.
-SQLPAD_SAML_LINK_HTML = "Sign in with SSO"
-
-# Auto create a user record if it does not exist when new user is detected via SAML.
-SQLPAD_SAML_AUTO_SIGN_UP = "false"
-
-# Default role to assign user created when SQLPAD_SAML_AUTO_SIGN_UP is turned on.
-# Accepted values are `editor` and `admin`.
-SQLPAD_SAML_DEFAULT_ROLE = "editor"
-```
+See [Authentication page](/authentication) for information on configuring authentication mechanisms.

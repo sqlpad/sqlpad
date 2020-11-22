@@ -9,7 +9,7 @@ const connection = {
   database: 'sqlpad',
   username: 'sqlpad',
   password: 'sqlpad',
-  maxRows: 50000,
+  maxRows: 10000,
 };
 
 const dropTable = 'DROP TABLE IF EXISTS test;';

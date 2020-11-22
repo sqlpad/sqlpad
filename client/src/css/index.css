@@ -10,10 +10,14 @@
   --REFERENCE-button-active-color: #096dd9;
   --REFERENCE-primary-color: #1890ff;
 
+  --toolbar-bg-color: #f4f4f4;
+  --table-alt-row-bg-color: #fafafa;
+
   --primary-color: hsl(209, 100%, 55%);
   --primary-dark-color: hsl(209, 100%, 42%);
   --primary-light-color: hsl(209, 100%, 63%);
   --primary-darkest-color: hsl(209, 50%, 25%);
+  --primary-focus: hsl(215, 100%, 25%);
 
   --primary-color-30: rgba(24, 143, 255, 0.3);
   --primary-color-90: rgba(24, 144, 255, 0.9);
@@ -105,6 +109,10 @@ input {
 
 /*  Utilities
 ============================================================================ */
+.monospace-font {
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+}
+
 .truncate {
   white-space: nowrap;
   overflow: hidden;
@@ -139,10 +147,10 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: scroll;
+  overflow: auto;
 
   font-size: 1.3rem;
-  padding: 24px;
+  padding: 16px;
   text-align: center;
   color: hsl(323, 100%, 42%);
 }

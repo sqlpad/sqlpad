@@ -1,21 +1,18 @@
 const path = require('path');
-const datastore = require('nedb-promise');
 const mkdirp = require('mkdirp');
-const appLog = require('./app-log');
 const Models = require('../models');
 const SequelizeDb = require('../sequelize-db');
 
 /**
- * Whenever possible nedb should be read from the app req object.
+ * Whenever possible db should be read from the app req object.
  * Sometimes this isn't possible or convenient at the moment however.
- * For those cases, this module provides access by caching the nedb instance.
- * Safety measures have been added to ensure only 1 instance of nedb can be initialized per alias
+ * For those cases, this module provides access by caching the db instance.
+ * Safety measures have been added to ensure only 1 instance of db can be initialized per alias
  */
 let instances = {};
 
 /**
- * Get nedb instance for an optional alias.
- * Returns promise of nedb instance
+ * Returns promise of db instance
  * @param {string} [instanceAlias]
  */
 async function getDb(instanceAlias = 'default') {
@@ -23,60 +20,27 @@ async function getDb(instanceAlias = 'default') {
   if (!instancePromise) {
     throw new Error('db instance must be created first');
   }
-  // nedb will already be a promise -- this just makes it explicit
-  const { nedb, models, sequelizeDb } = await instancePromise;
-  return { nedb, models, sequelizeDb };
+  // already be a promise -- this just makes it explicit
+  const { models, sequelizeDb } = await instancePromise;
+  return { models, sequelizeDb };
 }
 
 /**
- * Initialize nedb for a given config
+ * Initialize db for a given config
  * @param {object} config
  */
-async function initNedb(config) {
+async function initDb(config) {
   const dbPath = config.get('dbPath');
-  const dbInMemory = config.get('dbInMemory');
-
   mkdirp.sync(path.join(dbPath, '/cache'));
-
-  function getDatastore(dbName) {
-    return dbInMemory
-      ? datastore()
-      : datastore({ filename: path.join(dbPath, dbName) });
-  }
-
-  const nedb = {
-    users: getDatastore('users.db'),
-    connections: getDatastore('connections.db'),
-    connectionAccesses: getDatastore('connectionaccesses.db'),
-    queries: getDatastore('queries.db'),
-    queryHistory: getDatastore('queryhistory.db'),
-    cache: getDatastore('cache.db'),
-    instances: [
-      'users',
-      'connections',
-      'connectionAccesses',
-      'queries',
-      'queryHistory',
-      'cache',
-    ],
-  };
-
-  // Load dbs, migrate data, and apply indexes
-  await Promise.all(
-    nedb.instances.map((dbname) => {
-      appLog.info('Loading %s', dbname);
-      return nedb[dbname].loadDatabase();
-    })
-  );
 
   const sequelizeDb = new SequelizeDb(config);
   const models = new Models(sequelizeDb, config);
 
-  return { nedb, models, sequelizeDb };
+  return { models, sequelizeDb };
 }
 
 /**
- * Initializes an nedb instance for a given config.
+ * Initializes a db instance for a given config.
  * Ensures that this only happens once for a given alias.
  * If this were called multiple times weird things could happen
  * @param {object} config
@@ -87,7 +51,7 @@ function makeDb(config, instanceAlias = 'default') {
   if (instances[instanceAlias]) {
     throw new Error(`db instance ${instanceAlias} already made`);
   }
-  const dbPromise = initNedb(config);
+  const dbPromise = initDb(config);
   instances[instanceAlias] = dbPromise;
   return true;
 }

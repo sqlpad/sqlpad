@@ -5,11 +5,10 @@ const { v4: uuidv4 } = require('uuid');
  * @param {import('sequelize').QueryInterface} queryInterface
  * @param {import('../lib/config')} config
  * @param {import('../lib/logger')} appLog
- * @param {object} nedb - collection of nedb objects created in /lib/db.js
  * @param {object} sequelizeDb - sequelize instance
  */
 // eslint-disable-next-line no-unused-vars
-async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
+async function up(queryInterface, config, appLog, sequelizeDb) {
   /**
    * batches can now take the place of query_history,
    * as it acts as a log of queries that have been run.

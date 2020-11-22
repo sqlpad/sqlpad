@@ -12,7 +12,7 @@ const wrap = require('../lib/wrap');
 async function handleSignup(req, res, next) {
   const { models, config, webhooks } = req;
 
-  if (config.get('userpassAuthDisabled') || config.get('disableUserpassAuth')) {
+  if (config.get('userpassAuthDisabled')) {
     return res.utils.forbidden();
   }
 
@@ -22,10 +22,7 @@ async function handleSignup(req, res, next) {
     return res.utils.error('Passwords do not match');
   }
 
-  let [user, adminRegistrationOpen] = await Promise.all([
-    models.users.findOneByEmail(req.body.email),
-    models.users.adminRegistrationOpen(),
-  ]);
+  let user = await models.users.findOneByEmail(req.body.email);
 
   if (user && user.passhash) {
     return res.utils.error('User already signed up');
@@ -39,16 +36,12 @@ async function handleSignup(req, res, next) {
     return next();
   }
 
-  // if open admin registration or allowed email create user
-  // otherwise exit
-  if (
-    adminRegistrationOpen ||
-    checkAllowedDomains(allowedDomains, req.body.email)
-  ) {
+  // if allowed email create user otherwise exit
+  if (checkAllowedDomains(allowedDomains, req.body.email)) {
     user = await models.users.create({
       email: req.body.email,
       password: req.body.password,
-      role: adminRegistrationOpen ? 'admin' : 'editor',
+      role: 'editor',
       signupAt: new Date(),
     });
     webhooks.userCreated(user);

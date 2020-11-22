@@ -7,12 +7,7 @@ function expectKeys(data, expectedKeys) {
   );
 }
 
-const expectedKeys = [
-  'adminRegistrationOpen',
-  'currentUser',
-  'config',
-  'version',
-];
+const expectedKeys = ['currentUser', 'config', 'version'];
 
 const expectedConfigKeys = [
   'baseUrl',
@@ -20,7 +15,6 @@ const expectedConfigKeys = [
   'allowCsvDownload',
   'editorWordWrap',
   'publicUrl',
-  'smtpConfigured',
   'googleAuthConfigured',
   'localAuthConfigured',
   'samlConfigured',

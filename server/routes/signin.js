@@ -42,18 +42,13 @@ function handleSignin(req, res, next) {
   if (
     body.email &&
     body.password &&
-    (config.get('ldapAuthEnabled') || config.get('enableLdapAuth')) &&
+    config.get('ldapAuthEnabled') &&
     body.email.indexOf('@') < 0
   ) {
     return passport.authenticate('ldapauth', handleAuth)(req, res, next);
   }
 
-  if (
-    body.email &&
-    body.password &&
-    !config.get('userpassAuthDisabled') &&
-    !config.get('disableUserpassAuth')
-  ) {
+  if (body.email && body.password && !config.get('userpassAuthDisabled')) {
     return passport.authenticate('local', handleAuth)(req, res, next);
   }
 

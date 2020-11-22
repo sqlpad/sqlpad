@@ -1,7 +1,5 @@
 # API
 
-!> API patterns described below are new to `latest` and upcoming v5 release
-
 ## Overview
 
 SQLPad aims to implement a REST-ish API, and as of v5, has been updated to be more consistent with itself and a typical REST API design.
@@ -22,6 +20,18 @@ With v5, status codes are used as you would expect. Status code usage is kept mi
 For `200` responses, the response body is the data requested. For a list of items, that means the body will be an array of objects. For a single item, the body will be the item requested.
 
 For `400` - `500` status codes, the body returned will be a JSON error object, with a `title` property at the very least. The error object has yet to be finalized, but may evolve using the [JSON:API](https://jsonapi.org/format/#error-objects) as a guide.
+
+## Authentication to the API
+
+There are several options for authenticating to the REST API.
+
+1. Use GUI username and password with HTML Basic Authentication (unless `SQLPAD_USERPASS_AUTH_DISABLED` is set)
+
+   curl --user username:password http://sqlpad.example.com/sqlpad/api/users
+
+2. Use a Service Token generated from the GUI. Example:
+
+   curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer yourtoken" http://sqlpad.example.com/sqlpad/api/users
 
 ## Example: List Items
 
@@ -163,8 +173,6 @@ A `404` not found error will be returned when a specific item is requested, upda
 
 **Response**
 
-`GET /api/widgets/n-f`
-
 Response body:
 
 ```json
@@ -180,15 +188,3 @@ Response body:
 Pagination and links are not yet supported, but will be added at some point, using `Links` header (https://tools.ietf.org/html/rfc5988#page-6)
 
 Some "action" URLs exist, and behave more like RPC calls. One particular URL for example is to format a query. If you have a good RESTy idea we're open to using a REST approach for it (for now, an RPC call seems pragmatic).
-
-## Authentication to the API
-
-There are several options for authenticating to the REST API.
-
-1. Use GUI username and password with HTML Basic Authentication (unless `SQLPAD_USERPASS_AUTH_DISABLED` is set)
-
-       curl --user username:password http://sqlpad.example.com/sqlpad/api/users
-
-2. Use a Service Token generated from the GUI. Example:
-
-       curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer yourtoken" http://sqlpad.example.com/sqlpad/api/users

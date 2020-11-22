@@ -2,6 +2,17 @@ const assert = require('assert');
 const { v4: uuidv4 } = require('uuid');
 const TestUtils = require('../utils');
 
+function isNonAdminUserPayload(user) {
+  assert.deepStrictEqual(Object.keys(user), [
+    'id',
+    'name',
+    'email',
+    'role',
+    'createdAt',
+    'updatedAt',
+  ]);
+}
+
 describe('api/users', function () {
   const utils = new TestUtils();
   let user;
@@ -37,7 +48,7 @@ describe('api/users', function () {
     assert(!user.hasOwnProperty('passhash'));
   });
 
-  it('Gets list of users', async function () {
+  it('Gets list of users as admin', async function () {
     const body = await utils.get('admin', '/api/users');
     TestUtils.validateListSuccessBody(body);
     assert.equal(body.length, 4, '4 length');
@@ -53,16 +64,30 @@ describe('api/users', function () {
     assert(!user.hasOwnProperty('data'));
   });
 
-  it('Gets single user', async function () {
+  it('Gets list of users as editor', async function () {
+    const body = await utils.get('editor', '/api/users');
+    TestUtils.validateListSuccessBody(body);
+    assert.equal(body.length, 4, '4 length');
+    const user = body.find((u) => u.email === 'admin@test.com');
+    // Non-admin gets a restricted list of users
+    isNonAdminUserPayload(user);
+  });
+
+  it('Gets single user as admin', async function () {
     const u = await utils.get('admin', `/api/users/${user.id}`);
     assert.equal(u.email, user.email);
     // passhash should *not* be present
     assert(!u.hasOwnProperty('passhash'));
-    // Requires admin access
-    await utils.get('editor', `/api/users/${user.id}`, 403);
   });
 
-  it('Updates user', async function () {
+  it('Gets single user as editor', async function () {
+    const u = await utils.get('editor', `/api/users/${user.id}`);
+    assert.equal(u.email, user.email);
+    // Non-admin gets a restricted list of users
+    isNonAdminUserPayload(u);
+  });
+
+  it('Admin updates other user', async function () {
     const passwordResetId = uuidv4();
     const body = await utils.put('admin', `/api/users/${user.id}`, {
       role: 'admin',
@@ -79,6 +104,66 @@ describe('api/users', function () {
     assert.equal(body.data.test, true);
     assert(new Date(body.updatedAt) >= new Date(user.updatedAt));
     assert(!body.hasOwnProperty('passhash'));
+  });
+
+  it('Admin updates self', async function () {
+    // If there are fields that can't be updated, a 403 is returned
+    await utils.put(
+      'admin',
+      `/api/users/${utils.users.admin.id}`,
+      {
+        role: 'editor',
+        name: 'test',
+      },
+      400
+    );
+
+    const body = await utils.put(
+      'admin',
+      `/api/users/${utils.users.admin.id}`,
+      {
+        name: 'test',
+      }
+    );
+
+    assert.equal(body.name, 'test');
+    assert(new Date(body.updatedAt) >= new Date(user.updatedAt));
+    assert(!body.hasOwnProperty('passhash'));
+  });
+
+  it('Editor updates self', async function () {
+    // If there are fields that can't be updated, a 403 is returned
+    await utils.put(
+      'editor',
+      `/api/users/${utils.users.editor.id}`,
+      {
+        role: 'editor',
+        name: 'test',
+      },
+      400
+    );
+
+    const body = await utils.put(
+      'editor',
+      `/api/users/${utils.users.editor.id}`,
+      {
+        name: 'test',
+      }
+    );
+
+    assert.equal(body.name, 'test');
+    isNonAdminUserPayload(body);
+  });
+
+  it('Editor cannot update others', async function () {
+    await utils.put(
+      'editor',
+      `/api/users/${utils.users.admin.id}`,
+      {
+        name: 'test',
+      },
+      403
+    );
   });
 
   it('Requires authentication', function () {

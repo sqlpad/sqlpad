@@ -7,7 +7,7 @@ const connection = {
   driver: 'vertica',
   host: 'localhost',
   username: 'dbadmin',
-  maxRows: 50000,
+  maxRows: 10000,
 };
 
 const initSql = `

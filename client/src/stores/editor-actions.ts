@@ -1,27 +1,50 @@
 import localforage from 'localforage';
 import queryString from 'query-string';
-import { v4 as uuidv4 } from 'uuid';
 import message from '../common/message';
-import { ACLRecord, AppInfo, ChartFields, Connection } from '../types';
+import {
+  ACLRecord,
+  AppInfo,
+  Batch,
+  ChartFields,
+  Connection,
+  ConnectionClient,
+} from '../types';
 import { api } from '../utilities/api';
-import baseUrl from '../utilities/baseUrl';
+import { getHistory } from '../utilities/history';
 import {
   removeLocalQueryText,
   setLocalQueryText,
 } from '../utilities/localQueryText';
-import runQueryViaBatch from '../utilities/runQueryViaBatch';
 import updateCompletions from '../utilities/updateCompletions';
-import { EditorSession, SchemaState, useEditorStore } from './editor-store';
+import {
+  EditorSession,
+  INITIAL_SESSION,
+  INITIAL_STATE,
+  SchemaState,
+  useEditorStore,
+} from './editor-store';
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 const { getState, setState } = useEditorStore;
 
-function setSession(update: Partial<EditorSession>) {
-  const { focusedSessionId, editorSessions } = getState();
-  const focusedSession = getState().getSession();
+function setSession(sessionId: string, update: Partial<EditorSession>) {
+  const { editorSessions } = getState();
+  const session = getState().getSession(sessionId);
+  if (!session) {
+    return setState({
+      editorSessions: {
+        ...editorSessions,
+        [sessionId]: { ...INITIAL_SESSION, ...update },
+      },
+    });
+  }
   setState({
     editorSessions: {
       ...editorSessions,
-      [focusedSessionId]: { ...focusedSession, ...update },
+      [sessionId]: { ...session, ...update },
     },
   });
 }
@@ -30,36 +53,72 @@ function setSession(update: Partial<EditorSession>) {
 // This only does work if data exists to do the work on
 // Assumption here is that the API call will finish in the 10 seconds this is scheduled for
 setInterval(async () => {
-  const { connectionClient } = getState().getSession();
+  const { editorSessions } = getState();
+  for (const sessionId of Object.keys(editorSessions)) {
+    const { connectionClient } = getState().getSession(sessionId) || {};
 
-  if (connectionClient) {
-    const updateJson = await api.put(
-      `/api/connection-clients/${connectionClient.id}`,
-      {}
-    );
+    if (connectionClient) {
+      const updateJson = await api.put(
+        `/api/connection-clients/${connectionClient.id}`,
+        {}
+      );
 
-    const currentConnectionClient = getState().getSession().connectionClient;
+      const currentConnectionClient = getState().getSession(sessionId)
+        ?.connectionClient;
 
-    // If the connectionClient changed since hearbeat, do nothing
-    if (currentConnectionClient?.id !== connectionClient?.id) {
-      return;
-    }
+      // If the connectionClient changed since hearbeat, do nothing
+      if (
+        !currentConnectionClient ||
+        currentConnectionClient.id !== connectionClient?.id
+      ) {
+        return;
+      }
 
-    // If the PUT didn't return a connectionClient object or has an error,
-    // the connectionClient has been disconnected
-    if (updateJson.error || !updateJson.data) {
-      setSession({
-        connectionClient: undefined,
-      });
-    } else {
-      setSession({
-        connectionClient: updateJson.data,
-      });
+      // If the PUT didn't return a connectionClient object or has an error,
+      // the connectionClient has been disconnected
+      if (updateJson.error || !updateJson.data) {
+        setSession(sessionId, {
+          connectionClient: undefined,
+        });
+      } else {
+        setSession(sessionId, {
+          connectionClient: updateJson.data,
+        });
+      }
     }
   }
 }, 10000);
 
-export const initApp = async (
+function setBatch(sessionId: string, batchId: string, batch: Batch) {
+  const { batches, statements } = getState();
+  const { selectedStatementId } = getState().getSession(sessionId) || {};
+
+  const updatedStatements = {
+    ...statements,
+  };
+
+  if (batch?.statements) {
+    for (const statement of batch.statements) {
+      updatedStatements[statement.id] = statement;
+    }
+    if (batch.statements.length === 1) {
+      const onlyStatementId = batch.statements[0].id;
+      if (selectedStatementId !== onlyStatementId) {
+        setSession(sessionId, { selectedStatementId: onlyStatementId });
+      }
+    }
+  }
+
+  setState({
+    statements: updatedStatements,
+    batches: {
+      ...batches,
+      [batchId]: batch,
+    },
+  });
+}
+
+export const initEditor = async (
   config: AppInfo['config'],
   connections: Connection[]
 ) => {
@@ -114,7 +173,8 @@ export const initApp = async (
       }
     }
 
-    setSession({ connectionId: initialConnectionId });
+    const { focusedSessionId } = getState();
+    setSession(focusedSessionId, { connectionId: initialConnectionId });
     setState({ initialized: true });
   } catch (error) {
     console.error(error);
@@ -122,11 +182,24 @@ export const initApp = async (
   }
 };
 
+export function toggleShowQueryModal() {
+  const { showQueryModal } = getState();
+  setState({ showQueryModal: !showQueryModal });
+}
+
+/**
+ * Reset state (on signout for example)
+ */
+export async function resetState() {
+  setState({ ...INITIAL_STATE });
+}
+
 /**
  * Open a connection client for the currently selected connection if supported
  */
 export async function connectConnectionClient() {
-  const { connectionClient, connectionId } = getState().getSession();
+  const { focusedSessionId } = getState();
+  const { connectionClient, connectionId } = getState().getFocusedSession();
 
   // If a connectionClient is already open or selected connection id doesn't exist, do nothing
   if (connectionClient || !connectionId) {
@@ -156,7 +229,7 @@ export async function connectConnectionClient() {
     return message.error('Problem connecting to database');
   }
 
-  setSession({
+  setSession(focusedSessionId, {
     connectionClient: json.data,
   });
 }
@@ -165,7 +238,8 @@ export async function connectConnectionClient() {
  * Disconnect the current connection client if one exists
  */
 export async function disconnectConnectionClient() {
-  const { connectionClient } = getState().getSession();
+  const { focusedSessionId } = getState();
+  const { connectionClient } = getState().getFocusedSession();
 
   if (connectionClient) {
     api
@@ -177,9 +251,22 @@ export async function disconnectConnectionClient() {
       });
   }
 
-  setSession({
+  setSession(focusedSessionId, {
     connectionClient: undefined,
   });
+}
+
+function cleanupConnectionClient(connectionClient?: ConnectionClient) {
+  // Close connection client but do not wait for this to complete
+  if (connectionClient) {
+    api
+      .delete(`/api/connection-clients/${connectionClient.id}`)
+      .then((json) => {
+        if (json.error) {
+          message.error(json.error);
+        }
+      });
+  }
 }
 
 /**
@@ -187,30 +274,24 @@ export async function disconnectConnectionClient() {
  * @param connectionId
  */
 export function selectConnectionId(connectionId: string) {
-  const { connectionClient } = getState().getSession();
+  const { focusedSessionId } = getState();
+  const { connectionClient } = getState().getFocusedSession();
 
   localforage
     .setItem('selectedConnectionId', connectionId)
     .catch((error) => message.error(error));
 
-  if (connectionClient) {
-    api
-      .delete(`/api/connection-clients/${connectionClient.id}`)
-      .then((json) => {
-        if (json.error) {
-          message.error(json.error);
-        }
-      });
-  }
+  cleanupConnectionClient(connectionClient);
 
-  setSession({
+  setSession(focusedSessionId, {
     connectionId,
     connectionClient: undefined,
   });
 }
 
 export const formatQuery = async () => {
-  const { queryText, queryId } = getState().getSession();
+  const { focusedSessionId } = getState();
+  const { queryText, queryId } = getState().getFocusedSession();
 
   const json = await api.post('/api/format-sql', {
     query: queryText,
@@ -227,30 +308,41 @@ export const formatQuery = async () => {
   }
 
   setLocalQueryText(queryId, json.data.query);
-  // TODO - once there more than 1 session user could toggle tabs before response comes back
-  // setFocusedSession shortcut should go away for explicit session updates
-  setSession({ queryText: json.data.query, unsavedChanges: true });
+  setSession(focusedSessionId, {
+    queryText: json.data.query,
+    unsavedChanges: true,
+  });
 };
 
+/**
+ * Loads query and stores in editor session state.
+ * Returns a promise of API result to allow context-dependent behavior,
+ * like showing not found modal in query editor.
+ * @param queryId
+ */
 export const loadQuery = async (queryId: string) => {
-  const { error, data } = await api.getQuery(queryId);
+  const response = await api.getQuery(queryId);
+
+  const { error, data } = response;
   if (error || !data) {
-    return message.error('Query not found');
+    return response;
   }
 
-  const { connectionClient } = getState().getSession();
+  const { focusedSessionId } = getState();
+  const {
+    connectionClient,
+    ...restOfCurrentSession
+  } = getState().getFocusedSession();
 
-  if (connectionClient) {
-    api
-      .delete(`/api/connection-clients/${connectionClient.id}`)
-      .then((json) => {
-        if (json.error) {
-          message.error(json.error);
-        }
-      });
-  }
+  // Cleanup existing connection
+  // Even if the connection isn't changing, the client should be refreshed
+  // This is to prevent accidental state from carrying over
+  // For example, if there is an open transaction,
+  // we don't want that impacting the new query if same connectionId is used)
+  cleanupConnectionClient(connectionClient);
 
-  setSession({
+  setSession(focusedSessionId, {
+    ...restOfCurrentSession,
     // Map query object to flattened editor session data
     queryId,
     connectionId: data.connectionId,
@@ -265,15 +357,19 @@ export const loadQuery = async (queryId: string) => {
     canRead: data.canRead,
     canWrite: data.canWrite,
     // Reset result/error/unsaved/running states
-    runQueryInstanceId: undefined,
+    batchId: '',
+    selectedStatementId: '',
     isRunning: false,
     queryError: undefined,
     queryResult: undefined,
     unsavedChanges: false,
   });
+
+  return response;
 };
 
 export const runQuery = async () => {
+  const { focusedSessionId } = getState();
   const {
     queryId,
     queryName,
@@ -283,15 +379,27 @@ export const runQuery = async () => {
     connectionId,
     connectionClient,
     selectedText,
-  } = getState().getSession();
+  } = getState().getFocusedSession();
 
-  // multiple queries could be running and we only want to keep the "current" or latest query run
-  const runQueryInstanceId = uuidv4();
+  if (!connectionId) {
+    return setSession(focusedSessionId, {
+      queryError: 'Connection required',
+      selectedStatementId: '',
+    });
+  }
 
-  setSession({
-    runQueryInstanceId,
+  if (!queryText) {
+    return setSession(focusedSessionId, {
+      queryError: 'SQL text required',
+      selectedStatementId: '',
+    });
+  }
+
+  setSession(focusedSessionId, {
+    batchId: undefined,
     isRunning: true,
     runQueryStartTime: new Date(),
+    selectedStatementId: '',
   });
 
   const postData = {
@@ -307,21 +415,61 @@ export const runQuery = async () => {
     },
   };
 
-  const { data, error } = await runQueryViaBatch(postData);
+  let res = await api.createBatch(postData);
+  let error = res.error;
+  let batch = res.data;
 
-  // Get latest state and check runQueryInstanceId to ensure it matches
-  // If it matches another query has not been run and we can keep the result.
-  // Not matching implies another query has been executed and we can ignore this result.
-  if (getState().getSession().runQueryInstanceId === runQueryInstanceId) {
-    setSession({
-      isRunning: false,
+  if (error) {
+    return setSession(focusedSessionId, {
       queryError: error,
-      queryResult: data,
     });
   }
+
+  if (!batch) {
+    return setSession(focusedSessionId, {
+      queryError: 'error creating batch',
+    });
+  }
+
+  setBatch(focusedSessionId, batch.id, batch);
+
+  while (
+    batch?.id &&
+    !((batch?.status === 'finished' || batch?.status === 'error') && !error)
+  ) {
+    await sleep(500);
+    res = await api.getBatch(batch.id);
+    error = res.error;
+    batch = res.data;
+
+    setSession(focusedSessionId, {
+      batchId: batch?.id,
+      queryError: error,
+    });
+
+    if (batch) {
+      setBatch(focusedSessionId, batch.id, batch);
+    }
+  }
+
+  setSession(focusedSessionId, {
+    isRunning: false,
+  });
 };
 
-export const saveQuery = async () => {
+export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {
+  const { focusedSessionId } = getState();
+  const session = getState().getFocusedSession();
+
+  // If can't write, bail early
+  if (!session.canWrite) {
+    setSession(focusedSessionId, { showValidation: false });
+    setState({ showQueryModal: false });
+    return;
+  }
+
+  const mergedSession = { ...session, ...additionalUpdates };
+
   const {
     queryId,
     connectionId,
@@ -331,15 +479,15 @@ export const saveQuery = async () => {
     chartType,
     tags,
     acl,
-  } = getState().getSession();
+  } = mergedSession;
 
   if (!queryName) {
-    message.error('Query name required');
-    setSession({ showValidation: true });
+    setSession(focusedSessionId, { showValidation: true });
+    setState({ showQueryModal: true });
     return;
   }
 
-  setSession({ isSaving: true });
+  setSession(focusedSessionId, { isSaving: true, saveError: undefined });
   const queryData = {
     connectionId,
     name: queryName,
@@ -353,142 +501,184 @@ export const saveQuery = async () => {
   };
 
   if (queryId) {
-    api.put(`/api/queries/${queryId}`, queryData).then((json) => {
+    api.updateQuery(queryId, queryData).then((json) => {
       const { error, data } = json;
       if (error) {
-        message.error(error);
-        setSession({ isSaving: false });
+        // If there was an error, show the save dialog.
+        // It might be closed and it is where the error is placed.
+        // This should be rare, and not sure what might trigger it at this point, but just in case
+        setSession(focusedSessionId, { isSaving: false, saveError: error });
+        setState({ showQueryModal: true });
         return;
       }
-      api.reloadQueries();
-      removeLocalQueryText(data.id);
-      setSession({
-        isSaving: false,
-        unsavedChanges: false,
-        connectionId: data.connectionId,
-        queryText: data.queryText,
-        queryName: data.name,
-        tags: data.tags,
-        acl: data.acl,
-        chartType: data?.chart?.chartType,
-        chartFields: data?.chart?.fields,
-        canDelete: data.canDelete,
-        canRead: data.canRead,
-        canWrite: data.canWrite,
-      });
+      // TypeScript doesn't know that if error did not exist we are dealing with data
+      if (data) {
+        removeLocalQueryText(data.id);
+        setSession(focusedSessionId, {
+          isSaving: false,
+          unsavedChanges: false,
+          connectionId: data.connectionId,
+          queryId: data.id,
+          queryText: data.queryText,
+          queryName: data.name,
+          tags: data.tags,
+          acl: data.acl,
+          chartType: data?.chart?.chartType,
+          chartFields: data?.chart?.fields,
+          canDelete: data.canDelete,
+          canRead: data.canRead,
+          canWrite: data.canWrite,
+        });
+        setState({ showQueryModal: false });
+      }
     });
   } else {
-    api.post(`/api/queries`, queryData).then((json) => {
+    api.createQuery(queryData).then((json) => {
       const { error, data } = json;
       if (error) {
-        message.error(error);
-        setSession({ isSaving: false });
+        // If there was an error, show the save dialog.
+        // It might be closed and it is where the error is placed.
+        // This should be rare, and not sure what might trigger it at this point, but just in case
+        setSession(focusedSessionId, { isSaving: false, saveError: error });
+        setState({ showQueryModal: true });
         return;
       }
-      api.reloadQueries();
-      window.history.replaceState(
-        {},
-        data.name,
-        `${baseUrl()}/queries/${data.id}`
-      );
-      message.success('Query Saved');
-      removeLocalQueryText(data.id);
-      setSession({
-        isSaving: false,
-        unsavedChanges: false,
-        connectionId: data.connectionId,
-        queryText: data.queryText,
-        queryName: data.name,
-        tags: data.tags,
-        acl: data.acl,
-        chartType: data?.chart?.chartType,
-        chartFields: data?.chart?.fields,
-        canDelete: data.canDelete,
-        canRead: data.canRead,
-        canWrite: data.canWrite,
-      });
+      // TypeScript doesn't know that if error did not exist we are dealing with data
+      if (data) {
+        const history = getHistory();
+        history?.push(`/queries/${data.id}`);
+        removeLocalQueryText(data.id);
+        setSession(focusedSessionId, {
+          isSaving: false,
+          unsavedChanges: false,
+          connectionId: data.connectionId,
+          queryId: data.id,
+          queryText: data.queryText,
+          queryName: data.name,
+          tags: data.tags,
+          acl: data.acl,
+          chartType: data?.chart?.chartType,
+          chartFields: data?.chart?.fields,
+          canDelete: data.canDelete,
+          canRead: data.canRead,
+          canWrite: data.canWrite,
+        });
+        setState({ showQueryModal: false });
+      }
     });
   }
 };
 
+// Clone works by updating existing session, then navigating to URL with `/queries/new`
+// The session doesn't change, so the new should not get applied
 export const handleCloneClick = () => {
-  const { queryName } = getState().getSession();
-  const newName = `Copy of ${queryName}`;
-  window.history.replaceState({}, newName, `${baseUrl()}/queries/new`);
-  setSession({ queryId: '', queryName: newName, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  const { queryName } = getState().getFocusedSession();
+  const history = getHistory();
+  setSession(focusedSessionId, {
+    queryId: '',
+    queryName: `Copy of ${queryName}`,
+    unsavedChanges: true,
+    canDelete: true,
+    canWrite: true,
+    canRead: true,
+  });
+  history?.push(`/queries/new`);
 };
 
 export const resetNewQuery = () => {
-  // NOTE connectionId IS NOT set here on purpose
-  // The new query should have the same connection as previously
-  setSession({
-    runQueryInstanceId: undefined,
-    isRunning: false,
-    queryId: '',
-    queryName: '',
-    tags: [],
-    acl: [],
-    queryText: '',
-    chartType: '',
-    chartFields: {},
-    canRead: true,
-    canWrite: true,
-    canDelete: true,
-    queryError: undefined,
-    queryResult: undefined,
-    unsavedChanges: false,
-  });
+  const { focusedSessionId } = getState();
+
+  // Get some editor state from current session and carry that on to new session
+  const {
+    showSchema,
+    showVisProperties,
+    schemaExpansions,
+    connectionId,
+    connectionClient,
+  } = getState().getFocusedSession();
+
+  const session = {
+    ...INITIAL_SESSION,
+    showSchema,
+    showVisProperties,
+    schemaExpansions,
+    connectionId,
+    connectionClient,
+  };
+  setSession(focusedSessionId, session);
+};
+
+export const selectStatementId = (selectedStatementId: string) => {
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { selectedStatementId });
 };
 
 export const setQueryText = (queryText: string) => {
-  const { queryId } = getState().getSession();
+  const { focusedSessionId } = getState();
+  const { queryId } = getState().getFocusedSession();
   setLocalQueryText(queryId, queryText);
-  setSession({ queryText, unsavedChanges: true });
+  setSession(focusedSessionId, { queryText, unsavedChanges: true });
 };
 
 export const setQueryName = (queryName: string) => {
-  setSession({ queryName, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { queryName, unsavedChanges: true });
 };
 
 export const setTags = (tags: string[]) => {
-  setSession({ tags, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { tags, unsavedChanges: true });
 };
 
 export const setAcl = (acl: Partial<ACLRecord>[]) => {
-  setSession({ acl, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { acl, unsavedChanges: true });
 };
 
 export const setChartType = (chartType: string) => {
-  setSession({ chartType, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { chartType, unsavedChanges: true });
 };
 
 export const setChartFields = (chartFields: ChartFields) => {
-  setSession({ chartFields, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { chartFields, unsavedChanges: true });
 };
 
 export const handleChartConfigurationFieldsChange = (
   chartFieldId: string,
-  queryResultField: any
+  queryResultField: string | boolean | number
 ) => {
-  const { chartFields } = getState().getSession();
+  const { focusedSessionId } = getState();
+  const { chartFields } = getState().getFocusedSession();
 
-  setSession({
+  setSession(focusedSessionId, {
     chartFields: { ...chartFields, [chartFieldId]: queryResultField },
     unsavedChanges: true,
   });
 };
 
 export const handleChartTypeChange = (chartType: string) => {
-  setSession({ chartType, unsavedChanges: true });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { chartType, unsavedChanges: true });
 };
 
 export const handleQuerySelectionChange = (selectedText: string) => {
-  setSession({ selectedText });
+  const { focusedSessionId } = getState();
+  setSession(focusedSessionId, { selectedText });
 };
 
 export function toggleSchema() {
-  const { showSchema } = getState().getSession();
-  setSession({ showSchema: !showSchema });
+  const { focusedSessionId } = getState();
+  const { showSchema } = getState().getFocusedSession();
+  setSession(focusedSessionId, { showSchema: !showSchema });
+}
+
+export function toggleVisProperties() {
+  const { focusedSessionId } = getState();
+  const { showVisProperties } = getState().getFocusedSession();
+  setSession(focusedSessionId, { showVisProperties: !showVisProperties });
 }
 
 export function setSchemaState(connectionId: string, schemaState: SchemaState) {
@@ -506,8 +696,8 @@ export function setSchemaState(connectionId: string, schemaState: SchemaState) {
  * @param reload - force cache refresh for schema
  */
 export async function loadSchema(connectionId: string, reload?: boolean) {
-  const { schemaStates } = getState();
-  const { showSchema, schemaExpansions } = getState().getSession();
+  const { schemaStates, focusedSessionId } = getState();
+  const { showSchema, schemaExpansions } = getState().getFocusedSession();
 
   if (!schemaStates[connectionId] || reload) {
     setSchemaState(connectionId, {
@@ -544,7 +734,7 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
       error: undefined,
     });
 
-    setSession({
+    setSession(focusedSessionId, {
       schemaExpansions: { ...schemaExpansions, [connectionId]: expanded },
     });
   }
@@ -561,12 +751,13 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
 }
 
 export function toggleSchemaItem(connectionId: string, item: { id: string }) {
-  const { schemaExpansions } = getState().getSession();
+  const { focusedSessionId } = getState();
+  const { schemaExpansions } = getState().getFocusedSession();
 
   const expanded = { ...schemaExpansions[connectionId] };
   expanded[item.id] = !expanded[item.id];
 
-  setSession({
+  setSession(focusedSessionId, {
     schemaExpansions: { ...schemaExpansions, [connectionId]: expanded },
   });
 }

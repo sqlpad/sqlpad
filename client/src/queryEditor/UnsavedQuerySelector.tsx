@@ -9,18 +9,30 @@ import {
   removeLocalQueryText,
 } from '../utilities/localQueryText';
 
-function UnsavedQuerySelector({ queryId }: any) {
+interface Props {
+  queryId: string;
+}
+
+/**
+ * @param Props
+ */
+function UnsavedQuerySelector({ queryId }: Props) {
   const queryText = useSessionQueryText();
   const [showModal, setShowModal] = useState(false);
   const [unsavedQueryText, setUnsavedQueryText] = useState('');
 
   useEffect(() => {
-    getLocalQueryText(queryId).then((localQueryText) => {
-      if (typeof localQueryText === 'string' && localQueryText.trim() !== '') {
-        setShowModal(true);
-        setUnsavedQueryText(localQueryText);
-      }
-    });
+    if (queryId) {
+      getLocalQueryText(queryId).then((localQueryText) => {
+        if (
+          typeof localQueryText === 'string' &&
+          localQueryText.trim() !== ''
+        ) {
+          setShowModal(true);
+          setUnsavedQueryText(localQueryText);
+        }
+      });
+    }
   }, [queryId]);
 
   const value = [queryText, unsavedQueryText];
@@ -32,6 +44,7 @@ function UnsavedQuerySelector({ queryId }: any) {
         <Button
           onClick={() => {
             setShowModal(false);
+            removeLocalQueryText(queryId);
           }}
         >
           Use saved

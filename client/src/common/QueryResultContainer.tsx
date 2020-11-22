@@ -1,29 +1,44 @@
 import React from 'react';
+import {
+  useSessionQueryError,
+  useStatementColumns,
+  useStatementRowCount,
+  useStatementStatus,
+} from '../stores/editor-store';
+import { api } from '../utilities/api';
 import ErrorBlock from './ErrorBlock';
 import InfoBlock from './InfoBlock';
 import QueryResultDataTable from './QueryResultDataTable';
 import QueryResultRunning from './QueryResultRunning';
 
 export interface Props {
-  isRunning?: boolean;
-  queryError?: string;
-  queryResult?: {
-    status: string;
-    rows?: any[];
-  };
+  statementId?: string;
 }
 
-function QueryResultContainer({ isRunning, queryError, queryResult }: Props) {
-  if (isRunning) {
+function QueryResultContainer({ statementId }: Props) {
+  const columns = useStatementColumns(statementId) || [];
+  const rowCount = useStatementRowCount(statementId);
+  const status = useStatementStatus(statementId);
+  const queryError = useSessionQueryError();
+  const { data, error } = api.useStatementResults(statementId, status);
+
+  if (
+    status === 'queued' ||
+    status === 'started' ||
+    (status === 'finished' && !data)
+  ) {
     return <QueryResultRunning />;
   }
   if (queryError) {
     return <ErrorBlock>{queryError}</ErrorBlock>;
   }
-  if (!queryResult || !queryResult.rows) {
+  if (error) {
+    return <ErrorBlock>Error getting query results</ErrorBlock>;
+  }
+  if (rowCount === undefined) {
     return null;
   }
-  if (queryResult.status === 'finished' && queryResult.rows.length === 0) {
+  if (status === 'finished' && rowCount === 0) {
     return (
       <InfoBlock>
         Query finished
@@ -32,7 +47,7 @@ function QueryResultContainer({ isRunning, queryError, queryResult }: Props) {
       </InfoBlock>
     );
   }
-  return <QueryResultDataTable queryResult={queryResult} />;
+  return <QueryResultDataTable columns={columns} rows={data} />;
 }
 
-export default QueryResultContainer;
+export default React.memo(QueryResultContainer);

@@ -52,17 +52,25 @@
   box-shadow: 0 1px 0 rgb(9, 100, 185, 0.5);
 }
 
-.primary:hover,
 .primary:focus {
   color: #fff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-focus);
+  z-index: 99999;
+}
+
+.primary:hover {
+  color: #fff;
   background-color: var(--primary-light-color);
-  border-color: var(--secondary-color);
+  border-color: var(--primary-light-color);
+  z-index: 99999;
 }
 
 .primary:active {
   color: #fff;
   background-color: var(--primary-dark-color);
-  border-color: var(--secondary-dark-color);
+  border-color: var(--primary-dark-color);
 }
 
 .danger {
@@ -121,4 +129,51 @@
 .ghost[disabled] {
   border: none;
   color: rgba(255, 255, 255, 0.55);
+}
+
+.primaryGhost {
+  color: var(--primary-color);
+  box-shadow: 0 1px 0 transparent;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.primaryGhost:hover,
+.primaryGhost:focus {
+  color: var(--primary-dark-color);
+  background-color: transparent;
+}
+
+.primaryGhost:active {
+  color: var(--primary-dark-color);
+  background-color: transparent;
+}
+
+.primaryGhost:disabled,
+.primaryGhost[disabled] {
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.leftWithMenu {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-right: 1px solid rgba(255, 255, 255, 0.55);
+}
+
+.menuButton {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  padding: 0 4px;
+}
+
+.menuButton:hover,
+.menuButton:focus {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  padding: 0 3px;
+}
+
+.menuButton:disabled {
+  padding: 0 4px;
 }

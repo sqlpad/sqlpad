@@ -5,11 +5,10 @@ const migrationUtils = require('../lib/migration-utils');
  * @param {import('sequelize').QueryInterface} queryInterface
  * @param {import('../lib/config')} config
  * @param {import('../lib/logger')} appLog
- * @param {object} nedb - collection of nedb objects created in /lib/db.js
  * @param {object} sequelizeDb - sequelize instance
  */
 // eslint-disable-next-line no-unused-vars
-async function up(queryInterface, config, appLog, nedb, sequelizeDb) {
+async function up(queryInterface, config, appLog, sequelizeDb) {
   async function tryRemove(tableName, constraintName) {
     try {
       await queryInterface.removeConstraint(tableName, constraintName);

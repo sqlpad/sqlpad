@@ -1,18 +1,36 @@
 import React from 'react';
-import Button from '../common/Button';
+import ButtonLink from '../common/ButtonLink';
 import { resetNewQuery } from '../stores/editor-actions';
 
+/**
+ * This link leverages the redirect to generate a new sessionId
+ */
 function ToolbarNewQueryButton() {
   return (
-    <Button
+    <ButtonLink
       variant="ghost"
-      // TODO FIXME XXX: This was meant to be a buttonLink
-      // to="/queries/new"
-      tooltip="New query"
-      onClick={() => resetNewQuery()}
+      to="/queries/new"
+      onClick={(e) => {
+        // If user is trying to open another tab, let the browser do that
+        if (
+          e.ctrlKey ||
+          e.metaKey ||
+          e.altKey ||
+          e.shiftKey ||
+          e.button ||
+          e.defaultPrevented
+        ) {
+          return;
+        }
+
+        // Otherwise init a new query
+        // User could be going from new to new query, and it needs to be reset via function call
+        // We cannot rely on router to do this for us
+        resetNewQuery();
+      }}
     >
       New
-    </Button>
+    </ButtonLink>
   );
 }
 

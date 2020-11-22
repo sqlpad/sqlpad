@@ -15,14 +15,11 @@ function enableSaml(config) {
         {
           passReqToCallback: true,
           path: '/login/callback',
-          entryPoint:
-            config.get('samlEntryPoint') || config.get('samlEntryPoint_d'),
-          issuer: config.get('samlIssuer') || config.get('samlIssuer_d'),
-          callbackUrl:
-            config.get('samlCallbackUrl') || config.get('samlCallbackUrl_d'),
-          cert: config.get('samlCert') || config.get('samlCert_d'),
-          authnContext:
-            config.get('samlAuthContext') || config.get('samlAuthContext_d'),
+          entryPoint: config.get('samlEntryPoint'),
+          issuer: config.get('samlIssuer'),
+          callbackUrl: config.get('samlCallbackUrl'),
+          cert: config.get('samlCert'),
+          authnContext: config.get('samlAuthContext'),
           identifierFormat: null,
         },
         async function (req, p, done) {
@@ -39,10 +36,7 @@ function enableSaml(config) {
 
           const { models, webhooks } = req;
 
-          let [openAdminRegistration, user] = await Promise.all([
-            models.users.adminRegistrationOpen(),
-            models.users.findOneByEmail(email),
-          ]);
+          let user = await models.users.findOneByEmail(email);
 
           if (user) {
             if (user.disabled) {
@@ -56,13 +50,10 @@ function enableSaml(config) {
           }
 
           // If auto sign up is turned on create user
-          if (openAdminRegistration || config.get('samlAutoSignUp')) {
+          if (config.get('samlAutoSignUp')) {
             const newUser = await models.users.create({
               email,
-              role: openAdminRegistration
-                ? 'admin'
-                : config.get('samlDefaultRole') ||
-                  config.get('samlDefaultRole_d'),
+              role: config.get('samlDefaultRole'),
               signupAt: new Date(),
             });
             webhooks.userCreated(newUser);

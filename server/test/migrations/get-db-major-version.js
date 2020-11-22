@@ -54,8 +54,8 @@ describe('migrations/get-db-major-version', function () {
     await utils.migrate();
   });
 
-  it('After migration - major is 5', async function () {
+  it('After migration - major is 6', async function () {
     const major = await utils.migrator.getDbMajorVersion();
-    assert.strictEqual(major, 5);
+    assert.strictEqual(major, 6);
   });
 });

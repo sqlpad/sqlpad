@@ -8,36 +8,34 @@ import IconMenu from './IconMenu';
 
 type Ref = HTMLAnchorElement;
 
-interface Props extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+interface NavigationLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   to: string;
 }
 
-const NavigationLink = React.forwardRef<Ref, Props>((props, ref) => {
-  return <Link {...props} innerRef={ref} />;
-});
-
-interface Links {
-  json: string;
-  csv: string;
-  xlsx: string;
-}
+const NavigationLink = React.forwardRef<Ref, NavigationLinkProps>(
+  (props, ref) => {
+    return <Link {...props} innerRef={ref} />;
+  }
+);
 
 function ExportButton({
-  links,
+  statementId,
   onSaveImageClick,
 }: {
-  links: Links;
+  statementId?: string;
   onSaveImageClick?: () => void;
 }) {
   const { config } = useAppContext();
 
-  if (!config || !links) {
+  if (!config || !statementId) {
     return null;
   }
 
   const { allowCsvDownload } = config;
 
   const items = [];
+
   if (onSaveImageClick) {
     items.push(
       <MenuItem key="png" onSelect={onSaveImageClick}>
@@ -45,12 +43,13 @@ function ExportButton({
       </MenuItem>
     );
   }
+
   if (allowCsvDownload) {
     items.push(
       <MenuLink
         key="csv"
         as={NavigationLink}
-        to={links.csv}
+        to={`/statement-results/${statementId}.csv`}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -61,7 +60,7 @@ function ExportButton({
       <MenuLink
         key="xlsx"
         as={NavigationLink}
-        to={links.xlsx}
+        to={`/statement-results/${statementId}.xlsx`}
         target="_blank"
         rel="noopener noreferrer"
       >
@@ -72,7 +71,7 @@ function ExportButton({
       <MenuLink
         key="json"
         as={NavigationLink}
-        to={links.json}
+        to={`/statement-results/${statementId}.json`}
         target="_blank"
         rel="noopener noreferrer"
       >

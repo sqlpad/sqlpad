@@ -4,11 +4,13 @@ A `Connection` in SQLPad is a configuration to a specific database instance. Bus
 
 When a user write's a query, they'll pick a connection to use to run it. This connection choice will also be saved with the query.
 
-Admins can create connections in the UI, but connections can also be created in a JSON or INI config file, via a complicated environment variable convention, or via experimental seed data files.
+Admins can create connections in the UI, but connections can also be created via environment variables or experimental seed data files.
 
 ## Multi-Statement Transaction Support
 
 ?> Available as of `4.2.0`
+
+!> When using Multi-Statement transactions SQLPad becomes a stateful service. HTTP API calls must consistently resolve to same SQLPad instance using sticky sessions or similar.
 
 Multi-statement transaction support adds the ability for a user to use the same underlying connection across query executions. This allows things like opening a transaction, running queries, and rolling the transaction back or committing the transaction across query runs. It also opens up the ability to create and use temp tables that are generally scoped per connection session.
 
@@ -20,13 +22,9 @@ Work is under way to add multi-statement transaction support to drivers that ben
 
 ?> As of 3.2.0 connections may be defined via application configuration.
 
-?> JSON & INI config files deprecated as of 5.1.0
-
-### Via Environment Variable & .env File
-
 When defining connections via environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTIONS__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTIONS`, `<connectionId>`, and `<fieldName>`.
 
-All values (connectionId, fieldName, and value for the environment variable) are case sensitive.
+**Fields and values are case sensitive**.
 
 The connection ID value used can be any alphanumeric value. This can be a randomly generated value like SQLPad's underlying embedded database uses, or it can be a more human-friendly name, or an id used from another source.
 
@@ -38,7 +36,7 @@ Every connection defined should provide a `name` and `driver` value, with driver
 
 Example for a MySQL connection with id `prod123`.
 
-```sh
+```bash
 SQLPAD_CONNECTIONS__prod123__name="Production 123"
 SQLPAD_CONNECTIONS__prod123__driver=mysql
 SQLPAD_CONNECTIONS__prod123__host=localhost
@@ -248,7 +246,7 @@ Redshift uses the Postgres driver, using a different query for pulling schema.
 | `role`               | Role                 |   text    |
 | `preQueryStatements` | Pre-query statements |   text    |
 
-` `# BigQuery
+## BigQuery
 
 | key               | description                      | data type |
 | ----------------- | -------------------------------- | :-------: |

@@ -54,23 +54,13 @@ function queryLdap(client, searchBase, scope, filter) {
 }
 
 function enableLdap(config) {
-  if (!(config.get('ldapAuthEnabled') || config.get('enableLdapAuth'))) {
+  if (!config.get('ldapAuthEnabled')) {
     return;
   }
 
-  const bindDN =
-    config.get('ldapBindDN') ||
-    config.get('ldapUsername') ||
-    config.get('ldapUsername_d');
-
-  const bindCredentials =
-    config.get('ldapPassword') || config.get('ldapPassword_d');
-
-  const searchBase =
-    config.get('ldapSearchBase') ||
-    config.get('ldapBaseDN') ||
-    config.get('ldapBaseDN_d');
-
+  const bindDN = config.get('ldapBindDN');
+  const bindCredentials = config.get('ldapPassword');
+  const searchBase = config.get('ldapSearchBase');
   const adminRoleFilter = config.get('ldapRoleAdminFilter');
   const editorRoleFilter = config.get('ldapRoleEditorFilter');
 
@@ -94,12 +84,12 @@ function enableLdap(config) {
         usernameField: 'email',
         passwordField: 'password',
         server: {
-          url: config.get('ldapUrl') || config.get('ldapUrl_d'),
+          url: config.get('ldapUrl'),
           searchBase,
           bindDN,
           bindCredentials,
           searchFilter: config.get('ldapSearchFilter'),
-          groupSearchBase: config.get('ldapBaseDN'),
+          groupSearchBase: config.get('ldapSearchBase'),
           groupSearchFilter: '(cn={{dn}})',
         },
       },

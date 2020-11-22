@@ -20,8 +20,5 @@ describe('lib/make-migrator', function () {
     await utils.migrator.migrate();
     const upToDate = await utils.migrator.schemaUpToDate();
     assert(upToDate);
-
-    const majorVersion = await utils.migrator.getDbMajorVersion();
-    assert.strictEqual(majorVersion, 5);
   });
 });

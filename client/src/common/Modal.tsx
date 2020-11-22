@@ -9,9 +9,17 @@ export interface Props extends React.HTMLAttributes<HTMLElement> {
   visible?: boolean;
   onClose?: () => void;
   width: string | number;
+  initialFocusRef?: React.RefObject<any>;
 }
 
-function Modal({ title, visible, onClose, width, children }: Props) {
+function Modal({
+  title,
+  visible,
+  onClose,
+  width,
+  initialFocusRef,
+  children,
+}: Props) {
   if (visible) {
     return (
       <Dialog
@@ -21,6 +29,7 @@ function Modal({ title, visible, onClose, width, children }: Props) {
         style={{
           width,
         }}
+        initialFocusRef={initialFocusRef}
       >
         <div className={styles.titleWrapper}>
           <span>{title}</span>

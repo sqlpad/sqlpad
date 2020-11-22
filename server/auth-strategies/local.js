@@ -4,7 +4,7 @@ const appLog = require('../lib/app-log');
 const passhash = require('../lib/passhash.js');
 
 function enableLocal(config) {
-  if (config.get('userpassAuthDisabled') || config.get('disableUserpassAuth')) {
+  if (config.get('userpassAuthDisabled')) {
     return;
   }
 

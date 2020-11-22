@@ -20,8 +20,7 @@ async function listServiceTokens(req, res) {
 async function generateServiceToken(req, res) {
   const { models, config } = req;
 
-  const secret =
-    config.get('serviceTokenSecret') || config.get('serviceTokenSecret_d');
+  const secret = config.get('serviceTokenSecret');
   if (!secret) {
     return res.utils.forbidden();
   }

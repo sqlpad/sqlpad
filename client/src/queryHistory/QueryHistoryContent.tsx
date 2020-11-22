@@ -1,34 +1,24 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Button from '../common/Button';
-import QueryResultContainer from '../common/QueryResultContainer';
+import ErrorBlock from '../common/ErrorBlock';
+import QueryResultDataTable from '../common/QueryResultDataTable';
+import QueryResultRunning from '../common/QueryResultRunning';
 import { api } from '../utilities/api';
-import QueryHistoryFilterItem from './QueryHistoryFilterItem';
+import QueryHistoryFilterItem, { Filter } from './QueryHistoryFilterItem';
 
-function getQueryResult(rows: any) {
-  return {
-    rows,
-    columns: [
-      { name: 'userEmail', datatype: 'string' },
-      { name: 'connectionName', datatype: 'string' },
-      { name: 'startTime', datatype: 'datetime' },
-      { name: 'stopTime', datatype: 'datetime' },
-      { name: 'durationMs', datatype: 'number' },
-      { name: 'queryId', datatype: 'string' },
-      { name: 'queryName', datatype: 'string' },
-      { name: 'queryText', datatype: 'string' },
-      { name: 'incomplete', datatype: 'boolean' },
-      { name: 'rowCount', datatype: 'number' },
-      { name: 'createdAt', datatype: 'datetime' },
-    ],
-    status: 'finished',
-  };
-}
-
-interface Filter {
-  field: string;
-  operator: string;
-  value: string;
-}
+const COLUMNS = [
+  { name: 'userEmail', datatype: 'string' },
+  { name: 'connectionName', datatype: 'string' },
+  { name: 'startTime', datatype: 'datetime' },
+  { name: 'stopTime', datatype: 'datetime' },
+  { name: 'durationMs', datatype: 'number' },
+  { name: 'queryId', datatype: 'string' },
+  { name: 'queryName', datatype: 'string' },
+  { name: 'queryText', datatype: 'string' },
+  { name: 'incomplete', datatype: 'boolean' },
+  { name: 'rowCount', datatype: 'number' },
+  { name: 'createdAt', datatype: 'datetime' },
+];
 
 function QueryHistoryContent() {
   const [filters, setFilters] = useState<Filter[]>([]);
@@ -36,9 +26,11 @@ function QueryHistoryContent() {
 
   function buildFilterUrlParameter() {
     const urlFilters = filters.map((f) => {
-      if (['before', 'after'].includes(f.operator)) {
+      if (['before', 'after'].includes(f.operator || '')) {
         try {
-          f.value = new Date(f.value).toISOString();
+          if (f.value) {
+            f.value = new Date(f.value).toISOString();
+          }
         } catch (error) {
           f.value = error.message;
         }
@@ -55,13 +47,17 @@ function QueryHistoryContent() {
     mutate,
   } = api.useQueryHistory(filterUrl);
 
-  const queryHistory = getQueryResult(historyData || []) || {};
+  const arrayRows = useMemo(() => {
+    return (historyData || []).map((row) => {
+      return COLUMNS.map((column) => row[column.name]);
+    });
+  }, [historyData]);
 
   const handleRefresh = () => {
     mutate();
   };
 
-  const setFilterValue = (index: any, filterItem: any) => {
+  const setFilterValue = (index: number, filterItem: any) => {
     const newFilter = [...filters];
     if ('field' in filterItem) {
       newFilter[index].field = filterItem.field;
@@ -82,13 +78,13 @@ function QueryHistoryContent() {
     setFilters(newFilters);
   };
 
-  const handleRemoveFilter = (index: any) => {
+  const handleRemoveFilter = (index: number) => {
     const newFilters = [...filters];
     newFilters.splice(index, 1);
     setFilters(newFilters);
   };
 
-  const handleApplyFilter = (e: any) => {
+  const handleApplyFilter = () => {
     setFilterUrl(buildFilterUrlParameter());
   };
 
@@ -135,7 +131,7 @@ function QueryHistoryContent() {
               filter={filterItem}
               onChange={setFilterValue}
               onAddFilter={
-                index === filters.length - 1 ? handleAddFilter : null
+                index === filters.length - 1 ? handleAddFilter : undefined
               }
               onRemoveFilter={handleRemoveFilter}
             />
@@ -156,13 +152,14 @@ function QueryHistoryContent() {
   }
 
   let rowCount = null;
-  if (queryHistory && queryHistory.rows) {
-    rowCount = <div>{queryHistory.rows.length} rows</div>;
+  if (historyData) {
+    rowCount = <div>{historyData.length} rows</div>;
   }
 
-  // TODO - setting a fixed height for now until display issue is sorted out for large number of results
-  // The flex based layout wasn't working for some reason
-  // (seems fine if grid is not rendered -- is it an issue with react-measure?)
+  // Result grid height is fixed for now. To use dynamic flex sizing Modal CSS
+  // would need to be reworked and the complexity is not worth the changes.
+  // If dynamic height is needed, a simpler solution might be to measure screen height and grid position.
+  // Unknown if more height is necessary, so leaving this as is.
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -173,21 +170,19 @@ function QueryHistoryContent() {
       </div>
       <br />
       {rowCount}
-      <div style={{ display: 'flex', flexGrow: 1, height: '100%' }}>
-        <div
-          style={{
-            position: 'relative',
-            width: '100%',
-            height: 300,
-            border: '1px solid #CCC',
-          }}
-        >
-          <QueryResultContainer
-            isRunning={isRunning}
-            queryResult={queryHistory}
-            queryError={queryError}
-          />
-        </div>
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: 360,
+          border: '1px solid #CCC',
+        }}
+      >
+        {isRunning && <QueryResultRunning />}
+        {queryError && <ErrorBlock>{queryError}</ErrorBlock>}
+        {!isRunning && !queryError && historyData && (
+          <QueryResultDataTable columns={COLUMNS} rows={arrayRows} />
+        )}
       </div>
     </>
   );

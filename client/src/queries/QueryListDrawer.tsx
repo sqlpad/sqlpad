@@ -1,4 +1,3 @@
-import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import queryString from 'query-string';
 import React, { useCallback, useEffect, useState } from 'react';
 import Measure from 'react-measure';
@@ -13,10 +12,9 @@ import InfoBlock from '../common/InfoBlock';
 import Input from '../common/Input';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
-import MultiSelect from '../common/MultiSelect';
+import MultiSelect, { MultiSelectItem } from '../common/MultiSelect';
 import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube';
-import Text from '../common/Text';
 import { Query } from '../types';
 import { api } from '../utilities/api';
 import styles from './QueryList.module.css';
@@ -25,12 +23,6 @@ import QueryPreview from './QueryPreview';
 const SHARED = 'SHARED';
 const MY_QUERIES = 'MY_QUERIES';
 const ALL = 'ALL';
-
-interface Item {
-  name?: string;
-  id: string;
-  component?: any;
-}
 
 type Params = Record<
   string,
@@ -150,11 +142,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
 
   const Row = ({ index, style }: any) => {
     const query = queries[index];
-    const tableUrl = `/query-table/${query.id}`;
-    const chartUrl = `/query-chart/${query.id}`;
     const queryUrl = `/queries/${query.id}`;
-
-    const hasChart = query && query.chart && query.chart.chartType;
 
     return (
       <ListItem
@@ -164,45 +152,14 @@ function QueryListDrawer({ onClose, visible }: Props) {
         onMouseLeave={() => setPreview(null)}
         style={style}
       >
-        <Link className={styles.queryLink} to={queryUrl} onClick={handleClose}>
+        <Link
+          className={`${styles.queryLink} truncate`}
+          to={queryUrl}
+          onClick={handleClose}
+        >
           {query.name}
-          <br />
-          <Text type="secondary">{query.connection.name}</Text>
         </Link>
         <div className={styles.listItemActions}>
-          <Link
-            className={styles.newWindowLink}
-            to={tableUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            table <OpenInNewIcon size={16} />
-          </Link>
-          <div style={{ width: 8 }} />
-          {Boolean(hasChart) ? (
-            <Link
-              className={styles.newWindowLink}
-              to={chartUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              chart <OpenInNewIcon size={16} />
-            </Link>
-          ) : (
-            // this is a "disabled" link
-            <span
-              style={{
-                color: 'rgba(0, 0, 0, 0.25)',
-                cursor: 'not-allowed',
-                pointerEvents: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-              }}
-            >
-              chart <OpenInNewIcon size={16} />
-            </span>
-          )}
-          <div style={{ width: 4 }} />
           <DeleteConfirmButton
             icon
             key="del"
@@ -287,7 +244,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
                   id: t,
                   name: t,
                 }))}
-                onChange={(items: Item[]) => setSearchTags(items)}
+                onChange={(items: MultiSelectItem[]) => setSearchTags(items)}
                 placeholder="tags"
               />
             </div>
@@ -337,7 +294,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
                       onItemsRendered={onItemsRendered}
                       height={dimensions.height}
                       itemCount={queries.length}
-                      itemSize={60}
+                      itemSize={48}
                       width={dimensions.width}
                       overscanCount={2}
                     >

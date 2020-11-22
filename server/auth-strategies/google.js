@@ -20,10 +20,7 @@ async function passportGoogleStrategyHandler(
   }
 
   try {
-    let [openAdminRegistration, user] = await Promise.all([
-      models.users.adminRegistrationOpen(),
-      models.users.findOneByEmail(email),
-    ]);
+    let user = await models.users.findOneByEmail(email);
 
     if (user) {
       if (user.disabled) {
@@ -36,10 +33,10 @@ async function passportGoogleStrategyHandler(
       return done(null, newUser);
     }
     const allowedDomains = config.get('allowedDomains');
-    if (openAdminRegistration || checkAllowedDomains(allowedDomains, email)) {
+    if (checkAllowedDomains(allowedDomains, email)) {
       const newUser = await models.users.create({
         email,
-        role: openAdminRegistration ? 'admin' : 'editor',
+        role: 'editor',
         signupAt: new Date(),
       });
       webhooks.userCreated(newUser);
@@ -62,10 +59,8 @@ async function passportGoogleStrategyHandler(
  */
 function enableGoogle(config) {
   const baseUrl = config.get('baseUrl');
-  const googleClientId =
-    config.get('googleClientId') || config.get('googleClientId_d');
-  const googleClientSecret =
-    config.get('googleClientSecret') || config.get('googleClientSecret_d');
+  const googleClientId = config.get('googleClientId');
+  const googleClientSecret = config.get('googleClientSecret');
   const publicUrl = config.get('publicUrl');
 
   if (config.googleAuthConfigured()) {

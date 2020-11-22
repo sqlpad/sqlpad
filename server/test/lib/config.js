@@ -1,9 +1,9 @@
 const assert = require('assert');
-const path = require('path');
-const fromDefault = require('../../lib/config/from-default');
-const fromEnv = require('../../lib/config/from-env');
-const fromCli = require('../../lib/config/from-cli');
-const fromFile = require('../../lib/config/from-file');
+const {
+  getFromCli,
+  getFromDefault,
+  getFromEnv,
+} = require('../../lib/config/config-utils');
 const Config = require('../../lib/config');
 
 function configHasError(args, errorFindFunction) {
@@ -16,7 +16,7 @@ function configHasError(args, errorFindFunction) {
 
 describe('lib/config/from-default', function () {
   it('provides expected values', function () {
-    const conf = fromDefault();
+    const conf = getFromDefault();
     assert.equal(conf.port, 80, 'default port');
     assert(conf.dbPath !== '$HOME/sqlpad/db', 'dbPath should change');
   });
@@ -24,14 +24,14 @@ describe('lib/config/from-default', function () {
 
 describe('lib/config/from-env', function () {
   it('provides expected values', function () {
-    const conf = fromEnv({ SQLPAD_PORT: 8000 });
+    const conf = getFromEnv({ SQLPAD_PORT: 8000 });
     assert.equal(conf.port, 8000, 'conf.port');
   });
 });
 
 describe('lib/config/from-cli', function () {
   it('provides expected values', function () {
-    const conf = fromCli({
+    const conf = getFromCli({
       keyPath: 'key/path',
       certPath: 'cert/path',
       admin: 'admin@email.com',
@@ -42,49 +42,7 @@ describe('lib/config/from-cli', function () {
   });
 });
 
-describe('lib/config/fromFile', function () {
-  it('throws for missing file', function () {
-    assert.throws(() => fromFile(path.join(__dirname, '/missing.ini')));
-  });
-
-  it('handles falsey path', function () {
-    function isEmpty(obj) {
-      assert.equal(Object.keys(obj).length, 0, 'empty object');
-    }
-    isEmpty(fromFile());
-    isEmpty(fromFile(null));
-    isEmpty(fromFile(''));
-  });
-
-  it('reads INI', function () {
-    const config = fromFile(path.join(__dirname, '../fixtures/config.ini'));
-    assert.equal(config.dbPath, 'dbPath', 'dbPath');
-    assert.equal(config.baseUrl, 'baseUrl', 'baseUrl');
-    assert.equal(config.certPassphrase, 'certPassphrase', 'certPassphrase');
-    assert.equal(Object.keys(config).length, 3, '3 items');
-  });
-
-  it('reads JSON', function () {
-    const config = fromFile(path.join(__dirname, '../fixtures/config.json'));
-    assert.equal(config.dbPath, 'dbPath', 'dbPath');
-    assert.equal(config.baseUrl, 'baseUrl', 'baseUrl');
-    assert.equal(config.certPassphrase, 'certPassphrase', 'certPassphrase');
-    assert.equal(Object.keys(config).length, 3, '3 items');
-  });
-
-  it('fromFile ignores .env', function () {
-    const config = fromFile(path.join(__dirname, '../fixtures/config.env'));
-    assert.equal(Object.keys(config).length, 0, '0 items');
-  });
-
-  it('Errors for old config file key', function () {
-    configHasError(
-      { config: path.join(__dirname, '../fixtures/old-config.json') },
-      (error) =>
-        error.includes('cert-passphrase') && error.includes('NOT RECOGNIZED')
-    );
-  });
-
+describe('lib/config', function () {
   it('Error: Unknown session store', function () {
     configHasError({ sessionStore: 'not-real-store' }, (error) =>
       error.includes('SQLPAD_SESSION_STORE must be one of')
@@ -108,21 +66,6 @@ describe('lib/config/fromFile', function () {
     );
   });
 
-  it('Deprecated warning for json/ini config file', function () {
-    const config = new Config(
-      { config: path.join(__dirname, '../fixtures/old-config.json') },
-      {}
-    );
-    const validations = config.getValidations();
-    assert(validations.warnings);
-    const found = validations.warnings.find(
-      (s) =>
-        s ===
-        'DEPRECATED CONFIG: .json and .ini file support deprecated. Use .env file or environment variables instead.'
-    );
-    assert(found, 'has warning about file deprecated');
-  });
-
   it('Errors for old cli flag', function () {
     const config = new Config({ debug: true }, {});
     const validations = config.getValidations();
@@ -144,20 +87,81 @@ describe('lib/config/fromFile', function () {
     assert(found, 'has error about old key');
   });
 
-  it('Warns for deprecated config', function () {
-    const config = new Config({ whitelistedDomains: 'is going away' }, {});
+  it('Errors env connection missing name', function () {
+    const config = new Config(
+      {},
+      { SQLPAD_CONNECTIONS__test__driver: 'postgres' }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes('SQLPAD_CONNECTIONS__test__name missing')
+    );
+    assert(found, 'has error');
+  });
 
+  it('Errors env connection missing driver', function () {
+    const config = new Config(
+      {},
+      { SQLPAD_CONNECTIONS__test__name: 'My test' }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes('SQLPAD_CONNECTIONS__test__driver missing')
+    );
+    assert(found, 'has error');
+  });
+
+  it('Errors env connection invalid driver', function () {
+    const config = new Config(
+      {},
+      {
+        SQLPAD_CONNECTIONS__test__name: 'My test',
+        SQLPAD_CONNECTIONS__test__driver: 'foo',
+      }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes(
+        'Environment config SQLPAD_CONNECTIONS__test__driver invalid. "foo" not a supported driver.'
+      )
+    );
+    assert(found, 'has error');
+  });
+
+  it('Errors env connection invalid driver field', function () {
+    const config = new Config(
+      {},
+      {
+        SQLPAD_CONNECTIONS__test__name: 'My test',
+        SQLPAD_CONNECTIONS__test__driver: 'postgres',
+        SQLPAD_CONNECTIONS__test__wrongField: 'localhost',
+      }
+    );
+    const validations = config.getValidations();
+    assert(validations.errors);
+    const found = validations.errors.find((error) =>
+      error.includes(
+        'Environment config SQLPAD_CONNECTIONS__test__wrongField invalid. "wrongField" not a known field for postgres.'
+      )
+    );
+    assert(found, 'has error');
+  });
+
+  it('Warns for deprecated config', function () {
+    const config = new Config({ deprecatedTestConfig: 'just a test' }, {});
     const validations = config.getValidations();
     assert(validations.warnings);
     const found = validations.warnings.find(
       (warning) =>
-        warning.includes('whitelistedDomains') && warning.includes('DEPRECATED')
+        warning.includes('deprecatedTestConfig') &&
+        warning.includes('DEPRECATED')
     );
     assert(found, 'has deprecated key warning');
   });
-});
 
-describe('lib/config', function () {
   it('.get() should get a value provided by default', function () {
     const config = new Config({}, {});
     assert.equal(config.get('ip'), '0.0.0.0');

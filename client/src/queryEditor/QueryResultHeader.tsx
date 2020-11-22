@@ -1,103 +1,138 @@
-import DownloadIcon from 'mdi-react/DownloadIcon';
+import MenuLeftIcon from 'mdi-react/MenuLeftIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Button from '../common/Button';
+import ExportButton from '../common/ExportButton';
+import HSpacer from '../common/HSpacer';
+import IconButton from '../common/IconButton';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer';
+import { selectStatementId } from '../stores/editor-actions';
 import {
+  useSessionBatch,
   useSessionIsRunning,
-  useSessionQueryId,
-  useSessionQueryResult,
   useSessionRunQueryStartTime,
+  useSessionSelectedStatementId,
+  useSessionTableLink,
+  useStatementDurationMs,
+  useStatementIncomplete,
+  useStatementRowCount,
+  useStatementSequence,
+  useStatementStatus,
+  useStatementText,
 } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
 
 function QueryResultHeader() {
   const isRunning = useSessionIsRunning();
-  const queryId = useSessionQueryId();
-  const queryResult = useSessionQueryResult();
   const runQueryStartTime = useSessionRunQueryStartTime();
+  const statementId = useSessionSelectedStatementId();
+
+  const rowCount = useStatementRowCount(statementId);
+  const hasRows = rowCount !== undefined && rowCount > 0;
+  const incomplete = useStatementIncomplete(statementId);
+  const statementDurationMs = useStatementDurationMs(statementId);
+  const status = useStatementStatus(statementId);
+
+  const batch = useSessionBatch();
+  const numOfStatements = batch?.statements.length || 0;
+
+  const statementText = useStatementText(statementId);
+  const statementSequence = useStatementSequence(statementId);
 
   const { config } = useAppContext();
-  if (isRunning || !queryResult) {
-    return (
-      <div className={styles.toolbar}>
-        {isRunning ? (
-          <span className={styles.toolbarItem}>
-            Query time: <SecondsTimer startTime={runQueryStartTime} />
-          </span>
-        ) : null}
+
+  const tableLink = useSessionTableLink(statementSequence);
+  const showLink = Boolean(tableLink);
+
+  const isStatementFinished = status === 'finished';
+  const isStatementRunning = status === 'queued' || status === 'started';
+
+  let timerContent = null;
+  if ((statementId && isStatementRunning) || (!statementId && isRunning)) {
+    timerContent = (
+      <div style={{ whiteSpace: 'nowrap' }}>
+        <SecondsTimer startTime={runQueryStartTime} /> seconds
       </div>
     );
+  } else if (statementId && isStatementFinished) {
+    const serverSec =
+      statementDurationMs !== undefined ? statementDurationMs / 1000 : 0;
+    timerContent = (
+      <div style={{ whiteSpace: 'nowrap' }}>{serverSec} seconds</div>
+    );
+  } else if (!statementId && batch?.durationMs !== undefined) {
+    const serverSec = batch?.durationMs / 1000;
+    timerContent = <div>{serverSec} seconds</div>;
   }
-
-  const rows = queryResult.rows || [];
-  const links = queryResult.links || {};
-  const serverSec = queryResult.durationMs / 1000;
-  const rowCount = rows.length;
-  const incomplete = Boolean(queryResult.incomplete);
-  const hasRows = rows.length > 0;
-
-  const showLink =
-    typeof queryId === 'string' && queryId !== 'new' && queryId !== '';
 
   return (
     <div className={styles.toolbar}>
-      <div className={styles.toolbarItem}>{serverSec} seconds</div>
-      <div className={styles.toolbarItem}>{rowCount} rows</div>
+      {statementId && numOfStatements > 1 ? (
+        <Button
+          className={styles.returnToStatementsBtn}
+          variant="primary-ghost"
+          onClick={() => {
+            selectStatementId('');
+          }}
+        >
+          <MenuLeftIcon /> Return to statements
+        </Button>
+      ) : null}
 
-      <div className={styles.toolbarItem}>
-        {config?.allowCsvDownload && hasRows && (
-          <span className={styles.iconLinkWrapper}>
-            <Link
-              className={styles.iconLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              to={links.csv}
-            >
-              <DownloadIcon style={{ marginRight: 4 }} size={16} />
-              .csv
-            </Link>
+      <HSpacer size={1} grow />
 
-            <Link
-              className={styles.iconLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              to={links.xlsx}
-            >
-              <DownloadIcon style={{ marginRight: 4 }} size={16} />
-              .xlsx
-            </Link>
-
-            <Link
-              className={styles.iconLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              to={links.json}
-            >
-              <DownloadIcon style={{ marginRight: 4 }} size={16} />
-              .json
-            </Link>
-          </span>
-        )}
-      </div>
-      {/* TODO: links.table will not appear if query is saved after run */}
-      {showLink && links.table && (
-        <div className={styles.toolbarItem}>
-          <span className={styles.iconLinkWrapper}>
-            <Link
-              className={styles.iconLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              to={links.table}
-            >
-              table <OpenInNewIcon style={{ marginLeft: 4 }} size={16} />
-            </Link>
-          </span>
-        </div>
+      {statementId && statementSequence && numOfStatements > 1 && (
+        <>
+          <div className={styles.statementHeaderStatementText}>
+            {`${statementSequence}. ${statementText}`}
+          </div>
+          <HSpacer size={1} grow />
+        </>
       )}
-      {incomplete && <IncompleteDataNotification />}
+
+      {statementId && isStatementFinished && (
+        <>
+          <div style={{ whiteSpace: 'nowrap' }}>{rowCount} rows</div>
+          <HSpacer />
+        </>
+      )}
+
+      {statementId && isStatementFinished && showLink && (
+        <>
+          <IconButton
+            disabled={!Boolean(tableLink)}
+            to={tableLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            tooltip="Open table in new window"
+          >
+            <OpenInNewIcon size={16} />
+          </IconButton>
+          <HSpacer />
+        </>
+      )}
+
+      {statementId &&
+        isStatementFinished &&
+        config?.allowCsvDownload &&
+        hasRows && (
+          <>
+            <ExportButton statementId={statementId} />
+            <HSpacer />
+          </>
+        )}
+
+      {statementId && isStatementFinished && incomplete && (
+        <>
+          <IncompleteDataNotification />
+          <HSpacer />
+        </>
+      )}
+
+      {timerContent}
+      <HSpacer size={1} />
     </div>
   );
 }

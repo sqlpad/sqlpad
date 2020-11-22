@@ -3,6 +3,7 @@ import { VariableSizeGrid } from 'react-window';
 import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
 import Measure from 'react-measure';
+import { StatementColumn, StatementResults } from '../types';
 
 interface FieldMeta {
   datatype: string;
@@ -75,7 +76,8 @@ const cellStyle: React.CSSProperties = {
 };
 
 interface QueryResultDataTableProps {
-  queryResult: any;
+  columns: StatementColumn[];
+  rows?: StatementResults;
 }
 
 interface QueryResultDataTableState {
@@ -87,11 +89,6 @@ interface QueryResultDataTableState {
     [key: string]: number;
   };
   scrollbarWidth: number;
-}
-
-interface Column {
-  name: string;
-  maxValueLength: number;
 }
 
 // NOTE: PureComponent's shallow compare works for this component
@@ -118,11 +115,11 @@ class QueryResultDataTable extends React.PureComponent<
     nextProps: QueryResultDataTableProps,
     prevState: QueryResultDataTableState
   ) {
-    const { queryResult } = nextProps;
+    const { columns } = nextProps;
     const { columnWidths } = prevState;
 
-    if (queryResult && queryResult.columns) {
-      queryResult.columns.forEach((column: Column) => {
+    if (columns) {
+      columns.forEach((column) => {
         const { name, maxValueLength } = column;
         if (!columnWidths[name]) {
           // (This length is number of characters -- it later gets assigned ~ 20px per char)
@@ -151,16 +148,16 @@ class QueryResultDataTable extends React.PureComponent<
   // If not, it's the dummy column at the end, and it should fill the rest of the grid width
   getColumnWidth = (index: number) => {
     const { columnWidths, scrollbarWidth, dimensions } = this.state;
-    const { queryResult } = this.props;
-    const column: Column = queryResult.columns[index];
+    const { columns } = this.props;
+    const column = columns[index];
     const { width } = dimensions;
 
     if (column) {
       return columnWidths[column.name];
     }
 
-    const totalWidthFilled = queryResult.columns
-      .map((col: Column) => columnWidths[col.name])
+    const totalWidthFilled = columns
+      .map((col) => columnWidths[col.name])
       .reduce((prev: number, curr: number) => prev + curr, 0);
 
     const fakeColumnWidth = width - totalWidthFilled - scrollbarWidth;
@@ -212,8 +209,8 @@ class QueryResultDataTable extends React.PureComponent<
     rowIndex: number;
     style: React.CSSProperties;
   }) => {
-    const { queryResult } = this.props;
-    const column = queryResult.columns[columnIndex];
+    const { columns } = this.props;
+    const column = columns[columnIndex];
 
     // If dataKey is present this is an actual header to render
     if (column) {
@@ -249,8 +246,8 @@ class QueryResultDataTable extends React.PureComponent<
     rowIndex: number;
     style: React.CSSProperties;
   }) => {
-    const { queryResult } = this.props;
-    const column = queryResult.columns[columnIndex];
+    const { columns, rows } = this.props;
+    const column = columns[columnIndex];
     const finalStyle = Object.assign({}, style, cellStyle);
     if (rowIndex % 2 === 0) {
       finalStyle.backgroundColor = '#fafafa';
@@ -258,7 +255,7 @@ class QueryResultDataTable extends React.PureComponent<
 
     // If dataKey is present this is a real data cell to render
     if (column) {
-      const value = queryResult.rows[rowIndex][column.name];
+      const value = rows?.[rowIndex]?.[columnIndex];
       return (
         <div style={finalStyle}>
           <div className="truncate">{renderValue(value, column)}</div>
@@ -291,13 +288,13 @@ class QueryResultDataTable extends React.PureComponent<
   };
 
   render() {
-    const { queryResult } = this.props;
+    const { columns, rows } = this.props;
     const { height, width } = this.state.dimensions;
 
-    if (queryResult && queryResult.rows && queryResult.columns) {
-      const rowCount = queryResult.rows.length;
+    if (rows && columns) {
+      const rowCount = rows.length;
       // Add extra column to fill remaining grid width if necessary
-      const columnCount = queryResult.columns.length + 1;
+      const columnCount = columns.length + 1;
 
       return (
         <Measure bounds onResize={this.handleContainerResize}>

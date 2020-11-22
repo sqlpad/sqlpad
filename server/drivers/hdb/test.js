@@ -11,7 +11,7 @@ const connection = {
   username: 'SYSTEM',
   password: 'SQLPad1!',
   hanaSchema: 'SYSTEM',
-  maxRows: 50000,
+  maxRows: 10000,
 };
 
 const initSqls = [

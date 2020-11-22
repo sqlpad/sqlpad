@@ -12,6 +12,55 @@ export interface Connection {
   updatedAt: string | Date;
 }
 
+export type StatementResults = Array<Array<any>>;
+
+export interface StatementColumn {
+  datatype: string;
+  max?: number | string | Date | boolean;
+  min?: number | string | Date | boolean;
+  maxValueLength?: number;
+  name: string;
+}
+
+export interface StatementError {
+  title: string;
+}
+
+export interface Statement {
+  id: string;
+  batchId: string;
+  sequence: number;
+  statementText: string;
+  status: 'queued' | 'started' | 'finished' | 'error';
+  startTime?: string | Date;
+  stopTime?: string | Date;
+  durationMs?: number;
+  columns?: StatementColumn[];
+  rowCount?: number;
+  resultsPath?: string;
+  incomplete?: boolean;
+  error?: StatementError;
+}
+
+export interface Batch {
+  id: string;
+  queryId?: string;
+  name?: string;
+  connectionId: string;
+  connectionClientId: string;
+  status: 'started' | 'finished' | 'error';
+  startTime: string | Date;
+  stopTime: string | Date;
+  durationMs: number;
+  batchText: string;
+  selectedText: string;
+  chart?: QueryChart;
+  statements: Statement[];
+  userId: string;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+}
+
 export type ConnectionFields = Record<string, any>;
 
 export interface ConnectionDetail extends ConnectionFields {
@@ -39,7 +88,6 @@ export interface ConnectionClient {
 }
 
 export interface AppInfo {
-  adminRegistrationOpen: boolean;
   config: {
     allowCsvDownload: boolean;
     // baseUrl app is mounted in. ie "/sqlpad"
@@ -56,7 +104,6 @@ export interface AppInfo {
     samlConfigured: boolean;
     samlLinkHtml: string;
     showServiceTokensUI: boolean;
-    smtpConfigured: string;
   };
   // brief user info if user is logged in
   currentUser?: {
@@ -80,13 +127,15 @@ export interface ACLRecord {
   write: boolean;
 }
 
+export interface QueryChart {
+  fields?: ChartFields;
+  chartType?: string;
+}
+
 export interface Query {
   id: string;
   name: string;
-  chart?: {
-    fields?: ChartFields;
-    chartType?: string;
-  };
+  chart?: QueryChart;
   queryText: string;
   connection: {
     id: string;
@@ -150,6 +199,12 @@ export interface User {
   passwordResetId?: string;
 }
 
+export interface UserSelfUpdate {
+  email: string;
+  name: string;
+  password?: string;
+}
+
 export interface ConnectionAccess {
   connectionId: string;
   connectionName: string;
@@ -209,3 +264,5 @@ export interface ConnectionSchema {
   schemas?: Schema[];
   tables?: SchemaTable[];
 }
+
+export type QueryHistoryResponse = Array<Record<string, any>>;

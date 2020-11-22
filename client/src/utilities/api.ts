@@ -4,6 +4,7 @@ import 'whatwg-fetch';
 import message from '../common/message';
 import {
   AppInfo,
+  Batch,
   Connection,
   ConnectionAccess,
   ConnectionDetail,
@@ -11,8 +12,11 @@ import {
   Driver,
   Query,
   QueryDetail,
+  QueryHistoryResponse,
   ServiceToken,
+  StatementResults,
   User,
+  UserSelfUpdate,
 } from '../types';
 import baseUrl from './baseUrl';
 
@@ -92,36 +96,82 @@ async function fetchJson<DataT = any>(
 }
 
 export const api = {
-  put(url: any, body: any) {
-    return fetchJson('PUT', url, body);
+  put<DataT = any>(url: any, body: any) {
+    return fetchJson<DataT>('PUT', url, body);
   },
 
   delete(url: any) {
     return fetchJson('DELETE', url);
   },
 
-  post(url: any, body: any) {
-    return fetchJson('POST', url, body);
+  post<DataT = any>(url: any, body: any) {
+    return fetchJson<DataT>('POST', url, body);
   },
 
   get<DataT = any>(url: any) {
     return fetchJson<DataT>('GET', url);
   },
 
-  signout() {
-    return this.get('/api/signout');
+  async signout() {
+    await this.get('/api/signout');
+    return mutate('api/app');
   },
 
-  async getQueries() {
+  createBatch(data: Partial<Batch>) {
+    return this.post<Batch>('/api/batches', data);
+  },
+
+  getBatch(batchId: string) {
+    return this.get<Batch>(`/api/batches/${batchId}`);
+  },
+
+  useBatch(batchId: string) {
+    return useSWR<Batch>(`/api/batches/${batchId}`);
+  },
+
+  getStatementResults(statementId: string) {
+    return this.get<StatementResults>(`/api/statements/${statementId}/results`);
+  },
+
+  /**
+   * Get statement results, but only if statement is finished
+   * This is important because these gets are deduped/cached
+   * @param statementId
+   * @param status
+   */
+  useStatementResults(statementId?: string, status?: string) {
+    const url =
+      statementId && status === 'finished'
+        ? `/api/statements/${statementId}/results`
+        : null;
+    return useSWR<StatementResults>(url, {
+      dedupingInterval: 60000,
+    });
+  },
+
+  getQueries() {
     return this.get<Query[]>('/api/queries');
+  },
+
+  useQuery(queryId?: string) {
+    return useSWR<QueryDetail>(queryId ? `/api/queries/${queryId}` : null);
   },
 
   getQuery(queryId: string) {
     return this.get<QueryDetail>(`/api/queries/${queryId}`);
   },
 
-  reloadQueries() {
-    return mutate('/api/queries');
+  async createQuery(body: any) {
+    const query = await this.post<QueryDetail>(`/api/queries`, body);
+    mutate('/api/queries');
+    return query;
+  },
+
+  async updateQuery(queryId: string, body: any) {
+    const query = await this.put<QueryDetail>(`/api/queries/${queryId}`, body);
+    mutate(`/api/queries`);
+    mutate(`/api/queries/${queryId}`);
+    return query;
   },
 
   deleteQuery(queryId: string) {
@@ -129,7 +179,9 @@ export const api = {
   },
 
   useConnections() {
-    return useSWR<Connection[]>('/api/connections');
+    return useSWR<Connection[]>('/api/connections', {
+      dedupingInterval: 60000,
+    });
   },
 
   reloadConnections() {
@@ -198,6 +250,14 @@ export const api = {
     return this.delete(`/api/service-tokens/${serviceTokenId}`);
   },
 
+  async updateUser(id: string, body: UserSelfUpdate) {
+    const response = await this.put<User>(`/api/users/${id}`, body);
+    mutate(`/api/users/${id}`);
+    // This API is used for self-updates so reload app-context
+    mutate('api/app');
+    return response;
+  },
+
   useUser(id: string) {
     return useSWR<User>(`/api/users/${id}`);
   },
@@ -230,6 +290,6 @@ export const api = {
    * @param filter comma delimited list of filter strings in format field|operator|value
    */
   useQueryHistory(filter?: string) {
-    return useSWR(`/api/query-history?filter=${filter}`);
+    return useSWR<QueryHistoryResponse>(`/api/query-history?filter=${filter}`);
   },
 };

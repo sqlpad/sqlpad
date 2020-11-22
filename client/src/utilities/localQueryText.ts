@@ -18,8 +18,10 @@ export function removeLocalQueryText(queryId: any) {
     .catch((error) => console.error(error));
 }
 
-export default {
+const localQueryText = {
   setLocalQueryText,
   getLocalQueryText,
   removeLocalQueryText,
 };
+
+export default localQueryText;
