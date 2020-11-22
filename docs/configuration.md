@@ -1,6 +1,6 @@
 # Configuration
 
-!> 5.1.0 deprecates JSON/INI config files and adds new environment variables. See [CHANGELOG](https://github.com/sqlpad/sqlpad/blob/master/CHANGELOG.md) for mapping.
+!> 6.0.0 removes JSON/INI config file support. See [CHANGELOG](https://github.com/sqlpad/sqlpad/blob/master/CHANGELOG.md) for more info.
 
 ?> .env config file support added in 5.1.0
 
@@ -125,7 +125,8 @@ To use SQLite, all that must be set is `SQLPAD_DB_PATH`, and a `sqlite` file wil
 To use a different backend database, set `SQLPAD_BACKEND_DB_URI` to the desired target database.
 
 ```bash
-# Directory to store SQLPad embedded database content. This includes queries, users, query result cache files, etc.
+# Directory to store SQLPad disk-backed resources.
+# Depending on configuration this could include SQLite file, query result cache files, and session storage.
 # In the official docker image, this path is set to `/var/lib/sqlpad`.
 SQLPAD_DB_PATH = ""
 
@@ -138,8 +139,7 @@ SQLPAD_BACKEND_DB_URI = ""
 
 # If enabled, runs SQLite in memory
 # In this case, the database contents will be lost when the application stops.
-# SQLPAD_DB_PATH is still required to be provided for cache and session support.
-# SQLPAD_DB_PATH will be made optional in future release.
+# SQLPAD_DB_PATH is still required if SQLPAD_SESSION_STORE or SQLPAD_QUERY_RESULT_STORE are set to file.
 SQLPAD_DB_IN_MEMORY = "false"
 ```
 
