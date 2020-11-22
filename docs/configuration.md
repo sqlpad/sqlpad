@@ -176,7 +176,7 @@ To generate a service token, log into SQLPad as an `admin` user and click `Servi
 The generated Bearer token may be used by passing it via the Authorization header:
 
 ```bash
-curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/sqlpad/api/users
+curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/api/users
 ```
 
 For more information on APIs available see [API Overview](/api-overview).
