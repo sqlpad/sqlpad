@@ -265,7 +265,8 @@ function SchemaSidebar() {
                   Copy{' '}
                   <span className="monospace-font">
                     {formatIdentifiers(schemaItemId)}
-                  </span>
+                  </span>{' '}
+                  to clipboard
                 </MenuItem>
                 <MenuItem
                   onSelect={() =>
@@ -277,7 +278,8 @@ function SchemaSidebar() {
                   Copy{' '}
                   <span className="monospace-font">
                     {formatIdentifiers(schemaItemId, '"')}
-                  </span>
+                  </span>{' '}
+                  to clipboard
                 </MenuItem>
                 <MenuItem
                   onSelect={() =>
@@ -289,7 +291,8 @@ function SchemaSidebar() {
                   Copy{' '}
                   <span className="monospace-font">
                     {formatIdentifiers(schemaItemId, '[]')}
-                  </span>
+                  </span>{' '}
+                  to clipboard
                 </MenuItem>
               </MenuItems>
             </MenuPopover>
