@@ -54,6 +54,7 @@ Any environment variables set starting with `SQLPAD_` that are not known by SQLP
 - Fixes tag input leaving unselected value in input
 - Fixes clone/new URL not changing as expected
 - Fixes query-not-found experience, prompting user to start new query.
+- Fixes reusing connection clients on query change (See issue #806)
 - Simplifies query list (if too much open issue)
 - Increases SQL editor font size to 14
 
