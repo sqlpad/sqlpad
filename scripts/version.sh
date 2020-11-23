@@ -8,9 +8,8 @@ fi
 
 # Determine if branch is up-to-date
 # If not exit the script
-UPSTREAM=${1:-'@{u}'}
 LOCAL=$(git rev-parse @)
-REMOTE=$(git rev-parse "$UPSTREAM")
+REMOTE=$(git rev-parse @{u})
 
 if [ $LOCAL = $REMOTE ]; then
     echo "Branch up-to-date"

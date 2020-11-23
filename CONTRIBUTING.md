@@ -36,14 +36,10 @@ If you've made a significant contribution to SQLPad you'll be invited to join as
 
 No pressure to accept the invite or even do anything with the access. Contribute as much or as little as you'd like, even if it is just to weigh in on the direction of the project.
 
-## Contributing Money
-
-Interested in paid support, sponsorship, or contracting out SQLPad development work? Please reach out to rick.bergfalk@gmail.com.
-
 ## License
 
 By contributing to SQLPad, you agree that your contributions will be licensed under its MIT license.
 
 ## Getting Started
 
-Ready to get started? Refer to [Developer Guide](https://github.com/sqlpad/sqlpad/blob/master/DEVELOPER-GUIDE.md) to learn how to build and orient yourself with the project.
+Ready to get started? Refer to [DEVELOPER-GUIDE.md](https://github.com/sqlpad/sqlpad/blob/master/DEVELOPER-GUIDE.md) to learn how to build and orient yourself with the project.

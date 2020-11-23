@@ -2,7 +2,7 @@
 
 A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Presto, SAP HANA, Cassandra, Snowflake, Google BigQuery, SQLite, and many more via [ODBC](https://github.com/sqlpad/sqlpad/wiki/ODBC).
 
-![SQLPad Query Editor](https://sqlpad.github.io/sqlpad/images/screenshots/v5.1.0.png)
+![SQLPad Query Editor](https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png)
 
 ## Docker Image
 
@@ -14,27 +14,23 @@ See [docker-examples](https://github.com/sqlpad/sqlpad/tree/master/docker-exampl
 
 ## Development
 
-For instructions on installing/running SQLPad from git repo see [developer guide](https://github.com/sqlpad/sqlpad/blob/master/DEVELOPER-GUIDE.md)
+For instructions on installing/running SQLPad from git repo see [DEVELOPER-GUIDE.md](https://github.com/sqlpad/sqlpad/blob/master/DEVELOPER-GUIDE.md)
 
-## Configuration
+## Project Documentation
 
-- [project page - configuration](https://sqlpad.github.io/sqlpad/#/configuration)
-- [docs/configuration.md](https://github.com/sqlpad/sqlpad/blob/master/docs/configuration.md)
+Documentation located at [https://sqlpad.github.io/sqlpad](https://sqlpad.github.io/sqlpad).
 
-### Connection configuration
+Documentation source located in [docs directory](https://github.com/sqlpad/sqlpad/tree/master/docs), built/rendered by docsify.
 
-- [project page - connections](https://sqlpad.github.io/sqlpad/#/connections)
-- [docs/connections.md](https://github.com/sqlpad/sqlpad/blob/master/docs/connections.md)
+## Project Status
 
-## Seed Data (experimental)
+Despite recent development this last year and move to GitHub org, SQLPad is mostly "finished" in that it won't radically be changing from what it is today.
 
-- [project page - seed data](https://sqlpad.github.io/sqlpad/#/seed-data)
-- [docs/seed-data.md](https://github.com/sqlpad/sqlpad/blob/master/docs/seed-data.md)
+Maintenance releases and bugfixes guaranteed through 2021.
 
-## Logging
+## Contributing
 
-- [project page - logging](https://sqlpad.github.io/sqlpad/#/logging)
-- [docs/logging.md](https://github.com/sqlpad/sqlpad/blob/master/docs/logging.md)
+[Collaborators always welcome!](https://github.com/sqlpad/sqlpad/blob/master/CONTRIBUTING.md)
 
 ## License
 
