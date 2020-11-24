@@ -73,6 +73,8 @@ const cellStyle: React.CSSProperties = {
   paddingRight: '.5rem',
   borderBottom: '1px solid #CCC',
   display: 'relative',
+  overflowX: 'hidden',
+  overflowY: 'hidden',
 };
 
 interface QueryResultDataTableProps {
@@ -256,11 +258,7 @@ class QueryResultDataTable extends React.PureComponent<
     // If dataKey is present this is a real data cell to render
     if (column) {
       const value = rows?.[rowIndex]?.[columnIndex];
-      return (
-        <div style={finalStyle}>
-          <div className="truncate">{renderValue(value, column)}</div>
-        </div>
-      );
+      return <pre style={finalStyle}>{renderValue(value, column)}</pre>;
     }
 
     // If no dataKey this is a dummy cell.
@@ -272,9 +270,22 @@ class QueryResultDataTable extends React.PureComponent<
     );
   };
 
-  getRowHeight() {
+  getRowHeight = (index: number) => {
+    const { rows } = this.props;
+    if (rows) {
+      let lines = 1;
+      const row = rows[index] || [];
+      row.forEach((value) => {
+        const valueLines = `${value}`.split('\n').length;
+        if (valueLines > lines) {
+          lines = valueLines;
+        }
+      });
+      return lines * 30;
+    }
+
     return 30;
-  }
+  };
 
   // When a scroll occurs in the body grid,
   // synchronize the scroll position of the header grid
