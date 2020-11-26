@@ -18,6 +18,8 @@ describe('lib/get-columns.js', function () {
         datetime: null,
         numberString: null,
         date: noTime,
+        bool: false,
+        obj: {},
       },
       {
         alwaysNull: null,
@@ -28,6 +30,8 @@ describe('lib/get-columns.js', function () {
         datetime: d2,
         numberString: 100,
         date: null,
+        bool: true,
+        obj: { a: 'foo', b: 'bar' },
       },
       {
         alwaysNull: null,
@@ -38,6 +42,8 @@ describe('lib/get-columns.js', function () {
         datetime: d1,
         numberString: 0,
         date: noTime,
+        bool: true,
+        obj: null,
       },
       {
         alwaysNull: null,
@@ -48,6 +54,8 @@ describe('lib/get-columns.js', function () {
         datetime: null,
         numberString: null,
         date: noTime,
+        bool: true,
+        obj: { a: 'foo', b: 'bar' },
       },
     ];
 
@@ -76,6 +84,7 @@ describe('lib/get-columns.js', function () {
 
     assert.equal(cMap.string.datatype, 'string', 'string.datatype');
     assert.equal(cMap.string.maxValueLength, 7, 'string.maxValueLength');
+    assert.equal(cMap.string.maxLineLength, 7, 'string.maxLineLength');
 
     assert.equal(cMap.datetime.datatype, 'datetime', 'datetime.datatype');
     assert.equal(cMap.datetime.max.getTime(), d2.getTime(), 'datetime.max');
@@ -86,5 +95,11 @@ describe('lib/get-columns.js', function () {
     assert.equal(cMap.numberString.min, 0, 'numberString.min');
 
     assert.equal(cMap.date.datatype, 'date', 'date.datatype');
+
+    assert.equal(cMap.bool.datatype, 'boolean', 'bool.datatype');
+
+    assert.equal(cMap.obj.datatype, 'object', 'obj.datatype');
+    assert.equal(cMap.obj.maxValueLength, 30, 'obj.maxValueLength');
+    assert.equal(cMap.obj.maxLineLength, 13, 'obj.maxLineLength');
   });
 });
