@@ -3,21 +3,22 @@ import Button from '../common/Button';
 import ErrorBlock from '../common/ErrorBlock';
 import QueryResultDataTable from '../common/QueryResultDataTable';
 import QueryResultRunning from '../common/QueryResultRunning';
+import { StatementColumn } from '../types';
 import { api } from '../utilities/api';
 import QueryHistoryFilterItem, { Filter } from './QueryHistoryFilterItem';
 
-const COLUMNS = [
-  { name: 'userEmail', datatype: 'string' },
-  { name: 'connectionName', datatype: 'string' },
-  { name: 'startTime', datatype: 'datetime' },
-  { name: 'stopTime', datatype: 'datetime' },
-  { name: 'durationMs', datatype: 'number' },
-  { name: 'queryId', datatype: 'string' },
-  { name: 'queryName', datatype: 'string' },
-  { name: 'queryText', datatype: 'string' },
-  { name: 'incomplete', datatype: 'boolean' },
-  { name: 'rowCount', datatype: 'number' },
-  { name: 'createdAt', datatype: 'datetime' },
+const COLUMNS: StatementColumn[] = [
+  { name: 'userEmail', datatype: 'string', maxLineLength: 20 },
+  { name: 'connectionName', datatype: 'string', maxLineLength: 20 },
+  { name: 'startTime', datatype: 'datetime', maxLineLength: 23 },
+  { name: 'stopTime', datatype: 'datetime', maxLineLength: 23 },
+  { name: 'durationMs', datatype: 'number', maxLineLength: 10 },
+  { name: 'queryId', datatype: 'string', maxLineLength: 36 },
+  { name: 'queryName', datatype: 'string', maxLineLength: 30 },
+  { name: 'queryText', datatype: 'string', maxLineLength: 50 },
+  { name: 'incomplete', datatype: 'boolean', maxLineLength: 4 },
+  { name: 'rowCount', datatype: 'number', maxLineLength: 8 },
+  { name: 'createdAt', datatype: 'datetime', maxLineLength: 23 },
 ];
 
 function QueryHistoryContent() {
