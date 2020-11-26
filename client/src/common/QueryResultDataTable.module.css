@@ -1,0 +1,67 @@
+/* 
+  Fancy CSS to apply a shadow when content is overflowing
+  Approach modified from https://codepen.io/matthewbeta/pen/fzoHI
+*/
+.scrollboxEven {
+  background-image: 
+    /* Shadows */ linear-gradient(
+      to right,
+      rgb(250, 250, 250),
+      rgb(250, 250, 250)
+    ),
+    linear-gradient(to right, rgb(250, 250, 250), rgb(250, 250, 250)),
+    /* Shadow covers */
+      linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0)),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0));
+
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-color: rgb(250, 250, 250);
+  background-size: 20px 100%, 20px 100%, 10px 100%, 10px 100%;
+
+  /* Opera doesn't support this in the shorthand */
+  background-attachment: local, local, scroll, scroll;
+}
+
+.scrollboxOdd {
+  background-image: 
+    /* Shadows */ linear-gradient(to right, white, white),
+    linear-gradient(to right, white, white),
+    /* Shadow covers */
+      linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0)),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0));
+
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-color: white;
+  background-size: 20px 100%, 20px 100%, 10px 100%, 10px 100%;
+
+  /* Opera doesn't support this in the shorthand */
+  background-attachment: local, local, scroll, scroll;
+}
+
+.faderEven {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 0, 0, 0),
+    rgb(250, 250, 250)
+  );
+}
+
+.faderOdd {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 0, 0, 0),
+    rgb(255, 255, 255)
+  );
+}

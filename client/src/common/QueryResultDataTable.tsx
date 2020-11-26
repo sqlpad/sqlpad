@@ -4,6 +4,7 @@ import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
 import Measure from 'react-measure';
 import { StatementColumn, StatementResults } from '../types';
+import styles from './QueryResultDataTable.module.css';
 
 interface FieldMeta {
   datatype: string;
@@ -257,14 +258,24 @@ class QueryResultDataTable extends React.PureComponent<
     const { columns, rows } = this.props;
     const column = columns[columnIndex];
     const finalStyle = Object.assign({}, style, cellStyle);
+
+    let scrollboxClass = styles.scrollboxOdd;
+    let faderClass = styles.faderOdd;
     if (rowIndex % 2 === 0) {
       finalStyle.backgroundColor = '#fafafa';
+      scrollboxClass = styles.scrollboxEven;
+      faderClass = styles.faderEven;
     }
 
     // If dataKey is present this is a real data cell to render
     if (column) {
       const value = rows?.[rowIndex]?.[columnIndex];
-      return <pre style={finalStyle}>{renderValue(value, column)}</pre>;
+      return (
+        <pre className={scrollboxClass} style={finalStyle}>
+          {renderValue(value, column)}
+          <div className={faderClass}></div>
+        </pre>
+      );
     }
 
     // If no dataKey this is a dummy cell.
