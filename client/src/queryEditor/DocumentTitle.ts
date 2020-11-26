@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useSessionQueryName } from '../stores/editor-store';
 
 /**
@@ -10,9 +9,9 @@ function DocumentTitle({ queryId }: { queryId: string }) {
   const queryName = useSessionQueryName();
   const title = queryId === '' ? 'New query' : queryName;
 
-  useEffect(() => {
+  if (document.title !== title) {
     document.title = title;
-  }, [title]);
+  }
 
   return null;
 }
