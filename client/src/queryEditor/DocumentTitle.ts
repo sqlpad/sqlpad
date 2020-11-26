@@ -10,7 +10,6 @@ function DocumentTitle({ queryId }: { queryId: string }) {
   const title = queryId === '' ? 'New query' : queryName;
 
   if (document.title !== title) {
-    console.log('updating title');
     document.title = title;
   }
 
