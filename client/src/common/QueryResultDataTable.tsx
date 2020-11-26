@@ -115,8 +115,8 @@ class QueryResultDataTable extends React.PureComponent<
   componentDidUpdate = (prevProps: QueryResultDataTableProps) => {
     const { columns } = this.props;
     const { columnWidths } = this.state;
-    // TODO - take width into consideration for column sizes if few cols are used
-    // const { height, width } = this.state.dimensions;
+
+    const { width } = this.state.dimensions;
 
     let newInitialColumn = false;
 
@@ -125,6 +125,16 @@ class QueryResultDataTable extends React.PureComponent<
         const { name, maxValueLength } = column;
         if (!columnWidths[name]) {
           newInitialColumn = true;
+
+          // If this is the only column, give it the entire width minus 40px
+          // The 40px accounts for scrollbar + spare column
+          // Also serves as a visual reminder/remains visually consistent with other tables that have empty spare column
+          if (columns.length === 1) {
+            const almostAll = Math.floor(width) - 40;
+            columnWidths[name] = almostAll;
+            return;
+          }
+
           // (This length is number of characters -- it later gets assigned ~ 20px per char)
           let valueLength = maxValueLength || 8;
 
@@ -162,12 +172,16 @@ class QueryResultDataTable extends React.PureComponent<
     const { width } = dimensions;
 
     if (column) {
-      return columnWidths[column.name];
+      return columnWidths[column.name] || 0;
     }
 
     const totalWidthFilled = columns
       .map((col) => columnWidths[col.name])
       .reduce((prev: number, curr: number) => prev + curr, 0);
+
+    if (isNaN(totalWidthFilled)) {
+      return 0;
+    }
 
     const fakeColumnWidth = width - totalWidthFilled - scrollbarWidth;
     return fakeColumnWidth < 10 ? 10 : fakeColumnWidth;
