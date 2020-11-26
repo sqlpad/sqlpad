@@ -6,10 +6,6 @@ import Measure from 'react-measure';
 import { StatementColumn, StatementResults } from '../types';
 import styles from './QueryResultDataTable.module.css';
 
-interface FieldMeta {
-  datatype: string;
-}
-
 // https://davidwalsh.name/detect-scrollbar-width
 const scrollbarWidth = () => {
   const scrollDiv = document.createElement('div');
@@ -23,15 +19,15 @@ const scrollbarWidth = () => {
   return scrollbarWidth;
 };
 
-const renderValue = (input: any, fieldMeta: FieldMeta) => {
+const renderValue = (input: any, column: StatementColumn) => {
   if (input === null || input === undefined) {
     return <em>null</em>;
   } else if (input === true || input === false) {
     return input.toString();
-  } else if (fieldMeta.datatype === 'datetime') {
+  } else if (column.datatype === 'datetime') {
     // Remove the letters from ISO string and present as is
     return input.replace('T', ' ').replace('Z', '');
-  } else if (fieldMeta.datatype === 'date') {
+  } else if (column.datatype === 'date') {
     // Formats ISO string to YYYY-MM-DD
     return input.substring(0, 10);
   } else if (typeof input === 'object') {
@@ -122,7 +118,7 @@ class QueryResultDataTable extends React.PureComponent<
 
     if (columns) {
       columns.forEach((column) => {
-        const { name, maxValueLength } = column;
+        const { name, maxLineLength } = column;
         if (!columnWidths[name]) {
           newInitialColumn = true;
 
@@ -135,13 +131,17 @@ class QueryResultDataTable extends React.PureComponent<
             return;
           }
 
-          // (This length is number of characters -- it later gets assigned ~ 20px per char)
-          let valueLength = maxValueLength || 8;
+          // This length is number of characters in longest line of data for this column
+          let numChars = maxLineLength || 8;
+          const CHAR_PIXEL_WIDTH = 8;
 
-          if (name.length > valueLength) {
-            valueLength = name.length;
+          if (name.length > numChars) {
+            numChars = name.length;
           }
-          let columnWidthGuess = valueLength * 20;
+          let columnWidthGuess = numChars * CHAR_PIXEL_WIDTH;
+
+          // Column width estimates are capped to range between 100 and 350
+          // No reason other than these seem like good limits
           if (columnWidthGuess < 100) {
             columnWidthGuess = 100;
           } else if (columnWidthGuess > 350) {
@@ -307,7 +307,12 @@ class QueryResultDataTable extends React.PureComponent<
       let lines = 1;
       const row = rows[index] || [];
       row.forEach((value) => {
-        const valueLines = `${value}`.split('\n').length;
+        if (value === null || value === undefined) {
+          return;
+        }
+        const stringValue =
+          typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+        const valueLines = stringValue.split('\n').length;
         if (valueLines > lines) {
           lines = valueLines;
         }
