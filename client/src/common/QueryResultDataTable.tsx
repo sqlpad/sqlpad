@@ -111,23 +111,19 @@ class QueryResultDataTable extends React.PureComponent<
     this.setState({ scrollbarWidth: scrollbarWidth() });
   };
 
-  componentDidUpdate = () => {
-    // Make sure fake column is added in and sized right
-    this.recalc(0);
-  };
-
-  static getDerivedStateFromProps(
-    nextProps: QueryResultDataTableProps,
-    prevState: QueryResultDataTableState
-  ) {
-    const { columns } = nextProps;
-    const { columnWidths } = prevState;
+  componentDidUpdate = (prevProps: QueryResultDataTableProps) => {
+    const { columns } = this.props;
+    const { columnWidths } = this.state;
+    // TODO - take width into consideration for column sizes if few cols are used
     // const { height, width } = this.state.dimensions;
+
+    let newInitialColumn = false;
 
     if (columns) {
       columns.forEach((column) => {
         const { name, maxValueLength } = column;
         if (!columnWidths[name]) {
+          newInitialColumn = true;
           // (This length is number of characters -- it later gets assigned ~ 20px per char)
           let valueLength = maxValueLength || 8;
 
@@ -145,8 +141,14 @@ class QueryResultDataTable extends React.PureComponent<
         }
       });
     }
-    return { columnWidths };
-  }
+
+    if (newInitialColumn) {
+      this.setState({ columnWidths }, () => this.recalc(0));
+    } else {
+      // Make sure fake column is added in and sized right
+      this.recalc(0);
+    }
+  };
 
   // NOTE
   // An empty dummy column is added to the grid for visual purposes
