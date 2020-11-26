@@ -1,5 +1,10 @@
 # Changelog
 
+## [6.0.1] - 2020-11-26
+
+- Fix missing query text from query history
+- Fix stale page title on sign in
+
 ## [6.0.0] - 2020-11-22
 
 This release removes deprecated functionality and changes some default behaviors, requiring a major version bump. There are some notable enhancements as well however.
