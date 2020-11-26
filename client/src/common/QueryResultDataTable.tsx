@@ -57,24 +57,25 @@ const bodyStyle: React.CSSProperties = {
 };
 
 const headerCellStyle: React.CSSProperties = {
-  lineHeight: '30px',
+  lineHeight: '22px',
   backgroundColor: '#f4f4f4',
   justifyContent: 'space-between',
   borderBottom: '1px solid #CCC',
   display: 'flex',
   fontWeight: 'bold',
-  paddingLeft: '.5rem',
-  paddingRight: '.5rem',
+  padding: 4,
 };
 
 const cellStyle: React.CSSProperties = {
-  lineHeight: '30px',
-  paddingLeft: '.5rem',
-  paddingRight: '.5rem',
+  lineHeight: '22px',
+  padding: 4,
   borderBottom: '1px solid #CCC',
   display: 'relative',
   overflowX: 'hidden',
   overflowY: 'hidden',
+  color: 'rgba(0, 0, 0, 0.65)',
+  fontFamily:
+    "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
 };
 
 interface QueryResultDataTableProps {
@@ -93,9 +94,6 @@ interface QueryResultDataTableState {
   scrollbarWidth: number;
 }
 
-// NOTE: PureComponent's shallow compare works for this component
-// because the isRunning prop will toggle with each query execution
-// It would otherwise not rerender on change of prop.queryResult alone
 class QueryResultDataTable extends React.PureComponent<
   QueryResultDataTableProps,
   QueryResultDataTableState
@@ -113,12 +111,18 @@ class QueryResultDataTable extends React.PureComponent<
     this.setState({ scrollbarWidth: scrollbarWidth() });
   };
 
+  componentDidUpdate = () => {
+    // Make sure fake column is added in and sized right
+    this.recalc(0);
+  };
+
   static getDerivedStateFromProps(
     nextProps: QueryResultDataTableProps,
     prevState: QueryResultDataTableState
   ) {
     const { columns } = nextProps;
     const { columnWidths } = prevState;
+    // const { height, width } = this.state.dimensions;
 
     if (columns) {
       columns.forEach((column) => {
@@ -281,7 +285,8 @@ class QueryResultDataTable extends React.PureComponent<
           lines = valueLines;
         }
       });
-      return lines * 30;
+      // Line height is 22px, 8 is 4px padding top and bottom
+      return lines * 22 + 8;
     }
 
     return 30;
@@ -331,7 +336,7 @@ class QueryResultDataTable extends React.PureComponent<
                 columnCount={columnCount}
                 rowCount={1}
                 columnWidth={this.getColumnWidth}
-                rowHeight={this.getRowHeight}
+                rowHeight={() => 30}
                 height={30}
                 width={width - this.state.scrollbarWidth}
                 ref={this.headerGrid}
