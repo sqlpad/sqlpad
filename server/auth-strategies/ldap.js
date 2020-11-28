@@ -1,59 +1,10 @@
 const passport = require('passport');
 const ldap = require('ldapjs');
-const appLog = require('../lib/app-log');
 const LdapStrategy = require('passport-ldapauth');
+const appLog = require('../lib/app-log');
+const ldapUtils = require('../lib/ldap-utils');
 
-/**
- * Convenience wrapper to promisify client.bind() function
- * @param {*} client
- * @param {string} bindDN
- * @param {string} ldapPassword
- */
-function bindClient(client, bindDN, ldapPassword) {
-  return new Promise((resolve, reject) => {
-    client.bind(bindDN, ldapPassword, function (err) {
-      if (err) {
-        return reject(err);
-      }
-      return resolve();
-    });
-  });
-}
-
-/**
- * Convenience wrapper to query ldap and get an array of results
- * If nothing found empty array is returned
- * @param {*} client
- * @param {string} searchBase
- * @param {string} scope - base or sub
- * @param {string} filter - ldap query string
- */
-function queryLdap(client, searchBase, scope, filter) {
-  const opts = {
-    scope,
-    filter,
-  };
-  return new Promise((resolve, reject) => {
-    client.search(searchBase, opts, (err, res) => {
-      const results = [];
-      if (err) {
-        return reject(err);
-      }
-
-      res.on('searchEntry', function (entry) {
-        results.push(entry.object);
-      });
-      res.on('error', function (err) {
-        reject(err);
-      });
-      res.on('end', function () {
-        resolve(results);
-      });
-    });
-  });
-}
-
-function enableLdap(config) {
+async function enableLdap(config) {
   if (!config.get('ldapAuthEnabled')) {
     return;
   }
@@ -74,7 +25,18 @@ function enableLdap(config) {
     ldapDefaultRole = '';
   }
 
-  appLog.info('Enabling ldap authentication strategy.');
+  appLog.info('Enabling LDAP authentication strategy.');
+
+  appLog.debug('Checking LDAP bind config');
+  const canBind = await ldapUtils.ldapCanBind(config);
+  if (canBind) {
+    appLog.debug('LDAP bind successful');
+  } else {
+    appLog.warn(
+      'LDAP bind attempt failed. LDAP auth will still be configured.'
+    );
+  }
+
   passport.use(
     new LdapStrategy(
       {
@@ -156,13 +118,12 @@ function enableLdap(config) {
             const client = ldap.createClient({
               url: config.get('ldapUrl'),
             });
-            await bindClient(client, bindDN, bindCredentials);
+            await ldapUtils.bindClient(client, bindDN, bindCredentials);
 
             try {
               if (adminRoleFilter) {
                 const filter = `(&${userIdFilter}${adminRoleFilter})`;
-                appLog.debug(`Running LDAP search ${filter}`);
-                const results = await queryLdap(
+                const results = await ldapUtils.queryLdap(
                   client,
                   searchBase,
                   'sub',
@@ -179,8 +140,7 @@ function enableLdap(config) {
               // If role wasn't found for admin, try running editor search
               if (!role && editorRoleFilter) {
                 const filter = `(&${userIdFilter}${editorRoleFilter})`;
-                appLog.debug(`Running LDAP search ${filter}`);
-                const results = await queryLdap(
+                const results = await ldapUtils.queryLdap(
                   client,
                   searchBase,
                   'sub',

@@ -45,7 +45,7 @@ async function authStrategies(config, models) {
   await disableAuth(config, models);
   google(config);
   jwtServiceToken(config);
-  ldap(config);
+  await ldap(config);
   local(config);
   oidc(config);
   saml(config);
