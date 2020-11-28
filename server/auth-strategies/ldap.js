@@ -91,6 +91,7 @@ function enableLdap(config) {
           searchFilter: config.get('ldapSearchFilter'),
           groupSearchBase: config.get('ldapSearchBase'),
           groupSearchFilter: '(cn={{dn}})',
+          log: appLog.logger,
         },
       },
       async function passportLdapStrategyHandler(req, profile, done) {
