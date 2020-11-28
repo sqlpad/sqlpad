@@ -1,5 +1,10 @@
 # Changelog
 
+## [6.0.2] - 2020-11-28
+
+- Add LDAP trace logging
+- Add LDAP bind check at startup if enabled
+
 ## [6.0.1] - 2020-11-26
 
 - Fix missing query text from query history
