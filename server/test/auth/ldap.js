@@ -1,10 +1,20 @@
 const assert = require('assert');
 const request = require('supertest');
 const TestUtil = require('../utils');
+const ldapUtils = require('../../lib/ldap-utils');
 
 describe('auth/ldap', function () {
-  before(function () {
-    if (process.env.SKIP_INTEGRATION === 'true') {
+  before(async function () {
+    // If LDAP is available to bind to continue with tests
+    const utils = new TestUtil({
+      ldapAuthEnabled: true,
+      ldapUrl: 'ldap://localhost:389',
+      ldapBindDN: 'cn=admin,dc=planetexpress,dc=com',
+      ldapPassword: 'GoodNewsEveryone',
+    });
+    const canBind = await ldapUtils.ldapCanBind(utils.config);
+
+    if (!canBind || process.env.SKIP_INTEGRATION === 'true') {
       return this.skip();
     }
   });
