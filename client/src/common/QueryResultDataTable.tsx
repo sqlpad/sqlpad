@@ -4,10 +4,7 @@ import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
 import Measure from 'react-measure';
 import { StatementColumn, StatementResults } from '../types';
-
-interface FieldMeta {
-  datatype: string;
-}
+import styles from './QueryResultDataTable.module.css';
 
 // https://davidwalsh.name/detect-scrollbar-width
 const scrollbarWidth = () => {
@@ -22,15 +19,15 @@ const scrollbarWidth = () => {
   return scrollbarWidth;
 };
 
-const renderValue = (input: any, fieldMeta: FieldMeta) => {
+const renderValue = (input: any, column: StatementColumn) => {
   if (input === null || input === undefined) {
     return <em>null</em>;
   } else if (input === true || input === false) {
     return input.toString();
-  } else if (fieldMeta.datatype === 'datetime') {
+  } else if (column.datatype === 'datetime') {
     // Remove the letters from ISO string and present as is
     return input.replace('T', ' ').replace('Z', '');
-  } else if (fieldMeta.datatype === 'date') {
+  } else if (column.datatype === 'date') {
     // Formats ISO string to YYYY-MM-DD
     return input.substring(0, 10);
   } else if (typeof input === 'object') {
@@ -57,22 +54,25 @@ const bodyStyle: React.CSSProperties = {
 };
 
 const headerCellStyle: React.CSSProperties = {
-  lineHeight: '30px',
+  lineHeight: '22px',
   backgroundColor: '#f4f4f4',
   justifyContent: 'space-between',
   borderBottom: '1px solid #CCC',
   display: 'flex',
   fontWeight: 'bold',
-  paddingLeft: '.5rem',
-  paddingRight: '.5rem',
+  padding: 4,
 };
 
 const cellStyle: React.CSSProperties = {
-  lineHeight: '30px',
-  paddingLeft: '.5rem',
-  paddingRight: '.5rem',
+  lineHeight: '22px',
+  padding: 4,
   borderBottom: '1px solid #CCC',
   display: 'relative',
+  overflowX: 'hidden',
+  overflowY: 'hidden',
+  color: 'rgba(0, 0, 0, 0.65)',
+  fontFamily:
+    "'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace",
 };
 
 interface QueryResultDataTableProps {
@@ -91,9 +91,6 @@ interface QueryResultDataTableState {
   scrollbarWidth: number;
 }
 
-// NOTE: PureComponent's shallow compare works for this component
-// because the isRunning prop will toggle with each query execution
-// It would otherwise not rerender on change of prop.queryResult alone
 class QueryResultDataTable extends React.PureComponent<
   QueryResultDataTableProps,
   QueryResultDataTableState
@@ -111,24 +108,40 @@ class QueryResultDataTable extends React.PureComponent<
     this.setState({ scrollbarWidth: scrollbarWidth() });
   };
 
-  static getDerivedStateFromProps(
-    nextProps: QueryResultDataTableProps,
-    prevState: QueryResultDataTableState
-  ) {
-    const { columns } = nextProps;
-    const { columnWidths } = prevState;
+  componentDidUpdate = (prevProps: QueryResultDataTableProps) => {
+    const { columns } = this.props;
+    const { columnWidths } = this.state;
+
+    const { width } = this.state.dimensions;
+
+    let newInitialColumn = false;
 
     if (columns) {
       columns.forEach((column) => {
-        const { name, maxValueLength } = column;
+        const { name, maxLineLength } = column;
         if (!columnWidths[name]) {
-          // (This length is number of characters -- it later gets assigned ~ 20px per char)
-          let valueLength = maxValueLength || 8;
+          newInitialColumn = true;
 
-          if (name.length > valueLength) {
-            valueLength = name.length;
+          // If this is the only column, give it the entire width minus 40px
+          // The 40px accounts for scrollbar + spare column
+          // Also serves as a visual reminder/remains visually consistent with other tables that have empty spare column
+          if (columns.length === 1) {
+            const almostAll = Math.floor(width) - 40;
+            columnWidths[name] = almostAll;
+            return;
           }
-          let columnWidthGuess = valueLength * 20;
+
+          // This length is number of characters in longest line of data for this column
+          let numChars = maxLineLength || 8;
+          const CHAR_PIXEL_WIDTH = 8;
+
+          if (name.length > numChars) {
+            numChars = name.length;
+          }
+          let columnWidthGuess = numChars * CHAR_PIXEL_WIDTH;
+
+          // Column width estimates are capped to range between 100 and 350
+          // No reason other than these seem like good limits
           if (columnWidthGuess < 100) {
             columnWidthGuess = 100;
           } else if (columnWidthGuess > 350) {
@@ -139,8 +152,14 @@ class QueryResultDataTable extends React.PureComponent<
         }
       });
     }
-    return { columnWidths };
-  }
+
+    if (newInitialColumn) {
+      this.setState({ columnWidths }, () => this.recalc(0));
+    } else {
+      // Make sure fake column is added in and sized right
+      this.recalc(0);
+    }
+  };
 
   // NOTE
   // An empty dummy column is added to the grid for visual purposes
@@ -153,12 +172,16 @@ class QueryResultDataTable extends React.PureComponent<
     const { width } = dimensions;
 
     if (column) {
-      return columnWidths[column.name];
+      return columnWidths[column.name] || 0;
     }
 
     const totalWidthFilled = columns
       .map((col) => columnWidths[col.name])
       .reduce((prev: number, curr: number) => prev + curr, 0);
+
+    if (isNaN(totalWidthFilled)) {
+      return 0;
+    }
 
     const fakeColumnWidth = width - totalWidthFilled - scrollbarWidth;
     return fakeColumnWidth < 10 ? 10 : fakeColumnWidth;
@@ -249,16 +272,35 @@ class QueryResultDataTable extends React.PureComponent<
     const { columns, rows } = this.props;
     const column = columns[columnIndex];
     const finalStyle = Object.assign({}, style, cellStyle);
+
+    let scrollboxClass = styles.scrollboxOdd;
+    let faderClass = styles.faderOdd;
     if (rowIndex % 2 === 0) {
       finalStyle.backgroundColor = '#fafafa';
+      scrollboxClass = styles.scrollboxEven;
+      faderClass = styles.faderEven;
     }
 
     // If dataKey is present this is a real data cell to render
     if (column) {
       const value = rows?.[rowIndex]?.[columnIndex];
       return (
-        <div style={finalStyle}>
-          <div className="truncate">{renderValue(value, column)}</div>
+        <div className={scrollboxClass} style={finalStyle}>
+          <pre className={styles.cellValue}>{renderValue(value, column)}</pre>
+          {/* 
+            this placeholder is hidden content that helps the overflow shadow work.
+            Without this 10px of content needs to overflow before.
+            Unfortunately it looks like actual content is needed for overflow, so the "x" is that content.
+            Two letters seems to be a bit too much. 
+            Is there not a way to have empty space count as content for overflow purposes?
+            Something seems off about this.
+          */}
+          <div className={styles.hiddenPlaceholder}>x</div>
+          {/* 
+            Absolutely positioned fader to fade content out.
+            Was initially going to be instead of the shadow, but using both provide a subtle look thats kinda nice.
+          */}
+          <div className={faderClass}></div>
         </div>
       );
     }
@@ -272,9 +314,28 @@ class QueryResultDataTable extends React.PureComponent<
     );
   };
 
-  getRowHeight() {
+  getRowHeight = (index: number) => {
+    const { rows } = this.props;
+    if (rows) {
+      let lines = 1;
+      const row = rows[index] || [];
+      row.forEach((value) => {
+        if (value === null || value === undefined) {
+          return;
+        }
+        const stringValue =
+          typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+        const valueLines = stringValue.split('\n').length;
+        if (valueLines > lines) {
+          lines = valueLines;
+        }
+      });
+      // Line height is 22px, 8 is 4px padding top and bottom
+      return lines * 22 + 8;
+    }
+
     return 30;
-  }
+  };
 
   // When a scroll occurs in the body grid,
   // synchronize the scroll position of the header grid
@@ -320,7 +381,7 @@ class QueryResultDataTable extends React.PureComponent<
                 columnCount={columnCount}
                 rowCount={1}
                 columnWidth={this.getColumnWidth}
-                rowHeight={this.getRowHeight}
+                rowHeight={() => 30}
                 height={30}
                 width={width - this.state.scrollbarWidth}
                 ref={this.headerGrid}

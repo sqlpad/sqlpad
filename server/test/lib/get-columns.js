@@ -18,6 +18,8 @@ describe('lib/get-columns.js', function () {
         datetime: null,
         numberString: null,
         date: noTime,
+        bool: false,
+        obj: {},
       },
       {
         alwaysNull: null,
@@ -28,6 +30,8 @@ describe('lib/get-columns.js', function () {
         datetime: d2,
         numberString: 100,
         date: null,
+        bool: true,
+        obj: { a: 'foo', b: 'bar' },
       },
       {
         alwaysNull: null,
@@ -38,6 +42,8 @@ describe('lib/get-columns.js', function () {
         datetime: d1,
         numberString: 0,
         date: noTime,
+        bool: true,
+        obj: null,
       },
       {
         alwaysNull: null,
@@ -48,6 +54,8 @@ describe('lib/get-columns.js', function () {
         datetime: null,
         numberString: null,
         date: noTime,
+        bool: true,
+        obj: { a: 'foo', b: 'bar' },
       },
     ];
 
@@ -57,34 +65,94 @@ describe('lib/get-columns.js', function () {
       cMap[c.name] = c;
     });
 
-    assert.equal(cMap.alwaysNull.datatype, null, 'null');
+    assert.deepStrictEqual(cMap.alwaysNull, {
+      name: 'alwaysNull',
+      datatype: null,
+      max: null,
+      min: null,
+      maxLineLength: 0,
+      maxValueLength: 0,
+    });
 
-    assert.equal(cMap.accountNumber.datatype, 'string', 'accountNumber');
-    assert.equal(
-      cMap.accountNumber.maxValueLength,
-      6,
-      'accountNumber.maxValueLength'
-    );
+    assert.deepStrictEqual(cMap.accountNumber, {
+      name: 'accountNumber',
+      datatype: 'string',
+      max: null,
+      min: null,
+      maxLineLength: 6,
+      maxValueLength: 6,
+    });
 
-    assert.equal(cMap.decimalString.datatype, 'number', 'decimalString');
-    assert.equal(cMap.decimalString.max, 0.999, 'decimalString.max');
-    assert.equal(cMap.decimalString.min, 0.111, 'decimalString.min');
+    assert.deepStrictEqual(cMap.decimalString, {
+      name: 'decimalString',
+      datatype: 'number',
+      max: 0.999,
+      min: 0.111,
+      maxLineLength: 0,
+      maxValueLength: 0,
+    });
 
-    assert.equal(cMap.number.datatype, 'number', 'number.datatype');
-    assert.equal(cMap.number.max, 30, 'number.max');
-    assert.equal(cMap.number.min, 0, 'number.min');
+    assert.deepStrictEqual(cMap.number, {
+      name: 'number',
+      datatype: 'number',
+      max: 30,
+      min: 0,
+      maxLineLength: 0,
+      maxValueLength: 0,
+    });
 
-    assert.equal(cMap.string.datatype, 'string', 'string.datatype');
-    assert.equal(cMap.string.maxValueLength, 7, 'string.maxValueLength');
+    assert.deepStrictEqual(cMap.string, {
+      name: 'string',
+      datatype: 'string',
+      max: null,
+      min: null,
+      maxLineLength: 7,
+      maxValueLength: 7,
+    });
 
-    assert.equal(cMap.datetime.datatype, 'datetime', 'datetime.datatype');
-    assert.equal(cMap.datetime.max.getTime(), d2.getTime(), 'datetime.max');
-    assert.equal(cMap.datetime.min.getTime(), d1.getTime(), 'datetime.min');
+    assert.deepStrictEqual(cMap.datetime, {
+      name: 'datetime',
+      datatype: 'datetime',
+      max: d2,
+      min: d1,
+      maxLineLength: 23,
+      maxValueLength: 23,
+    });
 
-    assert.equal(cMap.numberString.datatype, 'number', 'numberString.datatype');
-    assert.equal(cMap.numberString.max, 100, 'numberString.max');
-    assert.equal(cMap.numberString.min, 0, 'numberString.min');
+    assert.deepStrictEqual(cMap.numberString, {
+      name: 'numberString',
+      datatype: 'number',
+      max: 100,
+      min: 0,
+      maxLineLength: 0,
+      maxValueLength: 0,
+    });
 
-    assert.equal(cMap.date.datatype, 'date', 'date.datatype');
+    assert.deepStrictEqual(cMap.date, {
+      name: 'date',
+      datatype: 'date',
+      max: noTime,
+      min: noTime,
+      maxLineLength: 10,
+      maxValueLength: 10,
+    });
+
+    assert.deepStrictEqual(cMap.bool, {
+      name: 'bool',
+      datatype: 'boolean',
+      max: null,
+      min: null,
+      maxLineLength: 4,
+      maxValueLength: 4,
+    });
+
+    assert.deepStrictEqual(cMap.obj, {
+      name: 'obj',
+      datatype: 'object',
+      max: null,
+      min: null,
+      maxLineLength: 13,
+      maxValueLength: 30,
+    });
   });
 });

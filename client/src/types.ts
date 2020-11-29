@@ -15,10 +15,25 @@ export interface Connection {
 export type StatementResults = Array<Array<any>>;
 
 export interface StatementColumn {
-  datatype: string;
+  datatype:
+    | 'date'
+    | 'datetime'
+    | 'object'
+    | 'number'
+    | 'boolean'
+    | 'string'
+    | null;
   max?: number | string | Date | boolean;
   min?: number | string | Date | boolean;
+  /**
+   * Number of characters longest value ignoring new lines
+   */
   maxValueLength?: number;
+  /**
+   * Number of characters in longest line of data for this column.
+   * Objects are JSON.stringify(value, null, 2)
+   */
+  maxLineLength?: number;
   name: string;
 }
 

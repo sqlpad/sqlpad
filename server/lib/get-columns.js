@@ -40,7 +40,10 @@ module.exports = function getColumns(rows) {
           datatype: null,
           max: null,
           min: null,
+          // max length of total content
           maxValueLength: 0,
+          // max line length (objects JSON.stringified with 2 spaces)
+          maxLineLength: 0,
         };
       }
 
@@ -58,13 +61,23 @@ module.exports = function getColumns(rows) {
           const isoString = dt.toISOString();
           if (isoString.includes('T00:00:00.000Z')) {
             meta[key].datatype = 'date';
+            meta[key].maxValueLength = 10;
+            meta[key].maxLineLength = 10;
           } else {
             meta[key].datatype = 'datetime';
+            meta[key].maxValueLength = 23;
+            meta[key].maxLineLength = 23;
           }
         } else if (isNumeric(value)) {
           meta[key].datatype = 'number';
         } else if (_.isString(value)) {
           meta[key].datatype = 'string';
+        } else if (typeof value === 'boolean') {
+          meta[key].datatype = 'boolean';
+          meta[key].maxValueLength = 4;
+          meta[key].maxLineLength = 4;
+        } else if (typeof value === 'object') {
+          meta[key].datatype = 'object';
         }
       }
 
@@ -99,6 +112,23 @@ module.exports = function getColumns(rows) {
         if (meta[key].maxValueLength < value.length) {
           meta[key].maxValueLength = value.length;
         }
+        const lineLengths = value.split('\n').map((line) => line.length);
+        const maxLineLength = Math.max(...lineLengths);
+        if (meta[key].maxLineLength < maxLineLength) {
+          meta[key].maxLineLength = maxLineLength;
+        }
+      }
+
+      if (meta[key].datatype === 'object' && value) {
+        const stringValue = JSON.stringify(value, null, 2);
+        if (meta[key].maxValueLength < stringValue.length) {
+          meta[key].maxValueLength = stringValue.length;
+        }
+        const lineLengths = stringValue.split('\n').map((line) => line.length);
+        const maxLineLength = Math.max(...lineLengths);
+        if (meta[key].maxLineLength < maxLineLength) {
+          meta[key].maxLineLength = maxLineLength;
+        }
       }
 
       // if we have a value and are dealing with a number or date, we should get min and max
@@ -116,6 +146,12 @@ module.exports = function getColumns(rows) {
           meta[key].min = value;
         } else if (value < meta[key].min) {
           meta[key].min = value;
+        }
+        // get string length of number
+        const stringLength = value.toString().length;
+        if (meta[key].maxValueLength < stringLength.length) {
+          meta[key].maxValueLength = stringLength.length;
+          meta[key].maxLineLength = stringLength.length;
         }
       }
 

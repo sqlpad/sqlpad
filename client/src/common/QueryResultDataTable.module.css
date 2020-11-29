@@ -1,0 +1,91 @@
+/* 
+  Fancy CSS to apply a shadow when content is overflowing
+  Approach modified from https://codepen.io/matthewbeta/pen/fzoHI
+*/
+.scrollboxEven {
+  display: flex;
+  flex-wrap: nowrap;
+  background-image: 
+    /* Shadows */ linear-gradient(
+      to right,
+      rgb(250, 250, 250),
+      rgb(250, 250, 250)
+    ),
+    linear-gradient(to right, rgb(250, 250, 250), rgb(250, 250, 250)),
+    /* Shadow covers */
+      linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0)),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0));
+
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-color: rgb(250, 250, 250);
+  background-size: 10px 100%, 10px 100%, 10px 100%, 10px 100%;
+
+  /* Opera doesn't support this in the shorthand */
+  background-attachment: local, local, scroll, scroll;
+}
+
+.scrollboxOdd {
+  display: flex;
+  flex-wrap: nowrap;
+  background-image: 
+    /* Shadows */ linear-gradient(to right, white, white),
+    linear-gradient(to right, white, white),
+    /* Shadow covers */
+      linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0)),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0));
+
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-color: white;
+  background-size: 10px 100%, 10px 100%, 10px 100%, 10px 100%;
+
+  /* Opera doesn't support this in the shorthand */
+  background-attachment: local, local, scroll, scroll;
+}
+
+.cellValue {
+  flex-shrink: 0;
+  line-height: 22px;
+  overflow: hidden;
+  color: rgba(0, 0, 0, 0.65);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro',
+    monospace;
+}
+
+/* 
+  The important thing about this placeholder is that it is hidden
+  It needs to take up space but not be visible
+*/
+.hiddenPlaceholder {
+  visibility: hidden;
+  display: block;
+  width: 20px;
+  height: 100%;
+}
+
+.faderEven {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 0, 0, 0),
+    rgb(250, 250, 250)
+  );
+}
+
+.faderOdd {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 0, 0, 0),
+    rgb(255, 255, 255)
+  );
+}
