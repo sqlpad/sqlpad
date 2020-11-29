@@ -1,10 +1,22 @@
 /* 
   Fancy CSS to apply a shadow when content is overflowing
   Approach modified from https://codepen.io/matthewbeta/pen/fzoHI
+
+  There's an issue with this approach in that the content needs to overflow by 10 pixels
+  so that the "covering" shadow is moved and reveals the actual shadow. 
+
+  This can be fixed if 10 pixels of content can be added to the right hand side of a result grid cell.
+  Prior attempt using flex and a hidden value resulted in strange padding behavior.
+
+  If this cannot be accomplished with CSS it might make sense to render cell values off screen and measure them?
+  That could get expensive.
+
+  We might not need to measure much though if we map measurements to number of characters, 
+  since we're using a monospace font.
+
+  Open to other ideas if anyone has them!
 */
 .scrollboxEven {
-  display: flex;
-  flex-wrap: nowrap;
   background-image: 
     /* Shadows */ linear-gradient(
       to right,
@@ -26,8 +38,6 @@
 }
 
 .scrollboxOdd {
-  display: flex;
-  flex-wrap: nowrap;
   background-image: 
     /* Shadows */ linear-gradient(to right, white, white),
     linear-gradient(to right, white, white),
@@ -42,26 +52,6 @@
 
   /* Opera doesn't support this in the shorthand */
   background-attachment: local, local, scroll, scroll;
-}
-
-.cellValue {
-  flex-shrink: 0;
-  line-height: 22px;
-  overflow: hidden;
-  color: rgba(0, 0, 0, 0.65);
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro',
-    monospace;
-}
-
-/* 
-  The important thing about this placeholder is that it is hidden
-  It needs to take up space but not be visible
-*/
-.hiddenPlaceholder {
-  visibility: hidden;
-  display: block;
-  width: 20px;
-  height: 100%;
 }
 
 .faderEven {
