@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.1.1] - 2020-11-29
+
+- Fix query result grid value padding
+
 ## [6.1.0] - 2020-11-28
 
 Misc enhancements to support showing multiline content in query results.
