@@ -3,6 +3,8 @@
   Approach modified from https://codepen.io/matthewbeta/pen/fzoHI
 */
 .scrollboxEven {
+  display: flex;
+  flex-wrap: nowrap;
   background-image: 
     /* Shadows */ linear-gradient(
       to right,
@@ -17,13 +19,15 @@
   background-position: left center, right center, left center, right center;
   background-repeat: no-repeat;
   background-color: rgb(250, 250, 250);
-  background-size: 20px 100%, 20px 100%, 10px 100%, 10px 100%;
+  background-size: 10px 100%, 10px 100%, 10px 100%, 10px 100%;
 
   /* Opera doesn't support this in the shorthand */
   background-attachment: local, local, scroll, scroll;
 }
 
 .scrollboxOdd {
+  display: flex;
+  flex-wrap: nowrap;
   background-image: 
     /* Shadows */ linear-gradient(to right, white, white),
     linear-gradient(to right, white, white),
@@ -34,10 +38,30 @@
   background-position: left center, right center, left center, right center;
   background-repeat: no-repeat;
   background-color: white;
-  background-size: 20px 100%, 20px 100%, 10px 100%, 10px 100%;
+  background-size: 10px 100%, 10px 100%, 10px 100%, 10px 100%;
 
   /* Opera doesn't support this in the shorthand */
   background-attachment: local, local, scroll, scroll;
+}
+
+.cellValue {
+  flex-shrink: 0;
+  line-height: 22px;
+  overflow: hidden;
+  color: rgba(0, 0, 0, 0.65);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro',
+    monospace;
+}
+
+/* 
+  The important thing about this placeholder is that it is hidden
+  It needs to take up space but not be visible
+*/
+.hiddenPlaceholder {
+  visibility: hidden;
+  display: block;
+  width: 20px;
+  height: 100%;
 }
 
 .faderEven {

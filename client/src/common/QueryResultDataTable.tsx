@@ -285,10 +285,23 @@ class QueryResultDataTable extends React.PureComponent<
     if (column) {
       const value = rows?.[rowIndex]?.[columnIndex];
       return (
-        <pre className={scrollboxClass} style={finalStyle}>
-          {renderValue(value, column)}
+        <div className={scrollboxClass} style={finalStyle}>
+          <pre className={styles.cellValue}>{renderValue(value, column)}</pre>
+          {/* 
+            this placeholder is hidden content that helps the overflow shadow work.
+            Without this 10px of content needs to overflow before.
+            Unfortunately it looks like actual content is needed for overflow, so the "x" is that content.
+            Two letters seems to be a bit too much. 
+            Is there not a way to have empty space count as content for overflow purposes?
+            Something seems off about this.
+          */}
+          <div className={styles.hiddenPlaceholder}>x</div>
+          {/* 
+            Absolutely positioned fader to fade content out.
+            Was initially going to be instead of the shadow, but using both provide a subtle look thats kinda nice.
+          */}
           <div className={faderClass}></div>
-        </pre>
+        </div>
       );
     }
 
