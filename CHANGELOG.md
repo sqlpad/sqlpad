@@ -1,5 +1,15 @@
 # Changelog
 
+## [6.1.0] - 2020-11-28
+
+Misc enhancements to support showing multiline content in query results.
+
+- Text value cells render line breaks. Row height is increased to accommodate the column value with most lines.
+- JSON and other object values are JSON pretty-printed for multiline rendering.
+- If single column is returned, the initial column width will use full width of result area.
+- Changes grid font family to monospace
+- Adds shadow to indicate text overflow
+
 ## [6.0.2] - 2020-11-28
 
 - Add LDAP trace logging

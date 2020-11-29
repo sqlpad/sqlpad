@@ -1,6 +1,6 @@
 {
   "name": "sqlpad-front-end",
-  "version": "6.0.2",
+  "version": "6.1.0",
   "private": true,
   "proxy": "http://localhost:3010",
   "dependencies": {
