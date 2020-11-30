@@ -37,6 +37,10 @@ class Users {
     return this.findOneById(id);
   }
 
+  /**
+   * For LDAP auth, account login may be used instead of proper email address
+   * @param {string} email
+   */
   async findOneByEmail(email) {
     const user = await this.sequelizeDb.Users.findOne({
       where: { email: email.toLowerCase() },
