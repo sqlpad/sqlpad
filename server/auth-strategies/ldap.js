@@ -93,13 +93,29 @@ async function enableLdap(config) {
             userIdFilter = `(uid=${profile.uid})`;
           }
 
-          // Email could be multi-valued
-          // For now first is used, but might need to check both in future?
-          let email = Array.isArray(profile.mail)
-            ? profile.mail[0]
-            : profile.mail;
+          // Mail may not always be available on profile
+          // In that case, fall back to user login fields.
+          // This field will go into `users.email` to serve in email's place.
+          // This should probably go into its own field, but this can complicate existing auth and UI
+          // If another field is added in the future, non-emails can be identified and moved accordingly
+          let identifierAttrValue =
+            profile.mail || profile.sAMAccountName || profile.uid;
 
-          email = email.toLowerCase();
+          // LDAP attributes like `mail` could be multi-valued.
+          // If an array was provided pick the first value
+          // For now first value is used, but might need to check both in future?
+          identifierAttrValue = Array.isArray(identifierAttrValue)
+            ? identifierAttrValue[0]
+            : identifierAttrValue;
+
+          if (typeof identifierAttrValue === 'string') {
+            identifierAttrValue = identifierAttrValue.toLowerCase().trim();
+          } else {
+            appLog.warn(
+              `Unexpected value for LDAP identifier attribute: ${identifierAttrValue}`
+            );
+            return done(null, false);
+          }
 
           let role = '';
 
@@ -163,7 +179,7 @@ async function enableLdap(config) {
             }
           }
 
-          let user = await models.users.findOneByEmail(email);
+          let user = await models.users.findOneByEmail(identifierAttrValue);
 
           if (user) {
             if (user.disabled) {
@@ -199,7 +215,7 @@ async function enableLdap(config) {
           if (role && config.get('ldapAutoSignUp')) {
             appLog.debug(`adding user ${profileUsername} to role ${role}`);
             const newUser = await models.users.create({
-              email,
+              email: identifierAttrValue,
               role,
               syncAuthRole: true,
               signupAt: new Date(),
