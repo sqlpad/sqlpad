@@ -42,6 +42,43 @@ function formatIdentifiers(s: string, quoteChars: string = '') {
     .join('.');
 }
 
+/**
+ * Input fields for clipboard copy value sourcing
+ * The input must be visible/displayed somewhere, in our case offscreen
+ * @param props
+ */
+function OffScreenInput({ id, value }: { id: string; value: string }) {
+  return (
+    <input
+      id={id}
+      type="text"
+      readOnly
+      style={{ position: 'absolute', left: -9999 }}
+      value={value}
+    />
+  );
+}
+
+/**
+ * MenuItem to query for related input rendered and select and copy its text
+ * @param props
+ */
+function CopyMenuItem({ id, value }: { id: string; value: string }) {
+  return (
+    <MenuItem
+      onSelect={() => {
+        const copyText: HTMLInputElement | null = document.querySelector(id);
+        if (copyText) {
+          copyText.select();
+          document.execCommand('copy');
+        }
+      }}
+    >
+      Copy <span className="monospace-font">{value}</span> to clipboard
+    </MenuItem>
+  );
+}
+
 function SchemaSidebar() {
   const connectionId = useSessionConnectionId();
   const [search, setSearch] = useState('');
@@ -235,6 +272,20 @@ function SchemaSidebar() {
 
           <Divider style={{ margin: '4px 0' }} />
 
+          {/* Input fields for copy-paste value sourcing */}
+          <OffScreenInput
+            id="schema-copy-value-no-quote"
+            value={formatIdentifiers(schemaItemId)}
+          />
+          <OffScreenInput
+            id="schema-copy-value-quote"
+            value={formatIdentifiers(schemaItemId, '"')}
+          />
+          <OffScreenInput
+            id="schema-copy-value-bracket"
+            value={formatIdentifiers(schemaItemId, '[]')}
+          />
+
           {/* 
             This menu is hidden and moves around based on where context-menu click happens 
             This is hacky but works! reach-ui does not expose the menu components 
@@ -255,45 +306,18 @@ function SchemaSidebar() {
             </MenuButton>
             <MenuPopover style={{ zIndex: 999999 }}>
               <MenuItems>
-                <MenuItem
-                  onSelect={() =>
-                    navigator.clipboard.writeText(
-                      formatIdentifiers(schemaItemId)
-                    )
-                  }
-                >
-                  Copy{' '}
-                  <span className="monospace-font">
-                    {formatIdentifiers(schemaItemId)}
-                  </span>{' '}
-                  to clipboard
-                </MenuItem>
-                <MenuItem
-                  onSelect={() =>
-                    navigator.clipboard.writeText(
-                      formatIdentifiers(schemaItemId, '"')
-                    )
-                  }
-                >
-                  Copy{' '}
-                  <span className="monospace-font">
-                    {formatIdentifiers(schemaItemId, '"')}
-                  </span>{' '}
-                  to clipboard
-                </MenuItem>
-                <MenuItem
-                  onSelect={() =>
-                    navigator.clipboard.writeText(
-                      formatIdentifiers(schemaItemId, '[]')
-                    )
-                  }
-                >
-                  Copy{' '}
-                  <span className="monospace-font">
-                    {formatIdentifiers(schemaItemId, '[]')}
-                  </span>{' '}
-                  to clipboard
-                </MenuItem>
+                <CopyMenuItem
+                  id="#schema-copy-value-no-quote"
+                  value={formatIdentifiers(schemaItemId)}
+                />
+                <CopyMenuItem
+                  id="#schema-copy-value-quote"
+                  value={formatIdentifiers(schemaItemId, '"')}
+                />
+                <CopyMenuItem
+                  id="#schema-copy-value-bracket"
+                  value={formatIdentifiers(schemaItemId, '[]')}
+                />
               </MenuItems>
             </MenuPopover>
           </Menu>
