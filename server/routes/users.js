@@ -16,8 +16,8 @@ function cleanUser(req, user) {
   }
 
   // Otherwise send back a minimal object
-  const { id, name, email, role, createdAt, updatedAt } = user;
-  return { id, name, email, role, createdAt, updatedAt };
+  const { id, name, email, ldapId, role, createdAt, updatedAt } = user;
+  return { id, name, email, ldapId, role, createdAt, updatedAt };
 }
 
 /**
@@ -36,20 +36,21 @@ async function listUsers(req, res) {
  * @param {Res} res
  */
 async function createUser(req, res) {
-  const { models, webhooks } = req;
+  const { models, webhooks, body } = req;
 
-  let user = await models.users.findOneByEmail(req.body.email);
+  let user = await models.users.findOneByEmail(body.email);
   if (user) {
     return res.utils.error('user already exists');
   }
 
   // Only accept certain fields
   user = await models.users.create({
-    email: req.body.email.toLowerCase(),
-    role: req.body.role,
-    name: req.body.name,
-    data: req.body.data,
-    syncAuthRole: Boolean(req.body.syncAuthRole),
+    email: body.email.toLowerCase(),
+    ldapId: body.ldapId,
+    role: body.role,
+    name: body.name,
+    data: body.data,
+    syncAuthRole: Boolean(body.syncAuthRole),
   });
 
   webhooks.userCreated(user);
@@ -104,29 +105,29 @@ async function updateUser(req, res) {
 
   // this route could handle potentially different kinds of updates
   // only update user properties that are explicitly allowed to be updated and present
-  if (body.role != null) {
-    updateUser.role = body.role;
-  }
-  if (body.passwordResetId != null) {
-    updateUser.passwordResetId = body.passwordResetId;
-  }
-  if (body.name) {
-    updateUser.name = body.name;
-  }
-  if (body.email) {
-    updateUser.email = body.email.toLowerCase();
-  }
-  if (body.data) {
-    updateUser.data = body.data;
-  }
-  if (body.hasOwnProperty('disabled')) {
-    updateUser.disabled = body.disabled;
-  }
-  if (body.hasOwnProperty('syncAuthRole')) {
-    updateUser.syncAuthRole = body.syncAuthRole;
-  }
+  const {
+    role,
+    passwordResetId,
+    name,
+    email,
+    data,
+    disabled,
+    syncAuthRole,
+    ldapId,
+  } = body;
 
-  const updatedUser = await models.users.update(params.id, updateUser);
+  const update = {
+    role,
+    passwordResetId,
+    name,
+    email: typeof email === 'string' ? email.toLowerCase() : email,
+    data,
+    disabled,
+    syncAuthRole,
+    ldapId,
+  };
+
+  const updatedUser = await models.users.update(params.id, update);
   return res.utils.data(cleanUser(req, updatedUser));
 }
 

@@ -19,6 +19,9 @@ class Users {
     if (rest.email) {
       rest.email = rest.email.toLowerCase();
     }
+    if (rest.ldapId) {
+      rest.ldapId = rest.ldapId.toLowerCase();
+    }
 
     const newUser = await this.sequelizeDb.Users.create(rest);
     return this.findOneById(newUser.id);
@@ -32,18 +35,34 @@ class Users {
     if (rest.email) {
       rest.email = rest.email.toLowerCase();
     }
+    if (rest.ldapId) {
+      rest.ldapId = rest.ldapId.toLowerCase();
+    }
 
     await this.sequelizeDb.Users.update(rest, { where: { id } });
     return this.findOneById(id);
   }
 
   /**
-   * For LDAP auth, account login may be used instead of proper email address
    * @param {string} email
    */
   async findOneByEmail(email) {
     const user = await this.sequelizeDb.Users.findOne({
       where: { email: email.toLowerCase() },
+    });
+    if (user) {
+      let final = user.toJSON();
+      final.data = ensureJson(final.data);
+      return final;
+    }
+  }
+
+  /**
+   * @param {string} ldapId
+   */
+  async findOneByLdapId(ldapId) {
+    const user = await this.sequelizeDb.Users.findOne({
+      where: { ldapId: ldapId.toLowerCase() },
     });
     if (user) {
       let final = user.toJSON();
@@ -71,6 +90,7 @@ class Users {
         'id',
         'name',
         'email',
+        'ldapId',
         'role',
         'disabled',
         'signupAt',

@@ -14,6 +14,13 @@ type Edits = {
   duration?: string;
 };
 
+interface UserSummary {
+  id: string;
+  name?: string;
+  email?: string;
+  ldapId?: string;
+}
+
 interface Props {
   onConnectionAccessSaved: (connectionAccess: ConnectionAccess) => void;
 }
@@ -31,12 +38,24 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: Props) {
   ].concat(apiConnections || []);
 
   let { data: apiUsers } = api.useUsers();
-  const users = [
+
+  const users: UserSummary[] = [
     {
       id: '__EVERYONE__',
       email: 'Everyone',
     },
-  ].concat(apiUsers || []);
+  ];
+
+  if (apiUsers) {
+    apiUsers.forEach((user) => {
+      users.push({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        ldapId: user.ldapId,
+      });
+    });
+  }
 
   const setConnectionAccessValue = (key: keyof Edits, value: string) => {
     setConnectionAccessEdits((prev) => ({ ...prev, [key]: value }));
@@ -95,7 +114,7 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: Props) {
     sortBy(users, ['email']).forEach((user) =>
       userSelectOptions.push(
         <option key={user.id} value={user.id}>
-          {user.email}
+          {user.email || user.name || user.ldapId}
         </option>
       )
     );

@@ -16,6 +16,7 @@ async function getApp(req, res) {
           email: req.user.email,
           role: req.user.role,
           name: req.user.name,
+          ldapId: req.user.ldapId,
         }
       : undefined;
 

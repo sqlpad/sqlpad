@@ -7,6 +7,7 @@ function isNonAdminUserPayload(user) {
     'id',
     'name',
     'email',
+    'ldapId',
     'role',
     'createdAt',
     'updatedAt',
@@ -189,5 +190,21 @@ describe('api/users', function () {
   it('Returns expected list', async function () {
     const body = await utils.get('admin', '/api/users');
     assert.equal(body.length, 3, '3 length');
+  });
+
+  it('Creates user with ldapId', async function () {
+    const user = await utils.post('admin', '/api/users', {
+      email: 'userldap@test.com',
+      ldapId: 'USERLDAP',
+      name: 'user1',
+      role: 'editor',
+      data: {
+        create: true,
+      },
+    });
+
+    assert(user.id, 'has id');
+    assert.equal(user.email, 'userldap@test.com');
+    assert.equal(user.ldapId, 'userldap');
   });
 });

@@ -123,9 +123,10 @@ export interface AppInfo {
   // brief user info if user is logged in
   currentUser?: {
     id: string;
-    email: string;
+    email?: string;
     role: string;
     name?: string;
+    ldapId?: string;
   };
   version: string;
 }
@@ -203,9 +204,10 @@ export interface QueryDetail {
 
 export interface User {
   id: string;
-  email: string;
+  email?: string;
   name: string;
   role: string;
+  ldapId?: string;
   syncAuthRole?: boolean | null;
   disabled: boolean;
   signupAt: string | Date;

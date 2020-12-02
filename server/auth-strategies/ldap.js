@@ -94,28 +94,15 @@ async function enableLdap(config) {
           }
 
           // Mail may not always be available on profile
-          // In that case, fall back to user login fields.
-          // This field will go into `users.email` to serve in email's place.
-          // This should probably go into its own field, but this can complicate existing auth and UI
-          // If another field is added in the future, non-emails can be identified and moved accordingly
-          let identifierAttrValue =
-            profile.mail || profile.sAMAccountName || profile.uid;
+          let email = Array.isArray(profile.mail)
+            ? profile.mail[0]
+            : profile.mail;
 
-          // LDAP attributes like `mail` could be multi-valued.
-          // If an array was provided pick the first value
-          // For now first value is used, but might need to check both in future?
-          identifierAttrValue = Array.isArray(identifierAttrValue)
-            ? identifierAttrValue[0]
-            : identifierAttrValue;
-
-          if (typeof identifierAttrValue === 'string') {
-            identifierAttrValue = identifierAttrValue.toLowerCase().trim();
-          } else {
-            appLog.warn(
-              `Unexpected value for LDAP identifier attribute: ${identifierAttrValue}`
-            );
-            return done(null, false);
+          if (typeof email === 'string') {
+            email = email.toLowerCase().trim();
           }
+
+          const ldapId = profileUsername.toLowerCase();
 
           let role = '';
 
@@ -179,12 +166,26 @@ async function enableLdap(config) {
             }
           }
 
-          let user = await models.users.findOneByEmail(identifierAttrValue);
+          // Find user. Try email first, then ldapId (username) as a fallback
+          // Email might not have been populated
+          let user;
+          if (email) {
+            user = await models.users.findOneByEmail(email);
+          }
+          // There was a brief time in master branch where username was stored in email so try this too
+          if (!user) {
+            user = await models.users.findOneByEmail(ldapId);
+          }
+          if (!user) {
+            user = await models.users.findOneByLdapId(ldapId);
+          }
 
           if (user) {
             if (user.disabled) {
               return done(null, false);
             }
+
+            const updates = {};
 
             // If a role was set by RBAC and user already exists, but role doesn't match, update it
             if (
@@ -193,10 +194,17 @@ async function enableLdap(config) {
               user.syncAuthRole &&
               user.role !== role
             ) {
-              const newUser = await models.users.update(user.id, {
-                role,
-              });
-              return done(null, newUser);
+              updates.role = role;
+            }
+
+            // If ldapId has not been captured yet, or it is different update it
+            if (user.ldapId !== ldapId) {
+              updates.ldapId = ldapId;
+            }
+
+            if (Object.keys(updates).length > 0) {
+              const updatedUser = await models.users.update(user.id, updates);
+              return done(null, updatedUser);
             }
 
             // Otherwise return found user
@@ -215,7 +223,8 @@ async function enableLdap(config) {
           if (role && config.get('ldapAutoSignUp')) {
             appLog.debug(`adding user ${profileUsername} to role ${role}`);
             const newUser = await models.users.create({
-              email: identifierAttrValue,
+              email,
+              ldapId,
               role,
               syncAuthRole: true,
               signupAt: new Date(),

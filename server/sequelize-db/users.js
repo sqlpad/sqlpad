@@ -9,11 +9,18 @@ module.exports = function (sequelize) {
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
       },
-      // For LDAP auth, this may contain account login if profile.mail does not exist
-      // This field serves purpose of lower-cased external id
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+        validate: {
+          isLowercase: true,
+        },
+      },
+      // User account ID for LDAP authentication
+      // Currently this is used as a fallback when ldap profile.mail is not available
+      ldapId: {
+        type: DataTypes.STRING,
+        allowNull: true,
         validate: {
           isLowercase: true,
         },
