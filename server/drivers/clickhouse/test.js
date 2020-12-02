@@ -55,6 +55,7 @@ describe('drivers/clickhouse', function () {
       .runQuery('SELECT id FROM test WHERE id = 1 LIMIT 1', connection)
       .then((results) => {
         assert(!results.incomplete, 'not incomplete');
+        assert.strictEqual(results.rows[0].id, 1);
         assert.equal(results.rows.length, 1, 'rows length');
       });
   });

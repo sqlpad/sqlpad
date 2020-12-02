@@ -39,12 +39,6 @@ function runQuery(query, connection) {
     database: connection.database || 'default',
   };
 
-  // TODO FIXME XXX - Not all queries work with FORMAT JSON, like INSERT queries
-  // Is there a way to provide this programatically?
-  if (!query.toLowerCase().startsWith('insert')) {
-    query = `${query} FORMAT JSON`;
-  }
-
   return clickhouse.send(clickhouseConfig, query).then((result) => {
     if (!result) {
       throw new Error('No result returned');

@@ -10,7 +10,10 @@ function wait(ms) {
 
 // Get ClickHouse headers from config
 function getHeaders(config) {
-  const headers = {};
+  const headers = {
+    Accept: 'application/json',
+    'X-ClickHouse-Format': 'JSON',
+  };
   if (config.password) {
     headers['X-ClickHouse-Key'] = config.password;
   }
