@@ -71,6 +71,7 @@ class Users {
         'id',
         'name',
         'email',
+        'ldapId',
         'role',
         'disabled',
         'signupAt',
