@@ -363,6 +363,8 @@ describe('auth/ldap', function () {
 
     const agent = request.agent(utils.app);
 
+    // Initial Sign in will capture ldapId, so this needs to be done twice
+    // Second time it should not change
     await agent
       .post('/api/signin')
       .send({
@@ -371,13 +373,25 @@ describe('auth/ldap', function () {
       })
       .expect(200);
 
-    const afterSignIn = await utils.models.users.findOneByEmail(
+    const afterSignIn1 = await utils.models.users.findOneByEmail(
+      'hermes@planetexpress.com'
+    );
+
+    await agent
+      .post('/api/signin')
+      .send({
+        password: 'hermes',
+        email: 'hermes',
+      })
+      .expect(200);
+
+    const afterSignIn2 = await utils.models.users.findOneByEmail(
       'hermes@planetexpress.com'
     );
 
     assert.equal(
-      initialUser.updatedAt.valueOf(),
-      afterSignIn.updatedAt.valueOf()
+      afterSignIn1.updatedAt.valueOf(),
+      afterSignIn2.updatedAt.valueOf()
     );
   });
 });
