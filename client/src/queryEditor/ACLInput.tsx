@@ -35,7 +35,10 @@ function ACLInput({ acl, onChange, disabled }: Props) {
     users
       .filter((user) => user.id !== queryAuthorId)
       .map((user) => {
-        return { value: user.id, label: user.name || user.email };
+        return {
+          value: user.id,
+          label: user.name || user.email || user.ldapId || '',
+        };
       })
   );
 

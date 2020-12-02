@@ -10,7 +10,7 @@ function UserButton() {
   return (
     <div className={styles.style}>
       {' '}
-      {currentUser?.name || currentUser.email}
+      {currentUser?.name || currentUser.email || currentUser.ldapId}
     </div>
   );
 }
