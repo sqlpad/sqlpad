@@ -28,14 +28,11 @@ function send(config, query) {
   const results = {
     data: [],
   };
-  return fetch(
-    `${config.url}/?user=${config.user}&password=${config.password}&database=${config.database}`,
-    {
-      method: 'POST',
-      body: query,
-      headers: getHeaders(config),
-    }
-  )
+  return fetch(`${config.url}/?database=${config.database}`, {
+    method: 'POST',
+    body: query,
+    headers: getHeaders(config),
+  })
     .then((response) =>
       response.ok ? response.text() : { error: response.text() }
     )
