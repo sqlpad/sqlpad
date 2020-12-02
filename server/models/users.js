@@ -19,6 +19,9 @@ class Users {
     if (rest.email) {
       rest.email = rest.email.toLowerCase();
     }
+    if (rest.ldapId) {
+      rest.ldapId = rest.ldapId.toLowerCase();
+    }
 
     const newUser = await this.sequelizeDb.Users.create(rest);
     return this.findOneById(newUser.id);
@@ -31,6 +34,9 @@ class Users {
     }
     if (rest.email) {
       rest.email = rest.email.toLowerCase();
+    }
+    if (rest.ldapId) {
+      rest.ldapId = rest.ldapId.toLowerCase();
     }
 
     await this.sequelizeDb.Users.update(rest, { where: { id } });
