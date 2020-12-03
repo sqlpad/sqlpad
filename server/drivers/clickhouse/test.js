@@ -8,7 +8,7 @@ const connection = {
   driver: 'clickhouse',
   host: 'localhost',
   port: '8123',
-  username: 'sqlpad',
+  username: 'default',
   database: 'default',
 };
 
