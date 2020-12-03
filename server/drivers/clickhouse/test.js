@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const assert = require('assert');
 const clickhouse = require('./index.js');
 const testUtils = require('../test-utils.js');
@@ -6,13 +7,14 @@ const connection = {
   name: 'test clickhouse',
   driver: 'clickhouse',
   host: 'localhost',
-  port: '8080',
-  username: 'sqlpad',
+  port: '8123',
+  username: 'default',
   database: 'default',
 };
 
-const databaseSql = 'CREATE database test';
-const tableSql = 'CREATE TABLE test (id UInt32, some_text String)';
+const databaseSql = 'CREATE database IF NOT EXISTS test';
+const tableSql = `CREATE TABLE IF NOT EXISTS test (id UInt32, some_text String) ENGINE = Memory`;
+const truncateSql = `TRUNCATE TABLE test`;
 
 // For clickhouse, we should test to make sure driver follows the nextUri links properly
 // To help with that we can add lots of data
@@ -25,22 +27,16 @@ const insertSql =
   'INSERT INTO test (id, some_text) VALUES ' + values.join(', ');
 
 describe('drivers/clickhouse', function () {
-  before(function () {
+  before(async function () {
     this.timeout(60000);
-    return clickhouse
-      .runQuery(databaseSql, connection)
-      .then(() => {
-        // database needs to be set or otherwise always specified
-        connection.database = 'test';
-        return clickhouse.runQuery(tableSql, connection);
-      })
-      .then(() => {
-        let seq = Promise.resolve();
-        for (let i = 0; i < 10; i++) {
-          seq = seq.then(() => clickhouse.runQuery(insertSql, connection));
-        }
-        return seq;
-      });
+    await clickhouse.runQuery(databaseSql, connection);
+    // database needs to be set or otherwise always specified
+    connection.database = 'test';
+    await clickhouse.runQuery(tableSql, connection);
+    await clickhouse.runQuery(truncateSql, connection);
+    for (let i = 0; i < 10; i++) {
+      await clickhouse.runQuery(insertSql, connection);
+    }
   });
 
   it('tests connection', function () {
@@ -59,6 +55,7 @@ describe('drivers/clickhouse', function () {
       .runQuery('SELECT id FROM test WHERE id = 1 LIMIT 1', connection)
       .then((results) => {
         assert(!results.incomplete, 'not incomplete');
+        assert.strictEqual(results.rows[0].id, 1);
         assert.equal(results.rows.length, 1, 'rows length');
       });
   });

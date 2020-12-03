@@ -10,7 +10,10 @@ function wait(ms) {
 
 // Get ClickHouse headers from config
 function getHeaders(config) {
-  const headers = {};
+  const headers = {
+    Accept: 'application/json',
+    'X-ClickHouse-Format': 'JSON',
+  };
   if (config.password) {
     headers['X-ClickHouse-Key'] = config.password;
   }
@@ -28,14 +31,11 @@ function send(config, query) {
   const results = {
     data: [],
   };
-  return fetch(
-    `${config.url}/?user=${config.user}&password=${config.password}&database=${config.database}`,
-    {
-      method: 'POST',
-      body: query,
-      headers: getHeaders(config),
-    }
-  )
+  return fetch(`${config.url}/?database=${config.database}`, {
+    method: 'POST',
+    body: query,
+    headers: getHeaders(config),
+  })
     .then((response) =>
       response.ok ? response.text() : { error: response.text() }
     )

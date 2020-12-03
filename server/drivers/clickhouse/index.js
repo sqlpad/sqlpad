@@ -34,11 +34,11 @@ function runQuery(query, connection) {
   const port = connection.port || 8123;
   const clickhouseConfig = {
     url: `http://${connection.host}:${port}`,
-    user: connection.username || 'default',
+    username: connection.username || 'default',
     password: connection.password || '',
     database: connection.database || 'default',
   };
-  query = `${query} FORMAT JSON`;
+
   return clickhouse.send(clickhouseConfig, query).then((result) => {
     if (!result) {
       throw new Error('No result returned');
