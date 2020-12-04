@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.1.2] - 2020-12-03
+
+- Fix LDAP auth for profiles without mail attribute. SQLPad's users `email` field is now nullable.
+- Fix schema item copy-to-clipboard for non-HTTPS environments
+- Fix ClicHouse driver auth for latest ClickHouse release
+- Use `cancelled` status for statements following a statement error in multi-statement batch. (These previously were stuck in `queued` status.)
+- Return 404 for unfinished statement results. Statement results API is only intended to be used once a statement is `finished`.
+
 ## [6.1.1] - 2020-11-29
 
 - Fix query result grid value padding
