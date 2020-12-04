@@ -51,6 +51,10 @@ async function getStatementResults(req, res) {
     return res.utils.notFound();
   }
 
+  if (statement.status !== 'finished') {
+    return res.utils.notFound();
+  }
+
   // Get batch to ensure it was created by User.
   // This is not the most efficient since it gets statements again
   // Need to maybe rethink these models functions
