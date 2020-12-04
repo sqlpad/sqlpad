@@ -28,6 +28,7 @@ module.exports = function (sequelize) {
         validate: {
           // Potentially add 'cancelled'?
           // We have no way of canceling current statement but future could be
+          // If a batch errors, any statements following error will be "cancelled" status
           isIn: [['started', 'finished', 'error']],
         },
         defaultValue: 'started',

@@ -21,11 +21,13 @@ module.exports = function (sequelize) {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      // If a batch errors, any statements following error will be "cancelled" status
+      // At this time statements/batches cannot be cancelled otherwise
       status: {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {
-          isIn: [['queued', 'started', 'finished', 'error']],
+          isIn: [['queued', 'started', 'finished', 'error', 'cancelled']],
         },
         defaultValue: 'queued',
       },

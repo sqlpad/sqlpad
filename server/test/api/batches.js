@@ -199,7 +199,7 @@ describe('api/batches', function () {
     assert.deepEqual(b.statements[0].error, {
       title: 'SQLITE_ERROR: incomplete input',
     });
-    assert.equal(b.statements[1].status, 'queued');
+    assert.equal(b.statements[1].status, 'cancelled');
     assert.equal(b.statements[1].rowCount, null, 'no rowCount');
     assert.equal(b.statements[1].resultsPath, null, 'no resultpath');
     assert.equal(b.statements[1].startTime, null, 'no startTime');
