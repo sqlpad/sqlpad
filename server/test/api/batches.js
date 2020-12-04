@@ -199,11 +199,24 @@ describe('api/batches', function () {
     assert.deepEqual(b.statements[0].error, {
       title: 'SQLITE_ERROR: incomplete input',
     });
+
+    await utils.get(
+      'admin',
+      `/api/statements/${b.statements[0].id}/results`,
+      404
+    );
+
     assert.equal(b.statements[1].status, 'cancelled');
     assert.equal(b.statements[1].rowCount, null, 'no rowCount');
     assert.equal(b.statements[1].resultsPath, null, 'no resultpath');
     assert.equal(b.statements[1].startTime, null, 'no startTime');
     assert.equal(b.statements[1].stopTime, null, 'no stopTime');
+
+    await utils.get(
+      'admin',
+      `/api/statements/${b.statements[1].id}/results`,
+      404
+    );
   });
 
   it('statement without rows does not create file', async function () {
