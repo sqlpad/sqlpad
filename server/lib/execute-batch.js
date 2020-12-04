@@ -73,24 +73,29 @@ async function executeBatch(config, models, webhooks, batchId) {
         durationMs: stopTime - batchStartTime,
       });
       webhooks.statementFinished(user, connection, updatedBatch, statement.id);
-      webhooks.batchFinished(user, connection, updatedBatch);
       break;
     }
   }
   stopTime = new Date();
 
+  if (statementError) {
+    await models.statements.updateErrorQueuedToCancelled(batchId);
+  }
+
   if (!statementError) {
-    const updatedBatch = await models.batches.update(batch.id, {
+    await models.batches.update(batch.id, {
       status: 'finished',
       stopTime,
       durationMs: stopTime - batchStartTime,
     });
-    webhooks.batchFinished(user, connection, updatedBatch);
   }
 
   if (disconnectOnFinish) {
     await connectionClient.disconnect();
   }
+
+  const finalBatch = await models.batches.findOneById(batchId);
+  webhooks.batchFinished(user, connection, finalBatch);
 }
 
 module.exports = executeBatch;

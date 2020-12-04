@@ -138,7 +138,15 @@ class Statements {
       error,
     };
     await this.sequelizeDb.Statements.update(update, { where: { id } });
+
     return this.findOneById(id);
+  }
+
+  async updateErrorQueuedToCancelled(batchId) {
+    await this.sequelizeDb.Statements.update(
+      { status: 'cancelled' },
+      { where: { batchId, status: 'queued' } }
+    );
   }
 
   async updateFinished(id, queryResult, stopTime, durationMs) {
