@@ -95,9 +95,11 @@ async function makeApp(config, models) {
     app.use(favicon(icoPath));
   }
 
-  app.use(bodyParser.json({
-    limit: config.get('bodyLimit'),
-  }));
+  app.use(
+    bodyParser.json({
+      limit: config.get('bodyLimit'),
+    })
+  );
   app.use(
     bodyParser.urlencoded({
       extended: true,

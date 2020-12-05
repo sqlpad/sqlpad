@@ -44,6 +44,13 @@ SQLPAD_PASSPHRASE = "At least the sensitive bits won't be plain text?"
 # HTTP server timeout as number of seconds.
 SQLPAD_TIMEOUT_SECONDS = 300
 
+# HTTP server maximum payload size.
+# Defaults to `1mb`
+# Uses bytes.js syntax as seen in https://github.com/visionmedia/bytes.js#bytesparsestringnumber-value-numbernull
+# If no unit is given it is assumed the value is in bytes
+# Useful units are `kb` and `mb` in base 2 (1024 not 1000)
+SQLPAD_BODY_LIMIT = "1mb"
+
 # Minutes to keep a session active. Session will be extended by this amount each request.
 SQLPAD_SESSION_MINUTES = 60
 
