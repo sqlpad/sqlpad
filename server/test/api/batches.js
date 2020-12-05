@@ -316,14 +316,14 @@ describe('api/batches', function () {
           yield singleQuery
       }
     }
-    const maxPayload = bytes.parse('1mb')
+    const bodyLimit = utils.config.get('bodyLimit')
+    const maxPayload = bytes.parse(bodyLimit)
     // assuming UTF-8: one byte per ASCII char
     const numberOfQueries = maxPayload/singleQuery.length
     let massiveQuery = ``
     for (statement of range(numberOfQueries)) {
       massiveQuery = massiveQuery.concat(statement)
     }
-    console.log(Buffer.byteLength(massiveQuery, 'utf8'), massiveQuery.length)
     await utils.post('admin', `/api/batches`, {
       connectionId: connection.id,
       batchText: massiveQuery,

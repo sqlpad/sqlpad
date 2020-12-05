@@ -96,7 +96,7 @@ async function makeApp(config, models) {
   }
 
   app.use(bodyParser.json({
-    limit: '1mb'
+    limit: config.get('bodyLimit'),
   }));
   app.use(
     bodyParser.urlencoded({

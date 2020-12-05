@@ -40,6 +40,11 @@ const configItems = [
     default: 300,
   },
   {
+    key: 'bodyLimit',
+    envVar: 'SQLPAD_BODY_LIMIT',
+    default: '1mb',
+  },
+  {
     key: 'ip',
     envVar: 'SQLPAD_IP',
     default: '0.0.0.0',
