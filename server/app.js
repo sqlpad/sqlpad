@@ -222,7 +222,8 @@ async function makeApp(config, models) {
     if (res.headersSent) {
       return next(err);
     }
-    appLog.error(err);
+    //appLog.error(err);
+    console.log("BALLS")
     return res.status(500).json({
       title: 'Internal Server Error',
     });
