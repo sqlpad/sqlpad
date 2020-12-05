@@ -307,4 +307,21 @@ describe('api/batches', function () {
 
     assert(!exists);
   });
+
+  it('payload too large returns 413', async function () {
+    function* range(start, end) {
+      for (let i = start; i <= end; i++) {
+          yield `SELECT 1 AS id UNION SELECT 2 AS id UNION SELECT 3 AS id UNION SELECT 4 AS id;`;
+      }
+    }
+    let massiveQuery = ``
+    for (statement of range(1, 10000)) {
+      massiveQuery = massiveQuery.concat(statement)
+    }
+    const b1 = await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      batchText: massiveQuery,
+    }, statusCode = 413);
+  });
+
 });
