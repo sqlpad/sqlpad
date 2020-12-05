@@ -222,8 +222,12 @@ async function makeApp(config, models) {
     if (res.headersSent) {
       return next(err);
     }
-    //appLog.error(err);
-    console.log("BALLS")
+    appLog.error(err);
+    if (err && err.type === 'entity.too.large') {
+      return res.status(413).json({
+        title: 'Payload Too Large',
+      });
+    }
     return res.status(500).json({
       title: 'Internal Server Error',
     });
