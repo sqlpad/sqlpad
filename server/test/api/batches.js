@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
 const assert = require('assert');
+const bytes = require('bytes')
 const fs = require('fs');
 const util = require('util');
 const path = require('path');
@@ -309,16 +310,21 @@ describe('api/batches', function () {
   });
 
   it('payload too large returns 413', async function () {
-    function* range(start, end) {
-      for (let i = start; i <= end; i++) {
-          yield `SELECT 1 AS id UNION SELECT 2 AS id UNION SELECT 3 AS id UNION SELECT 4 AS id;`;
+    const singleQuery = `SELECT 1 AS id UNION SELECT 2 AS id UNION SELECT 3 AS id UNION SELECT 4 AS id;`;
+    function* range(count) {
+      for (let i = 0; i < count; i++) {
+          yield singleQuery
       }
     }
+    const maxPayload = bytes.parse('1mb')
+    // assuming UTF-8: one byte per ASCII char
+    const numberOfQueries = maxPayload/singleQuery.length
     let massiveQuery = ``
-    for (statement of range(1, 10000)) {
+    for (statement of range(numberOfQueries)) {
       massiveQuery = massiveQuery.concat(statement)
     }
-    const b1 = await utils.post('admin', `/api/batches`, {
+    console.log(Buffer.byteLength(massiveQuery, 'utf8'), massiveQuery.length)
+    await utils.post('admin', `/api/batches`, {
       connectionId: connection.id,
       batchText: massiveQuery,
     }, statusCode = 413);

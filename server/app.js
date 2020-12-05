@@ -95,7 +95,9 @@ async function makeApp(config, models) {
     app.use(favicon(icoPath));
   }
 
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({
+    limit: '1mb'
+  }));
   app.use(
     bodyParser.urlencoded({
       extended: true,
