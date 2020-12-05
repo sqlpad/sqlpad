@@ -309,7 +309,7 @@ describe('api/batches', function () {
     assert(!exists);
   });
 
-  it('payload too large returns 413', async function () {
+  it('returns 413 on large payload', async function () {
     const singleQuery = `SELECT 1 AS id UNION SELECT 2 AS id UNION SELECT 3 AS id UNION SELECT 4 AS id;`;
     function* range(count) {
       for (let i = 0; i < count; i++) {
