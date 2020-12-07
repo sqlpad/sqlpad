@@ -70,7 +70,6 @@
     "node-crate": "^2.0.6",
     "node-fetch": "^2.6.1",
     "node-xlsx": "^0.15.0",
-    "odbc": "^2.2.2",
     "papaparse": "^5.3.0",
     "passport": "^0.4.1",
     "passport-custom": "^1.1.1",
@@ -103,7 +102,7 @@
   },
   "main": "./app.js",
   "bin": {
-    "sqlpad": "server.js"
+    "sqlpad": "./server.js"
   },
   "optionalDependencies": {
     "odbc": "^2.2.2"
