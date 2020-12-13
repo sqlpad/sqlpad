@@ -4,7 +4,11 @@ import SplitPane from 'react-split-pane';
 import AppHeader from '../app-header/AppHeader';
 import { debouncedResizeChart } from '../common/tauChartRef';
 import SchemaInfoLoader from '../schema/SchemaInfoLoader';
-import { connectConnectionClient, loadQuery } from '../stores/editor-actions';
+import {
+  connectConnectionClient,
+  loadKernelQuery,
+  loadQuery,
+} from '../stores/editor-actions';
 import useShortcuts from '../utilities/use-shortcuts';
 import DocumentTitle from './DocumentTitle';
 import EditorPaneRightSidebar from './EditorPaneRightSidebar';
@@ -19,11 +23,12 @@ import UnsavedQuerySelector from './UnsavedQuerySelector';
 
 interface Params {
   queryId?: string;
+  entityData?: string;
 }
 
 function QueryEditor() {
   const [showNotFound, setShowNotFound] = useState(false);
-  const { queryId = '' } = useParams<Params>();
+  const { queryId = '', entityData = '' } = useParams<Params>();
   useShortcuts();
 
   // On queryId change from URL string, load query as needed.
@@ -35,16 +40,22 @@ function QueryEditor() {
   // If query is not found, show the not found modal to inform user and prompt to start new query.
   useEffect(() => {
     setShowNotFound(false);
-    if (queryId === '') {
-      connectConnectionClient();
+    if (entityData.length > 0) {
+      loadKernelQuery(entityData).then(({ error, data }) => {
+        if (error || !data) {
+          return setShowNotFound(true);
+        }
+      });
+    } else if (queryId === '') {
     } else if (queryId) {
       loadQuery(queryId).then(({ error, data }) => {
         if (error || !data) {
           return setShowNotFound(true);
         }
-        connectConnectionClient();
       });
     }
+
+    connectConnectionClient();
   }, [queryId]);
 
   return (

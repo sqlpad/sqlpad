@@ -161,6 +161,10 @@ export const api = {
     return this.get<QueryDetail>(`/api/queries/${queryId}`);
   },
 
+  getKernelQuery(entityData: string) {
+    return this.get<QueryDetail>(`/api/kernel/${entityData}`);
+  },
+
   async createQuery(body: any) {
     const query = await this.post<QueryDetail>(`/api/queries`, body);
     mutate('/api/queries');
@@ -171,6 +175,16 @@ export const api = {
     const query = await this.put<QueryDetail>(`/api/queries/${queryId}`, body);
     mutate(`/api/queries`);
     mutate(`/api/queries/${queryId}`);
+    return query;
+  },
+
+  async updateKernelQuery(entityData: string, body: any) {
+    const query = await this.put<QueryDetail>(
+      `/api/kernel/${entityData}`,
+      body
+    );
+    mutate(`/api/kernel`);
+    mutate(`/api/kernel/${entityData}`);
     return query;
   },
 

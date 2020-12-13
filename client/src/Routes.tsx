@@ -81,6 +81,10 @@ function Routes() {
           )}
         />
 
+        <Route exact path="/kernel/:entityData">
+          <QueryEditorWrapper />
+        </Route>
+
         {/* If nothing matches redirect to new query */}
         <Route>
           <Redirect to="/queries/new" />

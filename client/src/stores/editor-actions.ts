@@ -313,6 +313,59 @@ export const formatQuery = async () => {
     unsavedChanges: true,
   });
 };
+/**
+ * Loads query and stores in editor session state.
+ * Returns a promise of API result to allow context-dependent behavior,
+ * like showing not found modal in query editor.
+ * @param queryId
+ */
+export const loadKernelQuery = async (queryId: string) => {
+  const response = await api.getKernelQuery(queryId);
+
+  const { error, data } = response;
+  if (error || !data) {
+    return response;
+  }
+
+  const { focusedSessionId } = getState();
+  const {
+    connectionClient,
+    ...restOfCurrentSession
+  } = getState().getFocusedSession();
+
+  // Cleanup existing connection
+  // Even if the connection isn't changing, the client should be refreshed
+  // This is to prevent accidental state from carrying over
+  // For example, if there is an open transaction,
+  // we don't want that impacting the new query if same connectionId is used)
+  cleanupConnectionClient(connectionClient);
+
+  setSession(focusedSessionId, {
+    ...restOfCurrentSession,
+    // Map query object to flattened editor session data
+    queryId,
+    connectionId: data.connectionId,
+    connectionClient: undefined,
+    queryText: data.queryText,
+    queryName: data.name,
+    tags: data.tags,
+    acl: data.acl,
+    chartType: data?.chart?.chartType,
+    chartFields: data?.chart?.fields,
+    canDelete: data.canDelete,
+    canRead: data.canRead,
+    canWrite: data.canWrite,
+    // Reset result/error/unsaved/running states
+    batchId: '',
+    selectedStatementId: '',
+    isRunning: false,
+    queryError: undefined,
+    queryResult: undefined,
+    unsavedChanges: false,
+  });
+
+  return response;
+};
 
 /**
  * Loads query and stores in editor session state.
