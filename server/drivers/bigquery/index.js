@@ -100,7 +100,12 @@ function runQuery(queryString, connection = {}) {
     .createQueryJob(query)
     .then(([job]) => {
       // Wait for the query to finish.
-      const options = { timeoutMs: timeoutSeconds * 1000 };
+      const options = {
+        timeoutMs: timeoutSeconds * 1000,
+        wrapIntegers: {
+          integerTypeCastFunction: (val) => val.toString(),
+        },
+      };
       if (isMaxRowsSpecified) {
         options.maxResults = connection.maxRows + 1;
       }
