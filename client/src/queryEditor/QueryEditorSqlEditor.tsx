@@ -2,12 +2,15 @@ import React, { useCallback } from 'react';
 import SqlEditor from '../common/SqlEditor';
 import {
   handleQuerySelectionChange,
-  setQueryText,
+  setKernelQueryText,
 } from '../stores/editor-actions';
 import { useSessionQueryText } from '../stores/editor-store';
 
 function QueryEditorSqlEditor() {
-  const onChange = useCallback((value: string) => setQueryText(value), []);
+  const onChange = useCallback(
+    (value: string) => setKernelQueryText(value),
+    []
+  );
   const value = useSessionQueryText();
 
   return (

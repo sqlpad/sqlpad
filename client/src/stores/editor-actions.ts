@@ -1,5 +1,6 @@
 import localforage from 'localforage';
 import queryString from 'query-string';
+import debounce from 'lodash/debounce';
 import message from '../common/message';
 import {
   ACLRecord,
@@ -23,6 +24,7 @@ import {
   SchemaState,
   useEditorStore,
 } from './editor-store';
+import { cpuUsage } from 'process';
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -319,19 +321,36 @@ export const formatQuery = async () => {
  * like showing not found modal in query editor.
  * @param queryId
  */
-export const loadKernelQuery = async (queryId: string) => {
-  const response = await api.getKernelQuery(queryId);
-
+export const loadKernelQuery = async (entityData: string) => {
+  const response = await api.getKernelQuery(entityData);
   const { error, data } = response;
-  if (error || !data) {
-    return response;
-  }
-
+  const updates: Partial<EditorSession> = {
+    queryName: entityData,
+  };
   const { focusedSessionId } = getState();
   const {
     connectionClient,
     ...restOfCurrentSession
   } = getState().getFocusedSession();
+
+  if (error || !data) {
+    saveQuery(updates);
+
+    setSession(focusedSessionId, {
+      ...restOfCurrentSession,
+      // Map query object to flattened editor session data
+      // queryId,
+      connectionClient: undefined,
+      queryText: 'peice of poop',
+      batchId: '',
+      selectedStatementId: '',
+      isRunning: false,
+      queryError: undefined,
+      queryResult: undefined,
+      unsavedChanges: false,
+    });
+    return response;
+  }
 
   // Cleanup existing connection
   // Even if the connection isn't changing, the client should be refreshed
@@ -343,7 +362,7 @@ export const loadKernelQuery = async (queryId: string) => {
   setSession(focusedSessionId, {
     ...restOfCurrentSession,
     // Map query object to flattened editor session data
-    queryId,
+    queryId: data.id,
     connectionId: data.connectionId,
     connectionClient: undefined,
     queryText: data.queryText,
@@ -363,6 +382,7 @@ export const loadKernelQuery = async (queryId: string) => {
     queryResult: undefined,
     unsavedChanges: false,
   });
+  saveQuery(updates);
 
   return response;
 };
@@ -375,7 +395,6 @@ export const loadKernelQuery = async (queryId: string) => {
  */
 export const loadQuery = async (queryId: string) => {
   const response = await api.getQuery(queryId);
-
   const { error, data } = response;
   if (error || !data) {
     return response;
@@ -667,6 +686,14 @@ export const selectStatementId = (selectedStatementId: string) => {
   setSession(focusedSessionId, { selectedStatementId });
 };
 
+export const setKernelQueryText = (queryText: string) => {
+  const { focusedSessionId } = getState();
+  const { queryId } = getState().getFocusedSession();
+  setLocalQueryText(queryId, queryText);
+  setSession(focusedSessionId, { queryText, unsavedChanges: true });
+  debouncedUpdateBucket(focusedSessionId);
+};
+
 export const setQueryText = (queryText: string) => {
   const { focusedSessionId } = getState();
   const { queryId } = getState().getFocusedSession();
@@ -814,3 +841,12 @@ export function toggleSchemaItem(connectionId: string, item: { id: string }) {
     schemaExpansions: { ...schemaExpansions, [connectionId]: expanded },
   });
 }
+
+export function updateBucket(sessionId: string) {
+  const session = getState().getSession(sessionId);
+  const updates: Partial<EditorSession> = {
+    queryName: session?.queryName,
+  };
+  saveQuery(updates);
+}
+export const debouncedUpdateBucket = debounce(updateBucket, 5000);

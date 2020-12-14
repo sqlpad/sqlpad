@@ -115,10 +115,10 @@ async function listQueries(req, res) {
       const repValue = tag;
       params[repKey] = repValue;
       whereSqls.push(`
-      queries.id IN ( 
-        SELECT qt.query_id 
-        FROM query_tags qt 
-        WHERE qt.tag = :${repKey} 
+      queries.id IN (
+        SELECT qt.query_id
+        FROM query_tags qt
+        WHERE qt.tag = :${repKey}
       )`);
     });
   }
@@ -128,11 +128,11 @@ async function listQueries(req, res) {
   if (user.role !== 'admin') {
     whereSqls.push(`
       queries.created_by = :userId
-      OR queries.id IN ( 
-        SELECT qa.query_id 
-        FROM query_acl qa 
-        WHERE 
-          qa.group_id = '__EVERYONE__' 
+      OR queries.id IN (
+        SELECT qa.query_id
+        FROM query_acl qa
+        WHERE
+          qa.group_id = '__EVERYONE__'
           OR user_id = :userId
       )
     `);
@@ -292,6 +292,28 @@ async function getQuery(req, res) {
 }
 
 router.get('/api/queries/:id', mustBeAuthenticated, wrap(getQuery));
+
+/**
+ * @param {Req} req
+ * @param {Res} res
+ */
+async function getKernelQuery(req, res) {
+  const { models, user, params } = req;
+  const query = await models.findQueryByName(params.name);
+
+  if (!query) {
+    return res.utils.notFound();
+  }
+
+  const decorated = decorateQueryUserAccess(query, user);
+  if (decorated.canRead) {
+    return res.utils.data(decorated);
+  }
+
+  return res.utils.forbidden();
+}
+
+router.get('/api/kernel/:name', mustBeAuthenticated, wrap(getKernelQuery));
 
 /**
  * @param {Req} req

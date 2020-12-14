@@ -43,6 +43,25 @@ class Queries {
     return query;
   }
 
+  async findOneByName(name) {
+    let query = await this.sequelizeDb.Queries.findOne({ where: { name } });
+    if (!query) {
+      return;
+    }
+    query = query.toJSON();
+    query.chart = ensureJson(query.chart);
+    const tags = await this.sequelizeDb.QueryTags.findAll({
+      attributes: ['tag'],
+      where: { queryId: query.id },
+    });
+
+    query.tags = tags.map((tagRow) => {
+      return tagRow.tag;
+    });
+
+    return query;
+  }
+
   async findAll() {
     let queries = await this.sequelizeDb.Queries.findAll({});
     queries = queries.map((query) => query.toJSON());

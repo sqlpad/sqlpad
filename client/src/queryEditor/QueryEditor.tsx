@@ -47,7 +47,8 @@ function QueryEditor() {
         }
       });
     } else if (queryId === '') {
-    } else if (queryId) {
+    }
+    if (queryId.length > 0) {
       loadQuery(queryId).then(({ error, data }) => {
         if (error || !data) {
           return setShowNotFound(true);
@@ -56,7 +57,7 @@ function QueryEditor() {
     }
 
     connectConnectionClient();
-  }, [queryId]);
+  }, [queryId, entityData]);
 
   return (
     <div
