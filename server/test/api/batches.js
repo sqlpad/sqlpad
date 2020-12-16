@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
 const assert = require('assert');
+const bytes = require('bytes');
 const fs = require('fs');
 const util = require('util');
 const path = require('path');
@@ -306,5 +307,26 @@ describe('api/batches', function () {
     }
 
     assert(!exists);
+  });
+
+  it('returns 413 on large payload', async function () {
+    const singleQuery = `SELECT 1 AS id UNION SELECT 2 AS id UNION SELECT 3 AS id UNION SELECT 4 AS id;`;
+    const bodyLimit = utils.config.get('bodyLimit');
+    const maxPayload = bytes.parse(bodyLimit);
+    // assuming UTF-8: one byte per ASCII char
+    const numberOfQueries = maxPayload / singleQuery.length;
+    let massiveQuery = ``;
+    for (let i = 0; i < numberOfQueries; ++i) {
+      massiveQuery = massiveQuery.concat(singleQuery);
+    }
+    await utils.post(
+      'admin',
+      `/api/batches`,
+      {
+        connectionId: connection.id,
+        batchText: massiveQuery,
+      },
+      413
+    );
   });
 });

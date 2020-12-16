@@ -95,7 +95,11 @@ async function makeApp(config, models) {
     app.use(favicon(icoPath));
   }
 
-  app.use(bodyParser.json());
+  app.use(
+    bodyParser.json({
+      limit: config.get('bodyLimit'),
+    })
+  );
   app.use(
     bodyParser.urlencoded({
       extended: true,
@@ -223,6 +227,11 @@ async function makeApp(config, models) {
       return next(err);
     }
     appLog.error(err);
+    if (err && err.type === 'entity.too.large') {
+      return res.status(413).json({
+        title: 'Payload Too Large',
+      });
+    }
     return res.status(500).json({
       title: 'Internal Server Error',
     });
