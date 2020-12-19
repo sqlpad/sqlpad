@@ -11,3 +11,4 @@ sqlpad.tar.gz
 server/drivers/sqlite/sqlpad_test_sqlite.db
 server/test/artifacts
 server/test/fixtures/sales.sqlite
+client/.eslintcache
