@@ -20,6 +20,9 @@ module.exports = function (sequelize) {
       userEmail: {
         type: DataTypes.STRING,
       },
+      status: {
+        type: DataTypes.TEXT,
+      },
       startTime: {
         type: DataTypes.DATE,
       },
