@@ -135,6 +135,7 @@ describe('api/query-history', function () {
       'connectionName',
       'userId',
       'userEmail',
+      'status',
       'startTime',
       'stopTime',
       'durationMs',
