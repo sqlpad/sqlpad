@@ -10,6 +10,7 @@ import QueryHistoryFilterItem, { Filter } from './QueryHistoryFilterItem';
 const COLUMNS: StatementColumn[] = [
   { name: 'userEmail', datatype: 'string', maxLineLength: 20 },
   { name: 'connectionName', datatype: 'string', maxLineLength: 20 },
+  { name: 'status', datatype: 'string', maxLineLength: 20 },
   { name: 'startTime', datatype: 'datetime', maxLineLength: 23 },
   { name: 'stopTime', datatype: 'datetime', maxLineLength: 23 },
   { name: 'durationMs', datatype: 'number', maxLineLength: 10 },

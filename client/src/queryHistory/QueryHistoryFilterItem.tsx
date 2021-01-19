@@ -49,6 +49,10 @@ const QueryHistoryFilterItem = ({
       label: 'connectionName',
       operators: [operators.contains],
     },
+    status: {
+      label: 'status',
+      operators: [operators.contains],
+    },
     startTime: {
       label: 'startTime',
       operators: [operators.before, operators.after],

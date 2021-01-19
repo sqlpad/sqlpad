@@ -36,6 +36,7 @@ module.exports = function urlFilterToDbFilter(urlFilter) {
                 case 'eq':
                 case 'ne':
                   dbOperator = Op[operator];
+                  // TODO FIXME - not all equals values will be int (query history status for example)
                   dbValue = parseInt(value);
                   break;
                 case 'before':
