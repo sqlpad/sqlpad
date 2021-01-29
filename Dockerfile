@@ -1,7 +1,6 @@
 FROM node:12.20-alpine3.12 AS build
 
 RUN apk add --update --no-cache \
-    python2 \
     make \
     g++
 
