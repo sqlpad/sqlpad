@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 13.x, 14.x, 15.x]
+        node-version: [12.x, 14.x, 15.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -39,7 +39,7 @@ jobs:
       fail-fast: false # if one job fails, others will not be aborted
       matrix:
         backendtype: ['', 'mssql', 'mysql', 'mariadb', 'postgres']
-        node-version: [12.x, 13.x, 14.x, 15.x]
+        node-version: [12.x, 14.x, 15.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -82,7 +82,6 @@ jobs:
             docker ps
             sleep 0.5
           done
-
 
       - name: Test
         run: npm run test${{ matrix.backendtype }} --prefix server
