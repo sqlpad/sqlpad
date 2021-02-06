@@ -25,7 +25,7 @@ services:
         ]
       interval: 5s
       timeout: 3s
-      retries: 40
+      retries: 10
 
   mssql:
     image: 'mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04'
@@ -52,8 +52,8 @@ services:
           'SELECT 1',
         ]
       interval: 5s
-      timeout: 2s
-      retries: 40
+      timeout: 3s
+      retries: 10
 
   postgres:
     image: postgres:9.6-alpine
@@ -67,7 +67,7 @@ services:
       test: ['CMD', 'pg_isready']
       interval: 5s
       timeout: 2s
-      retries: 40
+      retries: 10
 
   mariadb:
     image: mariadb:10.3
@@ -82,7 +82,7 @@ services:
       test: ['CMD', 'mysqladmin', 'status', '-uroot', '-ppassword']
       interval: 5s
       timeout: 2s
-      retries: 40
+      retries: 10
 
   mysql:
     image: mysql:8
@@ -97,4 +97,4 @@ services:
       test: ['CMD', 'mysql', '-uuser', '-ppassword', '-e', 'select 1']
       interval: 5s
       timeout: 2s
-      retries: 40
+      retries: 10
