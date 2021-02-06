@@ -14,18 +14,21 @@ services:
         [
           'CMD',
           'ldapsearch',
-          '-H', 'ldap://127.0.0.1:10389',
-          '-D', 'cn=admin,dc=planetexpress,dc=com',
-          '-w', 'GoodNewsEveryone',
-          '-b', 'cn=admin,dc=planetexpress,dc=com'
+          '-H',
+          'ldap://127.0.0.1:10389',
+          '-D',
+          'cn=admin,dc=planetexpress,dc=com',
+          '-w',
+          'GoodNewsEveryone',
+          '-b',
+          'cn=admin,dc=planetexpress,dc=com',
         ]
-      interval: 3s
+      interval: 5s
       timeout: 3s
-      retries: 10
-
+      retries: 40
 
   mssql:
-    image: 'mcr.microsoft.com/mssql/server:2017-latest'
+    image: 'mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04'
     hostname: 'mssql'
     ports:
       - 1433:1433
@@ -47,9 +50,9 @@ services:
           '-Q',
           'SELECT 1',
         ]
-      interval: 3s
+      interval: 5s
       timeout: 3s
-      retries: 10
+      retries: 40
 
   postgres:
     image: postgres:9.6-alpine
@@ -63,7 +66,7 @@ services:
       test: ['CMD', 'pg_isready']
       interval: 5s
       timeout: 2s
-      retries: 10
+      retries: 40
 
   mariadb:
     image: mariadb:10.3
@@ -78,7 +81,7 @@ services:
       test: ['CMD', 'mysqladmin', 'status', '-uroot', '-ppassword']
       interval: 5s
       timeout: 2s
-      retries: 10
+      retries: 40
 
   mysql:
     image: mysql:8
@@ -93,4 +96,4 @@ services:
       test: ['CMD', 'mysql', '-uuser', '-ppassword', '-e', 'select 1']
       interval: 5s
       timeout: 2s
-      retries: 10
+      retries: 40
