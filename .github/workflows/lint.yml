@@ -15,7 +15,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install
-      - run: npm install --prefix client
-      - run: npm install --prefix server
+      - run: npm ci
+      - run: npm ci --prefix client
+      - run: npm ci --prefix server
       - run: npm run lint

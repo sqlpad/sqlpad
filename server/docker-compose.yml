@@ -14,19 +14,23 @@ services:
         [
           'CMD',
           'ldapsearch',
-          '-H', 'ldap://127.0.0.1:10389',
-          '-D', 'cn=admin,dc=planetexpress,dc=com',
-          '-w', 'GoodNewsEveryone',
-          '-b', 'cn=admin,dc=planetexpress,dc=com'
+          '-H',
+          'ldap://127.0.0.1:10389',
+          '-D',
+          'cn=admin,dc=planetexpress,dc=com',
+          '-w',
+          'GoodNewsEveryone',
+          '-b',
+          'cn=admin,dc=planetexpress,dc=com',
         ]
-      interval: 3s
+      interval: 5s
       timeout: 3s
       retries: 10
 
-
   mssql:
-    image: 'mcr.microsoft.com/mssql/server:2017-latest'
+    image: 'mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04'
     hostname: 'mssql'
+    restart: unless-stopped
     ports:
       - 1433:1433
     environment:
@@ -47,7 +51,7 @@ services:
           '-Q',
           'SELECT 1',
         ]
-      interval: 3s
+      interval: 5s
       timeout: 3s
       retries: 10
 
