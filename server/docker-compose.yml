@@ -50,8 +50,8 @@ services:
           '-Q',
           'SELECT 1',
         ]
-      interval: 5s
-      timeout: 3s
+      interval: 10s
+      timeout: 10s
       retries: 40
 
   postgres:
