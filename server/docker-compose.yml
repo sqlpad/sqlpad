@@ -10,6 +10,20 @@ services:
     ports:
       - 389:389
     privileged: true
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'ldapsearch',
+          '-H', 'ldap://127.0.0.1:10389',
+          '-D', 'cn=admin,dc=planetexpress,dc=com',
+          '-w', 'GoodNewsEveryone',
+          '-b', 'cn=admin,dc=planetexpress,dc=com'
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
 
   mssql:
     image: 'mcr.microsoft.com/mssql/server:2017-latest'

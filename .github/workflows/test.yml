@@ -76,5 +76,13 @@ jobs:
             sleep 0.5
           done
 
+      - name: Verify ldap is healthy before starting
+        run: |
+          until  docker ps | fgrep "(healthy)" | grep test-openldap ; do
+            docker ps
+            sleep 0.5
+          done
+
+
       - name: Test
         run: npm run test${{ matrix.backendtype }} --prefix server
