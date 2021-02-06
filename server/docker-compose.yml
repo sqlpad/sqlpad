@@ -30,6 +30,7 @@ services:
   mssql:
     image: 'mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04'
     hostname: 'mssql'
+    restart: unless-stopped
     ports:
       - 1433:1433
     environment:
@@ -50,8 +51,8 @@ services:
           '-Q',
           'SELECT 1',
         ]
-      interval: 10s
-      timeout: 10s
+      interval: 5s
+      timeout: 2s
       retries: 40
 
   postgres:
