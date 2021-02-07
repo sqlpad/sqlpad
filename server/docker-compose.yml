@@ -2,11 +2,13 @@ version: '3'
 services:
   redis:
     image: redis:6-alpine
+    restart: always
     ports:
       - 6379:6379
 
   ldap:
     image: rroemhild/test-openldap
+    restart: always
     ports:
       - 10389:10389
     healthcheck:
@@ -24,13 +26,14 @@ services:
           'cn=admin,dc=planetexpress,dc=com',
         ]
       interval: 5s
-      timeout: 3s
+      timeout: 2s
       retries: 10
+      start_period: 20s
 
   mssql:
     image: 'mcr.microsoft.com/mssql/server:2019-CU8-ubuntu-16.04'
     hostname: 'mssql'
-    restart: unless-stopped
+    restart: always
     ports:
       - 1433:1433
     environment:
@@ -52,11 +55,13 @@ services:
           'SELECT 1',
         ]
       interval: 5s
-      timeout: 3s
+      timeout: 2s
       retries: 10
+      start_period: 20s
 
   postgres:
     image: postgres:9.6-alpine
+    restart: always
     environment:
       POSTGRES_USER: sqlpad
       POSTGRES_PASSWORD: sqlpad
@@ -68,9 +73,11 @@ services:
       interval: 5s
       timeout: 2s
       retries: 10
+      start_period: 20s
 
   mariadb:
     image: mariadb:10.3
+    restart: always
     ports:
       - 13306:3306
     environment:
@@ -83,9 +90,11 @@ services:
       interval: 5s
       timeout: 2s
       retries: 10
+      start_period: 20s
 
   mysql:
     image: mysql:8
+    restart: always
     ports:
       - 23306:3306
     environment:
@@ -98,3 +107,4 @@ services:
       interval: 5s
       timeout: 2s
       retries: 10
+      start_period: 20s
