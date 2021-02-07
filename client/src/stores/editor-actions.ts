@@ -175,6 +175,9 @@ export const initEditor = async (
 
     const { focusedSessionId } = getState();
     setSession(focusedSessionId, { connectionId: initialConnectionId });
+    if (initialConnectionId) {
+      loadSchema(initialConnectionId);
+    }
     setState({ initialized: true });
   } catch (error) {
     console.error(error);
