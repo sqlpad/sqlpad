@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.2.0] - 2021-02-07
+
+- Add query status to query history
+- Ignore `SQLPAD_SERVICE_` env vars during unknown env var check
+- BigQuery: use wrapIntegers to prevent int64 truncation
+- Fix schema load for single defaulted connection
+- Update dependencies
+
 ## [6.1.2] - 2020-12-03
 
 - Fix LDAP auth for profiles without mail attribute. SQLPad's users `email` field is now nullable.
