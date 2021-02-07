@@ -130,7 +130,7 @@ export const initEditor = async (
     let initialConnectionId = '';
 
     if (connections.length === 1) {
-      selectedConnectionId = connections[0].id;
+      initialConnectionId = connections[0].id;
     } else {
       const { defaultConnectionId } = config || {};
       if (defaultConnectionId) {
@@ -175,6 +175,9 @@ export const initEditor = async (
 
     const { focusedSessionId } = getState();
     setSession(focusedSessionId, { connectionId: initialConnectionId });
+    if (initialConnectionId) {
+      loadSchema(initialConnectionId);
+    }
     setState({ initialized: true });
   } catch (error) {
     console.error(error);
