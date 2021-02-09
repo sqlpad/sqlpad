@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.2.1] - 2021-02-09
+
+- Reduce unknown `SQLPAD_*` environment variable error to warning
+
 ## [6.2.0] - 2021-02-07
 
 - Add query status to query history
