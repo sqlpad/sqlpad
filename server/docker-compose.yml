@@ -12,19 +12,6 @@ services:
     ports:
       - 10389:10389
     healthcheck:
-      test:
-        [
-          'CMD',
-          'ldapsearch',
-          '-H',
-          'ldap://127.0.0.1:10389',
-          '-D',
-          'cn=admin,dc=planetexpress,dc=com',
-          '-w',
-          'GoodNewsEveryone',
-          '-b',
-          'cn=admin,dc=planetexpress,dc=com',
-        ]
       interval: 5s
       timeout: 2s
       retries: 10
