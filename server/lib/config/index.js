@@ -128,14 +128,8 @@ class Config {
     // Any key that starts with SQLPAD_ that isn't known should raise a message.
     // Exceptions:
     // - SQLPAD_CONNECTIONS__ variables as they are dynamic and depend on database defined
-    // - SQLPAD_SERVICE_ variables as they may be used in a kubernetes environment
     Object.keys(this.env).forEach((key) => {
-      if (
-        key.startsWith('SQLPAD_') &&
-        !isConnectionEnv(key) &&
-        !key.startsWith('SQLPAD_SERVICE_') &&
-        !key.startsWith('SQLPAD_PORT_')
-      ) {
+      if (key.startsWith('SQLPAD_') && !isConnectionEnv(key)) {
         const foundDefinition = configItems.find((item) => item.envVar === key);
         if (!foundDefinition) {
           // If key wasn't found, check known removed variables
