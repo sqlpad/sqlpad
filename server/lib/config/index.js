@@ -12,6 +12,42 @@ const {
 } = require('./config-utils');
 const drivers = require('../../drivers');
 
+const REMOVED_ENVS = [
+  'CERT_PASSPHRASE',
+  'CERT_PATH',
+  'DISABLE_AUTH',
+  'DISABLE_USERPASS_AUTH',
+  'ENABLE_LDAP_AUTH',
+  'GOOGLE_CLIENT_ID',
+  'GOOGLE_CLIENT_SECRET',
+  'KEY_PATH',
+  'LDAP_BASE_DN',
+  'LDAP_PASSWORD',
+  'LDAP_URL',
+  'LDAP_USERNAME',
+  'SAML_AUTH_CONTEXT',
+  'SAML_CALLBACK_URL',
+  'SAML_CERT',
+  'SAML_ENTRY_POINT',
+  'SAML_ISSUER',
+  'SAML_LINK_HTML',
+  'SERVICE_TOKEN_SECRET',
+  'SQLPAD_DEBUG',
+  'SQLPAD_DISABLE_AUTH_DEFAULT_ROLE',
+  'SQLPAD_HTTPS_PORT',
+  'SQLPAD_LDAP_BASE_DN',
+  'SQLPAD_LDAP_USERNAME',
+  'SQLPAD_SLACK_WEBHOOK',
+  'SQLPAD_SMTP_FROM',
+  'SQLPAD_SMTP_HOST',
+  'SQLPAD_SMTP_PASSWORD',
+  'SQLPAD_SMTP_PORT',
+  'SQLPAD_SMTP_SECURE',
+  'SQLPAD_SMTP_USER',
+  'SQLPAD_TABLE_CHART_LINKS_REQUIRE_AUTH',
+  'WHITELISTED_DOMAINS',
+];
+
 class Config {
   constructor(argv, env) {
     this.argv = argv;
@@ -97,13 +133,24 @@ class Config {
       if (
         key.startsWith('SQLPAD_') &&
         !isConnectionEnv(key) &&
-        !key.startsWith('SQLPAD_SERVICE_')
+        !key.startsWith('SQLPAD_SERVICE_') &&
+        !key.startsWith('SQLPAD_PORT_')
       ) {
         const foundDefinition = configItems.find((item) => item.envVar === key);
         if (!foundDefinition) {
-          errors.push(
-            `CONFIG NOT RECOGNIZED: Environment variable "${key}" no longer supported.`
-          );
+          // If key wasn't found, check known removed variables
+          // If previously used, raise error, otherwise log warning
+          // Environments like k8s may use SQLPAD_* variables for other things
+          const foundRemoved = REMOVED_ENVS.find((removed) => removed === key);
+          if (foundRemoved) {
+            errors.push(
+              `CONFIG NOT RECOGNIZED: Environment variable "${key}" no longer used`
+            );
+          } else {
+            warnings.push(
+              `CONFIG NOT RECOGNIZED: Environment variable "${key}"`
+            );
+          }
         }
       }
     });

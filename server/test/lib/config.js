@@ -87,6 +87,18 @@ describe('lib/config', function () {
     assert(found, 'has error about old key');
   });
 
+  it('Warns for unknown env var', function () {
+    const config = new Config({}, { SQLPAD_UNKNOWN_VAR: 'true' });
+    const validations = config.getValidations();
+    assert(validations.warnings);
+    const found = validations.warnings.find(
+      (warning) =>
+        warning.includes('SQLPAD_UNKNOWN_VAR') &&
+        warning.includes('NOT RECOGNIZED')
+    );
+    assert(found, 'has warning about unknown key');
+  });
+
   it('Errors env connection missing name', function () {
     const config = new Config(
       {},
