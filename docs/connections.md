@@ -152,6 +152,7 @@ A default connection selection can be set using environment variable `SQLPAD_DEF
 | `username`                         | Database Username                                     |   text    |
 | `password`                         | Database Password                                     |   text    |
 | `postgresSsl`                      | Use SSL                                               |  boolean  |
+| `postgresSslSelfSigned`            | Allow self-signed SSL certificate                     |  boolean  |
 | `postgresCert`                     | Database Certificate Path                             |   text    |
 | `postgresKey`                      | Database Key Path                                     |   text    |
 | `postgresCA`                       | Database CA Path                                      |   text    |
