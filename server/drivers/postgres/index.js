@@ -40,6 +40,10 @@ class Client {
       if (connection.postgresCA) {
         pgConfig.ssl['ca'] = fs.readFileSync(connection.postgresCA);
       }
+    } else if (connection.postgresSsl && connection.postgresSslSelfSigned) {
+      pgConfig.ssl = {
+        rejectUnauthorized: false,
+      };
     }
 
     this.pgConfig = pgConfig;
@@ -211,6 +215,11 @@ const fields = [
     key: 'postgresSsl',
     formType: 'CHECKBOX',
     label: 'Use SSL',
+  },
+  {
+    key: 'postgresSslSelfSigned',
+    formType: 'CHECKBOX',
+    label: 'Allow self-signed SSL certificate',
   },
   {
     key: 'postgresCert',
