@@ -50,7 +50,7 @@ router.delete('/api/queries/:id', mustBeAuthenticated, wrap(deleteQuery));
 //   AND id IN (SELECT query_id FROM query_tags WHERE tag = 'tag1')
 //   AND id IN (SELECT query_id FROM query_tags WHERE tag = 'tag2')
 //   -- for search
-//   AND (name LIKE '%search%' OR query_text LIKE '%search%')
+//   AND (LOWER(name) LIKE '%search_in_lowercase%' OR LOWER(query_text) LIKE '%search_in_lowercase%')
 // ORDER BY
 //   name ASC
 //   -- updated_at DESC
@@ -140,9 +140,9 @@ async function listQueries(req, res) {
   }
 
   if (search) {
-    params.search = `%${search}%`;
+    params.search = `%${search.toLowerCase()}%`;
     whereSqls.push(
-      `( queries.name LIKE :search OR queries.query_text LIKE :search )`
+      `( LOWER(queries.name) LIKE :search OR LOWER(queries.query_text) LIKE :search )`
     );
   }
 
