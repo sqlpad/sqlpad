@@ -3,13 +3,11 @@ import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import SecondsTimer from '../common/SecondsTimer';
 import styles from './QueryHistoryResultHeader.module.css';
 
-type OwnProps = {
+type Props = {
   isRunning?: boolean;
   queryResult?: any;
   runQueryStartTime?: Date;
 };
-
-type Props = OwnProps & typeof QueryHistoryResultHeader.defaultProps;
 
 function QueryHistoryResultHeader({
   isRunning,

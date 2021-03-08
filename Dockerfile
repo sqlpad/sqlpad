@@ -1,6 +1,6 @@
 # Need to remote into this image and debug some flow? 
-# docker run -it --rm node:12.20-alpine3.12 /bin/ash
-FROM node:12.20-alpine3.12 AS build
+# docker run -it --rm node:12.21-alpine3.12 /bin/ash
+FROM node:12.21-alpine3.12 AS build
 
 RUN apk add --update --no-cache \
     python3 \
