@@ -3,13 +3,11 @@ import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 
 const LINK_STYLE = { display: 'inline-flex', alignItems: 'center' };
 
-type OwnProps = {
+type Props = {
   version?: string;
 };
 
-type Props = OwnProps & typeof AboutContent.defaultProps;
-
-function AboutContent({ version }: Props) {
+function AboutContent({ version = '' }: Props) {
   return (
     <div>
       <p>
@@ -80,9 +78,5 @@ function AboutContent({ version }: Props) {
     </div>
   );
 }
-
-AboutContent.defaultProps = {
-  version: '',
-};
 
 export default AboutContent;
