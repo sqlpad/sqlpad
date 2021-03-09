@@ -10,6 +10,24 @@ const Statements = require('./statements');
 const Tags = require('./tags');
 const Users = require('./users');
 
+/**
+ * Models today is a perhaps best thought of as a data-access-layer
+ * or collection of utility functions for the high level compound objects in SQLPad.
+ * These functions wrap complex ORM (sequelize) interactions involving one or more tables.
+ *
+ * Any direct use of sequelize should be limited to the following:
+ *   - initial setup
+ *   - these model functions
+ *   - migrations
+ *   - tests
+ *
+ * The functions may reach out beyond their own boundaries,
+ * and are not a 1-to-1 mapping between objects and tables.
+ *
+ * For example, there are functions under the `tags` property,
+ * but the `queries` property has plenty of functions
+ * that look to and modify the tags table as well.
+ */
 class Models {
   constructor(sequelizeDb, config) {
     this.sequelizeDb = sequelizeDb;
