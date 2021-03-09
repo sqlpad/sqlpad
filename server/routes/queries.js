@@ -21,7 +21,6 @@ async function deleteQuery(req, res) {
   const decorated = decorateQueryUserAccess(query, user);
   if (decorated.canDelete) {
     await models.queries.removeById(params.id);
-    await models.queryAcl.removeByQueryId(params.id);
     return res.utils.data();
   }
 

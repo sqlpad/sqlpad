@@ -3,7 +3,6 @@ const ConnectionAccesses = require('./connection-accesses');
 const ConnectionClients = require('./connection-clients');
 const Connections = require('./connections');
 const Queries = require('./queries');
-const QueryAcl = require('./query-acl');
 const QueryHistory = require('./query-history');
 const SchemaInfo = require('./schema-info');
 const ServiceTokens = require('./service-tokens');
@@ -19,7 +18,6 @@ class Models {
     this.connectionClients = new ConnectionClients(sequelizeDb, config);
     this.connections = new Connections(sequelizeDb, config);
     this.queries = new Queries(sequelizeDb, config);
-    this.queryAcl = new QueryAcl(sequelizeDb, config);
     this.queryHistory = new QueryHistory(sequelizeDb, config);
     this.schemaInfo = new SchemaInfo(sequelizeDb, config);
     this.serviceTokens = new ServiceTokens(sequelizeDb, config);

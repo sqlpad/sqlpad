@@ -34,22 +34,22 @@ describe('QueryAcl', function () {
     await utils.init();
 
     await assert.rejects(async () => {
-      await utils.models.queryAcl.create({
+      await utils.models.sequelizeDb.QueryAcl.create({
         queryId: 'q1',
         userId: 'u1',
       });
-      await utils.models.queryAcl.create({
+      await utils.models.sequelizeDb.QueryAcl.create({
         queryId: 'q1',
         userId: 'u1',
       });
     });
 
     await assert.rejects(async () => {
-      await utils.models.queryAcl.create({
+      await utils.models.sequelizeDb.QueryAcl.create({
         queryId: 'q1',
         groupId: 'group1',
       });
-      await utils.models.queryAcl.create({
+      await utils.models.sequelizeDb.QueryAcl.create({
         queryId: 'q1',
         groupId: 'group1',
       });

@@ -98,7 +98,20 @@ class Queries {
   }
 
   removeById(id) {
-    return this.sequelizeDb.Queries.destroy({ where: { id } });
+    return this.sequelizeDb.sequelize.transaction(async (transaction) => {
+      await this.sequelizeDb.QueryAcl.destroy({
+        transaction,
+        where: { queryId: id },
+      });
+      await this.sequelizeDb.QueryTags.destroy({
+        transaction,
+        where: { queryId: id },
+      });
+      await this.sequelizeDb.Queries.destroy({
+        transaction,
+        where: { id },
+      });
+    });
   }
 
   /**
