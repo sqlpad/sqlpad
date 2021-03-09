@@ -129,7 +129,11 @@ async function loadSeedData(appLog, config, models) {
     // TODO - only update query if query data is different
     // Aways updating is causing updatedAt to change, which is bringing these results to the top of UI
     // This will require taking a subset of query data and performing a deep equal
-    await models.upsertQuery(data);
+    if (existing) {
+      await models.queries.update(existing.id, data);
+    } else {
+      await models.queries.create(data);
+    }
   }
 
   const connections = await getItemDirectoryData(

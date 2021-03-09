@@ -312,7 +312,7 @@ async function createQuery(req, res) {
     acl,
   };
 
-  const newQuery = await models.upsertQuery(query);
+  const newQuery = await models.queries.create(query);
 
   let connection;
   if (connectionId) {
@@ -356,7 +356,7 @@ async function updateQuery(req, res) {
     acl,
   });
 
-  const updatedQuery = await models.upsertQuery(query);
+  const updatedQuery = await models.queries.update(params.id, query);
   const data = decorateQueryUserAccess(updatedQuery, user);
   return res.utils.data(data);
 }

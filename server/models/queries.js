@@ -103,9 +103,10 @@ class Queries {
 
   /**
    * Create new query object
-   * @param {object} query
+   * @param {object} data - query object with tags, acl
    */
-  async create(query) {
+  async create(data) {
+    const { acl, tags, createdAt, updatedAt, ...query } = data;
     // Open transaction
     // If tags are provided, delete existing and bulk add new
     // update query
@@ -113,13 +114,12 @@ class Queries {
     // return updated object
     let created;
     await this.sequelizeDb.sequelize.transaction(async (transaction) => {
-      const { createdAt, updatedAt, tags, ...data } = query;
-      created = await this.sequelizeDb.Queries.create(data, {
+      created = await this.sequelizeDb.Queries.create(query, {
         transaction,
       });
 
-      if (Array.isArray(query.tags)) {
-        const tagData = query.tags
+      if (Array.isArray(tags)) {
+        const tagData = tags
           .filter((tag) => {
             return typeof tag === 'string' && tag.trim() !== '';
           })
@@ -128,6 +128,19 @@ class Queries {
           });
 
         await this.sequelizeDb.QueryTags.bulkCreate(tagData, { transaction });
+      }
+
+      if (acl && acl.length) {
+        const aclRows = acl.map((row) => {
+          return {
+            queryId: created.id,
+            userId: row.userId,
+            userEmail: row.userEmail,
+            groupId: row.groupId,
+            write: row.write,
+          };
+        });
+        await this.sequelizeDb.QueryAcl.bulkCreate(aclRows, { transaction });
       }
     });
 
@@ -138,17 +151,15 @@ class Queries {
    * Save query object
    * returns saved query object
    * @param {string} id
-   * @param {object} query
+   * @param {object} data - query object with tags, acl
    */
-  async update(id, query) {
-    // Open transaction
-    // If tags are provided, delete existing and bulk add new
-    // update query
-    // commit transaction
-    // return updated object
+  async update(id, data) {
+    const { acl, tags, createdAt, updatedAt, ...query } = data;
+
     await this.sequelizeDb.sequelize.transaction(async (transaction) => {
-      if (Array.isArray(query.tags)) {
-        const tagData = query.tags
+      // If tags array provided sync tags
+      if (Array.isArray(tags)) {
+        const tagData = tags
           .filter((tag) => {
             return typeof tag === 'string' && tag.trim() !== '';
           })
@@ -160,16 +171,33 @@ class Queries {
           where: { queryId: id },
         });
         await this.sequelizeDb.QueryTags.bulkCreate(tagData, { transaction });
-        const update = { ...query };
-        delete update.id;
-        delete update.createdAt;
-        delete update.updatedAt;
-        delete update.tags;
-        await this.sequelizeDb.Queries.update(update, {
-          transaction,
-          where: { id },
-        });
       }
+
+      // If acl array provided sync ACL entries
+      if (Array.isArray(acl)) {
+        await this.sequelizeDb.QueryAcl.destroy({
+          transaction,
+          where: { queryId: id },
+        });
+
+        const aclRows = acl.map((row) => {
+          return {
+            queryId: id,
+            userId: row.userId,
+            userEmail: row.userEmail,
+            groupId: row.groupId,
+            write: row.write,
+          };
+        });
+        await this.sequelizeDb.QueryAcl.bulkCreate(aclRows, { transaction });
+      }
+
+      const update = { ...query };
+      delete update.id;
+      await this.sequelizeDb.Queries.update(update, {
+        transaction,
+        where: { id },
+      });
     });
 
     return this.findOneById(id);
