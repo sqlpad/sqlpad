@@ -1,6 +1,7 @@
 import React from 'react';
 import QueryResultContainer from '../common/QueryResultContainer';
 import QueryResultRunning from '../common/QueryResultRunning';
+import { setMouseOverResultPane } from '../stores/editor-actions';
 import {
   useSessionBatch,
   useSessionIsRunning,
@@ -44,7 +45,10 @@ function QueryEditorResultPane() {
   }
 
   return (
-    <div>
+    <div
+      onMouseOver={() => setMouseOverResultPane(true)}
+      onMouseLeave={() => setMouseOverResultPane(false)}
+    >
       <QueryResultHeader />
       <div
         style={{

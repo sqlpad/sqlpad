@@ -7,6 +7,7 @@ import SchemaInfoLoader from '../schema/SchemaInfoLoader';
 import { connectConnectionClient, loadQuery } from '../stores/editor-actions';
 import useShortcuts from '../utilities/use-shortcuts';
 import DocumentTitle from './DocumentTitle';
+import EditorNavProtection from './EditorNavProtection';
 import EditorPaneRightSidebar from './EditorPaneRightSidebar';
 import EditorPaneSchemaSidebar from './EditorPaneSchemaSidebar';
 import EditorPaneVis from './EditorPaneVis';
@@ -81,6 +82,7 @@ function QueryEditor() {
       <SchemaInfoLoader />
       <QuerySaveModal />
       <NotFoundModal visible={showNotFound} queryId={queryId} />
+      <EditorNavProtection />
     </div>
   );
 }

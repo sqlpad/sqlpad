@@ -190,6 +190,10 @@ export function toggleShowQueryModal() {
   setState({ showQueryModal: !showQueryModal });
 }
 
+export function setMouseOverResultPane(mouseOverResultPane: boolean) {
+  setState({ mouseOverResultPane });
+}
+
 /**
  * Reset state (on signout for example)
  */
