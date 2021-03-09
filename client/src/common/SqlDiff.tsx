@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import Measure from 'react-measure';
 import { diff as DiffEditor } from 'react-ace';
-require(`ace-builds/src-noconflict/mode-sql`);
-require(`ace-builds/src-noconflict/theme-sqlserver`);
+import 'ace-builds/src-noconflict/mode-sql';
+import 'ace-builds/src-noconflict/theme-sqlserver';
 
 export interface Props {
   value?: string[];
