@@ -14,7 +14,7 @@ const wrap = require('../lib/wrap');
  */
 async function deleteQuery(req, res) {
   const { models, params, user } = req;
-  const query = await models.findQueryById(params.id);
+  const query = await models.queries.findOneById(params.id);
   if (!query) {
     return res.utils.notFound();
   }
@@ -277,7 +277,7 @@ router.get('/api/queries', mustBeAuthenticated, wrap(listQueries));
  */
 async function getQuery(req, res) {
   const { models, user, params } = req;
-  const query = await models.findQueryById(params.id);
+  const query = await models.queries.findOneById(params.id);
 
   if (!query) {
     return res.utils.notFound();
@@ -333,7 +333,7 @@ router.post('/api/queries', mustBeAuthenticated, wrap(createQuery));
 async function updateQuery(req, res) {
   const { models, params, user, body } = req;
 
-  const query = await models.findQueryById(params.id);
+  const query = await models.queries.findOneById(params.id);
   if (!query) {
     return res.utils.notFound();
   }

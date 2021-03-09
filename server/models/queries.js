@@ -40,6 +40,36 @@ class Queries {
       return tagRow.tag;
     });
 
+    // Get ACL
+    query.acl = await this.sequelizeDb.QueryAcl.findAll({
+      where: { queryId: id },
+    });
+    query.acl = query.acl.map((acl) => acl.toJSON());
+
+    // Get created by / updated by user objects
+    const createdBy = await this.sequelizeDb.Users.findOne({
+      attributes: ['id', 'name', 'email'],
+      where: { id: query.createdBy },
+    });
+    const updatedBy = await this.sequelizeDb.Users.findOne({
+      attributes: ['id', 'name', 'email'],
+      where: { id: query.updatedBy },
+    });
+
+    query.createdByUser = {
+      id: createdBy.id,
+      name: createdBy.name,
+      email: createdBy.email,
+    };
+
+    if (updatedBy) {
+      query.updatedByUser = {
+        id: updatedBy.id,
+        name: createdBy.name,
+        email: createdBy.email,
+      };
+    }
+
     return query;
   }
 
