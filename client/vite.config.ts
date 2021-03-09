@@ -33,4 +33,7 @@ export default defineConfig({
   server: {
     proxy,
   },
+  build: {
+    outDir: 'build',
+  },
 });
