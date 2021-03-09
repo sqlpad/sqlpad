@@ -4,8 +4,8 @@ import AceEditor from 'react-ace';
 import 'ace-builds/src-min-noconflict/ext-searchbox';
 import Measure from 'react-measure';
 import useAppContext from '../utilities/use-app-context';
-require(`ace-builds/src-noconflict/mode-sql`);
-require(`ace-builds/src-noconflict/theme-sqlserver`);
+import 'ace-builds/src-noconflict/mode-sql';
+import 'ace-builds/src-noconflict/theme-sqlserver';
 
 const noop = () => {};
 
