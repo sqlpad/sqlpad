@@ -11,7 +11,6 @@ const ServiceTokens = require('./service-tokens');
 const Statements = require('./statements');
 const Tags = require('./tags');
 const Users = require('./users');
-const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 
 class Models {
   constructor(sequelizeDb, config) {
@@ -28,37 +27,6 @@ class Models {
     this.statements = new Statements(sequelizeDb, config);
     this.tags = new Tags(sequelizeDb, config);
     this.users = new Users(sequelizeDb, config);
-  }
-
-  /**
-   * Find all queries that a user has access to.
-   * This DOES NOT send associated query info at this time (acl and user object)
-   * If user is an admin, get all queries
-   * If user is NOT an admin, get queries created by user or that are shared
-   *
-   * This needs to merge queries and acl
-   * Fetching both query and acl data is not ideal, but is probably okay for now
-   * This will become problematic for large SQLPad environments
-   * Eventually this can be a better SQL query once all data is moved to SQLite
-   * @param {object} user
-   */
-  async findQueriesForUser(user) {
-    const queries = await this.queries.findAll();
-    const queryAcls = await this.queryAcl.findAll();
-    const queryAclsByQueryId = _.groupBy(queryAcls, 'queryId');
-
-    return (
-      queries
-        // Join in query ACL info needed for decorateQueryUserAccess
-        .map((query) => {
-          query.acl = queryAclsByQueryId[query.id] || [];
-          return query;
-        })
-        // Decorate query with canRead/canWrite/canDelete
-        .map((query) => decorateQueryUserAccess(query, user))
-        // Only include queries user can read
-        .filter((query) => query.canRead)
-    );
   }
 
   /**
