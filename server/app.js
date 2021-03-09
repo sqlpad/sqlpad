@@ -251,9 +251,11 @@ async function makeApp(config, models) {
   if (fs.existsSync(indexTemplatePath)) {
     const html = fs.readFileSync(indexTemplatePath, 'utf8');
     const baseUrlHtml = html
+      .replace(/="\/assets/g, `="${baseUrl}/assets`)
       .replace(/="\/stylesheets/g, `="${baseUrl}/stylesheets`)
       .replace(/="\/javascripts/g, `="${baseUrl}/javascripts`)
       .replace(/="\/images/g, `="${baseUrl}/images`)
+      .replace(/="\/favicon/g, `="${baseUrl}/favicon`)
       .replace(/="\/fonts/g, `="${baseUrl}/fonts`)
       .replace(/="\/static/g, `="${baseUrl}/static`);
     app.use((req, res) => res.send(baseUrlHtml));
