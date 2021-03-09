@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const Batches = require('./batches');
 const ConnectionAccesses = require('./connection-accesses');
 const ConnectionClients = require('./connection-clients');
