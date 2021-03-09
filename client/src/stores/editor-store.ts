@@ -52,6 +52,7 @@ export interface EditorSession {
 export type EditorStoreState = {
   initialized: boolean;
   showQueryModal: boolean;
+  mouseOverResultPane: boolean;
   focusedSessionId: string;
   editorSessions: Record<string, EditorSession>;
   batches: Record<string, Batch>;
@@ -96,6 +97,7 @@ export const INITIAL_SESSION: EditorSession = {
 export const INITIAL_STATE = {
   initialized: false,
   showQueryModal: false,
+  mouseOverResultPane: false,
   focusedSessionId: INITIAL_SESSION_ID,
   editorSessions: {
     [INITIAL_SESSION_ID]: INITIAL_SESSION,
@@ -127,6 +129,10 @@ export function useInitialized() {
 
 export function useShowQueryModal() {
   return useEditorStore((s) => s.showQueryModal);
+}
+
+export function useMouseOverResultPane() {
+  return useEditorStore((s) => s.mouseOverResultPane);
 }
 
 export function useSessionQueryShared() {
