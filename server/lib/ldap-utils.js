@@ -2,6 +2,25 @@ const ldap = require('ldapjs');
 const appLog = require('./app-log');
 
 /**
+ * Create ldap client
+ * @param {*} config
+ */
+function getClient(config) {
+  const client = ldap.createClient({
+    url: config.get('ldapUrl'),
+  });
+
+  // An error listener must be registered,
+  // otherwise error is thrown deep within the stack and cannot be caught
+  // We'll get an error during bind attempt, so this can mostly be ignored
+  client.on('error', (err) => {
+    appLog.error(err);
+  });
+
+  return client;
+}
+
+/**
  * Convenience wrapper to promisify client.bind() function
  * @param {*} client
  * @param {string} bindDN
@@ -31,18 +50,15 @@ async function ldapCanBind(config) {
     return;
   }
 
-  const url = config.get('ldapUrl');
   const bindDN = config.get('ldapBindDN');
   const bindCredentials = config.get('ldapPassword');
 
   // Establish LDAP client
-  const client = ldap.createClient({
-    url,
-  });
-
+  let client;
   let canBind = false;
 
   try {
+    client = getClient(config);
     await bindClient(client, bindDN, bindCredentials);
     canBind = true;
   } catch (error) {
@@ -51,7 +67,9 @@ async function ldapCanBind(config) {
 
   // try to unbind in case connected
   try {
-    client.unbind();
+    if (client) {
+      client.unbind();
+    }
   } catch (error) {
     // ignore error
   }
@@ -99,4 +117,5 @@ module.exports = {
   bindClient,
   ldapCanBind,
   queryLdap,
+  getClient,
 };
