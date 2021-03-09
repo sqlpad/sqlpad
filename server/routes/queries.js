@@ -14,14 +14,13 @@ const wrap = require('../lib/wrap');
  */
 async function deleteQuery(req, res) {
   const { models, params, user } = req;
-  const query = await models.findQueryById(params.id);
+  const query = await models.queries.findOneById(params.id);
   if (!query) {
     return res.utils.notFound();
   }
   const decorated = decorateQueryUserAccess(query, user);
   if (decorated.canDelete) {
     await models.queries.removeById(params.id);
-    await models.queryAcl.removeByQueryId(params.id);
     return res.utils.data();
   }
 
@@ -277,7 +276,7 @@ router.get('/api/queries', mustBeAuthenticated, wrap(listQueries));
  */
 async function getQuery(req, res) {
   const { models, user, params } = req;
-  const query = await models.findQueryById(params.id);
+  const query = await models.queries.findOneById(params.id);
 
   if (!query) {
     return res.utils.notFound();
@@ -312,7 +311,7 @@ async function createQuery(req, res) {
     acl,
   };
 
-  const newQuery = await models.upsertQuery(query);
+  const newQuery = await models.queries.create(query);
 
   let connection;
   if (connectionId) {
@@ -333,7 +332,7 @@ router.post('/api/queries', mustBeAuthenticated, wrap(createQuery));
 async function updateQuery(req, res) {
   const { models, params, user, body } = req;
 
-  const query = await models.findQueryById(params.id);
+  const query = await models.queries.findOneById(params.id);
   if (!query) {
     return res.utils.notFound();
   }
@@ -356,7 +355,7 @@ async function updateQuery(req, res) {
     acl,
   });
 
-  const updatedQuery = await models.upsertQuery(query);
+  const updatedQuery = await models.queries.update(params.id, query);
   const data = decorateQueryUserAccess(updatedQuery, user);
   return res.utils.data(data);
 }

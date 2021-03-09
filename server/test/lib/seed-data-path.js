@@ -11,9 +11,9 @@ describe('seedDataPath', function () {
     assert.strictEqual(queries.length, 2);
     const query1 = queries.find((q) => q.id === 'seed-query-1');
     assert(query1);
-    const queryAcls = await utils.models.queryAcl.findAllByQueryId(
-      'seed-query-1'
-    );
+    const queryAcls = await utils.models.sequelizeDb.QueryAcl.findAll({
+      where: { queryId: 'seed-query-1' },
+    });
     assert.equal(queryAcls.length, 3);
     const connections = await utils.models.connections.findAll();
     assert.equal(connections.length, 1);
