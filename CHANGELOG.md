@@ -1,5 +1,13 @@
 # Changelog
 
+## [6.3.0] - 2021-03-08
+
+- Postgres: Add self-signed certificate support
+- Update queries search to be case-insensitive
+- Prevent accidental back navigation when scrolling query results
+- Fix query result display on Safari
+- Update dependencies
+
 ## [6.2.1] - 2021-02-09
 
 - Reduce unknown `SQLPAD_*` environment variable error to warning
