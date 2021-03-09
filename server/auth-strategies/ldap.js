@@ -1,5 +1,4 @@
 const passport = require('passport');
-const ldap = require('ldapjs');
 const LdapStrategy = require('passport-ldapauth');
 const appLog = require('../lib/app-log');
 const ldapUtils = require('../lib/ldap-utils');
@@ -118,9 +117,8 @@ async function enableLdap(config) {
             roleSetByRBAC = true;
 
             // Establish LDAP client to make additional queries
-            const client = ldap.createClient({
-              url: config.get('ldapUrl'),
-            });
+            const client = ldapUtils.getClient(config);
+
             await ldapUtils.bindClient(client, bindDN, bindCredentials);
 
             try {
