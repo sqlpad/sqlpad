@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import reactRefresh from '@vitejs/plugin-react-refresh';
 
+const sourcemap = process.env.SOURCEMAP === 'true';
+
 // For each route prefix below, add proxy entry to http://localhost:3010
 // Add another set with '/sqlpad' prefix, as that base url is used during dev/testing
 // Previously this project use create-react-app, which automatically fell back to proxy for special cases
@@ -35,5 +37,6 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
+    sourcemap,
   },
 });

@@ -53,6 +53,7 @@
     "zustand": "^3.3.1"
   },
   "scripts": {
+    "analyze": "cross-env SOURCEMAP=true npm run build && source-map-explorer \"build/assets/*.js\" --html bundle-analysis-result.html",
     "build": "tsc && vite build",
     "start": "vite",
     "fixlint": "eslint --fix \"**/*.{js,jsx,ts,tsx}\"",
@@ -67,8 +68,10 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "eslint-config-prettier": "^8.1.0",
     "eslint-config-react-app": "^6.0.0",
-    "eslint-plugin-prettier": "^3.3.1"
+    "eslint-plugin-prettier": "^3.3.1",
+    "source-map-explorer": "^2.5.2"
   }
 }
