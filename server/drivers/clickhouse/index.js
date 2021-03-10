@@ -1,5 +1,15 @@
-const clickhouse = require('./_clickhouse');
+const { ClickHouse } = require('clickhouse');
+const sqlLimiter = require('sql-limiter');
 const { formatSchemaQueryResults } = require('../utils');
+
+// Important notes about clickhouse driver implementation:
+//
+// `clickhouse` package does not provide column information, and uses `request`
+// May need to move to `node-clickhouse` or other library down the road
+// https://clickhouse.tech/docs/en/interfaces/third-party/client-libraries/
+//
+// Row limiting is handled via sql-limiter. This works for `LIMIT <limit>` use,
+// but could produce unexpected queries if user uses Clickhouse's `LIMIT <offset>,<limit>` syntax
 
 const id = 'clickhouse';
 const name = 'ClickHouse';
@@ -28,36 +38,44 @@ function getClickHouseSchemaSql(database) {
  * @param {string} query
  * @param {object} connection
  */
-function runQuery(query, connection) {
+async function runQuery(query, connection) {
   let incomplete = false;
-  const rows = [];
+  let rows = [];
+
+  const ONE_MILLION = 1000000;
+  const maxRows = connection.maxRows || ONE_MILLION;
+  const maxRowsPlusOne = maxRows + 1;
+
+  // NOTE - sql limiter may need to support ClickHouse's "LIMIT <offset>,<limit>" syntax
+  // If a SQLPad users use that syntax, the sql-limiter will use the offset integer as limit integer.
+  // This could potentially produce unexpected results
+  const limitedQuery = sqlLimiter.limit(query, ['limit'], maxRowsPlusOne);
+
   const port = connection.port || 8123;
-  const clickhouseConfig = {
-    url: `http://${connection.host}:${port}`,
+  const protocol = connection.useHTTPS ? 'https' : 'http';
+  const url = `${protocol}://${connection.host}`;
+  const database = connection.database;
+  const basicAuth = {
     username: connection.username || 'default',
     password: connection.password || '',
-    database: connection.database || 'default',
   };
 
-  return clickhouse.send(clickhouseConfig, query).then((result) => {
-    if (!result) {
-      throw new Error('No result returned');
-    }
-    let { data, columns } = result;
-    if (data.length > connection.maxRows) {
-      incomplete = true;
-      data = data.slice(0, connection.maxRows);
-    }
-    for (let r = 0; r < data.length; r++) {
-      const row = {};
-      for (let c = 0; c < columns.length; c++) {
-        // row[columns[c].name] = data[r][c];
-        row[columns[c].name] = data[r][columns[c].name];
-      }
-      rows.push(row);
-    }
-    return { rows, incomplete };
+  const clickhouse = new ClickHouse({
+    url,
+    port,
+    basicAuth,
+    format: 'json',
+    config: {
+      database,
+    },
   });
+
+  rows = await clickhouse.query(limitedQuery).toPromise();
+  if (rows.length > maxRows) {
+    incomplete = true;
+    rows = rows.slice(0, maxRows);
+  }
+  return { rows, incomplete };
 }
 
 /**
@@ -105,6 +123,11 @@ const fields = [
     key: 'database',
     formType: 'TEXT',
     label: 'Database Name (optional)',
+  },
+  {
+    key: 'useHTTPS',
+    formType: 'CHECKBOX',
+    label: 'Use HTTPS',
   },
 ];
 
