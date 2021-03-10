@@ -6,7 +6,7 @@ const google = require('./google');
 const jwtServiceToken = require('./jwt-service-token');
 const ldap = require('./ldap');
 const local = require('./local');
-const oidc = require('./oidc');
+const oidcLegacy = require('./oidc-legacy');
 const saml = require('./saml');
 
 // The serializeUser/deserializeUser functions apply regardless of the strategy used.
@@ -47,7 +47,7 @@ async function authStrategies(config, models) {
   jwtServiceToken(config);
   await ldap(config);
   local(config);
-  oidc(config);
+  oidcLegacy(config);
   saml(config);
 }
 
