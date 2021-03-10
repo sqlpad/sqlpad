@@ -36,7 +36,7 @@ async function getApp(req, res) {
       ldapRolesConfigured: Boolean(
         config.get('ldapRoleAdminFilter') || config.get('ldapRoleEditorFilter')
       ),
-      oidcConfigured: config.oidcConfigured(),
+      oidcConfigured: config.oidcLegacyConfigured() || config.oidcConfigured(),
       oidcLinkHtml: config.get('oidcLinkHtml'),
       showServiceTokensUI: Boolean(config.get('serviceTokenSecret')),
     },

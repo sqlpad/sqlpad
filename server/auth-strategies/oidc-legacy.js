@@ -77,7 +77,7 @@ async function passportOidcStrategyHandler(
  * @param {object} config
  */
 function enableOidcLegacy(config) {
-  if (config.oidcConfigured()) {
+  if (config.oidcLegacyConfigured()) {
     appLog.info(
       'Enabling OIDC (passport-openidconnect) authentication strategy.'
     );
@@ -86,7 +86,7 @@ function enableOidcLegacy(config) {
     const publicUrl = config.get('publicUrl');
 
     passport.use(
-      'oidc',
+      'oidc-legacy',
       new OidcStrategy(
         {
           passReqToCallback: true,

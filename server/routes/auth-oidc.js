@@ -50,10 +50,10 @@ function handleOidcCallback(req, res, next) {
     return redirectUser(err, user);
   }
 
-  passport.authenticate('oidc', handleAuth)(req, res, next);
+  passport.authenticate('oidc-legacy', handleAuth)(req, res, next);
 }
 
-router.get('/auth/oidc', passport.authenticate('oidc'));
+router.get('/auth/oidc', passport.authenticate('oidc-legacy'));
 router.get('/auth/oidc/callback', handleOidcCallback);
 
 module.exports = router;

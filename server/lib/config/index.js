@@ -260,6 +260,20 @@ class Config {
     );
   }
 
+  // TODO add check for no auto detect/keys
+  oidcLegacyConfigured() {
+    return Boolean(
+      this.all.publicUrl &&
+        this.all.oidcClientId &&
+        this.all.oidcClientSecret &&
+        this.all.oidcIssuer &&
+        this.all.oidcAuthorizationUrl &&
+        this.all.oidcTokenUrl &&
+        this.all.oidcUserInfoUrl
+    );
+  }
+
+  // TODO add check for issuer + autodetect, or all of legacy + keys
   oidcConfigured() {
     return Boolean(
       this.all.publicUrl &&
