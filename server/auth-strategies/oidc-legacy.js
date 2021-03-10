@@ -69,12 +69,18 @@ async function passportOidcStrategyHandler(
 }
 
 /**
- * Adds OIDC auth strategy if OIDC auth is configured
+ * Adds OIDC auth strategy using old passport-openidconnect if OIDC auth is configured
+ * passport-openidconnect has not been updated in quite some time,
+ * and is not as robust as openid-client.
+ *
+ * In a future version, remove passport-openidconnect support.
  * @param {object} config
  */
-function enableOidc(config) {
+function enableOidcLegacy(config) {
   if (config.oidcConfigured()) {
-    appLog.info('Enabling OIDC authentication strategy.');
+    appLog.info(
+      'Enabling OIDC (passport-openidconnect) authentication strategy.'
+    );
 
     const baseUrl = config.get('baseUrl');
     const publicUrl = config.get('publicUrl');
@@ -99,4 +105,4 @@ function enableOidc(config) {
   }
 }
 
-module.exports = enableOidc;
+module.exports = enableOidcLegacy;
