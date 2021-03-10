@@ -1,18 +1,25 @@
 const passport = require('passport');
+const OidcStrategy = require('passport-openidconnect').Strategy;
 const appLog = require('../lib/app-log');
 const checkAllowedDomains = require('../lib/check-allowed-domains.js');
-const { Issuer, Strategy } = require('openid-client');
 
-async function openidClientHandler(req, tokenSet, userinfo, done) {
+async function passportOidcStrategyHandler(
+  req,
+  issuer,
+  sub,
+  profile,
+  accessToken,
+  refreshToken,
+  done
+) {
   const { models, config, appLog, webhooks } = req;
+  const _json = profile._json || {};
 
-  const _json = tokenSet.claims() || {};
-
+  // _json.sub appears to be an id. Is it? Should .sub be used for SQLPad user id?
+  // Unsure if email ever doesn't exist if email claim is requested,
+  // but just in case fall back to preferred_username
   const email = _json.email || _json.preferred_username;
-  let name = _json.name;
-  if (!name && _json.given_name && _json.family_name) {
-    name = `${_json.given_name} ${_json.family_name}`;
-  }
+  const name = _json.name;
 
   if (!email) {
     appLog.debug('OIDC email not provided');
@@ -62,37 +69,40 @@ async function openidClientHandler(req, tokenSet, userinfo, done) {
 }
 
 /**
- * Adds OIDC auth strategy if OIDC auth is configured
+ * Adds OIDC auth strategy using old passport-openidconnect if OIDC auth is configured
+ * passport-openidconnect has not been updated in quite some time,
+ * and is not as robust as openid-client.
+ *
+ * In a future version, remove passport-openidconnect support.
  * @param {object} config
  */
-async function enableOidc(config) {
-  if (config.oidcConfigured()) {
-    appLog.info('Enabling OIDC authentication strategy (via openid-client).');
+function enableOidcLegacy(config) {
+  if (config.oidcLegacyConfigured()) {
+    appLog.info(
+      'Enabling OIDC authentication strategy (via passport-openidconnect).'
+    );
 
     const baseUrl = config.get('baseUrl');
     const publicUrl = config.get('publicUrl');
 
-    const issuer = await Issuer.discover(config.get('oidcIssuer'));
-
-    const client = new issuer.Client({
-      client_id: config.get('oidcClientId'),
-      client_secret: config.get('oidcClientSecret'),
-      redirect_uris: [`${publicUrl}${baseUrl}/auth/oidc/callback`],
-      post_logout_redirect_uris: [`${publicUrl}${baseUrl}`],
-    });
-
     passport.use(
-      'oidc',
-      new Strategy(
+      'oidc-legacy',
+      new OidcStrategy(
         {
           passReqToCallback: true,
-          client,
-          params: { scope: 'openid profile email' },
+          issuer: config.get('oidcIssuer'),
+          authorizationURL: config.get('oidcAuthorizationUrl'),
+          tokenURL: config.get('oidcTokenUrl'),
+          userInfoURL: config.get('oidcUserInfoUrl'),
+          clientID: config.get('oidcClientId'),
+          clientSecret: config.get('oidcClientSecret'),
+          callbackURL: publicUrl + baseUrl + '/auth/oidc/callback',
+          scope: 'openid profile email',
         },
-        openidClientHandler
+        passportOidcStrategyHandler
       )
     );
   }
 }
 
-module.exports = enableOidc;
+module.exports = enableOidcLegacy;

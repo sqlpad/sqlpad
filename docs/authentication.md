@@ -128,16 +128,22 @@ OpenID Connect authentication can be enabled by setting the following required e
 # localhost used in dev
 PUBLIC_URL = "http://localhost:3010"
 
+# HTML code for the sign-in link used for starting Open ID authentication.
+SQLPAD_OIDC_LINK_HTML = "Sign in with OpenID"
+
 SQLPAD_OIDC_CLIENT_ID = "actual-client-id"
 SQLPAD_OIDC_CLIENT_SECRET = "actual-client-secret"
-# URLs will vary by provider
+# Issuer endpoint (will vary by provider)
+# As of version 6.4.0 the issuer endpoint is the only URL needed
+# as long as the OIDC provider supplies .well-known endpoints
 SQLPAD_OIDC_ISSUER = "https://some.openidprovider.com/oauth2/default"
+
+# If .well-known is not supported, the additional 3 endpoints must be supplied
+# Supplying these endpoints is not recommended,
+# as it uses an older openid implementation which may not be compatible with your auth provider.
 SQLPAD_OIDC_AUTHORIZATION_URL = "https://some.openidprovider.com/oauth2/default/v1/authorize"
 SQLPAD_OIDC_TOKEN_URL = "https://some.openidprovider.com/oauth2/default/v1/token"
 SQLPAD_OIDC_USER_INFO_URL = "https://some.openidprovider.okta.com/oauth2/default/v1/userinfo"
-
-# HTML code for the sign-in link used for starting Open ID authentication.
-SQLPAD_OIDC_LINK_HTML = "Sign in with OpenID"
 ```
 
 The callback redirect URI used by SQLPad is `<baseurl>/auth/oidc/callback`.

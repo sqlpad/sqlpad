@@ -260,7 +260,7 @@ class Config {
     );
   }
 
-  oidcConfigured() {
+  oidcLegacyConfigured() {
     return Boolean(
       this.all.publicUrl &&
         this.all.oidcClientId &&
@@ -269,6 +269,23 @@ class Config {
         this.all.oidcAuthorizationUrl &&
         this.all.oidcTokenUrl &&
         this.all.oidcUserInfoUrl
+    );
+  }
+
+  // oidc configured only needs to check for minimal setup
+  // With newer openid-client we can detect auth/token/user urls
+  // If detecting the endpoints is not available, many additional oidc config options need to be provided
+  // This can happen after passport-openidconnect is removed
+  oidcConfigured() {
+    return Boolean(
+      this.all.publicUrl &&
+        this.all.oidcClientId &&
+        this.all.oidcClientSecret &&
+        this.all.oidcIssuer &&
+        // The additional URLs *should not* be specified
+        !this.all.oidcAuthorizationUrl &&
+        !this.all.oidcTokenUrl &&
+        !this.all.oidcUserInfoUrl
     );
   }
 
