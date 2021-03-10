@@ -67,21 +67,12 @@ async function openidClientHandler(req, tokenSet, userinfo, done) {
  */
 async function enableOidc(config) {
   if (config.oidcConfigured()) {
-    appLog.info('Enabling OIDC authentication strategy.');
+    appLog.info('Enabling OIDC authentication strategy (via openid-client).');
 
     const baseUrl = config.get('baseUrl');
     const publicUrl = config.get('publicUrl');
 
-    // TODO make discover configurable
     const issuer = await Issuer.discover(config.get('oidcIssuer'));
-
-    // const issuer = new Issuer({
-    //   issuer: config.get('oidcIssuer'),
-    //   authorization_endpoint: config.get('oidcAuthorizationUrl'),
-    //   token_endpoint: config.get('oidcTokenUrl'),
-    //   userinfo_endpoint: config.get('oidcUserInfoUrl'),
-    //   jwks_uri: 'https://dev-350224.okta.com/oauth2/default/v1/keys',
-    // });
 
     const client = new issuer.Client({
       client_id: config.get('oidcClientId'),

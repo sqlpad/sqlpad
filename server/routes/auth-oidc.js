@@ -8,14 +8,15 @@ const router = require('express').Router();
  * @param {Function} next
  *
  * Work arounds in here because node-openid-client strategy
- * doesn't do a workaround some strategies do.
+ * suffers from a race condition of sorts in passport
  *
  * These workarounds should be fine for both openid-client and passport-openidconnect
  * https://github.com/panva/node-openid-client/issues/146
  * https://github.com/jaredhanson/passport/pull/680
  */
 function handleOidcCallback(req, res, next) {
-  const baseUrl = req.config.get('baseUrl');
+  const { config } = req;
+  const baseUrl = config.get('baseUrl');
 
   function redirectUser(err, user) {
     if (err) {
@@ -50,10 +51,24 @@ function handleOidcCallback(req, res, next) {
     return redirectUser(err, user);
   }
 
-  passport.authenticate('oidc-legacy', handleAuth)(req, res, next);
+  // If legacy oidc is configured authenticate with that mechanism
+  // Otherwise use oidc implementation based on openid-client
+  if (config.oidcLegacyConfigured()) {
+    return passport.authenticate('oidc-legacy', handleAuth)(req, res, next);
+  }
+  return passport.authenticate('oidc', handleAuth)(req, res, next);
 }
 
-router.get('/auth/oidc', passport.authenticate('oidc-legacy'));
+router.get('/auth/oidc', (req, res, next) => {
+  const { config } = req;
+  // If legacy oidc is configured authenticate with that mechanism
+  // Otherwise use oidc implementation based on openid-client
+  if (config.oidcLegacyConfigured()) {
+    return passport.authenticate('oidc-legacy')(req, res, next);
+  }
+  return passport.authenticate('oidc')(req, res, next);
+});
+
 router.get('/auth/oidc/callback', handleOidcCallback);
 
 module.exports = router;

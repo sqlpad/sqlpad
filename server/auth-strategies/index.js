@@ -6,6 +6,7 @@ const google = require('./google');
 const jwtServiceToken = require('./jwt-service-token');
 const ldap = require('./ldap');
 const local = require('./local');
+const oidc = require('./oidc');
 const oidcLegacy = require('./oidc-legacy');
 const saml = require('./saml');
 
@@ -47,6 +48,7 @@ async function authStrategies(config, models) {
   jwtServiceToken(config);
   await ldap(config);
   local(config);
+  await oidc(config);
   oidcLegacy(config);
   saml(config);
 }
