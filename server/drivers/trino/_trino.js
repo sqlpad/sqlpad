@@ -8,7 +8,7 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Get Presto headers from config
+// Get Trino headers from config
 function getHeaders(config) {
   const headers = { 'X-Trino-User': config.user };
   if (config.catalog) {
