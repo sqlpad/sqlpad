@@ -19,7 +19,7 @@ const truncateSql = `TRUNCATE TABLE test`;
 // For clickhouse, we should test to make sure driver follows the nextUri links properly
 // To help with that we can add lots of data
 const values = [];
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 100; i++) {
   values.push(`(${i}, 'some text for the text field ${i}')`);
 }
 
@@ -34,7 +34,7 @@ describe('drivers/clickhouse', function () {
     connection.database = 'test';
     await clickhouse.runQuery(tableSql, connection);
     await clickhouse.runQuery(truncateSql, connection);
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 100; i++) {
       await clickhouse.runQuery(insertSql, connection);
     }
   });
