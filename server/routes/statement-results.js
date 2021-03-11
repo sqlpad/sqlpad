@@ -22,8 +22,6 @@ const renderValue = (input, column) => {
     return input.substring(0, 10);
   } else if (typeof input === 'object') {
     return JSON.stringify(input, null, 2);
-  } else if (typeof input === 'string') {
-    return input;
   } else {
     return input;
   }
