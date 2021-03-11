@@ -41,7 +41,12 @@ function ConnectionDropdown() {
 
   // Only show the connection menu if there's more than one option to select.
   if (currentUser?.role === 'editor' && connections.length === 1) {
-    return null;
+    const name = connections.find((c) => c.id === selectedConnectionId)?.name;
+    return (
+      <div style={{ height: 32, lineHeight: '32px', padding: '0 8px' }}>
+        {name || ''}
+      </div>
+    );
   }
 
   const style = !selectedConnectionId
