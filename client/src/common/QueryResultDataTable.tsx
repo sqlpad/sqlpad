@@ -1,3 +1,10 @@
+import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
+  MenuPopover,
+} from '@reach/menu-button';
 import React from 'react';
 import { VariableSizeGrid } from 'react-window';
 import throttle from 'lodash/throttle';
@@ -43,6 +50,47 @@ const renderValue = (input: any, column: StatementColumn) => {
   }
 };
 
+/**
+ * Input fields for clipboard copy value sourcing
+ * The input must be visible/displayed somewhere, in our case offscreen
+ * @param props
+ */
+function OffScreenInput({ id, value }: { id: string; value: string }) {
+  return (
+    <textarea
+      id={id}
+      readOnly
+      style={{ position: 'absolute', left: -9999 }}
+      value={value}
+    />
+  );
+}
+
+/**
+ * MenuItem to query for related input rendered and select and copy its text
+ * @param props
+ */
+function CopyMenuItem({ id, value }: { id: string; value: string }) {
+  let displayValue = value;
+  if (value.length > 30) {
+    displayValue = value.substring(0, 30) + '…';
+  }
+
+  return (
+    <MenuItem
+      onSelect={() => {
+        const copyText: HTMLInputElement | null = document.querySelector(id);
+        if (copyText) {
+          copyText.select();
+          document.execCommand('copy');
+        }
+      }}
+    >
+      Copy <span className="monospace-font">{displayValue}</span> to clipboard
+    </MenuItem>
+  );
+}
+
 // Hide the overflow so the scroll bar never shows in the header grid
 const headerStyle: React.CSSProperties = {
   overflowX: 'hidden',
@@ -81,6 +129,9 @@ interface QueryResultDataTableProps {
 }
 
 interface QueryResultDataTableState {
+  contextTop: number;
+  contextLeft: number;
+  cellCopyValue: string;
   dimensions: {
     width: number;
     height: number;
@@ -96,6 +147,9 @@ class QueryResultDataTable extends React.PureComponent<
   QueryResultDataTableState
 > {
   state: QueryResultDataTableState = {
+    contextTop: 0,
+    contextLeft: 0,
+    cellCopyValue: '',
     dimensions: {
       width: -1,
       height: -1,
@@ -336,8 +390,31 @@ class QueryResultDataTable extends React.PureComponent<
     this.setState({ dimensions: contentRect.bounds });
   };
 
+  handleContextMenu = (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    // target needs casting as no way of knowing what it is
+    const target = event.target as HTMLDivElement;
+
+    const cellCopyValue = target.innerText || '';
+
+    this.setState({
+      cellCopyValue,
+      contextTop: event.clientY,
+      contextLeft: event.clientX,
+    });
+
+    if (cellCopyValue) {
+      const el = document.getElementById('cell-value-context-menu');
+      const clickEvent = document.createEvent('MouseEvents');
+      clickEvent.initEvent('mousedown', true, true);
+      el?.dispatchEvent(clickEvent);
+    }
+  };
+
   render() {
     const { columns, rows } = this.props;
+    const { cellCopyValue, contextLeft, contextTop } = this.state;
     const { height, width } = this.state.dimensions;
 
     if (rows && columns) {
@@ -348,7 +425,14 @@ class QueryResultDataTable extends React.PureComponent<
       return (
         <Measure bounds onResize={this.handleContainerResize}>
           {({ measureRef }) => (
-            <div ref={measureRef} className="h-100 w-100">
+            <div
+              ref={measureRef}
+              onContextMenu={this.handleContextMenu}
+              className="h-100 w-100"
+              style={{
+                position: 'absolute',
+              }}
+            >
               {/* 
                 Visual hack - On Windows, scrollbar always showing in grid takes up some amount of room on side of content.
                 To account for this, the header width is reduced by scrollbar width.
@@ -365,6 +449,10 @@ class QueryResultDataTable extends React.PureComponent<
                   height: 30,
                 }}
               />
+
+              {/* Input fields for copy-paste value sourcing */}
+              <OffScreenInput id="cell-copy-value" value={cellCopyValue} />
+
               <VariableSizeGrid
                 columnCount={columnCount}
                 rowCount={1}
@@ -390,6 +478,31 @@ class QueryResultDataTable extends React.PureComponent<
               >
                 {this.Cell}
               </VariableSizeGrid>
+
+              {/* 
+                This menu is hidden and moves around based on where context-menu click happens 
+                This is hacky but works! reach-ui does not expose the menu components 
+                in a way that allows them to be used for context menu
+              */}
+              <Menu>
+                <MenuButton
+                  id="cell-value-context-menu"
+                  style={{
+                    visibility: 'hidden',
+                    position: 'fixed',
+                    height: 1,
+                    left: contextLeft,
+                    top: contextTop,
+                  }}
+                >
+                  Hidden context menu
+                </MenuButton>
+                <MenuPopover style={{ zIndex: 999999 }}>
+                  <MenuItems>
+                    <CopyMenuItem id="#cell-copy-value" value={cellCopyValue} />
+                  </MenuItems>
+                </MenuPopover>
+              </Menu>
             </div>
           )}
         </Measure>
