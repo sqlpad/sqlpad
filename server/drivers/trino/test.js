@@ -8,9 +8,9 @@ const connection = {
   host: 'localhost',
   port: '8080',
   username: 'sqlpad',
-  prestoCatalog: 'memory',
+  catalog: 'memory',
   // will be set after schema is created
-  prestoSchema: null,
+  schema: null,
 };
 
 const schemaSql = 'CREATE SCHEMA test';
@@ -32,8 +32,8 @@ describe('drivers/trino', function () {
     return trino
       .runQuery(schemaSql, connection)
       .then(() => {
-        // prestoSchema needs to be set or otherwise always specified
-        connection.prestoSchema = 'test';
+        // schema needs to be set or otherwise always specified
+        connection.schema = 'test';
         return trino.runQuery(tableSql, connection);
       })
       .then(() => {
