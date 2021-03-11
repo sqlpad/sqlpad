@@ -9,6 +9,24 @@ const sanitize = require('sanitize-filename');
 
 const FORMATS = ['csv', 'json', 'xlsx'];
 
+const renderValue = (input, column) => {
+  if (input === null || input === undefined) {
+    return null;
+  } else if (input === true || input === false) {
+    return input;
+  } else if (column.datatype === 'datetime' && typeof input === 'string') {
+    // Remove the letters from ISO string and present as is
+    return input.replace('T', ' ').replace('Z', '');
+  } else if (column.datatype === 'date' && typeof input === 'string') {
+    // Formats ISO string to YYYY-MM-DD
+    return input.substring(0, 10);
+  } else if (typeof input === 'object') {
+    return JSON.stringify(input, null, 2);
+  } else {
+    return input;
+  }
+};
+
 /**
  * NOTE: This is not an `/api/` route, so the responses here are not JSON
  *
@@ -57,9 +75,23 @@ async function handleDownload(req, res) {
     'attachment; filename="' + filename + '"'
   );
 
+  // Convert row data to formats for exports
+  // Currently this JSON stringifies objects and arrays,
+  // and strips the T and Z from JSON stringified date strings
+  // TODO - for xlsx export, we should see if possible to get values formatted correctly in file
+  // For example, sending a date object doesn't make it a date cell
+  // Unsure if node-xlsx (https://www.npmjs.com/package/node-xlsx) supports this.
+  // May need to use xlsx package directly (https://www.npmjs.com/package/xlsx)
+  const rowsForExport = rows.map((row) => {
+    const convertedRow = statement.columns.map((col, index) =>
+      renderValue(row[index], col)
+    );
+    return convertedRow;
+  });
+
   if (format === 'csv') {
     res.setHeader('Content-Type', 'text/csv');
-    const csvData = papa.unparse([columnNames].concat(rows));
+    const csvData = papa.unparse([columnNames].concat(rowsForExport));
     return res.send(csvData);
   }
 
@@ -69,7 +101,7 @@ async function handleDownload(req, res) {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     );
     const xlsxBuffer = xlsx.build([
-      { name: 'query-results', data: [columnNames].concat(rows) },
+      { name: 'query-results', data: [columnNames].concat(rowsForExport) },
     ]);
     return res.send(xlsxBuffer);
   }
