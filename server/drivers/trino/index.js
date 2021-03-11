@@ -34,13 +34,13 @@ function runQuery(query, connection) {
   let incomplete = false;
   const rows = [];
   const port = connection.port || 8080;
-  const prestoConfig = {
+  const config = {
     url: `http://${connection.host}:${port}`,
     user: connection.username,
-    catalog: connection.prestoCatalog,
-    schema: connection.prestoSchema,
+    catalog: connection.catalog,
+    schema: connection.schema,
   };
-  return trino.send(prestoConfig, query).then((result) => {
+  return trino.send(config, query).then((result) => {
     if (!result) {
       throw new Error('No result returned');
     }
@@ -74,10 +74,7 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  const schemaSql = getTrinoSchemaSql(
-    connection.prestoCatalog,
-    connection.prestoSchema
-  );
+  const schemaSql = getTrinoSchemaSql(connection.catalog, connection.schema);
   return runQuery(schemaSql, connection).then((queryResult) =>
     formatSchemaQueryResults(queryResult)
   );
