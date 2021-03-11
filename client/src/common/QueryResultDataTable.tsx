@@ -73,7 +73,7 @@ function OffScreenInput({ id, value }: { id: string; value: string }) {
 function CopyMenuItem({ id, value }: { id: string; value: string }) {
   let displayValue = value;
   if (value.length > 30) {
-    displayValue = value.substring(0, 30) + '…';
+    displayValue = value.substring(0, 30).trim() + '…';
   }
 
   return (
