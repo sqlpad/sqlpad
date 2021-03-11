@@ -210,6 +210,18 @@ Redshift uses the Postgres driver, using a different query for pulling schema.
 | `sqlserverMultiSubnetFailover` | MultiSubnetFailover           |  boolean  |
 | `readOnlyIntent`               | ReadOnly Application Intent   |  boolean  |
 
+## Trino
+
+| key        | description            | data type |
+| ---------- | ---------------------- | :-------: |
+| `name`     | Name of connection     |   text    |
+| `driver`   | Must be `trino`        |   text    |
+| `host`     | Host/Server/IP Address |   text    |
+| `port`     | Port (optional)        |   text    |
+| `username` | Database Username      |   text    |
+| `catalog`  | Catalog                |   text    |
+| `schema`   | Schema                 |   text    |
+
 ## Vertica
 
 | key        | description            | data type |

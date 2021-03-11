@@ -17,6 +17,7 @@ const drivers = {
   snowflake: require('./snowflake'),
   sqlite: require('./sqlite'),
   sqlserver: require('./sqlserver'),
+  trino: require('./trino'),
   vertica: require('./vertica'),
 };
 
