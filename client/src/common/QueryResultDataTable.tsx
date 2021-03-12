@@ -12,6 +12,7 @@ import Draggable from 'react-draggable';
 import Measure from 'react-measure';
 import { StatementColumn, StatementResults } from '../types';
 import styles from './QueryResultDataTable.module.css';
+import Modal from './Modal';
 
 // https://davidwalsh.name/detect-scrollbar-width
 const scrollbarWidth = () => {
@@ -129,8 +130,10 @@ interface QueryResultDataTableProps {
 }
 
 interface QueryResultDataTableState {
+  cellModalVisible: boolean;
   contextTop: number;
   contextLeft: number;
+  cellColumnName: string;
   cellCopyValue: string;
   dimensions: {
     width: number;
@@ -147,8 +150,10 @@ class QueryResultDataTable extends React.PureComponent<
   QueryResultDataTableState
 > {
   state: QueryResultDataTableState = {
+    cellModalVisible: false,
     contextTop: 0,
     contextLeft: 0,
+    cellColumnName: '',
     cellCopyValue: '',
     dimensions: {
       width: -1,
@@ -340,7 +345,12 @@ class QueryResultDataTable extends React.PureComponent<
     if (column) {
       const value = rows?.[rowIndex]?.[columnIndex];
       return (
-        <pre className={scrollboxClass} style={finalStyle}>
+        <pre
+          data-is-cell="true"
+          data-column-name={column.name}
+          className={scrollboxClass}
+          style={finalStyle}
+        >
           {renderValue(value, column)}
           <div className={faderClass}></div>
         </pre>
@@ -391,30 +401,49 @@ class QueryResultDataTable extends React.PureComponent<
   };
 
   handleContextMenu = (event: React.MouseEvent) => {
-    event.preventDefault();
-
     // target needs casting as no way of knowing what it is
     const target = event.target as HTMLDivElement;
 
     const cellCopyValue = target.innerText || '';
+    const isCell = target.getAttribute('data-is-cell');
+    const cellColumnName = target.getAttribute('data-column-name') || '';
 
-    this.setState({
-      cellCopyValue,
-      contextTop: event.clientY,
-      contextLeft: event.clientX,
-    });
+    if (isCell === 'true' && cellCopyValue) {
+      event.preventDefault();
 
-    if (cellCopyValue) {
-      const el = document.getElementById('cell-value-context-menu');
-      const clickEvent = document.createEvent('MouseEvents');
-      clickEvent.initEvent('mousedown', true, true);
-      el?.dispatchEvent(clickEvent);
+      this.setState({
+        cellColumnName,
+        cellCopyValue,
+        contextTop: event.clientY,
+        contextLeft: event.clientX,
+      });
+
+      if (cellCopyValue) {
+        const el = document.getElementById('cell-value-context-menu');
+        const clickEvent = document.createEvent('MouseEvents');
+        clickEvent.initEvent('mousedown', true, true);
+        el?.dispatchEvent(clickEvent);
+      }
     }
+  };
+
+  handleCellModalClose = () => {
+    this.setState({
+      cellModalVisible: false,
+      cellColumnName: '',
+      cellCopyValue: '',
+    });
   };
 
   render() {
     const { columns, rows } = this.props;
-    const { cellCopyValue, contextLeft, contextTop } = this.state;
+    const {
+      cellModalVisible,
+      cellColumnName,
+      cellCopyValue,
+      contextLeft,
+      contextTop,
+    } = this.state;
     const { height, width } = this.state.dimensions;
 
     if (rows && columns) {
@@ -500,9 +529,27 @@ class QueryResultDataTable extends React.PureComponent<
                 <MenuPopover style={{ zIndex: 999999 }}>
                   <MenuItems>
                     <CopyMenuItem id="#cell-copy-value" value={cellCopyValue} />
+                    <MenuItem
+                      onSelect={() => {
+                        this.setState({ cellModalVisible: true });
+                      }}
+                    >
+                      View expanded value
+                    </MenuItem>
                   </MenuItems>
                 </MenuPopover>
               </Menu>
+
+              <Modal
+                title={cellColumnName}
+                width="fit-content"
+                visible={cellModalVisible}
+                onClose={this.handleCellModalClose}
+              >
+                <pre style={{ fontSize: '14px', color: '#000' }}>
+                  {cellCopyValue}
+                </pre>
+              </Modal>
             </div>
           )}
         </Measure>
