@@ -1,5 +1,14 @@
 # Changelog
 
+## [6.4.0] - 2021-03-11
+
+- Add Trino support
+- Enhance OIDC authentication, supporting discover of endpoint URLs when only providing `SQLPAD_OIDC_ISSUER` endpoint.
+- Show connection name if user is editor role and only single connection exists.
+- Add context menu to query result cell allowing copy and expanded viewing of cell value.
+- Fix ClickHouse support for ClickHouse versions prior to 20.7
+- Fix object and date values in CSV and XLSX export
+
 ## [6.3.0] - 2021-03-08
 
 - Postgres: Add self-signed certificate support
