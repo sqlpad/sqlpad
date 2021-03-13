@@ -16,9 +16,12 @@
   background-color: rgba(0, 0, 0, 0.03);
 }
 
+.title {
+  margin-right: 32px;
+}
+
 .dialogBody {
   padding: 16px;
-  max-width: 80vw;
+  max-width: 90vw;
   overflow-x: auto;
-  margin-right: 32px;
 }
