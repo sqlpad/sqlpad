@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.4.1] - 2021-03-13
+
+- Fix modal/dialog style
+
 ## [6.4.0] - 2021-03-11
 
 - Add Trino support
