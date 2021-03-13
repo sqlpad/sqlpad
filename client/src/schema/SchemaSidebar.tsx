@@ -296,10 +296,10 @@ function SchemaSidebar() {
               id="context-menu"
               style={{
                 visibility: 'hidden',
-                position: 'absolute',
+                position: 'fixed',
                 height: 1,
                 left: contextLeft,
-                top: contextTop - 90,
+                top: contextTop,
               }}
             >
               Hidden context menu
