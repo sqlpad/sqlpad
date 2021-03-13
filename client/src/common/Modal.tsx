@@ -32,7 +32,7 @@ function Modal({
         initialFocusRef={initialFocusRef}
       >
         <div className={styles.titleWrapper}>
-          <span>{title}</span>
+          <span className={styles.title}>{title}</span>
           {onClose && (
             <IconButton onClick={onClose}>
               <CloseIcon />
