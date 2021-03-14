@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.4.2] - 2021-03-12
+
+- Fix chart download button
+
 ## [6.4.1] - 2021-03-13
 
 - Fix modal/dialog style
