@@ -4,18 +4,22 @@ import React from 'react';
 import IconButton from '../common/IconButton';
 import { exportPng } from '../common/tauChartRef';
 import {
+  useLastStatementId,
   useSessionQueryId,
   useSessionQueryName,
-  useSessionQueryResult,
+  useStatementStatus,
 } from '../stores/editor-store';
+import { api } from '../utilities/api';
 
 function QueryEditorChartToolbar({ children }: any) {
   const queryId = useSessionQueryId() || 'new';
   const queryName = useSessionQueryName() || 'New query';
-  const queryResult = useSessionQueryResult();
 
-  const downloadEnabled =
-    queryResult && queryResult.rows && queryResult.rows.length;
+  const statementId = useLastStatementId();
+  const status = useStatementStatus(statementId);
+  const { data } = api.useStatementResults(statementId, status);
+
+  const downloadEnabled = data && data.length;
 
   return (
     <div

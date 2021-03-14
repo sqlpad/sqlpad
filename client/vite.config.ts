@@ -31,6 +31,7 @@ proxy['^/.*/api/app'] = PROXY_URL;
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: '/sqlpad/',
   plugins: [reactRefresh()],
   server: {
     proxy,
