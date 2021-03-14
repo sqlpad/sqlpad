@@ -45,11 +45,12 @@ function SqlpadTauChart({
     let chart: any;
 
     if (!isRunning && !queryError && chartConfiguration && columns && rows) {
-      const queryResult = {
+      const dataRows = getObjectRows(columns, rows);
+      const chartConfig = getTauChartConfig(
+        chartConfiguration,
         columns,
-        rows: getObjectRows(columns, rows),
-      };
-      const chartConfig = getTauChartConfig(chartConfiguration, queryResult);
+        dataRows
+      );
       if (chartConfig) {
         chart = new Chart(chartConfig);
         chart.renderTo('#chart');
@@ -86,7 +87,6 @@ SqlpadTauChart.propTypes = {
   isRunning: PropTypes.bool,
   chartConfiguration: PropTypes.object,
   queryError: PropTypes.string,
-  queryResult: PropTypes.object,
 };
 
 export default SqlpadTauChart;

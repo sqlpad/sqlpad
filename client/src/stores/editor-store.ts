@@ -43,7 +43,6 @@ export interface EditorSession {
   selectedText: string;
   selectedStatementId: string;
   queryError?: any;
-  queryResult?: any;
   runQueryStartTime?: any;
   showValidation: boolean;
   unsavedChanges: boolean;
@@ -86,7 +85,6 @@ export const INITIAL_SESSION: EditorSession = {
   canWrite: true,
   canDelete: true,
   queryError: undefined,
-  queryResult: undefined,
   runQueryStartTime: undefined,
   selectedText: '',
   selectedStatementId: '',
@@ -212,10 +210,6 @@ export function useSessionChartType() {
 
 export function useSessionChartFields() {
   return useEditorStore((s) => s.getFocusedSession().chartFields);
-}
-
-export function useSessionQueryResult() {
-  return useEditorStore((s) => s.getFocusedSession().queryResult);
 }
 
 export function useSessionQueryError() {

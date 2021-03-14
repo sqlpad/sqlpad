@@ -368,7 +368,6 @@ export const loadQuery = async (queryId: string) => {
     selectedStatementId: '',
     isRunning: false,
     queryError: undefined,
-    queryResult: undefined,
     unsavedChanges: false,
   });
 
