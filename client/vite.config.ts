@@ -1,4 +1,3 @@
-import { defineConfig } from 'vite';
 import reactRefresh from '@vitejs/plugin-react-refresh';
 
 const sourcemap = process.env.SOURCEMAP === 'true';
@@ -30,14 +29,25 @@ PROXY_ROUTES.forEach((route) => {
 proxy['^/.*/api/app'] = PROXY_URL;
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  base: '/sqlpad/',
-  plugins: [reactRefresh()],
-  server: {
-    proxy,
-  },
-  build: {
-    outDir: 'build',
-    sourcemap,
-  },
-});
+const getConfig = ({ command, mode }) => {
+  let base = undefined;
+
+  // command is either build or serve
+  if (command === 'serve') {
+    base = '/sqlpad/';
+  }
+
+  return {
+    base,
+    plugins: [reactRefresh()],
+    server: {
+      proxy,
+    },
+    build: {
+      outDir: 'build',
+      sourcemap,
+    },
+  };
+};
+
+export default getConfig;
