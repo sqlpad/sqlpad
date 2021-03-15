@@ -1,8 +1,6 @@
-import { defineConfig } from 'vite';
 import reactRefresh from '@vitejs/plugin-react-refresh';
 
 const sourcemap = process.env.SOURCEMAP === 'true';
-const isProduction = process.env.NODE_ENV === 'production';
 
 // For each route prefix below, add proxy entry to http://localhost:3010
 // Add another set with '/sqlpad' prefix, as that base url is used during dev/testing
@@ -31,14 +29,25 @@ PROXY_ROUTES.forEach((route) => {
 proxy['^/.*/api/app'] = PROXY_URL;
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  base: isProduction ? undefined : '/sqlpad/',
-  plugins: [reactRefresh()],
-  server: {
-    proxy,
-  },
-  build: {
-    outDir: 'build',
-    sourcemap,
-  },
-});
+const getConfig = ({ command, mode }) => {
+  let base = undefined;
+
+  // command is either build or serve
+  if (command === 'serve') {
+    base = '/sqlpad/';
+  }
+
+  return {
+    base,
+    plugins: [reactRefresh()],
+    server: {
+      proxy,
+    },
+    build: {
+      outDir: 'build',
+      sourcemap,
+    },
+  };
+};
+
+export default getConfig;
