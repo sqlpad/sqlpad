@@ -1,8 +1,13 @@
 # Changelog
 
-## [6.4.2] - 2021-03-12
+## [6.4.3] - 2021-03-14
 
 - Fix chart download button
+- Fix 6.4.2 build
+
+## [6.4.2] - 2021-03-12
+
+**BROKEN** - UI development config included in production build, breaking UI.
 
 ## [6.4.1] - 2021-03-13
 
