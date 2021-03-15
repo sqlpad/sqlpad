@@ -1,4 +1,5 @@
 const sqlLimiter = require('sql-limiter');
+const _ = require('lodash');
 const ensureJson = require('./ensure-json');
 
 class Batches {
@@ -39,6 +40,37 @@ class Batches {
     });
     items = items.map((item) => item.toJSON());
     return items;
+  }
+
+  /**
+   * Get all batches and more for user and query id
+   * @param {object} user
+   * @param {string} [queryId]
+   * @param {boolean} [includeStatements]
+   */
+  async findAllForUserQuery(user, queryId = null, includeStatements = false) {
+    let batches = await this.sequelizeDb.Batches.findAll({
+      where: { userId: user.id, queryId },
+    });
+    batches = batches.map((item) => item.toJSON());
+
+    if (includeStatements) {
+      const batchIds = batches.map((batch) => batch.id);
+      let statements = await this.sequelizeDb.Statements.findAll({
+        where: { batchId: batchIds },
+      });
+      statements = statements.map((statement) => statement.toJSON());
+      const statementsByBatchId = _.groupBy(statements, 'batchId');
+      batches.forEach((batch) => {
+        batch.statements = statementsByBatchId[batch.id];
+      });
+    }
+
+    // TODO: it'd be nice if there was a small set of statement results to return here for query execution history
+    // Unsure how best to implement at this time.
+    // Would additional reads work here or should small result preview be stored on statements table?
+
+    return batches;
   }
 
   /**
