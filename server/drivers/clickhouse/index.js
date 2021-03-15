@@ -70,7 +70,7 @@ async function runQuery(query, connection) {
     },
   });
 
-  rows = await clickhouse.query(limitedQuery).toPromise();
+  rows = await clickhouse.query(limitedQuery + ' FORMAT JSON').toPromise();
   if (rows.length > maxRows) {
     incomplete = true;
     rows = rows.slice(0, maxRows);
