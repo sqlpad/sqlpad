@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import reactRefresh from '@vitejs/plugin-react-refresh';
 
 const sourcemap = process.env.SOURCEMAP === 'true';
+const isProduction = process.env.NODE_ENV === 'production';
 
 // For each route prefix below, add proxy entry to http://localhost:3010
 // Add another set with '/sqlpad' prefix, as that base url is used during dev/testing
@@ -31,7 +32,7 @@ proxy['^/.*/api/app'] = PROXY_URL;
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/sqlpad/',
+  base: isProduction ? undefined : '/sqlpad/',
   plugins: [reactRefresh()],
   server: {
     proxy,

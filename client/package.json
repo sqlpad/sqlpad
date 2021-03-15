@@ -54,8 +54,8 @@
   },
   "scripts": {
     "analyze": "cross-env SOURCEMAP=true npm run build && source-map-explorer \"build/assets/*.js\" --html bundle-analysis-result.html",
-    "build": "tsc && vite build",
-    "start": "vite",
+    "build": "cross-env NODE_ENV=production tsc && vite build",
+    "start": "cross-env NODE_ENV=development vite",
     "fixlint": "eslint --fix \"**/*.{js,jsx,ts,tsx}\"",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
     "dev": "vite",
