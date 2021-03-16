@@ -129,6 +129,12 @@ export const api = {
     return useSWR<Batch>(`/api/batches/${batchId}`);
   },
 
+  useQueryBatchHistory(queryId: string) {
+    return useSWR<Batch[]>(
+      `/api/batches?queryId=${queryId}&includeStatements=true`
+    );
+  },
+
   getStatementResults(statementId: string) {
     return this.get<StatementResults>(`/api/statements/${statementId}/results`);
   },
