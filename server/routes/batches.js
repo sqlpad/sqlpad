@@ -1,4 +1,5 @@
 require('../typedefs');
+const moment = require('moment');
 const router = require('express').Router();
 const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
 const executeBatch = require('../lib/execute-batch');
@@ -86,6 +87,12 @@ async function list(req, res) {
   } else {
     batches = await models.batches.findAllForUser(user);
   }
+
+  batches.forEach((batch) => {
+    batch.startTimeCalendar = moment(batch.startTime).calendar();
+    batch.stopTimeCalendar = moment(batch.stopTime).calendar();
+    batch.createdAtCalendar = moment(batch.createdAt).calendar();
+  });
 
   return res.utils.data(batches);
 }

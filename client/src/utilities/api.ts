@@ -5,6 +5,7 @@ import message from '../common/message';
 import {
   AppInfo,
   Batch,
+  BatchHistoryItem,
   Connection,
   ConnectionAccess,
   ConnectionDetail,
@@ -130,7 +131,7 @@ export const api = {
   },
 
   useQueryBatchHistory(queryId: string) {
-    return useSWR<Batch[]>(
+    return useSWR<BatchHistoryItem[]>(
       `/api/batches?queryId=${queryId}&includeStatements=true`
     );
   },
