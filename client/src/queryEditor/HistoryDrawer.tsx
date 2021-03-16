@@ -10,6 +10,8 @@ import { api } from '../utilities/api';
 import theme from 'prism-react-renderer/themes/vsLight';
 import { useSessionQueryId, useSessionQueryName } from '../stores/editor-store';
 import styles from './StatementsTable.module.css';
+import Button from '../common/Button';
+import { setEditorBatchHistoryItem } from '../stores/editor-actions';
 
 type Props = {
   visible?: boolean;
@@ -62,6 +64,7 @@ function HistoryDrawer({ onClose, visible }: Props) {
                 padding: 8,
                 marginTop: 16,
                 marginBottom: 16,
+                position: 'relative',
               }}
             >
               <h2 style={{ fontSize: '1rem' }}>{batch.createdAtCalendar}</h2>
@@ -69,6 +72,15 @@ function HistoryDrawer({ onClose, visible }: Props) {
                 {capitalize(batch.status)} in{' '}
                 {humanizeDuration(batch.durationMs)}
               </div>
+              <Button
+                style={{ position: 'absolute', top: 8, right: 8 }}
+                onClick={() => {
+                  setEditorBatchHistoryItem(batch);
+                  handleClose();
+                }}
+              >
+                Open in editor
+              </Button>
               <Highlight
                 {...defaultProps}
                 theme={theme}
@@ -125,7 +137,7 @@ function HistoryDrawer({ onClose, visible }: Props) {
                     <thead>
                       <tr>
                         {(statement?.columns || []).map((column) => (
-                          <th>{column.name}</th>
+                          <th key={column.name}>{column.name}</th>
                         ))}
                       </tr>
                       <tr>
