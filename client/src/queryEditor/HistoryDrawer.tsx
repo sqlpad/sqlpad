@@ -86,7 +86,8 @@ function HistoryDrawer({ onClose, visible }: Props) {
                 </pre>
               )}
             </Highlight>
-            {!batch.statements && batch.status === 'finished' ? (
+            {!batch.statements &&
+            (batch.status === 'finished' || batch.status === 'error') ? (
               <div className="sp-info" style={{ fontSize: '1rem' }}>
                 Query results purged from storage
               </div>
