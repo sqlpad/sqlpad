@@ -71,6 +71,9 @@ class Batches {
       const statementsByBatchId = _.groupBy(statements, 'batchId');
       batches.forEach((batch) => {
         batch.statements = statementsByBatchId[batch.id];
+        if (batch.statements) {
+          _.sortBy(batch.statements, ['sequence']);
+        }
       });
     }
 
