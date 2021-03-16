@@ -47,10 +47,18 @@ class Batches {
    * @param {object} user
    * @param {string} [queryId]
    * @param {boolean} [includeStatements]
+   * @param {number} [limit]
    */
-  async findAllForUserQuery(user, queryId = null, includeStatements = false) {
+  async findAllForUserQuery(
+    user,
+    queryId = null,
+    includeStatements = false,
+    limit = 40
+  ) {
     let batches = await this.sequelizeDb.Batches.findAll({
       where: { userId: user.id, queryId },
+      limit,
+      order: [['createdAt', 'DESC']],
     });
     batches = batches.map((item) => item.toJSON());
 
@@ -66,9 +74,8 @@ class Batches {
       });
     }
 
-    // TODO: it'd be nice if there was a small set of statement results to return here for query execution history
-    // Unsure how best to implement at this time.
-    // Would additional reads work here or should small result preview be stored on statements table?
+    // Results are in desc order, but we'll return them in ascending
+    batches = _.sortBy(batches, ['createdAt']);
 
     return batches;
   }
