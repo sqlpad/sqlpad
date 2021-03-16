@@ -9,7 +9,7 @@ function ToolbarHistoryButton() {
   return (
     <>
       <IconButton
-        tooltip="Configure visualization"
+        tooltip="View query run history"
         onClick={() => setShow(true)}
       >
         <HistoryIcon />
