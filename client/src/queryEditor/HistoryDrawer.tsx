@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
+import Highlight, { defaultProps } from 'prism-react-renderer';
 import Drawer from '../common/Drawer';
 import ErrorBlock from '../common/ErrorBlock';
 import InfoBlock from '../common/InfoBlock';
 import SpinKitCube from '../common/SpinKitCube';
 import { api } from '../utilities/api';
+import theme from 'prism-react-renderer/themes/vsLight';
 
 type Props = {
   visible?: boolean;
@@ -49,7 +51,24 @@ function HistoryDrawer({ onClose, visible }: Props) {
           <div key={batch.id}>
             <div>{batch.createdAt}</div>
             <div>{batch.status}</div>
-            <pre>{batch.batchText}</pre>
+            <Highlight
+              {...defaultProps}
+              theme={theme}
+              code={batch.batchText}
+              language="sql"
+            >
+              {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                <pre className={className} style={style}>
+                  {tokens.map((line, i) => (
+                    <div {...getLineProps({ line, key: i })}>
+                      {line.map((token, key) => (
+                        <span {...getTokenProps({ token, key })} />
+                      ))}
+                    </div>
+                  ))}
+                </pre>
+              )}
+            </Highlight>
             {(batch.statements || []).map((statement) => {
               return <div key={statement.id}>{statement.durationMs}</div>;
             })}

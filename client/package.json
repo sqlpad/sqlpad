@@ -32,6 +32,7 @@
     "mdi-react": "^7.4.0",
     "mitt": "^2.1.0",
     "parse-link-header": "^1.0.1",
+    "prism-react-renderer": "^1.2.0",
     "prop-types": "^15.7.2",
     "query-string": "^6.13.8",
     "react": "^17.0.1",
