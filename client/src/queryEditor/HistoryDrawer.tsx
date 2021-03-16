@@ -48,95 +48,107 @@ function HistoryDrawer({ onClose, visible }: Props) {
     if (queryBatches.length === 0) {
       content = (
         <div style={{ height: 150, width: '100%' }}>
-          <InfoBlock>No queries found</InfoBlock>
+          <InfoBlock>No run history found for this query.</InfoBlock>
         </div>
       );
-    }
-    content = queryBatches
-      .map((batch) => {
-        return (
-          <div
-            key={batch.id}
-            style={{
-              border: '1px solid #eee',
-              padding: 8,
-              marginTop: 16,
-              marginBottom: 16,
-            }}
-          >
-            <h2 style={{ fontSize: '1rem' }}>{batch.createdAtCalendar}</h2>
-            <div style={{ marginBottom: 16 }}>
-              {capitalize(batch.status)} in {humanizeDuration(batch.durationMs)}
-            </div>
-            <Highlight
-              {...defaultProps}
-              theme={theme}
-              code={batch.selectedText || batch.batchText}
-              language="sql"
+    } else {
+      content = queryBatches
+        .map((batch) => {
+          return (
+            <div
+              key={batch.id}
+              style={{
+                border: '1px solid #eee',
+                padding: 8,
+                marginTop: 16,
+                marginBottom: 16,
+              }}
             >
-              {({ className, style, tokens, getLineProps, getTokenProps }) => (
-                <pre className={className} style={style}>
-                  {tokens.map((line, i) => (
-                    <div {...getLineProps({ line, key: i })}>
-                      {line.map((token, key) => (
-                        <span {...getTokenProps({ token, key })} />
-                      ))}
-                    </div>
-                  ))}
-                </pre>
-              )}
-            </Highlight>
-            {!batch.statements &&
-            (batch.status === 'finished' || batch.status === 'error') ? (
-              <div className="sp-info" style={{ fontSize: '1rem' }}>
-                Query results purged from storage
+              <h2 style={{ fontSize: '1rem' }}>{batch.createdAtCalendar}</h2>
+              <div style={{ marginBottom: 16 }}>
+                {capitalize(batch.status)} in{' '}
+                {humanizeDuration(batch.durationMs)}
               </div>
-            ) : null}
-            {(batch.statements || []).map((statement) => {
-              if (statement.error) {
-                return (
-                  <div
-                    key={statement.id}
-                    className="sp-error"
-                    style={{ fontSize: '1rem' }}
-                  >
-                    {statement.error.title}
-                  </div>
-                );
-              }
+              <Highlight
+                {...defaultProps}
+                theme={theme}
+                code={batch.selectedText || batch.batchText}
+                language="sql"
+              >
+                {({
+                  className,
+                  style,
+                  tokens,
+                  getLineProps,
+                  getTokenProps,
+                }) => (
+                  <pre className={className} style={style}>
+                    {tokens.map((line, i) => (
+                      <div {...getLineProps({ line, key: i })}>
+                        {line.map((token, key) => (
+                          <span {...getTokenProps({ token, key })} />
+                        ))}
+                      </div>
+                    ))}
+                  </pre>
+                )}
+              </Highlight>
+              {!batch.statements &&
+              (batch.status === 'finished' || batch.status === 'error') ? (
+                <div className="sp-info" style={{ fontSize: '1rem' }}>
+                  Query results purged from storage
+                </div>
+              ) : null}
+              {(batch.statements || []).map((statement) => {
+                if (statement.error) {
+                  return (
+                    <div
+                      key={statement.id}
+                      className="sp-error"
+                      style={{ fontSize: '1rem' }}
+                    >
+                      {statement.error.title}
+                    </div>
+                  );
+                }
 
-              return (
-                <table
-                  key={statement.id}
-                  className={styles.table}
-                  style={{ border: 'var(--border)' }}
-                >
-                  <thead>
-                    <tr>
-                      {(statement?.columns || []).map((column) => (
-                        <th>{column.name}</th>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td
-                        style={{ textAlign: 'center' }}
-                        colSpan={(statement?.columns || []).length}
-                      >
-                        <em>
-                          {statement.rowCount}{' '}
-                          {statement.rowCount === 1 ? 'row' : 'rows'}
-                          {statement.incomplete ? '(incomplete)' : ''}
-                        </em>
-                      </td>
-                    </tr>
-                  </thead>
-                </table>
-              );
-            })}
-          </div>
-        );
-      })
-      .concat([<div key="bottom" ref={bottomEl} />]);
+                if (statement.status !== 'finished') {
+                  return null;
+                }
+
+                return (
+                  <table
+                    key={statement.id}
+                    className={styles.table}
+                    style={{ border: 'var(--border)', marginTop: 8 }}
+                  >
+                    <thead>
+                      <tr>
+                        {(statement?.columns || []).map((column) => (
+                          <th>{column.name}</th>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td
+                          style={{ textAlign: 'center' }}
+                          colSpan={(statement?.columns || []).length}
+                        >
+                          <em>
+                            {statement.rowCount}{' '}
+                            {statement.rowCount === 1 ? 'row' : 'rows'}
+                            {statement.incomplete ? '(incomplete)' : ''}
+                          </em>
+                        </td>
+                      </tr>
+                    </thead>
+                  </table>
+                );
+              })}
+            </div>
+          );
+        })
+        .concat([<div key="bottom" ref={bottomEl} />]);
+    }
   }
 
   const batchLength = queryBatches ? queryBatches.length : 0;
