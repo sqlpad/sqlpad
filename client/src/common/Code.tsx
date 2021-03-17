@@ -6,7 +6,7 @@ export interface Props extends React.HTMLAttributes<HTMLElement> {
 }
 
 const Code = ({ children, className, type, ...rest }: Props) => {
-  const cs = [];
+  const cs = [styles.code];
 
   if (className) {
     cs.push(className);
@@ -17,7 +17,7 @@ const Code = ({ children, className, type, ...rest }: Props) => {
   }
 
   return (
-    <pre>
+    <pre className={styles.pre}>
       <code className={cs.join(' ')} {...rest}>
         {children}
       </code>

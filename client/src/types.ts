@@ -76,6 +76,12 @@ export interface Batch {
   updatedAt: string | Date;
 }
 
+export interface BatchHistoryItem extends Batch {
+  startTimeCalendar: string | Date;
+  stopTimeCalendar: string | Date;
+  createdAtCalendar: string | Date;
+}
+
 export type ConnectionFields = Record<string, any>;
 
 export interface ConnectionDetail extends ConnectionFields {

@@ -5,6 +5,7 @@ import {
   ACLRecord,
   AppInfo,
   Batch,
+  BatchHistoryItem,
   ChartFields,
   Connection,
   ConnectionClient,
@@ -461,6 +462,35 @@ export const runQuery = async () => {
   setSession(focusedSessionId, {
     isRunning: false,
   });
+};
+
+export const setEditorBatchHistoryItem = async (
+  batchHistoryItem: BatchHistoryItem
+) => {
+  const { focusedSessionId } = getState();
+
+  // Statements might not exist if query result data is purged
+  // In that case, just restore the SQL and chart config and similar
+  // clear out batchId/selectedStatementId
+  const hasStatements = batchHistoryItem.statements;
+
+  setSession(focusedSessionId, {
+    queryName: batchHistoryItem.name,
+    queryText: batchHistoryItem.batchText,
+    chartType: batchHistoryItem.chart?.chartType,
+    chartFields: batchHistoryItem.chart?.fields,
+    connectionId: batchHistoryItem.connectionId,
+    connectionClient: undefined,
+    selectedText: '',
+    batchId: hasStatements ? batchHistoryItem.id : undefined,
+    selectedStatementId: undefined,
+    isRunning: false,
+    runQueryStartTime: batchHistoryItem.startTime,
+  });
+
+  if (hasStatements) {
+    setBatch(focusedSessionId, batchHistoryItem.id, batchHistoryItem);
+  }
 };
 
 export const saveQuery = async (additionalUpdates?: Partial<EditorSession>) => {

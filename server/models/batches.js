@@ -1,4 +1,5 @@
 const sqlLimiter = require('sql-limiter');
+const _ = require('lodash');
 const ensureJson = require('./ensure-json');
 
 class Batches {
@@ -39,6 +40,47 @@ class Batches {
     });
     items = items.map((item) => item.toJSON());
     return items;
+  }
+
+  /**
+   * Get all batches and more for user and query id
+   * @param {object} user
+   * @param {string} [queryId]
+   * @param {boolean} [includeStatements]
+   * @param {number} [limit]
+   */
+  async findAllForUserQuery(
+    user,
+    queryId = null,
+    includeStatements = false,
+    limit = 40
+  ) {
+    let batches = await this.sequelizeDb.Batches.findAll({
+      where: { userId: user.id, queryId },
+      limit,
+      order: [['createdAt', 'DESC']],
+    });
+    batches = batches.map((item) => item.toJSON());
+
+    if (includeStatements) {
+      const batchIds = batches.map((batch) => batch.id);
+      let statements = await this.sequelizeDb.Statements.findAll({
+        where: { batchId: batchIds },
+      });
+      statements = statements.map((statement) => statement.toJSON());
+      const statementsByBatchId = _.groupBy(statements, 'batchId');
+      batches.forEach((batch) => {
+        batch.statements = statementsByBatchId[batch.id];
+        if (batch.statements) {
+          _.sortBy(batch.statements, ['sequence']);
+        }
+      });
+    }
+
+    // Results are in desc order, but we'll return them in ascending
+    batches = _.sortBy(batches, ['createdAt']);
+
+    return batches;
   }
 
   /**

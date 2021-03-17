@@ -24,6 +24,7 @@ describe('api/batches', function () {
   let query;
   let connection;
   let batch;
+  let batchWithoutQueryId;
   let statement1;
   let statement2;
 
@@ -70,6 +71,51 @@ describe('api/batches', function () {
     assert(batch.id);
     assert.equal(batch.statements.length, 2);
     assert.equal(batch.status, 'started');
+  });
+
+  it('creates batch without query id', async function () {
+    batchWithoutQueryId = await utils.post('admin', `/api/batches`, {
+      connectionId: connection.id,
+      batchText: queryText,
+      selectedText: queryText,
+    });
+    assert(batchWithoutQueryId.id);
+  });
+
+  it('gets list for query id including statements', async function () {
+    const batches = await utils.get(
+      'admin',
+      `/api/batches?queryId=${query.id}&includeStatements=true`
+    );
+    const foundBatch = batches.find((b) => b.id === batch.id);
+    assert.strictEqual(foundBatch.statements.length, 2);
+  });
+
+  it('gets list for query id without statements', async function () {
+    const batches = await utils.get(
+      'admin',
+      `/api/batches?queryId=${query.id}&includeStatements=false`
+    );
+    const foundBatch = batches.find((b) => b.id === batch.id);
+    assert(!foundBatch.statements);
+  });
+
+  it('gets list for no queryId including statements', async function () {
+    const batches = await utils.get(
+      'admin',
+      `/api/batches?queryId=null&includeStatements=true`
+    );
+    const foundBatch = batches.find((b) => b.id === batchWithoutQueryId.id);
+    assert.strictEqual(foundBatch.statements.length, 2);
+  });
+
+  it('gets list for no query id without statements', async function () {
+    const batches = await utils.get(
+      'admin',
+      `/api/batches?queryId=null&includeStatements=false`
+    );
+    const foundBatch = batches.find((b) => b.id === batchWithoutQueryId.id);
+    assert(!foundBatch.statements);
   });
 
   it('GETs finished result', async function () {
@@ -177,7 +223,7 @@ describe('api/batches', function () {
 
   it('Only batch creator can view batch', async function () {
     const adminBatches = await utils.get('admin', `/api/batches`);
-    assert.equal(adminBatches.length, 1);
+    assert.equal(adminBatches.length, 2);
     const editorBatches = await utils.get('editor', `/api/batches`);
     assert.equal(editorBatches.length, 0);
     await utils.get('editor', `/api/batches/${batch.id}`, 403);

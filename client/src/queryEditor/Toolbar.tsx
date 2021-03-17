@@ -2,6 +2,7 @@ import React from 'react';
 import ConnectionDropDown from './ConnectionDropdown';
 import ToolbarChartButton from './ToolbarChartButton';
 import ToolbarConnectionClientButton from './ToolbarConnectionClientButton';
+import ToolbarHistoryButton from './ToolbarHistoryButton';
 import ToolbarQueryName from './ToolbarQueryName';
 import ToolbarRunButton from './ToolbarRunButton';
 import ToolbarSpacer from './ToolbarSpacer';
@@ -27,6 +28,7 @@ function Toolbar() {
         <ToolbarSpacer grow />
         <ToolbarRunButton />
         <ToolbarSpacer />
+        <ToolbarHistoryButton />
         <ToolbarChartButton />
       </div>
     </div>

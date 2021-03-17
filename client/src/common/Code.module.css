@@ -1,4 +1,4 @@
-pre {
+.pre {
   font-family: 'Courier 10 Pitch', Courier, monospace;
   font-size: 95%;
   line-height: 140%;
@@ -6,7 +6,7 @@ pre {
   word-wrap: break-word;
 }
 
-code {
+.code {
   font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
   font-size: 95%;
   line-height: 140%;

@@ -139,6 +139,28 @@ input {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
+.sp-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+
+  font-size: 1.3rem;
+  padding: 16px;
+  text-align: center;
+  color: hsl(323, 100%, 42%);
+}
+
+.sp-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.3rem;
+  padding: 16px;
+  text-align: center;
+}
+
 /* Might be trying out more of just plain css, less of css.modules */
 .sp-error-block {
   height: 100%;
@@ -163,7 +185,7 @@ input {
   align-items: center;
 
   font-size: 1.3rem;
-  padding: 24px;
+  padding: 16px;
   text-align: center;
 }
 
