@@ -1,17 +1,17 @@
-import React, { useEffect, useRef } from 'react';
-import Highlight, { defaultProps } from 'prism-react-renderer';
 import humanizeDuration from 'humanize-duration';
 import capitalize from 'lodash/capitalize';
+import Highlight, { defaultProps } from 'prism-react-renderer';
+import theme from 'prism-react-renderer/themes/vsLight';
+import React, { useEffect, useRef } from 'react';
+import Button from '../common/Button';
 import Drawer from '../common/Drawer';
 import ErrorBlock from '../common/ErrorBlock';
 import InfoBlock from '../common/InfoBlock';
 import SpinKitCube from '../common/SpinKitCube';
-import { api } from '../utilities/api';
-import theme from 'prism-react-renderer/themes/vsLight';
-import { useSessionQueryId, useSessionQueryName } from '../stores/editor-store';
-import styles from './StatementsTable.module.css';
-import Button from '../common/Button';
 import { setEditorBatchHistoryItem } from '../stores/editor-actions';
+import { useSessionQueryId, useSessionQueryName } from '../stores/editor-store';
+import { api } from '../utilities/api';
+import styles from './StatementsTable.module.css';
 
 type Props = {
   visible?: boolean;
@@ -25,16 +25,22 @@ function HistoryDrawer({ onClose, visible }: Props) {
   const queryId = useSessionQueryId() || 'null';
   const queryName = useSessionQueryName() || 'unsaved queries';
 
-  let {
+  const {
     data: queryBatches,
     error: queryBatchHistoryError,
   } = api.useQueryBatchHistory(queryId);
 
   const fetching = !queryBatches;
 
-  function handleClose() {
-    onClose();
-  }
+  const batchLength = queryBatches ? queryBatches.length : 0;
+  useEffect(() => {
+    if (visible && batchLength > 0) {
+      // Without setTimeout this fires too soon? This is sort of hacky and could be fragile
+      setTimeout(() => {
+        bottomEl && bottomEl.current && bottomEl.current.scrollIntoView(false);
+      }, 50);
+    }
+  }, [batchLength, visible]);
 
   let content = null;
 
@@ -60,7 +66,7 @@ function HistoryDrawer({ onClose, visible }: Props) {
             <div
               key={batch.id}
               style={{
-                border: '1px solid #eee',
+                border: 'var(--border)',
                 padding: 8,
                 marginTop: 16,
                 marginBottom: 16,
@@ -76,7 +82,7 @@ function HistoryDrawer({ onClose, visible }: Props) {
                 style={{ position: 'absolute', top: 8, right: 8 }}
                 onClick={() => {
                   setEditorBatchHistoryItem(batch);
-                  handleClose();
+                  onClose();
                 }}
               >
                 Open in editor
@@ -163,19 +169,12 @@ function HistoryDrawer({ onClose, visible }: Props) {
     }
   }
 
-  const batchLength = queryBatches ? queryBatches.length : 0;
-  useEffect(() => {
-    if (visible && batchLength > 0) {
-      bottomEl && bottomEl.current && bottomEl.current.scrollIntoView(false);
-    }
-  }, [batchLength, visible]);
-
   return (
     <Drawer
       title={`Run history for ${queryName}`}
       visible={visible}
-      width={'80vw'}
-      onClose={handleClose}
+      width={'70vw'}
+      onClose={onClose}
       placement="right"
     >
       <div
