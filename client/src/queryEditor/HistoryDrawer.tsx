@@ -166,9 +166,7 @@ function HistoryDrawer({ onClose, visible }: Props) {
   const batchLength = queryBatches ? queryBatches.length : 0;
   useEffect(() => {
     if (visible && batchLength > 0) {
-      setTimeout(() => {
-        bottomEl && bottomEl.current && bottomEl.current.scrollIntoView(false);
-      });
+      bottomEl && bottomEl.current && bottomEl.current.scrollIntoView(false);
     }
   }, [batchLength, visible]);
 
