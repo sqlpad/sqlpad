@@ -85,7 +85,7 @@
     "pg": "^8.5.1",
     "pino": "^6.11.0",
     "prettier": "^2.2.1",
-    "query-string": "^6.13.8",
+    "query-string": "^7.0.0",
     "redis": "^3.0.2",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
