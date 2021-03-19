@@ -1,5 +1,10 @@
 # Changelog
 
+## [6.5.0] - 2021-03-18
+
+- Add query run history side drawer
+- Add support for ClickHouse `LIMIT <offset_number>,<limit_number>` syntax
+
 ## [6.4.3] - 2021-03-14
 
 - Fix chart download button
