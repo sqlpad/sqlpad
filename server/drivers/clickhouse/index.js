@@ -49,7 +49,7 @@ async function runQuery(query, connection) {
   // NOTE - sql limiter may need to support ClickHouse's "LIMIT <offset>,<limit>" syntax
   // If a SQLPad users use that syntax, the sql-limiter will use the offset integer as limit integer.
   // This could potentially produce unexpected results
-  const limitedQuery = sqlLimiter.limit(query, ['limit'], maxRowsPlusOne);
+  let limitedQuery = sqlLimiter.limit(query, ['limit'], maxRowsPlusOne);
 
   const port = connection.port || 8123;
   const protocol = connection.useHTTPS ? 'https' : 'http';
@@ -70,7 +70,21 @@ async function runQuery(query, connection) {
     },
   });
 
-  rows = await clickhouse.query(limitedQuery + ' FORMAT JSON').toPromise();
+  // clickhouse package will append ' FORMAT JSON' to certain queries,
+  // but does not handle CTEs WITH... SELECT.
+  // This borrows from approach used in package:
+  // https://github.com/TimonKK/clickhouse/blob/9dea3c0c3e4f3e2fe64e59dad762f1db044bf9bf/index.js#L479
+  // This is a bit naive but should cover most cases
+  if (
+    limitedQuery.trim().match(/^(with|select|show|exists)/i) &&
+    !limitedQuery
+      .trim()
+      .match(/FORMAT\s*(JSON|TabSeparatedWithNames|CSVWithNames)/im)
+  ) {
+    limitedQuery += ' FORMAT JSON';
+  }
+
+  rows = await clickhouse.query(limitedQuery).toPromise();
   if (rows.length > maxRows) {
     incomplete = true;
     rows = rows.slice(0, maxRows);
