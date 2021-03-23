@@ -1,15 +1,9 @@
-const { ClickHouse } = require('clickhouse');
-const sqlLimiter = require('sql-limiter');
-const { formatSchemaQueryResults } = require('../utils');
-
-// Important notes about clickhouse driver implementation:
-//
 // `clickhouse` package does not provide column information, and uses `request`
 // May need to move to `node-clickhouse` or other library down the road
 // https://clickhouse.tech/docs/en/interfaces/third-party/client-libraries/
-//
-// Row limiting is handled via sql-limiter. This works for `LIMIT <limit>` use,
-// but could produce unexpected queries if user uses Clickhouse's `LIMIT <offset>,<limit>` syntax
+const { ClickHouse } = require('clickhouse');
+const sqlLimiter = require('sql-limiter');
+const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'clickhouse';
 const name = 'ClickHouse';
@@ -46,9 +40,6 @@ async function runQuery(query, connection) {
   const maxRows = connection.maxRows || ONE_MILLION;
   const maxRowsPlusOne = maxRows + 1;
 
-  // NOTE - sql limiter may need to support ClickHouse's "LIMIT <offset>,<limit>" syntax
-  // If a SQLPad users use that syntax, the sql-limiter will use the offset integer as limit integer.
-  // This could potentially produce unexpected results
   let limitedQuery = sqlLimiter.limit(query, ['limit'], maxRowsPlusOne);
 
   const port = connection.port || 8123;
@@ -72,11 +63,13 @@ async function runQuery(query, connection) {
 
   // clickhouse package will append ' FORMAT JSON' to certain queries,
   // but does not handle CTEs WITH... SELECT.
-  // This borrows from approach used in package:
+  // This is a modified approach used in package:
   // https://github.com/TimonKK/clickhouse/blob/9dea3c0c3e4f3e2fe64e59dad762f1db044bf9bf/index.js#L479
-  // This is a bit naive but should cover most cases
+  // If a certain query type is detected and FORMAT JSON is not included, append it
+  // CTEs will be detected as following statement type (WITH cte AS (...) SELECT) will have type of "select"
+  const statementType = sqlLimiter.getStatementType(limitedQuery);
   if (
-    limitedQuery.trim().match(/^(with|select|show|exists)/i) &&
+    ['select', 'show', 'exists'].indexOf(statementType) > -1 &&
     !limitedQuery
       .trim()
       .match(/FORMAT\s*(JSON|TabSeparatedWithNames|CSVWithNames)/im)
