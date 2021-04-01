@@ -35,8 +35,9 @@ function runQuery(query, connection) {
   const rows = [];
   const port = connection.port || 8080;
   const prestoConfig = {
-    url: `http://${connection.host}:${port}`,
+    url: `${connection.host}:${port}`,
     user: connection.username,
+    password: connection.password,
     catalog: connection.prestoCatalog,
     schema: connection.prestoSchema,
   };
@@ -99,6 +100,11 @@ const fields = [
     key: 'username',
     formType: 'TEXT',
     label: 'Database Username',
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password',
   },
   {
     key: 'prestoCatalog',

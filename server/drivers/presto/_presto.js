@@ -10,7 +10,12 @@ function wait(ms) {
 
 // Get Presto headers from config
 function getHeaders(config) {
-  const headers = { 'X-Presto-User': config.user };
+  const headers = {
+    'X-Presto-User': config.user,
+    Authorization:
+      'Basic ' +
+      Buffer.from(`${config.user}:${config.password}`).toString('base64'),
+  };
   if (config.catalog) {
     headers['X-Presto-Catalog'] = config.catalog;
   }
