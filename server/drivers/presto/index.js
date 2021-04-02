@@ -35,8 +35,13 @@ function runQuery(query, connection) {
   const rows = [];
   const port = connection.port || 8080;
   const protocol = connection.useHTTPS ? 'https' : 'http';
+  const host = connection.host;
+  let url = `${connection.host}:${port}`;
+  if (!host.match(/^(http|https):\/\//i)) {
+    url = `${protocol}://${url}`;
+  }
   const prestoConfig = {
-    url: `${protocol}://${connection.host}:${port}`,
+    url,
     user: connection.username,
     password: connection.password,
     catalog: connection.prestoCatalog,
