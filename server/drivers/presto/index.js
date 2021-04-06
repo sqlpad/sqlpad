@@ -34,8 +34,13 @@ function runQuery(query, connection) {
   let incomplete = false;
   const rows = [];
   const port = connection.port || 8080;
+  const protocol = connection.useHTTPS ? 'https' : 'http';
+  let url = `${connection.host}:${port}`;
+  if (!url.match(/^(http|https):\/\//i)) {
+    url = `${protocol}://${url}`;
+  }
   const prestoConfig = {
-    url: `${connection.host}:${port}`,
+    url,
     user: connection.username,
     password: connection.password,
     catalog: connection.prestoCatalog,
@@ -115,6 +120,11 @@ const fields = [
     key: 'prestoSchema',
     formType: 'TEXT',
     label: 'Schema',
+  },
+  {
+    key: 'useHTTPS',
+    formType: 'CHECKBOX',
+    label: 'Use HTTPS',
   },
 ];
 
