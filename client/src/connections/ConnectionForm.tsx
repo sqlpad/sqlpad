@@ -115,11 +115,8 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
     }
 
     let json;
-    if (connectionEdits.id) {
-      json = await api.put(
-        `/api/connections/${connectionEdits.id}`,
-        connectionEdits
-      );
+    if (connectionId) {
+      json = await api.put(`/api/connections/${connectionId}`, connectionEdits);
     } else {
       json = await api.post('/api/connections', connectionEdits);
     }
