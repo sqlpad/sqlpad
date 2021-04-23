@@ -249,12 +249,21 @@ async function up(queryInterface, config, appLog) {
         users_email: {
           fields: ['email'],
         },
-        // This is problematic for mssql as password_reset_id is nullable
-        // This is removed and replaced with a filtered unique index on non-null values
-        // This needs to be commented out to allow migration check to pass for mssql
-        // users_password_reset_id: {
-        //   fields: ['password_reset_id'],
-        // },
+      },
+    }
+  );
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'users',
+    'users_password_reset_id',
+    ['password_reset_id'],
+    {
+      unique: true,
+      where: {
+        password_reset_id: {
+          [Sequelize.Op.ne]: null,
+        },
       },
     }
   );
