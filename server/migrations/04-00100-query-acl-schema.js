@@ -2,6 +2,13 @@ const Sequelize = require('sequelize');
 const migrationUtils = require('../lib/migration-utils');
 
 /**
+ * NOTE: This migration has been consolidated and altered since its original authoring
+ * These changes were made 04/22/2021, at which point SQLPad was version 6.6.0
+ * The contents of this migration as it is today create the end result as it would have been as of 5.0.0 release.
+ * For new installations, it effectively sets up what is needed by 5.0.0
+ * For existing installations, SQLPad is guaranteed to be at 5.0.0 or later,
+ * and since this migration name remains unchanged, it will not run.
+ *
  * @param {import('sequelize').QueryInterface} queryInterface
  * @param {import('../lib/config')} config
  * @param {import('../lib/logger')} appLog
@@ -46,9 +53,6 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
     updated_at: {
       type: Sequelize.DATE,
     },
-    user_email: {
-      type: Sequelize.STRING,
-    },
     group_id: {
       type: Sequelize.STRING,
     },
@@ -58,21 +62,6 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
     fields: ['query_id'],
     name: 'query_acl_query_id',
   });
-
-  await migrationUtils.addOrReplaceIndex(
-    queryInterface,
-    'query_acl',
-    'query_acl_user_email_query_id_key',
-    ['user_email', 'query_id'],
-    {
-      unique: true,
-      where: {
-        user_email: {
-          [Sequelize.Op.ne]: null,
-        },
-      },
-    }
-  );
 
   await migrationUtils.addOrReplaceIndex(
     queryInterface,
