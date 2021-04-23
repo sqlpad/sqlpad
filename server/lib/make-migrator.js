@@ -68,6 +68,7 @@ function makeMigrator(config, appLog, sequelizeInstance) {
       // 04-00200
       // ... all the way to
       // 05-00100
+      // 5.0.0 release specifically included up to 04-00900 migration
       //
       // v4 migrations = 04-00000 - 04-00199
       // 04-00100
