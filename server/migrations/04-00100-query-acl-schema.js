@@ -31,7 +31,7 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
     },
     user_id: {
       type: Sequelize.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     write: {
       type: Sequelize.BOOLEAN,
@@ -45,12 +45,37 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
     updated_at: {
       type: Sequelize.DATE,
     },
+    user_email: {
+      type: Sequelize.STRING,
+    },
+    group_id: {
+      type: Sequelize.STRING,
+    },
+  });
+
+  // Add unique constraint for (user_email, query_id) and (group_id, query_id)
+  await queryInterface.addConstraint('query_acl', {
+    type: 'unique',
+    name: 'query_acl_user_email_query_id_key',
+    fields: ['user_email', 'query_id'],
   });
 
   await queryInterface.addConstraint('query_acl', {
     type: 'unique',
-    name: 'query_acl_query_id_user_id_key',
-    fields: ['query_id', 'user_id'],
+    name: 'query_acl_group_id_query_id_key',
+    fields: ['group_id', 'query_id'],
+  });
+
+  // Swap unique constraint around for (query_id, user_id) for index strategy, then add query_id index
+  await queryInterface.addConstraint('query_acl', {
+    type: 'unique',
+    name: 'query_acl_user_id_query_id_key',
+    fields: ['user_id', 'query_id'],
+  });
+
+  await queryInterface.addIndex('query_acl', {
+    fields: ['query_id'],
+    name: 'query_acl_query_id',
   });
 }
 
