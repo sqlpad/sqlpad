@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const migrationUtils = require('../lib/migration-utils');
 
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
@@ -53,30 +54,55 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
     },
   });
 
-  // Add unique constraint for (user_email, query_id) and (group_id, query_id)
-  await queryInterface.addConstraint('query_acl', {
-    type: 'unique',
-    name: 'query_acl_user_email_query_id_key',
-    fields: ['user_email', 'query_id'],
-  });
-
-  await queryInterface.addConstraint('query_acl', {
-    type: 'unique',
-    name: 'query_acl_group_id_query_id_key',
-    fields: ['group_id', 'query_id'],
-  });
-
-  // Swap unique constraint around for (query_id, user_id) for index strategy, then add query_id index
-  await queryInterface.addConstraint('query_acl', {
-    type: 'unique',
-    name: 'query_acl_user_id_query_id_key',
-    fields: ['user_id', 'query_id'],
-  });
-
   await queryInterface.addIndex('query_acl', {
     fields: ['query_id'],
     name: 'query_acl_query_id',
   });
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'query_acl',
+    'query_acl_user_email_query_id_key',
+    ['user_email', 'query_id'],
+    {
+      unique: true,
+      where: {
+        user_email: {
+          [Sequelize.Op.ne]: null,
+        },
+      },
+    }
+  );
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'query_acl',
+    'query_acl_group_id_query_id_key',
+    ['group_id', 'query_id'],
+    {
+      unique: true,
+      where: {
+        group_id: {
+          [Sequelize.Op.ne]: null,
+        },
+      },
+    }
+  );
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'query_acl',
+    'query_acl_user_id_query_id_key',
+    ['user_id', 'query_id'],
+    {
+      unique: true,
+      where: {
+        user_id: {
+          [Sequelize.Op.ne]: null,
+        },
+      },
+    }
+  );
 }
 
 module.exports = {
