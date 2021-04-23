@@ -243,6 +243,9 @@ async function up(queryInterface, config, appLog) {
         type: Sequelize.DATE,
         allowNull: false,
       },
+      disabled: {
+        type: Sequelize.BOOLEAN,
+      },
     },
     {
       uniqueKeys: {
