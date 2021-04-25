@@ -46,15 +46,15 @@ async function runQuery(query, connection) {
   const protocol = connection.useHTTPS ? 'https' : 'http';
   const url = `${protocol}://${connection.host}`;
   const database = connection.database;
-  const basicAuth = {
-    username: connection.username || 'default',
-    password: connection.password || '',
-  };
+
+  const username = connection.username || 'default';
+  const password = connection.password || '';
 
   const clickhouse = new ClickHouse({
     url,
     port,
-    basicAuth,
+    username,
+    password,
     format: 'json',
     config: {
       database,
