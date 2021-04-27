@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
 
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
@@ -10,73 +9,9 @@ const { v4: uuidv4 } = require('uuid');
 // eslint-disable-next-line no-unused-vars
 async function up(queryInterface, config, appLog, sequelizeDb) {
   /**
-   * batches can now take the place of query_history,
-   * as it acts as a log of queries that have been run.
-   *
-   * Existing query_history records are inserted into batches.
-   * Then a view is created to translate batches and other tables
-   * into a wide table, used for reporting.
-   *
-   * The query_history table is then dropped,
-   * as it is no longer necessary.
+   * Creates a query history view off of batches and statements tables
    * ========================================================
    */
-
-  let rows = await sequelizeDb.query(
-    `
-      SELECT 
-        connection_id, 
-        user_id, 
-        start_time, 
-        stop_time,
-        query_run_time AS duration_ms,
-        query_id,
-        query_name AS name,
-        query_text AS batch_text,
-        created_at,
-        row_count,
-        incomplete
-      FROM 
-        query_history
-    `,
-    {
-      type: Sequelize.QueryTypes.SELECT,
-    }
-  );
-
-  const batchRows = [];
-  const statementRows = [];
-
-  rows.forEach((row) => {
-    const { incomplete, row_count, ...batch } = row;
-    const batchId = uuidv4();
-    batchRows.push({
-      ...batch,
-      id: batchId,
-      selected_text: row.batch_text,
-      status: 'finished',
-      updated_at: row.created_at,
-    });
-    statementRows.push({
-      id: uuidv4(),
-      sequence: 1,
-      batch_id: batchId,
-      statement_text: row.batch_text,
-      status: 'finished',
-      start_time: row.start_time,
-      stop_time: row.stop_time,
-      duration_ms: row.duration_ms,
-      incomplete,
-      row_count,
-      created_at: row.created_at,
-      updated_at: row.created_at,
-    });
-  });
-
-  if (batchRows.length) {
-    await queryInterface.bulkInsert('batches', batchRows);
-    await queryInterface.bulkInsert('statements', statementRows);
-  }
 
   let castType = 'INTEGER';
   if (config.get('backendDatabaseUri').startsWith('mysql')) {
@@ -121,8 +56,6 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
       type: Sequelize.QueryTypes.RAW,
     }
   );
-
-  await queryInterface.dropTable('query_history');
 }
 
 module.exports = {

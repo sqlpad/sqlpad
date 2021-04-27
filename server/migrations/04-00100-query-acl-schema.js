@@ -1,6 +1,14 @@
 const Sequelize = require('sequelize');
+const migrationUtils = require('../lib/migration-utils');
 
 /**
+ * NOTE: This migration has been consolidated and altered since its original authoring
+ * These changes were made 04/22/2021, at which point SQLPad was version 6.6.0
+ * The contents of this migration as it is today create the end result as it would have been as of 5.0.0 release.
+ * For new installations, it effectively sets up what is needed by 5.0.0
+ * For existing installations, SQLPad is guaranteed to be at 5.0.0 or later,
+ * and since this migration name remains unchanged, it will not run.
+ *
  * @param {import('sequelize').QueryInterface} queryInterface
  * @param {import('../lib/config')} config
  * @param {import('../lib/logger')} appLog
@@ -31,7 +39,7 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
     },
     user_id: {
       type: Sequelize.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     write: {
       type: Sequelize.BOOLEAN,
@@ -45,13 +53,45 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
     updated_at: {
       type: Sequelize.DATE,
     },
+    group_id: {
+      type: Sequelize.STRING,
+    },
   });
 
-  await queryInterface.addConstraint('query_acl', {
-    type: 'unique',
-    name: 'query_acl_query_id_user_id_key',
-    fields: ['query_id', 'user_id'],
+  await queryInterface.addIndex('query_acl', {
+    fields: ['query_id'],
+    name: 'query_acl_query_id',
   });
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'query_acl',
+    'query_acl_group_id_query_id_key',
+    ['group_id', 'query_id'],
+    {
+      unique: true,
+      where: {
+        group_id: {
+          [Sequelize.Op.ne]: null,
+        },
+      },
+    }
+  );
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'query_acl',
+    'query_acl_user_id_query_id_key',
+    ['user_id', 'query_id'],
+    {
+      unique: true,
+      where: {
+        user_id: {
+          [Sequelize.Op.ne]: null,
+        },
+      },
+    }
+  );
 }
 
 module.exports = {

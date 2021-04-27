@@ -202,84 +202,6 @@ async function up(queryInterface, config, appLog) {
   );
 
   /**
-   * QUERY HISTORY
-   * ========================================================
-   */
-  await queryInterface.createTable('query_history', {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    connection_id: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    connection_name: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    user_id: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    user_email: {
-      type: Sequelize.STRING,
-      allowNull: false,
-    },
-    start_time: {
-      type: Sequelize.DATE,
-    },
-    stop_time: {
-      type: Sequelize.DATE,
-    },
-    query_run_time: {
-      type: Sequelize.INTEGER,
-    },
-    query_id: {
-      type: Sequelize.STRING,
-    },
-    query_name: {
-      type: Sequelize.STRING,
-    },
-    query_text: {
-      type: Sequelize.TEXT,
-      allowNull: false,
-    },
-    incomplete: {
-      type: Sequelize.BOOLEAN,
-    },
-    row_count: {
-      type: Sequelize.INTEGER,
-    },
-    created_at: {
-      type: Sequelize.DATE,
-      allowNull: false,
-    },
-  });
-
-  await migrationUtils.addOrReplaceIndex(
-    queryInterface,
-    'query_history',
-    'query_history_connection_name',
-    ['connection_name']
-  );
-
-  await migrationUtils.addOrReplaceIndex(
-    queryInterface,
-    'query_history',
-    'query_history_user_email',
-    ['user_email']
-  );
-
-  await migrationUtils.addOrReplaceIndex(
-    queryInterface,
-    'query_history',
-    'query_history_created_at',
-    ['created_at']
-  );
-
-  /**
    * USERS
    * ========================================================
    */
@@ -321,18 +243,30 @@ async function up(queryInterface, config, appLog) {
         type: Sequelize.DATE,
         allowNull: false,
       },
+      disabled: {
+        type: Sequelize.BOOLEAN,
+      },
     },
     {
       uniqueKeys: {
         users_email: {
           fields: ['email'],
         },
-        // This is problematic for mssql as password_reset_id is nullable
-        // This is removed and replaced with a filtered unique index on non-null values
-        // This needs to be commented out to allow migration check to pass for mssql
-        // users_password_reset_id: {
-        //   fields: ['password_reset_id'],
-        // },
+      },
+    }
+  );
+
+  await migrationUtils.addOrReplaceIndex(
+    queryInterface,
+    'users',
+    'users_password_reset_id',
+    ['password_reset_id'],
+    {
+      unique: true,
+      where: {
+        password_reset_id: {
+          [Sequelize.Op.ne]: null,
+        },
       },
     }
   );
