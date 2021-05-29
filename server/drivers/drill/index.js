@@ -1,4 +1,4 @@
-const drill = require('./drill.js');
+const drill = require('./drill');
 const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
 

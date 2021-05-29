@@ -2,7 +2,7 @@ require('../typedefs');
 const papa = require('papaparse');
 const xlsx = require('node-xlsx');
 const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
+const mustBeAuthenticated = require('../middleware/must-be-authenticated');
 const wrap = require('../lib/wrap');
 const moment = require('moment');
 const sanitize = require('sanitize-filename');

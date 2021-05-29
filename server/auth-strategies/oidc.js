@@ -1,6 +1,6 @@
 const passport = require('passport');
 const appLog = require('../lib/app-log');
-const checkAllowedDomains = require('../lib/check-allowed-domains.js');
+const checkAllowedDomains = require('../lib/check-allowed-domains');
 const { Issuer, Strategy } = require('openid-client');
 
 async function openidClientHandler(req, tokenSet, userinfo, done) {

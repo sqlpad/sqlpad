@@ -1,6 +1,6 @@
 const assert = require('assert');
-const testUtils = require('../test-utils.js');
-const hdb = require('./index.js');
+const testUtils = require('../test-utils');
+const hdb = require('./index');
 
 const connection = {
   name: 'test hdb (SAP HANA)',

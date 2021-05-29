@@ -1,7 +1,7 @@
 const passport = require('passport');
 const BasicStrategy = require('passport-http').BasicStrategy;
 const appLog = require('../lib/app-log');
-const passhash = require('../lib/passhash.js');
+const passhash = require('../lib/passhash');
 
 function enableBasic(config) {
   if (config.get('userpassAuthDisabled')) {

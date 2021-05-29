@@ -1,7 +1,7 @@
 const passport = require('passport');
 const PassportLocalStrategy = require('passport-local').Strategy;
 const appLog = require('../lib/app-log');
-const passhash = require('../lib/passhash.js');
+const passhash = require('../lib/passhash');
 
 function enableLocal(config) {
   if (config.get('userpassAuthDisabled')) {

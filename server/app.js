@@ -10,13 +10,13 @@ const MemoryStore = require('memorystore')(session);
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const RedisStore = require('connect-redis')(session);
 const appLog = require('./lib/app-log');
-const Webhooks = require('./lib/webhooks.js');
+const Webhooks = require('./lib/webhooks');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const passport = require('passport');
 const authStrategies = require('./auth-strategies');
-const sessionlessAuth = require('./middleware/sessionless-auth.js');
-const ResponseUtils = require('./lib/response-utils.js');
+const sessionlessAuth = require('./middleware/sessionless-auth');
+const ResponseUtils = require('./lib/response-utils');
 const expressPinoLogger = require('express-pino-logger');
 
 // This is a workaround till BigInt is fully supported by the standard
@@ -171,13 +171,13 @@ async function makeApp(config, models) {
   /*  Routes
   ============================================================================= */
   const preAuthRouters = [
-    require('./routes/password-reset.js'),
-    require('./routes/signout.js'),
-    require('./routes/signup.js'),
-    require('./routes/signin.js'),
-    require('./routes/google-auth.js'),
-    require('./routes/auth-oidc.js'),
-    require('./routes/saml.js'),
+    require('./routes/password-reset'),
+    require('./routes/signout'),
+    require('./routes/signup'),
+    require('./routes/signin'),
+    require('./routes/google-auth'),
+    require('./routes/auth-oidc'),
+    require('./routes/saml'),
   ];
 
   // Add pre-auth routes to app
@@ -190,29 +190,29 @@ async function makeApp(config, models) {
   app.use(sessionlessAuth);
 
   const authRequiredRouters = [
-    require('./routes/statement-results.js'),
-    require('./routes/queries.js'),
-    require('./routes/drivers.js'),
-    require('./routes/users.js'),
-    require('./routes/connections.js'),
-    require('./routes/connection-accesses.js'),
-    require('./routes/connection-clients.js'),
-    require('./routes/connection-schema.js'),
-    require('./routes/test-connection.js'),
-    require('./routes/query-history.js'),
-    require('./routes/schema-info.js'),
-    require('./routes/tags.js'),
-    require('./routes/format-sql.js'),
-    require('./routes/service-tokens.js'),
-    require('./routes/batches.js'),
-    require('./routes/statements.js'),
+    require('./routes/statement-results'),
+    require('./routes/queries'),
+    require('./routes/drivers'),
+    require('./routes/users'),
+    require('./routes/connections'),
+    require('./routes/connection-accesses'),
+    require('./routes/connection-clients'),
+    require('./routes/connection-schema'),
+    require('./routes/test-connection'),
+    require('./routes/query-history'),
+    require('./routes/schema-info'),
+    require('./routes/tags'),
+    require('./routes/format-sql'),
+    require('./routes/service-tokens'),
+    require('./routes/batches'),
+    require('./routes/statements'),
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
   authRequiredRouters.forEach((router) => app.use(baseUrl, router));
 
   // Add '*/api/app' route last and without baseUrl
-  app.use(require('./routes/app.js'));
+  app.use(require('./routes/app'));
 
   // For any missing api route, return a 404
   // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective

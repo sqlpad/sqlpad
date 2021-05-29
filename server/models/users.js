@@ -1,5 +1,5 @@
-const passhash = require('../lib/passhash.js');
-const ensureJson = require('./ensure-json.js');
+const passhash = require('../lib/passhash');
+const ensureJson = require('./ensure-json');
 
 class Users {
   /**

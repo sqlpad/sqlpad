@@ -1,6 +1,6 @@
 const assert = require('assert');
-const testUtils = require('../test-utils.js');
-const crate = require('./index.js');
+const testUtils = require('../test-utils');
+const crate = require('./index');
 
 const connection = {
   name: 'test crate',

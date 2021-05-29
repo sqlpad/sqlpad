@@ -1,6 +1,6 @@
 const assert = require('assert');
-const bigquery = require('./index.js');
-const testUtils = require('../test-utils.js');
+const bigquery = require('./index');
+const testUtils = require('../test-utils');
 
 const connection = {
   name: 'test bigquery',

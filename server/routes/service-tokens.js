@@ -1,6 +1,6 @@
 require('../typedefs');
 const router = require('express').Router();
-const mustBeAdmin = require('../middleware/must-be-admin.js');
+const mustBeAdmin = require('../middleware/must-be-admin');
 const wrap = require('../lib/wrap');
 
 /**
