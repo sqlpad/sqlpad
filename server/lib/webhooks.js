@@ -109,15 +109,8 @@ class Webhooks {
       return;
     }
 
-    const {
-      id,
-      name,
-      queryText,
-      tags,
-      chart,
-      createdByUser,
-      createdAt,
-    } = query;
+    const { id, name, queryText, tags, chart, createdByUser, createdAt } =
+      query;
 
     const body = {
       query: {

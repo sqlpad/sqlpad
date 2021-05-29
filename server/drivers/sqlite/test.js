@@ -1,6 +1,6 @@
 const assert = require('assert');
-const sqlite3 = require('./index.js');
-const testUtils = require('../test-utils.js');
+const sqlite3 = require('./index');
+const testUtils = require('../test-utils');
 
 const connection = {
   filename: './sqlpad_test_sqlite.db',

@@ -25,10 +25,8 @@ function HistoryDrawer({ onClose, visible }: Props) {
   const queryId = useSessionQueryId() || 'null';
   const queryName = useSessionQueryName() || 'unsaved queries';
 
-  const {
-    data: queryBatches,
-    error: queryBatchHistoryError,
-  } = api.useQueryBatchHistory(queryId);
+  const { data: queryBatches, error: queryBatchHistoryError } =
+    api.useQueryBatchHistory(queryId);
 
   const fetching = !queryBatches;
 

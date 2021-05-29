@@ -4,7 +4,7 @@ const _ = require('lodash');
 const formatLinkHeader = require('format-link-header');
 const queryString = require('query-string');
 const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
+const mustBeAuthenticated = require('../middleware/must-be-authenticated');
 const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
 const wrap = require('../lib/wrap');
 

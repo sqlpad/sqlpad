@@ -1,7 +1,7 @@
 require('../typedefs');
 const { Op } = require('sequelize');
 const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
+const mustBeAuthenticated = require('../middleware/must-be-authenticated');
 const urlFilterToDbFilter = require('../lib/url-filter-to-db-filter');
 const wrap = require('../lib/wrap');
 

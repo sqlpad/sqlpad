@@ -1,6 +1,6 @@
 const assert = require('assert');
-const testUtils = require('../test-utils.js');
-const unixodbc = require('./index.js');
+const testUtils = require('../test-utils');
+const unixodbc = require('./index');
 
 // Using Windows? You may need to change your db path to something like
 // process.env.ODBC_CONNECTION_STRING =

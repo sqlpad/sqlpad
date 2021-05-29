@@ -1,7 +1,7 @@
 require('../typedefs');
 const sqlFormatter = require('sql-formatter');
 const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
+const mustBeAuthenticated = require('../middleware/must-be-authenticated');
 
 /**
  * Returns formatted query in same object format it was sent

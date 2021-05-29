@@ -1,6 +1,6 @@
 require('../typedefs');
 const router = require('express').Router();
-const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
+const mustHaveConnectionAccess = require('../middleware/must-have-connection-access');
 const ConnectionClient = require('../lib/connection-client');
 const wrap = require('../lib/wrap');
 

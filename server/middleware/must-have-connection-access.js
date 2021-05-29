@@ -11,10 +11,11 @@ module.exports = [
         return next();
       }
       const connectionId = req.params.connectionId || req.body.connectionId;
-      const connectionAccess = await models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
-        connectionId,
-        req.user.id
-      );
+      const connectionAccess =
+        await models.connectionAccesses.findOneActiveByConnectionIdAndUserId(
+          connectionId,
+          req.user.id
+        );
       if (connectionAccess) {
         return next();
       }

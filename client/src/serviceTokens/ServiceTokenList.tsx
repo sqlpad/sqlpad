@@ -11,9 +11,8 @@ import ServiceTokenForm from './ServiceTokenForm';
 function ServiceTokenList() {
   const [showServiceTokenForm, setShowServiceTokenForm] = useState(false);
   const [generatedServiceToken, setGenerateServiceToken] = useState(null);
-  const [showGeneratedServiceToken, setShowGeneratedServiceToken] = useState(
-    false
-  );
+  const [showGeneratedServiceToken, setShowGeneratedServiceToken] =
+    useState(false);
 
   const { data: serviceTokensData, error, mutate } = api.useServiceTokens();
   const serviceTokens = serviceTokensData || [];

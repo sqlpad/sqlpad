@@ -9,28 +9,26 @@ interface EditorPaneSchemaSidebarProps {
   children: ReactElement;
 }
 
-const EditorPaneSchemaSidebar: FunctionComponent<EditorPaneSchemaSidebarProps> = ({
-  children,
-  queryId,
-}: EditorPaneSchemaSidebarProps) => {
-  const showSchema = useSessionShowSchema();
+const EditorPaneSchemaSidebar: FunctionComponent<EditorPaneSchemaSidebarProps> =
+  ({ children, queryId }: EditorPaneSchemaSidebarProps) => {
+    const showSchema = useSessionShowSchema();
 
-  if (!showSchema) {
-    return children;
-  }
+    if (!showSchema) {
+      return children;
+    }
 
-  return (
-    <SplitPane
-      split="vertical"
-      minSize={150}
-      defaultSize={260}
-      maxSize={-100}
-      onChange={() => debouncedResizeChart(queryId)}
-    >
-      <SchemaSidebar />
-      {children}
-    </SplitPane>
-  );
-};
+    return (
+      <SplitPane
+        split="vertical"
+        minSize={150}
+        defaultSize={260}
+        maxSize={-100}
+        onChange={() => debouncedResizeChart(queryId)}
+      >
+        <SchemaSidebar />
+        {children}
+      </SplitPane>
+    );
+  };
 
 export default EditorPaneSchemaSidebar;

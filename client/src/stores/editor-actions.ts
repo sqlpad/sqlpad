@@ -64,8 +64,8 @@ setInterval(async () => {
         {}
       );
 
-      const currentConnectionClient = getState().getSession(sessionId)
-        ?.connectionClient;
+      const currentConnectionClient =
+        getState().getSession(sessionId)?.connectionClient;
 
       // If the connectionClient changed since hearbeat, do nothing
       if (
@@ -337,10 +337,8 @@ export const loadQuery = async (queryId: string) => {
   }
 
   const { focusedSessionId } = getState();
-  const {
-    connectionClient,
-    ...restOfCurrentSession
-  } = getState().getFocusedSession();
+  const { connectionClient, ...restOfCurrentSession } =
+    getState().getFocusedSession();
 
   // Cleanup existing connection
   // Even if the connection isn't changing, the client should be refreshed
@@ -776,8 +774,8 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
   }
 
   // Refresh completions
-  const connectionSchema = getState().schemaStates[connectionId]
-    ?.connectionSchema;
+  const connectionSchema =
+    getState().schemaStates[connectionId]?.connectionSchema;
 
   if (connectionSchema?.schemas || connectionSchema?.tables) {
     updateCompletions(connectionSchema);

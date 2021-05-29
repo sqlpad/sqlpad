@@ -1,6 +1,6 @@
 const assert = require('assert');
-const testUtils = require('../test-utils.js');
-const mysql2 = require('./index.js');
+const testUtils = require('../test-utils');
+const mysql2 = require('./index');
 
 const connection = {
   name: 'test mysql2',

@@ -1,7 +1,7 @@
 const passport = require('passport');
 const OidcStrategy = require('passport-openidconnect').Strategy;
 const appLog = require('../lib/app-log');
-const checkAllowedDomains = require('../lib/check-allowed-domains.js');
+const checkAllowedDomains = require('../lib/check-allowed-domains');
 
 async function passportOidcStrategyHandler(
   req,

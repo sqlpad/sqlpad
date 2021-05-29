@@ -1,6 +1,6 @@
 const assert = require('assert');
-const testUtils = require('../test-utils.js');
-const snowflake = require('./index.js');
+const testUtils = require('../test-utils');
+const snowflake = require('./index');
 
 const connection = {
   name: 'test snowflake',

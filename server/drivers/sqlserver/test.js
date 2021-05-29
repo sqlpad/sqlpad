@@ -1,6 +1,6 @@
 const assert = require('assert');
-const testUtils = require('../test-utils.js');
-const sqlserver = require('./index.js');
+const testUtils = require('../test-utils');
+const sqlserver = require('./index');
 
 const masterConnection = {
   name: 'test sqlserver',

@@ -1,10 +1,10 @@
 require('../typedefs');
 const moment = require('moment');
 const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
+const mustBeAuthenticated = require('../middleware/must-be-authenticated');
 const executeBatch = require('../lib/execute-batch');
 const wrap = require('../lib/wrap');
-const mustHaveConnectionAccess = require('../middleware/must-have-connection-access.js');
+const mustHaveConnectionAccess = require('../middleware/must-have-connection-access');
 
 /**
  * Create batch

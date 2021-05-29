@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 const assert = require('assert');
-const cassandra = require('./index.js');
-const testUtils = require('../test-utils.js');
+const cassandra = require('./index');
+const testUtils = require('../test-utils');
 
 const connection = {
   name: 'test cassandra',

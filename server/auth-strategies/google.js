@@ -1,7 +1,7 @@
 const passport = require('passport');
 const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
 const appLog = require('../lib/app-log');
-const checkAllowedDomains = require('../lib/check-allowed-domains.js');
+const checkAllowedDomains = require('../lib/check-allowed-domains');
 
 async function passportGoogleStrategyHandler(
   req,
