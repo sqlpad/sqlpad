@@ -12,42 +12,43 @@ interface EditorPaneRightSidebarProps {
   children: ReactElement;
 }
 
-const EditorPaneRightSidebar: FunctionComponent<EditorPaneRightSidebarProps> = ({
-  children,
-  queryId,
-}: EditorPaneRightSidebarProps) => {
-  const showVisProperties = useSessionShowVisProperties();
+const EditorPaneRightSidebar: FunctionComponent<EditorPaneRightSidebarProps> =
+  ({ children, queryId }: EditorPaneRightSidebarProps) => {
+    const showVisProperties = useSessionShowVisProperties();
 
-  let sidebarContent = null;
+    let sidebarContent = null;
 
-  if (showVisProperties) {
-    sidebarContent = (
-      <div style={{ position: 'absolute', padding: 8 }} className="h-100 w-100">
-        <ChartStatementDisclaimer />
-        <ChartTypeSelect />
-        <Spacer size={2} />
-        <ChartInputs />
-      </div>
+    if (showVisProperties) {
+      sidebarContent = (
+        <div
+          style={{ position: 'absolute', padding: 8 }}
+          className="h-100 w-100"
+        >
+          <ChartStatementDisclaimer />
+          <ChartTypeSelect />
+          <Spacer size={2} />
+          <ChartInputs />
+        </div>
+      );
+    }
+
+    if (!sidebarContent) {
+      return children;
+    }
+
+    return (
+      <SplitPane
+        split="vertical"
+        primary="second"
+        defaultSize={260}
+        maxSize={400}
+        minSize={160}
+        onChange={() => debouncedResizeChart(queryId)}
+      >
+        {children}
+        {sidebarContent}
+      </SplitPane>
     );
-  }
-
-  if (!sidebarContent) {
-    return children;
-  }
-
-  return (
-    <SplitPane
-      split="vertical"
-      primary="second"
-      defaultSize={260}
-      maxSize={400}
-      minSize={160}
-      onChange={() => debouncedResizeChart(queryId)}
-    >
-      {children}
-      {sidebarContent}
-    </SplitPane>
-  );
-};
+  };
 
 export default EditorPaneRightSidebar;
