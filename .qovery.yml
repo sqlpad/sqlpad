@@ -1,0 +1,11 @@
+---
+application:
+  name: "sqlpad"
+  project: "epil"
+  organization: "QoveryCommunity"
+routers:
+- name: "main-sqlpad"
+  routes:
+  - application_name: "sqlpad"
+    paths:
+    - "/*"
