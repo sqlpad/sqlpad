@@ -34,8 +34,9 @@ function runQuery(query, connection) {
   let incomplete = false;
   const rows = [];
   const port = connection.port || 8080;
+  const protocol = connection.useHTTPS ? 'https' : 'http';
   const config = {
-    url: `http://${connection.host}:${port}`,
+    url: `${protocol}://${connection.host}:${port}`,
     user: connection.username,
     catalog: connection.catalog,
     schema: connection.schema,
@@ -105,6 +106,11 @@ const fields = [
     key: 'schema',
     formType: 'TEXT',
     label: 'Schema',
+  },
+  {
+    key: 'useHTTPS',
+    formType: 'CHECKBOX',
+    label: 'Use HTTPS',
   },
 ];
 
