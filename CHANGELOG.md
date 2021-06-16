@@ -1,5 +1,12 @@
 # Changelog
 
+## [6.7.0] - 2021-06-15
+
+- Add Trino HTTPS support
+- Fix ClickHouse authentication
+- Fix connection edit form
+- Update dependencies
+
 ## [6.6.0] - 2021-04-09
 
 - Add Presto authentication and HTTPS support
