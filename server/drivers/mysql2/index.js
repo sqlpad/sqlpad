@@ -53,6 +53,7 @@ class Client {
       timezone: 'Z',
       supportBigNumbers: true,
       flags: '+INTERACTIVE',
+      dateStrings: true,
     };
     if (connection.mysqlSsl) {
       myConfig.ssl = {};
