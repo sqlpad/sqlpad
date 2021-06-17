@@ -60,6 +60,7 @@ class Client {
       ssl: connection.mysqlSsl,
       preQueryStatements: connection.preQueryStatements,
       flags: '+INTERACTIVE',
+      dateStrings: true,
     };
 
     // TODO cache key/cert values
