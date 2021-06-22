@@ -7,7 +7,6 @@ async function openidClientHandler(req, tokenSet, userinfo, done) {
   const { models, config, appLog, webhooks } = req;
 
   const _json = tokenSet.claims() || {};
-
   const email = _json.email || _json.preferred_username;
   let name = _json.name;
   if (!name && _json.given_name && _json.family_name) {
@@ -20,7 +19,10 @@ async function openidClientHandler(req, tokenSet, userinfo, done) {
       message: 'email not provided',
     });
   }
-
+  let role = 'editor';
+  if (_json.roles && _json.roles.includes('admin')) {
+    role = 'admin';
+  }
   try {
     let user = await models.users.findOneByEmail(email);
 
@@ -32,6 +34,7 @@ async function openidClientHandler(req, tokenSet, userinfo, done) {
       user.signupAt = new Date();
       const newUser = await models.users.update(user.id, {
         name,
+        role,
         signupAt: new Date(),
       });
       appLog.debug(`OIDC User ${email} updated`);
@@ -42,7 +45,7 @@ async function openidClientHandler(req, tokenSet, userinfo, done) {
       const newUser = await models.users.create({
         name,
         email,
-        role: 'editor',
+        role,
         signupAt: new Date(),
       });
       webhooks.userCreated(newUser);
@@ -87,7 +90,7 @@ async function enableOidc(config) {
         {
           passReqToCallback: true,
           client,
-          params: { scope: 'openid profile email' },
+          params: { scope: 'openid profile email roles' },
         },
         openidClientHandler
       )
