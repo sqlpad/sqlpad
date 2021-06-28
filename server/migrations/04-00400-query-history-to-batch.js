@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('@rickbergfalk/sequelize');
 
 /**
  * @param {import('sequelize').QueryInterface} queryInterface

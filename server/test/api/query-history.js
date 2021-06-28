@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { Op } = require('sequelize');
+const { Op } = require('@rickbergfalk/sequelize');
 const TestUtils = require('../utils');
 const urlFilterToDbFilter = require('../../lib/url-filter-to-db-filter');
 

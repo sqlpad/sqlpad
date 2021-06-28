@@ -1,5 +1,5 @@
 const path = require('path');
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require('@rickbergfalk/sequelize');
 const appLog = require('../lib/app-log');
 
 // Sequelize logging function

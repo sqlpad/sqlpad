@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('@rickbergfalk/sequelize');
 const migrationUtils = require('../lib/migration-utils');
 
 /**

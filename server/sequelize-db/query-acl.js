@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require('@rickbergfalk/sequelize');
 
 module.exports = function (sequelize) {
   // An entry in this table gives access to a query for a user_id, user_email, or group_id

@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@google-cloud/bigquery": "^5.6.0",
+    "@rickbergfalk/sequelize": "^6.6.5",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cassandra-driver": "^4.6.3",
@@ -90,7 +91,6 @@
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
     "sanitize-filename": "^1.6.3",
-    "sequelize": "^6.6.2",
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.5.0",
     "snowflake-sdk": "^1.6.1",
