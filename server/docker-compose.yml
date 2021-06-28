@@ -63,7 +63,7 @@ services:
       start_period: 20s
 
   mariadb:
-    image: mariadb:10.3
+    image: mariadb:latest
     restart: always
     ports:
       - 13306:3306
