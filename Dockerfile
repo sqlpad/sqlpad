@@ -1,12 +1,18 @@
 # Need to remote into this image and debug some flow? 
 # docker run -it --rm node:12.22.1-alpine3.12 /bin/ash
-FROM node:12.22.1-alpine3.12 AS build
-
-RUN apk add --update --no-cache \
-    python3 \
-    make \
-    g++
-
+FROM node:lts-buster AS build
+ARG ODBC_ENABLED=false
+RUN apt-get update && apt-get install -y \
+    python3 make g++ python3-dev  \
+    && ( \
+        if [ "$ODBC_ENABLED" = "true" ] ; \
+        then \
+         echo "Installing ODBC build dependencies." 1>&2 ;\
+         apt-get install -y unixodbc-dev ;\
+         npm install -g node-gyp ;\
+        fi\
+       ) \
+    && rm -rf /var/lib/apt/lists/*
 RUN npm config set python /usr/bin/python3
 
 WORKDIR /sqlpad
@@ -51,10 +57,23 @@ RUN npm prune --production
 
 # Start another stage with a fresh node
 # Copy the server directory that has all the necessary node modules + front end build
-FROM node:12.22.1-alpine3.12
+FROM node:lts-buster-slim as bundle
+ARG ODBC_ENABLED=false
+
+# Create a directory for the hooks and optionaly install ODBC
+RUN mkdir -p /etc/docker-entrypoint.d \
+    && apt-get update && apt-get install -y wget \
+    && ( \
+        if [ "$ODBC_ENABLED" = "true" ] ; \
+        then \
+            echo "Installing ODBC runtime dependencies." 1>&2 ;\
+            apt-get install -y unixodbc libaio1 odbcinst libodbc1 ;\
+            touch /etc/odbcinst.ini ;\
+        fi\
+    ) \
+    && rm -rf /var/lib/apt/lists/* 
 
 WORKDIR /usr/app
-
 COPY --from=build /sqlpad/docker-entrypoint /
 COPY --from=build /sqlpad/server .
 
@@ -66,14 +85,15 @@ ENTRYPOINT ["/docker-entrypoint"]
 
 # Things to think about for future docker builds
 # Perhaps add a healthcheck?
-# Should nginx be used to front sqlpad?
-#
-# Should ODBC drivers be installed? (once ODBC is compiling that is)
-# 
-# If you are wanting to use ODBC in docker build, 
-# fork this, make sure it compiles unixodbc driver in first stage, 
-# and add specific ODBC drivers here in this stage
+# Should nginx be used to front sqlpad? << No. you can always add an LB/nginx on top of this with compose or other tools when needed.
 
 RUN ["chmod", "+x", "/docker-entrypoint"]
-
 WORKDIR /var/lib/sqlpad
+
+# If you want to use ODBC, use `docker build -t sqlpad/sqlpad-odbc --build-arg ODBC_ENABLED=true .`
+# That will create an image with ODBC enabled.
+#
+# Then add specific ODBC drivers.
+# Option 1: extend this Dockerfile in a fork.
+# Option 2: create your own that starts `FROM sqlpad/sqlpad-odbc` and add drivers there.
+#           Note: this is currently not available on dockerhub so you must use the build command to provision it locally.
