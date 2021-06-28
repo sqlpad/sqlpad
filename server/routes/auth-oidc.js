@@ -1,5 +1,6 @@
 require('../typedefs');
 const passport = require('passport');
+const appLog = require('../lib/app-log');
 const router = require('express').Router();
 
 /**
@@ -20,6 +21,7 @@ function handleOidcCallback(req, res, next) {
 
   function redirectUser(err, user) {
     if (err) {
+      appLog.debug(JSON.stringify(err));
       res.redirect(`${baseUrl}/signin`);
     }
     if (!user) {
