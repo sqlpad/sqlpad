@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op } = require('@rickbergfalk/sequelize');
 
 /**
  * Transforms URL formatted filter parameters to NeDB compatible filter objects

@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes } = require('@rickbergfalk/sequelize');
 
 module.exports = function (sequelize) {
   const Connections = sequelize.define(

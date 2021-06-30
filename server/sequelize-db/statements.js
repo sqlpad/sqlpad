@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+const Sequelize = require('@rickbergfalk/sequelize');
 
 module.exports = function (sequelize) {
   const Statements = sequelize.define(
