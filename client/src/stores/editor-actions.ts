@@ -756,7 +756,14 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
 
     // Pre-expand schemas
     const expanded: { [key: string]: boolean } = {};
-    if (data?.schemas) {
+    // Added schemas length restriction before auto-expand.
+    // This limit is there because there is no collapse-all function in the UI
+    // and render time can explode quickly.
+    // In datawarehousing there can be 100's of schema's each containing 50-100
+    // tables and those containing each 5+ columns and manually collapsing
+    // them is very annoying.
+    // NOTE: the 5 here is completely arbitrary it may be preferable to not auto expand unless there is only 1.
+    if (data?.schemas && data?.schemas.length <= 5) {
       data.schemas.forEach((schema) => {
         expanded[schema.name] = true;
       });

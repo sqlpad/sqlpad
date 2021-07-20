@@ -121,11 +121,12 @@ function SchemaSidebar() {
     const expandable = row.type === 'schema' || row.type === 'table';
     if (expandable) {
       classNames.push(styles.expandable);
-      icon = expanded[row.id] ? (
-        <OpenIcon size={ICON_SIZE} style={ICON_STYLE} />
-      ) : (
-        <ClosedIcon size={ICON_SIZE} style={ICON_STYLE} />
-      );
+      icon =
+        expanded[row.id] === true ? (
+          <OpenIcon size={ICON_SIZE} style={ICON_STYLE} />
+        ) : (
+          <ClosedIcon size={ICON_SIZE} style={ICON_STYLE} />
+        );
     }
 
     const indentationPadding = row.level * 20 + (!expandable ? 10 : 0);
