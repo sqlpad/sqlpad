@@ -86,7 +86,10 @@ function QueryHistoryContent() {
     setFilters(newFilters);
   };
 
-  const handleApplyFilter = () => {
+  const handleApplyFilter = (e: any) => {
+    // prevent the browsers default handling of submit.
+    // otherwise it will bake a get request to the url of the form with the fields as params.
+    if (e && e.preventDefault) e.preventDefault();
     setFilterUrl(buildFilterUrlParameter());
   };
 
