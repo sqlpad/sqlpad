@@ -21,7 +21,10 @@ function ServiceTokenForm({ onServiceTokenGenerated }: any) {
     setServiceTokenEdits((prev) => ({ ...prev, [key]: value }));
   };
 
-  const generateServiceToken = async () => {
+  const generateServiceToken = async (event: any) => {
+    // prevent the browsers default handling of submit.
+    // otherwise it will bake a get request to the url of the form with the fields as params.
+    event.preventDefault();
     if (generating) {
       return;
     }
@@ -104,7 +107,6 @@ function ServiceTokenForm({ onServiceTokenGenerated }: any) {
             htmlType="submit"
             style={{ width: 120 }}
             variant="primary"
-            onClick={generateServiceToken}
             disabled={generating}
           >
             {generating ? 'Generating...' : 'Generate'}

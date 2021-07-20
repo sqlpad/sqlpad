@@ -61,7 +61,11 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: Props) {
     setConnectionAccessEdits((prev) => ({ ...prev, [key]: value }));
   };
 
-  const createConnectionAccess = async () => {
+  const createConnectionAccess = async (event: any) => {
+    // prevent the browsers default handling of submit.
+    // otherwise it will bake a get request to the url of the form with the fields as params.
+    event.preventDefault();
+
     if (creating) {
       return;
     }
@@ -176,7 +180,6 @@ function ConnectionAccessForm({ onConnectionAccessSaved }: Props) {
             htmlType="submit"
             style={{ width: 120 }}
             variant="primary"
-            onClick={createConnectionAccess}
             disabled={creating}
           >
             {creating ? 'Creating...' : 'Create'}

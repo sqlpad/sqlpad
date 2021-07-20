@@ -27,9 +27,17 @@ export default function searchSchemaInfo(
 
   if (connectionSchema.schemas) {
     connectionSchema.schemas.forEach((schema) => {
-      const filteredTables = searchTables(schema.tables, searchRegEx);
-      const filteredSchema = { ...schema, tables: filteredTables };
-      filteredSchemas.push(filteredSchema);
+      // if the search matches the schema add the entire schema. search box says "Search schema" so....
+      if (searchRegEx.test(schema.name)) {
+        const filteredSchema = { ...schema, tables: [...schema.tables] };
+        filteredSchemas.push(filteredSchema);
+      } else {
+        const filteredTables = searchTables(schema.tables, searchRegEx);
+        const filteredSchema = { ...schema, tables: filteredTables };
+        if (filteredSchema.tables.length > 0) {
+          filteredSchemas.push(filteredSchema);
+        }
+      }
     });
     return { schemas: filteredSchemas } as ConnectionSchema;
   }

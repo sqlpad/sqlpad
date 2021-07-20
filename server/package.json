@@ -46,6 +46,7 @@
     "body-parser": "^1.19.0",
     "cassandra-driver": "^4.6.3",
     "clickhouse": "^2.4.0",
+    "compression": "^1.7.4",
     "connect-redis": "^6.0.0",
     "connect-session-sequelize": "^7.1.0",
     "cryptr": "^6.0.2",

@@ -86,7 +86,11 @@ function QueryHistoryContent() {
     setFilters(newFilters);
   };
 
-  const handleApplyFilter = () => {
+  const handleApplyFilter = (event: any) => {
+    // prevent the browsers default handling of submit.
+    // otherwise it will bake a get request to the url of the form with the fields as params.
+    event.preventDefault();
+
     setFilterUrl(buildFilterUrlParameter());
   };
 
@@ -144,7 +148,6 @@ function QueryHistoryContent() {
           htmlType="submit"
           style={{ width: 120 }}
           variant="primary"
-          onClick={handleApplyFilter}
           disabled={isRunning}
         >
           {isRunning ? 'Searching...' : 'Search'}
