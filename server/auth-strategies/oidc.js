@@ -90,7 +90,9 @@ async function enableOidc(config) {
         {
           passReqToCallback: true,
           client,
-          params: { scope: 'openid profile email roles' },
+          params: {
+            scope: config.get('oidcScope') || 'openid profile email roles',
+          },
         },
         openidClientHandler
       )

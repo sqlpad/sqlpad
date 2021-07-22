@@ -289,16 +289,6 @@ class Config {
     );
   }
 
-  // AAD configured only needs to check for minimal setup
-  aadConfigured() {
-    return Boolean(
-      this.all.publicUrl &&
-        this.all.aadClientId &&
-        this.all.aadClientSecret &&
-        this.all.aadTenantId
-    );
-  }
-
   /**
    * Get connections from config.
    * These are provided at runtime and not upserted into the backing database.

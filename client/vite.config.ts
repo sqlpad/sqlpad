@@ -13,7 +13,6 @@ const PROXY_ROUTES = [
   '/login/callback',
   '/auth/google',
   '/auth/oidc',
-  '/auth/aad',
 ];
 
 const PROXY_URL = 'http://localhost:3010';

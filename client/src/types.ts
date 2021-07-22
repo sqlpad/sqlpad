@@ -121,8 +121,6 @@ export interface AppInfo {
     localAuthConfigured: boolean;
     oidcConfigured: boolean;
     oidcLinkHtml: string;
-    aadConfigured: boolean;
-    aadLinkHtml: string;
     publicUrl: string;
     samlConfigured: boolean;
     samlLinkHtml: string;

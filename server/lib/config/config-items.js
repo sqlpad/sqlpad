@@ -358,26 +358,10 @@ const configItems = [
     envVar: 'SQLPAD_OIDC_LINK_HTML',
     default: 'Sign in with OpenID',
   },
-  // Azure AD
   {
-    key: 'aadClientId',
-    envVar: 'SQLPAD_AAD_CLIENT_ID',
-    default: '',
-  },
-  {
-    key: 'aadClientSecret',
-    envVar: 'SQLPAD_AAD_CLIENT_SECRET',
-    default: '',
-  },
-  {
-    key: 'aadTenantId',
-    envVar: 'SQLPAD_AAD_TENANT_ID',
-    default: '',
-  },
-  {
-    key: 'aadLinkHtml',
-    envVar: 'SQLPAD_AAD_LINK_HTML',
-    default: 'Sign in with Azure Active Directory',
+    key: 'oidcScope',
+    envVar: 'SQLPAD_OIDC_SCOPE',
+    default: 'openid profile email roles',
   },
   {
     key: 'webhookEnabled',

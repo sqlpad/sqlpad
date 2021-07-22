@@ -23,8 +23,6 @@ const expectedConfigKeys = [
   'ldapRolesConfigured',
   'oidcConfigured',
   'oidcLinkHtml',
-  'aadConfigured',
-  'aadLinkHtml',
   'showServiceTokensUI',
 ];
 

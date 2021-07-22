@@ -143,25 +143,6 @@ function SignIn() {
     </div>
   );
 
-  const aadForm = (
-    <div>
-      <Spacer />
-      <ButtonLink
-        variant="primary"
-        style={{
-          width: '100%',
-          textAlign: 'center',
-        }}
-        href={config.baseUrl + '/auth/aad'}
-      >
-        <div
-          className="w-100"
-          dangerouslySetInnerHTML={{ __html: config.aadLinkHtml }}
-        />
-      </ButtonLink>
-    </div>
-  );
-
   return (
     <div style={{ width: '300px', textAlign: 'center', margin: '100px auto' }}>
       <h1>SQLPad</h1>
@@ -169,7 +150,6 @@ function SignIn() {
       {config.googleAuthConfigured && googleForm}
       {config.samlConfigured && samlForm}
       {config.oidcConfigured && oidcForm}
-      {config.aadConfigured && aadForm}
     </div>
   );
 }
