@@ -8,6 +8,7 @@ const ldap = require('./ldap');
 const local = require('./local');
 const oidc = require('./oidc');
 const oidcLegacy = require('./oidc-legacy');
+const aad = require('./aad');
 const saml = require('./saml');
 
 // The serializeUser/deserializeUser functions apply regardless of the strategy used.
@@ -50,6 +51,7 @@ async function authStrategies(config, models) {
   local(config);
   await oidc(config);
   oidcLegacy(config);
+  await aad(config);
   saml(config);
 }
 

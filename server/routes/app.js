@@ -9,6 +9,7 @@ const wrap = require('../lib/wrap');
  */
 async function getApp(req, res) {
   const { config } = req;
+
   const currentUser =
     req.isAuthenticated() && req.user
       ? {
@@ -38,6 +39,8 @@ async function getApp(req, res) {
       ),
       oidcConfigured: config.oidcLegacyConfigured() || config.oidcConfigured(),
       oidcLinkHtml: config.get('oidcLinkHtml'),
+      aadConfigured: config.aadConfigured(),
+      aadLinkHtml: config.get('aadLinkHtml'),
       showServiceTokensUI: Boolean(config.get('serviceTokenSecret')),
     },
     version: packageJson.version,
