@@ -17,8 +17,10 @@
  */
 module.exports = function checkAllowedDomains(allowedDomains, email) {
   if (allowedDomains) {
-    const domain = email.split('@').pop();
-    const domains = allowedDomains.split(' ').map((domain) => domain.trim());
+    const domain = email.split('@').pop().toLowerCase();
+    const domains = allowedDomains
+      .split(' ')
+      .map((domain) => domain.trim().toLowerCase());
 
     return domains.includes(domain);
   }
