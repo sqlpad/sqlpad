@@ -21,7 +21,8 @@ function getSchemaSql(database) {
       t.table_schema, 
       t.table_name, 
       c.column_name, 
-      c.data_type
+      c.data_type,
+      c.column_comment as column_description
     FROM 
       INFORMATION_SCHEMA.TABLES t 
       JOIN INFORMATION_SCHEMA.COLUMNS c ON t.table_schema = c.table_schema AND t.table_name = c.table_name 
