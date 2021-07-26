@@ -1,7 +1,6 @@
 .DS_Store
 .env
 .idea/*
-**/.vscode/*
 client/build/
 server/public
 coverage/
@@ -13,4 +12,3 @@ server/drivers/sqlite/sqlpad_test_sqlite.db
 server/test/artifacts
 server/test/fixtures/sales.sqlite
 client/.eslintcache
-**/package-lock.json
