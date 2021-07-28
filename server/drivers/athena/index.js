@@ -55,7 +55,7 @@ function runQuery(queryString, connection = {}) {
     .query({ sql: limitedQuery })
     .then((results) => {
       let rows = results.Items;
-      if (rows.Count >= maxRowsPlusOne) {
+      if (rows.length >= maxRowsPlusOne) {
         return { rows: rows.slice(0, maxRows), incomplete: true };
       }
       return { rows, incomplete: false };
