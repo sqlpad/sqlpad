@@ -281,6 +281,18 @@ Redshift uses the Postgres driver, using a different query for pulling schema.
 | `filename`                         | Path to file                                          |   text    |
 | `readonly`                         | Open file in read only mode                           |  boolean  |
 
+## Athena
+
+| key                                | description                                           | data type |
+| ---------------------------------- | ----------------------------------------------------- | :-------: |
+| `name`                             | Name of connection                                    |   text    |
+| `driver`                           | Must be `athena`                                      |   text    |
+| `awsRegion`                        | AWS Region                                            |   text    |
+| `awsAccessKeyId`                   | AWS Access Key ID                                     |   text    |
+| `awsSecretAccessKey`               | AWS Secret Access Key                                 |   text    |
+| `athenaStagingDirectory`           | Athena staging directory in S3                        |   text    |
+| `athenaWorkgroup`                  | Athena workgroup (`primary' by default)               |   text    |
+
 ## ODBC (unixodbc)
 
 ?> Despite the underlying `driver` being `unixodbc`, this appears to be functional on Windows.

@@ -98,7 +98,7 @@ const fields = [
   {
     key: 'awsSecretAccessKey',
     formType: 'TEXT',
-    label: 'AWS Secret Access Key.',
+    label: 'AWS Secret Access Key',
   },
   {
     key: 'athenaStagingDirectory',
