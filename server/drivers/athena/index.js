@@ -19,7 +19,7 @@ const SCHEMA_SQL_INFORMATION_SCHEMA = `
 `;
 
 /**
- * Return BiqQuery API object.
+ * Load Athena client.
  * @param {object} connection
  */
 function newAthenaClient(connection) {
