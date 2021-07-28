@@ -2,6 +2,7 @@ const appLog = require('../lib/app-log');
 const validate = require('./validate');
 
 const drivers = {
+  athena: require('./athena'),
   bigquery: require('./bigquery'),
   cassandra: require('./cassandra'),
   clickhouse: require('./clickhouse'),
