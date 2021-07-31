@@ -379,7 +379,6 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
           htmlType="submit"
           style={{ width: 120 }}
           variant="primary"
-          onClick={saveConnection}
           disabled={saving}
         >
           {saving ? 'Saving...' : 'Save'}

@@ -1,4 +1,5 @@
 require('../typedefs');
+const compression = require('compression');
 const router = require('express').Router();
 const mustHaveConnectionAccess = require('../middleware/must-have-connection-access');
 const ConnectionClient = require('../lib/connection-client');
@@ -42,8 +43,12 @@ async function getConnectionSchema(req, res) {
   return res.utils.data(schemaInfo);
 }
 
+// compression is added here becasue a big database server can have huge amount
+// of metadata and since this is not retrieved schema by schema 20mb+ would easily be possible in plain/text
+// on slow connections where a LB does not compress this can be a big bottleneck.
 router.get(
   '/api/connections/:connectionId/schema',
+  compression(),
   mustHaveConnectionAccess,
   wrap(getConnectionSchema)
 );
