@@ -108,7 +108,7 @@ async function batchToReq(req, res, next) {
       return res.utils.notFound();
     }
 
-    if (batch.userId !== user.id) {
+    if (batch.userId !== user.id.toString()) {
       return res.utils.forbidden();
     }
 

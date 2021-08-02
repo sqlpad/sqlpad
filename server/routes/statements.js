@@ -23,7 +23,7 @@ async function getStatement(req, res) {
   // Need to maybe rethink these models functions
   const batch = await models.batches.findOneById(statement.batchId);
 
-  if (batch.userId !== user.id) {
+  if (batch.userId !== user.id.toString()) {
     return res.utils.forbidden();
   }
 
@@ -60,7 +60,7 @@ async function getStatementResults(req, res) {
   // Need to maybe rethink these models functions
   const batch = await models.batches.findOneById(statement.batchId);
 
-  if (batch.userId !== user.id) {
+  if (batch.userId !== user.id.toString()) {
     return res.utils.forbidden();
   }
 
