@@ -42,6 +42,8 @@
   "dependencies": {
     "@google-cloud/bigquery": "^5.6.0",
     "@rickbergfalk/sequelize": "^6.6.5",
+    "aws-sdk": "^2.955.0",
+    "athena-express": "^7.1.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cassandra-driver": "^4.6.3",
