@@ -22,7 +22,7 @@ async function getStatement(req, res) {
   // This is not the most efficient since it gets statements again
   // Need to maybe rethink these models functions
   const batch = await models.batches.findOneById(statement.batchId);
-
+  // ensure string comparison
   if (batch.userId !== user.id.toString()) {
     return res.utils.forbidden();
   }
