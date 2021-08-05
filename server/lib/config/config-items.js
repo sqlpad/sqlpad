@@ -359,6 +359,11 @@ const configItems = [
     default: 'Sign in with OpenID',
   },
   {
+    key: 'oidcScope',
+    envVar: 'SQLPAD_OIDC_SCOPE',
+    default: 'openid profile email roles',
+  },
+  {
     key: 'webhookEnabled',
     envVar: 'SQLPAD_WEBHOOK_ENABLED',
     default: false,

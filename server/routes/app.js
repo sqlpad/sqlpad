@@ -9,6 +9,7 @@ const wrap = require('../lib/wrap');
  */
 async function getApp(req, res) {
   const { config } = req;
+
   const currentUser =
     req.isAuthenticated() && req.user
       ? {

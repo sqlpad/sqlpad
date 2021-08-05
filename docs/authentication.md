@@ -133,6 +133,11 @@ SQLPAD_OIDC_LINK_HTML = "Sign in with OpenID"
 
 SQLPAD_OIDC_CLIENT_ID = "actual-client-id"
 SQLPAD_OIDC_CLIENT_SECRET = "actual-client-secret"
+
+# Authentication scope allows to customize the scope depend on the supported provider.
+# Default value is "openid profile email roles"
+SQLPAD_OIDC_SCOPE = "openid profile email roles"
+
 # Issuer endpoint (will vary by provider)
 # As of version 6.4.0 the issuer endpoint is the only URL needed
 # as long as the OIDC provider supplies .well-known endpoints
