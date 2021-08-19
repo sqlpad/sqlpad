@@ -18,7 +18,7 @@ For instructions on installing/running SQLPad from git repo see [DEVELOPER-GUIDE
 
 ## Project Documentation
 
-Documentation located at [https://sqlpad.github.io/sqlpad](https://sqlpad.github.io/sqlpad).
+Documentation located at [https://getsqlpad.com](https://getsqlpad.com).
 
 Documentation source located in [docs directory](https://github.com/sqlpad/sqlpad/tree/master/docs), built/rendered by docsify.
 
