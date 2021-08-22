@@ -5,6 +5,7 @@ import ToolbarConnectionClientButton from './ToolbarConnectionClientButton';
 import ToolbarHistoryButton from './ToolbarHistoryButton';
 import ToolbarQueryName from './ToolbarQueryName';
 import ToolbarRunButton from './ToolbarRunButton';
+import ToolbarCancelButton from './ToolbarCancelButton';
 import ToolbarSpacer from './ToolbarSpacer';
 import ToolbarToggleSchemaButton from './ToolbarToggleSchemaButton';
 
@@ -27,6 +28,8 @@ function Toolbar() {
         <ToolbarQueryName />
         <ToolbarSpacer grow />
         <ToolbarRunButton />
+        <ToolbarSpacer />
+        <ToolbarCancelButton />
         <ToolbarSpacer />
         <ToolbarHistoryButton />
         <ToolbarChartButton />

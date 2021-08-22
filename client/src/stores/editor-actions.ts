@@ -221,6 +221,10 @@ export async function connectConnectionClient() {
     (connection) => connection.id === connectionId
   );
 
+  if (connection) {
+    setAsynchronousDriver(connection.isAsynchronous);
+  }
+
   const supportedAndEnabled =
     connection &&
     connection.supportsConnectionClient &&
@@ -239,6 +243,7 @@ export async function connectConnectionClient() {
 
   setSession(focusedSessionId, {
     connectionClient: json.data,
+    isDriverAsynchronous: connection ? connection.isAsynchronous : false,
   });
 }
 
@@ -384,6 +389,7 @@ export const runQuery = async () => {
     connectionId,
     connectionClient,
     selectedText,
+    isDriverAsynchronous,
   } = getState().getFocusedSession();
 
   if (!connectionId) {
@@ -403,6 +409,7 @@ export const runQuery = async () => {
   setSession(focusedSessionId, {
     batchId: undefined,
     isRunning: true,
+    isExecutionStarting: false,
     runQueryStartTime: new Date(),
     selectedStatementId: '',
   });
@@ -421,6 +428,11 @@ export const runQuery = async () => {
   };
 
   let res = await api.createBatch(postData);
+
+  setSession(focusedSessionId, {
+    isExecutionStarting: isDriverAsynchronous ? true : false,
+  });
+
   let error = res.error;
   let batch = res.data;
 
@@ -440,7 +452,12 @@ export const runQuery = async () => {
 
   while (
     batch?.id &&
-    !((batch?.status === 'finished' || batch?.status === 'error') && !error)
+    !(
+      (batch?.status === 'finished' ||
+        batch?.status === 'error' ||
+        batch?.status === 'cancelled') &&
+      !error
+    )
   ) {
     await sleep(500);
     res = await api.getBatch(batch.id);
@@ -459,6 +476,52 @@ export const runQuery = async () => {
 
   setSession(focusedSessionId, {
     isRunning: false,
+    isExecutionStarting: false,
+  });
+};
+
+export const cancelQuery = async () => {
+  const { focusedSessionId } = getState();
+  const { connectionId, isDriverAsynchronous, batchId } =
+    getState().getFocusedSession();
+
+  if (!isDriverAsynchronous) {
+    return setSession(focusedSessionId, {
+      queryError: 'Driver does not support cancellation',
+      selectedStatementId: '',
+    });
+  }
+
+  if (!batchId) {
+    return setSession(focusedSessionId, {
+      queryError: 'Batch ID required',
+      selectedStatementId: '',
+    });
+  }
+  if (!connectionId) {
+    return setSession(focusedSessionId, {
+      queryError: 'Connection required',
+      selectedStatementId: '',
+    });
+  }
+
+  setSession(focusedSessionId, {
+    isRunning: true,
+    isExecutionStarting: true,
+    runQueryStartTime: new Date(),
+    selectedStatementId: '',
+  });
+
+  const putData = {
+    connectionId: connectionId,
+  };
+
+  await api.cancelBatch(batchId, putData);
+  message.error('Query cancelled by user');
+  return setSession(focusedSessionId, {
+    batchId: undefined,
+    isRunning: false,
+    isExecutionStarting: false,
   });
 };
 
@@ -814,5 +877,18 @@ export function toggleSchemaItem(connectionId: string, item: { id: string }) {
 
   setSession(focusedSessionId, {
     schemaExpansions: { ...schemaExpansions, [connectionId]: expanded },
+  });
+}
+
+/**
+ * Sets the state for an asynchronous driver that will enable cancel queries
+ * @param {boolean} setAsynchronousDriver
+ */
+export function setAsynchronousDriver(asynchronous?: boolean) {
+  const { focusedSessionId } = getState();
+
+  const isAsync = asynchronous ? true : false;
+  setSession(focusedSessionId, {
+    isDriverAsynchronous: isAsync,
   });
 }

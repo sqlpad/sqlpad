@@ -4,7 +4,10 @@ import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
 import Text from '../common/Text';
-import { selectConnectionId } from '../stores/editor-actions';
+import {
+  selectConnectionId,
+  setAsynchronousDriver,
+} from '../stores/editor-actions';
 import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import ConnectionEditDrawer from './ConnectionEditDrawer';
@@ -32,6 +35,7 @@ function ConnectionList() {
 
   const newConnection = () => {
     setConnectionId(null);
+    setAsynchronousDriver(false);
     setShowEdit(true);
   };
 
