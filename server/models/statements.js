@@ -149,6 +149,17 @@ class Statements {
     );
   }
 
+  async updateCancelled(id, stopTime, durationMs) {
+    const update = {
+      status: 'cancelled',
+      stopTime,
+      durationMs,
+    };
+
+    await this.sequelizeDb.Statements.update(update, { where: { id } });
+    return this.findOneById(id);
+  }
+
   async updateFinished(id, queryResult, stopTime, durationMs) {
     const { config } = this;
     const dbPath = config.get('dbPath');
@@ -297,6 +308,14 @@ class Statements {
     for (const statement of statements) {
       await this.removeById(statement.id);
     }
+  }
+
+  async updateExecutionId(id, executionId) {
+    const update = {
+      executionId,
+    };
+    await this.sequelizeDb.Statements.update(update, { where: { id } });
+    return this.findOneById(id);
   }
 }
 

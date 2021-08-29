@@ -126,6 +126,10 @@ export const api = {
     return this.get<Batch>(`/api/batches/${batchId}`);
   },
 
+  cancelBatch(batchId: string, putData: any) {
+    return this.put(`/api/batches/${batchId}/cancel`, putData);
+  },
+
   useBatch(batchId: string) {
     return useSWR<Batch>(`/api/batches/${batchId}`);
   },

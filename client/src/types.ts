@@ -9,6 +9,7 @@ export interface Connection {
   multiStatementTransactionEnabled?: boolean;
   name: string;
   supportsConnectionClient: boolean;
+  isAsynchronous: boolean;
   updatedAt: string | Date;
 }
 
@@ -46,7 +47,8 @@ export interface Statement {
   batchId: string;
   sequence: number;
   statementText: string;
-  status: 'queued' | 'started' | 'finished' | 'error';
+  status: 'queued' | 'started' | 'finished' | 'error' | 'cancelled';
+  executionId?: string;
   startTime?: string | Date;
   stopTime?: string | Date;
   durationMs?: number;
@@ -63,7 +65,7 @@ export interface Batch {
   name?: string;
   connectionId: string;
   connectionClientId: string;
-  status: 'started' | 'finished' | 'error';
+  status: 'started' | 'finished' | 'error' | 'cancelled';
   startTime: string | Date;
   stopTime: string | Date;
   durationMs: number;

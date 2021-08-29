@@ -264,6 +264,153 @@ class ConnectionClient {
   }
 
   /**
+   * Starts a query execution and returns immediately
+   * If the connectionClient supports persistent database connections and is connected,
+   * it'll use the database connection already established.
+   * If not connected or does not support persistent connection,
+   * it uses the driver.startQueryExecution() implementation that will open a connection, run query, then close.
+   * @param {string} query
+   * @returns {Promise}
+   */
+  async startQueryExecution(query) {
+    const connection = this.connection;
+    const driver = this.driver;
+    const user = this.user;
+    const connectionName = connection.name;
+    const startTime = new Date();
+
+    const queryContext = {
+      connectionClientId: this.id,
+      driver: connection.driver,
+      userId: user && user.id,
+      userEmail: user && user.email,
+      connectionId: connection.id,
+      connectionName,
+      query,
+      startTime,
+    };
+
+    appLog.info(queryContext, 'Starting query execution');
+
+    let executionId;
+    try {
+      if (!connection.isAsynchronous) {
+        throw new Error(`Driver ${driver.name} does not support async queries`);
+      }
+      // If client is connected use that connection,
+      // otherwise use driver.runQuery to run query with fresh one-off connection
+      if (this.isConnected()) {
+        // uses pre-existing connection to run query, and keeps connection open
+        // lastActivityAt is updated both before and after query (the query could take a while)
+        this.lastActivityAt = new Date();
+        executionId = await this.client.startQueryExecution(query);
+        this.lastActivityAt = new Date();
+      } else {
+        // Opens a new connection to db, runs query, then closes connection
+        executionId = await driver.startQueryExecution(query, connection);
+      }
+    } catch (error) {
+      // It is logged INFO because it isn't necessarily a server/application error
+      // It could just be a bad query
+      appLog.info(
+        { ...queryContext, error: error.toString() },
+        'Error running query'
+      );
+
+      // Rethrow the error
+      // The error here is something expected and should be shown to user
+      throw error;
+    }
+    const stopTime = new Date();
+    const queryRunTime = stopTime - startTime;
+    appLog.info(
+      {
+        ...queryContext,
+        executionId,
+        stopTime,
+        queryRunTime,
+      },
+      'Query started'
+    );
+    return executionId;
+  }
+
+  /**
+   * Cancel query
+   * If the connectionClient supports persistent database connections and is connected,
+   * it'll use the database connection already established.
+   * If not connected or does not support persistent connection,
+   * it uses the driver.cancelQuery() implementation that will open a connection, run query, then close.
+   * @param {string} query
+   * @returns {Promise}
+   */
+  async cancelQuery(query) {
+    const connection = this.connection;
+    const driver = this.driver;
+    const user = this.user;
+    const connectionName = connection.name;
+    const startTime = new Date();
+
+    const queryContext = {
+      executionId: uuidv4(),
+      connectionClientId: this.id,
+      driver: connection.driver,
+      userId: user && user.id,
+      userEmail: user && user.email,
+      connectionId: connection.id,
+      connectionName,
+      query,
+      startTime,
+    };
+
+    appLog.info(queryContext, 'Cancel query');
+
+    try {
+      if (!connection.isAsynchronous) {
+        throw new Error(
+          `Driver ${driver.name} does not support cancellation of queries`
+        );
+      }
+
+      // If client is connected use that connection,
+      // otherwise use driver.cancelQuery to cancel query with fresh one-off connection
+      if (this.isConnected()) {
+        // uses pre-existing connection to cancel query, and keeps connection open
+        // lastActivityAt is updated both before and after query (the query could take a while)
+        this.lastActivityAt = new Date();
+        await this.client.cancelQuery(query);
+        this.lastActivityAt = new Date();
+      } else {
+        // Opens a new connection to db, runs query, then closes connection
+        await driver.cancelQuery(query, connection);
+      }
+    } catch (error) {
+      // It is logged INFO because it isn't necessarily a server/application error
+      // It could just be a bad query
+      appLog.info(
+        { ...queryContext, error: error.toString() },
+        'Error cancelling query'
+      );
+
+      // Rethrow the error
+      // The error here is something expected and should be shown to user
+      throw error;
+    }
+    const stopTime = new Date();
+    const queryRunTime = stopTime - startTime;
+
+    appLog.info(
+      {
+        ...queryContext,
+        stopTime,
+        queryRunTime,
+      },
+      'Cancellation finished'
+    );
+    return true;
+  }
+
+  /**
    * Test connection passed in using the driver implementation
    * As long as promise resolves without error
    * it is considered a successful connection config

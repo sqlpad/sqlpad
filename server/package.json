@@ -42,8 +42,8 @@
   "dependencies": {
     "@google-cloud/bigquery": "^5.6.0",
     "@rickbergfalk/sequelize": "^6.6.5",
-    "aws-sdk": "^2.955.0",
     "athena-express": "^7.1.0",
+    "aws-sdk": "^2.955.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "cassandra-driver": "^4.6.3",
@@ -114,6 +114,7 @@
     "odbc": "^2.2.2"
   },
   "devDependencies": {
+    "aws-sdk-mock": "^5.2.1",
     "bytes": "3.1.0",
     "eslint": "^7.28.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -122,9 +123,12 @@
     "eslint-plugin-prettier": "^3.4.0",
     "mocha": "^9.0.0",
     "ncp": "^2.0.0",
+    "nise": "^5.1.0",
     "node-dev": "^7.0.0",
     "parse-link-header": "^1.0.1",
     "pino-pretty": "^5.0.2",
-    "supertest": "^6.1.1"
+    "sinon": "^11.1.1",
+    "supertest": "^6.1.1",
+    "traverse": "^0.6.6"
   }
 }

@@ -63,6 +63,9 @@ module.exports = function (sequelize) {
         type: Sequelize.DATE,
         allowNull: false,
       },
+      executionId: {
+        type: Sequelize.STRING,
+      },
     },
     {
       tableName: 'statements',

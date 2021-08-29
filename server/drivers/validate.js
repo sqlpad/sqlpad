@@ -43,6 +43,10 @@ function validate(id, driver) {
   validateFunction(driver, 'runQuery');
   validateFunction(driver, 'testConnection');
   validateArray(driver, 'fields');
+
+  if (driver.asynchronous) {
+    validateFunction(driver, 'cancelQuery');
+  }
 }
 
 module.exports = validate;

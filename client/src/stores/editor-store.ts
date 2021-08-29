@@ -27,7 +27,9 @@ export interface EditorSession {
   batchId?: string;
   isRunning: boolean;
   isSaving: boolean;
+  isExecutionStarting: boolean;
   saveError?: string;
+  isDriverAsynchronous: boolean;
   // Editor session takes Query model fields and flattens
   queryId?: string;
   queryName: string;
@@ -72,6 +74,8 @@ export const INITIAL_SESSION: EditorSession = {
   connectionClient: undefined,
   batchId: undefined,
   isRunning: false,
+  isExecutionStarting: false,
+  isDriverAsynchronous: false,
   isSaving: false,
   saveError: undefined,
   queryId: undefined,
@@ -186,6 +190,10 @@ export function useSessionCanWrite() {
 
 export function useSessionConnectionId(): string {
   return useEditorStore((s) => s.getFocusedSession().connectionId);
+}
+
+export function useExecutionStarting(): boolean {
+  return useEditorStore((s) => s.getFocusedSession().isExecutionStarting);
 }
 
 export function useSessionConnectionClient() {
@@ -415,4 +423,8 @@ export function useStatementText(statementId?: string) {
     }
     return s.statements[statementId]?.statementText;
   });
+}
+
+export function useSessionAsyncDriver(): boolean {
+  return useEditorStore((s) => s.getFocusedSession().isDriverAsynchronous);
 }

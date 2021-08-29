@@ -11,6 +11,7 @@ import Select from '../common/Select';
 import SpinKitCube from '../common/SpinKitCube';
 import TextArea from '../common/TextArea';
 import { api } from '../utilities/api';
+import { setAsynchronousDriver } from '../stores/editor-actions';
 
 const TEXT = 'TEXT';
 const PASSWORD = 'PASSWORD';
@@ -124,6 +125,9 @@ function ConnectionForm({ connectionId, onConnectionSaved }: any) {
     if (json.error) {
       setSaving(false);
       return message.error(json.error);
+    }
+    if (json.data) {
+      setAsynchronousDriver(json.data.isAsynchronous);
     }
     api.reloadConnections();
     return onConnectionSaved(json.data);
