@@ -5,7 +5,7 @@
   "devDependencies": {
     "husky": "^4.3.8",
     "lint-staged": "^10.5.4",
-    "prettier": "^2.3.1"
+    "prettier": "^2.3.2"
   },
   "prettier": {
     "singleQuote": true
