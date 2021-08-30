@@ -11,3 +11,4 @@
   - [Overview](/api-overview.md)
   - [Batches & Statements](/api-batches.md)
   - [Connection Schema](/api-connection-schema.md)
+  - [Queries](/api-queries.md)

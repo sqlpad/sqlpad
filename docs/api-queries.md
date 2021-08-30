@@ -52,10 +52,6 @@ Similarly, `createdBy`, `updatedBy`, related user objects, `canDelete`, `canRead
       write: true,
     }
   ],
-
-  canDelete: true,
-  canRead: true,
-  canWrite: true,
 }
 ```
 
