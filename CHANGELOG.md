@@ -1,5 +1,22 @@
 # Changelog
 
+## [6.8.0] - 2021-08-31
+
+- Add support for 0000-00-00 date strings in MySQL
+- Add MySQL column descriptions
+- Add AWS Athena support
+- Add cancellable query support to AWS Athena connection
+- Add Azure AD support to OIDC auth
+- Allow role to be assigned via OIDC user role
+- Add ODBC support to docker container (see `docker-examples/oracle-odbc-image` for example)
+- Render markdown hyperlinks in query result columns
+- Sort schema and table on name
+- Polish schema search and default expanded behaviors
+- Add compression to schema route payload
+- Fix search history
+- Fix OIDC illegal redirects
+- Fix `/api/batches` forbidden response when using API key
+
 ## [6.7.1] - 2021-06-15
 
 - Add Trino HTTPS support
