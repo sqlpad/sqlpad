@@ -97,6 +97,9 @@ function runQuery(executionId, connection = {}) {
     .query(executionId)
     .then((results) => {
       appLog.trace(results);
+      if (!results.Items) {
+        return { results, incomplete: false };
+      }
       appLog.debug(
         `Retrieved ${results.Items.length} items out of ${results.Count}`
       );
