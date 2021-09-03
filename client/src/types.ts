@@ -117,7 +117,7 @@ export interface AppInfo {
     baseUrl: string;
     defaultConnectionId: string;
     editorWordWrap: boolean;
-    googleAuthConfigured: string;
+    googleAuthConfigured: boolean;
     ldapConfigured: boolean;
     ldapRolesConfigured: boolean;
     localAuthConfigured: boolean;
