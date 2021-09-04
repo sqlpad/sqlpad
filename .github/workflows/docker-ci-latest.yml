@@ -1,4 +1,4 @@
-name: Docker Hub CI
+name: docker-ci-latest
 
 on:
   push:
