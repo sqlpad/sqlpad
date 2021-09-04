@@ -1,5 +1,10 @@
 # Changelog
 
+## [6.8.1] - 2021-09-05
+
+- Prevent disclosure of Google OAuth secret
+- Fix Athena drop/create table query support
+
 ## [6.8.0] - 2021-08-31
 
 - Add support for 0000-00-00 date strings in MySQL
