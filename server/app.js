@@ -65,6 +65,8 @@ async function makeApp(config, models) {
   ============================================================================= */
   const app = express();
 
+  app.set('trust proxy', true);
+
   // Default helmet protections, minus frameguard (becaue of sqlpad iframe embed), adding referrerPolicy
   app.use(helmet.dnsPrefetchControl());
   app.use(helmet.hidePoweredBy());
@@ -112,10 +114,18 @@ async function makeApp(config, models) {
     saveUninitialized: false,
     resave: true,
     rolling: true,
-    cookie: { maxAge: cookieMaxAgeMs },
+    cookie: { maxAge: cookieMaxAgeMs, sameSite: 'strict' },
     secret: config.get('cookieSecret'),
     name: config.get('cookieName'),
   };
+
+  // Toggle secure flag for cookies if we're running under HTTPS
+  const publicUrl = config.get('publicUrl');
+
+  if (publicUrl && /^https/.test(publicUrl)) {
+    sessionOptions.cookie.secure = true;
+  }
+
   const sessionStore = config.get('sessionStore').toLowerCase();
 
   switch (sessionStore) {
