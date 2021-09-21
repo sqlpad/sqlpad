@@ -202,6 +202,14 @@ SQLPAD_SAML_AUTO_SIGN_UP = "false"
 # Accepted values are `editor` and `admin`.
 SQLPAD_SAML_DEFAULT_ROLE = "editor"
 
+# If set to true on each login the role is set based on the rules below.
+# It is recommended to set this to true, if you use one of the supported SAML claims to manage access.
+SQLPAD_SAML_ENFORCED_ROLE = "false"
+
+# The AzureAD group to assign to admin role.
+# Note: this does not need to be a UUID, it depends on how the claim is setup in Azure but the default is a UUID.
+SQLPAD_SAML_ADMIN_GROUP = '00000000-0000-0000-0000-000000000000'
+
 # Public URL required
 PUBLIC_URL = "http://localhost"
 
@@ -210,6 +218,17 @@ SQLPAD_USERPASS_AUTH_DISABLED = true
 ```
 
 SQLPad users do not need to be added ahead of time, and may be created on the fly using `SQLPAD_SAML_AUTO_SIGN_UP`. Whenever a new user is detected (unable to match to existing user email), a user record will be added to SQLPad's user table and a user signed in. By default users are not auto-created and must otherwise be added ahead of time.
+
+Supported SAML claims: 
+- Azure `role` also known as `appRoles` in azure
+- Azure `groups`
+
+Order for determining the SAML role:
+1. Is role `admin` present in role claim? if yes, then sqlpad role is `admin`.
+2. Is `SQLPAD_SAML_ADMIN_GROUP` present in groups claim? if yes, then sqlpad role is `admin`
+3. SQLPad role is `SQLPAD_SAML_DEFAULT_ROLE`
+
+The SAML base roles selection is used only when `SQLPAD_SAML_ENFORCED_ROLE` is `true` on each login, or when creating a new user.
 
 ## LDAP
 

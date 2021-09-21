@@ -255,6 +255,16 @@ const configItems = [
     default: 'editor',
   },
   {
+    key: 'samlAdminGroup',
+    envVar: 'SQLPAD_SAML_ADMIN_GROUP',
+    default: '',
+  },
+  {
+    key: 'samlEnforcedRole',
+    envVar: 'SQLPAD_SAML_ENFORCED_ROLE',
+    default: false,
+  },
+  {
     key: 'allowConnectionAccessToEveryone',
     envVar: 'SQLPAD_ALLOW_CONNECTION_ACCESS_TO_EVERYONE',
     default: true,
