@@ -2,12 +2,16 @@ import mitt from 'mitt';
 import React, { useEffect, useState } from 'react';
 import styles from './message.module.css';
 
-const emitter = mitt();
-
 interface Message {
   message: string;
   type: 'success' | 'error';
 }
+
+type Events = {
+  message: Message;
+};
+
+const emitter = mitt<Events>();
 
 export function MessageDisplayer() {
   const [messages, setMessages] = useState<Message[]>([]);

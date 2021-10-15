@@ -33,7 +33,7 @@ function QueryHistoryContent() {
           if (f.value) {
             f.value = new Date(f.value).toISOString();
           }
-        } catch (error) {
+        } catch (error: any) {
           f.value = error.message;
         }
       }
