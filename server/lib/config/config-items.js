@@ -30,6 +30,11 @@ const configItems = [
     default: 60,
   },
   {
+    key: 'sessionCookieSameSite',
+    envVar: 'SQLPAD_SESSION_COOKIE_SAME_SITE',
+    default: 'strict',
+  },
+  {
     key: 'sessionStore',
     envVar: 'SQLPAD_SESSION_STORE',
     default: 'file', // database, redis, memory

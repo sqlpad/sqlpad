@@ -149,6 +149,10 @@ SQLPAD_OIDC_ISSUER = "https://some.openidprovider.com/oauth2/default"
 SQLPAD_OIDC_AUTHORIZATION_URL = "https://some.openidprovider.com/oauth2/default/v1/authorize"
 SQLPAD_OIDC_TOKEN_URL = "https://some.openidprovider.com/oauth2/default/v1/token"
 SQLPAD_OIDC_USER_INFO_URL = "https://some.openidprovider.okta.com/oauth2/default/v1/userinfo"
+
+# To enable spec compliant browsers to work.
+# Default is 'strict' and that removes the session cookie on redirects.
+SQLPAD_SESSION_COOKIE_SAME_SITE = 'Lax'
 ```
 
 The callback redirect URI used by SQLPad is `<baseurl>/auth/oidc/callback`.

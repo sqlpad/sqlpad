@@ -109,12 +109,13 @@ async function makeApp(config, models) {
   );
 
   const cookieMaxAgeMs = parseInt(config.get('sessionMinutes'), 10) * 60 * 1000;
+  const cookieSameSite = config.get('sessionCookieSameSite');
 
   const sessionOptions = {
     saveUninitialized: false,
     resave: true,
     rolling: true,
-    cookie: { maxAge: cookieMaxAgeMs, sameSite: 'strict' },
+    cookie: { maxAge: cookieMaxAgeMs, sameSite: cookieSameSite },
     secret: config.get('cookieSecret'),
     name: config.get('cookieName'),
   };
