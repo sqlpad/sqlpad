@@ -44,7 +44,7 @@ function newAthenaClient(connection) {
     };
     AWS.config.update(awsCredentials);
   } else {
-    AWS.config.update({ region: awsCredential.region });
+    AWS.config.update({ region: connection.awsRegion });
   }
 
   const athenaExpressConfig = {
