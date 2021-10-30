@@ -85,6 +85,15 @@ class ConnectionAccesses {
     return this.sequelizeDb.ConnectionAccesses.findOne({ where });
   }
 
+  findAllActiveByUserId(userId) {
+    const where = {
+      userId: { [Op.in]: [userId, consts.EVERYONE_ID] },
+      expiryDate: { [Op.gt]: new Date() },
+    };
+
+    return this.sequelizeDb.ConnectionAccesses.findAll({ where });
+  }
+
   findAllActiveByConnectionId(connectionId) {
     const where = {
       connectionId: { [Op.in]: [connectionId, consts.EVERY_CONNECTION_ID] },
