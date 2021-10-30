@@ -62,6 +62,11 @@ SQLPAD_SESSION_MINUTES = 60
 # `database` will use whatever backend database is used (or SQLite if SQLPAD_DB_PATH is set)
 SQLPAD_SESSION_STORE = "file"
 
+# The the SameSite restriction for the Session cookie
+# You may need to switch this to 'Lax' for proper login routing in browsers e.g. oidc does not work in firefox with 'strict'.
+# any login routing dependent on redirects requires 'Lax' to work for more info read https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+SQLPAD_SESSION_COOKIE_SAME_SITE = 'strict'
+
 # Similar to session storage, query result storage may also be configured.
 # Valid values are `file` (default), `database`, `redis`, `memory`
 # If set to `memory`, store is limited to 1000 entries with a max age of 1 hour
