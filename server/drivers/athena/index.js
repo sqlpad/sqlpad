@@ -44,7 +44,7 @@ function newAthenaClient(connection) {
     };
     AWS.config.update(awsCredentials);
   } else {
-    AWS.config.update({ region: connection.region });
+    AWS.config.update({ region: connection.awsRegion });
   }
 
   const athenaExpressConfig = {
@@ -136,7 +136,7 @@ function cancelQuery(executionId, connection = {}) {
     };
     AWS.config.update(awsCredentials);
   } else {
-    AWS.config.update({ region: connection.region });
+    AWS.config.update({ region: connection.awsRegion });
   }
   const athena = new AWS.Athena();
 
