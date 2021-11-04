@@ -1,6 +1,6 @@
 # SQLPad
 
-A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Trino, Presto, Pinot, Drill, SAP HANA, Snowflake, BigQuery, SQLite, and many others via ODBC.
+A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Trino, Presto, Pinot, Drill, SAP HANA, Snowflake, BigQuery, SQLite, TiDB and many others via ODBC.
 
 <img class="screenshot" src="https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png" alt="SQLPad screenshot" >
 
@@ -51,6 +51,9 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
   </div>
   <div class="db-container">
     <img src="images/logo-sqlite.svg" data-origin="images/logo-sqlite.svg" alt="SQLite" >
+  </div>
+  <div class="db-container">
+    <img src="images/logo-tidb.png" data-origin="images/logo-tidb.png" alt="TiDB" >
   </div>
   <div class="db-container">many others via ODBC</div>
 </div>
