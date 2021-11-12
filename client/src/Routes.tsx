@@ -29,24 +29,20 @@ function Routes() {
     return (
       <Router basename={config.baseUrl}>
         <Switch>
-          <Route exact path="/signin" render={() => <SignIn />} />
-          <Route exact path="/signup" render={() => <SignUp />} />
+          <Route exact path="/signin" children={<SignIn />} />
+          <Route exact path="/signup" children={<SignUp />} />
           <Route
             exact
             path="/password-reset/:passwordResetId"
-            render={({ match }) => (
-              <PasswordReset passwordResetId={match.params.passwordResetId} />
-            )}
+            children={<PasswordReset />}
           />
           <Route
             exact
             path="/password-reset"
-            render={() => <PasswordResetRequested />}
+            children={<PasswordResetRequested />}
           />
           {/* If nothing matches redirect to signin */}
-          <Route>
-            <Redirect to="/signin" />
-          </Route>
+          <Route children={<Redirect to="/signin" />} />
         </Switch>
         <RegisterHistory />
       </Router>
@@ -57,34 +53,28 @@ function Routes() {
     <Router basename={config.baseUrl}>
       <Switch>
         {/* For /queries/new prevent a queryId from being captured via params */}
-        <Route exact path="/queries/new">
-          <QueryEditorWrapper />
-        </Route>
+        <Route exact path="/queries/new" children={<QueryEditorWrapper />} />
 
-        <Route exact path="/queries/:queryId">
-          <QueryEditorWrapper />
-        </Route>
+        <Route
+          exact
+          path="/queries/:queryId"
+          children={<QueryEditorWrapper />}
+        />
 
         <Route
           exact
           path="/query-table/:queryId"
-          render={({ match }) => (
-            <QueryTableOnly queryId={match.params.queryId} />
-          )}
+          children={<QueryTableOnly />}
         />
 
         <Route
           exact
           path="/query-chart/:queryId"
-          render={({ match }) => (
-            <QueryChartOnly queryId={match.params.queryId} />
-          )}
+          children={<QueryChartOnly />}
         />
 
         {/* If nothing matches redirect to new query */}
-        <Route>
-          <Redirect to="/queries/new" />
-        </Route>
+        <Route children={<Redirect to="/queries/new" />} />
       </Switch>
       <RegisterHistory />
     </Router>

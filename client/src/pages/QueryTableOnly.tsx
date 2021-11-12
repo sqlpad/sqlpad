@@ -1,5 +1,6 @@
 import queryString from 'query-string';
 import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import ExportButton from '../common/ExportButton';
 import IncompleteDataNotification from '../common/IncompleteDataNotification';
 import QueryResultContainer from '../common/QueryResultContainer';
@@ -22,7 +23,8 @@ interface ParsedQueryString {
   connectionClientId?: string;
 }
 
-function QueryTableOnly({ queryId }: Props) {
+function QueryTableOnly() {
+  const { queryId } = useParams<Props>();
   const qs: ParsedQueryString = queryString.parse(window.location.search);
   const sequence = qs.sequence ? parseInt(qs.sequence) : undefined;
 

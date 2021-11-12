@@ -1,12 +1,17 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import Button from '../common/Button';
 import Input from '../common/Input';
 import message from '../common/message';
 import Spacer from '../common/Spacer';
 import { api } from '../utilities/api';
 
-function PasswordReset({ passwordResetId }: { passwordResetId: string }) {
+interface Params {
+  passwordResetId: string;
+}
+
+function PasswordReset() {
+  const { passwordResetId } = useParams<Params>();
   const history = useHistory();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
