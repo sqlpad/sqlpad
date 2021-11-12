@@ -44,9 +44,7 @@ function Routes() {
             render={() => <PasswordResetRequested />}
           />
           {/* If nothing matches redirect to signin */}
-          <Route>
-            <Redirect to="/signin" />
-          </Route>
+          <Route render={() => <Redirect to="/signin" />} />
         </Switch>
         <RegisterHistory />
       </Router>
@@ -82,9 +80,7 @@ function Routes() {
         />
 
         {/* If nothing matches redirect to new query */}
-        <Route>
-          <Redirect to="/queries/new" />
-        </Route>
+        <Route render={() => <Redirect to="/queries/new" />} />
       </Switch>
       <RegisterHistory />
     </Router>
