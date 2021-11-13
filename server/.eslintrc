@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb-base", "plugin:prettier/recommended"],
+  "extends": ["airbnb-base", "prettier"],
   "env": {
     "mocha": true
   },
@@ -28,6 +28,8 @@
     "prefer-destructuring": "off",
     "prefer-promise-reject-errors": "off",
     "prefer-template": "off",
+    "prefer-arrow-callback": "off",
+    "arrow-body-style": "off",
     "radix": "off",
     "vars-on-top": "off"
   }
