@@ -3,17 +3,12 @@
   "version": "6.8.1",
   "private": true,
   "devDependencies": {
-    "husky": "^4.3.8",
-    "lint-staged": "^10.5.4",
-    "prettier": "^2.3.2"
+    "husky": "^7.0.0",
+    "lint-staged": "^11.2.6",
+    "prettier": "^2.4.1"
   },
   "prettier": {
     "singleQuote": true
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npx lint-staged"
-    }
   },
   "lint-staged": {
     "*.{js,json,css}": [
@@ -22,6 +17,8 @@
   },
   "scripts": {
     "fixlint": "npm run fixlint --prefix client && npm run fixlint --prefix server && prettier --write \"**/*.js\"",
-    "lint": "npm run lint --prefix client && npm run lint --prefix server && prettier --check \"**/*.js\""
+    "lint": "npm run lint --prefix client && npm run lint --prefix server && prettier --check \"**/*.js\"",
+    "prepare": "husky install",
+    "precommit": "lint-staged"
   }
 }

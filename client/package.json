@@ -7,7 +7,6 @@
     "@reach/menu-button": "^0.16.2",
     "@reach/tooltip": "^0.16.2",
     "@types/humanize-duration": "^3.27.0",
-    "@types/jest": "^26.0.24",
     "@types/keymaster": "^1.6.30",
     "@types/lodash": "^4.14.176",
     "@types/match-sorter": "^6.0.0",
@@ -57,8 +56,8 @@
     "analyze": "cross-env SOURCEMAP=true npm run build && source-map-explorer \"build/assets/*.js\" --html bundle-analysis-result.html",
     "build": "tsc && vite build",
     "start": "vite",
-    "fixlint": "eslint --fix \"**/*.{js,jsx,ts,tsx}\"",
-    "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
+    "fixlint": "eslint --fix \"**/*.{js,jsx,ts,tsx}\" && prettier --write .",
+    "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier --check .",
     "dev": "vite",
     "serve": "vite preview"
   },
@@ -80,9 +79,9 @@
     "eslint-plugin-flowtype": "^5.10.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-prettier": "^3.4.1",
     "eslint-plugin-react": "^7.27.0",
     "eslint-plugin-react-hooks": "^4.3.0",
+    "prettier": "^2.4.1",
     "source-map-explorer": "^2.5.2"
   }
 }

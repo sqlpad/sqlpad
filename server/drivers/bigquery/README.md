@@ -18,14 +18,14 @@ The BigQuery driver cannot be tested without creating a project in Google Cloud.
 - Create a project in Google Cloud.
 - Enable the BigQuery API for your project, create a service account, and download the service account key [per this BigQuery Getting Started doc](https://cloud.google.com/bigquery/docs/quickstarts/quickstart-client-libraries).
 - Create a new BigQuery dataset using the web console or the command line:
-    - Web: go into BigQuery (under Big Data in the list of services on the left) and create a new dataset (e.g. `my_new_dataset`).
-    - CLI: after [installing and initializing the Cloud SDK](https://cloud.google.com/bigquery/docs/quickstarts/quickstart-command-line), run `bq mk my_new_dataset`.
+  - Web: go into BigQuery (under Big Data in the list of services on the left) and create a new dataset (e.g. `my_new_dataset`).
+  - CLI: after [installing and initializing the Cloud SDK](https://cloud.google.com/bigquery/docs/quickstarts/quickstart-command-line), run `bq mk my_new_dataset`.
 - From the root directory of the `SQLPad` repo, run `scripts/build.sh` to install dependencies.
 - Define and export the following environment variables:
-    - BIGQUERY_TEST_CREDENTIALS_FILE - service account JSON file pathname
-    - BIGQUERY_TEST_GCP_PROJECT_ID - Google Cloud project name
-    - BIGQUERY_TEST_DATASET_NAME - BigQuery dataset name (unqualified tables will default to this)
-    - BIGQUERY_TEST_DATASET_LOCATION - Google Cloud project region e.g. "US"
+  - BIGQUERY_TEST_CREDENTIALS_FILE - service account JSON file pathname
+  - BIGQUERY_TEST_GCP_PROJECT_ID - Google Cloud project name
+  - BIGQUERY_TEST_DATASET_NAME - BigQuery dataset name (unqualified tables will default to this)
+  - BIGQUERY_TEST_DATASET_LOCATION - Google Cloud project region e.g. "US"
 - Run `sh test.sh`.
 
 ### Manually testing the BigQuery driver _in situ_ within `SQLPad`:
@@ -37,10 +37,11 @@ The BigQuery driver cannot be tested without creating a project in Google Cloud.
 - Point your browser at http://localhost:3010 and log in using the credentials you just defined.
 - Create a new Connection, choosing the BigQuery driver, adding your GCP project ID, the path to the service account keyfile, the dataset you created, and the location (`US`).
 - Select the new connection and execute some statements, e.g.:
-    ```
-    create table my_new_dataset.junk(foo string);
-    insert into my_new_dataset.junk values ('bar');
-    select * from my_new_dataset.junk;
-    ```
 
-    Note that if the connection's dataset is `my_new_dataset`, you can omit the `my_new_dataset.` prefixes in these statements.
+  ```
+  create table my_new_dataset.junk(foo string);
+  insert into my_new_dataset.junk values ('bar');
+  select * from my_new_dataset.junk;
+  ```
+
+  Note that if the connection's dataset is `my_new_dataset`, you can omit the `my_new_dataset.` prefixes in these statements.
