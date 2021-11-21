@@ -1,5 +1,5 @@
 const consts = require('../lib/consts');
-const { Op } = require('@rickbergfalk/sequelize');
+const { Op } = require('sequelize');
 
 class ConnectionAccesses {
   /**

@@ -1,5 +1,5 @@
 require('../typedefs');
-const { QueryTypes } = require('@rickbergfalk/sequelize');
+const { QueryTypes } = require('sequelize');
 const _ = require('lodash');
 const formatLinkHeader = require('format-link-header');
 const queryString = require('query-string');

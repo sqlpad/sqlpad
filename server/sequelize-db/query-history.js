@@ -1,4 +1,4 @@
-const { DataTypes } = require('@rickbergfalk/sequelize');
+const { DataTypes } = require('sequelize');
 
 module.exports = function (sequelize) {
   const QueryHistory = sequelize.define(
