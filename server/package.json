@@ -94,7 +94,7 @@
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
     "sanitize-filename": "^1.6.3",
-    "sequelize": "npm:@rickbergfalk/sequelize@^6.6.5",
+    "sequelize": "^6.11.0",
     "serve-favicon": "^2.5.0",
     "session-file-store": "^1.5.0",
     "snowflake-sdk": "^1.6.5",
@@ -115,7 +115,7 @@
   },
   "devDependencies": {
     "aws-sdk-mock": "^5.4.0",
-    "bytes": "3.1.0",
+    "bytes": "^3.1.1",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.3.0",
@@ -126,7 +126,6 @@
     "node-dev": "^7.1.0",
     "parse-link-header": "^1.0.1",
     "pino-pretty": "^7.2.0",
-    "sinon": "^11.1.2",
     "supertest": "^6.1.6",
     "traverse": "^0.6.6"
   }
