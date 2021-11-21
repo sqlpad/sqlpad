@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "@google-cloud/bigquery": "^5.9.2",
-    "@rickbergfalk/sequelize": "^6.6.5",
     "athena-express": "^7.1.2",
     "aws-sdk": "^2.1033.0",
     "bcryptjs": "^2.4.3",

@@ -1,4 +1,4 @@
-const { QueryTypes } = require('@rickbergfalk/sequelize');
+const { QueryTypes } = require('sequelize');
 
 class Tags {
   /**
