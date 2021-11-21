@@ -138,7 +138,7 @@ const SCHEMA_SQL = `
     join pg_catalog.pg_namespace as ns on ns.oid = cls.relnamespace
     join pg_catalog.pg_type as tp on tp.typelem = attr.atttypid
   where 
-    cls.relkind in ('r', 'v', 'm')
+    cls.relkind in ('r', 'v', 'm', 'f')
     and ns.nspname not in ('pg_catalog', 'pg_toast', 'information_schema')
     and not attr.attisdropped 
     and attr.attnum > 0
