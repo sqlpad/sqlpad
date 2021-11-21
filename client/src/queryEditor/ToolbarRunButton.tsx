@@ -3,8 +3,9 @@ import CopyIcon from 'mdi-react/ContentCopyIcon';
 import UnsavedIcon from 'mdi-react/ContentSaveEditIcon';
 import SaveIcon from 'mdi-react/ContentSaveIcon';
 import FormatIcon from 'mdi-react/FormatAlignLeftIcon';
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useState } from 'react';
 import Button from '../common/Button';
+import QueryConfirmModal from './QueryConfirmModal';
 import {
   connectConnectionClient,
   formatQuery,
@@ -32,7 +33,9 @@ function ToolbarRunButton() {
   const canWrite = useSessionCanWrite();
   const unsavedChanges = useSessionUnsavedChanges();
   const cloneDisabled = !queryId;
-
+  
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  
   const saveIcon = unsavedChanges ? (
     <UnsavedIcon size={16} />
   ) : (
@@ -45,7 +48,7 @@ function ToolbarRunButton() {
         variant="primary"
         onClick={async () => {
           await connectConnectionClient();
-          runQuery();
+          setShowConfirmModal(true)
         }}
         disabled={isRunning}
         menuItems={[
@@ -79,6 +82,11 @@ function ToolbarRunButton() {
       >
         Run
       </Button>
+      <QueryConfirmModal
+        visible={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={() => {runQuery(); setShowConfirmModal(false)}}
+      />
     </>
   );
 }
