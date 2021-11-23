@@ -8,34 +8,11 @@ const id = 'athena';
 const name = 'Athena';
 const asynchronous = true;
 
-// Not very elegant but is compatible with Athena v1 and v2
-const SCHEMA_SQL_INFORMATION_SCHEMA = `
-
-  SELECT
-    c.table_schema as table_schema,
-    c.table_name as table_name,
-    c.column_name as column_name,
-    CASE WHEN regexp_like(c.extra_info, 'partition key')
-    THEN
-      c.data_type || ' (partitioned)'
-    ELSE
-      c.data_type
-    END as data_type
-  FROM
-    INFORMATION_SCHEMA.columns c
-  WHERE
-    c.table_schema NOT IN ('INFORMATION_SCHEMA', 'information_schema')
-  ORDER BY
-    c.table_schema,
-    c.table_name,
-    c.ordinal_position
-`;
-
 /**
- * Load Athena client.
+ * Configure AWS.
  * @param {object} connection
  */
-function newAthenaClient(connection) {
+function configureAWS(connection) {
   if (connection.awsAccessKeyId && connection.awsSecretAccessKey) {
     const awsCredentials = {
       region: connection.awsRegion,
@@ -46,6 +23,79 @@ function newAthenaClient(connection) {
   } else {
     AWS.config.update({ region: connection.awsRegion });
   }
+}
+
+/**
+ * Paginate AWS response.
+ */
+async function traverseAllPages(awsCall, extractor) {
+  return new Promise((resolve, reject) => {
+    let allResults = []
+    awsCall.eachPage((err, data) => {
+      if (data) {
+        allResults = allResults.concat(extractor(data))
+        return true
+      } else if (err) {
+        reject(new Error(`Could not fetch: ${err}`))
+        return true
+      } else {
+        resolve(allResults)
+        return true
+      }
+    })
+  })
+}
+
+/**
+ * Load Athena schema with Glue.
+ * @param {object} connection
+ */
+async function getAthenaSchemaWithGlue(connection) {
+  configureAWS(connection);
+
+  const glue = new AWS.Glue();
+  const databases = await traverseAllPages(
+    glue.getDatabases(),
+    (r) => r.DatabaseList || []
+  )
+
+  const schema = []
+  for (const database of databases) {
+    let include = true;
+    if (connection.athenaDatabaseInclusionPatterns) {
+      include = false;
+      for (const exclusionPattern of connection.athenaDatabaseInclusionPatterns.split(",")) {
+        if (RegExp(exclusionPattern).test(database.Name)) {
+          include = true;
+        }
+      }
+    }
+    if (include) {
+      const tables = await traverseAllPages(
+        glue.getTables({ DatabaseName: database.Name }),
+        (r) => r.TableList || []
+      )
+      for (const table of tables) {
+        for (const column of table["StorageDescriptor"]["Columns"]) {
+          schema.push({
+            table_schema: database.Name,
+            table_name: table.Name,
+            column_name: column["Name"],
+            data_type: column["Type"]
+          })
+        }
+      }
+    }
+  }
+  return { rows: schema };
+}
+
+/**
+ * Load Athena client.
+ * @param {object} connection
+ */
+function newAthenaClient(connection) {
+  configureAWS(connection);
 
   const athenaExpressConfig = {
     aws: AWS,
@@ -170,8 +220,7 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  return startQueryExecution(SCHEMA_SQL_INFORMATION_SCHEMA, connection)
-    .then((executionId) => runQuery(executionId, connection))
+  return getAthenaSchemaWithGlue(connection)
     .then((queryResult) => formatSchemaQueryResults(queryResult));
 }
 
@@ -203,6 +252,13 @@ const fields = [
     formType: 'TEXT',
     label: 'Athena Workgroup. Optional, defaults to "primary"',
   },
+  {
+    key: 'athenaDatabaseInclusionPatterns',
+    formType: 'TEXT',
+    label:
+      'If set, only Athena databases which follow these regex patterns will be shown in the sidebar. ' +
+      'The patterns must be separated by comma.',
+  }
 ];
 
 module.exports = {
