@@ -59,7 +59,7 @@ async function getAthenaSchemaWithGlue(connection) {
     (r) => r.DatabaseList || []
   )
 
-  const schema = []
+  let tables = [];
   for (const database of databases) {
     let include = true;
     if (connection.athenaDatabaseInclusionPatterns) {
@@ -71,22 +71,26 @@ async function getAthenaSchemaWithGlue(connection) {
       }
     }
     if (include) {
-      const tables = await traverseAllPages(
+      tables = tables.concat(traverseAllPages(
         glue.getTables({ DatabaseName: database.Name }),
         (r) => r.TableList || []
-      )
-      for (const table of tables) {
-        for (const column of table["StorageDescriptor"]["Columns"]) {
-          schema.push({
-            table_schema: database.Name,
-            table_name: table.Name,
-            column_name: column["Name"],
-            data_type: column["Type"]
-          })
-        }
-      }
+      ))
     }
   }
+
+  tables = (await Promise.all(tables)).flat();
+  const schema = [];
+  for (let table of tables) {
+    for (const column of table["StorageDescriptor"]["Columns"]) {
+      schema.push({
+        table_schema: table["DatabaseName"],
+        table_name: table["Name"],
+        column_name: column["Name"],
+        data_type: column["Type"]
+      })
+    }
+  }
+
   return { rows: schema };
 }
 
