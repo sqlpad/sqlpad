@@ -30,20 +30,20 @@ function configureAWS(connection) {
  */
 async function traverseAllPages(awsCall, extractor) {
   return new Promise((resolve, reject) => {
-    let allResults = []
+    let allResults = [];
     awsCall.eachPage((err, data) => {
       if (data) {
-        allResults = allResults.concat(extractor(data))
-        return true
+        allResults = allResults.concat(extractor(data));
+        return true;
       } else if (err) {
-        reject(new Error(`Could not fetch: ${err}`))
-        return true
+        reject(new Error(`Could not fetch: ${err}`));
+        return true;
       } else {
-        resolve(allResults)
-        return true
+        resolve(allResults);
+        return true;
       }
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -57,37 +57,41 @@ async function getAthenaSchemaWithGlue(connection) {
   const databases = await traverseAllPages(
     glue.getDatabases(),
     (r) => r.DatabaseList || []
-  )
+  );
 
   let tables = [];
   for (const database of databases) {
     let include = true;
     if (connection.athenaDatabaseInclusionPatterns) {
       include = false;
-      for (const exclusionPattern of connection.athenaDatabaseInclusionPatterns.split(",")) {
+      for (const exclusionPattern of connection.athenaDatabaseInclusionPatterns.split(
+        ','
+      )) {
         if (RegExp(exclusionPattern).test(database.Name)) {
           include = true;
         }
       }
     }
     if (include) {
-      tables = tables.concat(traverseAllPages(
-        glue.getTables({ DatabaseName: database.Name }),
-        (r) => r.TableList || []
-      ))
+      tables = tables.concat(
+        traverseAllPages(
+          glue.getTables({ DatabaseName: database.Name }),
+          (r) => r.TableList || []
+        )
+      );
     }
   }
 
   tables = (await Promise.all(tables)).flat();
   const schema = [];
   for (let table of tables) {
-    for (const column of table["StorageDescriptor"]["Columns"]) {
+    for (const column of table['StorageDescriptor']['Columns']) {
       schema.push({
-        table_schema: table["DatabaseName"],
-        table_name: table["Name"],
-        column_name: column["Name"],
-        data_type: column["Type"]
-      })
+        table_schema: table['DatabaseName'],
+        table_name: table['Name'],
+        column_name: column['Name'],
+        data_type: column['Type'],
+      });
     }
   }
 
@@ -224,8 +228,9 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  return getAthenaSchemaWithGlue(connection)
-    .then((queryResult) => formatSchemaQueryResults(queryResult));
+  return getAthenaSchemaWithGlue(connection).then((queryResult) =>
+    formatSchemaQueryResults(queryResult)
+  );
 }
 
 const fields = [
@@ -262,7 +267,7 @@ const fields = [
     label:
       'If set, only Athena databases which follow these regex patterns will be shown in the sidebar. ' +
       'The patterns must be separated by comma.',
-  }
+  },
 ];
 
 module.exports = {
