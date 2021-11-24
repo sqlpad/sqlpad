@@ -266,7 +266,7 @@ const fields = [
     formType: 'TEXT',
     label:
       'If set, only Athena databases which follow these regex patterns will be shown in the sidebar. ' +
-      'The patterns must be separated by comma.',
+      'The patterns must be separated by commas.',
   },
 ];
 
