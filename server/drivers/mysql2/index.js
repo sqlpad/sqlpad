@@ -33,6 +33,18 @@ function getSchemaSql(database) {
   `;
 }
 
+const BASE64_PREFIX = 'base64:';
+/**
+ * If the path starts with the base64 prefix it will create a buffer from the base64 string
+ * @param {string} path
+ */
+function loadData(path) {
+  if (path.startsWith(BASE64_PREFIX)) {
+    return Buffer.from(path.substring(BASE64_PREFIX.length), 'base64');
+  }
+  return fs.readFileSync(path);
+}
+
 class Client {
   constructor(connection) {
     this.connection = connection;
@@ -61,12 +73,12 @@ class Client {
       // TODO cache key/cert values
       if (connection.mysqlKey && connection.mysqlCert) {
         myConfig.ssl = {
-          key: fs.readFileSync(connection.mysqlKey),
-          cert: fs.readFileSync(connection.mysqlCert),
+          key: loadData(connection.mysqlKey),
+          cert: loadData(connection.mysqlCert),
         };
       }
       if (connection.mysqlCA) {
-        myConfig.ssl['ca'] = fs.readFileSync(connection.mysqlCA);
+        myConfig.ssl['ca'] = loadData(connection.mysqlCA);
       }
       if (connection.minTlsVersion) {
         myConfig.ssl['minVersion'] = connection.minTlsVersion;
