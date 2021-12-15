@@ -833,8 +833,9 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
     }
 
     const stringCompare = new Intl.Collator('en', { sensitivity: 'base' });
-    const nameCompare: { (a: { name: string }, b: { name: string }): number } =
-      (a, b) => stringCompare.compare(a.name, b.name);
+    const nameCompare: {
+      (a: { name: string }, b: { name: string }): number;
+    } = (a, b) => stringCompare.compare(a.name, b.name);
     if (data?.schemas) {
       data.schemas.sort(nameCompare);
       data.schemas.forEach((schema) => {
