@@ -10,7 +10,7 @@
     "@types/keymaster": "^1.6.30",
     "@types/lodash": "^4.14.178",
     "@types/match-sorter": "^6.0.0",
-    "@types/node": "^14.18.0",
+    "@types/node": "^14.18.1",
     "@types/parse-link-header": "^1.0.1",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
@@ -48,7 +48,7 @@
     "typescript": "^4.5.4",
     "use-debounce": "^7.0.1",
     "uuid": "^8.3.2",
-    "vite": "^2.7.2",
+    "vite": "^2.7.3",
     "whatwg-fetch": "^3.5.0",
     "zustand": "^3.6.7"
   },
