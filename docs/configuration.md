@@ -80,6 +80,9 @@ SQLPAD_COOKIE_NAME = "sqlpad.sid"
 # Secret used to sign cookies
 SQLPAD_COOKIE_SECRET = "secret-used-to-sign-cookies-please-set-and-make-strong"
 
+# Set secure cookie attribute
+SQLPAD_COOKIE_SECURE = "false"
+
 # Acquire socket from systemd if available
 SQLPAD_SYSTEMD_SOCKET = ""
 
@@ -89,6 +92,10 @@ SQLPAD_ALLOWED_DOMAINS = ""
 
 # Path to root of seed data directories. See Seed Data documentation.
 SQLPAD_SEED_DATA_PATH = ""
+
+# Trust proxy
+# https://expressjs.com/en/guide/behind-proxies.html
+SQLPAD_TRUST_PROXY = "false"
 ```
 
 ## Application Behavior

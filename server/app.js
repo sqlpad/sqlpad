@@ -65,7 +65,7 @@ async function makeApp(config, models) {
   ============================================================================= */
   const app = express();
 
-  app.set('trust proxy', true);
+  app.set('trust proxy', config.get('trustProxy'));
 
   // Default helmet protections, minus frameguard (becaue of sqlpad iframe embed), adding referrerPolicy
   app.use(helmet.dnsPrefetchControl());
@@ -120,12 +120,7 @@ async function makeApp(config, models) {
     name: config.get('cookieName'),
   };
 
-  // Toggle secure flag for cookies if we're running under HTTPS
-  const publicUrl = config.get('publicUrl');
-
-  if (publicUrl && /^https/.test(publicUrl)) {
-    sessionOptions.cookie.secure = true;
-  }
+  sessionOptions.cookie.secure = config.get('cookieSecure');
 
   const sessionStore = config.get('sessionStore').toLowerCase();
 
