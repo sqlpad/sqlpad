@@ -73,7 +73,7 @@ async function passportOidcStrategyHandler(
  * passport-openidconnect has not been updated in quite some time,
  * and is not as robust as openid-client.
  *
- * In a future version, remove passport-openidconnect support.
+ * TODO BREAKING CHANGE - In a future version, remove passport-openidconnect support.
  * @param {object} config
  */
 function enableOidcLegacy(config) {
