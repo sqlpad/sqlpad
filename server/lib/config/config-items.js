@@ -25,6 +25,11 @@ const configItems = [
     default: 'secret-used-to-sign-cookies-please-set-and-make-strong',
   },
   {
+    key: 'cookieSecure',
+    envVar: 'SQLPAD_COOKIE_SECURE',
+    default: false,
+  },
+  {
     key: 'sessionMinutes',
     envVar: 'SQLPAD_SESSION_MINUTES',
     default: 60,
@@ -313,6 +318,12 @@ const configItems = [
     key: 'seedDataPath',
     envVar: 'SQLPAD_SEED_DATA_PATH',
     default: '',
+  },
+  // https://expressjs.com/en/guide/behind-proxies.html
+  {
+    key: 'trustProxy',
+    envVar: 'SQLPAD_TRUST_PROXY',
+    default: false,
   },
   {
     key: 'authProxyEnabled',
