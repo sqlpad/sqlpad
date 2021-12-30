@@ -1,0 +1,43 @@
+replicaCount: 1
+
+image:
+  repository: sqlpad/sqlpad
+  pullPolicy: IfNotPresent
+  tag: "5"
+
+resources:
+  limits:
+    memory: 512Mi
+    cpu: 1
+  requests:
+    memory: 256Mi        
+    cpu: "0.5"
+
+ports:
+  containerPort: 3000
+
+configmap:
+  name: "sqlpad-cm"
+
+env:
+  sqlpad:
+    SQLPAD_ADMIN: "admin@sqlpad.com"
+    SQLPAD_ADMIN_PASSWORD: "admin"
+    SQLPAD_APP_LOG_LEVEL: "info"
+    SQLPAD_WEB_LOG_LEVEL: "info"
+    SQLPAD_CONNECTIONS__pgdemo__name: "Postgres demo"
+    SQLPAD_CONNECTIONS__pgdemo__driver: "postgres"
+    SQLPAD_CONNECTIONS__pgdemo__host: "sqlpad-postgresql"
+    SQLPAD_CONNECTIONS__pgdemo__database: "postgres"
+    SQLPAD_CONNECTIONS__pgdemo__username: "sqlpad"
+    SQLPAD_CONNECTIONS__pgdemo__password: "sqlpad"
+    SQLPAD_CONNECTIONS__pgdemo__multiStatementTransactionEnabled: true
+    SQLPAD_CONNECTIONS__pgdemo__idleTimeoutSeconds: "86400"
+
+postgresql:
+  enabled: true
+  postgresUser: sqlpad
+  postgresPassword: sqlpad
+  postgresDatabase: postgres
+  PGPASSWORD: sqlpad
+  initdbScriptsConfigMap: "sqlpad-cm"
