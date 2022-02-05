@@ -30,7 +30,7 @@
     "match-sorter": "^6.3.1",
     "mdi-react": "^7.4.0",
     "mitt": "^3.0.0",
-    "parse-link-header": "^1.0.1",
+    "parse-link-header": "^2.0.0",
     "prism-react-renderer": "^1.2.1",
     "prop-types": "^15.8.1",
     "query-string": "^7.1.1",
