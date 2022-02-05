@@ -1,5 +1,17 @@
 # Changelog
 
+## [6.9.0] - 2022-02-05
+
+- Add cookie security configuration options
+- Limit listed connections based on user access
+- Add SAML based role management
+- Postgres: Add foreign tables to schema
+- Athena: Fix athena region configuration
+- Athena: Add support reading schema from glue
+- MySQL: Allow base64 for SSL
+- Fix migrations to be MySQL 5.7 safe
+- Update dependencies
+
 ## [6.8.1] - 2021-09-05
 
 - Prevent disclosure of Google OAuth secret
