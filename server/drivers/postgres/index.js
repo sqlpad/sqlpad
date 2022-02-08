@@ -31,6 +31,11 @@ class Client {
       stream: createSocksConnection(connection),
     };
 
+    const queryTimeout = parseInt(connection.queryTimeout, 10);
+    if (queryTimeout) {
+      pgConfig.query_timeout = queryTimeout * 1000;
+    }
+
     // TODO cache key/cert values
     if (connection.postgresKey && connection.postgresCert) {
       pgConfig.ssl = {
@@ -267,6 +272,11 @@ const fields = [
     label: 'Pre-query Statements (Optional)',
     placeholder:
       'Use to enforce session variables like:\n  SET statement_timeout = 15000;\n\nDeny multiple statements per query to avoid overwritten values.',
+  },
+  {
+    key: 'queryTimeout',
+    formType: 'TEXT',
+    label: 'Query Timeout (seconds)',
   },
 ];
 

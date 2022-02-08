@@ -146,6 +146,7 @@ A default connection selection can be set using environment variable `SQLPAD_DEF
 | `driver`                           | Must be `postgres`                                    |   text    |
 | `multiStatementTransactionEnabled` | Reuse db connection across query executions           |  boolean  |
 | `idleTimeoutSeconds`               | Seconds to allow connection to be idle before closing |  number   |
+| `queryTimeout`                     | Seconds to allow any query to run before cancelling   |  number   |
 | `host`                             | Host/Server/IP Address                                |   text    |
 | `port`                             | Port (optional)                                       |   text    |
 | `database`                         | Database                                              |   text    |
