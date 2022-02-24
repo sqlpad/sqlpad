@@ -31,6 +31,8 @@
     "prefer-arrow-callback": "off",
     "arrow-body-style": "off",
     "radix": "off",
-    "vars-on-top": "off"
+    "vars-on-top": "off",
+    "prefer-regex-literals": "off",
+    "no-promise-executor-return": "off"
   }
 }
