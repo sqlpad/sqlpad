@@ -115,8 +115,8 @@
   "devDependencies": {
     "aws-sdk-mock": "^5.6.2",
     "bytes": "^3.1.2",
-    "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint": "^8.9.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-plugin-import": "^2.25.4",
     "mocha": "^9.2.1",
