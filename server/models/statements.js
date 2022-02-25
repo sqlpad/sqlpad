@@ -36,7 +36,7 @@ class Statements {
     }
 
     if (this.queryResultStore === 'memory') {
-      this.memoryCache = new LRU({ max: 1000, maxAge: 1000 * 60 * 60 });
+      this.memoryCache = new LRU({ max: 1000, ttl: 1000 * 60 * 60 });
     }
   }
 
