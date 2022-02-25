@@ -79,15 +79,17 @@ class TestUtils {
 
   static redisAvailable(redisUri) {
     return new Promise((resolve) => {
-      const client = redis.createClient(redisUri);
-      client.on('error', () => {
-        resolve(false);
-        client.end(true);
-      });
-      client.on('connect', () => {
-        resolve(true);
-        client.end(true);
-      });
+      const client = redis.createClient({ url: redisUri });
+      client
+        .connect()
+        .then(() => {
+          resolve(true);
+          client.quit();
+        })
+        .catch(() => {
+          resolve(false);
+          client.quit();
+        });
     });
   }
 

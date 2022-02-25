@@ -152,7 +152,11 @@ async function makeApp(config, models) {
       break;
     }
     case 'redis': {
-      const redisClient = redis.createClient(config.get('redisUri'));
+      const redisClient = redis.createClient({
+        legacyMode: true,
+        url: config.get('redisUri'),
+      });
+      redisClient.connect().catch((error) => appLog.error(error));
       sessionOptions.store = new RedisStore({ client: redisClient });
       sessionOptions.resave = false;
       break;
