@@ -5,8 +5,8 @@ on:
   schedule:
     - cron: '0 10 * * *' # everyday at 10am
   push:
-    branches:
-      - '**'
+    # branches:
+    #   - '**'
     tags:
       - 'v*.*.*'
   pull_request:

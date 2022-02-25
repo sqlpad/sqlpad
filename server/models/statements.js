@@ -3,11 +3,11 @@ const util = require('util');
 const path = require('path');
 const fs = require('fs');
 const mkdirp = require('mkdirp');
-const { promisify } = require('util');
 const LRU = require('lru-cache');
 const redis = require('redis');
 const { Op } = require('sequelize');
 const ensureJson = require('./ensure-json');
+const appLog = require('../lib/app-log');
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
 const unlink = util.promisify(fs.unlink);
@@ -28,15 +28,13 @@ class Statements {
     this.queryResultStore = config.get('queryResultStore');
 
     if (this.queryResultStore === 'redis') {
-      const client = redis.createClient(config.get('redisUri'));
+      const client = redis.createClient({ url: config.get('redisUri') });
+      client.connect().catch((error) => appLog.error(error));
       this.redisClient = client;
-      this.redisGetAsync = promisify(client.get).bind(client);
-      this.redisSetexAsync = promisify(client.setex).bind(client);
-      this.redisDelAsync = promisify(client.del).bind(client);
     }
 
     if (this.queryResultStore === 'memory') {
-      this.memoryCache = new LRU({ max: 1000, maxAge: 1000 * 60 * 60 });
+      this.memoryCache = new LRU({ max: 1000, ttl: 1000 * 60 * 60 });
     }
   }
 
@@ -107,7 +105,7 @@ class Statements {
     }
 
     if (this.isRedisStore()) {
-      await this.redisDelAsync(redisDbKey(id));
+      await this.redisClient.del(redisDbKey(id));
     }
 
     if (this.isMemoryStore()) {
@@ -189,7 +187,7 @@ class Statements {
         if (!seconds || seconds <= 0) {
           seconds = 60 * 60;
         }
-        await this.redisSetexAsync(
+        await this.redisClient.setEx(
           redisDbKey(id),
           seconds,
           JSON.stringify(arrOfArr)
@@ -262,7 +260,7 @@ class Statements {
     }
 
     if (this.isRedisStore()) {
-      const json = await this.redisGetAsync(redisDbKey(statement.id));
+      const json = await this.redisClient.get(redisDbKey(statement.id));
       if (json) {
         const parsed = JSON.parse(json);
         if (Array.isArray(parsed)) {
