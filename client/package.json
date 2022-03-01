@@ -44,12 +44,12 @@
     "react-window-infinite-loader": "^1.0.5",
     "swr": "^1.2.2",
     "taucharts": "^2.8.0",
-    "typescript": "^4.5.5",
+    "typescript": "^4.6.2",
     "use-debounce": "^7.0.1",
     "uuid": "^8.3.2",
-    "vite": "^2.8.4",
+    "vite": "^2.8.5",
     "whatwg-fetch": "^3.5.0",
-    "zustand": "^3.7.0"
+    "zustand": "^3.7.1"
   },
   "scripts": {
     "analyze": "cross-env SOURCEMAP=true npm run build && source-map-explorer \"build/assets/*.js\" --html bundle-analysis-result.html",
