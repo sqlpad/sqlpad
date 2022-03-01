@@ -97,7 +97,7 @@ function QueryListDrawer({ onClose, visible }: Props) {
         setLoading(false);
         setError(error);
         if (links && links.next) {
-          setNext(links.next.url);
+          setNext(links.next);
         } else {
           setNext(null);
         }
