@@ -1,4 +1,3 @@
-import parseLinkHeader from 'parse-link-header';
 import useSWR, { mutate } from 'swr';
 import 'whatwg-fetch';
 import message from '../common/message';
@@ -19,12 +18,13 @@ import {
   User,
   UserSelfUpdate,
 } from '../types';
+import { Links, parseLinkHeader } from '../utilities/parse-link-header';
 import baseUrl from './baseUrl';
 
 interface FetchResponse<DataT> {
   data?: DataT;
   error?: string;
-  links?: parseLinkHeader.Links;
+  links?: Links;
 }
 
 async function fetchJson<DataT = any>(
