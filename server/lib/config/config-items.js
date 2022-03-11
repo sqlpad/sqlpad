@@ -130,6 +130,11 @@ const configItems = [
     default: '',
   },
   {
+    key: 'googleDefaultRole',
+    envVar: 'SQLPAD_GOOGLE_DEFAULT_ROLE',
+    default: 'editor',
+  },
+  {
     key: 'publicUrl',
     envVar: 'PUBLIC_URL',
     default: '',
