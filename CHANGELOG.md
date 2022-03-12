@@ -1,5 +1,11 @@
 # Changelog
 
+## [6.10.0] - 2022-03-11
+
+- Add postgres query timeout config
+- Add default role config for Google Auth
+- Update dependencies
+
 ## [6.9.0] - 2022-02-05
 
 - Add cookie security configuration options
