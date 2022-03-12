@@ -42,7 +42,7 @@
   "dependencies": {
     "@google-cloud/bigquery": "^5.11.0",
     "athena-express": "^7.1.4",
-    "aws-sdk": "^2.1091.0",
+    "aws-sdk": "^2.1092.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.2",
     "cassandra-driver": "^4.6.3",
@@ -115,11 +115,11 @@
   "devDependencies": {
     "aws-sdk-mock": "^5.6.2",
     "bytes": "^3.1.2",
-    "eslint": "^8.10.0",
+    "eslint": "^8.11.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.25.4",
-    "mocha": "^9.2.1",
+    "mocha": "^9.2.2",
     "ncp": "^2.0.0",
     "nise": "^5.1.1",
     "node-dev": "^7.2.0",
