@@ -1,4 +1,9 @@
-const _ = require('lodash');
+const mustache = require('mustache');
+
+// Disable HTML escaping. We're not using it for HTML
+mustache.escape = function (text) {
+  return text;
+};
 
 /**
  * Iterates over connection object, replacing any template strings with values from user
@@ -19,9 +24,7 @@ function renderConnection(connection, user) {
     } else {
       const value = connection[key];
       if (typeof value === 'string') {
-        _.templateSettings.interpolate = /{{([\s\S]+?)}}/g;
-        const compiled = _.template(value);
-        replaced[key] = compiled({ user });
+        replaced[key] = mustache.render(value, { user });
       } else {
         replaced[key] = value;
       }
