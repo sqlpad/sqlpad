@@ -1,5 +1,10 @@
 # Changelog
 
+## [6.10.1] - 2022-03-13
+
+- Secure connection template functionality.
+  This restricts connection template values to fields on user object, preventing the use of arbitrary JavaScript, as it could be leveraged for abuse. (This functionality was, and still is, only available to `admin` accounts.)
+
 ## [6.10.0] - 2022-03-11
 
 - Add postgres query timeout config
