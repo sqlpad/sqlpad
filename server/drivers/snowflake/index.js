@@ -82,9 +82,6 @@ function runQuery(query, connection) {
             return resolve({ rows, incomplete });
           });
 
-        // Check to see if a custom maxrows is set, otherwise use default
-        const maxRows = resolvePositiveNumber(this.connection.maxrows_override, this.connection.maxRows);
-
         sfConnection
           .execute({ sqlText: query })
           .streamRows()
@@ -96,6 +93,11 @@ function runQuery(query, connection) {
           .on('data', function (row) {
             if (addRowsToResults) {
               // If we haven't hit the max yet add row to results
+              // Check to see if a custom maxrows is set, otherwise use default
+              const maxRows = resolvePositiveNumber(
+                connection.maxrows_override,
+                connection.maxRows
+              );
               if (rows.length < maxRows) {
                 return rows.push(row);
               }
@@ -224,14 +226,20 @@ const fields = [
   },
 ];
 
-function resolvePositiveNumber(num, defaultValue){
-  if(num == null) return defaultValue;
-  if(typeof num === 'string') num = Number.parseInt(num, 10);
-  if(typeof num !== 'number') return defaultValue;
-  if(!Number.isFinite(num)) return defaultValue;
-  if(num > 0) return num;
+/**
+ * Check if number is a positive integer, otherwise return default
+ * @param {object} num
+ * @param {number} defaultValue
+ * @returns
+ */
+function resolvePositiveNumber(num, defaultValue) {
+  if (num == null) return defaultValue;
+  if (typeof num === 'string') num = Number.parseInt(num, 10);
+  if (typeof num !== 'number') return defaultValue;
+  if (!Number.isFinite(num)) return defaultValue;
+  if (num > 0) return num;
   return defaultValue;
- }
+}
 
 module.exports = {
   id,
