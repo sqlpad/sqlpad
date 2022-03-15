@@ -118,7 +118,8 @@ class Client {
       throw new Error('Must be connected');
     }
 
-    const { maxRows } = this.connection;
+    // Check to see if a custom maxrows is set, otherwise use default
+    const maxRows = resolvePositiveNumber(connection.maxrows_override, connection.maxRows) ;
     const maxRowsPlusOne = maxRows + 1;
     const limitedQuery = sqlLimiter.limit(
       query,
@@ -243,7 +244,22 @@ const fields = [
     formType: 'CHECKBOX',
     label: 'Use old/insecure pre 4.1 Auth System',
   },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
+    description: 'Optional',
+  },
 ];
+
+function resolvePositiveNumber(num, defaultValue){
+  if(num == null) return defaultValue;
+  if(typeof num === 'string') num = Number.parseInt(a, 10);
+  if(typeof num !== 'number') return defaultValue;
+  if(!Number.isFinite(num)) return defaultValue;
+  if(num > 0) return num;
+  return defaultValue;
+ }
 
 module.exports = {
   id,
