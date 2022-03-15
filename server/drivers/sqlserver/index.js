@@ -65,7 +65,7 @@ function runQuery(query, connection) {
       }
 
       // Check to see if a custom maxrows is set, otherwise use default
-      var  maxRows = resolvePositiveNumber(connection.maxrows_override, connection.maxRows) ;
+      const maxRows = resolvePositiveNumber(connection.maxrows_override, connection.maxRows) ;
 
       const request = new mssql.Request(pool);
       // Stream set a config level doesn't seem to work
