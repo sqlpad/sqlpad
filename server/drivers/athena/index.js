@@ -124,7 +124,8 @@ function newAthenaClient(connection) {
 function startQueryExecution(queryString, connection = {}) {
   const athenaClient = newAthenaClient(connection);
 
-  const maxRows = connection.maxRows;
+  // Check to see if a custom maxrows is set, otherwise use default
+  const maxRows = resolvePositiveNumber(connection.maxrows_override, connection.maxRows) ;
   const maxRowsPlusOne = maxRows + 1;
   const limitedQuery = sqlLimiter.limit(queryString, ['limit'], maxRowsPlusOne);
 
@@ -147,7 +148,8 @@ function startQueryExecution(queryString, connection = {}) {
  * @param {object} connection
  */
 function runQuery(executionId, connection = {}) {
-  const maxRows = connection.maxRows;
+  // Check to see if a custom maxrows is set, otherwise use default
+  const maxRows = resolvePositiveNumber(connection.maxrows_override, connection.maxRows) ;
   const maxRowsPlusOne = maxRows + 1;
   const athenaClient = newAthenaClient(connection);
 
@@ -268,7 +270,22 @@ const fields = [
       'If set, only Athena databases which follow these regex patterns will be shown in the sidebar. ' +
       'The patterns must be separated by commas.',
   },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
+    description: 'Optional',
+  },
 ];
+
+function resolvePositiveNumber(num, defaultValue){
+  if(num == null) return defaultValue;
+  if(typeof num === 'string') num = Number.parseInt(a, 10);
+  if(typeof num !== 'number') return defaultValue;
+  if(!Number.isFinite(num)) return defaultValue;
+  if(num > 0) return num;
+  return defaultValue;
+ }
 
 module.exports = {
   id,
