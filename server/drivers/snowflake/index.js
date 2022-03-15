@@ -82,6 +82,9 @@ function runQuery(query, connection) {
             return resolve({ rows, incomplete });
           });
 
+        // Check to see if a custom maxrows is set, otherwise use default
+        const maxRows = resolvePositiveNumber(connection.maxrows_override, connection.maxRows) ;
+
         sfConnection
           .execute({ sqlText: query })
           .streamRows()
@@ -93,7 +96,7 @@ function runQuery(query, connection) {
           .on('data', function (row) {
             if (addRowsToResults) {
               // If we haven't hit the max yet add row to results
-              if (rows.length < connection.maxRows) {
+              if (rows.length < maxRows) {
                 return rows.push(row);
               }
 
@@ -213,7 +216,22 @@ const fields = [
     placeholder:
       'Use to enforce session parameters like:\n  ALTER SESSION SET statement_timeout_in_seconds = 15;',
   },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
+    description: 'Optional',
+  },
 ];
+
+function resolvePositiveNumber(num, defaultValue){
+  if(num == null) return defaultValue;
+  if(typeof num === 'string') num = Number.parseInt(a, 10);
+  if(typeof num !== 'number') return defaultValue;
+  if(!Number.isFinite(num)) return defaultValue;
+  if(num > 0) return num;
+  return defaultValue;
+ }
 
 module.exports = {
   id,
