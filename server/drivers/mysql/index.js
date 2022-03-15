@@ -146,7 +146,7 @@ class Client {
     }
 
     // Check to see if a custom maxrows is set, otherwise use default
-    const maxRows = resolvePositiveNumber(connection.maxrows_override, connection.maxRows) ;
+    const maxRows = resolvePositiveNumber(this.connection.maxrows_override, this.connection.maxRows);
     const maxRowsPlusOne = maxRows + 1;
     const limitedQuery = sqlLimiter.limit(
       query,

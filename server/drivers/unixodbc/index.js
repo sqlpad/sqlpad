@@ -149,7 +149,7 @@ class Client {
     const { limit_strategies } = this.connection;
     
     // Check to see if a custom maxrows is set, otherwise use default
-    const maxRows = resolvePositiveNumber(connection.maxrows_override, connection.maxRows) ;
+    const maxRows = resolvePositiveNumber(this.connection.maxrows_override, this.connection.maxRows);
     
     let cleanedQuery = query;
     const strategies = cleanAndValidateLimitStrategies(limit_strategies);
