@@ -1,10 +1,10 @@
 {
   "name": "sqlpad-project",
-  "version": "6.9.0",
+  "version": "6.10.1",
   "private": true,
   "devDependencies": {
     "husky": "^7.0.0",
-    "lint-staged": "^12.3.4",
+    "lint-staged": "^12.3.5",
     "prettier": "^2.5.1"
   },
   "prettier": {

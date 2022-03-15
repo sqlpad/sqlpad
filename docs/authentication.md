@@ -113,6 +113,9 @@ SQLPAD_GOOGLE_CLIENT_ID = ""
 # Google Client Secret used for OAuth setup. Authorized redirect URI for sqlpad is '[baseurl]/auth/google/callback'
 SQLPAD_GOOGLE_CLIENT_SECRET = ""
 
+# Default role for Google OAuth. May be either `admin` or `editor`
+SQLPAD_GOOGLE_DEFAULT_ROLE = "editor"
+
 # Public URL required
 PUBLIC_URL = "http://localhost"
 

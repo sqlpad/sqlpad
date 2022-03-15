@@ -34,9 +34,23 @@ async function passportGoogleStrategyHandler(
     }
     const allowedDomains = config.get('allowedDomains');
     if (checkAllowedDomains(allowedDomains, email)) {
+      // Derive what the googleDefaultRole should be from config
+      // Value in config could be `editor` or `admin`
+      let googleDefaultRole = config
+        .get('googleDefaultRole')
+        .toLowerCase()
+        .trim();
+
+      // @TODO: Consider getting the role from the Google callback?
+      // @TODO: Unify the default role handlers across different auth strategies.
+      const validRoles = new Set(['editor', 'admin']);
+      if (!validRoles.has(googleDefaultRole)) {
+        googleDefaultRole = 'editor';
+      }
+
       const newUser = await models.users.create({
         email,
-        role: 'editor',
+        role: googleDefaultRole,
         signupAt: new Date(),
       });
       webhooks.userCreated(newUser);
