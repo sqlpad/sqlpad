@@ -90,7 +90,9 @@ class Client {
   // It can be assumed it will only ever handle 1 statement at a time
   async runQuery(query) {
     let incomplete = false;
-    const { maxRows } = this.connection;
+    
+    // Check to see if a custom maxrows is set, otherwise use default
+    const maxRows = resolvePositiveNumber(connection.maxrows_override, connection.maxRows) ;
     const maxRowsPlusOne = maxRows + 1;
 
     const limitedQuery = sqlLimiter.limit(
@@ -278,7 +280,22 @@ const fields = [
     formType: 'TEXT',
     label: 'Query Timeout (seconds)',
   },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
+    description: 'Optional',
+  },
 ];
+
+function resolvePositiveNumber(num, defaultValue){
+  if(num == null) return defaultValue;
+  if(typeof num === 'string') num = Number.parseInt(a, 10);
+  if(typeof num !== 'number') return defaultValue;
+  if(!Number.isFinite(num)) return defaultValue;
+  if(num > 0) return num;
+  return defaultValue;
+ }
 
 module.exports = {
   Client,
