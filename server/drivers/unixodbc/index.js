@@ -146,7 +146,12 @@ class Client {
   }
 
   async runQuery(query) {
-    const { limit_strategies, maxRows } = this.connection;
+    const { limit_strategies } = this.connection;
+    
+    var  maxRows = connection.maxRows;
+    if (Number.isFinite(connection.maxrows_override) || connection.maxrows_override > 0) {
+      maxRows = connection.maxrows_override;
+    }
 
     let cleanedQuery = query;
     const strategies = cleanAndValidateLimitStrategies(limit_strategies);
@@ -232,6 +237,12 @@ const fields = [
     key: 'password',
     formType: 'PASSWORD',
     label: 'Database Password',
+    description: 'Optional',
+  },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
     description: 'Optional',
   },
   {
