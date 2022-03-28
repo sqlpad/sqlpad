@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const sqlLimiter = require('sql-limiter');
 const { formatSchemaQueryResults } = require('../utils');
 const appLog = require('../../lib/app-log');
+const { resolvePositiveNumber } = require('../../lib/resolve-number');
 
 const id = 'mysql';
 const name = 'MySQL';
@@ -277,21 +278,6 @@ const fields = [
     description: 'Optional',
   },
 ];
-
-/**
- * Check if number is a positive integer, otherwise return default
- * @param {object} num
- * @param {number} defaultValue
- * @returns
- */
-function resolvePositiveNumber(num, defaultValue) {
-  if (num == null) return defaultValue;
-  if (typeof num === 'string') num = Number.parseInt(num, 10);
-  if (typeof num !== 'number') return defaultValue;
-  if (!Number.isFinite(num)) return defaultValue;
-  if (num > 0) return num;
-  return defaultValue;
-}
 
 module.exports = {
   id,

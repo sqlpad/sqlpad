@@ -4,6 +4,7 @@ const sqlLimiter = require('sql-limiter');
 const SocksConnection = require('socksjs');
 const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
+const { resolvePositiveNumber } = require('../../lib/resolve-number');
 
 const id = 'postgres';
 const name = 'Postgres';
@@ -291,20 +292,6 @@ const fields = [
   },
 ];
 
-/**
- * Check if number is a positive integer, otherwise return default
- * @param {object} num
- * @param {number} defaultValue
- * @returns
- */
-function resolvePositiveNumber(num, defaultValue) {
-  if (num == null) return defaultValue;
-  if (typeof num === 'string') num = Number.parseInt(num, 10);
-  if (typeof num !== 'number') return defaultValue;
-  if (!Number.isFinite(num)) return defaultValue;
-  if (num > 0) return num;
-  return defaultValue;
-}
 module.exports = {
   Client,
   id,
