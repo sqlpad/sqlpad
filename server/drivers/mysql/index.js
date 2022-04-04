@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const sqlLimiter = require('sql-limiter');
 const { formatSchemaQueryResults } = require('../utils');
 const appLog = require('../../lib/app-log');
+const { resolvePositiveNumber } = require('../../lib/resolve-number');
 
 const id = 'mysql';
 const name = 'MySQL';
@@ -145,7 +146,11 @@ class Client {
       throw new Error('Must be connected');
     }
 
-    const { maxRows } = this.connection;
+    // Check to see if a custom maxrows is set, otherwise use default
+    const maxRows = resolvePositiveNumber(
+      this.connection.maxrows_override,
+      this.connection.maxRows
+    );
     const maxRowsPlusOne = maxRows + 1;
     const limitedQuery = sqlLimiter.limit(
       query,
@@ -265,6 +270,12 @@ const fields = [
     label: 'Pre-query Statements (Optional)',
     placeholder:
       'Use to enforce session variables like:\n  SET max_statement_time = 15;\n  SET max_execution_time = 15;\n\nDeny multiple statements per query to avoid overwritten values.',
+  },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
+    description: 'Optional',
   },
 ];
 

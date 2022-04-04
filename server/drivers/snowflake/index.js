@@ -1,5 +1,6 @@
 const snowflake = require('snowflake-sdk');
 const { formatSchemaQueryResults } = require('../utils');
+const { resolvePositiveNumber } = require('../../lib/resolve-number');
 
 const id = 'snowflake';
 const name = 'Snowflake';
@@ -93,7 +94,12 @@ function runQuery(query, connection) {
           .on('data', function (row) {
             if (addRowsToResults) {
               // If we haven't hit the max yet add row to results
-              if (rows.length < connection.maxRows) {
+              // Check to see if a custom maxrows is set, otherwise use default
+              const maxRows = resolvePositiveNumber(
+                connection.maxrows_override,
+                connection.maxRows
+              );
+              if (rows.length < maxRows) {
                 return rows.push(row);
               }
 
@@ -212,6 +218,12 @@ const fields = [
     label: 'Pre-query Statements (Optional)',
     placeholder:
       'Use to enforce session parameters like:\n  ALTER SESSION SET statement_timeout_in_seconds = 15;',
+  },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
+    description: 'Optional',
   },
 ];
 

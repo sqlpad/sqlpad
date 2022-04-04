@@ -2,6 +2,7 @@ const odbc = require('odbc');
 const appLog = require('../../lib/app-log');
 const sqlLimiter = require('sql-limiter');
 const { formatSchemaQueryResults } = require('../utils');
+const { resolvePositiveNumber } = require('../../lib/resolve-number');
 
 const id = 'unixodbc';
 const name = 'unixODBC';
@@ -146,7 +147,13 @@ class Client {
   }
 
   async runQuery(query) {
-    const { limit_strategies, maxRows } = this.connection;
+    const { limit_strategies } = this.connection;
+
+    // Check to see if a custom maxrows is set, otherwise use default
+    const maxRows = resolvePositiveNumber(
+      this.connection.maxrows_override,
+      this.connection.maxRows
+    );
 
     let cleanedQuery = query;
     const strategies = cleanAndValidateLimitStrategies(limit_strategies);
@@ -178,8 +185,8 @@ class Client {
       if (columns && columns.length > 0) {
         // iterate over queryResult, which is also an array of rows
         for (const row of queryResult) {
-          if (this.connection.maxRows) {
-            if (rows.length < this.connection.maxRows) {
+          if (maxRows) {
+            if (rows.length < maxRows) {
               rows.push(row);
             } else {
               incomplete = true;
@@ -232,6 +239,12 @@ const fields = [
     key: 'password',
     formType: 'PASSWORD',
     label: 'Database Password',
+    description: 'Optional',
+  },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
     description: 'Optional',
   },
   {

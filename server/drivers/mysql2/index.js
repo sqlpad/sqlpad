@@ -3,6 +3,7 @@ const mysql = require('mysql2/promise');
 const appLog = require('../../lib/app-log');
 const sqlLimiter = require('sql-limiter');
 const { formatSchemaQueryResults } = require('../utils');
+const { resolvePositiveNumber } = require('../../lib/resolve-number');
 
 const id = 'mysql2';
 const name = 'MySQL2';
@@ -118,7 +119,11 @@ class Client {
       throw new Error('Must be connected');
     }
 
-    const { maxRows } = this.connection;
+    // Check to see if a custom maxrows is set, otherwise use default
+    const maxRows = resolvePositiveNumber(
+      this.connection.maxrows_override,
+      this.connection.maxRows
+    );
     const maxRowsPlusOne = maxRows + 1;
     const limitedQuery = sqlLimiter.limit(
       query,
@@ -242,6 +247,12 @@ const fields = [
     key: 'mysqlInsecureAuth',
     formType: 'CHECKBOX',
     label: 'Use old/insecure pre 4.1 Auth System',
+  },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
+    description: 'Optional',
   },
 ];
 

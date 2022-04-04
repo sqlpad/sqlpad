@@ -4,6 +4,7 @@ const sqlLimiter = require('sql-limiter');
 const SocksConnection = require('socksjs');
 const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
+const { resolvePositiveNumber } = require('../../lib/resolve-number');
 
 const id = 'postgres';
 const name = 'Postgres';
@@ -90,7 +91,12 @@ class Client {
   // It can be assumed it will only ever handle 1 statement at a time
   async runQuery(query) {
     let incomplete = false;
-    const { maxRows } = this.connection;
+
+    // Check to see if a custom maxrows is set, otherwise use default
+    const maxRows = resolvePositiveNumber(
+      this.connection.maxrows_override,
+      this.connection.maxRows
+    );
     const maxRowsPlusOne = maxRows + 1;
 
     const limitedQuery = sqlLimiter.limit(
@@ -277,6 +283,12 @@ const fields = [
     key: 'queryTimeout',
     formType: 'TEXT',
     label: 'Query Timeout (seconds)',
+  },
+  {
+    key: 'maxrows_override',
+    formType: 'TEXT',
+    label: 'Maximum rows to return',
+    description: 'Optional',
   },
 ];
 
