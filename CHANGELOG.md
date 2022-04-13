@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.11.0] - 2022-04-12
+
+- Add max rows override for ODBC, Athena, MySQL, Postgres, Snowflake, and SQL Server drivers
+
 ## [6.10.1] - 2022-03-13
 
 - Secure connection template functionality.
