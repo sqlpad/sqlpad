@@ -15,6 +15,7 @@ function removePassword(connection) {
 
 /**
  * Lists only connections that are available to the user.
+ * TODO MAJOR BREAKING - for next major version, remove all connection data other than name, driver, dates created
  *
  * @param {Req} req
  * @param {Res} res
