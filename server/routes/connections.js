@@ -15,6 +15,7 @@ function removePassword(connection) {
 
 /**
  * Lists only connections that are available to the user.
+ * TODO MAJOR BREAKING - for next major version, remove all connection data other than name, driver, dates created
  *
  * @param {Req} req
  * @param {Res} res
@@ -25,6 +26,9 @@ async function listConnections(req, res) {
     models.connections.findAll(),
     models.connectionAccesses.findAllActiveByUserId(req.user.id),
   ]);
+
+  connections = connections.map((connection) => removePassword(connection));
+
   // Admins have access to all connections.
   if (req.user.role !== 'admin') {
     // map access to a set of connection ids
