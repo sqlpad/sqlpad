@@ -25,6 +25,9 @@ async function listConnections(req, res) {
     models.connections.findAll(),
     models.connectionAccesses.findAllActiveByUserId(req.user.id),
   ]);
+
+  connections = connections.map((connection) => removePassword(connection));
+
   // Admins have access to all connections.
   if (req.user.role !== 'admin') {
     // map access to a set of connection ids
