@@ -2,16 +2,16 @@
 # docker run -it --rm node:12.22.1-alpine3.12 /bin/ash
 FROM node:lts-buster AS build
 ARG ODBC_ENABLED=false
-RUN apt-get update && apt-get install -y \
+RUN npm install --global yarn && apt-get update && apt-get install -y \
     python3 make g++ python3-dev  \
     && ( \
-        if [ "$ODBC_ENABLED" = "true" ] ; \
-        then \
-         echo "Installing ODBC build dependencies." 1>&2 ;\
-         apt-get install -y unixodbc-dev ;\
-         npm install -g node-gyp ;\
-        fi\
-       ) \
+    if [ "$ODBC_ENABLED" = "true" ] ; \
+    then \
+    echo "Installing ODBC build dependencies." 1>&2 ;\
+    apt-get install -y unixodbc-dev ;\
+    npm install -g node-gyp ;\
+    fi\
+    ) \
     && rm -rf /var/lib/apt/lists/*
 RUN npm config set python /usr/bin/python3
 
@@ -28,9 +28,9 @@ COPY ./client/package* ./client/
 COPY ./server/package* ./server/
 
 # Install dependencies
-RUN npm ci
-RUN npm ci --prefix client
-RUN npm ci --prefix server
+RUN yarn
+RUN (cd client && yarn)
+RUN (cd server && yarn)
 
 # Copy rest of the project into docker
 COPY . .
@@ -64,12 +64,12 @@ ARG ODBC_ENABLED=false
 RUN mkdir -p /etc/docker-entrypoint.d \
     && apt-get update && apt-get install -y wget \
     && ( \
-        if [ "$ODBC_ENABLED" = "true" ] ; \
-        then \
-            echo "Installing ODBC runtime dependencies." 1>&2 ;\
-            apt-get install -y unixodbc libaio1 odbcinst libodbc1 ;\
-            touch /etc/odbcinst.ini ;\
-        fi\
+    if [ "$ODBC_ENABLED" = "true" ] ; \
+    then \
+    echo "Installing ODBC runtime dependencies." 1>&2 ;\
+    apt-get install -y unixodbc libaio1 odbcinst libodbc1 ;\
+    touch /etc/odbcinst.ini ;\
+    fi\
     ) \
     && rm -rf /var/lib/apt/lists/* 
 

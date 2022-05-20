@@ -11,12 +11,12 @@ if [ ! -d $SCRIPTS_DIR ] ||
 fi
 
 # Install node modules per package-lock.json
-npm ci
-npm ci --prefix $SQLPAD_CLIENT_DIR
-npm ci --prefix $SQLPAD_SERVER_DIR
+yarn
+(cd $SQLPAD_CLIENT_DIR && yarn)
+(cd $SQLPAD_SERVER_DIR && yarn)
 
 # Build front-end
-npm run build --prefix $SQLPAD_CLIENT_DIR
+(cd $SQLPAD_CLIENT_DIR && yarn build)
 
 # Copy front-end build to server directory
 rm -rf ${SQLPAD_SERVER_DIR}/public

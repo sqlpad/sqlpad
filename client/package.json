@@ -58,6 +58,10 @@
     "dev": "vite",
     "serve": "vite preview"
   },
+  "resolutions": {
+    "@types/react": "17.0.45",
+    "@types/react-dom": "17.0.17"
+  },
   "browserslist": [
     ">0.2%",
     "not dead",

@@ -61,7 +61,7 @@ jobs:
         run: docker-compose -f server/docker-compose.yml up -d ${{ matrix.backendtype }} &
 
       - name: Install node modules
-        run: npm ci --prefix server
+        run: (cd server && yarn)
 
       - name: Download built artifacts
         uses: actions/download-artifact@v1
