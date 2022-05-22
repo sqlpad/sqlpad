@@ -2,7 +2,7 @@
 # docker run -it --rm node:12.22.1-alpine3.12 /bin/ash
 FROM node:lts-buster AS build
 ARG ODBC_ENABLED=false
-RUN npm install --global yarn && apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y \
     python3 make g++ python3-dev  \
     && ( \
     if [ "$ODBC_ENABLED" = "true" ] ; \
