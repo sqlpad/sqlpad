@@ -1,0 +1,7 @@
+version: '3'
+services:
+  tdengine:
+    image: tdengine/tdengine:latest
+    hostname: 'tdengine-server'
+    ports:
+      - '6041:6041'

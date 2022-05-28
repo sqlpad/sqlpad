@@ -102,6 +102,7 @@
     "sql-formatter": "^2.3.3",
     "sql-limiter": "^2.6.0",
     "sqlite3": "npm:@vscode/sqlite3@^5.0.8",
+    "td2.0-rest-connector": "^1.0.3",
     "umzug": "^2.3.0",
     "uuid": "^8.3.2",
     "vertica": "^0.5.5"
