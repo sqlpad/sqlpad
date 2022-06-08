@@ -26,11 +26,17 @@ WORKDIR /sqlpad
 COPY ./package* ./
 COPY ./client/package* ./client/
 COPY ./server/package* ./server/
+COPY ./yarn* ./
+COPY ./client/yarn* ./client/
+COPY ./server/yarn* ./server/
 
 # Install dependencies
 RUN yarn
-RUN (cd client && yarn)
-RUN (cd server && yarn)
+WORKDIR /sqlpad/client
+RUN yarn
+WORKDIR /sqlpad/server
+RUN yarn
+WORKDIR /sqlpad
 
 # Copy rest of the project into docker
 COPY . .
