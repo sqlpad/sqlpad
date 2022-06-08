@@ -1,5 +1,10 @@
 # Changelog
 
+## [6.11.1] - 2022-06-07
+
+- Remove connection password from connection list API. While this is an admin-only API, this matches the behavior for connection detail.
+- Update dependencies
+
 ## [6.11.0] - 2022-04-12
 
 - Add max rows override for ODBC, Athena, MySQL, Postgres, Snowflake, and SQL Server drivers
