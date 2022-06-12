@@ -7,7 +7,6 @@ SQLPad's an old project, and some dependencies are being left at specific versio
 ```
 Package                Current Wanted Latest Why oudated
 -------------------------------------------------------------------------------------------------------------------------------
-mariadb                2.5.6   2.5.6  3.0.0  v3 changes how booleans are handled. Could break
 node-fetch             2.6.7   2.6.7  3.2.6  3.x is ESM, can't be imported via sync `require`
 openid-client          4.9.1   4.9.1  5.1.6  Difficult to test
 passport               0.4.1   0.4.1  0.6.0  Unclear what breaking might be, difficult to test

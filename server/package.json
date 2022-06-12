@@ -63,7 +63,7 @@
     "ldapjs": "^2.3.2",
     "lodash": "^4.17.20",
     "lru-cache": "^7.8.1",
-    "mariadb": "^2.5.6",
+    "mariadb": "^3.0.0",
     "memorystore": "^1.6.7",
     "minimist": "^1.2.6",
     "mkdirp": "^1.0.4",
