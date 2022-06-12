@@ -87,7 +87,7 @@
     "passport-openidconnect": "0.0.2",
     "passport-saml": "^3.2.1",
     "pg": "^8.7.3",
-    "pino": "^7.10.0",
+    "pino": "^8.0.0",
     "prettier": "^2.6.2",
     "query-string": "^7.1.1",
     "redis": "^4.0.6",
@@ -125,7 +125,7 @@
     "nise": "^5.1.1",
     "node-dev": "^7.4.2",
     "parse-link-header": "^2.0.0",
-    "pino-pretty": "^7.6.1",
+    "pino-pretty": "^8.0.0",
     "supertest": "^6.2.2",
     "traverse": "^0.6.6"
   }
