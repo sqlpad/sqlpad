@@ -120,7 +120,7 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
-    "mocha": "^9.2.2",
+    "mocha": "^10.0.0",
     "ncp": "^2.0.0",
     "nise": "^5.1.1",
     "node-dev": "^7.4.2",
