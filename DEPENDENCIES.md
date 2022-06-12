@@ -7,7 +7,6 @@ SQLPad's an old project, and some dependencies are being left at specific versio
 ```
 Package                  Current    Wanted    Latest  Why Outdated
 -------------------------------------------------------------------------------------------------------------------------------
-helmet                     4.6.0     4.6.0     5.0.2  Changes defaults. Not worth hassle yet
 node-fetch                 2.6.7     2.6.7     3.2.0  3.x is ESM, can't be imported via sync `require`
 openid-client              4.9.1     4.9.1     5.1.3  Difficult to test
 passport                   0.4.1     0.4.1     0.5.2  Unclear what breaking might be, difficult to test
