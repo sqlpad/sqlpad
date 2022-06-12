@@ -40,7 +40,7 @@
     "lint": "eslint \"**/*.js\" && prettier --check ."
   },
   "dependencies": {
-    "@google-cloud/bigquery": "^5.12.0",
+    "@google-cloud/bigquery": "^6.0.0",
     "athena-express": "^7.1.5",
     "aws-sdk": "^2.1113.0",
     "bcryptjs": "^2.4.3",
