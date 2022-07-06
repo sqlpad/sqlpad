@@ -4992,10 +4992,10 @@ sql-formatter@^2.3.3:
   dependencies:
     lodash "^4.17.20"
 
-sql-limiter@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/sql-limiter/-/sql-limiter-2.6.0.tgz#698b2cc018c667d55900d04892e40b84376f1034"
-  integrity sha512-UKH+V0p8V0g5HdkMJvThW3kZT/tB5BC0sHFqS0aHMW+7orzk4w8gsd3ZbDAbz1hjAMudj5E3GxiXGRrRsAZRQQ==
+sql-limiter@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/sql-limiter/-/sql-limiter-3.0.0.tgz#3a8f876908fc49e572e904af80f4c5941e0b265a"
+  integrity sha512-D6cT9vpwU+ktA1f6wGHojZLP1iPTkt7x54zsZebcAfdSFym8gYNwkhtSVSU2F3veYsnrIaUetxGtiLDi2YviUg==
   dependencies:
     moo "^0.5.1"
 
