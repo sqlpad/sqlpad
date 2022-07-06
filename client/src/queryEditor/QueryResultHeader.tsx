@@ -102,7 +102,7 @@ function QueryResultHeader() {
       {statementId && isStatementFinished && showLink && (
         <>
           <IconButton
-            disabled={!Boolean(tableLink)}
+            disabled={!tableLink}
             to={tableLink}
             target="_blank"
             rel="noopener noreferrer"
