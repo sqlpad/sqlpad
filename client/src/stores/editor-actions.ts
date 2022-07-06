@@ -138,7 +138,7 @@ export const initEditor = async (
         const foundDefault = connections.find(
           (c) => c.id === defaultConnectionId
         );
-        if (Boolean(foundDefault)) {
+        if (foundDefault) {
           initialConnectionId = defaultConnectionId;
         }
       }
@@ -147,7 +147,7 @@ export const initEditor = async (
         const selectedConnection = connections.find(
           (c) => c.id === selectedConnectionId
         );
-        if (Boolean(selectedConnection)) {
+        if (selectedConnection) {
           initialConnectionId = selectedConnectionId;
         }
       }

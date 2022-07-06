@@ -1,4 +1,4 @@
-import reactRefresh from '@vitejs/plugin-react-refresh';
+import react from '@vitejs/plugin-react';
 
 const sourcemap = process.env.SOURCEMAP === 'true';
 
@@ -30,7 +30,7 @@ proxy['^/.*/api/app'] = PROXY_URL;
 
 // https://vitejs.dev/config/
 const getConfig = ({ command, mode }) => {
-  let base = undefined;
+  let base: string | undefined = undefined;
 
   // command is either build or serve
   if (command === 'serve') {
@@ -39,7 +39,7 @@ const getConfig = ({ command, mode }) => {
 
   return {
     base,
-    plugins: [reactRefresh()],
+    plugins: [react()],
     server: {
       proxy,
     },
