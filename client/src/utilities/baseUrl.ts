@@ -1,7 +1,7 @@
 let _baseUrl = '';
 
 /**
- * Sets and/or gets the base URL of the frontend static content
+ * Sets and/or gets the base URL of the frontend single-page app
  */
 export default function baseUrl(value?: string) {
   if (typeof value === 'string') {

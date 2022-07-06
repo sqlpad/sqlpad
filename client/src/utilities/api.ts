@@ -302,7 +302,7 @@ export const api = {
           config: {
             ...fetched.config,
             baseUrl:
-              import.meta.env.VITE_UI_BASE_URL_OVERRIDE ||
+              import.meta.env.VITE_SPA_BASE_URL_OVERRIDE ||
               fetched.config.baseUrl,
           },
         };
