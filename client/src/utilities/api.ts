@@ -19,7 +19,8 @@ import {
   UserSelfUpdate,
 } from '../types';
 import { Links, parseLinkHeader } from '../utilities/parse-link-header';
-import baseUrl from './baseUrl';
+import { apiBaseUrl } from './baseUrl';
+import swrFetcher from './swr-fetcher';
 
 interface FetchResponse<DataT> {
   data?: DataT;
@@ -32,7 +33,7 @@ async function fetchJson<DataT = any>(
   url: any,
   body?: any
 ): Promise<FetchResponse<DataT>> {
-  const BASE_URL = baseUrl();
+  const BASE_URL = apiBaseUrl();
   const opts: RequestInit = {
     method: method.toUpperCase(),
     credentials: 'same-origin',
@@ -289,7 +290,26 @@ export const api = {
   },
 
   useAppInfo() {
-    return useSWR<AppInfo>('api/app', { dedupingInterval: 60000 });
+    const apiBaseUrlOverride = import.meta.env.VITE_API_BASE_URL_OVERRIDE;
+    if (apiBaseUrlOverride) {
+      apiBaseUrl(import.meta.env.VITE_API_BASE_URL_OVERRIDE);
+    }
+
+    return useSWR<AppInfo>('api/app', {
+      dedupingInterval: 60000,
+      fetcher: async (url: any) => {
+        const fetched = (await swrFetcher(url)) as AppInfo;
+        return {
+          ...fetched,
+          config: {
+            ...fetched.config,
+            baseUrl:
+              import.meta.env.VITE_SPA_BASE_URL_OVERRIDE ||
+              fetched.config.baseUrl,
+          },
+        };
+      },
+    });
   },
 
   reloadAppInfo() {
