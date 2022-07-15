@@ -232,3 +232,18 @@ SQLPAD_HTTPS_CERT_PASSPHRASE = ""
 ## Authentication
 
 See [Authentication page](/authentication) for information on configuring authentication mechanisms.
+
+## React App Build Configuration
+
+The React build of the sqlpad client directory can be customized via .env files or build-time process environment variables.
+
+```bash
+# React App API/SPA Base URL Override
+# By default, the client-side sqlpad React app serves its Single-Page App (SPA, with routing handled in index.html) from the base URL path set by SQLPAD_BASE_URL.
+# If you're building the React app yourself and hosting the index.html at a different URL path from the API, you can set these environment variables at build time to specify the base URL paths of the index.html versus API.
+# This is helpful if you host the React single-page app in a Backend-for-frontend that handles authentication and relays requests to the sqlpad API.
+# Note that index.html will still expect to retrieve static content assets from the root URL.
+# For example, with the following settings, the React app will expect the API to be hosted behind the same domain, but under the /api/sqlpad path; the index.html will be served from /ui.  
+VITE_API_BASE_URL_OVERRIDE='/api/sqlpad'
+VITE_SPA_BASE_URL_OVERRIDE='/ui'
+```
