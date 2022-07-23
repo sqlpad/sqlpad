@@ -824,9 +824,9 @@ aws-sdk-mock@^5.6.2:
     traverse "^0.6.6"
 
 aws-sdk@^2.1113.0:
-  version "2.1176.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1176.0.tgz#f3524433a60857a8fcd21722251f2b1f19d72008"
-  integrity sha512-jinSKjACYHIkkz0UlFwQXwz8HAHZIeJg5wOnZoMTKU3/WM6Vh26hZJJ6XkwDAfBmyWp3V9qFdQoSAiO8SeXKjw==
+  version "2.1181.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1181.0.tgz#6ec2997881ae3df76e56d7150fc2992f12ce43dc"
+  integrity sha512-AAHSknRFAIjXBA/XNAL7gS79agr1LbS0oGimOJqJauGSJfWNaOpDc7z6OLNUQqGa5Joc3maD5QJcSKp1Pm/deQ==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -2706,10 +2706,10 @@ internal-slot@^1.0.3:
     has "^1.0.3"
     side-channel "^1.0.4"
 
-ip@^1.1.5:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/ip/-/ip-1.1.8.tgz#ae05948f6b075435ed3307acce04629da8cdbf48"
-  integrity sha512-PuExPYUiu6qMBQb4l06ecm6T6ujzhmh+MeJcW9wa89PoAz5pvd4zPgN5WJV104mb6S2T1AwNIAaB70JNrLQWhg==
+ip@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/ip/-/ip-2.0.0.tgz#4cf4ab182fee2314c75ede1276f8c80b479936da"
+  integrity sha512-WKa+XuLG1A1R0UWhl2+1XQSi+fZWMsYKffMZTTYsiZaUD8k2yDAj5atimTUD2TZkyCkNEeYE5NhFZmupOGtjYQ==
 
 ipaddr.js@0.1.3:
   version "0.1.3"
@@ -4261,6 +4261,11 @@ pino-std-serializers@^5.0.0:
   resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-5.6.0.tgz#31b141155d6520967c5ec72944d08fb45c490fd3"
   integrity sha512-VdUXCw8gO+xhir7sFuoYSjTnzB+TMDGxhAC/ph3YS3sdHnXNdsK0wMtADNUltfeGkn2KDxEM21fnjF3RwXyC8A==
 
+pino-std-serializers@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/pino-std-serializers/-/pino-std-serializers-6.0.0.tgz#4c20928a1bafca122fdc2a7a4a171ca1c5f9c526"
+  integrity sha512-mMMOwSKrmyl+Y12Ri2xhH1lbzQxwwpuru9VjyJpgFIH4asSj88F2csdMwN6+M5g1Ll4rmsYghHLQJw81tgZ7LQ==
+
 pino@^7.5.0:
   version "7.11.0"
   resolved "https://registry.yarnpkg.com/pino/-/pino-7.11.0.tgz#0f0ea5c4683dc91388081d44bff10c83125066f6"
@@ -4279,21 +4284,21 @@ pino@^7.5.0:
     thread-stream "^0.15.1"
 
 pino@^8.0.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/pino/-/pino-8.1.0.tgz#6211c5e77d813624f6707ec4750f4fbf778d5621"
-  integrity sha512-53jlxs+02UNTtF1XwVWfa0dHipBiM5GK73XhkHn8M2hUl9y3L94dNwB8BwQhpd5WdHjBkyJiO7v0LRt4SGgsPg==
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/pino/-/pino-8.3.0.tgz#13e400df4ef39ce716b33b8e5486fb8e24a30c45"
+  integrity sha512-CUOOU5sYgyLVijf7qsOWkPLOdzIXaVE9Oyl6zAkjgJn30uGBFUtrRaaCzbtOSJ1I6BqfanBqBttbazEJIwHkJg==
   dependencies:
     atomic-sleep "^1.0.0"
     fast-redact "^3.1.1"
     on-exit-leak-free "^2.1.0"
     pino-abstract-transport v1.0.0
-    pino-std-serializers "^5.0.0"
+    pino-std-serializers "^6.0.0"
     process-warning "^2.0.0"
     quick-format-unescaped "^4.0.3"
     real-require "^0.1.0"
     safe-stable-stringify "^2.3.1"
-    sonic-boom "^3.0.0"
-    thread-stream "^1.0.0"
+    sonic-boom "^3.1.0"
+    thread-stream "^2.0.0"
 
 please-upgrade-node@^3.2.0:
   version "3.2.0"
@@ -4529,9 +4534,9 @@ readable-stream@^3.1.1, readable-stream@^3.4.0, readable-stream@^3.6.0:
     util-deprecate "^1.0.1"
 
 readable-stream@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-4.0.0.tgz#da7105d03430a28ef4080785a43e6a45d4cdc4d1"
-  integrity sha512-Mf7ilWBP6AV3tF3MjtBrHMH3roso7wIrpgzCwt9ybvqiJQVWIEBMnp/W+S//yvYSsUUi2cJIwD7q7m57l0AqZw==
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-4.1.0.tgz#280d0a29f559d3fb684a277254e02b6f61ae0631"
+  integrity sha512-sVisi3+P2lJ2t0BPbpK629j8wRW06yKGJUcaLAGXPAUhyUxVJm7VsCTit1PFgT4JHUDMrGNR+ZjSKpzGaRF3zw==
   dependencies:
     abort-controller "^3.0.0"
 
@@ -4977,11 +4982,11 @@ socks-proxy-agent@^6.0.0:
     socks "^2.6.2"
 
 socks@^2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/socks/-/socks-2.6.2.tgz#ec042d7960073d40d94268ff3bb727dc685f111a"
-  integrity sha512-zDZhHhZRY9PxRruRMR7kMhnf3I8hDs4S3f9RecfnGxvcBHQcKcIH/oUcEWffsfl1XxdYlA7nnlGbbTvPz9D8gA==
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/socks/-/socks-2.7.0.tgz#f9225acdb841e874dca25f870e9130990f3913d0"
+  integrity sha512-scnOe9y4VuiNUULJN72GrM26BNOjVsfPXI+j+98PkyEfsIXroa5ofyjT+FzGvn/xHs73U2JtoBYAVx9Hl4quSA==
   dependencies:
-    ip "^1.1.5"
+    ip "^2.0.0"
     smart-buffer "^4.2.0"
 
 socksjs@^0.5.0:
@@ -4998,10 +5003,10 @@ sonic-boom@^2.2.1:
   dependencies:
     atomic-sleep "^1.0.0"
 
-sonic-boom@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-3.0.0.tgz#235119a6606e2646919a27d83ef687f2ba6c0fba"
-  integrity sha512-p5DiZOZHbJ2ZO5MADczp5qrfOd3W5Vr2vHxfCpe7G4AzPwVOweIjbfgku8wSQUuk+Y5Yuo8W7JqRe6XKmKistg==
+sonic-boom@^3.0.0, sonic-boom@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/sonic-boom/-/sonic-boom-3.1.0.tgz#c79f4298ae841f236f3bc0d6c1225d39d51f8eb2"
+  integrity sha512-qVr246G5307nz5JmhtsvHudxNMrRTWTCmTg+tA4gHQJnVyx/SsyQnky/5peC23B8etvlKli9P6sNXWQGDxoskQ==
   dependencies:
     atomic-sleep "^1.0.0"
 
@@ -5035,9 +5040,9 @@ sql-limiter@^3.0.0:
     moo "^0.5.1"
 
 sqlite3@^5.0.8:
-  version "5.0.9"
-  resolved "https://registry.yarnpkg.com/sqlite3/-/sqlite3-5.0.9.tgz#421b9c065480f1c589f89cabd6d0ea9575a69855"
-  integrity sha512-e2lEKevUF65UJu4IIuuFytgW7yNMkmCkfyn66jXWeb7OcdHvRo7nXhF+IQ25iW6x2grB0DyKdGCpx8Rd8EkA2Q==
+  version "5.0.10"
+  resolved "https://registry.yarnpkg.com/sqlite3/-/sqlite3-5.0.10.tgz#64e1efb1b5a1ae343d2cc64ce9e582e5f5db24ba"
+  integrity sha512-xG4XPp7+b/lIlb/acs4XzBmmahI1Qq3Yhy+jZnZJivwB6DXpoOpGR6QinRbsQkHJIvMZyUsJDXouSva/JXcWFA==
   dependencies:
     "@mapbox/node-pre-gyp" "^1.0.0"
     node-addon-api "^4.2.0"
@@ -5313,10 +5318,10 @@ thread-stream@^0.15.1:
   dependencies:
     real-require "^0.1.0"
 
-thread-stream@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/thread-stream/-/thread-stream-1.0.1.tgz#beb10b9b06d4b2e35ce137ff8a08f9805512d8cd"
-  integrity sha512-JuZyfzx81e5MBk8uIr8ZH76bXyjEQvbRDEkSdlV1JFBdq/rbby2RuvzBYlTBd/xCljxy6lPxrTLXzB9Jl1bNrw==
+thread-stream@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/thread-stream/-/thread-stream-2.0.0.tgz#1ecb450324ebb1bb284d4398b8af15cb6905028c"
+  integrity sha512-tnbzCbIrA4Khq5SJt/Fyz5DlE8pUnPR3//nWv+cqdRktvAl2NuC9O08HHq2Ifa10bhkvHLuzcesNjaH15EgTXA==
   dependencies:
     real-require "^0.1.0"
 
