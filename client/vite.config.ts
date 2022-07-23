@@ -41,6 +41,7 @@ const getConfig = ({ command, mode }) => {
     base,
     plugins: [react()],
     server: {
+      port: 3000,
       proxy,
     },
     build: {
