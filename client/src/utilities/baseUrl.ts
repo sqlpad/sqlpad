@@ -10,7 +10,7 @@ export default function baseUrl(value?: string) {
   return _baseUrl;
 }
 
-let _apiBaseUrl: string|undefined = undefined;
+let _apiBaseUrl: string | undefined = undefined;
 
 /**
  * Sets and/or gets the base URL of the backend API.
