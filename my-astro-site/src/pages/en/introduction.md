@@ -26,7 +26,7 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
     <img src="/images/logo-vertica.jpg" data-origin="/images/logo-vertica.png" alt="Vertica" >
   </div>
   <div class="db-container">
-    <img src="/images/logo-crate.svg" data-origin="/images/logo-crate.svg" alt="Crate" >
+    <img src="/images/logo-crate.png" data-origin="/images/logo-crate.png" alt="Crate" >
   </div>
   <div class="db-container">
     <img src="/images/logo-clickhouse.png" data-origin="/images/logo-clickhouse.png" alt="ClickHouse" >
@@ -44,7 +44,7 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
     <img src="/images/logo-apachedrill.png" data-origin="/images/logo-apachedrill.png" alt="Apache Drill" >
   </div>
   <div class="db-container">
-    <img src="/images/logo-pinot.svg" data-origin="/images/logo-pinot.svg" alt="Apache Pinot" >
+    <img src="/images/logo-pinot.png" data-origin="/images/logo-pinot.png" alt="Apache Pinot" >
   </div>
   <div class="db-container db-container-bg">
     <img src="/images/logo-cassandra.png" data-origin="/images/logo-cassandra.png" alt="Cassandra" >
@@ -56,7 +56,7 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
     <img src="/images/logo-bigquery.png" data-origin="/images/logo-bigquery.png" alt="BigQuery" >
   </div>
   <div class="db-container">
-    <img src="/images/logo-sqlite.svg" data-origin="/images/logo-sqlite.svg" alt="SQLite" >
+    <img src="/images/logo-sqlite.png" data-origin="/images/logo-sqlite.png" alt="SQLite" >
   </div>
   <div class="db-container">
     <img src="/images/logo-tidb.png" data-origin="/images/logo-tidb.png" alt="TiDB" >
