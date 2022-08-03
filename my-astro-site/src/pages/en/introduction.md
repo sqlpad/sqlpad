@@ -1,14 +1,21 @@
 ---
-title: SQLPad
+title: Introduction
 description: Docs intro
 layout: ../../layouts/MainLayout.astro
 ---
 
-## Introduction
 
 A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Trino, Presto, Pinot, Drill, SAP HANA, Snowflake, BigQuery, SQLite, TiDB and many others via ODBC.
 
 <img class="screenshot" src="https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png" alt="SQLPad screenshot" >
+
+
+## Current Status
+
+SQLPad is in maintenance mode. Security updates and critical bug-fixes will be made as needed and as possible.
+
+Because of the sensitive nature of this application, the project will not be transferred to any other owner.
+
 
 ## Database Support
 
@@ -64,14 +71,7 @@ A web app for writing and running SQL queries and visualizing the results. Suppo
   <div class="db-container">many others via ODBC</div>
 </div>
 
-## Is SQLPad for me?
 
-SQLPad is a self-hosted web app for writing and running SQL queries and optionally visualizing the results.
+## Alternatives
 
-It's a simple tool for exploratory data work and visualizations, or quick convenient access to run a SQL query here and there.
-
-## Why not SQLPad?
-
-It's not a dashboarding tool, and likely will never become one. If you're looking for open-source dashboarding check out [Redash](https://redash.io/), [Metabase](https://www.metabase.com/) or [Superset](https://github.com/apache/incubator-superset).
-
-It can't handle a query with 2 columns returned of the same name.
+SQLPad is not a dashboarding tool, and likely will never become one. If you're looking for open-source dashboarding check out [Redash](https://redash.io/), [Metabase](https://www.metabase.com/) or [Superset](https://github.com/apache/incubator-superset).
