@@ -6,15 +6,23 @@ layout: ../../layouts/MainLayout.astro
 
 ## Running SQLPad
 
-There are 2 options to run SQLPad: Install [Node.js](https://nodejs.org/) and [build and run SQLPad from the git repository](https://github.com/sqlpad/sqlpad/blob/master/DEVELOPER-GUIDE.md), or use the [docker images on Docker Hub](https://hub.docker.com/r/sqlpad/sqlpad/).
+### Building from source
 
-SQLPad does not require any additional servers other than its own self. By default it uses SQLite and the file system for storing queries, query results, and web sessions. SQLite may be replaced with an external database using the `SQLPAD_BACKEND_DB_URI` environment variable as of v5. See [backend database configuration](/configuration?id=backend-database-management) for more info.
+SQLPad does not require any additional servers other than its own self. By default it uses SQLite and the file system for storing queries, query results, and web sessions. SQLite may be replaced with an external database. See [backend database configuration](/en/configuration?id=backend-database-management#backend-database-management) for more info.
+
+[Build and run SQLPad from the git repository](https://github.com/sqlpad/sqlpad/blob/master/DEVELOPER-GUIDE.md)
+
+### Docker
+
+[Docker images](https://hub.docker.com/r/sqlpad/sqlpad/)
 
 The docker image runs on port 3000 by default and stores its local database files at `/var/lib/sqlpad`. See [docker-examples](https://github.com/sqlpad/sqlpad/tree/master/docker-examples) directory for example docker-compose setup with SQL Server and others.
 
 ## Releases & Versioning
 
-SQLPad version strategy is inspired by [semantic versioning](https://semver.org/). Major version bumps will occur when there are breaking HTTP API changes, breaking configuration changes, removal of functionality, or major UI design changes. Minor and patch version bumps will consist of enhancements and fixes.
+For SQLPad versions 6 and prior, the version strategy was inspired by [semantic versioning](https://semver.org/). Major version bumps contained breaking HTTP API changes, breaking configuration changes, removal of functionality, or major UI design changes. Minor and patch version bumps consisted of enhancements and bugfixes.
+
+As of version 7, SQLPad will be dropping any attempt at following sementic versioning.
 
 The `latest` tag on Docker Hub is continuously built from latest commit from the `master` branch in GitHub. Do not use it unless you are okay experiencing a work-in-progress. It should be functional, but may not be stable or final.
 
@@ -22,10 +30,9 @@ The `latest` tag on Docker Hub is continuously built from latest commit from the
 
 To update SQLPad:
 
-1. Pull in the latest code or Docker image
 1. Shut down existing SQLPad instance(s)
-1. Take a backup of [backing database](/configuration?id=backend-database-management)
-1. Run the updated code/image.
+1. Take a backup of [backing database](/en/configuration?id=backend-database-management#backend-database-management)
+1. Start updated SQLPad code or docker image
 
 SQLPad runs its own migrations at application start, ensuring the schema is up-to-date.
 
@@ -72,4 +79,4 @@ SQLPad users are one of two roles today: `Admin` and `Editor`.
 
 `Admin` users administrators of the system, and generally can do anything that is possible in the system. Connection access restrictions and query sharing do not apply to them, and they can see everything. Admins are the only users allowed to create connections via the UI, assign connection access, and add new users.
 
-`Editor` users are basic users that can create, run, and edit queries. As of version `4.2.0` (which is under development), all queries created are private to the user that created them, unless the user shares the query with other users on the platform. Editors cannot create their own connections or add users to the SQLPad instance.
+`Editor` users are basic users that can create, run, and edit queries. As of version `4.2.0` all queries created are private to the user that created them, unless the user shares the query with other users on the platform. Editors cannot create their own connections or add users to the SQLPad instance.
