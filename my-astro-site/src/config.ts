@@ -1,17 +1,15 @@
 export const SITE = {
-  title: 'Documentation',
-  description: 'Your website description.',
+  title: 'SQLPad',
+  description: 'Web-based SQL editor run in your own private cloud. Supports MySQL, Postgres, SQL Server, Vertica, Crate, ClickHouse, Trino, Presto, SAP HANA, Cassandra, Snowflake, BigQuery, SQLite, and more with ODBC',
   defaultLanguage: 'en_US',
 };
 
 export const OPEN_GRAPH = {
   image: {
-    src: 'https://github.com/withastro/astro/blob/main/assets/social/banner.jpg?raw=true',
-    alt:
-      'astro logo on a starry expanse of space,' +
-      ' with a purple saturn-like planet floating in the right foreground',
+    src: 'https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png',
+    alt: 'A screenshot of SQLPad',
   },
-  twitter: 'astrodotbuild',
+  twitter: 'rickbergfalk',
 };
 
 export const KNOWN_LANGUAGES = {
