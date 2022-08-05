@@ -1,18 +1,17 @@
 ---
-title: API
+title: API Overview
 description: API
 layout: ../../layouts/MainLayout.astro
 ---
 
-## Overview
 
-SQLPad aims to implement a REST-ish API, and as of v5, has been updated to be more consistent with itself and a typical REST API design.
+SQLPad aims to implement a REST-ish API and has been updated over the years to be more consistent with itself and a typical REST API design.
 
 Not all APIs within SQLPad follow this convention. This should cover _most_ APIs however, and be used as a guide when adding new APIs to SQLPad. Any PRs for tests or utilities to make all this easier and more consistent across the project are welcome.
 
 Prior to v5, SQLPad did some funky things. All responses (whether they contained an error or not) returned a 200 status code. Errors were wrapped in an `error` envelope, where as data was wrapped in an envelope named after the API (For example, `/api/queries` responded with a body of `{ queries: [] }`)
 
-With v5, status codes are used as you would expect. Status code usage is kept minimal, with the following being used as of this guide:
+With v5 and later, status codes are used as you would expect. Status code usage is kept minimal, with the following being used as of this guide:
 
 - `200`: OK (request was a success)
 - `400`: Bad request (user input error)
