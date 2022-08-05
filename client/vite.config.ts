@@ -30,7 +30,7 @@ proxy['^/.*/api/app'] = PROXY_URL;
 
 // https://vitejs.dev/config/
 const getConfig = ({ command, mode }) => {
-  let base: string | undefined = undefined;
+  let base: string | undefined = process.env['VITE_SPA_BASE_URL_OVERRIDE'];
 
   // command is either build or serve
   if (command === 'serve') {
