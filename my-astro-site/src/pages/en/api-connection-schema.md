@@ -4,13 +4,10 @@ description: Connection Schema API
 layout: ../../layouts/MainLayout.astro
 ---
 
-## Overview
 
 The connection schema API returnes the database schema (schemas, tables, and columns) for the connection specified.
 
 ## Get Connection Schema
-
-?> Available in version 5.7.0
 
 The connection schema API returnes the database schema (schemas, tables, and columns) for the connection specified.
 
