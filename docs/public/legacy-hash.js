@@ -11,7 +11,7 @@ const hashRedirects = {
   '#/api-batches': '/en/api-batches',
   '#/api-connection-schema': '/en/api-connection-schema',
   '#/api-queries': '/en/api-queries',
-}
+};
 
 // You know what we don't even need to wait til the page is loaded?
 // We just need the URL and it'll always be there. lets go.
