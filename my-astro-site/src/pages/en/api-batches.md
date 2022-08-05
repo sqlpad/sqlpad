@@ -4,20 +4,6 @@ description: Batches & Statements API
 layout: ../../layouts/MainLayout.astro
 ---
 
-?> Batches and related APIs available as of v5.0.0
-
-## Overview
-
-A new restful approach to running queries is being added to SQLPad as of version 5 release.
-
-Prior to v5, queries were run in SQLPad with an HTTP `POST`, with the query results being returned in the response.
-
-While nice and simple, it has some downsides:
-
-- long queries require long HTTP timeout configurations (not ideal, requires additional configuration to load balancers, proxy, etc.)
-- An execution with multiple statements/queries would require all queries to finish before results are sent back. Results would have to be in single response (might be too big)
-
-As of v5 new restful APIs have replaced the existing query-result API.
 
 The `/batches` API creates a query `batch`, which details a string of SQL text that may include one or more SQL statements. These statements are parsed, and corresponding `statement` objects are created.
 
