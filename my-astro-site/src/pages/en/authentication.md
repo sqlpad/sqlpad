@@ -32,8 +32,6 @@ SQLPAD_USERPASS_AUTH_DISABLED = "false"
 
 ## No Authentication
 
-?> Available as of `4.2.0`
-
 SQLPad can be configured to run without any authentication at all. This can be enabled by setting `SQLPAD_AUTH_DISABLED` to `true`.
 
 If enabled, `SQLPAD_AUTH_DISABLED_DEFAULT_ROLE` is used to assign admin or editor role to users. Set to `editor` if you want to restrict SQLPad to connections defined via configuration.
@@ -48,9 +46,7 @@ SQLPAD_AUTH_DISABLED_DEFAULT_ROLE = "editor"
 
 ## Auth Proxy
 
-?> Available as of `4.2.0`
-
-!> When using this feature be sure to restrict access to SQLPad by listening to a restricted IP using `SQLPAD_IP` configuration or other method
+**Important:** When using this feature be sure to restrict access to SQLPad by listening to a restricted IP using `SQLPAD_IP` configuration or other method
 
 An HTTP reverse proxy may be used to handle authentication as of SQLPad `4.2.0` or later.
 
@@ -245,8 +241,6 @@ The SAML base roles selection is used only when `SQLPAD_SAML_ENFORCED_ROLE` is `
 
 ## LDAP
 
-?> Available as of 5.8.0
-
 LDAP-based authentication can be enabled by setting the necessary environment variables:
 
 ```bash
@@ -338,4 +332,4 @@ The generated Bearer token may be used by passing it via the Authorization heade
 curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/sqlpad/api/users
 ```
 
-For more information on APIs available see [API Overview](/api-overview).
+For more information on APIs available see [API Overview](/en/api-overview).
