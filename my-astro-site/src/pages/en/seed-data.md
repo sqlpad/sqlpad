@@ -4,7 +4,7 @@ description: Seed data
 layout: ../../layouts/MainLayout.astro
 ---
 
-**EXPERIMENTAL** This feature may continue to change before being finalized. Use at your own risk.
+**EXPERIMENTAL:** This feature may continue to change before being finalized. Use at your own risk.
 
 Data may be seeded to a SQLPad instance via JSON files on the file system. At this time only query and connection data may be seeded.
 
