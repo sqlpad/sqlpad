@@ -4,10 +4,6 @@ description: Configuration
 layout: ../../layouts/MainLayout.astro
 ---
 
-!> 6.0.0 removes JSON/INI config file support. See [CHANGELOG](https://github.com/sqlpad/sqlpad/blob/master/CHANGELOG.md) for more info.
-
-?> .env config file support added in 5.1.0
-
 SQLPad may be configured via environment variables or an .env config file.
 
 Config file path may be specified passing command line option `--config` or environment variable `SQLPAD_CONFIG`.
@@ -130,8 +126,6 @@ SQLPAD_DEFAULT_CONNECTION_ID = ""
 
 ## Redis
 
-Redis may be used for session storage as of `5.3.0`, and query result storage as of `5.4.0`.
-
 ```bash
 # URI for redis instance to use when SQLPAD_SESSION_STORE or SQLPAD_QUERY_RESULT_STORE are set to `redis`
 # Format should be [redis[s]:]//[[user][:password@]][host][:port][/db-number][?db=db-number[&password=bar[&option=value]]]
@@ -202,7 +196,7 @@ The generated Bearer token may be used by passing it via the Authorization heade
 curl -X GET -H 'Accept: application/json' -H "Authorization: Bearer the.generated.token" http://localhost:3010/api/users
 ```
 
-For more information on APIs available see [API Overview](/api-overview).
+For more information on APIs available see [API Overview](/en/api-overview).
 
 ```bash
 # Secret to sign the generated Service Tokens
@@ -218,7 +212,7 @@ SQLPAD_APP_LOG_LEVEL = 'info'
 SQLPAD_WEB_LOG_LEVEL = 'info
 ```
 
-See [logging](/logging) for log examples.
+See [logging](/en/logging) for log examples.
 
 ## HTTPS
 
@@ -235,4 +229,4 @@ SQLPAD_HTTPS_CERT_PASSPHRASE = ""
 
 ## Authentication
 
-See [Authentication page](/authentication) for information on configuring authentication mechanisms.
+See [Authentication page](/en/authentication) for information on configuring authentication mechanisms.
