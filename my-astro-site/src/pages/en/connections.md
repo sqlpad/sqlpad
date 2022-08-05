@@ -12,9 +12,7 @@ Admins can create connections in the UI, but connections can also be created via
 
 ## Multi-Statement Transaction Support
 
-?> Available as of `4.2.0`
-
-!> When using Multi-Statement transactions SQLPad becomes a stateful service. HTTP API calls must consistently resolve to same SQLPad instance using sticky sessions or similar.
+**Important:** When using Multi-Statement transactions SQLPad becomes a stateful service. HTTP API calls must consistently resolve to same SQLPad instance using sticky sessions or similar.
 
 Multi-statement transaction support adds the ability for a user to use the same underlying connection across query executions. This allows things like opening a transaction, running queries, and rolling the transaction back or committing the transaction across query runs. It also opens up the ability to create and use temp tables that are generally scoped per connection session.
 
@@ -23,8 +21,6 @@ Multi-statement transaction support is opt-in based on connection configuration.
 Work is under way to add multi-statement transaction support to drivers that benefit from the addition. At this time MySQL, SQLite, Postgres, and ODBC drivers support this approach.
 
 ## Defining Connections via Configuration
-
-?> As of 3.2.0 connections may be defined via application configuration.
 
 When defining connections via environment variables, connection field values must be provided using an environment variable with the convention `SQLPAD_CONNECTIONS__<connectionId>__<fieldName>`. Note double underscores between `SQLPAD_CONNECTIONS`, `<connectionId>`, and `<fieldName>`.
 
@@ -48,8 +44,6 @@ SQLPAD_CONNECTIONS__prod123__mysqlInsecureAuth=true
 ```
 
 ## Connection selection
-
-?> Available as of `4.5.0`
 
 A default connection selection can be set using environment variable `SQLPAD_DEFAULT_CONNECTION_ID`. It can also be specified as part of the query editor URL, i.e., `https://mysqlpad.example.com/queries/new?connectionName=connection1` or `https://mysqlpad.example.com/queries/new?connectionId=xxx-xxxxx-xxx-xxx`.
 
