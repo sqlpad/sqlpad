@@ -4,8 +4,6 @@ description: Webhooks
 layout: ../../layouts/MainLayout.astro
 ---
 
-?> Available `5.2.0`
-
 A variety of webhooks are available to extend the functionality of SQLPad.
 
 To enable a specific webhook, set `SQLPAD_WEBHOOK_ENABLED` to `true`, and provide a URL for the event you would like to subscribe to. HTTP and HTTPS URLs are supported. This URL will be sent an HTTP POST with a payload of relevant information when the event occurs.
