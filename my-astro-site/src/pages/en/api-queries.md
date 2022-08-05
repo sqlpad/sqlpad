@@ -4,11 +4,10 @@ description: Queries API
 layout: ../../layouts/MainLayout.astro
 ---
 
-## Overview
 
 The `queries` API is used for saving and updating saved queries. Queries contain a block of SQL text (may be multiple statements), a name, a connection used to run the query against, and an optional chart configuration JSON object.
 
-The `queries` API follows the general patterns described in [API Overview](http://getsqlpad.com/#/api-overview) with an addition in that the queries list API allows for server-side filtering and pagination.
+The `queries` API follows the general patterns described in [API Overview](/en/api-overview) with an addition in that the queries list API allows for server-side filtering and pagination.
 
 ## Single Query GET, POST, and PUT
 
