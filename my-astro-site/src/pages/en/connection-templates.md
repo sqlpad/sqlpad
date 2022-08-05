@@ -4,9 +4,7 @@ description: Connection Templates
 layout: ../../layouts/MainLayout.astro
 ---
 
-!> **EXPERIMENTAL This feature may break certain SQLPad functionality and may change if too problematic. Use at your own risk**
-
-?> Available as of `4.2.0`
+**EXPERIMENTAL:** This feature may break certain SQLPad functionality and may change if too problematic. Use at your own risk
 
 A connection is a collection of settings that inform SQLPad how to connect to a database. In most cases this involves a hostname, a db user and password, a connection string, etc. (Other BI tools may call these _Data Source_)
 
@@ -36,7 +34,7 @@ The SQLPad `user` object now has a generic `data` JSON object property, that can
 }
 ```
 
-Today the only options available to populate the `user.data` property is to use [Auth Proxy authentication](https://getsqlpad.com/#/authentication?id=auth-proxy) and map the data to that field, or use the REST API and a Service Token to do so. (The API will be undergoing some changes for v5, and will be documented after those changes are made.)
+Today the only options available to populate the `user.data` property is to use [Auth Proxy authentication](/en/authentication/#auth-proxy) and map the data to that field, or use the REST API and a Service Token to do so. (The API will be undergoing some changes for v5, and will be documented after those changes are made.)
 
 Once the `dbUser` data is persisted to the user, it may be referenced in a connection using a mustache or handlebars like templating syntax using double curly braces `{{user.data.dbUser}}`. All properties under `user` may be used (email, name, etc).
 
