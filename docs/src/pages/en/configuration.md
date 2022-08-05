@@ -229,7 +229,7 @@ SQLPAD_HTTPS_CERT_PASSPHRASE = ""
 
 ## Authentication
 
-See [Authentication page](/authentication) for information on configuring authentication mechanisms.
+See [Authentication page](/en/authentication) for information on configuring authentication mechanisms.
 
 ## React App Build Configuration
 
