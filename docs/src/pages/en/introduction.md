@@ -7,7 +7,7 @@ layout: ../../layouts/MainLayout.astro
 
 SQLPad is a web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Trino, Presto, Pinot, Drill, SAP HANA, Snowflake, BigQuery, SQLite, TiDB and many others via ODBC.
 
-<img class="screenshot" src="https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png" alt="SQLPad screenshot" >
+<img class="screenshot" src="/images/screenshot.png" alt="SQLPad screenshot" >
 
 
 ## Current Status
@@ -15,6 +15,16 @@ SQLPad is a web app for writing and running SQL queries and visualizing the resu
 SQLPad is in maintenance mode. Security updates and critical bug-fixes will be made as needed and as possible.
 
 Because of the sensitive nature of this application, the project will not be transferred to any other owner.
+
+
+## Alternatives
+
+While not exactly alternatives, these open source projects might be of interest:
+
+* [Querybook](https://www.querybook.org/) (open source)
+* [Superset](https://github.com/apache/superset) (open source) / [Preset](https://preset.io/) (company)
+* [Chartbrew](https://github.com/chartbrew/chartbrew) (open source) / [Chartbrew](https://chartbrew.com/) (company)
+* [Lightdash](https://github.com/lightdash/lightdash) (open source) / [Lightdash](https://www.lightdash.com/) (company)
 
 
 ## Database Support
@@ -72,6 +82,3 @@ Because of the sensitive nature of this application, the project will not be tra
 </div>
 
 
-## Alternatives
-
-SQLPad is not a dashboarding tool, and likely will never become one. If you're looking for open-source dashboarding check out [Redash](https://redash.io/), [Metabase](https://www.metabase.com/) or [Superset](https://github.com/apache/incubator-superset).
