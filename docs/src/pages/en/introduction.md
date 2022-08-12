@@ -17,6 +17,16 @@ SQLPad is in maintenance mode. Security updates and critical bug-fixes will be m
 Because of the sensitive nature of this application, the project will not be transferred to any other owner.
 
 
+## Alternatives
+
+While not exactly alternatives, these open source projects might be of interest:
+
+* [Querybook](https://www.querybook.org/) (open source)
+* [Superset](https://github.com/apache/superset) (open source) / [Preset](https://preset.io/) (company)
+* [Chartbrew](https://github.com/chartbrew/chartbrew) (open source) / [Chartbrew](https://chartbrew.com/) (company)
+* [Lightdash](https://github.com/lightdash/lightdash) (open source) / [Lightdash](https://www.lightdash.com/) (company)
+
+
 ## Database Support
 
 <div class="db-images">
@@ -72,6 +82,3 @@ Because of the sensitive nature of this application, the project will not be tra
 </div>
 
 
-## Alternatives
-
-SQLPad is not a dashboarding tool, and likely will never become one. If you're looking for open-source dashboarding check out [Redash](https://redash.io/), [Metabase](https://www.metabase.com/) or [Superset](https://github.com/apache/incubator-superset).
