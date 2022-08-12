@@ -3,13 +3,13 @@ import { SITE, OPEN_GRAPH } from "../config.ts";
 export interface Props {
 	content: any;
 	site: any;
-	canonicalURL: URL | string;
 }
-const { content = {}, canonicalURL } = Astro.props;
+const { content = {} } = Astro.props;
 const formattedContentTitle = content.title ? `${content.title} | ${SITE.title}` : SITE.title;
 const imageSrc = content?.image?.src ?? OPEN_GRAPH.image.src;
 const canonicalImageSrc = new URL(imageSrc, Astro.site);
 const imageAlt = content?.image?.alt ?? OPEN_GRAPH.image.alt;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!-- Page Metadata -->
