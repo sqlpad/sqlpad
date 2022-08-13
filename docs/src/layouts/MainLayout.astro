@@ -18,7 +18,7 @@ const githubEditUrl = CONFIG.GITHUB_EDIT_URL && CONFIG.GITHUB_EDIT_URL + current
 
 <head>
 	<HeadCommon />
-	<HeadSEO {content} canonicalURL={Astro.canonicalURL} />
+	<HeadSEO {content} />
 	<title>{content.title ? `${content.title} | ${CONFIG.SITE.title}` : CONFIG.SITE.title}</title>
 	<style>
 		body {
