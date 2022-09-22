@@ -1,31 +1,35 @@
 ---
-import { SITE, OPEN_GRAPH } from "../config.ts";
+import { SITE, OPEN_GRAPH, Frontmatter } from '../config';
+
 export interface Props {
-	content: any;
-	site: any;
+  frontmatter: Frontmatter;
+  canonicalUrl: URL;
 }
-const { content = {} } = Astro.props;
-const formattedContentTitle = content.title ? `${content.title} | ${SITE.title}` : SITE.title;
-const imageSrc = content?.image?.src ?? OPEN_GRAPH.image.src;
+
+const { frontmatter, canonicalUrl } = Astro.props as Props;
+const formattedContentTitle = `${frontmatter.title} | ${SITE.title}`;
+const imageSrc = frontmatter.image?.src ?? OPEN_GRAPH.image.src;
 const canonicalImageSrc = new URL(imageSrc, Astro.site);
-const imageAlt = content?.image?.alt ?? OPEN_GRAPH.image.alt;
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const imageAlt = frontmatter.image?.alt ?? OPEN_GRAPH.image.alt;
 ---
 
 <!-- Page Metadata -->
-<link rel="canonical" href={canonicalURL} />
+<link rel="canonical" href={canonicalUrl} />
 
 <!-- OpenGraph Tags -->
 <meta property="og:title" content={formattedContentTitle} />
 <meta property="og:type" content="article" />
-<meta property="og:url" content={canonicalURL} />
-<meta property="og:locale" content={content.ogLocale ?? SITE.defaultLanguage} />
+<meta property="og:url" content={canonicalUrl} />
+<meta
+  property="og:locale"
+  content={frontmatter.ogLocale ?? SITE.defaultLanguage}
+/>
 <meta property="og:image" content={canonicalImageSrc} />
 <meta property="og:image:alt" content={imageAlt} />
 <meta
-	name="description"
-	property="og:description"
-	content={content.description ? content.description : SITE.description}
+  name="description"
+  property="og:description"
+  content={frontmatter.description ?? SITE.description}
 />
 <meta property="og:site_name" content={SITE.title} />
 
@@ -34,8 +38,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 <meta name="twitter:site" content={OPEN_GRAPH.twitter} />
 <meta name="twitter:title" content={formattedContentTitle} />
 <meta
-	name="twitter:description"
-	content={content.description ? content.description : SITE.description}
+  name="twitter:description"
+  content={frontmatter.description ?? SITE.description}
 />
 <meta name="twitter:image" content={canonicalImageSrc} />
 <meta name="twitter:image:alt" content={imageAlt} />

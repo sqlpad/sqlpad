@@ -1,6 +1,7 @@
 export const SITE = {
   title: 'SQLPad',
-  description: 'Web-based SQL editor run in your own private cloud. Supports MySQL, Postgres, SQL Server, Vertica, Crate, ClickHouse, Trino, Presto, SAP HANA, Cassandra, Snowflake, BigQuery, SQLite, and more with ODBC',
+  description:
+    'Web-based SQL editor run in your own private cloud. Supports MySQL, Postgres, SQL Server, Vertica, Crate, ClickHouse, Trino, Presto, SAP HANA, Cassandra, Snowflake, BigQuery, SQLite, and more with ODBC',
   defaultLanguage: 'en_US',
 };
 
@@ -12,9 +13,21 @@ export const OPEN_GRAPH = {
   twitter: 'rickbergfalk',
 };
 
+// This is the type of the frontmatter you put in the docs markdown files.
+export type Frontmatter = {
+  title: string;
+  description: string;
+  layout: string;
+  image?: { src: string; alt: string };
+  dir?: 'ltr' | 'rtl';
+  ogLocale?: string;
+  lang?: string;
+};
+
 export const KNOWN_LANGUAGES = {
   English: 'en',
-};
+} as const;
+export const KNOWN_LANGUAGE_CODES = Object.values(KNOWN_LANGUAGES);
 
 // Uncomment this to add an "Edit this page" button to every page of documentation.
 export const GITHUB_EDIT_URL = `https://github.com/sqlpad/sqlpad/tree/master/docs/`;
@@ -30,23 +43,28 @@ export const GITHUB_EDIT_URL = `https://github.com/sqlpad/sqlpad/tree/master/doc
 //   apiKey: 'XXXXXXXXXX',
 // }
 
-export const SIDEBAR = {
-  en: [
-    { text: 'Guide', header: true },
-    { text: 'Introduction', link: 'en/introduction' },
-    { text: 'Getting Started', link: 'en/getting-started' },
-    { text: 'Configuration', link: 'en/configuration' },
-    { text: 'Connections', link: 'en/connections' },
-    { text: 'Authentication', link: 'en/authentication' },
-    { text: 'Seed Data', link: 'en/seed-data' },
-    { text: 'Connection Templates', link: 'en/connection-templates' },
-    { text: 'Logging', link: 'en/logging' },
-    { text: 'Webhooks', link: 'en/webhooks' },
-
-    { text: 'API', header: true },
-    { text: 'Overview', link: 'en/api-overview' },
-    { text: 'Batches and Statements', link: 'en/api-batches' },
-    { text: 'Connection Schema', link: 'en/api-connection-schema' },
-    { text: 'Queries', link: 'en/api-queries' },
-  ],
+export type Sidebar = Record<
+  typeof KNOWN_LANGUAGE_CODES[number],
+  Record<string, { text: string; link: string }[]>
+>;
+export const SIDEBAR: Sidebar = {
+  en: {
+    Guide: [
+      { text: 'Introduction', link: 'en/introduction' },
+      { text: 'Getting Started', link: 'en/getting-started' },
+      { text: 'Configuration', link: 'en/configuration' },
+      { text: 'Connections', link: 'en/connections' },
+      { text: 'Authentication', link: 'en/authentication' },
+      { text: 'Seed Data', link: 'en/seed-data' },
+      { text: 'Connection Templates', link: 'en/connection-templates' },
+      { text: 'Logging', link: 'en/logging' },
+      { text: 'Webhooks', link: 'en/webhooks' },
+    ],
+    API: [
+      { text: 'Overview', link: 'en/api-overview' },
+      { text: 'Batches and Statements', link: 'en/api-batches' },
+      { text: 'Connection Schema', link: 'en/api-connection-schema' },
+      { text: 'Queries', link: 'en/api-queries' },
+    ],
+  },
 };
