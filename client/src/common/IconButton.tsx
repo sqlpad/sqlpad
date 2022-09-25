@@ -63,6 +63,7 @@ const IconButton = React.forwardRef<Ref, ButtonProps & LinkProps>(
           <Link to={to} className={classNames.join(' ')} {...rest}>
             {React.Children.map(children, (child) => {
               if (React.isValidElement(child)) {
+                // @ts-expect-error size is not assignable to unknown, unsure how to type this currently
                 return React.cloneElement(child, { size: ICON_SIZE }, null);
               }
             })}
@@ -82,6 +83,7 @@ const IconButton = React.forwardRef<Ref, ButtonProps & LinkProps>(
           {React.Children.map(children, (child) => {
             // https://stackoverflow.com/questions/42261783/how-to-assign-the-correct-typing-to-react-cloneelement-when-giving-properties-to
             if (React.isValidElement(child)) {
+              // @ts-expect-error size is not assignable to unknown, unsure how to type this currently
               return React.cloneElement(child, { size: ICON_SIZE }, null);
             }
           })}
