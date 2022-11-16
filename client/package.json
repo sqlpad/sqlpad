@@ -1,6 +1,6 @@
 {
   "name": "sqlpad-front-end",
-  "version": "6.11.2",
+  "version": "6.11.3",
   "private": true,
   "dependencies": {
     "@reach/dialog": "^0.17.0",
