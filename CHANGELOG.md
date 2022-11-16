@@ -1,12 +1,16 @@
 # Changelog
 
+## [6.11.3] - 2022-11-16
+
+- Update dependencies
+
 ## [6.11.2] - 2022-09-25
 
 - Update dependencies
 
 ## [6.11.1] - 2022-06-07
 
-- Remove connection password from connection list API. This matches the behavior for connection detail.
+- Remove connection password from connection list API. This matches the behavior for connection detail API.
 - Update dependencies
 
 ## [6.11.0] - 2022-04-12
