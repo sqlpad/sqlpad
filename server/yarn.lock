@@ -4184,14 +4184,6 @@ passport-oauth2@1.x.x:
     uid2 "0.0.x"
     utils-merge "1.x.x"
 
-passport-openidconnect@^0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/passport-openidconnect/-/passport-openidconnect-0.1.1.tgz#83921ff5f87f634079f65262dada834af1972244"
-  integrity sha512-r0QJiWEzwCg2MeCIXVP5G6YxVRqnEsZ2HpgKRthZ9AiQHJrgGUytXpsdcGF9BRwd3yMrEesb/uG/Yxb86rrY0g==
-  dependencies:
-    oauth "0.9.x"
-    passport-strategy "1.x.x"
-
 passport-saml@^3.2.1:
   version "3.2.4"
   resolved "https://registry.yarnpkg.com/passport-saml/-/passport-saml-3.2.4.tgz#e8e9523f954988a3a47d12e425d7fa0f20a74dc9"

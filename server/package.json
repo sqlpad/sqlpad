@@ -84,7 +84,6 @@
     "passport-jwt": "^4.0.0",
     "passport-ldapauth": "^3.0.1",
     "passport-local": "^1.0.0",
-    "passport-openidconnect": "^0.1.1",
     "passport-saml": "^3.2.1",
     "pg": "^8.7.3",
     "pino": "^8.0.0",
