@@ -2,9 +2,7 @@
 
 ## Supported Versions
 
-Only the latest release is supported in the sense that security and bug fixes are not applied to previous releases.
-
-For example, a fix `6.1.1` will not be applied to `6.0.`x or `5.x.x` versions.
+Only the latest release is supported. Fixes are not ported back to prior major versions.
 
 ## Reporting a Vulnerability
 
