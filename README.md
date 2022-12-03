@@ -10,6 +10,8 @@ SQLPad is a legacy project in maintenance mode. If evaluating SQLPad, please con
 
 Maintenance releases for security and dependency updates will continue as possible.
 
+**As of version 7, semver will no longer be followed**. Unlike prior versions, patch updates may require major Node.js version updates, or contain removal of functionality.
+
 ## Docker Image
 
 The docker image runs on port 3000 and uses `/var/lib/sqlpad` for the embedded database directory.

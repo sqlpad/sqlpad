@@ -142,13 +142,3 @@ yarn test
 # specifying the path to the test file and --exit to exit after tests have run
 npx mocha test/path/to/file.js --exit
 ```
-
-## Releases
-
-SQLPad tries to follow [semantic versioning](https://semver.org/). As an application, this primarily means breaking HTTP API changes, breaking configuration changes, or major UI design changes will result in a major version bump. Minor and patch version bumps will consist of enhancements and fixes.
-
-For all enhancements, core SQLPad functionality should not be altered in any major way unless planned for an upcoming major release.
-
-The primary means of distributing SQLPad is via Docker Hub images. Images are automatically created off of git tags pushed to the repo matching the version format `v<major>.<minor>.<patch>`.
-
-To simplify the creation of package.json version bumps and tag creation, the `scripts/version.sh` may be used to cut a new release. Make updates to `CHANGELOG.md` followed by running `scripts/versions.sh 3.4.5` (or whatever the version number may be).
