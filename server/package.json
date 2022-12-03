@@ -103,7 +103,7 @@
     "sql-limiter": "^3.0.0",
     "sqlite3": "^5.0.8",
     "umzug": "^2.3.0",
-    "uuid": "^8.3.2",
+    "uuid": "^9.0.0",
     "vertica": "^0.5.5"
   },
   "main": "./app.js",
