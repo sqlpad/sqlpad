@@ -125,7 +125,7 @@
     "nise": "^5.1.1",
     "node-dev": "^7.4.2",
     "parse-link-header": "^2.0.0",
-    "pino-pretty": "^8.0.0",
+    "pino-pretty": "^9.1.1",
     "supertest": "^6.2.2",
     "traverse": "^0.6.6"
   }
