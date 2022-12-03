@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.11.4] - 2022-12-02
+
+- Update dependencies
+
 ## [6.11.3] - 2022-11-16
 
 - Update dependencies
