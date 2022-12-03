@@ -456,10 +456,10 @@
     async "^3.2.1"
     simple-lru-cache "^0.0.2"
 
-"@tediousjs/connection-string@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@tediousjs/connection-string/-/connection-string-0.3.0.tgz#23f7af793a365cc3b6a149ec1320f1e28c4242ff"
-  integrity sha512-d/keJiNKfpHo+GmSB8QcsAwBx8h+V1UbdozA5TD+eSLXprNY53JAYub47J9evsSKWDdNG5uVj0FiMozLKuzowQ==
+"@tediousjs/connection-string@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@tediousjs/connection-string/-/connection-string-0.4.1.tgz#6c92dcde392ff2401d9e9de628c1cd8f4b2a735f"
+  integrity sha512-gr1mFN7KMOn+VviQKcrt+z1/7ttn7s9NSMFFyg5GrJylNH6JGrDDNRm7C5vE4PNwhW6hYT67QRUO44Ns2LQijg==
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -477,13 +477,6 @@
   integrity sha512-9AonUzyTjXXhEOa0DnqpzZi6VHlqKMswga9EXjpXnnqxwLtdvPPtlO8evrI5D9S6asFRCQ6v+wpiUKbw+vKqyg==
   dependencies:
     "@types/ms" "*"
-
-"@types/es-aggregate-error@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/es-aggregate-error/-/es-aggregate-error-1.0.2.tgz#a970b4a5bbee95d87aebaa2aa317c846c18429df"
-  integrity sha512-erqUpFXksaeR2kejKnhnjZjbFxUpGZx4Z7ydNL9ie8tEhXPiZTsLeUDJ6aR1F8j5wWUAtOAQWUqkc7givBJbBA==
-  dependencies:
-    "@types/node" "*"
 
 "@types/geojson@^7946.0.10":
   version "7946.0.10"
@@ -1254,10 +1247,10 @@ combined-stream@^1.0.6, combined-stream@^1.0.8, combined-stream@~1.0.6:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^9.1.0:
-  version "9.4.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-9.4.0.tgz#bc4a40918fefe52e22450c111ecd6b7acce6f11c"
-  integrity sha512-sRPT+umqkz90UA8M1yqYfnHlZA7fF6nSphDtxeywPZ49ysjxDQybzk13CL+mXekDRG92skbcqCLVovuCusNmFw==
+commander@^9.4.0:
+  version "9.4.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-9.4.1.tgz#d1dd8f2ce6faf93147295c0df13c7c21141cfbdd"
+  integrity sha512-5EEkTNyHNGFPD2H+c/dXXfQZYa/scCKasxWcXJaWnNJ99pnQN9Vnmqow+p+PlFPE63Q6mThaZws1T+HxfpgtPw==
 
 component-emitter@^1.3.0:
   version "1.3.0"
@@ -3625,17 +3618,17 @@ ms@2.1.3, ms@^2.0.0, ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-mssql@^8.1.0:
-  version "8.1.4"
-  resolved "https://registry.yarnpkg.com/mssql/-/mssql-8.1.4.tgz#5eca0b515b3a0dc878f380460315fc8f73c40d80"
-  integrity sha512-nqkYYehETWVvFLB9zAGJV2kegOsdtLjUnkHA52aFhlE0ZIoOXC3BL8pLERwFicFypM4i3DX1hYeuM726EEIxjQ==
+mssql@^9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/mssql/-/mssql-9.0.1.tgz#9a311388229e5d596bfbda616e535b9a63241d69"
+  integrity sha512-rmBEPeUgZswvcclSc4s21WJCG0xqDYBas1MSnZepzDPvtNRgkx6f/gCm52EEo2djVtIXJgRq22m7gj7floz4Ng==
   dependencies:
-    "@tediousjs/connection-string" "^0.3.0"
-    commander "^9.1.0"
+    "@tediousjs/connection-string" "^0.4.1"
+    commander "^9.4.0"
     debug "^4.3.3"
     rfdc "^1.3.0"
     tarn "^3.0.2"
-    tedious "^14.0.0"
+    tedious "^15.0.1"
 
 mustache@^4.2.0:
   version "4.2.0"
@@ -5463,15 +5456,14 @@ tarn@^3.0.2:
   resolved "https://registry.yarnpkg.com/tarn/-/tarn-3.0.2.tgz#73b6140fbb881b71559c4f8bfde3d9a4b3d27693"
   integrity sha512-51LAVKUSZSVfI05vjPESNc5vwqqZpbXCsU+/+wxlOrUjk2SnFTt97v9ZgQrD4YmxYW1Px6w2KjaDitCfkvgxMQ==
 
-tedious@^14.0.0:
-  version "14.7.0"
-  resolved "https://registry.yarnpkg.com/tedious/-/tedious-14.7.0.tgz#4126eab68aa3f24ef42406f2e74af5aa96b64e50"
-  integrity sha512-d3qlmZcvZyt7akyPHiOdR+knfzObWZH3mW+gouQTSb7YTSwtpHuYHcvsQabfbY7oOvgbs51xRb7CwOahWK/t9w==
+tedious@^15.0.1:
+  version "15.1.2"
+  resolved "https://registry.yarnpkg.com/tedious/-/tedious-15.1.2.tgz#4dd3c33134be01d64520475e911ca83e276fcfeb"
+  integrity sha512-94slmnggCX8zG6iLNnM3k6PplTguP0p7R2RWOKTXdPmK1VmTpWk4+e0J4koIMXm1jjG7sGlZ1/JlaGVAdF1OOg==
   dependencies:
     "@azure/identity" "^2.0.4"
     "@azure/keyvault-keys" "^4.4.0"
     "@js-joda/core" "^5.2.0"
-    "@types/es-aggregate-error" "^1.0.2"
     bl "^5.0.0"
     es-aggregate-error "^1.0.8"
     iconv-lite "^0.6.3"
