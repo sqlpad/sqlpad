@@ -75,7 +75,7 @@
     "node-crate": "^2.0.6",
     "node-fetch": "^2.6.7",
     "node-xlsx": "^0.21.0",
-    "openid-client": "^4.9.1",
+    "openid-client": "^5.3.1",
     "papaparse": "^5.3.2",
     "passport": "^0.6.0",
     "passport-custom": "^1.1.1",
