@@ -18,19 +18,13 @@ The docker image runs on port 3000 and uses `/var/lib/sqlpad` for the embedded d
 
 See [docker-examples](https://github.com/sqlpad/sqlpad/tree/master/docker-examples) directory for example docker-compose setup with SQL Server.
 
-## Development
-
-For instructions on installing/running SQLPad from git repo see [DEVELOPER-GUIDE.md](https://github.com/sqlpad/sqlpad/blob/master/DEVELOPER-GUIDE.md)
-
 ## Project Documentation
 
 Documentation located at [https://getsqlpad.com](https://getsqlpad.com).
 
-Documentation source located in [docs directory](https://github.com/sqlpad/sqlpad/tree/master/docs), built/rendered by docsify.
+## Development
 
-## Contributing
-
-[Collaborators always welcome!](https://github.com/sqlpad/sqlpad/blob/master/CONTRIBUTING.md)
+For instructions on installing/running SQLPad from git repo see [DEVELOPER-GUIDE.md](https://github.com/sqlpad/sqlpad/blob/master/DEVELOPER-GUIDE.md)
 
 ## License
 
