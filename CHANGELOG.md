@@ -1,5 +1,10 @@
 # Changelog
 
+## [7.0.0] - TBD
+
+- Update dependencies - potentially breaking changes for auth due to dependency updates.
+- Change in versioning scheme. Semver will no longer be followed.
+
 ## [6.11.4] - 2022-12-02
 
 - Update dependencies
