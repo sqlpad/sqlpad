@@ -10,15 +10,13 @@ SQLPad is a legacy project in maintenance mode. If evaluating SQLPad, please con
 
 Maintenance releases for security and dependency updates will continue as possible.
 
-**As of version 7, semver will no longer be followed**. Unlike prior versions, patch updates may require major Node.js version updates, or contain removal of functionality.
+**As of version 7, semver is no longer followed**. Going forward patch updates may require major Node.js version updates, or contain removal of functionality.
 
 ## Docker Image
 
 The docker image runs on port 3000 and uses `/var/lib/sqlpad` for the embedded database directory.
 
-`latest` tag is continuously built from latest commit in repo. Only use that if you want to live on the edge, otherwise use specific version tags to ensure stability.
-
-See [docker-examples](https://github.com/sqlpad/sqlpad/tree/master/docker-examples) directory for example docker-compose setup with SQL Server.
+See [docker-examples](https://github.com/sqlpad/sqlpad/tree/master/docker-examples) for docker-compose examples.
 
 ## Project Documentation
 
