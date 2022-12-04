@@ -35,7 +35,7 @@ RUN yarn
 WORKDIR /sqlpad/client
 RUN yarn
 WORKDIR /sqlpad/server
-RUN yarn
+RUN yarn --production
 WORKDIR /sqlpad
 
 # Copy rest of the project into docker
@@ -46,20 +46,6 @@ RUN npm run build --prefix client && \
     rm -rf server/public && \
     mkdir server/public && \
     cp -r client/build/* server/public
-
-# Build test db used for dev, debugging and running tests
-RUN node server/generate-test-db-fixture.js
-
-# Run tests and linting to validate build
-ENV SKIP_INTEGRATION true
-RUN npm run test --prefix server
-RUN npm run lint
-
-# Remove any dev dependencies from server
-# We don't care about root or client directories 
-# as they are not going to be copied to next stage
-WORKDIR /sqlpad/server
-RUN npm prune --production
 
 # Start another stage with a fresh node
 # Copy the server directory that has all the necessary node modules + front end build
