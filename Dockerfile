@@ -31,6 +31,8 @@ COPY ./client/yarn* ./client/
 COPY ./server/yarn* ./server/
 
 # Install dependencies
+# Timeout increase necessary for mdi-react timeout
+RUN yarn config set network-timeout 600000 -g
 RUN yarn
 WORKDIR /sqlpad/client
 RUN yarn
