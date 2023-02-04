@@ -1884,10 +1884,10 @@ match-sorter@*, match-sorter@^6.3.1:
     "@babel/runtime" "^7.12.5"
     remove-accents "0.4.2"
 
-mdi-react@^8.3.1:
-  version "8.6.0"
-  resolved "https://registry.yarnpkg.com/mdi-react/-/mdi-react-8.6.0.tgz#74b8418cb233e7f7c3456b3072df0a5fcc591a8a"
-  integrity sha512-aFhdEYDMCHZ90qGO8yLe902XkRPPeRgd4mOq7IbONnS1eeecvlAFRPETKpAMWKdSoxs+ReCS5nY3gOQG1Ciq3Q==
+mdi-react@9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/mdi-react/-/mdi-react-9.1.0.tgz#68ef12a10f6028411e8d00031f41de68338282ed"
+  integrity sha512-QFY9BkhX5MaEFpq+0ZGbM7S0iOGkgPb3RLRyzHJIxo8LT8jGu8VY0M+3tfXAaRgYN83t7ksA7D8kuFTt8d/oag==
 
 "memoize-one@>=3.1.1 <6":
   version "5.2.1"
