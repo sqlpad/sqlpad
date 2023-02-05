@@ -1,5 +1,5 @@
 import React from 'react';
-import ReachTooltip from '@reach/tooltip';
+import { Tooltip as ReachTooltip } from '@reach/tooltip';
 import '@reach/tooltip/styles.css';
 
 export interface Props extends React.HTMLAttributes<HTMLElement> {
