@@ -43,6 +43,7 @@ function runQuery(query, connection) {
       encrypt: Boolean(connection.sqlserverEncrypt),
       multiSubnetFailover: connection.sqlserverMultiSubnetFailover,
       readOnlyIntent: connection.readOnlyIntent,
+      trustServerCertificate: Boolean(connection.trustServerCertificate),
       // Set enableArithAbort to avoid following log message:
       // tedious deprecated The default value for `config.options.enableArithAbort`
       // will change from `false` to `true` in the next major version of `tedious`.
@@ -182,6 +183,11 @@ const fields = [
     key: 'readOnlyIntent',
     formType: 'CHECKBOX',
     label: 'ReadOnly Application Intent',
+  },
+  {
+    key: 'trustServerCertificate',
+    formType: 'CHECKBOX',
+    label: 'Trust Server Certificate',
   },
   {
     key: 'maxrows_override',
