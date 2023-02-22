@@ -1,5 +1,10 @@
 # Changelog
 
+## [7.0.1] - 2023-02-21
+
+- Add "Trust Server Cert" option for SQL Server connections
+- Update dependencies (minor and patch)
+
 ## [7.0.0] - 2022-12-03
 
 - Update dependencies - potentially breaking changes for auth due to dependency updates.
