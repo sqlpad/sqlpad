@@ -4,7 +4,7 @@
   "description": "Web app. Write SQL and visualize the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, SAP HANA, and BigQuery.",
   "license": "MIT",
   "engines": {
-    "node": ">=12"
+    "node": ">=16"
   },
   "keywords": [
     "sql",
@@ -63,7 +63,7 @@
     "ldapjs": "^2.3.2",
     "lodash": "^4.17.20",
     "lru-cache": "^7.8.1",
-    "mariadb": "^3.0.0",
+    "mariadb": "3.0.2",
     "memorystore": "^1.6.7",
     "minimist": "^1.2.6",
     "mkdirp": "2.1.3",
