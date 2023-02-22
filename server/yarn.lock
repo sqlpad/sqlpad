@@ -3395,16 +3395,17 @@ make-fetch-happen@^9.1.0:
     socks-proxy-agent "^6.0.0"
     ssri "^8.0.0"
 
-mariadb@^3.0.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-3.1.0.tgz#7d683dabd83d2521303257a14062df25f9a88fbc"
-  integrity sha512-OyWbm90bX6gsEuJjD8rLrkBXYt3BR/xc6mQfFibZmmzSw938S5EZzullW5gbVZKRZwbZGxihfszxjCETWid45Q==
+mariadb@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-3.0.2.tgz#427ae286b8fb35f4046b3457f4df729a5019d6c3"
+  integrity sha512-dVjiQZ6RW0IXFnX+T/ZEmnqs724DgkQsXqfCyInXn0XxVfO2Px6KbS4M3Ny6UiBg0zJ93SHHvfVBgYO4ZnFvvw==
   dependencies:
     "@types/geojson" "^7946.0.10"
     "@types/node" "^17.0.45"
     denque "^2.1.0"
     iconv-lite "^0.6.3"
     lru-cache "^7.14.0"
+    moment-timezone "^0.5.38"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -3598,7 +3599,7 @@ mock-require@^3.0.3:
     get-caller-file "^1.0.2"
     normalize-path "^2.1.1"
 
-moment-timezone@^0.5.15, moment-timezone@^0.5.35:
+moment-timezone@^0.5.15, moment-timezone@^0.5.35, moment-timezone@^0.5.38:
   version "0.5.40"
   resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.40.tgz#c148f5149fd91dd3e29bf481abc8830ecba16b89"
   integrity sha512-tWfmNkRYmBkPJz5mr9GVDn9vRlVZOTe6yqY92rFxiOdWXbjaR0+9LwQnZGGuNR63X456NqmEkbskte8tWL5ePg==
