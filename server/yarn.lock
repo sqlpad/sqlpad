@@ -3403,16 +3403,17 @@ make-fetch-happen@^9.1.0:
     socks-proxy-agent "^6.0.0"
     ssri "^8.0.0"
 
-mariadb@^3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-3.1.0.tgz#7d683dabd83d2521303257a14062df25f9a88fbc"
-  integrity sha512-OyWbm90bX6gsEuJjD8rLrkBXYt3BR/xc6mQfFibZmmzSw938S5EZzullW5gbVZKRZwbZGxihfszxjCETWid45Q==
+mariadb@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-3.0.2.tgz#427ae286b8fb35f4046b3457f4df729a5019d6c3"
+  integrity sha512-dVjiQZ6RW0IXFnX+T/ZEmnqs724DgkQsXqfCyInXn0XxVfO2Px6KbS4M3Ny6UiBg0zJ93SHHvfVBgYO4ZnFvvw==
   dependencies:
     "@types/geojson" "^7946.0.10"
     "@types/node" "^17.0.45"
     denque "^2.1.0"
     iconv-lite "^0.6.3"
     lru-cache "^7.14.0"
+    moment-timezone "^0.5.38"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -3606,7 +3607,7 @@ mock-require@^3.0.3:
     get-caller-file "^1.0.2"
     normalize-path "^2.1.1"
 
-moment-timezone@^0.5.15, moment-timezone@^0.5.35:
+moment-timezone@^0.5.15, moment-timezone@^0.5.35, moment-timezone@^0.5.38:
   version "0.5.41"
   resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.41.tgz#a7ad3285fd24aaf5f93b8119a9d749c8039c64c5"
   integrity sha512-e0jGNZDOHfBXJGz8vR/sIMXvBIGJJcqFjmlg9lmE+5KX1U7/RZNMswfD8nKnNCnQdKTIj50IaRKwl1fvMLyyRg==
@@ -3660,10 +3661,10 @@ mustache@^4.2.0:
   resolved "https://registry.yarnpkg.com/mustache/-/mustache-4.2.0.tgz#e5892324d60a12ec9c2a73359edca52972bf6f64"
   integrity sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ==
 
-mysql2@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/mysql2/-/mysql2-3.2.0.tgz#3613a8903bcb7ade0ae35b29945a0378eb67da89"
-  integrity sha512-0Vn6a9WSrq6fWwvPgrvIwnOCldiEcgbzapVRDAtDZ4cMTxN7pnGqCTx8EG32S/NYXl6AXkdO+9hV1tSIi/LigA==
+mysql2@3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/mysql2/-/mysql2-3.1.0.tgz#7d7b6c9e368bd5f74a82ce150edc32401a05d756"
+  integrity sha512-woMeIog21X72RcFLhE/xajhUdnwRMd6Oq16S7/O2qJ5lPUDfFwgSW+xhx7TjzcM8PU3q+dVsryIaDi+HyQR/0A==
   dependencies:
     denque "^2.1.0"
     generate-function "^2.3.1"
