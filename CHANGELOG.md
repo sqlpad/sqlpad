@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.0.2] - 2023-03-06
+
+- Update dependencies
+
 ## [7.0.1] - 2023-02-21
 
 - Add "Trust Server Cert" option for SQL Server connections
