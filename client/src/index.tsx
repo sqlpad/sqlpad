@@ -11,6 +11,8 @@ import './css/react-split-pane.css';
 import './css/vendorOverrides.css';
 import Routes from './Routes';
 import swrFetcher from './utilities/swr-fetcher';
+import { SettingsProvider, ThemeSettings } from "./components/settings"
+import ThemeProvider from "./theme";
 
 declare global {
   interface Window {
@@ -26,7 +28,11 @@ ReactDOM.render(
       fetcher: swrFetcher,
     }}
   >
-    <Routes />
+      <ThemeProvider>
+          <ThemeSettings>
+              <Routes />
+          </ThemeSettings>
+      </ThemeProvider>
     <MessageDisplayer />
   </SWRConfig>,
   document.getElementById('root')

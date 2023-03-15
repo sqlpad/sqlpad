@@ -3,6 +3,11 @@
   "version": "7.0.2",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@emotion/cache": "^11.10.5",
+    "@iconify/react": "^4.0.1",
+    "@mui/material": "^5.11.0",
     "@reach/dialog": "^0.18.0",
     "@reach/menu-button": "^0.18.0",
     "@reach/tooltip": "^0.18.0",
@@ -10,7 +15,6 @@
     "@types/keymaster": "^1.6.30",
     "@types/lodash": "^4.14.181",
     "@types/match-sorter": "^6.0.0",
-    "@types/node": "^14.18.12",
     "@types/react": "^17.0.44",
     "@types/react-dom": "^17.0.15",
     "@types/react-measure": "^2.0.8",
@@ -21,6 +25,7 @@
     "@vitejs/plugin-react": "^3.1.0",
     "d3": "^5.16.0",
     "downshift": "^6.1.7",
+    "framer-motion": "^7.10.0",
     "history": "^4.10.1",
     "humanize-duration": "^3.27.1",
     "keymaster": "^1.6.2",
@@ -39,6 +44,7 @@
     "react-measure": "^2.5.2",
     "react-router-dom": "^5.3.0",
     "react-split-pane": "^0.1.92",
+    "axios": "^1.2.1",
     "react-window": "^1.8.6",
     "react-window-infinite-loader": "^1.0.5",
     "swr": "^1.3.0",
@@ -69,6 +75,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@types/node": "^16.18.9",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
     "eslint": "^8.13.0",

@@ -21,7 +21,7 @@ const proxy: Record<string, string> = {};
 
 PROXY_ROUTES.forEach((route) => {
   proxy[route] = PROXY_URL;
-  proxy[`/sqlpad${route}`] = PROXY_URL;
+  proxy[`/transform${route}`] = PROXY_URL;
 });
 
 // This wildcard route is used for the UI to figure out what the baseURL is for the app
@@ -34,14 +34,14 @@ const getConfig = ({ command, mode }) => {
 
   // command is either build or serve
   if (command === 'serve') {
-    base = '/sqlpad/';
+    base = '/transform/';
   }
 
   return {
     base,
     plugins: [react()],
     server: {
-      port: 3000,
+      port: 3001,
       proxy,
     },
     build: {
