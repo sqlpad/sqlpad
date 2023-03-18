@@ -126,5 +126,8 @@
     "pino-pretty": "^9.1.1",
     "supertest": "^6.2.2",
     "traverse": "^0.6.6"
+  },
+  "resolutions": {
+    "supertest/**/cookiejar": "^2.1.4"
   }
 }
