@@ -90,7 +90,6 @@
     "prettier": "^2.6.2",
     "query-string": "^7.1.1",
     "redis": "^4.0.6",
-    "request": "^2.88.2",
     "rimraf": "^3.0.2",
     "sanitize-filename": "^1.6.3",
     "sequelize": "^6.19.0",
