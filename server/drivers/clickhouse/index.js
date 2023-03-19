@@ -1,7 +1,4 @@
-// `clickhouse` package does not provide column information, and uses `request`
-// May need to move to `node-clickhouse` or other library down the road
-// https://clickhouse.tech/docs/en/interfaces/third-party/client-libraries/
-const { ClickHouse } = require('clickhouse');
+const { createClient } = require('@clickhouse/client');
 const sqlLimiter = require('sql-limiter');
 const { formatSchemaQueryResults } = require('../utils');
 
@@ -44,40 +41,36 @@ async function runQuery(query, connection) {
 
   const port = connection.port || 8123;
   const protocol = connection.useHTTPS ? 'https' : 'http';
-  const url = `${protocol}://${connection.host}`;
+  const host = `${protocol}://${connection.host}:${port}`;
   const database = connection.database;
-
   const username = connection.username || 'default';
   const password = connection.password || '';
 
-  const clickhouse = new ClickHouse({
-    url,
-    port,
+  const client = createClient({
+    host,
+    database,
     username,
     password,
-    format: 'json',
-    config: {
-      database,
-    },
   });
 
-  // clickhouse package will append ' FORMAT JSON' to certain queries,
-  // but does not handle CTEs WITH... SELECT.
-  // This is a modified approach used in package:
-  // https://github.com/TimonKK/clickhouse/blob/9dea3c0c3e4f3e2fe64e59dad762f1db044bf9bf/index.js#L479
-  // If a certain query type is detected and FORMAT JSON is not included, append it
-  // CTEs will be detected as following statement type (WITH cte AS (...) SELECT) will have type of "select"
+  // clickhouse client needs to use exec or query depending on statement type
+  // If the query returns some results, format needs to be set and the `query` method should be used
+  // Otherwise `exec` method should be used
   const statementType = sqlLimiter.getStatementType(limitedQuery);
-  if (
-    ['select', 'show', 'exists'].indexOf(statementType) > -1 &&
-    !limitedQuery
-      .trim()
-      .match(/FORMAT\s*(JSON|TabSeparatedWithNames|CSVWithNames)/im)
-  ) {
-    limitedQuery += ' FORMAT JSON';
+
+  const format =
+    ['select', 'show', 'exists'].indexOf(statementType) > -1
+      ? `JSONEachRow`
+      : undefined;
+  const useExec = !format;
+
+  if (useExec) {
+    await client.exec({ query: limitedQuery });
+    return { rows, incomplete };
   }
 
-  rows = await clickhouse.query(limitedQuery).toPromise();
+  const resultSet = await client.query({ query: limitedQuery, format });
+  rows = await resultSet.json();
   if (rows.length > maxRows) {
     incomplete = true;
     rows = rows.slice(0, maxRows);
