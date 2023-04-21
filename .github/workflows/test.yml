@@ -64,7 +64,7 @@ jobs:
         run: (cd server && yarn)
 
       - name: Download built artifacts
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: built_node${{ matrix.node-version }}
           path: server/public
