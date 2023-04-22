@@ -97,14 +97,14 @@ color-name@~1.1.4:
   integrity sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==
 
 colorette@^2.0.19:
-  version "2.0.19"
-  resolved "https://registry.yarnpkg.com/colorette/-/colorette-2.0.19.tgz#cdf044f47ad41a0f4b56b3a0d5b4e6e1a2d5a798"
-  integrity sha512-3tlv/dIP7FWvj3BsbHrGLJ6l/oKh1O3TcgBqMn+yyCagOxc23fyzDS6HypQbgxWbkpDnf52p1LuR4eWDQ/K9WQ==
+  version "2.0.20"
+  resolved "https://registry.yarnpkg.com/colorette/-/colorette-2.0.20.tgz#9eb793e6833067f7235902fcd3b09917a000a95a"
+  integrity sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==
 
 commander@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.0.tgz#71797971162cd3cf65f0b9d24eb28f8d303acdf1"
-  integrity sha512-zS5PnTI22FIRM6ylNW8G4Ap0IEOyk62fhLSD0+uHRT9McRCLGpkVNvao4bjimpK/GShynyQkFFxHhwMcETmduA==
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.1.tgz#881ee46b4f77d1c1dccc5823433aa39b022cbe06"
+  integrity sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==
 
 cross-spawn@^7.0.3:
   version "7.0.3"
@@ -165,9 +165,9 @@ get-stream@^6.0.1:
   integrity sha512-ts6Wi+2j3jQjqi70w5AlN8DFnkSwC+MqmxEzdEALB2qXZYV3X/b1CTfgPLGJNMeAWxdPfU8FO1ms3NUfaHCPYg==
 
 human-signals@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-4.3.0.tgz#2095c3cd5afae40049403d4b811235b03879db50"
-  integrity sha512-zyzVyMjpGBX2+6cDVZeFPCdtOtdsxOeseRhB9tkQ6xXmGUNrcnBzdEKPy3VPNYz+4gy1oukVOXcrJCunSyc6QQ==
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/human-signals/-/human-signals-4.3.1.tgz#ab7f811e851fca97ffbd2c1fe9a958964de321b2"
+  integrity sha512-nZXjEF2nbo7lIw3mgYjItAfgQXog3OjJogSbKa2CQIIvSGWcKgeJnQlNXip6NglNzYH45nSRiEVimMvYL8DDqQ==
 
 husky@^8.0.1:
   version "8.0.3"
@@ -210,9 +210,9 @@ lilconfig@2.1.0:
   integrity sha512-utWOt/GHzuUxnLKxB6dk81RoOeoNeHgbrXiuGk4yyF5qlRz+iIVWu56E2fqGHFrXz0QNUhLB/8nKqvRH66JKGQ==
 
 lint-staged@^13.0.1:
-  version "13.2.0"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-13.2.0.tgz#b7abaf79c91cd36d824f17b23a4ce5209206126a"
-  integrity sha512-GbyK5iWinax5Dfw5obm2g2ccUiZXNGtAS4mCbJ0Lv4rq6iEtfBSjOYdcbOtAIFtM114t0vdpViDDetjVTSd8Vw==
+  version "13.2.1"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-13.2.1.tgz#9d30a14e3e42897ef417bc98556fb757f75cae87"
+  integrity sha512-8gfzinVXoPfga5Dz/ZOn8I2GOhf81Wvs+KwbEXQn/oWZAvCVS2PivrXfVbFJc93zD16uC0neS47RXHIjXKYZQw==
   dependencies:
     chalk "5.2.0"
     cli-truncate "^3.1.0"
@@ -339,9 +339,9 @@ pidtree@^0.6.0:
   integrity sha512-eG2dWTVw5bzqGRztnHExczNxt5VGsE6OwTeCG3fdUf9KBsZzO3R5OIIIzWR+iZA0NtZ+RDVdaoE2dK1cn6jH4g==
 
 prettier@^2.6.2:
-  version "2.8.4"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.4.tgz#34dd2595629bfbb79d344ac4a91ff948694463c3"
-  integrity sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==
+  version "2.8.7"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.7.tgz#bb79fc8729308549d28fe3a98fce73d2c0656450"
+  integrity sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==
 
 restore-cursor@^3.1.0:
   version "3.1.0"
