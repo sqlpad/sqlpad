@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.0.4] - 2023-04-22
+
+- Update dependencies
+
 ## [7.0.3] - 2023-03-19
 
 - Updates clickhouse implementation to [official nodejs driver](https://clickhouse.com/docs/en/integrations/language-clients/nodejs). At time of release, compatible Clickhouse versions are 22.8 - 23.2.
