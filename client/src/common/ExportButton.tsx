@@ -15,6 +15,7 @@ interface NavigationLinkProps
 
 const NavigationLink = React.forwardRef<Ref, NavigationLinkProps>(
   (props, ref) => {
+    // @ts-expect-error link error after dep upgrade
     return <Link {...props} innerRef={ref} />;
   }
 );
