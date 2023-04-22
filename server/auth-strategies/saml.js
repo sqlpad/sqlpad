@@ -1,5 +1,5 @@
 const passport = require('passport');
-const SamlStrategy = require('passport-saml').Strategy;
+const SamlStrategy = require('@node-saml/passport-saml').Strategy;
 const appLog = require('../lib/app-log');
 
 /**
