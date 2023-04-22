@@ -42,6 +42,7 @@
   "dependencies": {
     "@clickhouse/client": "^0.0.13",
     "@google-cloud/bigquery": "^6.0.0",
+    "@node-saml/passport-saml": "^4.0.3",
     "athena-express": "^7.1.5",
     "aws-sdk": "^2.1113.0",
     "bcryptjs": "^2.4.3",
@@ -84,7 +85,6 @@
     "passport-jwt": "^4.0.0",
     "passport-ldapauth": "^3.0.1",
     "passport-local": "^1.0.0",
-    "passport-saml": "^3.2.1",
     "pg": "^8.7.3",
     "pino": "^8.0.0",
     "prettier": "^2.6.2",
