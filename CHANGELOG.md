@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.0.5] - 2023-05-02
+
+- Update dependencies
+
 ## [7.0.4] - 2023-04-22
 
 - Update dependencies
