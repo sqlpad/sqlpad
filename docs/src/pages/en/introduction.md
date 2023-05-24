@@ -4,7 +4,7 @@ description: Docs intro
 layout: ../../layouts/MainLayout.astro
 ---
 
-SQLPad is a web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Trino, Presto, Pinot, Drill, SAP HANA, Snowflake, BigQuery, SQLite, TiDB and many others via ODBC.
+SQLPad is a web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Trino, Presto, Pinot, Drill, SAP HANA, BigQuery, SQLite, TiDB and many others via ODBC.
 
 <img class="screenshot" src="/images/screenshot.png" alt="SQLPad screenshot" >
 
@@ -63,9 +63,6 @@ While not exactly alternatives, these open source projects might be of interest:
   </div>
   <div class="db-container db-container-bg">
     <img src="/images/logo-cassandra.png" data-origin="/images/logo-cassandra.png" alt="Cassandra" >
-  </div>
-  <div class="db-container">
-    <img src="/images/logo-snowflake.png" data-origin="/images/logo-snowflake.png" alt="Snowflake" >
   </div>
   <div class="db-container">
     <img src="/images/logo-bigquery.png" data-origin="/images/logo-bigquery.png" alt="BigQuery" >

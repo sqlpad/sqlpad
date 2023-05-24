@@ -1,7 +1,7 @@
 export const SITE = {
   title: 'SQLPad',
   description:
-    'Web-based SQL editor run in your own private cloud. Supports MySQL, Postgres, SQL Server, Vertica, Crate, ClickHouse, Trino, Presto, SAP HANA, Cassandra, Snowflake, BigQuery, SQLite, and more with ODBC',
+    'Web-based SQL editor run in your own private cloud. Supports MySQL, Postgres, SQL Server, Vertica, Crate, ClickHouse, Trino, Presto, SAP HANA, Cassandra, BigQuery, SQLite, and more with ODBC',
   defaultLanguage: 'en_US',
 };
 
@@ -44,7 +44,7 @@ export const GITHUB_EDIT_URL = `https://github.com/sqlpad/sqlpad/tree/master/doc
 // }
 
 export type Sidebar = Record<
-  typeof KNOWN_LANGUAGE_CODES[number],
+  (typeof KNOWN_LANGUAGE_CODES)[number],
   Record<string, { text: string; link: string }[]>
 >;
 export const SIDEBAR: Sidebar = {
