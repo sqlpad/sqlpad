@@ -65,9 +65,6 @@ While not exactly alternatives, these open source projects might be of interest:
     <img src="/images/logo-cassandra.png" data-origin="/images/logo-cassandra.png" alt="Cassandra" >
   </div>
   <div class="db-container">
-    <img src="/images/logo-snowflake.png" data-origin="/images/logo-snowflake.png" alt="Snowflake" >
-  </div>
-  <div class="db-container">
     <img src="/images/logo-bigquery.png" data-origin="/images/logo-bigquery.png" alt="BigQuery" >
   </div>
   <div class="db-container">

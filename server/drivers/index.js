@@ -15,7 +15,6 @@ const drivers = {
   postgres: require('./postgres'),
   presto: require('./presto'),
   redshift: require('./redshift'),
-  snowflake: require('./snowflake'),
   sqlite: require('./sqlite'),
   sqlserver: require('./sqlserver'),
   trino: require('./trino'),

@@ -243,21 +243,6 @@ Redshift uses the Postgres driver, using a different query for pulling schema.
 | `localDataCenter` | Local data center                |   text    |
 | `keyspace`        | Keyspace                         |   text    |
 
-## Snowflake
-
-| key                  | description          | data type |
-| -------------------- | -------------------- | :-------: |
-| `name`               | Name of connection   |   text    |
-| `driver`             | Must be `snowflake`  |   text    |
-| `account`            | Account              |   text    |
-| `username`           | User name            |   text    |
-| `password`           | Password             |   text    |
-| `warehouse`          | Warehouse            |   text    |
-| `database`           | Database             |   text    |
-| `schema`             | Schema               |   text    |
-| `role`               | Role                 |   text    |
-| `preQueryStatements` | Pre-query statements |   text    |
-
 ## BigQuery
 
 | key               | description                      | data type |
