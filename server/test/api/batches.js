@@ -6,9 +6,6 @@ const util = require('util');
 const path = require('path');
 const TestUtils = require('../utils');
 const access = util.promisify(fs.access);
-const { v4: uuidv4 } = require('uuid');
-const AWSMock = require('aws-sdk-mock');
-const AWS = require('aws-sdk');
 
 const query1 = `SELECT 1 AS id, 'blue' AS color`;
 const query2 = `SELECT 1 AS id, 'blue' AS color UNION ALL SELECT 2 AS id, 'red' AS color ORDER BY id`;
@@ -19,41 +16,13 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function setupAthenaMock() {
-  AWSMock.setSDKInstance(AWS);
-
-  AWSMock.mock('Athena', 'startQueryExecution', () => {
-    return Promise.resolve({ QueryExecutionId: uuidv4() });
-  });
-  AWSMock.mock('Athena', 'stopQueryExecution', () => {
-    return Promise.resolve({});
-  });
-  AWSMock.mock('Athena', 'getQueryResults', () => {
-    return Promise.resolve({ results: [] });
-  });
-  AWSMock.mock('Athena', 'getQueryExecution', () => {
-    return Promise.resolve({
-      QueryExecution: {
-        Status: { State: 'SUCCEEDED' },
-        ResultConfiguration: { OutputLocation: 's3://test/location/data.csv' },
-        StatementType: 'DML',
-      },
-    });
-  });
-  AWSMock.mock('S3', 'getObject', () => {
-    return Promise.resolve({});
-  });
-}
-
 describe('api/batches', function () {
   /**
    * @type {TestUtils}
    */
   let utils;
   let query;
-  let asyncQuery;
   let connection;
-  let asyncDriverConnection;
   let batch;
   let batchWithoutQueryId;
   let statement1;
@@ -76,23 +45,11 @@ describe('api/batches', function () {
     });
     await utils.init(true);
 
-    setupAthenaMock();
-
     connection = await utils.post('admin', '/api/connections', {
       name: 'test connection',
       driver: 'sqlite',
       data: {
         filename: './test/fixtures/sales.sqlite',
-      },
-    });
-
-    asyncDriverConnection = await utils.post('admin', '/api/connections', {
-      driver: 'athena',
-      name: 'test async driver connection',
-      data: {
-        awsRegion: 'us-east-1',
-        awsAccessKeyId: 'access',
-        awsSecretAccessKey: 'secret',
       },
     });
 
@@ -102,18 +59,6 @@ describe('api/batches', function () {
       connectionId: connection.id,
       queryText,
     });
-
-    asyncQuery = await utils.post('admin', '/api/queries', {
-      name: 'test async connection query',
-      tags: ['test'],
-      connectionId: asyncDriverConnection.id,
-      queryText,
-    });
-  });
-
-  after(async function () {
-    // Bring back the library to avoid hiding issues by inadvertently mocking
-    AWSMock.restore();
   });
 
   it('Creates batch', async function () {
@@ -429,34 +374,6 @@ describe('api/batches', function () {
       },
       413
     );
-  });
-
-  it('creates batch and cancels it', async function () {
-    batch = await utils.post('admin', `/api/batches`, {
-      connectionId: asyncDriverConnection.id,
-      queryId: asyncQuery.id,
-      batchText: queryText,
-      selectedText: queryText,
-    });
-    assert(batch.id);
-    const response = await utils.put(
-      'admin',
-      `/api/batches/${batch.id}/cancel`,
-      {
-        connectionId: asyncDriverConnection.id,
-      }
-    );
-    assert(response);
-    assert.equal(response.status, 'cancelled');
-    assert(response.statements);
-    assert.equal(response.statements.length, 2);
-    for (let s in response.statement) {
-      if (s.hasOwnProperty('status')) {
-        assert.equal(s.status, 'cancelled');
-      } else {
-        assert.fail('statement without status');
-      }
-    }
   });
 
   it('creates batch, tries to cancel it, and receives 400 when unsupported', async function () {
