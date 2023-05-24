@@ -22,6 +22,8 @@ While not exactly alternatives, these open source projects might be of interest:
 - [Superset](https://github.com/apache/superset) (open source) / [Preset](https://preset.io/) (company)
 - [Chartbrew](https://github.com/chartbrew/chartbrew) (open source) / [Chartbrew](https://chartbrew.com/) (company)
 - [Lightdash](https://github.com/lightdash/lightdash) (open source) / [Lightdash](https://www.lightdash.com/) (company)
+- [CloudBeaver](https://github.com/dbeaver/cloudbeaver) (open source)
+- [Awesome DB tools GUIs](https://github.com/mgramin/awesome-db-tools#gui)
 
 ## Database Support
 
