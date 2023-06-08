@@ -8,4 +8,5 @@ if [ -d "/etc/docker-entrypoint.d" ]; then
         . "$file"
     done < <(find /etc/docker-entrypoint.d -maxdepth 1 -name '*.sh' -type f  -print0)
 fi
+set +a
 exec node /usr/app/server.js $@
