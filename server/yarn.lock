@@ -167,10 +167,10 @@
     jsonwebtoken "^9.0.0"
     uuid "^8.3.0"
 
-"@clickhouse/client@^0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@clickhouse/client/-/client-0.0.13.tgz#951c2c407e2394cdfe632b13965a39b111a2f9e1"
-  integrity sha512-QSqc/4hECW0Gk39nZ6RzBGh2n26uUwuwR75Er5Pi7AMKowkdyzbLbSUzEem2rsjy72GHgqyQnrSLIh8bF2UlMA==
+"@clickhouse/client@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@clickhouse/client/-/client-0.0.16.tgz#36ae3f1bb36a92127ed390feb13582aa1a834b62"
+  integrity sha512-X2K3nXHpicXmvnNpD1mKbtsbnofVcJt3Zd+mk+JS7PR5eCiBZaoa9mZRF2ZXrHXfrkGZGc1DnCd3FKfVWZlLpg==
   dependencies:
     node-abort-controller "^3.0.1"
     uuid "^9.0.0"

@@ -40,7 +40,7 @@
     "lint": "eslint \"**/*.js\" && prettier --check ."
   },
   "dependencies": {
-    "@clickhouse/client": "^0.0.13",
+    "@clickhouse/client": "^0.0.16",
     "@google-cloud/bigquery": "^6.0.0",
     "@node-saml/passport-saml": "^4.0.3",
     "athena-express": "^7.1.5",
