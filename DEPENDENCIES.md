@@ -5,7 +5,8 @@ SQLPad's an old project, and some dependencies are being left at specific versio
 ## Server (as of 6/18/2023)
 
 - `node-ldapjs` - 3.x brings a lot of changes and risk of breakage. https://github.com/ldapjs/node-ldapjs/releases/tag/v3.0.0
-- `node-fetch` - 3.x is ESM only.
+- `node-fetch` - 3.x is ESM only
+- `query-string` - 8.x is ESM only
 - `sql-formatter` - 3.x onward has performance regressions, changes in functionality.
 - `umzug` - 3.x has many (unnecessary) breaking changes and additional dependencies.
 
