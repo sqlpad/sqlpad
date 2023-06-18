@@ -1194,10 +1194,10 @@ confusing-browser-globals@^1.0.10:
   resolved "https://registry.yarnpkg.com/confusing-browser-globals/-/confusing-browser-globals-1.0.11.tgz#ae40e9b57cdd3915408a2805ebd3a5585608dc81"
   integrity sha512-JsPKdmh8ZkmnHxDk55FZ1TqVLvEQTvoByJZRN9jzI0UjxK/QgAmsphz7PGtqgPieQZ/CQcHWXCR7ATDNhGe+YA==
 
-connect-redis@^6.1.3:
-  version "6.1.3"
-  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-6.1.3.tgz#0a83c953f9ece45ae37d304a8e8d1c3c6a60b4b9"
-  integrity sha512-aaNluLlAn/3JPxRwdzw7lhvEoU6Enb+d83xnokUNhC9dktqBoawKWL+WuxinxvBLTz6q9vReTnUDnUslaz74aw==
+connect-redis@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/connect-redis/-/connect-redis-7.1.0.tgz#6618334697f2ed91536848cdc03734def2138acf"
+  integrity sha512-UaqO1EirWjON2ENsyau7N5lbkrdYBpS6mYlXSeff/OYXsd6EGZ+SXSmNPoljL2PSua8fgjAEaldSA73PMZQ9Eg==
 
 connect-session-sequelize@^7.1.3:
   version "7.1.7"
