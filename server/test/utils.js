@@ -1,7 +1,7 @@
 const assert = require('assert');
 const { v4: uuidv4 } = require('uuid');
 const rimraf = require('rimraf');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const path = require('path');
 const redis = require('redis');
 const request = require('supertest');

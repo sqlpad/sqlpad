@@ -2,7 +2,7 @@
 const util = require('util');
 const path = require('path');
 const fs = require('fs');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const { LRUCache } = require('lru-cache');
 const redis = require('redis');
 const { Op } = require('sequelize');
