@@ -2,8 +2,8 @@
 const util = require('util');
 const path = require('path');
 const fs = require('fs');
-const mkdirp = require('mkdirp');
-const LRU = require('lru-cache');
+const { mkdirp } = require('mkdirp');
+const { LRUCache } = require('lru-cache');
 const redis = require('redis');
 const { Op } = require('sequelize');
 const ensureJson = require('./ensure-json');
@@ -34,7 +34,7 @@ class Statements {
     }
 
     if (this.queryResultStore === 'memory') {
-      this.memoryCache = new LRU({ max: 1000, ttl: 1000 * 60 * 60 });
+      this.memoryCache = new LRUCache({ max: 1000, ttl: 1000 * 60 * 60 });
     }
   }
 
@@ -109,7 +109,7 @@ class Statements {
     }
 
     if (this.isMemoryStore()) {
-      this.memoryCache.del(id);
+      this.memoryCache.delete(id);
     }
 
     if (this.isDatabaseStore()) {

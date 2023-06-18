@@ -8,7 +8,7 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const MemoryStore = require('memorystore')(session);
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const RedisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis').default;
 const appLog = require('./lib/app-log');
 const Webhooks = require('./lib/webhooks');
 const bodyParser = require('body-parser');
@@ -153,7 +153,6 @@ async function makeApp(config, models) {
     }
     case 'redis': {
       const redisClient = redis.createClient({
-        legacyMode: true,
         url: config.get('redisUri'),
       });
       redisClient.connect().catch((error) => appLog.error(error));

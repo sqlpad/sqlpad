@@ -1,5 +1,5 @@
 const path = require('path');
-const mkdirp = require('mkdirp');
+const { mkdirp } = require('mkdirp');
 const Models = require('../models');
 const SequelizeDb = require('../sequelize-db');
 

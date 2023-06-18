@@ -63,20 +63,28 @@ services:
       start_period: 20s
 
   mariadb:
-    image: mariadb:latest
+    image: mariadb:11.0
     restart: always
     ports:
       - 13306:3306
     environment:
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-      MYSQL_DATABASE: db
-      MYSQL_ROOT_PASSWORD: password
+      MARIADB_USER: user
+      MARIADB_PASSWORD: password
+      MARIADB_DATABASE: db
+      MARIADB_ROOT_PASSWORD: password
+      MARIADB_MYSQL_LOCALHOST_USER: 1
     healthcheck:
-      test: ['CMD', 'mysqladmin', 'status', '-uroot', '-ppassword']
-      interval: 5s
-      timeout: 2s
-      retries: 10
+      test:
+        [
+          'CMD',
+          'healthcheck.sh',
+          '--su-mysql',
+          '--connect',
+          '--innodb_initialized',
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
       start_period: 20s
 
   mysql:

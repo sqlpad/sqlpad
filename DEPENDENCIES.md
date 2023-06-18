@@ -2,17 +2,25 @@
 
 SQLPad's an old project, and some dependencies are being left at specific versions for specific reasons.
 
-## Server (as of 12/02/2022)
+Lists of outdated dependencies can be retrieved by doing the following:
 
-```
-Package                Current Wanted  Latest Why oudated
--------------------------------------------------------------------------------------------------------------------------------
-node-fetch             2.6.7   2.6.7   3.3.0  3.x is ESM, can't be imported via sync `require`
-sql-formatter          2.3.4   2.3.4  12.0.3  v3+ has performance regressions, incompatible with SQLPad's use case
-umzug                  2.3.0   2.3.0   3.2.1  Lots of breaking changes, adds many dependencies. Remain on v2
+```sh
+# from root
+cd server # or client
+yarn outdated
 ```
 
-## Client (as of 2/28/2022)
+## Outdated server dependencies (as of 6/18/2023)
+
+- `ldapjs` - 3.x brings a [lot of changes and risk of breakage](https://github.com/ldapjs/node-ldapjs/releases/tag/v3.0.0)
+- `mariadb` - 3.0.2 works with sequelize. 3.1.2 doesn't.
+- `node-fetch` - 3.x is ESM only
+- `query-string` - 8.x is ESM only
+- `rim-raf` - 3.1.2 adds transitive deps that are ESM only
+- `sql-formatter` - 3.x onward has performance regressions, changes in functionality.
+- `umzug` - 3.x has many (unnecessary) breaking changes and additional dependencies.
+
+## Outdated client dependencies (as of 2/28/2022)
 
 ```
 Package                  Current    Wanted    Latest  Why Outdated
