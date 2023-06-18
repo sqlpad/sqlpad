@@ -1,6 +1,6 @@
 const assert = require('assert');
 const { v4: uuidv4 } = require('uuid');
-const { rimraf } = require('rimraf');
+const rimraf = require('rimraf');
 const { mkdirp } = require('mkdirp');
 const path = require('path');
 const redis = require('redis');
@@ -20,8 +20,8 @@ const ensureConnectionAccess = require('../lib/ensure-connection-access');
 const ensureAdmin = require('../lib/ensure-admin');
 
 // At the start of any test run, clean out the root artifacts directory
-before(function () {
-  return rimraf(path.join(__dirname, '/artifacts/*'), { glob: true });
+before(function (done) {
+  rimraf(path.join(__dirname, '/artifacts/*'), done);
 });
 
 class TestUtils {
@@ -129,7 +129,14 @@ class TestUtils {
   prepDbDir() {
     const dbPath = this.config.get('dbPath');
     mkdirp.sync(dbPath);
-    return rimraf(path.join(dbPath, '*'), { glob: true });
+    return new Promise((resolve, reject) => {
+      return rimraf(path.join(dbPath, '*'), (err) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
   }
 
   async initDbs() {

@@ -90,7 +90,7 @@
     "prettier": "^2.6.2",
     "query-string": "^7.1.1",
     "redis": "^4.0.6",
-    "rimraf": "^5.0.1",
+    "rimraf": "^3.0.2",
     "sanitize-filename": "^1.6.3",
     "sequelize": "^6.19.0",
     "serve-favicon": "^2.5.0",
