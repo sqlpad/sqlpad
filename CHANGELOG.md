@@ -1,5 +1,11 @@
 # Changelog
 
+## [7.1.0] - 2023-06-18
+
+- [Remove snowflake support](https://github.com/sqlpad/sqlpad/pull/1191)
+- Fix docker-entrypoint script to allow setting env vars [#1192](https://github.com/sqlpad/sqlpad/pull/1192)
+- Update dependencies
+
 ## [7.0.5] - 2023-05-02
 
 - Update dependencies
