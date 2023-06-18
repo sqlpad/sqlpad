@@ -207,6 +207,7 @@ Redshift uses the Postgres driver, using a different query for pulling schema.
 | `domain`                       | Domain                        |   text    |
 | `sqlserverEncrypt`             | Encrypt (necessary for Azure) |  boolean  |
 | `sqlserverMultiSubnetFailover` | MultiSubnetFailover           |  boolean  |
+| `trustServerCertificate`       | Trust Server Certificate      |  boolean  |
 | `readOnlyIntent`               | ReadOnly Application Intent   |  boolean  |
 
 ## Trino
