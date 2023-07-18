@@ -4,7 +4,7 @@ const { formatSchemaQueryResults } = require('../utils');
 const id = 'conduyt';
 const name = 'conduyt';
 
-function getTrinoSchemaSql(catalog, schema) {
+function getConduytSchemaSql(catalog, schema) {
   const schemaSql = schema ? `AND table_schema = '${schema}'` : '';
   return `
     SELECT 
