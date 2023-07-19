@@ -6,6 +6,7 @@ const drivers = {
   bigquery: require('./bigquery'),
   cassandra: require('./cassandra'),
   clickhouse: require('./clickhouse'),
+  conduyt: require('./conduyt'),  
   crate: require('./crate'),
   drill: require('./drill'),
   hdb: require('./hdb'),
