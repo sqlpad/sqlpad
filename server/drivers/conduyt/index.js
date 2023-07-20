@@ -1,4 +1,5 @@
 const conduyt = require('./_conduyt.js');
+const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'conduyt';
@@ -13,7 +14,7 @@ function getConduytSchemaSql(catalog, schema) {
       c.column_name, 
       c.data_type
     FROM 
-      INFORMATION_SCHEMA.COLUMNS c
+      ${catalog}.INFORMATION_SCHEMA.COLUMNS c
     WHERE
       table_catalog = '${catalog}'
       ${schemaSql}
@@ -57,6 +58,7 @@ function runQuery(query, connection) {
       }
       rows.push(row);
     }
+    appLog.warn("runQuery rows = " + JSON.stringify(rows));
     return { rows, incomplete };
   });
 }

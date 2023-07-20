@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const appLog = require('../../lib/app-log');
 const NEXT_URI_TIMEOUT = 100;
 
 module.exports = { send };
@@ -48,6 +49,7 @@ function updateResults(results, statement) {
 }
 
 function handleStatementAndGetMore(results, statement, config) {
+  appLog.warn("handleStatementAndGetMore = " + JSON.stringify(statement));
   if (statement.error) {
     // A lot of other error data available,
     // but error.message contains the detail on syntax issue
