@@ -17,6 +17,12 @@ function getHeaders(config) {
   if (config.schema) {
     headers['X-Conduyt-Schema'] = config.schema;
   }
+  if (config.email) {
+    headers['X-Conduyt-Email'] = config.email;
+  }
+  if (config.sessionId) {
+    headers['X-Conduyt-Session-Id'] = config.sessionId;
+  }  
   return headers;
 }
 

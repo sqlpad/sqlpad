@@ -13,7 +13,7 @@ function getConduytSchemaSql(catalog, schema) {
       c.column_name, 
       c.data_type
     FROM 
-      INFORMATION_SCHEMA.COLUMNS c
+      ${catalog}.INFORMATION_SCHEMA.COLUMNS c
     WHERE
       table_catalog = '${catalog}'
       ${schemaSql}
@@ -38,8 +38,10 @@ function runQuery(query, connection) {
   const config = {
     url: `${protocol}://${connection.host}:${port}`,
     user: connection.username,
+    email: connection.useremail,
     catalog: connection.catalog,
     schema: connection.schema,
+    sessionId: connection.sessionId,
   };
   return conduyt.send(config, query).then((result) => {
     if (!result) {
@@ -98,10 +100,20 @@ const fields = [
     label: 'Database Username',
   },
   {
+    key: 'useremail',
+    formType: 'TEXT',
+    label: 'User Email',
+  },
+  {
     key: 'catalog',
     formType: 'TEXT',
     label: 'Catalog',
   },
+  {
+    key: 'sessionId',
+    formType: 'TEXT',
+    label: 'Session Id',
+  },  
   {
     key: 'schema',
     formType: 'TEXT',
