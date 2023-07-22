@@ -11,6 +11,7 @@ function wait(ms) {
 
 // Get Trino headers from config
 function getHeaders(config) {
+  appLog.warn("getHeaders = " + JSON.stringify(config));
   const headers = { 'X-Conduyt-User': config.user };
   if (config.catalog) {
     headers['X-Conduyt-Catalog'] = config.catalog;
@@ -18,6 +19,12 @@ function getHeaders(config) {
   if (config.schema) {
     headers['X-Conduyt-Schema'] = config.schema;
   }
+  if (config.email) {
+    headers['X-Conduyt-Email'] = config.email;
+  }
+  if (config.sessionId) {
+    headers['X-Conduyt-Session-Id'] = config.sessionId;
+  }  
   return headers;
 }
 

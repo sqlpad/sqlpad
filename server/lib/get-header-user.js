@@ -1,5 +1,7 @@
 const _ = require('lodash');
+const appLog = require('./app-log');
 require('../typedefs');
+
 
 /**
  * Derive header user from request headers
@@ -25,6 +27,7 @@ function getHeaderUser(req) {
       }
     });
 
+  appLog.warn("getHeaderUser = " + JSON.stringify(headerUser));
   if (Object.keys(headerUser).length > 0) {
     return headerUser;
   }

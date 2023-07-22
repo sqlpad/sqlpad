@@ -39,9 +39,13 @@ function runQuery(query, connection) {
   const config = {
     url: `${protocol}://${connection.host}:${port}`,
     user: connection.username,
+    email: connection.useremail,
     catalog: connection.catalog,
     schema: connection.schema,
+    sessionId: connection.sessionId,
   };
+  appLog.warn("runQuery connection = " + JSON.stringify(connection));
+  appLog.warn("runQuery config = " + JSON.stringify(config));
   return conduyt.send(config, query).then((result) => {
     if (!result) {
       throw new Error('No result returned');
@@ -100,10 +104,20 @@ const fields = [
     label: 'Database Username',
   },
   {
+    key: 'useremail',
+    formType: 'TEXT',
+    label: 'User Email',
+  },
+  {
     key: 'catalog',
     formType: 'TEXT',
     label: 'Catalog',
   },
+  {
+    key: 'sessionId',
+    formType: 'TEXT',
+    label: 'Session Id',
+  },  
   {
     key: 'schema',
     formType: 'TEXT',
