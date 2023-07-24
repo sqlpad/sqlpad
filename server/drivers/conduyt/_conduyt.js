@@ -1,7 +1,8 @@
 const fetch = require('node-fetch');
+const appLog = require('../../lib/app-log');
 const NEXT_URI_TIMEOUT = 100;
 
-module.exports = { send };
+module.exports = { send, schemaQuery };
 
 // Util - setTimeout as a promise
 function wait(ms) {
@@ -26,6 +27,23 @@ function getHeaders(config) {
   return headers;
 }
 
+
+function schemaQuery(config) {
+  if (!config.url) {
+    return Promise.reject(new Error('config.url is required'));
+  }
+  const results = {
+    data: [],
+  };
+  return fetch(`${config.url}/private_api/v1/schema`, {
+    method: 'GET',
+    headers: getHeaders(config),
+  })
+    .then((response) => response.json())
+    .then((statement) => handleStatementAndGetMore(results, statement, config));
+}
+
+
 // Given config and query, returns promise with the results
 function send(config, query) {
   if (!config.url) {
@@ -40,7 +58,8 @@ function send(config, query) {
     headers: getHeaders(config),
   })
     .then((response) => response.json())
-    .then((statement) => handleStatementAndGetMore(results, statement, config));
+    .then((statement) => handleStatementAndGetMore(results, statement, config)
+  );
 }
 
 function updateResults(results, statement) {

@@ -118,7 +118,7 @@ function SchemaSidebar() {
 
     let icon = null;
 
-    const expandable = row.type === 'schema' || row.type === 'table';
+    const expandable = row.type === 'catalog' || row.type === 'schema' || row.type === 'table';
     if (expandable) {
       classNames.push(styles.expandable);
       icon =

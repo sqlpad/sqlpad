@@ -836,6 +836,16 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
     const nameCompare: {
       (a: { name: string }, b: { name: string }): number;
     } = (a, b) => stringCompare.compare(a.name, b.name);
+    if (data?.catalogs) {
+      data.catalogs.sort(nameCompare);
+      data.catalogs.forEach((catalogs) => {
+        catalogs.schemas.sort(nameCompare);
+        catalogs.schemas.forEach((schema) => {
+          schema.tables.sort(nameCompare);
+          // NOTE: we do not sort columns that can be annoying with regards to creation order.
+        });
+      });      
+    }
     if (data?.schemas) {
       data.schemas.sort(nameCompare);
       data.schemas.forEach((schema) => {
@@ -845,7 +855,8 @@ export async function loadSchema(connectionId: string, reload?: boolean) {
     }
     if (data?.tables) {
       data.tables.sort(nameCompare);
-    }
+      // NOTE: we do not sort columns that can be annoying with regards to creation order.
+      }
 
     setSchemaState(connectionId, {
       loading: false,

@@ -285,9 +285,16 @@ export interface Schema {
   tables: SchemaTable[];
 }
 
+export interface Catalog {
+  name: string;
+  description: string;
+  schemas: Schema[];
+}
+
 export interface ConnectionSchema {
   schemas?: Schema[];
   tables?: SchemaTable[];
+  catalogs?: Catalog[];
 }
 
 export type QueryHistoryResponse = Array<Record<string, any>>;
