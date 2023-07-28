@@ -2,13 +2,16 @@ require('../typedefs');
 const router = require('express').Router();
 const packageJson = require('../package.json');
 const wrap = require('../lib/wrap');
+const appLog = require('../lib/app-log');
 
 /**
  * @param {Req} req
  * @param {Res} res
  */
 async function getApp(req, res) {
-  const { config } = req;
+  const { config, user } = req;
+
+  appLog.warn("getApp user = " + JSON.stringify(user));
 
   const currentUser =
     req.isAuthenticated() && req.user

@@ -49,7 +49,6 @@ function formatSchemaQueryResults(queryResult) {
     return {};
   }
 
-  appLog.warn("formatSchemaQueryResults = " + JSON.stringify(queryResult));
   if (queryResult.rows[0].table_catalog) {
     return formatSchemaQueryResultsWithCatalog(queryResult);
   }
@@ -223,15 +222,12 @@ function formatSchemaQueryResultsWithCatalog(queryResult) {
     const dataType = cleanRow.data_type;
     const columnDescription = cleanRow.column_description;
 
-    appLog.warn("formatSchemaQueryResultsWithCatalog row = " + JSON.stringify(cleanRow));
-
     const catalogId = catalogName;
     const schemaId = `${catalogName}.${schemaName}`;
     const tableId = `${catalogName}.${schemaName}.${tableName}`;
 
     // If catalog exists and hasn't been added to index yet, add it
     if (!catalogsById[catalogId]) {
-      appLog.warn("adding catalog = " + catalogId);      
       catalogsById[catalogId] = {
         name: catalogName,
         description: '',
@@ -241,7 +237,6 @@ function formatSchemaQueryResultsWithCatalog(queryResult) {
 
     // If schema exists and hasn't been added to index yet, add it
     if (!schemasById[schemaId]) {
-      appLog.warn("adding schema = " + schemaId);      
       const schema = {
         name: schemaName,
         description: schemaDescription,
@@ -253,7 +248,6 @@ function formatSchemaQueryResultsWithCatalog(queryResult) {
 
     // If table hasn't been captured in index yet, add it
     if (!tablesById[tableId]) {
-      appLog.warn("adding table = " + tableId);      
       const table = {
         name: tableName,
         description: tableDescription,
@@ -263,7 +257,6 @@ function formatSchemaQueryResultsWithCatalog(queryResult) {
       schemasById[schemaId].tables.push(table);
     }
 
-    appLog.warn("adding column = " + columnName);      
     const column = {
       name: columnName,
       description: columnDescription,
@@ -273,8 +266,6 @@ function formatSchemaQueryResultsWithCatalog(queryResult) {
     tablesById[tableId].columns.push(column);
   }
 
-  appLog.warn("result = " + JSON.stringify(Object.values(catalogsById)));      
-  
   return {
     catalogs: Object.values(catalogsById),
   };  

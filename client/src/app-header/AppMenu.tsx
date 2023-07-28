@@ -9,15 +9,20 @@ import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import AboutModal from './AboutModal';
 
+
 function AppMenu() {
   const { currentUser } = useAppContext();
   const [showAbout, setShowAbout] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const history = useHistory();
+  let currentUserEmail = '';
 
   let hideUserItems = false;
   if (!currentUser || currentUser.id === 'noauth') {
     hideUserItems = true;
+  }
+  if (currentUser && currentUser.email) {
+    currentUserEmail = currentUser.email;
   }
 
   return (
@@ -30,7 +35,7 @@ function AppMenu() {
         <MenuItem
           hidden={hideUserItems}
           onSelect={async () => {
-            await api.signout();
+            await api.signout(currentUserEmail);
             history.push(`/signin`);
             resetState();
           }}

@@ -435,6 +435,11 @@ const configItems = [
     default: '',
   },
   {
+    key: 'webhookSignoutUrl',
+    envVar: 'SQLPAD_WEBHOOK_SIGNOUT_URL',
+    default: '',
+  },  
+  {
     key: 'deprecatedTestConfig',
     envVar: 'SQLPAD_DEPRECATED_TEST_CONFIG',
     default: '',

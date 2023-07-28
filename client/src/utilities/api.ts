@@ -114,8 +114,8 @@ export const api = {
     return fetchJson<DataT>('GET', url);
   },
 
-  async signout() {
-    await this.get('/api/signout');
+  async signout(userEmail: any) {
+    await this.get(`/api/signout/${userEmail}`);
     return mutate('api/app');
   },
 
