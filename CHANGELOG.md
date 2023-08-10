@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.1.1] - 2023-08-09
+
+- Update dependencies
+
 ## [7.1.0] - 2023-06-18
 
 - [Remove snowflake support](https://github.com/sqlpad/sqlpad/pull/1191)
