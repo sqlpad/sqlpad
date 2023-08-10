@@ -1,6 +1,6 @@
 # Need to remote into this image and debug some flow? 
-# docker run -it --rm node:16-bullseye-slim /bin/ash
-FROM node:16-bullseye-slim AS build
+# docker run -it --rm node:18-bullseye-slim /bin/ash
+FROM node:18-bullseye-slim AS build
 ARG ODBC_ENABLED=false
 RUN apt-get update && apt-get install -y \
     python3 make g++ python3-dev  \
@@ -51,7 +51,7 @@ RUN npm run build --prefix client && \
 
 # Start another stage with a fresh node
 # Copy the server directory that has all the necessary node modules + front end build
-FROM node:16-bullseye-slim as bundle
+FROM node:18-bullseye-slim as bundle
 ARG ODBC_ENABLED=false
 
 # Create a directory for the hooks and optionaly install ODBC
