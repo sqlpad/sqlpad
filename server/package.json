@@ -1,6 +1,6 @@
 {
   "name": "sqlpad",
-  "version": "7.1.1",
+  "version": "7.1.2",
   "description": "Web app. Write SQL and visualize the results. Supports Postgres, MySQL, SQL Server, Crate, Vertica, SAP HANA, and BigQuery.",
   "license": "MIT",
   "engines": {
