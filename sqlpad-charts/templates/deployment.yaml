@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-deploy
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      volumes:
+        - name: {{ .Values.configmap.name }}
+          configMap:
+            name: {{ .Values.configmap.name }}
+      containers:
+      - name: sqlpad
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        ports:
+        - containerPort: {{ .Values.ports.containerPort }}
+        resources:
+          limits:
+            memory: {{ .Values.resources.limits.memory }}
+            cpu: {{ .Values.resources.limits.cpu }}
+          requests:
+            memory: {{ .Values.resources.requests.memory }}
+            cpu: {{ .Values.resources.requests.cpu }}
+        env:
+          - name: SQLPAD_ADMIN
+            value: "admin@sqlpad.com"
+          - name: SQLPAD_ADMIN_PASSWORD
+            value: "admin"
+          - name: SQLPAD_APP_LOG_LEVEL
+            value: 'debug'
+          - name: SQLPAD_WEB_LOG_LEVEL
+            value: 'warn'
+          - name: SQLPAD_CONNECTIONS__pgdemo__name
+            value: 'Postgres demo'
+          - name: SQLPAD_CONNECTIONS__pgdemo__driver
+            value: 'postgres'
+          - name: SQLPAD_CONNECTIONS__pgdemo__host
+            value: 'sqlpad-postgresql'
+          - name: SQLPAD_CONNECTIONS__pgdemo__database
+            value: 'postgres'
+          - name: SQLPAD_CONNECTIONS__pgdemo__username
+            value: 'sqlpad'
+          - name: SQLPAD_CONNECTIONS__pgdemo__password
+            value: 'sqlpad'
+          - name: SQLPAD_CONNECTIONS__pgdemo__multiStatementTransactionEnabled
+            value: 'true'    
+          - name: SQLPAD_CONNECTIONS__pgdemo__idleTimeoutSeconds
+            value: '86400'           

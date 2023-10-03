@@ -34,11 +34,11 @@ function runQuery(query, connection) {
     port: connection.port ? connection.port : 5433,
     user: connection.username,
     password: connection.password,
-    database: connection.database
+    database: connection.database,
   };
 
   return new Promise((resolve, reject) => {
-    const client = vertica.connect(params, function(err) {
+    const client = vertica.connect(params, function (err) {
       if (err) {
         client.disconnect();
         return reject(err);
@@ -51,11 +51,11 @@ function runQuery(query, connection) {
 
       const verticaQuery = client.query(query);
 
-      verticaQuery.on('fields', fields => {
-        columnNames = fields.map(field => field.name);
+      verticaQuery.on('fields', (fields) => {
+        columnNames = fields.map((field) => field.name);
       });
 
-      verticaQuery.on('row', function(row) {
+      verticaQuery.on('row', function (row) {
         if (rows.length < connection.maxRows) {
           const resultRow = {};
           row.forEach((value, index) => {
@@ -71,7 +71,7 @@ function runQuery(query, connection) {
         }
       });
 
-      verticaQuery.on('end', function() {
+      verticaQuery.on('end', function () {
         if (!finished) {
           finished = true;
           client.disconnect();
@@ -79,7 +79,7 @@ function runQuery(query, connection) {
         }
       });
 
-      verticaQuery.on('error', function(err) {
+      verticaQuery.on('error', function (err) {
         if (!finished) {
           finished = true;
           client.disconnect();
@@ -104,7 +104,7 @@ function testConnection(connection) {
  * @param {*} connection
  */
 function getSchema(connection) {
-  return runQuery(SCHEMA_SQL, connection).then(queryResult =>
+  return runQuery(SCHEMA_SQL, connection).then((queryResult) =>
     formatSchemaQueryResults(queryResult)
   );
 }
@@ -113,28 +113,28 @@ const fields = [
   {
     key: 'host',
     formType: 'TEXT',
-    label: 'Host/Server/IP Address'
+    label: 'Host/Server/IP Address',
   },
   {
     key: 'port',
     formType: 'TEXT',
-    label: 'Port (optional)'
+    label: 'Port (optional)',
   },
   {
     key: 'database',
     formType: 'TEXT',
-    label: 'Database'
+    label: 'Database',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username'
+    label: 'Database Username',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password'
-  }
+    label: 'Database Password',
+  },
 ];
 
 module.exports = {
@@ -143,5 +143,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

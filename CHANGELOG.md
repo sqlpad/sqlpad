@@ -1,32 +1,610 @@
 # Changelog
 
-## 3.4.0
+## [7.1.2] - 2023-08-16
 
-### November 10, 2019
+- Revert dockerfile node version to node 16
+
+## [7.1.1] - 2023-08-09
+
+- Update dependencies
+
+## [7.1.0] - 2023-06-18
+
+- [Remove snowflake support](https://github.com/sqlpad/sqlpad/pull/1191)
+- Fix docker-entrypoint script to allow setting env vars [#1192](https://github.com/sqlpad/sqlpad/pull/1192)
+- Update dependencies
+
+## [7.0.5] - 2023-05-02
+
+- Update dependencies
+
+## [7.0.4] - 2023-04-22
+
+- Update dependencies
+
+## [7.0.3] - 2023-03-19
+
+- Updates clickhouse implementation to [official nodejs driver](https://clickhouse.com/docs/en/integrations/language-clients/nodejs). At time of release, compatible Clickhouse versions are 22.8 - 23.2.
+- Updates dependencies
+
+## [7.0.2] - 2023-03-06
+
+- Update dependencies
+
+## [7.0.1] - 2023-02-21
+
+- Add "Trust Server Cert" option for SQL Server connections
+- Update dependencies (minor and patch)
+
+## [7.0.0] - 2022-12-03
+
+- Update dependencies - potentially breaking changes for auth due to dependency updates.
+- Change in versioning scheme. Semver will no longer be followed.
+
+## [6.11.4] - 2022-12-02
+
+- Update dependencies
+
+## [6.11.3] - 2022-11-16
+
+- Update dependencies
+
+## [6.11.2] - 2022-09-25
+
+- Update dependencies
+
+## [6.11.1] - 2022-06-07
+
+- Remove connection password from connection list API. This matches the behavior for connection detail API.
+- Update dependencies
+
+## [6.11.0] - 2022-04-12
+
+- Add max rows override for ODBC, Athena, MySQL, Postgres, Snowflake, and SQL Server drivers
+
+## [6.10.1] - 2022-03-13
+
+- Secure connection template functionality.
+  This restricts connection template values to fields on user object, preventing the use of arbitrary JavaScript, as it could be leveraged for abuse. (This functionality was, and still is, only available to `admin` accounts.)
+
+## [6.10.0] - 2022-03-11
+
+- Add postgres query timeout config
+- Add default role config for Google Auth
+- Update dependencies
+
+## [6.9.0] - 2022-02-05
+
+- Add cookie security configuration options
+- Limit listed connections based on user access
+- Add SAML based role management
+- Postgres: Add foreign tables to schema
+- Athena: Fix athena region configuration
+- Athena: Add support reading schema from glue
+- MySQL: Allow base64 for SSL
+- Fix migrations to be MySQL 5.7 safe
+- Update dependencies
+
+## [6.8.1] - 2021-09-05
+
+- Prevent disclosure of Google OAuth secret
+- Fix Athena drop/create table query support
+
+## [6.8.0] - 2021-08-31
+
+- Add support for 0000-00-00 date strings in MySQL
+- Add MySQL column descriptions
+- Add AWS Athena support
+- Add cancellable query support to AWS Athena connection
+- Add Azure AD support to OIDC auth
+- Allow role to be assigned via OIDC user role
+- Add ODBC support to docker container (see `docker-examples/oracle-odbc-image` for example)
+- Render markdown hyperlinks in query result columns
+- Sort schema and table on name
+- Polish schema search and default expanded behaviors
+- Add compression to schema route payload
+- Fix search history
+- Fix OIDC illegal redirects
+- Fix `/api/batches` forbidden response when using API key
+
+## [6.7.1] - 2021-06-15
+
+- Add Trino HTTPS support
+- Fix ClickHouse authentication
+- Fix connection edit form
+- Update dependencies
+
+## [6.7.0] - 2021-06-15
+
+_Incomplete release. Use 6.7.1 instead._
+
+## [6.6.0] - 2021-04-09
+
+- Add Presto authentication and HTTPS support
+- Fix ClickHouse queries beginning with comment
+- Update Dockerfile node and package dependencies
+
+## [6.5.0] - 2021-03-18
+
+- Add query run history side drawer
+- Add support for ClickHouse `LIMIT <offset_number>,<limit_number>` syntax
+
+## [6.4.3] - 2021-03-14
+
+- Fix chart download button
+- Fix 6.4.2 build
+
+## [6.4.2] - 2021-03-12
+
+**BROKEN** - UI development config included in production build, breaking UI.
+
+## [6.4.1] - 2021-03-13
+
+- Fix modal/dialog style
+
+## [6.4.0] - 2021-03-11
+
+- Add Trino support
+- Enhance OIDC authentication, supporting discover of endpoint URLs when only providing `SQLPAD_OIDC_ISSUER` endpoint.
+- Show connection name if user is editor role and only single connection exists.
+- Add context menu to query result cell allowing copy and expanded viewing of cell value.
+- Fix ClickHouse support for ClickHouse versions prior to 20.7
+- Fix object and date values in CSV and XLSX export
+
+## [6.3.0] - 2021-03-08
+
+- Postgres: Add self-signed certificate support
+- Update queries search to be case-insensitive
+- Prevent accidental back navigation when scrolling query results
+- Fix query result display on Safari
+- Update dependencies
+
+## [6.2.1] - 2021-02-09
+
+- Reduce unknown `SQLPAD_*` environment variable error to warning
+
+## [6.2.0] - 2021-02-07
+
+- Add query status to query history
+- Ignore `SQLPAD_SERVICE_` env vars during unknown env var check
+- BigQuery: use wrapIntegers to prevent int64 truncation
+- Fix schema load for single defaulted connection
+- Update dependencies
+
+## [6.1.2] - 2020-12-03
+
+- Fix LDAP auth for profiles without mail attribute. SQLPad's users `email` field is now nullable.
+- Fix schema item copy-to-clipboard for non-HTTPS environments
+- Fix ClicHouse driver auth for latest ClickHouse release
+- Use `cancelled` status for statements following a statement error in multi-statement batch. (These previously were stuck in `queued` status.)
+- Return 404 for unfinished statement results. Statement results API is only intended to be used once a statement is `finished`.
+
+## [6.1.1] - 2020-11-29
+
+- Fix query result grid value padding
+
+## [6.1.0] - 2020-11-28
+
+Misc enhancements to support showing multiline content in query results.
+
+- Text value cells render line breaks. Row height is increased to accommodate the column value with most lines.
+- JSON and other object values are JSON pretty-printed for multiline rendering.
+- If single column is returned, the initial column width will use full width of result area.
+- Changes grid font family to monospace
+- Adds shadow to indicate text overflow
+
+## [6.0.2] - 2020-11-28
+
+- Add LDAP trace logging
+- Add LDAP bind check at startup if enabled
+
+## [6.0.1] - 2020-11-26
+
+- Fix missing query text from query history
+- Fix stale page title on sign in
+
+## [6.0.0] - 2020-11-22
+
+This release removes deprecated functionality and changes some default behaviors, requiring a major version bump. There are some notable enhancements as well however.
+
+### Updating to 6.0.0
+
+Upgrading to version 6 requires existing SQLPad instances be running on a 5.x.x release. If version 4 or earlier is detected, startup and migration will be aborted.
+
+To upgrade, install and run via your preferred method. Version 6 has no data migrations other than a dummy migration to serve as a version marker. If you'd like to roll back to 5.x.x, you _should_ be able to run 5.8.4 on a 6.0.0 database.
+
+Database backups are encouraged however. Please follow good practices if your SQLPad use warrants it.
+
+### Visualization Configuration Sidebar
+
+Visualization configuration has moved into a sidebar on the right. The existing chart button toggles its visibility.
+
+<img src="https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png" width="1000" alt="visualization sidebar">
+
+### Multiple Result Sets
+
+Multiple result set support has been added to the UI. When executing multiple SQL statements at once, a summary table will show with the status of each SQL statement. Executing single statements works as it did before.
+
+Note that query visualization is locked to the last SQL statement in a batch.
+
+<img src="https://user-images.githubusercontent.com/303966/99915844-ca5ce180-2ccb-11eb-8277-08f8b33c6eea.png" alt="multiple results running">
+
+<img src="https://user-images.githubusercontent.com/303966/99915855-e1033880-2ccb-11eb-8169-52590bec6957.png" alt="multiple results error">
+
+<img src="https://user-images.githubusercontent.com/303966/99917088-aef5d480-2cd3-11eb-8d90-32bddf3f927e.png" alt="multiple results statement drill down">
+
+### Query Dialog & Sharing Enhancments
+
+Query name, tags, and sharing have been moved to a dialog, appearing on initial save or click on query name in the toolbar. Query sharing has been enhanced, allowing queries to be shared with individual users as well as limit their ability to save changes to the query.
+
+<img src="https://user-images.githubusercontent.com/303966/99915798-6cc89500-2ccb-11eb-9fec-d2b50c5c1fd2.png" width="400" alt="query dialog and sharing enhancements">
+
+### Schema Context Menu
+
+A context menu has been added to the schema sidebar. When right-clicking schemas, tables, and columns, a menu will display with values that can be copied to the clipboard.
+
+<img src="https://user-images.githubusercontent.com/303966/99920524-cb047080-2ce9-11eb-8833-7e60bfe9f7c3.png" width="300" alt="schema context menu">
+
+### User Profile Dialog
+
+Users may now provide a name and change their email as well as password if local authentication is enabled.
+
+<img src="https://user-images.githubusercontent.com/303966/99915807-7e11a180-2ccb-11eb-98ce-0db2a0e61ee7.png" width="400" alt="user profile dialog">
+
+### Strict Configuration Checking
+
+Any environment variables set starting with `SQLPAD_` that are not known by SQLPad will raise an error and prevent SQLPad from starting up. This should help catch config issues early.
+
+### Breaking Changes
+
+- Removes password reset UI emails. Password reset URLs can still be generated in UI via an admin account
+- Removes Slack webhook. Use generic webhooks to build your own.
+- Removes deprecated configuration variables
+- Removes .json and .ini configuration file support
+- Removes open admin registration. `SQLPAD_ADMIN` should be used for initial account, or auto sign-up should be enabled when using compatible auth strategy.
+- Reduces default query result row limit to 10,000 (previously 50,000)
+- Server process exits on configuration error or unknown configuration key
+
+### Maintenance, Fixes, and UX
+
+- Adds query-not-found dialog, prompting user to start new query.
+- Simplifies query list (if too much open issue)
+- Increases SQL editor font size to 14
+- Fixes tag input leaving unselected value in input
+- Fixes clone/new URL not changing as expected
+- Fixes reusing connection clients on query change (See issue #806)
+- Updates dependencies
+
+## [5.8.4] - 2020-11-04
+
+- Ensure port config value handled as number
+
+## [5.8.3] - 2020-11-04
+
+_accidentally tagged without changes_
+
+## [5.8.2] - 2020-10-30
+
+- Fix LDAP role sync. If LDAP role filters are set up, role syncing may be toggled per user on user forms. By default auto-created users will have roles synced. Manually added users will not.
+- Update dependencies
+- Fix connection client heartbeat race condition (UI)
+
+## [5.8.1] - 2020-10-23
+
+- Fix LDAP editor role search filter
+- Allow empty/`denied` value for `SQLPAD_LDAP_DEFAULT_ROLE` to deny users that do not match LDAP role filters. See [LDAP documentation](http://getsqlpad.com/#/authentication?id=ldap-experimental) for more info.
+
+## [5.8.0] - 2020-10-22
+
+- Add LDAP auto sign-up and dynamic role assignment based on LDAP search
+- Fix: Allow LDAP auth without local/userpass auth enabled
+- Update dependencies
+
+## [5.7.0] - 2020-10-19
+
+- Add Apache Pinot support
+- Enhance SQL editor autocomplete
+
+## [5.6.0] - 2020-09-04
+
+- Fix Presto/ClickHouse error display
+- Show line numbers in SQL editor
+- Update dependencies
+
+## [5.5.1] - 2020-08-07
+
+- Fix missing `top` strategy addition in 5.5.0
+
+## [5.5.0] - 2020-08-07
+
+- Add `top` limit strategy for ODBC connections
+- Fix SQL editor not clearing on new query
+- Update dependencies
+
+## [5.4.0] - 2020-08-03
+
+- Add configurable query result store (memory, database, and redis now an option). See `SQLPAD_QUERY_RESULT_STORE` under [configuration](https://getsqlpad.com/#/configuration) docs.
+- Update MySQL connections to use INTERACTIVE flag to prevent early connection close.
+
+## [5.3.0] - 2020-07-31
+
+- Embolden result column headers
+- Add configurable session store (memory, database, and redis now an option). See `SQLPAD_SESSION_STORE` under [configuration](https://getsqlpad.com/#/configuration) docs.
+- Update server dependencies
+
+## [5.2.1] - 2020-07-27
+
+- Fix MySQL2 transaction support
+- Fix old query results potentially overwriting new query results when using multi-statement transactions
+
+## [5.2.0] - 2020-07-20
+
+This release introduces new generic webhooks for a variety of events, while deprecating specific communication implementations (SMTP email and Slack). With webhooks, it is up to you to implement communication to your SQLPad users.
+
+The webhooks added support a larger number of events than previously handled, such as queries being run and results/error received from those queries.
+
+- Add webhooks [documentation](http://getsqlpad.com/#/webhooks)
+- Deprecate SMTP email and Slack webhook, both to be removed in v6.
+- Capture database error message on ODBC driver connection error
+- Show service token UI only if enabled via config (#787)
+- CrateDB - provide separate user, password, and SSL fields (#793)
+- Fix multiline string support in `sql-limiter`
+- Fix regular expression constraint in `sql-limiter`
+
+## [5.1.0] - 2020-07-10
+
+- Add OpenID Connect authentication support
+- Add .env config file support
+- Fix disabled admin on initial SQLPad load when using seed queries
+- Deprecate INI and JSON config files support
+- Environment variables renamed for better consistency. Old name is deprecated:
+  - `GOOGLE_CLIENT_ID` ➡ `SQLPAD_GOOGLE_CLIENT_ID`
+  - `GOOGLE_CLIENT_SECRET` ➡ `SQLPAD_GOOGLE_CLIENT_SECRET`
+  - `DISABLE_AUTH` ➡ `SQLPAD_AUTH_DISABLED`
+  - `SQLPAD_DISABLE_AUTH_DEFAULT_ROLE` ➡ `SQLPAD_AUTH_DISABLED_DEFAULT_ROLE`
+  - `DISABLE_USERPASS_AUTH` ➡ `SQLPAD_USERPASS_AUTH_DISABLED`
+  - `ENABLE_LDAP_AUTH` ➡ `SQLPAD_LDAP_AUTH_ENABLED`
+  - `LDAP_URL` ➡ `SQLPAD_LDAP_URL`
+  - `LDAP_BASE_DN` ➡ `SQLPAD_LDAP_BASE_DN`
+  - `LDAP_USERNAME` ➡ `SQLPAD_LDAP_USERNAME`
+  - `LDAP_PASSWORD` ➡ `SQLPAD_LDAP_PASSWORD`
+  - `CERT_PATH` ➡ `SQLPAD_HTTPS_CERT_PATH`
+  - `CERT_PASSPHRASE` ➡ `SQLPAD_HTTPS_CERT_PASSPHRASE`
+  - `KEY_PATH` ➡ `SQLPAD_HTTPS_KEY_PATH`
+  - `SERVICE_TOKEN_SECRET` ➡ `SQLPAD_SERVICE_TOKEN_SECRET`
+
+## [5.0.0] - 2020-07-03
+
+Version 5 contains many infrastructure and API changes, as well as migrations that are not easy to roll back from. It is highly recommended take a backup of your database (`SQLPAD_DB_PATH` directory and/or your backend db in use).
+
+This release finishes the migration from an embedded JSON database to an ORM and SQLite (used by default). For new instances of SQLPad, the following alternative backend databases may be used: SQL Server, MySQL, MariaDB, or PostgreSQL via `SQLPAD_BACKEND_DB_URI`.
+
+Providing a value for `SQLPAD_DB_PATH`/`dbPath` is still required, as the file system is still used for sessions and storage of query results. This requirement will be removed in a later 5.x release.
+
+Migrations will be run on SQLPad start up. To disable this behavior, set `SQLPAD_DB_AUTOMIGRATE` to `false`. Migrations may be run manually via `node server.js --config path/to/file.ext --migrate`. When using `--migrate` the process will exit after applying migrations.
+
+Special thanks to @eladeyal-intel, @bruth, @yorek, @dengc367, @murphyke, and @Wizhi, for all their contributions in this release!
+
+### Enhancements
+
+- Column descriptions added for Google BigQuery
+
+- Added MySQL 2 driver
+
+- Add Redshift driver
+
+- Add ClickHouse driver
+
+- Add ActiveDirectory authentication
+
+- Multi-transaction statement option made available for MySQL/MySQL 2 drivers
+
+- Connection dropdown hidden if user is non-admin and only 1 connection exists
+
+- Connection may be pre-selected via URL query parameter `connectionId` or `connectionName`
+
+- Add default role when using disabling auth (`SQLPAD_DISABLE_AUTH_DEFAULT_ROLE`). `editor` is used by default.
+
+- Users may be enabled/disabled to restrict access (alternative to deletion)
+
+- Migrations may be run on their own using `--migration`
+
+- Automigration may be disabled with `SQLPAD_DB_AUTOMIGRATE`
+
+- Server side filtering and pagination added for `queries` API
+
+- ODBC - limit strategies added for configuring method used to enforce query row limits
+
+- Test connection error shown
+
+- New `/batches` API for running multi-statement SQL. This replaces `/query-result` API, and is written in a more RESTful approach, removing the need to extend SQLPad timeouts. See [API docs](http://getsqlpad.com/#/api-batches) for more info.
+
+- Adds `allowedDomains` config item and deprecates `whitelistedDomains` to be removed in v6.
+
+### Breaking
+
+- Only admins may see all query history
+
+- `denyMultipleStatements` connection option removed. Multiple statements are now attempted to be supported at SQLPad REST API level via `batches` and `statements` API.
+
+- `/download-results/` API has been removed in favor of `/statement-results/`, which is similar but based on `statementId` instead of `cacheKey`. See [API docs](http://getsqlpad.com/#/api-batches) for more info.
+
+- `debug` config option removed. Use `appLogLevel` set to `debug` instead.
+
+- `tableChartLinksRequireAuth` config option removed.
+
+  All table/chart links require authentication going forward. If unauthenticated access to these URLs is necessary, look into whether an alternate auth solution may be used to passively provide authentication as necessary (like auth proxy for example.)
+
+- data model changes:
+
+  - `createdDate` fields have been renamed to `createdAt` (`created_at` in table)
+  - `modifiedDate` fields have been renamed to `updatedAt` (`updated_at` in table)
+  - `user.signupDate` renamed to `user.signupAt` (`signup_at` in table)
+  - `query.modifiedBy` renamed to `query.updatedBy` (`updated_by` in table)
+  - `query.createdBy` and `query.updatedBy` now hold user id as opposed to user email address.
+  - `query.lastAccessDate` is removed. It was no different from `updatedAt`
+  - Connection driver-specific fields have been moved to `connection.data`. Fields are still decorated on base of connection object for compatibility.
+  - `cache` table has changed to use `id` instead of `cacheKey`.
+  - `cache.expiration` has renamed to `cache.expiryDate` for consistency with other models
+  - `cache.queryName` has renamed to `cache.name` for more generic use
+  - `cache.schema` has been renamed to `cache.data` and stores raw JSON for generic use
+
+- Regex filter for query history no longer supported
+
+- Config file without an .json or .ini extension will be assumed to be JSON. Specific extensions will be required in a future release.
+
+- Config file that does not exist will throw an error at startup instead of silently ignoring.
+
+## [4.4.0] - 2020-04-22
+
+- Adds ability to set initial default connection via configuration `defaultConnectionId`. (Only for initial load. User connections are then cached locally)
+- Changes default query list filter to "all queries" instead of "my queries".
+- Defaults schema sidebar to open, and removes local caching of toggle selection.
+- Fixes autocomplete missing when schema sidebar is hidden on load.
+- Updates dependencies
+
+## [4.3.0] - 2020-04-16
+
+- Support multiple datasets in BigQuery connection
+- Fix sql splitting for strings containing `;`
+
+## [4.2.0] - 2020-04-06
+
+### Features
+
+- Add Google BigQuery support [documentation](https://getsqlpad.com/#/connections?id=bigquery)
+
+- Add SQLite support [documentation](https://getsqlpad.com/#/connections?id=sqlite)
+
+- Adds batch query support to ODBC (last statement is shown in UI)
+
+- Auth: Add option to disable authentication. [documentation](https://getsqlpad.com/#/authentication?id=no-authentication)
+
+  When auth is disabled, application no longer requires authentication.
+
+- Auth: Add proxy authentication support. [documentation](https://getsqlpad.com/#/authentication?id=auth-proxy)
+
+- Add private/shared query model.
+
+  Going forward queries are _private_ by default. When sharing is enabled, query is shared with all users (and they are given write permissions). Finer-grained access to be added in the future (share with specific user, read vs write)
+
+- Add connection and query seed data support [documentation](https://getsqlpad.com/#/seed-data)
+
+- Add service tokens (api tokens). New menu option is available when logged in as admin.
+
+- Add application header for application-level administration
+
+- Adds multi-statement transaction support for Postgres, SQLite, and ODBC. [documentation](https://getsqlpad.com/#/connections?id=multi-statement-transaction-support)
+
+- Add config deprecation for following keys: `debug`, `tableChartLinksRequireAuth`, `keyPath`, `certPath`, `certPassphrase`
+
+- Add connection template support [documentation](https://getsqlpad.com/#/connection-templates)
+
+- Adds additional query run logging for queries executed and details surrounding them (logged under `info` level)
+
+### Fixes
+
+- Fix: long connection form display to always show save/test buttons
+
+- Use ISO 8601 timestamps for log messages instead of unix epoch
+
+### Maintenance / Misc / Dev updates
+
+- Updated dependencies
+- Introduced SQLite as backing store. nedb data (embedded db currently in use) will eventually be migrated to SQLite.
+- Added migration framework. Migrations are run at server startup.
+- Added mult-stage build
+- Lots of refactoring to better organize authentication, addition of new features.
+
+## [4.1.1] - 2020-03-10
+
+- Fix auth for email addresses containing `+` and quoted `@` characters
+
+## [4.1.0] - 2020-02-25
+
+### Features
+
+- Add Snowflake driver/support (#519)
+- Add MS SQL Server readOnly intent option (#520)
+- Add logging using pino (#527, #547)
+
+  SQLPad now logs json messages to stdout using the [pino](http://getpino.io/#/) library. Amount of logging can be controlled by setting `appLogLevel` and `webLogLevel` for application and web logs respectively. Pino does not manage log transport, but has an ecosystem of tooling available that does http://getpino.io/#/docs/transports.
+
+- Allow dynamic user data in connection configuration (#544)
+
+  Connections can have user values dynamically substituted in connection configuration values containing text values. This is a work-in-progress and can be used for adventurous. See PR for details, otherwise more info and corresponding UI will come with future releases.
+
+- Add GitHub Release builds via build pipeline (#550)
+- Add `dbInMemory` setting (#553)
+
+  `dbInMemory` will run the embedded SQLPad db in memory without logging to disk. Enabling this does not remove the need for `dbPath` at this time, as file system access is still required for result caches and express session support. (`dbPath` to become optional in future release)
+
+### Fixes
+
+- Fix TypeError: Do not know how to serialize a BigInt (#522)
+- Fix tests for non-utc time zones (#524)
+
+### Maintenance
+
+- Update server dependencies (#525)
+- Maintenance & refactoring (#534, #535, #538, #539, #540, #541, #542, #543, #545, #551, #552, #553)
+
+## [4.0.0] - 2020-01-18
+
+### Breaking changes
+
+- Node 12 or later required
+
+### Features
+
+- Add ability to restrict connections to specific users (#502)
+- Merge multiple statement result sets for postgres into 1 result set (#510)
+- Add Pre-query statements options to MySQL driver (#511)
+- Add Query execution history (#512)
+- Add Pre-query statements options to MySQL driver (#515)
+- Update odbc dependency to v2
+
+## [3.5.3] - 2019-12-30
+
+- Revert build script to use sh
+
+## [3.5.2] - 2019-12-30
+
+- Fix admin password from env var
+- Fix mysql zero-row result bug
+- Fix add user and connection form submit page refresh in Firefox
+- Fix schema sidebar height issues in Safari/Chrome
+- Set build script to use bash instead of sh
+- Let connection username/password decipher errors bubble up
+
+## [3.5.1] - 2019-12-13
+
+- Added support for authentication to Cassandra
+- Added SSL support for MySQL/MariaDB
+- Added JSON query result downloads alongside XSLX and CSV
+
+## [3.5.0] - 2019-11-29
+
+- Add json download format for query result
+- Fix use of SQLPAD_ADMIN_PASSWORD setting
+
+## [3.4.0] - 2019-11-10
 
 - Add `sqlserverMultiSubnetFailover` option for SQL Server
 
-## 3.3.0
-
-### November 8, 2019
+## [3.3.0] - 2019-11-08
 
 - Add `SQLPAD_TIMEOUT_SECONDS` config for setting http server timeout. Useful for supporting long running queries.
 
-## 3.2.1
-
-### October 17, 2019
+## [3.2.1] - 2019-10-17
 
 - Fix SQL Server "port must be type number" error
 
-## 3.2.0
-
-### October 12, 2019
+## [3.2.0] - 2019-10-12
 
 - Adds support for defining connections via configuration.
 
-## 3.1.1
-
-### October 10, 2019
+## [3.1.1] - 2019-10-10
 
 Update all dependencies to latest (client & server). Includes major updates to following modules:
 
@@ -39,55 +617,37 @@ Update all dependencies to latest (client & server). Includes major updates to f
 
 Some integrations are not able to be tested by existing test setup. Please open an issue if any breakage is discovered.
 
-## 3.1.0
-
-### September 30, 2019
+## [3.1.0] - 2019-09-30
 
 - Add cookie name config setting
 - Add admin password setting
 
-## 3.0.2
-
-### September 1, 2019
+## [3.0.2] - 2019-09-01
 
 - Removes npm version update check and related config item `disableUpdateCheck`
 
-## 3.0.1
-
-### September 1, 2019
+## [3.0.1] - 2019-09-01
 
 SQLPad v3 is a UI redesign/refresh along with a large file structure change and configuration change. It has been in "beta" for quite some time, and if you are running the latest docker image or running a recent build of master, you've already been using it.
 
-#### Features
+### Features
 
 - URLs in query results will be turned into links
-- All other 3.0.0-beta features
-
-#### Breaking changes
-
-- CLI flags have been changed to use config item key (#460)
-- All other 3.0.0-beta breaking changes
-
-## 3.0.0-beta.2
-
-### August 4, 2019
-
-#### Breaking changes
-
-- Default db path is no longer used if db path is not provided in config. Previous default was `$HOME/sqlpad/db`.
-- Default config file path no longer used. Previous default was `$HOME/.sqlpadrc`.
-- Configuration UI has been removed. See https://github.com/rickbergfalk/sqlpad/issues/447.
-- cli-flags in saved .sqlpadrc JSON are no longer used for config values. These configuration keys should instead be switched the the `key` found in `configItems.js`. For example, instead of `dir` or `db`, use `dbPath`. Instead of `cert-passphrase` use `certPassphrase`, etc.
-- `--save` and `--forget` cli flags no longer supported
-
-#### Features
-
 - SAML authentication support
 - Remember selected connection id / schema toggle
 - Configurable session time and secret
-- Support for JSON and INI config file added. File should config using `key` fields found in [configItems.js](https://github.com/rickbergfalk/sqlpad/blob/master/server/lib/config/configItems.js). Config file path default is `$HOME/.sqlpadrc` and may otherwise be specified using `--config` via command line or `SQLPAD_CONFIG` environment variable.
+- Support for JSON and INI config file added. File should config using `key` fields found in [configItems.js](https://github.com/sqlpad/sqlpad/blob/master/server/lib/config/config-items.js). Config file path default is `$HOME/.sqlpadrc` and may otherwise be specified using `--config` via command line or `SQLPAD_CONFIG` environment variable.
 
-#### Fixes
+### Breaking changes
+
+- CLI flags have been changed to use config item key (#460)
+- Default db path is no longer used if db path is not provided in config. Previous default was `$HOME/sqlpad/db`.
+- Default config file path no longer used. Previous default was `$HOME/.sqlpadrc`.
+- Configuration UI has been removed. See https://github.com/sqlpad/sqlpad/issues/447.
+- cli-flags in saved .sqlpadrc JSON are no longer used for config values. These configuration keys should instead be switched the the `key` found in `configItems.js`. For example, instead of `dir` or `db`, use `dbPath`. Instead of `cert-passphrase` use `certPassphrase`, etc.
+- `--save` and `--forget` cli flags no longer supported
+
+### Fixes
 
 - Fix preview sticking around after query selection
 - Fix tag/search input in query list
@@ -96,15 +656,11 @@ SQLPad v3 is a UI redesign/refresh along with a large file structure change and 
 - Fix app menu for non-admin users
 - Fix frozen editor after query error
 
-## 3.0.0
-
-### September 1, 2019
+## [3.0.0] - 2019-09-01
 
 This build is broken. sorry :(
 
-## 3.0.0-beta.1
-
-### June 25, 2019
+## [3.0.0-beta.1] - 2019-06-25
 
 Beta for version 3 may be installed via latest docker image, or by installing via npm referencing exact version or beta tag.
 
@@ -126,68 +682,48 @@ The schema sidebar may now be hidden and is now searchable. It has also been rew
 
 Query result grid no longer has data bars for numeric values since it didn't make sense for all number values. Date value display logic has been altered to only show timestamps if timestamps are detected. When timestamps are shown, the full timestamp from the JavaScript date object is displayed.
 
-## 2.8.1
-
-### March 7, 2019
+## [2.8.1] - 2019-03-07
 
 - Fix Google oauth for Google+ API shutdown
 
-## 2.8.0
-
-### October 17, 2018
+## [2.8.0] - 2018-10-17
 
 - Add postgres column description to schema sidebar
 - Log user id and email in debug mode
 - Replace memory-based session store with file-based
 
-## 2.7.1
-
-### August 2, 2018
+## [2.7.1] - 2018-08-02
 
 - Fix query editor not responding to input after query result scroll
 
-## 2.7.0
+## [2.7.0] - 2018-07-01
 
-### July 1, 2018
+- Add optional odbc support. See [ODBC wiki page](https://github.com/sqlpad/sqlpad/wiki/ODBC) for more detais
 
-- Add optional odbc support. See [ODBC wiki page](https://github.com/rickbergfalk/sqlpad/wiki/ODBC) for more detais
-
-## 2.6.1
-
-### June 17, 2018
+## [2.6.1] - 2018-06-17
 
 - Fix query editor loading when connections load slowly
 
-## 2.6.0
-
-### May 5, 2018
+## [2.6.0] - 2018-05-05
 
 - Add Cassandra support
 - Sort driver dropdown in connection form
 
-## 2.5.8
-
-### May 5, 2018
+## [2.5.8] - 2018-05-05
 
 - Extend data grid to full width of container
 
-## 2.5.7
-
-### May 4, 2018
+## [2.5.7] - 2018-05-04
 
 - Implement data grid using react-virtualized (fixes resizable columns)
 - Fix chart rendering error when columns no longer returned by query are referenced
 - Allow case insensitive user lookup by email (fixes case sensitive signup/signin issues)
 
-## 2.5.6
-
-### April 25, 2018
+## [2.5.6] - 2018-04-25
 
 - Revert chart fix from 2.5.5 preventing charts from rendering
 
-## 2.5.5
-
-### April 23, 2018
+## [2.5.5] - 2018-04-23
 
 - Remove frameguard protection (fixes iframe embeds)
 - Use CDN for bootstrap font (fixes missing icons when using baseUrl)
@@ -202,34 +738,24 @@ Query result grid no longer has data bars for numeric values since it didn't mak
   - All drivers now tested
 - New docker build process/root-level Dockerfile
 
-## 2.5.4
-
-### April 1, 2018
+## [2.5.4] - 2018-04-01
 
 - Fixed password reset link when using base url
 
-## 2.5.3
-
-### March 29, 2018
+## [2.5.3] - 2018-03-29
 
 - Fix SAP HANA schema not being cached due to dots in column name
 
-## 2.5.2
-
-### March 27, 2018
+## [2.5.2] - 2018-03-27
 
 - Fix error when updating connection
 - Fix SQLPAD_BASE_URL / --base-url use
 
-## 2.5.1
-
-### February 5, 2018
+## [2.5.1] - 2018-02-05
 
 - Fix early session expiration / extend session expiration every response
 
-## 2.5.0
-
-### February 5, 2018
+## [2.5.0] - 2018-02-05
 
 - Added support for SAP HANA (ccmehil)
 - Many security improvements
@@ -245,21 +771,15 @@ Query result grid no longer has data bars for numeric values since it didn't mak
   - Limits presto schema sidebar to schema if provided in connection info
   - Removed (view) label on views
 
-## 2.4.2
-
-### December 27, 2017
+## [2.4.2] - 2017-12-27
 
 - Fixed generic schema info query for case-sensitive collation
 
-## 2.4.1
-
-### December 3, 2017
+## [2.4.1] - 2017-12-03
 
 - Fixed disappearing data table after vis resize
 
-## 2.4.0
-
-### December 3, 2017
+## [2.4.0] - 2017-12-03
 
 - Added resizable panes to query editor
 - Added SQL formatter to query editor (KochamCie)
@@ -286,23 +806,17 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 - Fixed layout bugs from flexbox
 - Lots of misc front-end refactoring
 
-## 2.3.2
-
-### October 21, 2017
+## [2.3.2] - 2017-10-21
 
 - Fix --base-url config use
 - Refactored layout styling to use flexbox css
 
-## 2.3.1
-
-### October 7, 2017
+## [2.3.1] - 2017-10-07
 
 - Force no-cache on fetch requests (fixes some odd IE issues)
 - Fix docker entry point
 
-## 2.3.0
-
-### September 4, 2017
+## [2.3.0] - 2017-09-04
 
 - New features
   - Added systemd socket activation support (epeli)
@@ -318,21 +832,15 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 - Compatibility notes
   - Node v6.x now required at minimum
 
-## 2.2.0
-
-### May 29, 2017
+## [2.2.0] - 2017-05-29
 
 - added SOCKS proxy support for postgres (brysgo)
 
-## 2.2.0-beta2
-
-### March 19, 2017
+## [2.2.0-beta2] - 2017-03-19
 
 - fixed version displayed in about modal
 
-## 2.2.0-beta1
-
-### March 18, 2017
+## [2.2.0-beta1] - 2017-03-18
 
 - fixed query tag weirdness from previous v1 weirdness
 - leading 0s preserved in query results and treated as strings instead of numbers
@@ -342,47 +850,35 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 - refactored connection admin screen
 - changed build system to fork create-react-app
 
-## 2.1.3
-
-### January 28, 2017
+## [2.1.3] - 2017-01-28
 
 - Ensure strict db startup order (vweevers)
 - Improve query editor performance/reduce SQL editor lag
 
-## 2.1.2
-
-### December 9, 2016
+## [2.1.2] - 2016-12-09
 
 - Fix chart only view not displaying charts
 - Fix query editor search
 - Update dependencies
 
-## 2.1.1
-
-### November 29, 2016
+## [2.1.1] - 2016-11-29
 
 - Fix: disabling of links on query details modal (vweevers)
 - Fix: Vis tab loading indicator behaves same as query tab, hiding error on rerun (vweevers)
 - Fix: Charts rendered lazily. Query result grid loads faster, large query results won't lock browser until you try to chart. (vweevers)
 - Fix: Hide local auth form if DISABLE_USERPASS_AUTH=true
 
-## 2.1.0
-
-### November 20, 2016
+## [2.1.0] - 2016-11-20
 
 - run https via sqlpad directly (see additional setting) (jameswinegar)
 - Support non English characters when downloading files (askluyao)
 - render booleans/null timestamps properly
 
-## 2.0.0
-
-### October 12, 2016
+## [2.0.0] - 2016-10-12
 
 - (See beta 1 - 3 release notes)
 
-## 2.0.0-beta3
-
-### October 11, 2016
+## [2.0.0-beta3] - 2016-10-11
 
 - Password reset/forogot password functionality added
   - Admins may generate reset links manually
@@ -393,9 +889,7 @@ Query result grid no longer has data bars for numeric values since it didn't mak
   - Item is disabled in UI if value is provided by environment or cli
   - sensitive values are only masked if environment variables
 
-## 2.0.0-beta2
-
-### September 19, 2016
+## [2.0.0-beta2] - 2016-09-19
 
 - Move to single-page-app architecture
 - New query loading animation
@@ -406,14 +900,12 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 - Misc bug fixes
 - More code cleanup
 
-## 2.0.0-beta1
-
-### September 1, 2016
+## [2.0.0-beta1] - 2016-09-01
 
 - UI design updates _everywhere_
 - Query Listing:
   - preview query contents by hovering over query listing
-  - occassional search/filter weirdness has been fixed
+  - occasional search/filter weirdness has been fixed
 - Query Editor:
   - Schema sidebar no longer separates views and tables in hierarchy
   - New result grid
@@ -437,47 +929,47 @@ Query result grid no longer has data bars for numeric values since it didn't mak
   - Query tag input does not allow creation
   - Query auto-refresh not yet implemented
 
-## 1.17.0
+## [1.17.0]
 
 - empty postgres queries (like executing a comment only) no longer crash sqlpad
 - materialized views are included in schema sidebar for postgres
 
-## 1.16.0
+## [1.16.0]
 
 - SQLPad may now be mounted under a base url path by providing --base-url cli flag or SQLPAD_BASE_URL env variable
 - Updated taucharts to 0.9.1
 - Legends are now included when saving png chart images
 
-## 1.15.0
+## [1.15.0]
 
 - Many client-side and server-side dependencies updated
 - Add ability to bind to a specific IP address via the --ip flag or the SQLPAD_IP environment variable
 - Removed sort inputs for bar charts. (Chart sort may instead be influenced using ORDER BY in SQL query.)
 
-## 1.14.0
+## [1.14.0]
 
 - Add ability to turn off date localization (add config item "localize" set to "false")
 
-## 1.13.0
+## [1.13.0]
 
 - Add --debug flag to SQLPad cli to enable extra logging
 - Port and passphrase may be set via environment variables SQLPAD_PORT and SQLPAD_PASSPHRASE
 
-## 1.12.0
+## [1.12.0]
 
 - Add support for Crate.io
 
-## 1.11.0
+## [1.11.0]
 
 - Auto-refresh query every x seconds
 - Fix crash when unregistered user tries to log in
 
-## 1.10.0
+## [1.10.0]
 
 - MySQL connections can now old/insecure pre 4.1 auth system
 - links now available to display just the chart or data grid
 
-## 1.9.0
+## [1.9.0]
 
 - Charting now handled by the very cool tauCharts library. It's a bit faster, has facets, grammar of graphics concepts, handles time series data better, trendlines.
 - When changing chart types, SQLPad will remember and reapply the field selections where applicable.
@@ -486,15 +978,15 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 - Schema-item-name copy-to-clipboard buttons now available. Opt in by creating configuration item `showSchemaCopyButton` to `true`.
 - Query results can now be downloaded as xlsx file. (link will be hidden if csv downloads are disabled)
 
-## 1.8.2
+## [1.8.2]
 
 - Connection password no longer visible on connection screen.
 
-## 1.8.1
+## [1.8.1]
 
 - Duplicate content headers prevented when csv filename contains comma.
 
-## 1.8.0
+## [1.8.0]
 
 - Authentication now managed by Passport.js
 - Username/Password authenication strategy can be disabled by setting environment variable DISABLE_USERPASS_AUTH
@@ -503,39 +995,39 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 - Whitelist domains for username administration by setting environment variable WHITELISTED_DOMAINS
 - Query connection now selected by default if only one exists
 
-## 1.7.0
+## [1.7.0]
 
 - Tags now look like tags
 - Typeahead added for easy tag creation
 
-## 1.6.0
+## [1.6.0]
 
 - Code cleanup
 
-## 1.5.1
+## [1.5.1]
 
 - remove console logging used for debugging
 
-## 1.5.0
+## [1.5.0]
 
 - Vertica now supported via Vertica driver
 - CSVs no longer generated if disabled
 - optimizations made to schema-info processing
 
-## 1.4.1
+## [1.4.1]
 
 - improved db tree/schema info performance
 
-## 1.4.0
+## [1.4.0]
 
 - Charts can be saved as images
 
-## 1.3.0
+## [1.3.0]
 
 - work-around to handle multiple statements using postgres driver
 - fix to provide MAX_SAFE_INTEGER if not defined
 
-## 1.2.1
+## [1.2.1]
 
 - query results are limited to 50,000 records. This can be changed by adding a configuration key "queryResultMaxRows" and providing the number of max rows you would like returned.
 - Minor bugfixes
@@ -543,16 +1035,16 @@ Query result grid no longer has data bars for numeric values since it didn't mak
 - schema information now cached
 - connection port is optional in UI
 
-## 1.2.0
+## [1.2.0]
 
 - Added port property to connections
 - Configuration system has been added
 - CSV downloads can be disabled via configuration. Add new item with key "allowCsvDownload" with value "false" to disable.
 
-## 1.1.0
+## [1.1.0]
 
 - Add initial Vertica support via use of Postgres driver
 
-## 1.0.0
+## [1.0.0]
 
 - SQLPad is released

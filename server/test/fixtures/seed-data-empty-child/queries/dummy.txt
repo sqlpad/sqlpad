@@ -1,0 +1,1 @@
+This is just a dummy file to ensure non-json files are ignored

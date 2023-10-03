@@ -3,13 +3,14 @@
   position: fixed;
   color: #fff;
   background-color: var(--primary-color);
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
   padding: 8px;
   top: 16px;
   right: 16px;
   width: 200px;
+  z-index: 9001 !important;
 }
 
 .error {
-  background-color: var(--secondary-color);
+  background-color: hsl(323, 100%, 42%);
 }

@@ -5,12 +5,17 @@ module.exports = { send };
 
 // Util - setTimeout as a promise
 function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Get Presto headers from config
 function getHeaders(config) {
-  const headers = { 'X-Presto-User': config.user };
+  const headers = {
+    'X-Presto-User': config.user,
+    Authorization:
+      'Basic ' +
+      Buffer.from(`${config.user}:${config.password}`).toString('base64'),
+  };
   if (config.catalog) {
     headers['X-Presto-Catalog'] = config.catalog;
   }
@@ -26,15 +31,15 @@ function send(config, query) {
     return Promise.reject(new Error('config.url is required'));
   }
   const results = {
-    data: []
+    data: [],
   };
   return fetch(`${config.url}/v1/statement`, {
     method: 'POST',
     body: query,
-    headers: getHeaders(config)
+    headers: getHeaders(config),
   })
-    .then(response => response.json())
-    .then(statement => handleStatementAndGetMore(results, statement, config));
+    .then((response) => response.json())
+    .then((statement) => handleStatementAndGetMore(results, statement, config));
 }
 
 function updateResults(results, statement) {
@@ -51,7 +56,7 @@ function handleStatementAndGetMore(results, statement, config) {
   if (statement.error) {
     // A lot of other error data available,
     // but error.message contains the detail on syntax issue
-    return Promise.reject(statement.error.message);
+    return Promise.reject(new Error(statement.error.message));
   }
   results = updateResults(results, statement);
   if (!statement.nextUri) {
@@ -59,6 +64,6 @@ function handleStatementAndGetMore(results, statement, config) {
   }
   return wait(NEXT_URI_TIMEOUT)
     .then(() => fetch(statement.nextUri, { headers: getHeaders(config) }))
-    .then(response => response.json())
-    .then(statement => handleStatementAndGetMore(results, statement, config));
+    .then((response) => response.json())
+    .then((statement) => handleStatementAndGetMore(results, statement, config));
 }

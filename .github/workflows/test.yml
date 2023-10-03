@@ -1,0 +1,88 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # We want to run on external PRs, but not on our own internal PRs as they'll be run
+    # by the push to the branch.
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository
+
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Build for ${{ matrix.node-version }}
+        run: scripts/build.sh
+
+      - name: Store artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: built_node${{ matrix.node-version }}
+          path: server/public
+
+  test:
+    needs: build
+    runs-on: ubuntu-20.04
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false # if one job fails, others will not be aborted
+      matrix:
+        backendtype: ['', 'mssql', 'mysql', 'mariadb', 'postgres']
+        node-version: [16.x, 18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Start redis
+        run: docker-compose -f server/docker-compose.yml up -d redis &
+
+      - name: Start ldap
+        run: docker-compose -f server/docker-compose.yml up -d ldap &
+
+      - name: Start service for backend server
+        if: ${{ matrix.backendtype }}
+        run: docker-compose -f server/docker-compose.yml up -d ${{ matrix.backendtype }} &
+
+      - name: Install node modules
+        run: (cd server && yarn)
+
+      - name: Download built artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: built_node${{ matrix.node-version }}
+          path: server/public
+
+      - name: Verify backend DB service is healthy before starting
+        if: ${{ matrix.backendtype }}
+        run: |
+          until  docker ps | fgrep "(healthy)" | grep  ${{ matrix.backendtype }} ; do
+            docker ps
+            sleep 0.5
+          done
+
+      - name: Verify ldap is healthy before starting
+        run: |
+          until  docker ps | fgrep "(healthy)" | grep test-openldap ; do
+            docker ps
+            sleep 0.5
+          done
+
+      - name: Test
+        run: npm run test${{ matrix.backendtype }} --prefix server

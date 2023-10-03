@@ -9,13 +9,19 @@
   justify-content: space-between;
   box-sizing: border-box;
   flex: 0 0 45px;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   padding: 8px 16px;
   line-height: 1.5;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.03);
 }
 
+.title {
+  margin-right: 32px;
+}
+
 .dialogBody {
   padding: 16px;
+  max-width: 90vw;
+  overflow-x: auto;
 }

@@ -1,11 +1,12 @@
 /* eslint-disable no-await-in-loop */
 const assert = require('assert');
-const cassandra = require('./index.js');
+const cassandra = require('./index');
+const testUtils = require('../test-utils');
 
 const connection = {
   name: 'test cassandra',
   driver: 'cassandra',
-  contactPoints: 'localhost'
+  contactPoints: 'localhost',
 };
 
 const initSqls = [
@@ -14,35 +15,28 @@ const initSqls = [
   'CREATE TABLE test.test ( id int PRIMARY KEY, name text);',
   `INSERT INTO test.test (id, name) VALUES (1, 'one');`,
   `INSERT INTO test.test (id, name) VALUES (2, 'two');`,
-  `INSERT INTO test.test (id, name) VALUES (3, 'three');`
+  `INSERT INTO test.test (id, name) VALUES (3, 'three');`,
 ];
 
-describe('drivers/cassandra', function() {
-  before(async function() {
+describe('drivers/cassandra', function () {
+  before(async function () {
     this.timeout(10000);
     for (const sql of initSqls) {
       await cassandra.runQuery(sql, connection);
     }
   });
 
-  it('tests connection', function() {
+  it('tests connection', function () {
     return cassandra.testConnection(connection);
   });
 
-  it('getSchema()', async function() {
+  it('getSchema()', async function () {
     const schemaInfo = await cassandra.getSchema(connection);
-    assert(schemaInfo);
-    assert(schemaInfo.test, 'test');
-    assert(schemaInfo.test.test, 'test.test');
-    const columns = schemaInfo.test.test;
-    assert.equal(columns.length, 2, 'columns.length');
-    assert.equal(columns[0].table_schema, 'test', 'table_schema');
-    assert.equal(columns[0].table_name, 'test', 'table_name');
-    assert.equal(columns[0].column_name, 'id', 'column_name');
-    assert(columns[0].hasOwnProperty('data_type'), 'data_type');
+    const column = testUtils.getColumn(schemaInfo, 'test', 'test', 'id');
+    assert(column.hasOwnProperty('dataType'));
   });
 
-  it('runQuery under limit', async function() {
+  it('runQuery under limit', async function () {
     const results = await cassandra.runQuery(
       'SELECT id FROM test.test WHERE id = 1;',
       connection
@@ -51,7 +45,7 @@ describe('drivers/cassandra', function() {
     assert.equal(results.rows.length, 1, 'rows length');
   });
 
-  it('runQuery over limit', async function() {
+  it('runQuery over limit', async function () {
     const limitedConnection = { ...connection, maxRows: 2 };
     const results = await cassandra.runQuery(
       'SELECT * FROM test.test;',
@@ -61,7 +55,7 @@ describe('drivers/cassandra', function() {
     assert.equal(results.rows.length, 2, 'row length');
   });
 
-  it('returns descriptive error message', async function() {
+  it('returns descriptive error message', async function () {
     let error;
     try {
       await cassandra.runQuery('SELECT * FROM test.missing_table;', connection);

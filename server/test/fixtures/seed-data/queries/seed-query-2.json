@@ -1,0 +1,7 @@
+{
+  "id": "seed-query-2",
+  "name": "Seed query 2",
+  "connectionId": "seed-connection-1",
+  "queryText": "SELECT * FROM seed_table",
+  "createdBy": "admin@sqlpad.com"
+}

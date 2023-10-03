@@ -1,0 +1,21 @@
+{
+  "id": "seed-query-1",
+  "name": "Seed query 1",
+  "connectionId": "seed-connection-1",
+  "queryText": "SELECT * FROM seed_table",
+  "createdBy": "admin@sqlpad.com",
+  "acl": [
+    {
+      "userId": "some-userId-in-sqlpad",
+      "write": false
+    },
+    {
+      "userEmail": "someone@sqlpad.com",
+      "write": true
+    },
+    {
+      "groupId": "__EVERYONE__",
+      "write": true
+    }
+  ]
+}

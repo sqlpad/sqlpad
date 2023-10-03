@@ -1,0 +1,22 @@
+apiVersion: v2
+name: sqlpad
+description: sqlpad helm charts 
+
+type: application
+
+version: 0.1.0
+
+keywords:
+  - sqlpad
+  - sql
+  - mysql
+  - postgresql
+
+home: https://github.com/sqlpad/sqlpad
+
+maintainers:
+  - name: linjinbao666
+    email: linjinbao666@gmail.com
+    url: https://blog.amrom.tk
+
+appVersion: "1.16.0"

@@ -1,0 +1,9 @@
+{
+  "id": "seed-connection-1",
+  "name": "postgres seed connection",
+  "driver": "postgres",
+  "host": "pghost",
+  "database": "pgdatabase",
+  "username": "pgusername",
+  "password": "pguserpassword"
+}

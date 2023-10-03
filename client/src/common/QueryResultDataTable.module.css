@@ -1,0 +1,81 @@
+/* 
+  Fancy CSS to apply a shadow when content is overflowing
+  Approach modified from https://codepen.io/matthewbeta/pen/fzoHI
+
+  There's an issue with this approach in that the content needs to overflow by 10 pixels
+  so that the "covering" shadow is moved and reveals the actual shadow. 
+
+  This can be fixed if 10 pixels of content can be added to the right hand side of a result grid cell.
+  Prior attempt using flex and a hidden value resulted in strange padding behavior.
+
+  If this cannot be accomplished with CSS it might make sense to render cell values off screen and measure them?
+  That could get expensive.
+
+  We might not need to measure much though if we map measurements to number of characters, 
+  since we're using a monospace font.
+
+  Open to other ideas if anyone has them!
+*/
+.scrollboxEven {
+  background-image: 
+    /* Shadows */ linear-gradient(
+      to right,
+      rgb(250, 250, 250),
+      rgb(250, 250, 250)
+    ),
+    linear-gradient(to right, rgb(250, 250, 250), rgb(250, 250, 250)),
+    /* Shadow covers */
+      linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0)),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0));
+
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-color: rgb(250, 250, 250);
+  background-size: 10px 100%, 10px 100%, 10px 100%, 10px 100%;
+
+  /* Opera doesn't support this in the shorthand */
+  background-attachment: local, local, scroll, scroll;
+}
+
+.scrollboxOdd {
+  background-image: 
+    /* Shadows */ linear-gradient(to right, white, white),
+    linear-gradient(to right, white, white),
+    /* Shadow covers */
+      linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0)),
+    linear-gradient(to left, rgba(0, 0, 0, 0.25), rgba(255, 255, 255, 0));
+
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-color: white;
+  background-size: 10px 100%, 10px 100%, 10px 100%, 10px 100%;
+
+  /* Opera doesn't support this in the shorthand */
+  background-attachment: local, local, scroll, scroll;
+}
+
+.faderEven {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgb(250, 250, 250)
+  );
+}
+
+.faderOdd {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 16px;
+  background-image: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0),
+    rgb(255, 255, 255)
+  );
+}

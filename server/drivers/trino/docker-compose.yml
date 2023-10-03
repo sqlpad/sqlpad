@@ -1,0 +1,6 @@
+version: '3'
+services:
+  trino:
+    image: trinodb/trino:353
+    ports:
+      - '8080:8080'

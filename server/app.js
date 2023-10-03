@@ -2,159 +2,282 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
+const pino = require('pino');
+const redis = require('redis');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
-const config = require('./lib/config');
-
-const baseUrl = config.get('baseUrl');
-const googleClientId = config.get('googleClientId');
-const googleClientSecret = config.get('googleClientSecret');
-const publicUrl = config.get('publicUrl');
-const dbPath = config.get('dbPath');
-const debug = config.get('debug');
-const cookieName = config.get('cookieName');
-const cookieSecret = config.get('cookieSecret');
-const sessionMinutes = config.get('sessionMinutes');
-
-const samlEntryPoint = config.get('samlEntryPoint');
-const samlIssuer = config.get('samlIssuer');
-const samlCallbackUrl = config.get('samlCallbackUrl');
-const samlCert = config.get('samlCert');
-const samlAuthContext = config.get('samlAuthContext');
-
-/*  Express setup
-============================================================================= */
+const MemoryStore = require('memorystore')(session);
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const RedisStore = require('connect-redis').default;
+const appLog = require('./lib/app-log');
+const Webhooks = require('./lib/webhooks');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
-const morgan = require('morgan');
 const passport = require('passport');
-const errorhandler = require('errorhandler');
+const authStrategies = require('./auth-strategies');
+const sessionlessAuth = require('./middleware/sessionless-auth');
+const ResponseUtils = require('./lib/response-utils');
+const expressPinoLogger = require('express-pino-logger');
 
-const app = express();
+// This is a workaround till BigInt is fully supported by the standard
+// See https://tc39.es/ecma262/#sec-ecmascript-language-types-bigint-type
+// and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt
+// If this is not done, then a JSON.stringify(BigInt) throws
+// "TypeError: Do not know how to serialize a BigInt"
+/* global BigInt:writable */
+/* eslint no-extend-native: ["error", { "exceptions": ["BigInt"] }] */
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};
 
-// Default helmet protections, minus frameguard (becaue of sqlpad iframe embed), adding referrerPolicy
-app.use(helmet.dnsPrefetchControl());
-app.use(helmet.hidePoweredBy());
-app.use(helmet.hsts({}));
-app.use(helmet.ieNoOpen());
-app.use(helmet.noSniff());
-app.use(helmet.xssFilter());
-app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+/**
+ * Create an express app using config
+ * @param {object} config
+ */
+async function makeApp(config, models) {
+  if (typeof config.get !== 'function') {
+    throw new Error('config is required to create app');
+  }
+  if (!models) {
+    throw new Error('models is required to create app');
+  }
 
-app.set('env', debug ? 'development' : 'production');
+  const webhooks = new Webhooks(config, models, appLog);
 
-if (debug) {
-  app.use(errorhandler());
-}
-app.use(favicon(path.join(__dirname, '/public/favicon.ico')));
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true
-  })
-);
+  const expressPino = expressPinoLogger({
+    level: config.get('webLogLevel'),
+    timestamp: pino.stdTimeFunctions.isoTime,
+    name: 'sqlpad-web',
+    // express-pino-logger logs all the headers by default
+    // Removing these for now but open to adding them back in based on feedback
+    redact: {
+      paths: [
+        'req.headers',
+        'res.headers',
+        'req.remoteAddress',
+        'req.remotePort',
+      ],
+      remove: true,
+    },
+  });
 
-app.use(
-  session({
-    store: new FileStore({
-      path: path.join(dbPath, '/sessions')
-    }),
+  /*  Express setup
+  ============================================================================= */
+  const app = express();
+
+  app.set('trust proxy', config.get('trustProxy'));
+
+  // Default helmet protections, minus frameguard (becaue of sqlpad iframe embed), adding referrerPolicy
+  app.use(helmet.dnsPrefetchControl());
+  app.use(helmet.hidePoweredBy());
+  app.use(helmet.hsts({}));
+  app.use(helmet.ieNoOpen());
+  app.use(helmet.noSniff());
+  app.use(helmet.xssFilter());
+  app.use(helmet.referrerPolicy({ policy: 'same-origin' }));
+
+  // Decorate req and res with SQLPad objects and utils
+  app.use(function (req, res, next) {
+    req.config = config;
+    req.models = models;
+    req.appLog = appLog;
+    req.webhooks = webhooks;
+
+    res.utils = new ResponseUtils(res, next);
+
+    next();
+  });
+
+  app.use(expressPino);
+
+  // Use favicon middleware if favicon exists
+  // Thist just loads it and serves from memory
+  const icoPath = path.join(__dirname, '/public/favicon.ico');
+  if (fs.existsSync(icoPath)) {
+    app.use(favicon(icoPath));
+  }
+
+  app.use(
+    bodyParser.json({
+      limit: config.get('bodyLimit'),
+    })
+  );
+  app.use(
+    bodyParser.urlencoded({
+      extended: true,
+    })
+  );
+
+  const cookieMaxAgeMs = parseInt(config.get('sessionMinutes'), 10) * 60 * 1000;
+  const cookieSameSite = config.get('sessionCookieSameSite');
+
+  const sessionOptions = {
     saveUninitialized: false,
     resave: true,
     rolling: true,
-    cookie: { maxAge: 1000 * 60 * sessionMinutes },
-    secret: cookieSecret,
-    name: cookieName
-  })
-);
+    cookie: { maxAge: cookieMaxAgeMs, sameSite: cookieSameSite },
+    secret: config.get('cookieSecret'),
+    name: config.get('cookieName'),
+  };
 
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(baseUrl, express.static(path.join(__dirname, 'public')));
-if (debug) {
-  app.use(morgan('dev'));
-}
+  sessionOptions.cookie.secure = config.get('cookieSecure');
 
-/*  Passport setup
-============================================================================= */
-require('./middleware/passport.js');
+  const sessionStore = config.get('sessionStore').toLowerCase();
 
-/*  Routes
-============================================================================= */
-const routers = [
-  require('./routes/drivers.js'),
-  require('./routes/users.js'),
-  require('./routes/forgot-password.js'),
-  require('./routes/password-reset.js'),
-  require('./routes/connections.js'),
-  require('./routes/test-connection.js'),
-  require('./routes/queries.js'),
-  require('./routes/query-result.js'),
-  require('./routes/download-results.js'), // streams result download to browser
-  require('./routes/schema-info.js'),
-  require('./routes/tags.js'),
-  require('./routes/format-sql.js'),
-  require('./routes/signup-signin-signout.js')
-];
-
-if (googleClientId && googleClientSecret && publicUrl) {
-  if (debug) {
-    console.log('Enabling Google authentication Strategy.');
+  switch (sessionStore) {
+    case 'file': {
+      const sessionPath = path.join(config.get('dbPath'), '/sessions');
+      sessionOptions.store = new FileStore({
+        path: sessionPath,
+        logFn: () => {},
+      });
+      break;
+    }
+    case 'memory': {
+      sessionOptions.store = new MemoryStore({
+        checkPeriod: cookieMaxAgeMs,
+      });
+      break;
+    }
+    case 'database': {
+      sessionOptions.store = new SequelizeStore({
+        db: models.sequelizeDb.sequelize,
+        table: 'Sessions',
+      });
+      // SequelizeStore supports the touch method so per the express-session docs this should be set to false
+      sessionOptions.resave = false;
+      // SequelizeStore docs mention setting this to true if SSL is done outside of Node
+      // Not sure we have any way of knowing based on current config
+      // sessionOptions.proxy = true;
+      break;
+    }
+    case 'redis': {
+      const redisClient = redis.createClient({
+        url: config.get('redisUri'),
+      });
+      redisClient.connect().catch((error) => appLog.error(error));
+      sessionOptions.store = new RedisStore({ client: redisClient });
+      sessionOptions.resave = false;
+      break;
+    }
+    default: {
+      throw new Error(`Invalid session store ${sessionStore}`);
+    }
   }
-  routers.push(require('./routes/oauth.js'));
-}
 
-if (
-  samlEntryPoint &&
-  samlIssuer &&
-  samlCallbackUrl &&
-  samlCert &&
-  samlAuthContext
-) {
-  if (debug) {
-    console.log('Enabling SAML authentication Strategy.');
+  app.use(session(sessionOptions));
+
+  const baseUrl = config.get('baseUrl');
+
+  app.use(baseUrl, express.static(path.join(__dirname, 'public')));
+
+  /*  Passport setup
+  ============================================================================= */
+  await authStrategies(config, models);
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  /*  Routes
+  ============================================================================= */
+  const preAuthRouters = [
+    require('./routes/password-reset'),
+    require('./routes/signout'),
+    require('./routes/signup'),
+    require('./routes/signin'),
+    require('./routes/google-auth'),
+    require('./routes/auth-oidc'),
+    require('./routes/saml'),
+  ];
+
+  // Add pre-auth routes to app
+  preAuthRouters.forEach((router) => app.use(baseUrl, router));
+
+  // Add sessionless authentication middleware
+  // This handles things like HTTP basic, auth proxy, disable auth, and JWT service tokens
+  // These attempt to authenticate the request based on information passed every request
+  // They do not persist a session
+  app.use(sessionlessAuth);
+
+  const authRequiredRouters = [
+    require('./routes/statement-results'),
+    require('./routes/queries'),
+    require('./routes/drivers'),
+    require('./routes/users'),
+    require('./routes/connections'),
+    require('./routes/connection-accesses'),
+    require('./routes/connection-clients'),
+    require('./routes/connection-schema'),
+    require('./routes/test-connection'),
+    require('./routes/query-history'),
+    require('./routes/schema-info'),
+    require('./routes/tags'),
+    require('./routes/format-sql'),
+    require('./routes/service-tokens'),
+    require('./routes/batches'),
+    require('./routes/statements'),
+  ];
+
+  // Add all core routes to the baseUrl except for the */api/app route
+  authRequiredRouters.forEach((router) => app.use(baseUrl, router));
+
+  // Add '*/api/app' route last and without baseUrl
+  app.use(require('./routes/app'));
+
+  // For any missing api route, return a 404
+  // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
+  app.use(baseUrl + '/api/', function (req, res) {
+    req.log.debug('reached catch all api route');
+    return res.utils.notFound();
+  });
+
+  // Add an error handler for /api
+  app.use(baseUrl + '/api/', function (err, req, res, next) {
+    if (res.headersSent) {
+      return next(err);
+    }
+    appLog.error(err);
+    if (err && err.type === 'entity.too.large') {
+      return res.status(413).json({
+        title: 'Payload Too Large',
+      });
+    }
+    return res.status(500).json({
+      title: 'Internal Server Error',
+    });
+  });
+
+  // Anything else should render the client-side app
+  // Client-side routing will take care of things from here
+  // Because index.html will be served via static plugin,
+  // we need to rename it to something else and switch out the URLs to consider the baseUrl
+  const indexPath = path.join(__dirname, 'public/index.html');
+  const indexTemplatePath = path.join(__dirname, 'public/index-template.html');
+
+  if (fs.existsSync(indexPath)) {
+    fs.renameSync(indexPath, indexTemplatePath);
   }
-  routers.push(require('./routes/saml.js'));
+
+  if (fs.existsSync(indexTemplatePath)) {
+    const html = fs.readFileSync(indexTemplatePath, 'utf8');
+    const baseUrlHtml = html
+      .replace(/="\/assets/g, `="${baseUrl}/assets`)
+      .replace(/="\/stylesheets/g, `="${baseUrl}/stylesheets`)
+      .replace(/="\/javascripts/g, `="${baseUrl}/javascripts`)
+      .replace(/="\/images/g, `="${baseUrl}/images`)
+      .replace(/="\/favicon/g, `="${baseUrl}/favicon`)
+      .replace(/="\/fonts/g, `="${baseUrl}/fonts`)
+      .replace(/="\/static/g, `="${baseUrl}/static`);
+    app.use((req, res) => res.send(baseUrlHtml));
+  } else {
+    const msg = `No UI template detected. Build client/ and copy files to server/public/`;
+    appLog.warn(msg);
+    app.use((req, res) => {
+      appLog.warn(msg);
+      res.status(404).send(msg);
+    });
+  }
+
+  return app;
 }
 
-// Add all core routes to the baseUrl except for the */api/app route
-routers.forEach(function(router) {
-  app.use(baseUrl, router);
-});
-
-// Add '*/api/app' route last and without baseUrl
-app.use(require('./routes/app.js'));
-
-// For any missing api route, return a 404
-// NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
-app.use(baseUrl + '/api/', function(req, res) {
-  console.log('reached catch all api route');
-  res.sendStatus(404);
-});
-
-// Anything else should render the client-side app
-// Client-side routing will take care of things from here
-// Because index.html will be served via static plugin,
-// we need to rename it to something else and switch out the URLs to consider the baseUrl
-const indexPath = path.join(__dirname, 'public/index.html');
-const indexTemplatePath = path.join(__dirname, 'public/index-template.html');
-
-if (fs.existsSync(indexPath)) {
-  fs.renameSync(indexPath, indexTemplatePath);
-}
-
-if (fs.existsSync(indexTemplatePath)) {
-  const html = fs.readFileSync(indexTemplatePath, 'utf8');
-  const baseUrlHtml = html
-    .replace(/="\/stylesheets/g, `="${baseUrl}/stylesheets`)
-    .replace(/="\/javascripts/g, `="${baseUrl}/javascripts`)
-    .replace(/="\/images/g, `="${baseUrl}/images`)
-    .replace(/="\/fonts/g, `="${baseUrl}/fonts`)
-    .replace(/="\/static/g, `="${baseUrl}/static`);
-  app.use((req, res) => res.send(baseUrlHtml));
-} else {
-  console.error('\nNO FRONT END TEMPLATE DETECTED');
-  console.error('If not running in dev mode please report this issue.\n');
-}
-
-module.exports = app;
+module.exports = makeApp;

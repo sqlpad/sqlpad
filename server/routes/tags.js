@@ -1,22 +1,17 @@
-const _ = require('lodash');
+require('../typedefs');
 const router = require('express').Router();
-const queriesUtil = require('../models/queries.js');
-const mustBeAuthenticated = require('../middleware/must-be-authenticated.js');
-const sendError = require('../lib/sendError');
+const mustBeAuthenticated = require('../middleware/must-be-authenticated');
+const wrap = require('../lib/wrap');
 
-router.get('/api/tags', mustBeAuthenticated, async function(req, res) {
-  try {
-    const queries = await queriesUtil.findAll();
-    const tags = _.uniq(_.flatten(_.map(queries, 'tags')))
-      .sort()
-      .filter(t => t);
+/**
+ * @param {Req} req
+ * @param {Res} res
+ */
+async function listTags(req, res) {
+  const tags = await req.models.tags.findDistinctTags();
+  return res.utils.data(tags);
+}
 
-    return res.json({
-      tags
-    });
-  } catch (error) {
-    sendError(res, error, 'Problem getting tags');
-  }
-});
+router.get('/api/tags', mustBeAuthenticated, wrap(listTags));
 
 module.exports = router;

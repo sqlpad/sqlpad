@@ -47,17 +47,14 @@ async function runQuery(query, connection) {
   const { maxRows } = connection;
   const limit = maxRows < CRATE_LIMIT ? maxRows : CRATE_LIMIT;
 
-  if (connection.port) {
-    crate.connect(connection.host, connection.port);
-  } else {
-    crate.connect(connection.host);
-  }
+  let connectionString = getConnectionString(connection);
+  crate.connect(connectionString);
 
   try {
     const res = await crate.execute(query);
     const results = {
       rows: res.json,
-      incomplete: false
+      incomplete: false,
     };
     if (results.rows.length >= limit) {
       results.incomplete = true;
@@ -67,6 +64,37 @@ async function runQuery(query, connection) {
   } catch (error) {
     throw new Error(error.message);
   }
+}
+
+/**
+ * Get connection string with options
+ * @param {*} connection
+ */
+function getConnectionString(connection) {
+  let url;
+  try {
+    // if connection.host contains a valid url e.g. 'https://crate.io:4200'
+    url = new URL(connection.host);
+    // if connection.host doesn't contain protocol e.g. 'crate.io:4200'
+    if (!['http:', 'https:'].includes(url.protocol)) {
+      let protocol = connection.ssl ? 'https:' : 'http:';
+      url = new URL(protocol + connection.host);
+    }
+  } catch (error) {
+    // if connection.host contains only hostname e.g. 'crate.io'
+    let protocol = connection.ssl ? 'https:' : 'http:';
+    url = new URL(protocol + connection.host);
+  }
+  if (connection.port) {
+    url.port = connection.port;
+  }
+  if (connection.username) {
+    url.username = connection.username;
+    if (connection.password) {
+      url.password = connection.password;
+    }
+  }
+  return url.href;
 }
 
 /**
@@ -99,13 +127,28 @@ const fields = [
   {
     key: 'host',
     formType: 'TEXT',
-    label: 'Host/Server/IP Address'
+    label: 'Host/Server/IP Address',
   },
   {
     key: 'port',
     formType: 'TEXT',
-    label: 'Port (optional)'
-  }
+    label: 'Port (optional)',
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username',
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password',
+  },
+  {
+    key: 'ssl',
+    formType: 'CHECKBOX',
+    label: 'Use SSL',
+  },
 ];
 
 module.exports = {
@@ -114,5 +157,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

@@ -1,42 +1,53 @@
+require('../typedefs');
 const router = require('express').Router();
 const packageJson = require('../package.json');
-const usersUtil = require('../models/users.js');
-const sendError = require('../lib/sendError');
-const config = require('../lib/config');
+const wrap = require('../lib/wrap');
+
+/**
+ * @param {Req} req
+ * @param {Res} res
+ */
+async function getApp(req, res) {
+  const { config } = req;
+
+  const currentUser =
+    req.isAuthenticated() && req.user
+      ? {
+          id: req.user.id,
+          email: req.user.email,
+          role: req.user.role,
+          name: req.user.name,
+          ldapId: req.user.ldapId,
+        }
+      : undefined;
+
+  return res.utils.data({
+    currentUser,
+    config: {
+      allowCsvDownload: config.get('allowCsvDownload'),
+      baseUrl: config.get('baseUrl'),
+      defaultConnectionId: config.get('defaultConnectionId'),
+      editorWordWrap: config.get('editorWordWrap'),
+      googleAuthConfigured: Boolean(config.googleAuthConfigured()),
+      localAuthConfigured: !config.get('userpassAuthDisabled'),
+      publicUrl: config.get('publicUrl'),
+      samlConfigured: Boolean(config.get('samlEntryPoint')),
+      samlLinkHtml: config.get('samlLinkHtml'),
+      ldapConfigured: config.get('ldapAuthEnabled'),
+      ldapRolesConfigured: Boolean(
+        config.get('ldapRoleAdminFilter') || config.get('ldapRoleEditorFilter')
+      ),
+      oidcConfigured: config.oidcConfigured(),
+      oidcLinkHtml: config.get('oidcLinkHtml'),
+      showServiceTokensUI: Boolean(config.get('serviceTokenSecret')),
+    },
+    version: packageJson.version,
+  });
+}
 
 // NOTE: this route needs a wildcard because it is fetched as a relative url
 // from the front-end. The static SPA does not know if sqlpad is mounted at
 // the root of a domain or if there is a base-url provided in the config
-router.get('*/api/app', async (req, res) => {
-  try {
-    const adminRegistrationOpen = await usersUtil.adminRegistrationOpen();
-    const currentUser =
-      req.isAuthenticated() && req.user
-        ? {
-            _id: req.user.id,
-            email: req.user.email,
-            role: req.user.role
-          }
-        : undefined;
-
-    return res.json({
-      adminRegistrationOpen,
-      currentUser,
-      config: {
-        publicUrl: config.get('publicUrl'),
-        allowCsvDownload: config.get('allowCsvDownload'),
-        editorWordWrap: config.get('editorWordWrap'),
-        baseUrl: config.get('baseUrl'),
-        smtpConfigured: config.smtpConfigured(),
-        googleAuthConfigured: config.googleAuthConfigured(),
-        localAuthConfigured: !config.get('disableUserpassAuth'),
-        samlConfigured: Boolean(config.get('samlEntryPoint'))
-      },
-      version: packageJson.version
-    });
-  } catch (error) {
-    sendError(res, error, 'Problem querying users');
-  }
-});
+router.get('*/api/app', wrap(getApp));
 
 module.exports = router;

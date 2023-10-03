@@ -1,87 +1,62 @@
 const path = require('path');
-const datastore = require('nedb-promise');
-const mkdirp = require('mkdirp');
-const config = require('./config');
-const passhash = require('../lib/passhash');
+const { mkdirp } = require('mkdirp');
+const Models = require('../models');
+const SequelizeDb = require('../sequelize-db');
 
-const admin = config.get('admin');
-const adminPassword = config.get('adminPassword');
-const dbPath = config.get('dbPath');
-const debug = config.get('debug');
-const port = config.get('port');
+/**
+ * Whenever possible db should be read from the app req object.
+ * Sometimes this isn't possible or convenient at the moment however.
+ * For those cases, this module provides access by caching the db instance.
+ * Safety measures have been added to ensure only 1 instance of db can be initialized per alias
+ */
+let instances = {};
 
-mkdirp.sync(path.join(dbPath, '/cache'));
+/**
+ * Returns promise of db instance
+ * @param {string} [instanceAlias]
+ */
+async function getDb(instanceAlias = 'default') {
+  const instancePromise = instances[instanceAlias];
+  if (!instancePromise) {
+    throw new Error('db instance must be created first');
+  }
+  // already be a promise -- this just makes it explicit
+  const { models, sequelizeDb } = await instancePromise;
+  return { models, sequelizeDb };
+}
 
-const db = {
-  users: datastore({ filename: path.join(dbPath, 'users.db') }),
-  connections: datastore({
-    filename: path.join(dbPath, 'connections.db')
-  }),
-  queries: datastore({ filename: path.join(dbPath, 'queries.db') }),
-  cache: datastore({ filename: path.join(dbPath, 'cache.db') }),
-  instances: ['users', 'connections', 'queries', 'cache']
+/**
+ * Initialize db for a given config
+ * @param {object} config
+ */
+async function initDb(config) {
+  const dbPath = config.get('dbPath');
+  mkdirp.sync(path.join(dbPath, '/cache'));
+
+  const sequelizeDb = new SequelizeDb(config);
+  const models = new Models(sequelizeDb, config);
+
+  return { models, sequelizeDb };
+}
+
+/**
+ * Initializes a db instance for a given config.
+ * Ensures that this only happens once for a given alias.
+ * If this were called multiple times weird things could happen
+ * @param {object} config
+ * @param {string} instanceAlias
+ */
+function makeDb(config, instanceAlias = 'default') {
+  // makeDb should only be called once for a given alias
+  if (instances[instanceAlias]) {
+    throw new Error(`db instance ${instanceAlias} already made`);
+  }
+  const dbPromise = initDb(config);
+  instances[instanceAlias] = dbPromise;
+  return true;
+}
+
+module.exports = {
+  makeDb,
+  getDb,
 };
-
-// Load dbs, migrate data, and apply indexes
-async function init() {
-  await Promise.all(
-    db.instances.map(dbname => {
-      if (debug) {
-        console.log('Loading %s..', dbname);
-      }
-      return db[dbname].loadDatabase();
-    })
-  );
-  await db.users.ensureIndex({ fieldName: 'email', unique: true });
-  await db.cache.ensureIndex({ fieldName: 'cacheKey', unique: true });
-  // set autocompaction
-  const tenMinutes = 1000 * 60 * 10;
-  db.instances.forEach(dbname => {
-    db[dbname].nedb.persistence.setAutocompactionInterval(tenMinutes);
-  });
-  return ensureAdmin();
-}
-
-db.loadPromise = init();
-
-async function ensureAdmin() {
-  const adminEmail = admin;
-  if (!adminEmail) {
-    return;
-  }
-
-  try {
-    // if an admin was passed in the command line, check to see if a user exists with that email
-    // if so, set the admin to true
-    // if not, whitelist the email address.
-    // Then write to console that the person should visit the signup url to finish registration.
-    const user = await db.users.findOne({ email: adminEmail });
-    if (user) {
-      const changes = { role: 'admin' };
-      if (adminPassword) {
-        changes.passhash = passhash.getPasshash(adminPassword);
-      }
-      await db.users.update({ _id: user._id }, { $set: changes }, {});
-      console.log(adminEmail + ' should now have admin access.');
-      return;
-    }
-
-    const newAdmin = {
-      email: adminEmail,
-      role: 'admin'
-    };
-    if (adminPassword) {
-      newAdmin.passhash = passhash.getPasshash(adminPassword);
-    }
-    await db.users.insert(newAdmin);
-    console.log(`\n${adminEmail} has been whitelisted with admin access.`);
-    console.log(
-      `\nPlease visit http://localhost:${port}/signup/ to complete registration.`
-    );
-  } catch (error) {
-    console.log(`ERROR: could not make ${adminEmail} an admin.`);
-    throw error;
-  }
-}
-
-module.exports = db;

@@ -1,4 +1,5 @@
-const drill = require('./drill.js');
+const drill = require('./drill');
+const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'drill';
@@ -41,16 +42,16 @@ function runQuery(query, connection) {
     user: connection.username,
     password: connection.password,
     defaultSchema: connection.drillDefaultSchema,
-    ssl: connection.ssl || false
+    ssl: connection.ssl || false,
   };
   const client = new drill.Client(drillConfig);
 
-  return client.query(drillConfig, query).then(result => {
+  return client.query(drillConfig, query).then((result) => {
     if (!result) {
       throw new Error('No result returned');
     } else if (result.errorMessage && result.errorMessage.length > 0) {
-      console.log('Error with query: ' + query);
-      console.log(result.errorMessage);
+      appLog.info('Error with query: %s', query);
+      appLog.info(result.errorMessage);
       throw new Error(result.errorMessage.split('\n')[0]);
     }
     if (result.length > connection.maxRows) {
@@ -86,7 +87,7 @@ function getSchema(connection) {
     connection.drillCatalog
     // connection.drillSchema
   );
-  return runQuery(schemaSql, connection).then(queryResult =>
+  return runQuery(schemaSql, connection).then((queryResult) =>
     formatSchemaQueryResults(queryResult)
   );
 }
@@ -95,33 +96,33 @@ const fields = [
   {
     key: 'host',
     formType: 'TEXT',
-    label: 'Host/Server/IP Address'
+    label: 'Host/Server/IP Address',
   },
   {
     key: 'port',
     formType: 'TEXT',
-    label: 'Port (optional)'
+    label: 'Port (optional)',
   },
   {
     key: 'username',
     formType: 'TEXT',
-    label: 'Database Username'
+    label: 'Database Username',
   },
   {
     key: 'password',
     formType: 'PASSWORD',
-    label: 'Database Password'
+    label: 'Database Password',
   },
   {
     key: 'drillDefaultSchema',
     formType: 'TEXT',
-    label: 'Default Schema'
+    label: 'Default Schema',
   },
   {
     key: 'ssl',
     formType: 'CHECKBOX',
-    label: 'Use SSL to connect to Drill'
-  }
+    label: 'Use SSL to connect to Drill',
+  },
 ];
 
 module.exports = {
@@ -130,5 +131,5 @@ module.exports = {
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

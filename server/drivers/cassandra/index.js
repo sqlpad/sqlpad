@@ -1,26 +1,9 @@
 const cassandra = require('cassandra-driver');
+const appLog = require('../../lib/app-log');
 const { formatSchemaQueryResults } = require('../utils');
 
 const id = 'cassandra';
 const name = 'Cassandra';
-
-const fields = [
-  {
-    key: 'contactPoints',
-    formType: 'TEXT',
-    label: 'Contact points (comma delimited)'
-  },
-  {
-    key: 'localDataCenter',
-    formType: 'TEXT',
-    label: 'Local data center'
-  },
-  {
-    key: 'keyspace',
-    formType: 'TEXT',
-    label: 'Keyspace'
-  }
-];
 
 const SCHEMA_SQL = `
   SELECT 
@@ -37,11 +20,10 @@ const SCHEMA_SQL = `
  * @param {*} client
  */
 function shutdownClient(client) {
-  client
-    .shutdown()
-    .catch(error =>
-      console.error('Error shutting down cassandra connection', error)
-    );
+  client.shutdown().catch((error) => {
+    appLog.error('Error shutting down cassandra connection');
+    appLog.error(error);
+  });
 }
 
 /**
@@ -51,15 +33,30 @@ function shutdownClient(client) {
  * @param {object} connection
  */
 async function runQuery(query, connection) {
-  const { contactPoints, keyspace, localDataCenter, maxRows } = connection;
-
-  const client = new cassandra.Client({
-    contactPoints: contactPoints.split(',').map(cp => cp.trim()),
+  const {
+    contactPoints,
+    keyspace,
+    localDataCenter,
+    maxRows,
+    username,
+    password,
+  } = connection;
+  const caConfig = {
+    contactPoints: contactPoints.split(',').map((cp) => cp.trim()),
     // Unfamiliar with cassandra - docs mention datacenter1 and this works as a default so leaving it in
     // If someone familiar with cassandra can expand on this please do
     localDataCenter: localDataCenter || 'datacenter1',
-    keyspace
-  });
+    keyspace,
+  };
+
+  if (connection.username && connection.password) {
+    caConfig['authProvider'] = new cassandra.auth.PlainTextAuthProvider(
+      username,
+      password
+    );
+  }
+
+  const client = new cassandra.Client(caConfig);
 
   try {
     const result = await client.execute(query, [], { fetchSize: maxRows });
@@ -92,11 +89,39 @@ async function getSchema(connection) {
   return formatSchemaQueryResults(queryResult);
 }
 
+const fields = [
+  {
+    key: 'contactPoints',
+    formType: 'TEXT',
+    label: 'Contact points (comma delimited)',
+  },
+  {
+    key: 'localDataCenter',
+    formType: 'TEXT',
+    label: 'Local data center',
+  },
+  {
+    key: 'keyspace',
+    formType: 'TEXT',
+    label: 'Keyspace',
+  },
+  {
+    key: 'username',
+    formType: 'TEXT',
+    label: 'Database Username',
+  },
+  {
+    key: 'password',
+    formType: 'PASSWORD',
+    label: 'Database Password',
+  },
+];
+
 module.exports = {
   id,
   name,
   fields,
   getSchema,
   runQuery,
-  testConnection
+  testConnection,
 };

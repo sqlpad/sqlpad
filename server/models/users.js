@@ -1,86 +1,113 @@
-const Joi = require('@hapi/joi');
-const db = require('../lib/db.js');
-const passhash = require('../lib/passhash.js');
+const passhash = require('../lib/passhash');
+const ensureJson = require('./ensure-json');
 
-const schema = Joi.object({
-  _id: Joi.string().optional(), // will be auto-gen by nedb
-  email: Joi.string().required(),
-  role: Joi.string()
-    .lowercase()
-    .allow('admin', 'editor', 'viewer'),
-  passwordResetId: Joi.string()
-    .guid()
-    .optional()
-    .empty(''),
-  passhash: Joi.string().optional(), // may not exist if user hasn't signed up yet
-  password: Joi.string()
-    .optional()
-    .strip(),
-  createdDate: Joi.date().default(Date.now),
-  modifiedDate: Joi.date().default(Date.now),
-  signupDate: Joi.date().optional()
-});
-
-async function save(data) {
-  if (!data.email) {
-    throw new Error('email required when saving user');
+class Users {
+  /**
+   * @param {import('../sequelize-db')} sequelizeDb
+   * @param {import('../lib/config')} config
+   */
+  constructor(sequelizeDb, config) {
+    this.sequelizeDb = sequelizeDb;
+    this.config = config;
   }
 
-  data.modifiedDate = new Date();
+  async create(data) {
+    const { password, ...rest } = data;
+    if (password) {
+      rest.passhash = await passhash.getPasshash(password);
+    }
+    if (rest.email) {
+      rest.email = rest.email.toLowerCase();
+    }
+    if (rest.ldapId) {
+      rest.ldapId = rest.ldapId.toLowerCase();
+    }
 
-  if (data.password) {
-    data.passhash = await passhash.getPasshash(data.password);
+    const newUser = await this.sequelizeDb.Users.create(rest);
+    return this.findOneById(newUser.id);
   }
 
-  const joiResult = schema.validate(data);
-  if (joiResult.error) {
-    return Promise.reject(joiResult.error);
+  async update(id, changes) {
+    const { password, ...rest } = changes;
+    if (password) {
+      rest.passhash = await passhash.getPasshash(password);
+    }
+    if (rest.email) {
+      rest.email = rest.email.toLowerCase();
+    }
+    if (rest.ldapId) {
+      rest.ldapId = rest.ldapId.toLowerCase();
+    }
+
+    await this.sequelizeDb.Users.update(rest, { where: { id } });
+    return this.findOneById(id);
   }
 
-  await db.users.update({ email: data.email }, joiResult.value, {
-    upsert: true
-  });
-  return findOneByEmail(data.email);
+  /**
+   * @param {string} email
+   */
+  async findOneByEmail(email) {
+    const user = await this.sequelizeDb.Users.findOne({
+      where: { email: email.toLowerCase() },
+    });
+    if (user) {
+      let final = user.toJSON();
+      final.data = ensureJson(final.data);
+      return final;
+    }
+  }
+
+  /**
+   * @param {string} ldapId
+   */
+  async findOneByLdapId(ldapId) {
+    const user = await this.sequelizeDb.Users.findOne({
+      where: { ldapId: ldapId.toLowerCase() },
+    });
+    if (user) {
+      let final = user.toJSON();
+      final.data = ensureJson(final.data);
+      return final;
+    }
+  }
+
+  async findOneById(id) {
+    const user = await this.sequelizeDb.Users.findOne({ where: { id } });
+    if (user) {
+      let final = user.toJSON();
+      final.data = ensureJson(final.data);
+      return final;
+    }
+  }
+
+  findOneByPasswordResetId(passwordResetId) {
+    return this.sequelizeDb.Users.findOne({ where: { passwordResetId } });
+  }
+
+  async findAll() {
+    const users = await this.sequelizeDb.Users.findAll({
+      attributes: [
+        'id',
+        'name',
+        'email',
+        'ldapId',
+        'role',
+        'disabled',
+        'signupAt',
+        'createdAt',
+        'updatedAt',
+      ],
+      order: [['email']],
+    });
+
+    return users.map((user) => {
+      return user.toJSON();
+    });
+  }
+
+  removeById(id) {
+    return this.sequelizeDb.Users.destroy({ where: { id } });
+  }
 }
 
-function findOneByEmail(email) {
-  return db.users.findOne({ email: { $regex: new RegExp(email, 'i') } });
-}
-
-function findOneById(id) {
-  return db.users.findOne({ _id: id });
-}
-
-function findOneByPasswordResetId(passwordResetId) {
-  return db.users.findOne({ passwordResetId });
-}
-
-function findAll() {
-  return db.users
-    .cfind({}, { password: 0, passhash: 0 })
-    .sort({ email: 1 })
-    .exec();
-}
-
-/**
- * Returns boolean regarding whether admin registration should be open or not
- * @returns {Promise<boolean>} administrationOpen
- */
-async function adminRegistrationOpen() {
-  const doc = await db.users.findOne({ role: 'admin' });
-  return !doc;
-}
-
-function removeById(id) {
-  return db.users.remove({ _id: id });
-}
-
-module.exports = {
-  findOneByEmail,
-  findOneById,
-  findOneByPasswordResetId,
-  findAll,
-  adminRegistrationOpen,
-  removeById,
-  save
-};
+module.exports = Users;
