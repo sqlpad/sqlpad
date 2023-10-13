@@ -71,7 +71,9 @@ function HistoryDrawer({ onClose, visible }: Props) {
                 position: 'relative',
               }}
             >
-              <h2 style={{ fontSize: '1rem' }}>{batch.createdAtCalendar}</h2>
+              <h2 style={{ fontSize: '1rem' }}>
+                {batch.createdAtCalendar.toString()}
+              </h2>
               <div style={{ marginBottom: 16 }}>
                 {capitalize(batch.status)} in{' '}
                 {humanizeDuration(batch.durationMs)}

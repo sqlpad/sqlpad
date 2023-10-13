@@ -22,6 +22,7 @@ const EditorPaneVis: FunctionComponent<EditorPaneVisProps> = ({
   }
 
   return (
+    // @ts-expect-error SplitPane types are off
     <SplitPane
       key="editorAndVis"
       split="vertical"
