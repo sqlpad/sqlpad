@@ -1,7 +1,6 @@
 import humanizeDuration from 'humanize-duration';
 import capitalize from 'lodash/capitalize';
-import Highlight, { defaultProps } from 'prism-react-renderer';
-import theme from 'prism-react-renderer/themes/vsLight';
+import { Highlight, themes } from 'prism-react-renderer';
 import React, { useEffect, useRef } from 'react';
 import Button from '../common/Button';
 import Drawer from '../common/Drawer';
@@ -88,8 +87,7 @@ function HistoryDrawer({ onClose, visible }: Props) {
                 Open in editor
               </Button>
               <Highlight
-                {...defaultProps}
-                theme={theme}
+                theme={themes.vsLight}
                 code={batch.selectedText || batch.batchText}
                 language="sql"
               >
