@@ -12,9 +12,10 @@ interface EditorPaneRightSidebarProps {
   children: ReactElement;
 }
 
-const EditorPaneRightSidebar: FunctionComponent<
-  EditorPaneRightSidebarProps
-> = ({ children, queryId }: EditorPaneRightSidebarProps) => {
+const EditorPaneRightSidebar = ({
+  children,
+  queryId,
+}: EditorPaneRightSidebarProps) => {
   const showVisProperties = useSessionShowVisProperties();
 
   let sidebarContent = null;
@@ -35,6 +36,7 @@ const EditorPaneRightSidebar: FunctionComponent<
   }
 
   return (
+    // @ts-expect-error SplitPane types are off
     <SplitPane
       split="vertical"
       primary="second"

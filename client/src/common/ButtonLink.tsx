@@ -45,7 +45,6 @@ const ButtonLink = ({
     );
   } else {
     link = (
-      // @ts-expect-error link error after dep upgrade
       <Link to={to || ''} className={classNames.join(' ')} {...rest}>
         {icon && React.cloneElement(icon, { size: ICON_SIZE }, null)}
         {children && icon && <span style={{ width: 4 }} />}

@@ -62,6 +62,7 @@ function QueryEditor() {
       <div style={{ position: 'relative', flexGrow: 1 }}>
         <EditorPaneRightSidebar queryId={queryId}>
           <EditorPaneSchemaSidebar queryId={queryId}>
+            {/* @ts-expect-error SplitPane types are off */}
             <SplitPane
               split="horizontal"
               minSize={100}
