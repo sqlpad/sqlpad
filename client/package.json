@@ -18,7 +18,7 @@
     "@types/react-window": "^1.8.5",
     "@types/react-window-infinite-loader": "^1.0.6",
     "@types/uuid": "^9.0.0",
-    "@vitejs/plugin-react": "^3.1.0",
+    "@vitejs/plugin-react": "^4.1.0",
     "d3": "^5.16.0",
     "downshift": "^6.1.7",
     "history": "^4.10.1",
