@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.1.3] - 2023-10-29
+
+- Update dependencies
+
 ## [7.1.2] - 2023-08-16
 
 - Revert dockerfile node version to node 16
