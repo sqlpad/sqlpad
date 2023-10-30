@@ -1,6 +1,6 @@
-const assert = require('assert');
-const request = require('supertest');
-const TestUtil = require('../utils');
+import assert from 'assert';
+import request from 'supertest';
+import TestUtil from '../utils.js';
 
 describe('auth/disable-auth', function () {
   it('signs in with noauth user', async function () {

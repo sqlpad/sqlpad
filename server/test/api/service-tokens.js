@@ -1,7 +1,7 @@
-const assert = require('assert');
-const request = require('supertest');
-const jwt = require('jsonwebtoken');
-const TestUtils = require('../utils');
+import assert from 'assert';
+import request from 'supertest';
+import jwt from 'jsonwebtoken';
+import TestUtils from '../utils.js';
 
 describe('api/service-tokens', function () {
   const serviceTokenSecret = 'secr3t';

@@ -7,4 +7,4 @@ function mustBeAuthenticated(req, res, next) {
   return res.utils.unauthorized();
 }
 
-module.exports = mustBeAuthenticated;
+export default mustBeAuthenticated;

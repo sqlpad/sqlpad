@@ -1,5 +1,5 @@
-const consts = require('../lib/consts');
-const { Op } = require('sequelize');
+import consts from '../lib/consts.js';
+import { Op } from 'sequelize';
 
 class ConnectionAccesses {
   /**
@@ -128,4 +128,4 @@ class ConnectionAccesses {
   }
 }
 
-module.exports = ConnectionAccesses;
+export default ConnectionAccesses;

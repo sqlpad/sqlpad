@@ -1,5 +1,5 @@
-const presto = require('./_presto');
-const { formatSchemaQueryResults } = require('../utils');
+import presto from './_presto.js';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'presto';
 const name = 'Presto';
@@ -128,7 +128,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

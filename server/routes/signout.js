@@ -1,6 +1,7 @@
-require('../typedefs');
-const router = require('express').Router();
-const appLog = require('../lib/app-log');
+import '../typedefs.js';
+import appLog from '../lib/app-log.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * Clear out session regardless of auth strategy
@@ -21,4 +22,4 @@ function handleSignout(req, res) {
 
 router.get('/api/signout', handleSignout);
 
-module.exports = router;
+export default router;

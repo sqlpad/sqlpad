@@ -1,7 +1,8 @@
-const passport = require('passport');
-const router = require('express').Router();
-const getHeaderUser = require('../lib/get-header-user');
-require('../typedefs');
+import passport from 'passport';
+import getHeaderUser from '../lib/get-header-user.js';
+import '../typedefs.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * Try to determine the form of login, and authenticate the request
@@ -68,4 +69,4 @@ router.post('/api/signin', handleSignin, function (req, res) {
   res.utils.data();
 });
 
-module.exports = router;
+export default router;

@@ -1,6 +1,6 @@
-const sqlLimiter = require('sql-limiter');
-const pinot = require('./_pinot');
-const { formatSchemaQueryResults } = require('../utils');
+import sqlLimiter from 'sql-limiter';
+import pinot from './_pinot.js';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'pinot';
 const name = 'Apache Pinot';
@@ -104,7 +104,7 @@ async function getSchema(connection) {
   return formatSchemaQueryResults({ rows: columnRows });
 }
 
-module.exports = {
+export default {
   id,
   name,
   fields,

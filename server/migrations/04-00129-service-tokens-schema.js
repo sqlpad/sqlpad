@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
 
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
@@ -6,7 +6,7 @@ const Sequelize = require('sequelize');
  * @param {import('../lib/logger')} appLog
  */
 // eslint-disable-next-line no-unused-vars
-async function up(queryInterface, config, appLog) {
+export async function up(queryInterface, config, appLog) {
   await queryInterface.createTable('service_tokens', {
     id: {
       type: Sequelize.INTEGER,
@@ -47,6 +47,6 @@ async function up(queryInterface, config, appLog) {
   });
 }
 
-module.exports = {
+export default {
   up,
 };

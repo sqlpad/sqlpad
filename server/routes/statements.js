@@ -1,7 +1,8 @@
-require('../typedefs');
-const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated');
-const wrap = require('../lib/wrap');
+import '../typedefs.js';
+import mustBeAuthenticated from '../middleware/must-be-authenticated.js';
+import wrap from '../lib/wrap.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * Get statement by id.
@@ -74,4 +75,4 @@ router.get(
   wrap(getStatementResults)
 );
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
-const assert = require('assert');
-const TestUtils = require('../utils');
+import assert from 'assert';
+import TestUtils from '../utils.js';
 
 function expectKeys(data, expectedKeys) {
   Object.keys(data).forEach((key) =>

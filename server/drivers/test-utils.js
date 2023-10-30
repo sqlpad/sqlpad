@@ -1,4 +1,4 @@
-const assert = require('assert');
+import assert from 'assert';
 
 function getColumn(tree, schemaName, tableName, columnName) {
   const s = tree.schemas.find((s) => s.name === schemaName);
@@ -17,7 +17,7 @@ function hasColumnDataType(tree, schemaName, tableName, columnName, dataType) {
   }
 }
 
-module.exports = {
+export default {
   getColumn,
   hasColumnDataType,
 };

@@ -1,9 +1,9 @@
-const appLog = require('../../lib/app-log');
-const AWS = require('aws-sdk');
-const athena = require('athena-express');
-const sqlLimiter = require('sql-limiter');
-const { formatSchemaQueryResults } = require('../utils');
-const { resolvePositiveNumber } = require('../../lib/resolve-number');
+import appLog from '../../lib/app-log.js';
+import AWS from 'aws-sdk';
+import athena from 'athena-express';
+import sqlLimiter from 'sql-limiter';
+import { formatSchemaQueryResults } from '../utils.js';
+import { resolvePositiveNumber } from '../../lib/resolve-number.js';
 
 const id = 'athena';
 const name = 'Athena';
@@ -285,7 +285,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   asynchronous,

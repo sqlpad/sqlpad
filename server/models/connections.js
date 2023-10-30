@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const Cryptr = require('cryptr');
-const drivers = require('../drivers');
-const validateConnection = require('../lib/validate-connection');
+import _ from 'lodash';
+import Cryptr from 'cryptr';
+import drivers from '../drivers/index.js';
+import validateConnection from '../lib/validate-connection.js';
 
 class Connections {
   /**
@@ -206,4 +206,4 @@ class Connections {
   }
 }
 
-module.exports = Connections;
+export default Connections;

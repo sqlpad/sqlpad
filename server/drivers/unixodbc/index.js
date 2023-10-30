@@ -1,8 +1,8 @@
-const odbc = require('odbc');
-const appLog = require('../../lib/app-log');
-const sqlLimiter = require('sql-limiter');
-const { formatSchemaQueryResults } = require('../utils');
-const { resolvePositiveNumber } = require('../../lib/resolve-number');
+import odbc from 'odbc';
+import appLog from '../../lib/app-log.js';
+import sqlLimiter from 'sql-limiter';
+import { formatSchemaQueryResults } from '../utils.js';
+import { resolvePositiveNumber } from '../../lib/resolve-number.js';
 
 const id = 'unixodbc';
 const name = 'unixODBC';
@@ -260,7 +260,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   Client,
   fields,
   getSchema,

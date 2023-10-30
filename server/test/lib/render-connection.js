@@ -1,5 +1,5 @@
-const assert = require('assert');
-const renderConnection = require('../../lib/render-connection');
+import assert from 'assert';
+import renderConnection from '../../lib/render-connection.js';
 
 describe('lib/render-connection', function () {
   it('renders connection with user', function () {

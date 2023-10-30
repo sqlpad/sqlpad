@@ -1,6 +1,6 @@
-const { DataTypes } = require('sequelize');
+import { DataTypes } from 'sequelize';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Cache = sequelize.define(
     'Cache',
     {
@@ -32,4 +32,4 @@ module.exports = function (sequelize) {
   );
 
   return Cache;
-};
+}

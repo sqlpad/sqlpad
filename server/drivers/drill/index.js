@@ -1,6 +1,6 @@
-const drill = require('./drill');
-const appLog = require('../../lib/app-log');
-const { formatSchemaQueryResults } = require('../utils');
+import { Client } from './drill.js';
+import appLog from '../../lib/app-log.js';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'drill';
 const name = 'Apache Drill';
@@ -44,7 +44,7 @@ function runQuery(query, connection) {
     defaultSchema: connection.drillDefaultSchema,
     ssl: connection.ssl || false,
   };
-  const client = new drill.Client(drillConfig);
+  const client = new Client(drillConfig);
 
   return client.query(drillConfig, query).then((result) => {
     if (!result) {
@@ -125,7 +125,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

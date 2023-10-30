@@ -1,7 +1,7 @@
-const passport = require('passport');
-const appLog = require('../lib/app-log');
-const checkAllowedDomains = require('../lib/check-allowed-domains');
-const { Issuer, Strategy } = require('openid-client');
+import passport from 'passport';
+import appLog from '../lib/app-log.js';
+import checkAllowedDomains from '../lib/check-allowed-domains.js';
+import { Issuer, Strategy } from 'openid-client';
 
 async function openidClientHandler(req, tokenSet, userinfo, done) {
   const { models, config, appLog, webhooks } = req;
@@ -100,4 +100,4 @@ async function enableOidc(config) {
   }
 }
 
-module.exports = enableOidc;
+export default enableOidc;

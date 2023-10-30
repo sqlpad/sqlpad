@@ -1,9 +1,9 @@
-const { v4: uuidv4, v5: uuidv5 } = require('uuid');
-const consts = require('./consts');
-const drivers = require('../drivers');
-const renderConnection = require('./render-connection');
-const appLog = require('./app-log');
-const getColumns = require('./get-columns');
+import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
+import consts from './consts.js';
+import drivers from '../drivers/index.js';
+import renderConnection from './render-connection.js';
+import appLog from './app-log.js';
+import getColumns from './get-columns.js';
 
 /**
  * Connection client runs queries for a given connection and user
@@ -460,4 +460,4 @@ class ConnectionClient {
   }
 }
 
-module.exports = ConnectionClient;
+export default ConnectionClient;

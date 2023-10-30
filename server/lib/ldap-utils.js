@@ -1,5 +1,5 @@
-const ldap = require('ldapjs');
-const appLog = require('./app-log');
+import ldap from 'ldapjs';
+import appLog from './app-log.js';
 
 /**
  * Create ldap client
@@ -113,7 +113,7 @@ function queryLdap(client, searchBase, scope, filter) {
   });
 }
 
-module.exports = {
+export default {
   bindClient,
   ldapCanBind,
   queryLdap,

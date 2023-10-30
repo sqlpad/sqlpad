@@ -1,5 +1,5 @@
-const assert = require('assert').strict;
-const TestUtils = require('../utils');
+import { strict as assert } from 'assert';
+import TestUtils from '../utils.js';
 
 describe('api/connection-clients', function () {
   const utils = new TestUtils();

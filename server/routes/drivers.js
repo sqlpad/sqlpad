@@ -1,7 +1,8 @@
-require('../typedefs');
-const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated');
-const drivers = require('../drivers');
+import '../typedefs.js';
+import mustBeAuthenticated from '../middleware/must-be-authenticated.js';
+import drivers from '../drivers/index.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * @param {Req} req
@@ -22,4 +23,4 @@ function getDrivers(req, res) {
 
 router.get('/api/drivers', mustBeAuthenticated, getDrivers);
 
-module.exports = router;
+export default router;

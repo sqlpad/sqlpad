@@ -1,5 +1,5 @@
-const vertica = require('vertica');
-const { formatSchemaQueryResults } = require('../utils');
+import vertica from 'vertica';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'vertica';
 const name = 'Vertica';
@@ -137,7 +137,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

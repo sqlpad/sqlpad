@@ -1,6 +1,6 @@
-const { DataTypes } = require('sequelize');
+import { DataTypes } from 'sequelize';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   // An entry in this table gives access to a query for a user_id, user_email, or group_id
   const QueryAcl = sequelize.define(
     'QueryAcl',
@@ -49,4 +49,4 @@ module.exports = function (sequelize) {
   );
 
   return QueryAcl;
-};
+}

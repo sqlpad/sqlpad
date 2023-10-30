@@ -1,6 +1,6 @@
-const sqlLimiter = require('sql-limiter');
-const _ = require('lodash');
-const ensureJson = require('./ensure-json');
+import sqlLimiter from 'sql-limiter';
+import _ from 'lodash';
+import ensureJson from './ensure-json.js';
 
 class Batches {
   /**
@@ -144,4 +144,4 @@ class Batches {
   }
 }
 
-module.exports = Batches;
+export default Batches;

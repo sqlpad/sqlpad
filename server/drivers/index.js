@@ -1,30 +1,47 @@
-const appLog = require('../lib/app-log');
-const validate = require('./validate');
+import appLog from '../lib/app-log.js';
+import validate from './validate.js';
+import athena from './athena/index.js';
+import bigquery from './bigquery/index.js';
+import cassandra from './cassandra/index.js';
+import clickhouse from './clickhouse/index.js';
+import crate from './crate/index.js';
+import drill from './drill/index.js';
+import hdb from './hdb/index.js';
+import mysql from './mysql/index.js';
+import mysql2 from './mysql2/index.js';
+import pinot from './pinot/index.js';
+import postgres from './postgres/index.js';
+import presto from './presto/index.js';
+import redshift from './redshift/index.js';
+import sqlite from './sqlite/index.js';
+import sqlserver from './sqlserver/index.js';
+import trino from './trino/index.js';
+import vertica from './vertica/index.js';
 
 const drivers = {
-  athena: require('./athena'),
-  bigquery: require('./bigquery'),
-  cassandra: require('./cassandra'),
-  clickhouse: require('./clickhouse'),
-  crate: require('./crate'),
-  drill: require('./drill'),
-  hdb: require('./hdb'),
-  mysql: require('./mysql'),
-  mysql2: require('./mysql2'),
-  pinot: require('./pinot'),
-  postgres: require('./postgres'),
-  presto: require('./presto'),
-  redshift: require('./redshift'),
-  sqlite: require('./sqlite'),
-  sqlserver: require('./sqlserver'),
-  trino: require('./trino'),
-  vertica: require('./vertica'),
+  athena,
+  bigquery,
+  cassandra,
+  clickhouse,
+  crate,
+  drill,
+  hdb,
+  mysql,
+  mysql2,
+  pinot,
+  postgres,
+  presto,
+  redshift,
+  sqlite,
+  sqlserver,
+  trino,
+  vertica,
 };
 
 // unixodbc is an optional dependency due to it needing to be compiled
 // (and lacks prebuilt binaries like sqlite provides)
 try {
-  drivers.unixodbc = require('./unixodbc');
+  drivers.unixodbc = await import('./unixodbc');
 } catch (error) {
   appLog.info('ODBC driver not available');
 }
@@ -35,4 +52,6 @@ Object.keys(drivers).forEach((id) => {
   validate(id, driver);
 });
 
-module.exports = drivers;
+export default drivers;
+
+export const { unixodbc } = drivers;

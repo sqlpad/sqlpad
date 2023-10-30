@@ -1,5 +1,5 @@
-const crate = require('node-crate');
-const { formatSchemaQueryResults } = require('../utils');
+import crate from 'node-crate';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'crate';
 const name = 'Crate';
@@ -151,7 +151,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

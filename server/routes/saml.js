@@ -1,5 +1,6 @@
-const passport = require('passport');
-const router = require('express').Router();
+import passport from 'passport';
+import express from 'express';
+const router = express.Router();
 
 router.post(
   '/login/callback',
@@ -23,4 +24,4 @@ router.get(
   }
 );
 
-module.exports = router;
+export default router;

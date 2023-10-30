@@ -1,6 +1,6 @@
-const passport = require('passport');
-const SamlStrategy = require('@node-saml/passport-saml').Strategy;
-const appLog = require('../lib/app-log');
+import passport from 'passport';
+import { Strategy as SamlStrategy } from '@node-saml/passport-saml';
+import appLog from '../lib/app-log.js';
 
 /**
  * Lookup table to make code below more readable.
@@ -181,4 +181,4 @@ function enableSaml(config) {
   }
 }
 
-module.exports = enableSaml;
+export default enableSaml;

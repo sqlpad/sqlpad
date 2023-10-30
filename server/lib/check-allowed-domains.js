@@ -15,7 +15,7 @@
  * @param {string} email
  * @returns {boolean}
  */
-module.exports = function checkAllowedDomains(allowedDomains, email) {
+export default function checkAllowedDomains(allowedDomains, email) {
   if (allowedDomains) {
     const domain = email.split('@').pop().toLowerCase();
     const domains = allowedDomains
@@ -25,4 +25,4 @@ module.exports = function checkAllowedDomains(allowedDomains, email) {
     return domains.includes(domain);
   }
   return false;
-};
+}

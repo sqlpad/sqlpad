@@ -1,6 +1,6 @@
-const assert = require('assert');
-const request = require('supertest');
-const TestUtils = require('../utils');
+import assert from 'assert';
+import request from 'supertest';
+import TestUtils from '../utils.js';
 
 async function testSessionStore(sessionStore, additionalOpts = {}) {
   const utils = new TestUtils({

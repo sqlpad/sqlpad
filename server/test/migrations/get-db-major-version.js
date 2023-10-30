@@ -1,12 +1,17 @@
 /* eslint-disable no-await-in-loop */
-const assert = require('assert');
-const path = require('path');
-const ncp = require('ncp').ncp;
-const TestUtils = require('../utils');
+import assert from 'assert';
+import path from 'path';
+import allNcp from 'ncp'; // not ESM, so we name this funky thing allNcp?
+import TestUtils from '../utils.js';
+import serverDirname from '../../server-dirname.cjs';
 
+const { ncp } = allNcp;
 ncp.limit = 16;
 
-const sourceDir = path.join(__dirname, '../fixtures/v4.2.0-test-db/testdb');
+const sourceDir = path.join(
+  serverDirname,
+  'test/fixtures/v4.2.0-test-db/testdb'
+);
 
 function copyDbFiles(source, destination) {
   return new Promise((resolve, reject) => {
@@ -27,7 +32,7 @@ describe('migrations/get-db-major-version', function () {
 
   before('preps the env', async function () {
     utils = new TestUtils({
-      dbPath: path.join(__dirname, '../artifacts/v4-to-v5'),
+      dbPath: path.join(serverDirname, 'test/artifacts/v4-to-v5'),
       dbInMemory: false,
       // Force this test to only run with SQLite
       backendDatabaseUri: '',

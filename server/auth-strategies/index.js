@@ -1,13 +1,13 @@
-const passport = require('passport');
-const authProxy = require('./auth-proxy');
-const basic = require('./basic');
-const disableAuth = require('./disable-auth');
-const google = require('./google');
-const jwtServiceToken = require('./jwt-service-token');
-const ldap = require('./ldap');
-const local = require('./local');
-const oidc = require('./oidc');
-const saml = require('./saml');
+import passport from 'passport';
+import authProxy from './auth-proxy.js';
+import basic from './basic.js';
+import disableAuth from './disable-auth.js';
+import google from './google.js';
+import jwtServiceToken from './jwt-service-token.js';
+import ldap from './ldap.js';
+import local from './local.js';
+import oidc from './oidc.js';
+import saml from './saml.js';
 
 // The serializeUser/deserializeUser functions apply regardless of the strategy used.
 // Given a user object, extract the id to use for session
@@ -51,4 +51,4 @@ async function authStrategies(config, models) {
   saml(config);
 }
 
-module.exports = authStrategies;
+export default authStrategies;

@@ -1,6 +1,6 @@
-const { DataTypes } = require('sequelize');
+import { DataTypes } from 'sequelize';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Connections = sequelize.define(
     'Connections',
     {
@@ -45,4 +45,4 @@ module.exports = function (sequelize) {
   );
 
   return Connections;
-};
+}

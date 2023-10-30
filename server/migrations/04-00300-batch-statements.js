@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const migrationUtils = require('../lib/migration-utils');
+import Sequelize from 'sequelize';
+import migrationUtils from '../lib/migration-utils.js';
 
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
@@ -7,7 +7,7 @@ const migrationUtils = require('../lib/migration-utils');
  * @param {import('../lib/logger')} appLog
  */
 // eslint-disable-next-line no-unused-vars
-async function up(queryInterface, config, appLog) {
+export async function up(queryInterface, config, appLog) {
   /**
    * BATCH
    * For now, batch is a copy of query + additional fields to capture context
@@ -160,6 +160,6 @@ async function up(queryInterface, config, appLog) {
   );
 }
 
-module.exports = {
+export default {
   up,
 };

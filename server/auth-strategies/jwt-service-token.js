@@ -1,7 +1,6 @@
-const passport = require('passport');
-const PassportJwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
-const appLog = require('../lib/app-log');
+import passport from 'passport';
+import { Strategy as PassportJwtStrategy, ExtractJwt } from 'passport-jwt';
+import appLog from '../lib/app-log.js';
 
 /**
  * Adds JWT Service Token auth strategy if configured
@@ -43,4 +42,4 @@ function enableJwtServiceToken(config) {
   }
 }
 
-module.exports = enableJwtServiceToken;
+export default enableJwtServiceToken;

@@ -1,9 +1,10 @@
-require('../typedefs');
-const { Op } = require('sequelize');
-const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated');
-const urlFilterToDbFilter = require('../lib/url-filter-to-db-filter');
-const wrap = require('../lib/wrap');
+import '../typedefs.js';
+import { Op } from 'sequelize';
+import mustBeAuthenticated from '../middleware/must-be-authenticated.js';
+import urlFilterToDbFilter from '../lib/url-filter-to-db-filter.js';
+import wrap from '../lib/wrap.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * @param {Req} req
@@ -33,4 +34,4 @@ async function getHistoryList(req, res) {
 
 router.get('/api/query-history', mustBeAuthenticated, wrap(getHistoryList));
 
-module.exports = router;
+export default router;

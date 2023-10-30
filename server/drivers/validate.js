@@ -49,4 +49,4 @@ function validate(id, driver) {
   }
 }
 
-module.exports = validate;
+export default validate;

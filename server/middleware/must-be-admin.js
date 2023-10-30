@@ -1,6 +1,6 @@
-const mustBeAuthenticated = require('./must-be-authenticated');
+import mustBeAuthenticated from './must-be-authenticated.js';
 
-module.exports = [
+export default [
   mustBeAuthenticated,
   function mustBeAdmin(req, res, next) {
     if (req.user.role === 'admin') {

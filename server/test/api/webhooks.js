@@ -1,6 +1,9 @@
 /* eslint-disable no-await-in-loop */
-const assert = require('assert');
-const TestUtils = require('../utils');
+import assert from 'assert';
+import TestUtils from '../utils.js';
+import serverDirname from '../../server-dirname.cjs';
+import fs from 'fs';
+import path from 'path';
 
 /**
  * Logs body to a JSON file. Useful for debug/generating JSON examples for documentation
@@ -8,10 +11,8 @@ const TestUtils = require('../utils');
  */
 // eslint-disable-next-line no-unused-vars
 function logBody(body) {
-  const fs = require('fs');
-  const path = require('path');
   fs.writeFileSync(
-    path.join(__dirname, '/webhook.json'),
+    path.join(serverDirname, 'test/artifacts/webhook.json'),
     JSON.stringify(body, null, 2),
     'utf8'
   );

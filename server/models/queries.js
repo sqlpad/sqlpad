@@ -1,5 +1,5 @@
-const _ = require('lodash');
-const ensureJson = require('./ensure-json');
+import _ from 'lodash';
+import ensureJson from './ensure-json.js';
 /*
 "chart": {
     "chartType": "line",
@@ -217,4 +217,4 @@ class Queries {
   }
 }
 
-module.exports = Queries;
+export default Queries;

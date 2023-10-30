@@ -58,6 +58,6 @@ async function addOrReplaceIndex(
   }
 }
 
-module.exports = {
+export default {
   addOrReplaceIndex,
 };

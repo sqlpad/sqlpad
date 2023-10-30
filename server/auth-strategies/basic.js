@@ -1,7 +1,7 @@
-const passport = require('passport');
-const BasicStrategy = require('passport-http').BasicStrategy;
-const appLog = require('../lib/app-log');
-const passhash = require('../lib/passhash');
+import passport from 'passport';
+import { BasicStrategy } from 'passport-http';
+import appLog from '../lib/app-log.js';
+import passhash from '../lib/passhash.js';
 
 function enableBasic(config) {
   if (config.get('userpassAuthDisabled')) {
@@ -40,4 +40,4 @@ function enableBasic(config) {
   );
 }
 
-module.exports = enableBasic;
+export default enableBasic;

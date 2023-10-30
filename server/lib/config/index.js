@@ -1,16 +1,19 @@
 /* eslint-disable class-methods-use-this */
-const appLog = require('../app-log');
-const configItems = require('./config-items');
-const validateConnection = require('../validate-connection');
-const {
+import appLog from '../app-log.js';
+
+import configItems from './config-items.js';
+import validateConnection from '../validate-connection.js';
+
+import {
   getFromCli,
   getFromDefault,
   getFromEnv,
   getOldConfigWarning,
   parseConnectionsFromEnv,
   isConnectionEnv,
-} = require('./config-utils');
-const drivers = require('../../drivers');
+} from './config-utils.js';
+
+import drivers from '../../drivers/index.js';
 
 const REMOVED_ENVS = [
   'CERT_PASSPHRASE',
@@ -308,4 +311,4 @@ class Config {
   }
 }
 
-module.exports = Config;
+export default Config;

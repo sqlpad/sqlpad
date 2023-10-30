@@ -1,10 +1,11 @@
 /* eslint-disable no-await-in-loop */
-const assert = require('assert');
-const bytes = require('bytes');
-const fs = require('fs');
-const util = require('util');
-const path = require('path');
-const TestUtils = require('../utils');
+import assert from 'assert';
+
+import bytes from 'bytes';
+import fs from 'fs';
+import util from 'util';
+import path from 'path';
+import TestUtils from '../utils.js';
 const access = util.promisify(fs.access);
 
 const query1 = `SELECT 1 AS id, 'blue' AS color`;

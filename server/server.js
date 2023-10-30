@@ -1,20 +1,19 @@
-#!/usr/bin/env node
-
-const fs = require('fs');
-const http = require('http');
-const https = require('https');
-const minimist = require('minimist');
-const detectPort = require('detect-port');
-const dotenv = require('dotenv');
-const makeApp = require('./app');
-const appLog = require('./lib/app-log');
-const Config = require('./lib/config');
-const { makeDb, getDb } = require('./lib/db');
-const makeMigrator = require('./lib/make-migrator');
-const loadSeedData = require('./lib/load-seed-data');
-const ensureAdmin = require('./lib/ensure-admin');
-const ensureConnectionAccess = require('./lib/ensure-connection-access');
-const packageJson = require('./package.json');
+#!/usr/bin/env nodeimport fs from 'fs';
+import http from 'http';
+import https from 'https';
+import minimist from 'minimist';
+import detectPort from 'detect-port';
+import dotenv from 'dotenv';
+import makeApp from './app.js';
+import appLog from './lib/app-log.js';
+import Config from './lib/config/index.js';
+import { makeDb, getDb } from './lib/db.js';
+import makeMigrator from './lib/make-migrator.js';
+import loadSeedData from './lib/load-seed-data.js';
+import ensureAdmin from './lib/ensure-admin.js';
+import ensureConnectionAccess from './lib/ensure-connection-access.js';
+import packageJson from './server-package-json.cjs';
+import fs from 'fs';
 
 const argv = minimist(process.argv.slice(2));
 

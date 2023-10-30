@@ -1,8 +1,8 @@
-const assert = require('assert');
-const {
+import assert from 'assert';
+import {
   resolveNumber,
   resolvePositiveNumber,
-} = require('../../lib/resolve-number');
+} from '../../lib/resolve-number.js';
 
 describe('lib/resolve-number', function () {
   it('resolveNumber: if given parameter is a number, return number otherwise return a default value', function () {

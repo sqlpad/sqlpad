@@ -1,6 +1,6 @@
-const assert = require('assert');
-const testUtils = require('../test-utils');
-const presto = require('./index');
+import assert from 'assert';
+import testUtils from '../test-utils.js';
+import presto from './index.js';
 
 const connection = {
   name: 'test presto',

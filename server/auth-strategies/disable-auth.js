@@ -1,8 +1,8 @@
-require('../typedefs');
-const passport = require('passport');
-const passportCustom = require('passport-custom');
+import '../typedefs.js';
+import passport from 'passport';
+import passportCustom from 'passport-custom';
+import appLog from '../lib/app-log.js';
 const CustomStrategy = passportCustom.Strategy;
-const appLog = require('../lib/app-log');
 
 function getNoAuthUser(config) {
   const role =
@@ -63,4 +63,4 @@ async function enableDisableAuth(config, models) {
   }
 }
 
-module.exports = enableDisableAuth;
+export default enableDisableAuth;

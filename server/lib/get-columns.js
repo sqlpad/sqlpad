@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 /**
  * Derive whether value is a number number or number as a string
@@ -30,7 +30,7 @@ function isNumeric(value) {
  * Iterate over collection of rows and derive column metadata
  * @param {array<object>} rows
  */
-module.exports = function getColumns(rows) {
+export default function getColumns(rows) {
   const meta = {};
 
   rows.forEach((row) => {
@@ -179,4 +179,4 @@ module.exports = function getColumns(rows) {
   return Object.entries(meta).map(([key, value]) => {
     return { ...value, name: key };
   });
-};
+}

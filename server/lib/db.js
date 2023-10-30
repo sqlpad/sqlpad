@@ -1,7 +1,7 @@
-const path = require('path');
-const { mkdirp } = require('mkdirp');
-const Models = require('../models');
-const SequelizeDb = require('../sequelize-db');
+import path from 'path';
+import { mkdirp } from 'mkdirp';
+import Models from '../models/index.js';
+import SequelizeDb from '../sequelize-db/index.js';
 
 /**
  * Whenever possible db should be read from the app req object.
@@ -15,7 +15,7 @@ let instances = {};
  * Returns promise of db instance
  * @param {string} [instanceAlias]
  */
-async function getDb(instanceAlias = 'default') {
+export async function getDb(instanceAlias = 'default') {
   const instancePromise = instances[instanceAlias];
   if (!instancePromise) {
     throw new Error('db instance must be created first');
@@ -46,7 +46,7 @@ async function initDb(config) {
  * @param {object} config
  * @param {string} instanceAlias
  */
-function makeDb(config, instanceAlias = 'default') {
+export function makeDb(config, instanceAlias = 'default') {
   // makeDb should only be called once for a given alias
   if (instances[instanceAlias]) {
     throw new Error(`db instance ${instanceAlias} already made`);
@@ -55,8 +55,3 @@ function makeDb(config, instanceAlias = 'default') {
   instances[instanceAlias] = dbPromise;
   return true;
 }
-
-module.exports = {
-  makeDb,
-  getDb,
-};

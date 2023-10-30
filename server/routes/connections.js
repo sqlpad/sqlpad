@@ -1,9 +1,10 @@
-require('../typedefs');
-const router = require('express').Router();
-const mustBeAdmin = require('../middleware/must-be-admin');
-const mustBeAuthenticated = require('../middleware/must-be-authenticated');
-const wrap = require('../lib/wrap');
-const consts = require('../lib/consts');
+import '../typedefs.js';
+import mustBeAdmin from '../middleware/must-be-admin.js';
+import mustBeAuthenticated from '../middleware/must-be-authenticated.js';
+import wrap from '../lib/wrap.js';
+import consts from '../lib/consts.js';
+import express from 'express';
+const router = express.Router();
 
 function removePassword(connection) {
   connection.password = '';
@@ -100,4 +101,4 @@ router.post('/api/connections', mustBeAdmin, wrap(createConnection));
 router.put('/api/connections/:id', mustBeAdmin, wrap(updateConnection));
 router.delete('/api/connections/:id', mustBeAdmin, wrap(deleteConnection));
 
-module.exports = router;
+export default router;

@@ -1,8 +1,9 @@
-const assert = require('assert').strict;
-const path = require('path');
-const TestUtils = require('../utils');
-const ConnectionClient = require('../../lib/connection-client');
-const { v4: uuidv4 } = require('uuid');
+import { strict as assert } from 'assert';
+import path from 'path';
+import TestUtils from '../utils.js';
+import ConnectionClient from '../../lib/connection-client.js';
+import { v4 as uuidv4 } from 'uuid';
+import serverDirname from '../../server-dirname.cjs';
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -20,8 +21,8 @@ describe('lib/connection-clients', function () {
       name: 'connection-client-test',
       data: {
         filename: path.join(
-          __dirname,
-          '../artifacts/connection-client-test.sqlite'
+          serverDirname,
+          'test/artifacts/connection-client-test.sqlite'
         ),
       },
       idleTimeoutSeconds: 1,

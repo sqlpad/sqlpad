@@ -1,12 +1,13 @@
-require('../typedefs');
-const { QueryTypes } = require('sequelize');
-const _ = require('lodash');
-const formatLinkHeader = require('format-link-header');
-const queryString = require('query-string');
-const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated');
-const decorateQueryUserAccess = require('../lib/decorate-query-user-access');
-const wrap = require('../lib/wrap');
+import '../typedefs.js';
+import { QueryTypes } from 'sequelize';
+import _ from 'lodash';
+import formatLinkHeader from 'format-link-header';
+import queryString from 'query-string';
+import mustBeAuthenticated from '../middleware/must-be-authenticated.js';
+import decorateQueryUserAccess from '../lib/decorate-query-user-access.js';
+import wrap from '../lib/wrap.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * @param {Req} req
@@ -362,4 +363,4 @@ async function updateQuery(req, res) {
 
 router.put('/api/queries/:id', mustBeAuthenticated, wrap(updateQuery));
 
-module.exports = router;
+export default router;

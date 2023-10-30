@@ -1,7 +1,8 @@
-require('../typedefs');
-const router = require('express').Router();
-const packageJson = require('../package.json');
-const wrap = require('../lib/wrap');
+import '../typedefs.js';
+import packageJson from '../server-package-json.cjs';
+import wrap from '../lib/wrap.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * @param {Req} req
@@ -50,4 +51,4 @@ async function getApp(req, res) {
 // the root of a domain or if there is a base-url provided in the config
 router.get('*/api/app', wrap(getApp));
 
-module.exports = router;
+export default router;

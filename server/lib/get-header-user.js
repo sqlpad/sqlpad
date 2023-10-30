@@ -1,5 +1,5 @@
-const _ = require('lodash');
-require('../typedefs');
+import _ from 'lodash';
+import '../typedefs.js';
 
 /**
  * Derive header user from request headers
@@ -32,4 +32,4 @@ function getHeaderUser(req) {
   return null;
 }
 
-module.exports = getHeaderUser;
+export default getHeaderUser;

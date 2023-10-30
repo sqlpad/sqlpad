@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const migrationUtils = require('../lib/migration-utils');
+import Sequelize from 'sequelize';
+import migrationUtils from '../lib/migration-utils.js';
 
 /**
  * NOTE: This migration has been consolidated and altered since its original authoring
@@ -15,7 +15,7 @@ const migrationUtils = require('../lib/migration-utils');
  * @param {object} sequelizeDb - sequelize instance
  */
 // eslint-disable-next-line no-unused-vars
-async function up(queryInterface, config, appLog, sequelizeDb) {
+export async function up(queryInterface, config, appLog, sequelizeDb) {
   if (config.get('backendDatabaseUri').startsWith('mssql')) {
     await sequelizeDb.query(
       `
@@ -94,6 +94,6 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
   );
 }
 
-module.exports = {
+export default {
   up,
 };

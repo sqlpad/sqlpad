@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 
 function getHeaders() {
   return {
@@ -183,4 +183,4 @@ async function getVersion(controllerUrl) {
   return getJson(`${controllerUrl}/version`);
 }
 
-module.exports = { postSql, getTables, getTableSchema, getVersion };
+export default { postSql, getTables, getTableSchema, getVersion };

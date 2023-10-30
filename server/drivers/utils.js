@@ -42,7 +42,7 @@
  * @param {object} queryResult
  * @param {array} [queryResult.rows]
  */
-function formatSchemaQueryResults(queryResult) {
+export function formatSchemaQueryResults(queryResult) {
   if (!queryResult || !queryResult.rows || !queryResult.rows.length) {
     return {};
   }
@@ -132,7 +132,3 @@ function formatSchemaQueryResults(queryResult) {
     tables: Object.values(tablesById),
   };
 }
-
-module.exports = {
-  formatSchemaQueryResults,
-};

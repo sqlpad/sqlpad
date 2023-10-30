@@ -1,7 +1,8 @@
-require('../typedefs');
-const sqlFormatter = require('sql-formatter');
-const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated');
+import '../typedefs.js';
+import sqlFormatter from 'sql-formatter';
+import mustBeAuthenticated from '../middleware/must-be-authenticated.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * Returns formatted query in same object format it was sent
@@ -21,4 +22,4 @@ function formatSql(req, res) {
 
 router.post('/api/format-sql', mustBeAuthenticated, formatSql);
 
-module.exports = router;
+export default router;

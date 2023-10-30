@@ -1,5 +1,5 @@
-const assert = require('assert');
-const utils = require('../../drivers/utils');
+import assert from 'assert';
+import { formatSchemaQueryResults } from '../../drivers/utils.js';
 
 describe('drivers/utils', function () {
   it('formatSchemaQueryResults handles full row set', function () {
@@ -33,7 +33,7 @@ describe('drivers/utils', function () {
       },
     ];
 
-    const res = utils.formatSchemaQueryResults({ rows });
+    const res = formatSchemaQueryResults({ rows });
 
     assert.deepStrictEqual(res, {
       schemas: [
@@ -93,7 +93,7 @@ describe('drivers/utils', function () {
       },
     ];
 
-    const res = utils.formatSchemaQueryResults({ rows });
+    const res = formatSchemaQueryResults({ rows });
 
     assert.deepStrictEqual(res, {
       schemas: [
@@ -127,7 +127,7 @@ describe('drivers/utils', function () {
       },
     ];
 
-    const res = utils.formatSchemaQueryResults({ rows });
+    const res = formatSchemaQueryResults({ rows });
 
     assert.deepStrictEqual(res, {
       tables: [

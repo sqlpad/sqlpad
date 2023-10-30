@@ -1,14 +1,12 @@
-require('../typedefs');
-const moment = require('moment');
-const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated');
-const {
-  executeBatch,
-  executeCancellableBatch,
-} = require('../lib/execute-batch');
-const { cancelBatch } = require('../lib/cancel-batch');
-const wrap = require('../lib/wrap');
-const mustHaveConnectionAccess = require('../middleware/must-have-connection-access');
+import '../typedefs.js';
+import moment from 'moment';
+import mustBeAuthenticated from '../middleware/must-be-authenticated.js';
+import { executeBatch, executeCancellableBatch } from '../lib/execute-batch.js';
+import { cancelBatch } from '../lib/cancel-batch.js';
+import wrap from '../lib/wrap.js';
+import mustHaveConnectionAccess from '../middleware/must-have-connection-access.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * Create batch
@@ -209,4 +207,4 @@ router.put(
   wrap(cancel)
 );
 
-module.exports = router;
+export default router;

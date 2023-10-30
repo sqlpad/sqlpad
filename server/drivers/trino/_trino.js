@@ -1,7 +1,7 @@
-const fetch = require('node-fetch');
+import fetch from 'node-fetch';
 const NEXT_URI_TIMEOUT = 100;
 
-module.exports = { send };
+export default { send };
 
 // Util - setTimeout as a promise
 function wait(ms) {
