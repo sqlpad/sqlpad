@@ -6,6 +6,7 @@
   "engines": {
     "node": ">=16"
   },
+  "type": "module",
   "keywords": [
     "sql",
     "mssql",
