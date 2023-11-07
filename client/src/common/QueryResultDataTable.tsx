@@ -10,7 +10,7 @@ import { VariableSizeGrid } from 'react-window';
 import throttle from 'lodash/throttle';
 import Draggable from 'react-draggable';
 import Measure from 'react-measure';
-import { StatementColumn, StatementResults } from '../types';
+import { QueryResultFormat, StatementColumn, StatementResults } from '../types';
 import styles from './QueryResultDataTable.module.css';
 import Modal from './Modal';
 
@@ -138,6 +138,7 @@ const cellStyle: React.CSSProperties = {
 interface QueryResultDataTableProps {
   columns: StatementColumn[];
   rows?: StatementResults;
+  queryResultFormat: QueryResultFormat;
 }
 
 interface QueryResultDataTableState {
@@ -447,7 +448,7 @@ class QueryResultDataTable extends React.PureComponent<
   };
 
   render() {
-    const { columns, rows } = this.props;
+    const { columns, rows, queryResultFormat } = this.props;
     const {
       cellModalVisible,
       cellColumnName,
@@ -461,6 +462,42 @@ class QueryResultDataTable extends React.PureComponent<
       const rowCount = rows.length;
       // Add extra column to fill remaining grid width if necessary
       const columnCount = columns.length + 1;
+
+      if (queryResultFormat === 'fullColumns') {
+        const colNameWidth =
+          columns.reduce(
+            (charLength, { name }) => Math.max(name.length, charLength),
+            0
+          ) *
+            0.7 +
+          'em';
+
+        return (
+          <div style={{ overflow: 'auto', height: '100%' }}>
+            {rows.map((r, index) => (
+              <div
+                key={index}
+                style={{ padding: '10px', borderBottom: '1px dashed #ccc' }}
+              >
+                {columns.map(({ name }, index) => (
+                  <div key={name} style={{ display: 'flex' }}>
+                    <div
+                      style={{
+                        fontWeight: 'bold',
+                        textAlign: 'right',
+                        width: colNameWidth,
+                      }}
+                    >
+                      {name}:
+                    </div>
+                    <div style={{ marginLeft: '0.5em' }}>{r[index]}</div>
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        );
+      }
 
       return (
         <Measure bounds onResize={this.handleContainerResize}>

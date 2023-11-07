@@ -6,6 +6,7 @@ import QueryResultRunning from '../common/QueryResultRunning';
 import { StatementColumn } from '../types';
 import { api } from '../utilities/api';
 import QueryHistoryFilterItem, { Filter } from './QueryHistoryFilterItem';
+import { useQueryResultFormat } from '../stores/editor-store';
 
 const COLUMNS: StatementColumn[] = [
   { name: 'userEmail', datatype: 'string', maxLineLength: 20 },
@@ -25,6 +26,7 @@ const COLUMNS: StatementColumn[] = [
 function QueryHistoryContent() {
   const [filters, setFilters] = useState<Filter[]>([]);
   const [filterUrl, setFilterUrl] = useState('');
+  const queryResultFormat = useQueryResultFormat();
 
   function buildFilterUrlParameter() {
     const urlFilters = filters.map((f) => {
@@ -186,7 +188,11 @@ function QueryHistoryContent() {
         {isRunning && <QueryResultRunning />}
         {queryError && <ErrorBlock>{queryError}</ErrorBlock>}
         {!isRunning && !queryError && historyData && (
-          <QueryResultDataTable columns={COLUMNS} rows={arrayRows} />
+          <QueryResultDataTable
+            columns={COLUMNS}
+            rows={arrayRows}
+            queryResultFormat={queryResultFormat}
+          />
         )}
       </div>
     </>

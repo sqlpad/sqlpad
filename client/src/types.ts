@@ -291,3 +291,5 @@ export interface ConnectionSchema {
 }
 
 export type QueryHistoryResponse = Array<Record<string, any>>;
+
+export type QueryResultFormat = 'column' | 'fullColumns';

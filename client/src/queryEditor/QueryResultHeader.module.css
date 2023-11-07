@@ -1,14 +1,14 @@
 .toolbar {
-  height: 34px;
+  height: 40px;
   border-bottom: 1px solid #ccc;
   background-color: var(--toolbar-bg-color);
   display: flex;
   align-items: center;
 }
 
-/* 
-  Because we are adjusting header on actual button, 
-  we need to handle Button component behavior where padding needs to be adjusted on hover 
+/*
+  Because we are adjusting header on actual button,
+  we need to handle Button component behavior where padding needs to be adjusted on hover
   This is not great, and should be addressed in Button component
   The padding is greatly reduced here because the icon used has quite a bit of padding already
 */

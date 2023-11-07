@@ -53,7 +53,7 @@ function QueryEditorResultPane() {
       <div
         style={{
           position: 'absolute',
-          top: 34,
+          top: 40,
           bottom: 0,
           left: 0,
           right: 0,

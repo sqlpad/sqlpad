@@ -23,8 +23,11 @@ import {
 } from '../stores/editor-store';
 import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
+import { useQueryResultFormat } from '../stores/editor-store';
+import { setQueryResultFormat } from '../stores/editor-actions';
 
 function QueryResultHeader() {
+  const queryResultFormat = useQueryResultFormat();
   const isRunning = useSessionIsRunning();
   const runQueryStartTime = useSessionRunQueryStartTime();
   const statementId = useSessionSelectedStatementId();
@@ -67,6 +70,24 @@ function QueryResultHeader() {
     timerContent = <div>{serverSec} seconds</div>;
   }
 
+  const formatSelector = (
+    <>
+      format:&nbsp;
+      <Button
+        disabled={queryResultFormat === 'column'}
+        onClick={() => setQueryResultFormat('column')}
+      >
+        column
+      </Button>
+      <Button
+        disabled={queryResultFormat === 'fullColumns'}
+        onClick={() => setQueryResultFormat('fullColumns')}
+      >
+        full columns
+      </Button>
+    </>
+  );
+
   return (
     <div className={styles.toolbar}>
       {statementId && numOfStatements > 1 ? (
@@ -80,9 +101,9 @@ function QueryResultHeader() {
           <MenuLeftIcon /> Return to statements
         </Button>
       ) : null}
-
+      <HSpacer size={1} />
+      {formatSelector}
       <HSpacer size={1} grow />
-
       {statementId && statementSequence && numOfStatements > 1 && (
         <>
           <div className={styles.statementHeaderStatementText}>
@@ -91,14 +112,12 @@ function QueryResultHeader() {
           <HSpacer size={1} grow />
         </>
       )}
-
       {statementId && isStatementFinished && (
         <>
           <div style={{ whiteSpace: 'nowrap' }}>{rowCount} rows</div>
           <HSpacer />
         </>
       )}
-
       {statementId && isStatementFinished && showLink && (
         <>
           <IconButton
@@ -113,7 +132,6 @@ function QueryResultHeader() {
           <HSpacer />
         </>
       )}
-
       {statementId &&
         isStatementFinished &&
         config?.allowCsvDownload &&
@@ -123,14 +141,12 @@ function QueryResultHeader() {
             <HSpacer />
           </>
         )}
-
       {statementId && isStatementFinished && incomplete && (
         <>
           <IncompleteDataNotification />
           <HSpacer />
         </>
       )}
-
       {timerContent}
       <HSpacer size={1} />
     </div>
