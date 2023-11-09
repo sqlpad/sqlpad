@@ -469,7 +469,7 @@ class QueryResultDataTable extends React.PureComponent<
             (charLength, { name }) => Math.max(name.length, charLength),
             0
           ) *
-            0.7 +
+            0.625 +
           'em';
 
         return (
@@ -477,7 +477,11 @@ class QueryResultDataTable extends React.PureComponent<
             {rows.map((r, index) => (
               <div
                 key={index}
-                style={{ padding: '10px', borderBottom: '1px dashed #ccc' }}
+                style={{
+                  padding: '10px',
+                  borderBottom: cellStyle.borderBottom,
+                  background: index % 2 !== 0 ? '#f9f9f9' : undefined,
+                }}
               >
                 {columns.map(({ name }, index) => (
                   <div key={name} style={{ display: 'flex' }}>
@@ -490,7 +494,7 @@ class QueryResultDataTable extends React.PureComponent<
                     >
                       {name}:
                     </div>
-                    <div style={{ marginLeft: '0.5em' }}>{r[index]}</div>
+                    <div style={{ marginLeft: '0.3em' }}>{r[index]}</div>
                   </div>
                 ))}
               </div>
