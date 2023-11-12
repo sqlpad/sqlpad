@@ -41,7 +41,11 @@ const drivers = {
 // unixodbc is an optional dependency due to it needing to be compiled
 // (and lacks prebuilt binaries like sqlite provides)
 try {
-  drivers.unixodbc = await import('./unixodbc');
+  appLog.info('Loading odbc');
+  drivers.unixodbc = await import('./unixodbc/index.js').then(
+    (module) => module.default
+  );
+  appLog.info('Loaded odbc');
 } catch (error) {
   appLog.info('ODBC driver not available');
 }
@@ -53,5 +57,3 @@ Object.keys(drivers).forEach((id) => {
 });
 
 export default drivers;
-
-export const { unixodbc } = drivers;
