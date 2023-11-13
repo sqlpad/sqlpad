@@ -464,40 +464,35 @@ class QueryResultDataTable extends React.PureComponent<
       const columnCount = columns.length + 1;
 
       if (queryResultFormat === 'fullColumns') {
-        const colNameWidth =
-          columns.reduce(
-            (charLength, { name }) => Math.max(name.length, charLength),
-            0
-          ) *
-            0.625 +
-          'em';
-
         return (
           <div style={{ overflow: 'auto', height: '100%' }}>
             {rows.map((r, index) => (
-              <div
+              <pre
                 key={index}
                 style={{
+                  margin: 0,
                   padding: '10px',
-                  borderBottom: cellStyle.borderBottom,
+                  borderBottom:
+                    queryResultFormat === 'fullColumns'
+                      ? cellStyle.borderBottom
+                      : undefined,
                   background: index % 2 !== 0 ? '#f9f9f9' : undefined,
                 }}
               >
-                {columns.map(({ name }, index) => (
-                  <div key={name} style={{ display: 'flex' }}>
-                    <div
-                      style={{
-                        fontWeight: 'bold',
-                        textAlign: 'right',
-                        width: colNameWidth,
-                      }}
-                    >
-                      {name}:
+                {columns.map(({ name }, index) => {
+                  const maxCharLength = columns.reduce(
+                    (charLength, { name }) => Math.max(name.length, charLength),
+                    0
+                  );
+                  const value = r[index];
+                  return (
+                    <div key={name}>
+                      <strong>{`${name.padStart(maxCharLength)}: `}</strong>
+                      <span>{value}</span>
                     </div>
-                    <div style={{ marginLeft: '0.3em' }}>{r[index]}</div>
-                  </div>
-                ))}
-              </div>
+                  );
+                })}
+              </pre>
             ))}
           </div>
         );

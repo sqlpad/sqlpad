@@ -49,7 +49,7 @@ function QueryEditorResultPane() {
       onMouseOver={() => setMouseOverResultPane(true)}
       onMouseLeave={() => setMouseOverResultPane(false)}
     >
-      <QueryResultHeader />
+      <QueryResultHeader rows={data} />
       <div
         style={{
           position: 'absolute',

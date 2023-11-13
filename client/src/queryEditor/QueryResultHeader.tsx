@@ -1,6 +1,9 @@
 import MenuLeftIcon from 'mdi-react/MenuLeftIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
+import TableIcon from 'mdi-react/TableIcon';
+import RowHorizontalIcon from 'mdi-react/LandRowsHorizontalIcon';
 import React from 'react';
+import ClipboardButton from '../common/ClipboardButton';
 import Button from '../common/Button';
 import ExportButton from '../common/ExportButton';
 import HSpacer from '../common/HSpacer';
@@ -14,6 +17,7 @@ import {
   useSessionRunQueryStartTime,
   useSessionSelectedStatementId,
   useSessionTableLink,
+  useStatementColumns,
   useStatementDurationMs,
   useStatementIncomplete,
   useStatementRowCount,
@@ -25,8 +29,9 @@ import useAppContext from '../utilities/use-app-context';
 import styles from './QueryResultHeader.module.css';
 import { useQueryResultFormat } from '../stores/editor-store';
 import { setQueryResultFormat } from '../stores/editor-actions';
+import { QueryResultFormat, StatementResults } from '../types';
 
-function QueryResultHeader() {
+function QueryResultHeader({ rows }: { rows: StatementResults | undefined }) {
   const queryResultFormat = useQueryResultFormat();
   const isRunning = useSessionIsRunning();
   const runQueryStartTime = useSessionRunQueryStartTime();
@@ -37,6 +42,7 @@ function QueryResultHeader() {
   const incomplete = useStatementIncomplete(statementId);
   const statementDurationMs = useStatementDurationMs(statementId);
   const status = useStatementStatus(statementId);
+  const columns = useStatementColumns(statementId) || [];
 
   const batch = useSessionBatch();
   const numOfStatements = batch?.statements.length || 0;
@@ -69,22 +75,28 @@ function QueryResultHeader() {
     const serverSec = batch?.durationMs / 1000;
     timerContent = <div>{serverSec} seconds</div>;
   }
-
+  const formatOptions: {
+    format: QueryResultFormat;
+    title: string;
+    icon: typeof RowHorizontalIcon;
+  }[] = [
+    { format: 'column', title: 'table', icon: TableIcon },
+    { format: 'fullColumns', title: 'vertical', icon: RowHorizontalIcon },
+  ];
   const formatSelector = (
     <>
       format:&nbsp;
-      <Button
-        disabled={queryResultFormat === 'column'}
-        onClick={() => setQueryResultFormat('column')}
-      >
-        column
-      </Button>
-      <Button
-        disabled={queryResultFormat === 'fullColumns'}
-        onClick={() => setQueryResultFormat('fullColumns')}
-      >
-        full columns
-      </Button>
+      {formatOptions.map(({ format, title, icon: IconComponent }) => (
+        <Button
+          key={format}
+          disabled={queryResultFormat === format}
+          onClick={() => setQueryResultFormat(format)}
+        >
+          <IconComponent />
+          &nbsp;
+          {title}
+        </Button>
+      ))}
     </>
   );
 
@@ -115,6 +127,71 @@ function QueryResultHeader() {
       {statementId && isStatementFinished && (
         <>
           <div style={{ whiteSpace: 'nowrap' }}>{rowCount} rows</div>
+          <HSpacer />
+        </>
+      )}
+      {statementId && isStatementFinished && (
+        <>
+          <ClipboardButton
+            onCopyStart={() => {
+              if (!rows) {
+                throw new Error('nothing to copy');
+              }
+
+              if (queryResultFormat === 'fullColumns') {
+                return rows.reduce((result, row) => {
+                  const formattedRow = columns
+                    .map(({ name }, colIndex) => {
+                      const maxCharLength = columns.reduce(
+                        (charLength, { name }) =>
+                          Math.max(name.length, charLength),
+                        0
+                      );
+                      const value = row[colIndex];
+                      return `${name.padStart(maxCharLength)}: ${value}`;
+                    })
+                    .join('\n');
+
+                  return `${result}${formattedRow}\n${'*'.repeat(60)}\n`;
+                }, '');
+              }
+
+              const colWidthsByIndex = rows.reduce((result, row) => {
+                return row.map((value, colIndex) => {
+                  return Math.max(
+                    result[colIndex],
+                    String(value).length,
+                    columns[colIndex].name.length
+                  );
+                });
+              }, Array(columns.length).fill(0));
+              const cellSeperator = ' | ';
+              const rowSeparator = '-'.repeat(
+                colWidthsByIndex.reduce(
+                  (rowLength, colWidth) =>
+                    rowLength + colWidth + cellSeperator.length,
+                  0
+                )
+              );
+              const tableHeader = columns
+                .map(({ name }, colIndex) => {
+                  const colWidth = colWidthsByIndex[colIndex];
+                  return `${name.padEnd(colWidth)}${cellSeperator}`;
+                })
+                .join('');
+              const tableRows = rows.reduce((result, row) => {
+                const formattedRow = row
+                  .map((value, colIndex) => {
+                    const colWidth = colWidthsByIndex[colIndex];
+                    return `${String(value).padEnd(colWidth)}${cellSeperator}`;
+                  })
+                  .join('');
+
+                return `${result}\n${formattedRow}\n${rowSeparator}`;
+              }, '');
+              return `${tableHeader}\n${rowSeparator}${tableRows}`;
+            }}
+          />
           <HSpacer />
         </>
       )}
