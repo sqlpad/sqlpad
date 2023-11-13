@@ -1,3 +1,4 @@
+import Tooltip from '../common/Tooltip';
 import MenuLeftIcon from 'mdi-react/MenuLeftIcon';
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon';
 import TableIcon from 'mdi-react/TableIcon';
@@ -85,18 +86,23 @@ function QueryResultHeader({ rows }: { rows: StatementResults | undefined }) {
   ];
   const formatSelector = (
     <>
-      format:&nbsp;
-      {formatOptions.map(({ format, title, icon: IconComponent }) => (
-        <Button
-          key={format}
-          disabled={queryResultFormat === format}
-          onClick={() => setQueryResultFormat(format)}
-        >
-          <IconComponent />
-          &nbsp;
-          {title}
-        </Button>
-      ))}
+      {formatOptions.map(({ format, title, icon: IconComponent }) => {
+        const disabled = queryResultFormat === format;
+        return (
+          <Tooltip label={title} key={format}>
+            <Button
+              disabled={disabled}
+              onClick={() => setQueryResultFormat(format)}
+              style={{
+                cursor: disabled ? 'default' : undefined,
+                boxShadow: disabled ? 'inset 0 0 2px' : undefined,
+              }}
+            >
+              <IconComponent />
+            </Button>
+          </Tooltip>
+        );
+      })}
     </>
   );
 
