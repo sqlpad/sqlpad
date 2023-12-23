@@ -14,6 +14,7 @@ import ensureAdmin from './lib/ensure-admin.js';
 import ensureConnectionAccess from './lib/ensure-connection-access.js';
 import packageJson from './server-package-json.cjs';
 import fs from 'fs';
+import { initDrivers } from './drivers/index.js';
 
 const argv = minimist(process.argv.slice(2));
 
@@ -165,6 +166,8 @@ async function startServer() {
   if (migrateOnly) {
     process.exit(0);
   }
+
+  await initDrivers();
 
   // Ensure admin is set if configured
   await ensureAdmin(models, config);
