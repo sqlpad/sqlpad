@@ -1,5 +1,11 @@
 # Changelog
 
+## [7.2.0] - 2023-12-23
+
+- Add extra result display formats and copy-to-clipboard (#1209)
+- Fix helm chart postgres dependency (#1212)
+- Fix BigQuery indexes schema panel (#1214)
+
 ## [7.1.3] - 2023-10-29
 
 - Update dependencies
