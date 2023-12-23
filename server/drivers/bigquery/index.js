@@ -175,9 +175,14 @@ function getSchema(connection) {
     )
     .then(([tables]) =>
       Promise.all(
-        tables.map((table) =>
-          bigquery.dataset(table.dataset_id).table(table.table_id).getMetadata()
-        )
+        tables
+          .filter((table) => !table.table_id.startsWith('_SEARCH_INDEX_'))
+          .map((table) =>
+            bigquery
+              .dataset(table.dataset_id)
+              .table(table.table_id)
+              .getMetadata()
+          )
       )
     )
     .then((tables) => {

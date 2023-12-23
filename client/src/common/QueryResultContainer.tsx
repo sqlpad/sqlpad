@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  useQueryResultFormat,
   useSessionQueryError,
   useStatementColumns,
   useStatementRowCount,
@@ -19,6 +20,7 @@ function QueryResultContainer({ statementId }: Props) {
   const columns = useStatementColumns(statementId) || [];
   const rowCount = useStatementRowCount(statementId);
   const status = useStatementStatus(statementId);
+  const queryResultFormat = useQueryResultFormat();
   const queryError = useSessionQueryError();
   const { data, error } = api.useStatementResults(statementId, status);
 
@@ -47,7 +49,13 @@ function QueryResultContainer({ statementId }: Props) {
       </InfoBlock>
     );
   }
-  return <QueryResultDataTable columns={columns} rows={data} />;
+  return (
+    <QueryResultDataTable
+      columns={columns}
+      rows={data}
+      queryResultFormat={queryResultFormat}
+    />
+  );
 }
 
 export default React.memo(QueryResultContainer);

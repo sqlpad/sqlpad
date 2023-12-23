@@ -5,6 +5,7 @@ import {
   ChartFields,
   ConnectionClient,
   ConnectionSchema,
+  QueryResultFormat,
   Statement,
   StatementColumn,
 } from '../types';
@@ -57,6 +58,7 @@ export type EditorStoreState = {
   focusedSessionId: string;
   editorSessions: Record<string, EditorSession>;
   batches: Record<string, Batch>;
+  queryResultFormat: QueryResultFormat;
   statements: Record<string, Statement>;
   schemaStates: { [conectionId: string]: SchemaState };
   getFocusedSession: () => EditorSession;
@@ -107,6 +109,7 @@ export const INITIAL_STATE = {
   batches: {},
   statements: {},
   schemaStates: {},
+  queryResultFormat: 'column' as QueryResultFormat,
 };
 
 export const useEditorStore = create<EditorStoreState>((set, get) => ({
@@ -255,6 +258,10 @@ export function useBatchError() {
     }
     return;
   });
+}
+
+export function useQueryResultFormat() {
+  return useEditorStore((s) => s.queryResultFormat);
 }
 
 export function useSessionRunQueryStartTime() {

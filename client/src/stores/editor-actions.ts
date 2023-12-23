@@ -9,6 +9,7 @@ import {
   ChartFields,
   Connection,
   ConnectionClient,
+  QueryResultFormat,
 } from '../types';
 import { api } from '../utilities/api';
 import { getHistory } from '../utilities/history';
@@ -193,6 +194,10 @@ export function toggleShowQueryModal() {
 
 export function setMouseOverResultPane(mouseOverResultPane: boolean) {
   setState({ mouseOverResultPane });
+}
+
+export function setQueryResultFormat(queryResultFormat: QueryResultFormat) {
+  setState({ queryResultFormat });
 }
 
 /**
