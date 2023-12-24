@@ -1,10 +1,10 @@
-require('../typedefs');
-const _ = require('lodash');
-const passport = require('passport');
-const passportCustom = require('passport-custom');
+import '../typedefs.js';
+import _ from 'lodash';
+import passport from 'passport';
+import passportCustom from 'passport-custom';
+import getHeaderUser from '../lib/get-header-user.js';
+import appLog from '../lib/app-log.js';
 const CustomStrategy = passportCustom.Strategy;
-const getHeaderUser = require('../lib/get-header-user');
-const appLog = require('../lib/app-log');
 
 /**
  * An auth-proxy custom strategy
@@ -101,4 +101,4 @@ function enableAuthProxy(config) {
   }
 }
 
-module.exports = enableAuthProxy;
+export default enableAuthProxy;

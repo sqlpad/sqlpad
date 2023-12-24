@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+
+import path from 'path';
 
 function dirExists(path) {
   try {
@@ -151,4 +152,4 @@ async function loadSeedData(appLog, config, models) {
   }
 }
 
-module.exports = loadSeedData;
+export default loadSeedData;

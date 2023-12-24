@@ -1,7 +1,7 @@
-const assert = require('assert');
-const request = require('supertest');
-const TestUtil = require('../utils');
-const ldapUtils = require('../../lib/ldap-utils');
+import assert from 'assert';
+import request from 'supertest';
+import TestUtil from '../utils.js';
+import ldapUtils from '../../lib/ldap-utils.js';
 
 describe('auth/ldap', function () {
   before(async function () {

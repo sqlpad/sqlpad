@@ -1,5 +1,5 @@
-const assert = require('assert');
-const passhash = require('../../lib/passhash');
+import assert from 'assert';
+import passhash from '../../lib/passhash.js';
 
 describe('lib/passhash', function () {
   const password = 'This is a p@ssw0rd like!';

@@ -1,5 +1,5 @@
-const assert = require('assert');
-const getColumns = require('../../lib/get-columns');
+import assert from 'assert';
+import getColumns from '../../lib/get-columns.js';
 
 const d1 = new Date();
 const d2 = new Date(new Date().getTime() + 60000);

@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 /* eslint-disable no-await-in-loop */
-const fs = require('fs');
-const path = require('path');
-const moment = require('moment');
-const sqliteDriver = require('./drivers/sqlite');
+import fs from 'fs';
+import path from 'path';
+import moment from 'moment';
+import sqliteDriver from './drivers/sqlite/index.js';
+import serverDirname from './server-dirname.cjs';
 
 /**
  * This script generates server/test/fixtures/sales.sqlite file for testing and dev purposes
@@ -17,7 +18,7 @@ const sqliteDriver = require('./drivers/sqlite');
  * If always distributed it can serve as a good debug tool for others.
  */
 
-const filename = path.join(__dirname, 'test/fixtures/sales.sqlite');
+const filename = path.join(serverDirname, 'test/fixtures/sales.sqlite');
 
 const client = new sqliteDriver.Client({
   filename,

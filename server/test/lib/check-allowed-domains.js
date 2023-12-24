@@ -1,5 +1,5 @@
-const assert = require('assert');
-const checkAllowedDomains = require('../../lib/check-allowed-domains');
+import assert from 'assert';
+import checkAllowedDomains from '../../lib/check-allowed-domains.js';
 
 describe('lib/check-allowed-domains', function () {
   it('allows email addresses matching any domain in the list', function () {

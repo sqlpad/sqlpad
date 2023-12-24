@@ -1,7 +1,8 @@
-require('../typedefs');
-const passport = require('passport');
-const appLog = require('../lib/app-log');
-const router = require('express').Router();
+import '../typedefs.js';
+import passport from 'passport';
+import appLog from '../lib/app-log.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * @param {Req} req
@@ -70,4 +71,4 @@ router.get('/auth/oidc', (req, res, next) => {
 
 router.get('/auth/oidc/callback', handleOidcCallback);
 
-module.exports = router;
+export default router;

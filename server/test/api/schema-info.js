@@ -1,6 +1,6 @@
-const assert = require('assert');
-const TestUtils = require('../utils');
-const ConnectionClient = require('../../lib/connection-client');
+import assert from 'assert';
+import TestUtils from '../utils.js';
+import ConnectionClient from '../../lib/connection-client.js';
 
 describe('api/schema-info', function () {
   this.timeout(10000);

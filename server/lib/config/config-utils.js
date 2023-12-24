@@ -1,6 +1,6 @@
-const definitions = require('./config-items');
-const path = require('path');
-const fs = require('fs');
+import definitions from './config-items.js';
+import path from 'path';
+import fs from 'fs';
 
 const userHome =
   process.platform === 'win32' ? process.env.USERPROFILE : process.env.HOME;
@@ -20,7 +20,7 @@ if (fs.existsSync(oldConfigFilePath)) {
   `;
 }
 
-function getOldConfigWarning() {
+export function getOldConfigWarning() {
   return message;
 }
 
@@ -28,7 +28,7 @@ function getOldConfigWarning() {
  * Gets default config values
  * @returns {object} configMap
  */
-function getFromDefault() {
+export function getFromDefault() {
   const defaultMap = {};
 
   definitions.forEach((definition) => {
@@ -43,7 +43,7 @@ function getFromDefault() {
  * @param {object} env optional
  * @returns {object} configMap
  */
-function getFromEnv(env) {
+export function getFromEnv(env) {
   return definitions
     .filter((definition) => definition.hasOwnProperty('envVar'))
     .reduce((envMap, definition) => {
@@ -60,7 +60,7 @@ function getFromEnv(env) {
  * @param {object} argv
  * @returns {object} configMap
  */
-function getFromCli(argv) {
+export function getFromCli(argv) {
   return definitions.reduce((confMap, definition) => {
     const { key } = definition;
 
@@ -72,7 +72,7 @@ function getFromCli(argv) {
   }, {});
 }
 
-function isConnectionEnv(key = '') {
+export function isConnectionEnv(key = '') {
   return key.startsWith('SQLPAD_CONNECTIONS__');
 }
 
@@ -88,7 +88,7 @@ function isConnectionEnv(key = '') {
  *
  * @param {object} env
  */
-function parseConnectionsFromEnv(env) {
+export function parseConnectionsFromEnv(env) {
   const connectionsMap = Object.keys(env)
     .filter((key) => key.startsWith('SQLPAD_CONNECTIONS__'))
     .reduce((connectionsMap, envVar) => {
@@ -111,7 +111,7 @@ function parseConnectionsFromEnv(env) {
   return connectionsFromConfig;
 }
 
-module.exports = {
+export default {
   getFromEnv,
   getFromDefault,
   getOldConfigWarning,

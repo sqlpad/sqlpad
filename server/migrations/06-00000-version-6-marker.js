@@ -6,10 +6,10 @@
  * @param {import('../lib/logger')} appLog
  */
 // eslint-disable-next-line no-unused-vars
-async function up(queryInterface, config, appLog) {
+export async function up(queryInterface, config, appLog) {
   return true;
 }
 
-module.exports = {
+export default {
   up,
 };

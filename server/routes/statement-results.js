@@ -1,11 +1,12 @@
-require('../typedefs');
-const papa = require('papaparse');
-const xlsx = require('node-xlsx');
-const router = require('express').Router();
-const mustBeAuthenticated = require('../middleware/must-be-authenticated');
-const wrap = require('../lib/wrap');
-const moment = require('moment');
-const sanitize = require('sanitize-filename');
+import '../typedefs.js';
+import papa from 'papaparse';
+import xlsx from 'node-xlsx';
+import mustBeAuthenticated from '../middleware/must-be-authenticated.js';
+import wrap from '../lib/wrap.js';
+import moment from 'moment';
+import sanitize from 'sanitize-filename';
+import express from 'express';
+const router = express.Router();
 
 const FORMATS = ['csv', 'json', 'xlsx'];
 
@@ -128,4 +129,4 @@ router.get(
   wrap(handleDownload)
 );
 
-module.exports = router;
+export default router;

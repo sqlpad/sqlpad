@@ -1,6 +1,6 @@
-const cassandra = require('cassandra-driver');
-const appLog = require('../../lib/app-log');
-const { formatSchemaQueryResults } = require('../utils');
+import cassandra from 'cassandra-driver';
+import appLog from '../../lib/app-log.js';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'cassandra';
 const name = 'Cassandra';
@@ -117,7 +117,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

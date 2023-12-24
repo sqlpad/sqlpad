@@ -1,6 +1,6 @@
-const assert = require('assert');
-const { v4: uuidv4 } = require('uuid');
-const TestUtils = require('../utils');
+import assert from 'assert';
+import { v4 as uuidv4 } from 'uuid';
+import TestUtils from '../utils.js';
 
 function isNonAdminUserPayload(user) {
   assert.deepStrictEqual(Object.keys(user), [

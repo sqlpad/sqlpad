@@ -1,10 +1,10 @@
-const fs = require('fs');
-const pg = require('pg');
-const sqlLimiter = require('sql-limiter');
-const SocksConnection = require('socksjs');
-const appLog = require('../../lib/app-log');
-const { formatSchemaQueryResults } = require('../utils');
-const { resolvePositiveNumber } = require('../../lib/resolve-number');
+import fs from 'fs';
+import pg from 'pg';
+import sqlLimiter from 'sql-limiter';
+import SocksConnection from 'socksjs';
+import appLog from '../../lib/app-log.js';
+import { formatSchemaQueryResults } from '../utils.js';
+import { resolvePositiveNumber } from '../../lib/resolve-number.js';
 
 const id = 'postgres';
 const name = 'Postgres';
@@ -292,7 +292,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   Client,
   id,
   name,

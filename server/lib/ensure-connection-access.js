@@ -1,5 +1,5 @@
-const appLog = require('./app-log');
-const consts = require('./consts');
+import appLog from './app-log.js';
+import consts from './consts.js';
 
 /**
  * Ensure admin email is a user if provided
@@ -29,4 +29,4 @@ async function ensureConnectionAccess(sequelizeDb, config) {
   }
 }
 
-module.exports = ensureConnectionAccess;
+export default ensureConnectionAccess;

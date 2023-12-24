@@ -1,8 +1,9 @@
-require('../typedefs');
-const passport = require('passport');
-const router = require('express').Router();
-const checkAllowedDomains = require('../lib/check-allowed-domains');
-const wrap = require('../lib/wrap');
+import '../typedefs.js';
+import passport from 'passport';
+import checkAllowedDomains from '../lib/check-allowed-domains.js';
+import wrap from '../lib/wrap.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * @param {Req} req
@@ -60,4 +61,4 @@ router.post(
   }
 );
 
-module.exports = router;
+export default router;

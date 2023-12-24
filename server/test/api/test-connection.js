@@ -1,4 +1,4 @@
-const TestUtils = require('../utils');
+import TestUtils from '../utils.js';
 
 describe('api/test-connection', function () {
   const utils = new TestUtils();

@@ -1,11 +1,11 @@
-const { Op } = require('sequelize');
+import { Op } from 'sequelize';
 
 /**
  * Transforms URL formatted filter parameters to NeDB compatible filter objects
  * @param {string} url formatted filter (i.e. queryText|regex|DELETE)
  * @returns {object} NeDB compatible filter object
  */
-module.exports = function urlFilterToDbFilter(urlFilter) {
+export default function urlFilterToDbFilter(urlFilter) {
   let dbFilter = {};
   if (typeof urlFilter === 'string') {
     dbFilter = {
@@ -73,4 +73,4 @@ module.exports = function urlFilterToDbFilter(urlFilter) {
   }
 
   return dbFilter;
-};
+}

@@ -1,4 +1,4 @@
-const Logger = require('./logger');
+import Logger from './logger.js';
 const appLog = new Logger();
 
-module.exports = appLog;
+export default appLog;

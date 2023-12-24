@@ -1,10 +1,11 @@
 /* eslint-disable no-await-in-loop */
-const fs = require('fs');
-const mysql = require('mysql');
-const sqlLimiter = require('sql-limiter');
-const { formatSchemaQueryResults } = require('../utils');
-const appLog = require('../../lib/app-log');
-const { resolvePositiveNumber } = require('../../lib/resolve-number');
+import fs from 'fs';
+
+import mysql from 'mysql';
+import sqlLimiter from 'sql-limiter';
+import { formatSchemaQueryResults } from '../utils.js';
+import appLog from '../../lib/app-log.js';
+import { resolvePositiveNumber } from '../../lib/resolve-number.js';
 
 const id = 'mysql';
 const name = 'MySQL';
@@ -279,7 +280,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

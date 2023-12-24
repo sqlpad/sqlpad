@@ -1,5 +1,5 @@
-const fetch = require('node-fetch');
-const appLog = require('./app-log');
+import fetch from 'node-fetch';
+import appLog from './app-log.js';
 
 function userSummary(user) {
   if (!user) {
@@ -229,4 +229,4 @@ class Webhooks {
   }
 }
 
-module.exports = Webhooks;
+export default Webhooks;

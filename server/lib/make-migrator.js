@@ -1,5 +1,6 @@
-const path = require('path');
-const Umzug = require('umzug');
+import path from 'path';
+import Umzug from 'umzug';
+import serverDirname from '../server-dirname.cjs';
 
 function makeMigrator(config, appLog, sequelizeInstance) {
   const umzug = new Umzug({
@@ -18,9 +19,25 @@ function makeMigrator(config, appLog, sequelizeInstance) {
         appLog,
         sequelizeInstance,
       ],
-      path: path.join(__dirname, '../migrations'),
+      path: path.join(serverDirname, 'migrations'),
       // The pattern that determines whether or not a file is a migration.
       pattern: /^\d+[\w-]+\.js$/,
+
+      // A function that maps a file path to a migration object in the form
+      // { up: Function, down: Function }. The default for this is to require(...)
+      // the file as javascript, but you can use this to transpile TypeScript,
+      // read raw sql etc.
+      // See https://github.com/sequelize/umzug/blob/v2.x/test/fixtures/index.js
+      // for examples.
+      customResolver: (path) => {
+        const filePath = `file:///${path.replace(/\\/g, '/')}`;
+        const getModule = () => import(filePath);
+        return {
+          up: async (upParams, config, appLog, sequelizeInstance) =>
+            (await getModule()).up(upParams, config, appLog, sequelizeInstance),
+          down: async (downParams) => (await getModule()).down(downParams),
+        };
+      },
     },
   });
 
@@ -92,4 +109,4 @@ function makeMigrator(config, appLog, sequelizeInstance) {
   };
 }
 
-module.exports = makeMigrator;
+export default makeMigrator;

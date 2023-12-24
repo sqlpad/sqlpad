@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const url = require('url');
+import Sequelize from 'sequelize';
+import url from 'url';
 
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
@@ -8,7 +8,7 @@ const url = require('url');
  * @param {object} sequelizeDb - sequelize instance
  */
 // eslint-disable-next-line no-unused-vars
-async function up(queryInterface, config, appLog, sequelizeDb) {
+export async function up(queryInterface, config, appLog, sequelizeDb) {
   const backendDatabaseUri = config.get('backendDatabaseUri');
   const urlParts = url.parse(backendDatabaseUri);
   const dialect = backendDatabaseUri
@@ -68,6 +68,6 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
   }
 }
 
-module.exports = {
+export default {
   up,
 };

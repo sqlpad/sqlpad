@@ -1,4 +1,4 @@
-const pino = require('pino');
+import pino from 'pino';
 
 // Log levels https://github.com/pinojs/pino/issues/123
 const levels = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent'];
@@ -59,4 +59,4 @@ class Logger {
   }
 }
 
-module.exports = Logger;
+export default Logger;

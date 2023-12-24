@@ -1,6 +1,7 @@
-require('../typedefs');
-const router = require('express').Router();
-const wrap = require('../lib/wrap');
+import '../typedefs.js';
+import wrap from '../lib/wrap.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * This route used to set new password given a passwordResetId
@@ -33,4 +34,4 @@ async function handlePasswordReset(req, res) {
 
 router.post('/api/password-reset/:passwordResetId', wrap(handlePasswordReset));
 
-module.exports = router;
+export default router;

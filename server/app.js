@@ -1,23 +1,52 @@
-const fs = require('fs');
-const path = require('path');
-const express = require('express');
-const helmet = require('helmet');
-const pino = require('pino');
-const redis = require('redis');
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
-const MemoryStore = require('memorystore')(session);
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
-const RedisStore = require('connect-redis').default;
-const appLog = require('./lib/app-log');
-const Webhooks = require('./lib/webhooks');
-const bodyParser = require('body-parser');
-const favicon = require('serve-favicon');
-const passport = require('passport');
-const authStrategies = require('./auth-strategies');
-const sessionlessAuth = require('./middleware/sessionless-auth');
-const ResponseUtils = require('./lib/response-utils');
-const expressPinoLogger = require('express-pino-logger');
+import fs from 'fs';
+import path from 'path';
+import express from 'express';
+import helmet from 'helmet';
+import pino from 'pino';
+import redis from 'redis';
+import session from 'express-session';
+import FileStoreFactory from 'session-file-store';
+import MemoryStoreFactory from 'memorystore';
+import SequelizeStoreFactory from 'connect-session-sequelize';
+import RedisStore from 'connect-redis';
+import appLog from './lib/app-log.js';
+import Webhooks from './lib/webhooks.js';
+import bodyParser from 'body-parser';
+import favicon from 'serve-favicon';
+import passport from 'passport';
+import authStrategies from './auth-strategies/index.js';
+import sessionlessAuth from './middleware/sessionless-auth.js';
+import ResponseUtils from './lib/response-utils.js';
+import expressPinoLogger from 'express-pino-logger';
+import serverDirname from './server-dirname.cjs';
+import routePasswordReset from './routes/password-reset.js';
+import routeSignout from './routes/signout.js';
+import routeSignup from './routes/signup.js';
+import routeSignin from './routes/signin.js';
+import routeGoogleAuth from './routes/google-auth.js';
+import routeAuthOidc from './routes/auth-oidc.js';
+import routeSaml from './routes/saml.js';
+import routeStatementResults from './routes/statement-results.js';
+import routeQueries from './routes/queries.js';
+import routeDrivers from './routes/drivers.js';
+import routeUsers from './routes/users.js';
+import routeConnections from './routes/connections.js';
+import routeConnectionAccesses from './routes/connection-accesses.js';
+import routeConnectionClients from './routes/connection-clients.js';
+import routeConnectionSchema from './routes/connection-schema.js';
+import routeTestConnection from './routes/test-connection.js';
+import routeQueryHistory from './routes/query-history.js';
+import routeSchemaInfo from './routes/schema-info.js';
+import routeTags from './routes/tags.js';
+import routeFormatSql from './routes/format-sql.js';
+import routeServiceTokens from './routes/service-tokens.js';
+import routeBatches from './routes/batches.js';
+import routeStatements from './routes/statements.js';
+import routeApp from './routes/app.js';
+
+const FileStore = FileStoreFactory(session);
+const MemoryStore = MemoryStoreFactory(session);
+const SequelizeStore = SequelizeStoreFactory(session.Store);
 
 // This is a workaround till BigInt is fully supported by the standard
 // See https://tc39.es/ecma262/#sec-ecmascript-language-types-bigint-type
@@ -92,7 +121,7 @@ async function makeApp(config, models) {
 
   // Use favicon middleware if favicon exists
   // Thist just loads it and serves from memory
-  const icoPath = path.join(__dirname, '/public/favicon.ico');
+  const icoPath = path.join(serverDirname, '/public/favicon.ico');
   if (fs.existsSync(icoPath)) {
     app.use(favicon(icoPath));
   }
@@ -169,7 +198,7 @@ async function makeApp(config, models) {
 
   const baseUrl = config.get('baseUrl');
 
-  app.use(baseUrl, express.static(path.join(__dirname, 'public')));
+  app.use(baseUrl, express.static(path.join(serverDirname, 'public')));
 
   /*  Passport setup
   ============================================================================= */
@@ -180,13 +209,13 @@ async function makeApp(config, models) {
   /*  Routes
   ============================================================================= */
   const preAuthRouters = [
-    require('./routes/password-reset'),
-    require('./routes/signout'),
-    require('./routes/signup'),
-    require('./routes/signin'),
-    require('./routes/google-auth'),
-    require('./routes/auth-oidc'),
-    require('./routes/saml'),
+    routePasswordReset,
+    routeSignout,
+    routeSignup,
+    routeSignin,
+    routeGoogleAuth,
+    routeAuthOidc,
+    routeSaml,
   ];
 
   // Add pre-auth routes to app
@@ -199,29 +228,29 @@ async function makeApp(config, models) {
   app.use(sessionlessAuth);
 
   const authRequiredRouters = [
-    require('./routes/statement-results'),
-    require('./routes/queries'),
-    require('./routes/drivers'),
-    require('./routes/users'),
-    require('./routes/connections'),
-    require('./routes/connection-accesses'),
-    require('./routes/connection-clients'),
-    require('./routes/connection-schema'),
-    require('./routes/test-connection'),
-    require('./routes/query-history'),
-    require('./routes/schema-info'),
-    require('./routes/tags'),
-    require('./routes/format-sql'),
-    require('./routes/service-tokens'),
-    require('./routes/batches'),
-    require('./routes/statements'),
+    routeStatementResults,
+    routeQueries,
+    routeDrivers,
+    routeUsers,
+    routeConnections,
+    routeConnectionAccesses,
+    routeConnectionClients,
+    routeConnectionSchema,
+    routeTestConnection,
+    routeQueryHistory,
+    routeSchemaInfo,
+    routeTags,
+    routeFormatSql,
+    routeServiceTokens,
+    routeBatches,
+    routeStatements,
   ];
 
   // Add all core routes to the baseUrl except for the */api/app route
   authRequiredRouters.forEach((router) => app.use(baseUrl, router));
 
   // Add '*/api/app' route last and without baseUrl
-  app.use(require('./routes/app'));
+  app.use(routeApp);
 
   // For any missing api route, return a 404
   // NOTE - this cannot be a general catch-all because it might be a valid non-api route from a front-end perspective
@@ -250,8 +279,11 @@ async function makeApp(config, models) {
   // Client-side routing will take care of things from here
   // Because index.html will be served via static plugin,
   // we need to rename it to something else and switch out the URLs to consider the baseUrl
-  const indexPath = path.join(__dirname, 'public/index.html');
-  const indexTemplatePath = path.join(__dirname, 'public/index-template.html');
+  const indexPath = path.join(serverDirname, 'public/index.html');
+  const indexTemplatePath = path.join(
+    serverDirname,
+    'public/index-template.html'
+  );
 
   if (fs.existsSync(indexPath)) {
     fs.renameSync(indexPath, indexTemplatePath);
@@ -280,4 +312,4 @@ async function makeApp(config, models) {
   return app;
 }
 
-module.exports = makeApp;
+export default makeApp;

@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
 
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
@@ -7,7 +7,7 @@ const Sequelize = require('sequelize');
  * @param {object} sequelizeDb - sequelize instance
  */
 // eslint-disable-next-line no-unused-vars
-async function up(queryInterface, config, appLog, sequelizeDb) {
+export async function up(queryInterface, config, appLog, sequelizeDb) {
   /**
    * vw_query_history is not accurately converting batches to query history correctly
    * The view should show batch text if selected text is null or empty
@@ -71,6 +71,6 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
   );
 }
 
-module.exports = {
+export default {
   up,
 };

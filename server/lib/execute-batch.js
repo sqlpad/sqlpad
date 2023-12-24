@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-const ConnectionClient = require('./connection-client');
+import ConnectionClient from './connection-client.js';
 
 /**
  * Execute a query using batch/statement infrastructure
@@ -9,7 +9,7 @@ const ConnectionClient = require('./connection-client');
  * @param {import('./webhooks')} webhooks
  * @param {string} batchId
  */
-async function executeBatch(config, models, webhooks, batchId) {
+export async function executeBatch(config, models, webhooks, batchId) {
   const batch = await models.batches.findOneById(batchId);
   const user = await models.users.findOneById(batch.userId);
   const connection = await models.connections.findOneById(batch.connectionId);
@@ -110,7 +110,12 @@ async function executeBatch(config, models, webhooks, batchId) {
  * @param {import('./webhooks')} webhooks
  * @param {string} batchId
  */
-async function executeCancellableBatch(config, models, webhooks, batchId) {
+export async function executeCancellableBatch(
+  config,
+  models,
+  webhooks,
+  batchId
+) {
   const batch = await models.batches.findOneById(batchId);
   const user = await models.users.findOneById(batch.userId);
   const connection = await models.connections.findOneById(batch.connectionId);
@@ -187,8 +192,3 @@ async function executeCancellableBatch(config, models, webhooks, batchId) {
   const finalBatch = await models.batches.findOneById(batchId);
   webhooks.batchFinished(user, connection, finalBatch);
 }
-
-module.exports = {
-  executeBatch,
-  executeCancellableBatch,
-};

@@ -442,4 +442,4 @@ const configItems = [
   },
 ];
 
-module.exports = configItems;
+export default configItems;

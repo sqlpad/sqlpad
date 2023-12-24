@@ -1,4 +1,4 @@
-const bcrypt = require('bcryptjs');
+import bcrypt from 'bcryptjs';
 
 /**
  * Compares password string to passhash string
@@ -20,7 +20,7 @@ async function getPasshash(password) {
   return hash;
 }
 
-module.exports = {
+export default {
   comparePassword,
   getPasshash,
 };

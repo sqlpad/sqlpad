@@ -1,5 +1,5 @@
-const trino = require('./_trino');
-const { formatSchemaQueryResults } = require('../utils');
+import trino from './_trino.js';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'trino';
 const name = 'Trino';
@@ -114,7 +114,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

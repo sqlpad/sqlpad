@@ -1,13 +1,14 @@
 /* eslint-disable no-await-in-loop */
-const util = require('util');
-const path = require('path');
-const fs = require('fs');
-const { mkdirp } = require('mkdirp');
-const { LRUCache } = require('lru-cache');
-const redis = require('redis');
-const { Op } = require('sequelize');
-const ensureJson = require('./ensure-json');
-const appLog = require('../lib/app-log');
+import util from 'util';
+
+import path from 'path';
+import fs from 'fs';
+import { mkdirp } from 'mkdirp';
+import { LRUCache } from 'lru-cache';
+import redis from 'redis';
+import { Op } from 'sequelize';
+import ensureJson from './ensure-json.js';
+import appLog from '../lib/app-log.js';
 const writeFile = util.promisify(fs.writeFile);
 const readFile = util.promisify(fs.readFile);
 const unlink = util.promisify(fs.unlink);
@@ -317,4 +318,4 @@ class Statements {
   }
 }
 
-module.exports = Statements;
+export default Statements;

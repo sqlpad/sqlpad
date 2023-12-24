@@ -1,6 +1,6 @@
-const sqlite3 = require('sqlite3');
-const appLog = require('../../lib/app-log');
-const { formatSchemaQueryResults } = require('../utils');
+import sqlite3 from 'sqlite3';
+import appLog from '../../lib/app-log.js';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'sqlite';
 const name = 'SQLite';
@@ -190,7 +190,7 @@ async function getSchema(connection) {
   }
 }
 
-module.exports = {
+export default {
   Client,
   id,
   name,

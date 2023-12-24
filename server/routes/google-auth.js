@@ -1,6 +1,7 @@
-require('../typedefs');
-const passport = require('passport');
-const router = require('express').Router();
+import '../typedefs.js';
+import passport from 'passport';
+import express from 'express';
+const router = express.Router();
 
 /**
  * @param {Req} req
@@ -22,4 +23,4 @@ router.get(
 
 router.get('/auth/google/callback', handleGoogleCallback);
 
-module.exports = router;
+export default router;

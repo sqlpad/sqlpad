@@ -1,5 +1,5 @@
-const assert = require('assert');
-const TestUtils = require('../utils');
+import assert from 'assert';
+import TestUtils from '../utils.js';
 
 describe('api/drivers', function () {
   const utils = new TestUtils();

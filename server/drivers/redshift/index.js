@@ -1,8 +1,8 @@
-const fs = require('fs');
-const pg = require('pg');
-const sqlLimiter = require('sql-limiter');
-const appLog = require('../../lib/app-log');
-const { formatSchemaQueryResults } = require('../utils');
+import fs from 'fs';
+import pg from 'pg';
+import sqlLimiter from 'sql-limiter';
+import appLog from '../../lib/app-log.js';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'redshift';
 const name = 'Redshift';
@@ -211,7 +211,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   Client,
   id,
   name,

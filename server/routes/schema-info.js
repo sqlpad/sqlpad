@@ -1,8 +1,9 @@
-require('../typedefs');
-const router = require('express').Router();
-const mustHaveConnectionAccess = require('../middleware/must-have-connection-access');
-const ConnectionClient = require('../lib/connection-client');
-const wrap = require('../lib/wrap');
+import '../typedefs.js';
+import mustHaveConnectionAccess from '../middleware/must-have-connection-access.js';
+import ConnectionClient from '../lib/connection-client.js';
+import wrap from '../lib/wrap.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * @param {Req} req
@@ -87,4 +88,4 @@ router.get(
   wrap(getSchemaInfo)
 );
 
-module.exports = router;
+export default router;

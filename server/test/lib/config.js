@@ -1,10 +1,10 @@
-const assert = require('assert');
-const {
+import assert from 'assert';
+import {
   getFromCli,
   getFromDefault,
   getFromEnv,
-} = require('../../lib/config/config-utils');
-const Config = require('../../lib/config');
+} from '../../lib/config/config-utils.js';
+import Config from '../../lib/config/index.js';
 
 function configHasError(args, errorFindFunction) {
   const config = new Config(args, {});

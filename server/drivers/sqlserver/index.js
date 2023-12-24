@@ -1,6 +1,6 @@
-const mssql = require('mssql');
-const { formatSchemaQueryResults } = require('../utils');
-const { resolvePositiveNumber } = require('../../lib/resolve-number');
+import mssql from 'mssql';
+import { formatSchemaQueryResults } from '../utils.js';
+import { resolvePositiveNumber } from '../../lib/resolve-number.js';
 
 const id = 'sqlserver';
 const name = 'SQL Server';
@@ -197,7 +197,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

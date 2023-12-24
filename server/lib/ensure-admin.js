@@ -1,4 +1,4 @@
-const appLog = require('./app-log');
+import appLog from './app-log.js';
 
 /**
  * Ensure admin email is a user if provided
@@ -44,4 +44,4 @@ async function ensureAdmin(models, config) {
   }
 }
 
-module.exports = ensureAdmin;
+export default ensureAdmin;

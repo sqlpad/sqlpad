@@ -1,14 +1,14 @@
-const Batches = require('./batches');
-const ConnectionAccesses = require('./connection-accesses');
-const ConnectionClients = require('./connection-clients');
-const Connections = require('./connections');
-const Queries = require('./queries');
-const QueryHistory = require('./query-history');
-const SchemaInfo = require('./schema-info');
-const ServiceTokens = require('./service-tokens');
-const Statements = require('./statements');
-const Tags = require('./tags');
-const Users = require('./users');
+import Batches from './batches.js';
+import ConnectionAccesses from './connection-accesses.js';
+import ConnectionClients from './connection-clients.js';
+import Connections from './connections.js';
+import Queries from './queries.js';
+import QueryHistory from './query-history.js';
+import SchemaInfo from './schema-info.js';
+import ServiceTokens from './service-tokens.js';
+import Statements from './statements.js';
+import Tags from './tags.js';
+import Users from './users.js';
 
 /**
  * Models today is a perhaps best thought of as a data-access-layer
@@ -45,4 +45,4 @@ class Models {
   }
 }
 
-module.exports = Models;
+export default Models;

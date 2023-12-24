@@ -1,5 +1,5 @@
-const assert = require('assert');
-const validateConnection = require('../../lib/validate-connection');
+import assert from 'assert';
+import validateConnection from '../../lib/validate-connection.js';
 
 describe('drivers', function () {
   it('validateConnection() for old', function () {

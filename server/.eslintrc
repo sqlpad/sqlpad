@@ -1,9 +1,16 @@
 {
   "extends": ["airbnb-base", "prettier"],
   "env": {
+    "es6": true,
+    "node": true,
     "mocha": true
   },
+  "parserOptions": {
+    "ecmaVersion": 2022
+  },
   "rules": {
+    "import/prefer-default-export": "off",
+    "import/extensions": "off",
     "camelcase": "off",
     "consistent-return": "off",
     "dot-notation": "off",

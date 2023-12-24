@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 const maskToken = (token) => {
   return '********************'.concat(token.slice(-5));
@@ -69,4 +69,4 @@ class ServiceTokens {
   }
 }
 
-module.exports = ServiceTokens;
+export default ServiceTokens;

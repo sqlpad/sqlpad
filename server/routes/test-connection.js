@@ -1,8 +1,9 @@
-require('../typedefs');
-const router = require('express').Router();
-const mustBeAdmin = require('../middleware/must-be-admin');
-const wrap = require('../lib/wrap');
-const ConnectionClient = require('../lib/connection-client');
+import '../typedefs.js';
+import mustBeAdmin from '../middleware/must-be-admin.js';
+import wrap from '../lib/wrap.js';
+import ConnectionClient from '../lib/connection-client.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * A non-error response is considered a success or valid connection config
@@ -28,4 +29,4 @@ async function testConnection(req, res) {
 
 router.post('/api/test-connection', mustBeAdmin, wrap(testConnection));
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
-const Sequelize = require('sequelize');
-const migrationUtils = require('../lib/migration-utils');
+import Sequelize from 'sequelize';
+import migrationUtils from '../lib/migration-utils.js';
 
 /**
  * @param {import('sequelize').QueryInterface} queryInterface
@@ -8,7 +8,7 @@ const migrationUtils = require('../lib/migration-utils');
  * @param {object} sequelizeDb - sequelize instance
  */
 // eslint-disable-next-line no-unused-vars
-async function up(queryInterface, config, appLog, sequelizeDb) {
+export async function up(queryInterface, config, appLog, sequelizeDb) {
   // Statements need to reference the remote execution to enable query cancellation
 
   await queryInterface.addColumn('statements', 'execution_id', {
@@ -31,6 +31,6 @@ async function up(queryInterface, config, appLog, sequelizeDb) {
   );
 }
 
-module.exports = {
+export default {
   up,
 };

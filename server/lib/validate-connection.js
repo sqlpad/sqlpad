@@ -1,4 +1,4 @@
-const drivers = require('../drivers');
+import drivers from '../drivers/index.js';
 
 /**
  * Clean value to boolean
@@ -105,4 +105,4 @@ function validateConnection(connection) {
   return evenMoreClean;
 }
 
-module.exports = validateConnection;
+export default validateConnection;

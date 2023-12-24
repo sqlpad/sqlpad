@@ -1,6 +1,6 @@
-const { createClient } = require('@clickhouse/client');
-const sqlLimiter = require('sql-limiter');
-const { formatSchemaQueryResults } = require('../utils');
+import { createClient } from '@clickhouse/client';
+import sqlLimiter from 'sql-limiter';
+import { formatSchemaQueryResults } from '../utils.js';
 
 const id = 'clickhouse';
 const name = 'ClickHouse';
@@ -131,7 +131,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

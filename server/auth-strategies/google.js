@@ -1,7 +1,7 @@
-const passport = require('passport');
-const PassportGoogleStrategy = require('passport-google-oauth20').Strategy;
-const appLog = require('../lib/app-log');
-const checkAllowedDomains = require('../lib/check-allowed-domains');
+import passport from 'passport';
+import { Strategy as PassportGoogleStrategy } from 'passport-google-oauth20';
+import appLog from '../lib/app-log.js';
+import checkAllowedDomains from '../lib/check-allowed-domains.js';
 
 async function passportGoogleStrategyHandler(
   req,
@@ -96,4 +96,4 @@ function enableGoogle(config) {
   }
 }
 
-module.exports = enableGoogle;
+export default enableGoogle;

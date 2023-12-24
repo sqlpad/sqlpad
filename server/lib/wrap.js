@@ -5,4 +5,4 @@ const wrap =
   (...args) =>
     fn(...args).catch(args[2]);
 
-module.exports = wrap;
+export default wrap;

@@ -17,4 +17,4 @@ class QueryHistory {
   }
 }
 
-module.exports = QueryHistory;
+export default QueryHistory;

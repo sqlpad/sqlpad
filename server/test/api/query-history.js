@@ -1,7 +1,7 @@
-const assert = require('assert');
-const { Op } = require('sequelize');
-const TestUtils = require('../utils');
-const urlFilterToDbFilter = require('../../lib/url-filter-to-db-filter');
+import assert from 'assert';
+import { Op } from 'sequelize';
+import TestUtils from '../utils.js';
+import urlFilterToDbFilter from '../../lib/url-filter-to-db-filter.js';
 
 const queryText1 = `
   -- QUERY1

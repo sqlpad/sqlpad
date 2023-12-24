@@ -1,4 +1,4 @@
-const ConnectionClient = require('../lib/connection-client');
+import ConnectionClient from '../lib/connection-client.js';
 
 /**
  * ConnectionClients is a special in-memory store of connected database clients
@@ -71,4 +71,4 @@ class ConnectionClients {
   }
 }
 
-module.exports = ConnectionClients;
+export default ConnectionClients;

@@ -6,4 +6,4 @@ const consts = {
   CONNECTION_HASH_NAMESPACE: '3dffe1b8-5a91-4db7-8dfe-6c8a91a5eb6b',
 };
 
-module.exports = Object.freeze(consts);
+export default Object.freeze(consts);

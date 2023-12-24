@@ -1,6 +1,6 @@
-const passport = require('passport');
-const getHeaderUser = require('../lib/get-header-user');
-require('../typedefs');
+import passport from 'passport';
+import getHeaderUser from '../lib/get-header-user.js';
+import '../typedefs.js';
 
 /**
  * Middleware to handle passive/sessionless authentication means
@@ -81,4 +81,4 @@ function sessionlessAuth(req, res, next) {
   next();
 }
 
-module.exports = sessionlessAuth;
+export default sessionlessAuth;

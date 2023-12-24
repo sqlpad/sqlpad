@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
-const ConnectionClient = require('./connection-client');
-const appLog = require('./app-log');
+import ConnectionClient from './connection-client.js';
+
+import appLog from './app-log.js';
 
 /**
  * Execute a query using batch/statement infrastructure
@@ -10,8 +11,7 @@ const appLog = require('./app-log');
  * @param {import('./webhooks')} webhooks
  * @param {string} batchId
  */
-
-async function cancelBatch(models, webhooks, batchId) {
+export async function cancelBatch(models, webhooks, batchId) {
   const batch = await models.batches.findOneById(batchId);
   const user = await models.users.findOneById(batch.userId);
   const connection = await models.connections.findOneById(batch.connectionId);
@@ -94,7 +94,3 @@ async function cancelBatch(models, webhooks, batchId) {
   webhooks.batchFinished(user, connection, finalBatch);
   return true;
 }
-
-module.exports = {
-  cancelBatch,
-};

@@ -1,27 +1,28 @@
-const assert = require('assert');
-const { v4: uuidv4 } = require('uuid');
-const rimraf = require('rimraf');
-const { mkdirp } = require('mkdirp');
-const path = require('path');
-const redis = require('redis');
-const request = require('supertest');
-const detectPort = require('detect-port');
-const bodyParser = require('body-parser');
-const express = require('express');
-const http = require('http');
-const Config = require('../lib/config');
-const { Sequelize } = require('sequelize');
-const appLog = require('../lib/app-log');
-const db = require('../lib/db');
-const makeApp = require('../app');
-const makeMigrator = require('../lib/make-migrator');
-const loadSeedData = require('../lib/load-seed-data');
-const ensureConnectionAccess = require('../lib/ensure-connection-access');
-const ensureAdmin = require('../lib/ensure-admin');
+import assert from 'assert';
+import { v4 as uuidv4 } from 'uuid';
+import rimraf from 'rimraf';
+import { mkdirp } from 'mkdirp';
+import path from 'path';
+import redis from 'redis';
+import request from 'supertest';
+import detectPort from 'detect-port';
+import bodyParser from 'body-parser';
+import express from 'express';
+import http from 'http';
+import Config from '../lib/config/index.js';
+import { Sequelize } from 'sequelize';
+import appLog from '../lib/app-log.js';
+import * as db from '../lib/db.js';
+import makeApp from '../app.js';
+import makeMigrator from '../lib/make-migrator.js';
+import loadSeedData from '../lib/load-seed-data.js';
+import ensureConnectionAccess from '../lib/ensure-connection-access.js';
+import ensureAdmin from '../lib/ensure-admin.js';
+import serverDirname from '../server-dirname.cjs';
 
 // At the start of any test run, clean out the root artifacts directory
 before(function (done) {
-  rimraf(path.join(__dirname, '/artifacts/*'), done);
+  rimraf(path.join(serverDirname, 'test/artifacts/*'), done);
 });
 
 class TestUtils {
@@ -30,7 +31,7 @@ class TestUtils {
       {
         // Despite being in-memory, still need a file path for cache and session files
         // Eventually these will be moved to sqlite and we can be fully-in-memory
-        dbPath: path.join(__dirname, '/artifacts/defaultdb'),
+        dbPath: path.join(serverDirname, 'test/artifacts/defaultdb'),
         dbInMemory: true,
         sessionStore: 'memory',
         queryResultStore: 'memory',
@@ -266,4 +267,4 @@ class TestUtils {
   }
 }
 
-module.exports = TestUtils;
+export default TestUtils;

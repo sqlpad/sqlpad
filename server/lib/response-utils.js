@@ -68,4 +68,4 @@ class ResponseUtils {
   }
 }
 
-module.exports = ResponseUtils;
+export default ResponseUtils;

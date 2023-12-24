@@ -1,11 +1,11 @@
-const appLog = require('../lib/app-log');
+import appLog from '../lib/app-log.js';
 
 /**
  * If value is string try and parse JSON
  * Required to follow up on JSON fields when using SQL Server, as they are returned as string
  * @param {*} value
  */
-module.exports = function ensureJson(value) {
+export default function ensureJson(value) {
   let final = value;
   if (typeof value === 'string') {
     try {
@@ -15,4 +15,4 @@ module.exports = function ensureJson(value) {
     }
   }
   return final;
-};
+}

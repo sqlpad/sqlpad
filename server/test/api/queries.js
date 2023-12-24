@@ -1,8 +1,8 @@
-const assert = require('assert');
-const consts = require('../../lib/consts');
-const TestUtils = require('../utils');
-const queryString = require('query-string');
-const parseLinkHeader = require('parse-link-header');
+import assert from 'assert';
+import consts from '../../lib/consts.js';
+import TestUtils from '../utils.js';
+import queryString from 'query-string';
+import parseLinkHeader from 'parse-link-header';
 
 const createQueryBody = {
   name: 'test query',

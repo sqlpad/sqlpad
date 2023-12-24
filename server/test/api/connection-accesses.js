@@ -1,6 +1,6 @@
-const assert = require('assert');
-const TestUtils = require('../utils');
-const consts = require('../../lib/consts');
+import assert from 'assert';
+import TestUtils from '../utils.js';
+import consts from '../../lib/consts.js';
 
 describe('api/connection-accesses', function () {
   const utils = new TestUtils();

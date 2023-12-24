@@ -1,6 +1,6 @@
-const assert = require('assert');
-const bigquery = require('./index');
-const testUtils = require('../test-utils');
+import assert from 'assert';
+import bigquery from './index.js';
+import testUtils from '../test-utils.js';
 
 const connection = {
   name: 'test bigquery',

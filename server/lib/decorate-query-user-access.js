@@ -1,4 +1,4 @@
-const consts = require('./consts');
+import consts from './consts.js';
 
 // Not sure where to put utilities like these
 
@@ -37,4 +37,4 @@ function decorateQueryUserAccess(query, user) {
   return clone;
 }
 
-module.exports = decorateQueryUserAccess;
+export default decorateQueryUserAccess;

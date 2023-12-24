@@ -1,6 +1,6 @@
-const assert = require('assert');
-const testUtils = require('../test-utils');
-const trino = require('./index');
+import assert from 'assert';
+import testUtils from '../test-utils.js';
+import trino from './index.js';
 
 const connection = {
   name: 'test trino',

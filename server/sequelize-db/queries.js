@@ -1,6 +1,6 @@
-const { DataTypes } = require('sequelize');
+import { DataTypes } from 'sequelize';
 
-module.exports = function (sequelize) {
+export default function (sequelize) {
   const Queries = sequelize.define(
     'Queries',
     {
@@ -64,4 +64,4 @@ module.exports = function (sequelize) {
   );
 
   return Queries;
-};
+}

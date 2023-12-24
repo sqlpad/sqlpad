@@ -1,7 +1,8 @@
-require('../typedefs');
-const router = require('express').Router();
-const mustBeAdmin = require('../middleware/must-be-admin');
-const wrap = require('../lib/wrap');
+import '../typedefs.js';
+import mustBeAdmin from '../middleware/must-be-admin.js';
+import wrap from '../lib/wrap.js';
+import express from 'express';
+const router = express.Router();
 
 /**
  * @param {Req} req
@@ -53,4 +54,4 @@ router.get('/api/service-tokens', mustBeAdmin, wrap(listServiceTokens));
 router.post('/api/service-tokens', mustBeAdmin, wrap(generateServiceToken));
 router.delete('/api/service-tokens/:id', mustBeAdmin, wrap(deleteServiceToken));
 
-module.exports = router;
+export default router;

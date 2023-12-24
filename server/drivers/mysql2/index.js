@@ -1,9 +1,9 @@
-const fs = require('fs');
-const mysql = require('mysql2/promise');
-const appLog = require('../../lib/app-log');
-const sqlLimiter = require('sql-limiter');
-const { formatSchemaQueryResults } = require('../utils');
-const { resolvePositiveNumber } = require('../../lib/resolve-number');
+import fs from 'fs';
+import mysql from 'mysql2/promise';
+import appLog from '../../lib/app-log.js';
+import sqlLimiter from 'sql-limiter';
+import { formatSchemaQueryResults } from '../utils.js';
+import { resolvePositiveNumber } from '../../lib/resolve-number.js';
 
 const id = 'mysql2';
 const name = 'MySQL2';
@@ -256,7 +256,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

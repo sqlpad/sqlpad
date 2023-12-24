@@ -1,6 +1,6 @@
-const { BigQuery } = require('@google-cloud/bigquery');
-const { formatSchemaQueryResults } = require('../utils');
-const minimist = require('minimist');
+import { BigQuery } from '@google-cloud/bigquery';
+import { formatSchemaQueryResults } from '../utils.js';
+import minimist from 'minimist';
 
 const id = 'bigquery';
 const name = 'BigQuery';
@@ -232,7 +232,7 @@ const fields = [
   },
 ];
 
-module.exports = {
+export default {
   id,
   name,
   fields,

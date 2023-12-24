@@ -1,7 +1,7 @@
-const passport = require('passport');
-const LdapStrategy = require('passport-ldapauth');
-const appLog = require('../lib/app-log');
-const ldapUtils = require('../lib/ldap-utils');
+import passport from 'passport';
+import LdapStrategy from 'passport-ldapauth';
+import appLog from '../lib/app-log.js';
+import ldapUtils from '../lib/ldap-utils.js';
 
 async function enableLdap(config) {
   if (!config.get('ldapAuthEnabled')) {
@@ -241,4 +241,4 @@ async function enableLdap(config) {
   );
 }
 
-module.exports = enableLdap;
+export default enableLdap;

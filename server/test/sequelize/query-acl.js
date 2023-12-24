@@ -1,5 +1,5 @@
-const assert = require('assert');
-const TestUtils = require('../utils');
+import assert from 'assert';
+import TestUtils from '../utils.js';
 
 describe('QueryAcl', function () {
   it('write expected results', async function () {

@@ -1,4 +1,4 @@
-const { QueryTypes } = require('sequelize');
+import { QueryTypes } from 'sequelize';
 
 class Tags {
   /**
@@ -20,4 +20,4 @@ class Tags {
   }
 }
 
-module.exports = Tags;
+export default Tags;

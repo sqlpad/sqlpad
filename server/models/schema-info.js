@@ -1,4 +1,4 @@
-const ensureJson = require('./ensure-json');
+import ensureJson from './ensure-json.js';
 
 class SchemaInfo {
   /**
@@ -53,4 +53,4 @@ class SchemaInfo {
   }
 }
 
-module.exports = SchemaInfo;
+export default SchemaInfo;

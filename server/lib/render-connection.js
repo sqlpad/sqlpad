@@ -1,4 +1,4 @@
-const mustache = require('mustache');
+import mustache from 'mustache';
 
 // Disable HTML escaping. We're not using it for HTML
 mustache.escape = function (text) {
@@ -33,4 +33,4 @@ function renderConnection(connection, user) {
   return replaced;
 }
 
-module.exports = renderConnection;
+export default renderConnection;
