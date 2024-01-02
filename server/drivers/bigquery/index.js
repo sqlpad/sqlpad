@@ -38,13 +38,12 @@ function retry(
 /**
  * Return the query timeout in seconds from the app config.
  */
-let _timeoutSeconds;
 function getTimeoutSeconds() {
-  if (!_timeoutSeconds) {
-    const config = getConfigRef();
-    _timeoutSeconds = config?.get('timeoutSeconds'); // This is the HTTP connection timeout used by the SQLPad backend
-  }
-  return _timeoutSeconds;
+  const config = getConfigRef();
+  // This is the HTTP connection timeout used by the SQLPad backend
+  // It may not exist if this is executing outside the scope of the application
+  // In that case, return a stubbed in default
+  return config?.get('timeoutSeconds') ?? 300;
 }
 
 /**
