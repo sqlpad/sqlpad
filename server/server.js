@@ -15,6 +15,7 @@ import ensureConnectionAccess from './lib/ensure-connection-access.js';
 import packageJson from './server-package-json.cjs';
 import fs from 'fs';
 import { initDrivers } from './drivers/index.js';
+import { setConfigRef } from './lib/config/config-store.js';
 
 const argv = minimist(process.argv.slice(2));
 
@@ -59,6 +60,7 @@ if (configFilePath && configFilePath.includes('.env')) {
 }
 
 const config = new Config(argv, process.env);
+setConfigRef(config);
 
 const migrateOnly = config.get('migrate') || cliHas('migrate');
 

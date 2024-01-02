@@ -1,6 +1,6 @@
 import { BigQuery } from '@google-cloud/bigquery';
 import { formatSchemaQueryResults } from '../utils.js';
-import minimist from 'minimist';
+import { getConfigRef } from '../../lib/config/config-store.js';
 
 const id = 'bigquery';
 const name = 'BigQuery';
@@ -38,15 +38,12 @@ function retry(
 /**
  * Return the query timeout in seconds from the app config.
  */
-let _timeoutSeconds;
 function getTimeoutSeconds() {
-  if (!_timeoutSeconds) {
-    const Config = require('../../lib/config');
-    const argv = minimist(process.argv.slice(2));
-    const config = new Config(argv, process.env);
-    _timeoutSeconds = config.get('timeoutSeconds'); // This is the HTTP connection timeout used by the SQLPad backend
-  }
-  return _timeoutSeconds;
+  const config = getConfigRef();
+  // This is the HTTP connection timeout used by the SQLPad backend
+  // It may not exist if this is executing outside the scope of the application
+  // In that case, return a stubbed in default
+  return config?.get('timeoutSeconds') ?? 300;
 }
 
 /**
