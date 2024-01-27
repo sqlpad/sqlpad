@@ -116,6 +116,13 @@ class TestUtils {
       server,
       url: `http://localhost:${port}/`,
       responses,
+      close: () => {
+        return new Promise((resolve) => {
+          server.closeAllConnections();
+          server.close();
+          resolve();
+        });
+      },
     };
   }
 
