@@ -1,5 +1,10 @@
 # Changelog
 
+## [7.3.0] - 2024-01-27
+
+- Restore arm64 container build
+- Convert server code to ESM
+
 ## [7.2.0] - 2023-12-23
 
 - Add extra result display formats and copy-to-clipboard (#1209)
