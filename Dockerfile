@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     fi\
     ) \
     && rm -rf /var/lib/apt/lists/*
-RUN npm config set python /usr/bin/python3
+# RUN npm config set python /usr/bin/python3
 
 WORKDIR /sqlpad
 
