@@ -12,11 +12,11 @@ If you are using these examples as a starter for something you are working on, y
 
 ```sh
 # The most minimal example, mapping port 3000 to local docker host
-docker run -p 3000:3000 sqlpad/sqlpad:latest
+docker run -p 3000:3000 -e "SQLPAD_ADMIN=admin@sqlpad.com" -e "SQLPAD_ADMIN_PASSWORD=admin" sqlpad/sqlpad:latest
 
 # volume and env vars being set and run in background
 # directory `~/docker-volumes` must be shared with docker to work
-docker run --name sqlpad -p 127.0.0.1:3000:3000 --volume ~/docker-volumes/sqlpad-postgres:/var/lib/sqlpad --detach sqlpad/sqlpad:latest
+docker run --name sqlpad -p 127.0.0.1:3000:3000 -e "SQLPAD_ADMIN=admin@sqlpad.com" -e "SQLPAD_ADMIN_PASSWORD=admin" --volume ~/docker-volumes/sqlpad-postgres:/var/lib/sqlpad --detach sqlpad/sqlpad:latest
 
 # To list running docker images
 docker ps
