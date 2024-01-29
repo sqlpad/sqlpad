@@ -1,8 +1,8 @@
-import odbc from 'odbc';
-import appLog from '../../lib/app-log.js';
-import sqlLimiter from 'sql-limiter';
-import { formatSchemaQueryResults } from '../utils.js';
-import { resolvePositiveNumber } from '../../lib/resolve-number.js';
+// NOTE: This file is cjs due to wonky compat issues with amd64 builds
+// Something about attempting to import with a failure isn't being handled as previously expected
+// This might be a node issue resolved in later versions
+const odbc = require('odbc');
+const sqlLimiter = require('sql-limiter');
 
 const id = 'unixodbc';
 const name = 'unixODBC';
@@ -85,7 +85,9 @@ function testConnection(connection) {
  * Get schema for connection
  * @param {*} connection
  */
-function getSchema(connection) {
+async function getSchema(connection) {
+  const { formatSchemaQueryResults } = await import('../utils.js');
+
   const schema_sql = connection.schema_sql
     ? connection.schema_sql
     : SCHEMA_SQL_INFORMATION_SCHEMA;
@@ -136,6 +138,10 @@ class Client {
    * Does not propagate error up
    */
   async disconnect() {
+    const appLog = await import('../../lib/app-log.js').then(
+      (module) => module.default
+    );
+
     try {
       if (this.client && this.client.close) {
         await this.client.close();
@@ -147,6 +153,13 @@ class Client {
   }
 
   async runQuery(query) {
+    const { resolvePositiveNumber } = await import(
+      '../../lib/resolve-number.js'
+    );
+
+    const appLog = await import('../../lib/app-log.js').then(
+      (module) => module.default
+    );
     const { limit_strategies } = this.connection;
 
     // Check to see if a custom maxrows is set, otherwise use default
@@ -260,7 +273,7 @@ const fields = [
   },
 ];
 
-export default {
+module.exports = {
   Client,
   fields,
   getSchema,
