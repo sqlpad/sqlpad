@@ -43,7 +43,7 @@ export const initDrivers = async () => {
   // (and lacks prebuilt binaries like sqlite provides)
   try {
     appLog.info('Loading odbc');
-    drivers.unixodbc = await import('./unixodbc/index.js').then(
+    drivers.unixodbc = await import('./unixodbc/index.cjs').then(
       (module) => module.default
     );
     appLog.info('Loaded odbc');

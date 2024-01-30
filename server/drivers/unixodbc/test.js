@@ -1,6 +1,6 @@
 import assert from 'assert';
 import testUtils from '../test-utils.js';
-import unixodbc from './index.js';
+import unixodbc from './index.cjs';
 
 // Using Windows? You may need to change your db path to something like
 // process.env.ODBC_CONNECTION_STRING =
