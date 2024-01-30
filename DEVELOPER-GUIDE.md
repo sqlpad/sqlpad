@@ -149,6 +149,8 @@ You can build and test the docker file by running the following from the root of
 
 ```sh
 # build image from docker file
+# to build for a different architecture you can do
+# docker build -t localsqlpad . --no-cache=true --platform=linux/amd64
 docker build -t localsqlpad .
 
 # list images built
