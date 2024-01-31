@@ -5,7 +5,7 @@ function IncompleteDataNotification() {
   return (
     <DataNotification
       tooltip="Return fewer rows or increase query result max rows in
-    configuration."
+    configuration. If max rows has not been exceeded, return fewer columns."
     >
       Incomplete
     </DataNotification>
