@@ -1,19 +1,20 @@
 import path from 'path';
-import { mkdirp } from 'mkdirp';
+import mkdirp from 'mkdirp';
 import Models from '../models/index.js';
 import SequelizeDb from '../sequelize-db/index.js';
 
 /**
- * Whenever possible db should be read from the app req object.
- * Sometimes this isn't possible or convenient at the moment however.
+ * Whenever possible, the database (db) should be read from the app req object.
+ * Sometimes, this isn't possible or convenient at the moment, however.
  * For those cases, this module provides access by caching the db instance.
- * Safety measures have been added to ensure only 1 instance of db can be initialized per alias
+ * Safety measures have been added to ensure only 1 instance of the db can be initialized per alias.
  */
-let instances = {};
+const instances = {};
 
 /**
- * Returns promise of db instance
+ * Returns a promise of the db instance.
  * @param {string} [instanceAlias]
+ * @returns {Promise<{ models: Models, sequelizeDb: SequelizeDb }>}
  */
 export async function getDb(instanceAlias = 'default') {
   const instancePromise = instances[instanceAlias];
@@ -26,8 +27,9 @@ export async function getDb(instanceAlias = 'default') {
 }
 
 /**
- * Initialize db for a given config
+ * Initializes the db for a given config.
  * @param {object} config
+ * @returns {Promise<{ models: Models, sequelizeDb: SequelizeDb }>}
  */
 async function initDb(config) {
   const dbPath = config.get('dbPath');
@@ -42,9 +44,10 @@ async function initDb(config) {
 /**
  * Initializes a db instance for a given config.
  * Ensures that this only happens once for a given alias.
- * If this were called multiple times weird things could happen
+ * If this were called multiple times, weird things could happen.
  * @param {object} config
  * @param {string} instanceAlias
+ * @returns {boolean}
  */
 export function makeDb(config, instanceAlias = 'default') {
   // makeDb should only be called once for a given alias
