@@ -1,5 +1,11 @@
 # Changelog
 
+## [7.4.0] - 2024-02-03
+
+- Node 18 required
+- Show incomplete on truncated response from BigQuery (#1224)
+- Update dependencies
+
 ## [7.3.1] - 2024-01-30
 
 - Revert odbc implementation to CJS
