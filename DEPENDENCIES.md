@@ -14,8 +14,6 @@ yarn outdated
 
 - `ldapjs` - 3.x brings a [lot of changes and risk of breakage](https://github.com/ldapjs/node-ldapjs/releases/tag/v3.0.0)
 - `mariadb` - 3.0.2 works with sequelize. 3.1.2 doesn't.
-- `node-fetch` - 3.x is ESM only
-- `query-string` - 8.x is ESM only
 - `rim-raf` - 3.1.2 adds transitive deps that are ESM only
 - `sql-formatter` - 3.x onward has performance regressions, changes in functionality.
 - `umzug` - 3.x has many (unnecessary) breaking changes and additional dependencies.
