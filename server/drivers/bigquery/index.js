@@ -117,7 +117,7 @@ function runQuery(queryString, connection = {}) {
         }
       );
     })
-    .then(([rows]) => {
+    .then(([rows, nextPage]) => {
       if (rows.length === 0) {
         const t2 = process.hrtime(t1);
         if (t2[0] >= timeoutSeconds) {
@@ -127,6 +127,8 @@ function runQuery(queryString, connection = {}) {
 
       if (isMaxRowsSpecified && rows.length > connection.maxRows) {
         rows.splice(connection.maxRows);
+        incomplete = true;
+      } else if (nextPage) {
         incomplete = true;
       }
 
