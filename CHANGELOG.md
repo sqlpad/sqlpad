@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.3.1] - 2024-01-30
+
+- Revert odbc implementation to CJS
+
 ## [7.3.0] - 2024-01-27
 
 - Restore arm64 container build

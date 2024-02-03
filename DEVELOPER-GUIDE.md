@@ -142,3 +142,29 @@ yarn test
 # specifying the path to the test file and --exit to exit after tests have run
 npx mocha test/path/to/file.js --exit
 ```
+
+## Building local docker images
+
+You can build and test the docker file by running the following from the root of the directory. Note that you must have Docker installed and running.
+
+```sh
+# build image from docker file
+# to build for a different architecture you can do
+# docker build -t localsqlpad . --no-cache=true --platform=linux/amd64
+docker build -t localsqlpad .
+
+# list images built
+docker images
+
+# Run localsqlpad image just built
+# https://docs.docker.com/engine/reference/run/
+docker run -p 3000:3000 -e "SQLPAD_ADMIN=admin@sqlpad.com" -e "SQLPAD_ADMIN_PASSWORD=admin" localsqlpad
+
+# Now in browser you can open sqlpad at http://localhost:3000
+```
+
+In the event that a specific architecture needs to be tested, say an amd64 image to run on arm64, you can pull a dockerhub image based on specific sha.
+
+```sh
+docker run -p 3000:3000 -e "SQLPAD_ADMIN=admin@sqlpad.com" -e "SQLPAD_ADMIN_PASSWORD=admin" sqlpad/sqlpad@sha256:b80b4ab2af32ed07479d9233327bf3e5352fc71b41245d8e73b6403361be266a
+```
