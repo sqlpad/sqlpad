@@ -45,6 +45,7 @@ describe('api/webhooks', function () {
     });
 
     await wait(200);
+    await hookServer.close();
     assert.equal(hookServer.responses.length, 0);
   });
 
@@ -68,7 +69,7 @@ describe('api/webhooks', function () {
     });
 
     await wait(200);
-
+    await hookServer.close();
     assert.deepStrictEqual(hookServer.responses[0].body, {
       action: 'user_created',
       sqlpadUrl: 'http://mysqlpad.com:9000/sqlpad',
@@ -117,7 +118,7 @@ describe('api/webhooks', function () {
     });
 
     await wait(200);
-
+    await hookServer.close();
     // no secret or url headers this time
     assert.equal(hookServer.responses[0].headers['sqlpad-secret'], '');
 
@@ -189,6 +190,7 @@ describe('api/webhooks', function () {
     const statement1 = statements[0];
 
     await wait(500);
+    await hookServer.close();
 
     const { body: batchCreatedBody } = hookServer.responses.find(
       (r) => r.body.action === 'batch_created'
