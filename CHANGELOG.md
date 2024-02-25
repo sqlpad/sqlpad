@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.4.1] - 2024-02-24
+
+- Update dependencies
+
 ## [7.4.0] - 2024-02-03
 
 - Node 18 required
