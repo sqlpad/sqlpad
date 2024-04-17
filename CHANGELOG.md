@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.4.2] - 2024-04-16
+
+- Update dependencies
+
 ## [7.4.1] - 2024-02-24
 
 - Update dependencies
