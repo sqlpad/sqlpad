@@ -76,7 +76,7 @@
     "mysql2": "^3.3.5",
     "node-crate": "^3.0.0",
     "node-fetch": "^3.3.2",
-    "node-xlsx": "^0.23.0",
+    "node-xlsx": "^0.24.0",
     "openid-client": "^5.3.1",
     "papaparse": "^5.3.2",
     "passport": "^0.7.0",
