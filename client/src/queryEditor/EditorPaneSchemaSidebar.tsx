@@ -24,7 +24,7 @@ const EditorPaneSchemaSidebar = ({
     <SplitPane
       split="vertical"
       minSize={150}
-      defaultSize={260}
+      defaultSize={300}
       maxSize={-100}
       onChange={() => debouncedResizeChart(queryId)}
     >

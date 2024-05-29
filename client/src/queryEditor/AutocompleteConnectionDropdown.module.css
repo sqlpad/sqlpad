@@ -1,0 +1,17 @@
+@keyframes attention {
+  55% {
+    box-shadow: 0 0 0px var(--primary-color);
+  }
+  70% {
+    box-shadow: 0 0 9px var(--secondary-color);
+  }
+  85% {
+    box-shadow: 0 0 0px var(--primary-color);
+  }
+}
+
+.attention {
+  animation-name: attention;
+  animation-duration: 6s;
+  animation-iteration-count: infinite;
+}

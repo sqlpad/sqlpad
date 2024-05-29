@@ -1,5 +1,6 @@
 import React from 'react';
-import ConnectionDropDown from './ConnectionDropdown';
+
+import AutocompleteConnectionDropdown from './AutocompleteConnectionDropdown';
 import ToolbarChartButton from './ToolbarChartButton';
 import ToolbarConnectionClientButton from './ToolbarConnectionClientButton';
 import ToolbarHistoryButton from './ToolbarHistoryButton';
@@ -21,7 +22,7 @@ function Toolbar() {
     >
       <div style={{ display: 'flex' }}>
         <ToolbarToggleSchemaButton />
-        <ConnectionDropDown />
+        <AutocompleteConnectionDropdown />
         <ToolbarSpacer />
         <ToolbarConnectionClientButton />
         <ToolbarSpacer grow />

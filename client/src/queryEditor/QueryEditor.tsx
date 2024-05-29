@@ -59,7 +59,7 @@ function QueryEditor() {
     >
       <AppHeader />
       <Toolbar />
-      <div style={{ position: 'relative', flexGrow: 1 }}>
+      <div style={{ position: 'relative', flexGrow: 1, zIndex: 0 }}>
         <EditorPaneRightSidebar queryId={queryId}>
           <EditorPaneSchemaSidebar queryId={queryId}>
             {/* @ts-expect-error SplitPane types are off */}

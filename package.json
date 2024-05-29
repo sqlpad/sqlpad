@@ -20,5 +20,8 @@
     "lint": "npm run lint --prefix client && npm run lint --prefix server && prettier --check \"**/*.js\"",
     "prepare": "husky",
     "precommit": "lint-staged"
+  },
+  "dependencies": {
+    "react-select": "^5.8.0"
   }
 }
