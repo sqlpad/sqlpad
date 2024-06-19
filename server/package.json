@@ -73,7 +73,7 @@
     "mssql": "^10.0.2",
     "mustache": "^4.2.0",
     "mysql": "^2.18.1",
-    "mysql2": "^3.3.5",
+    "mysql2": "^3.9.8",
     "node-crate": "^3.0.0",
     "node-fetch": "^3.3.2",
     "node-xlsx": "^0.24.0",
