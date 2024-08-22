@@ -18,11 +18,12 @@ Because of the sensitive nature of this application, the project will not be tra
 
 While not exactly alternatives, these open source projects might be of interest:
 
+- [Bytebase](https://github.com/bytebase/bytebase) (open source) / [Bytebase](https://www.bytebase.com/) (company)
+- [Chartbrew](https://github.com/chartbrew/chartbrew) (open source) / [Chartbrew](https://chartbrew.com/) (company)
+- [CloudBeaver](https://github.com/dbeaver/cloudbeaver) (open source) [DBeaver](https://dbeaver.com/) (company)
+- [Lightdash](https://github.com/lightdash/lightdash) (open source) / [Lightdash](https://www.lightdash.com/) (company)
 - [Querybook](https://www.querybook.org/) (open source)
 - [Superset](https://github.com/apache/superset) (open source) / [Preset](https://preset.io/) (company)
-- [Chartbrew](https://github.com/chartbrew/chartbrew) (open source) / [Chartbrew](https://chartbrew.com/) (company)
-- [Lightdash](https://github.com/lightdash/lightdash) (open source) / [Lightdash](https://www.lightdash.com/) (company)
-- [CloudBeaver](https://github.com/dbeaver/cloudbeaver) (open source)
 - [Awesome DB tools GUIs](https://github.com/mgramin/awesome-db-tools#gui)
 
 ## Database Support
