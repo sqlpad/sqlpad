@@ -34,7 +34,7 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-20.04
-    timeout-minutes: 30
+    timeout-minutes: 15
 
     strategy:
       fail-fast: false # if one job fails, others will not be aborted
