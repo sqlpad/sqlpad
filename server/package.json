@@ -123,7 +123,7 @@
     "node-dev": "8.0.0",
     "parse-link-header": "^2.0.0",
     "pino-pretty": "^10.0.0",
-    "supertest": "^6.2.2",
+    "supertest": "^7.0.0",
     "traverse": "^0.6.6"
   },
   "resolutions": {
