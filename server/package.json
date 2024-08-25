@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@clickhouse/client": "^0.0.16",
-    "@google-cloud/bigquery": "^6.0.0",
+    "@google-cloud/bigquery": "^7.9.0",
     "@node-saml/passport-saml": "^4.0.3",
     "athena-express": "^7.1.5",
     "aws-sdk": "^2.1113.0",
