@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code ${{ github.sha }}
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build
-        uses: docker://node:18-slim
+        uses: docker://node:20-slim
         with:
           entrypoint: bash
           args: .github/workflows/build.sh
