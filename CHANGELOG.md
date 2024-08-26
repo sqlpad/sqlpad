@@ -1,6 +1,6 @@
 # Changelog
 
-## [7.5.0] - TBD
+## [7.5.0] - 2024-08-25
 
 - Node 20 or later required
 - Update dependencies
