@@ -15,7 +15,6 @@ yarn outdated
 - `@clickhouse/client` - 1.x is major breaking and needs thorough update/testing. 
 - `eslint` / `eslint-config-prettier` - airbnb preset doesn't have 9 listed as supported yet.
 - `ldapjs` - 3.x brings a [lot of changes and risk of breakage](https://github.com/ldapjs/node-ldapjs/releases/tag/v3.0.0).
-- `mariadb` - 3.0.2 works with sequelize. 3.1.0+ doesn't due to [timezone settings changes](https://github.com/mariadb-corporation/mariadb-connector-nodejs/blob/master/CHANGELOG.md#310-feb-2023) and needs a change in config & validation times are working as expected.
 - `prettier` - 3.x brings some formatting changes. Avoiding unnecessary noise for the forks out there.
 - `sql-formatter` - 3.x onward has performance regressions, changes in functionality.
 - `umzug` - 3.x has many (unnecessary) breaking changes and additional dependencies.

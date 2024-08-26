@@ -477,7 +477,7 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
-"@types/geojson@^7946.0.10":
+"@types/geojson@^7946.0.14":
   version "7946.0.14"
   resolved "https://registry.yarnpkg.com/@types/geojson/-/geojson-7946.0.14.tgz#319b63ad6df705ee2a65a73ef042c8271e696613"
   integrity sha512-WCfD5Ht3ZesJUsONdhvm84dmzWOiOzOAqOncN0++w0lBw1o8OuDNJF2McvvCef/yBqb/HYRahp1BYtODFQ8bRg==
@@ -523,10 +523,12 @@
   dependencies:
     undici-types "~6.19.2"
 
-"@types/node@^17.0.45":
-  version "17.0.45"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.45.tgz#2c0fafd78705e7a18b7906b5201a522719dc5190"
-  integrity sha512-w+tIMs3rq2afQdsPJlODhoUEKzFP1ayaoyl1CcnwtIlsVe7K7bA1NGm4s3PraqTLlXnbIN84zuBlxBWo1u9BLw==
+"@types/node@^20.11.17":
+  version "20.16.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.16.1.tgz#0b44b15271d0e2191ca68faf1fbe506e06aed732"
+  integrity sha512-zJDo7wEadFtSyNz5QITDfRcrhqDvQI1xQNQ0VoizPjM/dVAODqqIUWbJPkvsxmTI0MYRGRikcdjMPhOssnPejQ==
+  dependencies:
+    undici-types "~6.19.2"
 
 "@types/passport-strategy@^0.2.38":
   version "0.2.38"
@@ -3124,6 +3126,11 @@ long@*, long@^5.2.1, long@~5.2.3:
   resolved "https://registry.yarnpkg.com/long/-/long-5.2.3.tgz#a3ba97f3877cf1d778eccbcb048525ebb77499e1"
   integrity sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q==
 
+lru-cache@^10.2.0:
+  version "10.4.3"
+  resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-10.4.3.tgz#410fc8a17b70e598013df257c2446b7f3383f119"
+  integrity sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==
+
 lru-cache@^11.0.0:
   version "11.0.0"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-11.0.0.tgz#15d93a196f189034d7166caf9fe55e7384c98a21"
@@ -3144,7 +3151,7 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-lru-cache@^7.10.1, lru-cache@^7.14.0, lru-cache@^7.14.1:
+lru-cache@^7.10.1, lru-cache@^7.14.1:
   version "7.18.3"
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.18.3.tgz#f793896e0fd0e954a59dfdd82f0773808df6aa89"
   integrity sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==
@@ -3183,17 +3190,16 @@ make-fetch-happen@^9.1.0:
     socks-proxy-agent "^6.0.0"
     ssri "^8.0.0"
 
-mariadb@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-3.0.2.tgz#427ae286b8fb35f4046b3457f4df729a5019d6c3"
-  integrity sha512-dVjiQZ6RW0IXFnX+T/ZEmnqs724DgkQsXqfCyInXn0XxVfO2Px6KbS4M3Ny6UiBg0zJ93SHHvfVBgYO4ZnFvvw==
+mariadb@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/mariadb/-/mariadb-3.3.1.tgz#3ee361242411ba4cf4a80b06e304d1c68c97ad90"
+  integrity sha512-L8bh4iuZU3J8H7Co7rQ6OY9FDLItAN1rGy8kPA7Dyxo8AiHADuuONoypKKp1pE09drs6e5LR7UW9luLZ/A4znA==
   dependencies:
-    "@types/geojson" "^7946.0.10"
-    "@types/node" "^17.0.45"
+    "@types/geojson" "^7946.0.14"
+    "@types/node" "^20.11.17"
     denque "^2.1.0"
     iconv-lite "^0.6.3"
-    lru-cache "^7.14.0"
-    moment-timezone "^0.5.38"
+    lru-cache "^10.2.0"
 
 media-typer@0.3.0:
   version "0.3.0"
@@ -3386,7 +3392,7 @@ mocha@^10.0.0:
     yargs-parser "^20.2.9"
     yargs-unparser "^2.0.0"
 
-moment-timezone@^0.5.38, moment-timezone@^0.5.43:
+moment-timezone@^0.5.43:
   version "0.5.45"
   resolved "https://registry.yarnpkg.com/moment-timezone/-/moment-timezone-0.5.45.tgz#cb685acd56bac10e69d93c536366eb65aa6bcf5c"
   integrity sha512-HIWmqA86KcmCAhnMAN0wuDOARV/525R2+lOLotuGFzn4HO+FH+/645z2wx0Dt3iDv6/p61SIvKnDstISainhLQ==
