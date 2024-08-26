@@ -2,6 +2,9 @@ name: test
 
 on: [push, pull_request]
 
+env:
+  TZ: utc
+
 jobs:
   build:
     runs-on: ubuntu-latest
