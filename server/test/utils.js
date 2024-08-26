@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { v4 as uuidv4 } from 'uuid';
-import rimraf from 'rimraf';
+import { rimrafSync } from 'rimraf';
 import { mkdirp } from 'mkdirp';
 import path from 'path';
 import redis from 'redis';
@@ -21,8 +21,8 @@ import ensureAdmin from '../lib/ensure-admin.js';
 import serverDirname from '../server-dirname.cjs';
 
 // At the start of any test run, clean out the root artifacts directory
-before(function (done) {
-  rimraf(path.join(serverDirname, 'test/artifacts/*'), done);
+before(function () {
+  rimrafSync(path.join(serverDirname, 'test/artifacts/*'), { glob: true });
 });
 
 class TestUtils {
@@ -137,14 +137,7 @@ class TestUtils {
   prepDbDir() {
     const dbPath = this.config.get('dbPath');
     mkdirp.sync(dbPath);
-    return new Promise((resolve, reject) => {
-      return rimraf(path.join(dbPath, '*'), (err) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve();
-      });
-    });
+    return rimrafSync(path.join(dbPath, '*'), { glob: true });
   }
 
   async initDbs() {
