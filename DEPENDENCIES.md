@@ -10,20 +10,25 @@ cd server # or client
 yarn outdated
 ```
 
-## Outdated server dependencies (as of 6/18/2023)
+## Outdated server dependencies (as of 8/25/2024)
 
-- `ldapjs` - 3.x brings a [lot of changes and risk of breakage](https://github.com/ldapjs/node-ldapjs/releases/tag/v3.0.0)
-- `mariadb` - 3.0.2 works with sequelize. 3.1.2 doesn't.
+- `@clickhouse/client` - 1.x is major breaking and needs thorough update/testing.
+- `@node-saml/passport-saml` - 5.x is breaking changes, and we don't have automated tests for it. 
+- `eslint` / `eslint-config-prettier` - airbnb preset doesn't have 9 listed as supported yet.
+- `ldapjs` - 3.x brings a [lot of changes and risk of breakage](https://github.com/ldapjs/node-ldapjs/releases/tag/v3.0.0).
+- `mariadb` - 3.0.2 works with sequelize. 3.1.0+ doesn't due to [timezone settings changes](https://github.com/mariadb-corporation/mariadb-connector-nodejs/blob/master/CHANGELOG.md#310-feb-2023) and needs a change in config & validation times are working as expected.
+- `prettier` - 3.x brings some formatting changes. Avoiding unnecessary noise for the forks out there.
 - `sql-formatter` - 3.x onward has performance regressions, changes in functionality.
 - `umzug` - 3.x has many (unnecessary) breaking changes and additional dependencies.
 
-## Outdated client dependencies (as of 2/28/2022)
+## Outdated client dependencies (as of 8/25/2024)
 
-```
-Package                  Current    Wanted    Latest  Why Outdated
--------------------------------------------------------------------------------------------------------------------------------
-@types/node             14.18.12  14.18.12   17.0.21  Using node 14 at the moment
-d3                        5.16.0    5.16.0     7.3.0  taucharts requires d3@5
-history                   4.10.1    4.10.1     5.3.0  react-router-dom@5 requires history@4
-react-router-dom           5.3.0     5.3.0     6.2.2  react-router-dom@6 does not support Prompt component (yet)
-```
+There's a lot. React is on the verge of big changes, some of the dependencies used have been abandoned.
+
+Since client-side deps are used for development and compiled into something... there's less harm in leaving these sit. 
+
+The frontend client can be considered "frozen" as of this point. If this project is revived there's a lot that needs to be addressed here.
+
+- `d3` - taucharts requires d3@5
+- `history` - react-router-dom@5 requires history@4
+- `react-router-dom` - react-router-dom@6 does not support Prompt component (yet)
