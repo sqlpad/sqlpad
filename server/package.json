@@ -87,7 +87,7 @@
     "passport-ldapauth": "^3.0.1",
     "passport-local": "^1.0.0",
     "pg": "^8.7.3",
-    "pino": "^8.0.0",
+    "pino": "^9.3.2",
     "prettier": "^2.6.2",
     "query-string": "^8.2.0",
     "redis": "^4.0.6",
@@ -121,7 +121,7 @@
     "ncp": "^2.0.0",
     "node-dev": "8.0.0",
     "parse-link-header": "^2.0.0",
-    "pino-pretty": "^10.0.0",
+    "pino-pretty": "^11.2.2",
     "supertest": "^7.0.0",
     "traverse": "^0.6.6"
   },
