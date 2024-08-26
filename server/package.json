@@ -119,7 +119,6 @@
     "eslint-plugin-import": "^2.26.0",
     "mocha": "^10.0.0",
     "ncp": "^2.0.0",
-    "nise": "^5.1.1",
     "node-dev": "8.0.0",
     "parse-link-header": "^2.0.0",
     "pino-pretty": "^10.0.0",
