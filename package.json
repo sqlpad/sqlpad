@@ -1,6 +1,6 @@
 {
   "name": "sqlpad-project",
-  "version": "7.4.4",
+  "version": "7.5.0",
   "private": true,
   "devDependencies": {
     "husky": "^9.0.6",
