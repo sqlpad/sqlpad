@@ -41,7 +41,7 @@
     "lint": "eslint \"**/*.js\" && prettier --check ."
   },
   "dependencies": {
-    "@clickhouse/client": "^0.0.16",
+    "@clickhouse/client": "^1.5.0",
     "@google-cloud/bigquery": "^7.9.0",
     "@node-saml/passport-saml": "^5.0.0",
     "athena-express": "^7.1.5",
