@@ -1,4 +1,3 @@
-version: '3'
 services:
   drill:
     image: harisekhon/apache-drill:latest

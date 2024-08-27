@@ -1,4 +1,3 @@
-version: '3'
 services:
   mssql:
     image: 'microsoft/mssql-server-linux:2017-latest'

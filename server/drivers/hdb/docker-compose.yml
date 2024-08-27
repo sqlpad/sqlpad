@@ -1,4 +1,3 @@
-version: '3'
 services:
   hana:
     image: store/saplabs/hanaexpress:2.00.022.00.20171211.1
