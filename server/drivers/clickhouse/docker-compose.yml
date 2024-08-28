@@ -1,5 +1,5 @@
 services:
   clickhouse:
-    image: clickhouse/clickhouse-server:22.8
+    image: clickhouse/clickhouse-server:23.3
     ports:
       - '8123:8123'

@@ -41,13 +41,13 @@ async function runQuery(query, connection) {
 
   const port = connection.port || 8123;
   const protocol = connection.useHTTPS ? 'https' : 'http';
-  const host = `${protocol}://${connection.host}:${port}`;
+  const url = `${protocol}://${connection.host}:${port}`;
   const database = connection.database;
   const username = connection.username || 'default';
   const password = connection.password || '';
 
   const client = createClient({
-    host,
+    url,
     database,
     username,
     password,

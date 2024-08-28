@@ -158,13 +158,17 @@
     jsonwebtoken "^9.0.0"
     uuid "^8.3.0"
 
-"@clickhouse/client@^0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@clickhouse/client/-/client-0.0.16.tgz#36ae3f1bb36a92127ed390feb13582aa1a834b62"
-  integrity sha512-X2K3nXHpicXmvnNpD1mKbtsbnofVcJt3Zd+mk+JS7PR5eCiBZaoa9mZRF2ZXrHXfrkGZGc1DnCd3FKfVWZlLpg==
+"@clickhouse/client-common@1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@clickhouse/client-common/-/client-common-1.5.0.tgz#fa621ee4fbdf8f4b44e5548fd5d9fe1e44b07e88"
+  integrity sha512-U3vDp+PDnNVEv6kia+Mq5ygnlMZzsYU+3TX+0da3XvL926jzYLMBlIvFUxe2+/5k47ySvnINRC/2QxVK7PC2/A==
+
+"@clickhouse/client@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@clickhouse/client/-/client-1.5.0.tgz#ce6110a710396544a2435fe9ed8f61f20bd178b8"
+  integrity sha512-Udwyoec+AHHS1TiLxDiWiJWcm2BvhZEqGjmUnvzL54NyT8D8eh2mxn5RR/W5ie64JDnsKLeZFlPYKRRhZMhkxA==
   dependencies:
-    node-abort-controller "^3.0.1"
-    uuid "^9.0.0"
+    "@clickhouse/client-common" "1.5.0"
 
 "@eslint-community/eslint-utils@^4.2.0":
   version "4.4.0"
@@ -3509,11 +3513,6 @@ node-abi@^3.3.0:
   integrity sha512-bLn/fU/ALVBE9wj+p4Y21ZJWYFjUXLXPi/IewyLZkx3ApxKDNBWCKdReeKOtD8dWpOdDCeMyLh6ZewzcLsG2Nw==
   dependencies:
     semver "^7.3.5"
-
-node-abort-controller@^3.0.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/node-abort-controller/-/node-abort-controller-3.1.1.tgz#a94377e964a9a37ac3976d848cb5c765833b8548"
-  integrity sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==
 
 node-addon-api@^3.0.2:
   version "3.2.1"

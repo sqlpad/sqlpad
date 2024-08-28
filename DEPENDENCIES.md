@@ -12,7 +12,6 @@ yarn outdated
 
 ## Outdated server dependencies (as of 8/25/2024)
 
-- `@clickhouse/client` - 1.x is major breaking and needs thorough update/testing. 
 - `eslint` / `eslint-config-prettier` - airbnb preset doesn't have 9 listed as supported yet.
 - `ldapjs` - 3.x brings a [lot of changes and risk of breakage](https://github.com/ldapjs/node-ldapjs/releases/tag/v3.0.0).
 - `prettier` - 3.x brings some formatting changes. Avoiding unnecessary noise for the forks out there.

@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.5.1] - unreleased
+
+- Updated ClickHouse driver: ClickHouse 23.3 or later supported
+
 ## [7.5.0] - 2024-08-25
 
 - Node 20 or later required
