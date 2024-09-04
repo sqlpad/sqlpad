@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+# This iterates any sh file in the directory and executes them before our server starts
+# Note: we intentionally source the files, allowing scripts to set vars that override default behavior.
+if [ -d "/etc/docker-entrypoint.d" ]; then
+    while IFS= read -r -d $'\0' file; do
+        . "$file"
+    done < <(find /etc/docker-entrypoint.d -maxdepth 1 -name '*.sh' -type f  -print0)
+fi
+exec node /usr/app/server.js $@

@@ -1,0 +1,26 @@
+/* 
+  this style derived from Button + Ghost. 
+  User is not a clickable element at this time however 
+*/
+.style {
+  line-height: 1.499;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  border: 1px solid transparent;
+  user-select: none;
+  touch-action: manipulation;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 14px;
+  border-radius: 2px;
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 1px 0 transparent;
+  border-color: transparent;
+  background-color: transparent;
+}

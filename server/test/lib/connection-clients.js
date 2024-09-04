@@ -1,0 +1,134 @@
+import { strict as assert } from 'assert';
+import path from 'path';
+import TestUtils from '../utils.js';
+import ConnectionClient from '../../lib/connection-client.js';
+import { v4 as uuidv4 } from 'uuid';
+import serverDirname from '../../server-dirname.cjs';
+
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+describe('lib/connection-clients', function () {
+  const utils = new TestUtils();
+  let connection1;
+
+  before(async function () {
+    await utils.init(true);
+
+    connection1 = await utils.post('admin', '/api/connections', {
+      driver: 'sqlite',
+      name: 'connection-client-test',
+      data: {
+        filename: path.join(
+          serverDirname,
+          'test/artifacts/connection-client-test.sqlite'
+        ),
+      },
+      idleTimeoutSeconds: 1,
+      multiStatementTransactionEnabled: true,
+    });
+  });
+
+  it('Keep-alive keeps it alive', async function () {
+    const connectionClient = new ConnectionClient(
+      connection1,
+      utils.users.admin
+    );
+    assert(connectionClient);
+
+    await connectionClient.connect();
+    connectionClient.scheduleCleanupInterval(400, 100);
+    assert(connectionClient.isConnected());
+
+    await wait(200);
+    connectionClient.keepAlive();
+    await wait(200);
+    connectionClient.keepAlive();
+    await wait(200);
+    assert(connectionClient.isConnected());
+  });
+
+  it('Without keep alive it closes', async function () {
+    const connectionClient = new ConnectionClient(
+      connection1,
+      utils.users.admin
+    );
+    assert(connectionClient);
+
+    await connectionClient.connect();
+    connectionClient.scheduleCleanupInterval(400, 100);
+    assert(connectionClient.isConnected());
+
+    await wait(600);
+    assert(!connectionClient.isConnected());
+  });
+
+  it('Stays-open with activity', async function () {
+    const connectionClient = new ConnectionClient(
+      connection1,
+      utils.users.admin
+    );
+    assert(connectionClient);
+
+    await connectionClient.connect();
+    connectionClient.scheduleCleanupInterval(400, 100);
+    assert(connectionClient.isConnected());
+
+    await wait(300);
+    connectionClient.keepAlive();
+    await wait(300);
+    connectionClient.keepAlive();
+    await connectionClient.runQuery('SELECT 1 AS val');
+    await wait(300);
+    connectionClient.keepAlive();
+    await wait(300);
+    connectionClient.keepAlive();
+    assert(connectionClient.isConnected());
+  });
+
+  it('Closes without activity', async function () {
+    const connectionClient = new ConnectionClient(
+      connection1,
+      utils.users.admin
+    );
+    assert(connectionClient);
+
+    await connectionClient.connect();
+    connectionClient.scheduleCleanupInterval(400, 100);
+    assert(connectionClient.isConnected());
+
+    await wait(300);
+    connectionClient.keepAlive();
+    await wait(300);
+    connectionClient.keepAlive();
+    await wait(300);
+    connectionClient.keepAlive();
+    await wait(300);
+    connectionClient.keepAlive();
+    assert(!connectionClient.isConnected());
+  });
+
+  it('Throws an error when starting an async query with unsupported driver', async function () {
+    const connectionClient = new ConnectionClient(
+      connection1,
+      utils.users.admin
+    );
+    await assert.rejects(
+      connectionClient.startQueryExecution({}),
+      new Error('Driver SQLite does not support async queries')
+    );
+  });
+
+  it('Throws an error when cancelling an async query with unsupported driver', async function () {
+    const connectionClient = new ConnectionClient(
+      connection1,
+      utils.users.admin
+    );
+
+    await assert.rejects(
+      connectionClient.cancelQuery(uuidv4()),
+      new Error('Driver SQLite does not support cancellation of queries')
+    );
+  });
+});

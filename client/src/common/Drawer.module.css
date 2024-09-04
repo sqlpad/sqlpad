@@ -1,0 +1,33 @@
+.Dialog {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: absolute;
+  box-shadow: var(--box-shadow-2);
+}
+
+.titleWrapper {
+  box-sizing: border-box;
+  height: 44px;
+  font-size: 1.3rem;
+  border-bottom: var(--border);
+  display: flex;
+  padding: 5px 16px;
+  line-height: 1.5;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.dialogBody {
+  height: calc(100vh - 44px);
+  /* 
+   TODO move this padding into a separate component for dialog body, 
+   used as needed for each specific drawer 
+   Another component can be introduced for an "Actions" component that sits outside the body, 
+   with body being scrollable and grows
+  */
+  padding: 16px;
+  overflow-y: auto;
+}

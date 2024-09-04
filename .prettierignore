@@ -1,0 +1,16 @@
+*.html
+package-lock.json
+package.json
+client/build
+client/node_modules
+client/public
+db
+dbtest
+docker-validation
+scripts
+server/node_modules
+server/public
+server/test/fixtures/**/*.json
+docs/dist
+docs/node_modules
+docs/.vscode

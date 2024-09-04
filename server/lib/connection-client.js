@@ -1,0 +1,463 @@
+import { v4 as uuidv4, v5 as uuidv5 } from 'uuid';
+import consts from './consts.js';
+import drivers from '../drivers/index.js';
+import renderConnection from './render-connection.js';
+import appLog from './app-log.js';
+import getColumns from './get-columns.js';
+
+/**
+ * Connection client runs queries for a given connection and user
+ * It wraps the driver implementation used by the connection configuration
+ * Older-style driver implementations are one-off functions.
+ * Database connections are made, the user query is run, and then the database connection is closed.
+ * Newer-style driver implementations may include a `Client` class,
+ * which provides the ability to connect and disconnect to the database, and run queries with that connection.
+ */
+class ConnectionClient {
+  /**
+   * @param {object} connection
+   * @param {object} [user] - user to run query under. may not be provided if chart links turned on
+   */
+  constructor(connection, user) {
+    this.id = uuidv4();
+    this.connection = renderConnection(connection, user);
+    this.driver = drivers[connection.driver];
+
+    if (!this.driver) {
+      throw new Error('Invalid driver');
+    }
+
+    this.user = user;
+    this.Client = this.driver.Client;
+    this.connectedAt = null;
+
+    appLog.debug(
+      {
+        connectionClientId: this.id,
+        originalConnection: connection,
+        renderedConnection: this.connection,
+        user,
+      },
+      'Rendered connection for user'
+    );
+  }
+
+  /**
+   * Determines whether the connectionClient is connected to the db.
+   * For now the existence of this.client indicates an open connection
+   */
+  isConnected() {
+    return Boolean(this.client);
+  }
+
+  /**
+   * Updates lastKeepAliveAt to indicate a request was made to keep this connection alive.
+   * This may need to actually make a db call if drivers implement an automatic disconnect after some period of idle
+   */
+  keepAlive() {
+    if (this.isConnected()) {
+      this.lastKeepAliveAt = new Date();
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Get last keep alive at time
+   */
+  getLastKeepAliveAt() {
+    return this.lastKeepAliveAt;
+  }
+
+  /**
+   * Get last activity at time (last time user ran query with connected client)
+   */
+  getLastActivityAt() {
+    return this.lastActivityAt;
+  }
+
+  getConnectionName() {
+    return this.connection.name;
+  }
+
+  getConnectionDriver() {
+    return this.connection.driver;
+  }
+
+  /**
+   * Set up a poll to check on keep alive and activity requests
+   * and disconnect if keep alive has not been updated within range of keepAliveTimeoutMs or idleTimeoutSeconds (seconds)
+   * @param {number} [keepAliveTimeoutMs] - max amount of time to allow from keep alive ping before closing
+   * @param {number} [intervalMs] - interval ms to check keep alive time
+   */
+  scheduleCleanupInterval(keepAliveTimeoutMs = 30000, intervalMs = 10000) {
+    this.keepAlive();
+
+    const ONE_HOUR_SECONDS = 60 * 60;
+    const idleTimeoutSeconds =
+      parseInt(this.connection.idleTimeoutSeconds, 10) || ONE_HOUR_SECONDS;
+    const idleTimeoutMs = idleTimeoutSeconds * 1000;
+
+    this.cleanupInterval = setInterval(() => {
+      const now = new Date();
+      const sinceLastKeepAliveMs = now - this.getLastKeepAliveAt();
+      const sinceLastActivityMs = now - this.getLastActivityAt();
+
+      const keepAliveExceeded = sinceLastKeepAliveMs > keepAliveTimeoutMs;
+      const lastActivityExceeded = sinceLastActivityMs > idleTimeoutMs;
+
+      if (keepAliveExceeded || lastActivityExceeded) {
+        let msg = '';
+        if (keepAliveExceeded) {
+          msg += `Connection client keep alive exceeded timeout of ${keepAliveTimeoutMs}`;
+        } else {
+          msg += `Connection client last activity exceeded timeout of ${idleTimeoutMs}`;
+        }
+        appLog.debug(
+          {
+            connectionClientId: this.id,
+            connectionName: this.getConnectionName(),
+            driver: this.getConnectionDriver(),
+            sinceLastKeepAliveMs,
+            sinceLastActivityMs,
+          },
+          msg
+        );
+        this.disconnect().catch((error) => appLog.error(error));
+      }
+    }, intervalMs);
+  }
+
+  /**
+   * Create a persistent database connection if the driver implementation supports it.
+   */
+  async connect() {
+    const { Client } = this;
+    if (!Client) {
+      throw new Error('Does not support persistent connection');
+    }
+    this.client = new Client(this.connection);
+    await this.client.connect();
+    this.connectedAt = new Date();
+    this.lastActivityAt = new Date();
+    this.keepAlive();
+  }
+
+  /**
+   * Close the database connection
+   */
+  async disconnect() {
+    // Remove cleanup interval if it had been scheduled
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      delete this.cleanupInterval;
+    }
+    // If client still exists disconnect
+    if (this.client) {
+      const client = this.client;
+      this.client = null;
+      const connectionName = this.getConnectionName();
+      const driver = this.getConnectionDriver();
+      appLog.debug(
+        { connectionClientId: this.id, connectionName, driver },
+        'Disconnecting client connection'
+      );
+      await client.disconnect();
+    }
+  }
+
+  /**
+   * Run query
+   * If the connectionClient supports persistent database connections and is connected,
+   * it'll use the database connection already established.
+   * If not connected or does not support persistent connection,
+   * it uses the driver.runQuery() implementation that will open a connection, run query, then close.
+   * @param {string} query
+   * @returns {Promise}
+   */
+  async runQuery(query) {
+    const connection = this.connection;
+    const driver = this.driver;
+    const user = this.user;
+    const connectionName = connection.name;
+    const startTime = new Date();
+
+    const queryContext = {
+      executionId: uuidv4(),
+      connectionClientId: this.id,
+      driver: connection.driver,
+      userId: user && user.id,
+      userEmail: user && user.email,
+      connectionId: connection.id,
+      connectionName,
+      query,
+      startTime,
+    };
+
+    appLog.info(queryContext, 'Running query');
+
+    let results;
+    try {
+      // If client is connected use that connection,
+      // otherwise use driver.runQuery to run query with fresh one-off connection
+      if (this.isConnected()) {
+        // uses pre-existing connection to run query, and keeps connection open
+        // lastActivityAt is updated both before and after query (the query could take a while)
+        this.lastActivityAt = new Date();
+        results = await this.client.runQuery(query);
+        this.lastActivityAt = new Date();
+      } else {
+        // Opens a new connection to db, runs query, then closes connection
+        results = await driver.runQuery(query, connection);
+      }
+    } catch (error) {
+      // It is logged INFO because it isn't necessarily a server/application error
+      // It could just be a bad query
+      appLog.info(
+        { ...queryContext, error: error.toString() },
+        'Error running query'
+      );
+
+      // Rethrow the error
+      // The error here is something expected and should be shown to user
+      throw error;
+    }
+
+    let { rows, incomplete } = results;
+
+    if (!Array.isArray(rows)) {
+      appLog.warn(
+        {
+          driver: connection.driver,
+          connectionId: connection.id,
+          connectionName,
+          query,
+        },
+        'Expected rows to be an array but received %s.',
+        typeof rows
+      );
+      rows = [];
+    }
+
+    const columns = getColumns(rows);
+    const stopTime = new Date();
+    const queryRunTime = stopTime - startTime;
+
+    const queryResult = {
+      rows,
+      columns,
+      incomplete: Boolean(incomplete),
+    };
+
+    appLog.info(
+      {
+        ...queryContext,
+        stopTime,
+        queryRunTime,
+        rowCount: rows.length,
+        incomplete: Boolean(incomplete),
+      },
+      'Query finished'
+    );
+
+    return queryResult;
+  }
+
+  /**
+   * Starts a query execution and returns immediately
+   * If the connectionClient supports persistent database connections and is connected,
+   * it'll use the database connection already established.
+   * If not connected or does not support persistent connection,
+   * it uses the driver.startQueryExecution() implementation that will open a connection, run query, then close.
+   * @param {string} query
+   * @returns {Promise}
+   */
+  async startQueryExecution(query) {
+    const connection = this.connection;
+    const driver = this.driver;
+    const user = this.user;
+    const connectionName = connection.name;
+    const startTime = new Date();
+
+    const queryContext = {
+      connectionClientId: this.id,
+      driver: connection.driver,
+      userId: user && user.id,
+      userEmail: user && user.email,
+      connectionId: connection.id,
+      connectionName,
+      query,
+      startTime,
+    };
+
+    appLog.info(queryContext, 'Starting query execution');
+
+    let executionId;
+    try {
+      if (!connection.isAsynchronous) {
+        throw new Error(`Driver ${driver.name} does not support async queries`);
+      }
+      // If client is connected use that connection,
+      // otherwise use driver.runQuery to run query with fresh one-off connection
+      if (this.isConnected()) {
+        // uses pre-existing connection to run query, and keeps connection open
+        // lastActivityAt is updated both before and after query (the query could take a while)
+        this.lastActivityAt = new Date();
+        executionId = await this.client.startQueryExecution(query);
+        this.lastActivityAt = new Date();
+      } else {
+        // Opens a new connection to db, runs query, then closes connection
+        executionId = await driver.startQueryExecution(query, connection);
+      }
+    } catch (error) {
+      // It is logged INFO because it isn't necessarily a server/application error
+      // It could just be a bad query
+      appLog.info(
+        { ...queryContext, error: error.toString() },
+        'Error running query'
+      );
+
+      // Rethrow the error
+      // The error here is something expected and should be shown to user
+      throw error;
+    }
+    const stopTime = new Date();
+    const queryRunTime = stopTime - startTime;
+    appLog.info(
+      {
+        ...queryContext,
+        executionId,
+        stopTime,
+        queryRunTime,
+      },
+      'Query started'
+    );
+    return executionId;
+  }
+
+  /**
+   * Cancel query
+   * If the connectionClient supports persistent database connections and is connected,
+   * it'll use the database connection already established.
+   * If not connected or does not support persistent connection,
+   * it uses the driver.cancelQuery() implementation that will open a connection, run query, then close.
+   * @param {string} query
+   * @returns {Promise}
+   */
+  async cancelQuery(query) {
+    const connection = this.connection;
+    const driver = this.driver;
+    const user = this.user;
+    const connectionName = connection.name;
+    const startTime = new Date();
+
+    const queryContext = {
+      executionId: uuidv4(),
+      connectionClientId: this.id,
+      driver: connection.driver,
+      userId: user && user.id,
+      userEmail: user && user.email,
+      connectionId: connection.id,
+      connectionName,
+      query,
+      startTime,
+    };
+
+    appLog.info(queryContext, 'Cancel query');
+
+    try {
+      if (!connection.isAsynchronous) {
+        throw new Error(
+          `Driver ${driver.name} does not support cancellation of queries`
+        );
+      }
+
+      // If client is connected use that connection,
+      // otherwise use driver.cancelQuery to cancel query with fresh one-off connection
+      if (this.isConnected()) {
+        // uses pre-existing connection to cancel query, and keeps connection open
+        // lastActivityAt is updated both before and after query (the query could take a while)
+        this.lastActivityAt = new Date();
+        await this.client.cancelQuery(query);
+        this.lastActivityAt = new Date();
+      } else {
+        // Opens a new connection to db, runs query, then closes connection
+        await driver.cancelQuery(query, connection);
+      }
+    } catch (error) {
+      // It is logged INFO because it isn't necessarily a server/application error
+      // It could just be a bad query
+      appLog.info(
+        { ...queryContext, error: error.toString() },
+        'Error cancelling query'
+      );
+
+      // Rethrow the error
+      // The error here is something expected and should be shown to user
+      throw error;
+    }
+    const stopTime = new Date();
+    const queryRunTime = stopTime - startTime;
+
+    appLog.info(
+      {
+        ...queryContext,
+        stopTime,
+        queryRunTime,
+      },
+      'Cancellation finished'
+    );
+    return true;
+  }
+
+  /**
+   * Test connection passed in using the driver implementation
+   * As long as promise resolves without error
+   * it is considered a successful connection config
+   */
+  testConnection() {
+    return this.driver.testConnection(this.connection);
+  }
+
+  /**
+   * Gets schema (sometimes called schemaInfo) for connection
+   * This data is used by client to build schema tree in editor sidebar
+   * @returns {Promise}
+   */
+  getSchema() {
+    // Increase the max rows without modifiying original connection
+    const connectionMaxed = {
+      ...this.connection,
+      // 1 million rows ought to be enough for pulling schema.
+      // Schema probably needs to be broken up into getting tables (and their schemas), and then batching column reads
+      maxRows: 1000000,
+    };
+    return this.driver.getSchema(connectionMaxed);
+  }
+
+  /**
+   * A given connection may no longer return the same result given user template support
+   * To ensure schema is appropriately cached an ID must be derived from the resulting connection for a user
+   * Its possible and likely that a given connection will be the same for a few users,
+   * so we don't want to cache this on (connectionId, userId) pairing.
+   * Instead we'll use a hash of connection after template rendering
+   */
+  getSchemaCacheId(formatVersion) {
+    const identifier = formatVersion
+      ? `schemacache${formatVersion}:`
+      : 'schemacache:';
+
+    const keyValuesString = Object.keys(this.connection)
+      .sort()
+      .map((key) => {
+        return `${key}:${this.connection[key]}`;
+      })
+      .join('::');
+
+    return (
+      identifier + uuidv5(keyValuesString, consts.CONNECTION_HASH_NAMESPACE)
+    );
+  }
+}
+
+export default ConnectionClient;

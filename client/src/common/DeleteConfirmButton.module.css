@@ -1,0 +1,21 @@
+.Dialog {
+  width: 500px;
+  border-radius: 2px;
+  box-shadow: var(--box-shadow-2);
+}
+
+.dialogContent {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.buttonWrapper {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.button {
+  width: 200px;
+}

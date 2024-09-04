@@ -1,0 +1,26 @@
+.logo {
+  line-height: 1.499;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  user-select: none;
+  touch-action: manipulation;
+  padding: 0 10px;
+  font-size: 14px;
+  margin-left: -6px;
+  margin-top: -6px;
+  height: 44px;
+  margin-bottom: -6px;
+  margin-right: 6px;
+  box-shadow: none;
+  border-radius: 0;
+  color: #fff;
+  background-color: var(--primary-darkest-color);
+  border-color: var(--primary-color);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+}

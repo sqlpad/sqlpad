@@ -1,0 +1,109 @@
+.btnLink {
+  line-height: 1.499;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  border: 1px solid transparent;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.065);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  user-select: none;
+  touch-action: manipulation;
+  height: 32px;
+  padding: 0 10px;
+  font-size: 14px;
+  border-radius: 2px;
+  color: rgba(0, 0, 0, 0.65);
+  background-color: #fff;
+  border-color: rgb(217, 217, 217);
+  border-top-color: rgb(217, 217, 217, 0.5);
+  border-left-color: rgb(217, 217, 217, 0.5);
+  outline: 0;
+}
+
+.btnLink:hover,
+.btnLink:focus {
+  color: #40a9ff;
+  background-color: #fff;
+  border-color: #40a9ff;
+  box-shadow: 0 1px 0 rgba(64, 169, 255, 0.5);
+  outline: 0;
+}
+
+.btnLink:hover,
+.btnLink:focus,
+.btnLink:active {
+  text-decoration: none;
+  background: #fff;
+  outline: 0;
+}
+
+.btnLink:focus {
+  outline: 0;
+}
+
+.btnLink:disabled,
+.btnLink[disabled] {
+  color: rgba(0, 0, 0, 0.25);
+  background-color: #eee;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.065);
+  border: 1px solid transparent;
+  border-color: #d9d9d9;
+}
+
+.primary {
+  color: #fff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 0 rgb(9, 100, 185, 0.5);
+}
+
+.primary:focus {
+  color: #fff;
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-focus);
+  z-index: 99999;
+}
+
+.primary:hover {
+  color: #fff;
+  background-color: var(--primary-light-color);
+  border-color: var(--primary-light-color);
+  z-index: 99999;
+}
+
+.primary:active {
+  color: #fff;
+  background-color: var(--primary-dark-color);
+  border-color: var(--primary-dark-color);
+}
+
+.ghost {
+  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 1px 0 transparent;
+  border-color: transparent;
+  background-color: transparent;
+}
+
+.ghost:hover,
+.ghost:focus {
+  color: rgba(255, 255, 255, 0.85);
+  background-color: transparent;
+}
+
+.ghost:active {
+  color: rgba(255, 255, 255, 1);
+  background-color: transparent;
+}
+
+.ghost:disabled,
+.ghost[disabled] {
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+}

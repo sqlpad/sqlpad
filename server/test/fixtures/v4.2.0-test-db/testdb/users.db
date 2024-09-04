@@ -1,0 +1,4 @@
+{"email":"editor2-not-signed-up@sqlpad.com","role":"editor","modifiedDate":{"$$date":1586906603994},"createdDate":1586906603995,"_id":"0DMhYxP6RxbsgnPq"}
+{"email":"admin@sqlpad.com","role":"admin","signupDate":{"$$date":1586905032706},"modifiedDate":{"$$date":1586905032706},"passhash":"$2a$10$cnVd9.LaklA6Qoaw/Y8.yu2zjBAPwqY91wsQwCwEv7dz9wewnz2eu","createdDate":1586905032802,"_id":"ADNqDwRRF4U6HmKG"}
+{"email":"editor@sqlpad.com","role":"editor","modifiedDate":{"$$date":1586906658273},"createdDate":{"$$date":1586906588136},"_id":"kHpSTPbLJSfnTSJR","signupDate":{"$$date":1586906658273},"passhash":"$2a$10$lz9QP2wImrENRDheC1N8z.CxiUk.dXbp6PKePeeBFYjXqygYQSdES"}
+{"$$indexCreated":{"fieldName":"email","unique":true,"sparse":false}}

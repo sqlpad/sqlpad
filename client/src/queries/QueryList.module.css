@@ -1,0 +1,45 @@
+/* Padding of 2 added to show link outline when focused */
+.ListItem {
+  margin-top: 2px;
+  padding: 2px;
+}
+
+.ListItem:hover {
+  background-color: #f4f4f4;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.listItemActions {
+  position: absolute;
+  right: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.filterContainer {
+  border-bottom: var(--border);
+  background-color: rgba(0, 0, 0, 0.03);
+  padding: 16px;
+  /* 
+    Negative margins in place to compensate for padding in Drawer 
+    Should probably update Drawer implementation to have a subheader/actions section
+  */
+  margin: -16px -16px 16px -16px;
+}
+
+.filterRow {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.queryLink {
+  height: 46px;
+  line-height: 46px;
+  width: 500px;
+  padding-left: 4px;
+}
+
+.newWindowLink {
+  display: inline-flex;
+  align-items: center;
+}

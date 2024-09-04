@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sqlpad
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-initdb-config
+  namespace: sqlpad
+data:
+  pgdata.sh: |
+    #!/bin/bash
+    set -e
+
+    psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+        CREATE TABLE test (id int, name text);
+        INSERT INTO test (id, name) VALUES (1, 'one'), (2, 'two');
+    EOSQL
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlpad
+  namespace: sqlpad
+  labels:
+    app: sqlpad
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sqlpad
+  template:
+    metadata:
+      labels:
+        app: sqlpad
+    spec:
+      volumes:
+        - name: postgres-initdb
+          configMap:
+            name: postgres-initdb-config             
+      containers:
+      - name: postgres
+        image: postgres
+        env:
+          - name: POSTGRES_USER
+            value: "sqlpad"
+          - name: POSTGRES_PASSWORD
+            value: "sqlpad"
+        volumeMounts:
+          - name: postgres-initdb
+            mountPath: /docker-entrypoint-initdb.d
+      - name: sqlpad
+        image: sqlpad/sqlpad:5
+        ports:
+        - containerPort: 3000
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: 1
+          requests:
+            memory: 256Mi        
+            cpu: "0.5"
+        env:
+          - name: SQLPAD_ADMIN
+            value: "admin@sqlpad.com"
+          - name: SQLPAD_ADMIN_PASSWORD
+            value: "admin"
+          - name: SQLPAD_APP_LOG_LEVEL
+            value: 'debug'
+          - name: SQLPAD_WEB_LOG_LEVEL
+            value: 'warn'
+          - name: SQLPAD_CONNECTIONS__pgdemo__name
+            value: 'Postgres demo'
+          - name: SQLPAD_CONNECTIONS__pgdemo__driver
+            value: 'postgres'
+          - name: SQLPAD_CONNECTIONS__pgdemo__host
+            value: 'localhost'
+          - name: SQLPAD_CONNECTIONS__pgdemo__database
+            value: 'sqlpad'
+          - name: SQLPAD_CONNECTIONS__pgdemo__username
+            value: 'sqlpad'
+          - name: SQLPAD_CONNECTIONS__pgdemo__password
+            value: 'sqlpad'
+          - name: SQLPAD_CONNECTIONS__pgdemo__multiStatementTransactionEnabled
+            value: 'true'    
+          - name: SQLPAD_CONNECTIONS__pgdemo__idleTimeoutSeconds
+            value: '86400'           
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlpad-svc
+  namespace: sqlpad
+spec:
+  type: NodePort
+  ports:
+  - name: tcp-rule-sqlpad
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: sqlpad

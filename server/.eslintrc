@@ -1,0 +1,45 @@
+{
+  "extends": ["airbnb-base", "prettier"],
+  "env": {
+    "es6": true,
+    "node": true,
+    "mocha": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022
+  },
+  "rules": {
+    "import/prefer-default-export": "off",
+    "import/extensions": "off",
+    "camelcase": "off",
+    "consistent-return": "off",
+    "dot-notation": "off",
+    "func-names": "off",
+    "global-require": "off",
+    "import/newline-after-import": "off",
+    "import/no-dynamic-require": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/no-unresolved": "off",
+    "import/order": "off",
+    "no-else-return": "off",
+    "no-multi-assign": "off",
+    "no-param-reassign": "off",
+    "no-plusplus": "off",
+    "no-prototype-builtins": "off",
+    "no-restricted-globals": "off",
+    "no-restricted-syntax": "off",
+    "no-shadow": "off",
+    "no-underscore-dangle": "off",
+    "no-use-before-define": "off",
+    "prefer-const": "off",
+    "prefer-destructuring": "off",
+    "prefer-promise-reject-errors": "off",
+    "prefer-template": "off",
+    "prefer-arrow-callback": "off",
+    "arrow-body-style": "off",
+    "radix": "off",
+    "vars-on-top": "off",
+    "prefer-regex-literals": "off",
+    "no-promise-executor-return": "off"
+  }
+}

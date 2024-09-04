@@ -1,0 +1,212 @@
+/* variables
+============================================================================ */
+:root {
+  /* 
+    These REFERENCE are various colors that were sprinkled throughout
+    They are kept around for reference until colors settle
+  */
+  --REFERENCE-link-color: #00b7ff;
+  --REFERENCE-button-border-color: #40a9ff;
+  --REFERENCE-button-active-color: #096dd9;
+  --REFERENCE-primary-color: #1890ff;
+
+  --toolbar-bg-color: #f4f4f4;
+  --table-alt-row-bg-color: #fafafa;
+
+  --primary-color: hsl(209, 100%, 55%);
+  --primary-dark-color: hsl(209, 100%, 42%);
+  --primary-light-color: hsl(209, 100%, 63%);
+  --primary-darkest-color: hsl(209, 50%, 25%);
+  --primary-focus: hsl(215, 100%, 25%);
+
+  --primary-color-30: rgba(24, 143, 255, 0.3);
+  --primary-color-90: rgba(24, 144, 255, 0.9);
+
+  --secondary-color: rgb(250, 50, 173);
+  --secondary-dark-color: hsl(323, 100%, 50%);
+  --secondary-color-90: rgba(250, 50, 173, 0.9);
+  --secondary-color-75: rgba(250, 50, 173, 0.75);
+  --secondary-color-30: rgba(250, 50, 173, 0.3);
+
+  --border: 1px solid rgba(0, 0, 0, 0.15);
+
+  --box-shadow-1: 0px 2px 1px -1px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+
+  --box-shadow-2: 0px 11px 15px -7px rgba(0, 0, 0, 0.2),
+    0px 24px 38px 3px rgba(0, 0, 0, 0.14), 0px 9px 46px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* core styles
+============================================================================ */
+a {
+  color: var(--primary-color);
+}
+a:hover,
+a:active,
+a:focus {
+  text-decoration: none;
+}
+
+button,
+select {
+  text-transform: none;
+}
+
+button,
+input {
+  overflow: visible;
+}
+
+/* reach ui 
+============================================================================ */
+[data-reach-tooltip] {
+  z-index: 9000 !important;
+}
+
+[data-reach-dialog-overlay] {
+  z-index: 9000 !important;
+}
+
+[data-reach-dialog-content] {
+  z-index: 9000 !important;
+}
+
+[data-reach-dialog-overlay] {
+  background: rgba(0, 0, 0, 0.4) 100%;
+  background: radial-gradient(
+    at 50% 300px,
+    rgba(120, 120, 120, 0.2) 0%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+
+[data-reach-menu-item][data-selected] {
+  background: var(--primary-color);
+  color: white;
+  outline: none;
+}
+
+/* 
+  This helps fix weird pop in animation for icon menu button 
+  (It also looks nice)
+*/
+@keyframes slide-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.slide-down[data-reach-menu-list],
+.slide-down[data-reach-menu-items] {
+  border-radius: 2px;
+  animation: slide-down 0.1s ease;
+}
+
+/*  Utilities
+============================================================================ */
+.monospace-font {
+  font-family: Monaco, Consolas, 'Andale Mono', 'DejaVu Sans Mono', monospace;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.bg-error {
+  background-color: var(--secondary-color-75);
+  color: #fff;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.sp-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+
+  font-size: 1.3rem;
+  padding: 16px;
+  text-align: center;
+  color: hsl(323, 100%, 42%);
+}
+
+.sp-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.3rem;
+  padding: 16px;
+  text-align: center;
+}
+
+/* Might be trying out more of just plain css, less of css.modules */
+.sp-error-block {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+
+  font-size: 1.3rem;
+  padding: 16px;
+  text-align: center;
+  color: hsl(323, 100%, 42%);
+}
+
+.sp-info-block {
+  height: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.3rem;
+  padding: 16px;
+  text-align: center;
+}
+
+.spinning {
+  -webkit-animation: spin 2s linear infinite;
+  -moz-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+@-moz-keyframes spin {
+  100% {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}

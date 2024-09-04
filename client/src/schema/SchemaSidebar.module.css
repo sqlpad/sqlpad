@@ -1,0 +1,25 @@
+.schemaItem {
+  font-size: 12px;
+  line-height: 22px;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, source-code-pro,
+    monospace;
+  cursor: default;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.expandable {
+  user-select: none;
+}
+
+.expandable:hover {
+  background-color: #f4f4f4;
+}
+
+.schemaSpinner {
+  text-align: center;
+  padding-top: 100px;
+  width: 100%;
+  height: 100%;
+}

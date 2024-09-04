@@ -1,0 +1,12 @@
+.DS_Store
+.env
+.idea/
+.github
+.vscode
+/client/build
+/client/node_modules
+/db
+/dbtest
+/node_modules
+/server/node_modules
+/server/public
