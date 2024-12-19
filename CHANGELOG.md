@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.5.2] - 2024-12-19
+
+- Update dependencies
+
 ## [7.5.1] - 2024-09-31
 
 - Update ClickHouse driver: ClickHouse 23.3 or later supported
