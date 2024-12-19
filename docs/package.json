@@ -19,7 +19,7 @@
     "@types/node": "^18.0.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.0",
-    "astro": "^4.3.2",
+    "astro": "^5.0.9",
     "preact": "^10.7.3",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
