@@ -75,10 +75,11 @@ function ConnectionDropdown() {
         })}
 
         {currentUser?.role === 'admin' && (
-          <option value="new">... New connection</option>
+            <option value="manage">... Manage connections</option>
+         // <option value="new">... New connection</option>
         )}
         {currentUser?.role === 'admin' && (
-          <option value="manage">... Manage connections</option>
+          <option value="manage"></option>
         )}
       </Select>
       <ConnectionEditDrawer

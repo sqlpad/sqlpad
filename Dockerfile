@@ -72,7 +72,7 @@ COPY --from=build /sqlpad/docker-entrypoint /
 COPY --from=build /sqlpad/server .
 
 ENV NODE_ENV production
-ENV SQLPAD_DB_PATH /var/lib/sqlpad
+ENV SQLPAD_DB_PATH mariadb://sqlpad_user:admin@127.0.0.1:3306/sqlpad
 ENV SQLPAD_PORT 3000
 EXPOSE 3000
 ENTRYPOINT ["/docker-entrypoint"]

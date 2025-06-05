@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Button from '../common/Button';
 import DeleteConfirmButton from '../common/DeleteConfirmButton';
 import ListItem from '../common/ListItem';
 import message from '../common/message';
@@ -27,18 +26,19 @@ function ConnectionList() {
   const { currentUser } = useAppContext();
   const [connectionId, setConnectionId] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
-
+/*
   const editConnection = (connection: any) => {
     setConnectionId(connection.id);
     setShowEdit(true);
   };
-
+*/
+  /*
   const newConnection = () => {
     setConnectionId(null);
     setAsynchronousDriver(false);
     setShowEdit(true);
   };
-
+*/
   const handleEditDrawerClose = () => {
     setConnectionId(null);
     setShowEdit(false);
@@ -58,16 +58,7 @@ function ConnectionList() {
   const listItems = connections.map((item: any) => {
     const actions = [];
 
-    if (currentUser?.role === 'admin' && item.editable) {
-      actions.push(
-        <Button
-          key="edit"
-          style={{ marginLeft: 8 }}
-          onClick={() => editConnection(item)}
-        >
-          edit
-        </Button>
-      );
+    if (currentUser?.role === 'admin' && item.deletable) {
       actions.push(
         <DeleteConfirmButton
           key="delete"
@@ -97,20 +88,6 @@ function ConnectionList() {
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-        }}
-      >
-        <Button
-          style={{ width: 135 }}
-          variant="primary"
-          onClick={newConnection}
-        >
-          Add connection
-        </Button>
-      </div>
       <div style={{ flexGrow: 1 }}>{listItems}</div>
       <ConnectionEditDrawer
         connectionId={connectionId}
@@ -120,6 +97,7 @@ function ConnectionList() {
         placement="left"
       />
     </div>
+    
   );
 }
 

@@ -152,7 +152,7 @@ SQLPAD_DB_PATH = ""
 # Supported databases are: mysql, mariadb, sqlite3, mssql.
 # Some options can be provided in the connection string.
 # Example: `mariadb://username:password@host:port/databasename?ssl=true`
-SQLPAD_BACKEND_DB_URI = ""
+SQLPAD_BACKEND_DB_URI = mariadb://sqlpad_user:admin@127.0.0.1:3306/sqlpad
 
 # If enabled, runs SQLite in memory
 # In this case, the database contents will be lost when the application stops.
