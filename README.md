@@ -1,14 +1,16 @@
+## Project Status
+
+**Legacy project in maintenance mode.** If evaluating SQLPad, please consider a [potential alternative](https://getsqlpad.com/en/introduction/#alternatives) or forking the project and making it your own.
+
+**Maintenance releases for security and dependency updates will continue until August 2025, at which point the project will be archived.**
+
+
 # SQLPad
 
 A web app for writing and running SQL queries and visualizing the results. Supports Postgres, MySQL, SQL Server, ClickHouse, Crate, Vertica, Trino, Presto, SAP HANA, Cassandra, Google BigQuery, SQLite, TiDB and many more via [ODBC](https://github.com/sqlpad/sqlpad/wiki/ODBC).
 
 ![SQLPad Query Editor](https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png)
 
-## Project Status
-
-SQLPad is a legacy project in maintenance mode. If evaluating SQLPad, please consider a [potential alternative](https://getsqlpad.com/en/introduction/#alternatives) or forking the project and making it your own.
-
-Maintenance releases for security and dependency updates will continue as possible.
 
 **As of version 7, semver is no longer followed**. Going forward patch updates may require major Node.js version updates, or contain removal of functionality.
 
