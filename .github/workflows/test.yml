@@ -69,7 +69,7 @@ jobs:
       - name: Download built artifacts
         uses: actions/download-artifact@v4
         with:
-          name: built_node${{ matrix.node-version }}
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
           path: server/public
 
       - name: Verify backend DB service is healthy before starting
