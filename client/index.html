@@ -8,12 +8,29 @@
   <title>SQLPad</title>
   <link rel="shortcut icon" href="/favicon.ico">
   <!-- tauCharts css must be in a known path we can ref for image exports -->
-  <link rel="stylesheet" href="/javascripts/vendor/tauCharts/tauCharts.min.css" type="text/css" />
+  <link rel="stylesheet" href="/sqlpad/javascripts/vendor/tauCharts/tauCharts.min.css" type="text/css" />
+  
+  <link rel="stylesheet" href="/sqlpad/assets/index-97bc0071.css">
   <script type="module" src="/src/index.tsx"></script>
 </head>
 
 <body class="sans-serif">
   <div id="root"></div>
+  <script>
+    // Hide the "Add connection" button everywhere on the page after it renders
+    function hideAddConnectionButton() {
+      document.querySelectorAll('button._btn_13cvw_1._primary_13cvw_47').forEach(btn => {
+        if (btn.textContent.trim() === 'Add connection') {
+          btn.style.display = 'none';
+        }
+      });
+    }
+    // Hide on initial load
+    document.addEventListener('DOMContentLoaded', hideAddConnectionButton);
+    // Also try to hide after React renders (React can re-add the button)
+    // So run multiple times
+    setInterval(hideAddConnectionButton, 1000);
+  </script>
 </body>
 
 </html>

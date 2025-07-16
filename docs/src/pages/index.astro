@@ -2,4 +2,14 @@
 	// Redirect your homepage to the first page of documentation.
 	// If you have a landing page, remove this script and add it here!
 	window.location.pathname = `/en/introduction`;
+
+
+  // Hide "Add connection" button everywhere
+    document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('button._btn_13cvw_1._primary_13cvw_47').forEach(btn => {
+      if (btn.textContent.trim() === 'Add connection') {
+        btn.style.display = 'none';
+      }
+    });
+  });
 </script>

@@ -1,4 +1,5 @@
 export interface Connection {
+  deletable: boolean;
   createdAt: string | Date;
   description?: string;
   driver: string;

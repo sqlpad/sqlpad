@@ -58,6 +58,10 @@ input {
   overflow: visible;
 }
 
+button._btn_13cvw_1._primary_13cvw_47[type='button'] {
+  display: none !important;
+}
+
 /* reach ui 
 ============================================================================ */
 [data-reach-tooltip] {

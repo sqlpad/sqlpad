@@ -40,7 +40,7 @@ const DeleteConfirmButton = React.forwardRef<Ref, ButtonProps>(
           >
             <DeleteIcon />
           </IconButton>
-        ) : (
+        ) : ( 
           <Button
             onClick={() => setVisible(true)}
             ref={ref}
@@ -49,6 +49,7 @@ const DeleteConfirmButton = React.forwardRef<Ref, ButtonProps>(
           >
             {children}
           </Button>
+          
         )}
         {visible && (
           <Dialog

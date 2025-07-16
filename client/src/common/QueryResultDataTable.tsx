@@ -27,19 +27,54 @@ const scrollbarWidth = () => {
   return scrollbarWidth;
 };
 
+// Helper to normalize and type-guard column datatype as a string
+function getColumnDatatype(column: StatementColumn): string {
+  if (typeof column.datatype === 'string') {
+    return column.datatype.toLowerCase();
+  }
+  return '';
+}
+
+//Helper to convert numbers to plain decimal strings, removing scientific notation
+function toPlainString(num: number): string {
+  const sign = Math.sign(num) < 0 ? "-" : "";
+  const n = Math.abs(num);
+  if (n < 1.0) {
+    const e = parseInt(n.toExponential().split("e-")[1]);
+    if (e) {
+      const fixed = n.toFixed(e + 1).replace(/\.?0+$/, "");
+      return sign + fixed;
+    }
+  } else {
+    const e = parseInt(n.toExponential().split("e+")[1]);
+    if (e > 20) {
+      const fixed = n.toFixed(e).replace(/\.?0+$/, "");
+      return sign + fixed;
+    }
+  }
+  return sign + n.toString();
+}
+
+//Use toPlainString for numbers to avoid scientific notation and show all digits
 const renderValue = (input: any, column: StatementColumn) => {
   if (input === null || input === undefined) {
     return <em>null</em>;
   } else if (input === true || input === false) {
+
+    //To string method without js calculations
     return input.toString();
-  } else if (column.datatype === 'datetime') {
+  } else if (getColumnDatatype(column) === 'datetime') {
     // Remove the letters from ISO string and present as is
     return input.replace('T', ' ').replace('Z', '');
-  } else if (column.datatype === 'date') {
+  } else if (getColumnDatatype(column) === 'date') {
     // Formats ISO string to YYYY-MM-DD
     return input.substring(0, 10);
   } else if (typeof input === 'object') {
     return JSON.stringify(input, null, 2);
+  } else if (typeof input === 'number') {
+    
+    //Use toPlainString to avoid scientific notation
+    return toPlainString(input);
   } else if (typeof input === 'string' && input.match('^https?://')) {
     return (
       <a target="_blank" rel="noopener noreferrer" href={input}>
@@ -103,7 +138,6 @@ function CopyMenuItem({ id, value }: { id: string; value: string }) {
   );
 }
 
-// Hide the overflow so the scroll bar never shows in the header grid
 const headerStyle: React.CSSProperties = {
   overflowX: 'hidden',
   overflowY: 'hidden',
@@ -194,8 +228,6 @@ class QueryResultDataTable extends React.PureComponent<
           newInitialColumn = true;
 
           // If this is the only column, give it the entire width minus 40px
-          // The 40px accounts for scrollbar + spare column
-          // Also serves as a visual reminder/remains visually consistent with other tables that have empty spare column
           if (columns.length === 1) {
             const almostAll = Math.floor(width) - 40;
             columnWidths[name] = almostAll;
@@ -212,7 +244,6 @@ class QueryResultDataTable extends React.PureComponent<
           let columnWidthGuess = numChars * CHAR_PIXEL_WIDTH;
 
           // Column width estimates are capped to range between 100 and 350
-          // No reason other than these seem like good limits
           if (columnWidthGuess < 100) {
             columnWidthGuess = 100;
           } else if (columnWidthGuess > 350) {
@@ -232,10 +263,6 @@ class QueryResultDataTable extends React.PureComponent<
     }
   };
 
-  // NOTE
-  // An empty dummy column is added to the grid for visual purposes
-  // If dataKey was found this is a real column of data from the query result
-  // If not, it's the dummy column at the end, and it should fill the rest of the grid width
   getColumnWidth = (index: number) => {
     const { columnWidths, scrollbarWidth, dimensions } = this.state;
     const { columns } = this.props;
@@ -306,7 +333,6 @@ class QueryResultDataTable extends React.PureComponent<
     const { columns } = this.props;
     const column = columns[columnIndex];
 
-    // If dataKey is present this is an actual header to render
     if (column) {
       return (
         <div style={Object.assign({}, style, headerCellStyle)}>
@@ -319,7 +345,6 @@ class QueryResultDataTable extends React.PureComponent<
               this.resizeColumn({ dataKey: column.name, deltaX, columnIndex });
             }}
             position={{ x: 0, y: 0 }}
-            // zIndex={999}
           >
             <span className="DragHandleIcon">⋮</span>
           </Draggable>
@@ -327,7 +352,6 @@ class QueryResultDataTable extends React.PureComponent<
       );
     }
 
-    // If this is a dummy header cell render an empty header cell
     return <div style={Object.assign({}, style, headerCellStyle)} />;
   };
 
@@ -352,8 +376,6 @@ class QueryResultDataTable extends React.PureComponent<
       faderClass = styles.faderEven;
     }
 
-    // If dataKey is present this is a real data cell to render
-    // SEE COMMENTS IN QueryResultDataTable.module.css FOR ISSUES IN SHADOW IMPLEMENTATION
     if (column) {
       const value = rows?.[rowIndex]?.[columnIndex];
       return (
@@ -369,8 +391,6 @@ class QueryResultDataTable extends React.PureComponent<
       );
     }
 
-    // If no dataKey this is a dummy cell.
-    // It should render nothing, but match the row's style
     return (
       <div style={finalStyle}>
         <div className="truncate" />
@@ -394,17 +414,12 @@ class QueryResultDataTable extends React.PureComponent<
           lines = valueLines;
         }
       });
-      // Line height is 22px, 8 is 4px padding top and bottom
       return lines * 22 + 8;
     }
-
     return 30;
   };
 
-  // When a scroll occurs in the body grid,
-  // synchronize the scroll position of the header grid
   handleGridScroll = ({ scrollLeft }: { scrollLeft: number }) => {
-    // scrollTop previously was not supplied
     this.headerGrid?.current?.scrollTo({ scrollLeft, scrollTop: 0 });
   };
 
@@ -413,9 +428,7 @@ class QueryResultDataTable extends React.PureComponent<
   };
 
   handleContextMenu = (event: React.MouseEvent) => {
-    // target needs casting as no way of knowing what it is
     const target = event.target as HTMLDivElement;
-
     const cellCopyValue = target.innerText || '';
     const isCell = target.getAttribute('data-is-cell');
     const cellColumnName = target.getAttribute('data-column-name') || '';
@@ -460,7 +473,6 @@ class QueryResultDataTable extends React.PureComponent<
 
     if (rows && columns) {
       const rowCount = rows.length;
-      // Add extra column to fill remaining grid width if necessary
       const columnCount = columns.length + 1;
 
       if (queryResultFormat === 'fullColumns') {
@@ -509,12 +521,6 @@ class QueryResultDataTable extends React.PureComponent<
                 position: 'absolute',
               }}
             >
-              {/*
-                Visual hack - On Windows, scrollbar always showing in grid takes up some amount of room on side of content.
-                To account for this, the header width is reduced by scrollbar width.
-                This creates a small space in upper right corner that is unstyled.
-                Visually, we want this to look like a continuation of the header row, so we render a div out of flow, behind the actual header
-              */}
               <div
                 style={{
                   ...headerCellStyle,
@@ -526,7 +532,6 @@ class QueryResultDataTable extends React.PureComponent<
                 }}
               />
 
-              {/* Input fields for copy-paste value sourcing */}
               <OffScreenInput id="cell-copy-value" value={cellCopyValue} />
 
               <VariableSizeGrid
@@ -555,11 +560,6 @@ class QueryResultDataTable extends React.PureComponent<
                 {this.Cell}
               </VariableSizeGrid>
 
-              {/*
-                This menu is hidden and moves around based on where context-menu click happens
-                This is hacky but works! reach-ui does not expose the menu components
-                in a way that allows them to be used for context menu
-              */}
               <Menu>
                 <MenuButton
                   id="cell-value-context-menu"

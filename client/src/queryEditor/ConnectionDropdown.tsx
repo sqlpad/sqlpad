@@ -1,13 +1,11 @@
 import React, { useState, ChangeEvent } from 'react';
 import Select from '../common/Select';
-import ConnectionEditDrawer from '../connections/ConnectionEditDrawer';
 import ConnectionListDrawer from '../connections/ConnectionListDrawer';
 import {
   connectConnectionClient,
   selectConnectionId,
 } from '../stores/editor-actions';
 import { useSessionConnectionId } from '../stores/editor-store';
-import { Connection } from '../types';
 import { api } from '../utilities/api';
 import useAppContext from '../utilities/use-app-context';
 import styles from './ConnectionDropdown.module.css';
@@ -15,27 +13,16 @@ import styles from './ConnectionDropdown.module.css';
 function ConnectionDropdown() {
   const { currentUser } = useAppContext();
   const selectedConnectionId = useSessionConnectionId();
-  const [showEdit, setShowEdit] = useState(false);
   const [showConnections, setShowConnections] = useState(false);
 
   let { data: connectionsData, mutate } = api.useConnections();
   const connections = connectionsData || [];
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    if (event.target.value === 'new') {
-      return setShowEdit(true);
-    }
     if (event.target.value === 'manage') {
       return setShowConnections(true);
     }
     selectConnectionId(event.target.value);
-    connectConnectionClient();
-  };
-
-  const handleConnectionSaved = (connection: Connection) => {
-    mutate();
-    selectConnectionId(connection.id);
-    setShowEdit(false);
     connectConnectionClient();
   };
 
@@ -75,19 +62,9 @@ function ConnectionDropdown() {
         })}
 
         {currentUser?.role === 'admin' && (
-            <option value="manage">... Manage connections</option>
-         // <option value="new">... New connection</option>
-        )}
-        {currentUser?.role === 'admin' && (
-          <option value="manage"></option>
+          <option value="manage">... Manage connections</option>
         )}
       </Select>
-      <ConnectionEditDrawer
-        visible={showEdit}
-        placement="left"
-        onClose={() => setShowEdit(false)}
-        onConnectionSaved={handleConnectionSaved}
-      />
       <ConnectionListDrawer
         visible={showConnections}
         onClose={() => setShowConnections(false)}
