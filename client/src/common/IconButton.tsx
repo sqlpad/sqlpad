@@ -60,6 +60,7 @@ const IconButton = React.forwardRef<Ref, ButtonProps & LinkProps>(
     if (to && !disabled && !onClick) {
       button = (
         <div style={{ display: 'inline', lineHeight: 'initial' }}>
+          {/* @ts-expect-error anchor and buttons types are fighting */}
           <Link to={to} className={classNames.join(' ')} {...rest}>
             {React.Children.map(children, (child) => {
               if (React.isValidElement(child)) {
