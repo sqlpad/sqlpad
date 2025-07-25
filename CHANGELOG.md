@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.5.5] - 2025-07-25
+
+- Update dependencies (minor and patch)
+
 ## [7.5.4] - 2025-06-09
 
 - Update dependencies
