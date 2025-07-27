@@ -1,5 +1,9 @@
 # Changelog
 
+## [7.5.6] - 2025-07-26
+
+- Update Google bigquery driver
+
 ## [7.5.5] - 2025-07-25
 
 - Update dependencies (minor and patch)
