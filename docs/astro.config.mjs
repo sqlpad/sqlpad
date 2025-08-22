@@ -4,7 +4,7 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://getsqlpad.com',
+	site: 'https://sqlpad.pages.dev',
 	integrations: [
 		// Enable Preact to support Preact JSX components.
 		preact(),
